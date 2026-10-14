@@ -1,0 +1,7 @@
+node_modules
+dist
+render
+data
+.env*
+server.env
+.claude

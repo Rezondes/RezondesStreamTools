@@ -1,0 +1,15 @@
+node_modules
+dist
+
+# Gerenderte Videos, GIFs und Frames: lassen sich jederzeit neu erzeugen (#/stinger)
+render
+
+# Logins und Secrets: Token-Speicher des Servers und alle Env-Dateien, nur Vorlagen einchecken
+data
+server.env
+.env*
+!.env.example
+
+# Lokale Einstellungen und Logs
+.claude/settings.local.json
+*.log
