@@ -7,7 +7,7 @@
         "match": "LIZARD-TEST"
       },
       "who": [
-        "everyone"
+        "broadcaster"
       ],
       "cooldown": 1,
       "userCooldown": 1,
@@ -22,7 +22,8 @@
           "position": "random",
           "size": 360
         }
-      ]
+      ],
+      "enabled": false
     },
     {
       "name": "lizard",
@@ -33,8 +34,8 @@
       "who": [
         "everyone"
       ],
-      "cooldown": 1,
-      "userCooldown": 1,
+      "cooldown": 0,
+      "userCooldown": 0,
       "do": [
         {
           "type": "media",
