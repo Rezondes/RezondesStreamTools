@@ -39,6 +39,7 @@ export const ROUTES = {
   "POST /api/settings": { guard: "session", features: ["themes"] },
   "GET /api/admin/access": ADMIN,
   "POST /api/admin/access": ADMIN,
+  "GET /api/admin/streamers": ADMIN,
 } as const satisfies Record<string, Route>;
 
 export type RouteKey = keyof typeof ROUTES;

@@ -28,6 +28,13 @@ try {
   await profile.deleteTokens(folder);
   assert.equal(await profile.loadTokens(folder), null);
 
+  // Letzte Anmeldung: ohne Datei null, sonst der gespeicherte Zeitpunkt
+  assert.equal(await profile.loadLastLogin(folder), null);
+  await profile.saveLastLogin(folder, 1_700_000_000_000);
+  assert.equal(await profile.loadLastLogin(folder), 1_700_000_000_000);
+  await writeFile(join(folder, "profile.json"), "{kaputt");
+  assert.equal(await profile.loadLastLogin(folder), null);
+
   // Kaputte oder unvollständige Dateien gelten als nicht verbunden
   await writeFile(join(folder, "tokens.json"), "{kaputt");
   assert.equal(await profile.loadTokens(folder), null);

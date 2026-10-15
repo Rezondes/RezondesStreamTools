@@ -9,6 +9,7 @@ assert.equal(find("POST", "/api/triggers/config"), "POST /api/triggers/config");
 assert.equal(find("GET", "/api/test"), "method-not-allowed");
 assert.equal(find("DELETE", "/api/media"), "DELETE /api/media");
 assert.equal(find("PUT", "/api/media"), "method-not-allowed");
+assert.equal(find("GET", "/api/admin/streamers"), "GET /api/admin/streamers");
 assert.equal(find("GET", "/alerts.html"), null);
 assert.equal(find("GET", "/api/triggers/config/x"), null);
 // Schlüssel aus dem Prototyp von Object sind keine Routen
@@ -40,6 +41,9 @@ assert.equal(authorize(ROUTES["POST /api/twitch/disconnect"], { ...streamer, fea
 // Admin-Routen nur für Admins
 assert.equal(authorize(ROUTES["GET /api/admin/access"], streamer), "admin-only");
 assert.equal(authorize(ROUTES["POST /api/admin/access"], { ...streamer, admin: true }), "ok");
+// Beide Admin-Routen nur für Admins
+assert.equal(authorize(ROUTES["GET /api/admin/streamers"], streamer), "admin-only");
+assert.equal(authorize(ROUTES["GET /api/admin/streamers"], { ...streamer, admin: true }), "ok");
 
 // Overlay-Adressen unter /s/<login>/
 assert.deepEqual(overlayRoute(["status"]), { kind: "status" });

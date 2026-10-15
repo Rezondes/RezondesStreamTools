@@ -72,8 +72,9 @@ Läuft der Server, nutzt auch `npm run dev` dessen Anmeldung und Events (Proxy a
   - `features`: pro Funktion `off`, `beta` (nur Beta-Tester und Admins) oder `all`.
     `alerts` (EventSub-Alerts, Test-Alerts), `music` (Spotify), `triggers` und `fx` (Chat-Listener, Trigger, Medien; beide nötig), `chat` (nur im Status), `stinger`, `banners`.
 - Wer nicht freigeschaltet ist, landet nach der Twitch-Anmeldung wieder auf der Übersicht mit der Meldung "nicht freigeschaltet"; sein Token wird gleich widerrufen.
-- Admins lesen und ändern den Zugang über `GET` / `POST /api/admin/access` (JSON wie `access.json`). Bis das Dashboard dafür kommt,
-  z.B. in der Browser-Konsole auf der Übersicht: `fetch("/api/admin/access", { method: "POST", body: JSON.stringify(neu) })`.
+- Admins ändern das alles im Dashboard unter `[ ADMIN ]` (dahinter `GET` / `POST /api/admin/access`, JSON wie `access.json`).
+  Dort steht auch jedes Profil mit Zugang, Twitch-Verbindung, EventSub-Status und letzter Anmeldung (`GET /api/admin/streamers`).
+  Verliert jemand den Zugang, stoppt seine Laufzeit sofort; seine Overlays antworten danach mit 404.
   Änderungen wirken sofort: alle Laufzeiten starten neu, die Overlays verbinden sich selbst wieder.
 
 ### Adressen
@@ -88,6 +89,7 @@ Läuft der Server, nutzt auch `npm run dev` dessen Anmeldung und Events (Proxy a
 | `/auth/login`, `/auth/callback`, `POST /auth/logout` | alle | Anmeldung mit Twitch, Abmelden |
 | `/api/me`, `/api/test`, `/api/triggers`, `/api/trigger`, `/api/triggers/config`, `/api/media`, `/spotify/*`, `POST /api/twitch/disconnect` | angemeldet | Dashboard; Login aus dem Sitzungs-Cookie, Funktionsstufe geprüft |
 | `/api/admin/access` | Admins | Zugang und Funktionsstufen |
+| `/api/admin/streamers` | Admins | Profile mit Status |
 
 ### Umstieg vom Einzel-Server
 

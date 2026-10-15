@@ -1,5 +1,6 @@
 // Texte des Dashboards (Deutsch). Die Komponenten nehmen jeden sichtbaren Text von hier (Regel 20);
 // errors übersetzt die Fehlercodes des Servers (src/core/errorCodes.ts). Geprüft in texts.de.check.ts.
+import type { Feature, Level } from "../../server/access.ts";
 import type { ErrorCode } from "../core/errorCodes.ts";
 import type { SceneName } from "../core/theme.ts";
 import type { Section } from "./navigation.ts";
@@ -13,7 +14,6 @@ export const TEXTS = {
   logout: "[ ABMELDEN ]",
   signedInAs: "Angemeldet als",
   admin: "(Admin)",
-  comingSoon: "Dieser Bereich folgt in einem späteren Ausbau.",
   sections: {
     overview: "ÜBERSICHT",
     theme: "THEME",
@@ -126,6 +126,37 @@ export const TEXTS = {
     remove: "[ LÖSCHEN ]",
     confirm: (name: string) => `"${name}" löschen?`,
     confirmUsed: (name: string, triggers: string) => `"${name}" wird noch von diesen Triggern genutzt: ${triggers}. Trotzdem löschen?`,
+  },
+  adminArea: {
+    access: "Zugang",
+    registration: "Anmeldung",
+    registrationModes: { allowlist: "nur Allowlist", open: "offen für alle" },
+    allowlist: "Allowlist (ein Twitch-Login pro Zeile)",
+    beta: "Beta-Tester (ein Twitch-Login pro Zeile)",
+    features: "Funktionen",
+    levels: { off: "aus", beta: "nur Beta-Tester", all: "alle" } satisfies Record<Level, string>,
+    featureNames: {
+      alerts: "Alerts (EventSub)",
+      chat: "Chat",
+      music: "Musik (Spotify)",
+      fx: "Effekte (fx.html)",
+      triggers: "Chat-Trigger",
+      stinger: "Stinger",
+      banners: "Banner",
+      themes: "Themes und Einstellungen",
+    } satisfies Record<Feature, string>,
+    save: "[ ZUGANG SPEICHERN ]",
+    saved: "Gespeichert. Laufzeiten ohne Zugang sind gestoppt, alle anderen neu gestartet.",
+    streamers: "Profile",
+    login: "Login",
+    allowed: "Zugang",
+    connected: "Twitch verbunden",
+    live: "EventSub",
+    lastLogin: "Letzte Anmeldung",
+    yes: "ja",
+    no: "nein",
+    never: "nie",
+    adminMark: "(Admin)",
   },
   connections: {
     twitch: "Twitch",

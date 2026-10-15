@@ -7,7 +7,7 @@ import { mkdir, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { randomBytes } from "node:crypto";
 import * as streamerPath from "../src/core/streamerPath.ts";
-import { loadAccess, type Feature } from "./access.ts";
+import { loadAccess, revokedLogins, type Feature } from "./access.ts";
 import { writeAtomic } from "./atomicFile.ts";
 import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from "./http.ts";
 import { createLoginStates } from "./loginStates.ts";
@@ -145,7 +145,9 @@ async function twitchCallback({ response, url }: Call) {
     console.log(`Login refused, not on the allowlist: ${tokens.login}`);
     return redirect(response, "/?error=not-allowed");
   }
-  await profile.saveTokens(profile.folder(DATA, tokens.login), tokens);
+  const folder = profile.folder(DATA, tokens.login);
+  await profile.saveTokens(folder, tokens);
+  await profile.saveLastLogin(folder, Date.now());
   await startRuntime(tokens.login);
   console.log(`Twitch login: ${tokens.login}`);
   redirect(response, "/", { "Set-Cookie": sessionCookie(createSession(sessionKey, tokens.login), SECURE) });
@@ -282,10 +284,34 @@ async function saveSettingsRequest({ request, response, login }: Call) {
 async function saveAccess({ request, response }: Call) {
   const value = parseJson(String(await readBody(request, ACCESS_LIMIT)));
   if (typeof value !== "object" || value === null || Array.isArray(value)) return send(response, 400, "invalid-json");
-  // access.save bringt alles auf gültige Werte (sanitize)
+  // access.save bringt alles auf gültige Werte (sanitize). Wer den Zugang verliert, dessen Laufzeit endet sofort;
+  // alle anderen starten neu, damit geänderte Funktionsstufen gelten.
+  const before = access.get();
   const saved = await access.save(value);
+  const revoked = revokedLogins(before, saved, ADMINS, [...runtimes.keys()]);
+  for (const login of revoked) {
+    runtimes.get(login)?.stop();
+    runtimes.delete(login);
+    console.log(`Access revoked, runtime stopped: ${login}`);
+  }
   await restartAll();
   json(response, saved);
+}
+
+// Alle Profile mit Zugang, Verbindung (Tokens), EventSub-Status und letzter Anmeldung
+async function adminStreamers({ response }: Call) {
+  const rows = await Promise.all((await profile.list(DATA)).map(async login => {
+    const folder = profile.folder(DATA, login);
+    return {
+      login,
+      allowed: access.canUse(login),
+      admin: access.isAdmin(login),
+      connected: (await profile.loadTokens(folder)) !== null,
+      live: runtimes.get(login)?.live() ?? false,
+      lastLogin: await profile.loadLastLogin(folder),
+    };
+  }));
+  json(response, rows);
 }
 
 // Jede Route aus ROUTES hat genau einen Handler (der Typ erzwingt es)
@@ -310,6 +336,7 @@ const HANDLERS: Record<RouteKey, Handler> = {
   "POST /api/settings": saveSettingsRequest,
   "GET /api/admin/access": ({ response }) => json(response, access.get()),
   "POST /api/admin/access": saveAccess,
+  "GET /api/admin/streamers": adminStreamers,
 };
 
 // Login aus dem Cookie, und was er darf (Regel 26: nie aus der Anfrage selbst)

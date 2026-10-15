@@ -389,7 +389,7 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 9: Admin-Bereich
+## Package 9: Admin-Bereich (erledigt)
 
 **Ziel:** Admins schalten Anmeldung, Allowlist, Beta-Tester und Funktionsstufen im Dashboard um.
 
@@ -400,10 +400,10 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: Admin sieht Anmeldemodus (`allowlist`/`open`), Allowlist, Beta-Tester, je Funktion die Stufe (`off`/`beta`/`all`) und kann alles speichern.
-- [ ] AC2: Admin sieht alle Profile mit Status (verbunden, EventSub aktiv, letzte Anmeldung).
-- [ ] AC3: Entzieht der Admin einem Streamer den Zugang, wird dessen Laufzeit sofort gestoppt.
-- [ ] AC4: Nicht-Admins bekommen auf beide Admin-Routen 403.
+- [x] AC1: Admin sieht Anmeldemodus (`allowlist`/`open`), Allowlist, Beta-Tester, je Funktion die Stufe (`off`/`beta`/`all`) und kann alles speichern.
+- [x] AC2: Admin sieht alle Profile mit Status (verbunden, EventSub aktiv, letzte Anmeldung).
+- [x] AC3: Entzieht der Admin einem Streamer den Zugang, wird dessen Laufzeit sofort gestoppt. Geprüft: `revokedLogins` im Check, Sperre und 404 der Overlays per curl; das Stoppen einer echten Laufzeit braucht echte Twitch-Tokens (manuell).
+- [x] AC4: Nicht-Admins bekommen auf beide Admin-Routen 403.
 
 ### Tests (TDD)
 

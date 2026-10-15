@@ -1,5 +1,6 @@
 // Profil eines Streamers: Ordner DATA/streamers/<login>/ mit tokens.json (Twitch, mode 600), spotify.json,
-// triggers.json und media/. Hier: Ordner finden und die Twitch-Tokens lesen, schreiben, löschen.
+// triggers.json, settings.json, profile.json (letzte Anmeldung) und media/. Hier: Ordner finden, die Twitch-Tokens
+// lesen, schreiben, löschen und die letzte Anmeldung merken.
 // Gedacht für import * as profile. Check: profile.check.ts.
 import { readdir, readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
@@ -30,3 +31,16 @@ export async function loadTokens(profileFolder: string): Promise<TwitchTokens | 
 export const saveTokens = (profileFolder: string, tokens: TwitchTokens) => writeAtomic(join(profileFolder, "tokens.json"), JSON.stringify(tokens), 0o600);
 
 export const deleteTokens = (profileFolder: string) => rm(join(profileFolder, "tokens.json"), { force: true });
+
+// Zeitpunkt der letzten Twitch-Anmeldung (ms seit 1970) für die Admin-Übersicht
+export const saveLastLogin = (profileFolder: string, time: number) => writeAtomic(join(profileFolder, "profile.json"), JSON.stringify({ lastLogin: time }));
+
+export async function loadLastLogin(profileFolder: string): Promise<number | null> {
+  try {
+    const parsed = JSON.parse(await readFile(join(profileFolder, "profile.json"), "utf8")) as { lastLogin?: unknown };
+    return typeof parsed.lastLogin === "number" ? parsed.lastLogin : null;
+  } catch {
+    // Fehlt oder kaputt: unbekannt
+    return null;
+  }
+}

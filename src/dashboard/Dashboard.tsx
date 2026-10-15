@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { params } from "../core/params.ts";
+import Admin from "./Admin.tsx";
 import { loadAccount, post, type Account } from "./api.ts";
 import Connections from "./Connections.tsx";
 import Media from "./Media.tsx";
@@ -88,7 +89,7 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
       {section === "theme" && <ThemeSettings me={account} />}
       {section === "triggers" && <Triggers />}
       {section === "media" && <Media login={account.login} />}
-      {section === "admin" && <p className="muted">{TEXTS.comingSoon}</p>}
+      {section === "admin" && <Admin />}
     </>
   );
 }

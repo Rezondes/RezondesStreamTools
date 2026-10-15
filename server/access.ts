@@ -30,6 +30,11 @@ export function hasFeature(a: Access, admins: string[], login: string, f: Featur
   return level === "all" || (level === "beta" && (admins.includes(l) || a.beta.includes(l)));
 }
 
+// Logins aus running, die nach dem Wechsel von before auf after keinen Zugang mehr haben (ihre Laufzeit stoppt sofort)
+export function revokedLogins(before: Access, after: Access, admins: string[], running: readonly string[]) {
+  return running.filter(login => canUse(before, admins, login) && !canUse(after, admins, login));
+}
+
 // Unvollständige oder fremde Eingaben auf gültige Werte bringen
 export function sanitize(v: Partial<Access>): Access {
   const features = {} as Record<Feature, Level>;

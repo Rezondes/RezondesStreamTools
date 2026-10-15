@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { canUse, hasFeature, loadAccess, sanitize } from "./access.ts";
+import { canUse, hasFeature, loadAccess, revokedLogins, sanitize } from "./access.ts";
 
 const admins = ["rezondes"];
 const beta = sanitize({ registration: "allowlist", allowlist: ["Freund1"], beta: ["tester"], features: { music: "beta", fx: "off" } as never });
@@ -28,6 +28,13 @@ assert.equal(odd.registration, "allowlist");
 assert.deepEqual(odd.allowlist, ["a"]);
 assert.equal(odd.features.music, "all");
 assert.equal(Object.keys(odd.features).length, 8);
+
+// Entzogener Zugang: wer vorher durfte und jetzt nicht mehr, nur unter den laufenden Logins; Admins nie
+const before = sanitize({ allowlist: ["freund1", "freund2"] });
+assert.deepEqual(revokedLogins(before, sanitize({ allowlist: ["freund2"] }), admins, ["rezondes", "freund1", "freund2"]), ["freund1"]);
+assert.deepEqual(revokedLogins(before, sanitize({ allowlist: [] }), admins, ["rezondes"]), []);
+assert.deepEqual(revokedLogins(sanitize({ registration: "open" }), sanitize({ allowlist: ["freund2"] }), admins, ["fremder", "freund2"]), ["fremder"]);
+assert.deepEqual(revokedLogins(before, before, admins, ["freund1"]), []);
 
 // Gespeicherter Zugang in einem temporären Ordner, der danach gelöscht wird
 const folder = await mkdtemp(join(tmpdir(), "access-"));
