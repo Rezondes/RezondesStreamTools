@@ -114,4 +114,15 @@ const FIELDS = [
 
 export type StarterValues = ValuesOf<typeof FIELDS>;
 
-export const starterSettings: ThemeSchema = { id: "starter", name: "Starter", fields: FIELDS };
+const GROUP_SCENES = {
+  [SCREENS]: ["starting", "brb", "ending"],
+  [ALERTS]: ["alerts"],
+  [CHAT]: ["chat"],
+  [CAM]: ["cam"],
+  [MUSIC]: ["music"],
+  [FX]: ["fx"],
+  [STINGER]: [],
+  [BANNER]: [],
+} as const;
+
+export const starterSettings: ThemeSchema = { id: "starter", name: "Starter", fields: FIELDS, groupScenes: GROUP_SCENES };

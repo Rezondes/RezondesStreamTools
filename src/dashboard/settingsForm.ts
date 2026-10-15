@@ -1,7 +1,7 @@
 // Logik des Einstellungs-Formulars: Felder nach Gruppen in Schema-Reihenfolge, Zurücksetzen auf den Standard,
 // geänderte Felder gegenüber dem gespeicherten Stand und Fehler je Feld. Reine Funktionen, getestet in settingsForm.check.ts.
 import type { SettingError, SettingErrorCode } from "../core/settings.ts";
-import type { SettingField, SettingValue, SettingValues, ThemeSchema } from "../core/theme.ts";
+import type { SceneName, SettingField, SettingValue, SettingValues, ThemeSchema } from "../core/theme.ts";
 
 const same = (left: SettingValue | undefined, right: SettingValue | undefined) => JSON.stringify(left) === JSON.stringify(right);
 
@@ -11,6 +11,14 @@ export function groupFields(schema: ThemeSchema): { group: string; fields: Setti
   for (const field of schema.fields) groups.set(field.group, [...(groups.get(field.group) ?? []), field]);
   return [...groups].map(([group, fields]) => ({ group, fields }));
 }
+
+// Nur die Gruppen, die in scene wirken (siehe groupScenes); ohne Eintrag wirkt eine Gruppe überall
+export const groupsForScene = (schema: ThemeSchema, scene: SceneName) =>
+  groupFields(schema).filter(({ group }) => schema.groupScenes?.[group]?.includes(scene) ?? true);
+
+// Gruppen, die in keiner Szene wirken (Stinger, Banner): stehen im Bereich Rendern
+export const groupsWithoutScene = (schema: ThemeSchema) =>
+  Object.entries(schema.groupScenes ?? {}).filter(([, scenes]) => scenes.length === 0).map(([group]) => group);
 
 export const resetAll = (schema: ThemeSchema): SettingValues => Object.fromEntries(schema.fields.map(field => [field.key, field.default]));
 

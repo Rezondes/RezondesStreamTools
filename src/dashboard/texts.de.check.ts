@@ -25,6 +25,7 @@ assert.ok(TEXTS.adminArea.revoked("neo").endsWith("neo"));
 assert.ok(TEXTS.adminArea.betaRemoved("neo").endsWith("neo"));
 assert.ok(TEXTS.adminArea.off("Chat").endsWith("Chat"));
 assert.equal(TEXTS.obs.collection("neo"), "Overlays neo");
+assert.ok(TEXTS.theme.elsewhere("Stinger").startsWith("Stinger"));
 assert.ok(TEXTS.obs.done(7).includes("7"));
 assert.ok(TEXTS.obs.failed("kaputt").endsWith("kaputt"));
 

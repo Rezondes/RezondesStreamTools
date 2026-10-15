@@ -4,12 +4,11 @@
 import { useEffect, useRef, useState } from "react";
 import { PREVIEW } from "../core/hooks/useSettings.ts";
 import * as streamerPath from "../core/streamerPath.ts";
-import { SCENE_SIZES, SCENES, type SceneName } from "../core/theme.ts";
+import { SCENE_SIZES, type SceneName } from "../core/theme.ts";
 import type { PublicSettings } from "../core/types.ts";
 import { TEXTS } from "./texts.de.ts";
 
-export default function ScenePreview({ login, settings }: { login: string; settings: PublicSettings }) {
-  const [scene, setScene] = useState<SceneName>("alerts");
+export default function ScenePreview({ login, scene, settings }: { login: string; scene: SceneName; settings: PublicSettings }) {
   const [width, setWidth] = useState(0);
   const frame = useRef<HTMLIFrameElement>(null);
   const box = useRef<HTMLDivElement>(null);
@@ -36,12 +35,6 @@ export default function ScenePreview({ login, settings }: { login: string; setti
   const scale = width ? Math.min(1, width / size.width) : 0;
   return (
     <div className="scene-preview">
-      <label className="setting">
-        {TEXTS.theme.previewScene}
-        <select value={scene} onChange={event => setScene(event.target.value as SceneName)}>
-          {SCENES.map(name => <option key={name} value={name}>{TEXTS.scenes[name]}</option>)}
-        </select>
-      </label>
       <div ref={box} className="preview-box" style={{ height: size.height * scale }}>
         <iframe
           key={scene}

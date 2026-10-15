@@ -17,6 +17,9 @@ for (const theme of THEMES) {
   // Die Standardwerte selbst bestehen die Prüfung
   const defaults = Object.fromEntries(theme.fields.map(field => [field.key, field.default]));
   assert.deepEqual(validateSettings(theme, defaults).errors, [], `${theme.id}: ungültiger Standardwert`);
+  // Die Szenen-Zuordnung nennt nur Gruppen, die es gibt
+  const groups = new Set(theme.fields.map(field => field.group));
+  for (const group of Object.keys(theme.groupScenes ?? {})) assert.ok(groups.has(group), `${theme.id}: groupScenes nennt unbekannte Gruppe ${group}`);
 }
 
 console.log("registry ok");

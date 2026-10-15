@@ -263,4 +263,16 @@ const FIELDS = [
 
 export type MatrixValues = ValuesOf<typeof FIELDS>;
 
-export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: FIELDS };
+const GROUP_SCENES = {
+  [RAIN]: ["starting", "brb", "ending", "alerts"],
+  [SCREENS]: ["starting", "brb", "ending"],
+  [ALERTS]: ["alerts"],
+  [CHAT]: ["chat"],
+  [CAM]: ["cam"],
+  [MUSIC]: ["music"],
+  [FX]: ["fx"],
+  [STINGER]: [],
+  [BANNER]: [],
+} as const;
+
+export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: FIELDS, groupScenes: GROUP_SCENES };

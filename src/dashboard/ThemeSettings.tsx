@@ -1,16 +1,16 @@
-// Theme-Bereich im Dashboard: Theme wählen (speichert sofort), alle Einstellungen des Themes im aus dem Schema
-// erzeugten Formular, gruppiert nach group; Speichern mit Fehlern je Feld, Zurücksetzen je Feld und für alles,
+// Theme-Bereich im Dashboard: Theme wählen (speichert sofort), Szene wählen (Vorschau und die Gruppen, die in ihr
+// wirken, siehe groupScenes; die Suche durchsucht alle), Formular aus dem Schema, gruppiert nach group; Speichern mit Fehlern je Feld, Zurücksetzen je Feld und für alles,
 // Vorschau mit den ungespeicherten Werten. Gespeicherte Werte übernehmen die Overlays sofort (SSE).
 import { useCallback, useEffect, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
-import type { SettingValues, ThemeSchema } from "../core/theme.ts";
+import { SCENES, type SceneName, type SettingValues, type ThemeSchema } from "../core/theme.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
 import { getJson, loadMedia, postJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
 import ScenePreview from "./ScenePreview.tsx";
 import SettingInput from "./SettingInput.tsx";
-import { changedKeys, errorsByKey, groupFields, resetAll, resetField } from "./settingsForm.ts";
+import { changedKeys, errorsByKey, groupFields, groupsForScene, groupsWithoutScene, resetAll, resetField } from "./settingsForm.ts";
 import { TEXTS } from "./texts.de.ts";
 
 // Antwort von GET /api/settings: gewähltes Theme, gespeicherte Werte je Theme, verfügbare Themes
@@ -23,6 +23,7 @@ const defaultSchema = findTheme(DEFAULT_THEME)!;
 export default function ThemeSettings({ me }: { me: Me }) {
   const { file, draft, setDraft, errors, notice, media, save, load } = useSettingsFile();
   const [search, setSearch] = useState("");
+  const [scene, setScene] = useState<SceneName>("alerts");
   if (!file) {
     if (!notice || notice === "saved" || notice === "invalid") return <p className="muted">{TEXTS.loading}</p>;
     return (
@@ -48,6 +49,12 @@ export default function ThemeSettings({ me }: { me: Me }) {
           {file.themes.map(theme => <option key={theme.id} value={theme.id}>{theme.name}</option>)}
         </select>
       </label>
+      <label className="setting">
+        {TEXTS.theme.previewScene}
+        <select value={scene} onChange={event => setScene(event.target.value as SceneName)}>
+          {SCENES.map(name => <option key={name} value={name}>{TEXTS.scenes[name]}</option>)}
+        </select>
+      </label>
 
       <div className="actions settings-bar">
         <button className="btn primary" disabled={changed.length === 0} onClick={() => save(schema.id, draft)}>{TEXTS.theme.save}</button>
@@ -66,26 +73,27 @@ export default function ThemeSettings({ me }: { me: Me }) {
             {TEXTS.theme.search}
             <input type="search" value={search} onChange={event => setSearch(event.target.value)} />
           </label>
-          <SettingsGroups schema={schema} search={search} draft={{ values: draft, set: setDraft }} errors={errors} media={media} />
+          <SettingsGroups schema={schema} scene={scene} search={search} draft={{ values: draft, set: setDraft }} errors={errors} media={media} />
+          {groupsWithoutScene(schema).length > 0 && <p className="muted">{TEXTS.theme.elsewhere(groupsWithoutScene(schema).join(", "))}</p>}
         </div>
-        <ScenePreview login={me.login} settings={{ theme: schema.id, values: resolveSettings(schema, draft) }} />
+        <ScenePreview login={me.login} scene={scene} settings={{ theme: schema.id, values: resolveSettings(schema, draft) }} />
       </div>
     </section>
   );
 }
 
-// Felder des Schemas, je Gruppe aufklappbar (die erste offen); mit Suche nur passende Felder, alle Gruppen offen
-type GroupsProps = { schema: ThemeSchema; search: string; draft: Draft; errors: Record<string, SettingErrorCode>; media: readonly string[] };
-function SettingsGroups({ schema, search, draft, errors, media }: GroupsProps) {
+// Gruppen der Szene, aufklappbar (die der Szene offen, Allgemein zu); mit Suche passende Felder aller Gruppen, alle offen
+type GroupsProps = { schema: ThemeSchema; scene: SceneName; search: string; draft: Draft; errors: Record<string, SettingErrorCode>; media: readonly string[] };
+function SettingsGroups({ schema, scene, search, draft, errors, media }: GroupsProps) {
   const query = search.trim().toLowerCase();
-  const groups = groupFields(schema)
+  const groups = (query ? groupFields(schema) : groupsForScene(schema, scene))
     .map(({ group, fields }) => ({ group, fields: query ? fields.filter(field => `${group} ${field.label}`.toLowerCase().includes(query)) : fields }))
     .filter(({ fields }) => fields.length > 0);
   if (groups.length === 0) return <p className="muted">{TEXTS.theme.noMatch}</p>;
   return (
     <>
-      {groups.map(({ group, fields }, index) => (
-        <details key={`${group}${query ? "-search" : ""}`} className="settings-group" open={Boolean(query) || index === 0}>
+      {groups.map(({ group, fields }) => (
+        <details key={`${group}-${query ? "search" : scene}`} className="settings-group" open={Boolean(query) || group in (schema.groupScenes ?? {})}>
           <summary>{group}</summary>
           {fields.map(field => (
             <SettingInput

@@ -38,4 +38,6 @@ export type SettingField =
   | (FieldBase & { type: "media"; default: string; accept: "image" | "video" | "audio" })
   | (FieldBase & { type: "sound"; default: SoundValue });
 
-export type ThemeSchema = { id: string; name: string; fields: readonly SettingField[] };
+// groupScenes: in welchen Szenen eine Gruppe wirkt (das Dashboard zeigt nur die Gruppen der Szene in der Vorschau);
+// fehlt eine Gruppe, wirkt sie überall (Allgemein), [] = in keiner Szene (Stinger, Banner: Bereich Rendern)
+export type ThemeSchema = { id: string; name: string; fields: readonly SettingField[]; groupScenes?: Readonly<Record<string, readonly SceneName[]>> };

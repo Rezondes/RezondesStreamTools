@@ -1,7 +1,7 @@
 // Check für settingsForm.ts: Gruppen in Schema-Reihenfolge, Zurücksetzen, Änderungen und Fehler je Feld. Läuft mit npm test.
 import assert from "node:assert/strict";
 import type { ThemeSchema } from "../core/theme.ts";
-import { changedKeys, errorsByKey, groupFields, isDefault, resetAll, resetField } from "./settingsForm.ts";
+import { changedKeys, errorsByKey, groupFields, groupsForScene, groupsWithoutScene, isDefault, resetAll, resetField } from "./settingsForm.ts";
 
 const schema: ThemeSchema = {
   id: "probe",
@@ -19,6 +19,14 @@ assert.deepEqual(groupFields(schema).map(({ group, fields }) => [group, fields.m
   ["Allgemein", ["accent", "size"]],
   ["Szenen", ["title", "lines"]],
 ]);
+
+// Gruppen je Szene: ohne Eintrag überall, sonst nur in den genannten Szenen, [] nirgends
+const scoped: ThemeSchema = { ...schema, groupScenes: { Szenen: ["starting"], Stinger: [] } };
+assert.deepEqual(groupsForScene(scoped, "starting").map(({ group }) => group), ["Allgemein", "Szenen"]);
+assert.deepEqual(groupsForScene(scoped, "chat").map(({ group }) => group), ["Allgemein"]);
+assert.deepEqual(groupsForScene(schema, "chat").map(({ group }) => group), ["Allgemein", "Szenen"]);
+assert.deepEqual(groupsWithoutScene(scoped), ["Stinger"]);
+assert.deepEqual(groupsWithoutScene(schema), []);
 
 // Zurücksetzen: ein Feld oder alles auf den Standard
 const values = { accent: "#ff0000", title: "TSCHÜSS", size: 20, lines: ["x"] };
