@@ -4,7 +4,10 @@ import { SCENES, type SceneName, type SettingValues, type ThemeSchema } from "./
 
 const isScene = (name: string): name is SceneName => (SCENES as readonly string[]).includes(name);
 
-// Szene des Themes, sonst die des Standard-Themes; null für unbekannte Szenen oder wenn keiner sie hat
+// Theme-eigene Funktionen: diese Szenen hat nur ein Theme, das sie selbst mitbringt, sie werden nie geerbt
+const OWN_SCENES: readonly SceneName[] = ["minimes"];
+
+// Szene des Themes, sonst die des Standard-Themes (ausser OWN_SCENES); null für unbekannte Szenen oder wenn keiner sie hat
 export function resolveScene<Component>(
   scenes: Record<string, Partial<Record<SceneName, Component>>>,
   themeId: string,
@@ -12,7 +15,9 @@ export function resolveScene<Component>(
   fallbackTheme: string,
 ): Component | null {
   if (!isScene(scene)) return null;
-  return scenes[themeId]?.[scene] ?? scenes[fallbackTheme]?.[scene] ?? null;
+  const own = scenes[themeId]?.[scene];
+  if (OWN_SCENES.includes(scene)) return own ?? null;
+  return own ?? scenes[fallbackTheme]?.[scene] ?? null;
 }
 
 // Farben, Zahlen (mit Einheit laut Schema), Schalter (1/0, zum Rechnen in calc) und Schriften als --<key>.

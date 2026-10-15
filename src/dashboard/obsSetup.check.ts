@@ -9,7 +9,7 @@ const layout = obsLayout("https://overlays.example/s/neo", "neo", TEXTS.scenes, 
 
 // Drei Vollbild-Szenen mit je einer Quelle, dazu eine Szene mit den übrigen fünf Overlays
 assert.deepEqual(layout.map(scene => scene.name), [TEXTS.scenes.starting, TEXTS.scenes.brb, TEXTS.scenes.ending, "Overlays"]);
-assert.deepEqual(layout[3].sources.map(source => source.name), ["neo alerts", "neo chat", "neo cam", "neo music", "neo fx"]);
+assert.deepEqual(layout[3].sources.map(source => source.name), ["neo alerts", "neo chat", "neo cam", "neo music", "neo fx", "neo minimes"]);
 const chat = layout[3].sources[1];
 assert.deepEqual(chat, { scene: "chat", name: "neo chat", url: "https://overlays.example/s/neo/chat", width: 500, height: 900 });
 
@@ -20,7 +20,7 @@ assert.equal(dragUrl(chat), "https://overlays.example/s/neo/chat?layer-name=neo+
 let counter = 0;
 const collection = sceneCollection("Overlays neo", layout, () => `id-${++counter}`);
 assert.equal(collection.current_scene, TEXTS.scenes.starting);
-assert.equal(collection.sources.length, 8 + 4);
+assert.equal(collection.sources.length, 9 + 4);
 const input = collection.sources.find(source => source.name === "neo chat")!;
 assert.deepEqual(input.settings, { url: chat.url, width: 500, height: 900, reroute_audio: true });
 // Starting, BRB, Ending laden beim Aktivieren der Szene neu (Timer von vorn), die anderen laufen durch
@@ -33,7 +33,7 @@ assert.deepEqual(overlays.settings.items.find(item => item.name === "neo chat")?
 const requests = obsRequests(layout, ["Overlays"], ["neo chat"]);
 assert.deepEqual(requests.filter(request => request.requestType === "CreateScene").map(request => request.requestData.sceneName), [TEXTS.scenes.starting, TEXTS.scenes.brb, TEXTS.scenes.ending]);
 assert.deepEqual(requests.filter(request => request.requestType === "SetInputSettings").map(request => request.requestData.inputName), ["neo chat"]);
-assert.equal(requests.filter(request => request.requestType === "CreateInput").length, 7);
+assert.equal(requests.filter(request => request.requestType === "CreateInput").length, 8);
 
 // Authentifizierung wie im Protokoll beschrieben
 const sha = (text: string) => createHash("sha256").update(text).digest("base64");

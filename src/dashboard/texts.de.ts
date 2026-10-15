@@ -47,6 +47,7 @@ export const TEXTS = {
     cam: "Webcam-Rahmen",
     music: "Spotify Now Playing",
     fx: "Chat-Effekte (Trigger)",
+    minimes: "Minimes (Chatter als Figuren)",
   } satisfies Record<SceneName, string>,
   overview: {
     obsHint: "In OBS: Quelle hinzufügen, Browser, URL einfügen, Breite und Höhe wie angegeben.",
@@ -187,6 +188,7 @@ export const TEXTS = {
       stinger: "Stinger",
       banners: "Banner",
       themes: "Themes und Einstellungen",
+      minimes: "Minimes",
     } satisfies Record<Feature, string>,
     save: "[ ZUGANG SPEICHERN ]",
     confirmTitle: "Beim Speichern geht Folgendes verloren:",

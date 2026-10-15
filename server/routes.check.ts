@@ -54,6 +54,7 @@ assert.deepEqual(overlayRoute(["alerts.html"]), { kind: "scene", file: "alerts.h
 // Ohne Endung: nur bekannte Szenen, sie zeigen auf dieselbe Datei
 assert.deepEqual(overlayRoute(["alerts"]), { kind: "scene", file: "alerts.html" });
 assert.deepEqual(overlayRoute(["starting"]), { kind: "scene", file: "starting.html" });
+assert.deepEqual(overlayRoute(["minimes"]), { kind: "scene", file: "minimes.html" });
 assert.equal(overlayRoute(["index"]), null);
 assert.equal(overlayRoute(["unbekannt"]), null);
 assert.deepEqual(overlayRoute(["media", "lizard.gif"]), { kind: "media", file: "lizard.gif" });

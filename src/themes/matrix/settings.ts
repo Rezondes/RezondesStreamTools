@@ -3,6 +3,7 @@
 // MatrixValues ist der Typ der aufgelösten Werte, den die Szenen über useMatrix (values.ts) lesen.
 import { asciiArt, choice, color, flag, font, lines, number, sound, text, type ValuesOf } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
+import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 const LOGO = String.raw`
@@ -259,6 +260,8 @@ const FIELDS = [
   number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
   number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
   number("bannerRainDensity", "Regen-Dichte", BANNER, 100, 0, 100, "%"),
+  // Minimes: Befehle, Regeln und Bewegung sind für alle Themes mit Minimes gleich
+  ...MINIME_FIELDS,
 ] as const satisfies readonly SettingField[];
 
 export type MatrixValues = ValuesOf<typeof FIELDS>;
@@ -273,6 +276,9 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [STINGER]: [],
   [BANNER]: [],
+  [MINIME_COMMANDS]: ["minimes"],
+  [MINIME_RULES]: ["minimes"],
+  [MINIME_MOTION]: ["minimes"],
 } as const;
 
 export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: FIELDS, groupScenes: GROUP_SCENES };

@@ -27,7 +27,8 @@ const odd = sanitize({ registration: "jeder" as never, allowlist: [" A ", "a", "
 assert.equal(odd.registration, "allowlist");
 assert.deepEqual(odd.allowlist, ["a"]);
 assert.equal(odd.features.music, "all");
-assert.equal(Object.keys(odd.features).length, 8);
+assert.equal(Object.keys(odd.features).length, 9);
+assert.equal(odd.features.minimes, "all");
 
 // Entzogener Zugang: wer vorher durfte und jetzt nicht mehr, nur unter den laufenden Logins; Admins nie
 const before = sanitize({ allowlist: ["freund1", "freund2"] });

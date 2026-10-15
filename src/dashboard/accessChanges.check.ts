@@ -8,7 +8,7 @@ const saved: Access = {
   registration: "open",
   allowlist: ["neo", "Trinity"],
   beta: ["morpheus"],
-  features: { alerts: "all", chat: "all", music: "beta", fx: "all", triggers: "all", stinger: "off", banners: "all", themes: "all" },
+  features: { alerts: "all", chat: "all", music: "beta", fx: "all", triggers: "all", stinger: "off", banners: "all", themes: "all", minimes: "all" },
 };
 
 // Nichts geändert

@@ -1,7 +1,7 @@
 // Theme-Schnittstelle: welche Szenen es gibt und wie ein Theme seine Einstellungen beschreibt.
 // Das Schema ist reines TypeScript ohne React, damit Server und Dashboard es gleich prüfen.
 
-export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx"] as const;
+export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes"] as const;
 export type SceneName = (typeof SCENES)[number];
 
 // Empfohlene Grösse der Browserquelle in OBS; Themes gestalten ihre Szenen für diese Grössen
@@ -14,6 +14,7 @@ export const SCENE_SIZES: Record<SceneName, { width: number; height: number }> =
   cam: { width: 640, height: 360 },
   music: { width: 900, height: 240 },
   fx: { width: 1920, height: 1080 },
+  minimes: { width: 1920, height: 360 },
 };
 
 // Ton: eigene Datei aus den Medien (file) oder leer = eingebauter Ton des Themes; volume 0 bis 1
