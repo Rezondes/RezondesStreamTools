@@ -1,77 +1,54 @@
-// Effekt-Overlay für Chat-Trigger (config/triggers.json), transparent. Empfohlen 1920x1080.
+// Effekt-Overlay für die Chat-Trigger des Streamers (/s/<login>/fx.html), transparent. Empfohlen 1920x1080.
 // Parameter: ?zone=main (nur Aktionen mit dieser zone), ?sound=0, ?volume=0.5
 // Braucht den Overlay-Server, denn dort laufen die Trigger.
 //
 // Ablauf pro Effekt: glitcht rein und steht angehalten (delay), spielt ab samt Ton (duration),
 // bleibt angehalten auf dem letzten Bild stehen (after) und glitcht dann raus.
-import { useEffect, useRef, useState } from "react";
-import { connect, type FxAction, type FxEvent, type FxPosition } from "../twitch.ts";
-import { num, params } from "../util.ts";
+import { useEffect, useRef } from "react";
+import * as streamerPath from "../core/streamerPath.ts";
+import { streamer } from "../core/connection.ts";
+import { numberParam, params } from "../core/params.ts";
+import { fxLifetime } from "../core/overlayTiming.ts";
+import { useFx, useFxPhase, type ShownFx } from "../core/hooks/useFx.ts";
 
 const ZONE = params.get("zone") ?? "main";
 const MAX = 8;
 
-// Dateinamen kommen aus config/media/, volle URLs werden so verwendet
-const src = (name: string) => (/^https?:\/\//.test(name) ? name : `/media/${encodeURIComponent(name)}`);
-
-function place(p: FxPosition = "center") {
-  if (p === "center") return { x: 50, y: 50 };
-  if (p === "random") return { x: 20 + Math.random() * 60, y: 20 + Math.random() * 60 };
-  return p;
-}
-
-const times = (a: FxAction) => ({ delay: (a.delay ?? 0) * 1000, duration: (a.duration ?? 4) * 1000, after: (a.after ?? 0) * 1000 });
-
-type Shown = FxEvent & { x: number; y: number };
-type Phase = "pre" | "play" | "post";
+// Dateinamen kommen aus dem Medienordner des Streamers (/s/<login>/media/), volle URLs werden so verwendet
+const src = (name: string) => (/^https?:\/\//.test(name) || !streamer ? name : `${streamerPath.base(streamer)}/media/${encodeURIComponent(name)}`);
 
 export default function Fx() {
-  const [shown, setShown] = useState<Shown[]>([]);
-
-  useEffect(() => connect({
-    fx: e => {
-      if (e.zone !== ZONE) return;
-      setShown(list => [...list, { ...e, ...place(e.action.position) }].slice(-MAX));
-      const t = times(e.action);
-      setTimeout(() => setShown(list => list.filter(s => s.id !== e.id)), t.delay + t.duration + t.after);
-    },
-  }), []);
-
-  return <div className="fx">{shown.map(s => <Item key={s.id} item={s} />)}</div>;
+  const shown = useFx(ZONE, MAX);
+  return <div className="fx">{shown.map(item => <Item key={item.id} item={item} />)}</div>;
 }
 
-function Item({ item }: { item: Shown }) {
+function Item({ item }: { item: ShownFx }) {
   const a = item.action;
-  const t = times(a);
-  const [phase, setPhase] = useState<Phase>(t.delay > 0 ? "pre" : "play");
+  const phase = useFxPhase(a);
   const img = useRef<HTMLImageElement>(null);
   const still = useRef<HTMLCanvasElement>(null);
   const video = useRef<HTMLVideoElement>(null);
 
-  useEffect(() => {
-    const play = setTimeout(() => setPhase("play"), t.delay);
-    const stop = setTimeout(() => setPhase("post"), t.delay + t.duration);
-    return () => { clearTimeout(play); clearTimeout(stop); };
-  }, []);
-
   // Aktuelles Bild festhalten: ein GIF lässt sich nicht pausieren, also zeigt ein Canvas das Standbild
   const freeze = () => {
-    const i = img.current, c = still.current;
-    if (!i?.naturalWidth || !c) return;
-    c.width = i.naturalWidth;
-    c.height = i.naturalHeight;
-    c.getContext("2d")!.drawImage(i, 0, 0);
+    const image = img.current, canvas = still.current;
+    if (!image?.naturalWidth || !canvas) return;
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    canvas.getContext("2d")!.drawImage(image, 0, 0);
   };
 
   useEffect(() => {
     if (phase === "post") freeze();
-    if (video.current) phase === "play" ? video.current.play().catch(() => {}) : video.current.pause();
+    // Abspielen kann der Browser ohne Nutzerklick verweigern; dann bleibt das Standbild stehen
+    if (video.current && phase === "play") video.current.play().catch(() => {});
+    else if (video.current) video.current.pause();
     if (phase === "play" && a.sound && params.get("sound") !== "0") {
       const audio = new Audio(src(a.sound));
-      audio.volume = Math.min(1, (a.volume ?? 1) * num("volume", 1));
-      audio.play().catch(err => console.warn("Sound blockiert:", err));
+      audio.volume = Math.min(1, (a.volume ?? 1) * numberParam("volume", 1));
+      audio.play().catch((error: unknown) => console.warn("Sound blocked:", error));
     }
-  }, [phase]);
+  }, [phase, a.sound, a.volume]);
 
   // Platzhalter im Text: {user} und {message}
   const text = (a.text ?? "").replaceAll("{user}", item.user).replaceAll("{message}", item.message);
@@ -79,7 +56,7 @@ function Item({ item }: { item: Shown }) {
   return (
     <div
       className="fx-item"
-      style={{ left: `${item.x}%`, top: `${item.y}%`, width: a.size, "--life": `${t.delay + t.duration + t.after}ms` } as React.CSSProperties}
+      style={{ left: `${item.x}%`, top: `${item.y}%`, width: a.size, "--life": `${fxLifetime(a)}ms` } as React.CSSProperties}
     >
       {a.image && (
         <>

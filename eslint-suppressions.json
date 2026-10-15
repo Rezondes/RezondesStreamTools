@@ -1,0 +1,124 @@
+{
+  "server/access.ts": {
+    "@typescript-eslint/no-unsafe-argument": {
+      "count": 1
+    },
+    "id-length": {
+      "count": 11
+    }
+  },
+  "server/chat.ts": {
+    "id-length": {
+      "count": 3
+    }
+  },
+  "server/http.ts": {
+    "@typescript-eslint/no-unsafe-argument": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unsafe-member-access": {
+      "count": 1
+    }
+  },
+  "server/triggers.check.ts": {
+    "id-length": {
+      "count": 1
+    }
+  },
+  "server/triggers.ts": {
+    "@typescript-eslint/no-unsafe-assignment": {
+      "count": 1
+    },
+    "@typescript-eslint/no-unsafe-member-access": {
+      "count": 1
+    },
+    "id-denylist": {
+      "count": 1
+    },
+    "id-length": {
+      "count": 20
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/MatrixRain.tsx": {
+    "id-denylist": {
+      "count": 7
+    },
+    "id-length": {
+      "count": 2
+    }
+  },
+  "src/banners.ts": {
+    "id-denylist": {
+      "count": 54
+    },
+    "id-length": {
+      "count": 23
+    }
+  },
+  "src/scenes/Alerts.tsx": {
+    "id-length": {
+      "count": 2
+    }
+  },
+  "src/scenes/Chat.tsx": {
+    "id-length": {
+      "count": 4
+    }
+  },
+  "src/scenes/Fx.tsx": {
+    "id-length": {
+      "count": 1
+    }
+  },
+  "src/scenes/Music.tsx": {
+    "id-length": {
+      "count": 1
+    }
+  },
+  "src/scenes/Screen.tsx": {
+    "id-length": {
+      "count": 1
+    }
+  },
+  "src/scenes/Stinger.tsx": {
+    "id-denylist": {
+      "count": 2
+    },
+    "id-length": {
+      "count": 8
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/scenes/Triggers.tsx": {
+    "@typescript-eslint/no-unsafe-argument": {
+      "count": 3
+    },
+    "@typescript-eslint/no-unsafe-member-access": {
+      "count": 2
+    },
+    "id-length": {
+      "count": 56
+    },
+    "max-lines-per-function": {
+      "count": 1
+    }
+  },
+  "src/stinger.ts": {
+    "id-denylist": {
+      "count": 41
+    },
+    "id-length": {
+      "count": 14
+    }
+  },
+  "vite.config.ts": {
+    "id-length": {
+      "count": 2
+    }
+  }
+}

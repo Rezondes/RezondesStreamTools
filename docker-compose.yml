@@ -8,10 +8,12 @@ services:
     environment:
       PUBLIC_URL: http://localhost:8089
     volumes:
+      # Profile aller Streamer (data/streamers/<login>/: Tokens, Spotify, Trigger, Medien), Zugang, Sitzungs-Schlüssel
       - tokens:/data
-      # Trigger-Regeln und Medien: auf dem PC oder im Browser (/#/triggers) bearbeiten, ohne Neustart.
-      # Beschreibbar, damit der Editor speichern und Medien hochladen kann.
-      - ./config:/app/config
+      # Nur noch für die einmalige Übernahme der alten Einzel-Daten (triggers.json, media/) ins Profil.
+      # Schreibgeschützt: die Dateien bleiben liegen und werden danach übersprungen. Trigger und Medien
+      # bearbeitet man jetzt im Browser (/#/triggers); nach der Übernahme kann diese Zeile weg.
+      - ./config:/app/config:ro
     restart: unless-stopped
 
 volumes:

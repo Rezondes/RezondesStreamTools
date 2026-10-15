@@ -1,8 +1,8 @@
-// Editor für die Chat-Trigger (config/triggers.json) im Browser. Braucht den Overlay-Server.
+// Editor für die Chat-Trigger des angemeldeten Streamers (triggers.json im Profil) im Browser. Braucht den Overlay-Server.
 // Speichern prüft die Regeln auf dem Server; bei Fehlern bleibt die Datei unverändert.
 import { useEffect, useState } from "react";
 import type { Trigger, When } from "../../server/triggers.ts";
-import type { FxAction } from "../twitch.ts";
+import type { FxAction } from "../core/types.ts";
 
 const WHEN: { value: When["type"]; label: string }[] = [
   { value: "word", label: "ganzes Wort" },
@@ -38,10 +38,11 @@ export default function Triggers() {
   const [errors, setErrors] = useState<string[]>([]);
   const [note, setNote] = useState("");
 
-  const loadMedia = () => fetch("/api/media").then(r => r.json()).then(setMedia).catch(() => {});
+  // Ohne Medienliste bleibt die Auswahl leer; Eintippen geht trotzdem
+  const loadMedia = () => { fetch("/api/media").then(r => r.json()).then(setMedia).catch(() => {}); };
   useEffect(() => {
     fetch("/api/triggers/config")
-      .then(r => (r.ok ? r.json() : Promise.reject()))
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
       .then(c => { setList(c.triggers); setSaved(JSON.stringify(c.triggers)); })
       .catch(() => setErrors(["Overlay-Server nicht erreichbar. Der Editor braucht den Docker-Container."]));
     loadMedia();
@@ -92,7 +93,7 @@ export default function Triggers() {
         <button className="btn" onClick={() => setList([...list, newTrigger(list.length + 1)])}>[ + TRIGGER ]</button>
         <label className="btn">
           [ MEDIEN HOCHLADEN ]
-          <input type="file" multiple accept="image/*,video/mp4,video/webm,audio/*" hidden onChange={e => { upload(e.target.files); e.target.value = ""; }} />
+          <input type="file" multiple accept="image/*,video/mp4,video/webm,audio/*" hidden onChange={e => { upload(e.target.files).catch(() => setNote("Upload fehlgeschlagen")); e.target.value = ""; }} />
         </label>
         <span className={dirty ? "" : "muted"} role="status">{dirty ? "● ungespeicherte Änderungen" : note}</span>
       </section>

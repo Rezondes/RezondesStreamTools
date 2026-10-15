@@ -1,7 +1,7 @@
 # REZONDES // Stream-Overlays
 
 Browserquellen für OBS im Look des Portfolios (Schwarz, Phosphorgrün, Matrix-Regen, CRT).
-React + Vite + TypeScript. Optional ein kleiner Node-Server (Docker) für Twitch-Login und alle Events.
+React + Vite + TypeScript. Dazu ein kleiner Node-Server (Docker) für mehrere Streamer: Twitch-Anmeldung und alle Events.
 
 ## Start
 
@@ -32,27 +32,66 @@ Nach Änderungen am Code oder an `.env.local` neu bauen.
 | `#/music` | 900x240 | `?art=cover` / `record` / `vinyl` / `none`, `?hide=0` |
 | `#/fx` | 1920x1080 | `?zone=main`, `?sound=0`, `?volume=0.5` |
 
-Alle Szenen nehmen `?channel=name` (überschreibt Login bzw. `.env.local`) und `?demo`.
+Mit Server liegt jede Szene unter `/s/<login>/<szene>.html` (z.B. `http://localhost:8089/s/rezondes/alerts.html`);
+die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Unter `npm run dev` wählt `?s=<login>` den Streamer.
+Alle Szenen nehmen `?channel=name` (überschreibt den Streamer bzw. `.env.local`) und `?demo`.
 `music` und `fx` brauchen den Overlay-Server (Spotify bzw. Chat-Trigger laufen dort).
 
-## Overlay-Server mit Twitch-Login (Docker)
+## Overlay-Server (Docker, mehrere Streamer)
 
-Der Server liefert die Overlays aus, meldet sich per OAuth bei Twitch an und schickt alle Events live an die Overlays.
+Der Server liefert die Overlays aus, meldet Streamer per Twitch an und schickt ihre Events live an ihre Overlays.
+Jeder Streamer meldet sich im Dashboard mit Twitch an und bekommt ein eigenes Profil
+(`data/streamers/<login>/`: Twitch-Tokens, Spotify, Trigger, Medien), eine eigene Laufzeit und eigene Overlay-URLs.
 
 1. Auf https://dev.twitch.tv/console/apps eine App anlegen.
-   OAuth Redirect URL: `http://localhost:8089/auth/callback`, Client-Typ: Vertraulich.
-2. `server.env.example` nach `server.env` kopieren, Client-ID und Client-Secret eintragen.
+   OAuth Redirect URL: `PUBLIC_URL/auth/callback`, lokal `http://localhost:8089/auth/callback`. Client-Typ: Vertraulich.
+2. `server.env.example` nach `server.env` kopieren, Client-ID, Client-Secret und `ADMINS` (dein Twitch-Login) eintragen.
 3. Starten:
    ```bash
    docker compose up -d --build
    ```
-4. `http://localhost:8089` öffnen, `[ MIT TWITCH VERBINDEN ]` klicken, bei Twitch zustimmen.
-   Der Login liegt im Docker-Volume `tokens` und überlebt Neustarts; der Server erneuert ihn selbst.
-5. In OBS die Browserquellen auf `http://localhost:8089/alerts.html`, `.../chat.html` usw. stellen.
+4. `http://localhost:8089` öffnen, `[ MIT TWITCH ANMELDEN ]` klicken, bei Twitch zustimmen.
+   Das Profil liegt im Docker-Volume `tokens` und überlebt Neustarts. Der Server prüft die Tokens stündlich und erneuert sie selbst;
+   lehnt Twitch den Login ab, endet die Laufzeit des Streamers und er meldet sich neu an.
+5. In OBS die Browserquellen auf die URLs aus der Übersicht stellen, z.B. `http://localhost:8089/s/<login>/alerts.html`.
 
 Der Port (8089, in `docker-compose.yml` änderbar) ist nur auf diesem Rechner erreichbar (`127.0.0.1`). Client-Secret und Tokens bleiben im Server, nie im Browser.
+Für einen öffentlichen Server `PUBLIC_URL` auf die HTTPS-Adresse setzen (das Sitzungs-Cookie ist dann `Secure`).
 Ohne Docker: `npm run build`, dann `npm run server` (liest `server.env`).
-Läuft der Server, nutzt auch `npm run dev` dessen Login und Events (Proxy auf Port 8089).
+Läuft der Server, nutzt auch `npm run dev` dessen Anmeldung und Events (Proxy auf Port 8089 für `/s/`, `/api`, `/auth`, `/spotify`).
+
+### Zugang und Funktionsstufen
+
+- `ADMINS` (Komma-Liste in `server.env`) dürfen sich immer anmelden und haben jede Funktion, die nicht `off` ist.
+- `data/access.json` regelt den Rest; ohne Datei stehen nur die Admins in der Allowlist.
+  - `registration`: `allowlist` (nur Logins aus `allowlist` und Admins, für den Beta-Start) oder `open` (jeder Twitch-Login).
+  - `beta`: Logins, die zusätzlich Funktionen mit Stufe `beta` bekommen.
+  - `features`: pro Funktion `off`, `beta` (nur Beta-Tester und Admins) oder `all`.
+    `alerts` (EventSub-Alerts, Test-Alerts), `music` (Spotify), `triggers` und `fx` (Chat-Listener, Trigger, Medien; beide nötig), `chat` (nur im Status), `stinger`, `banners`.
+- Wer nicht freigeschaltet ist, landet nach der Twitch-Anmeldung wieder auf der Übersicht mit der Meldung "nicht freigeschaltet"; sein Token wird gleich widerrufen.
+- Admins lesen und ändern den Zugang über `GET` / `POST /api/admin/access` (JSON wie `access.json`). Bis das Dashboard dafür kommt,
+  z.B. in der Browser-Konsole auf der Übersicht: `fetch("/api/admin/access", { method: "POST", body: JSON.stringify(neu) })`.
+  Änderungen wirken sofort: alle Laufzeiten starten neu, die Overlays verbinden sich selbst wieder.
+
+### Adressen
+
+| Pfad | Wer | Zweck |
+|------|-----|-------|
+| `/s/<login>/<szene>.html` | öffentlich | Overlay-Szene für OBS |
+| `/s/<login>/status` | öffentlich | `{ login, live, spotify, features }` |
+| `/s/<login>/events` | öffentlich | Server-Sent Events (`alert`, `music`, `fx`), 404 ohne laufende Laufzeit |
+| `/s/<login>/media/<datei>` | öffentlich | Medien des Streamers (ohne Script-Ausführung) |
+| `/auth/login`, `/auth/callback`, `POST /auth/logout` | alle | Anmeldung mit Twitch, Abmelden |
+| `/api/me`, `/api/test`, `/api/triggers`, `/api/trigger`, `/api/triggers/config`, `/api/media`, `/spotify/*`, `POST /api/twitch/disconnect` | angemeldet | Dashboard; Login aus dem Sitzungs-Cookie, Funktionsstufe geprüft |
+| `/api/admin/access` | Admins | Zugang und Funktionsstufen |
+
+### Umstieg vom Einzel-Server
+
+Beim ersten Start übernimmt der Server die alten Daten: `data/tokens.json`, `data/spotify.json`, `config/triggers.json` und `config/media/*`
+landen in `data/streamers/<login>/` (Login aus den alten Tokens, sonst der erste Admin), der Login kommt in die Allowlist,
+die alten Dateien heissen danach `*.migrated`. `config/` ist in `docker-compose.yml` nur noch schreibgeschützt für diese Übernahme eingebunden;
+dort bleiben die Dateien liegen und werden bei späteren Starts übersprungen. Danach kann die Zeile weg.
+Die OBS-Quellen auf `/s/<login>/<szene>.html` umstellen: die alten Adressen wie `/alerts.html` kennen keinen Streamer und bekommen keine Server-Events mehr.
 
 | Event | mit Server | ohne Server (anonym) |
 |-------|-----------|----------------------|
@@ -67,13 +106,14 @@ Läuft der Server, nutzt auch `npm run dev` dessen Login und Events (Proxy auf P
 ### Spotify (Overlay `music.html`)
 
 1. Auf https://developer.spotify.com/dashboard eine App anlegen, API "Web API".
-   Redirect URI: `http://127.0.0.1:8089/spotify/callback` (Spotify erlaubt kein `localhost`).
+   Redirect URI: lokal `http://127.0.0.1:8089/spotify/callback` (Spotify erlaubt kein `localhost`), öffentlich `PUBLIC_URL/spotify/callback`.
 2. `SPOTIFY_CLIENT_ID` und `SPOTIFY_CLIENT_SECRET` in `server.env` eintragen, `docker compose up -d --build`.
-3. Auf der Übersicht `[ MIT SPOTIFY VERBINDEN ]` klicken.
+3. Jeder Streamer klickt auf seiner Übersicht `[ MIT SPOTIFY VERBINDEN ]` (Funktion `music`).
+   Solange die Spotify-App im Entwicklungsmodus ist, muss jedes Spotify-Konto dort als Nutzer eingetragen sein.
 
 Das Overlay zeigt Titel, Interpret, Album, Fortschritt und das Cover in Phosphorgrün.
 Ohne Cover (oder mit `?art=vinyl`) dreht sich eine ASCII-Schallplatte, mit `?art=record` füllt das Cover die ganze Platte und dreht sich mit. Bei Pause oder Stopp klappt es ein (`?hide=0` lässt es stehen).
-Der Server fragt Spotify alle 3 Sekunden ab, aber nur solange ein Overlay offen ist.
+Der Server fragt Spotify alle 3 Sekunden ab, aber nur solange ein Overlay des Streamers offen ist.
 
 ### Chat-Overlay
 
@@ -81,12 +121,13 @@ Läuft immer anonym über Twitch-IRC. Nachrichten glitchen rein und nach `?fade=
 Zeigt Twitch-Emotes sowie die globalen und Kanal-Emotes von 7TV, BetterTTV und FrankerFaceZ (alle 10 Minuten aufgefrischt).
 Gelöschte Nachrichten und gebannte Nutzer verschwinden sofort.
 
-## Chat-Trigger (`config/triggers.json`)
+## Chat-Trigger (`triggers.json` im Profil)
 
-Der Server liest den Chat mit. Passt eine Nachricht auf eine Regel, spielt `fx.html` die Aktionen ab.
-Datei speichern genügt, der Server lädt sie innerhalb von 2 Sekunden neu. Medien liegen in `config/media/`.
+Der Server liest den Chat jedes angemeldeten Streamers mit (Funktionen `triggers` und `fx`). Passt eine Nachricht auf eine Regel,
+spielt sein `fx.html` die Aktionen ab. Regeln stehen in `data/streamers/<login>/triggers.json`, Medien in `data/streamers/<login>/media/`.
+Datei speichern genügt, der Server lädt sie innerhalb von 2 Sekunden neu.
 
-Bequemer im Browser: `http://localhost:8089/#/triggers` (Knopf `[ TRIGGER BEARBEITEN ]` auf der Übersicht).
+Bequemer im Browser: `http://localhost:8089/#/triggers` (angemeldet, Knopf `[ TRIGGER BEARBEITEN ]` auf der Übersicht).
 Dort Regeln anlegen, kopieren, löschen, Aktionen sortieren und Medien hochladen (max. 50 MB, Bild/Video/Audio).
 Speichern prüft alle Regeln; bei Fehlern werden sie angezeigt und die Datei bleibt unverändert.
 
@@ -118,7 +159,8 @@ Speichern prüft alle Regeln; bei Fehlern werden sie angezeigt und die Datei ble
 | `do[].after` | Sekunden, die das Medium nach `duration` angehalten auf dem letzten Bild stehen bleibt, dann glitcht es raus |
 | `do[].together` | `true`: erscheint gleichzeitig mit der vorherigen Aktion. Sonst laufen die Aktionen in `do` nacheinander (nächste nach `delay` + `duration` + `after`) |
 
-Mitgeliefert sind `lizard.svg` und `lizard.wav` (selbst erstellt). Eigene Dateien einfach in `config/media/` legen und den Namen eintragen.
+Mitgeliefert sind `lizard.svg` und `lizard.wav` (selbst erstellt, in `config/media/`); die Übernahme kopiert sie ins Profil.
+Eigene Dateien im Editor hochladen oder in den Medienordner des Profils legen und den Namen eintragen.
 Auf der Übersicht gibt es für jede Regel einen Test-Knopf.
 
 ## Twitch-Banner
@@ -145,6 +187,8 @@ In OBS: Szenenübergänge, `+`, Stinger, Videodatei `render/stinger.webm`, Über
 - Alerts: "Audio über OBS steuern" aktivieren, dann haben die Pieptöne einen eigenen Mixer-Kanal.
 - "Quelle aktualisieren, wenn Szene aktiv wird" aktivieren bei starting/brb/ending, damit Countdown und Einschalt-Animation neu starten.
 
-## Check
+## Prüfungen
 
-`npm run check` testet IRC-Parser und Emotes, die ASCII-Schallplatte und die Trigger-Regeln.
+`npm run verify` prüft alles: Typen, ESLint, Regel-Skript, alle Checks mit Coverage-Grenzen und den Build.
+Läuft automatisch vor jedem Commit (`.githooks/pre-commit`, aktiviert durch `npm install`).
+Die Regeln selbst stehen in [CODING-RULES.md](CODING-RULES.md).

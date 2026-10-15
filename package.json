@@ -8,19 +8,29 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "server": "node --env-file=server.env server/index.ts",
-    "check": "node src/irc.check.ts && node src/vinyl.check.ts && node src/typing.check.ts && node server/triggers.check.ts"
+    "check": "npm test",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "test": "node --test --experimental-test-coverage --test-coverage-lines=90 --test-coverage-branches=90 --test-coverage-functions=95 --test-coverage-exclude=\"**/*.check.ts\" --test-coverage-exclude=\"scripts/**\" \"src/**/*.check.ts\" \"server/**/*.check.ts\" \"scripts/**/*.check.ts\"",
+    "verify": "npm run typecheck && npm run lint && npm test && vite build",
+    "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^26.6.5",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "ffmpeg-static": "^5.3.0",
-    "typescript": "^7.0.2",
+    "globals": "^17.13.0",
+    "typescript": "~6.0",
+    "typescript-eslint": "^8.71.2",
     "vite": "^8.3.4"
   },
   "allowScripts": {

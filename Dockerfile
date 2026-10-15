@@ -13,8 +13,8 @@ WORKDIR /app
 ENV NODE_ENV=production DIST=/app/dist DATA=/data CONFIG=/app/config PORT=8080
 COPY --from=build /app/dist ./dist
 COPY server ./server
-# Der Server nutzt den IRC-Parser der Overlays mit
-COPY src/irc.ts ./src/irc.ts
+# Der Server nutzt den IRC-Parser und die Pfad-Regeln (/s/<login>/...) der Overlays mit
+COPY src/irc.ts src/streamerPath.ts ./src/
 RUN mkdir /data && chown node:node /data
 USER node
 EXPOSE 8080

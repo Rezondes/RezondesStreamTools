@@ -1,3 +1,4 @@
+// Einstieg der Seite: wählt die Szene aus dem Hash (#/alerts) oder dem Dateinamen (alerts.html).
 import { createRoot } from "react-dom/client";
 import "./style.css";
 import Home from "./scenes/Home.tsx";

@@ -1,9 +1,16 @@
 // Vollbild-Szenen: Starting Soon, BRB, Ending. Für 1920x1080 gebaut, skaliert auf jede Quellgrösse.
 // Parameter: ?min=5 oder ?at=20:00 (Countdown, nur starting), ?next=Freitag 20 Uhr (ending), ?ticker=Text
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import MatrixRain from "../MatrixRain.tsx";
-import { clock, num, params, useDecode, useNow } from "../util.ts";
-import { frames, type Line } from "../typing.ts";
+import { numberParam, params } from "../core/params.ts";
+import { clock } from "../core/overlayTiming.ts";
+import { useDecode } from "../core/hooks/useDecode.ts";
+import { useNow } from "../core/hooks/useNow.ts";
+import type { Line } from "../core/typing.ts";
+import { useTerminal } from "../core/hooks/useTerminal.ts";
+
+// Fünf sichtbare Zeilen, Start nach der Einschalt-Animation, 1,8 bis 3,2 s Pause zwischen den Zeilen
+const TERMINAL_TIMING = { visible: 5, startDelayMs: 2600, pauseMinMs: 1800, pauseMaxMs: 3200 };
 
 type Kind = "starting" | "brb" | "ending";
 
@@ -82,7 +89,7 @@ function target() {
     if (d.getTime() < Date.now()) d.setDate(d.getDate() + 1);
     return d.getTime();
   }
-  return Date.now() + num("min", 5) * 60_000;
+  return Date.now() + numberParam("min", 5) * 60_000;
 }
 
 export default function Screen({ kind }: { kind: Kind }) {
@@ -147,33 +154,11 @@ export default function Screen({ kind }: { kind: Kind }) {
 // Tippt Zeilen nacheinander ab (inklusive Vertipper), endlos im Kreis, zeigt die letzten 5.
 // Zwischen den Zeilen 1,8 bis 3,2 s Pause, damit es nach jemandem aussieht, der nachdenkt.
 function Terminal({ lines }: { lines: Line[] }) {
-  const [shown, setShown] = useState<string[]>([]);
-  const [typing, setTyping] = useState("");
-
-  useEffect(() => {
-    let i = 0, f = 0;
-    let current = frames(lines[0]);
-    let timer: ReturnType<typeof setTimeout>;
-    const step = () => {
-      if (f < current.length) {
-        setTyping(current[f].text);
-        timer = setTimeout(step, current[f++].wait);
-      } else {
-        const done = current.at(-1)?.text ?? "";
-        setShown(s => [...s, done].slice(-5));
-        setTyping("");
-        current = frames(lines[++i % lines.length]);
-        f = 0;
-        timer = setTimeout(step, 1800 + Math.random() * 1400);
-      }
-    };
-    timer = setTimeout(step, 2600);
-    return () => clearTimeout(timer);
-  }, [lines]);
+  const { shown, typing } = useTerminal(lines, TERMINAL_TIMING);
 
   return (
     <div className="term">
-      {shown.map((l, k) => <div key={k} className="muted">root@rezondes:~$ {l}</div>)}
+      {shown.map((line, index) => <div key={index} className="muted">root@rezondes:~$ {line}</div>)}
       <div>root@rezondes:~$ {typing}<span className="cursor">█</span></div>
     </div>
   );

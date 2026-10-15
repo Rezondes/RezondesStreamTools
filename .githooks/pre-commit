@@ -1,0 +1,7 @@
+#!/bin/sh
+# Vor jedem Commit: Typen, Regeln (ESLint + scripts/rules.check.ts), Checks mit Coverage und Build.
+# Aktiv durch "git config core.hooksPath .githooks" (macht npm install automatisch).
+npm run verify || {
+  echo "Commit abgebrochen: npm run verify schlägt fehl (siehe CODING-RULES.md)."
+  exit 1
+}

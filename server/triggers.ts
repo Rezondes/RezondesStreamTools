@@ -1,8 +1,8 @@
-// Chat-Trigger: Regeln aus config/triggers.json. Wann (when), wer (who), wie oft (cooldown),
+// Chat-Trigger: Regeln aus triggers.json im Profil-Ordner des Streamers. Wann (when), wer (who), wie oft (cooldown),
 // was und wo (do: Aktionen mit zone). Die Datei wird alle 2 s auf Änderungen geprüft, kein Neustart nötig.
 import { readFile, rename, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import type { FxAction, FxEvent } from "../src/twitch.ts";
+import type { FxAction, FxEvent } from "../src/core/types.ts";
 import type { ChatLine } from "./chat.ts";
 
 export type When = {
@@ -91,8 +91,9 @@ export function compile(list: Trigger[]): { triggers: Loaded[]; errors: string[]
   return { triggers, errors };
 }
 
-export function startTriggers(configDir: string, fire: (e: FxEvent) => void) {
-  const file = join(configDir, "triggers.json");
+// Trigger eines Streamers. folder: Profil-Ordner, fire: Effekt an die Overlays. stop() beendet das Nachladen.
+export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
+  const file = join(folder, "triggers.json");
   let raw: Trigger[] = [];
   let triggers: Loaded[] = [];
   let mtime = 0;
@@ -109,13 +110,14 @@ export function startTriggers(configDir: string, fire: (e: FxEvent) => void) {
       const result = compile(raw);
       triggers = result.triggers;
       result.errors.forEach(e => console.error(e));
-      console.log(`Trigger geladen: ${triggers.map(t => t.name).join(", ") || "keine"}`);
+      console.log(`Triggers loaded: ${triggers.map(t => t.name).join(", ") || "none"}`);
     } catch (e) {
-      console.error(`${file} ist kein gültiges JSON, alte Trigger bleiben aktiv: ${(e as Error).message}`);
+      console.error(`${file} is not valid JSON, keeping the previous triggers: ${(e as Error).message}`);
     }
   }
-  load();
-  setInterval(load, 2000);
+  const reload = () => { load().catch((error: unknown) => console.error("Loading triggers failed:", error)); };
+  reload();
+  const reloadTimer = setInterval(reload, 2000);
 
   function run(t: Trigger, user: string, message: string) {
     const starts = schedule(t.do);
@@ -139,7 +141,7 @@ export function startTriggers(configDir: string, fire: (e: FxEvent) => void) {
       raw = list;
       triggers = result.triggers;
       mtime = (await stat(file)).mtimeMs;
-      console.log(`Trigger gespeichert: ${triggers.map(t => t.name).join(", ") || "keine"}`);
+      console.log(`Triggers saved: ${triggers.map(t => t.name).join(", ") || "none"}`);
       return [];
     },
 
@@ -152,7 +154,7 @@ export function startTriggers(configDir: string, fire: (e: FxEvent) => void) {
         if (now - (lastFired.get(userKey) ?? 0) < (t.userCooldown ?? 0) * 1000) continue;
         lastFired.set(t.name, now);
         lastFired.set(userKey, now);
-        console.log(`Trigger ${t.name} durch ${line.user}`);
+        console.log(`Trigger ${t.name} fired by ${line.user}`);
         run(t, line.user, line.text);
       }
     },
@@ -163,5 +165,8 @@ export function startTriggers(configDir: string, fire: (e: FxEvent) => void) {
       if (t) run(t, "Test", t.when.match);
       return Boolean(t);
     },
+
+    stop: () => clearInterval(reloadTimer),
   };
 }
+export type TriggerStore = ReturnType<typeof startTriggers>;

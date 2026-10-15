@@ -1,21 +1,15 @@
 // Chat-Overlay, transparent, neue Nachrichten unten. Empfohlen z.B. 500x900.
 // Parameter: ?fade=30 (Sekunden bis Ausblenden, 0 = nie), ?max=30, ?demo
-import { useEffect, useState } from "react";
-import { connect, type ChatMessage } from "../twitch.ts";
-import { num, useDecode } from "../util.ts";
+import type { ChatMessage } from "../core/types.ts";
+import { numberParam } from "../core/params.ts";
+import { useChat } from "../core/hooks/useChat.ts";
+import { useDecode } from "../core/hooks/useDecode.ts";
 
-const FADE = num("fade", 30);
-const MAX = num("max", 30);
+const FADE = numberParam("fade", 30);
+const MAX = numberParam("max", 30);
 
 export default function Chat() {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-
-  useEffect(() => connect({
-    chat: m => setMessages(list => [...list, m].slice(-MAX)),
-    // Gebannte Nutzer und gelöschte Nachrichten sofort vom Overlay nehmen
-    remove: ({ id, login }) => setMessages(list =>
-      id ? list.filter(m => m.id !== id) : login ? list.filter(m => m.login !== login) : []),
-  }), []);
+  const messages = useChat(MAX);
 
   return (
     <div className="chat" style={{ "--fade": `${FADE}s` } as React.CSSProperties}>

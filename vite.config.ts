@@ -1,4 +1,5 @@
 import { defineConfig, type Plugin, type Rollup } from "vite";
+import type { IncomingMessage, ServerResponse } from "node:http";
 import react from "@vitejs/plugin-react";
 import { spawn } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, rmSync, statSync, writeFileSync } from "node:fs";
@@ -11,8 +12,9 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
-    // Läuft der Overlay-Server (Docker), nutzt auch npm run dev dessen Login und Events
-    proxy: Object.fromEntries(["/api", "/auth", "/events", "/media", "/spotify"].map(p => [p, "http://localhost:8089"])),
+    // Läuft der Overlay-Server (Docker), nutzt auch npm run dev dessen Anmeldung, APIs und Overlay-Daten (/s/<login>/...).
+    // "/s/" mit Schrägstrich, sonst fiele auch /src/... unter den Proxy.
+    proxy: Object.fromEntries(["/s/", "/api", "/auth", "/spotify"].map(prefix => [prefix, "http://localhost:8089"])),
   },
   preview: { port: 4173, strictPort: true },
 });
@@ -36,7 +38,7 @@ function singleFile(): Plugin {
           source = source.replace(new RegExp(`<script[^>]*src="[^"]*${name}"[^>]*></script>`), () => `<script type="module">${code}</script>`);
           delete bundle[name];
         } else if (name.endsWith(".css")) {
-          source = source.replace(new RegExp(`<link[^>]*href="[^"]*${name}"[^>]*>`), () => `<style>${file.source}</style>`);
+          source = source.replace(new RegExp(`<link[^>]*href="[^"]*${name}"[^>]*>`), () => `<style>${String(file.source)}</style>`);
           delete bundle[name];
         }
       }
@@ -54,7 +56,7 @@ function stingerRender(): Plugin {
   return {
     name: "stinger-render",
     configureServer(server) {
-      server.middlewares.use("/__render", async (req, res) => {
+      const handleRender = async (req: IncomingMessage, res: ServerResponse): Promise<unknown> => {
         const url = new URL(req.url ?? "/", "http://localhost");
         const chunks: Buffer[] = [];
         for await (const chunk of req) chunks.push(chunk as Buffer);
@@ -93,7 +95,10 @@ function stingerRender(): Plugin {
           return;
         }
         res.statusCode = 404;
-        res.end();
+        return res.end();
+      };
+      server.middlewares.use("/__render", (req, res) => {
+        handleRender(req, res).catch((error: unknown) => { res.statusCode = 500; res.end(String(error)); });
       });
     },
   };

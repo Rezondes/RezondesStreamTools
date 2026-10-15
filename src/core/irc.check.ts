@@ -4,11 +4,11 @@ import { parseIrc, splitEmotes, splitWords } from "./irc.ts";
 
 const kappa = { name: "Kappa", url: "https://static-cdn.jtvnw.net/emoticons/v2/25/default/dark/2.0" };
 
-const msg = parseIrc("@badges=moderator/1;display-name=Rez\\sOndes;emotes=25:0-4 :rez!rez@rez.tmi.twitch.tv PRIVMSG #rezondes :Kappa hallo : welt");
-assert.equal(msg.command, "PRIVMSG");
-assert.deepEqual(msg.params, ["#rezondes", "Kappa hallo : welt"]);
-assert.equal(msg.tags["display-name"], "Rez Ondes");
-assert.equal(msg.prefix, "rez!rez@rez.tmi.twitch.tv");
+const message = parseIrc("@badges=moderator/1;display-name=Rez\\sOndes;emotes=25:0-4 :rez!rez@rez.tmi.twitch.tv PRIVMSG #rezondes :Kappa hallo : welt");
+assert.equal(message.command, "PRIVMSG");
+assert.deepEqual(message.params, ["#rezondes", "Kappa hallo : welt"]);
+assert.equal(message.tags["display-name"], "Rez Ondes");
+assert.equal(message.prefix, "rez!rez@rez.tmi.twitch.tv");
 
 assert.deepEqual(parseIrc("PING :tmi.twitch.tv"), { tags: {}, prefix: "", command: "PING", params: ["tmi.twitch.tv"] });
 assert.deepEqual(parseIrc(":tmi.twitch.tv CLEARCHAT #rezondes").params, ["#rezondes"]);

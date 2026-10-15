@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CUT, DURATION, FPS, H, W, drawStinger } from "../stinger.ts";
 import { LOOP, drawOfflineBanner, drawProfileBanner } from "../banners.ts";
-import { params } from "../util.ts";
+import { params } from "../core/params.ts";
 
 type Clip = {
   name: string;
@@ -46,7 +46,9 @@ export default function Stinger() {
   }, [playing, clip, stinger]);
 
   useEffect(() => {
-    document.fonts.load('24px "Share Tech Mono"').then(() => clip.draw(canvas.current!.getContext("2d")!, Math.min(t, clip.duration)));
+    document.fonts.load('24px "Share Tech Mono"')
+      .then(() => clip.draw(canvas.current!.getContext("2d")!, Math.min(t, clip.duration)))
+      .catch((error: unknown) => console.error("Font loading failed:", error));
   }, [t, clip]);
 
   async function render() {

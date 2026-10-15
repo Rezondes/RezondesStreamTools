@@ -1,5 +1,5 @@
 // Anonymer Twitch-Chat auf dem Server (gleich wie im Overlay), Quelle für die Chat-Trigger.
-import { parseIrc } from "../src/irc.ts";
+import { parseIrc } from "../src/core/irc.ts";
 
 export type ChatLine = { user: string; login: string; text: string; roles: string[] };
 
@@ -15,7 +15,7 @@ export function chat(channel: string, onLine: (line: ChatLine) => void): () => v
       ws.send("PASS SCHMOOPIIE");
       ws.send(`NICK justinfan${10000 + ((Math.random() * 80000) | 0)}`);
       ws.send(`JOIN #${channel}`);
-      console.log(`Chat-Trigger lauschen auf #${channel}`);
+      console.log(`Chat triggers listening on #${channel}`);
     };
     ws.onmessage = e => {
       for (const raw of String(e.data).split("\r\n")) {

@@ -1,12 +1,15 @@
 // Alert-Overlay, transparent. Empfohlen als Browserquelle 1920x1080, Alert erscheint oben mittig.
 // Parameter: ?duration=7 (Sekunden pro Alert), ?scale=0.7 (Grösse), ?sound=0, ?volume=0.5, ?demo
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MatrixRain from "../MatrixRain.tsx";
-import { connect, type Alert } from "../twitch.ts";
-import { beep, num, useDecode } from "../util.ts";
+import type { Alert } from "../core/types.ts";
+import { numberParam } from "../core/params.ts";
+import { beep } from "../core/sound.ts";
+import { useAlerts } from "../core/hooks/useAlerts.ts";
+import { useDecode } from "../core/hooks/useDecode.ts";
 
-const DURATION = num("duration", 7) * 1000;
-const SCALE = num("scale", 0.7);
+const DURATION = numberParam("duration", 7) * 1000;
+const SCALE = numberParam("scale", 0.7);
 
 const tagged = (tag: string, detail?: string) => (detail ? `${tag} // ${detail.toUpperCase()}` : tag);
 
@@ -27,39 +30,23 @@ function describe(a: Alert): { tag: string; title: string; line: string } {
 }
 
 export default function Alerts() {
-  const [queue, setQueue] = useState<(Alert & { key: number })[]>([]);
-
-  useEffect(() => {
-    let key = 0;
-    return connect({ alert: a => setQueue(q => [...q, { ...a, key: key++ }]) });
-  }, []);
-
-  // Nach Ablauf den aktuellen Alert entfernen, dann kommt automatisch der nächste
-  const current = queue[0];
-  useEffect(() => {
-    if (!current) return;
-    const id = setTimeout(() => setQueue(q => q.slice(1)), DURATION + 400);
-    return () => clearTimeout(id);
-  }, [current]);
-
-  return <div className="alerts" style={{ "--scale": SCALE } as React.CSSProperties}>{current && <AlertBox key={current.key} alert={current} />}</div>;
+  const { current, leaving } = useAlerts(DURATION);
+  return <div className="alerts" style={{ "--scale": SCALE } as React.CSSProperties}>{current && <AlertBox key={current.key} alert={current} leaving={leaving} />}</div>;
 }
 
-function AlertBox({ alert }: { alert: Alert }) {
+function AlertBox({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const { tag, title, line } = describe(alert);
-  const [leaving, setLeaving] = useState(false);
   const header = useDecode(`> INCOMING TRANSMISSION // ${tag}`, 550, 18);
   const name = useDecode(title.toUpperCase(), 800, 55);
   const sub = useDecode(line, 1300, 22);
   const quote = useDecode(alert.text && alert.kind !== "gift" ? `"${alert.text}"` : "", 1900, 18);
 
+  // Kleiner Modem-Gruss beim Öffnen, tiefer Ton beim Ausblenden
   useEffect(() => {
-    // Kleiner Modem-Gruss beim Öffnen
-    [880, 1320, 660, 1760].forEach((f, i) => beep(f, 90, i * 85));
+    [880, 1320, 660, 1760].forEach((frequency, index) => beep(frequency, 90, index * 85));
     beep(2640, 40, 900);
-    const id = setTimeout(() => { setLeaving(true); beep(440, 120); }, DURATION - 600);
-    return () => clearTimeout(id);
   }, []);
+  useEffect(() => { if (leaving) beep(440, 120); }, [leaving]);
 
   return (
     <div className={`alert${leaving ? " leaving" : ""}`} style={{ "--d": `${DURATION}ms` } as React.CSSProperties}>

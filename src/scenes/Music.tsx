@@ -2,26 +2,20 @@
 // Parameter: ?art=cover (Cover, sonst Platte) | record (Platte mit Cover als Etikett) | vinyl (immer Platte) | none,
 // ?hide=0 (bei Pause/Stopp sichtbar bleiben), ?demo
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { connect, type Track } from "../twitch.ts";
-import { clock, params, useDecode, useNow } from "../util.ts";
-import { vinyl } from "../vinyl.ts";
+import type { Track } from "../core/types.ts";
+import { params } from "../core/params.ts";
+import { clock, currentProgress } from "../core/overlayTiming.ts";
+import { useDecode } from "../core/hooks/useDecode.ts";
+import { useMusic } from "../core/hooks/useMusic.ts";
+import { useNow } from "../core/hooks/useNow.ts";
+import { vinyl } from "../core/vinyl.ts";
 
 const ART = params.get("art") ?? "cover";
 const HIDE = params.get("hide") !== "0";
 const IDLE: Track = { id: "idle", title: "KEINE WIEDERGABE", artist: "spotify://offline", album: "", cover: null, durationMs: 0, progressMs: 0, playing: false };
 
 export default function Music() {
-  const [track, setTrack] = useState<Track | null>(null);
-  const [last, setLast] = useState<Track | null>(null);
-  const [at, setAt] = useState(0);
-
-  useEffect(() => connect({
-    music: t => {
-      setTrack(t);
-      setAt(Date.now());
-      if (t) setLast(t);
-    },
-  }), []);
+  const { track, last, receivedAt: at } = useMusic();
 
   // Ausblenden, wenn nichts läuft; der letzte Titel bleibt für die Ausblend-Animation stehen
   const visible = HIDE ? Boolean(track?.playing) : true;
@@ -79,7 +73,8 @@ function Info({ track, at }: { track: Track; at: number }) {
   const now = useNow(250);
   const title = useDecode(track.title, 350, 30);
   const artist = useDecode(track.artist, 650, 18);
-  const progress = track.playing && at ? Math.min(track.durationMs, track.progressMs + now - at) : track.progressMs;
+  // at = 0: Titel aus dem Gedächtnis (ausgeblendet), dann nicht weiterrechnen
+  const progress = at ? currentProgress(track, at, now) : track.progressMs;
   const part = track.durationMs ? progress / track.durationMs : 0;
   const width = 32;
   const filled = Math.round(part * width);

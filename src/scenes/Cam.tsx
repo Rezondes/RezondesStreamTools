@@ -1,6 +1,8 @@
 // Webcam-Rahmen, innen transparent. Quelle genau so gross wie die Kamera anlegen, z.B. 640x360.
 // Parameter: ?label=REZONDES
-import { params, useDecode, useNow } from "../util.ts";
+import { params } from "../core/params.ts";
+import { useDecode } from "../core/hooks/useDecode.ts";
+import { useNow } from "../core/hooks/useNow.ts";
 
 export default function Cam() {
   const label = useDecode(params.get("label") ?? "CAM_01 // REZONDES", 600, 40);

@@ -1,5 +1,6 @@
+// Matrix-Regen auf einem Canvas, füllt sein Elternelement (Szenen, Alerts).
 import { useEffect, useRef } from "react";
-import { glyph } from "./util.ts";
+import { glyph } from "./core/glyphs.ts";
 
 // Matrix-Regen aus dem Portfolio, füllt sein Elternelement. size = Zeichengrösse in px.
 export default function MatrixRain({ size = 18, className = "rain" }: { size?: number; className?: string }) {

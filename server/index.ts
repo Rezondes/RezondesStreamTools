@@ -1,417 +1,309 @@
-// Overlay-Server: liefert dist/ aus, meldet sich per OAuth bei Twitch an und reicht
-// EventSub-Ereignisse per Server-Sent Events (/events) an alle offenen Overlays weiter.
-// Keine Abhängigkeiten, läuft direkt mit Node 24 (TypeScript wird beim Start entfernt).
+// Overlay-Server für mehrere Streamer: nur Routing und Start. Keine Abhängigkeiten, läuft direkt mit Node 24
+// (TypeScript wird beim Start entfernt): npm run server (liest server.env) oder im Docker-Container.
+// Öffentlich: Overlays unter /s/<login>/... (Szenen, status, events per SSE, media). Dashboard: Anmeldung per Twitch,
+// APIs mit Login aus dem Sitzungs-Cookie (Regel 26). Wer was darf, steht in routes.ts und access.ts.
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
-import { extname, join, resolve, sep } from "node:path";
+import { mkdir, readdir, stat } from "node:fs/promises";
+import { join, resolve } from "node:path";
 import { randomBytes } from "node:crypto";
-import type { Alert, Track } from "../src/twitch.ts";
-import * as spotify from "./spotify.ts";
-import { chat } from "./chat.ts";
-import { startTriggers } from "./triggers.ts";
+import * as streamerPath from "../src/core/streamerPath.ts";
+import { loadAccess, type Feature } from "./access.ts";
+import { writeAtomic } from "./atomicFile.ts";
+import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from "./http.ts";
+import { createLoginStates } from "./loginStates.ts";
+import { migrate } from "./migration.ts";
+import * as profile from "./profile.ts";
+import { authorize, find, overlayRoute, ROUTES, type RouteKey, type Visitor } from "./routes.ts";
+import { createSession, loadSessionKey, readSession, sessionCookie } from "./session.ts";
+import { redirectUri, type SpotifyApp } from "./spotify.ts";
+import { startStreamer, type Streamer } from "./streamer.ts";
+import { isAlertKind, SAMPLE_ALERTS, twitchApp } from "./twitch.ts";
 
+// --- Einstellungen aus server.env -------------------------------------------------------------
 const PORT = Number(process.env.PORT ?? 8080);
-const PUBLIC_URL = process.env.PUBLIC_URL ?? `http://localhost:${PORT}`;
-const CLIENT_ID = process.env.TWITCH_CLIENT_ID ?? "";
-const CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET ?? "";
+const PUBLIC_URL = (process.env.PUBLIC_URL ?? `http://localhost:${PORT}`).replace(/\/+$/, "");
 const DIST = resolve(process.env.DIST ?? "dist");
 const DATA = resolve(process.env.DATA ?? "data");
-// Eigene Einstellungen: config/triggers.json und config/media/ (Bilder, Videos, Sounds)
+// Nur noch für die Übernahme der alten Einzel-Daten (config/triggers.json, config/media/)
 const CONFIG = resolve(process.env.CONFIG ?? "config");
-const MEDIA = join(CONFIG, "media");
-const TOKEN_FILE = join(DATA, "tokens.json");
-const REDIRECT = `${PUBLIC_URL}/auth/callback`;
-const SCOPES = [
-  "moderator:read:followers",
-  "channel:read:subscriptions",
-  "bits:read",
-  "channel:read:redemptions",
-  "channel:read:hype_train",
-];
+const ADMINS = (process.env.ADMINS ?? "").split(",").map(login => login.trim().toLowerCase()).filter(streamerPath.isLogin);
+const SECURE = PUBLIC_URL.startsWith("https://");
+const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID ?? "";
+const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET ?? "";
+const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID ?? "";
+const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET ?? "";
 
-if (!CLIENT_ID || !CLIENT_SECRET) {
-  console.error("TWITCH_CLIENT_ID und TWITCH_CLIENT_SECRET fehlen (siehe server.env.example)");
+const MEDIA_LIMIT = 50 * 1024 * 1024;
+const TRIGGER_LIMIT = 1024 * 1024;
+const ACCESS_LIMIT = 64 * 1024;
+// Codes aus dem OAuth-Callback (Twitch, Spotify)
+const OAUTH_CODE = /^[\w.~-]{1,1024}$/;
+
+if (!TWITCH_CLIENT_ID || !TWITCH_CLIENT_SECRET) {
+  console.error("TWITCH_CLIENT_ID and TWITCH_CLIENT_SECRET are missing (see server.env.example)");
   process.exit(1);
 }
+if (ADMINS.length === 0) console.warn("ADMINS is empty: nobody can manage access (see server.env.example)");
 
-// --- Overlays (Server-Sent Events) ---------------------------------------------------
-const clients = new Set<ServerResponse>();
+const twitch = twitchApp(TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET, `${PUBLIC_URL}/auth/callback`);
+const spotifyApp: SpotifyApp | null = SPOTIFY_CLIENT_ID && SPOTIFY_CLIENT_SECRET
+  ? { clientId: SPOTIFY_CLIENT_ID, clientSecret: SPOTIFY_CLIENT_SECRET, redirectUri: redirectUri(PUBLIC_URL) }
+  : null;
 
-function emit(message: object) {
-  const line = `data: ${JSON.stringify(message)}\n\n`;
-  for (const c of clients) c.write(line);
-}
+await mkdir(DATA, { recursive: true });
+const access = await loadAccess(DATA, ADMINS);
+const sessionKey = await loadSessionKey(DATA);
+// Offene Anmeldungen: Twitch braucht nur den state, Spotify merkt sich dazu den Login
+const twitchStates = createLoginStates<true>(600_000, 1000);
+const spotifyStates = createLoginStates<string>(600_000, 1000);
 
-function broadcast(alert: Alert) {
-  emit({ type: "alert", alert });
-  console.log(`Alert ${alert.kind}: ${alert.user} (${clients.size} Overlays)`);
-}
+// --- Laufzeiten -------------------------------------------------------------------------------
+const runtimes = new Map<string, Streamer>();
 
-await spotify.init(PUBLIC_URL, DATA, (track: Track | null) => emit({ type: "music", track }), () => clients.size > 0);
-
-const triggers = startTriggers(CONFIG, event => emit({ type: "fx", event }));
-
-// Der Server liest den Chat des eingeloggten Kanals mit, damit Trigger auch ohne offenes Chat-Overlay laufen
-let stopChat: (() => void) | null = null;
-let chatLogin = "";
-function listenChat() {
-  const login = tokens?.login ?? "";
-  if (login === chatLogin) return;
-  stopChat?.();
-  stopChat = null;
-  chatLogin = login;
-  if (login) stopChat = chat(login, line => triggers.handle(line));
-}
-// Kommentarzeile hält die Verbindung durch Proxys und OBS offen
-setInterval(() => { for (const c of clients) c.write(": ping\n\n"); }, 25_000);
-
-// --- Tokens ----------------------------------------------------------------------------
-type Tokens = { access: string; refresh: string; userId: string; login: string };
-let tokens: Tokens | null = null;
-
-async function save(t: Tokens | null) {
-  tokens = t;
-  if (t) {
-    await mkdir(DATA, { recursive: true });
-    await writeFile(TOKEN_FILE, JSON.stringify(t), { mode: 0o600 });
-  } else {
-    await rm(TOKEN_FILE, { force: true });
-  }
-  listenChat();
-}
-
-async function tokenRequest(params: Record<string, string>) {
-  const res = await fetch("https://id.twitch.tv/oauth2/token", {
-    method: "POST",
-    body: new URLSearchParams({ client_id: CLIENT_ID, client_secret: CLIENT_SECRET, ...params }),
+// (Neu) starten, wenn der Login freigeschaltet ist und Tokens hat; sonst nur stoppen
+async function startRuntime(login: string): Promise<Streamer | null> {
+  runtimes.get(login)?.stop();
+  runtimes.delete(login);
+  const folder = profile.folder(DATA, login);
+  const tokens = access.canUse(login) ? await profile.loadTokens(folder) : null;
+  if (!tokens) return null;
+  const runtime: Streamer = await startStreamer({
+    login, folder, tokens, twitch, spotify: spotifyApp, features: access.features(login),
+    onEnd: () => { if (runtimes.get(login) === runtime) runtimes.delete(login); },
   });
-  if (!res.ok) throw new Error(`Token-Anfrage fehlgeschlagen: ${res.status} ${await res.text()}`);
-  return (await res.json()) as { access_token: string; refresh_token: string };
+  runtimes.set(login, runtime);
+  return runtime;
 }
 
-// Twitch verlangt eine stündliche Prüfung. Abgelaufen: mit dem Refresh-Token erneuern.
-async function validate() {
-  if (!tokens) return false;
-  const res = await fetch("https://id.twitch.tv/oauth2/validate", { headers: { Authorization: `OAuth ${tokens.access}` } });
-  if (res.ok) return true;
-  try {
-    const r = await tokenRequest({ grant_type: "refresh_token", refresh_token: tokens.refresh });
-    await save({ ...tokens, access: r.access_token, refresh: r.refresh_token });
-    return true;
-  } catch (e) {
-    console.error("Login abgelaufen, bitte neu verbinden:", e);
-    stopEventSub();
-    await save(null);
-    return false;
-  }
-}
-setInterval(validate, 3_600_000);
-
-// --- EventSub ----------------------------------------------------------------------------
-const subscriptions = (id: string): [string, string, Record<string, string>][] => [
-  ["channel.follow", "2", { broadcaster_user_id: id, moderator_user_id: id }],
-  ["channel.subscribe", "1", { broadcaster_user_id: id }],
-  ["channel.subscription.message", "1", { broadcaster_user_id: id }],
-  ["channel.subscription.gift", "1", { broadcaster_user_id: id }],
-  ["channel.cheer", "1", { broadcaster_user_id: id }],
-  ["channel.raid", "1", { to_broadcaster_user_id: id }],
-  ["channel.channel_points_custom_reward_redemption.add", "1", { broadcaster_user_id: id }],
-  ["channel.hype_train.begin", "2", { broadcaster_user_id: id }],
-  ["channel.hype_train.end", "2", { broadcaster_user_id: id }],
-];
-
-const TIERS: Record<string, string> = { "1000": "", "2000": "Tier 2", "3000": "Tier 3" };
-
-// Übersetzt ein EventSub-Ereignis in das Alert-Format der Overlays
-function toAlert(type: string, ev: any): Alert | null {
-  const anon = (name: string | null) => (ev.is_anonymous || !name ? "Anonym" : name);
-  switch (type) {
-    case "channel.follow": return { kind: "follow", user: ev.user_name };
-    // Verschenkte Subs meldet schon channel.subscription.gift, sonst gäbe es pro Empfänger einen Alert
-    case "channel.subscribe": return ev.is_gift ? null : { kind: "sub", user: ev.user_name, detail: TIERS[ev.tier] || undefined };
-    case "channel.subscription.message": return { kind: "resub", user: ev.user_name, amount: ev.cumulative_months, text: ev.message?.text || undefined, detail: TIERS[ev.tier] || undefined };
-    case "channel.subscription.gift": return { kind: "gift", user: anon(ev.user_name), amount: ev.total };
-    // Cheermotes wie "Cheer100" aus dem Text nehmen
-    case "channel.cheer": return { kind: "cheer", user: anon(ev.user_name), amount: ev.bits, text: ev.message.replace(/\b[a-zA-Z]+\d+\b/g, "").trim() || undefined };
-    case "channel.raid": return { kind: "raid", user: ev.from_broadcaster_user_name, amount: ev.viewers };
-    case "channel.channel_points_custom_reward_redemption.add": return { kind: "redeem", user: ev.user_name, amount: ev.reward.cost, detail: ev.reward.title, text: ev.user_input || undefined };
-    case "channel.hype_train.begin": return { kind: "hype", user: "HYPE TRAIN", amount: ev.level, detail: "begin" };
-    case "channel.hype_train.end": return { kind: "hype", user: "HYPE TRAIN", amount: ev.level, detail: "end" };
-  }
-  return null;
+// Nach geänderten Zugängen oder Funktionsstufen: alle Laufzeiten neu, die Overlays verbinden sich selbst wieder
+async function restartAll() {
+  for (const runtime of runtimes.values()) runtime.stop();
+  runtimes.clear();
+  for (const login of await profile.list(DATA)) await startRuntime(login);
 }
 
-let ws: WebSocket | null = null;
-let wanted = false;
-let keepalive: ReturnType<typeof setTimeout> | undefined;
-let retry: ReturnType<typeof setTimeout> | undefined;
+// spotify im Status: null = nicht eingerichtet oder Funktion aus, sonst ob verbunden
+const spotifyStatus = (features: Record<Feature, boolean>, runtime: Streamer | undefined) =>
+  (spotifyApp && features.music ? runtime?.spotify?.connected() ?? false : null);
 
-async function subscribeAll(sessionId: string) {
-  if (!(await validate()) || !tokens) return;
-  for (const [type, version, condition] of subscriptions(tokens.userId)) {
-    const res = await fetch("https://api.twitch.tv/helix/eventsub/subscriptions", {
-      method: "POST",
-      headers: { "Client-Id": CLIENT_ID, Authorization: `Bearer ${tokens.access}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ type, version, condition, transport: { method: "websocket", session_id: sessionId } }),
-    });
-    if (!res.ok) console.error(`Abo ${type} fehlgeschlagen: ${res.status} ${await res.text()}`);
-  }
-  console.log(`EventSub verbunden als ${tokens.login}`);
-}
-
-function startEventSub(url = "wss://eventsub.wss.twitch.tv/ws", subscribe = true) {
-  wanted = true;
-  const socket = new WebSocket(url);
-  let timeoutMs = 30_000;
-
-  socket.onmessage = async e => {
-    const m = JSON.parse(String(e.data));
-    const type = m.metadata?.message_type;
-    if (type === "session_welcome") {
-      timeoutMs = (m.payload.session.keepalive_timeout_seconds ?? 30) * 1000;
-      const old = ws;
-      ws = socket;
-      if (old && old !== socket) old.close();
-      // Nach session_reconnect bleiben die Abos bestehen
-      if (subscribe) await subscribeAll(m.payload.session.id);
-    } else if (type === "notification") {
-      const alert = toAlert(m.metadata.subscription_type, m.payload.event);
-      if (alert) broadcast(alert);
-    } else if (type === "session_reconnect") {
-      startEventSub(m.payload.session.reconnect_url, false);
-    } else if (type === "revocation") {
-      console.warn(`Abo widerrufen: ${m.payload.subscription.type} (${m.payload.subscription.status})`);
+// --- Overlays: /s/<login>/... -----------------------------------------------------------------
+async function overlay(request: IncomingMessage, response: ServerResponse, path: streamerPath.StreamerPath) {
+  const route = overlayRoute(path.segments);
+  const folder = profile.folder(DATA, path.login);
+  const known = access.canUse(path.login) && (await stat(folder).then(info => info.isDirectory(), () => false));
+  if (!route || !known) return send(response, 404, "not-found");
+  const runtime = runtimes.get(path.login);
+  switch (route.kind) {
+    case "status": {
+      const features = access.features(path.login);
+      return json(response, { login: path.login, live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features });
     }
-    // Twitch schickt regelmässig Keepalives. Bleiben sie aus, ist die Verbindung tot.
-    if (socket === ws) {
-      clearTimeout(keepalive);
-      keepalive = setTimeout(() => socket.close(), timeoutMs + 5000);
-    }
-  };
-
-  socket.onclose = () => {
-    if (!wanted || (socket !== ws && ws !== null)) return;
-    ws = null;
-    clearTimeout(keepalive);
-    clearTimeout(retry);
-    retry = setTimeout(() => tokens && startEventSub(), 5000);
-  };
-}
-
-function stopEventSub() {
-  wanted = false;
-  clearTimeout(keepalive);
-  clearTimeout(retry);
-  const old = ws;
-  ws = null;
-  old?.close();
-}
-
-// --- HTTP --------------------------------------------------------------------------------
-const TYPES: Record<string, string> = {
-  ".html": "text/html; charset=utf-8",
-  ".js": "text/javascript",
-  ".css": "text/css",
-  ".json": "application/json",
-  ".png": "image/png",
-  ".svg": "image/svg+xml",
-  ".webm": "video/webm",
-  ".mp4": "video/mp4",
-  ".gif": "image/gif",
-  ".webp": "image/webp",
-  ".jpg": "image/jpeg",
-  ".mp3": "audio/mpeg",
-  ".wav": "audio/wav",
-  ".ogg": "audio/ogg",
-};
-
-const SAMPLES: Record<string, Alert> = {
-  follow: { kind: "follow", user: "neo_42" },
-  sub: { kind: "sub", user: "Trinity", text: "Endlich abonniert!" },
-  resub: { kind: "resub", user: "MorpheusTV", amount: 12, text: "Ein Jahr schon!", detail: "Tier 2" },
-  gift: { kind: "gift", user: "Oracle", amount: 5 },
-  cheer: { kind: "cheer", user: "Tank", amount: 500, text: "Nimm das!" },
-  raid: { kind: "raid", user: "agent_smith", amount: 42 },
-  redeem: { kind: "redeem", user: "Dozer", amount: 500, detail: "Hydrieren!", text: "Trink was!" },
-  hype: { kind: "hype", user: "HYPE TRAIN", amount: 3, detail: "end" },
-};
-
-const loginStates = new Set<string>();
-
-const send = (res: ServerResponse, status: number, body: string) => {
-  res.writeHead(status, { "Content-Type": "text/plain; charset=utf-8" });
-  res.end(body);
-};
-const json = (res: ServerResponse, body: unknown) => {
-  res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-store" });
-  res.end(JSON.stringify(body));
-};
-const redirect = (res: ServerResponse, to: string) => {
-  res.writeHead(302, { Location: to });
-  res.end();
-};
-
-// POSTs von fremden Webseiten abweisen (sonst könnte jede Seite im Browser Fake-Alerts auslösen)
-function sameOrigin(req: IncomingMessage) {
-  const origin = req.headers.origin;
-  return !origin || new URL(origin).host === req.headers.host;
-}
-
-// Request-Body lesen, mit Obergrenze gegen versehentlich riesige Uploads
-async function readBody(req: IncomingMessage, limit: number) {
-  const chunks: Buffer[] = [];
-  let size = 0;
-  for await (const chunk of req) {
-    size += chunk.length;
-    if (size > limit) throw Object.assign(new Error("zu gross"), { status: 413 });
-    chunks.push(chunk);
+    case "events": return runtime ? runtime.attach(request, response) : send(response, 404, "not-running");
+    case "scene": return serveStatic(response, DIST, `/${route.file}`);
+    case "media": return serveStatic(response, join(folder, "media"), `/${route.file}`, true);
   }
-  return Buffer.concat(chunks);
 }
 
-// Erlaubte Mediendateien: nur einfache Namen (kein Pfad) mit bekannter Endung
-const MEDIA_NAME = /^[\w][\w .()-]*\.(gif|png|jpe?g|webp|svg|mp4|webm|mp3|wav|ogg)$/i;
-const MEDIA_LIMIT = 50 * 1024 * 1024;
+// --- Dashboard und Anmeldung ------------------------------------------------------------------
+// Eine Anfrage an eine Route aus ROUTES. login: aus dem Cookie, bei öffentlichen Routen evtl. leer.
+type Call = { request: IncomingMessage; response: ServerResponse; url: URL; login: string; runtime: Streamer | undefined };
+type Handler = (call: Call) => Promise<void> | void;
 
-async function serveStatic(root: string, path: string, res: ServerResponse) {
-  const file = resolve(join(root, decodeURIComponent(path === "/" ? "/index.html" : path)));
-  if (!file.startsWith(root + sep)) return send(res, 403, "Verboten");
+// JSON aus einem Body; undefined bei kaputtem JSON
+function parseJson(text: string): unknown {
   try {
-    const body = await readFile(file);
-    // Medien direkt geöffnet (z.B. eine hochgeladene SVG) dürfen kein Script ausführen
-    const sandbox = root === MEDIA ? { "Content-Security-Policy": "sandbox; default-src 'none'; img-src 'self' data:; media-src 'self'; style-src 'unsafe-inline'" } : {};
-    res.writeHead(200, { "Content-Type": TYPES[extname(file)] ?? "application/octet-stream", ...sandbox });
-    res.end(body);
+    return JSON.parse(text);
   } catch {
-    send(res, 404, "Nicht gefunden");
+    // Der Aufrufer antwortet mit 400
+    return undefined;
   }
 }
 
-async function handle(req: IncomingMessage, res: ServerResponse) {
-  const url = new URL(req.url ?? "/", PUBLIC_URL);
-  const post = req.method === "POST";
-  if (post && !sameOrigin(req)) return send(res, 403, "Fremde Herkunft");
+function twitchLogin({ response }: Call) {
+  const state = randomBytes(16).toString("hex");
+  twitchStates.add(state, true, Date.now());
+  redirect(response, twitch.authorizeUrl(state));
+}
 
-  switch (url.pathname) {
-    case "/api/status":
-      return json(res, { login: tokens?.login ?? null, live: ws !== null, spotify: spotify.enabled() ? spotify.connected() : null });
-
-    case "/events":
-      res.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" });
-      res.write(": verbunden\n\n");
-      // Neue Overlays sofort mit dem laufenden Titel versorgen
-      res.write(`data: ${JSON.stringify({ type: "music", track: spotify.current() })}\n\n`);
-      clients.add(res);
-      req.on("close", () => clients.delete(res));
-      return;
-
-    case "/auth/login": {
-      const state = randomBytes(16).toString("hex");
-      loginStates.add(state);
-      setTimeout(() => loginStates.delete(state), 600_000);
-      const query = new URLSearchParams({ client_id: CLIENT_ID, redirect_uri: REDIRECT, response_type: "code", scope: SCOPES.join(" "), state, force_verify: "true" });
-      return redirect(res, `https://id.twitch.tv/oauth2/authorize?${query}`);
-    }
-
-    case "/auth/callback": {
-      // state schützt davor, dass eine fremde Seite dir ihren Login unterschiebt
-      const code = url.searchParams.get("code");
-      if (!loginStates.delete(url.searchParams.get("state") ?? "") || !code) {
-        return send(res, 400, `Login abgebrochen oder ungültig (${url.searchParams.get("error_description") ?? "state"}). Bitte erneut verbinden.`);
-      }
-      const t = await tokenRequest({ grant_type: "authorization_code", code, redirect_uri: REDIRECT });
-      const me = await fetch("https://api.twitch.tv/helix/users", { headers: { "Client-Id": CLIENT_ID, Authorization: `Bearer ${t.access_token}` } }).then(r => r.json());
-      await save({ access: t.access_token, refresh: t.refresh_token, userId: me.data[0].id, login: me.data[0].login });
-      stopEventSub();
-      startEventSub();
-      return redirect(res, "/");
-    }
-
-    case "/auth/logout": {
-      if (!post) return send(res, 405, "Nur POST");
-      if (tokens) await fetch("https://id.twitch.tv/oauth2/revoke", { method: "POST", body: new URLSearchParams({ client_id: CLIENT_ID, token: tokens.access }) }).catch(() => {});
-      stopEventSub();
-      await save(null);
-      return json(res, { ok: true });
-    }
-
-    case "/spotify/login":
-      if (!spotify.enabled()) return send(res, 400, "SPOTIFY_CLIENT_ID und SPOTIFY_CLIENT_SECRET fehlen in server.env");
-      return redirect(res, spotify.loginUrl());
-
-    case "/spotify/callback":
-      if (!(await spotify.callback(url.searchParams.get("code"), url.searchParams.get("state")))) {
-        return send(res, 400, `Spotify-Login abgebrochen oder ungültig (${url.searchParams.get("error") ?? "state"}). Bitte erneut verbinden.`);
-      }
-      // Zurück auf die Übersicht unter der normalen Adresse (Callback kam über 127.0.0.1)
-      return redirect(res, `${PUBLIC_URL}/`);
-
-    case "/spotify/logout":
-      if (!post) return send(res, 405, "Nur POST");
-      await spotify.logout();
-      emit({ type: "music", track: null });
-      return json(res, { ok: true });
-
-    case "/api/triggers/config": {
-      if (!post) return json(res, triggers.config());
-      let list: unknown;
-      try {
-        list = JSON.parse(String(await readBody(req, 1024 * 1024))).triggers;
-      } catch {
-        return send(res, 400, JSON.stringify(["Ungültiges JSON"]));
-      }
-      if (!Array.isArray(list)) return send(res, 400, JSON.stringify(["triggers muss eine Liste sein"]));
-      const errors = await triggers.save(list);
-      return errors.length ? send(res, 400, JSON.stringify(errors)) : json(res, { ok: true });
-    }
-
-    case "/api/media": {
-      if (!post) {
-        const files = await readdir(MEDIA).catch(() => [] as string[]);
-        return json(res, files.filter(f => MEDIA_NAME.test(f)).sort());
-      }
-      const name = url.searchParams.get("name") ?? "";
-      if (!MEDIA_NAME.test(name)) return send(res, 400, "Dateiname oder Endung nicht erlaubt");
-      await mkdir(MEDIA, { recursive: true });
-      await writeFile(join(MEDIA, name), await readBody(req, MEDIA_LIMIT));
-      console.log(`Medium hochgeladen: ${name}`);
-      return json(res, { ok: true, name });
-    }
-
-    case "/api/triggers":
-      return json(res, triggers.list());
-
-    case "/api/trigger": {
-      if (!post) return send(res, 405, "Nur POST");
-      if (!triggers.fire(url.searchParams.get("name") ?? "")) return send(res, 404, "Trigger nicht gefunden");
-      return json(res, { ok: true });
-    }
-
-    case "/api/test": {
-      if (!post) return send(res, 405, "Nur POST");
-      const alert = SAMPLES[url.searchParams.get("kind") ?? ""];
-      if (!alert) return send(res, 400, `Unbekannt, erlaubt: ${Object.keys(SAMPLES).join(", ")}`);
-      broadcast(alert);
-      return json(res, { ok: true });
-    }
+// Tokens tauschen, Freischaltung prüfen, speichern, Laufzeit starten, Sitzung setzen.
+// Fehler gehen als Code (?error=) an das Dashboard, das den Text dazu zeigt (Regel 20).
+async function twitchCallback({ response, url }: Call) {
+  const code = url.searchParams.get("code") ?? "";
+  const stateValid = twitchStates.take(url.searchParams.get("state") ?? "", Date.now()) !== null;
+  const tokens = stateValid && OAUTH_CODE.test(code) ? await twitch.exchange(code) : null;
+  if (!tokens) return redirect(response, "/?error=login-failed");
+  if (!access.canUse(tokens.login)) {
+    // Nicht freigeschaltet: nichts speichern, Token gleich widerrufen
+    await twitch.revoke(tokens.access).catch((error: unknown) => console.error("Revoking a token failed:", error));
+    console.log(`Login refused, not on the allowlist: ${tokens.login}`);
+    return redirect(response, "/?error=not-allowed");
   }
-  if (url.pathname.startsWith("/media/")) return serveStatic(MEDIA, url.pathname.slice("/media".length), res);
-  return serveStatic(DIST, url.pathname, res);
+  await profile.saveTokens(profile.folder(DATA, tokens.login), tokens);
+  await startRuntime(tokens.login);
+  console.log(`Twitch login: ${tokens.login}`);
+  redirect(response, "/", { "Set-Cookie": sessionCookie(createSession(sessionKey, tokens.login), SECURE) });
 }
 
-// Gespeicherten Login vom letzten Start übernehmen
-try {
-  tokens = JSON.parse(await readFile(TOKEN_FILE, "utf8"));
-  if (await validate()) startEventSub();
-} catch {
-  console.log(`Noch nicht mit Twitch verbunden: ${PUBLIC_URL} öffnen`);
+// Abmelden: Cookie löschen, die Laufzeit (Overlays) läuft weiter
+function logout({ response }: Call) {
+  response.setHeader("Set-Cookie", sessionCookie("", SECURE, 0));
+  json(response, { ok: true });
 }
-listenChat();
 
-createServer((req, res) => {
-  handle(req, res).catch(e => {
-    if (e.status === 413) return send(res, 413, "Datei zu gross (max. 50 MB)");
-    console.error(e);
-    if (!res.headersSent) send(res, 500, "Serverfehler, siehe Log");
+function me({ response, login, runtime }: Call) {
+  const features = access.features(login);
+  json(response, { login, admin: access.isAdmin(login), live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features });
+}
+
+function testAlert({ response, url, runtime }: Call) {
+  const kind = url.searchParams.get("kind") ?? "";
+  if (!isAlertKind(kind)) return send(response, 400, "unknown-kind");
+  if (!runtime) return send(response, 409, "not-connected");
+  runtime.alert(SAMPLE_ALERTS[kind]);
+  json(response, { ok: true });
+}
+
+function triggerConfig({ response, runtime }: Call) {
+  if (!runtime?.triggers) return send(response, 409, "not-connected");
+  json(response, runtime.triggers.config());
+}
+
+// Vom Editor: der Server prüft die Regeln; bei Fehlern bleibt die Datei unverändert
+async function saveTriggerConfig({ request, response, runtime }: Call) {
+  if (!runtime?.triggers) return send(response, 409, "not-connected");
+  const body = parseJson(String(await readBody(request, TRIGGER_LIMIT))) as { triggers?: unknown } | null | undefined;
+  const list = body?.triggers;
+  if (!Array.isArray(list)) return json(response, ["invalid-json"], 400);
+  const errors = await runtime.triggers.save(list as Parameters<typeof runtime.triggers.save>[0]);
+  if (errors.length) return json(response, errors, 400);
+  json(response, { ok: true });
+}
+
+function triggerList({ response, runtime }: Call) {
+  json(response, runtime?.triggers?.list() ?? []);
+}
+
+function fireTrigger({ response, url, runtime }: Call) {
+  if (!runtime?.triggers) return send(response, 409, "not-connected");
+  if (!runtime.triggers.fire((url.searchParams.get("name") ?? "").slice(0, 200))) return send(response, 404, "unknown-trigger");
+  json(response, { ok: true });
+}
+
+async function mediaList({ response, login }: Call) {
+  const files = await readdir(join(profile.folder(DATA, login), "media")).catch(() => [] as string[]);
+  json(response, files.filter(streamerPath.isMediaName).sort());
+}
+
+async function uploadMedia({ request, response, url, login }: Call) {
+  const name = url.searchParams.get("name") ?? "";
+  if (!streamerPath.isMediaName(name)) return send(response, 400, "invalid-name");
+  await writeAtomic(join(profile.folder(DATA, login), "media", name), await readBody(request, MEDIA_LIMIT));
+  console.log(`Media uploaded by ${login}: ${name}`);
+  json(response, { ok: true, name });
+}
+
+function spotifyLogin({ response, login, runtime }: Call) {
+  if (!spotifyApp) return send(response, 409, "spotify-not-configured");
+  if (!runtime?.spotify) return send(response, 409, "not-connected");
+  const state = randomBytes(16).toString("hex");
+  spotifyStates.add(state, login, Date.now());
+  redirect(response, runtime.spotify.authorizeUrl(state));
+}
+
+// Kommt über die Spotify-Redirect-URL (lokal 127.0.0.1, ohne Cookie): der Login steht am state
+async function spotifyCallback({ response, url }: Call) {
+  const code = url.searchParams.get("code") ?? "";
+  const login = spotifyStates.take(url.searchParams.get("state") ?? "", Date.now());
+  const spotify = login && access.hasFeature(login, "music") ? runtimes.get(login)?.spotify : undefined;
+  const connected = spotify && OAUTH_CODE.test(code) ? await spotify.connect(code) : false;
+  // Zurück auf die Übersicht unter der normalen Adresse, dort liegt das Cookie
+  redirect(response, connected ? `${PUBLIC_URL}/` : `${PUBLIC_URL}/?error=spotify-failed`);
+}
+
+async function spotifyLogout({ response, runtime }: Call) {
+  await runtime?.spotify?.logout();
+  json(response, { ok: true });
+}
+
+// Twitch trennen: Token widerrufen und löschen, Laufzeit stoppen, abmelden
+async function twitchDisconnect({ response, login, runtime }: Call) {
+  const folder = profile.folder(DATA, login);
+  const tokens = runtime?.tokens() ?? (await profile.loadTokens(folder));
+  runtime?.stop();
+  runtimes.delete(login);
+  if (tokens) await twitch.revoke(tokens.access).catch((error: unknown) => console.error("Revoking a token failed:", error));
+  await profile.deleteTokens(folder);
+  console.log(`Twitch disconnected: ${login}`);
+  response.setHeader("Set-Cookie", sessionCookie("", SECURE, 0));
+  json(response, { ok: true });
+}
+
+async function saveAccess({ request, response }: Call) {
+  const value = parseJson(String(await readBody(request, ACCESS_LIMIT)));
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return send(response, 400, "invalid-json");
+  // access.save bringt alles auf gültige Werte (sanitize)
+  const saved = await access.save(value);
+  await restartAll();
+  json(response, saved);
+}
+
+// Jede Route aus ROUTES hat genau einen Handler (der Typ erzwingt es)
+const HANDLERS: Record<RouteKey, Handler> = {
+  "GET /auth/login": twitchLogin,
+  "GET /auth/callback": twitchCallback,
+  "POST /auth/logout": logout,
+  "GET /spotify/callback": spotifyCallback,
+  "GET /api/me": me,
+  "POST /api/test": testAlert,
+  "GET /api/triggers/config": triggerConfig,
+  "POST /api/triggers/config": saveTriggerConfig,
+  "GET /api/triggers": triggerList,
+  "POST /api/trigger": fireTrigger,
+  "GET /api/media": mediaList,
+  "POST /api/media": uploadMedia,
+  "GET /spotify/login": spotifyLogin,
+  "POST /spotify/logout": spotifyLogout,
+  "POST /api/twitch/disconnect": twitchDisconnect,
+  "GET /api/admin/access": ({ response }) => json(response, access.get()),
+  "POST /api/admin/access": saveAccess,
+};
+
+// Login aus dem Cookie, und was er darf (Regel 26: nie aus der Anfrage selbst)
+function visitor(request: IncomingMessage): Visitor {
+  const login = readSession(sessionKey, cookies(request).sid);
+  if (!login) return { login: null, allowed: false, admin: false, features: {} };
+  return { login, allowed: access.canUse(login), admin: access.isAdmin(login), features: access.features(login) };
+}
+
+async function route(request: IncomingMessage, response: ServerResponse) {
+  const url = new URL(request.url ?? "/", PUBLIC_URL);
+  const method = request.method ?? "GET";
+  // POSTs von fremden Webseiten abweisen
+  if (method === "POST" && !sameOrigin(request)) return send(response, 403, "cross-origin");
+  const key = find(method, url.pathname);
+  if (key === "method-not-allowed") return send(response, 405, "method-not-allowed");
+  if (key) {
+    const caller = visitor(request);
+    const decision = authorize(ROUTES[key], caller);
+    if (decision !== "ok") return send(response, decision === "unauthorized" ? 401 : 403, decision);
+    const login = caller.login ?? "";
+    return HANDLERS[key]({ request, response, url, login, runtime: runtimes.get(login) });
+  }
+  if (method !== "GET" && method !== "HEAD") return send(response, 404, "not-found");
+  const path = streamerPath.parse(url.pathname);
+  if (path) return overlay(request, response, path);
+  // Dashboard und Werkzeuge (index.html mit #/triggers, #/stinger)
+  return serveStatic(response, DIST, url.pathname === "/" ? "/index.html" : url.pathname);
+}
+
+// --- Start ------------------------------------------------------------------------------------
+await migrate({ data: DATA, config: CONFIG }, ADMINS, access);
+for (const login of await profile.list(DATA)) await startRuntime(login);
+
+createServer((request, response) => {
+  route(request, response).catch((error: unknown) => {
+    const tooLarge = error instanceof Error && "status" in error && error.status === 413;
+    if (!tooLarge) console.error("Request failed:", error);
+    if (!response.headersSent) send(response, tooLarge ? 413 : 500, tooLarge ? "too-large" : "server-error");
   });
-}).listen(PORT, () => console.log(`Overlays auf ${PUBLIC_URL}`));
+}).listen(PORT, () => console.log(`Overlay server on ${PUBLIC_URL} (${runtimes.size} streamers running)`));
