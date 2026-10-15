@@ -10,6 +10,7 @@ import Connections from "./Connections.tsx";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 import Overview from "./Overview.tsx";
 import { TEXTS } from "./texts.de.ts";
+import ThemeSettings from "./ThemeSettings.tsx";
 import "./dashboard.css";
 
 // Aktion an den Server; danach Konto neu laden und einen Fehler anzeigen
@@ -83,8 +84,9 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
       </nav>
       {section === "overview" && <Overview me={account} act={act} />}
       {section === "connections" && <Connections me={account} act={act} />}
+      {section === "theme" && <ThemeSettings me={account} />}
       {section === "triggers" && <Triggers />}
-      {(section === "theme" || section === "media" || section === "admin") && <p className="muted">{TEXTS.comingSoon}</p>}
+      {(section === "media" || section === "admin") && <p className="muted">{TEXTS.comingSoon}</p>}
     </>
   );
 }

@@ -2,24 +2,13 @@
 // Test (Fake-Events), dazu Test-Alerts und Trigger zum Auslösen, wenn die Funktionen freigegeben sind.
 import { useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
-import { SCENES, type SceneName } from "../core/theme.ts";
+import { SCENE_SIZES, SCENES } from "../core/theme.ts";
 import type { AlertKind } from "../core/types.ts";
 import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
 import type { Me } from "./navigation.ts";
 import { TEXTS } from "./texts.de.ts";
 
-// Empfohlene Grösse der Browserquelle in OBS
-const SIZES: Record<SceneName, string> = {
-  starting: "1920x1080",
-  brb: "1920x1080",
-  ending: "1920x1080",
-  alerts: "1920x1080",
-  chat: "500x900",
-  cam: "640x360",
-  music: "900x240",
-  fx: "1920x1080",
-};
 const TEST_ALERTS: readonly AlertKind[] = ["follow", "sub", "resub", "gift", "cheer", "raid", "redeem", "hype"];
 const COPIED_MS = 1500;
 
@@ -39,7 +28,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
               <tr key={scene}>
                 <td>{TEXTS.scenes[scene]}</td>
                 <td><code>{url}</code></td>
-                <td>{SIZES[scene]}</td>
+                <td>{SCENE_SIZES[scene].width}x{SCENE_SIZES[scene].height}</td>
                 <td className="actions">
                   <CopyButton text={url} />
                   <a className="btn" href={`#/${scene}?demo&s=${me.login}`} target="_blank" rel="noreferrer">{TEXTS.overview.test}</a>

@@ -29,6 +29,26 @@ export async function post(url: string): Promise<ErrorCode | null> {
   }
 }
 
+// JSON per POST: ok und die Antwort, sonst ok = false und der Fehlerkörper (Liste { key, code } oder ein Code)
+export async function postJson(url: string, body: unknown): Promise<{ ok: boolean; data: unknown }> {
+  try {
+    const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const text = await response.text();
+    return { ok: response.ok, data: parseBody(text) };
+  } catch {
+    return { ok: false, data: "server-error" };
+  }
+}
+
+// JSON-Antwort oder ein Fehlercode als Text
+function parseBody(text: string): unknown {
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return text.trim();
+  }
+}
+
 // JSON von url, bei Fehlern fallback
 export async function getJson<T>(url: string, fallback: T): Promise<T> {
   try {

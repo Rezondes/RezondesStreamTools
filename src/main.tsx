@@ -36,10 +36,10 @@ function ThemedScene({ scene }: { scene: SceneName }) {
   const chosen = findTheme(settings.theme) ?? defaultSchema;
   const Scene = resolveScene(THEME_SCENES, chosen.id, scene, DEFAULT_THEME);
   if (!Scene) return null;
-  // Erbt die Szene vom Standard-Theme, gelten dessen Einstellungen (gleiche Schlüssel werden übernommen)
-  const own = THEME_SCENES[chosen.id]?.[scene] === Scene;
-  const schema = own ? chosen : defaultSchema;
-  const values = own ? settings.values : resolveSettings(defaultSchema, settings.values);
+  // Erbt die Szene vom Standard-Theme, gelten dessen Einstellungen (gleiche Schlüssel werden übernommen).
+  // Aufgelöst wird immer, auch Werte aus der Vorschau des Dashboards landen so vollständig und gültig in der Szene.
+  const schema = THEME_SCENES[chosen.id]?.[scene] === Scene ? chosen : defaultSchema;
+  const values = resolveSettings(schema, settings.values);
   return (
     <ThemeValues.Provider value={values}>
       <div className={`theme-root theme-${schema.id}`} style={cssVariables(schema, values)}>

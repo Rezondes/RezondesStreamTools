@@ -320,7 +320,7 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 7: Einstellungs-Formular
+## Package 7: Einstellungs-Formular (erledigt)
 
 **Ziel:** Streamer ändern alle Theme-Einstellungen in einem automatisch erzeugten Formular mit Live-Vorschau.
 
@@ -332,11 +332,11 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: Theme-Auswahl aus allen eingebauten Themes; Wechsel speichert sofort.
-- [ ] AC2: Für jedes Feld des Schemas erscheint das passende Eingabefeld, gruppiert nach `group`, mit sichtbarem Label (Regel 23).
-- [ ] AC3: Speichern zeigt Fehler je Feld aus den Fehlercodes; ohne Fehler sind die Werte sofort in allen Overlays aktiv.
-- [ ] AC4: Vorschau zeigt eine gewählte Szene als `iframe` (`/s/<login>/<szene>.html?demo`) mit den ungespeicherten Werten.
-- [ ] AC5: "Auf Standard zurücksetzen" je Feld und für das ganze Theme.
+- [x] AC1: Theme-Auswahl aus allen eingebauten Themes; Wechsel speichert sofort.
+- [x] AC2: Für jedes Feld des Schemas erscheint das passende Eingabefeld, gruppiert nach `group`, mit sichtbarem Label (Regel 23).
+- [x] AC3: Speichern zeigt Fehler je Feld aus den Fehlercodes; ohne Fehler sind die Werte sofort in allen Overlays aktiv.
+- [x] AC4: Vorschau zeigt eine gewählte Szene als `iframe` (`/s/<login>/<szene>.html?demo`) mit den ungespeicherten Werten.
+- [x] AC5: "Auf Standard zurücksetzen" je Feld und für das ganze Theme.
 
 ### Tests (TDD)
 

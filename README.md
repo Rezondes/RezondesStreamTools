@@ -138,6 +138,11 @@ Chat, Kamera, Musik, Effekte, Stinger, Banner); die Standardwerte ergeben den bi
 Vertipper enthalten: `{del 4}` löscht 4 Zeichen, `{pause 900}` wartet 900 ms, `{smash 18}` haut auf die Tastatur.
 Der Theme-Code selbst enthält keine festen Farben, Texte oder Masse; das prüft `scripts/rules.check.ts`.
 
+Im Dashboard (Bereich `[ THEME ]`) entsteht das Formular automatisch aus dem Schema, gruppiert und mit
+Zurücksetzen je Feld oder für alles. Die Vorschau zeigt die gewählte Szene als `iframe` mit den noch nicht
+gespeicherten Werten (`/s/<login>/<szene>.html?demo&preview`, Werte per `postMessage` nur von derselben Herkunft).
+Ein Theme-Wechsel speichert sofort; Fehler beim Speichern erscheinen am jeweiligen Feld.
+
 ## Chat-Trigger (`triggers.json` im Profil)
 
 Der Server liest den Chat jedes angemeldeten Streamers mit (Funktionen `triggers` und `fx`). Passt eine Nachricht auf eine Regel,

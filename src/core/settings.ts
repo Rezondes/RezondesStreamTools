@@ -10,7 +10,8 @@ export type SettingError = { key: string; code: SettingErrorCode };
 const TEXT_LIMIT = 2000;
 const LINE_LIMIT = 200;
 const COLOR = /^#[0-9a-f]{6}([0-9a-f]{2})?$/i;
-const MEDIA_KIND = { image: /\.(gif|png|jpe?g|webp|svg)$/i, video: /\.(mp4|webm)$/i, audio: /\.(mp3|wav|ogg)$/i } as const;
+// Erlaubte Dateiendungen je Medienart (auch für die Auswahl im Dashboard)
+export const MEDIA_KIND = { image: /\.(gif|png|jpe?g|webp|svg)$/i, video: /\.(mp4|webm)$/i, audio: /\.(mp3|wav|ogg)$/i } as const;
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 const isText = (value: unknown, limit: number): SettingErrorCode | null => (typeof value !== "string" ? "invalid_type" : value.length > limit ? "too_long" : null);

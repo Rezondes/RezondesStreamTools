@@ -4,6 +4,18 @@
 export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx"] as const;
 export type SceneName = (typeof SCENES)[number];
 
+// Empfohlene Grösse der Browserquelle in OBS; Themes gestalten ihre Szenen für diese Grössen
+export const SCENE_SIZES: Record<SceneName, { width: number; height: number }> = {
+  starting: { width: 1920, height: 1080 },
+  brb: { width: 1920, height: 1080 },
+  ending: { width: 1920, height: 1080 },
+  alerts: { width: 1920, height: 1080 },
+  chat: { width: 500, height: 900 },
+  cam: { width: 640, height: 360 },
+  music: { width: 900, height: 240 },
+  fx: { width: 1920, height: 1080 },
+};
+
 // Ton: eigene Datei aus den Medien (file) oder leer = eingebauter Ton des Themes; volume 0 bis 1
 export type SoundValue = { file: string; volume: number };
 export type SettingValue = string | number | boolean | readonly string[] | SoundValue;
