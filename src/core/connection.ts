@@ -42,13 +42,19 @@ async function serverStatus(): Promise<ServerStatus | null> {
   }
 }
 
-// Alle Hooks einer Seite teilen sich eine Verbindung: der erste Abonnent startet die Quellen, der letzte stoppt sie
+// Alle Hooks einer Seite teilen sich eine Verbindung: der erste Abonnent startet die Quellen, der letzte stoppt sie.
+// Der Server schickt den laufenden Titel nur beim Verbinden; wer später abonniert (die Szene lädt nach den
+// Einstellungen), bekommt ihn aus lastTrack. undefined = noch keine Nachricht.
 const subscribers = new Set<Handlers>();
 let stopSources: (() => void) | null = null;
+let lastTrack: Track | null | undefined;
 const fanout: Handlers = {
   chat: message => subscribers.forEach(handlers => handlers.chat?.(message)),
   alert: alert => subscribers.forEach(handlers => handlers.alert?.(alert)),
-  music: track => subscribers.forEach(handlers => handlers.music?.(track)),
+  music: track => {
+    lastTrack = track;
+    subscribers.forEach(handlers => handlers.music?.(track));
+  },
   fx: event => subscribers.forEach(handlers => handlers.fx?.(event)),
   remove: removal => subscribers.forEach(handlers => handlers.remove?.(removal)),
   settings: settings => subscribers.forEach(handlers => handlers.settings?.(settings)),
@@ -58,11 +64,13 @@ const fanout: Handlers = {
 export function connect(handlers: Handlers): () => void {
   subscribers.add(handlers);
   stopSources ??= startSources(fanout);
+  if (lastTrack !== undefined) handlers.music?.(lastTrack);
   return () => {
     subscribers.delete(handlers);
     if (subscribers.size > 0) return;
     stopSources?.();
     stopSources = null;
+    lastTrack = undefined;
   };
 }
 
