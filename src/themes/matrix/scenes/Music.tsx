@@ -8,8 +8,8 @@ import { textBar } from "../../../core/template.ts";
 import { useMusic } from "../../../core/hooks/useMusic.ts";
 import { useNow } from "../../../core/hooks/useNow.ts";
 import { vinyl } from "../../../core/vinyl.ts";
-import { useMatrixDecode } from "../decode.ts";
-import { useMatrix } from "../values.ts";
+import { useMatrixDecode } from "../useMatrixDecode.ts";
+import { useMatrix } from "../useMatrix.ts";
 
 // fixed: Platte mit 12 Bildern pro Sekunde (wirkt wie ein Terminal, schont die CPU), Equalizer alle 130 ms, Fortschritt 4-mal pro Sekunde
 const PACE = { vinylFrameMs: 1000 / 12, equalizerMs: 130, progressMs: 250 };

@@ -5,9 +5,9 @@ import MatrixRain from "../MatrixRain.tsx";
 import type { Alert, AlertKind } from "../../../core/types.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
-import { useMatrixDecode } from "../decode.ts";
+import { useMatrixDecode } from "../useMatrixDecode.ts";
 import { playLeave, playOpen } from "../tones.ts";
-import { useMatrix } from "../values.ts";
+import { useMatrix } from "../useMatrix.ts";
 import type { MatrixValues } from "../settings.ts";
 
 const SOUND = {

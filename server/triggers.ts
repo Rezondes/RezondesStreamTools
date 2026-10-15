@@ -24,26 +24,26 @@ export type Trigger = {
   do: FxAction[];
 };
 
-const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
 export function toRegex(when: When): RegExp {
   const flags = when.caseSensitive ? "u" : "iu";
-  const m = escape(when.match);
+  const pattern = escape(when.match);
   switch (when.type) {
     // Wortgrenze: davor und danach kein Buchstabe und keine Ziffer, "LIZARD!" zählt also
-    case "word": return new RegExp(`(?<![\\p{L}\\p{N}_])${m}(?![\\p{L}\\p{N}_])`, flags);
-    case "contains": return new RegExp(m, flags);
-    case "exact": return new RegExp(`^\\s*${m}\\s*$`, flags);
-    case "command": return new RegExp(`^${m}(?=\\s|$)`, flags);
+    case "word": return new RegExp(`(?<![\\p{L}\\p{N}_])${pattern}(?![\\p{L}\\p{N}_])`, flags);
+    case "contains": return new RegExp(pattern, flags);
+    case "exact": return new RegExp(`^\\s*${pattern}\\s*$`, flags);
+    case "command": return new RegExp(`^${pattern}(?=\\s|$)`, flags);
     case "regex": return new RegExp(when.match, flags);
   }
 }
 
-export function allowed(t: Trigger, roles: string[]) {
-  const who = t.who ?? ["everyone"];
+export function allowed(trigger: Trigger, roles: string[]) {
+  const who = trigger.who ?? ["everyone"];
   // Der Streamer darf immer, Mods dürfen alles, was Subs/VIPs dürfen
-  return who.includes("everyone") || roles.includes("broadcaster") || who.some(w => roles.includes(w))
-    || (roles.includes("moderator") && who.some(w => w === "subscriber" || w === "vip"));
+  return who.includes("everyone") || roles.includes("broadcaster") || who.some(role => roles.includes(role))
+    || (roles.includes("moderator") && who.some(role => role === "subscriber" || role === "vip"));
 }
 
 // Startzeit jeder Aktion in ms. Aktionen laufen nacheinander: die nächste beginnt erst nach
@@ -52,11 +52,11 @@ export function allowed(t: Trigger, roles: string[]) {
 // (delay), spielt sie ab (duration) und lässt sie angehalten stehen (after).
 export function schedule(actions: FxAction[]): number[] {
   let next = 0; // frühester Start für die nächste Aktion in der Abfolge
-  let prevStart = 0;
-  return actions.map(a => {
-    const start = a.together ? prevStart : next;
-    next = Math.max(next, start + ((a.delay ?? 0) + (a.duration ?? 4) + (a.after ?? 0)) * 1000);
-    prevStart = start;
+  let previousStart = 0;
+  return actions.map(action => {
+    const start = action.together ? previousStart : next;
+    next = Math.max(next, start + ((action.delay ?? 0) + (action.duration ?? 4) + (action.after ?? 0)) * 1000);
+    previousStart = start;
     return start;
   });
 }
@@ -69,103 +69,119 @@ const WHEN_TYPES = ["word", "contains", "exact", "command", "regex"];
 export function compile(list: Trigger[]): { triggers: Loaded[]; errors: string[] } {
   const errors: string[] = [];
   const names = new Set<string>();
-  const triggers = list.flatMap(t => {
+  const triggers = list.flatMap(trigger => {
     try {
-      if (!t.name?.trim()) throw new Error("Name fehlt");
-      if (names.has(t.name)) throw new Error("Name doppelt vergeben");
-      names.add(t.name);
-      if (!WHEN_TYPES.includes(t.when?.type)) throw new Error(`when.type muss ${WHEN_TYPES.join(", ")} sein`);
-      if (!t.when.match) throw new Error("Suchtext (when.match) fehlt");
-      if (!Array.isArray(t.do) || t.do.length === 0) throw new Error("mindestens eine Aktion nötig");
-      t.do.forEach((a, i) => {
-        if (a.type !== "media" && a.type !== "text") throw new Error(`Aktion ${i + 1}: type muss media oder text sein`);
-        if (a.type === "media" && !a.image && !a.video && !a.sound) throw new Error(`Aktion ${i + 1}: Bild, Video oder Sound fehlt`);
-        if (a.type === "text" && !a.text) throw new Error(`Aktion ${i + 1}: Text fehlt`);
+      if (!trigger.name?.trim()) throw new Error("Name fehlt");
+      if (names.has(trigger.name)) throw new Error("Name doppelt vergeben");
+      names.add(trigger.name);
+      if (!WHEN_TYPES.includes(trigger.when?.type)) throw new Error(`when.type muss ${WHEN_TYPES.join(", ")} sein`);
+      if (!trigger.when.match) throw new Error("Suchtext (when.match) fehlt");
+      if (!Array.isArray(trigger.do) || trigger.do.length === 0) throw new Error("mindestens eine Aktion nötig");
+      trigger.do.forEach((action, index) => {
+        if (action.type !== "media" && action.type !== "text") throw new Error(`Aktion ${index + 1}: type muss media oder text sein`);
+        if (action.type === "media" && !action.image && !action.video && !action.sound) throw new Error(`Aktion ${index + 1}: Bild, Video oder Sound fehlt`);
+        if (action.type === "text" && !action.text) throw new Error(`Aktion ${index + 1}: Text fehlt`);
       });
-      return [{ ...t, regex: toRegex(t.when) }];
-    } catch (e) {
-      errors.push(`Trigger "${t.name || "?"}": ${(e as Error).message}`);
+      return [{ ...trigger, regex: toRegex(trigger.when) }];
+    } catch (error) {
+      errors.push(`Trigger "${trigger.name || "?"}": ${(error as Error).message}`);
       return [];
     }
   });
   return { triggers, errors };
 }
 
+const namesOf = (triggers: Loaded[]) => triggers.map(trigger => trigger.name).join(", ") || "none";
+
+// Regeln aus der Datei; wirft bei kaputtem JSON
+async function readTriggerFile(file: string): Promise<Trigger[]> {
+  const parsed = JSON.parse(await readFile(file, "utf8")) as { triggers?: Trigger[] };
+  return parsed.triggers ?? [];
+}
+
+// Über eine temporäre Datei, damit ein Absturz beim Schreiben nie eine halbe triggers.json hinterlässt
+async function writeTriggerFile(file: string, list: Trigger[]) {
+  const partial = `${file}.tmp`;
+  await writeFile(partial, JSON.stringify({ triggers: list }, null, 2) + "\n");
+  await rename(partial, file);
+}
+
+// Abklingzeiten für alle (name) und pro Zuschauer (name:login); ready merkt sich den Zeitpunkt, wenn es auslöst
+function createCooldowns() {
+  const lastFired = new Map<string, number>();
+  return function ready(trigger: Trigger, login: string, now: number) {
+    const userKey = `${trigger.name}:${login}`;
+    if (now - (lastFired.get(trigger.name) ?? 0) < (trigger.cooldown ?? 0) * 1000) return false;
+    if (now - (lastFired.get(userKey) ?? 0) < (trigger.userCooldown ?? 0) * 1000) return false;
+    lastFired.set(trigger.name, now);
+    lastFired.set(userKey, now);
+    return true;
+  };
+}
+
 // Trigger eines Streamers. folder: Profil-Ordner, fire: Effekt an die Overlays. stop() beendet das Nachladen.
 export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
   const file = join(folder, "triggers.json");
+  const ready = createCooldowns();
   let raw: Trigger[] = [];
   let triggers: Loaded[] = [];
-  let mtime = 0;
+  let modified = 0;
   let nextId = 1;
-  const lastFired = new Map<string, number>(); // "name" und "name:login" -> Zeitpunkt
 
   async function load() {
     const info = await stat(file).catch(() => null);
-    if (!info || info.mtimeMs === mtime) return;
-    mtime = info.mtimeMs;
+    if (!info || info.mtimeMs === modified) return;
+    modified = info.mtimeMs;
     try {
-      raw = JSON.parse(await readFile(file, "utf8")).triggers ?? [];
+      raw = await readTriggerFile(file);
       // Fehlerhafte Regeln überspringen, damit eine Tippfehler-Regel nicht alle anderen abschaltet
       const result = compile(raw);
       triggers = result.triggers;
-      result.errors.forEach(e => console.error(e));
-      console.log(`Triggers loaded: ${triggers.map(t => t.name).join(", ") || "none"}`);
-    } catch (e) {
-      console.error(`${file} is not valid JSON, keeping the previous triggers: ${(e as Error).message}`);
+      result.errors.forEach(error => console.error(error));
+      console.log(`Triggers loaded: ${namesOf(triggers)}`);
+    } catch (error) {
+      console.error(`${file} is not valid JSON, keeping the previous triggers: ${(error as Error).message}`);
     }
   }
   const reload = () => { load().catch((error: unknown) => console.error("Loading triggers failed:", error)); };
   reload();
   const reloadTimer = setInterval(reload, 2000);
 
-  function run(t: Trigger, user: string, message: string) {
-    const starts = schedule(t.do);
-    t.do.forEach((action, i) => setTimeout(() => fire({ id: nextId++, zone: action.zone ?? "main", action, user, message }), starts[i]));
+  function run(trigger: Trigger, user: string, message: string) {
+    const starts = schedule(trigger.do);
+    trigger.do.forEach((action, index) => setTimeout(() => fire({ id: nextId++, zone: action.zone ?? "main", action, user, message }), starts[index]));
   }
 
   return {
-    list: () => triggers.map(t => ({ name: t.name, enabled: t.enabled !== false })),
-
+    list: () => triggers.map(trigger => ({ name: trigger.name, enabled: trigger.enabled !== false })),
     // Regeln so, wie sie in der Datei stehen (für den Editor im Browser)
     config: () => ({ triggers: raw }),
-
-    // Vom Editor: erst prüfen, nur fehlerfreie Listen schreiben. Über eine temporäre Datei,
-    // damit ein Absturz beim Schreiben nie eine halbe triggers.json hinterlässt.
+    // Vom Editor: erst prüfen, nur fehlerfreie Listen schreiben
     async save(list: Trigger[]) {
       const result = compile(list);
       if (result.errors.length) return result.errors;
-      const tmp = `${file}.tmp`;
-      await writeFile(tmp, JSON.stringify({ triggers: list }, null, 2) + "\n");
-      await rename(tmp, file);
+      await writeTriggerFile(file, list);
       raw = list;
       triggers = result.triggers;
-      mtime = (await stat(file)).mtimeMs;
-      console.log(`Triggers saved: ${triggers.map(t => t.name).join(", ") || "none"}`);
+      modified = (await stat(file)).mtimeMs;
+      console.log(`Triggers saved: ${namesOf(triggers)}`);
       return [];
     },
-
     handle(line: ChatLine) {
       const now = Date.now();
-      for (const t of triggers) {
-        if (t.enabled === false || !t.regex.test(line.text) || !allowed(t, line.roles)) continue;
-        const userKey = `${t.name}:${line.login}`;
-        if (now - (lastFired.get(t.name) ?? 0) < (t.cooldown ?? 0) * 1000) continue;
-        if (now - (lastFired.get(userKey) ?? 0) < (t.userCooldown ?? 0) * 1000) continue;
-        lastFired.set(t.name, now);
-        lastFired.set(userKey, now);
-        console.log(`Trigger ${t.name} fired by ${line.user}`);
-        run(t, line.user, line.text);
+      for (const trigger of triggers) {
+        if (trigger.enabled === false || !trigger.regex.test(line.text) || !allowed(trigger, line.roles)) continue;
+        if (!ready(trigger, line.login, now)) continue;
+        console.log(`Trigger ${trigger.name} fired by ${line.user}`);
+        run(trigger, line.user, line.text);
       }
     },
-
-    // Zum Testen von der Übersicht aus, ohne Abklingzeit
+    // Zum Testen aus dem Dashboard, ohne Abklingzeit
     fire(name: string) {
-      const t = triggers.find(t => t.name === name);
-      if (t) run(t, "Test", t.when.match);
-      return Boolean(t);
+      const trigger = triggers.find(candidate => candidate.name === name);
+      if (trigger) run(trigger, "Test", trigger.when.match);
+      return Boolean(trigger);
     },
-
     stop: () => clearInterval(reloadTimer),
   };
 }

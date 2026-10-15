@@ -78,7 +78,7 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 | Checks with coverage limits | `npm test` | checks; lines 90 %, branches 90 %, functions 95 % |
 | Build | `vite build` | the overlays still build |
 
-Older ESLint findings are frozen in `eslint-suppressions.json`: new code gets no exception, and a fixed finding is removed with `npx eslint . --prune-suppressions`. Coverage limits only go up. A new rule names its check in the same commit; a rule without a check is a point of the review checklist.
+`eslint-suppressions.json` is empty: every older finding is fixed and new code gets no exception. Coverage limits only go up. A new rule names its check in the same commit; a rule without a check is a point of the review checklist.
 
 ## Review checklist
 

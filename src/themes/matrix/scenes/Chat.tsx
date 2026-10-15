@@ -2,8 +2,8 @@
 // Prompt, Badges, Grössen, Ausblenden und Animationen kommen aus den Einstellungen. Parameter: ?demo
 import type { ChatMessage } from "../../../core/types.ts";
 import { useChat } from "../../../core/hooks/useChat.ts";
-import { useMatrixDecode } from "../decode.ts";
-import { useMatrix } from "../values.ts";
+import { useMatrixDecode } from "../useMatrixDecode.ts";
+import { useMatrix } from "../useMatrix.ts";
 
 export default function Chat() {
   const values = useMatrix();

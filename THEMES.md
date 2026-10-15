@@ -13,7 +13,7 @@ Themes sind Code im Repo, kein Upload. Ein neues Theme ist ein eigener Ordner un
 src/themes/<id>/
   settings.ts        Schema: jedes Feld, das der Streamer einstellen kann, mit Standardwert
   settings.check.ts  Check: gültige Standardwerte, kein unbenutzter Schlüssel
-  values.ts          useXyz(): die Werte aus dem Kontext mit ihrem Typ
+  use<Id>.ts         use<Id>(): die Werte aus dem Kontext mit ihrem Typ (Hooks heissen use*.ts)
   index.tsx          Szenen des Themes (React.lazy) und Import von theme.css
   theme.css          Aussehen, alles unter .theme-<id>
   scenes/*.tsx       die Szenen (starting, brb, ending, alerts, chat, cam, music, fx), beliebig viele davon
@@ -27,7 +27,7 @@ src/themes/<id>/
    `flag`, `number`, `choice`, `font`, `sound`) jedes Feld beschreiben: Schlüssel, Label, Gruppe, Standardwert, bei
    Zahlen Grenzen und Einheit (`px`, `ms`, `s`, `%`). Die Gruppe wird ein Abschnitt im Formular.
    `ValuesOf<typeof FIELDS>` ergibt den Typ der Werte. `id` und `name` im exportierten `ThemeSchema` setzen.
-3. **Werte lesen**: in `values.ts` `useThemeValues()` aus `src/core/hooks/useSettings.ts` auf den eigenen Typ casten.
+3. **Werte lesen**: in `use<Id>.ts` (z.B. `useStarter.ts`) `useThemeValues()` aus `src/core/hooks/useSettings.ts` auf den eigenen Typ casten.
    main.tsx löst die Werte vorher gegen das Schema auf, darum ist jeder Schlüssel da und gültig.
 4. **Szenen** in `scenes/`: nur die Kern-Hooks aus `src/core/hooks/` nutzen (`useAlerts`, `useChat`, `useMusic`,
    `useFx`, `useTerminal`, `useDecode`, `useNow`), keine eigenen Netzwerkzugriffe. Texte mit Platzhaltern füllt

@@ -6,7 +6,7 @@ import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { resolveSettings } from "../core/settings.ts";
 import { bannerOptions, drawOfflineBanner, drawProfileBanner } from "../themes/matrix/banners.ts";
 import { matrixSettings, type MatrixValues } from "../themes/matrix/settings.ts";
-import { drawStinger, FPS, H, stingerOptions, W } from "../themes/matrix/stinger.ts";
+import { drawStinger, FPS, HEIGHT, stingerOptions, WIDTH } from "../themes/matrix/stinger.ts";
 import { getJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
 import { TEXTS } from "./texts.de.ts";
@@ -34,7 +34,7 @@ function clipsFor(values: MatrixValues, login: string): Clip[] {
   const stinger = stingerOptions(values);
   const banner = bannerOptions(values, login);
   return [
-    { name: "stinger", feature: "stinger", width: W, height: H, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawStinger(context, time, stinger) },
+    { name: "stinger", feature: "stinger", width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawStinger(context, time, stinger) },
     { name: "profile", feature: "banners", width: 1200, height: 480, fps: banner.profileFps, duration: banner.loop, cut: null, draw: (context, time) => drawProfileBanner(context, time, banner) },
     { name: "offline", feature: "banners", width: 1920, height: 1080, fps: banner.offlineFps, duration: banner.loop, cut: null, draw: (context, time) => drawOfflineBanner(context, time, banner) },
   ];

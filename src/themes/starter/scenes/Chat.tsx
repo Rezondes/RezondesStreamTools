@@ -2,7 +2,7 @@
 // Nutzt nur den Kern-Hook useChat und die Werte des Themes.
 import type { ChatMessage } from "../../../core/types.ts";
 import { useChat } from "../../../core/hooks/useChat.ts";
-import { useStarter } from "../values.ts";
+import { useStarter } from "../useStarter.ts";
 
 export default function Chat() {
   const values = useStarter();

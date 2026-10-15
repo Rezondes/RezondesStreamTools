@@ -9,8 +9,8 @@ import { fillTemplate, textBar } from "../../../core/template.ts";
 import { parseLine } from "../../../core/typing.ts";
 import { useNow } from "../../../core/hooks/useNow.ts";
 import { useTerminal } from "../../../core/hooks/useTerminal.ts";
-import { useMatrixDecode } from "../decode.ts";
-import { placeholders, useMatrix } from "../values.ts";
+import { useMatrixDecode } from "../useMatrixDecode.ts";
+import { placeholders, useMatrix } from "../useMatrix.ts";
 
 type Kind = "starting" | "brb" | "ending";
 

@@ -63,14 +63,14 @@ export function bannerOptions(values: MatrixValues, login: string): BannerOption
 }
 
 // Kurze Zeitfenster innerhalb der Schleife (Anteile von loop), in denen etwas glitcht
-const within = (t: number, loop: number, windows: [number, number][]) => windows.some(([from, to]) => t > from * loop && t < to * loop);
+const within = (time: number, loop: number, windows: [number, number][]) => windows.some(([from, to]) => time > from * loop && time < to * loop);
 
 // Matrix-Regen, der nach loop Sekunden wieder genau gleich aussieht:
 // jede Spalte läuft in dieser Zeit eine ganze Zahl von Durchgängen
-function rain(context: CanvasRenderingContext2D, t: number, width: number, height: number, size: number, alpha: number, options: BannerOptions) {
+function rain(context: CanvasRenderingContext2D, time: number, width: number, height: number, size: number, alpha: number, options: BannerOptions) {
   const columns = Math.ceil(width / size);
   const rows = Math.ceil(height / size);
-  const tick = Math.floor(t * 8); // 8 Zeichenwechsel pro Sekunde
+  const tick = Math.floor(time * 8); // 8 Zeichenwechsel pro Sekunde
   context.font = `${size}px "${options.font}", monospace`;
   context.textBaseline = "top";
   for (let column = 0; column < columns; column++) {
@@ -78,7 +78,7 @@ function rain(context: CanvasRenderingContext2D, t: number, width: number, heigh
     const length = 8 + ((hash(column * 3 + 1) * 18) | 0);
     const span = rows + length;
     const cycles = 1 + ((hash(column * 7 + 2) * 2) | 0);
-    const head = Math.floor((hash(column * 11 + 3) * span + (t / options.loop) * cycles * span) % span);
+    const head = Math.floor((hash(column * 11 + 3) * span + (time / options.loop) * cycles * span) % span);
     for (let tail = 0; tail < length; tail++) {
       const row = head - tail;
       if (row < 0 || row >= rows) continue;
@@ -109,14 +109,14 @@ function text(context: CanvasRenderingContext2D, options: BannerOptions, content
 }
 
 // ASCII-Logo mit gelegentlichem Zeilen-Glitch (zwei kurze Zuckungen pro Schleife)
-function logo(context: CanvasRenderingContext2D, t: number, centerX: number, y: number, size: number, options: BannerOptions) {
+function logo(context: CanvasRenderingContext2D, time: number, centerX: number, y: number, size: number, options: BannerOptions) {
   const lines = options.logo.split("\n");
   context.font = `${size}px "${options.font}", monospace`;
   const charWidth = context.measureText("M").width;
   const left = centerX - (Math.max(...lines.map(line => line.length)) * charWidth) / 2;
-  const glitching = within(t, options.loop, [[0.3, 0.33], [0.775, 0.795]]);
+  const glitching = within(time, options.loop, [[0.3, 0.33], [0.775, 0.795]]);
   lines.forEach((line, row) => {
-    const frame = Math.floor(t * 30);
+    const frame = Math.floor(time * 30);
     const shift = glitching && hash(row + frame) < 0.5 ? (hash(row * 5 + frame) - 0.5) * size * 1.4 : 0;
     text(context, options, line, left + shift, y + row * size * 1.05, size, options.accent, size * 0.5);
   });
@@ -146,42 +146,42 @@ function frame(context: CanvasRenderingContext2D, x: number, y: number, width: n
   context.shadowBlur = 0;
 }
 
-const blink = (t: number) => Math.floor(t * 2) % 2 === 0;
+const blink = (time: number) => Math.floor(time * 2) % 2 === 0;
 
 // Profilbanner 1200x480. Unten links legt Twitch je nach Ansicht Profilbild und Name darüber,
 // darum sitzt alles Wichtige mittig und oben.
-export function drawProfileBanner(context: CanvasRenderingContext2D, t: number, options: BannerOptions) {
+export function drawProfileBanner(context: CanvasRenderingContext2D, time: number, options: BannerOptions) {
   const width = 1200, height = 480;
   context.fillStyle = options.background;
   context.fillRect(0, 0, width, height);
-  rain(context, t, width, height, 16, 0.55, options);
+  rain(context, time, width, height, 16, 0.55, options);
   frame(context, 170, 70, 860, 300, 28, options);
-  const placed = logo(context, t, width / 2, 110, 26, options);
-  text(context, options, options.profileText + (blink(t) ? options.cursor : ""), placed.left, placed.bottom + 30, 26, options.accent, 8);
+  const placed = logo(context, time, width / 2, 110, 26, options);
+  text(context, options, options.profileText + (blink(time) ? options.cursor : ""), placed.left, placed.bottom + 30, 26, options.accent, 8);
   text(context, options, options.profileSub, placed.left, placed.bottom + 72, 20, options.dim);
   scanlines(context, width, height, options);
 }
 
 // Offline-Banner 1920x1080, im Stil der Starting-/Ending-Szenen
-export function drawOfflineBanner(context: CanvasRenderingContext2D, t: number, options: BannerOptions) {
+export function drawOfflineBanner(context: CanvasRenderingContext2D, time: number, options: BannerOptions) {
   const width = 1920, height = 1080;
   context.fillStyle = options.background;
   context.fillRect(0, 0, width, height);
-  rain(context, t, width, height, 22, 0.4, options);
+  rain(context, time, width, height, 22, 0.4, options);
 
   const boxX = 260, boxY = 150, boxWidth = 1400, boxHeight = 780;
   frame(context, boxX, boxY, boxWidth, boxHeight, 40, options);
   text(context, options, options.offlineHeader, boxX + 48, boxY + 26, 24, options.dim);
-  if (blink(t)) text(context, options, options.offlineStatus, boxX + boxWidth - 200, boxY + 26, 24, options.accent, 6);
+  if (blink(time)) text(context, options, options.offlineStatus, boxX + boxWidth - 200, boxY + 26, 24, options.accent, 6);
   context.fillStyle = options.line;
   context.fillRect(boxX + 48, boxY + 70, boxWidth - 96, 2);
 
-  const placed = logo(context, t, width / 2, boxY + 120, 32, options);
+  const placed = logo(context, time, width / 2, boxY + 120, 32, options);
   // Titel mit kurzem Farbversatz-Glitch
   context.font = `110px "${options.font}", monospace`;
   const titleX = width / 2 - context.measureText(options.offlineTitle).width / 2;
   const titleY = placed.bottom + 50;
-  if (within(t, options.loop, [[0.5, 0.53], [0.9, 0.915]])) {
+  if (within(time, options.loop, [[0.5, 0.53], [0.9, 0.915]])) {
     text(context, options, options.offlineTitle, titleX - 6, titleY, 110, options.highlight);
     text(context, options, options.offlineTitle, titleX + 6, titleY, 110, options.line);
   }
@@ -197,7 +197,7 @@ export function drawOfflineBanner(context: CanvasRenderingContext2D, t: number, 
   lines.forEach((line, index) => text(context, options, `${options.prompt} ${line}`, boxX + 48, boxY + boxHeight - 160 + index * 40, 26, index === lines.length - 1 ? options.accent : options.dim));
   context.font = `26px "${options.font}", monospace`;
   const lastWidth = context.measureText(`${options.prompt} ${lines.at(-1) ?? ""} `).width;
-  if (blink(t) && lines.length) text(context, options, options.cursor, boxX + 48 + lastWidth, boxY + boxHeight - 160 + (lines.length - 1) * 40, 26, options.accent);
+  if (blink(time) && lines.length) text(context, options, options.cursor, boxX + 48 + lastWidth, boxY + boxHeight - 160 + (lines.length - 1) * 40, 26, options.accent);
 
   scanlines(context, width, height, options);
 }

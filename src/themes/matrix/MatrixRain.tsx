@@ -3,7 +3,7 @@
 // kommen aus den Einstellungen.
 import { useEffect, useRef } from "react";
 import { glyph } from "../../core/glyphs.ts";
-import { useMatrix } from "./values.ts";
+import { useMatrix } from "./useMatrix.ts";
 
 type Drop = { y: number; speed: number; length: number; cells: string[] };
 

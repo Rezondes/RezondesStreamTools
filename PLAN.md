@@ -514,7 +514,7 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 13: Aufräumen
+## Package 13: Aufräumen (erledigt bis auf AC4)
 
 **Ziel:** Altlasten aus der Einzel-Version sind entfernt, ESLint-Ausnahmen abgebaut, Coverage-Grenzen angehoben.
 
@@ -525,10 +525,14 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: `eslint-suppressions.json` ist leer oder entfernt.
-- [ ] AC2: Coverage-Grenzen mindestens 85 % Zeilen, 90 % Zweige, 90 % Funktionen.
-- [ ] AC3: `WITHOUT_CHECK` enthält nur noch Netzwerk- und Einstiegs-Module.
+- [x] AC1: `eslint-suppressions.json` ist leer (`{}`; die Datei bleibt, weil `eslint.config.js` sie nennt).
+- [x] AC2: Coverage-Grenzen mindestens 85 % Zeilen, 90 % Zweige, 90 % Funktionen (gelten schon strenger: 90/90/95).
+- [x] AC3: `WITHOUT_CHECK` enthält nur noch Netzwerk-, Browser-Ein/Ausgabe- und Einstiegs-Module; Hooks (`use*.ts`) und reine Typ-Module erkennt die Regel selbst.
 - [ ] AC4: `config/` und der `CONFIG`-Mount sind entfernt, README ohne Hinweise auf die Einzel-Version.
+  **Bewusst offen:** Im echten Docker-Volume liegt noch die Einzel-Version (`tokens.json`, `spotify.json` im Wurzelordner,
+  kein `streamers/`). Die Übernahme läuft erst beim ersten Start der neuen Version und liest dabei `config/triggers.json`
+  und `config/media/`. Erst danach `config/`, den Mount in `docker-compose.yml`, `CONFIG` in `server/index.ts` und den
+  README-Abschnitt "Umstieg vom Einzel-Server" entfernen.
 
 ### Tests (TDD)
 

@@ -1,12 +1,12 @@
-// Stinger-Übergang für OBS. Reine Funktion der Zeit: gleiches t ergibt immer dasselbe Bild,
+// Stinger-Übergang für OBS. Reine Funktion der Zeit: gleiche Zeit (time) ergibt immer dasselbe Bild,
 // darum lässt er sich Frame für Frame exakt rendern (siehe scenes/Stinger.tsx und vite.config.ts).
 // Ablauf: Matrix-Spalten fallen herein und decken alles ab, Logo entschlüsselt sich,
 // am Übergangspunkt (cut) blitzt die Einschaltlinie, dann fallen die Spalten unten heraus.
 // Länge, Übergangspunkt, Texte, Farben und Schrift kommen über stingerOptions aus den Einstellungen.
 import type { MatrixValues } from "./settings.ts";
 
-export const W = 1920;
-export const H = 1080;
+export const WIDTH = 1920;
+export const HEIGHT = 1080;
 export const FPS = 60;
 
 export type StingerOptions = {
@@ -59,21 +59,21 @@ export function glyphAt(seed: number, glyphs: string) {
   return list[(hash(seed) * list.length) | 0] ?? "";
 }
 
-export function drawStinger(context: CanvasRenderingContext2D, t: number, options: StingerOptions) {
+export function drawStinger(context: CanvasRenderingContext2D, time: number, options: StingerOptions) {
   const { cut, duration, fall, column } = options;
-  const columns = Math.ceil(W / column);
-  const rows = Math.ceil(H / column);
-  context.clearRect(0, 0, W, H);
+  const columns = Math.ceil(WIDTH / column);
+  const rows = Math.ceil(HEIGHT / column);
+  context.clearRect(0, 0, WIDTH, HEIGHT);
   context.textBaseline = "top";
   context.font = `${column}px "${options.font}", monospace`;
-  const tick = Math.floor(t * 18); // Zeichen flackern 18-mal pro Sekunde
+  const tick = Math.floor(time * 18); // Zeichen flackern 18-mal pro Sekunde
 
   for (let index = 0; index < columns; index++) {
     // Spalten starten versetzt; am cut sind alle unten angekommen, danach fallen sie heraus
     const inStart = hash(index) * Math.max(0, cut - fall - 0.02);
     const outStart = cut + 0.08 + hash(index + 5000) * Math.max(0, duration - cut - fall - 0.1);
-    const bottom = easeIn(clamp01((t - inStart) / fall)) * H;
-    const top = easeIn(clamp01((t - outStart) / fall)) * H;
+    const bottom = easeIn(clamp01((time - inStart) / fall)) * HEIGHT;
+    const top = easeIn(clamp01((time - outStart) / fall)) * HEIGHT;
     if (bottom <= top) continue;
 
     const x = index * column;
@@ -81,7 +81,7 @@ export function drawStinger(context: CanvasRenderingContext2D, t: number, option
     context.fillRect(x, top, column, bottom - top);
 
     // Die führende Kante leuchtet: beim Hereinfallen unten, beim Herausfallen oben
-    const edge = bottom < H ? bottom : top;
+    const edge = bottom < HEIGHT ? bottom : top;
     for (let row = 0; row < rows; row++) {
       const y = row * column;
       if (y + column <= top || y >= bottom) continue;
@@ -95,16 +95,16 @@ export function drawStinger(context: CanvasRenderingContext2D, t: number, option
     context.globalAlpha = 1;
   }
 
-  if (options.showLogo) drawLogo(context, t, options);
-  drawFlash(context, t, options);
+  if (options.showLogo) drawLogo(context, time, options);
+  drawFlash(context, time, options);
 }
 
-function drawLogo(context: CanvasRenderingContext2D, t: number, options: StingerOptions) {
+function drawLogo(context: CanvasRenderingContext2D, time: number, options: StingerOptions) {
   const start = options.cut - 0.3;
   const end = options.cut + 0.45;
-  if (t < start || t > end) return;
-  const reveal = clamp01((t - start) / 0.28); // Anteil entschlüsselter Zeichen
-  const alpha = clamp01((end - t) / 0.15);
+  if (time < start || time > end) return;
+  const reveal = clamp01((time - start) / 0.28); // Anteil entschlüsselter Zeichen
+  const alpha = clamp01((end - time) / 0.15);
 
   const lines = options.logo.split("\n");
   const size = 44;
@@ -112,21 +112,21 @@ function drawLogo(context: CanvasRenderingContext2D, t: number, options: Stinger
   const charWidth = context.measureText("M").width;
   const lineHeight = size * 1.05;
   const width = Math.max(...lines.map(line => line.length)) * charWidth;
-  const left = (W - width) / 2;
-  const topLine = H / 2 - (lines.length * lineHeight) / 2 - 20;
-  const tick = Math.floor(t * 30);
+  const left = (WIDTH - width) / 2;
+  const topLine = HEIGHT / 2 - (lines.length * lineHeight) / 2 - 20;
+  const tick = Math.floor(time * 30);
 
   // Fenster hinter dem Logo: zieht sich erst als Linie auf, dann in die Höhe
   const padding = 56;
-  const boxWidth = (width + padding * 2) * clamp01((t - start) / 0.08);
-  const boxHeight = (lines.length * lineHeight + 110) * Math.max(0.02, clamp01((t - start - 0.08) / 0.1));
+  const boxWidth = (width + padding * 2) * clamp01((time - start) / 0.08);
+  const boxHeight = (lines.length * lineHeight + 110) * Math.max(0.02, clamp01((time - start - 0.08) / 0.1));
   const boxTop = topLine - 40 + (lines.length * lineHeight + 110 - boxHeight) / 2;
   context.globalAlpha = alpha;
   context.fillStyle = options.background;
-  context.fillRect((W - boxWidth) / 2, boxTop, boxWidth, boxHeight);
+  context.fillRect((WIDTH - boxWidth) / 2, boxTop, boxWidth, boxHeight);
   context.strokeStyle = options.accent;
   context.lineWidth = 2;
-  context.strokeRect((W - boxWidth) / 2, boxTop, boxWidth, boxHeight);
+  context.strokeRect((WIDTH - boxWidth) / 2, boxTop, boxWidth, boxHeight);
   if (boxHeight < lines.length * lineHeight) { context.globalAlpha = 1; return; }
 
   context.shadowColor = options.accent;
@@ -145,22 +145,22 @@ function drawLogo(context: CanvasRenderingContext2D, t: number, options: Stinger
   context.shadowBlur = 0;
   context.font = `28px "${options.font}", monospace`;
   context.fillStyle = options.dim;
-  const typed = options.text.slice(0, Math.floor(clamp01((t - start - 0.15) / 0.25) * options.text.length));
+  const typed = options.text.slice(0, Math.floor(clamp01((time - start - 0.15) / 0.25) * options.text.length));
   context.fillText(typed + (tick % 2 ? options.cursor : ""), left, topLine + lines.length * lineHeight + 24);
   context.globalAlpha = 1;
 }
 
 // Die Einschaltlinie aus dem Portfolio genau am Übergangspunkt
-function drawFlash(context: CanvasRenderingContext2D, t: number, options: StingerOptions) {
-  const progress = (t - (options.cut - 0.06)) / 0.2;
+function drawFlash(context: CanvasRenderingContext2D, time: number, options: StingerOptions) {
+  const progress = (time - (options.cut - 0.06)) / 0.2;
   if (progress < 0 || progress > 1) return;
-  const lineWidth = W * clamp01(progress / 0.4);
+  const lineWidth = WIDTH * clamp01(progress / 0.4);
   const lineHeight = 4 + 60 * clamp01((progress - 0.3) / 0.7);
   context.globalAlpha = 1 - clamp01((progress - 0.4) / 0.6);
   context.shadowColor = options.accent;
   context.shadowBlur = 40;
   context.fillStyle = options.flash;
-  context.fillRect((W - lineWidth) / 2, H / 2 - lineHeight / 2, lineWidth, lineHeight);
+  context.fillRect((WIDTH - lineWidth) / 2, HEIGHT / 2 - lineHeight / 2, lineWidth, lineHeight);
   context.shadowBlur = 0;
   context.globalAlpha = 1;
 }

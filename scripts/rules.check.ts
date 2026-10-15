@@ -12,30 +12,24 @@ const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclud
 
 const TEXT = /\.(ts|tsx|js|css|html|json|md|yml|svg|example)$|Dockerfile$|Caddyfile$/;
 const SOURCE = /^(src|server|scripts)\/.*\.(ts|tsx)$/;
-// React-Hooks (src/core/hooks) brauchen einen Browser; ihre Logik steckt in geprüften reinen Modulen
-const LOGIC = /^(src|server)\/(?!core\/hooks\/).*(?<!\.check)\.ts$/;
+const LOGIC = /^(src|server)\/.*(?<!\.check)\.ts$/;
+// React-Hooks (Dateien use*.ts) brauchen einen Browser; ihre Logik steckt in geprüften reinen Modulen
+const HOOK = /\/use[A-Z][^/]*\.ts$/;
+// Module nur mit Typen (kein export const/function/class) haben nichts zu prüfen
+const typesOnly = (file: string) => !/^export (const|let|function|async function|class|default)/m.test(readFileSync(file, "utf8"));
 
-// Logikmodule ohne Check, mit Grund. Neue Einträge nur mit Begründung (ponytail: Liste schrumpft beim Umbau).
+// Module ohne Check, mit Grund: nur Netzwerk, Ein- und Ausgabe im Browser und Einstiegspunkte.
+// Ihre Logik steckt in geprüften reinen Modulen. Neue Einträge nur mit Begründung.
 const WITHOUT_CHECK: Record<string, string> = {
   "src/core/connection.ts": "network client (IRC, SSE); translation is checked in ircEvents.ts",
-  "src/core/demo.ts": "random fake events for ?demo",
-  "src/core/glyphs.ts": "random character pick",
-  "src/core/params.ts": "reads the page URL",
-  "src/core/sound.ts": "Web Audio output",
-  "src/core/types.ts": "types only",
-  "src/core/theme.ts": "scene list, recommended sizes and types",
   "src/core/emotes.ts": "network loader; splitting is checked in irc.ts",
-  "src/themes/matrix/banners.ts": "canvas renderer; checked manually on #/stinger",
-  "src/themes/matrix/values.ts": "typed view of the theme context; typing comes from settings.ts",
-  "src/themes/matrix/decode.ts": "React hook over core useDecode with a timing table",
+  "src/core/demo.ts": "timer-driven fake event source for ?demo, stands in for the network",
+  "src/core/params.ts": "reads the page URL once at load (browser entry)",
+  "src/core/sound.ts": "Web Audio output",
   "src/themes/matrix/tones.ts": "Web Audio output",
-  "src/themes/starter/values.ts": "typed view of the theme context; typing comes from settings.ts",
-  "src/themes/schemaAudit.ts": "check helper, runs in every theme's settings.check.ts",
-  "src/core/errorCodes.ts": "list of codes, checked in src/dashboard/texts.de.check.ts",
   "src/dashboard/api.ts": "network client of the dashboard",
   "server/index.ts": "HTTP entry point",
   "server/chat.ts": "network client; parsing is checked in irc.ts",
-  "server/http.ts": "HTTP and file IO helpers",
   "server/streamer.ts": "runtime wiring of the checked clients (twitch, spotify, triggers, chat) with timers and SSE",
 };
 
@@ -72,8 +66,8 @@ for (const file of files.filter(file => SOURCE.test(file))) {
   if (folders.some(folder => ["dist", "render", "data", "node_modules"].includes(folder))) failures.push(`${file}: git-ignored folder name (rule 6)`);
 }
 
-// Checks: jedes Logikmodul hat <name>.check.ts daneben, ausser es steht mit Grund in WITHOUT_CHECK
-for (const file of files.filter(file => LOGIC.test(file) && !file.endsWith(".d.ts"))) {
+// Checks: jedes Logikmodul hat <name>.check.ts daneben, ausser Hooks, reine Typen oder mit Grund in WITHOUT_CHECK
+for (const file of files.filter(file => LOGIC.test(file) && !HOOK.test(file) && !file.endsWith(".d.ts") && !typesOnly(file))) {
   if (!existsSync(file.replace(/\.ts$/, ".check.ts")) && !(file in WITHOUT_CHECK)) failures.push(`${file}: no ${file.replace(/^.*\//, "").replace(/\.ts$/, ".check.ts")} (checks)`);
 }
 for (const listed of Object.keys(WITHOUT_CHECK)) {

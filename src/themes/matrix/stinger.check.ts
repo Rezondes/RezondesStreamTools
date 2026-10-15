@@ -1,7 +1,7 @@
 // Check für stinger.ts: der Übergang deckt am Übergangspunkt alles ab und ist am Anfang und Ende leer.
 // Ein Mock-Canvas zählt die gefüllten Rechtecke. Läuft mit npm test.
 import assert from "node:assert/strict";
-import { H, W, drawStinger, type StingerOptions } from "./stinger.ts";
+import { HEIGHT, WIDTH, drawStinger, type StingerOptions } from "./stinger.ts";
 
 function recorder() {
   const rects: number[][] = [];
@@ -20,8 +20,8 @@ const options: StingerOptions = {
   duration: 2, cut: 1, fall: 0.42, column: 24, text: "> TEST", cursor: "_", showLogo: true, logo: "AB\nCD", glyphs: "01", font: "VT323",
   background: "#000000", accent: "#39ff14", dim: "#1e9e0f", flash: "#d8ffcc",
 };
-const columns = W / options.column;
-const fullColumns = (rects: number[][]) => rects.filter(([, y, width, height]) => y === 0 && width === options.column && height === H).length;
+const columns = WIDTH / options.column;
+const fullColumns = (rects: number[][]) => rects.filter(([, y, width, height]) => y === 0 && width === options.column && height === HEIGHT).length;
 
 // Am Übergangspunkt ist jede Spalte über die ganze Höhe schwarz
 const atCut = recorder();

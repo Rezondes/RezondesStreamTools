@@ -6,7 +6,7 @@ import { useAlerts } from "../../../core/hooks/useAlerts.ts";
 import { playSound } from "../../../core/sound.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import type { StarterValues } from "../settings.ts";
-import { useStarter } from "../values.ts";
+import { useStarter } from "../useStarter.ts";
 
 const LINES = {
   follow: "followLine",

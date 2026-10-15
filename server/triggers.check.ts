@@ -18,13 +18,13 @@ assert.ok(!toRegex({ type: "word", match: "LIZARD", caseSensitive: true }).test(
 assert.ok(toRegex({ type: "contains", match: "a+b" }).test("xa+by"));
 assert.ok(toRegex({ type: "regex", match: "^l+i+z+" }).test("llllizzz"));
 
-const t = (who?: string[]): Trigger => ({ name: "x", when: { type: "word", match: "x" }, who, do: [] });
-assert.ok(allowed(t(), []));
-assert.ok(!allowed(t(["subscriber"]), []));
-assert.ok(allowed(t(["subscriber"]), ["subscriber"]));
-assert.ok(allowed(t(["subscriber"]), ["moderator"]));
-assert.ok(!allowed(t(["moderator"]), ["vip"]));
-assert.ok(allowed(t(["moderator"]), ["broadcaster"]));
+const withWho = (who?: string[]): Trigger => ({ name: "x", when: { type: "word", match: "x" }, who, do: [] });
+assert.ok(allowed(withWho(), []));
+assert.ok(!allowed(withWho(["subscriber"]), []));
+assert.ok(allowed(withWho(["subscriber"]), ["subscriber"]));
+assert.ok(allowed(withWho(["subscriber"]), ["moderator"]));
+assert.ok(!allowed(withWho(["moderator"]), ["vip"]));
+assert.ok(allowed(withWho(["moderator"]), ["broadcaster"]));
 
 // Ablauf: Aktion erscheint zu Beginn von delay; die nächste kommt nach delay + duration + after
 assert.deepEqual(schedule([{ type: "media" }]), [0]);

@@ -2,7 +2,7 @@
 // (erst Kopfzeile, dann Name, dann Zeile). Das Tempo aus den Einstellungen teilt alle Zeiten, die Zufallszeichen
 // kommen aus dem Zeichensatz des Themes.
 import { useDecode } from "../../core/hooks/useDecode.ts";
-import { useMatrix } from "./values.ts";
+import { useMatrix } from "./useMatrix.ts";
 
 const DECODE = {
   screenTitle: [2400, 45],

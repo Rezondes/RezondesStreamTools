@@ -47,7 +47,7 @@ export function sameOrigin(req: IncomingMessage) {
 export async function readBody(req: IncomingMessage, limit: number) {
   const chunks: Buffer[] = [];
   let size = 0;
-  for await (const chunk of req) {
+  for await (const chunk of req as AsyncIterable<Buffer>) {
     size += chunk.length;
     if (size > limit) throw Object.assign(new Error("zu gross"), { status: 413 });
     chunks.push(chunk);

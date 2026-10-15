@@ -2,8 +2,8 @@
 // Label, REC-Anzeige, Uhr und Ecken kommen aus den Einstellungen.
 import { fillTemplate } from "../../../core/template.ts";
 import { useNow } from "../../../core/hooks/useNow.ts";
-import { useMatrixDecode } from "../decode.ts";
-import { placeholders, useMatrix } from "../values.ts";
+import { useMatrixDecode } from "../useMatrixDecode.ts";
+import { placeholders, useMatrix } from "../useMatrix.ts";
 
 export default function Cam() {
   const values = useMatrix();

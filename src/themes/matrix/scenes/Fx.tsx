@@ -12,7 +12,7 @@ import { playSound } from "../../../core/sound.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import { fxLifetime } from "../../../core/overlayTiming.ts";
 import { useFx, useFxPhase, type ShownFx } from "../../../core/hooks/useFx.ts";
-import { useMatrix } from "../values.ts";
+import { useMatrix } from "../useMatrix.ts";
 
 const ZONE = params.get("zone") ?? "main";
 
