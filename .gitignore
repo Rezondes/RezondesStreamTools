@@ -1,7 +1,7 @@
 node_modules
 dist
 
-# Gerenderte Videos, GIFs und Frames: lassen sich jederzeit neu erzeugen (#/stinger)
+# Gerenderte Videos, GIFs und Frames aus der alten Render-Seite; heute liegen sie im Profil (data/)
 render
 
 # Logins und Secrets: Token-Speicher des Servers und alle Env-Dateien, nur Vorlagen einchecken

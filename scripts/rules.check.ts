@@ -10,7 +10,7 @@ const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclud
   .split("\n")
   .filter(file => file && existsSync(file));
 
-const TEXT = /\.(ts|tsx|js|css|html|json|md|yml|svg|example)$|Dockerfile$/;
+const TEXT = /\.(ts|tsx|js|css|html|json|md|yml|svg|example)$|Dockerfile$|Caddyfile$/;
 const SOURCE = /^(src|server|scripts)\/.*\.(ts|tsx)$/;
 // React-Hooks (src/core/hooks) brauchen einen Browser; ihre Logik steckt in geprüften reinen Modulen
 const LOGIC = /^(src|server)\/(?!core\/hooks\/).*(?<!\.check)\.ts$/;

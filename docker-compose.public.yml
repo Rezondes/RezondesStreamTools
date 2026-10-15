@@ -1,0 +1,29 @@
+# Öffentlicher Betrieb auf einem Server mit Domain, zusätzlich zu docker-compose.yml:
+#   docker compose --env-file server.env -f docker-compose.yml -f docker-compose.public.yml up -d --build
+# DOMAIN steht in server.env. Caddy nimmt Port 80 und 443 an, holt das Zertifikat und spricht intern mit dem
+# Overlay-Server; dessen Port ist von aussen nicht erreichbar.
+services:
+  overlays:
+    ports: !reset []
+    environment:
+      PUBLIC_URL: https://${DOMAIN:?DOMAIN fehlt in server.env}
+
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      DOMAIN: ${DOMAIN:?DOMAIN fehlt in server.env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - overlays
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:

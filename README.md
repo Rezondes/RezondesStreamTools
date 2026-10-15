@@ -59,9 +59,38 @@ Jeder Streamer meldet sich im Dashboard mit Twitch an und bekommt ein eigenes Pr
 5. In OBS die Browserquellen auf die URLs aus der Übersicht stellen, z.B. `http://localhost:8089/s/<login>/alerts.html`.
 
 Der Port (8089, in `docker-compose.yml` änderbar) ist nur auf diesem Rechner erreichbar (`127.0.0.1`). Client-Secret und Tokens bleiben im Server, nie im Browser.
-Für einen öffentlichen Server `PUBLIC_URL` auf die HTTPS-Adresse setzen (das Sitzungs-Cookie ist dann `Secure`).
+Für den öffentlichen Betrieb mit eigener Domain siehe "Öffentlicher Betrieb (Caddy, HTTPS)".
 Ohne Docker: `npm run build`, dann `npm run server` (liest `server.env`).
 Läuft der Server, nutzt auch `npm run dev` dessen Anmeldung und Events (Proxy auf Port 8089 für `/s/`, `/api`, `/auth`, `/spotify`).
+
+### Öffentlicher Betrieb (Caddy, HTTPS)
+
+Auf einem Server (VPS) mit Domain läuft vor dem Overlay-Server Caddy: es holt das Zertifikat automatisch
+(Let's Encrypt), leitet HTTP auf HTTPS um und gibt die Live-Events (SSE) ungepuffert weiter (`Caddyfile`).
+Der Overlay-Server selbst hat dann keinen offenen Port mehr.
+
+1. DNS: `A`/`AAAA`-Eintrag der Domain auf den Server; Ports 80 und 443 in der Firewall offen.
+2. In `server.env` zusätzlich `DOMAIN=overlays.example.de` eintragen (ohne `https://`).
+3. Redirect-URLs bei den Apps eintragen:
+   - Twitch: `https://<DOMAIN>/auth/callback`
+   - Spotify: `https://<DOMAIN>/spotify/callback`
+4. Starten:
+   ```bash
+   docker compose --env-file server.env -f docker-compose.yml -f docker-compose.public.yml up -d --build
+   ```
+   `PUBLIC_URL` ist dann `https://<DOMAIN>`, das Sitzungs-Cookie `Secure`.
+
+Backup: alle Daten liegen im Volume `tokens` (Profile, Zugang, Sitzungs-Schlüssel), Zertifikate im Volume `caddy_data`.
+Sichern, z.B. täglich:
+
+```bash
+docker run --rm -v rezondesstream_tokens:/data -v "$PWD":/backup alpine tar czf /backup/tokens-backup.tgz -C /data .
+```
+
+Das Archiv enthält Tokens; es gehört an einen geschützten Ort. Zurückspielen mit `tar xzf` in das (leere) Volume.
+
+Update: `git pull`, dann denselben `docker compose ... up -d --build` wie beim Start. Die Daten im Volume bleiben,
+offene Overlays verbinden sich nach dem Neustart selbst wieder.
 
 ### Zugang und Funktionsstufen
 

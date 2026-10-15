@@ -19,7 +19,7 @@ import * as profile from "./profile.ts";
 import { loadSettings, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 import { THEMES } from "../src/themes/registry.ts";
 import { authorize, find, overlayRoute, ROUTES, type RouteKey, type Visitor } from "./routes.ts";
-import { createSession, loadSessionKey, readSession, sessionCookie } from "./session.ts";
+import { createSession, isSecureUrl, loadSessionKey, readSession, sessionCookie } from "./session.ts";
 import { redirectUri, type SpotifyApp } from "./spotify.ts";
 import { startStreamer, type Streamer } from "./streamer.ts";
 import { isAlertKind, SAMPLE_ALERTS, twitchApp } from "./twitch.ts";
@@ -32,7 +32,7 @@ const DATA = resolve(process.env.DATA ?? "data");
 // Nur noch für die Übernahme der alten Einzel-Daten (config/triggers.json, config/media/)
 const CONFIG = resolve(process.env.CONFIG ?? "config");
 const ADMINS = (process.env.ADMINS ?? "").split(",").map(login => login.trim().toLowerCase()).filter(streamerPath.isLogin);
-const SECURE = PUBLIC_URL.startsWith("https://");
+const SECURE = isSecureUrl(PUBLIC_URL);
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID ?? "";
 const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET ?? "";
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID ?? "";

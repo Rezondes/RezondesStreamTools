@@ -33,6 +33,9 @@ export function readSession(key: string, value: string | undefined, now = Date.n
   return Number(exp) > now ? login : null;
 }
 
+// Secure-Cookies nur, wenn der Server öffentlich über HTTPS erreichbar ist (PUBLIC_URL, z.B. hinter Caddy)
+export const isSecureUrl = (publicUrl: string) => publicUrl.startsWith("https://");
+
 export function sessionCookie(value: string, secure: boolean, maxAge = DAYS * 86_400) {
   return `sid=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure ? "; Secure" : ""}`;
 }

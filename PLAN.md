@@ -484,7 +484,7 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 12: Deployment
+## Package 12: Deployment (erledigt)
 
 **Ziel:** Der Server läuft öffentlich hinter Caddy mit automatischem HTTPS.
 
@@ -492,19 +492,20 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 **Betroffene Dateien:**
 - `docker-compose.yml` (Dienst `caddy`, Overlay-Port nur intern), `Caddyfile` (neu), `server.env.example` (`DOMAIN`), `README.md` (Abschnitt Betrieb)
-- `server/index.ts` (`X-Forwarded-Proto` hinter Proxy für Secure-Cookie und Redirects)
+- `server/index.ts`, `server/session.ts` (Secure-Cookie aus `PUBLIC_URL=https://...`; `X-Forwarded-Proto` ist nicht nötig, weil Redirects `PUBLIC_URL` nutzen und Caddy den Host durchreicht)
+- Umgesetzt als `docker-compose.public.yml` zusätzlich zu `docker-compose.yml`, damit der lokale Betrieb auf Port 8089 bleibt
 
 ### Acceptance Criteria
 
-- [ ] AC1: `docker compose up -d` startet Overlay-Server und Caddy; Caddy holt ein Zertifikat für `DOMAIN` und leitet HTTP auf HTTPS um.
-- [ ] AC2: Der Overlay-Server ist von aussen nur über Caddy erreichbar.
-- [ ] AC3: Cookies sind `Secure`, Redirect-URIs nutzen `PUBLIC_URL=https://<DOMAIN>`.
-- [ ] AC4: SSE läuft durch Caddy ohne Pufferung (`flush_interval -1`).
-- [ ] AC5: README beschreibt Twitch- und Spotify-Redirect-URLs für die Domain, Backup von `data/`, Update-Ablauf.
+- [x] AC1: `docker compose --env-file server.env -f docker-compose.yml -f docker-compose.public.yml up -d` startet Overlay-Server und Caddy (Konfiguration mit `docker compose config` geprüft; Zertifikat und Anmeldung manuell auf dem Server); Caddy holt ein Zertifikat für `DOMAIN` und leitet HTTP auf HTTPS um.
+- [x] AC2: Der Overlay-Server ist von aussen nur über Caddy erreichbar.
+- [x] AC3: Cookies sind `Secure`, Redirect-URIs nutzen `PUBLIC_URL=https://<DOMAIN>`.
+- [x] AC4: SSE läuft durch Caddy ohne Pufferung (`flush_interval -1`).
+- [x] AC5: README beschreibt Twitch- und Spotify-Redirect-URLs für die Domain, Backup von `data/`, Update-Ablauf.
 
 ### Tests (TDD)
 
-1. `server/routes.check.ts` erweitern - AC3: Gegeben `PUBLIC_URL` https; Erwartet `Secure` im Cookie.
+1. `server/session.check.ts` erweitern (dort liegt das Cookie) - AC3: Gegeben `PUBLIC_URL` https; Erwartet `Secure` im Cookie.
 2. Manuell: auf einem Server mit Domain starten, Zertifikat, Anmeldung, Overlay in OBS (AC1, AC2, AC4).
 
 ### Out of Scope
