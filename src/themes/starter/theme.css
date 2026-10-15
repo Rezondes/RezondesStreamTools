@@ -1,0 +1,59 @@
+/* Starter-Theme: ruhige Karten mit Akzentkante, Vorlage für eigene Themes (THEMES.md). Gekapselt unter .theme-starter;
+   Farben, Grössen und Zeiten kommen als CSS-Variablen aus den Einstellungen, weitere Masse als var(--name, Standard).
+   Keyframes heissen starter-*, damit sie nicht mit anderen Themes kollidieren. */
+
+.theme-starter {
+  font-family: var(--font), sans-serif;
+  font-size: var(--fontSize);
+  line-height: 1.3;
+  color: var(--textColor);
+}
+
+/* --- Alerts ------------------------------------------------------------------ */
+.theme-starter .starter-alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alertTop); }
+.theme-starter .starter-card {
+  width: var(--alertWidth);
+  padding: var(--card-padding, 16px 20px);
+  border-radius: var(--radius);
+  border-left: var(--accent-width, 6px) solid var(--accent);
+  background: color-mix(in srgb, var(--card) calc(var(--cardOpacity) * 100%), transparent);
+  animation: starter-in var(--fadeDuration) ease-out both;
+}
+.theme-starter .starter-card.leaving { animation: starter-out var(--fadeDuration) ease-in forwards; }
+.theme-starter .starter-line { font-weight: bold; }
+.theme-starter .starter-message { margin-top: var(--message-gap, 6px); opacity: 0.8; }
+
+/* --- Chat ---------------------------------------------------------------------- */
+.theme-starter .starter-chat {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--chatGap);
+  padding: var(--chat-padding, 12px);
+  overflow: hidden;
+}
+.theme-starter .starter-row {
+  flex: none;
+  padding: var(--row-padding, 6px 10px);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--card) calc(var(--cardOpacity) * 100%), transparent);
+  overflow-wrap: anywhere;
+  animation: starter-in var(--fadeDuration) ease-out both;
+}
+/* Erscheinen, nach chatFade ausblenden */
+.theme-starter .starter-row.fades { animation: starter-in var(--fadeDuration) ease-out both, starter-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
+.theme-starter .starter-user { color: var(--accent); margin-right: var(--name-gap, 6px); }
+.theme-starter .starter-badge {
+  margin-right: var(--name-gap, 6px);
+  padding: var(--badge-padding, 0 4px);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--card);
+  font-size: 0.75em;
+}
+.theme-starter .starter-emote { height: var(--emoteSize); vertical-align: middle; }
+
+@keyframes starter-in { from { opacity: 0; translate: 0 calc(-1 * var(--slide, 12px)); } to { opacity: 1; translate: 0 0; } }
+@keyframes starter-out { from { opacity: 1; } to { opacity: 0; } }

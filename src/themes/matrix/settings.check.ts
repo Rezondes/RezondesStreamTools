@@ -1,14 +1,15 @@
 // Check für settings.ts (Schema des Matrix-Themes): gültige Standardwerte, jede Gruppe hat ihre Pflichtschlüssel
 // und jeder Schlüssel wird im Theme-Code benutzt (kein toter Schlüssel). Läuft mit npm test.
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-import { validateSettings } from "../../core/settings.ts";
+import { auditTheme } from "../schemaAudit.ts";
 import { matrixSettings } from "./settings.ts";
 
 const fields = matrixSettings.fields;
-const defaults = Object.fromEntries(fields.map(field => [field.key, field.default]));
-assert.deepEqual(validateSettings(matrixSettings, defaults).errors, []);
+
+// Gültige Standardwerte und kein toter Schlüssel (jeder kommt im Theme-Code vor)
+const audit = auditTheme(matrixSettings, import.meta.dirname);
+assert.deepEqual(audit.errors, []);
+assert.deepEqual(audit.unused, [], `unbenutzte Schlüssel: ${audit.unused.join(", ")}`);
 
 // Pflichtschlüssel je Gruppe (Package 5, AC1); Lautstärke steckt in den Ton-Feldern
 const REQUIRED: Record<string, string[]> = {
@@ -26,13 +27,5 @@ const REQUIRED: Record<string, string[]> = {
 for (const [group, keys] of Object.entries(REQUIRED)) {
   for (const key of keys) assert.equal(fields.find(field => field.key === key)?.group, group, `${key} fehlt in ${group}`);
 }
-
-// Kein toter Schlüssel: jeder Schlüssel kommt im Theme-Code vor (values.key, { key }, "key" oder var(--key))
-const folder = import.meta.dirname;
-const files = readdirSync(folder, { recursive: true, encoding: "utf8" })
-  .filter(file => /\.(ts|tsx|css)$/.test(file) && !/settings\.ts$|\.check\.ts$/.test(file));
-const source = files.map(file => readFileSync(join(folder, file), "utf8")).join("\n");
-const unused = fields.map(field => field.key).filter(key => !new RegExp(`\\.${key}\\b|[{,]\\s*${key}\\s*[,}]|"${key}"|var\\(--${key}\\)`).test(source));
-assert.deepEqual(unused, [], `unbenutzte Schlüssel: ${unused.join(", ")}`);
 
 console.log("matrix settings ok");

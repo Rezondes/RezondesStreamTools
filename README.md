@@ -145,6 +145,9 @@ Zurücksetzen je Feld oder für alles. Die Vorschau zeigt die gewählte Szene al
 gespeicherten Werten (`/s/<login>/<szene>.html?demo&preview`, Werte per `postMessage` nur von derselben Herkunft).
 Ein Theme-Wechsel speichert sofort; Fehler beim Speichern erscheinen am jeweiligen Feld.
 
+Eingebaut sind `matrix` (Standard, alle Szenen) und `starter` (schlichte Karten, nur Alerts und Chat; alle anderen
+Szenen kommen von `matrix`). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
+
 ## Chat-Trigger (`triggers.json` im Profil)
 
 Der Server liest den Chat jedes angemeldeten Streamers mit (Funktionen `triggers` und `fx`). Passt eine Nachricht auf eine Regel,

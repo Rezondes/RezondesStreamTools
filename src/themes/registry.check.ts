@@ -7,6 +7,7 @@ import { DEFAULT_THEME, findTheme, THEMES } from "./registry.ts";
 assert.equal(new Set(THEMES.map(theme => theme.id)).size, THEMES.length);
 assert.equal(findTheme(DEFAULT_THEME)?.id, "matrix");
 assert.equal(findTheme("gibt-es-nicht"), null);
+assert.equal(findTheme("starter")?.name, "Starter");
 
 for (const theme of THEMES) {
   // Schlüssel je Theme eindeutig, jedes Feld mit Label und Gruppe

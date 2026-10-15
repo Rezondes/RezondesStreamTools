@@ -456,7 +456,7 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 11: Starter-Theme
+## Package 11: Starter-Theme (erledigt)
 
 **Ziel:** Ein schlichtes Starter-Theme mit Anleitung zeigt, wie man ein eigenes Theme baut.
 
@@ -468,9 +468,9 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: Das Starter-Theme ist im Dashboard wählbar, zeigt eigene Alerts und Chat, alle anderen Szenen kommen von `matrix`.
-- [ ] AC2: Es nutzt nur Kern-Hooks und CSS-Variablen, keine festen Farben (Regel-Check aus Package 5 greift).
-- [ ] AC3: `THEMES.md` beschreibt Schritt für Schritt ein neues Theme, inklusive Registrierung und Checks.
+- [x] AC1: Das Starter-Theme ist im Dashboard wählbar, zeigt eigene Alerts und Chat, alle anderen Szenen kommen von `matrix`.
+- [x] AC2: Es nutzt nur Kern-Hooks und CSS-Variablen, keine festen Farben (Regel-Check aus Package 5 greift).
+- [x] AC3: `THEMES.md` beschreibt Schritt für Schritt ein neues Theme, inklusive Registrierung und Checks.
 
 ### Tests (TDD)
 

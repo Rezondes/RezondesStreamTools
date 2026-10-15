@@ -1,8 +1,9 @@
 // Einstellungs-Schema des eingebauten Themes "matrix": jeder sichtbare und hörbare Wert ist hier eine Einstellung,
 // die Standardwerte ergeben den bisherigen Look. Einzige Stelle des Themes mit festen Farben, Texten und Zahlen.
 // MatrixValues ist der Typ der aufgelösten Werte, den die Szenen über useMatrix (values.ts) lesen.
-import type { SettingField, SoundValue, ThemeSchema } from "../../core/theme.ts";
+import { choice, color, flag, font, lines, number, sound, text, textarea, type ValuesOf } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
+import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 const LOGO = String.raw`
  ___   ___   ____   ___    _  _   ___    ___   ___
@@ -13,17 +14,6 @@ const LOGO = String.raw`
 export const FONTS = ["Share Tech Mono", "VT323", "Fira Mono", "IBM Plex Mono", "Courier New"] as const;
 export const ANIMATIONS = ["glitch", "fade", "none"] as const;
 const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"] as const;
-const SILENT_DEFAULT: SoundValue = { file: "", volume: 1 };
-
-// Bausteine: der Schlüssel bleibt als Literal-Typ erhalten, daraus entsteht MatrixValues
-const color = <K extends string>(key: K, label: string, group: string, value: string) => ({ key, type: "color" as const, label, group, default: value });
-const text = <K extends string>(key: K, label: string, group: string, value: string, maxLength = 200) => ({ key, type: "text" as const, label, group, default: value, maxLength });
-const lines = <K extends string>(key: K, label: string, group: string, value: readonly string[]) => ({ key, type: "lines" as const, label, group, default: value, maxLines: 100 });
-const flag = <K extends string>(key: K, label: string, group: string, value: boolean) => ({ key, type: "boolean" as const, label, group, default: value });
-const sound = <K extends string>(key: K, label: string, group: string) => ({ key, type: "sound" as const, label, group, default: SILENT_DEFAULT });
-const choice = <K extends string>(key: K, label: string, group: string, value: string, options: readonly string[]) => ({ key, type: "select" as const, label, group, default: value, options });
-const number = <K extends string>(key: K, label: string, group: string, value: number, min: number, max: number, unit?: "px" | "ms" | "s" | "%", step?: number) =>
-  ({ key, type: "number" as const, label, group, default: value, min, max, ...(unit ? { unit } : {}), ...(step ? { step } : {}) });
 
 const GENERAL = "Allgemein";
 const RAIN = "Matrix-Regen";
@@ -45,10 +35,10 @@ const FIELDS = [
   color("glow", "Glühfarbe", GENERAL, "#39ff14"),
   color("highlight", "Glitch-Farbe", GENERAL, "#b6ff9e"),
   color("flash", "Blitzfarbe", GENERAL, "#d8ffcc"),
-  { key: "font", type: "font", label: "Schrift", group: GENERAL, default: "Share Tech Mono", options: FONTS },
+  font("font", "Schrift", GENERAL, "Share Tech Mono", FONTS),
   number("fontSize", "Grundgrösse der Schrift", GENERAL, 16, 8, 48, "px"),
   text("channelName", "Kanal-Name", GENERAL, "REZONDES", 40),
-  { key: "logo", type: "textarea", label: "ASCII-Logo", group: GENERAL, default: LOGO, maxLength: 4000 },
+  textarea("logo", "ASCII-Logo", GENERAL, LOGO),
   number("glowStrength", "Glühen (Stärke)", GENERAL, 1, 0, 3, undefined, 0.1),
   flag("scanlines", "Scanlines", GENERAL, true),
   number("scanlineStrength", "Scanlines (Stärke)", GENERAL, 0.28, 0, 1, undefined, 0.01),
@@ -271,12 +261,6 @@ const FIELDS = [
   number("bannerRainDensity", "Regen-Dichte", BANNER, 100, 0, 100, "%"),
 ] as const satisfies readonly SettingField[];
 
-type Field = (typeof FIELDS)[number];
-type ValueOf<F> = F extends { type: "number" } ? number
-  : F extends { type: "boolean" } ? boolean
-  : F extends { type: "lines" } ? readonly string[]
-  : F extends { type: "sound" } ? SoundValue
-  : string;
-export type MatrixValues = { readonly [F in Field as F["key"]]: ValueOf<F> };
+export type MatrixValues = ValuesOf<typeof FIELDS>;
 
 export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: FIELDS };
