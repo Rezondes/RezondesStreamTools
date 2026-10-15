@@ -10,6 +10,12 @@ import { TEXTS } from "./texts.de.ts";
 for (const code of ERROR_CODES) assert.ok(TEXTS.errors[code], `kein Text für ${code}`);
 for (const scene of SCENES) assert.ok(TEXTS.scenes[scene], `kein Name für die Szene ${scene}`);
 
+// Texte mit Platzhaltern setzen die Werte ein
+assert.equal(TEXTS.triggers.confirmDelete("lizard"), 'Trigger "lizard" löschen?');
+assert.equal(TEXTS.media.usage("1.0 MB", "200.0 MB"), "Belegt: 1.0 MB von 200.0 MB");
+assert.equal(TEXTS.media.confirm("a.gif"), '"a.gif" löschen?');
+assert.ok(TEXTS.media.confirmUsed("a.gif", "lizard, hype").includes("lizard, hype"));
+
 // Codes im Server: send(res, 4xx, "code"), Weiterleitungen ?error=code und die Entscheidungen in routes.ts
 const folder = join(import.meta.dirname, "../../server");
 const source = readdirSync(folder)

@@ -53,20 +53,6 @@
       "count": 1
     }
   },
-  "src/scenes/Triggers.tsx": {
-    "@typescript-eslint/no-unsafe-argument": {
-      "count": 3
-    },
-    "@typescript-eslint/no-unsafe-member-access": {
-      "count": 2
-    },
-    "id-length": {
-      "count": 56
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/themes/matrix/banners.ts": {
     "id-length": {
       "count": 6

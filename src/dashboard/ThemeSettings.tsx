@@ -6,7 +6,7 @@ import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
 import type { SettingValues, ThemeSchema } from "../core/theme.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
-import { getJson, postJson } from "./api.ts";
+import { getJson, loadMedia, postJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
 import ScenePreview from "./ScenePreview.tsx";
 import SettingInput from "./SettingInput.tsx";
@@ -96,7 +96,7 @@ function useSettingsFile() {
   useEffect(() => {
     load().catch((error: unknown) => console.warn("Loading settings failed:", error));
     // Medienliste nur mit freigegebenen Triggern; sonst bleibt die Auswahl leer
-    getJson<string[]>("/api/media", []).then(setMedia).catch((error: unknown) => console.warn("Loading media failed:", error));
+    loadMedia().then(list => setMedia(list.files.map(file => file.name))).catch((error: unknown) => console.warn("Loading media failed:", error));
   }, [load]);
 
   const save = (theme: string, values: unknown) => {

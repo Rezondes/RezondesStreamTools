@@ -10,7 +10,7 @@ export type SettingErrorCode = (typeof SETTING_ERROR_CODES)[number];
 export const REQUEST_ERROR_CODES = [
   "unauthorized", "not-allowed", "admin-only", "feature-off", "cross-origin", "method-not-allowed", "not-found", "forbidden",
   "login-failed", "spotify-failed", "spotify-not-configured", "not-connected", "not-running", "unavailable",
-  "unknown-kind", "unknown-trigger", "invalid-name", "invalid-json", "too-large", "server-error",
+  "unknown-kind", "unknown-trigger", "invalid-name", "invalid-json", "too-large", "quota-exceeded", "server-error",
 ] as const;
 
 export const ERROR_CODES = [...SETTING_ERROR_CODES, ...REQUEST_ERROR_CODES] as const;

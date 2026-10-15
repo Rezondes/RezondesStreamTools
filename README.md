@@ -150,7 +150,11 @@ spielt sein `fx.html` die Aktionen ab. Regeln stehen in `data/streamers/<login>/
 Datei speichern genügt, der Server lädt sie innerhalb von 2 Sekunden neu.
 
 Bequemer im Browser: `http://localhost:8089/#/triggers` (angemeldet, Bereich `[ TRIGGER ]` im Dashboard).
-Dort Regeln anlegen, kopieren, löschen, Aktionen sortieren und Medien hochladen (max. 50 MB, Bild/Video/Audio).
+Dort Regeln anlegen, kopieren, löschen, Aktionen sortieren und Medien hochladen (max. 50 MB pro Datei, Bild/Video/Audio).
+Der Bereich `[ MEDIEN ]` listet alle Dateien mit Grösse, Vorschau und den Triggern, die sie nutzen; Löschen fragt nach
+(`DELETE /api/media?name=`). Alle Medien eines Streamers zusammen dürfen höchstens `MEDIA_LIMIT_MB` belegen (Standard 200),
+darüber lehnt der Server Uploads mit `quota-exceeded` ab. Schreibende Anfragen (POST, DELETE) nimmt der Server nur von
+der eigenen Herkunft an.
 Speichern prüft alle Regeln; bei Fehlern werden sie angezeigt und die Datei bleibt unverändert.
 
 ```json

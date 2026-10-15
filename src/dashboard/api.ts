@@ -1,7 +1,10 @@
 // Anfragen des Dashboards an den Server: Konto laden (/api/me) und Aktionen per POST.
 // post liefert null bei Erfolg, sonst den Fehlercode aus der Antwort (Texte in texts.de.ts).
+import type { MediaList } from "../../server/media.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import type { Me } from "./navigation.ts";
+
+export type { MediaList };
 
 // undefined = lädt; offline = kein Server erreichbar; anonymous = nicht angemeldet; not-allowed = nicht freigeschaltet
 export type Account = Me | "offline" | "anonymous" | "not-allowed" | undefined;
@@ -18,9 +21,17 @@ export async function loadAccount(): Promise<Account> {
   }
 }
 
-export async function post(url: string): Promise<ErrorCode | null> {
+export const post = (url: string) => request(url, { method: "POST" });
+
+// Medien: Liste mit Grössen und Nutzung, Hochladen (Speicherlimit), Löschen
+export const loadMedia = () => getJson<MediaList>("/api/media", { files: [], usedBytes: 0, limitBytes: 0 });
+export const uploadMedia = (file: File) => request(`/api/media?name=${encodeURIComponent(file.name)}`, { method: "POST", body: file });
+export const deleteMedia = (name: string) => request(`/api/media?name=${encodeURIComponent(name)}`, { method: "DELETE" });
+
+// Anfrage ohne Antwortdaten: null bei Erfolg, sonst der Fehlercode aus der Antwort
+async function request(url: string, init: RequestInit): Promise<ErrorCode | null> {
   try {
-    const response = await fetch(url, { method: "POST" });
+    const response = await fetch(url, init);
     if (response.ok) return null;
     const code = (await response.text()).trim();
     return isErrorCode(code) ? code : "server-error";

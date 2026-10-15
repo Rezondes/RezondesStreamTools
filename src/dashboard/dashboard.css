@@ -13,6 +13,10 @@
 .dashboard th, .dashboard td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--green-line); vertical-align: middle; }
 .dashboard th { color: var(--green-dim); font-weight: normal; }
 .dashboard code { font-family: inherit; user-select: all; overflow-wrap: anywhere; }
+/* Medien: kleine Vorschau je Datei */
+.media-preview img, .media-preview video { display: block; max-width: 160px; max-height: 90px; }
+.media-preview audio { max-width: 220px; }
+
 /* Theme-Einstellungen: Formular links, Vorschau rechts (auf schmalen Bildschirmen untereinander) */
 .settings-bar { position: sticky; top: 0; z-index: 2; padding: 8px 0; background: var(--black); border-bottom: 1px solid var(--green-line); }
 .settings-layout { display: grid; gap: 16px; align-items: start; }

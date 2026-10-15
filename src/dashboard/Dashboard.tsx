@@ -4,13 +4,14 @@
 import { useEffect, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { params } from "../core/params.ts";
-import Triggers from "../scenes/Triggers.tsx";
 import { loadAccount, post, type Account } from "./api.ts";
 import Connections from "./Connections.tsx";
+import Media from "./Media.tsx";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 import Overview from "./Overview.tsx";
 import { TEXTS } from "./texts.de.ts";
 import ThemeSettings from "./ThemeSettings.tsx";
+import Triggers from "./Triggers.tsx";
 import "./dashboard.css";
 
 // Aktion an den Server; danach Konto neu laden und einen Fehler anzeigen
@@ -86,7 +87,8 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
       {section === "connections" && <Connections me={account} act={act} />}
       {section === "theme" && <ThemeSettings me={account} />}
       {section === "triggers" && <Triggers />}
-      {(section === "media" || section === "admin") && <p className="muted">{TEXTS.comingSoon}</p>}
+      {section === "media" && <Media login={account.login} />}
+      {section === "admin" && <p className="muted">{TEXTS.comingSoon}</p>}
     </>
   );
 }

@@ -3,7 +3,7 @@
 // Öffentlich: Overlays unter /s/<login>/... (Szenen, status, events per SSE, media). Dashboard: Anmeldung per Twitch,
 // APIs mit Login aus dem Sitzungs-Cookie (Regel 26). Wer was darf, steht in routes.ts und access.ts.
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { mkdir, readdir, stat } from "node:fs/promises";
+import { mkdir, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { randomBytes } from "node:crypto";
 import * as streamerPath from "../src/core/streamerPath.ts";
@@ -11,6 +11,7 @@ import { loadAccess, type Feature } from "./access.ts";
 import { writeAtomic } from "./atomicFile.ts";
 import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from "./http.ts";
 import { createLoginStates } from "./loginStates.ts";
+import { deleteMedia, listMedia, quotaError } from "./media.ts";
 import { migrate } from "./migration.ts";
 import * as profile from "./profile.ts";
 import { loadSettings, publicSettings, saveSettings, updateSettings } from "./settings.ts";
@@ -36,6 +37,8 @@ const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID ?? "";
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET ?? "";
 
 const MEDIA_LIMIT = 50 * 1024 * 1024;
+// Speicherplatz aller Medien eines Streamers zusammen (MEDIA_LIMIT_MB, Standard 200 MB)
+const MEDIA_QUOTA = (Number(process.env.MEDIA_LIMIT_MB) || 200) * 1024 * 1024;
 const TRIGGER_LIMIT = 1024 * 1024;
 const ACCESS_LIMIT = 64 * 1024;
 const SETTINGS_LIMIT = 512 * 1024;
@@ -193,17 +196,31 @@ function fireTrigger({ response, url, runtime }: Call) {
   json(response, { ok: true });
 }
 
+// Medien mit Grösse und den Triggern, die sie nutzen, dazu belegter und erlaubter Speicher
 async function mediaList({ response, login }: Call) {
-  const files = await readdir(join(profile.folder(DATA, login), "media")).catch(() => [] as string[]);
-  json(response, files.filter(streamerPath.isMediaName).sort());
+  json(response, await listMedia(profile.folder(DATA, login), MEDIA_QUOTA));
 }
 
 async function uploadMedia({ request, response, url, login }: Call) {
   const name = url.searchParams.get("name") ?? "";
   if (!streamerPath.isMediaName(name)) return send(response, 400, "invalid-name");
-  await writeAtomic(join(profile.folder(DATA, login), "media", name), await readBody(request, MEDIA_LIMIT));
+  const body = await readBody(request, MEDIA_LIMIT);
+  const folder = profile.folder(DATA, login);
+  const media = await listMedia(folder, MEDIA_QUOTA);
+  const replaced = media.files.find(file => file.name === name)?.size ?? 0;
+  if (quotaError(media.usedBytes, body.length, replaced, MEDIA_QUOTA)) return send(response, 413, "quota-exceeded");
+  await writeAtomic(join(folder, "media", name), body);
   console.log(`Media uploaded by ${login}: ${name}`);
   json(response, { ok: true, name });
+}
+
+// Löscht nur im eigenen Medienordner und nur gültige Namen
+async function removeMedia({ response, url, login }: Call) {
+  const name = url.searchParams.get("name") ?? "";
+  if (!streamerPath.isMediaName(name)) return send(response, 400, "invalid-name");
+  if (!(await deleteMedia(profile.folder(DATA, login), name))) return send(response, 404, "not-found");
+  console.log(`Media deleted by ${login}: ${name}`);
+  json(response, { ok: true });
 }
 
 function spotifyLogin({ response, login, runtime }: Call) {
@@ -285,6 +302,7 @@ const HANDLERS: Record<RouteKey, Handler> = {
   "POST /api/trigger": fireTrigger,
   "GET /api/media": mediaList,
   "POST /api/media": uploadMedia,
+  "DELETE /api/media": removeMedia,
   "GET /spotify/login": spotifyLogin,
   "POST /spotify/logout": spotifyLogout,
   "POST /api/twitch/disconnect": twitchDisconnect,
@@ -304,8 +322,8 @@ function visitor(request: IncomingMessage): Visitor {
 async function route(request: IncomingMessage, response: ServerResponse) {
   const url = new URL(request.url ?? "/", PUBLIC_URL);
   const method = request.method ?? "GET";
-  // POSTs von fremden Webseiten abweisen
-  if (method === "POST" && !sameOrigin(request)) return send(response, 403, "cross-origin");
+  // Schreibende Anfragen (POST, DELETE) von fremden Webseiten abweisen
+  if (method !== "GET" && method !== "HEAD" && !sameOrigin(request)) return send(response, 403, "cross-origin");
   const key = find(method, url.pathname);
   if (key === "method-not-allowed") return send(response, 405, "method-not-allowed");
   if (key) {

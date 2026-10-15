@@ -7,7 +7,8 @@ import { authorize, find, overlayRoute, ROUTES, type Visitor } from "./routes.ts
 assert.equal(find("GET", "/api/me"), "GET /api/me");
 assert.equal(find("POST", "/api/triggers/config"), "POST /api/triggers/config");
 assert.equal(find("GET", "/api/test"), "method-not-allowed");
-assert.equal(find("DELETE", "/api/media"), "method-not-allowed");
+assert.equal(find("DELETE", "/api/media"), "DELETE /api/media");
+assert.equal(find("PUT", "/api/media"), "method-not-allowed");
 assert.equal(find("GET", "/alerts.html"), null);
 assert.equal(find("GET", "/api/triggers/config/x"), null);
 // Schlüssel aus dem Prototyp von Object sind keine Routen
@@ -28,6 +29,7 @@ assert.equal(authorize(ROUTES["GET /api/me"], streamer), "ok");
 // Funktionsstufen: Test-Alerts brauchen alerts, Trigger und Medien brauchen triggers und fx, Spotify music
 assert.equal(authorize(ROUTES["POST /api/test"], { ...streamer, features: { ...allOn, alerts: false } }), "feature-off");
 assert.equal(authorize(ROUTES["POST /api/media"], { ...streamer, features: { ...allOn, fx: false } }), "feature-off");
+assert.equal(authorize(ROUTES["DELETE /api/media"], { ...streamer, features: { ...allOn, triggers: false } }), "feature-off");
 assert.equal(authorize(ROUTES["GET /api/triggers"], { ...streamer, features: { ...allOn, triggers: false } }), "feature-off");
 assert.equal(authorize(ROUTES["GET /spotify/login"], { ...streamer, features: { ...allOn, music: false } }), "feature-off");
 assert.equal(authorize(ROUTES["GET /spotify/login"], { ...streamer, features: {} }), "feature-off");

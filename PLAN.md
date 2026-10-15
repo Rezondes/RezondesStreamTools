@@ -354,7 +354,7 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 8: Trigger und Medien im Dashboard
+## Package 8: Trigger und Medien im Dashboard (erledigt)
 
 **Ziel:** Trigger-Editor und Medienverwaltung laufen im Dashboard, mit Löschen und Speicherlimit pro Streamer.
 
@@ -366,14 +366,14 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: Der Trigger-Editor funktioniert wie heute, im Dashboard-Bereich "Trigger".
-- [ ] AC2: Medien-Bereich listet Dateien mit Grösse und Vorschau, Löschen fragt nach und meldet, wenn ein Trigger die Datei noch nutzt.
-- [ ] AC3: Upload über dem Speicherlimit (Standard 200 MB, `MEDIA_LIMIT_MB`) wird mit Fehlercode abgelehnt.
-- [ ] AC4: `DELETE /api/media?name=` löscht nur Dateien des eigenen Streamers mit gültigem Namen.
+- [x] AC1: Der Trigger-Editor funktioniert wie heute, im Dashboard-Bereich "Trigger".
+- [x] AC2: Medien-Bereich listet Dateien mit Grösse und Vorschau, Löschen fragt nach und meldet, wenn ein Trigger die Datei noch nutzt.
+- [x] AC3: Upload über dem Speicherlimit (Standard 200 MB, `MEDIA_LIMIT_MB`) wird mit Fehlercode abgelehnt.
+- [x] AC4: `DELETE /api/media?name=` löscht nur Dateien des eigenen Streamers mit gültigem Namen.
 
 ### Tests (TDD)
 
-1. `server/media.check.ts > Limit` - AC3: Gegeben belegte 190 MB, Upload 20 MB; Erwartet `quota_exceeded`.
+1. `server/media.check.ts > Limit` - AC3: Gegeben belegte 190 MB, Upload 20 MB; Erwartet `quota-exceeded` (wie die übrigen Anfrage-Codes mit Bindestrich).
 2. `server/media.check.ts > Nutzung` - AC2: Gegeben Trigger-Liste; Erwartet Liste der Trigger, die `lizard.gif` nutzen.
 3. `server/media.check.ts > Name` - AC4: `../x.gif`, `a.exe` abgelehnt.
 4. Manuell: Upload, Löschen mit Rückfrage, Editor wie vorher (AC1, AC2).
