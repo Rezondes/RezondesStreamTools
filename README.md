@@ -11,7 +11,10 @@ cp .env.example .env.local   # Kanal eintragen
 npm run dev                  # http://localhost:5173
 ```
 
-Die Übersicht unter `http://localhost:5173` listet alle URLs. `[ TEST ]` öffnet die Szene mit Fake-Events (`?demo`).
+Das Dashboard unter `/` zeigt ohne Sitzung nur `[ MIT TWITCH ANMELDEN ]`, danach die Bereiche Übersicht, Theme, Trigger,
+Medien, Verbindungen und Admin; jeder Bereich erscheint nur, wenn seine Funktion für den Streamer freigegeben ist, Admin nur
+für Admins. Die Übersicht listet alle OBS-URLs mit Grösse, `[ KOPIEREN ]` und `[ TEST ]` (Szene mit Fake-Events, `?demo`).
+Alle Texte des Dashboards stehen in `src/dashboard/texts.de.ts`, auch die Texte zu den Fehlercodes des Servers.
 
 `npm run build` erzeugt in `dist/` eine HTML-Datei pro Szene (`starting.html`, `alerts.html`, ...), die der Overlay-Server
 unter `/s/<login>/` ausliefert. Einen Modus ohne Server gibt es nicht mehr, denn Theme und Einstellungen kommen vom Server.
@@ -109,7 +112,7 @@ Die OBS-Quellen auf `/s/<login>/<szene>.html` umstellen: die alten Adressen wie 
 1. Auf https://developer.spotify.com/dashboard eine App anlegen, API "Web API".
    Redirect URI: lokal `http://127.0.0.1:8089/spotify/callback` (Spotify erlaubt kein `localhost`), öffentlich `PUBLIC_URL/spotify/callback`.
 2. `SPOTIFY_CLIENT_ID` und `SPOTIFY_CLIENT_SECRET` in `server.env` eintragen, `docker compose up -d --build`.
-3. Jeder Streamer klickt auf seiner Übersicht `[ MIT SPOTIFY VERBINDEN ]` (Funktion `music`).
+3. Jeder Streamer klickt im Dashboard unter Verbindungen `[ MIT SPOTIFY VERBINDEN ]` (Funktion `music`).
    Solange die Spotify-App im Entwicklungsmodus ist, muss jedes Spotify-Konto dort als Nutzer eingetragen sein.
 
 Das Overlay zeigt Titel, Interpret, Album, Fortschritt und das Cover in Phosphorgrün.
@@ -141,7 +144,7 @@ Der Server liest den Chat jedes angemeldeten Streamers mit (Funktionen `triggers
 spielt sein `fx.html` die Aktionen ab. Regeln stehen in `data/streamers/<login>/triggers.json`, Medien in `data/streamers/<login>/media/`.
 Datei speichern genügt, der Server lädt sie innerhalb von 2 Sekunden neu.
 
-Bequemer im Browser: `http://localhost:8089/#/triggers` (angemeldet, Knopf `[ TRIGGER BEARBEITEN ]` auf der Übersicht).
+Bequemer im Browser: `http://localhost:8089/#/triggers` (angemeldet, Bereich `[ TRIGGER ]` im Dashboard).
 Dort Regeln anlegen, kopieren, löschen, Aktionen sortieren und Medien hochladen (max. 50 MB, Bild/Video/Audio).
 Speichern prüft alle Regeln; bei Fehlern werden sie angezeigt und die Datei bleibt unverändert.
 

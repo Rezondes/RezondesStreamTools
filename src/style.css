@@ -36,19 +36,6 @@ body.overlay { background: transparent; overflow: hidden; }
 .btn.primary,
 .btn:hover, .btn:focus-visible { background: var(--green); color: var(--black); outline: none; }
 
-/* --- Übersicht --------------------------------------------------------------------- */
-.home { max-width: 1200px; margin: 0 auto; padding: 32px 16px; display: grid; gap: 16px; }
-.home h1 { font-weight: normal; font-size: 28px; }
-.home table { width: 100%; border-collapse: collapse; }
-.home th, .home td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--green-line); vertical-align: middle; }
-.home th { color: var(--green-dim); font-weight: normal; }
-.home code { font-family: inherit; user-select: all; overflow-wrap: anywhere; }
-@media (max-width: 719px) {
-  .home thead { display: none; }
-  .home tr, .home td { display: block; border: none; padding: 4px 0; }
-  .home tr { border-bottom: 1px solid var(--green-line); padding: 12px 0; }
-}
-
 /* --- Stinger-Vorschau ---------------------------------------------------------------- */
 .stinger { max-width: 1200px; margin: 0 auto; padding: 24px 16px; display: grid; gap: 12px; }
 .stinger-view { position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--green-line); overflow: hidden; }
@@ -58,8 +45,6 @@ body.overlay { background: transparent; overflow: hidden; }
 .fake-scene.b { background: linear-gradient(135deg, #6b3a1b, #1b6b4a); }
 .stinger-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .stinger-bar input { flex: 1; min-width: 160px; accent-color: var(--green); }
-.home .panel { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--green-dim); }
-.home .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 
 .btn:disabled, .btn:disabled:hover { background: var(--black); border-color: var(--green-dim); color: var(--green-dim); cursor: default; }
 .error { background: var(--green); color: var(--black); padding: 4px 8px; }

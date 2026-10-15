@@ -1,0 +1,97 @@
+// Übersicht im Dashboard: die fertigen OBS-URLs des Streamers (/s/<login>/<szene>.html) mit Grösse, Kopieren und
+// Test (Fake-Events), dazu Test-Alerts und Trigger zum Auslösen, wenn die Funktionen freigegeben sind.
+import { useEffect, useState } from "react";
+import * as streamerPath from "../core/streamerPath.ts";
+import { SCENES, type SceneName } from "../core/theme.ts";
+import type { AlertKind } from "../core/types.ts";
+import { getJson } from "./api.ts";
+import type { Act } from "./Dashboard.tsx";
+import type { Me } from "./navigation.ts";
+import { TEXTS } from "./texts.de.ts";
+
+// Empfohlene Grösse der Browserquelle in OBS
+const SIZES: Record<SceneName, string> = {
+  starting: "1920x1080",
+  brb: "1920x1080",
+  ending: "1920x1080",
+  alerts: "1920x1080",
+  chat: "500x900",
+  cam: "640x360",
+  music: "900x240",
+  fx: "1920x1080",
+};
+const TEST_ALERTS: readonly AlertKind[] = ["follow", "sub", "resub", "gift", "cheer", "raid", "redeem", "hype"];
+const COPIED_MS = 1500;
+
+type TriggerInfo = { name: string; enabled: boolean };
+
+export default function Overview({ me, act }: { me: Me; act: Act }) {
+  const base = `${location.origin}${streamerPath.base(me.login)}`;
+  return (
+    <section className="panel">
+      <p className="muted">{TEXTS.overview.obsHint}</p>
+      <table>
+        <thead><tr><th>{TEXTS.overview.scene}</th><th>{TEXTS.overview.url}</th><th>{TEXTS.overview.size}</th><th /></tr></thead>
+        <tbody>
+          {SCENES.map(scene => {
+            const url = `${base}/${scene}.html`;
+            return (
+              <tr key={scene}>
+                <td>{TEXTS.scenes[scene]}</td>
+                <td><code>{url}</code></td>
+                <td>{SIZES[scene]}</td>
+                <td className="actions">
+                  <CopyButton text={url} />
+                  <a className="btn" href={`#/${scene}?demo&s=${me.login}`} target="_blank" rel="noreferrer">{TEXTS.overview.test}</a>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+      {me.features.alerts && (
+        <p className="actions">
+          <span className="muted">{TEXTS.overview.testAlerts}</span>
+          {TEST_ALERTS.map(kind => <button key={kind} className="btn" onClick={() => act(`/api/test?kind=${kind}`)}>[ {kind.toUpperCase()} ]</button>)}
+        </p>
+      )}
+      {me.features.triggers && me.features.fx && <TriggerButtons act={act} />}
+      <p><a className="btn" href="#/stinger">{TEXTS.overview.stinger}</a></p>
+    </section>
+  );
+}
+
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), COPIED_MS);
+    return () => clearTimeout(timer);
+  }, [copied]);
+  const copy = () => {
+    navigator.clipboard.writeText(text).then(() => setCopied(true)).catch((error: unknown) => console.warn("Copying failed:", error));
+  };
+  return <button className="btn" onClick={copy}>{copied ? TEXTS.overview.copied : TEXTS.overview.copy}</button>;
+}
+
+function TriggerButtons({ act }: { act: Act }) {
+  const [triggers, setTriggers] = useState<TriggerInfo[]>([]);
+  useEffect(() => {
+    let active = true;
+    getJson<TriggerInfo[]>("/api/triggers", [])
+      .then(list => { if (active) setTriggers(list); })
+      .catch((error: unknown) => console.warn("Loading triggers failed:", error));
+    return () => { active = false; };
+  }, []);
+  return (
+    <p className="actions">
+      <span className="muted">{TEXTS.overview.fireTriggers}</span>
+      {triggers.length === 0 && <span className="muted">{TEXTS.overview.noTriggers}</span>}
+      {triggers.map(trigger => (
+        <button key={trigger.name} className="btn" disabled={!trigger.enabled} onClick={() => act(`/api/trigger?name=${encodeURIComponent(trigger.name)}`)}>
+          [ {trigger.name.toUpperCase()} ]
+        </button>
+      ))}
+    </p>
+  );
+}

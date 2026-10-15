@@ -1,0 +1,21 @@
+/* Dashboard: Kopf, Navigation über die Bereiche, Panels und die URL-Tabelle der Übersicht. Grundstil in src/style.css. */
+.dashboard { max-width: 1200px; margin: 0 auto; padding: 32px 16px; display: grid; gap: 16px; }
+.dashboard h1 { font-weight: normal; font-size: 28px; }
+.dashboard h2 { font-weight: normal; font-size: 18px; color: var(--green-dim); }
+
+.dashboard-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--green-line); }
+.dashboard-user { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+
+.dashboard .panel { display: grid; gap: 12px; padding: 16px; border: 1px solid var(--green-dim); }
+.dashboard .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+.dashboard table { width: 100%; border-collapse: collapse; }
+.dashboard th, .dashboard td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--green-line); vertical-align: middle; }
+.dashboard th { color: var(--green-dim); font-weight: normal; }
+.dashboard code { font-family: inherit; user-select: all; overflow-wrap: anywhere; }
+@media (max-width: 719px) {
+  .dashboard thead { display: none; }
+  .dashboard tr, .dashboard td { display: block; border: none; padding: 4px 0; }
+  .dashboard tr { border-bottom: 1px solid var(--green-line); padding: 12px 0; }
+  .dashboard-user { margin-left: 0; }
+}

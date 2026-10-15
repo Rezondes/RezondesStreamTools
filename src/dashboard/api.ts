@@ -1,0 +1,40 @@
+// Anfragen des Dashboards an den Server: Konto laden (/api/me) und Aktionen per POST.
+// post liefert null bei Erfolg, sonst den Fehlercode aus der Antwort (Texte in texts.de.ts).
+import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
+import type { Me } from "./navigation.ts";
+
+// undefined = lädt; offline = kein Server erreichbar; anonymous = nicht angemeldet; not-allowed = nicht freigeschaltet
+export type Account = Me | "offline" | "anonymous" | "not-allowed" | undefined;
+
+export async function loadAccount(): Promise<Account> {
+  try {
+    const response = await fetch("/api/me");
+    if (response.status === 401) return "anonymous";
+    if (response.status === 403) return "not-allowed";
+    return response.ok ? ((await response.json()) as Me) : "offline";
+  } catch {
+    // Netzwerkfehler: kein Overlay-Server erreichbar (z.B. npm run dev ohne Server)
+    return "offline";
+  }
+}
+
+export async function post(url: string): Promise<ErrorCode | null> {
+  try {
+    const response = await fetch(url, { method: "POST" });
+    if (response.ok) return null;
+    const code = (await response.text()).trim();
+    return isErrorCode(code) ? code : "server-error";
+  } catch {
+    return "server-error";
+  }
+}
+
+// JSON von url, bei Fehlern fallback
+export async function getJson<T>(url: string, fallback: T): Promise<T> {
+  try {
+    const response = await fetch(url);
+    return response.ok ? ((await response.json()) as T) : fallback;
+  } catch {
+    return fallback;
+  }
+}

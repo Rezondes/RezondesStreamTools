@@ -1,9 +1,10 @@
 // Einstellungen eines Themes: gespeicherte Werte auflösen (Standard für alles Fehlende oder Ungültige) und
 // Eingaben aus dem Dashboard prüfen. Reine Funktionen für Server und Dashboard, getestet in settings.check.ts.
+import type { SettingErrorCode } from "./errorCodes.ts";
 import { isMediaName } from "./streamerPath.ts";
 import type { SettingField, SettingValue, SettingValues, ThemeSchema } from "./theme.ts";
 
-export type SettingErrorCode = "invalid_type" | "invalid_color" | "out_of_range" | "too_long" | "too_many_lines" | "unknown_option" | "invalid_media";
+export type { SettingErrorCode };
 export type SettingError = { key: string; code: SettingErrorCode };
 
 const TEXT_LIMIT = 2000;

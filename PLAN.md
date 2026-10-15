@@ -280,7 +280,7 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 6: Dashboard-Grundgerüst
+## Package 6: Dashboard-Grundgerüst (erledigt)
 
 **Ziel:** Angemeldete Streamer sehen ein Dashboard mit Bereichen für Übersicht, Theme, Trigger, Medien, Verbindungen und Admin.
 
@@ -297,16 +297,16 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: Ohne Sitzung zeigt `/` nur die Anmeldung mit Twitch; nach Anmeldung das Dashboard.
-- [ ] AC2: Die Navigation zeigt nur Bereiche, deren Funktion für den Streamer freigegeben ist; Admin nur für Admins.
-- [ ] AC3: Übersicht listet alle OBS-URLs `/s/<login>/<szene>.html` mit Grösse und Kopier-Knopf.
-- [ ] AC4: Verbindungen zeigt Twitch- und Spotify-Status mit Verbinden/Trennen.
-- [ ] AC5: Alle Texte kommen aus `texts.de.ts`, Fehlercodes des Servers werden dort übersetzt.
+- [x] AC1: Ohne Sitzung zeigt `/` nur die Anmeldung mit Twitch; nach Anmeldung das Dashboard.
+- [x] AC2: Die Navigation zeigt nur Bereiche, deren Funktion für den Streamer freigegeben ist; Admin nur für Admins.
+- [x] AC3: Übersicht listet alle OBS-URLs `/s/<login>/<szene>.html` mit Grösse und Kopier-Knopf.
+- [x] AC4: Verbindungen zeigt Twitch- und Spotify-Status mit Verbinden/Trennen.
+- [x] AC5: Alle Texte kommen aus `texts.de.ts`, Fehlercodes des Servers werden dort übersetzt.
 
 ### Tests (TDD)
 
 1. `src/dashboard/navigation.check.ts` - AC2: Gegeben `/api/me` mit Funktionen und `admin`; Erwartet sichtbare Bereiche.
-2. `src/dashboard/texts.check.ts` - AC5: jeder Fehlercode aus `server/` hat einen Text (Codes aus einer gemeinsamen Liste `src/core/errorCodes.ts`).
+2. `src/dashboard/texts.de.check.ts` - AC5: jeder Fehlercode aus `server/` hat einen Text (Codes aus einer gemeinsamen Liste `src/core/errorCodes.ts`).
 3. Manuell: Anmeldung, Navigation, Kopieren, Verbinden/Trennen (AC1, AC3, AC4).
 
 ### Umsetzungsschritte

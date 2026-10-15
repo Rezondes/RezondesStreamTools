@@ -29,6 +29,8 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/themes/matrix/values.ts": "typed view of the theme context; typing comes from settings.ts",
   "src/themes/matrix/decode.ts": "React hook over core useDecode with a timing table",
   "src/themes/matrix/tones.ts": "Web Audio output",
+  "src/core/errorCodes.ts": "list of codes, checked in src/dashboard/texts.de.check.ts",
+  "src/dashboard/api.ts": "network client of the dashboard",
   "server/index.ts": "HTTP entry point",
   "server/chat.ts": "network client; parsing is checked in irc.ts",
   "server/http.ts": "HTTP and file IO helpers",
