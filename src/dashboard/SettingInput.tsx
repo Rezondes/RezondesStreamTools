@@ -22,12 +22,18 @@ export default function SettingInput({ field, value, error, media, onChange, onR
   const id = `setting-${field.key}`;
   return (
     <div className={`setting${error ? " invalid" : ""}`}>
-      <label htmlFor={id}>{field.label}{field.type === "number" && field.unit ? ` (${field.unit})` : ""}</label>
+      <label htmlFor={id}>{field.label}{field.type === "number" ? numberHint(field.unit, TEXTS.theme.range(field.min, field.max)) : ""}</label>
       <Input id={id} field={field} value={value} media={media} onChange={onChange} invalid={Boolean(error)} />
       {!isDefault(field, value) && <button type="button" className="btn" onClick={onReset}>{TEXTS.theme.resetField}</button>}
       {error && <span className="setting-error" role="alert">{TEXTS.errors[error]}</span>}
     </div>
   );
+}
+
+// Einheit und Bereich hinter dem Label, z.B. " (s, 0 bis 10)"
+function numberHint(unit: string | undefined, range: string) {
+  const parts = [unit, range].filter(Boolean);
+  return parts.length > 0 ? ` (${parts.join(", ")})` : "";
 }
 
 type InputProps = Pick<Props, "field" | "value" | "media" | "onChange"> & { id: string; invalid: boolean };

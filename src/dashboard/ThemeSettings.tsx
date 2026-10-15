@@ -21,23 +21,38 @@ type Draft = { values: SettingValues; set: (update: (values: SettingValues) => S
 const defaultSchema = findTheme(DEFAULT_THEME)!;
 
 export default function ThemeSettings({ me }: { me: Me }) {
-  const { file, draft, setDraft, errors, notice, media, save } = useSettingsFile();
-  if (!file) return <p className="muted">{notice && notice !== "saved" && notice !== "invalid" ? TEXTS.errors[notice] : TEXTS.loading}</p>;
+  const { file, draft, setDraft, errors, notice, media, save, load } = useSettingsFile();
+  const [search, setSearch] = useState("");
+  if (!file) {
+    if (!notice || notice === "saved" || notice === "invalid") return <p className="muted">{TEXTS.loading}</p>;
+    return (
+      <p className="actions">
+        <span className="error" role="alert">{TEXTS.errors[notice]}</span>
+        <button className="btn" onClick={() => void load()}>{TEXTS.retry}</button>
+      </p>
+    );
+  }
   const schema = findTheme(file.theme) ?? defaultSchema;
-  const changed = changedKeys(resolveSettings(schema, file.values[schema.id]), draft);
+  const saved = resolveSettings(schema, file.values[schema.id]);
+  const changed = changedKeys(saved, draft);
+  const switchTheme = (id: string) => {
+    if (changed.length > 0 && !confirm(TEXTS.theme.confirmSwitch(changed.length))) return;
+    save(id, file.values[id] ?? {});
+  };
 
   return (
     <section className="panel theme-settings">
       <label className="setting">
         {TEXTS.theme.choose}
-        <select value={schema.id} onChange={event => save(event.target.value, file.values[event.target.value] ?? {})}>
+        <select value={schema.id} onChange={event => switchTheme(event.target.value)}>
           {file.themes.map(theme => <option key={theme.id} value={theme.id}>{theme.name}</option>)}
         </select>
       </label>
 
       <div className="actions settings-bar">
         <button className="btn primary" disabled={changed.length === 0} onClick={() => save(schema.id, draft)}>{TEXTS.theme.save}</button>
-        <button className="btn" onClick={() => setDraft(() => resetAll(schema))}>{TEXTS.theme.resetAll}</button>
+        <button className="btn" disabled={changed.length === 0} onClick={() => setDraft(() => saved)}>{TEXTS.theme.discard}</button>
+        <button className="btn" onClick={() => { if (confirm(TEXTS.theme.confirmReset)) setDraft(() => resetAll(schema)); }}>{TEXTS.theme.resetAll}</button>
         <span className="muted" role="status">
           {changed.length > 0 ? `${TEXTS.theme.unsaved} ${changed.length}` : notice === "saved" ? TEXTS.theme.saved : ""}
         </span>
@@ -46,19 +61,31 @@ export default function ThemeSettings({ me }: { me: Me }) {
       {notice && notice !== "saved" && notice !== "invalid" && <p className="error" role="alert">{TEXTS.errors[notice]}</p>}
 
       <div className="settings-layout">
-        <SettingsGroups schema={schema} draft={{ values: draft, set: setDraft }} errors={errors} media={media} />
+        <div className="settings-groups">
+          <label className="setting">
+            {TEXTS.theme.search}
+            <input type="search" value={search} onChange={event => setSearch(event.target.value)} />
+          </label>
+          <SettingsGroups schema={schema} search={search} draft={{ values: draft, set: setDraft }} errors={errors} media={media} />
+        </div>
         <ScenePreview login={me.login} settings={{ theme: schema.id, values: resolveSettings(schema, draft) }} />
       </div>
     </section>
   );
 }
 
-// Felder des Schemas, je Gruppe aufklappbar (die erste offen)
-function SettingsGroups({ schema, draft, errors, media }: { schema: ThemeSchema; draft: Draft; errors: Record<string, SettingErrorCode>; media: readonly string[] }) {
+// Felder des Schemas, je Gruppe aufklappbar (die erste offen); mit Suche nur passende Felder, alle Gruppen offen
+type GroupsProps = { schema: ThemeSchema; search: string; draft: Draft; errors: Record<string, SettingErrorCode>; media: readonly string[] };
+function SettingsGroups({ schema, search, draft, errors, media }: GroupsProps) {
+  const query = search.trim().toLowerCase();
+  const groups = groupFields(schema)
+    .map(({ group, fields }) => ({ group, fields: query ? fields.filter(field => `${group} ${field.label}`.toLowerCase().includes(query)) : fields }))
+    .filter(({ fields }) => fields.length > 0);
+  if (groups.length === 0) return <p className="muted">{TEXTS.theme.noMatch}</p>;
   return (
-    <div className="settings-groups">
-      {groupFields(schema).map(({ group, fields }, index) => (
-        <details key={group} className="settings-group" open={index === 0}>
+    <>
+      {groups.map(({ group, fields }, index) => (
+        <details key={`${group}${query ? "-search" : ""}`} className="settings-group" open={Boolean(query) || index === 0}>
           <summary>{group}</summary>
           {fields.map(field => (
             <SettingInput
@@ -73,7 +100,7 @@ function SettingsGroups({ schema, draft, errors, media }: { schema: ThemeSchema;
           ))}
         </details>
       ))}
-    </div>
+    </>
   );
 }
 
@@ -86,6 +113,7 @@ function useSettingsFile() {
   const [media, setMedia] = useState<string[]>([]);
 
   const load = useCallback(async () => {
+    setNotice(null);
     const loaded = await getJson<SettingsFile | null>("/api/settings", null);
     if (!loaded) return setNotice("server-error");
     setFile(loaded);
@@ -115,5 +143,5 @@ function useSettingsFile() {
       .catch((error: unknown) => console.warn("Saving settings failed:", error));
   };
 
-  return { file, draft, setDraft, errors, notice, media, save };
+  return { file, draft, setDraft, errors, notice, media, save, load };
 }
