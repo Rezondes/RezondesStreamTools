@@ -37,6 +37,12 @@ export const ROUTES = {
   // Theme und Einstellungen des eigenen Profils
   "GET /api/settings": { guard: "session", features: ["themes"] },
   "POST /api/settings": { guard: "session", features: ["themes"] },
+  // Rendern: Stinger braucht die Funktion stinger, Banner die Funktion banners; der Handler prüft je Clip
+  "POST /api/render/start": SESSION,
+  "POST /api/render/frame": SESSION,
+  "POST /api/render/done": SESSION,
+  "GET /api/render/files": SESSION,
+  "GET /api/render/file": SESSION,
   "GET /api/admin/access": ADMIN,
   "POST /api/admin/access": ADMIN,
   "GET /api/admin/streamers": ADMIN,

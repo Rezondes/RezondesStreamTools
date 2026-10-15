@@ -45,7 +45,6 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
         </p>
       )}
       {me.features.triggers && me.features.fx && <TriggerButtons act={act} />}
-      <p><a className="btn" href="#/stinger">{TEXTS.overview.stinger}</a></p>
     </section>
   );
 }

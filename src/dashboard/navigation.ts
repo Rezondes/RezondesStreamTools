@@ -4,21 +4,24 @@
 // Antwort von GET /api/me
 export type Me = { login: string; admin: boolean; live: boolean; spotify: boolean | null; features: Record<string, boolean> };
 
-export type Section = "overview" | "theme" | "triggers" | "media" | "connections" | "admin";
+export type Section = "overview" | "theme" | "triggers" | "media" | "render" | "connections" | "admin";
 
-// Reihenfolge = Reihenfolge in der Navigation; needs: Funktionen (alle nötig) oder "admin"
-const SECTIONS: readonly { section: Section; needs: readonly string[] | "admin" }[] = [
-  { section: "overview", needs: [] },
-  { section: "theme", needs: ["themes"] },
-  { section: "triggers", needs: ["triggers", "fx"] },
-  { section: "media", needs: ["triggers", "fx"] },
-  { section: "connections", needs: [] },
+// Reihenfolge = Reihenfolge in der Navigation. needs: Liste von Alternativen, eine davon muss ganz an sein
+// (z.B. Rendern mit stinger oder mit banners), oder "admin"
+const SECTIONS: readonly { section: Section; needs: readonly (readonly string[])[] | "admin" }[] = [
+  { section: "overview", needs: [[]] },
+  { section: "theme", needs: [["themes"]] },
+  { section: "triggers", needs: [["triggers", "fx"]] },
+  { section: "media", needs: [["triggers", "fx"]] },
+  { section: "render", needs: [["stinger"], ["banners"]] },
+  { section: "connections", needs: [[]] },
   { section: "admin", needs: "admin" },
 ];
 
 export function visibleSections(me: Me): Section[] {
+  const on = (features: readonly string[]) => features.every(feature => me.features[feature] === true);
   return SECTIONS
-    .filter(({ needs }) => (needs === "admin" ? me.admin : needs.every(feature => me.features[feature] === true)))
+    .filter(({ needs }) => (needs === "admin" ? me.admin : needs.some(on)))
     .map(({ section }) => section);
 }
 

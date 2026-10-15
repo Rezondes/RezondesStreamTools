@@ -191,24 +191,18 @@ Mitgeliefert sind `lizard.svg` und `lizard.wav` (selbst erstellt, in `config/med
 Eigene Dateien im Editor hochladen oder in den Medienordner des Profils legen und den Namen eintragen.
 Auf der Übersicht gibt es für jede Regel einen Test-Knopf.
 
-## Twitch-Banner
+## Stinger und Twitch-Banner (Bereich `[ RENDERN ]`)
 
-`http://localhost:5173/#/stinger` zeigt Stinger, Profilbanner (1200x480) und Offline-Banner (1920x1080) mit Vorschau.
-`[ RENDERN ]` erzeugt `render/profile.gif` bzw. `render/offline.gif` (Endlosschleife, unter 10 MB) und ein Standbild als `.png`.
+Der Bereich erscheint mit der Funktion `stinger` oder `banners`. Er zeigt Stinger (1920x1080), Profilbanner (1200x480)
+und Offline-Banner (1920x1080) mit Vorschau und Zeitleiste, gezeichnet mit den gespeicherten Einstellungen des
+Streamers (Theme `matrix`, Gruppen Stinger und Banner; Animation in `src/themes/matrix/stinger.ts` und `banners.ts`).
+`[ RENDERN ]` schickt jeden Frame als PNG an den Server, ffmpeg baut daraus in `DATA/streamers/<login>/render/`:
 
-## Stinger-Übergang
+- `stinger.webm`: VP9 mit Transparenz. In OBS: Szenenübergänge, `+`, Stinger, Videodatei wählen, Übergangspunkt wie im Dashboard angegeben (Standard 750 ms).
+- `profile.gif` bzw. `offline.gif` als Endlosschleife und ein Standbild `.png`. Über 10 MB nimmt Twitch kein GIF an; das Dashboard weist darauf hin.
 
-Animation in `src/themes/matrix/stinger.ts` (reine Funktion der Zeit, Länge, Übergangspunkt und Texte aus den Einstellungen). Vorschau mit Zeitleiste: `http://localhost:5173/#/stinger`.
-`[ RENDERN ]` schickt jeden Frame an den Dev-Server, ffmpeg baut daraus `render/stinger.webm` (VP9 mit Transparenz).
-
-Einmalig ffmpeg freischalten (npm blockiert den Download sonst):
-
-```bash
-npm install-scripts approve ffmpeg-static
-npm rebuild ffmpeg-static
-```
-
-In OBS: Szenenübergänge, `+`, Stinger, Videodatei `render/stinger.webm`, Übergangspunkt `750` ms.
+Pro Streamer läuft höchstens ein Render, mit höchstens 1200 Frames zu je 8 MB. ffmpeg steckt im Docker-Image;
+ohne Docker muss `ffmpeg` im PATH liegen (oder `FFMPEG=/pfad/zu/ffmpeg`).
 
 ## OBS-Tipps
 

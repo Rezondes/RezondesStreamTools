@@ -10,6 +10,7 @@ import Connections from "./Connections.tsx";
 import Media from "./Media.tsx";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 import Overview from "./Overview.tsx";
+import Render from "./Render.tsx";
 import { TEXTS } from "./texts.de.ts";
 import ThemeSettings from "./ThemeSettings.tsx";
 import Triggers from "./Triggers.tsx";
@@ -89,6 +90,7 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
       {section === "theme" && <ThemeSettings me={account} />}
       {section === "triggers" && <Triggers />}
       {section === "media" && <Media login={account.login} />}
+      {section === "render" && <Render me={account} />}
       {section === "admin" && <Admin />}
     </>
   );

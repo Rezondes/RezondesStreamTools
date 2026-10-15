@@ -2,8 +2,9 @@
 // (TypeScript wird beim Start entfernt): npm run server (liest server.env) oder im Docker-Container.
 // Öffentlich: Overlays unter /s/<login>/... (Szenen, status, events per SSE, media). Dashboard: Anmeldung per Twitch,
 // APIs mit Login aus dem Sitzungs-Cookie (Regel 26). Wer was darf, steht in routes.ts und access.ts.
+import { spawn } from "node:child_process";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
-import { mkdir, stat } from "node:fs/promises";
+import { copyFile, mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { randomBytes } from "node:crypto";
 import * as streamerPath from "../src/core/streamerPath.ts";
@@ -13,6 +14,7 @@ import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from
 import { createLoginStates } from "./loginStates.ts";
 import { deleteMedia, listMedia, quotaError } from "./media.ts";
 import { migrate } from "./migration.ts";
+import { CLIPS, createRenderJobs, ffmpegArgs, isClip, isOutputName, outputNames, RENDER_LIMITS } from "./render.ts";
 import * as profile from "./profile.ts";
 import { loadSettings, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 import { THEMES } from "../src/themes/registry.ts";
@@ -314,6 +316,79 @@ async function adminStreamers({ response }: Call) {
   json(response, rows);
 }
 
+// --- Rendern (Stinger, Banner) -------------------------------------------------------------------
+// Frames kommen als PNG vom Dashboard, ffmpeg (FFMPEG, sonst aus dem PATH; im Docker-Image per apk) baut das Ergebnis
+// in DATA/streamers/<login>/render/.
+const renderJobs = createRenderJobs(Date.now);
+const FFMPEG = process.env.FFMPEG ?? "ffmpeg";
+const renderFolder = (login: string) => join(profile.folder(DATA, login), "render");
+
+async function renderStart({ response, url, login }: Call) {
+  const clip = url.searchParams.get("clip") ?? "";
+  if (!isClip(clip)) return send(response, 400, "unknown-clip");
+  if (!access.hasFeature(login, CLIPS[clip].feature)) return send(response, 403, "feature-off");
+  const busy = renderJobs.start(login, clip);
+  if (busy) return send(response, 409, busy);
+  const frames = join(renderFolder(login), "frames");
+  await rm(frames, { recursive: true, force: true });
+  await mkdir(frames, { recursive: true });
+  json(response, { ok: true });
+}
+
+async function renderFrame({ request, response, url, login }: Call) {
+  const index = Number(url.searchParams.get("i"));
+  const body = await readBody(request, RENDER_LIMITS.frameBytes);
+  const error = renderJobs.frame(login, index, body.length);
+  if (error) return send(response, error === "render-not-started" ? 409 : 400, error);
+  await writeFile(join(renderFolder(login), "frames", `${String(index).padStart(4, "0")}.png`), body);
+  json(response, { ok: true });
+}
+
+async function renderDone({ response, url, login }: Call) {
+  const job = renderJobs.finish(login, Number(url.searchParams.get("fps")));
+  if (typeof job === "string") return send(response, job === "render-not-started" ? 409 : 400, job);
+  const folder = renderFolder(login);
+  const frames = join(folder, "frames");
+  const [video, still] = outputNames(job.clip);
+  const target = join(folder, video);
+  const result = await runFfmpeg(ffmpegArgs(CLIPS[job.clip].format, job.fps, frames, target));
+  // Standbild aus dem ersten Frame für Stellen, an denen Twitch kein animiertes GIF zeigt
+  if (result === 0 && still) await copyFile(join(frames, "0000.png"), join(folder, still));
+  await rm(frames, { recursive: true, force: true });
+  if (result !== 0) return send(response, 500, result === "missing" ? "ffmpeg-missing" : "render-failed");
+  const bytes = (await stat(target)).size;
+  console.log(`Rendered ${video} for ${login}: ${job.frames} frames, ${bytes} bytes`);
+  json(response, { files: outputNames(job.clip), bytes, tooLarge: CLIPS[job.clip].format === "gif" && bytes > RENDER_LIMITS.gifWarnBytes });
+}
+
+// Exit-Code von ffmpeg, "missing" wenn es nicht startet
+function runFfmpeg(args: string[]): Promise<number | "missing"> {
+  return new Promise(done => {
+    const child = spawn(FFMPEG, args, { stdio: ["ignore", "ignore", "pipe"] });
+    let log = "";
+    child.stderr.on("data", (chunk: Buffer) => { log = (log + chunk.toString()).slice(-2000); });
+    child.on("error", () => done("missing"));
+    child.on("close", code => {
+      if (code !== 0) console.error(`ffmpeg failed (${code ?? "?"}): ${log}`);
+      done(code ?? 1);
+    });
+  });
+}
+
+// Fertige Dateien des Streamers mit Grösse
+async function renderFiles({ response, login }: Call) {
+  const folder = renderFolder(login);
+  const names = (await readdir(folder).catch(() => [] as string[])).filter(isOutputName).sort();
+  json(response, await Promise.all(names.map(async name => ({ name, size: (await stat(join(folder, name))).size }))));
+}
+
+function renderFile({ response, url, login }: Call) {
+  const name = url.searchParams.get("name") ?? "";
+  if (!isOutputName(name)) return send(response, 400, "invalid-name");
+  response.setHeader("Content-Disposition", `attachment; filename="${name}"`);
+  return serveStatic(response, renderFolder(login), `/${name}`, true);
+}
+
 // Jede Route aus ROUTES hat genau einen Handler (der Typ erzwingt es)
 const HANDLERS: Record<RouteKey, Handler> = {
   "GET /auth/login": twitchLogin,
@@ -334,6 +409,11 @@ const HANDLERS: Record<RouteKey, Handler> = {
   "POST /api/twitch/disconnect": twitchDisconnect,
   "GET /api/settings": settings,
   "POST /api/settings": saveSettingsRequest,
+  "POST /api/render/start": renderStart,
+  "POST /api/render/frame": renderFrame,
+  "POST /api/render/done": renderDone,
+  "GET /api/render/files": renderFiles,
+  "GET /api/render/file": renderFile,
   "GET /api/admin/access": ({ response }) => json(response, access.get()),
   "POST /api/admin/access": saveAccess,
   "GET /api/admin/streamers": adminStreamers,

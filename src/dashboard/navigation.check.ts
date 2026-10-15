@@ -8,6 +8,9 @@ const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo"
 assert.deepEqual(visibleSections(me({})), ["overview", "connections"]);
 // Theme mit themes, Trigger und Medien nur mit triggers und fx zusammen
 assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true })), ["overview", "theme", "triggers", "media", "connections"]);
+// Rendern mit stinger oder banners
+assert.deepEqual(visibleSections(me({ banners: true })), ["overview", "render", "connections"]);
+assert.deepEqual(visibleSections(me({ stinger: true, banners: false })), ["overview", "render", "connections"]);
 assert.deepEqual(visibleSections(me({ triggers: true, fx: false })), ["overview", "connections"]);
 // Admin nur für Admins
 assert.deepEqual(visibleSections(me({}, true)), ["overview", "connections", "admin"]);

@@ -421,7 +421,7 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 10: Rendern pro Streamer
+## Package 10: Rendern pro Streamer (erledigt)
 
 **Ziel:** Stinger und Banner werden pro Streamer mit seinen Einstellungen auf dem Server gerendert und heruntergeladen.
 
@@ -433,16 +433,16 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: Im Dashboard-Bereich "Rendern" wählt der Streamer Stinger, Profil- oder Offline-Banner, sieht die Vorschau mit seinen Einstellungen und rendert.
-- [ ] AC2: Frames gehen an `POST /api/render/frame`, der Server kodiert mit ffmpeg nach `data/streamers/<login>/render/<name>.webm|gif|png`.
-- [ ] AC3: Das Ergebnis ist im Dashboard herunterladbar; GIFs über 10 MB werden mit Hinweis gemeldet.
-- [ ] AC4: Pro Streamer läuft höchstens ein Render gleichzeitig; Frame-Anzahl und Grösse sind begrenzt.
-- [ ] AC5: Funktionsstufen `stinger` und `banners` werden geprüft.
+- [x] AC1: Im Dashboard-Bereich "Rendern" wählt der Streamer Stinger, Profil- oder Offline-Banner, sieht die Vorschau mit seinen Einstellungen und rendert.
+- [x] AC2: Frames gehen an `POST /api/render/frame`, der Server kodiert mit ffmpeg nach `data/streamers/<login>/render/<name>.webm|gif|png`.
+- [x] AC3: Das Ergebnis ist im Dashboard herunterladbar; GIFs über 10 MB werden mit Hinweis gemeldet.
+- [x] AC4: Pro Streamer läuft höchstens ein Render gleichzeitig; Frame-Anzahl und Grösse sind begrenzt.
+- [x] AC5: Funktionsstufen `stinger` und `banners` werden geprüft.
 
 ### Tests (TDD)
 
 1. `server/render.check.ts > ffmpeg-Argumente` - AC2: Gegeben `gif`/`webm`, fps; Erwartet Argumentliste (Palette, Alpha).
-2. `server/render.check.ts > Grenzen` - AC4: zweiter Start während laufendem Render ergibt `render_busy`, Frame 10000 abgelehnt.
+2. `server/render.check.ts > Grenzen` - AC4: zweiter Start während laufendem Render ergibt `render-busy`, Frame 10000 abgelehnt.
 3. Manuell: Rendern, Herunterladen, in OBS einbinden (AC1, AC3).
 
 ### Umsetzungsschritte

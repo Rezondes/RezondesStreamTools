@@ -42,17 +42,6 @@
       "count": 1
     }
   },
-  "src/scenes/Stinger.tsx": {
-    "id-denylist": {
-      "count": 2
-    },
-    "id-length": {
-      "count": 8
-    },
-    "max-lines-per-function": {
-      "count": 1
-    }
-  },
   "src/themes/matrix/banners.ts": {
     "id-length": {
       "count": 6
@@ -61,11 +50,6 @@
   "src/themes/matrix/stinger.ts": {
     "id-length": {
       "count": 5
-    }
-  },
-  "vite.config.ts": {
-    "id-length": {
-      "count": 2
     }
   }
 }

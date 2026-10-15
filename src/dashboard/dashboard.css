@@ -13,6 +13,16 @@
 .dashboard th, .dashboard td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--green-line); vertical-align: middle; }
 .dashboard th { color: var(--green-dim); font-weight: normal; }
 .dashboard code { font-family: inherit; user-select: all; overflow-wrap: anywhere; }
+/* Rendern: Vorschau mit Zeitleiste; hinter dem Stinger zwei Test-Szenen, damit man den Schnitt sieht */
+.render-view { position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--green-line); overflow: hidden; }
+.render-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.fake-scene { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(24px, 6vw, 72px); color: #fff; }
+.fake-scene.a { background: linear-gradient(135deg, #1b3a6b, #4a1b6b); }
+.fake-scene.b { background: linear-gradient(135deg, #6b3a1b, #1b6b4a); }
+.render-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.render-bar input { flex: 1; min-width: 160px; }
+.render-files { list-style: none; display: grid; gap: 8px; }
+
 /* Medien: kleine Vorschau je Datei */
 .media-preview img, .media-preview video { display: block; max-width: 160px; max-height: 90px; }
 .media-preview audio { max-width: 220px; }

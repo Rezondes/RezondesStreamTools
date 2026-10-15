@@ -15,6 +15,8 @@ assert.equal(TEXTS.triggers.confirmDelete("lizard"), 'Trigger "lizard" löschen?
 assert.equal(TEXTS.media.usage("1.0 MB", "200.0 MB"), "Belegt: 1.0 MB von 200.0 MB");
 assert.equal(TEXTS.media.confirm("a.gif"), '"a.gif" löschen?');
 assert.ok(TEXTS.media.confirmUsed("a.gif", "lizard, hype").includes("lizard, hype"));
+assert.equal(TEXTS.render.frame(3, 96), "Frame 3/96");
+assert.ok(TEXTS.render.hints.stinger(750).includes("750 ms"));
 
 // Codes im Server: send(res, 4xx, "code"), Weiterleitungen ?error=code und die Entscheidungen in routes.ts
 const folder = join(import.meta.dirname, "../../server");
