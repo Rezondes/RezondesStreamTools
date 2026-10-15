@@ -1,6 +1,6 @@
 // Übersicht im Dashboard: die fertigen OBS-URLs des Streamers (/s/<login>/<szene>) mit Grösse, Kopieren und
 // Test (Fake-Events), dazu Test-Alerts und Trigger zum Auslösen, wenn die Funktionen freigegeben sind.
-import { useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
 import { SCENE_SIZES, SCENES } from "../core/theme.ts";
 import type { AlertKind } from "../core/types.ts";
@@ -51,15 +51,26 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
+  const [failed, setFailed] = useState(false);
   useEffect(() => {
     if (!copied) return;
     const timer = setTimeout(() => setCopied(false), COPIED_MS);
     return () => clearTimeout(timer);
   }, [copied]);
-  const copy = () => {
-    navigator.clipboard.writeText(text).then(() => setCopied(true)).catch((error: unknown) => console.warn("Copying failed:", error));
+  const copy = (event: MouseEvent<HTMLButtonElement>) => {
+    // Ohne Zugriff auf die Zwischenablage (http ohne localhost, Rechte) die URL markieren, Strg+C bleibt
+    const code = event.currentTarget.closest("tr")?.querySelector("code");
+    navigator.clipboard.writeText(text).then(() => { setFailed(false); setCopied(true); }).catch(() => {
+      if (code) getSelection()?.selectAllChildren(code);
+      setFailed(true);
+    });
   };
-  return <button className="btn" onClick={copy}>{copied ? TEXTS.overview.copied : TEXTS.overview.copy}</button>;
+  return (
+    <>
+      <button className="btn" onClick={copy}>{copied ? TEXTS.overview.copied : TEXTS.overview.copy}</button>
+      {failed && <span role="status" className="muted">{TEXTS.overview.copyFailed}</span>}
+    </>
+  );
 }
 
 function TriggerButtons({ act }: { act: Act }) {
