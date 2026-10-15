@@ -9,6 +9,10 @@ export const TEXTS = {
   title: "REZONDES // STREAM-OVERLAYS",
   loading: "Lade ...",
   retry: "[ ERNEUT LADEN ]",
+  upload: {
+    running: (name: string, index: number, count: number) => `Lade hoch (${index}/${count}): ${name}`,
+    done: "Hochgeladen:",
+  },
   offline: "Kein Overlay-Server erreichbar. Die Overlays brauchen den Server (Docker oder npm run server).",
   anonymous: "Nicht angemeldet.",
   login: "[ MIT TWITCH ANMELDEN ]",
@@ -75,7 +79,6 @@ export const TEXTS = {
     upload: "[ MEDIEN HOCHLADEN ]",
     unsaved: "● ungespeicherte Änderungen",
     saved: "Gespeichert. Die Trigger sind sofort aktiv.",
-    uploaded: "Hochgeladen:",
     empty: "Noch keine Trigger. [ + TRIGGER ] legt einen an.",
     confirmDelete: (name: string) => `Trigger "${name}" löschen?`,
     copySuffix: "-kopie",
@@ -125,7 +128,6 @@ export const TEXTS = {
   media: {
     usage: (used: string, limit: string) => `Belegt: ${used} von ${limit}`,
     upload: "[ HOCHLADEN ]",
-    uploaded: "Hochgeladen:",
     deleted: "Gelöscht:",
     empty: "Noch keine Medien. [ HOCHLADEN ] fügt Bilder, Videos oder Töne hinzu.",
     file: "Datei",

@@ -3,8 +3,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { MEDIA_KIND } from "../core/settings.ts";
 import * as streamerPath from "../core/streamerPath.ts";
-import { deleteMedia, loadMedia, uploadMedia, type MediaList } from "./api.ts";
+import { deleteMedia, loadMedia, type MediaList } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";
+import UploadButton from "./UploadButton.tsx";
 
 const MEDIA_TEXT = TEXTS.media;
 const KILOBYTE = 1024;
@@ -18,13 +19,6 @@ export default function Media({ login }: { login: string }) {
   const refresh = useCallback(() => { loadMedia().then(setList).catch(() => setNote(TEXTS.errors["server-error"])); }, []);
   useEffect(refresh, [refresh]);
 
-  const upload = (files: FileList | null) => {
-    Array.from(files ?? []).reduce((previous, file) => previous.then(async () => {
-      const code = await uploadMedia(file);
-      setNote(code ? `${file.name}: ${TEXTS.errors[code]}` : `${MEDIA_TEXT.uploaded} ${file.name}`);
-    }), Promise.resolve()).then(refresh).catch(() => setNote(TEXTS.errors["server-error"]));
-  };
-
   const remove = (name: string, usedBy: string[]) => {
     if (!confirm(usedBy.length ? MEDIA_TEXT.confirmUsed(name, usedBy.join(", ")) : MEDIA_TEXT.confirm(name))) return;
     deleteMedia(name)
@@ -37,12 +31,9 @@ export default function Media({ login }: { login: string }) {
   return (
     <section className="panel">
       <div className="actions">
-        <label className="btn primary">
-          {MEDIA_TEXT.upload}
-          <input type="file" multiple accept="image/*,video/mp4,video/webm,audio/*" className="visually-hidden" onChange={event => { upload(event.target.files); event.target.value = ""; }} />
-        </label>
         <span className="muted">{MEDIA_TEXT.usage(megabytes(list.usedBytes), megabytes(list.limitBytes))}</span>
         <span role="status">{note}</span>
+        <UploadButton label={MEDIA_TEXT.upload} primary onDone={refresh} />
       </div>
       {list.files.length === 0 && <p className="muted">{MEDIA_TEXT.empty}</p>}
       {list.files.length > 0 && (

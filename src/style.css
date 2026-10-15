@@ -43,6 +43,7 @@ body.overlay { background: transparent; overflow: hidden; }
 .error { border: 1px solid var(--green); border-left-width: 6px; color: var(--green); padding: 6px 10px; }
 .error::before { content: "Fehler: "; font-weight: bold; }
 /* Unsichtbar, aber per Tastatur erreichbar (Datei-Auswahl im Upload-Button) */
+.upload-report { flex-basis: 100%; list-style: none; display: grid; gap: 4px; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* --- Trigger-Editor ---------------------------------------------------------------------- */

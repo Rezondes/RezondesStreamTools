@@ -7,8 +7,9 @@ import type { Trigger, When } from "../../server/triggers.ts";
 import { isErrorCode } from "../core/errorCodes.ts";
 import { MEDIA_KIND } from "../core/settings.ts";
 import type { FxAction } from "../core/types.ts";
-import { loadMedia, post, uploadMedia } from "./api.ts";
+import { loadMedia, post } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";
+import UploadButton from "./UploadButton.tsx";
 
 const TRIGGER_TEXT = TEXTS.triggers;
 const WHEN_TYPES = Object.keys(TRIGGER_TEXT.whenTypes) as When["type"][];
@@ -36,11 +37,8 @@ export default function Triggers() {
         <button className="btn primary" disabled={!dirty} onClick={editor.save}>{TRIGGER_TEXT.save}</button>
         <button className="btn" disabled={!dirty} onClick={() => setList(JSON.parse(saved) as Trigger[])}>{TRIGGER_TEXT.discard}</button>
         <button className="btn" onClick={() => setList([...list, newTrigger(list.length + 1)])}>{TRIGGER_TEXT.add}</button>
-        <label className="btn">
-          {TRIGGER_TEXT.upload}
-          <input type="file" multiple accept="image/*,video/mp4,video/webm,audio/*" className="visually-hidden" onChange={event => { editor.upload(event.target.files); event.target.value = ""; }} />
-        </label>
         <span className={dirty ? "" : "muted"} role="status">{dirty ? TRIGGER_TEXT.unsaved : note}</span>
+        <UploadButton label={TRIGGER_TEXT.upload} onDone={editor.refreshMedia} />
       </div>
       {errors.length > 0 && <ul className="editor-errors" role="alert">{errors.map(error => <li key={error}>{error}</li>)}</ul>}
 
@@ -107,15 +105,7 @@ function useTriggerConfig() {
       .catch(() => setErrors([TEXTS.errors["server-error"]]));
   };
 
-  const upload = (files: FileList | null) => {
-    const all = Array.from(files ?? []);
-    all.reduce((previous, file) => previous.then(async () => {
-      const code = await uploadMedia(file);
-      setNote(code ? `${file.name}: ${TEXTS.errors[code]}` : `${TRIGGER_TEXT.uploaded} ${file.name}`);
-    }), Promise.resolve()).then(refreshMedia).catch(() => setNote(TEXTS.errors["server-error"]));
-  };
-
-  return { list, setList: (next: Trigger[]) => { setList(next); setErrors([]); }, saved, media, errors, note, dirty, save, upload };
+  return { list, setList: (next: Trigger[]) => { setList(next); setErrors([]); }, saved, media, errors, note, dirty, save, refreshMedia };
 }
 
 type CardProps = { trigger: Trigger; dirty: boolean; errors: string[]; onChange: (trigger: Trigger) => void; onCopy: () => void; onDelete: () => void };
