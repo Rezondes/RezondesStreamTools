@@ -38,7 +38,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
                 <td>{SCENE_SIZES[scene].width}x{SCENE_SIZES[scene].height}</td>
                 <td className="actions">
                   <CopyButton text={url} />
-                  <a className="btn" href={`#/${scene}?demo&s=${me.login}`} target="_blank" rel="noreferrer">{TEXTS.overview.test}</a>
+                  <a className="btn" href={`${url}?demo`} target="_blank" rel="noreferrer">{TEXTS.overview.test}</a>
                 </td>
               </tr>
             );

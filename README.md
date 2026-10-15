@@ -154,7 +154,7 @@ Der Theme-Code selbst enthält keine festen Farben, Texte oder Masse; das prüft
 
 Im Dashboard (Bereich `[ THEME ]`) entsteht das Formular automatisch aus dem Schema, gruppiert und mit
 Zurücksetzen je Feld oder für alles. Die Vorschau zeigt die gewählte Szene als `iframe` mit den noch nicht
-gespeicherten Werten (`/s/<login>/<szene>?demo&preview`, Werte per `postMessage` nur von derselben Herkunft).
+gespeicherten Werten (`/s/<login>/<szene>?demo&preview`, Werte per `BroadcastChannel` nur von derselben Herkunft, auch in einem eigenen Tab).
 Ein Theme-Wechsel speichert sofort; Fehler beim Speichern erscheinen am jeweiligen Feld.
 
 Eingebaut sind `matrix` (Standard, Terminal-Look) und `starter` (klarer, moderner Look mit Verlauf, abgerundeten
