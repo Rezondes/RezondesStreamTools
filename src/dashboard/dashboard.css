@@ -58,8 +58,6 @@
 }
 .dashboard textarea { resize: vertical; white-space: pre; }
 .dashboard input[type=color] { width: 44px; height: 36px; padding: 0; border: 1px solid var(--green-dim); background: var(--black); }
-.dashboard input[type=checkbox] { accent-color: var(--green); width: 18px; height: 18px; }
-.dashboard input[type=range] { accent-color: var(--green); }
 .dashboard input:focus-visible, .dashboard select:focus-visible, .dashboard textarea:focus-visible, .dashboard summary:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
 .setting-row input[type=text] { width: auto; flex: 1; min-width: 120px; }
 
