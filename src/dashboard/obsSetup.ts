@@ -22,8 +22,16 @@ export function obsLayout(base: string, login: string, sceneNames: Record<SceneN
   ];
 }
 
-// Einstellungen der Browserquelle; Ton läuft über den OBS-Mixer (Alerts, Effekte)
-const browserSettings = (source: ObsSource) => ({ url: source.url, width: source.width, height: source.height, reroute_audio: true });
+// Einstellungen der Browserquelle; Ton läuft über den OBS-Mixer (Alerts, Effekte). Starting, BRB und Ending laden
+// neu, sobald ihre Szene aktiv wird (Timer, Countdown und Animationen beginnen von vorn), und schlafen sonst.
+// Die übrigen Overlays laufen durch, sonst gingen Alerts und Chat verloren, während ihre Szene nicht zu sehen ist.
+const browserSettings = (source: ObsSource) => ({
+  url: source.url,
+  width: source.width,
+  height: source.height,
+  reroute_audio: true,
+  ...(FULLSCREEN.includes(source.scene) ? { restart_when_active: true, shutdown: true } : {}),
+});
 
 // Link zum Ziehen auf das OBS-Fenster; OBS nimmt die layer-Parameter wieder aus der URL
 export function dragUrl(source: ObsSource) {

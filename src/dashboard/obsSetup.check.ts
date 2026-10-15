@@ -23,6 +23,9 @@ assert.equal(collection.current_scene, TEXTS.scenes.starting);
 assert.equal(collection.sources.length, 8 + 4);
 const input = collection.sources.find(source => source.name === "neo chat")!;
 assert.deepEqual(input.settings, { url: chat.url, width: 500, height: 900, reroute_audio: true });
+// Starting, BRB, Ending laden beim Aktivieren der Szene neu (Timer von vorn), die anderen laufen durch
+const brb = collection.sources.find(source => source.name === "neo brb")!;
+assert.deepEqual(brb.settings, { url: "https://overlays.example/s/neo/brb", width: 1920, height: 1080, reroute_audio: true, restart_when_active: true, shutdown: true });
 const overlays = collection.sources.find(source => source.name === "Overlays") as { settings: { items: { name: string; source_uuid?: string }[] } };
 assert.deepEqual(overlays.settings.items.find(item => item.name === "neo chat")?.source_uuid, input.uuid);
 

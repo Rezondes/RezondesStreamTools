@@ -60,7 +60,7 @@ export const TEXTS = {
     testAlerts: "Test-Alert, erscheint auch live im Stream, wenn die Alerts-Quelle in OBS aktiv ist:",
     fireTriggers: "Trigger auslösen:",
     noTriggers: "keine geladen",
-    dragHint: "Tipp: eine URL aus der Tabelle auf das OBS-Fenster ziehen, OBS legt die Browserquelle mit Name und Grösse an.",
+    dragHint: "Tipp: eine URL aus der Tabelle auf das OBS-Fenster ziehen, OBS legt die Browserquelle mit Name und Grösse an. Bei Starting, BRB und Ending danach in den Eigenschaften \"Browser aktualisieren, wenn Szene aktiv wird\" anhaken, sonst läuft der Timer weiter.",
   },
   obs: {
     title: "In OBS importieren",
