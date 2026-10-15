@@ -39,7 +39,7 @@ export default function Media({ login }: { login: string }) {
       <div className="actions">
         <label className="btn primary">
           {MEDIA_TEXT.upload}
-          <input type="file" multiple accept="image/*,video/mp4,video/webm,audio/*" hidden onChange={event => { upload(event.target.files); event.target.value = ""; }} />
+          <input type="file" multiple accept="image/*,video/mp4,video/webm,audio/*" className="visually-hidden" onChange={event => { upload(event.target.files); event.target.value = ""; }} />
         </label>
         <span className="muted">{MEDIA_TEXT.usage(megabytes(list.usedBytes), megabytes(list.limitBytes))}</span>
         <span role="status">{note}</span>

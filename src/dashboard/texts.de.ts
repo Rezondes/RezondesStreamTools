@@ -83,6 +83,8 @@ export const TEXTS = {
     enabled: "aktiv",
     test: "[ TEST ]",
     testHint: "Effekt jetzt auslösen",
+    fired: "Ausgelöst: im Fx-Overlay sichtbar, wenn es in OBS offen ist.",
+    toConnections: "[ ZU DEN VERBINDUNGEN ]",
     saveFirst: "Erst speichern",
     copy: "[ KOPIE ]",
     remove: "[ LÖSCHEN ]",

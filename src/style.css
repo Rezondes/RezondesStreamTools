@@ -42,6 +42,8 @@ body.overlay { background: transparent; overflow: hidden; }
 /* Fehler umrandet mit Präfix, damit sie nicht wie ein Primär-Button oder der aktive Tab aussehen */
 .error { border: 1px solid var(--green); border-left-width: 6px; color: var(--green); padding: 6px 10px; }
 .error::before { content: "Fehler: "; font-weight: bold; }
+/* Unsichtbar, aber per Tastatur erreichbar (Datei-Auswahl im Upload-Button) */
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
 /* --- Trigger-Editor ---------------------------------------------------------------------- */
 .editor { max-width: 1280px; margin: 0 auto; padding: 24px 16px 64px; display: grid; gap: 16px; }

@@ -2,6 +2,7 @@
 // Speichern prüft die Regeln auf dem Server; bei Fehlern bleibt die Datei unverändert. Braucht die laufende
 // Twitch-Verbindung des Streamers (sonst kommt der Fehlercode not-connected).
 import { useEffect, useState } from "react";
+import type { ErrorCode } from "../core/errorCodes.ts";
 import type { Trigger, When } from "../../server/triggers.ts";
 import { isErrorCode } from "../core/errorCodes.ts";
 import { MEDIA_KIND } from "../core/settings.ts";
@@ -19,7 +20,14 @@ const newTrigger = (number: number): Trigger => ({ name: `trigger${number}`, whe
 export default function Triggers() {
   const editor = useTriggerConfig();
   const { list, setList, saved, media, errors, note, dirty } = editor;
-  if (!list) return <section className="editor">{errors.map(error => <p key={error} className="error">{error}</p>)}</section>;
+  if (!list) {
+    return (
+      <section className="editor">
+        {errors.map(error => <p key={error} className="error" role="alert">{error}</p>)}
+        {errors.includes(TEXTS.errors["not-connected"]) && <a className="btn" href="#/connections">{TRIGGER_TEXT.toConnections}</a>}
+      </section>
+    );
+  }
 
   const replace = (index: number, trigger: Trigger) => setList(list.map((current, position) => (position === index ? trigger : current)));
   return (
@@ -30,7 +38,7 @@ export default function Triggers() {
         <button className="btn" onClick={() => setList([...list, newTrigger(list.length + 1)])}>{TRIGGER_TEXT.add}</button>
         <label className="btn">
           {TRIGGER_TEXT.upload}
-          <input type="file" multiple accept="image/*,video/mp4,video/webm,audio/*" hidden onChange={event => { editor.upload(event.target.files); event.target.value = ""; }} />
+          <input type="file" multiple accept="image/*,video/mp4,video/webm,audio/*" className="visually-hidden" onChange={event => { editor.upload(event.target.files); event.target.value = ""; }} />
         </label>
         <span className={dirty ? "" : "muted"} role="status">{dirty ? TRIGGER_TEXT.unsaved : note}</span>
       </div>
@@ -46,6 +54,7 @@ export default function Triggers() {
           key={index}
           trigger={trigger}
           dirty={dirty}
+          errors={errors.filter(error => error.startsWith(`Trigger "${trigger.name || "?"}":`))}
           onChange={next => replace(index, next)}
           onCopy={() => setList([...list.slice(0, index + 1), { ...structuredClone(trigger), name: `${trigger.name}${TRIGGER_TEXT.copySuffix}` }, ...list.slice(index + 1)])}
           onDelete={() => { if (confirm(TRIGGER_TEXT.confirmDelete(trigger.name))) setList(list.filter((_, position) => position !== index)); }}
@@ -109,9 +118,9 @@ function useTriggerConfig() {
   return { list, setList: (next: Trigger[]) => { setList(next); setErrors([]); }, saved, media, errors, note, dirty, save, upload };
 }
 
-type CardProps = { trigger: Trigger; dirty: boolean; onChange: (trigger: Trigger) => void; onCopy: () => void; onDelete: () => void };
+type CardProps = { trigger: Trigger; dirty: boolean; errors: string[]; onChange: (trigger: Trigger) => void; onCopy: () => void; onDelete: () => void };
 
-function TriggerCard({ trigger, dirty, onChange, onCopy, onDelete }: CardProps) {
+function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: CardProps) {
   const who = trigger.who ?? ["everyone"];
   // "alle" schliesst die anderen Rollen aus und umgekehrt
   const toggleRole = (role: string) => {
@@ -132,11 +141,11 @@ function TriggerCard({ trigger, dirty, onChange, onCopy, onDelete }: CardProps) 
       <div className="row">
         <label className="grow">{TRIGGER_TEXT.name} <input value={trigger.name} onChange={event => onChange({ ...trigger, name: event.target.value })} /></label>
         <label className="check"><input type="checkbox" checked={trigger.enabled !== false} onChange={event => onChange({ ...trigger, enabled: event.target.checked })} /> {TRIGGER_TEXT.enabled}</label>
-        <button className="btn" disabled={dirty} title={dirty ? TRIGGER_TEXT.saveFirst : TRIGGER_TEXT.testHint}
-          onClick={() => { post(`/api/trigger?name=${encodeURIComponent(trigger.name)}`).catch(() => {}); }}>{TRIGGER_TEXT.test}</button>
+        <TestButton name={trigger.name} dirty={dirty} />
         <button className="btn" onClick={onCopy}>{TRIGGER_TEXT.copy}</button>
         <button className="btn" onClick={onDelete}>{TRIGGER_TEXT.remove}</button>
       </div>
+      {errors.length > 0 && <ul className="editor-errors" role="alert">{errors.map(error => <li key={error}>{error}</li>)}</ul>}
 
       <div className="row">
         <label>{TRIGGER_TEXT.when}
@@ -173,6 +182,19 @@ function TriggerCard({ trigger, dirty, onChange, onCopy, onDelete }: CardProps) 
       ))}
       <button className="btn" onClick={() => onChange({ ...trigger, do: [...trigger.do, newAction()] })}>{TRIGGER_TEXT.addAction}</button>
     </section>
+  );
+}
+
+// [ TEST ] löst den gespeicherten Trigger aus und meldet, ob es geklappt hat
+function TestButton({ name, dirty }: { name: string; dirty: boolean }) {
+  // undefined = noch nicht getestet, null = ausgelöst, sonst der Fehlercode
+  const [tested, setTested] = useState<ErrorCode | null | undefined>(undefined);
+  return (
+    <>
+      <button className="btn" disabled={dirty} title={dirty ? TRIGGER_TEXT.saveFirst : TRIGGER_TEXT.testHint}
+        onClick={() => { post(`/api/trigger?name=${encodeURIComponent(name)}`).then(setTested).catch(() => setTested("server-error")); }}>{TRIGGER_TEXT.test}</button>
+      {tested !== undefined && <span className={tested ? "error" : "muted"} role="status">{tested ? TEXTS.errors[tested] : TRIGGER_TEXT.fired}</span>}
+    </>
   );
 }
 
