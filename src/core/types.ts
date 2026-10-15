@@ -41,12 +41,18 @@ export type ChatRemoval = { id?: string; login?: string };
 // features: welche Funktionen für den Streamer an sind (alerts, chat, music, fx, triggers, ...)
 export type ServerStatus = { login: string; live: boolean; spotify: boolean | null; features: Record<string, boolean> };
 
-// Nachrichten vom Server an die Overlays (SSE), gesendet von server/streamer.ts
+// Eingeklinkter Chatter als Figur in der Szene minimes. color: #rrggbb oder null = Standardfarbe des Themes
+export type Minime = { login: string; user: string; color: string | null };
+
+// Nachrichten vom Server an die Overlays (SSE), gesendet von server/streamer.ts.
+// minimes: die ganze aktuelle Liste; minimeChat: dieser Chatter hat geschrieben (das Theme reagiert darauf)
 export type ServerMessage =
   | { type: "alert"; alert: Alert }
   | { type: "music"; track: Track | null }
   | { type: "fx"; event: FxEvent }
-  | { type: "settings"; settings: PublicSettings };
+  | { type: "settings"; settings: PublicSettings }
+  | { type: "minimes"; minimes: Minime[] }
+  | { type: "minimeChat"; login: string };
 
 // Gewähltes Theme und seine aufgelösten Einstellungen (GET /s/<login>/settings und SSE "settings")
 export type PublicSettings = { theme: string; values: SettingValues };
