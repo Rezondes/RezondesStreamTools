@@ -85,6 +85,8 @@ export const TEXTS = {
     resetField: "[ STANDARD ]",
     preview: "Vorschau",
     previewScene: "Szene (Vorschau und Einstellungen)",
+    openTab: "[ VORSCHAU IN NEUEM TAB ]",
+    openTabHint: "Zeigt ungespeicherte Änderungen sofort, solange dieser Tab offen ist.",
     elsewhere: (groups: string) => `${groups}: im Bereich RENDERN.`,
     colorPicker: "Farbe wählen:",
     builtInSound: "(eingebauter Ton)",

@@ -51,4 +51,6 @@ function ThemedScene({ scene }: { scene: SceneName }) {
 const scene = SCENES.find(name => name === path);
 
 document.body.classList.toggle("overlay", Boolean(scene));
+// Vorschau im eigenen Tab: Schachbrett statt weisser Fläche hinter dem transparenten Overlay
+document.body.classList.toggle("preview-tab", Boolean(scene) && new URLSearchParams(location.search).has("preview") && parent === window);
 createRoot(document.getElementById("root")!).render(scene ? <ThemedScene scene={scene} /> : <Dashboard />);

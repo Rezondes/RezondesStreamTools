@@ -17,6 +17,7 @@ body {
 }
 /* Overlays sind transparent, OBS legt sie über das Bild */
 body.overlay { background: transparent; overflow: hidden; }
+body.overlay.preview-tab { background: repeating-conic-gradient(#1a1a1a 0 25%, #101010 0 50%) 0 0 / 24px 24px; overflow: auto; }
 
 .muted { color: var(--green-dim); }
 .glow { text-shadow: 0 0 6px rgba(57, 255, 20, 0.8), 0 0 18px rgba(57, 255, 20, 0.45); }

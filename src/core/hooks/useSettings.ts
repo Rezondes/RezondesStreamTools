@@ -1,6 +1,7 @@
 // Hook: gewähltes Theme und Einstellungen des Streamers. null, bis /s/<login>/settings geladen ist; ohne Streamer
 // oder Server gilt fallback (Standardwerte). Änderungen aus dem Dashboard kommen sofort an (SSE "settings").
-// Mit ?preview (Vorschau im Dashboard) kommen ungespeicherte Werte per postMessage, nur von derselben Herkunft.
+// Mit ?preview (Vorschau im Dashboard, als iframe oder im eigenen Tab) kommen ungespeicherte Werte über einen
+// BroadcastChannel, den nur Seiten derselben Herkunft im selben Browser erreichen.
 // useThemeValues liest die Werte in einer Szene aus dem Kontext, den main.tsx setzt.
 import { createContext, useContext, useEffect, useState } from "react";
 import { connect, fetchSettings } from "../connection.ts";
@@ -8,8 +9,8 @@ import { params } from "../params.ts";
 import type { SettingValues } from "../theme.ts";
 import type { PublicSettings } from "../types.ts";
 
-// Nachrichten zwischen Dashboard und Vorschau: ready = die Szene hört zu, settings = neue Werte für die Szene
-export const PREVIEW = { ready: "rezondes-preview-ready", settings: "rezondes-preview-settings" } as const;
+// Kanal zwischen Dashboard und Vorschau: ready = eine Szene hört zu, settings = neue Werte für die Szenen
+export const PREVIEW = { channel: "rezondes-preview", ready: "ready", settings: "settings" } as const;
 
 export function useSettings(fallback: PublicSettings): PublicSettings | null {
   const [settings, setSettings] = useState<PublicSettings | null>(null);
@@ -24,14 +25,14 @@ export function useSettings(fallback: PublicSettings): PublicSettings | null {
   }, [fallback]);
 
   useEffect(() => {
-    if (!params.has("preview") || parent === window) return;
-    const receive = (event: MessageEvent) => {
+    if (!params.has("preview")) return;
+    const channel = new BroadcastChannel(PREVIEW.channel);
+    channel.onmessage = (event: MessageEvent) => {
       const data = event.data as { type?: unknown; settings?: PublicSettings } | null;
-      if (event.origin === location.origin && data?.type === PREVIEW.settings && data.settings) setSettings(data.settings);
+      if (data?.type === PREVIEW.settings && data.settings) setSettings(data.settings);
     };
-    addEventListener("message", receive);
-    parent.postMessage({ type: PREVIEW.ready }, location.origin);
-    return () => removeEventListener("message", receive);
+    channel.postMessage({ type: PREVIEW.ready });
+    return () => channel.close();
   }, []);
 
   return settings;
