@@ -2,12 +2,12 @@
 // Parameter: ?min=5 oder ?at=20:00 (Countdown, nur starting), ?next=Freitag 20 Uhr (ending), ?ticker=Text
 import { useLayoutEffect, useRef, useState } from "react";
 import MatrixRain from "../MatrixRain.tsx";
-import { numberParam, params } from "../core/params.ts";
-import { clock } from "../core/overlayTiming.ts";
-import { useDecode } from "../core/hooks/useDecode.ts";
-import { useNow } from "../core/hooks/useNow.ts";
-import type { Line } from "../core/typing.ts";
-import { useTerminal } from "../core/hooks/useTerminal.ts";
+import { numberParam, params } from "../../../core/params.ts";
+import { clock } from "../../../core/overlayTiming.ts";
+import { useDecode } from "../../../core/hooks/useDecode.ts";
+import { useNow } from "../../../core/hooks/useNow.ts";
+import type { Line } from "../../../core/typing.ts";
+import { useTerminal } from "../../../core/hooks/useTerminal.ts";
 
 // Fünf sichtbare Zeilen, Start nach der Einschalt-Animation, 1,8 bis 3,2 s Pause zwischen den Zeilen
 const TERMINAL_TIMING = { visible: 5, startDelayMs: 2600, pauseMinMs: 1800, pauseMaxMs: 3200 };

@@ -4,17 +4,17 @@
 import { lazy, type ComponentType } from "react";
 import type { SceneName } from "../core/theme.ts";
 
-const Screen = lazy(() => import("../scenes/Screen.tsx"));
+const Screen = lazy(() => import("./matrix/scenes/Screen.tsx"));
 
 export const THEME_SCENES: Record<string, Partial<Record<SceneName, ComponentType>>> = {
   matrix: {
     starting: () => <Screen kind="starting" />,
     brb: () => <Screen kind="brb" />,
     ending: () => <Screen kind="ending" />,
-    alerts: lazy(() => import("../scenes/Alerts.tsx")),
-    chat: lazy(() => import("../scenes/Chat.tsx")),
-    cam: lazy(() => import("../scenes/Cam.tsx")),
-    music: lazy(() => import("../scenes/Music.tsx")),
-    fx: lazy(() => import("../scenes/Fx.tsx")),
+    alerts: lazy(() => import("./matrix/scenes/Alerts.tsx")),
+    chat: lazy(() => import("./matrix/scenes/Chat.tsx")),
+    cam: lazy(() => import("./matrix/scenes/Cam.tsx")),
+    music: lazy(() => import("./matrix/scenes/Music.tsx")),
+    fx: lazy(() => import("./matrix/scenes/Fx.tsx")),
   },
 };

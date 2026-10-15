@@ -1,9 +1,9 @@
 // Chat-Overlay, transparent, neue Nachrichten unten. Empfohlen z.B. 500x900.
 // Parameter: ?fade=30 (Sekunden bis Ausblenden, 0 = nie), ?max=30, ?demo
-import type { ChatMessage } from "../core/types.ts";
-import { numberParam } from "../core/params.ts";
-import { useChat } from "../core/hooks/useChat.ts";
-import { useDecode } from "../core/hooks/useDecode.ts";
+import type { ChatMessage } from "../../../core/types.ts";
+import { numberParam } from "../../../core/params.ts";
+import { useChat } from "../../../core/hooks/useChat.ts";
+import { useDecode } from "../../../core/hooks/useDecode.ts";
 
 const FADE = numberParam("fade", 30);
 const MAX = numberParam("max", 30);

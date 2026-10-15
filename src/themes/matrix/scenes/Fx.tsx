@@ -5,11 +5,11 @@
 // Ablauf pro Effekt: glitcht rein und steht angehalten (delay), spielt ab samt Ton (duration),
 // bleibt angehalten auf dem letzten Bild stehen (after) und glitcht dann raus.
 import { useEffect, useRef } from "react";
-import * as streamerPath from "../core/streamerPath.ts";
-import { streamer } from "../core/connection.ts";
-import { numberParam, params } from "../core/params.ts";
-import { fxLifetime } from "../core/overlayTiming.ts";
-import { useFx, useFxPhase, type ShownFx } from "../core/hooks/useFx.ts";
+import * as streamerPath from "../../../core/streamerPath.ts";
+import { streamer } from "../../../core/connection.ts";
+import { numberParam, params } from "../../../core/params.ts";
+import { fxLifetime } from "../../../core/overlayTiming.ts";
+import { useFx, useFxPhase, type ShownFx } from "../../../core/hooks/useFx.ts";
 
 const ZONE = params.get("zone") ?? "main";
 const MAX = 8;

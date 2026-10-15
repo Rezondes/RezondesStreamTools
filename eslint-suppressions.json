@@ -42,7 +42,7 @@
       "count": 1
     }
   },
-  "src/MatrixRain.tsx": {
+  "src/themes/matrix/MatrixRain.tsx": {
     "id-denylist": {
       "count": 7
     },
@@ -50,7 +50,7 @@
       "count": 2
     }
   },
-  "src/banners.ts": {
+  "src/themes/matrix/banners.ts": {
     "id-denylist": {
       "count": 54
     },
@@ -58,27 +58,27 @@
       "count": 23
     }
   },
-  "src/scenes/Alerts.tsx": {
+  "src/themes/matrix/scenes/Alerts.tsx": {
     "id-length": {
       "count": 2
     }
   },
-  "src/scenes/Chat.tsx": {
+  "src/themes/matrix/scenes/Chat.tsx": {
     "id-length": {
       "count": 4
     }
   },
-  "src/scenes/Fx.tsx": {
+  "src/themes/matrix/scenes/Fx.tsx": {
     "id-length": {
       "count": 1
     }
   },
-  "src/scenes/Music.tsx": {
+  "src/themes/matrix/scenes/Music.tsx": {
     "id-length": {
       "count": 1
     }
   },
-  "src/scenes/Screen.tsx": {
+  "src/themes/matrix/scenes/Screen.tsx": {
     "id-length": {
       "count": 1
     }
@@ -108,7 +108,7 @@
       "count": 1
     }
   },
-  "src/stinger.ts": {
+  "src/themes/matrix/stinger.ts": {
     "id-denylist": {
       "count": 41
     },

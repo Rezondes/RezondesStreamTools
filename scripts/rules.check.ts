@@ -26,8 +26,8 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/core/theme.ts": "types only",
   "src/themes/matrix/settings.ts": "schema data, checked in src/themes/registry.check.ts",
   "src/core/emotes.ts": "network loader; splitting is checked in irc.ts",
-  "src/stinger.ts": "canvas renderer; checked manually on #/stinger",
-  "src/banners.ts": "canvas renderer; checked manually on #/stinger",
+  "src/themes/matrix/stinger.ts": "canvas renderer; checked manually on #/stinger",
+  "src/themes/matrix/banners.ts": "canvas renderer; checked manually on #/stinger",
   "server/index.ts": "HTTP entry point",
   "server/chat.ts": "network client; parsing is checked in irc.ts",
   "server/http.ts": "HTTP and file IO helpers",
@@ -76,7 +76,7 @@ for (const listed of Object.keys(WITHOUT_CHECK)) {
 }
 
 // Regel 16: Overlay-Szenen und Themes präsentieren nur, Verbindungen laufen über die Kern-Hooks
-const PRESENTING = /^src\/(themes\/.*|scenes\/(Alerts|Cam|Chat|Fx|Music|Screen))\.tsx?$/;
+const PRESENTING = /^src\/themes\/.*\.tsx?$/;
 for (const file of files.filter(file => PRESENTING.test(file))) {
   readFileSync(file, "utf8").split("\n").forEach((line, index) => {
     if (/\bfetch\(|new EventSource\(|new WebSocket\(/.test(line)) failures.push(`${file}:${index + 1}: network access in a scene (rule 16)`);

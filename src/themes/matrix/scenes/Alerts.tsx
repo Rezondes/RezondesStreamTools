@@ -2,11 +2,11 @@
 // Parameter: ?duration=7 (Sekunden pro Alert), ?scale=0.7 (Grösse), ?sound=0, ?volume=0.5, ?demo
 import { useEffect } from "react";
 import MatrixRain from "../MatrixRain.tsx";
-import type { Alert } from "../core/types.ts";
-import { numberParam } from "../core/params.ts";
-import { beep } from "../core/sound.ts";
-import { useAlerts } from "../core/hooks/useAlerts.ts";
-import { useDecode } from "../core/hooks/useDecode.ts";
+import type { Alert } from "../../../core/types.ts";
+import { numberParam } from "../../../core/params.ts";
+import { beep } from "../../../core/sound.ts";
+import { useAlerts } from "../../../core/hooks/useAlerts.ts";
+import { useDecode } from "../../../core/hooks/useDecode.ts";
 
 const DURATION = numberParam("duration", 7) * 1000;
 const SCALE = numberParam("scale", 0.7);

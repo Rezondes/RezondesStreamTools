@@ -3,7 +3,7 @@
 // Ablauf: Matrix-Spalten fallen herein und decken alles ab, Logo entschlüsselt sich,
 // am Schnittpunkt CUT blitzt die Einschaltlinie, dann fallen die Spalten unten heraus.
 import { LOGO } from "./scenes/Screen.tsx";
-import { GLYPHS } from "./core/glyphs.ts";
+import { GLYPHS } from "../../core/glyphs.ts";
 
 export const W = 1920;
 export const H = 1080;

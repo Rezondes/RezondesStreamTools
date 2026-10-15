@@ -2,8 +2,8 @@
 // (npm run dev), weil das Rendern die Frames an das Vite-Plugin in vite.config.ts schickt, das ffmpeg aufruft.
 // Auswahl per Knopf oder ?clip=stinger|profile|offline
 import { useEffect, useRef, useState } from "react";
-import { CUT, DURATION, FPS, H, W, drawStinger } from "../stinger.ts";
-import { LOOP, drawOfflineBanner, drawProfileBanner } from "../banners.ts";
+import { CUT, DURATION, FPS, H, W, drawStinger } from "../themes/matrix/stinger.ts";
+import { LOOP, drawOfflineBanner, drawProfileBanner } from "../themes/matrix/banners.ts";
 import { params } from "../core/params.ts";
 
 type Clip = {

@@ -2,13 +2,13 @@
 // Parameter: ?art=cover (Cover, sonst Platte) | record (Platte mit Cover als Etikett) | vinyl (immer Platte) | none,
 // ?hide=0 (bei Pause/Stopp sichtbar bleiben), ?demo
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import type { Track } from "../core/types.ts";
-import { params } from "../core/params.ts";
-import { clock, currentProgress } from "../core/overlayTiming.ts";
-import { useDecode } from "../core/hooks/useDecode.ts";
-import { useMusic } from "../core/hooks/useMusic.ts";
-import { useNow } from "../core/hooks/useNow.ts";
-import { vinyl } from "../core/vinyl.ts";
+import type { Track } from "../../../core/types.ts";
+import { params } from "../../../core/params.ts";
+import { clock, currentProgress } from "../../../core/overlayTiming.ts";
+import { useDecode } from "../../../core/hooks/useDecode.ts";
+import { useMusic } from "../../../core/hooks/useMusic.ts";
+import { useNow } from "../../../core/hooks/useNow.ts";
+import { vinyl } from "../../../core/vinyl.ts";
 
 const ART = params.get("art") ?? "cover";
 const HIDE = params.get("hide") !== "0";
