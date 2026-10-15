@@ -174,8 +174,8 @@ Zurücksetzen je Feld oder für alles. Die Vorschau zeigt die gewählte Szene al
 gespeicherten Werten (`/s/<login>/<szene>?demo&preview`, Werte per `postMessage` nur von derselben Herkunft).
 Ein Theme-Wechsel speichert sofort; Fehler beim Speichern erscheinen am jeweiligen Feld.
 
-Eingebaut sind `matrix` (Standard, alle Szenen) und `starter` (schlichte Karten, nur Alerts und Chat; alle anderen
-Szenen kommen von `matrix`). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
+Eingebaut sind `matrix` (Standard, Terminal-Look) und `starter` (klarer, moderner Look mit Verlauf, abgerundeten
+Karten und eigener Schrift; alle Szenen, Stinger und Banner eigenständig, nichts vom Matrix-Theme). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
 
 ## Chat-Trigger (`triggers.json` im Profil)
 

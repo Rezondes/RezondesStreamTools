@@ -2,8 +2,8 @@
 
 Ein Theme bestimmt, wie die Overlays aussehen. Es besteht aus einem Einstellungs-Schema (was der Streamer im Dashboard
 einstellen kann) und React-Szenen (wie es aussieht). Das eingebaute Theme `matrix` ist das Standard-Theme; jede Szene,
-die ein Theme nicht selbst mitbringt, kommt von dort. Das Theme `starter` in `src/themes/starter/` ist die kleinste
-Vorlage: nur Alerts und Chat, alles andere erbt es.
+die ein Theme nicht selbst mitbringt, kommt von dort. Das Theme `starter` in `src/themes/starter/` ist die Vorlage:
+ein eigenständiges Theme mit allen Szenen, Stinger und Bannern, ohne Teile des Matrix-Themes.
 
 Themes sind Code im Repo, kein Upload. Ein neues Theme ist ein eigener Ordner und zwei Einträge in Listen.
 
@@ -15,6 +15,7 @@ src/themes/<id>/
   settings.check.ts  Check: gültige Standardwerte, kein unbenutzter Schlüssel
   use<Id>.ts         use<Id>(): die Werte aus dem Kontext mit ihrem Typ (Hooks heissen use*.ts)
   index.tsx          Szenen des Themes (React.lazy) und Import von theme.css
+  render.ts          Stinger und Banner als Clips (reine Funktionen der Zeit, stinger.ts, banners.ts)
   theme.css          Aussehen, alles unter .theme-<id>
   scenes/*.tsx       die Szenen (starting, brb, ending, alerts, chat, cam, music, fx), beliebig viele davon
 ```
@@ -23,7 +24,7 @@ src/themes/<id>/
 
 1. **Ordner anlegen**: `src/themes/starter/` nach `src/themes/<id>/` kopieren. Die id besteht aus Kleinbuchstaben
    und landet in `settings.json` der Streamer; sie bleibt danach gleich.
-2. **Schema** in `settings.ts`: mit den Bausteinen aus `src/core/fields.ts` (`color`, `text`, `textarea`, `lines`,
+2. **Schema** in `settings.ts` (Stinger und Banner lesen ihre Werte aus den Gruppen `Stinger` und `Banner`): mit den Bausteinen aus `src/core/fields.ts` (`color`, `text`, `textarea`, `lines`,
    `flag`, `number`, `choice`, `font`, `sound`) jedes Feld beschreiben: Schlüssel, Label, Gruppe, Standardwert, bei
    Zahlen Grenzen und Einheit (`px`, `ms`, `s`, `%`). Die Gruppe wird ein Abschnitt im Formular.
    `ValuesOf<typeof FIELDS>` ergibt den Typ der Werte. `id` und `name` im exportierten `ThemeSchema` setzen.
@@ -38,6 +39,8 @@ src/themes/<id>/
 6. **Registrieren**:
    - `src/themes/registry.ts`: das Schema in `THEMES` eintragen (der erste Eintrag ist das Standard-Theme, bleibt `matrix`).
    - `src/themes/scenes.tsx`: die Szenen aus `index.tsx` in `THEME_SCENES` unter der id eintragen.
+   - `src/themes/renderers.ts`: die Clips aus `render.ts` (Stinger, Profil- und Offline-Banner, siehe
+     `src/themes/starter/render.ts`) eintragen; ohne Eintrag rendert der Bereich `[ RENDERN ]` die des Standard-Themes.
 7. **Prüfen**: `npm run verify`. Danach im Dashboard unter `[ THEME ]` das Theme wählen und in der Vorschau alle
    Szenen ansehen.
 

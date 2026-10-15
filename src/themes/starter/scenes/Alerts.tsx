@@ -1,5 +1,5 @@
-// Alerts des Starter-Themes: eine Karte mit einer Zeile je Alert-Art und optional der Nachricht, für die eingestellte
-// Dauer. Nutzt nur Kern-Hooks (useAlerts) und die Werte des Themes; Ton nur mit eigener Datei.
+// Alerts des Starter-Themes: eine abgerundete Karte mit Verlaufskante, Kopfzeile je Alert-Art, Zeile mit dem Namen,
+// optional der Nachricht und einem Restzeit-Balken. Ton nur mit eigener Datei.
 import { useEffect, useState } from "react";
 import type { Alert, AlertKind } from "../../../core/types.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
@@ -8,18 +8,22 @@ import { fillTemplate } from "../../../core/template.ts";
 import type { StarterValues } from "../settings.ts";
 import { useStarter } from "../useStarter.ts";
 
-const LINES = {
-  follow: "followLine",
-  sub: "subLine",
-  resub: "resubLine",
-  gift: "giftLine",
-  raid: "raidLine",
-  cheer: "cheerLine",
-  redeem: "redeemLine",
-  hype: "hypeBeginLine",
-} as const satisfies Record<AlertKind, keyof StarterValues>;
+const TEXTS = {
+  follow: ["followLabel", "followLine"],
+  sub: ["subLabel", "subLine"],
+  resub: ["resubLabel", "resubLine"],
+  gift: ["giftLabel", "giftLine"],
+  raid: ["raidLabel", "raidLine"],
+  cheer: ["cheerLabel", "cheerLine"],
+  redeem: ["redeemLabel", "redeemLine"],
+  hype: ["hypeLabel", "hypeBeginLine"],
+} as const satisfies Record<AlertKind, readonly [keyof StarterValues, keyof StarterValues]>;
 
-const lineOf = (alert: Alert, values: StarterValues) => (alert.kind === "hype" && alert.detail === "end" ? values.hypeEndLine : values[LINES[alert.kind]]);
+function describe(alert: Alert, values: StarterValues) {
+  const [label, line] = TEXTS[alert.kind];
+  const text = alert.kind === "hype" && alert.detail === "end" ? values.hypeEndLine : values[line];
+  return { label: values[label], line: fillTemplate(text, { user: alert.user, amount: alert.amount ?? 0, detail: alert.detail ?? "", text: alert.text ?? "" }) };
+}
 
 export default function Alerts() {
   const values = useStarter();
@@ -31,11 +35,13 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const values = useStarter();
   const [sound] = useState(() => values.alertSound);
   useEffect(() => { playSound(sound, () => {}); }, [sound]);
-  const line = fillTemplate(lineOf(alert, values), { user: alert.user, amount: alert.amount ?? 0, detail: alert.detail ?? "", text: alert.text ?? "" });
+  const { label, line } = describe(alert, values);
   return (
-    <div className={`starter-card${leaving ? " leaving" : ""}`}>
+    <div className={`starter-card starter-alert${leaving ? " leaving" : ""}`}>
+      <span className="starter-chip">{label}</span>
       <div className="starter-line">{line}</div>
-      {values.alertMessage && alert.text && alert.kind !== "gift" && <div className="starter-message">{alert.text}</div>}
+      {values.alertMessage && alert.text && alert.kind !== "gift" && <div className="starter-muted">{alert.text}</div>}
+      {values.alertProgress && <div className="starter-timer" aria-hidden="true" />}
     </div>
   );
 }

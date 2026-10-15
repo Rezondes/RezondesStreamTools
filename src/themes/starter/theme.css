@@ -1,27 +1,140 @@
-/* Starter-Theme: ruhige Karten mit Akzentkante, Vorlage für eigene Themes (THEMES.md). Gekapselt unter .theme-starter;
-   Farben, Grössen und Zeiten kommen als CSS-Variablen aus den Einstellungen, weitere Masse als var(--name, Standard).
-   Keyframes heissen starter-*, damit sie nicht mit anderen Themes kollidieren. */
+/* Starter-Theme: klarer, moderner Look mit Verlauf aus zwei Akzentfarben, abgerundeten Karten und weichen
+   Übergängen. Gekapselt unter .theme-starter; Farben, Grössen und Zeiten kommen als CSS-Variablen aus den
+   Einstellungen, weitere Masse als var(--name, Standard). Keyframes heissen starter-*. */
 
 .theme-starter {
-  font-family: var(--font), sans-serif;
+  font-family: var(--font), system-ui, sans-serif;
   font-size: var(--fontSize);
-  line-height: 1.3;
+  line-height: 1.35;
   color: var(--textColor);
+  --gradient: linear-gradient(135deg, var(--accent), var(--accent2));
+  --surface: color-mix(in srgb, var(--card) calc(var(--cardOpacity) * 100%), transparent);
+}
+
+.theme-starter .starter-muted { color: var(--mutedColor); }
+.theme-starter .starter-eyebrow {
+  color: var(--accent2);
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.theme-starter .starter-line { font-weight: 700; }
+
+/* Karte: Grundbaustein aller Szenen */
+.theme-starter .starter-card {
+  position: relative;
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 var(--shadow-y, 12px) var(--shadow-blur, 32px) color-mix(in srgb, var(--card) 50%, transparent);
+  animation: starter-in var(--fadeDuration) cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+.theme-starter .starter-card.leaving { animation: starter-out var(--fadeDuration) ease-in forwards; }
+
+.theme-starter .starter-chip {
+  display: inline-block;
+  margin-right: var(--chip-gap, 8px);
+  padding: var(--chip-padding, 2px 10px);
+  border-radius: var(--pill-radius, 999px);
+  background: var(--gradient);
+  color: var(--textColor);
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.theme-starter .starter-progress {
+  height: var(--progress-height, 6px);
+  border-radius: var(--pill-radius, 999px);
+  background: color-mix(in srgb, var(--mutedColor) 25%, transparent);
+  overflow: hidden;
+}
+.theme-starter .starter-progress span { display: block; height: 100%; border-radius: inherit; background: var(--gradient); transition: width var(--fadeDuration) linear; }
+
+/* --- Vollbild-Szenen (starting, brb, ending) -------------------------------- */
+.theme-starter .starter-screen { position: fixed; inset: 0; overflow: hidden; background: var(--background); }
+
+/* Drei weiche Farbflächen, die langsam wandern */
+.theme-starter .starter-blobs i {
+  position: absolute;
+  width: 55vmax;
+  height: 55vmax;
+  border-radius: 50%;
+  opacity: 0.35;
+  filter: blur(var(--blob-blur, 90px));
+  animation: starter-drift var(--blobSpeed) ease-in-out infinite alternate;
+}
+.theme-starter .starter-blobs i:nth-child(1) { left: -10vmax; top: -15vmax; background: var(--accent); }
+.theme-starter .starter-blobs i:nth-child(2) { right: -15vmax; bottom: -20vmax; background: var(--accent2); animation-direction: alternate-reverse; }
+.theme-starter .starter-blobs i:nth-child(3) { left: 35%; top: 40%; width: 35vmax; height: 35vmax; background: var(--accent); opacity: 0.2; animation-duration: calc(var(--blobSpeed) * 1.5); }
+
+.theme-starter .starter-stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  /* fixed: Bühnengrösse der Vollbild-Szenen, per --s auf die Quelle skaliert (Screen.tsx) */
+  width: 1920px; height: 1080px;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+  display: flex;
+  flex-direction: column;
+  padding: var(--stage-padding, 72px 96px);
+}
+.theme-starter .starter-top { display: flex; justify-content: space-between; align-items: center; font-size: var(--top-size, 28px); }
+.theme-starter .starter-channel { font-weight: 700; letter-spacing: 0.08em; }
+.theme-starter .starter-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--center-gap, 24px);
+  max-width: var(--center-width, 1200px);
+}
+.theme-starter .starter-center .starter-eyebrow { font-size: var(--eyebrow-size, 32px); }
+.theme-starter .starter-title {
+  font-size: var(--title-size, 112px);
+  font-weight: 800;
+  line-height: 1.1;
+  /* Platz für Unterlängen, sonst schneidet der Verlaufs-Text (background-clip) sie ab */
+  padding-bottom: 0.08em;
+  letter-spacing: -0.02em;
+  background: linear-gradient(90deg, var(--textColor), color-mix(in srgb, var(--textColor) 70%, var(--accent2)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.theme-starter .starter-big { font-size: var(--big-size, 96px); font-weight: 700; font-variant-numeric: tabular-nums; }
+.theme-starter .starter-center .starter-progress { width: var(--progress-width, 720px); height: var(--screen-progress-height, 10px); }
+.theme-starter .starter-center .starter-muted { font-size: var(--note-size, 32px); }
+.theme-starter .starter-ticker {
+  align-self: flex-start;
+  padding: var(--ticker-padding, 14px 24px);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: var(--ticker-size, 28px);
+  animation: starter-in var(--fadeDuration) ease-out both;
 }
 
 /* --- Alerts ------------------------------------------------------------------ */
 .theme-starter .starter-alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alertTop); }
-.theme-starter .starter-card {
+.theme-starter .starter-alert {
   width: var(--alertWidth);
-  padding: var(--card-padding, 16px 20px);
-  border-radius: var(--radius);
-  border-left: var(--accent-width, 6px) solid var(--accent);
-  background: color-mix(in srgb, var(--card) calc(var(--cardOpacity) * 100%), transparent);
-  animation: starter-in var(--fadeDuration) ease-out both;
+  display: grid;
+  gap: var(--alert-gap, 8px);
+  justify-items: start;
+  padding: var(--alert-padding, 20px 24px 24px);
+  overflow: hidden;
 }
-.theme-starter .starter-card.leaving { animation: starter-out var(--fadeDuration) ease-in forwards; }
-.theme-starter .starter-line { font-weight: bold; }
-.theme-starter .starter-message { margin-top: var(--message-gap, 6px); opacity: 0.8; }
+/* Verlaufskante oben */
+.theme-starter .starter-alert::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: var(--edge, 4px); background: var(--gradient); }
+.theme-starter .starter-alert .starter-line { font-size: 1.3em; }
+.theme-starter .starter-timer {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: var(--edge, 4px);
+  background: var(--gradient);
+  animation: starter-timer var(--alertDuration) linear forwards;
+}
 
 /* --- Chat ---------------------------------------------------------------------- */
 .theme-starter .starter-chat {
@@ -34,26 +147,67 @@
   padding: var(--chat-padding, 12px);
   overflow: hidden;
 }
-.theme-starter .starter-row {
-  flex: none;
-  padding: var(--row-padding, 6px 10px);
-  border-radius: var(--radius);
-  background: color-mix(in srgb, var(--card) calc(var(--cardOpacity) * 100%), transparent);
-  overflow-wrap: anywhere;
-  animation: starter-in var(--fadeDuration) ease-out both;
-}
+.theme-starter .starter-row { flex: none; padding: var(--row-padding, 10px 14px); overflow-wrap: anywhere; }
 /* Erscheinen, nach chatFade ausblenden */
 .theme-starter .starter-row.fades { animation: starter-in var(--fadeDuration) ease-out both, starter-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
-.theme-starter .starter-user { color: var(--accent); margin-right: var(--name-gap, 6px); }
-.theme-starter .starter-badge {
-  margin-right: var(--name-gap, 6px);
-  padding: var(--badge-padding, 0 4px);
-  border-radius: var(--radius);
-  background: var(--accent);
-  color: var(--card);
-  font-size: 0.75em;
-}
+.theme-starter .starter-user { margin-right: var(--name-gap, 8px); background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .theme-starter .starter-emote { height: var(--emoteSize); vertical-align: middle; }
 
-@keyframes starter-in { from { opacity: 0; translate: 0 calc(-1 * var(--slide, 12px)); } to { opacity: 1; translate: 0 0; } }
-@keyframes starter-out { from { opacity: 1; } to { opacity: 0; } }
+/* --- Kamera-Rahmen ------------------------------------------------------------- */
+.theme-starter .starter-cam { position: fixed; inset: 0; animation: starter-fade var(--fadeDuration) ease-out both; }
+/* Rahmen im Verlauf: Fläche mit Verlauf, innen per Maske ausgeschnitten */
+.theme-starter .starter-cam::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: var(--camBorder);
+  border-radius: var(--radius);
+  background: var(--gradient);
+  -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.theme-starter .starter-pill {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pill-gap, 8px);
+  padding: var(--pill-padding, 6px 14px);
+  border-radius: var(--pill-radius, 999px);
+  background: var(--surface);
+  font-weight: 600;
+}
+.theme-starter .starter-name { left: var(--pill-offset, 16px); bottom: var(--pill-offset, 16px); }
+.theme-starter .starter-live { right: var(--pill-offset, 16px); top: var(--pill-offset, 16px); font-size: 0.75em; letter-spacing: 0.08em; }
+.theme-starter .starter-live i { width: var(--dot, 10px); height: var(--dot, 10px); border-radius: 50%; background: var(--accent2); animation: starter-pulse var(--pulse, 1.6s) ease-in-out infinite; }
+
+/* --- Musik --------------------------------------------------------------------- */
+.theme-starter .starter-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 12px); }
+.theme-starter .starter-player { width: 100%; display: flex; align-items: center; gap: var(--player-gap, 20px); padding: var(--player-padding, 16px 20px); }
+.theme-starter .starter-cover { flex: none; width: var(--coverSize); height: var(--coverSize); border-radius: calc(var(--radius) * 0.75); object-fit: cover; }
+.theme-starter .starter-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
+.theme-starter .starter-track > * { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.theme-starter .starter-track .starter-line { font-size: 1.2em; }
+.theme-starter .starter-time { display: flex; align-items: center; gap: var(--time-gap, 12px); color: var(--mutedColor); font-size: 0.75em; font-variant-numeric: tabular-nums; }
+.theme-starter .starter-time .starter-progress { flex: 1; }
+
+/* --- Effekte ------------------------------------------------------------------- */
+.theme-starter .starter-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-starter .starter-fx-item {
+  position: absolute;
+  display: grid;
+  gap: var(--fx-gap, 12px);
+  justify-items: center;
+  transform: translate(-50%, -50%);
+  animation: starter-pop var(--fadeDuration) cubic-bezier(0.2, 0.8, 0.2, 1) both, starter-out var(--fadeDuration) ease-in calc(var(--life) - var(--fadeDuration)) forwards;
+}
+.theme-starter .starter-fx-item img, .theme-starter .starter-fx-item video, .theme-starter .starter-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); }
+.theme-starter .starter-fx-text { padding: var(--fx-text-padding, 10px 20px); font-size: var(--fxTextSize); font-weight: 700; text-align: center; overflow-wrap: anywhere; }
+
+@keyframes starter-in { from { opacity: 0; translate: 0 calc(-1 * var(--slide, 16px)); scale: 0.98; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes starter-out { from { opacity: 1; } to { opacity: 0; translate: 0 calc(-1 * var(--slide, 16px)); } }
+@keyframes starter-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes starter-pop { from { opacity: 0; scale: 0.85; } to { opacity: 1; scale: 1; } }
+@keyframes starter-timer { from { width: 100%; } to { width: 0; } }
+@keyframes starter-pulse { 50% { opacity: 0.3; } }
+@keyframes starter-drift { from { translate: 0 0; } to { translate: 12vmax 8vmax; } }
