@@ -17,6 +17,13 @@ assert.equal(TEXTS.media.confirm("a.gif"), '"a.gif" löschen?');
 assert.ok(TEXTS.media.confirmUsed("a.gif", "lizard, hype").includes("lizard, hype"));
 assert.equal(TEXTS.render.frame(3, 96), "Frame 3/96");
 assert.ok(TEXTS.render.hints.stinger(750).includes("750 ms"));
+assert.equal(TEXTS.theme.range(0, 10), "0 bis 10");
+assert.ok(TEXTS.theme.confirmSwitch(3).startsWith("3 "));
+assert.ok(TEXTS.render.confirmSwitch(2).startsWith("2 "));
+assert.equal(TEXTS.upload.running("a.gif", 2, 5), "Lade hoch (2/5): a.gif");
+assert.ok(TEXTS.adminArea.revoked("neo").endsWith("neo"));
+assert.ok(TEXTS.adminArea.betaRemoved("neo").endsWith("neo"));
+assert.ok(TEXTS.adminArea.off("Chat").endsWith("Chat"));
 
 // Codes im Server: send(res, 4xx, "code"), Weiterleitungen ?error=code und die Entscheidungen in routes.ts
 const folder = join(import.meta.dirname, "../../server");

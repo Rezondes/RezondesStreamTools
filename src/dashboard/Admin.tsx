@@ -4,6 +4,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Access, Feature, Level } from "../../server/access.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
+import { accessLosses, hasLosses } from "./accessChanges.ts";
 import { getJson, postJson } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";
 
@@ -22,11 +23,16 @@ const fromDraft = (draft: AccessDraft): Access => ({ ...draft, allowlist: lines(
 
 export default function Admin() {
   const [access, setAccess] = useState<AccessDraft | null>(null);
+  const [saved, setSaved] = useState<Access | null>(null);
   const [streamers, setStreamers] = useState<StreamerRow[]>([]);
   const [notice, setNotice] = useState<"saved" | ErrorCode | null>(null);
 
   const load = useCallback(() => {
-    getJson<Access | null>("/api/admin/access", null).then(loaded => (loaded ? setAccess(toDraft(loaded)) : setNotice("server-error"))).catch(() => setNotice("server-error"));
+    getJson<Access | null>("/api/admin/access", null).then(loaded => {
+      if (!loaded) return setNotice("server-error");
+      setSaved(loaded);
+      setAccess(toDraft(loaded));
+    }).catch(() => setNotice("server-error"));
     getJson<StreamerRow[]>("/api/admin/streamers", []).then(setStreamers).catch(() => setNotice("server-error"));
   }, []);
   useEffect(load, [load]);
@@ -34,7 +40,9 @@ export default function Admin() {
   if (!access) return <p className="muted">{notice && notice !== "saved" ? TEXTS.errors[notice] : TEXTS.loading}</p>;
 
   const save = () => {
-    postJson("/api/admin/access", fromDraft(access))
+    const next = fromDraft(access);
+    if (saved && !confirmLosses(saved, next)) return;
+    postJson("/api/admin/access", next)
       .then(result => {
         if (result.ok) {
           setNotice("saved");
@@ -57,6 +65,19 @@ export default function Admin() {
       <StreamerTable streamers={streamers} />
     </section>
   );
+}
+
+// Rückfrage, wenn Streamer Zugang oder Funktionen verlieren; true = speichern
+function confirmLosses(saved: Access, next: Access) {
+  const losses = accessLosses(saved, next);
+  if (!hasLosses(losses)) return true;
+  const lines = [
+    losses.revoked.length > 0 && ADMIN_TEXT.revoked(losses.revoked.join(", ")),
+    losses.betaRemoved.length > 0 && ADMIN_TEXT.betaRemoved(losses.betaRemoved.join(", ")),
+    losses.closed && ADMIN_TEXT.closed,
+    losses.off.length > 0 && ADMIN_TEXT.off(losses.off.map(feature => ADMIN_TEXT.featureNames[feature]).join(", ")),
+  ].filter(Boolean);
+  return confirm([ADMIN_TEXT.confirmTitle, ...lines.map(line => `- ${line}`), "", ADMIN_TEXT.confirmEnd].join("\n"));
 }
 
 function AccessForm({ access, onChange }: { access: AccessDraft; onChange: (access: AccessDraft) => void }) {

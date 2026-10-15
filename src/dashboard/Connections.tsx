@@ -15,7 +15,7 @@ export default function Connections({ me, act }: { me: Me; act: Act }) {
       </p>
       <p className="actions">
         <a className="btn" href="/auth/login">{texts.twitchReconnect}</a>
-        <button className="btn" onClick={() => act("/api/twitch/disconnect")}>{texts.twitchDisconnect}</button>
+        <button className="btn" onClick={() => { if (confirm(texts.confirmTwitch)) act("/api/twitch/disconnect"); }}>{texts.twitchDisconnect}</button>
       </p>
 
       <h2>{texts.spotify}</h2>
@@ -23,7 +23,7 @@ export default function Connections({ me, act }: { me: Me; act: Act }) {
       {me.spotify === true && (
         <p className="actions" role="status">
           <span className="glow">{texts.spotifyConnected}</span>
-          <button className="btn" onClick={() => act("/spotify/logout")}>{texts.spotifyDisconnect}</button>
+          <button className="btn" onClick={() => { if (confirm(texts.confirmSpotify)) act("/spotify/logout"); }}>{texts.spotifyDisconnect}</button>
         </p>
       )}
       {me.spotify === false && (
