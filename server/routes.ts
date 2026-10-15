@@ -42,6 +42,7 @@ export const ROUTES = {
   "POST /api/render/start": SESSION,
   "POST /api/render/frame": SESSION,
   "POST /api/render/done": SESSION,
+  "POST /api/render/cancel": SESSION,
   "GET /api/render/files": SESSION,
   "GET /api/render/file": SESSION,
   "GET /api/admin/access": ADMIN,

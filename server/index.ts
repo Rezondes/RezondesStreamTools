@@ -362,6 +362,13 @@ async function renderDone({ response, url, login }: Call) {
   json(response, { files: outputNames(job.clip), bytes, tooLarge: CLIPS[job.clip].format === "gif" && bytes > RENDER_LIMITS.gifWarnBytes });
 }
 
+// Abbrechen vor dem Kodieren: Job freigeben und die bisherigen Frames löschen
+async function renderCancel({ response, login }: Call) {
+  renderJobs.cancel(login);
+  await rm(join(renderFolder(login), "frames"), { recursive: true, force: true });
+  json(response, { ok: true });
+}
+
 // Exit-Code von ffmpeg, "missing" wenn es nicht startet
 function runFfmpeg(args: string[]): Promise<number | "missing"> {
   return new Promise(done => {
@@ -413,6 +420,7 @@ const HANDLERS: Record<RouteKey, Handler> = {
   "POST /api/render/start": renderStart,
   "POST /api/render/frame": renderFrame,
   "POST /api/render/done": renderDone,
+  "POST /api/render/cancel": renderCancel,
   "GET /api/render/files": renderFiles,
   "GET /api/render/file": renderFile,
   "GET /api/admin/access": ({ response }) => json(response, access.get()),

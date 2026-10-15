@@ -37,7 +37,9 @@ export default function Render({ me }: { me: Me }) {
       <div className="actions">
         <label className="setting">
           {RENDER_TEXT.theme}
-          <select value={schema.id} onChange={event => settings.choose(event.target.value)}>
+          <select value={schema.id} onChange={event => {
+            if (settings.changed.length === 0 || confirm(RENDER_TEXT.confirmSwitch(settings.changed.length))) settings.choose(event.target.value);
+          }}>
             {THEMES.map(theme => <option key={theme.id} value={theme.id}>{theme.name}</option>)}
           </select>
         </label>
@@ -113,6 +115,7 @@ function ClipPreview({ clip }: { clip: RenderClip }) {
           onChange={event => { preview.setPlaying(false); preview.setTime(Number(event.target.value)); }} />
         <span>{Math.min(preview.time, clip.duration).toFixed(2)} {RENDER_TEXT.seconds}</span>
         <button className="btn primary" disabled={job.busy} onClick={job.render}>{RENDER_TEXT.render}</button>
+        {job.canCancel && <button className="btn" onClick={job.cancel}>{RENDER_TEXT.cancel}</button>}
         <span className="muted" role="status">{job.status}</span>
       </div>
       <p className="muted">{cut !== null ? RENDER_TEXT.hints.stinger(Math.round(cut * SECOND_MS)) : RENDER_TEXT.hints[clip.name === "profile" ? "profile" : "offline"]}</p>
@@ -214,6 +217,9 @@ function usePreview(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement 
 function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement | null>, setPlaying: (playing: boolean) => void) {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  // Abbrechen geht nur, solange Frames gesendet werden; ffmpeg läuft danach bis zum Ende
+  const [canCancel, setCanCancel] = useState(false);
+  const cancelled = useRef(false);
   const codeOf = async (response: Response): Promise<ErrorCode> => {
     const text = (await response.text()).trim();
     return isErrorCode(text) ? text : "server-error";
@@ -225,12 +231,17 @@ function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElemen
     const context = canvas.current!.getContext("2d")!;
     const total = Math.round(clip.duration * clip.fps);
     for (let index = 0; index < total; index++) {
+      if (cancelled.current) {
+        await fetch("/api/render/cancel", { method: "POST" });
+        return setStatus(RENDER_TEXT.cancelled);
+      }
       clip.draw(context, index / clip.fps);
       const png = await new Promise<Blob>(done => canvas.current!.toBlob(blob => done(blob!), "image/png"));
       const sent = await fetch(`/api/render/frame?i=${index}`, { method: "POST", body: png });
       if (!sent.ok) return setStatus(TEXTS.errors[await codeOf(sent)]);
       setStatus(RENDER_TEXT.frame(index + 1, total));
     }
+    setCanCancel(false);
     setStatus(RENDER_TEXT.encoding);
     const done = await fetch(`/api/render/done?fps=${clip.fps}`, { method: "POST" });
     if (!done.ok) return setStatus(TEXTS.errors[await codeOf(done)]);
@@ -240,9 +251,12 @@ function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElemen
   const render = () => {
     setPlaying(false);
     setBusy(true);
+    cancelled.current = false;
+    setCanCancel(true);
     run()
       .catch(() => setStatus(TEXTS.errors["server-error"]))
-      .finally(() => { setBusy(false); setPlaying(true); dispatchEvent(new Event("render-done")); });
+      .finally(() => { setBusy(false); setCanCancel(false); setPlaying(true); dispatchEvent(new Event("render-done")); });
   };
-  return { status, busy, render };
+  const cancel = () => { cancelled.current = true; setCanCancel(false); };
+  return { status, busy, canCancel, render, cancel };
 }
