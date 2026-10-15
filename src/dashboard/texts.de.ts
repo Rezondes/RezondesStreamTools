@@ -229,7 +229,7 @@ export const TEXTS = {
     "invalid-json": "Ungültige Daten.",
     "too-large": "Datei oder Anfrage zu gross.",
     "quota-exceeded": "Kein Platz mehr: dein Speicher für Medien ist voll. Lösche zuerst Dateien.",
-    "server-error": "Fehler auf dem Server. Bitte erneut versuchen.",
+    "server-error": "Der Server konnte die Anfrage nicht verarbeiten. Bitte erneut versuchen.",
     "unknown-clip": "Unbekannter Clip.",
     "render-busy": "Es läuft schon ein Render. Bitte warten, bis er fertig ist.",
     "render-not-started": "Kein Render gestartet. Bitte neu rendern.",

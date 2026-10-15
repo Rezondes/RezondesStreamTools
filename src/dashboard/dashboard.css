@@ -42,7 +42,7 @@
 .setting-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .setting-volume { display: flex; align-items: center; gap: 6px; }
 .dashboard input:not([type=checkbox]):not([type=range]):not([type=color]), .dashboard select, .dashboard textarea {
-  min-height: 36px;
+  min-height: 44px;
   padding: 6px 8px;
   background: var(--black);
   color: var(--green);
