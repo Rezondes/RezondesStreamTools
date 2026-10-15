@@ -1,5 +1,7 @@
 // Ein Eingabefeld je Feldtyp des Theme-Schemas, mit sichtbarem Label (Regel 23), Fehlertext zum Code des Servers
 // und Zurücksetzen auf den Standard, sobald der Wert davon abweicht. Medien und Töne wählen aus dem Medienordner.
+// Felder mit ascii bieten den ASCII-Logo-Generator an (eigener Chunk, lädt erst beim Öffnen).
+import { lazy, Suspense, useState } from "react";
 import { MEDIA_KIND, type SettingErrorCode } from "../core/settings.ts";
 import type { SettingField, SettingValue, SoundValue } from "../core/theme.ts";
 import { isDefault } from "./settingsForm.ts";
@@ -18,12 +20,22 @@ const COLOR = /^#[0-9a-f]{6}/i;
 const asText = (value: SettingValue | undefined, fallback = "") => (typeof value === "string" ? value : fallback);
 const isSound = (value: unknown): value is SoundValue => typeof value === "object" && value !== null && "file" in value && "volume" in value;
 
+const AsciiGenerator = lazy(() => import("./AsciiGenerator.tsx"));
+
 export default function SettingInput({ field, value, error, media, onChange, onReset }: Props) {
   const id = `setting-${field.key}`;
+  const [generator, setGenerator] = useState(false);
+  const ascii = field.type === "textarea" && field.ascii === true;
   return (
     <div className={`setting${error ? " invalid" : ""}`}>
       <label htmlFor={id}>{field.label}{field.type === "number" ? numberHint(field.unit, TEXTS.theme.range(field.min, field.max)) : ""}</label>
       <Input id={id} field={field} value={value} media={media} onChange={onChange} invalid={Boolean(error)} />
+      {ascii && !generator && <button type="button" className="btn" onClick={() => setGenerator(true)}>{TEXTS.ascii.open}</button>}
+      {ascii && generator && (
+        <Suspense fallback={<p className="muted">{TEXTS.loading}</p>}>
+          <AsciiGenerator maxLength={field.maxLength ?? Infinity} onApply={art => { onChange(art); setGenerator(false); }} onClose={() => setGenerator(false)} />
+        </Suspense>
+      )}
       {!isDefault(field, value) && <button type="button" className="btn" onClick={onReset}>{TEXTS.theme.resetField}</button>}
       {error && <span className="setting-error" role="alert">{TEXTS.errors[error]}</span>}
     </div>

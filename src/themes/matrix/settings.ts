@@ -1,7 +1,7 @@
 // Einstellungs-Schema des eingebauten Themes "matrix": jeder sichtbare und hörbare Wert ist hier eine Einstellung,
 // die Standardwerte ergeben den bisherigen Look. Einzige Stelle des Themes mit festen Farben, Texten und Zahlen.
 // MatrixValues ist der Typ der aufgelösten Werte, den die Szenen über useMatrix (values.ts) lesen.
-import { choice, color, flag, font, lines, number, sound, text, textarea, type ValuesOf } from "../../core/fields.ts";
+import { asciiArt, choice, color, flag, font, lines, number, sound, text, type ValuesOf } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
@@ -38,7 +38,7 @@ const FIELDS = [
   font("font", "Schrift", GENERAL, "Share Tech Mono", FONTS),
   number("fontSize", "Grundgrösse der Schrift", GENERAL, 16, 8, 48, "px"),
   text("channelName", "Kanal-Name", GENERAL, "REZONDES", 40),
-  textarea("logo", "ASCII-Logo", GENERAL, LOGO),
+  asciiArt("logo", "ASCII-Logo", GENERAL, LOGO),
   number("glowStrength", "Glühen (Stärke)", GENERAL, 1, 0, 3, undefined, 0.1),
   flag("scanlines", "Scanlines", GENERAL, true),
   number("scanlineStrength", "Scanlines (Stärke)", GENERAL, 0.28, 0, 1, undefined, 0.01),

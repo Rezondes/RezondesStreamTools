@@ -30,7 +30,8 @@ type FieldBase = {
 
 export type SettingField =
   | (FieldBase & { type: "color"; default: string })
-  | (FieldBase & { type: "text" | "textarea"; default: string; maxLength?: number })
+  // ascii: das Dashboard bietet dazu den ASCII-Logo-Generator an
+  | (FieldBase & { type: "text" | "textarea"; default: string; maxLength?: number; ascii?: boolean })
   | (FieldBase & { type: "lines"; default: readonly string[]; maxLines?: number })
   | (FieldBase & { type: "number"; default: number; min: number; max: number; step?: number; unit?: "px" | "ms" | "s" | "%" })
   | (FieldBase & { type: "boolean"; default: boolean })

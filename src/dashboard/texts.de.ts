@@ -9,6 +9,16 @@ export const TEXTS = {
   title: "REZONDES // STREAM-OVERLAYS",
   loading: "Lade ...",
   retry: "[ ERNEUT LADEN ]",
+  ascii: {
+    open: "[ ASCII-LOGO ERZEUGEN ]",
+    name: "Name",
+    example: "z.B. REZONDES",
+    font: "Schrift",
+    preview: "Vorschau des ASCII-Logos",
+    apply: "[ ÜBERNEHMEN ]",
+    close: "[ SCHLIESSEN ]",
+    tooLong: "Zu lang für das Feld: kürzeren Namen oder schmalere Schrift (Small) wählen.",
+  },
   upload: {
     running: (name: string, index: number, count: number) => `Lade hoch (${index}/${count}): ${name}`,
     done: "Hochgeladen:",

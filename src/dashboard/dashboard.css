@@ -41,6 +41,8 @@
 
 .setting { display: grid; gap: 4px; padding: 6px 0; font-size: 14px; color: var(--green-dim); }
 .setting > .btn { justify-self: start; }
+.ascii-generator { display: grid; gap: 8px; padding: 8px 10px; border: 1px dashed var(--green-dim); }
+.ascii-preview { overflow-x: auto; padding: 8px; border: 1px solid var(--green-line); color: var(--green); font: 12px/1.15 "Share Tech Mono", monospace; }
 .setting.invalid input, .setting.invalid select, .setting.invalid textarea { border-color: var(--green); outline: 2px solid var(--green); }
 .setting-error { background: var(--green); color: var(--black); padding: 2px 6px; justify-self: start; }
 .setting-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }

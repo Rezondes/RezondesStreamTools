@@ -15,6 +15,10 @@ export const text = <K extends string>(key: K, label: string, group: string, val
 export const textarea = <K extends string>(key: K, label: string, group: string, value: string, maxLength = 4000) =>
   ({ key, type: "textarea" as const, label, group, default: value, maxLength });
 
+// Mehrzeiliger Text für ASCII-Kunst; das Dashboard bietet einen Generator aus einem Namen an
+export const asciiArt = <K extends string>(key: K, label: string, group: string, value: string, maxLength = 4000) =>
+  ({ ...textarea(key, label, group, value, maxLength), ascii: true });
+
 export const lines = <K extends string>(key: K, label: string, group: string, value: readonly string[], maxLines = 100) =>
   ({ key, type: "lines" as const, label, group, default: value, maxLines });
 
