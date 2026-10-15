@@ -256,7 +256,10 @@ async function saveSettingsRequest({ request, response, login }: Call) {
   const result = updateSettings(await loadSettings(folder), body.theme, body.values ?? {});
   if (!result.file) return json(response, result.errors, 400);
   await saveSettings(folder, result.file);
-  json(response, publicSettings(result.file));
+  const settings = publicSettings(result.file);
+  // Offene Overlays übernehmen die Werte sofort, ohne Neuladen
+  runtimes.get(login)?.broadcast({ type: "settings", settings });
+  json(response, settings);
 }
 
 async function saveAccess({ request, response }: Call) {

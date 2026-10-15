@@ -1,6 +1,7 @@
 // Gemeinsame Datentypen von Overlays, Dashboard und Server (nur Typen, nichts zur Laufzeit).
 // Feldnamen gehen über die Leitung (SSE, JSON-Dateien) und bleiben darum stabil.
 import type { Part } from "./irc.ts";
+import type { SettingValues } from "./theme.ts";
 
 export type ChatMessage = { id: string; login: string; user: string; badges: string[]; parts: Part[]; action: boolean };
 
@@ -41,4 +42,11 @@ export type ChatRemoval = { id?: string; login?: string };
 export type ServerStatus = { login: string; live: boolean; spotify: boolean | null; features: Record<string, boolean> };
 
 // Nachrichten vom Server an die Overlays (SSE), gesendet von server/streamer.ts
-export type ServerMessage = { type: "alert"; alert: Alert } | { type: "music"; track: Track | null } | { type: "fx"; event: FxEvent };
+export type ServerMessage =
+  | { type: "alert"; alert: Alert }
+  | { type: "music"; track: Track | null }
+  | { type: "fx"; event: FxEvent }
+  | { type: "settings"; settings: PublicSettings };
+
+// Gewähltes Theme und seine aufgelösten Einstellungen (GET /s/<login>/settings und SSE "settings")
+export type PublicSettings = { theme: string; values: SettingValues };

@@ -3,7 +3,7 @@
 // Prüft die Twitch-Tokens stündlich; ein ungültiger Login beendet die Laufzeit und löscht die Tokens.
 // Gestartet und gestoppt von server/index.ts.
 import type { IncomingMessage, ServerResponse } from "node:http";
-import type { Alert, Track } from "../src/core/types.ts";
+import type { Alert, ServerMessage, Track } from "../src/core/types.ts";
 import type { Feature } from "./access.ts";
 import { chat } from "./chat.ts";
 import { send } from "./http.ts";
@@ -27,7 +27,7 @@ const MAX_OVERLAYS = 50;
 
 export async function startStreamer(setup: StreamerSetup) {
   const overlays = new Set<ServerResponse>();
-  const emit = (message: object) => {
+  const emit = (message: ServerMessage) => {
     const line = `data: ${JSON.stringify(message)}\n\n`;
     for (const overlay of overlays) overlay.write(line);
   };
@@ -75,6 +75,8 @@ export async function startStreamer(setup: StreamerSetup) {
     triggers,
     spotify,
     alert,
+    // Nachricht an alle offenen Overlays, z.B. geänderte Einstellungen
+    broadcast: emit,
     stop,
     live: () => events?.live() ?? false,
     tokens: tokens.current,

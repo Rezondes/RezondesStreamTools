@@ -1,0 +1,31 @@
+// Check für themeRuntime.ts: welche Szene ein Theme liefert und welche Werte als CSS-Variablen ankommen. Läuft mit npm test.
+import assert from "node:assert/strict";
+import { cssVariables, resolveScene } from "./themeRuntime.ts";
+import type { ThemeSchema } from "./theme.ts";
+
+// Szene aus dem Theme, fehlende vom Standard-Theme, unbekannte Szene oder unbekanntes Theme ohne Standard: null
+const scenes = { matrix: { alerts: "matrix-alerts", chat: "matrix-chat" }, starter: { alerts: "starter-alerts" } };
+assert.equal(resolveScene(scenes, "starter", "alerts", "matrix"), "starter-alerts");
+assert.equal(resolveScene(scenes, "starter", "chat", "matrix"), "matrix-chat");
+assert.equal(resolveScene(scenes, "gibt-es-nicht", "alerts", "matrix"), "matrix-alerts");
+assert.equal(resolveScene(scenes, "starter", "index", "matrix"), null);
+assert.equal(resolveScene(scenes, "starter", "music", "matrix"), null);
+
+// CSS-Variablen: nur Farben und Zahlen, Zahlen mit Einheit laut Schema
+const schema: ThemeSchema = {
+  id: "probe",
+  name: "Probe",
+  fields: [
+    { key: "accent", type: "color", label: "Farbe", group: "A", default: "#39ff14" },
+    { key: "size", type: "number", label: "Grösse", group: "A", default: 10, min: 0, max: 100, unit: "px" },
+    { key: "fade", type: "number", label: "Ausblenden", group: "A", default: 30, min: 0, max: 600, unit: "s" },
+    { key: "scale", type: "number", label: "Skalierung", group: "A", default: 0.7, min: 0, max: 2 },
+    { key: "title", type: "text", label: "Titel", group: "A", default: "HALLO" },
+    { key: "glow", type: "boolean", label: "Glühen", group: "A", default: true },
+  ],
+};
+assert.deepEqual(cssVariables(schema, { accent: "#ff0000", size: 12, fade: 5, scale: 0.5, title: "X", glow: false }), {
+  "--accent": "#ff0000", "--size": "12px", "--fade": "5s", "--scale": "0.5",
+});
+
+console.log("themeRuntime ok");

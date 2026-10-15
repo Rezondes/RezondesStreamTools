@@ -5,10 +5,10 @@ import { spawn } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import ffmpegPath from "ffmpeg-static";
 
-// base "./" damit der Build auch aus einem beliebigen Ordner läuft
+// base "/": Skripte liegen absolut unter /assets/, damit sie auch unter /s/<login>/<szene>.html gefunden werden
 export default defineConfig({
-  base: "./",
-  plugins: [react(), stingerRender(), singleFile()],
+  base: "/",
+  plugins: [react(), stingerRender(), sceneFiles()],
   server: {
     port: 5173,
     strictPort: true,
@@ -22,28 +22,16 @@ export default defineConfig({
 // Szenen, die als eigene HTML-Datei in dist/ landen (gleiche Namen wie die Routen in src/main.tsx)
 const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx"];
 
-// Baut JS und CSS direkt ins HTML ein. Externe Module blockiert Chromium bei file://,
-// eingebettete nicht. So lässt sich dist/alerts.html in OBS als "Lokale Datei" einbinden.
-function singleFile(): Plugin {
+// Eine HTML-Datei je Szene (alerts.html, chat.html, ...) als Kopie von index.html. Der Server liefert sie unter
+// /s/<login>/<szene>.html aus; die Skripte liegen unter /assets/, je Theme ein eigener Chunk.
+function sceneFiles(): Plugin {
   return {
-    name: "single-file",
+    name: "scene-files",
     apply: "build",
     enforce: "post",
     generateBundle(_, bundle) {
       const html = bundle["index.html"] as Rollup.OutputAsset;
-      let source = String(html.source);
-      for (const [name, file] of Object.entries(bundle)) {
-        if (file.type === "chunk") {
-          const code = file.code.replace(/<\/script/gi, "<\\/script");
-          source = source.replace(new RegExp(`<script[^>]*src="[^"]*${name}"[^>]*></script>`), () => `<script type="module">${code}</script>`);
-          delete bundle[name];
-        } else if (name.endsWith(".css")) {
-          source = source.replace(new RegExp(`<link[^>]*href="[^"]*${name}"[^>]*>`), () => `<style>${String(file.source)}</style>`);
-          delete bundle[name];
-        }
-      }
-      html.source = source;
-      for (const scene of SCENES) this.emitFile({ type: "asset", fileName: `${scene}.html`, source });
+      for (const scene of SCENES) this.emitFile({ type: "asset", fileName: `${scene}.html`, source: html.source });
     },
   };
 }

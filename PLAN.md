@@ -182,7 +182,8 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 4: Theme zur Laufzeit
+## Package 4: Theme zur Laufzeit (erledigt)
+
 
 **Ziel:** Jede Overlay-Seite lädt Theme und Einstellungen ihres Streamers und erbt fehlende Szenen vom Standard-Theme.
 
@@ -198,11 +199,11 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: `/s/<login>/<szene>.html` rendert die Szene des eingestellten Themes mit den aufgelösten Werten.
-- [ ] AC2: Fehlt die Szene im Theme, wird die Szene des Standard-Themes `matrix` genutzt.
-- [ ] AC3: Die Werte stehen als CSS-Variablen am Wurzelelement der Szene (`--<key>` für Farben und Zahlen) und als Kontext für Texte.
-- [ ] AC4: Nur der Code des gewählten Themes wird geladen (eigener Chunk je Theme).
-- [ ] AC5: Ändert der Streamer Einstellungen, übernimmt die Overlay-Seite sie ohne Neuladen (SSE-Nachricht `settings`).
+- [x] AC1: `/s/<login>/<szene>.html` rendert die Szene des eingestellten Themes mit den aufgelösten Werten.
+- [x] AC2: Fehlt die Szene im Theme, wird die Szene des Standard-Themes `matrix` genutzt.
+- [x] AC3: Die Werte stehen als CSS-Variablen am Wurzelelement der Szene (`--<key>` für Farben und Zahlen) und als Kontext für Texte.
+- [x] AC4: Nur der Code des gewählten Themes wird geladen (eigener Chunk je Theme).
+- [x] AC5: Ändert der Streamer Einstellungen, übernimmt die Overlay-Seite sie ohne Neuladen (SSE-Nachricht `settings`).
 
 ### Tests (TDD)
 

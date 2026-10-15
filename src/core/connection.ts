@@ -10,7 +10,7 @@ import { toIrcEvents } from "./ircEvents.ts";
 import { params } from "./params.ts";
 import * as streamerPath from "./streamerPath.ts";
 import { demo } from "./demo.ts";
-import type { Alert, ChatMessage, ChatRemoval, FxEvent, ServerMessage, ServerStatus, Track } from "./types.ts";
+import type { Alert, ChatMessage, ChatRemoval, FxEvent, PublicSettings, ServerMessage, ServerStatus, Track } from "./types.ts";
 
 export type Handlers = {
   chat?: (message: ChatMessage) => void;
@@ -18,6 +18,7 @@ export type Handlers = {
   music?: (track: Track | null) => void;
   fx?: (event: FxEvent) => void;
   remove?: (removal: ChatRemoval) => void;
+  settings?: (settings: PublicSettings) => void;
 };
 
 // Login des Streamers, dessen Overlay das ist; null ohne /s/<login>/ und ohne gültiges ?s=
@@ -38,8 +39,44 @@ async function serverStatus(): Promise<ServerStatus | null> {
   }
 }
 
-// Verbindet alle Quellen und meldet Ereignisse an handlers; die Rückgabe trennt alles wieder
+// Alle Hooks einer Seite teilen sich eine Verbindung: der erste Abonnent startet die Quellen, der letzte stoppt sie
+const subscribers = new Set<Handlers>();
+let stopSources: (() => void) | null = null;
+const fanout: Handlers = {
+  chat: message => subscribers.forEach(handlers => handlers.chat?.(message)),
+  alert: alert => subscribers.forEach(handlers => handlers.alert?.(alert)),
+  music: track => subscribers.forEach(handlers => handlers.music?.(track)),
+  fx: event => subscribers.forEach(handlers => handlers.fx?.(event)),
+  remove: removal => subscribers.forEach(handlers => handlers.remove?.(removal)),
+  settings: settings => subscribers.forEach(handlers => handlers.settings?.(settings)),
+};
+
+// Meldet Ereignisse an handlers; die Rückgabe meldet wieder ab
 export function connect(handlers: Handlers): () => void {
+  subscribers.add(handlers);
+  stopSources ??= startSources(fanout);
+  return () => {
+    subscribers.delete(handlers);
+    if (subscribers.size > 0) return;
+    stopSources?.();
+    stopSources = null;
+  };
+}
+
+// Gewähltes Theme und Einstellungen des Streamers; null ohne Streamer oder Server
+export async function fetchSettings(): Promise<PublicSettings | null> {
+  if (!streamer || !location.protocol.startsWith("http")) return null;
+  try {
+    const response = await fetch(`${streamerPath.base(streamer)}/settings`);
+    return response.ok ? ((await response.json()) as PublicSettings) : null;
+  } catch {
+    // Netzwerkfehler: die Szene läuft mit den Standardwerten
+    return null;
+  }
+}
+
+// Verbindet alle Quellen und meldet Ereignisse an handlers; die Rückgabe trennt alles wieder
+function startSources(handlers: Handlers): () => void {
   let stopped = false;
   const stops = [params.has("demo") ? demo(handlers) : () => {}];
   serverStatus()
@@ -64,6 +101,7 @@ function events(login: string, handlers: Handlers) {
       if (message.type === "alert") handlers.alert?.(message.alert);
       else if (message.type === "music") handlers.music?.(message.track);
       else if (message.type === "fx") handlers.fx?.(message.event);
+      else if (message.type === "settings") handlers.settings?.(message.settings);
     };
     // Nach einer Antwort wie 404 (Laufzeit gerade nicht gestartet) gibt EventSource auf: selbst mit Pause neu verbinden
     source.onerror = () => {
