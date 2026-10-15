@@ -1,20 +1,10 @@
-// Szenen-Komponenten je Theme (React-Teil der Theme-Liste). Jedes Theme wird per React.lazy geladen und landet
-// im Build in einem eigenen Chunk; eine Seite lädt nur das Theme, das der Streamer gewählt hat.
-// Fehlende Szenen eines Themes kommen vom Standard-Theme (src/core/themeRuntime.ts).
-import { lazy, type ComponentType } from "react";
+// Szenen-Komponenten je Theme (React-Teil der Theme-Liste, die Schemas stehen in registry.ts).
+// Eine Seite lädt nur die Szene des Themes, das der Streamer gewählt hat; fehlende Szenen eines Themes
+// kommen vom Standard-Theme (src/core/themeRuntime.ts).
+import type { ComponentType } from "react";
 import type { SceneName } from "../core/theme.ts";
-
-const Screen = lazy(() => import("./matrix/scenes/Screen.tsx"));
+import { matrixScenes } from "./matrix/index.tsx";
 
 export const THEME_SCENES: Record<string, Partial<Record<SceneName, ComponentType>>> = {
-  matrix: {
-    starting: () => <Screen kind="starting" />,
-    brb: () => <Screen kind="brb" />,
-    ending: () => <Screen kind="ending" />,
-    alerts: lazy(() => import("./matrix/scenes/Alerts.tsx")),
-    chat: lazy(() => import("./matrix/scenes/Chat.tsx")),
-    cam: lazy(() => import("./matrix/scenes/Cam.tsx")),
-    music: lazy(() => import("./matrix/scenes/Music.tsx")),
-    fx: lazy(() => import("./matrix/scenes/Fx.tsx")),
-  },
+  matrix: matrixScenes,
 };

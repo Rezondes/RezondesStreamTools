@@ -25,6 +25,9 @@ export type Handlers = {
 const loginFromQuery = (params.get("s") ?? "").toLowerCase();
 export const streamer = streamerPath.parse(location.pathname)?.login ?? (streamerPath.isLogin(loginFromQuery) ? loginFromQuery : null);
 
+// Datei aus dem Medienordner des Streamers (/s/<login>/media/); volle URLs und Seiten ohne Streamer unverändert
+export const mediaUrl = (name: string) => (/^https?:\/\//.test(name) || !streamer ? name : `${streamerPath.base(streamer)}/media/${encodeURIComponent(name)}`);
+
 const channel = (params.get("channel") ?? streamer ?? String(import.meta.env.VITE_TWITCH_CHANNEL ?? "")).toLowerCase().replace(/^#/, "");
 
 // null = kein Streamer, kein Server erreichbar oder Streamer dort unbekannt

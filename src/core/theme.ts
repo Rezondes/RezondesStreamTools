@@ -6,7 +6,7 @@ export type SceneName = (typeof SCENES)[number];
 
 // Ton: eigene Datei aus den Medien (file) oder leer = eingebauter Ton des Themes; volume 0 bis 1
 export type SoundValue = { file: string; volume: number };
-export type SettingValue = string | number | boolean | string[] | SoundValue;
+export type SettingValue = string | number | boolean | readonly string[] | SoundValue;
 export type SettingValues = Record<string, SettingValue>;
 
 type FieldBase = {
@@ -19,7 +19,7 @@ type FieldBase = {
 export type SettingField =
   | (FieldBase & { type: "color"; default: string })
   | (FieldBase & { type: "text" | "textarea"; default: string; maxLength?: number })
-  | (FieldBase & { type: "lines"; default: string[]; maxLines?: number })
+  | (FieldBase & { type: "lines"; default: readonly string[]; maxLines?: number })
   | (FieldBase & { type: "number"; default: number; min: number; max: number; step?: number; unit?: "px" | "ms" | "s" | "%" })
   | (FieldBase & { type: "boolean"; default: boolean })
   | (FieldBase & { type: "select" | "font"; default: string; options: readonly string[] })

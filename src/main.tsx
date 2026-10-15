@@ -7,7 +7,7 @@ import "./style.css";
 import Home from "./scenes/Home.tsx";
 import Stinger from "./scenes/Stinger.tsx";
 import Triggers from "./scenes/Triggers.tsx";
-import { SCENES } from "./core/theme.ts";
+import { SCENES, type SceneName } from "./core/theme.ts";
 import { resolveSettings } from "./core/settings.ts";
 import { cssVariables, resolveScene } from "./core/themeRuntime.ts";
 import { ThemeValues, useSettings } from "./core/hooks/useSettings.ts";
@@ -20,18 +20,24 @@ addEventListener("hashchange", () => location.reload());
 const file = location.pathname.split("/").pop()!.replace(/\.html$/, "");
 const path = location.hash.replace(/^#\/?/, "").split("?")[0] || (file === "index" ? "" : file);
 
-// Standardwerte, bis die Einstellungen des Streamers geladen sind (und ohne Server)
+// Standardwerte, wenn es keine Einstellungen gibt (kein Streamer, kein Server)
 const defaultSchema = findTheme(DEFAULT_THEME)!;
 const DEFAULTS = { theme: DEFAULT_THEME, values: resolveSettings(defaultSchema, {}) };
 
-function ThemedScene({ scene }: { scene: string }) {
+function ThemedScene({ scene }: { scene: SceneName }) {
+  // Erst nach dem Laden zeigen, sonst blitzen kurz die Standardwerte auf
   const settings = useSettings(DEFAULTS);
-  const schema = findTheme(settings.theme) ?? defaultSchema;
-  const Scene = resolveScene(THEME_SCENES, schema.id, scene, DEFAULT_THEME);
+  if (!settings) return null;
+  const chosen = findTheme(settings.theme) ?? defaultSchema;
+  const Scene = resolveScene(THEME_SCENES, chosen.id, scene, DEFAULT_THEME);
   if (!Scene) return null;
+  // Erbt die Szene vom Standard-Theme, gelten dessen Einstellungen (gleiche Schlüssel werden übernommen)
+  const own = THEME_SCENES[chosen.id]?.[scene] === Scene;
+  const schema = own ? chosen : defaultSchema;
+  const values = own ? settings.values : resolveSettings(defaultSchema, settings.values);
   return (
-    <ThemeValues.Provider value={settings.values}>
-      <div className={`theme-root theme-${schema.id}`} style={cssVariables(schema, settings.values)}>
+    <ThemeValues.Provider value={values}>
+      <div className={`theme-root theme-${schema.id}`} style={cssVariables(schema, values)}>
         <Suspense fallback={null}>
           <Scene />
         </Suspense>
@@ -42,7 +48,7 @@ function ThemedScene({ scene }: { scene: string }) {
 
 // Werkzeuge, keine OBS-Quellen: Stinger-/Banner-Renderer und Trigger-Editor
 const tools: Record<string, React.ReactNode> = { stinger: <Stinger />, triggers: <Triggers /> };
-const isScene = (SCENES as readonly string[]).includes(path);
+const scene = SCENES.find(name => name === path);
 
-document.body.classList.toggle("overlay", isScene);
-createRoot(document.getElementById("root")!).render(isScene ? <ThemedScene scene={path} /> : tools[path] ?? <Home />);
+document.body.classList.toggle("overlay", Boolean(scene));
+createRoot(document.getElementById("root")!).render(scene ? <ThemedScene scene={scene} /> : tools[path] ?? <Home />);

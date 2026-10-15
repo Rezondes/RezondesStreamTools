@@ -11,7 +11,7 @@ assert.equal(resolveScene(scenes, "gibt-es-nicht", "alerts", "matrix"), "matrix-
 assert.equal(resolveScene(scenes, "starter", "index", "matrix"), null);
 assert.equal(resolveScene(scenes, "starter", "music", "matrix"), null);
 
-// CSS-Variablen: nur Farben und Zahlen, Zahlen mit Einheit laut Schema
+// CSS-Variablen: Farben, Zahlen mit Einheit laut Schema, Schalter als 1/0, Schriften in Anführungszeichen; Texte nicht
 const schema: ThemeSchema = {
   id: "probe",
   name: "Probe",
@@ -22,10 +22,11 @@ const schema: ThemeSchema = {
     { key: "scale", type: "number", label: "Skalierung", group: "A", default: 0.7, min: 0, max: 2 },
     { key: "title", type: "text", label: "Titel", group: "A", default: "HALLO" },
     { key: "glow", type: "boolean", label: "Glühen", group: "A", default: true },
+    { key: "font", type: "font", label: "Schrift", group: "A", default: "VT323", options: ["VT323", "Share Tech Mono"] },
   ],
 };
-assert.deepEqual(cssVariables(schema, { accent: "#ff0000", size: 12, fade: 5, scale: 0.5, title: "X", glow: false }), {
-  "--accent": "#ff0000", "--size": "12px", "--fade": "5s", "--scale": "0.5",
+assert.deepEqual(cssVariables(schema, { accent: "#ff0000", size: 12, fade: 5, scale: 0.5, title: "X", glow: false, font: "Share Tech Mono" }), {
+  "--accent": "#ff0000", "--size": "12px", "--fade": "5s", "--scale": "0.5", "--glow": "0", "--font": "\"Share Tech Mono\"",
 });
 
 console.log("themeRuntime ok");

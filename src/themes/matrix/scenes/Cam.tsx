@@ -1,17 +1,24 @@
 // Webcam-Rahmen, innen transparent. Quelle genau so gross wie die Kamera anlegen, z.B. 640x360.
-// Parameter: ?label=REZONDES
-import { params } from "../../../core/params.ts";
-import { useDecode } from "../../../core/hooks/useDecode.ts";
+// Label, REC-Anzeige, Uhr und Ecken kommen aus den Einstellungen.
+import { fillTemplate } from "../../../core/template.ts";
 import { useNow } from "../../../core/hooks/useNow.ts";
+import { useMatrixDecode } from "../decode.ts";
+import { placeholders, useMatrix } from "../values.ts";
 
 export default function Cam() {
-  const label = useDecode(params.get("label") ?? "CAM_01 // REZONDES", 600, 40);
+  const values = useMatrix();
+  const label = useMatrixDecode(fillTemplate(values.camLabel, placeholders(values)), "camLabel");
   const now = useNow();
   return (
     <div className="cam">
       <i className="corner tl" /><i className="corner tr" /><i className="corner bl" /><i className="corner br" />
       <div className="cam-label">{label}</div>
-      <div className="cam-rec"><span className="blink">●</span> REC {new Date(now).toLocaleTimeString("de-DE")}</div>
+      {(values.camRec || values.camClock) && (
+        <div className="cam-rec">
+          {values.camRec && <><span className="blink">{values.camRecDot}</span> {values.camRecText} </>}
+          {values.camClock && new Date(now).toLocaleTimeString(values.locale)}
+        </div>
+      )}
       <div className="cam-scan" aria-hidden="true" />
     </div>
   );

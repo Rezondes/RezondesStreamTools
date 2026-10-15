@@ -1,36 +1,36 @@
-// Chat-Overlay, transparent, neue Nachrichten unten. Empfohlen z.B. 500x900.
-// Parameter: ?fade=30 (Sekunden bis Ausblenden, 0 = nie), ?max=30, ?demo
+// Chat-Overlay, transparent, neue Nachrichten unten (oder oben). Empfohlen z.B. 500x900.
+// Prompt, Badges, Grössen, Ausblenden und Animationen kommen aus den Einstellungen. Parameter: ?demo
 import type { ChatMessage } from "../../../core/types.ts";
-import { numberParam } from "../../../core/params.ts";
 import { useChat } from "../../../core/hooks/useChat.ts";
-import { useDecode } from "../../../core/hooks/useDecode.ts";
-
-const FADE = numberParam("fade", 30);
-const MAX = numberParam("max", 30);
+import { useMatrixDecode } from "../decode.ts";
+import { useMatrix } from "../values.ts";
 
 export default function Chat() {
-  const messages = useChat(MAX);
-
+  const values = useMatrix();
+  const messages = useChat(values.chatMax);
   return (
-    <div className="chat" style={{ "--fade": `${FADE}s` } as React.CSSProperties}>
-      {messages.map(m => <Line key={m.id} m={m} />)}
+    <div className={`chat chat-${values.chatAlign}`}>
+      {messages.map(message => <Line key={message.id} message={message} />)}
     </div>
   );
 }
 
-function Line({ m }: { m: ChatMessage }) {
-  const user = useDecode(m.user, 0, 35);
+function Line({ message }: { message: ChatMessage }) {
+  const values = useMatrix();
+  const user = useMatrixDecode(message.user, "chatUser");
+  // Badges kommen als HOST, MOD, VIP, SUB aus core/ircEvents.ts
+  const badges: Record<string, string> = { HOST: values.badgeHost, MOD: values.badgeMod, VIP: values.badgeVip, SUB: values.badgeSub };
   return (
-    <div className={`msg${FADE > 0 ? " fades" : ""}${m.action ? " action" : ""}`}>
+    <div className={`msg in-${values.chatIn} out-${values.chatOut}${values.chatFade > 0 ? " fades" : ""}${message.action ? " action" : ""}`}>
       <div className="msg-head">
-        {m.badges.map(b => <span key={b} className="badge">{b}</span>)}
+        {message.badges.map(badge => <span key={badge} className="badge">{badges[badge] ?? badge}</span>)}
         <span className="glow">{user}</span>
-        <span className="muted">@twitch:~$</span>
+        <span className="muted">{values.chatPrompt}</span>
       </div>
       <div className="msg-body">
-        {m.parts.map((p, i) => typeof p === "string"
-          ? <span key={i}>{p}</span>
-          : <img key={i} className="emote" alt={p.name} src={p.url} />)}
+        {message.parts.map((part, index) => typeof part === "string"
+          ? <span key={index}>{part}</span>
+          : <img key={index} className="emote" alt={part.name} src={part.url} />)}
       </div>
     </div>
   );

@@ -13,24 +13,24 @@ npm run dev                  # http://localhost:5173
 
 Die Übersicht unter `http://localhost:5173` listet alle URLs. `[ TEST ]` öffnet die Szene mit Fake-Events (`?demo`).
 
-Ohne Server: `npm run build` erzeugt in `dist/` pro Szene eine eigenständige HTML-Datei
-(`starting.html`, `brb.html`, `ending.html`, `alerts.html`, `chat.html`, `cam.html`, `music.html`, `fx.html`, JS und CSS eingebettet).
-In OBS bei der Browserquelle "Lokale Datei" anhaken und die Datei wählen.
-Parameter gehen dann nur über das URL-Feld statt "Lokale Datei", z.B. `file:///F:/Code/RezondesStream/dist/alerts.html?sound=0`.
-Nach Änderungen am Code oder an `.env.local` neu bauen.
+`npm run build` erzeugt in `dist/` eine HTML-Datei pro Szene (`starting.html`, `alerts.html`, ...), die der Overlay-Server
+unter `/s/<login>/` ausliefert. Einen Modus ohne Server gibt es nicht mehr, denn Theme und Einstellungen kommen vom Server.
 
 ## Szenen
 
-| URL | Grösse | Optionen |
+| URL | Grösse | Optionen pro Quelle |
 |-----|--------|----------|
 | `#/starting` | 1920x1080 | `?min=5` oder `?at=20:00`, `?ticker=Text` |
 | `#/brb` | 1920x1080 | `?ticker=Text` |
 | `#/ending` | 1920x1080 | `?next=Freitag 20 Uhr`, `?ticker=Text` |
-| `#/alerts` | 1920x1080 | `?duration=7`, `?scale=0.7`, `?sound=0`, `?volume=0.5` |
-| `#/chat` | 500x900 | `?fade=30` (0 = nie), `?max=30` |
-| `#/cam` | wie Kamera | `?label=REZONDES` |
-| `#/music` | 900x240 | `?art=cover` / `record` / `vinyl` / `none`, `?hide=0` |
+| `#/alerts` | 1920x1080 | `?sound=0`, `?volume=0.5` |
+| `#/chat` | 500x900 | |
+| `#/cam` | wie Kamera | |
+| `#/music` | 900x240 | |
 | `#/fx` | 1920x1080 | `?zone=main`, `?sound=0`, `?volume=0.5` |
+
+Alles andere (Texte, Farben, Schrift, Dauer, Grösse, Position, Animationen, Töne, Darstellung der Musik, Ausblendzeit
+des Chats, Kamera-Label, Countdown-Standard, Ticker) stellt der Streamer im Theme ein, siehe "Themes und Einstellungen".
 
 Mit Server liegt jede Szene unter `/s/<login>/<szene>.html` (z.B. `http://localhost:8089/s/rezondes/alerts.html`);
 die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Unter `npm run dev` wählt `?s=<login>` den Streamer.
@@ -113,12 +113,12 @@ Die OBS-Quellen auf `/s/<login>/<szene>.html` umstellen: die alten Adressen wie 
    Solange die Spotify-App im Entwicklungsmodus ist, muss jedes Spotify-Konto dort als Nutzer eingetragen sein.
 
 Das Overlay zeigt Titel, Interpret, Album, Fortschritt und das Cover in Phosphorgrün.
-Ohne Cover (oder mit `?art=vinyl`) dreht sich eine ASCII-Schallplatte, mit `?art=record` füllt das Cover die ganze Platte und dreht sich mit. Bei Pause oder Stopp klappt es ein (`?hide=0` lässt es stehen).
+Ohne Cover (oder mit der Darstellung `vinyl`) dreht sich eine ASCII-Schallplatte, mit `record` füllt das Cover die ganze Platte und dreht sich mit. Bei Pause oder Stopp klappt es ein (abschaltbar in den Einstellungen).
 Der Server fragt Spotify alle 3 Sekunden ab, aber nur solange ein Overlay des Streamers offen ist.
 
 ### Chat-Overlay
 
-Läuft immer anonym über Twitch-IRC. Nachrichten glitchen rein und nach `?fade=` Sekunden wieder raus.
+Läuft immer anonym über Twitch-IRC. Nachrichten glitchen rein und nach der eingestellten Zeit wieder raus.
 Zeigt Twitch-Emotes sowie die globalen und Kanal-Emotes von 7TV, BetterTTV und FrankerFaceZ (alle 10 Minuten aufgefrischt).
 Gelöschte Nachrichten und gebannte Nutzer verschwinden sofort.
 
@@ -128,6 +128,12 @@ Jeder Streamer wählt ein Theme und stellt dessen Werte ein (Funktionsstufe `the
 `data/streamers/<login>/settings.json` als `{ theme, values: { <theme-id>: { ... } } }`, Werte je Theme getrennt.
 `POST /api/settings` mit `{ theme, values }` prüft gegen das Schema des Themes (`src/themes/<id>/settings.ts`)
 und speichert nur fehlerfreie Eingaben; sonst kommt eine Liste `{ key, code }` zurück.
+
+Im eingebauten Theme `matrix` ist jeder sichtbare und hörbare Wert eine Einstellung (Farben, Schrift, Logo, Regen,
+Texte und Terminal-Zeilen der Szenen, Alert-Texte je Art mit `{user}`, `{amount}`, `{detail}`, `{text}`, Töne je Alert-Art,
+Chat, Kamera, Musik, Effekte, Stinger, Banner); die Standardwerte ergeben den bisherigen Look. Terminal-Zeilen können
+Vertipper enthalten: `{del 4}` löscht 4 Zeichen, `{pause 900}` wartet 900 ms, `{smash 18}` haut auf die Tastatur.
+Der Theme-Code selbst enthält keine festen Farben, Texte oder Masse; das prüft `scripts/rules.check.ts`.
 
 ## Chat-Trigger (`triggers.json` im Profil)
 
@@ -178,7 +184,7 @@ Auf der Übersicht gibt es für jede Regel einen Test-Knopf.
 
 ## Stinger-Übergang
 
-Animation in `src/stinger.ts` (reine Funktion der Zeit). Vorschau mit Zeitleiste: `http://localhost:5173/#/stinger`.
+Animation in `src/themes/matrix/stinger.ts` (reine Funktion der Zeit, Länge, Übergangspunkt und Texte aus den Einstellungen). Vorschau mit Zeitleiste: `http://localhost:5173/#/stinger`.
 `[ RENDERN ]` schickt jeden Frame an den Dev-Server, ffmpeg baut daraus `render/stinger.webm` (VP9 mit Transparenz).
 
 Einmalig ffmpeg freischalten (npm blockiert den Download sonst):

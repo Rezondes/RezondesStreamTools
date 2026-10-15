@@ -1,62 +1,74 @@
-// Alert-Overlay, transparent. Empfohlen als Browserquelle 1920x1080, Alert erscheint oben mittig.
-// Parameter: ?duration=7 (Sekunden pro Alert), ?scale=0.7 (Grösse), ?sound=0, ?volume=0.5, ?demo
-import { useEffect } from "react";
+// Alert-Overlay, transparent. Empfohlen als Browserquelle 1920x1080. Texte je Alert-Art, Position, Grösse, Dauer,
+// Animationen und Töne kommen aus den Einstellungen. Parameter: ?sound=0, ?volume=0.5, ?demo
+import { useEffect, useState } from "react";
 import MatrixRain from "../MatrixRain.tsx";
-import type { Alert } from "../../../core/types.ts";
-import { numberParam } from "../../../core/params.ts";
-import { beep } from "../../../core/sound.ts";
+import type { Alert, AlertKind } from "../../../core/types.ts";
+import { fillTemplate } from "../../../core/template.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
-import { useDecode } from "../../../core/hooks/useDecode.ts";
+import { useMatrixDecode } from "../decode.ts";
+import { playLeave, playOpen } from "../tones.ts";
+import { useMatrix } from "../values.ts";
+import type { MatrixValues } from "../settings.ts";
 
-const DURATION = numberParam("duration", 7) * 1000;
-const SCALE = numberParam("scale", 0.7);
+const SOUND = {
+  follow: "soundFollow",
+  sub: "soundSub",
+  resub: "soundResub",
+  gift: "soundGift",
+  raid: "soundRaid",
+  cheer: "soundCheer",
+  redeem: "soundRedeem",
+  hype: "soundHype",
+} as const satisfies Record<AlertKind, keyof MatrixValues>;
 
-const tagged = (tag: string, detail?: string) => (detail ? `${tag} // ${detail.toUpperCase()}` : tag);
-
-function describe(a: Alert): { tag: string; title: string; line: string } {
-  const n = a.amount ?? 0;
-  switch (a.kind) {
-    case "follow": return { tag: "FOLLOW", title: a.user, line: "ist jetzt in der Matrix." };
-    case "sub": return { tag: tagged("SUB", a.detail), title: a.user, line: "hat die rote Pille genommen." };
-    case "resub": return { tag: tagged(`RESUB x${n}`, a.detail), title: a.user, line: `ist seit ${n} Monaten dabei.` };
-    case "gift": return { tag: `GIFT x${n}`, title: a.user, line: n !== 1 ? `verschenkt ${n} Subs an den Chat.` : a.text ? `verschenkt einen Sub an ${a.text}.` : "verschenkt einen Sub." };
-    case "raid": return { tag: "RAID", title: a.user, line: `raidet mit ${n} Zuschauern!` };
-    case "cheer": return { tag: `${n} BITS`, title: a.user, line: `cheert ${n} Bits.` };
-    case "redeem": return { tag: `${n} KANALPUNKTE`, title: a.user, line: `löst "${a.detail}" ein.` };
-    case "hype": return a.detail === "end"
-      ? { tag: "HYPE TRAIN", title: "HYPE TRAIN", line: `ist auf Level ${n} angekommen. Danke!` }
-      : { tag: "HYPE TRAIN", title: "HYPE TRAIN", line: "ist abgefahren! Alle einsteigen." };
+// Kopfzeile, Name und Zeile eines Alerts aus den Texten der Einstellungen
+function describe(alert: Alert, values: MatrixValues): { tag: string; title: string; line: string } {
+  const amount = alert.amount ?? 0;
+  const fill = (text: string) => fillTemplate(text, { user: alert.user, amount, detail: alert.detail ?? "", text: alert.text ?? "" });
+  const tier = alert.detail ? fillTemplate(values.tierSuffix, { detail: alert.detail.toUpperCase() }) : "";
+  const shown = (tag: string, line: string, title = alert.user) => ({ tag: fill(tag), title, line: fill(line) });
+  switch (alert.kind) {
+    case "follow": return shown(values.followTag, values.followLine);
+    case "sub": return shown(values.subTag + tier, values.subLine);
+    case "resub": return shown(values.resubTag + tier, values.resubLine);
+    case "gift": return shown(values.giftTag, amount !== 1 ? values.giftLine : alert.text ? values.giftToLine : values.giftOneLine);
+    case "raid": return shown(values.raidTag, values.raidLine);
+    case "cheer": return shown(values.cheerTag, values.cheerLine);
+    case "redeem": return shown(values.redeemTag, values.redeemLine);
+    case "hype": return shown(values.hypeTag, alert.detail === "end" ? values.hypeEndLine : values.hypeBeginLine, values.hypeTitle);
   }
 }
 
 export default function Alerts() {
-  const { current, leaving } = useAlerts(DURATION);
-  return <div className="alerts" style={{ "--scale": SCALE } as React.CSSProperties}>{current && <AlertBox key={current.key} alert={current} leaving={leaving} />}</div>;
+  const values = useMatrix();
+  const { current, leaving } = useAlerts(values.alertDuration);
+  return <div className={`alerts align-${values.alertAlign}`}>{current && <AlertBox key={current.key} alert={current} leaving={leaving} />}</div>;
 }
 
 function AlertBox({ alert, leaving }: { alert: Alert; leaving: boolean }) {
-  const { tag, title, line } = describe(alert);
-  const header = useDecode(`> INCOMING TRANSMISSION // ${tag}`, 550, 18);
-  const name = useDecode(title.toUpperCase(), 800, 55);
-  const sub = useDecode(line, 1300, 22);
-  const quote = useDecode(alert.text && alert.kind !== "gift" ? `"${alert.text}"` : "", 1900, 18);
+  const values = useMatrix();
+  const { tag, title, line } = describe(alert, values);
+  const header = useMatrixDecode(fillTemplate(values.alertHeader, { tag }), "alertHeader");
+  const name = useMatrixDecode(title.toUpperCase(), "alertName");
+  const sub = useMatrixDecode(line, "alertLine");
+  const withQuote = values.alertQuote && alert.text && alert.kind !== "gift";
+  const quote = useMatrixDecode(withQuote ? fillTemplate(values.quoteFormat, { text: alert.text ?? "" }) : "", "alertQuote");
 
-  // Kleiner Modem-Gruss beim Öffnen, tiefer Ton beim Ausblenden
-  useEffect(() => {
-    [880, 1320, 660, 1760].forEach((frequency, index) => beep(frequency, 90, index * 85));
-    beep(2640, 40, 900);
-  }, []);
-  useEffect(() => { if (leaving) beep(440, 120); }, [leaving]);
+  // Ton beim Öffnen genau einmal pro Alert, beim Ausblenden einmal
+  const [openSound] = useState(() => (values.alertSound ? values[SOUND[alert.kind]] : null));
+  useEffect(() => { if (openSound) playOpen(openSound); }, [openSound]);
+  const leaveSound = values.alertSound ? values.soundLeave : null;
+  useEffect(() => { if (leaving && leaveSound) playLeave(leaveSound); }, [leaving, leaveSound]);
 
   return (
-    <div className={`alert${leaving ? " leaving" : ""}`} style={{ "--d": `${DURATION}ms` } as React.CSSProperties}>
+    <div className={`alert in-${values.alertIn} out-${values.alertOut}${leaving ? " leaving" : ""}`}>
       <div className="alert-body">
-        <MatrixRain size={14} className="rain inner" />
+        {values.rainAlerts && <MatrixRain size={values.rainSizeAlerts} opacity={values.rainOpacityAlerts} />}
         <div className="alert-head">{header}</div>
         <div className="alert-name glow glitch" data-text={name}>{name}</div>
         <div className="alert-line">{sub}</div>
         {quote && <div className="alert-quote muted">{quote}</div>}
-        <div className="alert-timer" />
+        {values.alertTimer && <div className="alert-timer" />}
       </div>
     </div>
   );

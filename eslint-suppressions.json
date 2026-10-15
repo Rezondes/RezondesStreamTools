@@ -42,47 +42,6 @@
       "count": 1
     }
   },
-  "src/themes/matrix/MatrixRain.tsx": {
-    "id-denylist": {
-      "count": 7
-    },
-    "id-length": {
-      "count": 2
-    }
-  },
-  "src/themes/matrix/banners.ts": {
-    "id-denylist": {
-      "count": 54
-    },
-    "id-length": {
-      "count": 23
-    }
-  },
-  "src/themes/matrix/scenes/Alerts.tsx": {
-    "id-length": {
-      "count": 2
-    }
-  },
-  "src/themes/matrix/scenes/Chat.tsx": {
-    "id-length": {
-      "count": 4
-    }
-  },
-  "src/themes/matrix/scenes/Fx.tsx": {
-    "id-length": {
-      "count": 1
-    }
-  },
-  "src/themes/matrix/scenes/Music.tsx": {
-    "id-length": {
-      "count": 1
-    }
-  },
-  "src/themes/matrix/scenes/Screen.tsx": {
-    "id-length": {
-      "count": 1
-    }
-  },
   "src/scenes/Stinger.tsx": {
     "id-denylist": {
       "count": 2
@@ -108,12 +67,14 @@
       "count": 1
     }
   },
-  "src/themes/matrix/stinger.ts": {
-    "id-denylist": {
-      "count": 41
-    },
+  "src/themes/matrix/banners.ts": {
     "id-length": {
-      "count": 14
+      "count": 6
+    }
+  },
+  "src/themes/matrix/stinger.ts": {
+    "id-length": {
+      "count": 5
     }
   },
   "vite.config.ts": {

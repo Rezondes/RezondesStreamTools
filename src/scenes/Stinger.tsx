@@ -2,8 +2,10 @@
 // (npm run dev), weil das Rendern die Frames an das Vite-Plugin in vite.config.ts schickt, das ffmpeg aufruft.
 // Auswahl per Knopf oder ?clip=stinger|profile|offline
 import { useEffect, useRef, useState } from "react";
-import { CUT, DURATION, FPS, H, W, drawStinger } from "../themes/matrix/stinger.ts";
-import { LOOP, drawOfflineBanner, drawProfileBanner } from "../themes/matrix/banners.ts";
+import { FPS, H, W, drawStinger, stingerOptions } from "../themes/matrix/stinger.ts";
+import { bannerOptions, drawOfflineBanner, drawProfileBanner } from "../themes/matrix/banners.ts";
+import { matrixSettings, type MatrixValues } from "../themes/matrix/settings.ts";
+import { resolveSettings } from "../core/settings.ts";
 import { params } from "../core/params.ts";
 
 type Clip = {
@@ -18,10 +20,16 @@ type Clip = {
   hint: string;
 };
 
+// Standardwerte des Matrix-Themes; mit den Einstellungen eines Streamers rendert später der Server (Package 10)
+const VALUES = resolveSettings(matrixSettings, {}) as unknown as MatrixValues;
+const STINGER = stingerOptions(VALUES);
+const BANNER = bannerOptions(VALUES, VALUES.channelName.toLowerCase());
+const FONT = `24px "${VALUES.font}"`;
+
 const CLIPS: Clip[] = [
-  { name: "stinger", label: "STINGER", w: W, h: H, fps: FPS, duration: DURATION, format: "webm", draw: drawStinger, hint: `OBS: Übergang "Stinger", Videodatei render/stinger.webm, Übergangspunkt ${CUT * 1000} ms.` },
-  { name: "profile", label: "PROFILBANNER", w: 1200, h: 480, fps: 12, duration: LOOP, format: "gif", draw: drawProfileBanner, hint: "Twitch: Einstellungen > Kanal > Markenidentität > Profilbanner. Datei render/profile.gif (max. 10 MB), Standbild render/profile.png." },
-  { name: "offline", label: "OFFLINE-BANNER", w: 1920, h: 1080, fps: 10, duration: LOOP, format: "gif", draw: drawOfflineBanner, hint: "Twitch: Einstellungen > Kanal > Markenidentität > Banner für Videoplayer. Datei render/offline.gif (max. 10 MB), Standbild render/offline.png." },
+  { name: "stinger", label: "STINGER", w: W, h: H, fps: FPS, duration: STINGER.duration, format: "webm", draw: (context, time) => drawStinger(context, time, STINGER), hint: `OBS: Übergang "Stinger", Videodatei render/stinger.webm, Übergangspunkt ${STINGER.cut * 1000} ms.` },
+  { name: "profile", label: "PROFILBANNER", w: 1200, h: 480, fps: BANNER.profileFps, duration: BANNER.loop, format: "gif", draw: (context, time) => drawProfileBanner(context, time, BANNER), hint: "Twitch: Einstellungen > Kanal > Markenidentität > Profilbanner. Datei render/profile.gif (max. 10 MB), Standbild render/profile.png." },
+  { name: "offline", label: "OFFLINE-BANNER", w: 1920, h: 1080, fps: BANNER.offlineFps, duration: BANNER.loop, format: "gif", draw: (context, time) => drawOfflineBanner(context, time, BANNER), hint: "Twitch: Einstellungen > Kanal > Markenidentität > Banner für Videoplayer. Datei render/offline.gif (max. 10 MB), Standbild render/offline.png." },
 ];
 
 export default function Stinger() {
@@ -46,14 +54,14 @@ export default function Stinger() {
   }, [playing, clip, stinger]);
 
   useEffect(() => {
-    document.fonts.load('24px "Share Tech Mono"')
+    document.fonts.load(FONT)
       .then(() => clip.draw(canvas.current!.getContext("2d")!, Math.min(t, clip.duration)))
       .catch((error: unknown) => console.error("Font loading failed:", error));
   }, [t, clip]);
 
   async function render() {
     setPlaying(false);
-    await document.fonts.load('24px "Share Tech Mono"');
+    await document.fonts.load(FONT);
     const ctx = canvas.current!.getContext("2d")!;
     const frames = Math.round(clip.duration * clip.fps);
     await fetch(`/__render/start`, { method: "POST" });
@@ -78,7 +86,7 @@ export default function Stinger() {
       </p>
       <div className="stinger-view" style={{ aspectRatio: `${clip.w} / ${clip.h}` }}>
         {/* Fake-Szenen hinter dem Stinger, damit man sieht, wo geschnitten wird */}
-        {stinger && <div className={`fake-scene ${t < CUT ? "a" : "b"}`}>{t < CUT ? "SZENE A" : "SZENE B"}</div>}
+        {stinger && <div className={`fake-scene ${t < STINGER.cut ? "a" : "b"}`}>{t < STINGER.cut ? "SZENE A" : "SZENE B"}</div>}
         <canvas key={clip.name} ref={canvas} width={clip.w} height={clip.h} />
       </div>
       <div className="stinger-bar">

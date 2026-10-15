@@ -35,11 +35,22 @@ export function fxPhase(action: FxAction, elapsedMs: number): FxPhase {
   return "done";
 }
 
-// Position in Prozent der Overlay-Fläche; zufällig nur zwischen 20 und 80, damit nichts am Rand klebt
-export function placeFx(position: FxPosition | undefined, random: () => number) {
-  if (position === "random") return { x: 20 + random() * 60, y: 20 + random() * 60 };
+// Position in Prozent der Overlay-Fläche; zufällig nur mit margin Prozent Abstand zum Rand, damit nichts am Rand klebt
+export function placeFx(position: FxPosition | undefined, random: () => number, margin = 20) {
+  const span = 100 - 2 * margin;
+  if (position === "random") return { x: margin + random() * span, y: margin + random() * span };
   if (position && position !== "center") return position;
   return { x: 50, y: 50 };
+}
+
+// Ende eines Countdowns in ms: at = "HH:MM" (heute, oder morgen, wenn die Zeit schon vorbei ist), sonst seconds ab now
+export function countdownEnd(at: string | null, seconds: number, now: Date) {
+  const time = at?.match(/^(\d{1,2}):(\d{2})$/);
+  if (!time) return now.getTime() + seconds * 1000;
+  const end = new Date(now);
+  end.setHours(Number(time[1]), Number(time[2]), 0, 0);
+  if (end.getTime() < now.getTime()) end.setDate(end.getDate() + 1);
+  return end.getTime();
 }
 
 // Ein Alert beginnt 600 ms vor Ablauf auszublenden; der nächste kommt 400 ms nach Ablauf

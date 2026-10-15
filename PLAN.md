@@ -223,7 +223,7 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ---
 
-## Package 5: Matrix-Theme
+## Package 5: Matrix-Theme (erledigt)
 
 **Ziel:** Der bisherige Look ist das eingebaute Theme `matrix`, in dem jede Farbe, jeder Name und jeder Text eine Einstellung ist.
 
@@ -240,8 +240,8 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: Jeder sichtbare oder hörbare Wert ist eine Einstellung. Mindestens, gruppiert nach Szene:
-  - **Allgemein:** alle Farben (Haupt, gedämpft, Linie, Hintergrund, Glow, Fehler), Schriften, Grundgrösse, Kanal-Name, ASCII-Logo, Glow-Stärke, Scanlines an/aus und Stärke, Glitch-Stärke und -Dauer.
+- [x] AC1: Jeder sichtbare oder hörbare Wert ist eine Einstellung. Mindestens, gruppiert nach Szene:
+  - **Allgemein:** alle Farben (Haupt, gedämpft, Linie, Hintergrund, Glow, Glitch, Blitz; eine Fehlerfarbe entfällt, die Overlays haben keinen Fehlerzustand), Schriften, Grundgrösse, Kanal-Name, ASCII-Logo, Glow-Stärke, Scanlines an/aus und Stärke, Glitch-Stärke und -Dauer.
   - **Matrix-Regen:** an/aus je Szene, Zeichensatz, Zeichengrösse, Dichte, Geschwindigkeit, Deckkraft, Bildrate.
   - **Starting/BRB/Ending:** Titel, Untertitel, Countdown-Standard, Fortschrittsbalken an/aus, Terminal an/aus, Terminal-Zeilen je Szene inkl. Vertipper-Skripte, Prompt-Text, Tipp-Tempo, Pausen zwischen Zeilen, Anzahl sichtbarer Zeilen, Ticker-Text und -Tempo, Einschalt-Animation (Art, Dauer), Rahmen-Grösse.
   - **Alerts:** Text je Alert-Art (Kopfzeile, Zeile, Platzhalter `{user}`, `{amount}`, `{detail}`), Dauer, Grösse (Skalierung), Position, Breite, Ein-/Ausblend-Animation, Ton je Alert-Art, Lautstärke, Zitat an/aus, Restzeit-Balken an/aus.
@@ -251,13 +251,13 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
   - **Effekte (fx):** Standarddauer, Standardgrösse, Ein-/Ausblend-Animation, Zufallsbereich der Position.
   - **Stinger:** Länge, Übergangspunkt, Text (heute `> SZENENWECHSEL`), Logo an/aus, Spaltenbreite, Fallzeit.
   - **Banner:** Texte, Untertitel, Schleifenlänge, Bildrate, Regen-Dichte.
-- [ ] AC2: Die Standardwerte ergeben genau den heutigen Look, die heutigen Texte, Töne und Zeiten.
-- [ ] AC3: Im Theme-Code (`src/themes/*/**` ausser `settings.ts`) gibt es keine festen Gestaltungswerte; automatisch geprüft durch `scripts/rules.check.ts`:
+- [x] AC2: Die Standardwerte ergeben genau den heutigen Look, die heutigen Texte, Töne und Zeiten.
+- [x] AC3: Im Theme-Code (`src/themes/*/**` ausser `settings.ts`) gibt es keine festen Gestaltungswerte; automatisch geprüft durch `scripts/rules.check.ts`:
   Farbliterale (`#rgb`, `#rrggbb`, `rgb(`, `hsl(`), sichtbarer JSX-Text (Text zwischen Tags ausser Leerzeichen und Satzzeichen),
   `px`/`ms`/`s`-Zahlen in `theme.css` ausserhalb von `var(...)`-Standardwerten, Zahl-Literale > 1 in Szenen-Komponenten ausser Indizes.
   Ausnahmen nur mit Kommentar `// fixed: <Grund>` direkt darüber.
-- [ ] AC4: CSS ist unter `.theme-matrix` gekapselt.
-- [ ] AC5: Stinger und Banner nutzen Länge, Übergangspunkt und Texte aus den Einstellungen und bleiben reine Funktionen von `t`.
+- [x] AC4: CSS ist unter `.theme-matrix` gekapselt.
+- [x] AC5: Stinger und Banner nutzen Länge, Übergangspunkt und Texte aus den Einstellungen und bleiben reine Funktionen von `t`.
 
 ### Tests (TDD)
 
