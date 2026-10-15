@@ -1,4 +1,4 @@
-// Übersicht im Dashboard: die fertigen OBS-URLs des Streamers (/s/<login>/<szene>.html) mit Grösse, Kopieren und
+// Übersicht im Dashboard: die fertigen OBS-URLs des Streamers (/s/<login>/<szene>) mit Grösse, Kopieren und
 // Test (Fake-Events), dazu Test-Alerts und Trigger zum Auslösen, wenn die Funktionen freigegeben sind.
 import { useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
@@ -23,7 +23,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
         <thead><tr><th>{TEXTS.overview.scene}</th><th>{TEXTS.overview.url}</th><th>{TEXTS.overview.size}</th><th /></tr></thead>
         <tbody>
           {SCENES.map(scene => {
-            const url = `${base}/${scene}.html`;
+            const url = `${base}/${scene}`;
             return (
               <tr key={scene}>
                 <td>{TEXTS.scenes[scene]}</td>

@@ -1,4 +1,4 @@
-// Vorschau einer Szene im Dashboard: das echte Overlay als iframe (/s/<login>/<szene>.html?demo&preview), skaliert auf
+// Vorschau einer Szene im Dashboard: das echte Overlay als iframe (/s/<login>/<szene>?demo&preview), skaliert auf
 // die verfügbare Breite. Die ungespeicherten Werte gehen per postMessage hinein, sobald die Szene "ready" meldet
 // (useSettings in der Overlay-Seite), und bei jeder Änderung erneut.
 import { useEffect, useRef, useState } from "react";
@@ -47,7 +47,7 @@ export default function ScenePreview({ login, settings }: { login: string; setti
           key={scene}
           ref={frame}
           title={TEXTS.theme.preview}
-          src={`${streamerPath.base(login)}/${scene}.html?demo&preview`}
+          src={`${streamerPath.base(login)}/${scene}?demo&preview`}
           width={size.width}
           height={size.height}
           style={{ transform: `scale(${scale})` }}

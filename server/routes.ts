@@ -2,6 +2,7 @@
 // ROUTES sagt pro Dashboard- und Anmelde-Route, wer sie braucht; overlayRoute zerlegt /s/<login>/<rest>.
 // server/index.ts hängt an jeden Eintrag von ROUTES einen Handler. Check: routes.check.ts.
 import { isMediaName } from "../src/core/streamerPath.ts";
+import { SCENES } from "../src/core/theme.ts";
 import type { Feature } from "./access.ts";
 
 // public: ohne Anmeldung; session: Login aus dem Sitzungs-Cookie und freigeschaltet; admin: nur ADMINS
@@ -71,7 +72,7 @@ export function authorize(route: Route, visitor: Visitor): Decision {
   return route.features.every(feature => visitor.features[feature] === true) ? "ok" : "feature-off";
 }
 
-// Öffentliche Overlay-Adressen unter /s/<login>/: status, settings, events, <szene>.html, media/<datei>
+// Öffentliche Overlay-Adressen unter /s/<login>/: status, settings, events, <szene> oder <szene>.html, media/<datei>
 export type OverlayRoute =
   | { kind: "status" }
   | { kind: "settings" }
@@ -87,6 +88,8 @@ export function overlayRoute(segments: string[]): OverlayRoute | null {
   if (segments.length === 1 && first === "events") return { kind: "events" };
   // Szenen heissen wie ihre Datei in dist/ (alerts.html); index.html ist das Dashboard, keine Szene
   if (segments.length === 1 && /^[a-z]+\.html$/.test(first) && first !== "index.html") return { kind: "scene", file: first };
+  // Kurze Adresse ohne Endung (/s/<login>/alerts), nur für bekannte Szenen
+  if (segments.length === 1 && (SCENES as readonly string[]).includes(first)) return { kind: "scene", file: `${first}.html` };
   if (segments.length === 2 && first === "media" && isMediaName(second)) return { kind: "media", file: second };
   return null;
 }

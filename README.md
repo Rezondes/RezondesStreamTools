@@ -35,7 +35,7 @@ unter `/s/<login>/` ausliefert. Einen Modus ohne Server gibt es nicht mehr, denn
 Alles andere (Texte, Farben, Schrift, Dauer, Grösse, Position, Animationen, Töne, Darstellung der Musik, Ausblendzeit
 des Chats, Kamera-Label, Countdown-Standard, Ticker) stellt der Streamer im Theme ein, siehe "Themes und Einstellungen".
 
-Mit Server liegt jede Szene unter `/s/<login>/<szene>.html` (z.B. `http://localhost:8089/s/rezondes/alerts.html`);
+Mit Server liegt jede Szene unter `/s/<login>/<szene>` (z.B. `http://localhost:8089/s/rezondes/alerts`, mit `.html` geht es auch);
 die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Unter `npm run dev` wählt `?s=<login>` den Streamer.
 Alle Szenen nehmen `?channel=name` (überschreibt den Streamer bzw. `.env.local`) und `?demo`.
 `music` und `fx` brauchen den Overlay-Server (Spotify bzw. Chat-Trigger laufen dort).
@@ -56,7 +56,7 @@ Jeder Streamer meldet sich im Dashboard mit Twitch an und bekommt ein eigenes Pr
 4. `http://localhost:8089` öffnen, `[ MIT TWITCH ANMELDEN ]` klicken, bei Twitch zustimmen.
    Das Profil liegt im Docker-Volume `tokens` und überlebt Neustarts. Der Server prüft die Tokens stündlich und erneuert sie selbst;
    lehnt Twitch den Login ab, endet die Laufzeit des Streamers und er meldet sich neu an.
-5. In OBS die Browserquellen auf die URLs aus der Übersicht stellen, z.B. `http://localhost:8089/s/<login>/alerts.html`.
+5. In OBS die Browserquellen auf die URLs aus der Übersicht stellen, z.B. `http://localhost:8089/s/<login>/alerts`.
 
 Der Port (8089, in `docker-compose.yml` änderbar) ist nur auf diesem Rechner erreichbar (`127.0.0.1`). Client-Secret und Tokens bleiben im Server, nie im Browser.
 Für den öffentlichen Betrieb mit eigener Domain siehe "Öffentlicher Betrieb (Caddy, HTTPS)".
@@ -110,7 +110,7 @@ offene Overlays verbinden sich nach dem Neustart selbst wieder.
 
 | Pfad | Wer | Zweck |
 |------|-----|-------|
-| `/s/<login>/<szene>.html` | öffentlich | Overlay-Szene für OBS |
+| `/s/<login>/<szene>` (auch `.html`) | öffentlich | Overlay-Szene für OBS |
 | `/s/<login>/status` | öffentlich | `{ login, live, spotify, features }` |
 | `/s/<login>/settings` | öffentlich | gewähltes Theme und seine Einstellungen `{ theme, values }` |
 | `/s/<login>/events` | öffentlich | Server-Sent Events (`alert`, `music`, `fx`), 404 ohne laufende Laufzeit |
@@ -171,7 +171,7 @@ Der Theme-Code selbst enthält keine festen Farben, Texte oder Masse; das prüft
 
 Im Dashboard (Bereich `[ THEME ]`) entsteht das Formular automatisch aus dem Schema, gruppiert und mit
 Zurücksetzen je Feld oder für alles. Die Vorschau zeigt die gewählte Szene als `iframe` mit den noch nicht
-gespeicherten Werten (`/s/<login>/<szene>.html?demo&preview`, Werte per `postMessage` nur von derselben Herkunft).
+gespeicherten Werten (`/s/<login>/<szene>?demo&preview`, Werte per `postMessage` nur von derselben Herkunft).
 Ein Theme-Wechsel speichert sofort; Fehler beim Speichern erscheinen am jeweiligen Feld.
 
 Eingebaut sind `matrix` (Standard, alle Szenen) und `starter` (schlichte Karten, nur Alerts und Chat; alle anderen
