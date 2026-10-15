@@ -1,14 +1,18 @@
-// Render-Bereich im Dashboard: Stinger (WebM mit Alpha) sowie Profil- und Offline-Banner (GIF mit Standbild) mit den
-// gespeicherten Einstellungen des Streamers. Vorschau mit Zeitleiste; Rendern schickt jeden Frame als PNG an den
-// Server, der mit ffmpeg das Ergebnis baut (server/render.ts). Fertige Dateien zum Herunterladen.
+// Render-Bereich im Dashboard: Stinger (WebM mit Alpha) sowie Profil- und Offline-Banner (GIF mit Standbild) eines
+// wählbaren Themes. Neben der Vorschau stehen die Einstellungen der Gruppe des Clips (Stinger oder Banner); die
+// Vorschau zeigt ungespeicherte Werte sofort, Speichern ändert das Overlay-Theme nicht. Rendern: der Browser zeichnet
+// jeden Frame und schickt ihn als PNG an den Server, der mit ffmpeg das Ergebnis baut (server/render.ts).
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
-import { resolveSettings } from "../core/settings.ts";
-import { bannerOptions, drawOfflineBanner, drawProfileBanner } from "../themes/matrix/banners.ts";
-import { matrixSettings, type MatrixValues } from "../themes/matrix/settings.ts";
-import { drawStinger, FPS, HEIGHT, stingerOptions, WIDTH } from "../themes/matrix/stinger.ts";
-import { getJson } from "./api.ts";
+import type { ClipName, RenderClip } from "../core/renderClip.ts";
+import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
+import type { SettingValues } from "../core/theme.ts";
+import { DEFAULT_THEME, findTheme, THEMES } from "../themes/registry.ts";
+import { clipsFor } from "../themes/renderers.ts";
+import { getJson, postJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
+import SettingInput from "./SettingInput.tsx";
+import { changedKeys, errorsByKey, resetField } from "./settingsForm.ts";
 import { TEXTS } from "./texts.de.ts";
 
 const RENDER_TEXT = TEXTS.render;
@@ -17,61 +21,91 @@ const MEGABYTE = 1024 * 1024;
 // Beim Stinger eine Sekunde Pause nach jedem Durchlauf, damit man den Schnitt gut sieht
 const STINGER_PAUSE = 1;
 
-type Clip = {
-  name: "stinger" | "profile" | "offline";
-  feature: "stinger" | "banners";
-  width: number;
-  height: number;
-  fps: number;
-  duration: number;
-  cut: number | null; // Übergangspunkt in s, nur beim Stinger
-  draw: (context: CanvasRenderingContext2D, time: number) => void;
-};
-type SettingsFile = { values: Record<string, Record<string, unknown>> };
+type SettingsFile = { theme: string; values: Record<string, Record<string, unknown>> };
 type RenderedFile = { name: string; size: number };
 
-function clipsFor(values: MatrixValues, login: string): Clip[] {
-  const stinger = stingerOptions(values);
-  const banner = bannerOptions(values, login);
-  return [
-    { name: "stinger", feature: "stinger", width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawStinger(context, time, stinger) },
-    { name: "profile", feature: "banners", width: 1200, height: 480, fps: banner.profileFps, duration: banner.loop, cut: null, draw: (context, time) => drawProfileBanner(context, time, banner) },
-    { name: "offline", feature: "banners", width: 1920, height: 1080, fps: banner.offlineFps, duration: banner.loop, cut: null, draw: (context, time) => drawOfflineBanner(context, time, banner) },
-  ];
-}
-
 export default function Render({ me }: { me: Me }) {
-  const [values, setValues] = useState<MatrixValues | null>(null);
-  useEffect(() => {
-    // Ohne freigegebene Themes (403) gelten die Standardwerte
-    getJson<SettingsFile | null>("/api/settings", null)
-      .then(file => setValues(resolveSettings(matrixSettings, file?.values.matrix) as unknown as MatrixValues))
-      .catch((error: unknown) => console.warn("Loading settings failed:", error));
-  }, []);
-  if (!values) return <p className="muted">{TEXTS.loading}</p>;
-  const clips = clipsFor(values, me.login).filter(clip => me.features[clip.feature]);
-  return <RenderPanel clips={clips} font={`24px "${values.font}"`} />;
-}
-
-function RenderPanel({ clips, font }: { clips: Clip[]; font: string }) {
-  const [clip, setClip] = useState(clips[0]);
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const preview = usePreview(clip, canvas, font);
-  const job = useRenderJob(clip, canvas, font, preview.setPlaying);
-  const cut = clip.cut;
+  const settings = useThemeDraft();
+  const [clipName, setClipName] = useState<ClipName | null>(null);
+  if (!settings.ready) return <p className="muted">{TEXTS.loading}</p>;
+  const schema = findTheme(settings.theme) ?? findTheme(DEFAULT_THEME)!;
+  const clips = clipsFor(schema.id, resolveSettings(schema, settings.draft), me.login).filter(clip => me.features[clip.feature]);
+  const clip = clips.find(candidate => candidate.name === clipName) ?? clips[0];
+  const canSave = me.features.themes === true;
   return (
     <section className="panel render">
+      <div className="actions">
+        <label className="setting">
+          {RENDER_TEXT.theme}
+          <select value={schema.id} onChange={event => settings.choose(event.target.value)}>
+            {THEMES.map(theme => <option key={theme.id} value={theme.id}>{theme.name}</option>)}
+          </select>
+        </label>
+      </div>
       <p className="actions">
         {clips.map(candidate => (
-          <button key={candidate.name} className={`btn${candidate === clip ? " primary" : ""}`} onClick={() => { setClip(candidate); preview.setPlaying(true); }}>
+          <button key={candidate.name} className={`btn${candidate === clip ? " primary" : ""}`} aria-pressed={candidate === clip} onClick={() => setClipName(candidate.name)}>
             {RENDER_TEXT.clips[candidate.name]}
           </button>
         ))}
       </p>
+      <div className="settings-layout">
+        <ClipSettings clip={clip} settings={settings} canSave={canSave} />
+        <ClipPreview key={`${schema.id}-${clip.name}`} clip={clip} />
+      </div>
+      <RenderedFiles />
+    </section>
+  );
+}
+
+// Einstellungen der Gruppe des Clips, mit Speichern und Verwerfen
+function ClipSettings({ clip, settings, canSave }: { clip: RenderClip; settings: ThemeDraft; canSave: boolean }) {
+  const schema = findTheme(settings.theme) ?? findTheme(DEFAULT_THEME)!;
+  const fields = schema.fields.filter(field => field.group === clip.group);
+  const changed = settings.changed.length;
+  return (
+    <div className="settings-groups">
+      <h2>{RENDER_TEXT.settings}</h2>
+      {!canSave && <p className="muted">{RENDER_TEXT.readOnly}</p>}
+      <fieldset className="settings-group" disabled={!canSave}>
+        <legend>{clip.group}</legend>
+        {fields.map(field => (
+          <SettingInput
+            key={field.key}
+            field={field}
+            value={settings.draft[field.key]}
+            error={settings.errors[field.key]}
+            media={[]}
+            onChange={value => settings.set(current => ({ ...current, [field.key]: value }))}
+            onReset={() => settings.set(current => resetField(schema, current, field.key))}
+          />
+        ))}
+      </fieldset>
+      <p className="muted">{RENDER_TEXT.colorsHint}</p>
+      {canSave && (
+        <div className="actions">
+          <button className="btn primary" disabled={changed === 0} onClick={settings.save}>{RENDER_TEXT.save}</button>
+          <button className="btn" disabled={changed === 0} onClick={settings.discard}>{RENDER_TEXT.discard}</button>
+          <span className="muted" role="status">{changed > 0 ? `${RENDER_TEXT.unsaved} ${changed}` : settings.notice === "saved" ? RENDER_TEXT.saved : ""}</span>
+        </div>
+      )}
+      {settings.notice && settings.notice !== "saved" && <p className="error" role="alert">{TEXTS.errors[settings.notice]}</p>}
+    </div>
+  );
+}
+
+// Vorschau mit Zeitleiste und Rendern
+function ClipPreview({ clip }: { clip: RenderClip }) {
+  const canvas = useRef<HTMLCanvasElement>(null);
+  const preview = usePreview(clip, canvas);
+  const job = useRenderJob(clip, canvas, preview.setPlaying);
+  const cut = clip.cut;
+  return (
+    <div className="scene-preview">
       <div className="render-view" style={{ aspectRatio: `${clip.width} / ${clip.height}` }}>
         {/* Szenen hinter dem Stinger, damit man sieht, wo geschnitten wird */}
         {cut !== null && <div className={`fake-scene ${preview.time < cut ? "a" : "b"}`}>{preview.time < cut ? RENDER_TEXT.sceneA : RENDER_TEXT.sceneB}</div>}
-        <canvas key={clip.name} ref={canvas} width={clip.width} height={clip.height} />
+        <canvas ref={canvas} width={clip.width} height={clip.height} />
       </div>
       <div className="render-bar">
         <button className="btn" onClick={() => preview.setPlaying(value => !value)}>{preview.playing ? RENDER_TEXT.pause : RENDER_TEXT.play}</button>
@@ -82,23 +116,79 @@ function RenderPanel({ clips, font }: { clips: Clip[]; font: string }) {
         <span className="muted" role="status">{job.status}</span>
       </div>
       <p className="muted">{cut !== null ? RENDER_TEXT.hints.stinger(Math.round(cut * SECOND_MS)) : RENDER_TEXT.hints[clip.name === "profile" ? "profile" : "offline"]}</p>
-      <p className="muted">{RENDER_TEXT.settingsHint}</p>
+    </div>
+  );
+}
+
+function RenderedFiles() {
+  const [files, setFiles] = useState<RenderedFile[]>([]);
+  useEffect(() => {
+    const refresh = () => { getJson<RenderedFile[]>("/api/render/files", []).then(setFiles).catch(() => {}); };
+    refresh();
+    addEventListener("render-done", refresh);
+    return () => removeEventListener("render-done", refresh);
+  }, []);
+  return (
+    <>
       <h2>{RENDER_TEXT.files}</h2>
-      {job.files.length === 0 && <p className="muted">{RENDER_TEXT.noFiles}</p>}
+      {files.length === 0 && <p className="muted">{RENDER_TEXT.noFiles}</p>}
       <ul className="render-files">
-        {job.files.map(file => (
+        {files.map(file => (
           <li key={file.name}>
             <code>{file.name}</code> <span className="muted">{(file.size / MEGABYTE).toFixed(1)} MB</span>{" "}
             <a className="btn" href={`/api/render/file?name=${encodeURIComponent(file.name)}`} download={file.name}>{RENDER_TEXT.download}</a>
           </li>
         ))}
       </ul>
-    </section>
+    </>
   );
 }
 
+type ThemeDraft = ReturnType<typeof useThemeDraft>;
+
+// Gespeicherte Werte laden, Theme wählen, Entwurf halten, speichern (ohne das Overlay-Theme zu wechseln) und verwerfen
+function useThemeDraft() {
+  const [file, setFile] = useState<SettingsFile | null>(null);
+  const [ready, setReady] = useState(false);
+  const [theme, setTheme] = useState(DEFAULT_THEME);
+  const [draft, setDraft] = useState<SettingValues>({});
+  const [errors, setErrors] = useState<Record<string, SettingErrorCode>>({});
+  const [notice, setNotice] = useState<"saved" | ErrorCode | null>(null);
+
+  const saved = useCallback((id: string, loaded: SettingsFile | null) => resolveSettings(findTheme(id) ?? findTheme(DEFAULT_THEME)!, loaded?.values[id]), []);
+  useEffect(() => {
+    // Ohne freigegebene Themes (403) gelten die Standardwerte
+    getJson<SettingsFile | null>("/api/settings", null)
+      .then(loaded => {
+        const id = loaded?.theme ?? DEFAULT_THEME;
+        setFile(loaded);
+        setTheme(id);
+        setDraft(saved(id, loaded));
+        setReady(true);
+      })
+      .catch(() => setReady(true));
+  }, [saved]);
+
+  const choose = (id: string) => { setTheme(id); setDraft(saved(id, file)); setErrors({}); setNotice(null); };
+  const save = () => {
+    postJson("/api/settings", { theme, values: draft, choose: false })
+      .then(result => {
+        if (result.ok) {
+          setFile(current => ({ theme: current?.theme ?? theme, values: { ...current?.values, [theme]: draft } }));
+          setErrors({});
+          return setNotice("saved");
+        }
+        if (Array.isArray(result.data)) return setErrors(errorsByKey(result.data as SettingError[]));
+        setNotice(typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error");
+      })
+      .catch(() => setNotice("server-error"));
+  };
+  const discard = () => { setDraft(saved(theme, file)); setErrors({}); };
+  return { ready, theme, draft, errors, notice, changed: changedKeys(saved(theme, file), draft), set: setDraft, choose, save, discard };
+}
+
 // Vorschau: Endlosschleife über den Clip und Zeichnen des aktuellen Zeitpunkts
-function usePreview(clip: Clip, canvas: React.RefObject<HTMLCanvasElement | null>, font: string) {
+function usePreview(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement | null>) {
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(true);
   useEffect(() => {
@@ -111,29 +201,25 @@ function usePreview(clip: Clip, canvas: React.RefObject<HTMLCanvasElement | null
     };
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [playing, clip]);
+  }, [playing, clip.duration, clip.cut]);
   useEffect(() => {
-    document.fonts.load(font)
+    document.fonts.load(clip.font)
       .then(() => { const context = canvas.current?.getContext("2d"); if (context) clip.draw(context, Math.min(time, clip.duration)); })
       .catch((error: unknown) => console.error("Font loading failed:", error));
-  }, [time, clip, canvas, font]);
+  }, [time, clip, canvas]);
   return { time, setTime, playing, setPlaying };
 }
 
-// Rendern: Start, alle Frames als PNG, Fertigstellen; danach die Liste der fertigen Dateien neu laden
-function useRenderJob(clip: Clip, canvas: React.RefObject<HTMLCanvasElement | null>, font: string, setPlaying: (playing: boolean) => void) {
+// Rendern: Start, alle Frames als PNG, Fertigstellen; danach meldet "render-done" die neue Datei
+function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement | null>, setPlaying: (playing: boolean) => void) {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
-  const [files, setFiles] = useState<RenderedFile[]>([]);
-  const refresh = useCallback(() => { getJson<RenderedFile[]>("/api/render/files", []).then(setFiles).catch(() => {}); }, []);
-  useEffect(refresh, [refresh]);
-
   const codeOf = async (response: Response): Promise<ErrorCode> => {
     const text = (await response.text()).trim();
     return isErrorCode(text) ? text : "server-error";
   };
   const run = async () => {
-    await document.fonts.load(font);
+    await document.fonts.load(clip.font);
     const start = await fetch(`/api/render/start?clip=${clip.name}`, { method: "POST" });
     if (!start.ok) return setStatus(TEXTS.errors[await codeOf(start)]);
     const context = canvas.current!.getContext("2d")!;
@@ -156,7 +242,7 @@ function useRenderJob(clip: Clip, canvas: React.RefObject<HTMLCanvasElement | nu
     setBusy(true);
     run()
       .catch(() => setStatus(TEXTS.errors["server-error"]))
-      .finally(() => { setBusy(false); setPlaying(true); refresh(); });
+      .finally(() => { setBusy(false); setPlaying(true); dispatchEvent(new Event("render-done")); });
   };
-  return { status, busy, files, render };
+  return { status, busy, render };
 }

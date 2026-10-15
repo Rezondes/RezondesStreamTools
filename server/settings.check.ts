@@ -28,6 +28,11 @@ const other = { ...file, values: { ...file.values, starter: { title: "x" } } };
 const switched = updateSettings(other, "matrix", {}).file!;
 assert.deepEqual(switched.values.starter, { title: "x" });
 
+// Werte eines anderen Themes speichern, ohne das gewählte Overlay-Theme zu wechseln (Render-Seite)
+const kept = updateSettings(file, "starter", { accent: "#ff0000" }, false).file!;
+assert.equal(kept.theme, file.theme);
+assert.equal(kept.values.starter.accent, "#ff0000");
+
 // Speichern und Laden über die Datei (temporärer Ordner, danach gelöscht)
 const folder = await mkdtemp(join(tmpdir(), "settings-"));
 try {

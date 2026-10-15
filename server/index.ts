@@ -271,10 +271,11 @@ async function settings({ response, login }: Call) {
 
 // Theme wählen und dessen Werte speichern; der Server prüft gegen das Schema, Fehler kommen als Codes je Feld
 async function saveSettingsRequest({ request, response, login }: Call) {
-  const body = parseJson(String(await readBody(request, SETTINGS_LIMIT))) as { theme?: unknown; values?: unknown } | null | undefined;
+  const body = parseJson(String(await readBody(request, SETTINGS_LIMIT))) as { theme?: unknown; values?: unknown; choose?: unknown } | null | undefined;
   if (typeof body?.theme !== "string") return json(response, [{ key: "theme", code: "invalid_type" }], 400);
   const folder = profile.folder(DATA, login);
-  const result = updateSettings(await loadSettings(folder), body.theme, body.values ?? {});
+  // choose: false speichert nur die Werte (z.B. von der Render-Seite), das Overlay-Theme bleibt
+  const result = updateSettings(await loadSettings(folder), body.theme, body.values ?? {}, body.choose !== false);
   if (!result.file) return json(response, result.errors, 400);
   await saveSettings(folder, result.file);
   const settings = publicSettings(result.file);

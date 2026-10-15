@@ -27,13 +27,13 @@ export function publicSettings(file: SettingsFile): { theme: string; values: Set
   return { theme: schema.id, values: resolveSettings(schema, file.values[schema.id]) };
 }
 
-// Theme wählen und dessen Werte setzen. Nur fehlerfreie Eingaben ergeben eine neue Datei.
-export function updateSettings(file: SettingsFile, theme: string, input: unknown): { file: SettingsFile | null; errors: SettingError[] } {
+// Werte eines Themes setzen und es (choose) als Overlay-Theme wählen. Nur fehlerfreie Eingaben ergeben eine neue Datei.
+export function updateSettings(file: SettingsFile, theme: string, input: unknown, choose = true): { file: SettingsFile | null; errors: SettingError[] } {
   const schema = findTheme(theme);
   if (!schema) return { file: null, errors: [{ key: "theme", code: "unknown_option" }] };
   const checked = validateSettings(schema, input);
   if (checked.errors.length) return { file: null, errors: checked.errors };
-  return { file: { theme, values: { ...file.values, [theme]: checked.values } }, errors: [] };
+  return { file: { theme: choose ? theme : file.theme, values: { ...file.values, [theme]: checked.values } }, errors: [] };
 }
 
 export async function loadSettings(profileFolder: string): Promise<SettingsFile> {
