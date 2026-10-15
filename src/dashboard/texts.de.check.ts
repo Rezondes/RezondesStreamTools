@@ -24,6 +24,9 @@ assert.equal(TEXTS.upload.running("a.gif", 2, 5), "Lade hoch (2/5): a.gif");
 assert.ok(TEXTS.adminArea.revoked("neo").endsWith("neo"));
 assert.ok(TEXTS.adminArea.betaRemoved("neo").endsWith("neo"));
 assert.ok(TEXTS.adminArea.off("Chat").endsWith("Chat"));
+assert.equal(TEXTS.obs.collection("neo"), "Overlays neo");
+assert.ok(TEXTS.obs.done(7).includes("7"));
+assert.ok(TEXTS.obs.failed("kaputt").endsWith("kaputt"));
 
 // Codes im Server: send(res, 4xx, "code"), Weiterleitungen ?error=code und die Entscheidungen in routes.ts
 const folder = join(import.meta.dirname, "../../server");

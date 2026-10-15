@@ -12,6 +12,10 @@
 .dashboard table { width: 100%; border-collapse: collapse; }
 .dashboard th, .dashboard td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--green-line); vertical-align: middle; }
 .dashboard th { color: var(--green-dim); font-weight: normal; }
+.dashboard .obs-drag { color: inherit; text-decoration: none; cursor: grab; }
+/* Sonst markiert das Ziehen den Text, statt den Link mitzunehmen */
+.dashboard .obs-drag code { user-select: none; }
+.dashboard .obs-import { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--green-line); }
 .dashboard code { font-family: inherit; user-select: all; overflow-wrap: anywhere; }
 /* Rendern: Vorschau mit Zeitleiste; hinter dem Stinger zwei Test-Szenen, damit man den Schnitt sieht */
 .render-view { position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--green-line); overflow: hidden; }

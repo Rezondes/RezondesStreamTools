@@ -1,5 +1,6 @@
 // Übersicht im Dashboard: die fertigen OBS-URLs des Streamers (/s/<login>/<szene>) mit Grösse, Kopieren und
-// Test (Fake-Events), dazu Test-Alerts und Trigger zum Auslösen, wenn die Funktionen freigegeben sind.
+// Test (Fake-Events), dazu Test-Alerts und Trigger zum Auslösen, wenn die Funktionen freigegeben sind. Jede URL
+// lässt sich auf das OBS-Fenster ziehen; darunter der Import aller Szenen (ObsImport.tsx).
 import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
 import { SCENE_SIZES, SCENES } from "../core/theme.ts";
@@ -7,6 +8,8 @@ import type { AlertKind } from "../core/types.ts";
 import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
 import type { Me } from "./navigation.ts";
+import ObsImport from "./ObsImport.tsx";
+import { dragUrl, obsLayout } from "./obsSetup.ts";
 import { TEXTS } from "./texts.de.ts";
 
 const TEST_ALERTS: readonly AlertKind[] = ["follow", "sub", "resub", "gift", "cheer", "raid", "redeem", "hype"];
@@ -16,9 +19,12 @@ type TriggerInfo = { name: string; enabled: boolean };
 
 export default function Overview({ me, act }: { me: Me; act: Act }) {
   const base = `${location.origin}${streamerPath.base(me.login)}`;
+  const layout = obsLayout(base, me.login, TEXTS.scenes, TEXTS.obs.overlayScene);
+  const sources = new Map(layout.flatMap(scene => scene.sources).map(source => [source.scene, source]));
   return (
     <section className="panel">
       <p className="muted">{TEXTS.overview.obsHint}</p>
+      <p className="muted">{TEXTS.overview.dragHint}</p>
       <table>
         <thead><tr><th>{TEXTS.overview.scene}</th><th>{TEXTS.overview.url}</th><th>{TEXTS.overview.size}</th><th /></tr></thead>
         <tbody>
@@ -27,7 +33,8 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
             return (
               <tr key={scene}>
                 <td>{TEXTS.scenes[scene]}</td>
-                <td><code>{url}</code></td>
+                {/* Klick öffnet nichts, Ziehen auf OBS legt die Quelle an */}
+                <td><a className="obs-drag" href={dragUrl(sources.get(scene)!)} onClick={event => event.preventDefault()}><code>{url}</code></a></td>
                 <td>{SCENE_SIZES[scene].width}x{SCENE_SIZES[scene].height}</td>
                 <td className="actions">
                   <CopyButton text={url} />
@@ -45,6 +52,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
         </p>
       )}
       {me.features.triggers && me.features.fx && <TriggerButtons act={act} />}
+      <ObsImport login={me.login} layout={layout} />
     </section>
   );
 }
