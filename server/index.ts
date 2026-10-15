@@ -13,6 +13,8 @@ import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from
 import { createLoginStates } from "./loginStates.ts";
 import { migrate } from "./migration.ts";
 import * as profile from "./profile.ts";
+import { loadSettings, publicSettings, saveSettings, updateSettings } from "./settings.ts";
+import { THEMES } from "../src/themes/registry.ts";
 import { authorize, find, overlayRoute, ROUTES, type RouteKey, type Visitor } from "./routes.ts";
 import { createSession, loadSessionKey, readSession, sessionCookie } from "./session.ts";
 import { redirectUri, type SpotifyApp } from "./spotify.ts";
@@ -36,6 +38,7 @@ const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET ?? "";
 const MEDIA_LIMIT = 50 * 1024 * 1024;
 const TRIGGER_LIMIT = 1024 * 1024;
 const ACCESS_LIMIT = 64 * 1024;
+const SETTINGS_LIMIT = 512 * 1024;
 // Codes aus dem OAuth-Callback (Twitch, Spotify)
 const OAUTH_CODE = /^[\w.~-]{1,1024}$/;
 
@@ -98,6 +101,7 @@ async function overlay(request: IncomingMessage, response: ServerResponse, path:
       const features = access.features(path.login);
       return json(response, { login: path.login, live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features });
     }
+    case "settings": return json(response, publicSettings(await loadSettings(folder)));
     case "events": return runtime ? runtime.attach(request, response) : send(response, 404, "not-running");
     case "scene": return serveStatic(response, DIST, `/${route.file}`);
     case "media": return serveStatic(response, join(folder, "media"), `/${route.file}`, true);
@@ -238,6 +242,23 @@ async function twitchDisconnect({ response, login, runtime }: Call) {
   json(response, { ok: true });
 }
 
+// Dashboard: gewähltes Theme, gespeicherte Werte je Theme und die verfügbaren Themes
+async function settings({ response, login }: Call) {
+  const file = await loadSettings(profile.folder(DATA, login));
+  json(response, { ...file, themes: THEMES.map(theme => ({ id: theme.id, name: theme.name })) });
+}
+
+// Theme wählen und dessen Werte speichern; der Server prüft gegen das Schema, Fehler kommen als Codes je Feld
+async function saveSettingsRequest({ request, response, login }: Call) {
+  const body = parseJson(String(await readBody(request, SETTINGS_LIMIT))) as { theme?: unknown; values?: unknown } | null | undefined;
+  if (typeof body?.theme !== "string") return json(response, [{ key: "theme", code: "invalid_type" }], 400);
+  const folder = profile.folder(DATA, login);
+  const result = updateSettings(await loadSettings(folder), body.theme, body.values ?? {});
+  if (!result.file) return json(response, result.errors, 400);
+  await saveSettings(folder, result.file);
+  json(response, publicSettings(result.file));
+}
+
 async function saveAccess({ request, response }: Call) {
   const value = parseJson(String(await readBody(request, ACCESS_LIMIT)));
   if (typeof value !== "object" || value === null || Array.isArray(value)) return send(response, 400, "invalid-json");
@@ -264,6 +285,8 @@ const HANDLERS: Record<RouteKey, Handler> = {
   "GET /spotify/login": spotifyLogin,
   "POST /spotify/logout": spotifyLogout,
   "POST /api/twitch/disconnect": twitchDisconnect,
+  "GET /api/settings": settings,
+  "POST /api/settings": saveSettingsRequest,
   "GET /api/admin/access": ({ response }) => json(response, access.get()),
   "POST /api/admin/access": saveAccess,
 };

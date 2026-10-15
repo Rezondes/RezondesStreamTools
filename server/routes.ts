@@ -33,6 +33,9 @@ export const ROUTES = {
   // Trennen bleibt auch bei abgeschalteter Funktion möglich
   "POST /spotify/logout": SESSION,
   "POST /api/twitch/disconnect": SESSION,
+  // Theme und Einstellungen des eigenen Profils
+  "GET /api/settings": { guard: "session", features: ["themes"] },
+  "POST /api/settings": { guard: "session", features: ["themes"] },
   "GET /api/admin/access": ADMIN,
   "POST /api/admin/access": ADMIN,
 } as const satisfies Record<string, Route>;
@@ -60,9 +63,10 @@ export function authorize(route: Route, visitor: Visitor): Decision {
   return route.features.every(feature => visitor.features[feature] === true) ? "ok" : "feature-off";
 }
 
-// Öffentliche Overlay-Adressen unter /s/<login>/: status, events, <szene>.html, media/<datei>
+// Öffentliche Overlay-Adressen unter /s/<login>/: status, settings, events, <szene>.html, media/<datei>
 export type OverlayRoute =
   | { kind: "status" }
+  | { kind: "settings" }
   | { kind: "events" }
   | { kind: "scene"; file: string }
   | { kind: "media"; file: string };
@@ -71,6 +75,7 @@ export type OverlayRoute =
 export function overlayRoute(segments: string[]): OverlayRoute | null {
   const [first, second] = segments;
   if (segments.length === 1 && first === "status") return { kind: "status" };
+  if (segments.length === 1 && first === "settings") return { kind: "settings" };
   if (segments.length === 1 && first === "events") return { kind: "events" };
   // Szenen heissen wie ihre Datei in dist/ (alerts.html); index.html ist das Dashboard, keine Szene
   if (segments.length === 1 && /^[a-z]+\.html$/.test(first) && first !== "index.html") return { kind: "scene", file: first };

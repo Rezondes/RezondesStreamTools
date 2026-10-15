@@ -4,7 +4,7 @@ import { readFile, rename, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 // Funktionen, die einzeln für Beta-Tester oder alle freigegeben werden können
-export const FEATURES = ["alerts", "chat", "music", "fx", "triggers", "stinger", "banners"] as const;
+export const FEATURES = ["alerts", "chat", "music", "fx", "triggers", "stinger", "banners", "themes"] as const;
 export type Feature = (typeof FEATURES)[number];
 export type Level = "off" | "beta" | "all";
 

@@ -23,6 +23,8 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/core/params.ts": "reads the page URL",
   "src/core/sound.ts": "Web Audio output",
   "src/core/types.ts": "types only",
+  "src/core/theme.ts": "types only",
+  "src/themes/matrix/settings.ts": "schema data, checked in src/themes/registry.check.ts",
   "src/core/emotes.ts": "network loader; splitting is checked in irc.ts",
   "src/stinger.ts": "canvas renderer; checked manually on #/stinger",
   "src/banners.ts": "canvas renderer; checked manually on #/stinger",

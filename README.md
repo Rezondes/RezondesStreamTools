@@ -79,6 +79,7 @@ Läuft der Server, nutzt auch `npm run dev` dessen Anmeldung und Events (Proxy a
 |------|-----|-------|
 | `/s/<login>/<szene>.html` | öffentlich | Overlay-Szene für OBS |
 | `/s/<login>/status` | öffentlich | `{ login, live, spotify, features }` |
+| `/s/<login>/settings` | öffentlich | gewähltes Theme und seine Einstellungen `{ theme, values }` |
 | `/s/<login>/events` | öffentlich | Server-Sent Events (`alert`, `music`, `fx`), 404 ohne laufende Laufzeit |
 | `/s/<login>/media/<datei>` | öffentlich | Medien des Streamers (ohne Script-Ausführung) |
 | `/auth/login`, `/auth/callback`, `POST /auth/logout` | alle | Anmeldung mit Twitch, Abmelden |
@@ -120,6 +121,13 @@ Der Server fragt Spotify alle 3 Sekunden ab, aber nur solange ein Overlay des St
 Läuft immer anonym über Twitch-IRC. Nachrichten glitchen rein und nach `?fade=` Sekunden wieder raus.
 Zeigt Twitch-Emotes sowie die globalen und Kanal-Emotes von 7TV, BetterTTV und FrankerFaceZ (alle 10 Minuten aufgefrischt).
 Gelöschte Nachrichten und gebannte Nutzer verschwinden sofort.
+
+### Themes und Einstellungen
+
+Jeder Streamer wählt ein Theme und stellt dessen Werte ein (Funktionsstufe `themes`). Gespeichert in
+`data/streamers/<login>/settings.json` als `{ theme, values: { <theme-id>: { ... } } }`, Werte je Theme getrennt.
+`POST /api/settings` mit `{ theme, values }` prüft gegen das Schema des Themes (`src/themes/<id>/settings.ts`)
+und speichert nur fehlerfreie Eingaben; sonst kommt eine Liste `{ key, code }` zurück.
 
 ## Chat-Trigger (`triggers.json` im Profil)
 

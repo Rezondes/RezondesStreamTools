@@ -27,7 +27,7 @@ const odd = sanitize({ registration: "jeder" as never, allowlist: [" A ", "a", "
 assert.equal(odd.registration, "allowlist");
 assert.deepEqual(odd.allowlist, ["a"]);
 assert.equal(odd.features.music, "all");
-assert.equal(Object.keys(odd.features).length, 7);
+assert.equal(Object.keys(odd.features).length, 8);
 
 // Gespeicherter Zugang in einem temporären Ordner, der danach gelöscht wird
 const folder = await mkdtemp(join(tmpdir(), "access-"));

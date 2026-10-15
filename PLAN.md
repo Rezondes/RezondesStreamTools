@@ -137,7 +137,8 @@ Heute rufen die Szenen `connect()` aus `src/twitch.ts` direkt auf und halten War
 
 ---
 
-## Package 3: Theme-Schnittstelle und Einstellungen
+## Package 3: Theme-Schnittstelle und Einstellungen (erledigt)
+
 
 **Ziel:** Ein Theme beschreibt seine Szenen und Einstellungen, der Server speichert geprüfte Einstellungen pro Streamer.
 
@@ -156,11 +157,11 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 
 ### Acceptance Criteria
 
-- [ ] AC1: `SettingField` unterstützt `color`, `text`, `textarea`, `lines`, `number` (min/max/step, Einheit `px`/`ms`/`s`/`%`), `boolean`, `select`, `font` (Liste erlaubter Schriften), `media` (Datei aus den eigenen Medien, gefiltert nach Bild/Video/Ton), `sound` (eigener Ton oder eingebauter Synth-Ton mit Tonhöhe/Länge/Lautstärke), jeweils mit `key`, `label`, `group`, `scene` (welche Szene, für die Vorschau), `default`.
-- [ ] AC2: `resolveSettings` liefert für jedes Feld einen Wert: gespeichert und gültig, sonst Standard; unbekannte Schlüssel fallen weg.
-- [ ] AC3: `validateSettings` lehnt falsche Typen, Werte ausserhalb min/max, ungültige Farben, zu lange Texte (max. 2000 Zeichen, Listen max. 200 Zeilen) mit Fehlercodes ab.
-- [ ] AC4: `GET /s/<login>/settings` liefert `{ theme, values }` (aufgelöst, keine Geheimnisse); `POST /api/settings` (Sitzung, Funktion `themes`) speichert nur nach erfolgreicher Prüfung, sonst 400 mit Fehlercodes.
-- [ ] AC5: Werte werden pro Theme getrennt gespeichert; ein Theme-Wechsel verliert keine Werte eines anderen Themes.
+- [x] AC1: `SettingField` unterstützt `color`, `text`, `textarea`, `lines`, `number` (min/max/step, Einheit `px`/`ms`/`s`/`%`), `boolean`, `select`, `font` (Liste erlaubter Schriften), `media` (Datei aus den eigenen Medien, gefiltert nach Bild/Video/Ton), `sound` (eigener Ton oder eingebauter Synth-Ton mit Tonhöhe/Länge/Lautstärke), jeweils mit `key`, `label`, `group`, `scene` (welche Szene, für die Vorschau), `default`.
+- [x] AC2: `resolveSettings` liefert für jedes Feld einen Wert: gespeichert und gültig, sonst Standard; unbekannte Schlüssel fallen weg.
+- [x] AC3: `validateSettings` lehnt falsche Typen, Werte ausserhalb min/max, ungültige Farben, zu lange Texte (max. 2000 Zeichen, Listen max. 200 Zeilen) mit Fehlercodes ab.
+- [x] AC4: `GET /s/<login>/settings` liefert `{ theme, values }` (aufgelöst, keine Geheimnisse); `POST /api/settings` (Sitzung, Funktion `themes`) speichert nur nach erfolgreicher Prüfung, sonst 400 mit Fehlercodes.
+- [x] AC5: Werte werden pro Theme getrennt gespeichert; ein Theme-Wechsel verliert keine Werte eines anderen Themes.
 
 ### Tests (TDD)
 

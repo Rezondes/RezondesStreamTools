@@ -41,6 +41,8 @@ assert.equal(authorize(ROUTES["POST /api/admin/access"], { ...streamer, admin: t
 
 // Overlay-Adressen unter /s/<login>/
 assert.deepEqual(overlayRoute(["status"]), { kind: "status" });
+assert.deepEqual(overlayRoute(["settings"]), { kind: "settings" });
+assert.equal(overlayRoute(["settings", "x"]), null);
 assert.deepEqual(overlayRoute(["events"]), { kind: "events" });
 assert.deepEqual(overlayRoute(["alerts.html"]), { kind: "scene", file: "alerts.html" });
 assert.deepEqual(overlayRoute(["media", "lizard.gif"]), { kind: "media", file: "lizard.gif" });
