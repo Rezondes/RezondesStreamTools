@@ -10,10 +10,6 @@ services:
     volumes:
       # Profile aller Streamer (data/streamers/<login>/: Tokens, Spotify, Trigger, Medien), Zugang, Sitzungs-Schlüssel
       - tokens:/data
-      # Nur noch für die einmalige Übernahme der alten Einzel-Daten (triggers.json, media/) ins Profil.
-      # Schreibgeschützt: die Dateien bleiben liegen und werden danach übersprungen. Trigger und Medien
-      # bearbeitet man jetzt im Browser (/#/triggers); nach der Übernahme kann diese Zeile weg.
-      - ./config:/app/config:ro
     restart: unless-stopped
 
 volumes:

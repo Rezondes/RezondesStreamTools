@@ -11,7 +11,7 @@ FROM node:24-alpine
 WORKDIR /app
 # ffmpeg baut Stinger (WebM mit Alpha) und Banner (GIF) aus den Frames, die das Dashboard schickt
 RUN apk add --no-cache ffmpeg
-ENV NODE_ENV=production DIST=/app/dist DATA=/data CONFIG=/app/config PORT=8080
+ENV NODE_ENV=production DIST=/app/dist DATA=/data PORT=8080
 COPY --from=build /app/dist ./dist
 COPY server ./server
 # Der Server nutzt Kern-Module (IRC, Pfade, Einstellungen) und die Theme-Schemas der Overlays mit

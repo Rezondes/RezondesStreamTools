@@ -120,23 +120,6 @@ offene Overlays verbinden sich nach dem Neustart selbst wieder.
 | `/api/admin/access` | Admins | Zugang und Funktionsstufen |
 | `/api/admin/streamers` | Admins | Profile mit Status |
 
-### Umstieg vom Einzel-Server
-
-Beim ersten Start übernimmt der Server die alten Daten: `data/tokens.json`, `data/spotify.json`, `config/triggers.json` und `config/media/*`
-landen in `data/streamers/<login>/` (Login aus den alten Tokens, sonst der erste Admin), der Login kommt in die Allowlist,
-die alten Dateien heissen danach `*.migrated`. `config/` ist in `docker-compose.yml` nur noch schreibgeschützt für diese Übernahme eingebunden;
-dort bleiben die Dateien liegen und werden bei späteren Starts übersprungen. Danach kann die Zeile weg.
-Die OBS-Quellen auf `/s/<login>/<szene>.html` umstellen: die alten Adressen wie `/alerts.html` kennen keinen Streamer und bekommen keine Server-Events mehr.
-
-| Event | mit Server | ohne Server (anonym) |
-|-------|-----------|----------------------|
-| Follow | ja | nein |
-| Sub, Resub (mit Stufe) | ja | ja (ohne Stufe) |
-| Gift-Subs | ja | ja |
-| Bits | ja | ja |
-| Raid | ja | ja |
-| Kanalpunkte | ja | nein |
-| Hype Train Start und Ende | ja | nein |
 
 ### Spotify (Overlay `music.html`)
 
@@ -219,7 +202,6 @@ Speichern prüft alle Regeln; bei Fehlern werden sie angezeigt und die Datei ble
 | `do[].after` | Sekunden, die das Medium nach `duration` angehalten auf dem letzten Bild stehen bleibt, dann glitcht es raus |
 | `do[].together` | `true`: erscheint gleichzeitig mit der vorherigen Aktion. Sonst laufen die Aktionen in `do` nacheinander (nächste nach `delay` + `duration` + `after`) |
 
-Mitgeliefert sind `lizard.svg` und `lizard.wav` (selbst erstellt, in `config/media/`); die Übernahme kopiert sie ins Profil.
 Eigene Dateien im Editor hochladen oder in den Medienordner des Profils legen und den Namen eintragen.
 Auf der Übersicht gibt es für jede Regel einen Test-Knopf.
 

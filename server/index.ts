@@ -13,7 +13,6 @@ import { writeAtomic } from "./atomicFile.ts";
 import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from "./http.ts";
 import { createLoginStates } from "./loginStates.ts";
 import { deleteMedia, listMedia, quotaError } from "./media.ts";
-import { migrate } from "./migration.ts";
 import { CLIPS, createRenderJobs, ffmpegArgs, isClip, isOutputName, outputNames, RENDER_LIMITS } from "./render.ts";
 import * as profile from "./profile.ts";
 import { loadSettings, publicSettings, saveSettings, updateSettings } from "./settings.ts";
@@ -29,8 +28,6 @@ const PORT = Number(process.env.PORT ?? 8080);
 const PUBLIC_URL = (process.env.PUBLIC_URL ?? `http://localhost:${PORT}`).replace(/\/+$/, "");
 const DIST = resolve(process.env.DIST ?? "dist");
 const DATA = resolve(process.env.DATA ?? "data");
-// Nur noch für die Übernahme der alten Einzel-Daten (config/triggers.json, config/media/)
-const CONFIG = resolve(process.env.CONFIG ?? "config");
 const ADMINS = (process.env.ADMINS ?? "").split(",").map(login => login.trim().toLowerCase()).filter(streamerPath.isLogin);
 const SECURE = isSecureUrl(PUBLIC_URL);
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID ?? "";
@@ -457,7 +454,6 @@ async function route(request: IncomingMessage, response: ServerResponse) {
 }
 
 // --- Start ------------------------------------------------------------------------------------
-await migrate({ data: DATA, config: CONFIG }, ADMINS, access);
 for (const login of await profile.list(DATA)) await startRuntime(login);
 
 createServer((request, response) => {
