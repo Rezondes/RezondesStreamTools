@@ -10,7 +10,7 @@ import { toIrcEvents } from "./ircEvents.ts";
 import { params } from "./params.ts";
 import * as streamerPath from "./streamerPath.ts";
 import { demo } from "./demo.ts";
-import type { Alert, ChatMessage, ChatRemoval, FxEvent, PublicSettings, ServerMessage, ServerStatus, Track } from "./types.ts";
+import type { Alert, ChatMessage, ChatRemoval, FxEvent, Minime, PublicSettings, ServerMessage, ServerStatus, Track } from "./types.ts";
 
 export type Handlers = {
   chat?: (message: ChatMessage) => void;
@@ -19,6 +19,8 @@ export type Handlers = {
   fx?: (event: FxEvent) => void;
   remove?: (removal: ChatRemoval) => void;
   settings?: (settings: PublicSettings) => void;
+  minimes?: (minimes: Minime[]) => void;
+  minimeChat?: (login: string) => void;
 };
 
 // Login des Streamers, dessen Overlay das ist; null ohne /s/<login>/ und ohne gültiges ?s=
@@ -43,11 +45,12 @@ async function serverStatus(): Promise<ServerStatus | null> {
 }
 
 // Alle Hooks einer Seite teilen sich eine Verbindung: der erste Abonnent startet die Quellen, der letzte stoppt sie.
-// Der Server schickt den laufenden Titel nur beim Verbinden; wer später abonniert (die Szene lädt nach den
-// Einstellungen), bekommt ihn aus lastTrack. undefined = noch keine Nachricht.
+// Der Server schickt den laufenden Titel und die Minimes nur beim Verbinden; wer später abonniert (die Szene lädt nach
+// den Einstellungen), bekommt sie aus lastTrack und lastMinimes. undefined = noch keine Nachricht.
 const subscribers = new Set<Handlers>();
 let stopSources: (() => void) | null = null;
 let lastTrack: Track | null | undefined;
+let lastMinimes: Minime[] | undefined;
 const fanout: Handlers = {
   chat: message => subscribers.forEach(handlers => handlers.chat?.(message)),
   alert: alert => subscribers.forEach(handlers => handlers.alert?.(alert)),
@@ -58,6 +61,11 @@ const fanout: Handlers = {
   fx: event => subscribers.forEach(handlers => handlers.fx?.(event)),
   remove: removal => subscribers.forEach(handlers => handlers.remove?.(removal)),
   settings: settings => subscribers.forEach(handlers => handlers.settings?.(settings)),
+  minimes: minimes => {
+    lastMinimes = minimes;
+    subscribers.forEach(handlers => handlers.minimes?.(minimes));
+  },
+  minimeChat: login => subscribers.forEach(handlers => handlers.minimeChat?.(login)),
 };
 
 // Meldet Ereignisse an handlers; die Rückgabe meldet wieder ab
@@ -65,12 +73,14 @@ export function connect(handlers: Handlers): () => void {
   subscribers.add(handlers);
   stopSources ??= startSources(fanout);
   if (lastTrack !== undefined) handlers.music?.(lastTrack);
+  if (lastMinimes !== undefined) handlers.minimes?.(lastMinimes);
   return () => {
     subscribers.delete(handlers);
     if (subscribers.size > 0) return;
     stopSources?.();
     stopSources = null;
     lastTrack = undefined;
+    lastMinimes = undefined;
   };
 }
 
@@ -113,6 +123,8 @@ function events(login: string, handlers: Handlers) {
       else if (message.type === "music") handlers.music?.(message.track);
       else if (message.type === "fx") handlers.fx?.(message.event);
       else if (message.type === "settings") handlers.settings?.(message.settings);
+      else if (message.type === "minimes") handlers.minimes?.(message.minimes);
+      else if (message.type === "minimeChat") handlers.minimeChat?.(message.login);
     };
     // Nach einer Antwort wie 404 (Laufzeit gerade nicht gestartet) gibt EventSource auf: selbst mit Pause neu verbinden
     source.onerror = () => {

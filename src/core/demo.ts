@@ -1,6 +1,8 @@
-// Fake-Ereignisse für ?demo: Chat, Alerts und Musik, damit sich jedes Overlay ohne Stream testen lässt.
+// Fake-Ereignisse für ?demo: Chat, Alerts, Musik und Minimes, damit sich jedes Overlay ohne Stream testen lässt.
+// ?demo=<n>: so viele Minimes (Standard 5, höchstens 100).
 import { splitEmotes } from "./irc.ts";
-import type { Alert, Track } from "./types.ts";
+import { numberParam } from "./params.ts";
+import type { Alert, Minime, Track } from "./types.ts";
 import type { Handlers } from "./connection.ts";
 
 const NAMES = ["neo_42", "Trinity", "MorpheusTV", "agent_smith", "Oracle", "Tank", "Dozer", "Switch"];
@@ -34,6 +36,16 @@ const TRACKS: Track[] = [
 
 const pick = <T,>(list: T[]) => list[(Math.random() * list.length) | 0];
 
+// Demo-Minimes mit verschiedenen Farben, null = Standardfarbe des Themes
+const MINIME_COLORS = ["#39ff14", "#00e5ff", "#ff2bd6", "#ffd400", "#ff6a00", null];
+function demoMinimes(): Minime[] {
+  const count = Math.min(100, Math.max(0, numberParam("demo", 5) || 5));
+  return Array.from({ length: count }, (_, index) => {
+    const user = `${NAMES[index % NAMES.length]}${index >= NAMES.length ? index : ""}`;
+    return { login: user.toLowerCase(), user, color: MINIME_COLORS[index % MINIME_COLORS.length] };
+  });
+}
+
 // Startet die Fake-Ereignisse; die Rückgabe stoppt sie
 export function demo(handlers: Handlers) {
   const chat = setInterval(() => {
@@ -58,5 +70,8 @@ export function demo(handlers: Handlers) {
   const fire = () => handlers.alert?.(SAMPLES[alertIndex++ % SAMPLES.length]);
   const first = setTimeout(fire, 1000);
   const alerts = setInterval(fire, 11000);
-  return () => { clearInterval(chat); clearInterval(alerts); clearInterval(music); clearTimeout(first); };
+  const minimes = demoMinimes();
+  handlers.minimes?.(minimes);
+  const minimeChat = setInterval(() => handlers.minimeChat?.(pick(minimes).login), 3000);
+  return () => { clearInterval(chat); clearInterval(alerts); clearInterval(music); clearInterval(minimeChat); clearTimeout(first); };
 }
