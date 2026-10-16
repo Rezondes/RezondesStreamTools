@@ -27,6 +27,22 @@ assert.deepEqual(groupsForView(scoped, "starting").map(({ group }) => group), ["
 assert.deepEqual(groupsForView(scoped, "chat").map(({ group }) => group), []);
 assert.deepEqual(groupsForView(schema, "general").map(({ group }) => group), ["Allgemein", "Szenen"]);
 assert.deepEqual(groupsForView(schema, "chat").map(({ group }) => group), []);
+
+// Felder mit eigener Szene erscheinen nur dort, auch wenn ihre Gruppe in mehreren Szenen wirkt
+const screens: ThemeSchema = {
+  id: "probe",
+  name: "Probe",
+  fields: [
+    { key: "title", type: "text", label: "Titel", group: "Szenen", default: "X" },
+    { key: "startingLines", type: "lines", label: "Starting", group: "Szenen", default: [], scene: "starting" },
+    { key: "brbLines", type: "lines", label: "BRB", group: "Szenen", default: [], scene: "brb" },
+  ],
+  groupScenes: { Szenen: ["starting", "brb", "ending"] },
+};
+const keysIn = (view: "starting" | "brb" | "ending") => groupsForView(screens, view).flatMap(({ fields }) => fields.map(field => field.key));
+assert.deepEqual(keysIn("starting"), ["title", "startingLines"]);
+assert.deepEqual(keysIn("brb"), ["title", "brbLines"]);
+assert.deepEqual(keysIn("ending"), ["title"]);
 assert.deepEqual(groupsWithoutScene(scoped), ["Stinger"]);
 assert.deepEqual(groupsWithoutScene(schema), []);
 

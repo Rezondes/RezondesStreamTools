@@ -2,7 +2,7 @@
 // die Standardwerte ergeben den bisherigen Look. Einzige Stelle des Themes mit festen Farben, Texten und Zahlen.
 // MatrixValues ist der Typ der aufgelösten Werte, den die Szenen über useMatrix (values.ts) lesen.
 import { asciiText } from "../../core/asciiText.ts";
-import { asciiArt, choice, color, flag, font, lines, number, sound, text, type ValuesOf } from "../../core/fields.ts";
+import { asciiArt, choice, color, flag, font, inScene, lines, number, sound, text, type ValuesOf } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
@@ -64,27 +64,27 @@ const FIELDS = [
   number("rainFps", "Bildrate", RAIN, 20, 1, 60),
 
   // Starting, BRB, Ending
-  text("startingTitle", "Titel Starting", SCREENS, "STREAM STARTET GLEICH"),
-  text("brbTitle", "Titel BRB", SCREENS, "BIN GLEICH ZURÜCK"),
-  text("endingTitle", "Titel Ending", SCREENS, "STREAM BEENDET"),
+  inScene("starting", text("startingTitle", "Titel Starting", SCREENS, "STREAM STARTET GLEICH")),
+  inScene("brb", text("brbTitle", "Titel BRB", SCREENS, "BIN GLEICH ZURÜCK")),
+  inScene("ending", text("endingTitle", "Titel Ending", SCREENS, "STREAM BEENDET")),
   text("sceneHeader", "Kopfzeile ({channel}, {scene})", SCREENS, "{channel}://stream/{scene}"),
   text("liveText", "Live-Anzeige", SCREENS, "● LIVE-FEED"),
   flag("screenLogo", "Logo zeigen", SCREENS, true),
-  number("countdown", "Countdown-Standard", SCREENS, 300, 0, 86400, "s"),
-  text("countdownPrefix", "Countdown-Präfix", SCREENS, "T-"),
-  text("countdownDone", "Text nach dem Countdown", SCREENS, "INITIALISIERE ..."),
-  flag("progressBar", "Fortschrittsbalken", SCREENS, true),
-  number("progressWidth", "Fortschrittsbalken (Zeichen)", SCREENS, 40, 5, 100),
-  text("barFull", "Balken voll", SCREENS, "█", 4),
-  text("barEmpty", "Balken leer", SCREENS, "░", 4),
-  text("afkPrefix", "BRB-Zähler-Präfix", SCREENS, "AFK "),
-  text("brbNote", "Untertitel BRB", SCREENS, "Chat bleibt offen, schreibt ruhig weiter."),
-  text("endingThanks", "Untertitel Ending", SCREENS, "DANKE FÜRS ZUSCHAUEN"),
-  text("endingNextLabel", "Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream: "),
-  text("endingNext", "Nächster Stream (leer = ausblenden)", SCREENS, ""),
+  inScene("starting", number("countdown", "Countdown-Standard", SCREENS, 300, 0, 86400, "s")),
+  inScene("starting", text("countdownPrefix", "Countdown-Präfix", SCREENS, "T-")),
+  inScene("starting", text("countdownDone", "Text nach dem Countdown", SCREENS, "INITIALISIERE ...")),
+  inScene("starting", flag("progressBar", "Fortschrittsbalken", SCREENS, true)),
+  inScene("starting", number("progressWidth", "Fortschrittsbalken (Zeichen)", SCREENS, 40, 5, 100)),
+  inScene("starting", text("barFull", "Balken voll", SCREENS, "█", 4)),
+  inScene("starting", text("barEmpty", "Balken leer", SCREENS, "░", 4)),
+  inScene("brb", text("afkPrefix", "BRB-Zähler-Präfix", SCREENS, "AFK ")),
+  inScene("brb", text("brbNote", "Untertitel BRB", SCREENS, "Chat bleibt offen, schreibt ruhig weiter.")),
+  inScene("ending", text("endingThanks", "Untertitel Ending", SCREENS, "DANKE FÜRS ZUSCHAUEN")),
+  inScene("ending", text("endingNextLabel", "Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream: ")),
+  inScene("ending", text("endingNext", "Nächster Stream (leer = ausblenden)", SCREENS, "")),
   flag("terminal", "Terminal", SCREENS, true),
   text("prompt", "Prompt ({login}, {channel})", SCREENS, "root@{login}:~$"),
-  lines("startingLines", "Terminal Starting ({del 3}, {pause 900}, {smash 10})", SCREENS, [
+  inScene("starting", lines("startingLines", "Terminal Starting ({del 3}, {pause 900}, {smash 10})", SCREENS, [
     "boot sequence initiated",
     "coffee.exe not found ... falling back to energy_drink.exe",
     "cracking open a cold one ... *psst*",
@@ -103,8 +103,8 @@ const FIELDS = [
     "scanning chat for the one ... searching",
     "it works on my machine ... shipping my machine to chat",
     "git pull origin main ... already up to date",
-  ]),
-  lines("brbLines", "Terminal BRB", SCREENS, [
+  ])),
+  inScene("brb", lines("brbLines", "Terminal BRB", SCREENS, [
     "process suspended (pid 1337)",
     "user status: afk",
     "refilling drink ... cup 3 of ?",
@@ -119,8 +119,8 @@ const FIELDS = [
     "do not unplug the matrix",
     "while (afk) { chat.entertain(); }",
     "awaiting operator input",
-  ]),
-  lines("endingLines", "Terminal Ending", SCREENS, [
+  ])),
+  inScene("ending", lines("endingLines", "Terminal Ending", SCREENS, [
     "saving session ... ok",
     "flushing chat buffer ... ok",
     "writing highlights to /dev/memory ... ok",
@@ -132,7 +132,7 @@ const FIELDS = [
     "stopping services ...",
     "connection closed by remote host",
     "see you in the matrix",
-  ]),
+  ])),
   number("typingSpeed", "Tipp-Tempo", SCREENS, 1, 0.2, 5, undefined, 0.1),
   number("terminalStartDelay", "Terminal startet nach", SCREENS, 2600, 0, 30000, "ms"),
   number("terminalPauseMin", "Pause zwischen Zeilen (min)", SCREENS, 1800, 0, 60000, "ms"),

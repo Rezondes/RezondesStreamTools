@@ -1,6 +1,6 @@
 // Check für fields.ts: Bausteine für Theme-Schemas ergeben gültige Felder. Läuft mit npm test.
 import assert from "node:assert/strict";
-import { asciiArt, choice, color, flag, font, lines, number, sound, text, textarea } from "./fields.ts";
+import { asciiArt, choice, color, flag, font, inScene, lines, number, sound, text, textarea } from "./fields.ts";
 import { validateSettings } from "./settings.ts";
 import type { ThemeSchema } from "./theme.ts";
 
@@ -29,5 +29,8 @@ assert.deepEqual(fields[10], { key: "banner", type: "textarea", label: "Banner",
 const schema: ThemeSchema = { id: "probe", name: "Probe", fields };
 const defaults = Object.fromEntries(fields.map(field => [field.key, field.default]));
 assert.deepEqual(validateSettings(schema, defaults).errors, []);
+
+// Feld nur für eine Szene: alles andere bleibt gleich
+assert.deepEqual(inScene("brb", text("brbTitle", "Titel", "A", "PAUSE")), { ...text("brbTitle", "Titel", "A", "PAUSE"), scene: "brb" });
 
 console.log("fields ok");

@@ -15,12 +15,16 @@ export function groupFields(schema: ThemeSchema): { group: string; fields: Setti
 // Ansicht des Formulars: die allgemeinen Gruppen (wirken überall, auch in Stinger und Banner) oder eine Szene
 export type FormView = SceneName | "general";
 
-// Gruppen einer Ansicht: "general" = Gruppen ohne Eintrag in groupScenes, eine Szene = nur die Gruppen, die dort wirken
+// Gruppen einer Ansicht: "general" = Gruppen ohne Eintrag in groupScenes, eine Szene = nur die Gruppen, die dort wirken,
+// und darin nur Felder ohne eigene Szene oder mit genau dieser (z.B. die Terminal-Zeilen von BRB nur bei BRB)
 export const groupsForView = (schema: ThemeSchema, view: FormView) =>
-  groupFields(schema).filter(({ group }) => {
-    const scenes = schema.groupScenes?.[group];
-    return view === "general" ? scenes === undefined : scenes?.includes(view) ?? false;
-  });
+  groupFields(schema)
+    .filter(({ group }) => {
+      const scenes = schema.groupScenes?.[group];
+      return view === "general" ? scenes === undefined : scenes?.includes(view) ?? false;
+    })
+    .map(({ group, fields }) => ({ group, fields: fields.filter(field => field.scene === undefined || field.scene === view) }))
+    .filter(({ fields }) => fields.length > 0);
 
 // Gruppen, die in keiner Szene wirken (Stinger, Banner): stehen im Bereich Rendern
 export const groupsWithoutScene = (schema: ThemeSchema) =>

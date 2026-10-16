@@ -2,7 +2,7 @@
 // Übergängen, unabhängig vom Matrix-Theme (eigene Szenen, Schriften, Stinger und Banner). Vorlage für eigene Themes
 // (THEMES.md). Einzige Stelle des Themes mit festen Farben, Texten und Zahlen. StarterValues ist der Typ der
 // aufgelösten Werte, den die Szenen über useStarter lesen.
-import { choice, color, flag, font, number, sound, text, type ValuesOf } from "../../core/fields.ts";
+import { choice, color, flag, font, inScene, number, sound, text, type ValuesOf } from "../../core/fields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 export const STARTER_FONTS = ["Inter", "Manrope", "DM Sans", "Space Grotesk"] as const;
@@ -33,18 +33,18 @@ const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "STREAM", 40),
   choice("locale", "Uhrzeit-Format", GENERAL, "de-DE", LOCALES),
 
-  text("startingEyebrow", "Starting: Überzeile", SCREENS, "Gleich geht's los"),
-  text("startingTitle", "Starting: Titel", SCREENS, "Stream startet gleich"),
-  text("brbEyebrow", "BRB: Überzeile", SCREENS, "Kurze Pause"),
-  text("brbTitle", "BRB: Titel", SCREENS, "Bin gleich zurück"),
-  text("brbNote", "BRB: Untertitel", SCREENS, "Der Chat bleibt offen."),
-  text("endingEyebrow", "Ending: Überzeile", SCREENS, "Danke fürs Zuschauen"),
-  text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet"),
-  text("endingNextLabel", "Ending: Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream"),
-  text("endingNext", "Ending: Nächster Stream (leer = ausblenden)", SCREENS, ""),
-  number("countdown", "Countdown-Standard", SCREENS, 300, 0, 86400, "s"),
-  text("countdownDone", "Text nach dem Countdown", SCREENS, "Gleich live"),
-  flag("progressBar", "Fortschrittsbalken", SCREENS, true),
+  inScene("starting", text("startingEyebrow", "Starting: Überzeile", SCREENS, "Gleich geht's los")),
+  inScene("starting", text("startingTitle", "Starting: Titel", SCREENS, "Stream startet gleich")),
+  inScene("brb", text("brbEyebrow", "BRB: Überzeile", SCREENS, "Kurze Pause")),
+  inScene("brb", text("brbTitle", "BRB: Titel", SCREENS, "Bin gleich zurück")),
+  inScene("brb", text("brbNote", "BRB: Untertitel", SCREENS, "Der Chat bleibt offen.")),
+  inScene("ending", text("endingEyebrow", "Ending: Überzeile", SCREENS, "Danke fürs Zuschauen")),
+  inScene("ending", text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet")),
+  inScene("ending", text("endingNextLabel", "Ending: Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream")),
+  inScene("ending", text("endingNext", "Ending: Nächster Stream (leer = ausblenden)", SCREENS, "")),
+  inScene("starting", number("countdown", "Countdown-Standard", SCREENS, 300, 0, 86400, "s")),
+  inScene("starting", text("countdownDone", "Text nach dem Countdown", SCREENS, "Gleich live")),
+  inScene("starting", flag("progressBar", "Fortschrittsbalken", SCREENS, true)),
   flag("showClock", "Uhrzeit oben rechts", SCREENS, true),
   text("ticker", "Hinweis unten (leer = aus)", SCREENS, "", 300),
   flag("blobs", "Bewegter Farbhintergrund", SCREENS, true),

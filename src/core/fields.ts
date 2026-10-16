@@ -1,7 +1,7 @@
 // Bausteine für Theme-Schemas (src/themes/<id>/settings.ts): je Feldtyp eine Funktion, die den Schlüssel als
 // Literal-Typ behält. ValuesOf macht daraus den Typ der aufgelösten Werte, den die Szenen eines Themes lesen.
 // Check: fields.check.ts.
-import type { SoundValue } from "./theme.ts";
+import type { SceneName, SettingField, SoundValue } from "./theme.ts";
 
 type Unit = "px" | "ms" | "s" | "%";
 const SILENT: SoundValue = { file: "", volume: 1 };
@@ -37,6 +37,9 @@ export const font = <K extends string>(key: K, label: string, group: string, val
 
 export const number = <K extends string>(key: K, label: string, group: string, value: number, min: number, max: number, unit?: Unit, step?: number) =>
   ({ key, type: "number" as const, label, group, default: value, min, max, ...(unit ? { unit } : {}), ...(step ? { step } : {}) });
+
+// Feld, das nur in einer Szene wirkt: das Dashboard zeigt es nur dort (z.B. Titel oder Terminal-Zeilen von BRB)
+export const inScene = <F extends SettingField>(scene: SceneName, field: F): F & { scene: SceneName } => ({ ...field, scene });
 
 // Typ der aufgelösten Werte zu einer Feldliste: { [key]: Zahl, Schalter, Zeilen, Ton oder Text }
 type ValueOf<F> = F extends { type: "number" } ? number
