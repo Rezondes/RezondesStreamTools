@@ -2,7 +2,8 @@
 // freigegeben sind (/api/me), Admin nur für Admins. Reine Funktionen, getestet in navigation.check.ts.
 
 // Antwort von GET /api/me
-export type Me = { login: string; admin: boolean; live: boolean; spotify: boolean | null; features: Record<string, boolean> };
+// theme: das aktive Theme des Streamers (bestimmt den Skin des Dashboards)
+export type Me = { login: string; admin: boolean; live: boolean; spotify: boolean | null; features: Record<string, boolean>; theme: string };
 
 export type Section = "overview" | "theme" | "triggers" | "media" | "render" | "connections" | "admin";
 

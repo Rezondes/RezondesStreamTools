@@ -49,7 +49,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
       {me.features.alerts && (
         <p className="actions">
           <span className="muted">{TEXTS.overview.testAlerts}</span>
-          {TEST_ALERTS.map(kind => <button key={kind} className="btn" onClick={() => act(`/api/test?kind=${kind}`)}>[ {kind.toUpperCase()} ]</button>)}
+          {TEST_ALERTS.map(kind => <button key={kind} className="btn" onClick={() => act(`/api/test?kind=${kind}`)}>{TEXTS.overview.alertNames[kind]}</button>)}
         </p>
       )}
       {me.features.triggers && me.features.fx && <TriggerButtons act={act} />}
@@ -98,7 +98,7 @@ function TriggerButtons({ act }: { act: Act }) {
       {triggers.length === 0 && <span className="muted">{TEXTS.overview.noTriggers}</span>}
       {triggers.map(trigger => (
         <button key={trigger.name} className="btn" disabled={!trigger.enabled} onClick={() => act(`/api/trigger?name=${encodeURIComponent(trigger.name)}`)}>
-          [ {trigger.name.toUpperCase()} ]
+          {trigger.name}
         </button>
       ))}
     </p>

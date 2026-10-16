@@ -17,7 +17,7 @@ import { TEXTS } from "./texts.de.ts";
 
 // Antwort von GET /api/settings: gewähltes Theme, gespeicherte Werte je Theme, verfügbare Themes
 type SettingsFile = { theme: string; values: Record<string, Record<string, unknown>>; themes: { id: string; name: string }[] };
-type Notice = "saved" | "activated" | "invalid" | ErrorCode | null;
+type Notice = "saved" | "invalid" | ErrorCode | null;
 type Draft = { values: SettingValues; set: (update: (values: SettingValues) => SettingValues) => void };
 
 const defaultSchema = findTheme(DEFAULT_THEME)!;
@@ -33,7 +33,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
     if (next !== "general") setScene(next);
   };
   if (!file) {
-    if (!notice || notice === "saved" || notice === "activated" || notice === "invalid") return <p className="muted">{TEXTS.loading}</p>;
+    if (!notice || notice === "saved" || notice === "invalid") return <p className="muted">{TEXTS.loading}</p>;
     return (
       <p className="actions">
         <span className="error" role="alert">{TEXTS.errors[notice]}</span>
@@ -65,11 +65,11 @@ export default function ThemeSettings({ me }: { me: Me }) {
         <button className="btn" disabled={changed.length === 0} onClick={() => setDraft(() => saved)}>{TEXTS.theme.discard}</button>
         <button className="btn" onClick={() => { if (confirm(TEXTS.theme.confirmReset)) setDraft(() => resetAll(schema)); }}>{TEXTS.theme.resetAll}</button>
         <span className="muted" role="status">
-          {changed.length > 0 ? `${TEXTS.theme.unsaved} ${changed.length}` : notice === "saved" || notice === "activated" ? TEXTS.theme[notice] : ""}
+          {changed.length > 0 ? `${TEXTS.theme.unsaved} ${changed.length}` : notice === "saved" ? TEXTS.theme.saved : ""}
         </span>
       </div>
       {notice === "invalid" && <p className="error" role="alert">{TEXTS.theme.invalid}</p>}
-      {notice && notice !== "saved" && notice !== "activated" && notice !== "invalid" && <p className="error" role="alert">{TEXTS.errors[notice]}</p>}
+      {notice && notice !== "saved" && notice !== "invalid" && <p className="error" role="alert">{TEXTS.errors[notice]}</p>}
 
       <div className="settings-layout">
         <div className="settings-groups">
@@ -183,7 +183,9 @@ function useSettingsFile() {
       .then(async result => {
         if (result.ok) {
           await load(viewed);
-          return setNotice(activate ? "activated" : "saved");
+          // Anderes Theme aktiv: das Dashboard lädt neu und sieht danach wie das neue Theme aus
+          if (activate) return location.reload();
+          return setNotice("saved");
         }
         if (Array.isArray(result.data)) {
           setErrors(errorsByKey(result.data as SettingError[]));

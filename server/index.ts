@@ -163,9 +163,11 @@ function logout({ response }: Call) {
   json(response, { ok: true });
 }
 
-function me({ response, login, runtime }: Call) {
+// theme: das aktive Theme; das Dashboard sieht danach aus (Skin)
+async function me({ response, login, runtime }: Call) {
   const features = access.features(login);
-  json(response, { login, admin: access.isAdmin(login), live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features });
+  const { theme } = await loadSettings(profile.folder(DATA, login));
+  json(response, { login, admin: access.isAdmin(login), live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features, theme });
 }
 
 function testAlert({ response, url, runtime }: Call) {

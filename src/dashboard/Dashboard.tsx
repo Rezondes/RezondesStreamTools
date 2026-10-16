@@ -2,8 +2,9 @@
 // Streamer freigegeben sind (navigation.ts), Bereich im Hash (#/theme). Konto von /api/me, alle 5 Sekunden aufgefrischt;
 // ?error=<code> nach einer abgebrochenen Anmeldung und Fehler von Aktionen zeigen den Text zum Code.
 // Die Seite scrollt nie als Ganzes (Terminal): Titel und Navigation stehen fest, der Bereich darunter scrollt in sich;
-// Theme und Rendern teilen ihn in Einstellungen (scrollen) und Vorschau (steht).
-import { useEffect, useState } from "react";
+// Theme und Rendern teilen ihn in Einstellungen (scrollen) und Vorschau (steht). Das Aussehen folgt dem aktiven Theme
+// (skin.ts, skins.css).
+import { useEffect, useLayoutEffect, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { params } from "../core/params.ts";
 import Admin from "./Admin.tsx";
@@ -13,10 +14,13 @@ import Media from "./Media.tsx";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 import Overview from "./Overview.tsx";
 import Render from "./Render.tsx";
+import Scenery from "./Scenery.tsx";
+import { applySkin, rememberedSkin } from "./skin.ts";
 import { TEXTS } from "./texts.de.ts";
 import ThemeSettings from "./ThemeSettings.tsx";
 import Triggers from "./Triggers.tsx";
 import "./dashboard.css";
+import "./skins.css";
 
 // Aktion an den Server; danach Konto neu laden und einen Fehler anzeigen
 export type Act = (url: string) => void;
@@ -31,6 +35,11 @@ export default function Dashboard() {
     const code = params.get("error") ?? "";
     return isErrorCode(code) ? code : null;
   });
+
+  // Skin: erst der gemerkte (vor dem ersten Bild), dann der des aktiven Themes aus dem Konto
+  useLayoutEffect(() => applySkin(rememberedSkin()), []);
+  const theme = typeof account === "object" ? account.theme : null;
+  useEffect(() => { if (theme) applySkin(theme); }, [theme]);
 
   useEffect(() => {
     // Neuer Bereich: alte Fehlermeldung ausblenden
@@ -56,11 +65,14 @@ export default function Dashboard() {
   };
 
   return (
-    <main className="dashboard">
-      <h1 className="glow">{TEXTS.title}</h1>
-      {error && <p className="error" role="alert">{TEXTS.errors[error]}</p>}
-      <Content account={account} hash={hash} act={act} />
-    </main>
+    <>
+      <Scenery />
+      <main className="dashboard">
+        <h1>{TEXTS.title}</h1>
+        {error && <p className="error" role="alert">{TEXTS.errors[error]}</p>}
+        <Content account={account} hash={hash} act={act} />
+      </main>
+    </>
   );
 }
 
@@ -80,7 +92,7 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
       <nav className="dashboard-nav">
         {visible.map(id => (
           <a key={id} className={`btn${id === section ? " primary" : ""}`} href={`#/${id}`} aria-current={id === section ? "page" : undefined}>
-            [ {TEXTS.sections[id]} ]
+            {TEXTS.sections[id]}
           </a>
         ))}
         <span className="dashboard-user">

@@ -23,7 +23,7 @@ export default function Triggers() {
   const { list, setList, saved, media, errors, note, dirty } = editor;
   if (!list) {
     return (
-      <section className="editor">
+      <section className="panel editor">
         {errors.map(error => <p key={error} className="error" role="alert">{error}</p>)}
         {errors.includes(TEXTS.errors["not-connected"]) && <a className="btn" href="#/connections">{TRIGGER_TEXT.toConnections}</a>}
       </section>
@@ -32,7 +32,7 @@ export default function Triggers() {
 
   const replace = (index: number, trigger: Trigger) => setList(list.map((current, position) => (position === index ? trigger : current)));
   return (
-    <section className="editor">
+    <section className="panel editor">
       <div className="editor-bar">
         <button className="btn primary" disabled={!dirty} onClick={editor.save}>{TRIGGER_TEXT.save}</button>
         <button className="btn" disabled={!dirty} onClick={() => setList(JSON.parse(saved) as Trigger[])}>{TRIGGER_TEXT.discard}</button>
@@ -188,7 +188,7 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
   );
 }
 
-// [ TEST ] löst den gespeicherten Trigger aus und meldet, ob es geklappt hat
+// Test löst den gespeicherten Trigger aus und meldet, ob es geklappt hat
 function TestButton({ name, dirty }: { name: string; dirty: boolean }) {
   // undefined = noch nicht getestet, null = ausgelöst, sonst der Fehlercode
   const [tested, setTested] = useState<ErrorCode | null | undefined>(undefined);
@@ -229,9 +229,9 @@ function ActionRow({ action, first, onChange, onUp, onDown, onRemove }: RowProps
       <ActionTiming action={action} first={first} set={set} />
       <div className="row">
         <span className="row-end">
-          <button className="btn" disabled={!onUp} onClick={onUp} aria-label={TRIGGER_TEXT.moveUp}>[ ▲ ]</button>
-          <button className="btn" disabled={!onDown} onClick={onDown} aria-label={TRIGGER_TEXT.moveDown}>[ ▼ ]</button>
-          <button className="btn" disabled={!onRemove} onClick={onRemove} aria-label={TRIGGER_TEXT.removeAction}>[ ✕ ]</button>
+          <button className="btn" disabled={!onUp} onClick={onUp} aria-label={TRIGGER_TEXT.moveUp}>▲</button>
+          <button className="btn" disabled={!onDown} onClick={onDown} aria-label={TRIGGER_TEXT.moveDown}>▼</button>
+          <button className="btn" disabled={!onRemove} onClick={onRemove} aria-label={TRIGGER_TEXT.removeAction}>✕</button>
         </span>
       </div>
     </div>

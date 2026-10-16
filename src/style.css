@@ -1,49 +1,51 @@
-/* Grundstil von Dashboard und Werkzeugen wie im Portfolio: Schwarz, Phosphorgrün, eine Monospace-Schrift, keine
-   Rundungen. Der Look der Overlays steht im jeweiligen Theme (src/themes/<id>/theme.css). */
-:root {
-  --black: #000000;
-  --green: #39FF14;
-  --green-dim: #1E9E0F;
-  --green-line: #0E4D07;
-  color-scheme: dark;
-}
+/* Grundstil von Dashboard und Werkzeugen. Farben, Schrift, Rundungen und Schatten sind Tokens; ihre Werte setzt der
+   Skin des aktiven Themes (src/dashboard/skins.css, data-skin am <html>). Der Look der Overlays steht im jeweiligen
+   Theme (src/themes/<id>/theme.css). */
 
-* { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  background: var(--black);
-  color: var(--green);
-  font: 16px/1.25 "Share Tech Mono", "Fira Mono", monospace;
+  background: var(--page, var(--bg));
+  color: var(--fg);
+  font: var(--font-size, 16px)/var(--leading, 1.4) var(--font);
 }
 /* Overlays sind transparent, OBS legt sie über das Bild */
 body.overlay { background: transparent; overflow: hidden; }
 /* Öffentliche Seiten (Befehlsseite): das Theme malt den Hintergrund selbst */
 body.public-page { background: transparent; }
-body.overlay.preview-tab { background: repeating-conic-gradient(#1a1a1a 0 25%, #101010 0 50%) 0 0 / 24px 24px; overflow: auto; }
+body.overlay.preview-tab { background: var(--checker); overflow: auto; }
 
-.muted { color: var(--green-dim); }
-.glow { text-shadow: 0 0 6px rgba(57, 255, 20, 0.8), 0 0 18px rgba(57, 255, 20, 0.45); }
+.muted { color: var(--fg-dim); }
+.glow { color: var(--emph); text-shadow: var(--glow); }
 .btn {
   display: inline-flex;
   align-items: center;
+  gap: 6px;
   min-height: 44px;
-  padding: 6px 12px;
-  border: 1px solid var(--green);
-  color: var(--green);
+  padding: 6px 14px;
+  border: var(--border-w) solid var(--btn-border);
+  border-radius: var(--radius-btn);
+  color: var(--btn-fg);
   text-decoration: none;
   white-space: nowrap;
-  background: var(--black);
+  background: var(--btn-bg);
+  box-shadow: var(--btn-shadow);
   font: inherit;
+  font-weight: var(--btn-weight);
+  text-transform: var(--btn-case);
   cursor: pointer;
+  transition: background var(--fast, 120ms) ease-out, color var(--fast, 120ms) ease-out, transform var(--fast, 120ms) ease-out;
 }
-.btn.primary,
-.btn:hover { background: var(--green); color: var(--black); }
-/* Fokus immer als Rahmen, auch auf Primär-Buttons und dem aktiven Tab, die schon invertiert sind */
-.btn:focus-visible, .btn:focus-within { outline: 2px solid var(--green); outline-offset: 3px; }
+.btn:hover { background: var(--hover-bg); color: var(--hover-fg); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); }
+.btn:active:not(:disabled) { transform: var(--press, none); }
+/* Fokus immer als Rahmen, auch auf Primär-Buttons und dem aktiven Tab */
+.btn:focus-visible, .btn:focus-within { outline: 2px solid var(--focus); outline-offset: 3px; }
 
-.btn:disabled, .btn:disabled:hover { background: var(--black); border-color: var(--green-dim); color: var(--green-dim); cursor: default; }
+.btn:disabled, .btn:disabled:hover { background: var(--btn-bg); border-color: var(--line); color: var(--fg-dim); box-shadow: none; opacity: var(--disabled-opacity, 1); cursor: default; }
 /* Fehler umrandet mit Präfix, damit sie nicht wie ein Primär-Button oder der aktive Tab aussehen */
-.error { border: 1px solid var(--green); border-left-width: 6px; color: var(--green); padding: 6px 10px; }
+.error { border: var(--border-w) solid var(--error); border-left-width: 6px; border-radius: var(--radius-sm); background: var(--error-bg); color: var(--error); padding: 6px 10px; }
 .error::before { content: "Fehler: "; font-weight: bold; }
 /* Unsichtbar, aber per Tastatur erreichbar (Datei-Auswahl im Upload-Button) */
 .upload-report { flex-basis: 100%; list-style: none; display: grid; gap: 4px; }
@@ -51,7 +53,7 @@ body.overlay.preview-tab { background: repeating-conic-gradient(#1a1a1a 0 25%, #
 
 /* --- Formular-Elemente im Look: die Browser-Standards (weisse Checkbox, grauer Regler) passen nicht ------- */
 /* Scrollbars für alle Elemente (scrollbar-color wird vererbt) */
-:root { scrollbar-color: var(--green-dim) var(--black); }
+:root { scrollbar-color: var(--scroll-thumb) var(--scroll-track); }
 
 input[type=checkbox] {
   appearance: none;
@@ -61,52 +63,55 @@ input[type=checkbox] {
   width: 20px;
   height: 20px;
   margin: 0;
-  border: 1px solid var(--green);
-  background: var(--black);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-check);
+  background: var(--field);
   cursor: pointer;
 }
-/* Haken als gefülltes Quadrat */
-input[type=checkbox]::before { content: ""; width: 10px; height: 10px; background: var(--green); transform: scale(0); transition: transform 80ms ease-out; }
+/* Haken als gefülltes Feld */
+input[type=checkbox]::before { content: ""; width: 10px; height: 10px; border-radius: var(--radius-check); background: var(--accent); transform: scale(0); transition: transform 80ms ease-out; }
+input[type=checkbox]:checked { border-color: var(--accent); }
 input[type=checkbox]:checked::before { transform: scale(1); }
-input[type=checkbox]:disabled { border-color: var(--green-dim); cursor: default; }
-input[type=checkbox]:disabled::before { background: var(--green-dim); }
+input[type=checkbox]:disabled { border-color: var(--fg-dim); cursor: default; }
+input[type=checkbox]:disabled::before { background: var(--fg-dim); }
 
 input[type=range] { appearance: none; height: 24px; background: transparent; cursor: pointer; }
-input[type=range]::-webkit-slider-runnable-track { height: 4px; background: var(--green-line); }
-input[type=range]::-webkit-slider-thumb { appearance: none; width: 12px; height: 20px; margin-top: -8px; border: 0; background: var(--green); }
-input[type=range]::-moz-range-track { height: 4px; background: var(--green-line); }
-input[type=range]::-moz-range-progress { height: 4px; background: var(--green-dim); }
-input[type=range]::-moz-range-thumb { width: 12px; height: 20px; border: 0; border-radius: 0; background: var(--green); }
+input[type=range]::-webkit-slider-runnable-track { height: 4px; background: var(--line); }
+input[type=range]::-webkit-slider-thumb { appearance: none; width: var(--thumb-w, 12px); height: 20px; margin-top: -8px; border: 0; border-radius: var(--radius-check); background: var(--accent); }
+input[type=range]::-moz-range-track { height: 4px; background: var(--line); }
+input[type=range]::-moz-range-progress { height: 4px; background: var(--fg-dim); }
+input[type=range]::-moz-range-thumb { width: var(--thumb-w, 12px); height: 20px; border: 0; border-radius: var(--radius-check); background: var(--accent); }
 
-input[type=checkbox]:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+input[type=checkbox]:focus-visible, input[type=range]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 
 /* --- Trigger-Editor ---------------------------------------------------------------------- */
 .editor { max-width: 1280px; margin: 0 auto; padding: 24px 16px 64px; display: grid; gap: 16px; }
 .editor-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.editor-head h1 { font-weight: normal; font-size: 28px; }
-.editor-bar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 0; background: var(--black); border-bottom: 1px solid var(--green-line); }
-.editor-errors { list-style: none; padding: 10px 14px; border: 1px solid var(--green); display: grid; gap: 4px; }
+.editor-head h1 { font: var(--title-weight) 28px var(--font-title); }
+.editor-bar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 0; background: var(--surface); border-bottom: var(--border-w) solid var(--line); }
+.editor-errors { list-style: none; padding: 10px 14px; border: var(--border-w) solid var(--error); border-radius: var(--radius-sm); background: var(--error-bg); color: var(--error); display: grid; gap: 4px; }
 .editor-errors li::before { content: "! "; }
-.trigger-card { display: grid; gap: 14px; padding: 16px; border: 1px solid var(--green-dim); }
+.trigger-card { display: grid; gap: 14px; padding: 16px; border: var(--border-w) solid var(--border); border-radius: var(--radius); background: var(--surface-2); }
 .trigger-card.disabled { opacity: 0.55; }
 .trigger-card > .btn { justify-self: start; }
-.trigger-card h3 { font-weight: normal; font-size: 14px; letter-spacing: 1px; }
-.action-row { display: grid; gap: 10px; padding: 4px 0 4px 14px; border-left: 3px solid var(--green-line); }
+.trigger-card h3 { font-weight: normal; font-size: 14px; letter-spacing: 1px; text-transform: var(--label-case); }
+.action-row { display: grid; gap: 10px; padding: 4px 0 4px 14px; border-left: 3px solid var(--line); }
 .editor .row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
 .editor .grow { flex: 1; min-width: 180px; }
 .editor .row-end { margin-left: auto; display: flex; gap: 6px; }
-.editor label { display: grid; gap: 4px; font-size: 14px; color: var(--green-dim); }
-.editor label.check { display: flex; align-items: center; gap: 6px; min-height: 44px; color: var(--green); }
-.editor label.btn { display: inline-flex; color: var(--green); font-size: inherit; }
+.editor label { display: grid; gap: 4px; font-size: 14px; color: var(--fg-dim); }
+.editor label.check { display: flex; align-items: center; gap: 6px; min-height: 44px; color: var(--fg); }
+.editor label.btn { display: inline-flex; color: var(--btn-fg); font-size: inherit; }
 .editor input:not([type=checkbox]), .editor select {
   min-height: 44px;
   padding: 6px 8px;
-  background: var(--black);
-  color: var(--green);
-  border: 1px solid var(--green-dim);
+  background: var(--field);
+  color: var(--fg);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-sm);
   font: inherit;
 }
 .editor input[type=number] { width: 110px; }
-.editor input:focus-visible, .editor select:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
-.editor fieldset { display: flex; flex-wrap: wrap; gap: 10px; padding: 2px 10px 6px; border: 1px solid var(--green-line); }
-.editor legend { padding: 0 4px; font-size: 14px; color: var(--green-dim); }
+.editor input:focus-visible, .editor select:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+.editor fieldset { display: flex; flex-wrap: wrap; gap: 10px; padding: 2px 10px 6px; border: var(--border-w) solid var(--line); border-radius: var(--radius-sm); }
+.editor legend { padding: 0 4px; font-size: 14px; color: var(--fg-dim); }

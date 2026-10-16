@@ -1,0 +1,202 @@
+/* Skins des Dashboards: Werte der Tokens aus src/style.css und dashboard.css je aktivem Theme (data-skin am <html>,
+   gesetzt von skin.ts). Ohne data-skin gilt starter, der Skin des Standard-Themes. Charakter je Skin: DESIGN.md. */
+
+/* --- Starter: modern und schlicht. Dunkle Flächen, eine violette Signatur, weiche Karten, Inter --------------- */
+:root, :root[data-skin="starter"] {
+  color-scheme: dark;
+  --bg: #0b0b12;
+  --page: radial-gradient(1200px 500px at 50% -200px, #1d1640 0%, transparent 70%), #0b0b12;
+  --surface: #14141c;
+  --surface-2: #181822;
+  --field: #0f0f17;
+  --fg: #f4f4f8;
+  --fg-dim: #a1a1b5;
+  --line: #26263a;
+  --border: #2e2e45;
+  --heading: #a1a1b5;
+  --title-color: #f4f4f8;
+  --accent: #6d4aff;
+  --accent-hover: #5b38f0;
+  --on-accent: #ffffff;
+  --emph: #22d3ee;
+  --glow: none;
+  --focus: #22d3ee;
+  --error: #ff6b8a;
+  --error-bg: #2a1320;
+  --on-error: #14141c;
+  --btn-bg: #1c1c28;
+  --btn-fg: #f4f4f8;
+  --btn-border: #2e2e45;
+  --btn-shadow: none;
+  --btn-weight: 600;
+  --hover-bg: #26263a;
+  --hover-fg: #ffffff;
+  --press: translateY(1px);
+  --border-w: 1px;
+  --radius: 14px;
+  --radius-sm: 10px;
+  --radius-btn: 10px;
+  --radius-check: 5px;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --font: "Inter", system-ui, sans-serif;
+  --font-title: "Inter", system-ui, sans-serif;
+  --title-size: 26px;
+  --title-weight: 800;
+  --heading-weight: 600;
+  --title-case: none;
+  --label-case: none;
+  --btn-case: none;
+  --checker: repeating-conic-gradient(#1a1a24 0 25%, #12121a 0 50%) 0 0 / 24px 24px;
+  --scroll-thumb: #3a3a55;
+  --scroll-track: #0b0b12;
+}
+:root[data-skin="starter"] .dashboard h1, :root:not([data-skin]) .dashboard h1 {
+  background: linear-gradient(135deg, #8b6cff, #22d3ee);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* --- Matrix: Terminal. Schwarz, Phosphorgrün, eine Monospace-Schrift, keine Rundungen, Klammern um Knöpfe -------- */
+:root[data-skin="matrix"] {
+  color-scheme: dark;
+  --bg: #000000;
+  --page: #000000;
+  --surface: #000000;
+  --surface-2: #000000;
+  --field: #000000;
+  --fg: #39ff14;
+  --fg-dim: #1e9e0f;
+  --line: #0e4d07;
+  --border: #1e9e0f;
+  --heading: #1e9e0f;
+  --title-color: #39ff14;
+  --accent: #39ff14;
+  --accent-hover: #39ff14;
+  --on-accent: #000000;
+  --emph: #39ff14;
+  --glow: 0 0 6px rgba(57, 255, 20, 0.8), 0 0 18px rgba(57, 255, 20, 0.45);
+  --focus: #39ff14;
+  --error: #39ff14;
+  --error-bg: #000000;
+  --on-error: #000000;
+  --btn-bg: #000000;
+  --btn-fg: #39ff14;
+  --btn-border: #39ff14;
+  --btn-shadow: none;
+  --btn-weight: normal;
+  --hover-bg: #39ff14;
+  --hover-fg: #000000;
+  --press: none;
+  --border-w: 1px;
+  --radius: 0;
+  --radius-sm: 0;
+  --radius-btn: 0;
+  --radius-check: 0;
+  --shadow: none;
+  --font: "Share Tech Mono", "Fira Mono", monospace;
+  --font-title: "Share Tech Mono", "Fira Mono", monospace;
+  --leading: 1.25;
+  --title-size: 28px;
+  --title-weight: normal;
+  --heading-weight: normal;
+  --title-case: uppercase;
+  --label-case: none;
+  --btn-case: uppercase;
+  --checker: repeating-conic-gradient(#1a1a1a 0 25%, #101010 0 50%) 0 0 / 24px 24px;
+  --scroll-thumb: #1e9e0f;
+  --scroll-track: #000000;
+}
+:root[data-skin="matrix"] .dashboard h1 { text-shadow: var(--glow); }
+:root[data-skin="matrix"] .btn { gap: 0; }
+:root[data-skin="matrix"] .btn::before { content: "[\00a0"; }
+:root[data-skin="matrix"] .btn::after { content: "\00a0]"; }
+
+/* --- Südfrucht: Strand. Himmel, Meer und Sand als Seite, cremige Karten mit Holzrand, Meerblau als Signatur,
+       runde Knöpfe, Titel als Holzschild, Palmen am Rand (Szenerie aus Dashboard.tsx) ---------------------------- */
+:root[data-skin="suedfrucht"] {
+  color-scheme: light;
+  --bg: #fff8ea;
+  --page: linear-gradient(180deg, #2fa8ec 0%, #8fd9f5 38%, #b8ecff 55%, #1fb5c9 56%, #0b6f8e 74%, #f2d49b 75%, #d9b26f 100%) fixed;
+  --surface: #fff8ea;
+  --surface-2: #fffdf6;
+  --field: #ffffff;
+  --fg: #3b2412;
+  --fg-dim: #7a5536;
+  --line: #ecd8b0;
+  --border: #d39a5c;
+  --heading: #c2185b;
+  --title-color: #3b2412;
+  --accent: #0b6f8e;
+  --accent-hover: #095a73;
+  --on-accent: #ffffff;
+  --emph: #c2185b;
+  --glow: none;
+  --focus: #ff4f8b;
+  --error: #b42318;
+  --error-bg: #fff1ee;
+  --on-error: #ffffff;
+  --btn-bg: #fff8ea;
+  --btn-fg: #3b2412;
+  --btn-border: #d39a5c;
+  --btn-shadow: 0 3px 0 #8a5527;
+  --btn-weight: 700;
+  --hover-bg: #f6deb0;
+  --hover-fg: #3b2412;
+  --press: translateY(2px);
+  --border-w: 2px;
+  --radius: 22px;
+  --radius-sm: 12px;
+  --radius-btn: 999px;
+  --radius-check: 6px;
+  --shadow: 0 10px 0 rgba(138, 85, 39, 0.25), 0 18px 40px rgba(11, 111, 142, 0.25);
+  --font: "Nunito", system-ui, sans-serif;
+  --font-title: "Baloo 2", "Nunito", system-ui, sans-serif;
+  --title-size: 30px;
+  --title-weight: 400;
+  --heading-weight: 700;
+  --title-case: none;
+  --label-case: none;
+  --btn-case: none;
+  --thumb-w: 20px;
+  --dash-max: min(1440px, calc(100vw - 2 * clamp(60px, 9vw, 200px)));
+  --checker: repeating-conic-gradient(#f2e3c4 0 25%, #fff8ea 0 50%) 0 0 / 24px 24px;
+  --scroll-thumb: #d39a5c;
+  --scroll-track: #fff8ea;
+}
+/* Titel als Holzschild mit Schreibschrift */
+:root[data-skin="suedfrucht"] .dashboard h1 {
+  align-self: flex-start;
+  padding: 6px 22px 2px;
+  font-family: "Pacifico", "Baloo 2", cursive;
+  background: repeating-linear-gradient(180deg, #d39a5c 0 18px, #8a5527 18px 20px);
+  border: 4px solid #8a5527;
+  border-radius: 14px;
+  box-shadow: 0 6px 0 rgba(59, 36, 18, 0.35);
+}
+:root[data-skin="suedfrucht"] .btn:active:not(:disabled) { box-shadow: 0 1px 0 #8a5527; }
+:root[data-skin="suedfrucht"] .btn.primary { box-shadow: 0 3px 0 #073f52; }
+:root[data-skin="suedfrucht"] .dashboard-nav { border-bottom: none; }
+
+/* Anmeldung als cremige Plakette, damit sie vor Himmel und Sonne lesbar bleibt */
+:root[data-skin="suedfrucht"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
+
+/* Szenerie hinter dem Dashboard: nur im Südfrucht-Skin sichtbar */
+.skin-scenery { display: none; }
+:root[data-skin="suedfrucht"] .skin-scenery { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+:root[data-skin="suedfrucht"] .dashboard { position: relative; z-index: 1; }
+.skin-sun { position: absolute; top: 2vh; right: 22vw; width: 110px; height: 110px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 60px 20px rgba(255, 210, 63, 0.55); }
+/* svg.: stärker als die Formregel des Themes (.theme-suedfrucht .sf-shape, volle Breite) */
+.skin-scenery svg.skin-palm { position: absolute; bottom: -2vh; width: clamp(160px, 18vw, 340px); }
+.skin-scenery .skin-palm-left { left: -7vw; }
+.skin-scenery .skin-palm-right { right: -7vw; scale: -1 1; }
+.skin-scenery .skin-palm .part-main { fill: var(--palmTrunk); }
+.skin-scenery .skin-palm .part-detail { fill: var(--palmLeaf); }
+.skin-scenery .skin-palm .part-line { stroke: var(--woodDark); stroke-width: 3; }
+/* Früchte sitzen oben in der Titelzeile, zwischen Holzschild und Sonne */
+.skin-fruits { position: absolute; top: 14px; left: 58%; translate: -50% 0; display: flex; gap: clamp(12px, 2vw, 32px); }
+.skin-fruit { display: block; width: clamp(34px, 3vw, 48px); }
+.skin-fruit:nth-child(even) { translate: 0 -10px; rotate: 8deg; }
+.skin-fruit:nth-child(odd) { rotate: -6deg; }
+@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-sun, .skin-fruits { display: none; } }
+@media (max-width: 1099px) { .skin-fruits { display: none; } }

@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 
-const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo", admin, live: false, spotify: null, features });
+const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo", admin, live: false, spotify: null, features, theme: "starter" });
 
 // Nur Grundbereiche, wenn keine Funktion an ist
 assert.deepEqual(visibleSections(me({})), ["overview", "connections"]);
