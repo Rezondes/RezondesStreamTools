@@ -1,6 +1,7 @@
-# REZONDES // Stream-Overlays
+# RST - Rezondes Stream Tools
 
-Browserquellen für OBS im Look des Portfolios (Schwarz, Phosphorgrün, Matrix-Regen, CRT).
+Werkzeuge für Streamer: Browserquellen für OBS, ein Dashboard und eine Befehlsseite für Zuschauer, im Look des
+gewählten Themes (Starter, Matrix, Südfrucht).
 React + Vite + TypeScript. Dazu ein kleiner Node-Server (Docker) für mehrere Streamer: Twitch-Anmeldung und alle Events.
 
 ## Start

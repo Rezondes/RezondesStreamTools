@@ -6,7 +6,8 @@ import type { SceneName } from "../core/theme.ts";
 import type { Section } from "./navigation.ts";
 
 export const TEXTS = {
-  title: "Rezondes // Stream-Overlays",
+  // Kurzname oben links; lang: Rezondes Stream Tools (Seitentitel in index.html)
+  title: "RST",
   loading: "Lade ...",
   retry: "Erneut laden",
   ascii: {
