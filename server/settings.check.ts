@@ -3,7 +3,8 @@ import assert from "node:assert/strict";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { loadSettings, minimeRules, parseSettingsFile, publicSettings, saveSettings, updateSettings } from "./settings.ts";
+import { asciiText } from "../src/core/asciiText.ts";
+import { ensureSettings, firstSettings, loadSettings, minimeRules, parseSettingsFile, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 
 // Kaputte oder fremde Datei: Standard-Theme, keine Werte; unbekanntes Theme fällt auf den Standard zurück
 assert.deepEqual(parseSettingsFile("kaputt"), { theme: "matrix", values: {} });
@@ -19,7 +20,7 @@ const file = parseSettingsFile({ theme: "matrix", values: { matrix: { accent: "#
 const view = publicSettings(file);
 assert.equal(view.theme, "matrix");
 assert.equal(view.values.accent, "#ff0000");
-assert.equal(view.values.channelName, "REZONDES");
+assert.equal(view.values.channelName, "STREAM");
 assert.equal("fremd" in view.values, false);
 
 // Speichern: gültig ergibt die neue Datei, ungültig Fehler und keine Datei, unbekanntes Theme ein eigener Code
@@ -38,10 +39,22 @@ const kept = updateSettings(file, "starter", { accent: "#ff0000" }, false).file!
 assert.equal(kept.theme, file.theme);
 assert.equal(kept.values.starter.accent, "#ff0000");
 
+// Erster Login: das Standard-Theme ist gewählt, jedes Theme mit Personalisierung hat die Werte des Streamers
+const first = firstSettings("neo_42");
+assert.equal(first.theme, "matrix");
+assert.equal(publicSettings(first).values.channelName, "NEO_42");
+assert.equal(publicSettings(first).values.logo, asciiText("neo_42"));
+assert.deepEqual(first.values.starter, { channelName: "NEO_42" });
+
 // Speichern und Laden über die Datei (temporärer Ordner, danach gelöscht)
 const folder = await mkdtemp(join(tmpdir(), "settings-"));
 try {
   assert.deepEqual(await loadSettings(folder), { theme: "matrix", values: {} });
+  // Erster Login legt die Datei an, jeder weitere lässt sie stehen
+  assert.equal(await ensureSettings(folder, "neo_42"), true);
+  assert.deepEqual(await loadSettings(folder), first);
+  assert.equal(await ensureSettings(folder, "smith"), false);
+  assert.deepEqual(await loadSettings(folder), first);
   await saveSettings(folder, saved.file);
   assert.deepEqual(await loadSettings(folder), saved.file);
 } finally {

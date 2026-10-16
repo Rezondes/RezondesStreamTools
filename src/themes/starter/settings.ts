@@ -30,7 +30,7 @@ const FIELDS = [
   font("font", "Schrift", GENERAL, "Inter", STARTER_FONTS),
   number("fontSize", "Schriftgrösse", GENERAL, 22, 10, 60, "px"),
   number("fadeDuration", "Ein- und Ausblenden", GENERAL, 400, 0, 3000, "ms"),
-  text("channelName", "Kanal-Name", GENERAL, "REZONDES", 40),
+  text("channelName", "Kanal-Name", GENERAL, "STREAM", 40),
   choice("locale", "Uhrzeit-Format", GENERAL, "de-DE", LOCALES),
 
   text("startingEyebrow", "Starting: Überzeile", SCREENS, "Gleich geht's los"),
@@ -104,7 +104,7 @@ const FIELDS = [
   text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}"),
 
   text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
-  text("bannerProfileText", "Profilbanner: Text", BANNER, "Programmieren, Games und gute Laune"),
+  text("bannerProfileText", "Profilbanner: Text", BANNER, "Games, Talk und gute Laune"),
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade offline"),
   text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keinen Stream."),
   number("bannerLoop", "Schleifenlänge", BANNER, 6, 1, 20, "s"),
@@ -125,4 +125,7 @@ const GROUP_SCENES = {
   [BANNER]: [],
 } as const;
 
-export const starterSettings: ThemeSchema = { id: "starter", name: "Starter", fields: FIELDS, groupScenes: GROUP_SCENES };
+// Beim ersten Login: Kanal-Name aus dem Twitch-Login statt des Beispiels
+const personalize = (login: string) => ({ channelName: login.toUpperCase() });
+
+export const starterSettings: ThemeSchema = { id: "starter", name: "Starter", fields: FIELDS, groupScenes: GROUP_SCENES, personalize };

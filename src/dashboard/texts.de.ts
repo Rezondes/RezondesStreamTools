@@ -12,7 +12,7 @@ export const TEXTS = {
   ascii: {
     open: "[ ASCII-LOGO ERZEUGEN ]",
     name: "Name",
-    example: "z.B. REZONDES",
+    example: "z.B. NEO",
     font: "Schrift",
     preview: "Vorschau des ASCII-Logos",
     apply: "[ ÜBERNEHMEN ]",

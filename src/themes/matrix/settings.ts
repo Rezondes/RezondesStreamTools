@@ -1,16 +1,14 @@
 // Einstellungs-Schema des eingebauten Themes "matrix": jeder sichtbare und hörbare Wert ist hier eine Einstellung,
 // die Standardwerte ergeben den bisherigen Look. Einzige Stelle des Themes mit festen Farben, Texten und Zahlen.
 // MatrixValues ist der Typ der aufgelösten Werte, den die Szenen über useMatrix (values.ts) lesen.
+import { asciiText } from "../../core/asciiText.ts";
 import { asciiArt, choice, color, flag, font, lines, number, sound, text, type ValuesOf } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
-const LOGO = String.raw`
- ___   ___   ____   ___    _  _   ___    ___   ___
-| _ \ | __| |_  /  / _ \  | \| | |   \  | __| / __|
-|   / | _|   / /  | (_) | | .' | | |) | | _|  \__ \
-|_|_\ |___| /___|  \___/  |_|\_| |___/  |___| |___/`.slice(1);
+// Beispiel-Logo; beim ersten Login erzeugt personalize das Logo aus dem Twitch-Login
+const LOGO = asciiText("STREAM");
 
 export const FONTS = ["Share Tech Mono", "VT323", "Fira Mono", "IBM Plex Mono", "Courier New"] as const;
 export const ANIMATIONS = ["glitch", "fade", "none"] as const;
@@ -40,7 +38,7 @@ const FIELDS = [
   color("flash", "Blitzfarbe", GENERAL, "#d8ffcc"),
   font("font", "Schrift", GENERAL, "Share Tech Mono", FONTS),
   number("fontSize", "Grundgrösse der Schrift", GENERAL, 16, 8, 48, "px"),
-  text("channelName", "Kanal-Name", GENERAL, "REZONDES", 40),
+  text("channelName", "Kanal-Name", GENERAL, "STREAM", 40),
   asciiArt("logo", "ASCII-Logo", GENERAL, LOGO),
   number("glowStrength", "Glühen (Stärke)", GENERAL, 1, 0, 3, undefined, 0.1),
   flag("scanlines", "Scanlines", GENERAL, true),
@@ -88,10 +86,10 @@ const FIELDS = [
   text("prompt", "Prompt ({login}, {channel})", SCREENS, "root@{login}:~$"),
   lines("startingLines", "Terminal Starting ({del 3}, {pause 900}, {smash 10})", SCREENS, [
     "boot sequence initiated",
-    "coffee.exe not found ... falling back to monster_white.exe",
-    "cracking open a Monster Energy White ... *psst*",
+    "coffee.exe not found ... falling back to energy_drink.exe",
+    "cracking open a cold one ... *psst*",
     "loading neural_net.dll ... ok",
-    "dotnet build --configuration Stream ... succeeded (0 warnings, 47 suppressed)",
+    "compiling overlays ... succeeded (0 warnings, 47 suppressed)",
     "connecting to twitch.tv:443 ... ok",
     "sudo systemclt{del 2}tl strat{del 3}art stream{pause 900} --now{pause 600} --pls",
     "npm install motivation ... 1,284 vulnerabilities found",
@@ -109,10 +107,10 @@ const FIELDS = [
   lines("brbLines", "Terminal BRB", SCREENS, [
     "process suspended (pid 1337)",
     "user status: afk",
-    "refilling Monster Energy White ... can 3 of ?",
+    "refilling drink ... cup 3 of ?",
     "ping streamer ... request timed out",
     "retrying in 5s ...",
-    "Thread.Sleep(300000); // TODO: remove before stream",
+    "sleep 300 # TODO: remove before stream",
     "echo \"bin gelich{del 5}lecih{del 3}ich zrü{del 3}{pause 600}zurkc{del 3}{pause 900}{smash 18}",
     "keeping chat warm ... ok",
     "rubber duck is now in charge of the stream",
@@ -127,7 +125,7 @@ const FIELDS = [
     "flushing chat buffer ... ok",
     "writing highlights to /dev/memory ... ok",
     "git commit -m \"stream done\" ... ok",
-    "disposing streamer ... IDisposable not implemented",
+    "shutting down streamer ... streamer refuses",
     "thanks for watching",
     "closing 47 browser tabs ... 46 remaining",
     "shutdwon{del 4}down -h nwo{del 3}now{pause 900} --really{pause 700}{smash 10}",
@@ -252,8 +250,8 @@ const FIELDS = [
   flag("stingerLogo", "Logo", STINGER, true),
 
   // Twitch-Banner
-  text("bannerProfileText", "Profilbanner: Text", BANNER, "> just a dude who loves programming"),
-  text("bannerProfileSub", "Profilbanner: Untertitel", BANNER, "C# · .NET · TypeScript · Games"),
+  text("bannerProfileText", "Profilbanner: Text", BANNER, "> willkommen in der matrix"),
+  text("bannerProfileSub", "Profilbanner: Untertitel", BANNER, "Games · Talk · Community"),
   text("bannerOfflineStatus", "Offline-Banner: Status", BANNER, "○ OFFLINE"),
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "STREAM OFFLINE"),
   text("bannerOfflineText", "Offline-Banner: Text", BANNER, "> Folge dem Kanal, dann verpasst du den nächsten Stream nicht."),
@@ -322,4 +320,7 @@ const GROUP_SCENES = {
   [MINIME_MOTION]: ["minimes"],
 } as const;
 
-export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: FIELDS, groupScenes: GROUP_SCENES };
+// Beim ersten Login: Kanal-Name und ASCII-Logo aus dem Twitch-Login statt der Beispiele
+const personalize = (login: string) => ({ channelName: login.toUpperCase(), logo: asciiText(login) });
+
+export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: FIELDS, groupScenes: GROUP_SCENES, personalize };

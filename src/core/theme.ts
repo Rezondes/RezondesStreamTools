@@ -42,4 +42,12 @@ export type SettingField =
 
 // groupScenes: in welchen Szenen eine Gruppe wirkt (das Dashboard zeigt nur die Gruppen der Szene in der Vorschau);
 // fehlt eine Gruppe, wirkt sie überall (Allgemein), [] = in keiner Szene (Stinger, Banner: Bereich Rendern)
-export type ThemeSchema = { id: string; name: string; fields: readonly SettingField[]; groupScenes?: Readonly<Record<string, readonly SceneName[]>> };
+// personalize: Werte, die das Theme beim ersten Login mit dem Twitch-Login des Streamers füllt (Kanal-Name, Logo, ...),
+// statt allgemeiner Beispiele; fehlt es, gelten die Standardwerte
+export type ThemeSchema = {
+  id: string;
+  name: string;
+  fields: readonly SettingField[];
+  groupScenes?: Readonly<Record<string, readonly SceneName[]>>;
+  personalize?: (login: string) => SettingValues;
+};

@@ -21,7 +21,13 @@ for (const theme of THEMES) {
   // Die Szenen-Zuordnung nennt nur Gruppen, die es gibt
   const groups = new Set(theme.fields.map(field => field.group));
   for (const group of Object.keys(theme.groupScenes ?? {})) assert.ok(groups.has(group), `${theme.id}: groupScenes nennt unbekannte Gruppe ${group}`);
+  // Personalisierung beim ersten Login besteht das Schema, auch mit dem längsten Twitch-Login
+  if (theme.personalize) assert.deepEqual(validateSettings(theme, theme.personalize("a".repeat(15) + "_123456789")).errors, [], `${theme.id}: ungültige Personalisierung`);
 }
+
+// Beide Themes tragen beim ersten Login den Kanal-Namen ein, Matrix dazu das ASCII-Logo
+assert.deepEqual(Object.keys(findTheme("matrix")!.personalize!("neo")), ["channelName", "logo"]);
+assert.deepEqual(findTheme("starter")!.personalize!("neo"), { channelName: "NEO" });
 
 // Minimes hat vorerst nur das Matrix-Theme
 assert.equal(hasMinimes(findTheme("matrix")!), true);

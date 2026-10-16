@@ -44,7 +44,7 @@ assert.ok(texts(empty.calls) < texts(full.calls));
 assert.ok(empty.calls.filter(call => call.method === "fillRect").length < full.calls.filter(call => call.method === "fillRect").length);
 
 // Platzhalter in Kopfzeile und Prompt sind gefüllt
-assert.equal(options.offlineHeader, "REZONDES://stream/offline");
+assert.equal(options.offlineHeader, "STREAM://stream/offline");
 assert.equal(options.prompt, "root@rezondes:~$");
 
 console.log("banners ok");

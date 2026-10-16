@@ -15,7 +15,7 @@ import { createLoginStates } from "./loginStates.ts";
 import { deleteMedia, listMedia, quotaError } from "./media.ts";
 import { CLIPS, createRenderJobs, ffmpegArgs, isClip, isOutputName, outputNames, RENDER_LIMITS } from "./render.ts";
 import * as profile from "./profile.ts";
-import { loadSettings, minimeRules, publicSettings, saveSettings, updateSettings } from "./settings.ts";
+import { ensureSettings, loadSettings, minimeRules, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 import { THEMES } from "../src/themes/registry.ts";
 import { authorize, find, overlayRoute, ROUTES, type RouteKey, type Visitor } from "./routes.ts";
 import { createSession, isSecureUrl, loadSessionKey, readSession, sessionCookie } from "./session.ts";
@@ -147,6 +147,8 @@ async function twitchCallback({ response, url }: Call) {
   const folder = profile.folder(DATA, tokens.login);
   await profile.saveTokens(folder, tokens);
   await profile.saveLastLogin(folder, Date.now());
+  // Erster Login: Kanal-Name, Logo usw. der Themes mit dem eigenen Login statt der Beispiele (vor dem Start der Laufzeit)
+  if (await ensureSettings(folder, tokens.login)) console.log(`Settings created for ${tokens.login}`);
   await startRuntime(tokens.login);
   console.log(`Twitch login: ${tokens.login}`);
   redirect(response, "/", { "Set-Cookie": sessionCookie(createSession(sessionKey, tokens.login), SECURE) });

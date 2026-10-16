@@ -1,13 +1,13 @@
 // Einstellungen eines Streamers: Datei settings.json im Profil-Ordner = { theme, values: { <theme-id>: { ... } } }.
 // Werte bleiben je Theme getrennt, damit ein Theme-Wechsel nichts verliert. Geprüft wird gegen das Schema des Themes
 // (src/core/settings.ts). Check: settings.check.ts.
-import { readFile } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
 import { hasMinimes, readMinimeOptions } from "../src/core/minimeFields.ts";
 import type { MinimeRules } from "../src/core/minimes.ts";
 import { resolveSettings, validateSettings, type SettingError } from "../src/core/settings.ts";
 import type { SettingValues } from "../src/core/theme.ts";
-import { DEFAULT_THEME, findTheme } from "../src/themes/registry.ts";
+import { DEFAULT_THEME, findTheme, THEMES } from "../src/themes/registry.ts";
 import { writeAtomic } from "./atomicFile.ts";
 
 export type SettingsFile = { theme: string; values: Record<string, Record<string, unknown>> };
@@ -53,6 +53,19 @@ export async function loadSettings(profileFolder: string): Promise<SettingsFile>
     // Kaputtes JSON: wie ohne Datei, der nächste Speichervorgang schreibt sie neu
     return parseSettingsFile({});
   }
+}
+
+// Einstellungen beim ersten Login: Standard-Theme gewählt, jedes Theme mit den Werten aus seiner Personalisierung
+export function firstSettings(login: string): SettingsFile {
+  const values = Object.fromEntries(THEMES.flatMap(theme => (theme.personalize ? [[theme.id, theme.personalize(login)]] : [])));
+  return { theme: DEFAULT_THEME, values };
+}
+
+// Legt settings.json beim ersten Login an; true = neu angelegt, eine vorhandene Datei bleibt unverändert
+export async function ensureSettings(profileFolder: string, login: string): Promise<boolean> {
+  const exists = await stat(join(profileFolder, "settings.json")).then(() => true, () => false);
+  if (!exists) await saveSettings(profileFolder, firstSettings(login));
+  return !exists;
 }
 
 export const saveSettings = (profileFolder: string, file: SettingsFile) => writeAtomic(join(profileFolder, "settings.json"), JSON.stringify(file, null, 2));
