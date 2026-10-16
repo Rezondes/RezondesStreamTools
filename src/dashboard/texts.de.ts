@@ -100,7 +100,8 @@ export const TEXTS = {
     range: (min: number, max: number) => `${min} bis ${max}`,
     resetField: "[ STANDARD ]",
     preview: "Vorschau",
-    previewScene: "Szene (Vorschau und Einstellungen)",
+    previewScene: "Einstellungen für (Szene auch für die Vorschau)",
+    general: "Allgemein (alle Szenen, Stinger und Banner)",
     openTab: "[ VORSCHAU IN NEUEM TAB ]",
     openTabHint: "Zeigt ungespeicherte Änderungen sofort, solange dieser Tab offen ist.",
     elsewhere: (groups: string) => `${groups}: im Bereich RENDERN.`,
@@ -245,7 +246,7 @@ export const TEXTS = {
     saved: "Gespeichert. Das Overlay-Theme bleibt unverändert.",
     unsaved: "Ungespeicherte Änderungen:",
     readOnly: "Ändern kann nur, wem die Funktion Themes freigegeben ist. Gerendert wird mit den gespeicherten Werten.",
-    colorsHint: "Farben und Schrift kommen aus der Gruppe Allgemein im Bereich THEME.",
+    colorsHint: "Farben und Schrift kommen aus ALLGEMEIN im Bereich THEME (Auswahl \"Einstellungen für\").",
   },
   connections: {
     twitch: "Twitch",

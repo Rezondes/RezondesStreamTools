@@ -12,9 +12,15 @@ export function groupFields(schema: ThemeSchema): { group: string; fields: Setti
   return [...groups].map(([group, fields]) => ({ group, fields }));
 }
 
-// Nur die Gruppen, die in scene wirken (siehe groupScenes); ohne Eintrag wirkt eine Gruppe überall
-export const groupsForScene = (schema: ThemeSchema, scene: SceneName) =>
-  groupFields(schema).filter(({ group }) => schema.groupScenes?.[group]?.includes(scene) ?? true);
+// Ansicht des Formulars: die allgemeinen Gruppen (wirken überall, auch in Stinger und Banner) oder eine Szene
+export type FormView = SceneName | "general";
+
+// Gruppen einer Ansicht: "general" = Gruppen ohne Eintrag in groupScenes, eine Szene = nur die Gruppen, die dort wirken
+export const groupsForView = (schema: ThemeSchema, view: FormView) =>
+  groupFields(schema).filter(({ group }) => {
+    const scenes = schema.groupScenes?.[group];
+    return view === "general" ? scenes === undefined : scenes?.includes(view) ?? false;
+  });
 
 // Gruppen, die in keiner Szene wirken (Stinger, Banner): stehen im Bereich Rendern
 export const groupsWithoutScene = (schema: ThemeSchema) =>

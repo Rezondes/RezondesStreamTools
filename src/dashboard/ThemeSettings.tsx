@@ -1,6 +1,6 @@
 // Theme-Bereich im Dashboard: ein Theme zum Ansehen und Bearbeiten wählen (ändert die Overlays nicht), es erst per
-// Knopf als aktives Theme setzen; Szene wählen (Vorschau und die Gruppen, die in ihr wirken, siehe groupScenes; die
-// Suche durchsucht alle), Formular aus dem Schema, gruppiert nach group; Speichern mit Fehlern je Feld, Zurücksetzen je
+// Knopf als aktives Theme setzen; Ansicht wählen: Allgemein (Gruppen, die überall wirken) oder eine Szene (Vorschau und
+// die Gruppen, die in ihr wirken, siehe groupScenes; die Suche durchsucht alle), Formular aus dem Schema, gruppiert nach group; Speichern mit Fehlern je Feld, Zurücksetzen je
 // Feld und für alles, Vorschau mit den ungespeicherten Werten. Gespeicherte Werte des aktiven Themes übernehmen die
 // Overlays sofort (SSE).
 import { useCallback, useEffect, useState } from "react";
@@ -12,7 +12,7 @@ import { getJson, loadMedia, postJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
 import ScenePreview from "./ScenePreview.tsx";
 import SettingInput from "./SettingInput.tsx";
-import { changedKeys, errorsByKey, groupFields, groupsForScene, groupsWithoutScene, resetAll, resetField } from "./settingsForm.ts";
+import { changedKeys, errorsByKey, groupFields, groupsForView, groupsWithoutScene, resetAll, resetField, type FormView } from "./settingsForm.ts";
 import { TEXTS } from "./texts.de.ts";
 
 // Antwort von GET /api/settings: gewähltes Theme, gespeicherte Werte je Theme, verfügbare Themes
@@ -23,9 +23,15 @@ type Draft = { values: SettingValues; set: (update: (values: SettingValues) => S
 const defaultSchema = findTheme(DEFAULT_THEME)!;
 
 export default function ThemeSettings({ me }: { me: Me }) {
-  const { file, viewed, view, draft, setDraft, errors, notice, media, save, load } = useSettingsFile();
+  const { file, viewed, showTheme, draft, setDraft, errors, notice, media, save, load } = useSettingsFile();
   const [search, setSearch] = useState("");
+  const [view, setView] = useState<FormView>("general");
+  // Vorschau: die zuletzt gewählte Szene, auch während Allgemein angezeigt wird
   const [scene, setScene] = useState<SceneName>("alerts");
+  const chooseView = (next: FormView) => {
+    setView(next);
+    if (next !== "general") setScene(next);
+  };
   if (!file) {
     if (!notice || notice === "saved" || notice === "activated" || notice === "invalid") return <p className="muted">{TEXTS.loading}</p>;
     return (
@@ -40,7 +46,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
   const changed = changedKeys(saved, draft);
   const switchTheme = (id: string) => {
     if (changed.length > 0 && !confirm(TEXTS.theme.confirmSwitch(changed.length))) return;
-    view(id);
+    showTheme(id);
   };
 
   return (
@@ -48,7 +54,8 @@ export default function ThemeSettings({ me }: { me: Me }) {
       <ThemeChooser file={file} viewed={schema.id} onView={switchTheme} onActivate={() => save(true)} />
       <label className="setting">
         {TEXTS.theme.previewScene}
-        <select value={scene} onChange={event => setScene(event.target.value as SceneName)}>
+        <select value={view} onChange={event => chooseView(event.target.value as FormView)}>
+          <option value="general">{TEXTS.theme.general}</option>
           {SCENES.map(name => <option key={name} value={name}>{TEXTS.scenes[name]}</option>)}
         </select>
       </label>
@@ -70,7 +77,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
             {TEXTS.theme.search}
             <input type="search" value={search} onChange={event => setSearch(event.target.value)} />
           </label>
-          <SettingsGroups schema={schema} scene={scene} search={search} draft={{ values: draft, set: setDraft }} errors={errors} media={media} />
+          <SettingsGroups schema={schema} view={view} search={search} draft={{ values: draft, set: setDraft }} errors={errors} media={media} />
           {groupsWithoutScene(schema).length > 0 && <p className="muted">{TEXTS.theme.elsewhere(groupsWithoutScene(schema).join(", "))}</p>}
         </div>
         <ScenePreview login={me.login} scene={scene} settings={{ theme: schema.id, values: resolveSettings(schema, draft) }} />
@@ -105,18 +112,18 @@ function ThemeChooser({ file, viewed, onView, onActivate }: ChooserProps) {
   );
 }
 
-// Gruppen der Szene, aufklappbar (die der Szene offen, Allgemein zu); mit Suche passende Felder aller Gruppen, alle offen
-type GroupsProps = { schema: ThemeSchema; scene: SceneName; search: string; draft: Draft; errors: Record<string, SettingErrorCode>; media: readonly string[] };
-function SettingsGroups({ schema, scene, search, draft, errors, media }: GroupsProps) {
+// Gruppen der Ansicht, aufklappbar und offen; mit Suche passende Felder aller Gruppen
+type GroupsProps = { schema: ThemeSchema; view: FormView; search: string; draft: Draft; errors: Record<string, SettingErrorCode>; media: readonly string[] };
+function SettingsGroups({ schema, view, search, draft, errors, media }: GroupsProps) {
   const query = search.trim().toLowerCase();
-  const groups = (query ? groupFields(schema) : groupsForScene(schema, scene))
+  const groups = (query ? groupFields(schema) : groupsForView(schema, view))
     .map(({ group, fields }) => ({ group, fields: query ? fields.filter(field => `${group} ${field.label}`.toLowerCase().includes(query)) : fields }))
     .filter(({ fields }) => fields.length > 0);
   if (groups.length === 0) return <p className="muted">{TEXTS.theme.noMatch}</p>;
   return (
     <>
       {groups.map(({ group, fields }) => (
-        <details key={`${group}-${query ? "search" : scene}`} className="settings-group" open={Boolean(query) || group in (schema.groupScenes ?? {})}>
+        <details key={`${group}-${query ? "search" : view}`} className="settings-group" open>
           <summary>{group}</summary>
           {fields.map(field => (
             <SettingInput
@@ -158,7 +165,7 @@ function useSettingsFile() {
   }, []);
 
   // Anderes Theme ansehen: sein gespeicherter Stand wird der Entwurf, die Overlays bleiben wie sie sind
-  const view = (id: string) => {
+  const showTheme = (id: string) => {
     setViewed(id);
     setDraft(resolveSettings(findTheme(id) ?? defaultSchema, file?.values[id]));
     setErrors({});
@@ -187,5 +194,5 @@ function useSettingsFile() {
       .catch((error: unknown) => console.warn("Saving settings failed:", error));
   };
 
-  return { file, viewed, view, draft, setDraft, errors, notice, media, save, load };
+  return { file, viewed, showTheme, draft, setDraft, errors, notice, media, save, load };
 }

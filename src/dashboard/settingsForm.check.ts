@@ -1,7 +1,7 @@
 // Check für settingsForm.ts: Gruppen in Schema-Reihenfolge, Zurücksetzen, Änderungen und Fehler je Feld. Läuft mit npm test.
 import assert from "node:assert/strict";
 import type { ThemeSchema } from "../core/theme.ts";
-import { changedKeys, errorsByKey, groupFields, groupsForScene, groupsWithoutScene, isDefault, resetAll, resetField } from "./settingsForm.ts";
+import { changedKeys, errorsByKey, groupFields, groupsForView, groupsWithoutScene, isDefault, resetAll, resetField } from "./settingsForm.ts";
 
 const schema: ThemeSchema = {
   id: "probe",
@@ -20,11 +20,13 @@ assert.deepEqual(groupFields(schema).map(({ group, fields }) => [group, fields.m
   ["Szenen", ["title", "lines"]],
 ]);
 
-// Gruppen je Szene: ohne Eintrag überall, sonst nur in den genannten Szenen, [] nirgends
+// Gruppen je Ansicht: "general" zeigt die Gruppen ohne Eintrag (sie wirken überall), eine Szene nur ihre eigenen
 const scoped: ThemeSchema = { ...schema, groupScenes: { Szenen: ["starting"], Stinger: [] } };
-assert.deepEqual(groupsForScene(scoped, "starting").map(({ group }) => group), ["Allgemein", "Szenen"]);
-assert.deepEqual(groupsForScene(scoped, "chat").map(({ group }) => group), ["Allgemein"]);
-assert.deepEqual(groupsForScene(schema, "chat").map(({ group }) => group), ["Allgemein", "Szenen"]);
+assert.deepEqual(groupsForView(scoped, "general").map(({ group }) => group), ["Allgemein"]);
+assert.deepEqual(groupsForView(scoped, "starting").map(({ group }) => group), ["Szenen"]);
+assert.deepEqual(groupsForView(scoped, "chat").map(({ group }) => group), []);
+assert.deepEqual(groupsForView(schema, "general").map(({ group }) => group), ["Allgemein", "Szenen"]);
+assert.deepEqual(groupsForView(schema, "chat").map(({ group }) => group), []);
 assert.deepEqual(groupsWithoutScene(scoped), ["Stinger"]);
 assert.deepEqual(groupsWithoutScene(schema), []);
 
