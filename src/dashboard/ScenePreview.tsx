@@ -1,5 +1,5 @@
 // Vorschau einer Szene im Dashboard: das echte Overlay als iframe (/s/<login>/<szene>?demo&preview), skaliert auf
-// die verfügbare Breite, und dieselbe Adresse in einem eigenen Tab. Die ungespeicherten Werte gehen über den
+// den verfügbaren Platz, und dieselbe Adresse in einem eigenen Tab. Die ungespeicherten Werte gehen über den
 // BroadcastChannel an alle Vorschauen, bei jeder Änderung und wenn eine Szene "ready" meldet (useSettings).
 import { useEffect, useRef, useState } from "react";
 import { PREVIEW } from "../core/hooks/useSettings.ts";
@@ -9,7 +9,7 @@ import type { PublicSettings } from "../core/types.ts";
 import { TEXTS } from "./texts.de.ts";
 
 export default function ScenePreview({ login, scene, settings }: { login: string; scene: SceneName; settings: PublicSettings }) {
-  const [width, setWidth] = useState(0);
+  const [room, setRoom] = useState({ width: 0, height: 0 });
   const box = useRef<HTMLDivElement>(null);
   const size = SCENE_SIZES[scene];
 
@@ -29,13 +29,14 @@ export default function ScenePreview({ login, scene, settings }: { login: string
     channel.current?.postMessage({ type: PREVIEW.settings, settings });
   }, [settings]);
 
+  // Die Box hat das Seitenverhältnis der Szene und schrumpft in den Platz (CSS); die Szene passt in Breite und Höhe
   useEffect(() => {
-    const observer = new ResizeObserver(() => setWidth(box.current?.clientWidth ?? 0));
+    const observer = new ResizeObserver(() => setRoom({ width: box.current?.clientWidth ?? 0, height: box.current?.clientHeight ?? 0 }));
     if (box.current) observer.observe(box.current);
     return () => observer.disconnect();
   }, []);
 
-  const scale = width ? Math.min(1, width / size.width) : 0;
+  const scale = room.width && room.height ? Math.min(1, room.width / size.width, room.height / size.height) : 0;
   const src = `${streamerPath.base(login)}/${scene}?demo&preview`;
   return (
     <div className="scene-preview">
@@ -43,14 +44,14 @@ export default function ScenePreview({ login, scene, settings }: { login: string
         <a className="btn" href={src} target="_blank" rel="noreferrer">{TEXTS.theme.openTab}</a>
         <span className="muted">{TEXTS.theme.openTabHint}</span>
       </p>
-      <div ref={box} className="preview-box" style={{ height: size.height * scale }}>
+      <div ref={box} className="preview-box" style={{ aspectRatio: `${size.width} / ${size.height}`, maxWidth: size.width }}>
         <iframe
           key={scene}
           title={TEXTS.theme.preview}
           src={src}
           width={size.width}
           height={size.height}
-          style={{ transform: `scale(${scale})` }}
+          style={{ left: (room.width - size.width * scale) / 2, transform: `scale(${scale})` }}
         />
       </div>
     </div>
