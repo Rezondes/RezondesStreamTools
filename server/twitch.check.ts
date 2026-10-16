@@ -110,11 +110,12 @@ mock.timers.enable({ apis: ["setTimeout"] });
 
 const alerts: Alert[] = [];
 let valid: TwitchTokens | null = tokens;
-const events = eventSub(app, () => Promise.resolve(valid), alert => alerts.push(alert));
+let offline = 0;
+const events = eventSub(app, () => Promise.resolve(valid), alert => alerts.push(alert), () => { offline += 1; });
 const welcome = (id: string) => ({ metadata: { message_type: "session_welcome" }, payload: { session: { id, keepalive_timeout_seconds: 10 } } });
 
-// Start: Verbindung, nach session_welcome live und alle 9 Abos für die Session angefragt
-answers = { "https://api.twitch.tv/helix/eventsub/subscriptions": Array.from({ length: 9 }, () => ({ status: 202 })) };
+// Start: Verbindung, nach session_welcome live und alle 10 Abos für die Session angefragt
+answers = { "https://api.twitch.tv/helix/eventsub/subscriptions": Array.from({ length: 10 }, () => ({ status: 202 })) };
 requests.length = 0;
 events.start();
 assert.equal(events.live(), false);
@@ -123,14 +124,20 @@ assert.equal(first.url, "wss://eventsub.wss.twitch.tv/ws");
 first.receive(welcome("session-1"));
 await settle();
 assert.equal(events.live(), true);
-assert.equal(requests.length, 9);
+assert.equal(requests.length, 10);
 assert.match(requests[0].body, /"session_id":"session-1"/);
+assert.ok(requests.some(request => request.body.includes('"type":"stream.offline"')));
 
 // Notification wird zum Alert; kaputte Nachrichten und Widerrufe stören nicht
 first.receive({ metadata: { message_type: "notification", subscription_type: "channel.follow" }, payload: { event: { user_name: "neo" } } });
 first.onmessage?.({ data: "kein json" });
 first.receive({ metadata: { message_type: "revocation" }, payload: { subscription: { type: "channel.cheer", status: "authorization_revoked" } } });
 assert.deepEqual(alerts, [{ kind: "follow", user: "neo" }]);
+
+// Stream beendet: kein Alert, sondern der Rückruf offline
+first.receive({ metadata: { message_type: "notification", subscription_type: "stream.offline" }, payload: { event: {} } });
+assert.equal(offline, 1);
+assert.equal(alerts.length, 1);
 
 // session_reconnect: neue Verbindung zur Twitch-URL ohne neue Abos, die alte wird geschlossen; fremde URLs zählen nicht
 first.receive({ metadata: { message_type: "session_reconnect" }, payload: { session: { reconnect_url: "wss://evil.example/ws" } } });
@@ -140,7 +147,7 @@ const second = FakeSocket.opened[1];
 second.receive(welcome("session-2"));
 await settle();
 assert.ok(first.closed);
-assert.equal(requests.length, 9);
+assert.equal(requests.length, 10);
 
 // Bleiben Keepalives aus, wird die Verbindung geschlossen und nach einer Pause neu aufgebaut
 mock.timers.tick(15_000);
@@ -153,7 +160,7 @@ assert.equal(FakeSocket.opened.length, 3);
 valid = null;
 FakeSocket.opened[2].receive(welcome("session-3"));
 await settle();
-assert.equal(requests.length, 9);
+assert.equal(requests.length, 10);
 
 // stop: schliesst und plant keinen Neuversuch
 events.stop();

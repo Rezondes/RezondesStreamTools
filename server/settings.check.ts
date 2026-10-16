@@ -3,11 +3,16 @@ import assert from "node:assert/strict";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { loadSettings, parseSettingsFile, publicSettings, saveSettings, updateSettings } from "./settings.ts";
+import { loadSettings, minimeRules, parseSettingsFile, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 
 // Kaputte oder fremde Datei: Standard-Theme, keine Werte; unbekanntes Theme fällt auf den Standard zurück
 assert.deepEqual(parseSettingsFile("kaputt"), { theme: "matrix", values: {} });
 assert.equal(parseSettingsFile({ theme: "gibt-es-nicht", values: {} }).theme, "matrix");
+
+// Minime-Regeln: aus den Werten des gewählten Themes; ein Theme ohne Minimes ergibt null
+assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: { matrix: { minimeMax: 5 } } }))?.max, 5);
+assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: {} }))?.max, 30);
+assert.equal(minimeRules(parseSettingsFile({ theme: "starter", values: { matrix: { minimeMax: 5 } } })), null);
 
 // Öffentliche Sicht: aufgelöste Werte des gewählten Themes, sonst nichts
 const file = parseSettingsFile({ theme: "matrix", values: { matrix: { accent: "#ff0000", fremd: 1 } } });

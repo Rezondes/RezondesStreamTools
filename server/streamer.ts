@@ -1,12 +1,14 @@
 // Laufzeit eines Streamers (Regel 29): besitzt alle Verbindungen seines Profils (EventSub, Chat-Listener mit
-// Triggern, Spotify, SSE-Overlays) und beendet sie in stop(). Welche Teile laufen, sagen die Funktionsstufen.
+// Triggern und Minimes, Spotify, SSE-Overlays) und beendet sie in stop(). Welche Teile laufen, sagen die Funktionsstufen.
 // Prüft die Twitch-Tokens stündlich; ein ungültiger Login beendet die Laufzeit und löscht die Tokens.
 // Gestartet und gestoppt von server/index.ts.
 import type { IncomingMessage, ServerResponse } from "node:http";
-import type { Alert, ServerMessage, Track } from "../src/core/types.ts";
+import type { MinimeRules } from "../src/core/minimes.ts";
+import type { Alert, Minime, ServerMessage, Track } from "../src/core/types.ts";
 import type { Feature } from "./access.ts";
 import { chat } from "./chat.ts";
 import { send } from "./http.ts";
+import { startMinimes, type MinimeRuntime } from "./minimes.ts";
 import * as profile from "./profile.ts";
 import { spotifyClient, type SpotifyApp } from "./spotify.ts";
 import { startTriggers } from "./triggers.ts";
@@ -19,6 +21,7 @@ export type StreamerSetup = {
   twitch: TwitchApp;
   spotify: SpotifyApp | null; // null = Spotify nicht eingerichtet
   features: Record<Feature, boolean>;
+  minimeRules: MinimeRules | null; // null = das gewählte Theme hat keine Minimes
   onEnd: () => void; // Login ungültig geworden, die Laufzeit hat sich selbst beendet
 };
 
@@ -37,10 +40,10 @@ export async function startStreamer(setup: StreamerSetup) {
   };
 
   const tokens = tokenKeeper(setup, () => end());
-  const events = setup.features.alerts ? eventSub(setup.twitch, tokens.valid, alert) : null;
+  const minimes = setup.features.minimes ? await startMinimes({ folder: setup.folder, emit, now: Date.now, rules: setup.minimeRules }) : null;
+  const events = setup.features.alerts ? eventSub(setup.twitch, tokens.valid, alert, () => minimes?.offline()) : null;
   const triggers = setup.features.triggers && setup.features.fx ? startTriggers(setup.folder, event => emit({ type: "fx", event })) : null;
-  // Der Server liest den Chat mit, damit Trigger auch ohne offenes Chat-Overlay laufen
-  const stopChat = triggers ? chat(setup.login, line => triggers.handle(line)) : null;
+  const stopChat = listenToChat(setup.login, triggers, minimes);
   const spotify = setup.spotify && setup.features.music
     ? await spotifyClient(setup.spotify, setup.folder, track => emit({ type: "music", track }), () => overlays.size > 0)
     : null;
@@ -57,6 +60,7 @@ export async function startStreamer(setup: StreamerSetup) {
     events?.stop();
     stopChat?.();
     triggers?.stop();
+    minimes?.stop().catch((error: unknown) => console.error(`Stopping minimes of ${setup.login} failed:`, error));
     spotify?.stop();
     for (const overlay of overlays) overlay.end();
     overlays.clear();
@@ -74,6 +78,7 @@ export async function startStreamer(setup: StreamerSetup) {
     login: setup.login,
     triggers,
     spotify,
+    minimes,
     alert,
     // Nachricht an alle offenen Overlays, z.B. geänderte Einstellungen
     broadcast: emit,
@@ -83,18 +88,26 @@ export async function startStreamer(setup: StreamerSetup) {
     // Neues Overlay (SSE)
     attach(request: IncomingMessage, response: ServerResponse) {
       if (stopped || overlays.size >= MAX_OVERLAYS) return send(response, 503, "unavailable");
-      openStream(response, spotify?.current() ?? null);
+      openStream(response, spotify?.current() ?? null, minimes?.current() ?? null);
       overlays.add(response);
       request.on("close", () => overlays.delete(response));
     },
   };
 }
 
-// Antwort als Server-Sent Events öffnen und sofort mit dem laufenden Titel versorgen
-function openStream(response: ServerResponse, track: Track | null) {
+// Der Server liest den Chat mit, damit Trigger und Minimes auch ohne offenes Chat-Overlay laufen; null = keiner braucht ihn
+function listenToChat(login: string, triggers: ReturnType<typeof startTriggers> | null, minimes: MinimeRuntime | null) {
+  if (!triggers && !minimes) return null;
+  return chat(login, line => { triggers?.handle(line); minimes?.handle(line); }, banned => minimes?.ban(banned));
+}
+
+// Antwort als Server-Sent Events öffnen und sofort mit dem laufenden Titel und den Minimes versorgen
+// (minimes: null = Funktion aus, dann keine Nachricht)
+function openStream(response: ServerResponse, track: Track | null, minimes: Minime[] | null) {
   response.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" });
   response.write(": connected\n\n");
   response.write(`data: ${JSON.stringify({ type: "music", track })}\n\n`);
+  if (minimes) response.write(`data: ${JSON.stringify({ type: "minimes", minimes })}\n\n`);
 }
 export type Streamer = Awaited<ReturnType<typeof startStreamer>>;
 

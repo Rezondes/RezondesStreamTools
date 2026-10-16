@@ -143,6 +143,8 @@ function subscriptions(userId: string) {
     { type: "channel.channel_points_custom_reward_redemption.add", version: "1", condition: broadcaster },
     { type: "channel.hype_train.begin", version: "2", condition: broadcaster },
     { type: "channel.hype_train.end", version: "2", condition: broadcaster },
+    // Stream beendet (z.B. Minimes leeren), braucht keinen Scope
+    { type: "stream.offline", version: "1", condition: broadcaster },
   ];
 }
 
@@ -160,6 +162,7 @@ type Connection = {
   app: TwitchApp;
   tokens: () => Promise<TwitchTokens | null>;
   onAlert: (alert: Alert) => void;
+  onOffline: () => void;
   socket: WebSocket | null; // aktive Verbindung (nach session_welcome)
   wanted: boolean;
   keepalive?: ReturnType<typeof setTimeout>;
@@ -168,8 +171,9 @@ type Connection = {
 
 // EventSub-Verbindung eines Streamers. tokens liefert gültige (geprüfte, evtl. erneuerte) Tokens oder null.
 // live: verbunden und Abos angefragt. stop beendet die Verbindung und jeden geplanten Neuversuch.
-export function eventSub(app: TwitchApp, tokens: () => Promise<TwitchTokens | null>, onAlert: (alert: Alert) => void) {
-  const connection: Connection = { app, tokens, onAlert, socket: null, wanted: false };
+// onOffline: der Stream wurde beendet (stream.offline).
+export function eventSub(app: TwitchApp, tokens: () => Promise<TwitchTokens | null>, onAlert: (alert: Alert) => void, onOffline: () => void = () => {}) {
+  const connection: Connection = { app, tokens, onAlert, onOffline, socket: null, wanted: false };
   return {
     start() {
       connection.wanted = true;
@@ -236,7 +240,9 @@ function welcome(connection: Connection, socket: WebSocket, message: EventSubMes
 function dispatch(connection: Connection, message: EventSubMessage) {
   const type = message.metadata?.message_type;
   const reconnectUrl = message.payload?.session?.reconnect_url;
-  if (type === "notification") {
+  if (type === "notification" && message.metadata?.subscription_type === "stream.offline") {
+    connection.onOffline();
+  } else if (type === "notification") {
     const alert = toAlert(message.metadata?.subscription_type ?? "", message.payload?.event ?? {});
     if (alert) connection.onAlert(alert);
   } else if (type === "session_reconnect" && reconnectUrl && /^wss:\/\/[\w.-]+\.twitch\.tv\//.test(reconnectUrl)) {

@@ -3,6 +3,8 @@
 // (src/core/settings.ts). Check: settings.check.ts.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { hasMinimes, readMinimeOptions } from "../src/core/minimeFields.ts";
+import type { MinimeRules } from "../src/core/minimes.ts";
 import { resolveSettings, validateSettings, type SettingError } from "../src/core/settings.ts";
 import type { SettingValues } from "../src/core/theme.ts";
 import { DEFAULT_THEME, findTheme } from "../src/themes/registry.ts";
@@ -25,6 +27,13 @@ export function parseSettingsFile(raw: unknown): SettingsFile {
 export function publicSettings(file: SettingsFile): { theme: string; values: SettingValues } {
   const schema = findTheme(file.theme) ?? findTheme(DEFAULT_THEME)!;
   return { theme: schema.id, values: resolveSettings(schema, file.values[schema.id]) };
+}
+
+// Regeln der Minimes aus den Werten des gewählten Themes; null, wenn dieses Theme keine Minimes hat
+export function minimeRules(file: SettingsFile): MinimeRules | null {
+  const settings = publicSettings(file);
+  const schema = findTheme(settings.theme);
+  return schema && hasMinimes(schema) ? readMinimeOptions(settings.values).rules : null;
 }
 
 // Werte eines Themes setzen und es (choose) als Overlay-Theme wählen. Nur fehlerfreie Eingaben ergeben eine neue Datei.

@@ -15,7 +15,7 @@ import { createLoginStates } from "./loginStates.ts";
 import { deleteMedia, listMedia, quotaError } from "./media.ts";
 import { CLIPS, createRenderJobs, ffmpegArgs, isClip, isOutputName, outputNames, RENDER_LIMITS } from "./render.ts";
 import * as profile from "./profile.ts";
-import { loadSettings, publicSettings, saveSettings, updateSettings } from "./settings.ts";
+import { loadSettings, minimeRules, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 import { THEMES } from "../src/themes/registry.ts";
 import { authorize, find, overlayRoute, ROUTES, type RouteKey, type Visitor } from "./routes.ts";
 import { createSession, isSecureUrl, loadSessionKey, readSession, sessionCookie } from "./session.ts";
@@ -73,7 +73,7 @@ async function startRuntime(login: string): Promise<Streamer | null> {
   const tokens = access.canUse(login) ? await profile.loadTokens(folder) : null;
   if (!tokens) return null;
   const runtime: Streamer = await startStreamer({
-    login, folder, tokens, twitch, spotify: spotifyApp, features: access.features(login),
+    login, folder, tokens, twitch, spotify: spotifyApp, features: access.features(login), minimeRules: minimeRules(await loadSettings(folder)),
     onEnd: () => { if (runtimes.get(login) === runtime) runtimes.delete(login); },
   });
   runtimes.set(login, runtime);
@@ -278,6 +278,8 @@ async function saveSettingsRequest({ request, response, login }: Call) {
   const settings = publicSettings(result.file);
   // Offene Overlays übernehmen die Werte sofort, ohne Neuladen
   runtimes.get(login)?.broadcast({ type: "settings", settings });
+  // Die Minimes gelten mit den neuen Regeln weiter (oder ruhen, wenn das Theme keine hat)
+  runtimes.get(login)?.minimes?.setRules(minimeRules(result.file));
   json(response, settings);
 }
 
