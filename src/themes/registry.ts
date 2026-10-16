@@ -5,7 +5,7 @@ import { matrixSettings } from "./matrix/settings.ts";
 import { starterSettings } from "./starter/settings.ts";
 import { suedfruchtSettings } from "./suedfrucht/settings.ts";
 
-export const THEMES: readonly ThemeSchema[] = [matrixSettings, starterSettings, suedfruchtSettings];
+export const THEMES: readonly ThemeSchema[] = [starterSettings, matrixSettings, suedfruchtSettings];
 
 export const DEFAULT_THEME = THEMES[0].id;
 

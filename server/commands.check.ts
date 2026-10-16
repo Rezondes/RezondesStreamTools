@@ -30,6 +30,8 @@ try {
   // Funktionen fehlen
   await writeFile(join(folder, "triggers.json"), JSON.stringify({ triggers: [{ name: "lizard", when: { type: "command", match: "!lizard" }, do: [] }] }));
   await saveHelp(folder, DEFAULT_HELP);
+  // Minimes hat nur ein Theme mit der Funktion (Matrix); das Standard-Theme Starter hat keine
+  await writeFile(join(folder, "settings.json"), JSON.stringify({ theme: "matrix", values: {} }));
   const all = { minimes: true, triggers: true, fx: true };
   const kinds = async (features: Record<string, boolean>) => (await publicCommands(folder, "rezondes", features)).items.map(item => item.kind);
   assert.deepEqual(await kinds(all), ["help", "join", "look", "leave", "trigger"]);

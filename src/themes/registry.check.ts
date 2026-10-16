@@ -6,7 +6,7 @@ import { DEFAULT_THEME, findTheme, THEMES } from "./registry.ts";
 
 // Ids eindeutig, Standard-Theme vorhanden, unbekannte Id ergibt null
 assert.equal(new Set(THEMES.map(theme => theme.id)).size, THEMES.length);
-assert.equal(findTheme(DEFAULT_THEME)?.id, "matrix");
+assert.equal(findTheme(DEFAULT_THEME)?.id, "starter");
 assert.equal(findTheme("gibt-es-nicht"), null);
 assert.equal(findTheme("starter")?.name, "Starter");
 

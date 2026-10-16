@@ -1,9 +1,9 @@
 # Eigene Themes
 
 Ein Theme bestimmt, wie die Overlays aussehen. Es besteht aus einem Einstellungs-Schema (was der Streamer im Dashboard
-einstellen kann) und React-Szenen (wie es aussieht). Das eingebaute Theme `matrix` ist das Standard-Theme; jede Szene,
-die ein Theme nicht selbst mitbringt, kommt von dort. Das Theme `starter` in `src/themes/starter/` ist die Vorlage:
-ein eigenständiges Theme mit allen Szenen, Stinger und Bannern, ohne Teile des Matrix-Themes.
+einstellen kann) und React-Szenen (wie es aussieht). Das eingebaute Theme `starter` in `src/themes/starter/` ist das
+Standard-Theme (neue Streamer starten damit) und die Vorlage: ein eigenständiges Theme mit allen Szenen, Stinger und
+Bannern. Jede Szene, die ein Theme nicht selbst mitbringt, kommt vom Standard-Theme.
 
 Themes sind Code im Repo, kein Upload. Ein neues Theme ist ein eigener Ordner und zwei Einträge in Listen.
 
@@ -37,7 +37,7 @@ src/themes/<id>/
    und Schriften aus dem Schema kommen automatisch als CSS-Variablen an (`var(--accent)`, `var(--alertWidth)`).
    Feste Masse nur als Standardwert einer Variable: `padding: var(--card-padding, 16px 20px)`.
 6. **Registrieren**:
-   - `src/themes/registry.ts`: das Schema in `THEMES` eintragen (der erste Eintrag ist das Standard-Theme, bleibt `matrix`).
+   - `src/themes/registry.ts`: das Schema in `THEMES` eintragen (der erste Eintrag ist das Standard-Theme, bleibt `starter`).
    - `src/themes/scenes.tsx`: die Szenen aus `index.tsx` in `THEME_SCENES` unter der id eintragen.
    - `src/themes/renderers.ts`: die Clips aus `render.ts` (Stinger, Profil- und Offline-Banner, siehe
      `src/themes/starter/render.ts`) eintragen; ohne Eintrag rendert der Bereich `[ RENDERN ]` die des Standard-Themes.
@@ -111,9 +111,9 @@ Schema, und jeder Schlüssel wird im Theme-Code benutzt (`values.key`, `{ key }`
 
 ## Vererbung
 
-Fehlt einem Theme eine Szene, zeigt `/s/<login>/<szene>.html` die Szene des Standard-Themes `matrix` mit dessen
+Fehlt einem Theme eine Szene, zeigt `/s/<login>/<szene>.html` die Szene des Standard-Themes `starter` mit dessen
 Einstellungen. Gleich benannte Schlüssel (z.B. `accent`) übernimmt sie vom gewählten Theme, alle anderen haben die
-Standardwerte von `matrix`. Ausnahme: Szenen theme-eigener Funktionen (z.B. `minimes`) werden nie geerbt.
+Standardwerte von `starter`. Ausnahme: Szenen theme-eigener Funktionen (z.B. `minimes`) werden nie geerbt.
 
 ## Checkliste
 

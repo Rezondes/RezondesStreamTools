@@ -8,8 +8,8 @@ import { MINIME_BASE_FIELDS } from "../src/core/minimeFields.ts";
 import { ensureSettings, firstSettings, loadSettings, minimeRules, rulesFor, parseSettingsFile, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 
 // Kaputte oder fremde Datei: Standard-Theme, keine Werte; unbekanntes Theme fällt auf den Standard zurück
-assert.deepEqual(parseSettingsFile("kaputt"), { theme: "matrix", values: {} });
-assert.equal(parseSettingsFile({ theme: "gibt-es-nicht", values: {} }).theme, "matrix");
+assert.deepEqual(parseSettingsFile("kaputt"), { theme: "starter", values: {} });
+assert.equal(parseSettingsFile({ theme: "gibt-es-nicht", values: {} }).theme, "starter");
 
 // Minime-Regeln: aus den Werten des gewählten Themes; ein Theme ohne Minimes ergibt null
 assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: { matrix: { minimeMax: 5 } } }))?.max, 5);
@@ -54,15 +54,15 @@ assert.equal(kept.values.starter.accent, "#ff0000");
 
 // Erster Login: das Standard-Theme ist gewählt, jedes Theme mit Personalisierung hat die Werte des Streamers
 const first = firstSettings("neo_42");
-assert.equal(first.theme, "matrix");
+assert.equal(first.theme, "starter");
 assert.equal(publicSettings(first).values.channelName, "NEO_42");
-assert.equal(publicSettings(first).values.logo, asciiText("neo_42"));
+assert.equal(first.values.matrix.logo, asciiText("neo_42"));
 assert.deepEqual(first.values.starter, { channelName: "NEO_42" });
 
 // Speichern und Laden über die Datei (temporärer Ordner, danach gelöscht)
 const folder = await mkdtemp(join(tmpdir(), "settings-"));
 try {
-  assert.deepEqual(await loadSettings(folder), { theme: "matrix", values: {} });
+  assert.deepEqual(await loadSettings(folder), { theme: "starter", values: {} });
   // Erster Login legt die Datei an, jeder weitere lässt sie stehen
   assert.equal(await ensureSettings(folder, "neo_42"), true);
   assert.deepEqual(await loadSettings(folder), first);
