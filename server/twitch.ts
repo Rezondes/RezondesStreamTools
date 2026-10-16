@@ -94,7 +94,7 @@ export type TwitchApp = ReturnType<typeof twitchApp>;
 // --- Alerts ---------------------------------------------------------------------------------
 
 // Die Felder der EventSub-Ereignisse, die toAlert liest (alle optional, Twitch schickt je nach Typ andere)
-export type TwitchEvent = {
+type TwitchEvent = {
   user_name?: string | null;
   is_anonymous?: boolean;
   is_gift?: boolean;

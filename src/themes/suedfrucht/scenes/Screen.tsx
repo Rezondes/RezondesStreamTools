@@ -31,7 +31,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
   return (
     <div className={`sf-screen power-${values.powerOn}`}>
       <Beach time={time} />
-      <div className="sf-stage" ref={stage}>
+      <div className="sf-stage stage-box" ref={stage}>
         <span className="sf-clock">{new Date(now).toLocaleTimeString(values.locale)}</span>
         <div className={`sf-sign sf-wood sf-sign-${values.signStyle}`}>
           <p className="sf-eyebrow">{eyebrow}</p>

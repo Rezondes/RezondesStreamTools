@@ -3,7 +3,7 @@
 // frames() macht daraus Einzelbilder (Text + Wartezeit danach), parseLine() ein Drehbuch aus einer Textzeile der
 // Einstellungen. Reine Funktionen, getestet in typing.check.ts.
 
-export type Step = string | { del: number } | { pause: number } | { smash: number };
+type Step = string | { del: number } | { pause: number } | { smash: number };
 export type Line = string | Step[];
 export type Frame = { text: string; wait: number };
 

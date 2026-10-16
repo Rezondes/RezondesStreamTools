@@ -5,7 +5,7 @@ import { clock, currentProgress } from "../overlayTiming.ts";
 import type { Track } from "../types.ts";
 
 // Stand aus useMusic: track = aktuell (null = nichts läuft), last = zuletzt bekannter Titel, receivedAt = Empfangszeit
-export type MusicState = { track: Track | null; last: Track | null; receivedAt: number };
+type MusicState = { track: Track | null; last: Track | null; receivedAt: number };
 
 // Was der Player zeigt. hideWhenPaused: nur bei Wiedergabe sichtbar, der letzte Titel bleibt für die Ausblend-Animation
 // stehen. shown null = Leerlauf (das Theme zeigt seinen eigenen). at: Empfangszeit zum Weiterrechnen, 0 = Titel aus dem

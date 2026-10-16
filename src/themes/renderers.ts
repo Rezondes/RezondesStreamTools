@@ -5,5 +5,3 @@ import { DEFAULT_THEME, findModule } from "./registry.ts";
 
 // values: gegen das Schema des Themes aufgelöst
 export const clipsFor = (theme: string, values: SettingValues, login: string) => (findModule(theme) ?? findModule(DEFAULT_THEME)!).clips(values, login);
-
-export const hasClips = (theme: string) => findModule(theme) !== null;

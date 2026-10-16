@@ -3,7 +3,7 @@
 // Texte, Zitat-Regel und Töne kommen aus dem Alerts-Kontext des Kerns (src/core/alerts), hier Schlüssel, Symbole und
 // das Strand-Aussehen. Parameter: ?sound=0, ?volume=0.5
 import type { CSSProperties } from "react";
-import { alertQuote, describeAlert, type AlertTextKeys } from "../../../core/alerts/alerts.ts";
+import { ALERT_SOUND_KEYS, alertQuote, alertTextKeys, describeAlert } from "../../../core/alerts/alerts.ts";
 import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
 import { hash } from "../../../core/hash.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
@@ -16,29 +16,17 @@ import { playChime, playLeave } from "../tones.ts";
 import { useSuedfrucht } from "../useSuedfrucht.ts";
 
 type Key = keyof SuedfruchtValues;
-const KEYS: AlertTextKeys = {
-  tag: { follow: "followTag", sub: "subTag", resub: "resubTag", gift: "giftTag", raid: "raidTag", cheer: "cheerTag", redeem: "redeemTag", hype: "hypeTag" },
-  line: { follow: "followLine", sub: "subLine", resub: "resubLine", gift: "giftLine", raid: "raidLine", cheer: "cheerLine", redeem: "redeemLine", hype: "hypeBeginLine" },
-  hypeEndLine: "hypeEndLine",
-};
-// Südfrucht-eigen: Symbol auf der Briefmarke und Ton je Alert-Art
-const EXTRAS = {
-  follow: ["followIcon", "soundFollow"],
-  sub: ["subIcon", "soundSub"],
-  resub: ["resubIcon", "soundResub"],
-  gift: ["giftIcon", "soundGift"],
-  raid: ["raidIcon", "soundRaid"],
-  cheer: ["cheerIcon", "soundCheer"],
-  redeem: ["redeemIcon", "soundRedeem"],
-  hype: ["hypeIcon", "soundHype"],
-} as const satisfies Record<AlertKind, readonly [Key, Key]>;
+const KEYS = alertTextKeys("Tag");
+// Südfrucht-eigen: Symbol auf der Briefmarke je Alert-Art
+const ICONS_BY_KIND = {
+  follow: "followIcon", sub: "subIcon", resub: "resubIcon", gift: "giftIcon", raid: "raidIcon", cheer: "cheerIcon", redeem: "redeemIcon", hype: "hypeIcon",
+} as const satisfies Record<AlertKind, Key>;
 
 // fixed: Anzahl der Wassertropfen beim Spritzer
 const DROPS = 9;
 
 function describe(alert: Alert, values: SuedfruchtValues) {
-  const [icon, sound] = EXTRAS[alert.kind];
-  return { ...describeAlert(alert, values, KEYS), icon: values[icon] as IconName, sound: values[sound] };
+  return { ...describeAlert(alert, values, KEYS), icon: values[ICONS_BY_KIND[alert.kind]] as IconName, sound: values[ALERT_SOUND_KEYS[alert.kind]] };
 }
 
 export default function Alerts() {

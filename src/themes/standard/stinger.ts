@@ -1,6 +1,8 @@
 // Stinger des Standard-Themes: Streifen im Farbverlauf gleiten von links herein, decken am Übergangspunkt (cut) das
 // ganze Bild, zeigen kurz den Text und gleiten nach rechts hinaus. Ausserhalb der Streifen transparent.
 // Reine Funktion der Zeit, darum Frame für Frame renderbar. Check: stinger.check.ts.
+import { clamp01, easeInOut } from "../../core/easing.ts";
+
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
 export const FPS = 60;
@@ -16,9 +18,6 @@ export type StandardStingerOptions = {
   textColor: string;
 };
 
-const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
-// Weich beschleunigen und abbremsen
-const ease = (progress: number) => (progress < 0.5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2);
 
 export function drawStandardStinger(context: CanvasRenderingContext2D, time: number, options: StandardStingerOptions) {
   const { cut, duration } = options;
@@ -35,8 +34,8 @@ export function drawStandardStinger(context: CanvasRenderingContext2D, time: num
   const outLength = (duration - cut) * 0.7;
   for (let index = 0; index < count; index++) {
     const delay = count > 1 ? (index / (count - 1)) * 0.3 : 0;
-    const enter = ease(clamp01((time - delay * cut) / inLength));
-    const leave = ease(clamp01((time - cut - delay * (duration - cut)) / outLength));
+    const enter = easeInOut(clamp01((time - delay * cut) / inLength));
+    const leave = easeInOut(clamp01((time - cut - delay * (duration - cut)) / outLength));
     const right = enter * WIDTH;
     const left = leave * WIDTH;
     // 1 px Überlappung, damit zwischen den Streifen keine Haarlinie bleibt

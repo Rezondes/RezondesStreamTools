@@ -190,4 +190,3 @@ export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
     stop: () => clearInterval(reloadTimer),
   };
 }
-export type TriggerStore = ReturnType<typeof startTriggers>;

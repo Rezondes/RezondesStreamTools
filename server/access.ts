@@ -65,4 +65,3 @@ export async function loadAccess(dataDir: string, admins: string[]) {
     },
   };
 }
-export type AccessStore = Awaited<ReturnType<typeof loadAccess>>;

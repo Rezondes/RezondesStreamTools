@@ -2,6 +2,7 @@
 // und kein Schlüssel ist tot (jeder kommt im Theme-Code vor: values.key, { key }, "key" oder var(--key)).
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { ALERT_SOUND_KEYS, alertTextKeys } from "../core/alerts/alerts.ts";
 import { BADGE_KEYS } from "../core/chat/chat.ts";
 import { FX_KEYS } from "../core/fx/fx.ts";
 import { INFO_FIELDS } from "../core/infoFields.ts";
@@ -12,7 +13,14 @@ import type { ThemeSchema } from "../core/theme.ts";
 // Gemeinsame Felder einer Funktion liest der Kern (z.B. readMinimeOptions, describeCommands, useFxScene, badgeLabel), sie
 // gelten als benutzt; dazu die gebauten
 // Typ-Felder der Minimes (minimeVariantFields)
-const CORE_KEYS = new Set<string>([...MINIME_FIELDS.map(field => field.key), ...INFO_FIELDS.map(field => field.key), ...FX_KEYS, ...BADGE_KEYS, "minimeVariantCommand"]);
+// Alert-Texte nach dem Muster aus alertTextKeys (Kopfzeile <art>Tag oder <art>Label) und die Töne je Art
+const ALERT_KEYS = ["Tag", "Label"].flatMap(suffix => {
+  const keys = alertTextKeys(suffix);
+  return [...Object.values(keys.tag), ...Object.values(keys.line), keys.hypeEndLine];
+});
+const CORE_KEYS = new Set<string>([
+  ...MINIME_FIELDS.map(field => field.key), ...INFO_FIELDS.map(field => field.key), ...FX_KEYS, ...BADGE_KEYS, ...ALERT_KEYS, ...Object.values(ALERT_SOUND_KEYS), "minimeVariantCommand",
+]);
 const CORE_PREFIX = minimeNamesKey("");
 
 // folder: Ordner des Themes; settings.ts und Checks zählen nicht als Nutzung

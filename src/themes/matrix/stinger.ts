@@ -4,6 +4,7 @@
 // am Übergangspunkt (cut) blitzt die Einschaltlinie, dann fallen die Spalten unten heraus.
 // Länge, Übergangspunkt, Texte, Farben und Schrift kommen über stingerOptions aus den Einstellungen.
 import { hash } from "../../core/hash.ts";
+import { clamp01, easeIn } from "../../core/easing.ts";
 import type { MatrixValues } from "./settings.ts";
 
 export const WIDTH = 1920;
@@ -44,8 +45,6 @@ export const stingerOptions = (values: MatrixValues): StingerOptions => ({
   flash: values.flash,
 });
 
-const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
-const easeIn = (progress: number) => progress * progress;
 // Zeichen aus dem Zeichensatz, für dasselbe seed immer dasselbe
 export function glyphAt(seed: number, glyphs: string) {
   const list = Array.from(glyphs);

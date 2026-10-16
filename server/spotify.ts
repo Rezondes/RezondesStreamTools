@@ -34,7 +34,7 @@ export function toTokens(value: unknown): SpotifyTokens | null {
 
 // Die Felder der Spotify-Antwort, die toTrack liest
 type SpotifyImage = { url?: string };
-export type PlayingAnswer = {
+type PlayingAnswer = {
   is_playing?: boolean;
   progress_ms?: number | null;
   item?: {
@@ -123,7 +123,6 @@ export async function spotifyClient(app: SpotifyApp, folder: string, emit: (trac
     stop: () => clearInterval(timer),
   };
 }
-export type SpotifyClient = Awaited<ReturnType<typeof spotifyClient>>;
 
 async function loadTokens(file: string) {
   try {

@@ -3,7 +3,7 @@
 // Check: beach.check.ts.
 
 // Teil einer Form: main/detail = Fläche in Haupt- bzw. Detailfarbe, line = nur Linie
-export type ShapePart = { kind: "main" | "detail" | "line"; d: string };
+type ShapePart = { kind: "main" | "detail" | "line"; d: string };
 export type Shape = { viewBox: string; parts: readonly ShapePart[] };
 
 const round = (value: number) => Math.round(value * 10) / 10;

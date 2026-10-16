@@ -5,7 +5,7 @@
 // - Alerts ohne Server oder ohne laufende Laufzeit: Subs, Resubs, Gifts, Raids, Bits aus dem IRC
 // - ?demo in der URL: erzeugt Fake-Ereignisse zum Testen ohne Stream
 import { loadEmotes } from "./emotes.ts";
-import { parseIrc } from "./irc.ts";
+import { anonymousLogin, IRC_URL, parseIrc } from "./irc.ts";
 import { toIrcEvents } from "./ircEvents.ts";
 import { params } from "./params.ts";
 import * as streamerPath from "./streamerPath.ts";
@@ -179,13 +179,8 @@ function irc(name: string, handlers: Handlers, withAlerts: boolean) {
   };
 
   const open = () => {
-    socket = new WebSocket("wss://irc-ws.chat.twitch.tv:443");
-    socket.onopen = () => {
-      socket.send("CAP REQ :twitch.tv/tags twitch.tv/commands");
-      socket.send("PASS SCHMOOPIIE");
-      socket.send(`NICK justinfan${10000 + ((Math.random() * 80000) | 0)}`);
-      socket.send(`JOIN #${name}`);
-    };
+    socket = new WebSocket(IRC_URL);
+    socket.onopen = () => anonymousLogin(name, Math.random).forEach(line => socket.send(line));
     socket.onmessage = event => String(event.data).split("\r\n").filter(Boolean).forEach(handleLine);
     socket.onclose = () => { if (!stopped) retry = setTimeout(open, 3000); };
   };

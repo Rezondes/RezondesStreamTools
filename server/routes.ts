@@ -6,7 +6,7 @@ import { SCENES } from "../src/core/theme.ts";
 import type { Feature } from "./access.ts";
 
 // public: ohne Anmeldung; session: Login aus dem Sitzungs-Cookie und freigeschaltet; admin: nur ADMINS
-export type Guard = "public" | "session" | "admin";
+type Guard = "public" | "session" | "admin";
 // features: alle müssen für den Login an sein
 export type Route = { guard: Guard; features: readonly Feature[] };
 
@@ -78,7 +78,7 @@ export function authorize(route: Route, visitor: Visitor): Decision {
 }
 
 // Öffentliche Overlay-Adressen unter /s/<login>/: status, settings, events, commands (Liste der Chat-Befehle), <szene> oder <szene>.html, media/<datei>
-export type OverlayRoute =
+type OverlayRoute =
   | { kind: "status" }
   | { kind: "settings" }
   | { kind: "events" }

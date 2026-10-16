@@ -29,8 +29,8 @@ export type MinimeVariantRule = { id: string; names: readonly string[] };
 export type MinimeEntry = Minime & { lastSeen: number };
 // Farben bleiben gemerkt, auch wenn das Minime verschwindet. usedAt: zuletzt benutzt (für die Obergrenze),
 // changedAt: zuletzt geändert (für den Cooldown)
-export type StoredColor = { color: string; usedAt: number; changedAt: number };
-export type StoredVariant = { variant: string; usedAt: number; changedAt: number };
+type StoredColor = { color: string; usedAt: number; changedAt: number };
+type StoredVariant = { variant: string; usedAt: number; changedAt: number };
 export type MinimeState = { roster: MinimeEntry[]; colors: Record<string, StoredColor>; variants: Record<string, StoredVariant> };
 
 // Ereignisse aus dem Chat und vom Server. twitchColor: Namensfarbe aus dem Twitch-Tag color (oder null)
@@ -41,7 +41,7 @@ export type MinimeEvent =
   | { type: "leave" | "kick" | "chat" | "ban"; login: string }
   | { type: "prune" | "clear" };
 
-export type MinimeCommand =
+type MinimeCommand =
   | { type: "join"; color: string | null; variant: string | null }
   | { type: "color"; color: string }
   | { type: "variant"; variant: string }
@@ -49,7 +49,7 @@ export type MinimeCommand =
   | { type: "kick"; login: string };
 
 // changed: die sichtbare Liste hat sich geändert; react: Login, dessen Minime auf Chat reagieren soll
-export type MinimeResult = { state: MinimeState; changed: boolean; react: string | null };
+type MinimeResult = { state: MinimeState; changed: boolean; react: string | null };
 
 // fixed: Speicherschutz, damit minimes.json nicht unbegrenzt wächst
 export const MAX_STORED_COLORS = 2000;

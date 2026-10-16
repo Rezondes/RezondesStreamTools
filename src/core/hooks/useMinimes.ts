@@ -8,7 +8,7 @@ import { advance, nextEnd, react, syncRoster, type MinimeAction, type MinimeActo
 import { readMinimeOptions } from "../minimeFields.ts";
 import { useThemeValues } from "./useSettings.ts";
 
-export type MinimeSceneOptions = { catalog: readonly MinimeAction[]; reaction: MinimeAction | null; widthPx: number };
+type MinimeSceneOptions = { catalog: readonly MinimeAction[]; reaction: MinimeAction | null; widthPx: number };
 
 export function useMinimes({ catalog, reaction, widthPx }: MinimeSceneOptions): readonly MinimeActor[] {
   const values = useThemeValues();

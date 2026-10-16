@@ -23,7 +23,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
   return (
     <div className="standard-screen">
       {values.blobs && <div className="standard-blobs" aria-hidden="true"><i /><i /><i /></div>}
-      <div className="standard-stage" ref={stage}>
+      <div className="standard-stage stage-box" ref={stage}>
         <header className="standard-top">
           <span className="standard-channel">{values.channelName}</span>
           {values.showClock && <span className="standard-muted">{new Date(now).toLocaleTimeString(values.locale)}</span>}

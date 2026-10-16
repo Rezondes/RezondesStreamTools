@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { resolveSettings } from "../core/settings.ts";
 import { THEMES } from "./registry.ts";
-import { clipsFor, hasClips } from "./renderers.ts";
+import { clipsFor } from "./renderers.ts";
 
 // Mock-Canvas, das alles annimmt; zählt die Zeichenaufrufe
 function canvas() {
@@ -18,7 +18,6 @@ function canvas() {
 }
 
 for (const schema of THEMES) {
-  assert.ok(hasClips(schema.id), `${schema.id}: keine Clips`);
   const clips = clipsFor(schema.id, resolveSettings(schema, {}), "rezondes");
   assert.deepEqual(clips.map(clip => clip.name), ["stinger", "profile", "offline"], schema.id);
   const groups = new Set(schema.fields.map(field => field.group));
@@ -35,6 +34,5 @@ for (const schema of THEMES) {
 
 // Unbekanntes Theme: Clips des Standard-Themes
 assert.equal(clipsFor("gibt-es-nicht", resolveSettings(THEMES[0], {}), "rezondes").length, 3);
-assert.equal(hasClips("gibt-es-nicht"), false);
 
 console.log("renderers ok");

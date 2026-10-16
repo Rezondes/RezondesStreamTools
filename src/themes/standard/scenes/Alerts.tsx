@@ -1,18 +1,15 @@
 // Alerts des Standard-Themes: eine abgerundete Karte mit Verlaufskante, Kopfzeile je Alert-Art, Zeile mit dem Namen,
 // optional der Nachricht und einem Restzeit-Balken. Ton nur mit eigener Datei. Texte, Zitat-Regel und Töne kommen aus
 // dem Alerts-Kontext des Kerns (src/core/alerts), hier nur die Schlüssel der Texte und das Aussehen.
-import { alertQuote, describeAlert, type AlertTextKeys } from "../../../core/alerts/alerts.ts";
+import { alertQuote, alertTextKeys, describeAlert } from "../../../core/alerts/alerts.ts";
 import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
 import type { Alert } from "../../../core/types.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
 import { playSound } from "../../../core/sound.ts";
 import { useStandard } from "../useStandard.ts";
 
-const KEYS: AlertTextKeys = {
-  tag: { follow: "followLabel", sub: "subLabel", resub: "resubLabel", gift: "giftLabel", raid: "raidLabel", cheer: "cheerLabel", redeem: "redeemLabel", hype: "hypeLabel" },
-  line: { follow: "followLine", sub: "subLine", resub: "resubLine", gift: "giftLine", raid: "raidLine", cheer: "cheerLine", redeem: "redeemLine", hype: "hypeBeginLine" },
-  hypeEndLine: "hypeEndLine",
-};
+// Kopfzeilen heissen hier <art>Label
+const KEYS = alertTextKeys("Label");
 
 export default function Alerts() {
   const values = useStandard();

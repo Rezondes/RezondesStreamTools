@@ -1,6 +1,8 @@
 // Stinger des Südfrucht-Themes: eine grosse Welle mit Schaumkrone rollt von links ins Bild, deckt am Übergangspunkt
 // (cut) alles in Meeresfarben ab, zeigt kurz den Text und eine Palme und läuft rechts wieder hinaus. Davor und danach
 // transparent. Reine Funktion der Zeit, darum Frame für Frame renderbar. Check: stinger.check.ts.
+import { clamp01, easeInOut } from "../../core/easing.ts";
+
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
 export const FPS = 60;
@@ -26,9 +28,6 @@ const LAYER = 110;
 const CREST_WAVE = 220;
 const FOAM_WIDTH = 14;
 
-const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
-// Weich beschleunigen und abbremsen
-const ease = (progress: number) => (progress < 0.5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2);
 
 // Wellenkrone rechts an der Kante x: Bögen nach rechts, phase verschiebt sie mit der Zeit
 function crest(context: CanvasRenderingContext2D, x: number, phase: number) {
@@ -63,8 +62,8 @@ function drawPalm(context: CanvasRenderingContext2D, color: string) {
 export function drawSuedfruchtStinger(context: CanvasRenderingContext2D, time: number, options: SuedfruchtStingerOptions) {
   const { cut, duration } = options;
   context.clearRect(0, 0, WIDTH, HEIGHT);
-  const enter = ease(clamp01(time / (cut * 0.9)));
-  const leave = ease(clamp01((time - cut) / ((duration - cut) * 0.9)));
+  const enter = easeInOut(clamp01(time / (cut * 0.9)));
+  const leave = easeInOut(clamp01((time - cut) / ((duration - cut) * 0.9)));
   // Vorderkante kommt von links bis hinter den rechten Rand, Hinterkante folgt nach dem Übergangspunkt
   const right = enter * (WIDTH + 2 * CREST) - CREST;
   const left = leave * (WIDTH + 2 * CREST) - CREST;

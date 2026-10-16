@@ -6,7 +6,7 @@ import { circle, spikes } from "./beach.ts";
 
 // body = Fruchtfläche (Hauptfarbe, Umriss), detail = Fläche in Detailfarbe, line = Linie in Detailfarbe,
 // leaf = Blatt (Blattfarbe), stem = Stiel (Stielfarbe)
-export type FruitPart = { kind: "body" | "detail" | "line" | "leaf" | "stem"; d: string };
+type FruitPart = { kind: "body" | "detail" | "line" | "leaf" | "stem"; d: string };
 // face: Mitte des Gesichts in der Form (100 x 100) und Grösse (1 = normal)
 export type Fruit = { id: string; label: string; names: readonly string[]; parts: readonly FruitPart[]; face: { x: number; y: number; size: number } };
 
@@ -96,7 +96,6 @@ export const FRUITS: readonly Fruit[] = [
   ] },
 ];
 
-export type FruitId = (typeof FRUITS)[number]["id"];
 export const FRUIT_IDS = FRUITS.map(fruit => fruit.id);
 
 // Minime-Typen für das Schema: Befehl !frucht, je Frucht id, Name und Namen im Chat

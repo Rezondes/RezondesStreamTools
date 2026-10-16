@@ -43,8 +43,8 @@ export const INFO_FIELDS = [
 export type InfoValues = ValuesOf<typeof INFO_FIELDS>;
 
 // command: was man tippt ("" bei Mustern), text: Erklärung, details: kurze Zusatzzeilen (wer, wie oft, Auswahl)
-export type InfoEntry = { command: string; text: string; details: string[] };
-export type InfoSection = { id: "help" | "minimes" | "triggers"; heading: string; entries: InfoEntry[] };
+type InfoEntry = { command: string; text: string; details: string[] };
+type InfoSection = { id: "help" | "minimes" | "triggers"; heading: string; entries: InfoEntry[] };
 
 const ROLE_KEYS = {
   everyone: "infoRoleEveryone", subscriber: "infoRoleSubscriber", vip: "infoRoleVip", moderator: "infoRoleModerator", broadcaster: "infoRoleBroadcaster",

@@ -69,12 +69,7 @@
 .theme-standard .standard-blobs i:nth-child(3) { left: 35%; top: 40%; width: 35vmax; height: 35vmax; background: var(--accent); opacity: 0.2; animation-duration: calc(var(--blobSpeed) * 1.5); }
 
 .theme-standard .standard-stage {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  /* fixed: Bühnengrösse der Vollbild-Szenen, per --s auf die Quelle skaliert (Screen.tsx) */
-  width: 1920px; height: 1080px;
-  transform: translate(-50%, -50%) scale(var(--s, 1));
+  /* Lage, Grösse und Skalierung: stage-box aus src/core/screens/stage.css */
   display: flex;
   flex-direction: column;
   padding: var(--stage-padding, 72px 96px);

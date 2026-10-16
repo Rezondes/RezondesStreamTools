@@ -87,8 +87,6 @@ input[type=checkbox]:focus-visible, input[type=range]:focus-visible { outline: 2
 
 /* --- Trigger-Editor ---------------------------------------------------------------------- */
 .editor { max-width: 1280px; margin: 0 auto; padding: 24px 16px 64px; display: grid; gap: 16px; }
-.editor-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.editor-head h1 { font: var(--title-weight) 28px var(--font-title); }
 .editor-bar { position: sticky; top: 0; z-index: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 0; background: var(--surface); border-bottom: var(--border-w) solid var(--line); }
 .editor-errors { list-style: none; padding: 10px 14px; border: var(--border-w) solid var(--error); border-radius: var(--radius-sm); background: var(--error-bg); color: var(--error); display: grid; gap: 4px; }
 .editor-errors li::before { content: "! "; }

@@ -10,8 +10,8 @@ import { loadSettings, minimeRules } from "./settings.ts";
 export const DEFAULT_HELP: HelpConfig = { enabled: true, command: "!befehle", reply: "Befehle: {commands} | Alles erklärt: {link}", cooldown: 30 };
 
 const COMMAND = /^![a-z0-9_]{1,24}$/;
-export const MAX_REPLY = 400;
-export const MAX_COOLDOWN = 3600;
+const MAX_REPLY = 400;
+const MAX_COOLDOWN = 3600;
 
 // Gültige Einstellung oder null; der Befehl zählt ohne Gross- und Kleinschreibung
 export function toHelpConfig(value: unknown): HelpConfig | null {

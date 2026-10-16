@@ -1,15 +1,17 @@
 // Einstellungs-Schema des Südfrucht-Themes: süd-tropischer Küsten- und Meeres-Look (Meer, Wellen, Sand, Palmen,
 // Holzschilder) für alle Szenen, Stinger und Banner, dazu Frucht-Minimes, die hüpfen. Einzige Stelle des Themes mit
 // festen Farben, Texten und Zahlen. SuedfruchtValues ist der Typ der aufgelösten Werte (useSuedfrucht).
-import { choice, color, flag, font, inScene, lines, number, sound, text, type ValuesOf } from "../../core/fields.ts";
+import { choice, color, flag, font, inScene, lines, number, text, type ValuesOf } from "../../core/fields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
+import { alertSoundFields } from "../../core/alerts/alerts.ts";
+import { badgeFields } from "../../core/chat/chat.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./beach.ts";
 import { FRUIT_IDS, FRUIT_SET, FRUITS } from "./fruits.ts";
 
 export const FONTS = ["Fredoka", "Baloo 2", "Nunito", "Inter", "DM Sans"] as const;
-export const TITLE_FONTS = ["Pacifico", "Fredoka", "Baloo 2", "Nunito"] as const;
+const TITLE_FONTS = ["Pacifico", "Fredoka", "Baloo 2", "Nunito"] as const;
 const TIMES = ["morgen", "mittag", "abend", "nacht"] as const;
 const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"] as const;
 const MOTIONS = ["welle", "plopp", "gleiten", "blenden", "keins"] as const;
@@ -153,21 +155,10 @@ const FIELDS = [
   number("petalCount", "Anzahl Blüten", ALERTS, 14, 0, 40),
   flag("splash", "Wasserspritzer", ALERTS, true),
   flag("alertSound", "Töne", ALERTS, true),
-  sound("soundFollow", "Ton Follow (leer = eingebaut)", ALERTS),
-  sound("soundSub", "Ton Sub", ALERTS),
-  sound("soundResub", "Ton Resub", ALERTS),
-  sound("soundGift", "Ton Gift", ALERTS),
-  sound("soundRaid", "Ton Raid", ALERTS),
-  sound("soundCheer", "Ton Bits", ALERTS),
-  sound("soundRedeem", "Ton Kanalpunkte", ALERTS),
-  sound("soundHype", "Ton Hype Train", ALERTS),
-  sound("soundLeave", "Ton beim Ausblenden", ALERTS),
+  ...alertSoundFields(ALERTS),
 
   choice("chatStyle", "Stil", CHAT, "blase", ["blase", "planke", "muschel"]),
-  text("badgeHost", "Badge Streamer", CHAT, "HOST", 20),
-  text("badgeMod", "Badge Moderator", CHAT, "MOD", 20),
-  text("badgeVip", "Badge VIP", CHAT, "VIP", 20),
-  text("badgeSub", "Badge Abonnent", CHAT, "SUB", 20),
+  ...badgeFields(CHAT),
   flag("chatBadges", "Badges zeigen", CHAT, true),
   number("chatFontSize", "Schriftgrösse", CHAT, 20, 8, 60, "px"),
   number("emoteSize", "Emote-Grösse", CHAT, 28, 8, 120, "px"),

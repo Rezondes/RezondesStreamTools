@@ -24,7 +24,7 @@ const REAL_TIMERS: MinimeTimers = {
   clearInterval: id => clearInterval(id as ReturnType<typeof setInterval>),
 };
 
-export type MinimeSetup = {
+type MinimeSetup = {
   folder: string;
   emit: (message: ServerMessage) => void;
   now: () => number;

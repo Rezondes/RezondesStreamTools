@@ -2,17 +2,19 @@
 // die Standardwerte ergeben den bisherigen Look. Einzige Stelle des Themes mit festen Farben, Texten und Zahlen.
 // MatrixValues ist der Typ der aufgelösten Werte, den die Szenen über useMatrix (values.ts) lesen.
 import { asciiText } from "../../core/asciiText.ts";
-import { asciiArt, choice, color, flag, font, inScene, lines, number, sound, text, type ValuesOf } from "../../core/fields.ts";
+import { asciiArt, choice, color, flag, font, inScene, lines, number, text, type ValuesOf } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
+import { alertSoundFields } from "../../core/alerts/alerts.ts";
+import { badgeFields } from "../../core/chat/chat.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 // Beispiel-Logo; beim ersten Login erzeugt personalize das Logo aus dem Twitch-Login
 const LOGO = asciiText("STREAM");
 
 export const FONTS = ["Share Tech Mono", "VT323", "Fira Mono", "IBM Plex Mono", "Courier New"] as const;
-export const ANIMATIONS = ["glitch", "fade", "none"] as const;
+const ANIMATIONS = ["glitch", "fade", "none"] as const;
 const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"] as const;
 
 const GENERAL = "Allgemein";
@@ -181,22 +183,11 @@ const FIELDS = [
   choice("alertOut", "Ausblenden", ALERTS, "glitch", ANIMATIONS),
   flag("alertTimer", "Restzeit-Balken", ALERTS, true),
   flag("alertSound", "Töne", ALERTS, true),
-  sound("soundFollow", "Ton Follow (leer = eingebaut)", ALERTS),
-  sound("soundSub", "Ton Sub", ALERTS),
-  sound("soundResub", "Ton Resub", ALERTS),
-  sound("soundGift", "Ton Gift", ALERTS),
-  sound("soundRaid", "Ton Raid", ALERTS),
-  sound("soundCheer", "Ton Bits", ALERTS),
-  sound("soundRedeem", "Ton Kanalpunkte", ALERTS),
-  sound("soundHype", "Ton Hype Train", ALERTS),
-  sound("soundLeave", "Ton beim Ausblenden", ALERTS),
+  ...alertSoundFields(ALERTS),
 
   // Chat
   text("chatPrompt", "Prompt hinter dem Namen", CHAT, "@twitch:~$"),
-  text("badgeHost", "Badge Streamer", CHAT, "HOST", 20),
-  text("badgeMod", "Badge Moderator", CHAT, "MOD", 20),
-  text("badgeVip", "Badge VIP", CHAT, "VIP", 20),
-  text("badgeSub", "Badge Abonnent", CHAT, "SUB", 20),
+  ...badgeFields(CHAT),
   number("chatFontSize", "Schriftgrösse", CHAT, 22, 8, 80, "px"),
   number("chatFade", "Ausblenden nach (0 = nie)", CHAT, 30, 0, 3600, "s"),
   number("chatMax", "Max. Nachrichten", CHAT, 30, 1, 200),

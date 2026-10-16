@@ -5,7 +5,7 @@ import type { Alert, Minime, ServerMessage, Track } from "../core/types.ts";
 import { TEXTS } from "./texts.de.ts";
 
 export type LogKind = "alert" | "fx" | "music" | "minimes";
-export type LogEntry = { id: number; at: number; kind: LogKind; text: string };
+type LogEntry = { id: number; at: number; kind: LogKind; text: string };
 // entries: neueste zuerst; minimes und track: letzter Stand, um nur Änderungen zu melden (undefined = noch keiner)
 export type LogState = { entries: LogEntry[]; next: number; minimes?: Minime[]; track?: { id: string; playing: boolean } | null };
 

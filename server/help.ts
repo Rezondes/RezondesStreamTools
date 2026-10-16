@@ -4,7 +4,7 @@
 import { helpReply, type CommandList, type HelpConfig } from "../src/core/commands.ts";
 import type { ChatLine } from "./chat.ts";
 
-export type HelpSetup = {
+type HelpSetup = {
   login: string; // der Streamer, als der geantwortet wird
   help: HelpConfig;
   link: string; // Adresse der Befehlsseite

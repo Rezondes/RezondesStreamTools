@@ -5,7 +5,7 @@ import { connect } from "../connection.ts";
 import { alertTiming } from "../overlayTiming.ts";
 import type { Alert } from "../types.ts";
 
-export type QueuedAlert = Alert & { key: number };
+type QueuedAlert = Alert & { key: number };
 
 export function useAlerts(durationMs: number) {
   const [queue, setQueue] = useState<QueuedAlert[]>([]);

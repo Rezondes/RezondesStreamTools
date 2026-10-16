@@ -37,7 +37,7 @@ export function ffmpegArgs(format: "gif" | "webm", fps: number, frames: string, 
 }
 
 type Job = { clip: Clip; frames: number; startedAt: number };
-export type RenderError = "render-busy" | "render-not-started" | "render-limit" | "too-large";
+type RenderError = "render-busy" | "render-not-started" | "render-limit" | "too-large";
 
 // Laufende Renders je Login; now ist injiziert, damit der Timeout testbar bleibt
 export function createRenderJobs(now: () => number) {

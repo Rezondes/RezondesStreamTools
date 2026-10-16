@@ -1,6 +1,7 @@
 // Szenen des Matrix-Themes für die Theme-Liste (src/themes/scenes.tsx) samt seinem CSS.
 // Jede Szene wird per React.lazy geladen und landet im Build in einem eigenen Chunk.
 import { lazy } from "react";
+import { screenScenes } from "../../core/screens/screenScenes.tsx";
 import type { ThemeView } from "../../core/theme.ts";
 import { matrixSettings } from "./settings.ts";
 import "./theme.css";
@@ -10,9 +11,7 @@ const Screen = lazy(() => import("./scenes/Screen.tsx"));
 export const matrixView: ThemeView = {
   id: matrixSettings.id,
   scenes: {
-    starting: () => <Screen kind="starting" />,
-    brb: () => <Screen kind="brb" />,
-    ending: () => <Screen kind="ending" />,
+    ...screenScenes(Screen),
     alerts: lazy(() => import("./scenes/Alerts.tsx")),
     chat: lazy(() => import("./scenes/Chat.tsx")),
     cam: lazy(() => import("./scenes/Cam.tsx")),

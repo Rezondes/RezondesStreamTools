@@ -16,7 +16,7 @@ import { spotifyClient, type SpotifyApp } from "./spotify.ts";
 import { startTriggers } from "./triggers.ts";
 import { eventSub, type TwitchApp, type TwitchTokens } from "./twitch.ts";
 
-export type StreamerSetup = {
+type StreamerSetup = {
   login: string;
   folder: string; // Profil-Ordner
   tokens: TwitchTokens;

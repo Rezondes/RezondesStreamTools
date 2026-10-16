@@ -65,3 +65,13 @@ export function splitWords(parts: Part[], emotes: Map<string, string>): Part[] {
     return part.split(/(\s+)/).filter(Boolean).map(word => (emotes.has(word) ? { name: word, url: emotes.get(word)! } : word));
   });
 }
+
+// Adresse des Twitch-Chats und die Zeilen für eine anonyme Anmeldung (kein Token nötig, nur lesen) im Kanal channel;
+// random wählt die Nummer des Gast-Namens justinfan<n>. Gleich für Overlays und Server.
+export const IRC_URL = "wss://irc-ws.chat.twitch.tv:443";
+export const anonymousLogin = (channel: string, random: () => number) => [
+  "CAP REQ :twitch.tv/tags twitch.tv/commands",
+  "PASS SCHMOOPIIE",
+  `NICK justinfan${10000 + Math.floor(random() * 80000)}`,
+  `JOIN #${channel}`,
+];

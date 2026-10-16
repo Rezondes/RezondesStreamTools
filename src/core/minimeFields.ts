@@ -47,7 +47,7 @@ export const MINIME_BASE_FIELDS = [
 ] as const satisfies readonly SettingField[];
 
 // Nur für Farb-Themes: Befehl zum Farbwechsel, Mindesthelligkeit, Twitch-Namensfarbe
-export const MINIME_COLOR_FIELDS = [
+const MINIME_COLOR_FIELDS = [
   text("minimeColorCommand", "Befehl: Farbe ändern", MINIME_COMMANDS, "!color", 25),
   number("minimeMinBrightness", "Mindesthelligkeit der Farbe (0 bis 255)", MINIME_RULES, 80, 0, 255),
   flag("minimeUseTwitchColor", "Ohne eigene Farbe die Twitch-Namensfarbe nehmen", MINIME_RULES, true),
@@ -83,7 +83,7 @@ export type MinimeMotion = {
   enterMs: number;
   exitMs: number;
 };
-export type MinimeOptions = { rules: MinimeRules; motion: MinimeMotion };
+type MinimeOptions = { rules: MinimeRules; motion: MinimeMotion };
 
 const SCHEMA: ThemeSchema = { id: "minimes", name: "Minimes", fields: MINIME_FIELDS };
 

@@ -5,9 +5,9 @@
 // 3. obs-websocket 5: Anfragen, die fehlende Szenen und Quellen anlegen und vorhandene Quellen aktualisieren.
 import { OBS_SCENES, SCENE_SIZES, type SceneName } from "../core/theme.ts";
 
-export type ObsSource = { scene: SceneName; name: string; url: string; width: number; height: number };
+type ObsSource = { scene: SceneName; name: string; url: string; width: number; height: number };
 export type ObsScene = { name: string; sources: ObsSource[] };
-export type ObsRequest = { requestType: string; requestData: Record<string, unknown> };
+type ObsRequest = { requestType: string; requestData: Record<string, unknown> };
 
 const FULLSCREEN: readonly SceneName[] = ["starting", "brb", "ending"];
 // Ausrichtung der Szenenelemente: oben links (OBS_ALIGN_TOP | OBS_ALIGN_LEFT)

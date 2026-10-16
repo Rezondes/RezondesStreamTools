@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { frames, type Line } from "../typing.ts";
 
 // speed: Tipp-Tempo (2 = doppelt so schnell), siehe frames in typing.ts
-export type TerminalTiming = { visible: number; startDelayMs: number; pauseMinMs: number; pauseMaxMs: number; speed: number };
+type TerminalTiming = { visible: number; startDelayMs: number; pauseMinMs: number; pauseMaxMs: number; speed: number };
 
 export function useTerminal(lines: Line[], timing: TerminalTiming) {
   const [shown, setShown] = useState<string[]>([]);

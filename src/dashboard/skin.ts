@@ -3,7 +3,7 @@
 // Browser gemerkt, damit beim Laden nicht kurz der falsche aufblitzt. skinOf ist rein, Check: skin.check.ts.
 import { DEFAULT_THEME } from "../themes/registry.ts";
 
-export const SKINS = ["standard", "matrix", "suedfrucht"] as const;
+const SKINS = ["standard", "matrix", "suedfrucht"] as const;
 export type Skin = (typeof SKINS)[number];
 
 const STORAGE_KEY = "rezondes-skin";

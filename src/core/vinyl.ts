@@ -3,7 +3,7 @@
 const RAMP = " .:-=+*#%@";
 
 // Radius des Etiketts (Anteil vom Plattenradius)
-export const LABEL = 0.36;
+const LABEL = 0.36;
 
 // onCover: die Platte liegt über einem Cover-Bild. Dann nur dünne Rillenringe, Rand und Lichtreflex,
 // alles andere bleibt frei, damit das Cover über die ganze Platte durchscheint.

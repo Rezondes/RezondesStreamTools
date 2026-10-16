@@ -2,7 +2,7 @@
 // Läuft mit npm test.
 import assert from "node:assert/strict";
 import type { AlertKind } from "../types.ts";
-import { alertQuote, describeAlert, type AlertTextKeys } from "./alerts.ts";
+import { ALERT_SOUND_KEYS, alertQuote, alertSoundFields, alertTextKeys, describeAlert, type AlertTextKeys } from "./alerts.ts";
 
 const KINDS: AlertKind[] = ["follow", "sub", "resub", "gift", "raid", "cheer", "redeem", "hype"];
 const keys = (extra: Partial<AlertTextKeys> = {}): AlertTextKeys => ({
@@ -39,5 +39,15 @@ assert.equal(describeAlert({ kind: "sub", user: "neo" }, values, keys({ tierSuff
 assert.equal(alertQuote({ kind: "sub", user: "neo", text: "hallo" }), "hallo");
 assert.equal(alertQuote({ kind: "gift", user: "neo", amount: 1, text: "trinity" }), null);
 assert.equal(alertQuote({ kind: "follow", user: "neo" }), null);
+
+// Schlüssel nach dem üblichen Muster, mit eigener Endung der Kopfzeile und optionalen Texten
+assert.deepEqual(alertTextKeys("Tag"), { ...keys(), line: { ...keys().line, hype: "hypeBeginLine" } });
+assert.equal(alertTextKeys("Label").tag.follow, "followLabel");
+assert.equal(alertTextKeys("Tag", { tierSuffix: "tierSuffix" }).tierSuffix, "tierSuffix");
+
+// Ton-Felder: eins je Alert-Art (Schlüssel wie ALERT_SOUND_KEYS) und eins fürs Ausblenden, alle in der Gruppe
+const sounds = alertSoundFields("Alerts");
+assert.deepEqual(sounds.map(field => field.key), [...Object.values(ALERT_SOUND_KEYS), "soundLeave"]);
+assert.ok(sounds.every(field => field.group === "Alerts" && field.type === "sound"));
 
 console.log("alerts ok");

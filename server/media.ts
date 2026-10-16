@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { isMediaName } from "../src/core/streamerPath.ts";
 import type { Trigger } from "./triggers.ts";
 
-export type MediaFile = { name: string; size: number; usedBy: string[] };
+type MediaFile = { name: string; size: number; usedBy: string[] };
 export type MediaList = { files: MediaFile[]; usedBytes: number; limitBytes: number };
 
 // Namen der Trigger, deren Aktionen die Datei als Bild, Video oder Ton verwenden

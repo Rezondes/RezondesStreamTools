@@ -30,7 +30,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
   return (
     <div className={`screen-scene power-${values.powerOn}`}>
       {values.rainScreens && <MatrixRain size={values.rainSizeScreens} opacity={values.rainOpacityScreens} />}
-      <div className="stage" ref={stage}>
+      <div className="stage stage-box" ref={stage}>
         <div className="crt">
           <div className="crt-flash" aria-hidden="true" />
           <header className="crt-bar">

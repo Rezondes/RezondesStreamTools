@@ -2,7 +2,7 @@
 // Anmeldung wieder auf Allowlist beschränkt, Funktionen auf "aus" gestellt. Leer = nichts geht verloren.
 import type { Access, Feature } from "../../server/access.ts";
 
-export type AccessLosses = { revoked: string[]; betaRemoved: string[]; closed: boolean; off: Feature[] };
+type AccessLosses = { revoked: string[]; betaRemoved: string[]; closed: boolean; off: Feature[] };
 
 const removed = (before: string[], after: string[]) => {
   const kept = new Set(after.map(login => login.trim().toLowerCase()));

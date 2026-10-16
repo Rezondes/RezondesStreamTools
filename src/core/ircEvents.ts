@@ -3,7 +3,7 @@
 import { splitEmotes, splitWords, type IrcMessage } from "./irc.ts";
 import type { Alert, ChatMessage, ChatRemoval } from "./types.ts";
 
-export type IrcEvent =
+type IrcEvent =
   | { type: "chat"; message: ChatMessage }
   | { type: "alert"; alert: Alert }
   | { type: "remove"; removal: ChatRemoval }

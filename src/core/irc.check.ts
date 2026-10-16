@@ -1,6 +1,6 @@
 // Ausführen: npm run check
 import assert from "node:assert/strict";
-import { parseIrc, splitEmotes, splitWords } from "./irc.ts";
+import { anonymousLogin, parseIrc, splitEmotes, splitWords } from "./irc.ts";
 
 const kappa = { name: "Kappa", url: "https://static-cdn.jtvnw.net/emoticons/v2/25/default/dark/2.0" };
 
@@ -24,5 +24,8 @@ const cat = { name: "catJAM", url: "https://cdn.7tv.app/emote/x/2x.webp" };
 assert.deepEqual(splitWords([kappa, " catJAM vibes catJAMs"], extra), [kappa, " ", cat, " ", "vibes", " ", "catJAMs"]);
 assert.deepEqual(splitWords(["catJAM"], extra), [cat]);
 assert.deepEqual(splitWords(["hallo"], new Map()), ["hallo"]);
+
+// Anonyme Anmeldung: Tags und Befehle anfordern, Gast-Name mit Zufallsnummer, Kanal betreten
+assert.deepEqual(anonymousLogin("rezondes", () => 0.5), ["CAP REQ :twitch.tv/tags twitch.tv/commands", "PASS SCHMOOPIIE", "NICK justinfan50000", "JOIN #rezondes"]);
 
 console.log("irc ok");

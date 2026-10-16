@@ -1,0 +1,10 @@
+/* Bühne der Vollbild-Szenen (useStage): 1920x1080 in der Mitte der Quelle, per --s auf sie skaliert. Das Layout auf
+   der Bühne (Flex, Abstände) bestimmt das Theme über seine eigene Klasse. */
+.stage-box {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+}
