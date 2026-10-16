@@ -1,7 +1,7 @@
 // Check für overlayTiming.ts: Zeitanzeige, Musik-Fortschritt, Effekt-Phasen und -Position, Alert-Zeiten,
 // Entschlüsselungs-Effekt. Läuft mit npm test.
 import assert from "node:assert/strict";
-import { alertTiming, clock, countdownEnd, currentProgress, decodeFrame, fxLifetime, fxPhase, marqueeSeconds, placeFx } from "./overlayTiming.ts";
+import { alertTiming, clock, countdownEnd, currentProgress, decodeFrame, fxLifetime, fxPhase, placeFx } from "./overlayTiming.ts";
 
 // Uhr: Stunden:Minuten:Sekunden, nie negativ
 assert.equal(clock(3725), "01:02:05");
@@ -49,12 +49,5 @@ const scrambled = () => "?";
 assert.equal(decodeFrame("ABC DEF", -1, 10, scrambled), "");
 assert.equal(decodeFrame("ABC DEF", 25, 10, scrambled), "AB? ???");
 assert.equal(decodeFrame("ABC DEF", 1000, 10, scrambled), "ABC DEF");
-
-// Lauftext: Dauer wächst mit der Strecke (Fahrt ist 70 % der Dauer), auch sehr lange Titel laufen mit gleichem Tempo;
-// ohne Überstand oder ohne Tempo keine Dauer
-assert.equal(marqueeSeconds(280, 40), 10);
-assert.equal(marqueeSeconds(2800, 40), 100);
-assert.equal(marqueeSeconds(0, 40), 0);
-assert.equal(marqueeSeconds(100, 0), 0);
 
 console.log("overlayTiming ok");

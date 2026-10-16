@@ -1,7 +1,9 @@
 // Alert-Overlay, transparent. Empfohlen als Browserquelle 1920x1080. Texte je Alert-Art, Position, Grösse, Dauer,
-// Animationen und Töne kommen aus den Einstellungen. Parameter: ?sound=0, ?volume=0.5, ?demo
-import { useEffect, useState } from "react";
+// Animationen und Töne kommen aus den Einstellungen. Texte, Zitat-Regel und Töne kommen aus dem Alerts-Kontext des Kerns
+// (src/core/alerts), hier nur die Schlüssel der Texte und das Matrix-Aussehen. Parameter: ?sound=0, ?volume=0.5, ?demo
 import MatrixRain from "../MatrixRain.tsx";
+import { alertQuote, describeAlert, type AlertTextKeys } from "../../../core/alerts/alerts.ts";
+import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
 import type { Alert, AlertKind } from "../../../core/types.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
@@ -21,23 +23,15 @@ const SOUND = {
   hype: "soundHype",
 } as const satisfies Record<AlertKind, keyof MatrixValues>;
 
-// Kopfzeile, Name und Zeile eines Alerts aus den Texten der Einstellungen
-function describe(alert: Alert, values: MatrixValues): { tag: string; title: string; line: string } {
-  const amount = alert.amount ?? 0;
-  const fill = (text: string) => fillTemplate(text, { user: alert.user, amount, detail: alert.detail ?? "", text: alert.text ?? "" });
-  const tier = alert.detail ? fillTemplate(values.tierSuffix, { detail: alert.detail.toUpperCase() }) : "";
-  const shown = (tag: string, line: string, title = alert.user) => ({ tag: fill(tag), title, line: fill(line) });
-  switch (alert.kind) {
-    case "follow": return shown(values.followTag, values.followLine);
-    case "sub": return shown(values.subTag + tier, values.subLine);
-    case "resub": return shown(values.resubTag + tier, values.resubLine);
-    case "gift": return shown(values.giftTag, amount !== 1 ? values.giftLine : alert.text ? values.giftToLine : values.giftOneLine);
-    case "raid": return shown(values.raidTag, values.raidLine);
-    case "cheer": return shown(values.cheerTag, values.cheerLine);
-    case "redeem": return shown(values.redeemTag, values.redeemLine);
-    case "hype": return shown(values.hypeTag, alert.detail === "end" ? values.hypeEndLine : values.hypeBeginLine, values.hypeTitle);
-  }
-}
+const KEYS: AlertTextKeys = {
+  tag: { follow: "followTag", sub: "subTag", resub: "resubTag", gift: "giftTag", raid: "raidTag", cheer: "cheerTag", redeem: "redeemTag", hype: "hypeTag" },
+  line: { follow: "followLine", sub: "subLine", resub: "resubLine", gift: "giftLine", raid: "raidLine", cheer: "cheerLine", redeem: "redeemLine", hype: "hypeBeginLine" },
+  hypeEndLine: "hypeEndLine",
+  giftOneLine: "giftOneLine",
+  giftToLine: "giftToLine",
+  tierSuffix: "tierSuffix",
+  tierUpper: true,
+};
 
 export default function Alerts() {
   const values = useMatrix();
@@ -47,18 +41,17 @@ export default function Alerts() {
 
 function AlertBox({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const values = useMatrix();
-  const { tag, title, line } = describe(alert, values);
+  const { tag, line } = describeAlert(alert, values, KEYS);
+  // Matrix-eigen: der Hype Train hat statt eines Namens einen eigenen Titel
+  const title = alert.kind === "hype" ? values.hypeTitle : alert.user;
   const header = useMatrixDecode(fillTemplate(values.alertHeader, { tag }), "alertHeader");
   const name = useMatrixDecode(title.toUpperCase(), "alertName");
   const sub = useMatrixDecode(line, "alertLine");
-  const withQuote = values.alertQuote && alert.text && alert.kind !== "gift";
-  const quote = useMatrixDecode(withQuote ? fillTemplate(values.quoteFormat, { text: alert.text ?? "" }) : "", "alertQuote");
-
-  // Ton beim Öffnen genau einmal pro Alert, beim Ausblenden einmal
-  const [openSound] = useState(() => (values.alertSound ? values[SOUND[alert.kind]] : null));
-  useEffect(() => { if (openSound) playOpen(openSound); }, [openSound]);
-  const leaveSound = values.alertSound ? values.soundLeave : null;
-  useEffect(() => { if (leaving && leaveSound) playLeave(leaveSound); }, [leaving, leaveSound]);
+  const said = values.alertQuote ? alertQuote(alert) : null;
+  const quote = useMatrixDecode(said ? fillTemplate(values.quoteFormat, { text: said }) : "", "alertQuote");
+  const opening = values[SOUND[alert.kind]];
+  const closing = values.soundLeave;
+  useAlertSounds(values.alertSound ? () => playOpen(opening) : null, values.alertSound ? () => playLeave(closing) : null, leaving);
 
   return (
     <div className={`alert in-${values.alertIn} out-${values.alertOut}${leaving ? " leaving" : ""}`}>

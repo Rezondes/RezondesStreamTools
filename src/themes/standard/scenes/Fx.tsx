@@ -1,29 +1,20 @@
-// Effekt-Overlay des Standard-Themes für die Chat-Trigger (/s/<login>/fx), transparent. Medien zeigt core/FxMedia.tsx,
-// der Text steht in einer abgerundeten Karte. Standardwerte aus den Einstellungen gelten, wenn eine Aktion sie nicht
-// selbst angibt. Parameter: ?zone=main, ?sound=0, ?volume=0.5
-import { useMemo } from "react";
+// Effekt-Overlay des Standard-Themes für die Chat-Trigger (/s/<login>/fx), transparent. Zone, Standardwerte, Ablauf,
+// Lage und Text kommen aus dem Effekt-Kontext des Kerns (src/core/fx), die Medien zeigt core/FxMedia.tsx; hier steht
+// der Text in einer abgerundeten Karte. Parameter: ?zone=main, ?sound=0, ?volume=0.5
 import FxMedia from "../../../core/FxMedia.tsx";
-import { params } from "../../../core/params.ts";
-import { fillTemplate } from "../../../core/template.ts";
-import { fxLifetime } from "../../../core/overlayTiming.ts";
-import { useFx, useFxPhase, type ShownFx } from "../../../core/hooks/useFx.ts";
+import { useFxItem, useFxScene } from "../../../core/fx/useFxScene.ts";
+import type { ShownFx } from "../../../core/hooks/useFx.ts";
 import { useStandard } from "../useStandard.ts";
 
-const ZONE = params.get("zone") ?? "main";
-
 export default function Fx() {
-  const values = useStandard();
-  const defaults = useMemo(() => ({ duration: values.fxDuration, size: values.fxSize }), [values.fxDuration, values.fxSize]);
-  const shown = useFx(ZONE, values.fxMax, defaults, values.fxMargin);
+  const shown = useFxScene(useStandard());
   return <div className="standard-fx">{shown.map(item => <Item key={item.id} item={item} />)}</div>;
 }
 
 function Item({ item }: { item: ShownFx }) {
-  const action = item.action;
-  const phase = useFxPhase(action);
-  const text = fillTemplate(action.text ?? "", { user: item.user, message: item.message });
+  const { phase, text, style } = useFxItem(item);
   return (
-    <div className="standard-fx-item" style={{ left: `${item.x}%`, top: `${item.y}%`, width: action.size, "--life": `${fxLifetime(action)}ms` } as React.CSSProperties}>
+    <div className="standard-fx-item" style={style}>
       <FxMedia item={item} phase={phase} />
       {text && <div className="standard-card standard-fx-text">{text}</div>}
     </div>

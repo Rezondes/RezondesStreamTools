@@ -10,3 +10,7 @@ export function textBar(part: number, width: number, full: string, empty: string
   const filled = Math.round(Math.min(1, Math.max(0, part)) * width);
   return full.repeat(filled) + empty.repeat(width - filled);
 }
+
+// Platzhalter {channel} (Kanal-Name aus den Einstellungen) und {login} (Twitch-Login des Streamers; ohne Streamer der
+// Kanal-Name klein), gleich in jedem Theme
+export const channelNames = (channelName: string, login: string | null) => ({ channel: channelName, login: login ?? channelName.toLowerCase() });

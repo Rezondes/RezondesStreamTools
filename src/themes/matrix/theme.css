@@ -425,10 +425,6 @@
 .theme-matrix .music-album { font-size: var(--music-album-size, 18px); }
 .theme-matrix .music-progress { margin-top: var(--music-progress-gap, 6px); font-size: var(--music-progress-size, 18px); white-space: pre; overflow: hidden; }
 
-.theme-matrix .marquee { overflow: hidden; white-space: pre; }
-.theme-matrix .marquee span { display: inline-block; }
-.theme-matrix .marquee .scroll { animation: matrix-marquee-pingpong var(--marquee, 12s) ease-in-out infinite alternate; }
-@keyframes matrix-marquee-pingpong { 0%, 15% { transform: translateX(0); } 85%, 100% { transform: translateX(var(--shift)); } }
 
 /* --- Befehlsseite (öffentlich): Terminal-Spalte über dem Regen, scrollt als normale Seite ------------------------ */
 .theme-matrix.theme-root:has(.matrix-info) { min-height: 100vh; background: var(--background); }

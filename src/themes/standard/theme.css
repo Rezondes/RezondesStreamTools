@@ -187,6 +187,7 @@
 .theme-standard .standard-cover { flex: none; width: var(--coverSize); height: var(--coverSize); border-radius: calc(var(--radius) * 0.75); object-fit: cover; }
 .theme-standard .standard-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
 .theme-standard .standard-track > * { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.theme-standard .standard-track .marquee { text-overflow: clip; }
 .theme-standard .standard-track .standard-line { font-size: 1.2em; }
 .theme-standard .standard-time { display: flex; align-items: center; gap: var(--time-gap, 12px); color: var(--mutedColor); font-size: 0.75em; font-variant-numeric: tabular-nums; }
 .theme-standard .standard-time .standard-progress { flex: 1; }

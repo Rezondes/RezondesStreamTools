@@ -1,5 +1,6 @@
 // Chat des Standard-Themes: Nachrichten als abgerundete Karten untereinander, neue unten, optional mit Badges und
-// Ausblenden. Nutzt nur den Kern-Hook useChat und die Werte des Themes.
+// Ausblenden. Nachrichten (useChat) und ihr Inhalt mit Emotes (MessageParts) kommen aus dem Kern, hier das Aussehen.
+import MessageParts from "../../../core/chat/MessageParts.tsx";
 import type { ChatMessage } from "../../../core/types.ts";
 import { useChat } from "../../../core/hooks/useChat.ts";
 import { useStandard } from "../useStandard.ts";
@@ -16,9 +17,7 @@ function Row({ message }: { message: ChatMessage }) {
     <div className={`standard-card standard-row${values.chatFade > 0 ? " fades" : ""}`}>
       {values.chatBadges && message.badges.map(badge => <span key={badge} className="standard-chip">{badge}</span>)}
       <b className="standard-user">{message.user}</b>
-      {message.parts.map((part, index) => (typeof part === "string"
-        ? <span key={index}>{part}</span>
-        : <img key={index} className="standard-emote" alt={part.name} src={part.url} />))}
+      <MessageParts parts={message.parts} emoteClassName="standard-emote" />
     </div>
   );
 }

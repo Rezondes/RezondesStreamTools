@@ -5,7 +5,7 @@
 import { useMemo, useState, type CSSProperties } from "react";
 import { glyph } from "../../../core/glyphs.ts";
 import { useMinimes } from "../../../core/hooks/useMinimes.ts";
-import type { MinimeAction, MinimeActor } from "../../../core/minimeBehavior.ts";
+import { actorRun, actorStyle, type MinimeAction, type MinimeActor } from "../../../core/minimeBehavior.ts";
 import { useMatrix } from "../useMatrix.ts";
 import "../minimes.css";
 
@@ -32,21 +32,14 @@ export default function Minimes() {
 function Ghost({ actor }: { actor: MinimeActor }) {
   const values = useMatrix();
   const showing = actor.action === "enter" || actor.action === "exit";
-  // Position und Laufzeit je Geist; die Bewegung macht die CSS-Transition (nur bei walk mit Dauer)
-  const style = {
-    "--x": `${actor.toX}px`,
-    "--move": actor.action === "walk" ? `${actor.durationMs}ms` : "0ms",
-    "--action-ms": `${actor.durationMs}ms`,
-    "--facing": actor.facing,
-    "--minime": actor.color ?? values.minimeDefaultColor,
-  } as CSSProperties;
+  // Lage, Bewegung, Dauer und Blickrichtung aus dem Kern (actorStyle), dazu die Farbe des Geists
+  const style = { ...actorStyle(actor), "--minime": actor.color ?? values.minimeDefaultColor } as CSSProperties;
   return (
     <div className={`minime action-${actor.action}`} style={style}>
       {values.minimeNames && <div className="minime-name">{actor.user}</div>}
       <div className="minime-float">
         <div className="minime-flip">
-          {/* Neu bei jeder Aktion, damit ihre Animation auch zweimal hintereinander von vorn läuft */}
-          <div key={`${actor.action}-${actor.startedAt}`} className="minime-action">
+          <div key={actorRun(actor)} className="minime-action">
             <Shape />
             {showing && <Glyphs className="minime-decode" />}
             {actor.action === "sleep" && <Sleep />}

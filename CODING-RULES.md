@@ -34,8 +34,8 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 
 ## React and overlays
 
-16. **Themes only present, core only decides.** A scene component gets its data from core hooks (`useAlerts`, `useChat`, `useMusic`, `useFx`, `useTerminal`) and its look from the theme settings; it opens no socket, no `EventSource` and calls no `fetch` of its own.
-17. **Hooks** start with `use`, follow the rules of hooks and live in `src/core/hooks/`. Every effect cleans up everything it starts: timers, intervals, `requestAnimationFrame`, listeners, sockets, `EventSource`, `AbortController`, object URLs.
+16. **Themes only present, core only decides.** A scene component gets its data from core hooks (`useAlerts`, `useChat`, `useMusic`, `useFx`, `useTerminal`) and its look from the theme settings; it opens no socket, no `EventSource` and calls no `fetch` of its own. Logic that more than one theme needs lives once in a context of the core (`src/core/music`, `screens`, `alerts`, `chat`, `fx`, `info`: pure rules with a check, hooks and headless building blocks such as `<Marquee>`); a theme calls it and adds only its look and its own features. A theme imports only from its own folder and from `src/core`, never from another theme, the dashboard or the server; the core never imports from themes, dashboard or server.
+17. **Hooks** start with `use`, follow the rules of hooks and live in `src/core/hooks/` or in the context folder they belong to (`src/core/music/useNowPlaying.ts`). Every effect cleans up everything it starts: timers, intervals, `requestAnimationFrame`, listeners, sockets, `EventSource`, `AbortController`, object URLs.
 18. **State holds sources, not derived values.** What can be computed from props or state is computed in render. Keys are stable ids (alert key, message id); an index is a key only in a list that never reorders while mounted.
 19. **Styling through the theme.** Every colour, font, size and timing that a streamer may change is a theme setting and reaches the CSS as a custom property on the scene root (`--accent`, `--font`). A component holds no literal colour. A theme's CSS is scoped under its root class, so two themes never clash.
 20. **User-facing text never comes from a literal in core or server code.** Overlay texts (titles, alert lines, terminal lines) are theme settings with defaults; dashboard texts sit in one text module per language. A server answer carries a code, the dashboard shows the text for it.
@@ -74,7 +74,7 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 |---|---|---|
 | Type check | `npm run typecheck` | 15 |
 | ESLint (`eslint.config.js`) | `npm run lint` | 3, 4, 5, 8, 9, 15, 17, 21, 30, file and function size |
-| Rule script (`scripts/rules.check.ts`) | part of `npm test` | 6, 8 (file names), 11, 14, a check per logic module |
+| Rule script (`scripts/rules.check.ts`) | part of `npm test` | 6, 8 (file names), 11, 14, 16 (network and imports), 20, a check per logic module |
 | Checks with coverage limits | `npm test` | checks; lines 90 %, branches 90 %, functions 95 % |
 | Build | `vite build` | the overlays still build |
 

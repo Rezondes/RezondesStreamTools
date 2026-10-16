@@ -435,9 +435,7 @@
 .theme-suedfrucht .sf-cover-empty .part-line { stroke: var(--sun); }
 .theme-suedfrucht .sf-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
 .theme-suedfrucht .sf-head { font-size: 0.72em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
-.theme-suedfrucht .sf-song { overflow: hidden; white-space: nowrap; font-size: var(--musicTitleSize); }
-.theme-suedfrucht .sf-song span { display: inline-block; }
-.theme-suedfrucht .sf-song.marquee span { animation: suedfrucht-pingpong var(--marquee-time, 9s) ease-in-out infinite alternate; }
+.theme-suedfrucht .sf-song { font-weight: bold; font-size: var(--musicTitleSize); }
 .theme-suedfrucht .sf-artist, .theme-suedfrucht .sf-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: 0.85; }
 .theme-suedfrucht .sf-wave-progress { position: relative; height: var(--wave-progress, 8px); border-radius: var(--pill, 999px); background: color-mix(in srgb, currentColor 20%, transparent); overflow: hidden; }
 .theme-suedfrucht .sf-wave-progress span { display: block; height: 100%; width: calc(var(--part) * 100%); background: linear-gradient(90deg, var(--sea), var(--accent2)); transition: width var(--tick, 250ms) linear; }
@@ -499,7 +497,6 @@
 @keyframes suedfrucht-leaf { from { rotate: -5deg; } to { rotate: 5deg; } }
 @keyframes suedfrucht-spin { to { rotate: 1turn; } }
 @keyframes suedfrucht-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
-@keyframes suedfrucht-pingpong { 0%, 15% { translate: 0 0; } 85%, 100% { translate: var(--shift) 0; } }
 
 /* --- Befehlsseite (öffentlich): Strand fest im Hintergrund, Holzschilder scrollen als normale Seite davor -------- */
 .theme-suedfrucht.theme-root:has(.sf-info) { min-height: 100vh; background: var(--seaDeep); }

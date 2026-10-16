@@ -91,6 +91,8 @@ const FIELDS = [
   text("musicIdle", "Text ohne Wiedergabe", MUSIC, "Keine Musik"),
   flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
   flag("musicCover", "Cover zeigen", MUSIC, true),
+  flag("musicMarquee", "Lange Zeilen laufen durch", MUSIC, true),
+  number("musicMarqueeSpeed", "Lange Zeilen: Lauftempo (px pro Sekunde)", MUSIC, 40, 5, 400),
   number("coverSize", "Cover-Grösse", MUSIC, 120, 40, 400, "px"),
 
   number("fxDuration", "Standarddauer", FX, 4, 0.5, 120, "s", 0.5),

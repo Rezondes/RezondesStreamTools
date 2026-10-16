@@ -1,28 +1,24 @@
 // Spotify "Now Playing" des Südfrucht-Themes: Strandradio aus Holz, Muschel oder schlichte Karte, Cover rund oder
 // eckig, Kopfzeile, Titel (lange Titel laufen hin und her), Interpret, Album, Fortschritt als Wellenlinie und ein
-// Wellen-Equalizer. Bei Pause oder Stopp blendet der Player aus (abschaltbar). Parameter: ?demo
-import { useEffect, useState, type CSSProperties } from "react";
-import { useMusic } from "../../../core/hooks/useMusic.ts";
-import { useNow } from "../../../core/hooks/useNow.ts";
-import { useOverflow } from "../../../core/hooks/useOverflow.ts";
-import { currentProgress, marqueeSeconds } from "../../../core/overlayTiming.ts";
+// Wellen-Equalizer. Bei Pause oder Stopp blendet der Player aus (abschaltbar). Sichtbarkeit, Fortschritt, Cover und
+// Lauftext kommen aus dem Musik-Kontext des Kerns (src/core/music). Parameter: ?demo
+import type { CSSProperties } from "react";
+import Marquee from "../../../core/music/Marquee.tsx";
+import { useCover } from "../../../core/music/useCover.ts";
+import { useNowPlaying } from "../../../core/music/useNowPlaying.ts";
+import { useTrackProgress } from "../../../core/music/useTrackProgress.ts";
 import type { Track } from "../../../core/types.ts";
 import { ICONS } from "../beach.ts";
 import ShapeIcon from "../ShapeIcon.tsx";
 import { useSuedfrucht } from "../useSuedfrucht.ts";
 
-// fixed: Fortschritt viermal pro Sekunde
-const PROGRESS_MS = 250;
-
 export default function Music() {
   const values = useSuedfrucht();
-  const { track, last, receivedAt } = useMusic();
-  const visible = values.musicHide ? Boolean(track?.playing) : true;
-  const shown = track ?? (values.musicHide ? last : null);
+  const { shown, visible, at } = useNowPlaying(values.musicHide);
   return (
     <div className={`sf-music sf-music-${values.musicStyle}`}>
       <div key={shown?.id ?? "idle"} className={`sf-player${visible ? "" : " leaving"}${shown?.playing ? "" : " paused"}`}>
-        {shown ? <Playing track={shown} at={track ? receivedAt : 0} /> : <Idle />}
+        {shown ? <Playing track={shown} at={at} /> : <Idle />}
       </div>
     </div>
   );
@@ -30,19 +26,16 @@ export default function Music() {
 
 function Playing({ track, at }: { track: Track; at: number }) {
   const values = useSuedfrucht();
-  const now = useNow(PROGRESS_MS);
-  const [broken, setBroken] = useState(false);
-  useEffect(() => setBroken(false), [track.cover]);
-  const progress = at ? currentProgress(track, at, now) : track.progressMs;
-  const part = track.durationMs ? progress / track.durationMs : 0;
+  const { part } = useTrackProgress(track, at);
+  const cover = useCover(track.cover);
   return (
     <>
-      {track.cover && !broken
-        ? <img className={`sf-cover cover-${values.coverShape}`} src={track.cover} alt="" onError={() => setBroken(true)} />
+      {cover.src
+        ? <img className={`sf-cover cover-${values.coverShape}`} src={cover.src} alt="" onError={cover.onError} />
         : <div className={`sf-cover sf-cover-empty cover-${values.coverShape}`}><ShapeIcon shape={ICONS.sonne} /></div>}
       <div className="sf-track">
         <span className="sf-head">{track.playing ? values.musicHeadPlaying : values.musicHeadPaused}</span>
-        <Title text={track.title} />
+        <Marquee text={track.title} speed={values.musicMarqueeSpeed} enabled={values.musicMarquee} className="sf-song" />
         <span className="sf-artist">{track.artist}</span>
         {values.musicAlbum && <span className="sf-album">{track.album}</span>}
         {values.musicProgress && track.durationMs > 0 && <div className="sf-wave-progress" style={{ "--part": part } as CSSProperties}><span /></div>}
@@ -62,19 +55,6 @@ function Idle() {
         <span className="sf-artist">{values.musicIdleArtist}</span>
       </div>
     </>
-  );
-}
-
-// Titel; ist er länger als der Platz, läuft er hin und her (wenn eingeschaltet)
-function Title({ text }: { text: string }) {
-  const values = useSuedfrucht();
-  const { outer, inner, overflow } = useOverflow<HTMLElement, HTMLSpanElement>(text);
-  const moving = values.musicMarquee && overflow > 0;
-  const style = { "--shift": `-${overflow}px`, "--marquee-time": `${marqueeSeconds(overflow, values.musicMarqueeSpeed)}s` } as CSSProperties;
-  return (
-    <b ref={outer} className={`sf-song${moving ? " marquee" : ""}`} style={style}>
-      <span ref={inner}>{text}</span>
-    </b>
   );
 }
 

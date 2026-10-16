@@ -1,7 +1,7 @@
 // Check für minimeBehavior.ts: welche Aktion ein Minime als nächstes macht, wohin es wandert, Erscheinen,
 // Verschwinden und Reaktion auf Chat. Läuft mit npm test (einzeln: node src/core/minimeBehavior.check.ts).
 import assert from "node:assert/strict";
-import { advance, nextAction, nextEnd, positionAt, react, syncRoster, type MinimeActor, type MinimeStage } from "./minimeBehavior.ts";
+import { actorRun, actorStyle, advance, nextAction, nextEnd, positionAt, react, shownVariant, syncRoster, type MinimeActor, type MinimeStage } from "./minimeBehavior.ts";
 import { readMinimeOptions } from "./minimeFields.ts";
 
 const MOTION = readMinimeOptions({}).motion;
@@ -79,5 +79,17 @@ assert.equal(positionAt(actor({ action: "walk", startedAt: 0, durationMs: 0, fro
   const leaving = actor({ action: "exit", leaving: true });
   assert.equal(react(leaving, boost, 300), leaving);
 }
+
+// Darstellung für alle Themes: Lage, Laufzeit der Bewegung (nur beim Gehen), Dauer der Aktion und Blickrichtung als
+// CSS-Variablen; ein neuer Schlüssel je Aktion startet ihre Animation neu
+assert.deepEqual(actorStyle(actor({ action: "walk", toX: 120, durationMs: 800, facing: -1 })), { "--x": "120px", "--move": "800ms", "--action-ms": "800ms", "--facing": -1 });
+assert.equal(actorStyle(actor({ action: "idle" }))["--move"], "0ms");
+assert.equal(actorRun(actor({ action: "spin", startedAt: 42 })), "spin-42");
+
+// Typ der Figur: der vom Server, sonst in der Demo ein erlaubter nach dem Login (immer derselbe), sonst der Standard
+assert.equal(shownVariant(actor({ variant: "mango" }), ["kiwi"], "zitrone", true), "mango");
+assert.equal(shownVariant(actor(), ["kiwi"], "zitrone", true), "kiwi");
+assert.equal(shownVariant(actor(), ["kiwi"], "zitrone", false), "zitrone");
+assert.equal(shownVariant(actor(), [], "zitrone", true), "zitrone");
 
 console.log("minimeBehavior ok");

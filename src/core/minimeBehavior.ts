@@ -2,6 +2,7 @@
 // und verschwindet. Eingebaut sind enter, exit, idle und walk; alles andere bringt das Theme als Katalog mit
 // (Name, Dauer, Gewicht) und zeigt es über den Namen an. Rein (Regel 12): Zeit und Zufall kommen herein.
 // Genutzt von hooks/useMinimes.ts. Check: minimeBehavior.check.ts.
+import { hash, seedOf } from "./hash.ts";
 import type { MinimeMotion } from "./minimeFields.ts";
 import type { Minime } from "./types.ts";
 
@@ -97,4 +98,21 @@ export function nextEnd(actors: readonly MinimeActor[]): number | null {
 export function react(actor: MinimeActor, reaction: MinimeAction, now: number): MinimeActor {
   if (actor.leaving || actor.action === "enter" || actor.action === "exit") return actor;
   return at(actor, reaction.name, now, reaction.durationMs, positionAt(actor, now));
+}
+
+// CSS-Variablen einer Figur, gleich für jedes Theme: Lage (--x), Laufzeit der Bewegung (--move, nur beim Gehen, die
+// Bewegung macht eine CSS-Transition), Dauer der Aktion (--action-ms) und Blickrichtung (--facing, 1 oder -1)
+export function actorStyle(actor: MinimeActor): Record<string, string | number> {
+  return { "--x": `${actor.toX}px`, "--move": actor.action === "walk" ? `${actor.durationMs}ms` : "0ms", "--action-ms": `${actor.durationMs}ms`, "--facing": actor.facing };
+}
+
+// Schlüssel einer laufenden Aktion: neu bei jeder Aktion, damit ihre Animation auch zweimal hintereinander von vorn läuft
+export const actorRun = (actor: MinimeActor) => `${actor.action}-${actor.startedAt}`;
+
+// Typ, den eine Figur zeigt (Themes mit Typen): der vom Server; ohne Typ in der Demo ein erlaubter nach dem Login
+// (immer derselbe), sonst der Standardtyp des Themes
+export function shownVariant(actor: MinimeActor, enabled: readonly string[], fallback: string, demo: boolean) {
+  if (actor.variant) return actor.variant;
+  if (demo && enabled.length) return enabled[Math.floor(hash(seedOf(actor.login)) * enabled.length)];
+  return fallback;
 }

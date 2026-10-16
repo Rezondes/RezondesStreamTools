@@ -30,9 +30,22 @@ src/themes/<id>/
    `ValuesOf<typeof FIELDS>` ergibt den Typ der Werte. `id` und `name` im exportierten `ThemeSchema` setzen.
 3. **Werte lesen**: in `use<Id>.ts` (z.B. `useStandard.ts`) `useThemeValues()` aus `src/core/hooks/useSettings.ts` auf den eigenen Typ casten.
    main.tsx löst die Werte vorher gegen das Schema auf, darum ist jeder Schlüssel da und gültig.
-4. **Szenen** in `scenes/`: nur die Kern-Hooks aus `src/core/hooks/` nutzen (`useAlerts`, `useChat`, `useMusic`,
-   `useFx`, `useTerminal`, `useDecode`, `useNow`), keine eigenen Netzwerkzugriffe. Texte mit Platzhaltern füllt
-   `fillTemplate` aus `src/core/template.ts`, Töne spielt `playSound` aus `src/core/sound.ts`.
+4. **Szenen** in `scenes/`: Logik, die mehrere Themes brauchen, steht einmal im Kern und wird nur aufgerufen. Das
+   Theme liefert Aussehen und eigene Funktionen, keine eigene Kopie der Regeln und keine Netzwerkzugriffe:
+
+   | Szene | aus dem Kern |
+   |---|---|
+   | Musik | `core/music`: `useNowPlaying` (was der Player zeigt), `useTrackProgress` (Anteil, Uhrzeit), `useCover`, `<Marquee>` (Lauftext) |
+   | Starting, BRB, Ending | `core/screens`: `useStage` (1920x1080 skalieren), `useScreen` (Countdown, Pausenzeit, `?ticker`, `?next`), `shortClock`, `rotating` |
+   | Alerts | `useAlerts`; `core/alerts`: `describeAlert` (Texte je Art mit den eigenen Schlüsseln), `alertQuote`, `useAlertSounds` |
+   | Chat | `useChat`; `core/chat`: `<MessageParts>` (Text und Emotes), `badgeLabel` |
+   | Effekte | `core/fx`: `useFxScene`, `useFxItem` (Phase, Text, Lage), `<FxMedia>` |
+   | Befehlsseite | `core/info`: `useInfoPage` |
+   | Minimes | `useMinimes` (siehe unten) |
+
+   Platzhalter `{channel}` und `{login}` liefert `channelNames`, Texte füllt `fillTemplate` (beides
+   `src/core/template.ts`), eigene Töne spielt `playSound` aus `src/core/sound.ts`. Ein Theme importiert nur aus seinem
+   Ordner und aus `src/core` (geprüft).
 5. **CSS** in `theme.css`, jede Regel unter `.theme-<id>`, Keyframes mit Präfix `<id>-`. Farben, Zahlen, Schalter (1/0)
    und Schriften aus dem Schema kommen automatisch als CSS-Variablen an (`var(--accent)`, `var(--alertWidth)`).
    Feste Masse nur als Standardwert einer Variable: `padding: var(--card-padding, 16px 20px)`.
@@ -101,7 +114,8 @@ Hilfe-Befehl, die Minimes-Befehle des gewählten Themes und die öffentlichen Tr
 - keine Farbliterale (`#39ff14`, `rgb(...)`, `hsl(...)`), Farben kommen aus dem Schema;
 - kein sichtbarer Text im JSX, Texte kommen aus dem Schema;
 - in CSS keine `px`/`ms`/`s`-Werte ausserhalb von `var(--name, Standard)`;
-- in Szenen keine Zahlen über 1 (ausser Indizes).
+- in Szenen keine Zahlen über 1 (ausser Indizes);
+- Importe nur aus dem eigenen Ordner und aus `src/core`, nie aus einem anderen Theme, dem Dashboard oder dem Server.
 
 Eine bewusste Ausnahme bekommt einen Kommentar `fixed: <Grund>` auf derselben Zeile oder direkt darüber.
 
@@ -119,7 +133,7 @@ Standardwerte von `standard`. Ausnahme: Szenen theme-eigener Funktionen (z.B. `m
 
 - [ ] id eindeutig, Name lesbar, Gruppen sinnvoll benannt
 - [ ] jeder sichtbare und hörbare Wert ist eine Einstellung mit Standardwert
-- [ ] Szenen nutzen nur Kern-Hooks, kein `fetch`, `EventSource` oder `WebSocket`
+- [ ] Szenen nutzen nur Kern-Hooks und -Bausteine, keine eigene Kopie gemeinsamer Logik, kein `fetch`, `EventSource` oder `WebSocket`
 - [ ] CSS komplett unter `.theme-<id>`, Keyframes mit Präfix
 - [ ] in `registry.ts` und `scenes.tsx` eingetragen
 - [ ] `npm run verify` grün, im Dashboard ausprobiert

@@ -1,5 +1,8 @@
 // Chat-Overlay, transparent, neue Nachrichten unten (oder oben). Empfohlen z.B. 500x900.
-// Prompt, Badges, Grössen, Ausblenden und Animationen kommen aus den Einstellungen. Parameter: ?demo
+// Prompt, Badges, Grössen, Ausblenden und Animationen kommen aus den Einstellungen. Nachrichten (useChat), Badge-Texte
+// (badgeLabel) und Inhalt mit Emotes (MessageParts) kommen aus dem Kern, hier das Matrix-Aussehen. Parameter: ?demo
+import { badgeLabel } from "../../../core/chat/chat.ts";
+import MessageParts from "../../../core/chat/MessageParts.tsx";
 import type { ChatMessage } from "../../../core/types.ts";
 import { useChat } from "../../../core/hooks/useChat.ts";
 import { useMatrixDecode } from "../useMatrixDecode.ts";
@@ -18,19 +21,15 @@ export default function Chat() {
 function Line({ message }: { message: ChatMessage }) {
   const values = useMatrix();
   const user = useMatrixDecode(message.user, "chatUser");
-  // Badges kommen als HOST, MOD, VIP, SUB aus core/ircEvents.ts
-  const badges: Record<string, string> = { HOST: values.badgeHost, MOD: values.badgeMod, VIP: values.badgeVip, SUB: values.badgeSub };
   return (
     <div className={`msg in-${values.chatIn} out-${values.chatOut}${values.chatFade > 0 ? " fades" : ""}${message.action ? " action" : ""}`}>
       <div className="msg-head">
-        {message.badges.map(badge => <span key={badge} className="badge">{badges[badge] ?? badge}</span>)}
+        {message.badges.map(badge => <span key={badge} className="badge">{badgeLabel(badge, values)}</span>)}
         <span className="glow">{user}</span>
         <span className="muted">{values.chatPrompt}</span>
       </div>
       <div className="msg-body">
-        {message.parts.map((part, index) => typeof part === "string"
-          ? <span key={index}>{part}</span>
-          : <img key={index} className="emote" alt={part.name} src={part.url} />)}
+        <MessageParts parts={message.parts} emoteClassName="emote" />
       </div>
     </div>
   );

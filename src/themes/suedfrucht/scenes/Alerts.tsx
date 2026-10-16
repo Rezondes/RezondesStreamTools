@@ -1,7 +1,10 @@
 // Alerts des Südfrucht-Themes: Postkarte mit Briefmarke und Poststempel, Surfbrett auf einer Welle oder Flaschenpost,
 // je Alert-Art Kopfzeile, Zeile, Symbol und Ton; dazu Hibiskus-Konfetti, Wasserspritzer und die Restzeit als Seil.
-// Parameter: ?sound=0, ?volume=0.5
-import { useEffect, useState, type CSSProperties } from "react";
+// Texte, Zitat-Regel und Töne kommen aus dem Alerts-Kontext des Kerns (src/core/alerts), hier Schlüssel, Symbole und
+// das Strand-Aussehen. Parameter: ?sound=0, ?volume=0.5
+import type { CSSProperties } from "react";
+import { alertQuote, describeAlert, type AlertTextKeys } from "../../../core/alerts/alerts.ts";
+import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
 import { hash } from "../../../core/hash.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
 import { fillTemplate } from "../../../core/template.ts";
@@ -13,25 +16,29 @@ import { playChime, playLeave } from "../tones.ts";
 import { useSuedfrucht } from "../useSuedfrucht.ts";
 
 type Key = keyof SuedfruchtValues;
-const TEXTS = {
-  follow: ["followTag", "followLine", "followIcon", "soundFollow"],
-  sub: ["subTag", "subLine", "subIcon", "soundSub"],
-  resub: ["resubTag", "resubLine", "resubIcon", "soundResub"],
-  gift: ["giftTag", "giftLine", "giftIcon", "soundGift"],
-  raid: ["raidTag", "raidLine", "raidIcon", "soundRaid"],
-  cheer: ["cheerTag", "cheerLine", "cheerIcon", "soundCheer"],
-  redeem: ["redeemTag", "redeemLine", "redeemIcon", "soundRedeem"],
-  hype: ["hypeTag", "hypeBeginLine", "hypeIcon", "soundHype"],
-} as const satisfies Record<AlertKind, readonly [Key, Key, Key, Key]>;
+const KEYS: AlertTextKeys = {
+  tag: { follow: "followTag", sub: "subTag", resub: "resubTag", gift: "giftTag", raid: "raidTag", cheer: "cheerTag", redeem: "redeemTag", hype: "hypeTag" },
+  line: { follow: "followLine", sub: "subLine", resub: "resubLine", gift: "giftLine", raid: "raidLine", cheer: "cheerLine", redeem: "redeemLine", hype: "hypeBeginLine" },
+  hypeEndLine: "hypeEndLine",
+};
+// Südfrucht-eigen: Symbol auf der Briefmarke und Ton je Alert-Art
+const EXTRAS = {
+  follow: ["followIcon", "soundFollow"],
+  sub: ["subIcon", "soundSub"],
+  resub: ["resubIcon", "soundResub"],
+  gift: ["giftIcon", "soundGift"],
+  raid: ["raidIcon", "soundRaid"],
+  cheer: ["cheerIcon", "soundCheer"],
+  redeem: ["redeemIcon", "soundRedeem"],
+  hype: ["hypeIcon", "soundHype"],
+} as const satisfies Record<AlertKind, readonly [Key, Key]>;
 
 // fixed: Anzahl der Wassertropfen beim Spritzer
 const DROPS = 9;
 
 function describe(alert: Alert, values: SuedfruchtValues) {
-  const [tag, line, icon, sound] = TEXTS[alert.kind];
-  const text = alert.kind === "hype" && alert.detail === "end" ? values.hypeEndLine : values[line];
-  const fill = { user: alert.user, amount: alert.amount ?? 0, detail: alert.detail ?? "", text: alert.text ?? "" };
-  return { tag: fillTemplate(values[tag], fill), line: fillTemplate(text, fill), icon: values[icon] as IconName, sound: values[sound] };
+  const [icon, sound] = EXTRAS[alert.kind];
+  return { ...describeAlert(alert, values, KEYS), icon: values[icon] as IconName, sound: values[sound] };
 }
 
 export default function Alerts() {
@@ -48,12 +55,10 @@ export default function Alerts() {
 function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const values = useSuedfrucht();
   const { tag, line, icon, sound } = describe(alert, values);
-  const [opening] = useState(() => sound);
-  const [closing] = useState(() => values.soundLeave);
-  const sounds = values.alertSound;
-  useEffect(() => { if (sounds) playChime(opening); }, [sounds, opening]);
-  useEffect(() => { if (sounds && leaving) playLeave(closing); }, [sounds, leaving, closing]);
-  const quote = values.alertQuote && alert.text && alert.kind !== "gift" ? fillTemplate(values.quoteFormat, { text: alert.text }) : "";
+  const closing = values.soundLeave;
+  useAlertSounds(values.alertSound ? () => playChime(sound) : null, values.alertSound ? () => playLeave(closing) : null, leaving);
+  const said = values.alertQuote ? alertQuote(alert) : null;
+  const quote = said ? fillTemplate(values.quoteFormat, { text: said }) : "";
   return (
     <div className={`sf-alert sf-alert-${values.alertStyle} in-${values.alertIn} out-${values.alertOut}${leaving ? " leaving" : ""}`}>
       {values.alertStyle === "flaschenpost" && <div className="sf-bottle" aria-hidden="true" />}

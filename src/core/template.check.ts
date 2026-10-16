@@ -1,6 +1,6 @@
 // Check für template.ts: Platzhalter in Texten aus den Einstellungen. Läuft mit npm test.
 import assert from "node:assert/strict";
-import { fillTemplate, textBar } from "./template.ts";
+import { channelNames, fillTemplate, textBar } from "./template.ts";
 
 // Bekannte Platzhalter werden ersetzt, auch mehrfach und Zahlen
 assert.equal(fillTemplate("{user} cheert {amount} Bits, danke {user}!", { user: "NEO", amount: 100 }), "NEO cheert 100 Bits, danke NEO!");
@@ -14,5 +14,9 @@ assert.equal(textBar(0.5, 4, "#", "."), "##..");
 assert.equal(textBar(0.3, 10, "█", "░"), "███░░░░░░░");
 assert.equal(textBar(-1, 3, "#", "."), "...");
 assert.equal(textBar(2, 3, "#", "."), "###");
+
+// Platzhalter für Kanal und Login: ohne Streamer der Kanal-Name klein
+assert.deepEqual(channelNames("REZONDES", "rezondes"), { channel: "REZONDES", login: "rezondes" });
+assert.deepEqual(channelNames("Strand", null), { channel: "Strand", login: "strand" });
 
 console.log("template ok");

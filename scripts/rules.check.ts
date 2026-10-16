@@ -1,9 +1,10 @@
 // Prüft die Regeln aus CODING-RULES.md, die ESLint nicht abdeckt: Gedankenstrich, Sammelnamen,
-// Kopfkommentar, ignorierte Ordnernamen und dass jedes Logikmodul einen Check hat.
+// Kopfkommentar, ignorierte Ordnernamen, Importgrenzen zwischen Themes und Kern und dass jedes Logikmodul einen Check hat.
 // Läuft automatisch mit npm test (wie jede *.check.ts).
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import { posix } from "node:path";
 
 // Alle Dateien im Repo, auch neue, aber ohne das, was .gitignore ausschliesst
 const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], { encoding: "utf8" })
@@ -82,6 +83,34 @@ for (const file of files.filter(file => PRESENTING.test(file))) {
     if (/\bfetch\(|new EventSource\(|new WebSocket\(/.test(line)) failures.push(`${file}:${index + 1}: network access in a scene (rule 16)`);
   });
 }
+
+// Regel 16, Grenzen: ein Theme importiert nur aus seinem eigenen Ordner und aus src/core (Regeln, Hooks und Bausteine,
+// die für alle Themes gleich sind), nie aus einem anderen Theme, dem Dashboard oder dem Server. Der Kern importiert nie
+// aus Themes, Dashboard oder Server. Checks sind ausgenommen (sie dürfen z.B. schemaAudit nutzen).
+const IMPORT_FROM = /^\s*(?:import|export)\b[^"';]*?["']([^"']+)["']/gm;
+function importViolations(file: string, source: string): string[] {
+  const theme = /^src\/themes\/([^/]+)\//.exec(file)?.[1];
+  if ((!theme && !file.startsWith("src/core/")) || file.endsWith(".check.ts")) return [];
+  return [...source.matchAll(IMPORT_FROM)].flatMap(([, specifier]) => {
+    if (!specifier.startsWith(".")) return [];
+    const target = posix.normalize(posix.join(posix.dirname(file), specifier));
+    const allowed = theme ? target.startsWith(`src/themes/${theme}/`) || target.startsWith("src/core/") : !/^(src\/themes|src\/dashboard|server)\//.test(target);
+    return allowed ? [] : [`${file}: imports ${specifier} (rule 16)`];
+  });
+}
+
+// Selbsttest: eigener Ordner und Kern erlaubt, anderes Theme, Dashboard und Server nicht; der Kern nie nach oben
+assert.deepEqual(importViolations("src/themes/probe/scenes/A.tsx", [
+  "import { useProbe } from \"../useProbe.ts\";",
+  "import Marquee from \"../../../core/music/Marquee.tsx\";",
+  "import { useState } from \"react\";",
+  "import { x } from \"../../matrix/settings.ts\";",
+  "import {\n  y,\n} from \"../../../dashboard/api.ts\";",
+].join("\n")), ["src/themes/probe/scenes/A.tsx: imports ../../matrix/settings.ts (rule 16)", "src/themes/probe/scenes/A.tsx: imports ../../../dashboard/api.ts (rule 16)"]);
+assert.deepEqual(importViolations("src/core/music/a.ts", "import { THEMES } from \"../../themes/registry.ts\";"), ["src/core/music/a.ts: imports ../../themes/registry.ts (rule 16)"]);
+assert.deepEqual(importViolations("src/themes/probe/settings.check.ts", "import { auditTheme } from \"../schemaAudit.ts\";"), []);
+
+for (const file of files.filter(file => SOURCE.test(file))) failures.push(...importViolations(file, readFileSync(file, "utf8")));
 
 // Regel 20: Theme-Code ohne feste Gestaltungswerte. Farben, sichtbare Texte, Masse und Zeiten kommen aus den
 // Einstellungen (src/themes/<id>/settings.ts, dort erlaubt). Gemeldet werden Farbliterale, sichtbarer JSX-Text,

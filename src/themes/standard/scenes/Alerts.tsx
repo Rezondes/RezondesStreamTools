@@ -1,29 +1,18 @@
 // Alerts des Standard-Themes: eine abgerundete Karte mit Verlaufskante, Kopfzeile je Alert-Art, Zeile mit dem Namen,
-// optional der Nachricht und einem Restzeit-Balken. Ton nur mit eigener Datei.
-import { useEffect, useState } from "react";
-import type { Alert, AlertKind } from "../../../core/types.ts";
+// optional der Nachricht und einem Restzeit-Balken. Ton nur mit eigener Datei. Texte, Zitat-Regel und Töne kommen aus
+// dem Alerts-Kontext des Kerns (src/core/alerts), hier nur die Schlüssel der Texte und das Aussehen.
+import { alertQuote, describeAlert, type AlertTextKeys } from "../../../core/alerts/alerts.ts";
+import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
+import type { Alert } from "../../../core/types.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
 import { playSound } from "../../../core/sound.ts";
-import { fillTemplate } from "../../../core/template.ts";
-import type { StandardValues } from "../settings.ts";
 import { useStandard } from "../useStandard.ts";
 
-const TEXTS = {
-  follow: ["followLabel", "followLine"],
-  sub: ["subLabel", "subLine"],
-  resub: ["resubLabel", "resubLine"],
-  gift: ["giftLabel", "giftLine"],
-  raid: ["raidLabel", "raidLine"],
-  cheer: ["cheerLabel", "cheerLine"],
-  redeem: ["redeemLabel", "redeemLine"],
-  hype: ["hypeLabel", "hypeBeginLine"],
-} as const satisfies Record<AlertKind, readonly [keyof StandardValues, keyof StandardValues]>;
-
-function describe(alert: Alert, values: StandardValues) {
-  const [label, line] = TEXTS[alert.kind];
-  const text = alert.kind === "hype" && alert.detail === "end" ? values.hypeEndLine : values[line];
-  return { label: values[label], line: fillTemplate(text, { user: alert.user, amount: alert.amount ?? 0, detail: alert.detail ?? "", text: alert.text ?? "" }) };
-}
+const KEYS: AlertTextKeys = {
+  tag: { follow: "followLabel", sub: "subLabel", resub: "resubLabel", gift: "giftLabel", raid: "raidLabel", cheer: "cheerLabel", redeem: "redeemLabel", hype: "hypeLabel" },
+  line: { follow: "followLine", sub: "subLine", resub: "resubLine", gift: "giftLine", raid: "raidLine", cheer: "cheerLine", redeem: "redeemLine", hype: "hypeBeginLine" },
+  hypeEndLine: "hypeEndLine",
+};
 
 export default function Alerts() {
   const values = useStandard();
@@ -33,14 +22,15 @@ export default function Alerts() {
 
 function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const values = useStandard();
-  const [sound] = useState(() => values.alertSound);
-  useEffect(() => { playSound(sound, () => {}); }, [sound]);
-  const { label, line } = describe(alert, values);
+  const sound = values.alertSound;
+  useAlertSounds(() => playSound(sound, () => {}), null, leaving);
+  const { tag, line } = describeAlert(alert, values, KEYS);
+  const quote = values.alertMessage ? alertQuote(alert) : null;
   return (
     <div className={`standard-card standard-alert${leaving ? " leaving" : ""}`}>
-      <span className="standard-chip">{label}</span>
+      <span className="standard-chip">{tag}</span>
       <div className="standard-line">{line}</div>
-      {values.alertMessage && alert.text && alert.kind !== "gift" && <div className="standard-muted">{alert.text}</div>}
+      {quote && <div className="standard-muted">{quote}</div>}
       {values.alertProgress && <div className="standard-timer" aria-hidden="true" />}
     </div>
   );

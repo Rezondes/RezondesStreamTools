@@ -1,40 +1,38 @@
 // Spotify "Now Playing", transparent. Empfohlen 900x240, Box sitzt unten in der Quelle.
 // Darstellung (cover, record, vinyl, none), Texte, Equalizer, Platte, Grössen und Animationen kommen aus den
-// Einstellungen. Parameter: ?demo
+// Einstellungen. Sichtbarkeit, Fortschritt, Cover und Lauftext kommen aus dem Musik-Kontext des Kerns (src/core/music),
+// hier nur das Matrix-Aussehen mit Platte und Zeichen-Equalizer. Parameter: ?demo
 import { useEffect, useState } from "react";
 import type { Track } from "../../../core/types.ts";
-import { clock, currentProgress, marqueeSeconds } from "../../../core/overlayTiming.ts";
-import { useOverflow } from "../../../core/hooks/useOverflow.ts";
+import Marquee from "../../../core/music/Marquee.tsx";
+import { useCover } from "../../../core/music/useCover.ts";
+import { useNowPlaying } from "../../../core/music/useNowPlaying.ts";
+import { useTrackProgress } from "../../../core/music/useTrackProgress.ts";
 import { textBar } from "../../../core/template.ts";
-import { useMusic } from "../../../core/hooks/useMusic.ts";
-import { useNow } from "../../../core/hooks/useNow.ts";
 import { vinyl } from "../../../core/vinyl.ts";
 import { useMatrixDecode } from "../useMatrixDecode.ts";
 import { useMatrix } from "../useMatrix.ts";
 
-// fixed: Platte mit 12 Bildern pro Sekunde (wirkt wie ein Terminal, schont die CPU), Equalizer alle 130 ms, Fortschritt 4-mal pro Sekunde
-const PACE = { vinylFrameMs: 1000 / 12, equalizerMs: 130, progressMs: 250 };
-// fixed: Zeitanzeige in Minuten:Sekunden (clock liefert HH:MM:SS, ab Zeichen 3)
-const TIME = { secondMs: 1000, minutesFrom: 3 };
+// fixed: Platte mit 12 Bildern pro Sekunde (wirkt wie ein Terminal, schont die CPU), Equalizer alle 130 ms
+const PACE = { vinylFrameMs: 1000 / 12, equalizerMs: 130 };
 // fixed: eine volle Umdrehung der Platte im Bogenmass
 const TURN = Math.PI * 2;
 
 export default function Music() {
   const values = useMatrix();
-  const { track, last, receivedAt } = useMusic();
-
-  // Ausblenden, wenn nichts läuft; der letzte Titel bleibt für die Ausblend-Animation stehen
+  const playing = useNowPlaying(values.musicHide);
+  // Leerlauf als eigene Zeile im Player
   const idle: Track = { id: "idle", title: values.musicIdleTitle, artist: values.musicIdleArtist, album: "", cover: null, durationMs: 0, progressMs: 0, playing: false };
-  const visible = values.musicHide ? Boolean(track?.playing) : true;
-  const shown = track ?? (values.musicHide ? last : idle);
+  const shown = playing.shown ?? (values.musicHide ? null : idle);
   if (!shown) return null;
+  const visible = playing.visible;
 
   return (
     <div className="music">
       {/* key pro Titel: bei jedem Wechsel wird die Box neu aufgebaut und erscheint neu */}
       <div key={shown.id} className={`music-box in-${values.musicIn} out-${values.musicOut}${visible ? "" : " off"}`}>
         {values.musicArt !== "none" && <Art track={shown} />}
-        <Info track={shown} at={track ? receivedAt : 0} />
+        <Info track={shown} at={playing.at} />
       </div>
     </div>
   );
@@ -42,18 +40,16 @@ export default function Music() {
 
 function Art({ track }: { track: Track }) {
   const values = useMatrix();
-  const [broken, setBroken] = useState(false);
-  useEffect(() => setBroken(false), [track.cover]);
-  const cover = track.cover && !broken ? track.cover : null;
-  if (values.musicArt === "cover" && cover) {
+  const cover = useCover(track.cover);
+  if (values.musicArt === "cover" && cover.src) {
     return (
-      <div className="music-cover" key={cover}>
-        <img src={cover} alt="" onError={() => setBroken(true)} />
+      <div className="music-cover" key={cover.src}>
+        <img src={cover.src} alt="" onError={cover.onError} />
       </div>
     );
   }
   // record: Cover über die ganze Platte, sonst die reine ASCII-Platte
-  return <Vinyl playing={track.playing} cover={values.musicArt === "record" ? cover : null} onBroken={() => setBroken(true)} />;
+  return <Vinyl playing={track.playing} cover={values.musicArt === "record" ? cover.src : null} onBroken={cover.onError} />;
 }
 
 // Das Cover dreht mit demselben Winkel wie die Rillen; die runde Maske selbst steht still
@@ -79,13 +75,10 @@ function Vinyl({ playing, cover, onBroken }: { playing: boolean; cover: string |
 
 function Info({ track, at }: { track: Track; at: number }) {
   const values = useMatrix();
-  const now = useNow(PACE.progressMs);
   const title = useMatrixDecode(track.title, "musicTitle");
   const artist = useMatrixDecode(track.artist, "musicArtist");
-  // at = 0: Titel aus dem Gedächtnis (ausgeblendet), dann nicht weiterrechnen
-  const progress = at ? currentProgress(track, at, now) : track.progressMs;
-  const part = track.durationMs ? progress / track.durationMs : 0;
-  const time = (ms: number) => clock(ms / TIME.secondMs).slice(TIME.minutesFrom);
+  const { part, elapsed, total } = useTrackProgress(track, at);
+  const line = (text: string, className: string) => <Marquee text={text} speed={values.musicMarqueeSpeed} className={className} />;
 
   return (
     <div className="music-info">
@@ -93,12 +86,12 @@ function Info({ track, at }: { track: Track; at: number }) {
         <span>{track.playing ? values.musicHeadPlaying : values.musicHeadPaused}</span>
         {values.equalizer && <Equalizer playing={track.playing} />}
       </div>
-      <Marquee className="music-title glow">{title}</Marquee>
-      <Marquee className="music-artist">{artist}</Marquee>
-      {track.album && <Marquee className="music-album muted">{track.album}</Marquee>}
+      {line(title, "music-title glow")}
+      {line(artist, "music-artist")}
+      {track.album && line(track.album, "music-album muted")}
       {track.durationMs > 0 && (
         <div className="music-progress">
-          {time(progress)} [{textBar(part, values.musicBarWidth, values.barFull, values.barEmpty)}] {time(track.durationMs)}
+          {elapsed} [{textBar(part, values.musicBarWidth, values.barFull, values.barEmpty)}] {total}
         </div>
       )}
     </div>
@@ -117,16 +110,4 @@ function Equalizer({ playing }: { playing: boolean }) {
     return () => clearInterval(id);
   }, [playing, equalizerBars, equalizerChars]);
   return <span className="music-eq">{bars}</span>;
-}
-
-// Zu lange Zeilen laufen hin und her statt abgeschnitten zu werden, mit gleichem Tempo egal wie lang
-function Marquee({ className, children }: { className: string; children: string }) {
-  const { musicMarqueeSpeed } = useMatrix();
-  const { outer, inner, overflow } = useOverflow<HTMLDivElement, HTMLSpanElement>(children);
-  const style = { "--shift": `-${overflow}px`, "--marquee": `${marqueeSeconds(overflow, musicMarqueeSpeed)}s` } as React.CSSProperties;
-  return (
-    <div ref={outer} className={`marquee ${className}`}>
-      <span ref={inner} className={overflow ? "scroll" : ""} style={style}>{children}</span>
-    </div>
-  );
 }

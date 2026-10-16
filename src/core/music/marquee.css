@@ -1,0 +1,6 @@
+/* Lauftext (Marquee.tsx): zu lange Zeilen fahren hin und her. Stehen 15 % am Anfang und Ende, fahren in den 70 %
+   dazwischen (passend zu marqueeSeconds). --shift und --marquee-time setzt der Baustein. */
+.marquee { display: block; overflow: hidden; white-space: pre; }
+.marquee-text { display: inline-block; }
+.marquee-text.moving { animation: core-marquee var(--marquee-time) ease-in-out infinite alternate; }
+@keyframes core-marquee { 0%, 15% { translate: 0 0; } 85%, 100% { translate: var(--shift) 0; } }

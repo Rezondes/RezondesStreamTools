@@ -1,40 +1,31 @@
 // Vollbild-Szenen: Starting Soon, BRB, Ending. Für 1920x1080 gebaut, skaliert auf jede Quellgrösse.
 // Texte, Terminal, Countdown, Ticker und Animationen kommen aus den Einstellungen.
+// Bühne, Countdown, Pausenzeit und Parameter kommen aus dem Screens-Kontext des Kerns (src/core/screens).
 // Parameter pro Quelle: ?min=5 oder ?at=20:00 (Countdown, nur starting), ?next=Freitag 20 Uhr (ending), ?ticker=Text
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import MatrixRain from "../MatrixRain.tsx";
-import { numberParam, params } from "../../../core/params.ts";
-import { clock, countdownEnd } from "../../../core/overlayTiming.ts";
+import { clock } from "../../../core/overlayTiming.ts";
+import type { ScreenKind } from "../../../core/screens/screens.ts";
+import { useScreen } from "../../../core/screens/useScreen.ts";
+import { useStage } from "../../../core/screens/useStage.ts";
 import { fillTemplate, textBar } from "../../../core/template.ts";
 import { parseLine } from "../../../core/typing.ts";
-import { useNow } from "../../../core/hooks/useNow.ts";
 import { useTerminal } from "../../../core/hooks/useTerminal.ts";
 import { useMatrixDecode } from "../useMatrixDecode.ts";
 import { placeholders, useMatrix } from "../useMatrix.ts";
 
-type Kind = "starting" | "brb" | "ending";
-
-// fixed: Bühnengrösse, auf die alle Masse der Vollbild-Szenen ausgelegt sind (theme.css .stage)
-const STAGE = { width: 1920, height: 1080 };
-// fixed: Umrechnungen von Sekunden und Minuten
-const TIME = { secondMs: 1000, minuteSeconds: 60 };
 // fixed: Prozentanzeige und Wiederholungen des Ticker-Texts (die Animation läuft über die halbe Breite)
 const SHOW = { percent: 100, tickerRepeat: 6 };
 
-export default function Screen({ kind }: { kind: Kind }) {
+export default function Screen({ kind }: { kind: ScreenKind }) {
   const values = useMatrix();
   const stage = useStage();
-  const [start] = useState(Date.now);
-  const now = useNow();
-  const minutes = numberParam("min", values.countdown / TIME.minuteSeconds);
-  const end = useMemo(() => countdownEnd(params.get("at"), minutes * TIME.minuteSeconds, new Date(start)), [minutes, start]);
+  const screen = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
+  const { now, left, away, ticker, next } = screen;
   const title = useMatrixDecode({ starting: values.startingTitle, brb: values.brbTitle, ending: values.endingTitle }[kind], "screenTitle");
   const logo = useMatrixDecode(values.logo, "logo");
 
-  const left = Math.max(0, (end - now) / TIME.secondMs);
-  const progress = kind === "starting" && end > start ? 1 - (left * TIME.secondMs) / (end - start) : 0;
-  const ticker = params.get("ticker") ?? values.ticker;
-  const next = params.get("next") ?? values.endingNext;
+  const progress = kind === "starting" ? screen.progress : 0;
 
   return (
     <div className={`screen-scene power-${values.powerOn}`}>
@@ -63,7 +54,7 @@ export default function Screen({ kind }: { kind: Kind }) {
           )}
           {kind === "brb" && (
             <div className="status">
-              <div className="big">{values.afkPrefix}{clock((now - start) / TIME.secondMs)}</div>
+              <div className="big">{values.afkPrefix}{clock(away)}</div>
               <div className="muted">{values.brbNote}</div>
             </div>
           )}
@@ -103,16 +94,4 @@ function Terminal({ source }: { source: readonly string[] }) {
       <div>{prompt} {typing}<span className="cursor">{values.cursor}</span></div>
     </div>
   );
-}
-
-// Skaliert die Bühne auf das Fenster bzw. die OBS-Quelle
-function useStage() {
-  const ref = useRef<HTMLDivElement>(null);
-  useLayoutEffect(() => {
-    const fit = () => ref.current?.style.setProperty("--s", String(Math.min(innerWidth / STAGE.width, innerHeight / STAGE.height)));
-    fit();
-    addEventListener("resize", fit);
-    return () => removeEventListener("resize", fit);
-  }, []);
-  return ref;
 }

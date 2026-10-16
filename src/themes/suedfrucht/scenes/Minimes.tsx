@@ -3,9 +3,8 @@
 // Umschauen, Schlafen; auf Chat reagieren sie mit einem Saftspritzer. Wer drin ist und was jeder tut, kommt aus
 // useMinimes. Transparent, empfohlen 1920x360 am unteren Bildrand. Parameter: ?demo, ?demo=<n>
 import { useMemo, useState, type CSSProperties } from "react";
-import { hash, seedOf } from "../../../core/hash.ts";
 import { useMinimes } from "../../../core/hooks/useMinimes.ts";
-import type { MinimeAction, MinimeActor } from "../../../core/minimeBehavior.ts";
+import { actorRun, actorStyle, shownVariant, type MinimeAction, type MinimeActor } from "../../../core/minimeBehavior.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import { params } from "../../../core/params.ts";
 import Fruit from "../Fruit.tsx";
@@ -33,31 +32,17 @@ export default function Minimes() {
   const enabled = useMemo(() => readMinimeOptions(values, FRUIT_SET).rules.variants?.map(variant => variant.id) ?? [], [values]);
   return (
     <div className={`sf-minimes enter-${values.fruitEnter} exit-${values.fruitExit}`} aria-hidden="true">
-      {actors.map(actor => <Character key={actor.login} actor={actor} fruit={fruitOf(actor, enabled, values.fruitDefault)} />)}
+      {actors.map(actor => <Character key={actor.login} actor={actor} fruit={shownVariant(actor, enabled, values.fruitDefault, DEMO)} />)}
     </div>
   );
-}
-
-// Frucht vom Server; ohne Typ in der Demo eine eingeschaltete Frucht nach dem Login, sonst die Standardfrucht
-function fruitOf(actor: MinimeActor, enabled: readonly string[], fallback: string) {
-  if (actor.variant) return actor.variant;
-  if (DEMO && enabled.length) return enabled[Math.floor(hash(seedOf(actor.login)) * enabled.length)];
-  return fallback;
 }
 
 function Character({ actor, fruit }: { actor: MinimeActor; fruit: string }) {
   const values = useSuedfrucht();
   const hops = hopPlan(actor.durationMs, values.hopMs);
-  const style = {
-    "--x": `${actor.toX}px`,
-    "--move": actor.action === "walk" ? `${actor.durationMs}ms` : "0ms",
-    "--action-ms": `${actor.durationMs}ms`,
-    "--facing": actor.facing,
-    "--hops": hops.count,
-    "--hop-ms": `${hops.periodMs}ms`,
-  } as CSSProperties;
-  // Neu bei jeder Aktion, damit ihre Animation auch zweimal hintereinander von vorn läuft
-  const run = `${actor.action}-${actor.startedAt}`;
+  // Lage, Bewegung, Dauer und Blickrichtung aus dem Kern (actorStyle), dazu die Sprünge der Frucht
+  const style = { ...actorStyle(actor), "--hops": hops.count, "--hop-ms": `${hops.periodMs}ms` } as CSSProperties;
+  const run = actorRun(actor);
   return (
     <div className={`sf-minime fruit-${fruit} action-${actor.action}`} style={style}>
       {values.fruitNames && <span className={`sf-minime-name name-${values.fruitNameStyle}`}>{actor.user}</span>}

@@ -16,13 +16,6 @@ export function currentProgress(track: Pick<Track, "durationMs" | "progressMs" |
   return track.playing ? Math.min(track.durationMs, track.progressMs + now - receivedAt) : track.progressMs;
 }
 
-// Lauftext für zu lange Zeilen (Musik): Sekunden für einen Durchlauf hin, damit der Text mit pxPerSecond fährt.
-// Die Keyframes der Themes stehen 15 % am Anfang und 15 % am Ende, gefahren wird in den 70 % dazwischen.
-const MARQUEE_TRAVEL = 0.7;
-export function marqueeSeconds(overflowPx: number, pxPerSecond: number) {
-  return overflowPx > 0 && pxPerSecond > 0 ? overflowPx / pxPerSecond / MARQUEE_TRAVEL : 0;
-}
-
 export type FxPhase = "pre" | "play" | "post" | "done";
 
 const fxTimes = (action: FxAction) => ({ delay: (action.delay ?? 0) * 1000, duration: (action.duration ?? 4) * 1000, after: (action.after ?? 0) * 1000 });
