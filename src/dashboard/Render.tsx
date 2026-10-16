@@ -123,7 +123,7 @@ function RenderedFiles() {
     return () => removeEventListener("render-done", refresh);
   }, []);
   return (
-    <>
+    <div className="render-files-box">
       <h2>{RENDER_TEXT.files}</h2>
       {files.length === 0 && <p className="muted">{RENDER_TEXT.noFiles}</p>}
       <ul className="render-files">
@@ -134,7 +134,7 @@ function RenderedFiles() {
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }
 

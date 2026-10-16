@@ -1,5 +1,17 @@
 /* Dashboard: Kopf, Navigation über die Bereiche, Panels und die URL-Tabelle der Übersicht. Grundstil in src/style.css. */
-.dashboard { max-width: 1200px; margin: 0 auto; padding: 32px 16px; display: grid; gap: 16px; }
+/* Die Seite ist genau so hoch wie das Fenster und scrollt nie als Ganzes (Terminal): Titel, Meldung und Navigation
+   stehen fest, nur .dashboard-content scrollt in sich. Theme und Rendern (.split) teilen ihn in Spalten mit eigenem
+   Scroll, Aktionsleisten bleiben stehen. */
+.dashboard { max-width: 1440px; height: 100dvh; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+.dashboard > * { flex: none; }
+.dashboard-content { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.dashboard-content.split { display: flex; flex-direction: column; overflow: hidden; }
+.dashboard-content.split > .panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.dashboard-content.split > .panel > * { flex: none; }
+.dashboard-content.split .settings-layout { flex: 1 1 auto; min-height: 0; grid-template-rows: minmax(0, 1fr); align-items: stretch; }
+.dashboard-content.split .settings-groups { min-height: 0; overflow-y: auto; align-content: start; padding-right: 8px; }
+.dashboard-content.split .scene-preview { min-height: 0; overflow-y: auto; align-content: start; }
+.render-files-box { display: grid; gap: 8px; max-height: var(--files-height, 160px); overflow-y: auto; padding-top: 8px; border-top: 1px solid var(--green-line); }
 .dashboard h1 { font-weight: normal; font-size: 28px; }
 .dashboard h2 { font-weight: normal; font-size: 18px; color: var(--green-dim); }
 
@@ -32,7 +44,7 @@
 .media-preview audio { max-width: 220px; }
 
 /* Theme-Einstellungen: Formular links, Vorschau rechts (auf schmalen Bildschirmen untereinander) */
-.settings-bar { position: sticky; top: 0; z-index: 2; padding: 8px 0; background: var(--black); border-bottom: 1px solid var(--green-line); }
+.settings-bar { padding: 8px 0; border-bottom: 1px solid var(--green-line); }
 .settings-layout { display: grid; gap: 16px; align-items: start; }
 .settings-groups { display: grid; gap: 8px; min-width: 0; }
 .settings-group { border: 1px solid var(--green-line); padding: 8px 12px; }
@@ -61,11 +73,28 @@
 .dashboard input:focus-visible, .dashboard select:focus-visible, .dashboard textarea:focus-visible, .dashboard summary:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
 .setting-row input[type=text] { width: auto; flex: 1; min-width: 120px; }
 
-.scene-preview { display: grid; gap: 8px; position: sticky; top: 64px; }
+.scene-preview { display: grid; gap: 8px; }
 .preview-box { position: relative; overflow: hidden; border: 1px solid var(--green-line); background: repeating-conic-gradient(#1a1a1a 0 25%, #101010 0 50%) 0 0 / 24px 24px; }
 .preview-box iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: transparent; }
 @media (min-width: 1100px) {
   .settings-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+
+/* Schmal: Vorschau oben mit begrenzter Höhe, die Einstellungen scrollen darunter */
+@media (max-width: 1099px) {
+  .dashboard-content.split .settings-layout { display: flex; flex-direction: column; }
+  .dashboard-content.split .scene-preview { order: -1; flex: none; max-height: 42%; }
+  .dashboard-content.split .settings-groups { flex: 1 1 auto; }
+}
+
+/* Wenig Platz (Handy, niedriges Fenster): Navigation einzeilig und seitlich scrollbar, Theme und Rendern scrollen als
+   Ganzes im Inhaltsbereich statt in zu kleinen Spalten; die Seite selbst scrollt weiter nicht */
+@media (max-width: 719px), (max-height: 559px) {
+  .dashboard-nav { flex-wrap: nowrap; overflow-x: auto; }
+  .dashboard-nav > * { flex: none; }
+  .dashboard-content.split { display: block; overflow-y: auto; }
+  .dashboard-content.split > .panel { display: block; }
+  .dashboard-content.split .settings-groups, .dashboard-content.split .scene-preview { max-height: none; overflow: visible; }
 }
 
 @media (max-width: 719px) {

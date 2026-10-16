@@ -1,6 +1,8 @@
 // Dashboard unter /: ohne Sitzung nur die Anmeldung mit Twitch, danach die Navigation über die Bereiche, die für den
 // Streamer freigegeben sind (navigation.ts), Bereich im Hash (#/theme). Konto von /api/me, alle 5 Sekunden aufgefrischt;
 // ?error=<code> nach einer abgebrochenen Anmeldung und Fehler von Aktionen zeigen den Text zum Code.
+// Die Seite scrollt nie als Ganzes (Terminal): Titel und Navigation stehen fest, der Bereich darunter scrollt in sich;
+// Theme und Rendern teilen ihn in Einstellungen (scrollen) und Vorschau (steht).
 import { useEffect, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { params } from "../core/params.ts";
@@ -72,6 +74,7 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
 
   const visible = visibleSections(account);
   const section = sectionFromHash(hash, visible);
+  const split = section === "theme" || section === "render";
   return (
     <>
       <nav className="dashboard-nav">
@@ -85,13 +88,15 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
           <button className="btn" onClick={() => act("/auth/logout")}>{TEXTS.logout}</button>
         </span>
       </nav>
-      {section === "overview" && <Overview me={account} act={act} />}
-      {section === "connections" && <Connections me={account} act={act} />}
-      {section === "theme" && <ThemeSettings me={account} />}
-      {section === "triggers" && <Triggers />}
-      {section === "media" && <Media login={account.login} />}
-      {section === "render" && <Render me={account} />}
-      {section === "admin" && <Admin />}
+      <div className={`dashboard-content${split ? " split" : ""}`}>
+        {section === "overview" && <Overview me={account} act={act} />}
+        {section === "connections" && <Connections me={account} act={act} />}
+        {section === "theme" && <ThemeSettings me={account} />}
+        {section === "triggers" && <Triggers />}
+        {section === "media" && <Media login={account.login} />}
+        {section === "render" && <Render me={account} />}
+        {section === "admin" && <Admin />}
+      </div>
     </>
   );
 }
