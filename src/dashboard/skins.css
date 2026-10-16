@@ -1,8 +1,10 @@
 /* Skins des Dashboards: Werte der Tokens aus src/style.css und dashboard.css je aktivem Theme (data-skin am <html>,
-   gesetzt von skin.ts). Ohne data-skin gilt starter, der Skin des Standard-Themes. Charakter je Skin: DESIGN.md. */
+   gesetzt von skin.ts, nur auf der Dashboard-Seite). Die Tokens hängen bewusst nur an [data-skin]: Overlays und die
+   Befehlsseite haben keinen Skin, sonst überschrieben gleichnamige Tokens (--border, --radius, ...) die Variablen der
+   Themes. Charakter je Skin: DESIGN.md. */
 
 /* --- Starter: modern und schlicht. Dunkle Flächen, eine violette Signatur, weiche Karten, Inter --------------- */
-:root, :root[data-skin="starter"] {
+:root[data-skin="starter"] {
   color-scheme: dark;
   --bg: #0b0b12;
   --page: radial-gradient(1200px 500px at 50% -200px, #1d1640 0%, transparent 70%), #0b0b12;
@@ -50,7 +52,7 @@
   --scroll-thumb: #3a3a55;
   --scroll-track: #0b0b12;
 }
-:root[data-skin="starter"] .dashboard h1, :root:not([data-skin]) .dashboard h1 {
+:root[data-skin="starter"] .dashboard h1 {
   background: linear-gradient(135deg, #8b6cff, #22d3ee);
   -webkit-background-clip: text;
   background-clip: text;

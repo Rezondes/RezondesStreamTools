@@ -1,5 +1,6 @@
 /* Grundstil von Dashboard und Werkzeugen. Farben, Schrift, Rundungen und Schatten sind Tokens; ihre Werte setzt der
-   Skin des aktiven Themes (src/dashboard/skins.css, data-skin am <html>). Der Look der Overlays steht im jeweiligen
+   Skin des aktiven Themes (src/dashboard/skins.css, data-skin am <html>, nur im Dashboard). Regeln, deren Klassen
+   auch Themes benutzen (.glow, .muted), gelten darum nur unter [data-skin]. Der Look der Overlays steht im jeweiligen
    Theme (src/themes/<id>/theme.css). */
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -7,16 +8,16 @@
 body {
   background: var(--page, var(--bg));
   color: var(--fg);
-  font: var(--font-size, 16px)/var(--leading, 1.4) var(--font);
+  font: var(--font-size, 16px)/var(--leading, 1.4) var(--font, system-ui, sans-serif);
 }
 /* Overlays sind transparent, OBS legt sie über das Bild */
 body.overlay { background: transparent; overflow: hidden; }
 /* Öffentliche Seiten (Befehlsseite): das Theme malt den Hintergrund selbst */
 body.public-page { background: transparent; }
-body.overlay.preview-tab { background: var(--checker); overflow: auto; }
+body.overlay.preview-tab { background: var(--checker, repeating-conic-gradient(#1a1a1a 0 25%, #101010 0 50%) 0 0 / 24px 24px); overflow: auto; }
 
-.muted { color: var(--fg-dim); }
-.glow { color: var(--emph); text-shadow: var(--glow); }
+[data-skin] .muted { color: var(--fg-dim); }
+[data-skin] .glow { color: var(--emph); text-shadow: var(--glow); }
 .btn {
   display: inline-flex;
   align-items: center;

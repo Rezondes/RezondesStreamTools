@@ -5,6 +5,7 @@ import { Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
 import Dashboard from "./dashboard/Dashboard.tsx";
+import { applySkin, rememberedSkin } from "./dashboard/skin.ts";
 import { SCENES, type SceneName } from "./core/theme.ts";
 import { resolveSettings } from "./core/settings.ts";
 import { cssVariables, resolveScene } from "./core/themeRuntime.ts";
@@ -56,6 +57,8 @@ function ThemedScene({ scene }: { scene: SceneName }) {
 const scene = SCENES.find(name => name === path);
 
 const publicPage = scene !== undefined && PUBLIC_PAGES.includes(scene);
+// Dashboard: Skin vor dem ersten Bild setzen (der zuletzt gemerkte, das Konto korrigiert ihn); Szenen haben keinen
+if (!scene) applySkin(rememberedSkin());
 document.body.classList.toggle("overlay", Boolean(scene) && !publicPage);
 document.body.classList.toggle("public-page", publicPage);
 // Vorschau im eigenen Tab: Schachbrett statt weisser Fläche hinter dem transparenten Overlay

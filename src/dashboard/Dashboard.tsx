@@ -4,7 +4,7 @@
 // Die Seite scrollt nie als Ganzes (Terminal): Titel und Navigation stehen fest, der Bereich darunter scrollt in sich;
 // Theme und Rendern teilen ihn in Einstellungen (scrollen) und Vorschau (steht). Das Aussehen folgt dem aktiven Theme
 // (skin.ts, skins.css).
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { params } from "../core/params.ts";
 import Admin from "./Admin.tsx";
@@ -15,7 +15,7 @@ import { sectionFromHash, visibleSections } from "./navigation.ts";
 import Overview from "./Overview.tsx";
 import Render from "./Render.tsx";
 import Scenery from "./Scenery.tsx";
-import { applySkin, rememberedSkin } from "./skin.ts";
+import { applySkin } from "./skin.ts";
 import { TEXTS } from "./texts.de.ts";
 import ThemeSettings from "./ThemeSettings.tsx";
 import Triggers from "./Triggers.tsx";
@@ -36,8 +36,7 @@ export default function Dashboard() {
     return isErrorCode(code) ? code : null;
   });
 
-  // Skin: erst der gemerkte (vor dem ersten Bild), dann der des aktiven Themes aus dem Konto
-  useLayoutEffect(() => applySkin(rememberedSkin()), []);
+  // Skin des aktiven Themes aus dem Konto (der gemerkte steht schon seit main.tsx)
   const theme = typeof account === "object" ? account.theme : null;
   useEffect(() => { if (theme) applySkin(theme); }, [theme]);
 
