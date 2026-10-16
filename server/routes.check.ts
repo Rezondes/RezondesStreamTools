@@ -50,6 +50,7 @@ assert.deepEqual(overlayRoute(["status"]), { kind: "status" });
 assert.deepEqual(overlayRoute(["settings"]), { kind: "settings" });
 assert.equal(overlayRoute(["settings", "x"]), null);
 assert.deepEqual(overlayRoute(["events"]), { kind: "events" });
+assert.deepEqual(overlayRoute(["commands"]), { kind: "commands" });
 assert.deepEqual(overlayRoute(["alerts.html"]), { kind: "scene", file: "alerts.html" });
 // Ohne Endung: nur bekannte Szenen, sie zeigen auf dieselbe Datei
 assert.deepEqual(overlayRoute(["alerts"]), { kind: "scene", file: "alerts.html" });

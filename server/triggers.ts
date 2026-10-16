@@ -16,6 +16,9 @@ export type When = {
 export type Trigger = {
   name: string;
   enabled?: boolean;
+  // Auf der Befehlsseite und in der Chat-Hilfe zeigen (Standard ja), mit Erklärung für die Zuschauer
+  public?: boolean;
+  description?: string;
   when: When;
   // everyone, subscriber, vip, moderator, broadcaster (eine Rolle reicht)
   who?: string[];
@@ -64,6 +67,7 @@ export function schedule(actions: FxAction[]): number[] {
 type Loaded = Trigger & { regex: RegExp };
 
 const WHEN_TYPES = ["word", "contains", "exact", "command", "regex"];
+const MAX_DESCRIPTION = 200;
 
 // Prüft Regeln und baut die Suchmuster. Fehlerhafte Regeln landen in errors und werden übersprungen.
 export function compile(list: Trigger[]): { triggers: Loaded[]; errors: string[] } {
@@ -76,6 +80,7 @@ export function compile(list: Trigger[]): { triggers: Loaded[]; errors: string[]
       names.add(trigger.name);
       if (!WHEN_TYPES.includes(trigger.when?.type)) throw new Error(`when.type muss ${WHEN_TYPES.join(", ")} sein`);
       if (!trigger.when.match) throw new Error("Suchtext (when.match) fehlt");
+      if ((trigger.description ?? "").length > MAX_DESCRIPTION) throw new Error(`Beschreibung länger als ${MAX_DESCRIPTION} Zeichen`);
       if (!Array.isArray(trigger.do) || trigger.do.length === 0) throw new Error("mindestens eine Aktion nötig");
       trigger.do.forEach((action, index) => {
         if (action.type !== "media" && action.type !== "text") throw new Error(`Aktion ${index + 1}: type muss media oder text sein`);

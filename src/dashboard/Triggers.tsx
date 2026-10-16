@@ -110,7 +110,8 @@ function useTriggerConfig() {
 
 type CardProps = { trigger: Trigger; dirty: boolean; errors: string[]; onChange: (trigger: Trigger) => void; onCopy: () => void; onDelete: () => void };
 
-function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: CardProps) {
+// Wer darf, wie oft, und wie der Trigger auf der Befehlsseite erscheint
+function AudienceRows({ trigger, onChange }: { trigger: Trigger; onChange: (trigger: Trigger) => void }) {
   const who = trigger.who ?? ["everyone"];
   // "alle" schliesst die anderen Rollen aus und umgekehrt
   const toggleRole = (role: string) => {
@@ -118,6 +119,27 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
     const next = who.includes(role) ? rest : [...rest, role];
     onChange({ ...trigger, who: next.length ? next : ["everyone"] });
   };
+  return (
+    <>
+      <div className="row">
+        <fieldset>
+          <legend>{TRIGGER_TEXT.who}</legend>
+          {ROLES.map(role => (
+            <label key={role} className="check"><input type="checkbox" checked={who.includes(role)} onChange={() => toggleRole(role)} /> {TRIGGER_TEXT.roles[role]}</label>
+          ))}
+        </fieldset>
+        <NumberField label={TRIGGER_TEXT.cooldown} value={trigger.cooldown} onChange={value => onChange({ ...trigger, cooldown: value })} />
+        <NumberField label={TRIGGER_TEXT.userCooldown} value={trigger.userCooldown} onChange={value => onChange({ ...trigger, userCooldown: value })} />
+      </div>
+      <div className="row">
+        <label className="check"><input type="checkbox" checked={trigger.public !== false} onChange={event => onChange({ ...trigger, public: event.target.checked })} /> {TRIGGER_TEXT.public}</label>
+        <label className="grow">{TRIGGER_TEXT.description} <input value={trigger.description ?? ""} maxLength={200} placeholder={TRIGGER_TEXT.descriptionExample} onChange={event => onChange({ ...trigger, description: event.target.value || undefined })} /></label>
+      </div>
+    </>
+  );
+}
+
+function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: CardProps) {
   const setAction = (index: number, action: FxAction) => onChange({ ...trigger, do: trigger.do.map((current, position) => (position === index ? action : current)) });
   const move = (index: number, by: number) => {
     const next = [...trigger.do];
@@ -147,16 +169,7 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
         <label className="check"><input type="checkbox" checked={Boolean(trigger.when.caseSensitive)} onChange={event => when({ caseSensitive: event.target.checked })} /> {TRIGGER_TEXT.caseSensitive}</label>
       </div>
 
-      <div className="row">
-        <fieldset>
-          <legend>{TRIGGER_TEXT.who}</legend>
-          {ROLES.map(role => (
-            <label key={role} className="check"><input type="checkbox" checked={who.includes(role)} onChange={() => toggleRole(role)} /> {TRIGGER_TEXT.roles[role]}</label>
-          ))}
-        </fieldset>
-        <NumberField label={TRIGGER_TEXT.cooldown} value={trigger.cooldown} onChange={value => onChange({ ...trigger, cooldown: value })} />
-        <NumberField label={TRIGGER_TEXT.userCooldown} value={trigger.userCooldown} onChange={value => onChange({ ...trigger, userCooldown: value })} />
-      </div>
+      <AudienceRows trigger={trigger} onChange={onChange} />
 
       <h3 className="muted">{TRIGGER_TEXT.actions}</h3>
       {trigger.do.map((action, index) => (

@@ -10,6 +10,7 @@ import { randomBytes } from "node:crypto";
 import * as streamerPath from "../src/core/streamerPath.ts";
 import { loadAccess, revokedLogins, type Feature } from "./access.ts";
 import { writeAtomic } from "./atomicFile.ts";
+import { loadHelp, publicCommands, saveHelp, toHelpConfig } from "./commands.ts";
 import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from "./http.ts";
 import { createLoginStates } from "./loginStates.ts";
 import { deleteMedia, listMedia, quotaError } from "./media.ts";
@@ -106,6 +107,7 @@ async function overlay(request: IncomingMessage, response: ServerResponse, path:
     case "settings": return json(response, publicSettings(await loadSettings(folder)));
     // ?log: Ereignis-Protokoll im Dashboard, zählt nicht als offenes Overlay
     case "events": return runtime ? runtime.attach(request, response, new URL(request.url ?? "/", "http://x").searchParams.has("log")) : send(response, 404, "not-running");
+    case "commands": return json(response, await publicCommands(folder, path.login, access.features(path.login)));
     case "scene": return serveStatic(response, DIST, `/${route.file}`);
     case "media": return serveStatic(response, join(folder, "media"), `/${route.file}`, true);
   }
@@ -270,6 +272,17 @@ async function twitchDisconnect({ response, login, runtime }: Call) {
 }
 
 // Dashboard: gewähltes Theme, gespeicherte Werte je Theme und die verfügbaren Themes
+async function helpConfig({ response, login }: Call) {
+  json(response, await loadHelp(profile.folder(DATA, login)));
+}
+
+async function saveHelpConfig({ request, response, login }: Call) {
+  const help = toHelpConfig(parseJson(String(await readBody(request, SETTINGS_LIMIT))));
+  if (!help) return send(response, 400, "invalid-json");
+  await saveHelp(profile.folder(DATA, login), help);
+  json(response, help);
+}
+
 async function settings({ response, login }: Call) {
   const file = await loadSettings(profile.folder(DATA, login));
   json(response, { ...file, themes: THEMES.map(theme => ({ id: theme.id, name: theme.name })) });
@@ -424,6 +437,8 @@ const HANDLERS: Record<RouteKey, Handler> = {
   "GET /api/spotify": spotifyDetails,
   "POST /spotify/logout": spotifyLogout,
   "POST /api/twitch/disconnect": twitchDisconnect,
+  "GET /api/commands": helpConfig,
+  "POST /api/commands": saveHelpConfig,
   "GET /api/settings": settings,
   "POST /api/settings": saveSettingsRequest,
   "POST /api/render/start": renderStart,

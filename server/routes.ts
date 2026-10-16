@@ -36,6 +36,9 @@ export const ROUTES = {
   // Trennen bleibt auch bei abgeschalteter Funktion möglich
   "POST /spotify/logout": SESSION,
   "POST /api/twitch/disconnect": SESSION,
+  // Hilfe-Befehl im Chat (Liste der Befehle), für jeden Streamer
+  "GET /api/commands": SESSION,
+  "POST /api/commands": SESSION,
   // Theme und Einstellungen des eigenen Profils
   "GET /api/settings": { guard: "session", features: ["themes"] },
   "POST /api/settings": { guard: "session", features: ["themes"] },
@@ -74,11 +77,12 @@ export function authorize(route: Route, visitor: Visitor): Decision {
   return route.features.every(feature => visitor.features[feature] === true) ? "ok" : "feature-off";
 }
 
-// Öffentliche Overlay-Adressen unter /s/<login>/: status, settings, events, <szene> oder <szene>.html, media/<datei>
+// Öffentliche Overlay-Adressen unter /s/<login>/: status, settings, events, commands (Liste der Chat-Befehle), <szene> oder <szene>.html, media/<datei>
 export type OverlayRoute =
   | { kind: "status" }
   | { kind: "settings" }
   | { kind: "events" }
+  | { kind: "commands" }
   | { kind: "scene"; file: string }
   | { kind: "media"; file: string };
 
@@ -88,6 +92,7 @@ export function overlayRoute(segments: string[]): OverlayRoute | null {
   if (segments.length === 1 && first === "status") return { kind: "status" };
   if (segments.length === 1 && first === "settings") return { kind: "settings" };
   if (segments.length === 1 && first === "events") return { kind: "events" };
+  if (segments.length === 1 && first === "commands") return { kind: "commands" };
   // Szenen heissen wie ihre Datei in dist/ (alerts.html); index.html ist das Dashboard, keine Szene
   if (segments.length === 1 && /^[a-z]+\.html$/.test(first) && first !== "index.html") return { kind: "scene", file: first };
   // Kurze Adresse ohne Endung (/s/<login>/alerts), nur für bekannte Szenen

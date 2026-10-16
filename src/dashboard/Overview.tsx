@@ -8,6 +8,7 @@ import type { AlertKind } from "../core/types.ts";
 import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
 import type { Me } from "./navigation.ts";
+import ChatHelp from "./ChatHelp.tsx";
 import ObsImport from "./ObsImport.tsx";
 import { dragUrl, obsLayout } from "./obsSetup.ts";
 import { TEXTS } from "./texts.de.ts";
@@ -53,6 +54,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
       )}
       {me.features.triggers && me.features.fx && <TriggerButtons act={act} />}
       <ObsImport login={me.login} layout={layout} />
+      <ChatHelp />
     </section>
   );
 }
