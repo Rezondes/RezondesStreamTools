@@ -1,10 +1,12 @@
-// Verbindungen im Dashboard: Status von Twitch (EventSub) und Spotify mit Verbinden und Trennen.
+// Verbindungen im Dashboard: Status von Twitch (EventSub) und Spotify mit Verbinden und Trennen, darunter das live
+// Ereignis-Protokoll (EventFeed).
 // Twitch neu verbinden ist eine neue Anmeldung; Spotify erscheint nur, wenn Musik freigegeben und eingerichtet ist.
 // Verbunden zeigt Spotify Konto, laufenden Titel und ob gerade abgefragt wird (alle 5 s neu geladen).
 import { useEffect, useState } from "react";
 import type { SpotifyDetails } from "../core/types.ts";
 import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
+import EventFeed from "./EventFeed.tsx";
 import type { Me } from "./navigation.ts";
 import { TEXTS } from "./texts.de.ts";
 
@@ -39,6 +41,8 @@ export default function Connections({ me, act }: { me: Me; act: Act }) {
           <a className="btn primary" href="/spotify/login">{texts.spotifyConnect}</a>
         </p>
       )}
+
+      <EventFeed login={me.login} />
     </section>
   );
 }

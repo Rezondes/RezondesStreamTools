@@ -29,14 +29,11 @@ export type StreamerSetup = {
 const MAX_OVERLAYS = 50;
 
 export async function startStreamer(setup: StreamerSetup) {
-  const overlays = new Set<ServerResponse>();
-  const emit = (message: ServerMessage) => {
-    const line = `data: ${JSON.stringify(message)}\n\n`;
-    for (const overlay of overlays) overlay.write(line);
-  };
+  const hub = streamHub();
+  const emit = hub.emit;
   const alert = (value: Alert) => {
     emit({ type: "alert", alert: value });
-    console.log(`Alert ${value.kind} for ${setup.login}: ${value.user} (${overlays.size} overlays)`);
+    console.log(`Alert ${value.kind} for ${setup.login}: ${value.user} (${hub.overlayCount()} overlays)`);
   };
 
   const tokens = tokenKeeper(setup, () => end());
@@ -45,25 +42,21 @@ export async function startStreamer(setup: StreamerSetup) {
   const triggers = setup.features.triggers && setup.features.fx ? startTriggers(setup.folder, event => emit({ type: "fx", event })) : null;
   const stopChat = listenToChat(setup.login, triggers, minimes);
   const spotify = setup.spotify && setup.features.music
-    ? await spotifyClient(setup.spotify, setup.folder, track => emit({ type: "music", track }), () => overlays.size > 0)
+    ? await spotifyClient(setup.spotify, setup.folder, track => emit({ type: "music", track }), () => hub.overlayCount() > 0)
     : null;
-  // Kommentarzeile hält die Verbindung durch Proxys und OBS offen
-  const ping = setInterval(() => { for (const overlay of overlays) overlay.write(": ping\n\n"); }, 25_000);
   events?.start();
 
   let stopped = false;
   function stop() {
     if (stopped) return;
     stopped = true;
-    clearInterval(ping);
     tokens.stop();
     events?.stop();
     stopChat?.();
     triggers?.stop();
     minimes?.stop().catch((error: unknown) => console.error(`Stopping minimes of ${setup.login} failed:`, error));
     spotify?.stop();
-    for (const overlay of overlays) overlay.end();
-    overlays.clear();
+    hub.close();
   }
 
   async function end() {
@@ -85,12 +78,37 @@ export async function startStreamer(setup: StreamerSetup) {
     stop,
     live: () => events?.live() ?? false,
     tokens: tokens.current,
-    // Neues Overlay (SSE)
-    attach(request: IncomingMessage, response: ServerResponse) {
-      if (stopped || overlays.size >= MAX_OVERLAYS) return send(response, 503, "unavailable");
+    // Neues Overlay (SSE); watcher = Ereignis-Protokoll im Dashboard statt Overlay
+    attach(request: IncomingMessage, response: ServerResponse, watcher = false) {
+      if (stopped || hub.full()) return send(response, 503, "unavailable");
       openStream(response, spotify?.current() ?? null, minimes?.current() ?? null);
-      overlays.add(response);
-      request.on("close", () => overlays.delete(response));
+      hub.add(request, response, watcher);
+    },
+  };
+}
+
+// Offene SSE-Verbindungen eines Streamers: Overlays und Dashboard-Protokolle (watchers) bekommen dieselben
+// Nachrichten, aber nur Overlays zählen als "jemand schaut zu" (Spotify fragt nur dann ab)
+function streamHub() {
+  const overlays = new Set<ServerResponse>();
+  const watchers = new Set<ServerResponse>();
+  const write = (line: string) => { for (const stream of [...overlays, ...watchers]) stream.write(line); };
+  // Kommentarzeile hält die Verbindung durch Proxys und OBS offen
+  const ping = setInterval(() => write(": ping\n\n"), 25_000);
+  return {
+    emit: (message: ServerMessage) => write(`data: ${JSON.stringify(message)}\n\n`),
+    overlayCount: () => overlays.size,
+    full: () => overlays.size + watchers.size >= MAX_OVERLAYS,
+    add(request: IncomingMessage, response: ServerResponse, watcher: boolean) {
+      const set = watcher ? watchers : overlays;
+      set.add(response);
+      request.on("close", () => set.delete(response));
+    },
+    close() {
+      clearInterval(ping);
+      for (const stream of [...overlays, ...watchers]) stream.end();
+      overlays.clear();
+      watchers.clear();
     },
   };
 }

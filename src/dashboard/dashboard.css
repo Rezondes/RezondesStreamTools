@@ -13,6 +13,8 @@
 .dashboard-content.split .scene-preview { min-height: 0; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
 .dashboard-content.split .scene-preview > * { flex: none; }
 .dashboard-content.split .preview-box { flex: 0 1 auto; min-height: 0; max-height: none; }
+.event-log { list-style: none; margin: 0; padding: 8px 0 0; display: grid; gap: 4px; max-height: var(--log-height, 360px); overflow-y: auto; border-top: 1px solid var(--green-line); }
+.event-kind { display: inline-block; min-width: 9ch; color: var(--green-dim); }
 .render-files-box { display: grid; gap: 8px; max-height: var(--files-height, 160px); overflow-y: auto; padding-top: 8px; border-top: 1px solid var(--green-line); }
 .dashboard h1 { font-weight: normal; font-size: 28px; }
 .dashboard h2 { font-weight: normal; font-size: 18px; color: var(--green-dim); }

@@ -104,7 +104,8 @@ async function overlay(request: IncomingMessage, response: ServerResponse, path:
       return json(response, { login: path.login, live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features });
     }
     case "settings": return json(response, publicSettings(await loadSettings(folder)));
-    case "events": return runtime ? runtime.attach(request, response) : send(response, 404, "not-running");
+    // ?log: Ereignis-Protokoll im Dashboard, zählt nicht als offenes Overlay
+    case "events": return runtime ? runtime.attach(request, response, new URL(request.url ?? "/", "http://x").searchParams.has("log")) : send(response, 404, "not-running");
     case "scene": return serveStatic(response, DIST, `/${route.file}`);
     case "media": return serveStatic(response, join(folder, "media"), `/${route.file}`, true);
   }
