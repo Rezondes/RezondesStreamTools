@@ -224,6 +224,7 @@ const FIELDS = [
   flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
   flag("equalizer", "Equalizer", MUSIC, true),
   number("equalizerBars", "Equalizer-Balken", MUSIC, 12, 1, 60),
+  number("musicMarqueeSpeed", "Lange Zeilen: Lauftempo (px pro Sekunde)", MUSIC, 40, 5, 400),
   text("equalizerChars", "Equalizer-Zeichen", MUSIC, "▁▂▃▄▅▆▇█", 20),
   number("vinylSpeed", "Platten-Drehtempo", MUSIC, 0.16, 0, 1, undefined, 0.01),
   number("vinylSize", "Platten-Grösse (Zeichen)", MUSIC, 21, 8, 40),

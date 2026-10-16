@@ -19,7 +19,7 @@ const REQUIRED: Record<string, string[]> = {
   "Alerts": ["alertHeader", "followTag", "followLine", "subTag", "subLine", "resubTag", "resubLine", "giftTag", "giftLine", "raidTag", "raidLine", "cheerTag", "cheerLine", "redeemTag", "redeemLine", "hypeTag", "hypeBeginLine", "hypeEndLine", "alertDuration", "alertScale", "alertTop", "alertAlign", "alertWidth", "alertIn", "alertOut", "alertQuote", "alertTimer", "soundFollow", "soundSub", "soundResub", "soundGift", "soundRaid", "soundCheer", "soundRedeem", "soundHype"],
   "Chat": ["chatPrompt", "badgeHost", "badgeMod", "badgeVip", "badgeSub", "chatFontSize", "chatFade", "chatMax", "chatAlign", "chatOpacity", "emoteSize", "chatIn", "chatOut"],
   "Kamera-Rahmen": ["camLabel", "camRec", "camRecText", "camClock", "cornerLength", "cornerWidth"],
-  "Musik": ["musicArt", "musicHeadPlaying", "musicHeadPaused", "equalizer", "equalizerBars", "musicHide", "vinylSpeed", "coverSize", "musicTitleSize"],
+  "Musik": ["musicArt", "musicHeadPlaying", "musicHeadPaused", "equalizer", "equalizerBars", "musicHide", "vinylSpeed", "coverSize", "musicTitleSize", "musicMarqueeSpeed"],
   "Effekte": ["fxDuration", "fxSize", "fxIn", "fxOut", "fxMargin"],
   "Stinger": ["stingerDuration", "stingerCut", "stingerText", "stingerLogo", "stingerColumn", "stingerFall"],
   "Banner": ["bannerProfileText", "bannerProfileSub", "bannerOfflineTitle", "bannerOfflineText", "bannerOfflineLines", "bannerLoop", "bannerProfileFps", "bannerOfflineFps", "bannerRainDensity"],

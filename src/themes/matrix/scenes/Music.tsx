@@ -1,9 +1,10 @@
 // Spotify "Now Playing", transparent. Empfohlen 900x240, Box sitzt unten in der Quelle.
 // Darstellung (cover, record, vinyl, none), Texte, Equalizer, Platte, Grössen und Animationen kommen aus den
 // Einstellungen. Parameter: ?demo
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Track } from "../../../core/types.ts";
-import { clock, currentProgress } from "../../../core/overlayTiming.ts";
+import { clock, currentProgress, marqueeSeconds } from "../../../core/overlayTiming.ts";
+import { useOverflow } from "../../../core/hooks/useOverflow.ts";
 import { textBar } from "../../../core/template.ts";
 import { useMusic } from "../../../core/hooks/useMusic.ts";
 import { useNow } from "../../../core/hooks/useNow.ts";
@@ -118,17 +119,14 @@ function Equalizer({ playing }: { playing: boolean }) {
   return <span className="music-eq">{bars}</span>;
 }
 
-// Zu lange Zeilen laufen langsam hin und her statt abgeschnitten zu werden
+// Zu lange Zeilen laufen hin und her statt abgeschnitten zu werden, mit gleichem Tempo egal wie lang
 function Marquee({ className, children }: { className: string; children: string }) {
-  const outer = useRef<HTMLDivElement>(null);
-  const inner = useRef<HTMLSpanElement>(null);
-  const [overflow, setOverflow] = useState(0);
-  useLayoutEffect(() => {
-    setOverflow(Math.max(0, inner.current!.scrollWidth - outer.current!.clientWidth));
-  }, [children]);
+  const { musicMarqueeSpeed } = useMatrix();
+  const { outer, inner, overflow } = useOverflow<HTMLDivElement, HTMLSpanElement>(children);
+  const style = { "--shift": `-${overflow}px`, "--marquee": `${marqueeSeconds(overflow, musicMarqueeSpeed)}s` } as React.CSSProperties;
   return (
     <div ref={outer} className={`marquee ${className}`}>
-      <span ref={inner} className={overflow ? "scroll" : ""} style={{ "--shift": `-${overflow}px` } as React.CSSProperties}>{children}</span>
+      <span ref={inner} className={overflow ? "scroll" : ""} style={style}>{children}</span>
     </div>
   );
 }

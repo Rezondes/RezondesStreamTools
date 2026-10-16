@@ -22,7 +22,7 @@ const REQUIRED: Record<string, string[]> = {
   "Alerts": ["alertStyle", "followLine", "followIcon", "hypeEndLine", "alertDuration", "alertIn", "alertOut", "alertTimer", "petals", "splash", "soundFollow", "soundLeave"],
   "Chat": ["chatStyle", "chatFade", "chatMax", "chatAlign", "chatSway"],
   "Kamera-Rahmen": ["camStyle", "camLeaves", "camFlower", "camLabel", "camLive"],
-  "Musik": ["musicStyle", "coverShape", "equalizer", "musicHide", "musicMarquee"],
+  "Musik": ["musicStyle", "coverShape", "equalizer", "musicHide", "musicMarquee", "musicMarqueeSpeed"],
   "Effekte": ["fxDuration", "fxSize", "fxIn", "fxOut", "fxBubble"],
   "Stinger": ["stingerDuration", "stingerCut", "stingerText", "stingerWaves", "stingerFoam", "stingerPalm"],
   "Banner": ["bannerTitle", "bannerProfileText", "bannerOfflineTitle", "bannerOfflineLines", "bannerLoop"],

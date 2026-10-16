@@ -203,6 +203,7 @@ const FIELDS = [
   number("musicTitleSize", "Titelgrösse", MUSIC, 26, 10, 80, "px"),
   flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
   flag("musicMarquee", "Lange Titel laufen durch", MUSIC, true),
+  number("musicMarqueeSpeed", "Lange Titel: Lauftempo (px pro Sekunde)", MUSIC, 40, 5, 400),
 
   number("fxDuration", "Standarddauer", FX, 4, 0.5, 120, "s", 0.5),
   number("fxSize", "Standardgrösse", FX, 360, 20, 1920, "px"),

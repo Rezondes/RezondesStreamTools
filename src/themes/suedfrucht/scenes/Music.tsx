@@ -1,10 +1,11 @@
 // Spotify "Now Playing" des Südfrucht-Themes: Strandradio aus Holz, Muschel oder schlichte Karte, Cover rund oder
 // eckig, Kopfzeile, Titel (lange Titel laufen hin und her), Interpret, Album, Fortschritt als Wellenlinie und ein
 // Wellen-Equalizer. Bei Pause oder Stopp blendet der Player aus (abschaltbar). Parameter: ?demo
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { useMusic } from "../../../core/hooks/useMusic.ts";
 import { useNow } from "../../../core/hooks/useNow.ts";
-import { currentProgress } from "../../../core/overlayTiming.ts";
+import { useOverflow } from "../../../core/hooks/useOverflow.ts";
+import { currentProgress, marqueeSeconds } from "../../../core/overlayTiming.ts";
 import type { Track } from "../../../core/types.ts";
 import { ICONS } from "../beach.ts";
 import ShapeIcon from "../ShapeIcon.tsx";
@@ -67,16 +68,12 @@ function Idle() {
 // Titel; ist er länger als der Platz, läuft er hin und her (wenn eingeschaltet)
 function Title({ text }: { text: string }) {
   const values = useSuedfrucht();
-  const box = useRef<HTMLElement>(null);
-  const [shift, setShift] = useState(0);
-  useLayoutEffect(() => {
-    const element = box.current;
-    if (element) setShift(Math.min(0, element.clientWidth - element.scrollWidth));
-  }, [text]);
-  const moving = values.musicMarquee && shift < 0;
+  const { outer, inner, overflow } = useOverflow<HTMLElement, HTMLSpanElement>(text);
+  const moving = values.musicMarquee && overflow > 0;
+  const style = { "--shift": `-${overflow}px`, "--marquee-time": `${marqueeSeconds(overflow, values.musicMarqueeSpeed)}s` } as CSSProperties;
   return (
-    <b ref={box} className={`sf-song${moving ? " marquee" : ""}`} style={{ "--shift": `${shift}px` } as CSSProperties}>
-      <span>{text}</span>
+    <b ref={outer} className={`sf-song${moving ? " marquee" : ""}`} style={style}>
+      <span ref={inner}>{text}</span>
     </b>
   );
 }
