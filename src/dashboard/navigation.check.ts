@@ -7,7 +7,9 @@ const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo"
 // Nur Grundbereiche, wenn keine Funktion an ist
 assert.deepEqual(visibleSections(me({})), ["overview", "connections"]);
 // Theme mit themes, Trigger und Medien nur mit triggers und fx zusammen
-assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true })), ["overview", "theme", "triggers", "media", "connections"]);
+assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true })), ["overview", "theme", "media", "triggers", "connections"]);
+// Reihenfolge mit allem: Übersicht, Theme, Rendern, Medien, Trigger, Verbindungen, Admin
+assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true, stinger: true }, true)), ["overview", "theme", "render", "media", "triggers", "connections", "admin"]);
 // Rendern mit stinger oder banners
 assert.deepEqual(visibleSections(me({ banners: true })), ["overview", "render", "connections"]);
 assert.deepEqual(visibleSections(me({ stinger: true, banners: false })), ["overview", "render", "connections"]);

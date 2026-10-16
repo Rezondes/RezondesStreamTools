@@ -11,9 +11,9 @@ export type Section = "overview" | "theme" | "triggers" | "media" | "render" | "
 const SECTIONS: readonly { section: Section; needs: readonly (readonly string[])[] | "admin" }[] = [
   { section: "overview", needs: [[]] },
   { section: "theme", needs: [["themes"]] },
-  { section: "triggers", needs: [["triggers", "fx"]] },
-  { section: "media", needs: [["triggers", "fx"]] },
   { section: "render", needs: [["stinger"], ["banners"]] },
+  { section: "media", needs: [["triggers", "fx"]] },
+  { section: "triggers", needs: [["triggers", "fx"]] },
   { section: "connections", needs: [[]] },
   { section: "admin", needs: "admin" },
 ];
