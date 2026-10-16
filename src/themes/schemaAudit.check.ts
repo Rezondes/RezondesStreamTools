@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { minimeVariantFields } from "../core/minimeFields.ts";
 import type { ThemeSchema } from "../core/theme.ts";
 import { auditTheme } from "./schemaAudit.ts";
 
@@ -27,6 +28,9 @@ try {
   const audit = auditTheme(schema, folder);
   assert.deepEqual(audit.errors, [{ key: "accent", code: "invalid_color" }]);
   assert.deepEqual(audit.unused, ["unused"]);
+  // Gebaute Typ-Felder der Minimes liest der Kern: sie gelten als benutzt
+  const typed = { ...schema, fields: minimeVariantFields({ command: "!frucht", label: "Frucht", variants: [{ id: "mango", label: "Mango", names: ["mango"] }] }) };
+  assert.deepEqual(auditTheme(typed, folder).unused, []);
 } finally {
   await rm(folder, { recursive: true, force: true });
 }

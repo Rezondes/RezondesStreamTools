@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { hasMinimes, readMinimeOptions } from "../src/core/minimeFields.ts";
 import type { MinimeRules } from "../src/core/minimes.ts";
 import { resolveSettings, validateSettings, type SettingError } from "../src/core/settings.ts";
-import type { SettingValues } from "../src/core/theme.ts";
+import type { SettingValues, ThemeSchema } from "../src/core/theme.ts";
 import { DEFAULT_THEME, findTheme, THEMES } from "../src/themes/registry.ts";
 import { writeAtomic } from "./atomicFile.ts";
 
@@ -29,11 +29,16 @@ export function publicSettings(file: SettingsFile): { theme: string; values: Set
   return { theme: schema.id, values: resolveSettings(schema, file.values[schema.id]) };
 }
 
+// Regeln der Minimes eines Themes aus seinen Werten (mit seinen Typen, falls es welche hat); null ohne Minimes
+export function rulesFor(schema: ThemeSchema, values: unknown): MinimeRules | null {
+  return hasMinimes(schema) ? readMinimeOptions(values, schema.minimeVariants).rules : null;
+}
+
 // Regeln der Minimes aus den Werten des gewählten Themes; null, wenn dieses Theme keine Minimes hat
 export function minimeRules(file: SettingsFile): MinimeRules | null {
   const settings = publicSettings(file);
   const schema = findTheme(settings.theme);
-  return schema && hasMinimes(schema) ? readMinimeOptions(settings.values).rules : null;
+  return schema ? rulesFor(schema, settings.values) : null;
 }
 
 // Werte eines Themes setzen und es (choose) als Overlay-Theme wählen. Nur fehlerfreie Eingaben ergeben eine neue Datei.

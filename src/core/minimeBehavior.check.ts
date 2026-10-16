@@ -9,7 +9,7 @@ const STAGE: MinimeStage = { motion: MOTION, catalog: [{ name: "backflip", durat
 // Zufall als feste Folge, die sich wiederholt
 const sequence = (...values: number[]) => { let index = 0; return () => values[index++ % values.length]; };
 const actor = (changes: Partial<MinimeActor> = {}): MinimeActor => ({
-  login: "neo", user: "Neo", color: "#ff00aa", action: "idle", startedAt: 0, durationMs: 1000, fromX: 1000, toX: 1000, facing: 1, leaving: false, ...changes,
+  login: "neo", user: "Neo", color: "#ff00aa", variant: null, action: "idle", startedAt: 0, durationMs: 1000, fromX: 1000, toX: 1000, facing: 1, leaving: false, ...changes,
 });
 
 // Gewichte: idle 40, walk 40, glitch 20, backflip 0 kommt nie
@@ -47,15 +47,15 @@ assert.equal(positionAt(actor({ action: "walk", startedAt: 0, durationMs: 0, fro
 
 // Liste abgleichen: Neue erscheinen an zufälliger Stelle, Fehlende verschwinden, Bekannte übernehmen Name und Farbe
 {
-  const joined = syncRoster([], [{ login: "neo", user: "Neo", color: null }], STAGE, 100, sequence(0.5));
+  const joined = syncRoster([], [{ login: "neo", user: "Neo", color: null, variant: null }], STAGE, 100, sequence(0.5));
   assert.deepEqual(joined, [actor({ color: null, action: "enter", startedAt: 100, durationMs: 1200, fromX: 960, toX: 960 })]);
-  const recolored = syncRoster(joined, [{ login: "neo", user: "NEO", color: "#00ff00" }], STAGE, 200, sequence(0.5));
+  const recolored = syncRoster(joined, [{ login: "neo", user: "NEO", color: "#00ff00", variant: null }], STAGE, 200, sequence(0.5));
   assert.deepEqual({ user: recolored[0].user, color: recolored[0].color, action: recolored[0].action }, { user: "NEO", color: "#00ff00", action: "enter" });
   const walking = [actor({ action: "walk", startedAt: 0, durationMs: 1000, fromX: 0, toX: 100 })];
   const leaving = syncRoster(walking, [], STAGE, 500, sequence(0.5));
   assert.deepEqual(leaving, [actor({ action: "exit", startedAt: 500, durationMs: 900, fromX: 50, toX: 50, leaving: true })]);
   // Zurück, bevor es weg ist: erscheint an derselben Stelle neu
-  const back = syncRoster(leaving, [{ login: "neo", user: "Neo", color: "#ff00aa" }], STAGE, 600, sequence(0.5));
+  const back = syncRoster(leaving, [{ login: "neo", user: "Neo", color: "#ff00aa", variant: null }], STAGE, 600, sequence(0.5));
   assert.deepEqual(back, [actor({ action: "enter", startedAt: 600, durationMs: 1200, fromX: 50, toX: 50 })]);
 }
 

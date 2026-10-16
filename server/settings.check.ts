@@ -4,7 +4,8 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { asciiText } from "../src/core/asciiText.ts";
-import { ensureSettings, firstSettings, loadSettings, minimeRules, parseSettingsFile, publicSettings, saveSettings, updateSettings } from "./settings.ts";
+import { MINIME_BASE_FIELDS } from "../src/core/minimeFields.ts";
+import { ensureSettings, firstSettings, loadSettings, minimeRules, rulesFor, parseSettingsFile, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 
 // Kaputte oder fremde Datei: Standard-Theme, keine Werte; unbekanntes Theme fällt auf den Standard zurück
 assert.deepEqual(parseSettingsFile("kaputt"), { theme: "matrix", values: {} });
@@ -14,6 +15,14 @@ assert.equal(parseSettingsFile({ theme: "gibt-es-nicht", values: {} }).theme, "m
 assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: { matrix: { minimeMax: 5 } } }))?.max, 5);
 assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: {} }))?.max, 30);
 assert.equal(minimeRules(parseSettingsFile({ theme: "starter", values: { matrix: { minimeMax: 5 } } })), null);
+assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: {} }))?.variants, null);
+// Ein Theme mit Typen: die eingeschalteten Typen mit ihren Namen kommen in die Regeln
+{
+  const probe = { id: "probe", name: "Probe", fields: MINIME_BASE_FIELDS, minimeVariants: { command: "!frucht", label: "Frucht", variants: [{ id: "mango", label: "Mango", names: ["mango"] }, { id: "kiwi", label: "Kiwi", names: ["kiwi"] }] } };
+  const rules = rulesFor(probe, { minimeNames_kiwi: "" });
+  assert.deepEqual({ look: rules?.commands.look, variants: rules?.variants }, { look: "!frucht", variants: [{ id: "mango", names: ["mango"] }] });
+  assert.equal(rulesFor({ id: "ohne", name: "Ohne", fields: [] }, {}), null);
+}
 
 // Öffentliche Sicht: aufgelöste Werte des gewählten Themes, sonst nichts
 const file = parseSettingsFile({ theme: "matrix", values: { matrix: { accent: "#ff0000", fremd: 1 } } });

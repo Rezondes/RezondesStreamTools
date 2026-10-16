@@ -4,7 +4,7 @@
 // Gestartet von server/streamer.ts. Check: minimes.check.ts.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { applyMinime, emptyMinimeState, MAX_STORED_COLORS, parseCommand, type MinimeEntry, type MinimeEvent, type MinimeRules, type MinimeState, type StoredColor } from "../src/core/minimes.ts";
+import { applyMinime, emptyMinimeState, MAX_STORED_COLORS, parseCommand, type MinimeEntry, type MinimeEvent, type MinimeRules, type MinimeState } from "../src/core/minimes.ts";
 import type { Minime, ServerMessage } from "../src/core/types.ts";
 import { writeAtomic } from "./atomicFile.ts";
 import type { ChatLine } from "./chat.ts";
@@ -30,6 +30,7 @@ export type MinimeSetup = {
   now: () => number;
   rules: MinimeRules | null;
   timers?: MinimeTimers;
+  random?: () => number; // Zufall für die Vergabe von Typen, Standard Math.random
 };
 
 // fixed: Schreiblast, viele Chatnachrichten ergeben höchstens eine Datei alle 2 s
@@ -41,6 +42,7 @@ const MAX_ROSTER = 100;
 
 const LOGIN = /^[a-z0-9_]{1,25}$/;
 const COLOR = /^#[0-9a-f]{6}$/;
+const VARIANT = /^[a-z0-9]{1,30}$/;
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 const isTime = (value: unknown): value is number => typeof value === "number" && Number.isFinite(value);
 
@@ -48,17 +50,20 @@ function toEntry(value: unknown): MinimeEntry | null {
   if (!isObject(value) || typeof value.login !== "string" || !LOGIN.test(value.login)) return null;
   if (typeof value.user !== "string" || !value.user || value.user.length > 50 || !isTime(value.lastSeen)) return null;
   if (value.color !== null && !(typeof value.color === "string" && COLOR.test(value.color))) return null;
-  return { login: value.login, user: value.user, color: value.color, lastSeen: value.lastSeen };
+  // Typ fehlt in Dateien von vor den Typen, ungültige Typen werden zu null
+  const variant = typeof value.variant === "string" && VARIANT.test(value.variant) ? value.variant : null;
+  return { login: value.login, user: value.user, color: value.color, variant, lastSeen: value.lastSeen };
 }
 
-function toColors(value: unknown): MinimeState["colors"] {
+// Gemerkte Farben (key "color") oder Typen (key "variant"): nur gültige Einträge, die neuesten bis zur Obergrenze
+function toRemembered(value: unknown, key: "color" | "variant", pattern: RegExp) {
   if (!isObject(value)) return {};
-  const valid = Object.entries(value).filter((entry): entry is [string, StoredColor] => {
-    const [login, stored] = entry;
-    return LOGIN.test(login) && isObject(stored) && typeof stored.color === "string" && COLOR.test(stored.color) && isTime(stored.usedAt) && isTime(stored.changedAt);
+  const valid = Object.entries(value).flatMap(([login, stored]) => {
+    if (!LOGIN.test(login) || !isObject(stored) || typeof stored[key] !== "string" || !pattern.test(stored[key])) return [];
+    return isTime(stored.usedAt) && isTime(stored.changedAt) ? [{ login, entry: { [key]: stored[key], usedAt: stored.usedAt, changedAt: stored.changedAt } }] : [];
   });
-  const newest = valid.sort((first, second) => second[1].usedAt - first[1].usedAt).slice(0, MAX_STORED_COLORS);
-  return Object.fromEntries(newest.map(([login, stored]) => [login, { color: stored.color, usedAt: stored.usedAt, changedAt: stored.changedAt }]));
+  const newest = valid.sort((first, second) => second.entry.usedAt - first.entry.usedAt).slice(0, MAX_STORED_COLORS);
+  return Object.fromEntries(newest.map(({ login, entry }) => [login, entry]));
 }
 
 // Gelesene minimes.json auf gültige Form bringen: ungültige und doppelte Einträge fallen weg
@@ -68,7 +73,11 @@ export function parseMinimeFile(raw: unknown): MinimeState {
   for (const entry of Array.isArray(raw.roster) ? raw.roster.map(toEntry) : []) {
     if (entry && !roster.some(known => known.login === entry.login)) roster.push(entry);
   }
-  return { roster: roster.slice(0, MAX_ROSTER), colors: toColors(raw.colors) };
+  return {
+    roster: roster.slice(0, MAX_ROSTER),
+    colors: toRemembered(raw.colors, "color", COLOR) as MinimeState["colors"],
+    variants: toRemembered(raw.variants, "variant", VARIANT) as MinimeState["variants"],
+  };
 }
 
 // Chatzeile als Ereignis: ein Befehl oder sonst eine normale Nachricht
@@ -76,8 +85,9 @@ export function toMinimeEvent(line: ChatLine, rules: MinimeRules): MinimeEvent {
   const command = parseCommand(line.text, line.roles, rules);
   const twitchColor = line.color ?? null;
   switch (command?.type) {
-    case "join": return { type: "join", login: line.login, user: line.user, color: command.color, twitchColor };
+    case "join": return { type: "join", login: line.login, user: line.user, color: command.color, variant: command.variant, twitchColor };
     case "color": return { type: "color", login: line.login, user: line.user, color: command.color, twitchColor };
+    case "variant": return { type: "variant", login: line.login, user: line.user, variant: command.variant };
     case "leave": return { type: "leave", login: line.login };
     case "kick": return { type: "kick", login: command.login };
     case undefined: return { type: "chat", login: line.login };
@@ -102,7 +112,8 @@ export async function startMinimes(setup: MinimeSetup) {
   let rules = setup.rules;
   let saveTimer: unknown = null;
 
-  const current = (): Minime[] => (rules ? state.roster.map(({ login, user, color }) => ({ login, user, color })) : []);
+  const random = setup.random ?? Math.random;
+  const current = (): Minime[] => (rules ? state.roster.map(({ login, user, color, variant }) => ({ login, user, color, variant })) : []);
   // Speichern nacheinander, mit dem Stand zum Zeitpunkt des Schreibens: ein älterer Vorgang überschreibt nie einen neueren
   let saving = Promise.resolve();
   const save = () => {
@@ -115,7 +126,7 @@ export async function startMinimes(setup: MinimeSetup) {
   // announce: false, wenn der Aufrufer die Liste danach selbst schickt
   const apply = (event: MinimeEvent, announce = true) => {
     if (!rules) return;
-    const result = applyMinime(state, event, setup.now(), rules);
+    const result = applyMinime(state, event, setup.now(), rules, random);
     if (result.state !== state) {
       state = result.state;
       scheduleSave();

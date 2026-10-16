@@ -42,7 +42,8 @@ function demoMinimes(): Minime[] {
   const count = Math.min(100, Math.max(0, numberParam("demo", 5) || 5));
   return Array.from({ length: count }, (_, index) => {
     const user = `${NAMES[index % NAMES.length]}${index >= NAMES.length ? index : ""}`;
-    return { login: user.toLowerCase(), user, color: MINIME_COLORS[index % MINIME_COLORS.length] };
+    // Typ null: ein Theme mit Typen verteilt Demo-Minimes selbst
+    return { login: user.toLowerCase(), user, color: MINIME_COLORS[index % MINIME_COLORS.length], variant: null };
   });
 }
 

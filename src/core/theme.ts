@@ -42,6 +42,12 @@ export type SettingField =
 
 // groupScenes: in welchen Szenen eine Gruppe wirkt (das Dashboard zeigt nur die Gruppen der Szene in der Vorschau);
 // fehlt eine Gruppe, wirkt sie überall (Allgemein), [] = in keiner Szene (Stinger, Banner: Bereich Rendern)
+// Typen der Minimes eines Themes (z.B. Früchte) statt Farben: Befehl zum Wählen (Standardwort), Bezeichnung im
+// Dashboard und je Typ id (Kleinbuchstaben und Ziffern), Name und Standard-Namen im Chat
+export type MinimeVariantInfo = { id: string; label: string; names: readonly string[] };
+export type MinimeVariantSet = { command: string; label: string; variants: readonly MinimeVariantInfo[] };
+
+// minimeVariants: Typen der Minimes; fehlt es, wählen Chatter Farben (siehe src/core/minimeFields.ts)
 // personalize: Werte, die das Theme beim ersten Login mit dem Twitch-Login des Streamers füllt (Kanal-Name, Logo, ...),
 // statt allgemeiner Beispiele; fehlt es, gelten die Standardwerte
 export type ThemeSchema = {
@@ -50,4 +56,5 @@ export type ThemeSchema = {
   fields: readonly SettingField[];
   groupScenes?: Readonly<Record<string, readonly SceneName[]>>;
   personalize?: (login: string) => SettingValues;
+  minimeVariants?: MinimeVariantSet;
 };

@@ -13,8 +13,8 @@ const RULES = readMinimeOptions({}).rules;
 const line = (text: string, login = "neo", roles: string[] = []): ChatLine => ({ user: login.toUpperCase(), login, text, roles, color: "#ff0000" });
 
 // Datei: kaputte oder fremde Inhalte ergeben einen leeren Zustand, nur gültige Einträge bleiben
-assert.deepEqual(parseMinimeFile(null), { roster: [], colors: {} });
-assert.deepEqual(parseMinimeFile("x"), { roster: [], colors: {} });
+assert.deepEqual(parseMinimeFile(null), { roster: [], colors: {}, variants: {} });
+assert.deepEqual(parseMinimeFile("x"), { roster: [], colors: {}, variants: {} });
 assert.deepEqual(parseMinimeFile({
   roster: [
     { login: "../a", user: "A", color: null, lastSeen: 1 },
@@ -26,12 +26,23 @@ assert.deepEqual(parseMinimeFile({
   ],
   colors: { neo: { color: "#ff00aa", usedAt: 5, changedAt: 4 }, "x y": { color: "#ffffff", usedAt: 1, changedAt: 1 }, b: { color: "#fff", usedAt: 1, changedAt: 1 } },
 }), {
-  roster: [{ login: "neo", user: "Neo", color: "#ff00aa", lastSeen: 5 }, { login: "trinity", user: "Trinity", color: null, lastSeen: 7 }],
+  roster: [{ login: "neo", user: "Neo", color: "#ff00aa", variant: null, lastSeen: 5 }, { login: "trinity", user: "Trinity", color: null, variant: null, lastSeen: 7 }],
   colors: { neo: { color: "#ff00aa", usedAt: 5, changedAt: 4 } },
+  variants: {},
+});
+
+// Datei mit Typen: gültige bleiben, ungültige ids werden zu null bzw. fallen weg
+assert.deepEqual(parseMinimeFile({
+  roster: [{ login: "neo", user: "Neo", color: null, variant: "mango", lastSeen: 1 }, { login: "smith", user: "Smith", color: null, variant: "../x", lastSeen: 1 }],
+  variants: { neo: { variant: "mango", usedAt: 1, changedAt: 1 }, smith: { variant: "../x", usedAt: 1, changedAt: 1 } },
+}), {
+  roster: [{ login: "neo", user: "Neo", color: null, variant: "mango", lastSeen: 1 }, { login: "smith", user: "Smith", color: null, variant: null, lastSeen: 1 }],
+  colors: {},
+  variants: { neo: { variant: "mango", usedAt: 1, changedAt: 1 } },
 });
 
 // Chatzeilen: Befehle werden zu Ereignissen, alles andere zählt als Chat
-assert.deepEqual(toMinimeEvent(line("!join #f0a"), RULES), { type: "join", login: "neo", user: "NEO", color: "#ff00aa", twitchColor: "#ff0000" });
+assert.deepEqual(toMinimeEvent(line("!join #f0a"), RULES), { type: "join", login: "neo", user: "NEO", color: "#ff00aa", variant: null, twitchColor: "#ff0000" });
 assert.deepEqual(toMinimeEvent(line("!color 0 255 0"), RULES), { type: "color", login: "neo", user: "NEO", color: "#00ff00", twitchColor: "#ff0000" });
 assert.deepEqual(toMinimeEvent(line("!leave"), RULES), { type: "leave", login: "neo" });
 assert.deepEqual(toMinimeEvent(line("!leave @trinity", "mod", ["moderator"]), RULES), { type: "kick", login: "trinity" });
@@ -65,10 +76,10 @@ try {
   runtime.handle(line("hallo"));
   runtime.handle(line("hallo", "smith"));
   assert.deepEqual(messages, [
-    { type: "minimes", minimes: [{ login: "neo", user: "NEO", color: "#ff00aa" }] },
+    { type: "minimes", minimes: [{ login: "neo", user: "NEO", color: "#ff00aa", variant: null }] },
     { type: "minimeChat", login: "neo" },
   ]);
-  assert.deepEqual(runtime.current(), [{ login: "neo", user: "NEO", color: "#ff00aa" }]);
+  assert.deepEqual(runtime.current(), [{ login: "neo", user: "NEO", color: "#ff00aa", variant: null }]);
 
   // Gebündeltes Speichern: ein Schreib-Timer, der Stand landet in minimes.json
   now = 2000;
@@ -81,7 +92,7 @@ try {
   // Weniger Platz in den Einstellungen kürzt sofort, Ban entfernt, Offline leert
   messages.length = 0;
   runtime.setRules({ ...RULES, max: 1 });
-  assert.deepEqual(messages, [{ type: "minimes", minimes: [{ login: "trinity", user: "TRINITY", color: "#ff0000" }] }]);
+  assert.deepEqual(messages, [{ type: "minimes", minimes: [{ login: "trinity", user: "TRINITY", color: "#ff0000", variant: null }] }]);
   runtime.ban("trinity");
   assert.deepEqual(runtime.current(), []);
   runtime.handle(line("!join"));
@@ -108,7 +119,7 @@ try {
   await runtime.stop();
   assert.equal(clock.count(), 0);
   const again = await startMinimes({ folder, emit: () => {}, now: () => now, timers: fakeTimers().timers, rules: RULES });
-  assert.deepEqual(again.current(), [{ login: "oracle", user: "ORACLE", color: "#0000ff" }]);
+  assert.deepEqual(again.current(), [{ login: "oracle", user: "ORACLE", color: "#0000ff", variant: null }]);
   await again.stop();
 
   // Mit echten Timern: Speichern planen und stop räumt alles ab (der Check endet ohne hängende Timer)
@@ -118,6 +129,26 @@ try {
   assert.deepEqual((JSON.parse(await readFile(join(folder, "minimes.json"), "utf8")) as { roster: unknown[] }).roster, []);
 } finally {
   await rm(folder, { recursive: true, force: true });
+}
+
+// Typ-Modus: !join ohne Wahl gibt einen zufälligen erlaubten Typ, !frucht wechselt; die Liste trägt den Typ
+{
+  const typed = await mkdtemp(join(tmpdir(), "minimes-types-"));
+  try {
+    const types = { ...RULES, commands: { ...RULES.commands, look: "!frucht" }, variants: [{ id: "mango", names: ["mango"] }, { id: "sternfrucht", names: ["sternfrucht", "karambole"] }] };
+    const sent: ServerMessage[] = [];
+    const runtime = await startMinimes({ folder: typed, emit: message => sent.push(message), now: () => 1000, timers: fakeTimers().timers, rules: types, random: () => 0 });
+    runtime.handle(line("!join"));
+    runtime.handle(line("!frucht karambole"));
+    assert.deepEqual(sent, [
+      { type: "minimes", minimes: [{ login: "neo", user: "NEO", color: null, variant: "mango" }] },
+      { type: "minimes", minimes: [{ login: "neo", user: "NEO", color: null, variant: "sternfrucht" }] },
+    ]);
+    assert.deepEqual(toMinimeEvent(line("!frucht mango"), types), { type: "variant", login: "neo", user: "NEO", variant: "mango" });
+    await runtime.stop();
+  } finally {
+    await rm(typed, { recursive: true, force: true });
+  }
 }
 
 console.log("server minimes ok");
