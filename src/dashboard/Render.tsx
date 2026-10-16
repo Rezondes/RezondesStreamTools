@@ -1,5 +1,5 @@
-// Render-Bereich im Dashboard: Stinger (WebM mit Alpha) sowie Profil- und Offline-Banner (GIF mit Standbild) eines
-// wählbaren Themes. Neben der Vorschau stehen die Einstellungen der Gruppe des Clips (Stinger oder Banner); die
+// Render-Bereich im Dashboard: Stinger (WebM mit Alpha) sowie Profil- und Offline-Banner (GIF mit Standbild) des
+// aktiven Themes (gewählt im Bereich THEME). Neben der Vorschau stehen die Einstellungen der Gruppe des Clips (Stinger oder Banner); die
 // Vorschau zeigt ungespeicherte Werte sofort, Speichern ändert das Overlay-Theme nicht. Rendern: der Browser zeichnet
 // jeden Frame und schickt ihn als PNG an den Server, der mit ffmpeg das Ergebnis baut (server/render.ts).
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -7,7 +7,7 @@ import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import type { ClipName, RenderClip } from "../core/renderClip.ts";
 import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
 import type { SettingValues } from "../core/theme.ts";
-import { DEFAULT_THEME, findTheme, THEMES } from "../themes/registry.ts";
+import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
 import { clipsFor } from "../themes/renderers.ts";
 import { getJson, postJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
@@ -34,16 +34,7 @@ export default function Render({ me }: { me: Me }) {
   const canSave = me.features.themes === true;
   return (
     <section className="panel render">
-      <div className="actions">
-        <label className="setting">
-          {RENDER_TEXT.theme}
-          <select value={schema.id} onChange={event => {
-            if (settings.changed.length === 0 || confirm(RENDER_TEXT.confirmSwitch(settings.changed.length))) settings.choose(event.target.value);
-          }}>
-            {THEMES.map(theme => <option key={theme.id} value={theme.id}>{theme.name}</option>)}
-          </select>
-        </label>
-      </div>
+      <p className="muted">{RENDER_TEXT.theme(schema.name)}</p>
       <p className="actions">
         {clips.map(candidate => (
           <button key={candidate.name} className={`btn${candidate === clip ? " primary" : ""}`} aria-pressed={candidate === clip} onClick={() => setClipName(candidate.name)}>
@@ -149,7 +140,7 @@ function RenderedFiles() {
 
 type ThemeDraft = ReturnType<typeof useThemeDraft>;
 
-// Gespeicherte Werte laden, Theme wählen, Entwurf halten, speichern (ohne das Overlay-Theme zu wechseln) und verwerfen
+// Gespeicherte Werte des aktiven Themes laden, Entwurf halten, speichern und verwerfen
 function useThemeDraft() {
   const [file, setFile] = useState<SettingsFile | null>(null);
   const [ready, setReady] = useState(false);
@@ -172,7 +163,6 @@ function useThemeDraft() {
       .catch(() => setReady(true));
   }, [saved]);
 
-  const choose = (id: string) => { setTheme(id); setDraft(saved(id, file)); setErrors({}); setNotice(null); };
   const save = () => {
     postJson("/api/settings", { theme, values: draft, choose: false })
       .then(result => {
@@ -187,7 +177,7 @@ function useThemeDraft() {
       .catch(() => setNotice("server-error"));
   };
   const discard = () => { setDraft(saved(theme, file)); setErrors({}); };
-  return { ready, theme, draft, errors, notice, changed: changedKeys(saved(theme, file), draft), set: setDraft, choose, save, discard };
+  return { ready, theme, draft, errors, notice, changed: changedKeys(saved(theme, file), draft), set: setDraft, save, discard };
 }
 
 // Vorschau: Endlosschleife über den Clip und Zeichnen des aktuellen Zeitpunkts

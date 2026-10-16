@@ -19,7 +19,7 @@ assert.equal(TEXTS.render.frame(3, 96), "Frame 3/96");
 assert.ok(TEXTS.render.hints.stinger(750).includes("750 ms"));
 assert.equal(TEXTS.theme.range(0, 10), "0 bis 10");
 assert.ok(TEXTS.theme.confirmSwitch(3).startsWith("3 "));
-assert.ok(TEXTS.render.confirmSwitch(2).startsWith("2 "));
+assert.ok(TEXTS.render.theme("Matrix").includes("Matrix"));
 assert.equal(TEXTS.upload.running("a.gif", 2, 5), "Lade hoch (2/5): a.gif");
 assert.ok(TEXTS.adminArea.revoked("neo").endsWith("neo"));
 assert.ok(TEXTS.adminArea.betaRemoved("neo").endsWith("neo"));
