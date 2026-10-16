@@ -157,7 +157,8 @@ Der Theme-Code selbst enthält keine festen Farben, Texte oder Masse; das prüft
 Im Dashboard (Bereich `[ THEME ]`) entsteht das Formular automatisch aus dem Schema, gruppiert und mit
 Zurücksetzen je Feld oder für alles. Die Vorschau zeigt die gewählte Szene als `iframe` mit den noch nicht
 gespeicherten Werten (`/s/<login>/<szene>?demo&preview`, Werte per `BroadcastChannel` nur von derselben Herkunft, auch in einem eigenen Tab).
-Ein Theme-Wechsel speichert sofort; Fehler beim Speichern erscheinen am jeweiligen Feld.
+Die Theme-Auswahl zeigt ein Theme nur zum Ansehen und Bearbeiten; die Overlays stellt erst `[ ALS AKTIVES THEME SETZEN ]`
+um (so lassen sich andere Themes auch während des Streams anschauen). Fehler beim Speichern erscheinen am jeweiligen Feld.
 
 Eingebaut sind `matrix` (Standard, Terminal-Look), `starter` (klarer, moderner Look mit Verlauf, abgerundeten
 Karten und eigener Schrift; alle Szenen, Stinger und Banner eigenständig, nichts vom Matrix-Theme) und `suedfrucht`

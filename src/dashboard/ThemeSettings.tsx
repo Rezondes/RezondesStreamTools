@@ -1,6 +1,8 @@
-// Theme-Bereich im Dashboard: Theme wählen (speichert sofort), Szene wählen (Vorschau und die Gruppen, die in ihr
-// wirken, siehe groupScenes; die Suche durchsucht alle), Formular aus dem Schema, gruppiert nach group; Speichern mit Fehlern je Feld, Zurücksetzen je Feld und für alles,
-// Vorschau mit den ungespeicherten Werten. Gespeicherte Werte übernehmen die Overlays sofort (SSE).
+// Theme-Bereich im Dashboard: ein Theme zum Ansehen und Bearbeiten wählen (ändert die Overlays nicht), es erst per
+// Knopf als aktives Theme setzen; Szene wählen (Vorschau und die Gruppen, die in ihr wirken, siehe groupScenes; die
+// Suche durchsucht alle), Formular aus dem Schema, gruppiert nach group; Speichern mit Fehlern je Feld, Zurücksetzen je
+// Feld und für alles, Vorschau mit den ungespeicherten Werten. Gespeicherte Werte des aktiven Themes übernehmen die
+// Overlays sofort (SSE).
 import { useCallback, useEffect, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
@@ -15,17 +17,17 @@ import { TEXTS } from "./texts.de.ts";
 
 // Antwort von GET /api/settings: gewähltes Theme, gespeicherte Werte je Theme, verfügbare Themes
 type SettingsFile = { theme: string; values: Record<string, Record<string, unknown>>; themes: { id: string; name: string }[] };
-type Notice = "saved" | "invalid" | ErrorCode | null;
+type Notice = "saved" | "activated" | "invalid" | ErrorCode | null;
 type Draft = { values: SettingValues; set: (update: (values: SettingValues) => SettingValues) => void };
 
 const defaultSchema = findTheme(DEFAULT_THEME)!;
 
 export default function ThemeSettings({ me }: { me: Me }) {
-  const { file, draft, setDraft, errors, notice, media, save, load } = useSettingsFile();
+  const { file, viewed, view, draft, setDraft, errors, notice, media, save, load } = useSettingsFile();
   const [search, setSearch] = useState("");
   const [scene, setScene] = useState<SceneName>("alerts");
   if (!file) {
-    if (!notice || notice === "saved" || notice === "invalid") return <p className="muted">{TEXTS.loading}</p>;
+    if (!notice || notice === "saved" || notice === "activated" || notice === "invalid") return <p className="muted">{TEXTS.loading}</p>;
     return (
       <p className="actions">
         <span className="error" role="alert">{TEXTS.errors[notice]}</span>
@@ -33,22 +35,17 @@ export default function ThemeSettings({ me }: { me: Me }) {
       </p>
     );
   }
-  const schema = findTheme(file.theme) ?? defaultSchema;
+  const schema = findTheme(viewed) ?? defaultSchema;
   const saved = resolveSettings(schema, file.values[schema.id]);
   const changed = changedKeys(saved, draft);
   const switchTheme = (id: string) => {
     if (changed.length > 0 && !confirm(TEXTS.theme.confirmSwitch(changed.length))) return;
-    save(id, file.values[id] ?? {});
+    view(id);
   };
 
   return (
     <section className="panel theme-settings">
-      <label className="setting">
-        {TEXTS.theme.choose}
-        <select value={schema.id} onChange={event => switchTheme(event.target.value)}>
-          {file.themes.map(theme => <option key={theme.id} value={theme.id}>{theme.name}</option>)}
-        </select>
-      </label>
+      <ThemeChooser file={file} viewed={schema.id} onView={switchTheme} onActivate={() => save(true)} />
       <label className="setting">
         {TEXTS.theme.previewScene}
         <select value={scene} onChange={event => setScene(event.target.value as SceneName)}>
@@ -57,15 +54,15 @@ export default function ThemeSettings({ me }: { me: Me }) {
       </label>
 
       <div className="actions settings-bar">
-        <button className="btn primary" disabled={changed.length === 0} onClick={() => save(schema.id, draft)}>{TEXTS.theme.save}</button>
+        <button className="btn primary" disabled={changed.length === 0} onClick={() => save(false)}>{TEXTS.theme.save}</button>
         <button className="btn" disabled={changed.length === 0} onClick={() => setDraft(() => saved)}>{TEXTS.theme.discard}</button>
         <button className="btn" onClick={() => { if (confirm(TEXTS.theme.confirmReset)) setDraft(() => resetAll(schema)); }}>{TEXTS.theme.resetAll}</button>
         <span className="muted" role="status">
-          {changed.length > 0 ? `${TEXTS.theme.unsaved} ${changed.length}` : notice === "saved" ? TEXTS.theme.saved : ""}
+          {changed.length > 0 ? `${TEXTS.theme.unsaved} ${changed.length}` : notice === "saved" || notice === "activated" ? TEXTS.theme[notice] : ""}
         </span>
       </div>
       {notice === "invalid" && <p className="error" role="alert">{TEXTS.theme.invalid}</p>}
-      {notice && notice !== "saved" && notice !== "invalid" && <p className="error" role="alert">{TEXTS.errors[notice]}</p>}
+      {notice && notice !== "saved" && notice !== "activated" && notice !== "invalid" && <p className="error" role="alert">{TEXTS.errors[notice]}</p>}
 
       <div className="settings-layout">
         <div className="settings-groups">
@@ -79,6 +76,32 @@ export default function ThemeSettings({ me }: { me: Me }) {
         <ScenePreview login={me.login} scene={scene} settings={{ theme: schema.id, values: resolveSettings(schema, draft) }} />
       </div>
     </section>
+  );
+}
+
+// Theme zum Ansehen wählen (das aktive ist markiert) und das gewählte als aktives Theme der Overlays setzen
+type ChooserProps = { file: SettingsFile; viewed: string; onView: (id: string) => void; onActivate: () => void };
+function ThemeChooser({ file, viewed, onView, onActivate }: ChooserProps) {
+  const activeName = file.themes.find(theme => theme.id === file.theme)?.name ?? file.theme;
+  return (
+    <div className="actions">
+      <label className="setting">
+        {TEXTS.theme.choose}
+        <select value={viewed} onChange={event => onView(event.target.value)}>
+          {file.themes.map(theme => (
+            <option key={theme.id} value={theme.id}>{theme.id === file.theme ? `${theme.name} ${TEXTS.theme.activeMark}` : theme.name}</option>
+          ))}
+        </select>
+      </label>
+      {viewed === file.theme
+        ? <span className="muted">{TEXTS.theme.isActive}</span>
+        : (
+          <>
+            <button className="btn primary" onClick={onActivate}>{TEXTS.theme.activate}</button>
+            <span className="muted">{TEXTS.theme.notActive(activeName)}</span>
+          </>
+        )}
+    </div>
   );
 }
 
@@ -112,22 +135,35 @@ function SettingsGroups({ schema, scene, search, draft, errors, media }: GroupsP
   );
 }
 
-// Gespeicherte Einstellungen laden, Entwurf halten und speichern; Fehler des Servers je Feld oder als Code
+// Gespeicherte Einstellungen laden, das angesehene Theme mit seinem Entwurf halten und speichern; Fehler des Servers je
+// Feld oder als Code. save(activate): Werte des angesehenen Themes speichern, mit activate zusätzlich als aktives Theme.
 function useSettingsFile() {
   const [file, setFile] = useState<SettingsFile | null>(null);
+  const [viewed, setViewed] = useState("");
   const [draft, setDraft] = useState<SettingValues>({});
   const [errors, setErrors] = useState<Record<string, SettingErrorCode>>({});
   const [notice, setNotice] = useState<Notice>(null);
   const [media, setMedia] = useState<string[]>([]);
 
-  const load = useCallback(async () => {
+  // theme: das danach angesehene Theme, ohne Angabe das aktive
+  const load = useCallback(async (theme?: string) => {
     setNotice(null);
     const loaded = await getJson<SettingsFile | null>("/api/settings", null);
     if (!loaded) return setNotice("server-error");
+    const id = theme ?? loaded.theme;
     setFile(loaded);
-    setDraft(resolveSettings(findTheme(loaded.theme) ?? defaultSchema, loaded.values[loaded.theme]));
+    setViewed(id);
+    setDraft(resolveSettings(findTheme(id) ?? defaultSchema, loaded.values[id]));
     setErrors({});
   }, []);
+
+  // Anderes Theme ansehen: sein gespeicherter Stand wird der Entwurf, die Overlays bleiben wie sie sind
+  const view = (id: string) => {
+    setViewed(id);
+    setDraft(resolveSettings(findTheme(id) ?? defaultSchema, file?.values[id]));
+    setErrors({});
+    setNotice(null);
+  };
 
   useEffect(() => {
     load().catch((error: unknown) => console.warn("Loading settings failed:", error));
@@ -135,12 +171,12 @@ function useSettingsFile() {
     loadMedia().then(list => setMedia(list.files.map(file => file.name))).catch((error: unknown) => console.warn("Loading media failed:", error));
   }, [load]);
 
-  const save = (theme: string, values: unknown) => {
-    postJson("/api/settings", { theme, values })
+  const save = (activate: boolean) => {
+    postJson("/api/settings", { theme: viewed, values: draft, choose: activate })
       .then(async result => {
         if (result.ok) {
-          await load();
-          return setNotice("saved");
+          await load(viewed);
+          return setNotice(activate ? "activated" : "saved");
         }
         if (Array.isArray(result.data)) {
           setErrors(errorsByKey(result.data as SettingError[]));
@@ -151,5 +187,5 @@ function useSettingsFile() {
       .catch((error: unknown) => console.warn("Saving settings failed:", error));
   };
 
-  return { file, draft, setDraft, errors, notice, media, save, load };
+  return { file, viewed, view, draft, setDraft, errors, notice, media, save, load };
 }
