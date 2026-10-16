@@ -1,15 +1,15 @@
-// Vollbild-Szenen des Starter-Themes (Starting, BRB, Ending): ruhiger Hintergrund mit langsam wandernden
+// Vollbild-Szenen des Standard-Themes (Starting, BRB, Ending): ruhiger Hintergrund mit langsam wandernden
 // Farbflächen, in der Mitte Überzeile und Titel, dazu Countdown mit Fortschritt, Pausenzeit oder nächster Stream.
 // Für 1920x1080 gebaut, skaliert auf jede Quellgrösse. Parameter pro Quelle: ?min=5, ?at=20:00, ?next=..., ?ticker=...
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { numberParam, params } from "../../../core/params.ts";
 import { clock, countdownEnd } from "../../../core/overlayTiming.ts";
 import { useNow } from "../../../core/hooks/useNow.ts";
-import { useStarter } from "../useStarter.ts";
+import { useStandard } from "../useStandard.ts";
 
 type Kind = "starting" | "brb" | "ending";
 
-// fixed: Bühnengrösse, auf die alle Masse der Vollbild-Szenen ausgelegt sind (theme.css .starter-stage)
+// fixed: Bühnengrösse, auf die alle Masse der Vollbild-Szenen ausgelegt sind (theme.css .standard-stage)
 const STAGE = { width: 1920, height: 1080 };
 // fixed: Umrechnungen; unter einer Stunde zeigt die Uhr nur Minuten:Sekunden (clock liefert HH:MM:SS, ab Zeichen 3)
 const TIME = { secondMs: 1000, minuteSeconds: 60, hourSeconds: 3600, minutesFrom: 3 };
@@ -19,7 +19,7 @@ const PERCENT = 100;
 const short = (seconds: number) => (seconds < TIME.hourSeconds ? clock(seconds).slice(TIME.minutesFrom) : clock(seconds));
 
 export default function Screen({ kind }: { kind: Kind }) {
-  const values = useStarter();
+  const values = useStandard();
   const stage = useStage();
   const [start] = useState(Date.now);
   const now = useNow();
@@ -36,31 +36,31 @@ export default function Screen({ kind }: { kind: Kind }) {
   const ticker = params.get("ticker") ?? values.ticker;
 
   return (
-    <div className="starter-screen">
-      {values.blobs && <div className="starter-blobs" aria-hidden="true"><i /><i /><i /></div>}
-      <div className="starter-stage" ref={stage}>
-        <header className="starter-top">
-          <span className="starter-channel">{values.channelName}</span>
-          {values.showClock && <span className="starter-muted">{new Date(now).toLocaleTimeString(values.locale)}</span>}
+    <div className="standard-screen">
+      {values.blobs && <div className="standard-blobs" aria-hidden="true"><i /><i /><i /></div>}
+      <div className="standard-stage" ref={stage}>
+        <header className="standard-top">
+          <span className="standard-channel">{values.channelName}</span>
+          {values.showClock && <span className="standard-muted">{new Date(now).toLocaleTimeString(values.locale)}</span>}
         </header>
-        <main className="starter-center">
-          <p className="starter-eyebrow">{eyebrow}</p>
-          <h1 className="starter-title">{title}</h1>
+        <main className="standard-center">
+          <p className="standard-eyebrow">{eyebrow}</p>
+          <h1 className="standard-title">{title}</h1>
           {kind === "starting" && (
             <>
-              <div className="starter-big">{left > 0 ? short(left) : values.countdownDone}</div>
-              {values.progressBar && <div className="starter-progress"><span style={{ width: `${progress * PERCENT}%` }} /></div>}
+              <div className="standard-big">{left > 0 ? short(left) : values.countdownDone}</div>
+              {values.progressBar && <div className="standard-progress"><span style={{ width: `${progress * PERCENT}%` }} /></div>}
             </>
           )}
           {kind === "brb" && (
             <>
-              <div className="starter-big">{short((now - start) / TIME.secondMs)}</div>
-              <p className="starter-muted">{values.brbNote}</p>
+              <div className="standard-big">{short((now - start) / TIME.secondMs)}</div>
+              <p className="standard-muted">{values.brbNote}</p>
             </>
           )}
-          {kind === "ending" && next && <p className="starter-muted">{values.endingNextLabel}: {next}</p>}
+          {kind === "ending" && next && <p className="standard-muted">{values.endingNextLabel}: {next}</p>}
         </main>
-        {ticker && <footer className="starter-ticker">{ticker}</footer>}
+        {ticker && <footer className="standard-ticker">{ticker}</footer>}
       </div>
     </div>
   );

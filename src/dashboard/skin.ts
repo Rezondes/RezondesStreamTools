@@ -1,9 +1,9 @@
-// Skin des Dashboards: es sieht aus wie das aktive Theme (starter modern und schlicht, matrix Terminal, suedfrucht
+// Skin des Dashboards: es sieht aus wie das aktive Theme (standard modern und schlicht, matrix Terminal, suedfrucht
 // Strand). Der Skin steht als data-skin am <html>, die Farben und Formen dazu in skins.css. Der letzte Skin bleibt im
 // Browser gemerkt, damit beim Laden nicht kurz der falsche aufblitzt. skinOf ist rein, Check: skin.check.ts.
 import { DEFAULT_THEME } from "../themes/registry.ts";
 
-export const SKINS = ["starter", "matrix", "suedfrucht"] as const;
+export const SKINS = ["standard", "matrix", "suedfrucht"] as const;
 export type Skin = (typeof SKINS)[number];
 
 const STORAGE_KEY = "rezondes-skin";

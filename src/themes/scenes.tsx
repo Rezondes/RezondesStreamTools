@@ -4,11 +4,11 @@
 import type { ComponentType } from "react";
 import type { SceneName } from "../core/theme.ts";
 import { matrixScenes } from "./matrix/index.tsx";
-import { starterScenes } from "./starter/index.tsx";
+import { standardScenes } from "./standard/index.tsx";
 import { suedfruchtScenes } from "./suedfrucht/index.tsx";
 
 export const THEME_SCENES: Record<string, Partial<Record<SceneName, ComponentType>>> = {
   matrix: matrixScenes,
-  starter: starterScenes,
+  standard: standardScenes,
   suedfrucht: suedfruchtScenes,
 };

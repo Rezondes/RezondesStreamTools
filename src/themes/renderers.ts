@@ -4,12 +4,12 @@ import type { RenderClip } from "../core/renderClip.ts";
 import type { SettingValues } from "../core/theme.ts";
 import { matrixClips } from "./matrix/render.ts";
 import { DEFAULT_THEME } from "./registry.ts";
-import { starterClips } from "./starter/render.ts";
+import { standardClips } from "./standard/render.ts";
 import { suedfruchtClips } from "./suedfrucht/render.ts";
 
 const THEME_CLIPS: Record<string, (values: SettingValues, login: string) => RenderClip[]> = {
   matrix: matrixClips,
-  starter: starterClips,
+  standard: standardClips,
   suedfrucht: suedfruchtClips,
 };
 

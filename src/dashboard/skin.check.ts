@@ -5,9 +5,9 @@ import { applySkin, rememberedSkin, skinOf } from "./skin.ts";
 // Jedes eingebaute Theme hat seinen Skin, alles andere (auch leer oder kaputt) bekommt den des Standard-Themes
 assert.equal(skinOf("matrix"), "matrix");
 assert.equal(skinOf("suedfrucht"), "suedfrucht");
-assert.equal(skinOf("starter"), "starter");
-assert.equal(skinOf("gibt-es-nicht"), "starter");
-assert.equal(skinOf(null), "starter");
+assert.equal(skinOf("standard"), "standard");
+assert.equal(skinOf("gibt-es-nicht"), "standard");
+assert.equal(skinOf(null), "standard");
 
 // Setzen und merken mit nachgebautem document und Speicher; ohne Speicher (gesperrt) gilt der Skin trotzdem
 const root = { dataset: {} as Record<string, string> };

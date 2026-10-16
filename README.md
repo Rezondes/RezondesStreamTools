@@ -1,7 +1,7 @@
 # RST - Rezondes Stream Tools
 
 Werkzeuge für Streamer: Browserquellen für OBS, ein Dashboard und eine Befehlsseite für Zuschauer, im Look des
-gewählten Themes (Starter, Matrix, Südfrucht).
+gewählten Themes (Standard, Matrix, Südfrucht).
 React + Vite + TypeScript. Dazu ein kleiner Node-Server (Docker) für mehrere Streamer: Twitch-Anmeldung und alle Events.
 
 ## Start
@@ -165,8 +165,8 @@ gespeicherten Werten (`/s/<login>/<szene>?demo&preview`, Werte per `BroadcastCha
 Die Theme-Auswahl zeigt ein Theme nur zum Ansehen und Bearbeiten; die Overlays stellt erst `[ ALS AKTIVES THEME SETZEN ]`
 um (so lassen sich andere Themes auch während des Streams anschauen). Fehler beim Speichern erscheinen am jeweiligen Feld.
 
-Eingebaut sind `matrix` (Standard, Terminal-Look), `starter` (klarer, moderner Look mit Verlauf, abgerundeten
-Karten und eigener Schrift; alle Szenen, Stinger und Banner eigenständig, nichts vom Matrix-Theme) und `suedfrucht`
+Eingebaut sind `standard` (das Standard-Theme: klarer, moderner Look mit Verlauf, abgerundeten Karten und eigener
+Schrift; alle Szenen, Stinger und Banner eigenständig), `matrix` (Terminal-Look) und `suedfrucht`
 (Südfrucht: tropischer Strand mit Meer, Wellen, Palmen und Holzschildern; Tageszeit je Szene, Alerts als Postkarte,
 Surfbrett oder Flaschenpost, Chat als Luftblasen, Planken oder Muscheln, Rahmen aus Bambus, Holz oder Seil,
 Strandradio, Wellen-Stinger, Strand-Banner und hüpfende Frucht-Minimes). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
@@ -178,7 +178,7 @@ Chatter klinken sich per Chatbefehl als kleine Figur ein, die unten im Bild schw
 Beine, getragen von einer Düse aus fallenden Glyphen (Backflip, Glitch, Umschauen, Drehen, Schlafen, Blinzeln;
 Hüpfer mit Düsen-Boost, wenn der Chatter schreibt). Im Theme `suedfrucht` sind es Cartoon-Früchte mit Gesicht, die
 über den Strand hüpfen (Freudensprünge, Pirouette, Wackeln, Sonnenbrille, Umschauen, Schlafen; Saftspritzer, wenn der
-Chatter schreibt). Minimes sind eine Funktion des Themes: `starter` hat keine, dort bleibt die Szene leer und der Server
+Chatter schreibt). Minimes sind eine Funktion des Themes: `standard` hat keine, dort bleibt die Szene leer und der Server
 ignoriert die Befehle.
 
 | Befehl (Standard, einstellbar) | Wirkung |

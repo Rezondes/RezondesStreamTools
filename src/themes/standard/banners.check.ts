@@ -1,7 +1,7 @@
-// Check für banners.ts des Starter-Themes: beide Banner zeichnen Titel und Text und sehen nach einer Schleife exakt
+// Check für banners.ts des Standard-Themes: beide Banner zeichnen Titel und Text und sehen nach einer Schleife exakt
 // gleich aus (nahtloses GIF). Ein Mock-Canvas zeichnet die Aufrufe auf. Läuft mit npm test.
 import assert from "node:assert/strict";
-import { drawStarterOfflineBanner, drawStarterProfileBanner, type StarterBannerOptions } from "./banners.ts";
+import { drawStandardOfflineBanner, drawStandardProfileBanner, type StandardBannerOptions } from "./banners.ts";
 
 function recorder() {
   const calls: unknown[][] = [];
@@ -18,12 +18,12 @@ function recorder() {
   return { context: context as unknown as CanvasRenderingContext2D, calls };
 }
 
-const options: StarterBannerOptions = {
+const options: StandardBannerOptions = {
   loop: 6, font: "Inter", background: "#0b0b12", accent: "#7c5cff", accent2: "#22d3ee", textColor: "#ffffff", mutedColor: "#a1a1b5",
   title: "REZONDES", profileText: "Programmieren", offlineTitle: "Gerade offline", offlineText: "Folge dem Kanal",
 };
 
-for (const draw of [drawStarterProfileBanner, drawStarterOfflineBanner]) {
+for (const draw of [drawStandardProfileBanner, drawStandardOfflineBanner]) {
   const start = recorder();
   const end = recorder();
   draw(start.context, 0, options);
@@ -34,4 +34,4 @@ for (const draw of [drawStarterProfileBanner, drawStarterOfflineBanner]) {
   assert.ok(texts.includes("REZONDES"), draw.name);
 }
 
-console.log("starter banners ok");
+console.log("standard banners ok");

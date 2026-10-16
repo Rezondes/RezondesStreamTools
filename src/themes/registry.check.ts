@@ -6,9 +6,9 @@ import { DEFAULT_THEME, findTheme, THEMES } from "./registry.ts";
 
 // Ids eindeutig, Standard-Theme vorhanden, unbekannte Id ergibt null
 assert.equal(new Set(THEMES.map(theme => theme.id)).size, THEMES.length);
-assert.equal(findTheme(DEFAULT_THEME)?.id, "starter");
+assert.equal(findTheme(DEFAULT_THEME)?.id, "standard");
 assert.equal(findTheme("gibt-es-nicht"), null);
-assert.equal(findTheme("starter")?.name, "Starter");
+assert.equal(findTheme("standard")?.name, "Standard");
 
 for (const theme of THEMES) {
   // Schlüssel je Theme eindeutig, jedes Feld mit Label und Gruppe
@@ -27,11 +27,11 @@ for (const theme of THEMES) {
 
 // Beide Themes tragen beim ersten Login den Kanal-Namen ein, Matrix dazu das ASCII-Logo
 assert.deepEqual(Object.keys(findTheme("matrix")!.personalize!("neo")), ["channelName", "logo"]);
-assert.deepEqual(findTheme("starter")!.personalize!("neo"), { channelName: "NEO" });
+assert.deepEqual(findTheme("standard")!.personalize!("neo"), { channelName: "NEO" });
 
-// Minimes haben Matrix (Farben) und Südfrucht (Früchte als Typen), Starter nicht
+// Minimes haben Matrix (Farben) und Südfrucht (Früchte als Typen), Standard nicht
 assert.equal(hasMinimes(findTheme("matrix")!), true);
-assert.equal(hasMinimes(findTheme("starter")!), false);
+assert.equal(hasMinimes(findTheme("standard")!), false);
 assert.equal(hasMinimes(findTheme("suedfrucht")!), true);
 assert.equal(findTheme("suedfrucht")!.minimeVariants?.variants.length, 16);
 assert.deepEqual(findTheme("suedfrucht")!.personalize!("neo_42"), { channelName: "Neo_42" });

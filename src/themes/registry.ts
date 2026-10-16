@@ -2,10 +2,10 @@
 // Ein neues Theme wird hier eingetragen; das erste ist der Standard.
 import type { ThemeSchema } from "../core/theme.ts";
 import { matrixSettings } from "./matrix/settings.ts";
-import { starterSettings } from "./starter/settings.ts";
+import { standardSettings } from "./standard/settings.ts";
 import { suedfruchtSettings } from "./suedfrucht/settings.ts";
 
-export const THEMES: readonly ThemeSchema[] = [starterSettings, matrixSettings, suedfruchtSettings];
+export const THEMES: readonly ThemeSchema[] = [standardSettings, matrixSettings, suedfruchtSettings];
 
 export const DEFAULT_THEME = THEMES[0].id;
 

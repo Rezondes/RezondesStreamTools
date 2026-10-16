@@ -8,13 +8,15 @@ import { MINIME_BASE_FIELDS } from "../src/core/minimeFields.ts";
 import { ensureSettings, firstSettings, loadSettings, minimeRules, rulesFor, parseSettingsFile, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 
 // Kaputte oder fremde Datei: Standard-Theme, keine Werte; unbekanntes Theme fällt auf den Standard zurück
-assert.deepEqual(parseSettingsFile("kaputt"), { theme: "starter", values: {} });
-assert.equal(parseSettingsFile({ theme: "gibt-es-nicht", values: {} }).theme, "starter");
+assert.deepEqual(parseSettingsFile("kaputt"), { theme: "standard", values: {} });
+assert.equal(parseSettingsFile({ theme: "gibt-es-nicht", values: {} }).theme, "standard");
+// Das frühere Theme "starter" heisst jetzt "standard": gewähltes Theme und Werte ziehen mit um
+assert.deepEqual(parseSettingsFile({ theme: "starter", values: { starter: { accent: "#ff0000" } } }), { theme: "standard", values: { standard: { accent: "#ff0000" } } });
 
 // Minime-Regeln: aus den Werten des gewählten Themes; ein Theme ohne Minimes ergibt null
 assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: { matrix: { minimeMax: 5 } } }))?.max, 5);
 assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: {} }))?.max, 30);
-assert.equal(minimeRules(parseSettingsFile({ theme: "starter", values: { matrix: { minimeMax: 5 } } })), null);
+assert.equal(minimeRules(parseSettingsFile({ theme: "standard", values: { matrix: { minimeMax: 5 } } })), null);
 assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: {} }))?.variants, null);
 // Südfrucht: 16 Früchte als Typen, eine ausgeschaltete fehlt, Befehl !frucht
 assert.equal(minimeRules(parseSettingsFile({ theme: "suedfrucht", values: {} }))?.variants?.length, 16);
@@ -43,26 +45,26 @@ assert.deepEqual(updateSettings(file, "matrix", { accent: "grün" }), { file: nu
 assert.deepEqual(updateSettings(file, "gibt-es-nicht", {}), { file: null, errors: [{ key: "theme", code: "unknown_option" }] });
 
 // Theme-Wechsel verliert keine Werte eines anderen Themes
-const other = { ...file, values: { ...file.values, starter: { title: "x" } } };
+const other = { ...file, values: { ...file.values, standard: { title: "x" } } };
 const switched = updateSettings(other, "matrix", {}).file!;
-assert.deepEqual(switched.values.starter, { title: "x" });
+assert.deepEqual(switched.values.standard, { title: "x" });
 
 // Werte eines anderen Themes speichern, ohne das gewählte Overlay-Theme zu wechseln (Render-Seite)
-const kept = updateSettings(file, "starter", { accent: "#ff0000" }, false).file!;
+const kept = updateSettings(file, "standard", { accent: "#ff0000" }, false).file!;
 assert.equal(kept.theme, file.theme);
-assert.equal(kept.values.starter.accent, "#ff0000");
+assert.equal(kept.values.standard.accent, "#ff0000");
 
 // Erster Login: das Standard-Theme ist gewählt, jedes Theme mit Personalisierung hat die Werte des Streamers
 const first = firstSettings("neo_42");
-assert.equal(first.theme, "starter");
+assert.equal(first.theme, "standard");
 assert.equal(publicSettings(first).values.channelName, "NEO_42");
 assert.equal(first.values.matrix.logo, asciiText("neo_42"));
-assert.deepEqual(first.values.starter, { channelName: "NEO_42" });
+assert.deepEqual(first.values.standard, { channelName: "NEO_42" });
 
 // Speichern und Laden über die Datei (temporärer Ordner, danach gelöscht)
 const folder = await mkdtemp(join(tmpdir(), "settings-"));
 try {
-  assert.deepEqual(await loadSettings(folder), { theme: "starter", values: {} });
+  assert.deepEqual(await loadSettings(folder), { theme: "standard", values: {} });
   // Erster Login legt die Datei an, jeder weitere lässt sie stehen
   assert.equal(await ensureSettings(folder, "neo_42"), true);
   assert.deepEqual(await loadSettings(folder), first);

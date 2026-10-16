@@ -7,7 +7,7 @@ benutzen nur Tokens (`--bg`, `--surface`, `--fg`, `--accent`, `--radius`, `--fon
 
 ## Skins
 
-### Starter (Standard)
+### Standard (Standard-Theme)
 
 - **Schrift:** Inter, wenig Grössenkontrast, Gewicht trägt die Hierarchie (Titel 800, Knöpfe 600).
 - **Farbe:** dunkle, leicht kühle Flächen (`#0b0b12`, Karten `#14141c`), eine Signatur Violett `#6d4aff` (weisse

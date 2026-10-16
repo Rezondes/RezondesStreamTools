@@ -3,8 +3,8 @@
    Befehlsseite haben keinen Skin, sonst überschrieben gleichnamige Tokens (--border, --radius, ...) die Variablen der
    Themes. Charakter je Skin: DESIGN.md. */
 
-/* --- Starter: modern und schlicht. Dunkle Flächen, eine violette Signatur, weiche Karten, Inter --------------- */
-:root[data-skin="starter"] {
+/* --- Standard: modern und schlicht. Dunkle Flächen, eine violette Signatur, weiche Karten, Inter --------------- */
+:root[data-skin="standard"] {
   color-scheme: dark;
   --bg: #0b0b12;
   --page: radial-gradient(1200px 500px at 50% -200px, #1d1640 0%, transparent 70%), #0b0b12;
@@ -52,7 +52,7 @@
   --scroll-thumb: #3a3a55;
   --scroll-track: #0b0b12;
 }
-:root[data-skin="starter"] .dashboard h1 {
+:root[data-skin="standard"] .dashboard h1 {
   background: linear-gradient(135deg, #8b6cff, #22d3ee);
   -webkit-background-clip: text;
   background-clip: text;

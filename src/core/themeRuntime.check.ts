@@ -4,16 +4,16 @@ import { cssVariables, resolveScene } from "./themeRuntime.ts";
 import type { ThemeSchema } from "./theme.ts";
 
 // Szene aus dem Theme, fehlende vom Standard-Theme, unbekannte Szene oder unbekanntes Theme ohne Standard: null
-const scenes = { matrix: { alerts: "matrix-alerts", chat: "matrix-chat" }, starter: { alerts: "starter-alerts" } };
-assert.equal(resolveScene(scenes, "starter", "alerts", "matrix"), "starter-alerts");
-assert.equal(resolveScene(scenes, "starter", "chat", "matrix"), "matrix-chat");
+const scenes = { matrix: { alerts: "matrix-alerts", chat: "matrix-chat" }, standard: { alerts: "standard-alerts" } };
+assert.equal(resolveScene(scenes, "standard", "alerts", "matrix"), "standard-alerts");
+assert.equal(resolveScene(scenes, "standard", "chat", "matrix"), "matrix-chat");
 assert.equal(resolveScene(scenes, "gibt-es-nicht", "alerts", "matrix"), "matrix-alerts");
-assert.equal(resolveScene(scenes, "starter", "index", "matrix"), null);
-assert.equal(resolveScene(scenes, "starter", "music", "matrix"), null);
+assert.equal(resolveScene(scenes, "standard", "index", "matrix"), null);
+assert.equal(resolveScene(scenes, "standard", "music", "matrix"), null);
 // Theme-eigene Szenen (minimes) werden nie vom Standard-Theme geerbt
 const withMinimes = { ...scenes, matrix: { ...scenes.matrix, minimes: "matrix-minimes" } };
 assert.equal(resolveScene(withMinimes, "matrix", "minimes", "matrix"), "matrix-minimes");
-assert.equal(resolveScene(withMinimes, "starter", "minimes", "matrix"), null);
+assert.equal(resolveScene(withMinimes, "standard", "minimes", "matrix"), null);
 assert.equal(resolveScene(withMinimes, "gibt-es-nicht", "minimes", "matrix"), null);
 
 // CSS-Variablen: Farben, Zahlen mit Einheit laut Schema, Schalter als 1/0, Schriften in Anführungszeichen; Texte nicht

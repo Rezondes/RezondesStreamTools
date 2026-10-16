@@ -1,11 +1,11 @@
-// Stinger des Starter-Themes: Streifen im Farbverlauf gleiten von links herein, decken am Übergangspunkt (cut) das
+// Stinger des Standard-Themes: Streifen im Farbverlauf gleiten von links herein, decken am Übergangspunkt (cut) das
 // ganze Bild, zeigen kurz den Text und gleiten nach rechts hinaus. Ausserhalb der Streifen transparent.
 // Reine Funktion der Zeit, darum Frame für Frame renderbar. Check: stinger.check.ts.
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
 export const FPS = 60;
 
-export type StarterStingerOptions = {
+export type StandardStingerOptions = {
   duration: number; // Sekunden
   cut: number; // Sekunden, in OBS als Übergangspunkt eintragen
   panels: number; // Anzahl der Streifen
@@ -20,7 +20,7 @@ const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 // Weich beschleunigen und abbremsen
 const ease = (progress: number) => (progress < 0.5 ? 4 * progress ** 3 : 1 - (-2 * progress + 2) ** 3 / 2);
 
-export function drawStarterStinger(context: CanvasRenderingContext2D, time: number, options: StarterStingerOptions) {
+export function drawStandardStinger(context: CanvasRenderingContext2D, time: number, options: StandardStingerOptions) {
   const { cut, duration } = options;
   const count = Math.max(1, Math.round(options.panels));
   const band = HEIGHT / count;

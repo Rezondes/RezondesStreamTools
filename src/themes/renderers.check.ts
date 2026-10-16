@@ -1,4 +1,4 @@
-// Check für renderers.ts sowie matrix/render.ts und starter/render.ts: jedes Theme liefert Stinger, Profil- und
+// Check für renderers.ts sowie matrix/render.ts und standard/render.ts: jedes Theme liefert Stinger, Profil- und
 // Offline-Banner, die Gruppen gibt es im Schema, nur der Stinger hat einen Übergangspunkt. Läuft mit npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../core/settings.ts";

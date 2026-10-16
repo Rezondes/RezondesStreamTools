@@ -1,7 +1,7 @@
 # Eigene Themes
 
 Ein Theme bestimmt, wie die Overlays aussehen. Es besteht aus einem Einstellungs-Schema (was der Streamer im Dashboard
-einstellen kann) und React-Szenen (wie es aussieht). Das eingebaute Theme `starter` in `src/themes/starter/` ist das
+einstellen kann) und React-Szenen (wie es aussieht). Das eingebaute Theme `standard` in `src/themes/standard/` ist das
 Standard-Theme (neue Streamer starten damit) und die Vorlage: ein eigenständiges Theme mit allen Szenen, Stinger und
 Bannern. Jede Szene, die ein Theme nicht selbst mitbringt, kommt vom Standard-Theme.
 
@@ -22,13 +22,13 @@ src/themes/<id>/
 
 ## Schritt für Schritt
 
-1. **Ordner anlegen**: `src/themes/starter/` nach `src/themes/<id>/` kopieren. Die id besteht aus Kleinbuchstaben
+1. **Ordner anlegen**: `src/themes/standard/` nach `src/themes/<id>/` kopieren. Die id besteht aus Kleinbuchstaben
    und landet in `settings.json` der Streamer; sie bleibt danach gleich.
 2. **Schema** in `settings.ts` (Stinger und Banner lesen ihre Werte aus den Gruppen `Stinger` und `Banner`): mit den Bausteinen aus `src/core/fields.ts` (`color`, `text`, `textarea`, `lines`,
    `flag`, `number`, `choice`, `font`, `sound`) jedes Feld beschreiben: Schlüssel, Label, Gruppe, Standardwert, bei
    Zahlen Grenzen und Einheit (`px`, `ms`, `s`, `%`). Die Gruppe wird ein Abschnitt im Formular.
    `ValuesOf<typeof FIELDS>` ergibt den Typ der Werte. `id` und `name` im exportierten `ThemeSchema` setzen.
-3. **Werte lesen**: in `use<Id>.ts` (z.B. `useStarter.ts`) `useThemeValues()` aus `src/core/hooks/useSettings.ts` auf den eigenen Typ casten.
+3. **Werte lesen**: in `use<Id>.ts` (z.B. `useStandard.ts`) `useThemeValues()` aus `src/core/hooks/useSettings.ts` auf den eigenen Typ casten.
    main.tsx löst die Werte vorher gegen das Schema auf, darum ist jeder Schlüssel da und gültig.
 4. **Szenen** in `scenes/`: nur die Kern-Hooks aus `src/core/hooks/` nutzen (`useAlerts`, `useChat`, `useMusic`,
    `useFx`, `useTerminal`, `useDecode`, `useNow`), keine eigenen Netzwerkzugriffe. Texte mit Platzhaltern füllt
@@ -37,10 +37,10 @@ src/themes/<id>/
    und Schriften aus dem Schema kommen automatisch als CSS-Variablen an (`var(--accent)`, `var(--alertWidth)`).
    Feste Masse nur als Standardwert einer Variable: `padding: var(--card-padding, 16px 20px)`.
 6. **Registrieren**:
-   - `src/themes/registry.ts`: das Schema in `THEMES` eintragen (der erste Eintrag ist das Standard-Theme, bleibt `starter`).
+   - `src/themes/registry.ts`: das Schema in `THEMES` eintragen (der erste Eintrag ist das Standard-Theme, bleibt `standard`).
    - `src/themes/scenes.tsx`: die Szenen aus `index.tsx` in `THEME_SCENES` unter der id eintragen.
    - `src/themes/renderers.ts`: die Clips aus `render.ts` (Stinger, Profil- und Offline-Banner, siehe
-     `src/themes/starter/render.ts`) eintragen; ohne Eintrag rendert der Bereich `[ RENDERN ]` die des Standard-Themes.
+     `src/themes/standard/render.ts`) eintragen; ohne Eintrag rendert der Bereich `[ RENDERN ]` die des Standard-Themes.
 7. **Prüfen**: `npm run verify`. Danach im Dashboard unter `[ THEME ]` das Theme wählen und in der Vorschau alle
    Szenen ansehen.
 
@@ -111,9 +111,9 @@ Schema, und jeder Schlüssel wird im Theme-Code benutzt (`values.key`, `{ key }`
 
 ## Vererbung
 
-Fehlt einem Theme eine Szene, zeigt `/s/<login>/<szene>.html` die Szene des Standard-Themes `starter` mit dessen
+Fehlt einem Theme eine Szene, zeigt `/s/<login>/<szene>.html` die Szene des Standard-Themes `standard` mit dessen
 Einstellungen. Gleich benannte Schlüssel (z.B. `accent`) übernimmt sie vom gewählten Theme, alle anderen haben die
-Standardwerte von `starter`. Ausnahme: Szenen theme-eigener Funktionen (z.B. `minimes`) werden nie geerbt.
+Standardwerte von `standard`. Ausnahme: Szenen theme-eigener Funktionen (z.B. `minimes`) werden nie geerbt.
 
 ## Checkliste
 

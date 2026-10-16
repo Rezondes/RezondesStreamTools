@@ -1,12 +1,12 @@
-// Einstellungs-Schema des Starter-Themes: klarer, moderner Look mit Verlauf, abgerundeten Karten und weichen
+// Einstellungs-Schema des Standard-Themes: klarer, moderner Look mit Verlauf, abgerundeten Karten und weichen
 // Übergängen, unabhängig vom Matrix-Theme (eigene Szenen, Schriften, Stinger und Banner). Vorlage für eigene Themes
-// (THEMES.md). Einzige Stelle des Themes mit festen Farben, Texten und Zahlen. StarterValues ist der Typ der
-// aufgelösten Werte, den die Szenen über useStarter lesen.
+// (THEMES.md). Einzige Stelle des Themes mit festen Farben, Texten und Zahlen. StandardValues ist der Typ der
+// aufgelösten Werte, den die Szenen über useStandard lesen.
 import { choice, color, flag, font, inScene, number, sound, text, type ValuesOf } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
-export const STARTER_FONTS = ["Inter", "Manrope", "DM Sans", "Space Grotesk"] as const;
+export const STANDARD_FONTS = ["Inter", "Manrope", "DM Sans", "Space Grotesk"] as const;
 const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"] as const;
 
 const GENERAL = "Allgemein";
@@ -28,7 +28,7 @@ const FIELDS = [
   color("background", "Hintergrund (Vollbild-Szenen)", GENERAL, "#0b0b12"),
   number("cardOpacity", "Deckkraft der Karten", GENERAL, 0.88, 0, 1, undefined, 0.01),
   number("radius", "Eckenradius", GENERAL, 16, 0, 48, "px"),
-  font("font", "Schrift", GENERAL, "Inter", STARTER_FONTS),
+  font("font", "Schrift", GENERAL, "Inter", STANDARD_FONTS),
   number("fontSize", "Schriftgrösse", GENERAL, 22, 10, 60, "px"),
   number("fadeDuration", "Ein- und Ausblenden", GENERAL, 400, 0, 3000, "ms"),
   text("channelName", "Kanal-Name", GENERAL, "STREAM", 40),
@@ -116,7 +116,7 @@ const FIELDS = [
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 860, 400, 1600, "px"),
 ] as const satisfies readonly SettingField[];
 
-export type StarterValues = ValuesOf<typeof FIELDS>;
+export type StandardValues = ValuesOf<typeof FIELDS>;
 
 const GROUP_SCENES = {
   [SCREENS]: ["starting", "brb", "ending"],
@@ -133,4 +133,4 @@ const GROUP_SCENES = {
 // Beim ersten Login: Kanal-Name aus dem Twitch-Login statt des Beispiels
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 
-export const starterSettings: ThemeSchema = { id: "starter", name: "Starter", fields: FIELDS, groupScenes: GROUP_SCENES, personalize };
+export const standardSettings: ThemeSchema = { id: "standard", name: "Standard", fields: FIELDS, groupScenes: GROUP_SCENES, personalize };

@@ -14,12 +14,18 @@ export type SettingsFile = { theme: string; values: Record<string, Record<string
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 
-// Gelesene Datei auf gültige Form bringen: unbekanntes Theme wird der Standard, Werte nur als Objekte je Theme
+// Alte Theme-ids aus gespeicherten Dateien und ihr heutiger Name (das Theme "starter" heisst seit RST "standard")
+const RENAMED: Record<string, string> = { starter: "standard" };
+const currentId = (id: string) => RENAMED[id] ?? id;
+
+// Gelesene Datei auf gültige Form bringen: alte ids werden umbenannt, unbekanntes Theme wird der Standard, Werte nur
+// als Objekte je Theme
 export function parseSettingsFile(raw: unknown): SettingsFile {
   const source = isObject(raw) ? raw : {};
-  const theme = typeof source.theme === "string" && findTheme(source.theme) ? source.theme : DEFAULT_THEME;
+  const named = typeof source.theme === "string" ? currentId(source.theme) : "";
+  const theme = findTheme(named) ? named : DEFAULT_THEME;
   const values: SettingsFile["values"] = {};
-  if (isObject(source.values)) for (const [id, stored] of Object.entries(source.values)) if (isObject(stored)) values[id] = stored;
+  if (isObject(source.values)) for (const [id, stored] of Object.entries(source.values)) if (isObject(stored)) values[currentId(id)] = stored;
   return { theme, values };
 }
 

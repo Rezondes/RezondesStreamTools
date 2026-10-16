@@ -1,7 +1,7 @@
-// Twitch-Banner des Starter-Themes: Profilbanner (1200x480) und Offline-Banner (1920x1080) auf dunklem Grund mit zwei
+// Twitch-Banner des Standard-Themes: Profilbanner (1200x480) und Offline-Banner (1920x1080) auf dunklem Grund mit zwei
 // Farbflächen, die einmal pro Schleife im Kreis wandern (darum läuft das GIF nahtlos), dazu Titel und Text.
 // Reine Funktionen der Zeit. Check: banners.check.ts.
-export type StarterBannerOptions = {
+export type StandardBannerOptions = {
   loop: number; // Sekunden
   font: string;
   background: string;
@@ -18,7 +18,7 @@ export type StarterBannerOptions = {
 const TURN = Math.PI * 2;
 
 // Farbfläche als weicher Kreis; Mittelpunkt kreist mit der Schleife
-function blob(context: CanvasRenderingContext2D, time: number, options: StarterBannerOptions, center: [number, number], orbit: number, radius: number, color: string, phase: number) {
+function blob(context: CanvasRenderingContext2D, time: number, options: StandardBannerOptions, center: [number, number], orbit: number, radius: number, color: string, phase: number) {
   const angle = (time / options.loop) * TURN + phase;
   const x = center[0] + Math.cos(angle) * orbit;
   const y = center[1] + Math.sin(angle) * orbit;
@@ -31,14 +31,14 @@ function blob(context: CanvasRenderingContext2D, time: number, options: StarterB
   context.globalAlpha = 1;
 }
 
-function base(context: CanvasRenderingContext2D, time: number, options: StarterBannerOptions, width: number, height: number) {
+function base(context: CanvasRenderingContext2D, time: number, options: StandardBannerOptions, width: number, height: number) {
   context.fillStyle = options.background;
   context.fillRect(0, 0, width, height);
   blob(context, time, options, [width * 0.25, height * 0.3], height * 0.15, height * 0.9, options.accent, 0);
   blob(context, time, options, [width * 0.8, height * 0.75], height * 0.12, height * 0.8, options.accent2, Math.PI);
 }
 
-function write(context: CanvasRenderingContext2D, text: string, x: number, y: number, size: number, weight: number, color: string, options: StarterBannerOptions) {
+function write(context: CanvasRenderingContext2D, text: string, x: number, y: number, size: number, weight: number, color: string, options: StandardBannerOptions) {
   context.font = `${weight} ${size}px "${options.font}", sans-serif`;
   context.textBaseline = "alphabetic";
   context.fillStyle = color;
@@ -47,7 +47,7 @@ function write(context: CanvasRenderingContext2D, text: string, x: number, y: nu
 }
 
 // Akzentbalken im Verlauf unter dem Titel
-function bar(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, options: StarterBannerOptions) {
+function bar(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, options: StandardBannerOptions) {
   const gradient = context.createLinearGradient(x, y, x + width, y);
   gradient.addColorStop(0, options.accent);
   gradient.addColorStop(1, options.accent2);
@@ -56,7 +56,7 @@ function bar(context: CanvasRenderingContext2D, x: number, y: number, width: num
 }
 
 // Profilbanner 1200x480; unten links legt Twitch das Profilbild darüber, darum steht alles oben rechts der Mitte
-export function drawStarterProfileBanner(context: CanvasRenderingContext2D, time: number, options: StarterBannerOptions) {
+export function drawStandardProfileBanner(context: CanvasRenderingContext2D, time: number, options: StandardBannerOptions) {
   const width = 1200, height = 480;
   base(context, time, options, width, height);
   const left = 360;
@@ -66,7 +66,7 @@ export function drawStarterProfileBanner(context: CanvasRenderingContext2D, time
 }
 
 // Offline-Banner 1920x1080
-export function drawStarterOfflineBanner(context: CanvasRenderingContext2D, time: number, options: StarterBannerOptions) {
+export function drawStandardOfflineBanner(context: CanvasRenderingContext2D, time: number, options: StandardBannerOptions) {
   const width = 1920, height = 1080;
   base(context, time, options, width, height);
   const left = 180;
