@@ -1,0 +1,99 @@
+/* Minimes des Matrix-Themes (scenes/Minimes.tsx), gekapselt unter .theme-matrix, nur mit der Szene geladen.
+   Einstellungen kommen als CSS-Variablen (--minimeSize, --minimeGlow, ...); je Geist setzt die Szene --x, --move,
+   --action-ms, --facing und --minime (Farbe des Chatters). Die laufende Aktion steht als Klasse action-<name> am Geist.
+   Keyframes heissen matrix-minime-*. */
+
+.theme-matrix .minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+
+.theme-matrix .minime {
+  position: absolute;
+  left: 0;
+  bottom: var(--minimeGround);
+  width: var(--minimeSize);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--minime);
+  transform: translateX(calc(var(--x) - 50%));
+  transition: transform var(--move) linear;
+}
+
+.theme-matrix .minime-name {
+  font-size: var(--minimeNameSize);
+  margin-bottom: var(--minimeNameGap);
+  white-space: nowrap;
+  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minime-glow-near, 4px)) var(--minime);
+}
+
+/* Schweben: ständig leicht auf und ab, unabhängig von der Aktion */
+.theme-matrix .minime-float { width: 100%; animation: matrix-minime-float var(--minimeFloatMs) ease-in-out infinite alternate; }
+@keyframes matrix-minime-float { from { translate: 0 0; } to { translate: 0 calc(-1 * var(--minimeFloatHeight)); } }
+
+/* Blickrichtung (gespiegelt) und Neigung in Laufrichtung beim Wandern */
+.theme-matrix .minime-flip { transform: scaleX(var(--facing)); transition: rotate var(--minime-tilt-time, 0.3s) ease-out; }
+.theme-matrix .action-walk .minime-flip { rotate: calc(var(--facing) * var(--minimeTilt) * 1deg); }
+
+.theme-matrix .minime-action { position: relative; }
+.theme-matrix .minime-shape {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 calc(var(--minimeGlow) * var(--minime-glow-near, 4px)) var(--minime));
+}
+.theme-matrix .minime-shape .outline { fill: none; stroke: var(--minime); stroke-width: var(--minimeStroke); stroke-linecap: round; stroke-linejoin: round; }
+.theme-matrix .minime-shape .face { fill: var(--minimeFace); }
+.theme-matrix .minime-shape .hollow { fill: var(--minimeFace); stroke: color-mix(in srgb, var(--minime) 45%, transparent); stroke-width: var(--minimeStroke); }
+.theme-matrix .minime-shape .eye { fill: var(--minime); transform-box: fill-box; transform-origin: center; }
+
+/* Düse: Spalten fallender Glyphen unter dem Geist, nach unten ausgeblendet */
+.theme-matrix .minime-jet {
+  display: flex;
+  justify-content: center;
+  gap: var(--minime-jet-gap, 2px);
+  height: calc(var(--minimeJetLength) * var(--minimeJetSize));
+  margin-top: calc(-1 * var(--minime-jet-overlap, 6px));
+  overflow: hidden;
+  font-size: var(--minimeJetSize);
+  line-height: 1;
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+.theme-matrix .minime-column {
+  display: block;
+  width: 1ch;
+  word-break: break-all;
+  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minime-glow-near, 4px)) var(--minime);
+  animation: matrix-minime-fall var(--minimeJetSpeed) linear infinite;
+  animation-delay: calc(var(--column) * var(--minimeJetSpeed) / -3);
+}
+@keyframes matrix-minime-fall { from { translate: 0 -50%; } to { translate: 0 0; } }
+
+/* Erscheinen: von oben nach unten aufgebaut, darüber fallen Glyphen; Name und Düse blenden ein */
+.theme-matrix .action-enter .minime-shape { animation: matrix-minime-enter var(--action-ms) linear both; }
+@keyframes matrix-minime-enter {
+  from { clip-path: inset(0 0 100% 0); opacity: 0.4; }
+  60%  { opacity: 0.7; }
+  70%  { opacity: 0.3; }
+  to   { clip-path: inset(0); opacity: 1; }
+}
+.theme-matrix .action-enter .minime-name, .theme-matrix .action-enter .minime-jet { animation: matrix-fade-in var(--action-ms) ease-out both; }
+
+/* Verschwinden: zerfällt nach unten, Name und Düse blenden aus */
+.theme-matrix .action-exit .minime-shape { animation: matrix-minime-exit var(--action-ms) ease-in forwards; }
+@keyframes matrix-minime-exit {
+  from { clip-path: inset(0); opacity: 1; }
+  to   { clip-path: inset(100% 0 0 0); opacity: 0; translate: 0 var(--minime-exit-drop, 20px); }
+}
+.theme-matrix .action-exit .minime-name, .theme-matrix .action-exit .minime-jet { animation: matrix-fade-out var(--action-ms) ease-in forwards; }
+
+/* Glyphen über dem Geist beim Erscheinen und Verschwinden */
+.theme-matrix .minime-decode {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: space-around;
+  overflow: hidden;
+  font-size: var(--minimeJetSize);
+  line-height: 1;
+  animation: matrix-fade-out var(--action-ms) ease-in forwards;
+}

@@ -15,4 +15,5 @@ export const matrixScenes: Partial<Record<SceneName, ComponentType>> = {
   cam: lazy(() => import("./scenes/Cam.tsx")),
   music: lazy(() => import("./scenes/Music.tsx")),
   fx: lazy(() => import("./scenes/Fx.tsx")),
+  minimes: lazy(() => import("./scenes/Minimes.tsx")),
 };

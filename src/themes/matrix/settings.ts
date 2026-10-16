@@ -26,6 +26,7 @@ const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
 const BANNER = "Banner";
+const MINIME_LOOK = "Minimes: Aussehen";
 
 const FIELDS = [
   // Allgemein
@@ -262,6 +263,22 @@ const FIELDS = [
   number("bannerRainDensity", "Regen-Dichte", BANNER, 100, 0, 100, "%"),
   // Minimes: Befehle, Regeln und Bewegung sind für alle Themes mit Minimes gleich
   ...MINIME_FIELDS,
+  color("minimeDefaultColor", "Farbe ohne eigene Wahl", MINIME_LOOK, "#39ff14"),
+  color("minimeFace", "Gesicht (Kapuzeninneres)", MINIME_LOOK, "#000000"),
+  number("minimeSize", "Breite der Figur", MINIME_LOOK, 90, 30, 300, "px"),
+  number("minimeGround", "Abstand zum unteren Rand", MINIME_LOOK, 70, 0, 300, "px"),
+  number("minimeStroke", "Strichstärke", MINIME_LOOK, 2.5, 0.5, 8, undefined, 0.5),
+  number("minimeGlow", "Glühen (Stärke)", MINIME_LOOK, 1, 0, 3, undefined, 0.1),
+  number("minimeFloatHeight", "Schweben: Höhe", MINIME_LOOK, 6, 0, 40, "px"),
+  number("minimeFloatMs", "Schweben: Dauer auf oder ab", MINIME_LOOK, 1800, 200, 10_000, "ms"),
+  number("minimeTilt", "Neigung beim Wandern (Grad)", MINIME_LOOK, 8, 0, 45),
+  number("minimeJetColumns", "Düse: Spalten", MINIME_LOOK, 3, 1, 8),
+  number("minimeJetLength", "Düse: Zeichen je Spalte", MINIME_LOOK, 4, 1, 12),
+  number("minimeJetSize", "Düse: Zeichengrösse", MINIME_LOOK, 12, 6, 40, "px"),
+  number("minimeJetSpeed", "Düse: Fallzeit", MINIME_LOOK, 700, 100, 5000, "ms"),
+  flag("minimeNames", "Namen anzeigen", MINIME_LOOK, true),
+  number("minimeNameSize", "Name: Schriftgrösse", MINIME_LOOK, 16, 8, 48, "px"),
+  number("minimeNameGap", "Name: Abstand zum Kopf", MINIME_LOOK, 4, 0, 60, "px"),
 ] as const satisfies readonly SettingField[];
 
 export type MatrixValues = ValuesOf<typeof FIELDS>;
@@ -276,6 +293,7 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [STINGER]: [],
   [BANNER]: [],
+  [MINIME_LOOK]: ["minimes"],
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],
