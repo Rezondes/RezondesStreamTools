@@ -27,6 +27,7 @@ const FX = "Effekte";
 const STINGER = "Stinger";
 const BANNER = "Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
+const MINIME_MOVES = "Minimes: Animationen";
 
 const FIELDS = [
   // Allgemein
@@ -279,6 +280,27 @@ const FIELDS = [
   flag("minimeNames", "Namen anzeigen", MINIME_LOOK, true),
   number("minimeNameSize", "Name: Schriftgrösse", MINIME_LOOK, 16, 8, 48, "px"),
   number("minimeNameGap", "Name: Abstand zum Kopf", MINIME_LOOK, 4, 0, 60, "px"),
+  // Idle-Animationen: Häufigkeit 0 = nie
+  number("minimeBackflipWeight", "Backflip: Häufigkeit", MINIME_MOVES, 8, 0, 100),
+  number("minimeBackflipMs", "Backflip: Dauer", MINIME_MOVES, 1300, 200, 10_000, "ms"),
+  number("minimeBackflipHeight", "Backflip: Sprunghöhe", MINIME_MOVES, 60, 0, 300, "px"),
+  number("minimeGlitchWeight", "Glitch: Häufigkeit", MINIME_MOVES, 10, 0, 100),
+  number("minimeGlitchMs", "Glitch: Dauer", MINIME_MOVES, 600, 100, 5000, "ms"),
+  number("minimeGlitchShift", "Glitch: Versatz", MINIME_MOVES, 6, 0, 40, "px"),
+  number("minimeLookWeight", "Umschauen: Häufigkeit", MINIME_MOVES, 15, 0, 100),
+  number("minimeLookMs", "Umschauen: Dauer", MINIME_MOVES, 2400, 300, 10_000, "ms"),
+  number("minimeLookShift", "Umschauen: Augenweg", MINIME_MOVES, 4, 0, 20, "px"),
+  number("minimeSpinWeight", "Drehen: Häufigkeit", MINIME_MOVES, 8, 0, 100),
+  number("minimeSpinMs", "Drehen: Dauer", MINIME_MOVES, 1000, 200, 10_000, "ms"),
+  number("minimeSpinTurns", "Drehen: Umdrehungen", MINIME_MOVES, 2, 1, 10),
+  number("minimeSleepWeight", "Schlafen: Häufigkeit", MINIME_MOVES, 5, 0, 100),
+  number("minimeSleepMs", "Schlafen: Dauer", MINIME_MOVES, 7000, 1000, 60_000, "ms"),
+  number("minimeSleepDrop", "Schlafen: Absinken", MINIME_MOVES, 10, 0, 100, "px"),
+  text("minimeSleepText", "Schlafen: aufsteigendes Zeichen", MINIME_MOVES, "z", 4),
+  number("minimeBlinkEvery", "Blinzeln alle (0 = nie)", MINIME_MOVES, 4000, 0, 30_000, "ms"),
+  number("minimeBoostMs", "Reaktion auf Chat: Dauer", MINIME_MOVES, 700, 100, 5000, "ms"),
+  number("minimeBoostHeight", "Reaktion auf Chat: Hüpfhöhe", MINIME_MOVES, 18, 0, 200, "px"),
+  number("minimeBoostJet", "Reaktion auf Chat: Düse länger (Faktor)", MINIME_MOVES, 2, 1, 4, undefined, 0.1),
 ] as const satisfies readonly SettingField[];
 
 export type MatrixValues = ValuesOf<typeof FIELDS>;
@@ -294,6 +316,7 @@ const GROUP_SCENES = {
   [STINGER]: [],
   [BANNER]: [],
   [MINIME_LOOK]: ["minimes"],
+  [MINIME_MOVES]: ["minimes"],
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],

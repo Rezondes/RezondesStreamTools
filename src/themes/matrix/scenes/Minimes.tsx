@@ -1,6 +1,7 @@
 // Minimes des Matrix-Themes: eingeklinkte Chatter als Neon-Geister im Kapuzenpulli, ohne Beine, getragen von einer
 // Düse aus fallenden Glyphen, mit Namen über dem Kopf. Transparent, empfohlen 1920x360 am unteren Bildrand.
-// Wer drin ist und was jeder tut, kommt aus useMinimes; hier steht nur das Aussehen. Parameter: ?demo, ?demo=<n>
+// Wer drin ist und was jeder tut, kommt aus useMinimes; hier stehen das Aussehen und der Katalog der eigenen
+// Animationen (backflip, glitch, look, spin, sleep; boost als Reaktion auf Chat). Parameter: ?demo, ?demo=<n>
 import { useMemo, useState, type CSSProperties } from "react";
 import { glyph } from "../../../core/glyphs.ts";
 import { useMinimes } from "../../../core/hooks/useMinimes.ts";
@@ -8,12 +9,19 @@ import type { MinimeAction, MinimeActor } from "../../../core/minimeBehavior.ts"
 import { useMatrix } from "../useMatrix.ts";
 import "../minimes.css";
 
-const NO_ACTIONS: readonly MinimeAction[] = [];
-
 export default function Minimes() {
+  const values = useMatrix();
   // Breite der Szene einmal beim Laden (OBS-Quelle), danach bleibt sie
   const [widthPx] = useState(() => innerWidth);
-  const actors = useMinimes({ catalog: NO_ACTIONS, reaction: null, widthPx });
+  const catalog = useMemo<MinimeAction[]>(() => [
+    { name: "backflip", durationMs: values.minimeBackflipMs, weight: values.minimeBackflipWeight },
+    { name: "glitch", durationMs: values.minimeGlitchMs, weight: values.minimeGlitchWeight },
+    { name: "look", durationMs: values.minimeLookMs, weight: values.minimeLookWeight },
+    { name: "spin", durationMs: values.minimeSpinMs, weight: values.minimeSpinWeight },
+    { name: "sleep", durationMs: values.minimeSleepMs, weight: values.minimeSleepWeight },
+  ], [values]);
+  const reaction = useMemo<MinimeAction>(() => ({ name: "boost", durationMs: values.minimeBoostMs, weight: 0 }), [values.minimeBoostMs]);
+  const actors = useMinimes({ catalog, reaction, widthPx });
   return (
     <div className="minimes" aria-hidden="true">
       {actors.map(actor => <Ghost key={actor.login} actor={actor} />)}
@@ -41,6 +49,7 @@ function Ghost({ actor }: { actor: MinimeActor }) {
           <div key={`${actor.action}-${actor.startedAt}`} className="minime-action">
             <Shape />
             {showing && <Glyphs className="minime-decode" />}
+            {actor.action === "sleep" && <Sleep />}
           </div>
           <Glyphs className="minime-jet" />
         </div>
@@ -64,6 +73,16 @@ function Shape() {
       <ellipse className="eye" cx="41" cy="49" rx="4.5" ry="6" />
       <ellipse className="eye" cx="59" cy="49" rx="4.5" ry="6" />
     </svg>
+  );
+}
+
+// Aufsteigende Schlaf-Zeichen über dem Kopf, nacheinander
+function Sleep() {
+  const values = useMatrix();
+  return (
+    <div className="minime-sleep">
+      {[0, 1].map(index => <span key={index} style={{ "--index": index } as CSSProperties}>{values.minimeSleepText}</span>)}
+    </div>
   );
 }
 

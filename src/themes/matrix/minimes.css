@@ -97,3 +97,74 @@
   line-height: 1;
   animation: matrix-fade-out var(--action-ms) ease-in forwards;
 }
+
+/* Augen: blinzeln unabhängig von der Aktion (minimeBlinkEvery, 0 = nie) */
+.theme-matrix .minime-shape .eye { animation: matrix-minime-blink var(--minimeBlinkEvery) linear infinite; }
+@keyframes matrix-minime-blink { 0%, 95%, 100% { scale: 1 1; } 97.5% { scale: 1 0.1; } }
+
+/* Backflip: in die Hocke, hoch mit voller Rückwärtsdrehung (die Spiegelung dreht die Richtung mit), Düse flammt auf */
+.theme-matrix .action-backflip .minime-action { animation: matrix-minime-backflip var(--action-ms) ease-in-out both; transform-origin: 50% 60%; }
+@keyframes matrix-minime-backflip {
+  0%   { translate: 0 0; rotate: 0deg; }
+  15%  { translate: 0 calc(0.15 * var(--minimeBackflipHeight)); rotate: 0deg; }
+  55%  { translate: 0 calc(-1 * var(--minimeBackflipHeight)); rotate: -200deg; }
+  90%  { translate: 0 0; rotate: -360deg; }
+  100% { translate: 0 0; rotate: -360deg; }
+}
+.theme-matrix .action-backflip .minime-jet,
+.theme-matrix .action-boost .minime-jet { transform-origin: top; animation: matrix-minime-flare var(--action-ms) ease-out both; }
+@keyframes matrix-minime-flare { 0%, 100% { scale: 1 1; filter: none; } 20% { scale: 1 var(--minimeBoostJet); filter: brightness(1.6); } }
+
+/* Glitch: Streifen versetzt, Farbsaum in Glitch-Farbe, der Name flackert */
+.theme-matrix .action-glitch .minime-action { animation: matrix-minime-glitch var(--action-ms) steps(1, end) both; }
+@keyframes matrix-minime-glitch {
+  0%   { translate: var(--minimeGlitchShift) 0; clip-path: inset(10% 0 55% 0); filter: drop-shadow(var(--minimeGlitchShift) 0 0 var(--highlight)); }
+  20%  { translate: calc(-1 * var(--minimeGlitchShift)) 0; clip-path: inset(45% 0 20% 0); }
+  40%  { translate: 0 0; clip-path: inset(0); filter: drop-shadow(calc(-1 * var(--minimeGlitchShift)) 0 0 var(--highlight)); }
+  60%  { translate: calc(0.5 * var(--minimeGlitchShift)) 0; clip-path: inset(70% 0 0 0); }
+  80%  { translate: 0 0; clip-path: inset(0); filter: none; }
+  100% { translate: 0 0; clip-path: inset(0); filter: none; }
+}
+.theme-matrix .action-glitch .minime-name { animation: matrix-minime-flicker var(--action-ms) steps(1, end) both; }
+@keyframes matrix-minime-flicker { 0%, 40%, 80% { opacity: 1; } 20%, 60% { opacity: 0.2; } 100% { opacity: 1; } }
+
+/* Umschauen: Augen nach links, nach rechts, zurück (blinzeln läuft weiter) */
+.theme-matrix .action-look .minime-shape .eye {
+  animation: matrix-minime-blink var(--minimeBlinkEvery) linear infinite, matrix-minime-look var(--action-ms) ease-in-out both;
+}
+@keyframes matrix-minime-look {
+  0%, 100% { translate: 0 0; }
+  20%, 40% { translate: calc(-1 * var(--minimeLookShift)) 0; }
+  60%, 80% { translate: var(--minimeLookShift) 0; }
+}
+
+/* Drehen: Pirouette um die eigene Achse, so oft wie eingestellt */
+.theme-matrix .action-spin .minime-action {
+  animation: matrix-minime-spin calc(var(--action-ms) / var(--minimeSpinTurns)) linear var(--minimeSpinTurns);
+}
+@keyframes matrix-minime-spin { 0%, 100% { scale: 1 1; } 25%, 75% { scale: 0.05 1; } 50% { scale: -1 1; } }
+
+/* Schlafen: sinkt ab, Augen zu, Düse gedimmt, Zeichen steigen auf */
+.theme-matrix .action-sleep .minime-action { animation: matrix-minime-sleep var(--action-ms) ease-in-out both; }
+@keyframes matrix-minime-sleep { 0%, 100% { translate: 0 0; } 15%, 85% { translate: 0 var(--minimeSleepDrop); } }
+.theme-matrix .action-sleep .minime-shape .eye { animation: none; scale: 1 0.15; }
+.theme-matrix .action-sleep .minime-jet { opacity: var(--minime-sleep-jet, 0.35); }
+.theme-matrix .minime-sleep { position: absolute; top: 0; right: 0; font-size: var(--minimeNameSize); }
+.theme-matrix .minime-sleep span {
+  position: absolute;
+  opacity: 0;
+  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minime-glow-near, 4px)) var(--minime);
+  animation: matrix-minime-rise var(--minime-rise-time, 2s) ease-out infinite;
+  animation-delay: calc(var(--index) * var(--minime-rise-time, 2s) / 2);
+}
+@keyframes matrix-minime-rise {
+  from { opacity: 0; translate: 0 0; }
+  30%  { opacity: 1; }
+  to   { opacity: 0; translate: var(--minime-rise-x, 12px) calc(-1 * var(--minime-rise-y, 36px)); }
+}
+
+/* Reaktion auf Chat: Hüpfer, Düse länger und heller, Augen leuchten auf */
+.theme-matrix .action-boost .minime-action { animation: matrix-minime-hop var(--action-ms) ease-out both; }
+@keyframes matrix-minime-hop { 0%, 100% { translate: 0 0; } 30% { translate: 0 calc(-1 * var(--minimeBoostHeight)); } }
+.theme-matrix .action-boost .minime-shape .eye { animation: matrix-minime-shine var(--action-ms) ease-out both; }
+@keyframes matrix-minime-shine { 0%, 100% { scale: 1 1; filter: none; } 30% { scale: 1.3 1.3; filter: brightness(1.8); } }
