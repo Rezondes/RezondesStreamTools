@@ -99,14 +99,18 @@ export async function fetchSettings(): Promise<PublicSettings | null> {
 // Verbindet alle Quellen und meldet Ereignisse an handlers; die Rückgabe trennt alles wieder
 function startSources(handlers: Handlers): () => void {
   let stopped = false;
-  const stops = [params.has("demo") ? demo(handlers) : () => {}];
+  const isDemo = params.has("demo");
+  const stops = [isDemo ? demo(handlers) : () => {}];
+  // Mit ?demo zeigen Musik und Minimes nur die Demo: der Server schickt beim Verbinden seinen Stand (oft kein Titel,
+  // keine Minimes) und würde die Demo sonst überschreiben
+  const live: Handlers = isDemo ? { ...handlers, music: undefined, minimes: undefined, minimeChat: undefined } : handlers;
   serverStatus()
     .then(server => {
       if (stopped) return;
       const name = channel || server?.login;
       // Mit Server kommen Alerts nur vom Server, sonst gäbe es Subs doppelt
-      if (name) stops.push(irc(name, handlers, !server));
-      if (server) stops.push(events(server.login, handlers));
+      if (name) stops.push(irc(name, live, !server));
+      if (server) stops.push(events(server.login, live));
     })
     .catch((error: unknown) => console.error("Connecting failed:", error));
   return () => { stopped = true; stops.forEach(stop => stop()); };
