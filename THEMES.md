@@ -44,6 +44,34 @@ src/themes/<id>/
 7. **Prüfen**: `npm run verify`. Danach im Dashboard unter `[ THEME ]` das Theme wählen und in der Vorschau alle
    Szenen ansehen.
 
+## Theme-eigene Funktionen (Beispiel Minimes)
+
+Manche Funktionen hat nur ein Theme, das sie selbst mitbringt; ihre Szene wird **nicht** vom Standard-Theme geerbt
+(`OWN_SCENES` in `src/core/themeRuntime.ts`). Ein Theme ohne die Funktion zeigt dort eine leere Seite, der Server
+verarbeitet ihre Chatbefehle dann nicht. Die Logik liegt im Kern, das Theme liefert Aussehen und eigene Animationen.
+
+Minimes (Chatter als Figuren, Szene `minimes`) in einem eigenen Theme:
+
+1. **Felder einbinden**: `...MINIME_FIELDS` aus `src/core/minimeFields.ts` ins Schema. Das schaltet die Funktion für das
+   Theme ein (`hasMinimes`) und bringt Befehle, Regeln und Bewegung als Einstellungen mit (Gruppen `MINIME_COMMANDS`,
+   `MINIME_RULES`, `MINIME_MOTION`, in `groupScenes` der Szene `minimes` zuordnen). Diese Schlüssel liest der Kern,
+   sie gelten im Schema-Check als benutzt.
+2. **Szene** `scenes/Minimes.tsx` in `index.tsx` unter `minimes` eintragen. Sie ruft
+   `useMinimes({ catalog, reaction, widthPx })` aus `src/core/hooks/useMinimes.ts` und zeigt jedes Minime:
+   - `catalog`: eigene Animationen `{ name, durationMs, weight }`, Dauer und Häufigkeit aus eigenen Einstellungen
+     (Häufigkeit 0 = nie). `reaction`: Animation, wenn der Chatter schreibt (oder `null`). Beide mit `useMemo`.
+   - Jedes Minime hat `login`, `user`, `color` (`null` = eigene Standardfarbe), `action`, `durationMs`, `fromX`/`toX`
+     (px) und `facing` (1 rechts, -1 links). Eingebaute Aktionen: `enter`, `exit`, `idle`, `walk`; alle anderen kommen
+     aus dem Katalog.
+   - Üblich: Klasse `action-<name>` und Dauer als CSS-Variable setzen, `toX` als Position mit einer `transition` der
+     Länge `durationMs` nur bei `walk`, Farbe als `--minime` am Element (Laufzeitdaten, kein Literal).
+3. **CSS** für jede Aktion, am besten in einer eigenen Datei, die nur die Szene importiert (wie `matrix/minimes.css`).
+
+```ts
+const catalog = useMemo(() => [{ name: "wave", durationMs: values.waveMs, weight: values.waveWeight }], [values]);
+const actors = useMinimes({ catalog, reaction: null, widthPx: innerWidth });
+```
+
 ## Regeln, die automatisch geprüft werden
 
 `scripts/rules.check.ts` prüft jeden Theme-Ordner (ausser `settings.ts`):
@@ -63,7 +91,7 @@ Schema, und jeder Schlüssel wird im Theme-Code benutzt (`values.key`, `{ key }`
 
 Fehlt einem Theme eine Szene, zeigt `/s/<login>/<szene>.html` die Szene des Standard-Themes `matrix` mit dessen
 Einstellungen. Gleich benannte Schlüssel (z.B. `accent`) übernimmt sie vom gewählten Theme, alle anderen haben die
-Standardwerte von `matrix`.
+Standardwerte von `matrix`. Ausnahme: Szenen theme-eigener Funktionen (z.B. `minimes`) werden nie geerbt.
 
 ## Checkliste
 

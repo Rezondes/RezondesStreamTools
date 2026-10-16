@@ -31,6 +31,7 @@ unter `/s/<login>/` ausliefert. Einen Modus ohne Server gibt es nicht mehr, denn
 | `#/cam` | wie Kamera | |
 | `#/music` | 900x240 | |
 | `#/fx` | 1920x1080 | `?zone=main`, `?sound=0`, `?volume=0.5` |
+| `#/minimes` | 1920x360 | `?demo=<n>` (so viele Demo-Minimes, Standard 5) |
 
 Alles andere (Texte, Farben, Schrift, Dauer, Grösse, Position, Animationen, Töne, Darstellung der Musik, Ausblendzeit
 des Chats, Kamera-Label, Countdown-Standard, Ticker) stellt der Streamer im Theme ein, siehe "Themes und Einstellungen".
@@ -38,7 +39,7 @@ des Chats, Kamera-Label, Countdown-Standard, Ticker) stellt der Streamer im Them
 Mit Server liegt jede Szene unter `/s/<login>/<szene>` (z.B. `http://localhost:8089/s/rezondes/alerts`, mit `.html` geht es auch);
 die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Unter `npm run dev` wählt `?s=<login>` den Streamer.
 Alle Szenen nehmen `?channel=name` (überschreibt den Streamer bzw. `.env.local`) und `?demo`.
-`music` und `fx` brauchen den Overlay-Server (Spotify bzw. Chat-Trigger laufen dort).
+`music`, `fx` und `minimes` brauchen den Overlay-Server (Spotify, Chat-Trigger und Minimes laufen dort).
 
 ## Overlay-Server (Docker, mehrere Streamer)
 
@@ -99,7 +100,8 @@ offene Overlays verbinden sich nach dem Neustart selbst wieder.
   - `registration`: `allowlist` (nur Logins aus `allowlist` und Admins, für den Beta-Start) oder `open` (jeder Twitch-Login).
   - `beta`: Logins, die zusätzlich Funktionen mit Stufe `beta` bekommen.
   - `features`: pro Funktion `off`, `beta` (nur Beta-Tester und Admins) oder `all`.
-    `alerts` (EventSub-Alerts, Test-Alerts), `music` (Spotify), `triggers` und `fx` (Chat-Listener, Trigger, Medien; beide nötig), `chat` (nur im Status), `stinger`, `banners`.
+    `alerts` (EventSub-Alerts, Test-Alerts), `music` (Spotify), `triggers` und `fx` (Chat-Listener, Trigger, Medien; beide nötig), `chat` (nur im Status), `stinger`, `banners`,
+    `themes`, `minimes` (Chatter als Figuren, Szene `minimes`).
 - Wer nicht freigeschaltet ist, landet nach der Twitch-Anmeldung wieder auf der Übersicht mit der Meldung "nicht freigeschaltet"; sein Token wird gleich widerrufen.
 - Admins ändern das alles im Dashboard unter `[ ADMIN ]` (dahinter `GET` / `POST /api/admin/access`, JSON wie `access.json`).
   Dort steht auch jedes Profil mit Zugang, Twitch-Verbindung, EventSub-Status und letzter Anmeldung (`GET /api/admin/streamers`).
@@ -159,6 +161,30 @@ Ein Theme-Wechsel speichert sofort; Fehler beim Speichern erscheinen am jeweilig
 
 Eingebaut sind `matrix` (Standard, Terminal-Look) und `starter` (klarer, moderner Look mit Verlauf, abgerundeten
 Karten und eigener Schrift; alle Szenen, Stinger und Banner eigenständig, nichts vom Matrix-Theme). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
+
+## Minimes (Szene `minimes`)
+
+Chatter klinken sich per Chatbefehl als kleine Figur ein, die unten im Bild schwebt, hin und her wandert, ihren Namen
+über dem Kopf trägt und zufällige Animationen zeigt. Im Theme `matrix` ist das ein Neon-Geist im Kapuzenpulli, ohne
+Beine, getragen von einer Düse aus fallenden Glyphen (Backflip, Glitch, Umschauen, Drehen, Schlafen, Blinzeln;
+Hüpfer mit Düsen-Boost, wenn der Chatter schreibt). Minimes sind eine Funktion des Themes: `starter` hat keine,
+dort bleibt die Szene leer und der Server ignoriert die Befehle.
+
+| Befehl (Standard, einstellbar) | Wirkung |
+|---|---|
+| `!join` oder `!join <farbe>` | einklinken, optional mit Farbe |
+| `!color <farbe>` | Farbe ändern; klinkt auch ein (abschaltbar) |
+| `!leave` | raus; Mods (Rolle einstellbar) werfen mit `!leave @name` ein fremdes Minime raus |
+
+Farben: `#ff00aa`, `ff00aa`, `#f0a`, `255 0 170`, `255,0,170` oder `rgb(255, 0, 170)`. Zu dunkle Farben werden bis zur
+eingestellten Mindesthelligkeit aufgehellt; ohne eigene Farbe gilt die Twitch-Namensfarbe (abschaltbar), sonst die
+Standardfarbe des Themes. Ungültige Eingaben werden ignoriert, der Server kann nicht im Chat antworten.
+
+Alles Verhalten ist im Theme einstellbar (Gruppen "Minimes: Befehle", "Minimes: Regeln", "Minimes: Bewegung",
+im Matrix-Theme dazu "Minimes: Aussehen" und "Minimes: Animationen"): Befehlswörter, wer einklinken und rauswerfen darf,
+Höchstzahl und was bei voller Liste passiert, Verschwinden nach Minuten ohne Nachricht, Abklingzeit für Farbwechsel,
+Reaktion auf Chat, Leeren bei Streamende (`stream.offline`) und bei Ban oder Timeout, Tempo, Laufweite und Häufigkeiten.
+Die Liste und die gemerkten Farben stehen in `data/streamers/<login>/minimes.json` (höchstens alle 2 s geschrieben).
 
 ## Chat-Trigger (`triggers.json` im Profil)
 
