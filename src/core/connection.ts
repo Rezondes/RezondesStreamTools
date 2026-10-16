@@ -10,6 +10,7 @@ import { toIrcEvents } from "./ircEvents.ts";
 import { params } from "./params.ts";
 import * as streamerPath from "./streamerPath.ts";
 import { demo } from "./demo.ts";
+import type { CommandList } from "./commands.ts";
 import type { Alert, ChatMessage, ChatRemoval, FxEvent, Minime, PublicSettings, ServerMessage, ServerStatus, Track } from "./types.ts";
 
 export type Handlers = {
@@ -92,6 +93,18 @@ export async function fetchSettings(): Promise<PublicSettings | null> {
     return response.ok ? ((await response.json()) as PublicSettings) : null;
   } catch {
     // Netzwerkfehler: die Szene läuft mit den Standardwerten
+    return null;
+  }
+}
+
+// Chat-Befehle des Streamers für die Befehlsseite; null ohne Streamer, Server oder bei Netzwerkfehlern
+export async function fetchCommands(): Promise<CommandList | null> {
+  if (!streamer || !location.protocol.startsWith("http")) return null;
+  try {
+    const response = await fetch(`${streamerPath.base(streamer)}/commands`);
+    return response.ok ? ((await response.json()) as CommandList) : null;
+  } catch {
+    // Netzwerkfehler: die Seite zeigt die Liste dann nicht
     return null;
   }
 }

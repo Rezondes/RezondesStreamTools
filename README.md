@@ -32,6 +32,7 @@ unter `/s/<login>/` ausliefert. Einen Modus ohne Server gibt es nicht mehr, denn
 | `#/music` | 900x240 | |
 | `#/fx` | 1920x1080 | `?zone=main`, `?sound=0`, `?volume=0.5` |
 | `#/minimes` | 1920x360 | `?demo=<n>` (so viele Demo-Minimes, Standard 5) |
+| `#/info` | Seite | öffentliche Befehlsseite für Zuschauer, mit Server unter `/s/<login>/` |
 
 Alles andere (Texte, Farben, Schrift, Dauer, Grösse, Position, Animationen, Töne, Darstellung der Musik, Ausblendzeit
 des Chats, Kamera-Label, Countdown-Standard, Ticker) stellt der Streamer im Theme ein, siehe "Themes und Einstellungen".
@@ -40,6 +41,9 @@ Mit Server liegt jede Szene unter `/s/<login>/<szene>` (z.B. `http://localhost:8
 die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Unter `npm run dev` wählt `?s=<login>` den Streamer.
 Alle Szenen nehmen `?channel=name` (überschreibt den Streamer bzw. `.env.local`) und `?demo`.
 `music`, `fx` und `minimes` brauchen den Overlay-Server (Spotify, Chat-Trigger und Minimes laufen dort).
+Die Befehlsseite `/s/<login>/` zeigt Zuschauern alle Chat-Befehle im Stil des gewählten Themes (Liste als JSON unter
+`/s/<login>/commands`); der Hilfe-Befehl (Standard `!befehle`, einstellbar in der Übersicht) antwortet im Chat als
+Streamer mit der Kurzliste und dem Link. Dafür braucht die Twitch-Anmeldung den Scope `user:write:chat`.
 
 ## Overlay-Server (Docker, mehrere Streamer)
 

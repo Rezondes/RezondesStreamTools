@@ -211,3 +211,18 @@
 @keyframes starter-timer { from { width: 100%; } to { width: 0; } }
 @keyframes starter-pulse { 50% { opacity: 0.3; } }
 @keyframes starter-drift { from { translate: 0 0; } to { translate: 12vmax 8vmax; } }
+
+/* --- Befehlsseite (öffentlich): Spalte mit Karten auf dem Hintergrund, scrollt als normale Seite ------------------- */
+.theme-starter.theme-root:has(.starter-info) { min-height: 100vh; background: var(--background); }
+.theme-starter .starter-info { min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-starter .starter-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--info-gap, 24px); }
+.theme-starter .starter-info-title {
+  font-size: 2.4em;
+  font-weight: 800;
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.theme-starter .starter-info-card { display: grid; gap: var(--info-entry-gap, 16px); padding: var(--info-inner, 24px); }
+.theme-starter .starter-info-entry { display: grid; gap: var(--info-line-gap, 4px); justify-items: start; }

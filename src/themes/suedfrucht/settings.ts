@@ -3,6 +3,7 @@
 // festen Farben, Texten und Zahlen. SuedfruchtValues ist der Typ der aufgelösten Werte (useSuedfrucht).
 import { choice, color, flag, font, inScene, lines, number, sound, text, type ValuesOf } from "../../core/fields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
+import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./beach.ts";
 import { FRUIT_IDS, FRUIT_SET, FRUITS } from "./fruits.ts";
@@ -270,6 +271,9 @@ const FIELDS = [
   number("splashMs", "Reaktion auf Chat: Dauer", MINIME_MOVES, 900, 200, 5000, "ms"),
   number("splashHeight", "Reaktion auf Chat: Sprunghöhe", MINIME_MOVES, 50, 0, 300, "px"),
   number("splashDrops", "Reaktion auf Chat: Saftspritzer", MINIME_MOVES, 8, 0, 20),
+  // Befehlsseite (öffentlich, /s/<login>/): gemeinsame Texte aus dem Kern, dazu das Aussehen
+  ...INFO_FIELDS,
+  choice("timeInfo", "Befehlsseite: Tageszeit am Strand", INFO_GROUP, "mittag", TIMES),
 ] as const satisfies readonly SettingField[];
 
 export type SuedfruchtValues = ValuesOf<typeof FIELDS>;
@@ -291,7 +295,7 @@ const FRUIT_COLOR_FIELDS: SettingField[] = FRUITS.flatMap(fruit => [
 
 const SCREEN_SCENES = ["starting", "brb", "ending"] as const;
 const GROUP_SCENES = {
-  [BEACH]: SCREEN_SCENES,
+  [BEACH]: [...SCREEN_SCENES, "info"],
   [SCREENS]: SCREEN_SCENES,
   [ALERTS]: ["alerts"],
   [CHAT]: ["chat"],
@@ -308,6 +312,7 @@ const GROUP_SCENES = {
   [MINIME_HOP]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
   [FRUIT_COLORS]: ["minimes"],
+  [INFO_GROUP]: ["info"],
 } as const;
 
 // Beim ersten Login: Kanal-Name aus dem Twitch-Login (erster Buchstabe gross)

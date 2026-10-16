@@ -2,13 +2,14 @@
 // und kein Schlüssel ist tot (jeder kommt im Theme-Code vor: values.key, { key }, "key" oder var(--key)).
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { INFO_FIELDS } from "../core/infoFields.ts";
 import { MINIME_FIELDS, minimeNamesKey } from "../core/minimeFields.ts";
 import { validateSettings } from "../core/settings.ts";
 import type { ThemeSchema } from "../core/theme.ts";
 
-// Gemeinsame Felder einer Funktion liest der Kern (z.B. readMinimeOptions), sie gelten als benutzt; dazu die gebauten
+// Gemeinsame Felder einer Funktion liest der Kern (z.B. readMinimeOptions, describeCommands), sie gelten als benutzt; dazu die gebauten
 // Typ-Felder der Minimes (minimeVariantFields)
-const CORE_KEYS = new Set<string>([...MINIME_FIELDS.map(field => field.key), "minimeVariantCommand"]);
+const CORE_KEYS = new Set<string>([...MINIME_FIELDS.map(field => field.key), ...INFO_FIELDS.map(field => field.key), "minimeVariantCommand"]);
 const CORE_PREFIX = minimeNamesKey("");
 
 // folder: Ordner des Themes; settings.ts und Checks zählen nicht als Nutzung

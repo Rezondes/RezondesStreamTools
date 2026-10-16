@@ -429,3 +429,24 @@
 .theme-matrix .marquee span { display: inline-block; }
 .theme-matrix .marquee .scroll { animation: matrix-marquee-pingpong var(--marquee, 12s) ease-in-out infinite alternate; }
 @keyframes matrix-marquee-pingpong { 0%, 15% { transform: translateX(0); } 85%, 100% { transform: translateX(var(--shift)); } }
+
+/* --- Befehlsseite (öffentlich): Terminal-Spalte über dem Regen, scrollt als normale Seite ------------------------ */
+.theme-matrix.theme-root:has(.matrix-info) { min-height: 100vh; background: var(--background); }
+.theme-matrix .matrix-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-matrix .matrix-info-rain { position: fixed; inset: 0; pointer-events: none; }
+.theme-matrix .matrix-info-column {
+  position: relative;
+  max-width: var(--info-width, 880px);
+  margin: 0 auto;
+  padding: var(--info-inner, 32px);
+  display: grid;
+  gap: var(--info-gap, 24px);
+  border: var(--info-border, 1px) solid var(--line);
+  background: color-mix(in srgb, var(--background) 88%, transparent);
+}
+.theme-matrix .matrix-info-column h1 { font-size: 2em; letter-spacing: 0.08em; text-transform: uppercase; }
+.theme-matrix .matrix-info-section { display: grid; gap: var(--info-entry-gap, 12px); }
+.theme-matrix .matrix-info-section h2 { font-size: 1.2em; text-transform: uppercase; border-bottom: var(--info-border, 1px) solid var(--line); padding-bottom: var(--info-rule, 6px); }
+.theme-matrix .matrix-info-section h2::before { content: "> "; color: var(--dim); }
+.theme-matrix .matrix-info-entry { display: grid; gap: var(--info-line-gap, 2px); padding-left: var(--info-indent, 16px); border-left: var(--info-border, 1px) solid var(--line); }
+.theme-matrix .matrix-info-entry code { font: inherit; font-size: 1.15em; }

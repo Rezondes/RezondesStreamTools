@@ -3,6 +3,7 @@
 // (THEMES.md). Einzige Stelle des Themes mit festen Farben, Texten und Zahlen. StarterValues ist der Typ der
 // aufgelösten Werte, den die Szenen über useStarter lesen.
 import { choice, color, flag, font, inScene, number, sound, text, type ValuesOf } from "../../core/fields.ts";
+import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 export const STARTER_FONTS = ["Inter", "Manrope", "DM Sans", "Space Grotesk"] as const;
@@ -110,6 +111,9 @@ const FIELDS = [
   number("bannerLoop", "Schleifenlänge", BANNER, 6, 1, 20, "s"),
   number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
   number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
+  // Befehlsseite (öffentlich, /s/<login>/): gemeinsame Texte aus dem Kern, dazu das Aussehen
+  ...INFO_FIELDS,
+  number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 860, 400, 1600, "px"),
 ] as const satisfies readonly SettingField[];
 
 export type StarterValues = ValuesOf<typeof FIELDS>;
@@ -123,6 +127,7 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [STINGER]: [],
   [BANNER]: [],
+  [INFO_GROUP]: ["info"],
 } as const;
 
 // Beim ersten Login: Kanal-Name aus dem Twitch-Login statt des Beispiels

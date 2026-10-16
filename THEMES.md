@@ -79,6 +79,21 @@ Der Server vergibt dann Typen statt Farben; jedes Minime trägt `variant` (die i
 einen zufälligen erlaubten Typ, eine leere Namensliste schaltet einen Typ aus. In `?demo` kommen Minimes ohne Typ
 (`variant: null`); die Szene wählt dann selbst einen, z.B. nach `hash(seedOf(login))` aus `src/core/hash.ts`.
 
+## Befehlsseite (Szene info)
+
+Die öffentliche Seite für Zuschauer unter `/s/<login>/` (Szene `info`, keine OBS-Quelle) listet die Chat-Befehle: den
+Hilfe-Befehl, die Minimes-Befehle des gewählten Themes und die öffentlichen Trigger. So bekommt ein Theme sie:
+
+1. **Felder einbinden**: `...INFO_FIELDS` aus `src/core/infoFields.ts` ins Schema und die Gruppe `INFO_GROUP` in
+   `groupScenes` der Szene `info` zuordnen. Das sind alle sichtbaren Texte der Seite; der Kern liest sie, sie gelten im
+   Schema-Check als benutzt. Eigene Felder für das Aussehen (z.B. Hintergrund) kommen in dieselbe Gruppe.
+2. **Szene** `scenes/Info.tsx` in `index.tsx` unter `info` eintragen. Sie ruft `useCommands(minimeRules)` aus
+   `src/core/hooks/useCommands.ts` (Regeln der Minimes aus den eigenen Werten für die Demo, `null` ohne Minimes) und
+   `describeCommands(list, values)`; heraus kommen Abschnitte mit Überschrift und Einträgen (`command`, `text`,
+   `details`), die das Theme in seinem Stil zeigt.
+3. Die Seite scrollt als normale Seite und hat keine Live-Verbindung: das Wurzelelement malt den Hintergrund selbst
+   (z.B. `.theme-<id>.theme-root:has(.<id>-info) { min-height: 100vh; background: ... }`).
+
 ## Regeln, die automatisch geprüft werden
 
 `scripts/rules.check.ts` prüft jeden Theme-Ordner (ausser `settings.ts`):

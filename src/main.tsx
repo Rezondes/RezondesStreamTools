@@ -14,7 +14,9 @@ import { THEME_SCENES } from "./themes/scenes.tsx";
 
 const file = location.pathname.split("/").pop()!.replace(/\.html$/, "");
 const pathOf = (hash: string) => hash.replace(/^#\/?/, "").split("?")[0];
-const path = pathOf(location.hash) || (file === "index" ? "" : file);
+// /s/<login>/ ist die öffentliche Befehlsseite (Szene info)
+const streamerRoot = /^\/s\/[^/]+\/?$/.test(location.pathname);
+const path = pathOf(location.hash) || (streamerRoot ? "info" : file === "index" ? "" : file);
 
 const isPage = (name: string) => (SCENES as readonly string[]).includes(name);
 
@@ -26,9 +28,12 @@ addEventListener("hashchange", () => { if (isPage(path) || isPage(pathOf(locatio
 const defaultSchema = findTheme(DEFAULT_THEME)!;
 const DEFAULTS = { theme: DEFAULT_THEME, values: resolveSettings(defaultSchema, {}) };
 
+// Die Befehlsseite ist eine Seite für Zuschauer, kein Overlay: keine Live-Verbindung, normal scrollbar
+const PUBLIC_PAGES: readonly SceneName[] = ["info"];
+
 function ThemedScene({ scene }: { scene: SceneName }) {
   // Erst nach dem Laden zeigen, sonst blitzen kurz die Standardwerte auf
-  const settings = useSettings(DEFAULTS);
+  const settings = useSettings(DEFAULTS, !PUBLIC_PAGES.includes(scene));
   if (!settings) return null;
   const chosen = findTheme(settings.theme) ?? defaultSchema;
   const Scene = resolveScene(THEME_SCENES, chosen.id, scene, DEFAULT_THEME);
@@ -50,7 +55,9 @@ function ThemedScene({ scene }: { scene: SceneName }) {
 
 const scene = SCENES.find(name => name === path);
 
-document.body.classList.toggle("overlay", Boolean(scene));
+const publicPage = scene !== undefined && PUBLIC_PAGES.includes(scene);
+document.body.classList.toggle("overlay", Boolean(scene) && !publicPage);
+document.body.classList.toggle("public-page", publicPage);
 // Vorschau im eigenen Tab: Schachbrett statt weisser Fläche hinter dem transparenten Overlay
 document.body.classList.toggle("preview-tab", Boolean(scene) && new URLSearchParams(location.search).has("preview") && parent === window);
 createRoot(document.getElementById("root")!).render(scene ? <ThemedScene scene={scene} /> : <Dashboard />);

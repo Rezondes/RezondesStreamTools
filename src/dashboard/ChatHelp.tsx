@@ -1,7 +1,8 @@
-// Hilfe-Befehl auf der Übersicht: an/aus, Befehl, Vorlage der Chat-Antwort und Abklingzeit (commands.json im
+// Hilfe-Befehl auf der Übersicht mit Link zur öffentlichen Befehlsseite: an/aus, Befehl, Vorlage der Chat-Antwort und Abklingzeit (commands.json im
 // Profil, GET/POST /api/commands). Der Server prüft die Werte; ungültige bleiben ungespeichert.
 import { useEffect, useState } from "react";
 import type { HelpConfig } from "../core/commands.ts";
+import * as streamerPath from "../core/streamerPath.ts";
 import { getJson, postJson } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";
 
@@ -9,7 +10,8 @@ const TEXT = TEXTS.help;
 // canChat vom Server: darf der Twitch-Login schreiben (false = Login von vor dem Hilfe-Befehl, neu verbinden)
 type HelpState = HelpConfig & { canChat?: boolean | null };
 
-export default function ChatHelp() {
+export default function ChatHelp({ login }: { login: string }) {
+  const page = `${location.origin}${streamerPath.base(login)}/`;
   const [help, setHelp] = useState<HelpState | null>(null);
   const [status, setStatus] = useState<"saved" | "invalid" | null>(null);
   useEffect(() => { getJson<HelpState | null>("/api/commands", null).then(setHelp).catch(() => {}); }, []);
@@ -27,6 +29,11 @@ export default function ChatHelp() {
     <>
       <h2>{TEXT.title}</h2>
       <p className="muted">{TEXT.intro}</p>
+      <p className="actions">
+        <span>{TEXT.page}</span>
+        <a href={page} target="_blank" rel="noreferrer"><code>{page}</code></a>
+        <span className="muted">{TEXT.pageHint}</span>
+      </p>
       {help.canChat === false && (
         <p className="actions">
           <span className="error" role="alert">{TEXT.reconnect}</span>

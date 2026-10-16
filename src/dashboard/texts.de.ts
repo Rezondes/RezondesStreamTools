@@ -48,6 +48,7 @@ export const TEXTS = {
     music: "Spotify Now Playing",
     fx: "Chat-Effekte (Trigger)",
     minimes: "Minimes (Chatter als Figuren)",
+    info: "Befehlsseite (öffentlich)",
   } satisfies Record<SceneName, string>,
   overview: {
     obsHint: "In OBS: Quelle hinzufügen, Browser, URL einfügen, Breite und Höhe wie angegeben.",
@@ -66,6 +67,8 @@ export const TEXTS = {
   help: {
     title: "Chat-Befehle",
     intro: "Mit diesem Befehl bekommen Zuschauer im Chat die Liste aller Befehle (Minimes deines Themes und öffentliche Trigger).",
+    page: "Befehlsseite für Zuschauer:",
+    pageHint: "Aussehen und Texte unter Theme > Befehlsseite.",
     enabled: "Hilfe-Befehl aktiv",
     command: "Befehl",
     reply: "Antwort im Chat",

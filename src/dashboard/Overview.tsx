@@ -3,7 +3,7 @@
 // lässt sich auf das OBS-Fenster ziehen; darunter der Import aller Szenen (ObsImport.tsx).
 import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
-import { SCENE_SIZES, SCENES } from "../core/theme.ts";
+import { OBS_SCENES, SCENE_SIZES } from "../core/theme.ts";
 import type { AlertKind } from "../core/types.ts";
 import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
@@ -29,7 +29,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
       <table>
         <thead><tr><th>{TEXTS.overview.scene}</th><th>{TEXTS.overview.url}</th><th>{TEXTS.overview.size}</th><th /></tr></thead>
         <tbody>
-          {SCENES.map(scene => {
+          {OBS_SCENES.map(scene => {
             const url = `${base}/${scene}`;
             return (
               <tr key={scene}>
@@ -54,7 +54,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
       )}
       {me.features.triggers && me.features.fx && <TriggerButtons act={act} />}
       <ObsImport login={me.login} layout={layout} />
-      <ChatHelp />
+      <ChatHelp login={me.login} />
     </section>
   );
 }

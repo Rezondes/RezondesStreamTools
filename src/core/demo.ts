@@ -1,5 +1,7 @@
-// Fake-Ereignisse für ?demo: Chat, Alerts, Musik und Minimes, damit sich jedes Overlay ohne Stream testen lässt.
+// Fake-Ereignisse für ?demo: Chat, Alerts, Musik und Minimes, dazu eine Beispiel-Befehlsliste, damit sich jedes Overlay ohne Stream testen lässt.
 // ?demo=<n>: so viele Minimes (Standard 5, höchstens 100).
+import { commandList, type CommandList } from "./commands.ts";
+import type { MinimeRules } from "./minimes.ts";
 import { splitEmotes } from "./irc.ts";
 import { numberParam } from "./params.ts";
 import type { Alert, Minime, Track } from "./types.ts";
@@ -75,4 +77,12 @@ export function demo(handlers: Handlers) {
   handlers.minimes?.(minimes);
   const minimeChat = setInterval(() => handlers.minimeChat?.(pick(minimes).login), 3000);
   return () => { clearInterval(chat); clearInterval(alerts); clearInterval(music); clearInterval(minimeChat); clearTimeout(first); };
+}
+
+// Beispiel-Befehle für die Befehlsseite mit ?demo oder ohne Streamer; minimes: Regeln des Themes (null = keine Minimes)
+export function demoCommands(minimes: MinimeRules | null): CommandList {
+  return commandList("demo", { enabled: true, command: "!befehle", reply: "", cooldown: 30 }, minimes, [
+    { name: "lizard", description: "Eine Echse läuft quer durchs Bild.", when: { type: "command", match: "!lizard" }, cooldown: 10, userCooldown: 60 },
+    { name: "hydrate", description: "Erinnert ans Trinken.", when: { type: "word", match: "wasser" }, who: ["subscriber", "vip"], cooldown: 300 },
+  ]);
 }

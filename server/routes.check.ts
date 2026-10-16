@@ -51,6 +51,9 @@ assert.deepEqual(overlayRoute(["settings"]), { kind: "settings" });
 assert.equal(overlayRoute(["settings", "x"]), null);
 assert.deepEqual(overlayRoute(["events"]), { kind: "events" });
 assert.deepEqual(overlayRoute(["commands"]), { kind: "commands" });
+assert.deepEqual(overlayRoute([""]), { kind: "scene", file: "info.html" });
+assert.deepEqual(overlayRoute([]), { kind: "scene", file: "info.html" });
+assert.deepEqual(overlayRoute(["info"]), { kind: "scene", file: "info.html" });
 assert.deepEqual(overlayRoute(["alerts.html"]), { kind: "scene", file: "alerts.html" });
 // Ohne Endung: nur bekannte Szenen, sie zeigen auf dieselbe Datei
 assert.deepEqual(overlayRoute(["alerts"]), { kind: "scene", file: "alerts.html" });
@@ -60,8 +63,6 @@ assert.equal(overlayRoute(["index"]), null);
 assert.equal(overlayRoute(["unbekannt"]), null);
 assert.deepEqual(overlayRoute(["media", "lizard.gif"]), { kind: "media", file: "lizard.gif" });
 // Alles andere ist keine Overlay-Adresse: Dashboard, fremde Dateien, Pfade aus dem Medienordner hinaus
-assert.equal(overlayRoute([]), null);
-assert.equal(overlayRoute([""]), null);
 assert.equal(overlayRoute(["index.html"]), null);
 assert.equal(overlayRoute(["../tokens.json"]), null);
 assert.equal(overlayRoute(["status", "x"]), null);

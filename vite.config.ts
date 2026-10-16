@@ -16,7 +16,7 @@ export default defineConfig({
 });
 
 // Szenen, die als eigene HTML-Datei in dist/ landen (gleiche Namen wie die Routen in src/main.tsx)
-const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes"];
+const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes", "info"];
 
 // Eine HTML-Datei je Szene (alerts.html, chat.html, ...) als Kopie von index.html. Der Server liefert sie unter
 // /s/<login>/<szene>.html aus; die Skripte liegen unter /assets/, je Theme ein eigener Chunk.

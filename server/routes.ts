@@ -89,6 +89,8 @@ export type OverlayRoute =
 // segments: die dekodierten Pfadteile nach /s/<login>/; null = keine Overlay-Adresse (404)
 export function overlayRoute(segments: string[]): OverlayRoute | null {
   const [first, second] = segments;
+  // /s/<login>/ ist die öffentliche Befehlsseite
+  if (segments.length === 0 || (segments.length === 1 && first === "")) return { kind: "scene", file: "info.html" };
   if (segments.length === 1 && first === "status") return { kind: "status" };
   if (segments.length === 1 && first === "settings") return { kind: "settings" };
   if (segments.length === 1 && first === "events") return { kind: "events" };

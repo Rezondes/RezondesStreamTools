@@ -5,6 +5,7 @@ import { asciiText } from "../../core/asciiText.ts";
 import { asciiArt, choice, color, flag, font, inScene, lines, number, sound, text, type ValuesOf } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
+import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 // Beispiel-Logo; beim ersten Login erzeugt personalize das Logo aus dem Twitch-Login
@@ -299,12 +300,15 @@ const FIELDS = [
   number("minimeBoostMs", "Reaktion auf Chat: Dauer", MINIME_MOVES, 700, 100, 5000, "ms"),
   number("minimeBoostHeight", "Reaktion auf Chat: Hüpfhöhe", MINIME_MOVES, 18, 0, 200, "px"),
   number("minimeBoostJet", "Reaktion auf Chat: Düse länger (Faktor)", MINIME_MOVES, 2, 1, 4, undefined, 0.1),
+  // Befehlsseite (öffentlich, /s/<login>/): gemeinsame Texte aus dem Kern, dazu das Aussehen
+  ...INFO_FIELDS,
+  flag("infoRain", "Befehlsseite: Matrix-Regen im Hintergrund", INFO_GROUP, true),
 ] as const satisfies readonly SettingField[];
 
 export type MatrixValues = ValuesOf<typeof FIELDS>;
 
 const GROUP_SCENES = {
-  [RAIN]: ["starting", "brb", "ending", "alerts"],
+  [RAIN]: ["starting", "brb", "ending", "alerts", "info"],
   [SCREENS]: ["starting", "brb", "ending"],
   [ALERTS]: ["alerts"],
   [CHAT]: ["chat"],
@@ -318,6 +322,7 @@ const GROUP_SCENES = {
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],
+  [INFO_GROUP]: ["info"],
 } as const;
 
 // Beim ersten Login: Kanal-Name und ASCII-Logo aus dem Twitch-Login statt der Beispiele

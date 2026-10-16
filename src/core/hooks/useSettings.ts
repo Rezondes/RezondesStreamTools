@@ -12,7 +12,8 @@ import type { PublicSettings } from "../types.ts";
 // Kanal zwischen Dashboard und Vorschau: ready = eine Szene hört zu, settings = neue Werte für die Szenen
 export const PREVIEW = { channel: "rezondes-preview", ready: "ready", settings: "settings" } as const;
 
-export function useSettings(fallback: PublicSettings): PublicSettings | null {
+// live: false = nur einmal laden, keine SSE-Verbindung (öffentliche Befehlsseite: Besucher sind keine Overlays)
+export function useSettings(fallback: PublicSettings, live = true): PublicSettings | null {
   const [settings, setSettings] = useState<PublicSettings | null>(null);
   useEffect(() => {
     let active = true;
@@ -20,9 +21,9 @@ export function useSettings(fallback: PublicSettings): PublicSettings | null {
     fetchSettings()
       .then(loaded => { if (active) setSettings(current => current ?? loaded ?? fallback); })
       .catch((error: unknown) => console.warn("Loading settings failed:", error));
-    const stop = connect({ settings: setSettings });
+    const stop = live ? connect({ settings: setSettings }) : () => {};
     return () => { active = false; stop(); };
-  }, [fallback]);
+  }, [fallback, live]);
 
   useEffect(() => {
     if (!params.has("preview")) return;

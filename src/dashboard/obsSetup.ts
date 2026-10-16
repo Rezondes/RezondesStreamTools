@@ -3,7 +3,7 @@
 // 1. Ziehen: Link mit layer-name/-width/-height, OBS legt beim Ablegen die Browserquelle an.
 // 2. Datei: Szenensammlung (JSON) für Szenensammlung > Importieren.
 // 3. obs-websocket 5: Anfragen, die fehlende Szenen und Quellen anlegen und vorhandene Quellen aktualisieren.
-import { SCENE_SIZES, SCENES, type SceneName } from "../core/theme.ts";
+import { OBS_SCENES, SCENE_SIZES, type SceneName } from "../core/theme.ts";
 
 export type ObsSource = { scene: SceneName; name: string; url: string; width: number; height: number };
 export type ObsScene = { name: string; sources: ObsSource[] };
@@ -18,7 +18,7 @@ export function obsLayout(base: string, login: string, sceneNames: Record<SceneN
   const source = (scene: SceneName): ObsSource => ({ scene, name: `${login} ${scene}`, url: `${base}/${scene}`, ...SCENE_SIZES[scene] });
   return [
     ...FULLSCREEN.map(scene => ({ name: sceneNames[scene], sources: [source(scene)] })),
-    { name: overlayScene, sources: SCENES.filter(scene => !FULLSCREEN.includes(scene)).map(source) },
+    { name: overlayScene, sources: OBS_SCENES.filter(scene => !FULLSCREEN.includes(scene)).map(source) },
   ];
 }
 
