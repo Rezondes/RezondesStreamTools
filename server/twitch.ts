@@ -9,7 +9,9 @@ export type TwitchTokens = { access: string; refresh: string; userId: string; lo
 const ID_URL = "https://id.twitch.tv/oauth2";
 const HELIX_URL = "https://api.twitch.tv/helix";
 const EVENTSUB_URL = "wss://eventsub.wss.twitch.tv/ws";
-const SCOPES = ["moderator:read:followers", "channel:read:subscriptions", "bits:read", "channel:read:redemptions", "channel:read:hype_train"];
+// user:write:chat: Antwort auf den Hilfe-Befehl als Streamer in den eigenen Chat
+const CHAT_SCOPE = "user:write:chat";
+const SCOPES = ["moderator:read:followers", "channel:read:subscriptions", "bits:read", "channel:read:redemptions", "channel:read:hype_train", CHAT_SCOPE];
 
 // Nur bekannte Felder mit gültigen Werten (Regel 25), sonst null. Für tokens.json und Antworten von Twitch.
 export function toTokens(value: unknown): TwitchTokens | null {
@@ -59,6 +61,25 @@ export function twitchApp(clientId: string, clientSecret: string, redirectUri: s
       if (response.status !== 401) throw new Error(`Twitch token validation failed: ${response.status}`);
       const answer = await requestToken(clientId, clientSecret, { grant_type: "refresh_token", refresh_token: tokens.refresh });
       return answer ? toTokens({ ...tokens, access: answer.access_token, refresh: answer.refresh_token ?? tokens.refresh }) : null;
+    },
+
+    // Darf der Login in den Chat schreiben? Logins von vor dem Scope nicht; null = Twitch nicht erreichbar
+    async canChat(tokens: TwitchTokens): Promise<boolean | null> {
+      const response = await fetch(`${ID_URL}/validate`, { headers: { Authorization: `OAuth ${tokens.access}` } }).catch(() => null);
+      if (!response?.ok) return null;
+      return ((await response.json()) as { scopes?: string[] }).scopes?.includes(CHAT_SCOPE) ?? false;
+    },
+
+    // Nachricht als Streamer in den eigenen Chat; missing-scope = Login ohne Schreibrecht (neu verbinden), andere Fehler werfen
+    async say(tokens: TwitchTokens, message: string): Promise<"ok" | "missing-scope"> {
+      const response = await fetch(`${HELIX_URL}/chat/messages`, {
+        method: "POST",
+        headers: { "Client-Id": clientId, Authorization: `Bearer ${tokens.access}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ broadcaster_id: tokens.userId, sender_id: tokens.userId, message }),
+      });
+      if (response.status === 401 || response.status === 403) return "missing-scope";
+      if (!response.ok) throw new Error(`Twitch chat message failed: ${response.status}`);
+      return "ok";
     },
 
     // Token bei Twitch ungültig machen (Trennen, nicht freigeschaltet)

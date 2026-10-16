@@ -73,6 +73,7 @@ export const TEXTS = {
     cooldown: "Abklingzeit (s)",
     save: "[ SPEICHERN ]",
     saved: "Gespeichert.",
+    reconnect: "Der Server darf noch nicht in deinen Chat schreiben: Twitch einmal neu verbinden, damit der Hilfe-Befehl antwortet.",
     invalid: "Ungültig: Befehl wie !befehle (nur a-z, 0-9, _), Antwort höchstens 400 Zeichen, Abklingzeit 0 bis 3600 s.",
   },
   obs: {

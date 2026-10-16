@@ -61,3 +61,18 @@ function triggerItem(trigger: TriggerInfo): CommandItem {
     userCooldown: trigger.userCooldown ?? 0,
   };
 }
+
+// Twitch nimmt höchstens 500 Zeichen pro Chatnachricht
+export const MAX_CHAT = 500;
+
+// Antwort auf den Hilfe-Befehl: {commands} = alle Befehle, die man tippen kann (der Hilfe-Befehl selbst nicht, bei
+// Triggern nur Befehle, ganze Nachrichten und Wörter), {link} = die Befehlsseite; gekürzt auf MAX_CHAT
+export function helpReply(template: string, list: CommandList, link: string): string {
+  const typed = list.items.flatMap(item => {
+    if (item.kind === "help") return [];
+    if (item.kind !== "trigger") return [item.command];
+    return item.match !== null && item.when !== "contains" ? [item.match] : [];
+  });
+  const text = template.replaceAll("{commands}", [...new Set(typed)].join(", ")).replaceAll("{link}", link);
+  return text.slice(0, MAX_CHAT);
+}

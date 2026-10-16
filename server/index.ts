@@ -74,7 +74,7 @@ async function startRuntime(login: string): Promise<Streamer | null> {
   const tokens = access.canUse(login) ? await profile.loadTokens(folder) : null;
   if (!tokens) return null;
   const runtime: Streamer = await startStreamer({
-    login, folder, tokens, twitch, spotify: spotifyApp, features: access.features(login), minimeRules: minimeRules(await loadSettings(folder)),
+    login, folder, tokens, twitch, spotify: spotifyApp, features: access.features(login), minimeRules: minimeRules(await loadSettings(folder)), link: `${PUBLIC_URL}/s/${login}/`,
     onEnd: () => { if (runtimes.get(login) === runtime) runtimes.delete(login); },
   });
   runtimes.set(login, runtime);
@@ -272,14 +272,16 @@ async function twitchDisconnect({ response, login, runtime }: Call) {
 }
 
 // Dashboard: gewähltes Theme, gespeicherte Werte je Theme und die verfügbaren Themes
-async function helpConfig({ response, login }: Call) {
-  json(response, await loadHelp(profile.folder(DATA, login)));
+// canChat: darf der Twitch-Login in den Chat schreiben (false = neu verbinden, null = unbekannt)
+async function helpConfig({ response, login, runtime }: Call) {
+  json(response, { ...(await loadHelp(profile.folder(DATA, login))), canChat: runtime?.help.canChat() ?? null });
 }
 
-async function saveHelpConfig({ request, response, login }: Call) {
+async function saveHelpConfig({ request, response, login, runtime }: Call) {
   const help = toHelpConfig(parseJson(String(await readBody(request, SETTINGS_LIMIT))));
   if (!help) return send(response, 400, "invalid-json");
   await saveHelp(profile.folder(DATA, login), help);
+  runtime?.help.setConfig(help);
   json(response, help);
 }
 

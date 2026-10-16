@@ -1,7 +1,7 @@
 // Check für commands.ts: Liste der Chat-Befehle aus Hilfe-Befehl, Minimes (Farben oder Typen) und öffentlichen
 // Triggern. Läuft mit npm test.
 import assert from "node:assert/strict";
-import { commandList, type TriggerInfo } from "./commands.ts";
+import { commandList, helpReply, MAX_CHAT, type TriggerInfo } from "./commands.ts";
 import { readMinimeOptions } from "./minimeFields.ts";
 
 const HELP = { enabled: true, command: "!befehle", reply: "x", cooldown: 30 };
@@ -34,5 +34,13 @@ const typed = commandList("rezondes", null, fruits, []).items;
 assert.deepEqual(typed.find(item => item.kind === "look"), { kind: "look", command: "!frucht", who: ["everyone"], variants: [{ id: "mango", names: ["mango"] }] });
 assert.deepEqual(typed.find(item => item.kind === "join"), { kind: "join", command: "!join", who: ["everyone"], variants: [{ id: "mango", names: ["mango"] }] });
 assert.deepEqual(commandList("rezondes", { ...HELP, enabled: false }, null, []).items, []);
+
+// Chat-Antwort: Befehle ohne Doppelte (Wörter und Befehle der Trigger, keine Teilstrings oder Muster), Platzhalter
+// ersetzt, nie länger als Twitch erlaubt
+const list = commandList("rezondes", HELP, colors, [...TRIGGERS, { name: "zwei", when: { type: "word", match: "!lizard" } }, { name: "teil", when: { type: "contains", match: "lol" } }]);
+assert.equal(helpReply("Befehle: {commands} | {link}", list, "https://x/s/rezondes/"), "Befehle: !join, !color, !leave, !lizard | https://x/s/rezondes/");
+assert.equal(helpReply("{link}", commandList("rezondes", null, null, []), "L"), "L");
+assert.equal(helpReply("{commands}", commandList("rezondes", null, null, []), "L"), "");
+assert.equal(helpReply("x".repeat(600), list, "L").length, MAX_CHAT);
 
 console.log("commands ok");

@@ -6,17 +6,19 @@ import { getJson, postJson } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";
 
 const TEXT = TEXTS.help;
+// canChat vom Server: darf der Twitch-Login schreiben (false = Login von vor dem Hilfe-Befehl, neu verbinden)
+type HelpState = HelpConfig & { canChat?: boolean | null };
 
 export default function ChatHelp() {
-  const [help, setHelp] = useState<HelpConfig | null>(null);
+  const [help, setHelp] = useState<HelpState | null>(null);
   const [status, setStatus] = useState<"saved" | "invalid" | null>(null);
-  useEffect(() => { getJson<HelpConfig | null>("/api/commands", null).then(setHelp).catch(() => {}); }, []);
+  useEffect(() => { getJson<HelpState | null>("/api/commands", null).then(setHelp).catch(() => {}); }, []);
   if (!help) return null;
-  const change = (patch: Partial<HelpConfig>) => { setHelp({ ...help, ...patch }); setStatus(null); };
+  const change = (patch: Partial<HelpState>) => { setHelp({ ...help, ...patch }); setStatus(null); };
   const save = () => {
     postJson("/api/commands", help)
       .then(result => {
-        if (result.ok) setHelp(result.data as HelpConfig);
+        if (result.ok) setHelp({ ...(result.data as HelpConfig), canChat: help.canChat });
         setStatus(result.ok ? "saved" : "invalid");
       })
       .catch(() => setStatus("invalid"));
@@ -25,6 +27,12 @@ export default function ChatHelp() {
     <>
       <h2>{TEXT.title}</h2>
       <p className="muted">{TEXT.intro}</p>
+      {help.canChat === false && (
+        <p className="actions">
+          <span className="error" role="alert">{TEXT.reconnect}</span>
+          <a className="btn" href="/auth/login">{TEXTS.connections.twitchReconnect}</a>
+        </p>
+      )}
       <div className="actions">
         <label className="setting-row"><input type="checkbox" checked={help.enabled} onChange={event => change({ enabled: event.target.checked })} /> {TEXT.enabled}</label>
         <label className="setting">{TEXT.command} <input value={help.command} maxLength={25} onChange={event => change({ command: event.target.value })} /></label>

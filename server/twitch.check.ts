@@ -59,6 +59,7 @@ const authorize = new URL(app.authorizeUrl("state-1"));
 assert.equal(authorize.searchParams.get("state"), "state-1");
 assert.equal(authorize.searchParams.get("redirect_uri"), "http://localhost:8089/auth/callback");
 assert.match(authorize.searchParams.get("scope") ?? "", /channel:read:subscriptions/);
+assert.match(authorize.searchParams.get("scope") ?? "", /user:write:chat/);
 
 // exchange: Code gegen Tokens tauschen, Login dazu holen; ungültiger Code = null, Serverfehler werfen
 answers = {
@@ -78,6 +79,20 @@ assert.equal(await app.validate(tokens), tokens);
 assert.deepEqual(await app.validate(tokens), { ...tokens, access: "access-3", refresh: "refresh-3" });
 assert.equal(await app.validate(tokens), null);
 await assert.rejects(app.validate(tokens));
+
+// canChat: hat der Login den Scope zum Schreiben im Chat (alte Logins vor dem Scope nicht); Fehler = unbekannt
+answers = { "https://id.twitch.tv/oauth2/validate": [{ status: 200, body: { scopes: ["bits:read", "user:write:chat"] } }, { status: 200, body: { scopes: ["bits:read"] } }, { status: 500 }] };
+assert.equal(await app.canChat(tokens), true);
+assert.equal(await app.canChat(tokens), false);
+assert.equal(await app.canChat(tokens), null);
+
+// say: Nachricht als Streamer in den eigenen Chat; ok, fehlender Scope oder Fehler
+answers = { "https://api.twitch.tv/helix/chat/messages": [{ status: 200 }, { status: 403 }, { status: 401 }, { status: 500 }] };
+assert.equal(await app.say(tokens, "hallo"), "ok");
+assert.deepEqual(JSON.parse(requests.at(-1)!.body), { broadcaster_id: "42", sender_id: "42", message: "hallo" });
+assert.equal(await app.say(tokens, "hallo"), "missing-scope");
+assert.equal(await app.say(tokens, "hallo"), "missing-scope");
+await assert.rejects(app.say(tokens, "hallo"));
 
 // revoke: Fehler werfen, damit der Aufrufer sie loggt
 answers = { "https://id.twitch.tv/oauth2/revoke": [{ status: 200 }, { status: 400 }] };

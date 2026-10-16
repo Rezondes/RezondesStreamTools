@@ -1,5 +1,5 @@
 // Laufzeit eines Streamers (Regel 29): besitzt alle Verbindungen seines Profils (EventSub, Chat-Listener mit
-// Triggern und Minimes, Spotify, SSE-Overlays) und beendet sie in stop(). Welche Teile laufen, sagen die Funktionsstufen.
+// Triggern, Minimes und Hilfe-Befehl, Spotify, SSE-Overlays) und beendet sie in stop(). Welche Teile laufen, sagen die Funktionsstufen.
 // Prüft die Twitch-Tokens stündlich; ein ungültiger Login beendet die Laufzeit und löscht die Tokens.
 // Gestartet und gestoppt von server/index.ts.
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -7,6 +7,8 @@ import type { MinimeRules } from "../src/core/minimes.ts";
 import type { Alert, Minime, ServerMessage, Track } from "../src/core/types.ts";
 import type { Feature } from "./access.ts";
 import { chat } from "./chat.ts";
+import { loadHelp, publicCommands } from "./commands.ts";
+import { startHelp, type HelpRuntime } from "./help.ts";
 import { send } from "./http.ts";
 import { startMinimes, type MinimeRuntime } from "./minimes.ts";
 import * as profile from "./profile.ts";
@@ -23,6 +25,7 @@ export type StreamerSetup = {
   features: Record<Feature, boolean>;
   minimeRules: MinimeRules | null; // null = das gewählte Theme hat keine Minimes
   onEnd: () => void; // Login ungültig geworden, die Laufzeit hat sich selbst beendet
+  link: string; // Adresse der öffentlichen Befehlsseite, für die Antwort auf den Hilfe-Befehl
 };
 
 // Obergrenze offener Overlays pro Streamer, damit niemand den Server mit Verbindungen füllt
@@ -40,7 +43,8 @@ export async function startStreamer(setup: StreamerSetup) {
   const minimes = setup.features.minimes ? await startMinimes({ folder: setup.folder, emit, now: Date.now, rules: setup.minimeRules }) : null;
   const events = setup.features.alerts ? eventSub(setup.twitch, tokens.valid, alert, () => minimes?.offline()) : null;
   const triggers = setup.features.triggers && setup.features.fx ? startTriggers(setup.folder, event => emit({ type: "fx", event })) : null;
-  const stopChat = listenToChat(setup.login, triggers, minimes);
+  const help = await helpFor(setup, tokens);
+  const stopChat = listenToChat(setup.login, triggers, minimes, help);
   const spotify = setup.spotify && setup.features.music
     ? await spotifyClient(setup.spotify, setup.folder, track => emit({ type: "music", track }), () => hub.overlayCount() > 0)
     : null;
@@ -72,6 +76,7 @@ export async function startStreamer(setup: StreamerSetup) {
     triggers,
     spotify,
     minimes,
+    help,
     alert,
     // Nachricht an alle offenen Overlays, z.B. geänderte Einstellungen
     broadcast: emit,
@@ -113,10 +118,32 @@ function streamHub() {
   };
 }
 
-// Der Server liest den Chat mit, damit Trigger und Minimes auch ohne offenes Chat-Overlay laufen; null = keiner braucht ihn
-function listenToChat(login: string, triggers: ReturnType<typeof startTriggers> | null, minimes: MinimeRuntime | null) {
-  if (!triggers && !minimes) return null;
-  return chat(login, line => { triggers?.handle(line); minimes?.handle(line); }, banned => minimes?.ban(banned));
+// Der Server liest den Chat mit, damit Trigger, Minimes und der Hilfe-Befehl auch ohne offenes Chat-Overlay laufen
+function listenToChat(login: string, triggers: ReturnType<typeof startTriggers> | null, minimes: MinimeRuntime | null, help: HelpRuntime) {
+  return chat(login, line => {
+    if (help.isEcho(line)) return;
+    triggers?.handle(line);
+    minimes?.handle(line);
+    help.handle(line).catch((error: unknown) => console.error(`Help reply for ${login} failed:`, error));
+  }, banned => minimes?.ban(banned));
+}
+
+// Hilfe-Befehl mit der gespeicherten Einstellung; antwortet mit gültigen Tokens als Streamer. Ob der Login schreiben
+// darf, fragt er einmal beim Start bei Twitch nach
+async function helpFor(setup: StreamerSetup, tokens: ReturnType<typeof tokenKeeper>) {
+  const help = startHelp({
+    login: setup.login,
+    help: await loadHelp(setup.folder),
+    link: setup.link,
+    now: Date.now,
+    commands: () => publicCommands(setup.folder, setup.login, setup.features),
+    say: async message => {
+      const valid = await tokens.valid();
+      return valid ? setup.twitch.say(valid, message) : "missing-scope";
+    },
+  });
+  setup.twitch.canChat(tokens.current()).then(help.setCanChat).catch(() => {});
+  return help;
 }
 
 // Antwort als Server-Sent Events öffnen und sofort mit dem laufenden Titel und den Minimes versorgen
