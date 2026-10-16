@@ -1,5 +1,7 @@
-// Theme-Schnittstelle: welche Szenen es gibt und wie ein Theme seine Einstellungen beschreibt.
-// Das Schema ist reines TypeScript ohne React, damit Server und Dashboard es gleich prüfen.
+// Theme-Schnittstelle: welche Szenen es gibt, wie ein Theme seine Einstellungen beschreibt und was ein Theme liefern
+// muss (ThemeModule ohne React für Server und Dashboard, ThemeView mit den Szenen für die Overlays).
+import type { ComponentType } from "react";
+import type { RenderClip } from "./renderClip.ts";
 
 // info: öffentliche Befehlsseite für Zuschauer (/s/<login>/), keine Quelle für OBS
 export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes", "info"] as const;
@@ -61,3 +63,11 @@ export type ThemeSchema = {
   personalize?: (login: string) => SettingValues;
   minimeVariants?: MinimeVariantSet;
 };
+
+// Vertrag eines Themes, Daten-Seite (ohne React, auch für den Server): sein Schema und die Clips für Stinger und Banner
+// (Render-Bereich), berechnet aus den gegen das Schema aufgelösten Werten. Eingetragen in src/themes/registry.ts.
+export type ThemeModule = { schema: ThemeSchema; clips: (values: SettingValues, login: string) => RenderClip[] };
+
+// Vertrag eines Themes, Ansicht: seine Szenen (React.lazy), id gleich schema.id. Eingetragen in src/themes/scenes.tsx.
+// Fehlende Szenen kommen vom Standard-Theme, ausser theme-eigenen Funktionen (src/core/themeRuntime.ts).
+export type ThemeView = { id: string; scenes: Partial<Record<SceneName, ComponentType>> };

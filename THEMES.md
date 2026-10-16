@@ -49,11 +49,13 @@ src/themes/<id>/
 5. **CSS** in `theme.css`, jede Regel unter `.theme-<id>`, Keyframes mit Präfix `<id>-`. Farben, Zahlen, Schalter (1/0)
    und Schriften aus dem Schema kommen automatisch als CSS-Variablen an (`var(--accent)`, `var(--alertWidth)`).
    Feste Masse nur als Standardwert einer Variable: `padding: var(--card-padding, 16px 20px)`.
-6. **Registrieren**:
-   - `src/themes/registry.ts`: das Schema in `THEMES` eintragen (der erste Eintrag ist das Standard-Theme, bleibt `standard`).
-   - `src/themes/scenes.tsx`: die Szenen aus `index.tsx` in `THEME_SCENES` unter der id eintragen.
-   - `src/themes/renderers.ts`: die Clips aus `render.ts` (Stinger, Profil- und Offline-Banner, siehe
-     `src/themes/standard/render.ts`) eintragen; ohne Eintrag rendert der Bereich `[ RENDERN ]` die des Standard-Themes.
+6. **Registrieren**: ein Theme erfüllt den Vertrag aus `src/core/theme.ts` an zwei Stellen (ohne Klassen, nur Typen):
+   - `ThemeModule` (Daten, ohne React, auch für den Server): in `src/themes/registry.ts` in `THEME_MODULES` als
+     `{ schema: <id>Settings, clips: <id>Clips }` eintragen. `clips` liefert Stinger, Profil- und Offline-Banner aus
+     `render.ts` (siehe `src/themes/standard/render.ts`). Der erste Eintrag ist das Standard-Theme, bleibt `standard`.
+   - `ThemeView` (Szenen): `index.tsx` exportiert `<id>View = { id: <id>Settings.id, scenes: { ... } }`, eingetragen
+     in `src/themes/scenes.tsx` in `THEME_VIEWS`.
+   `registry.check.ts` prüft, dass jeder Ordner unter `src/themes/` in beiden Listen steht.
 7. **Prüfen**: `npm run verify`. Danach im Dashboard unter `[ THEME ]` das Theme wählen und in der Vorschau alle
    Szenen ansehen.
 
