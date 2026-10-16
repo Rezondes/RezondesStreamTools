@@ -244,6 +244,12 @@ async function spotifyCallback({ response, url }: Call) {
   redirect(response, connected ? `${PUBLIC_URL}/` : `${PUBLIC_URL}/?error=spotify-failed`);
 }
 
+// Konto, laufender Titel und Abfrage-Status für die Verbindungsseite; 409 ohne Spotify-Login
+async function spotifyDetails({ response, runtime }: Call) {
+  if (!runtime?.spotify?.connected()) return send(response, 409, "not-connected");
+  json(response, await runtime.spotify.details());
+}
+
 async function spotifyLogout({ response, runtime }: Call) {
   await runtime?.spotify?.logout();
   json(response, { ok: true });
@@ -414,6 +420,7 @@ const HANDLERS: Record<RouteKey, Handler> = {
   "POST /api/media": uploadMedia,
   "DELETE /api/media": removeMedia,
   "GET /spotify/login": spotifyLogin,
+  "GET /api/spotify": spotifyDetails,
   "POST /spotify/logout": spotifyLogout,
   "POST /api/twitch/disconnect": twitchDisconnect,
   "GET /api/settings": settings,

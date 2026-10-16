@@ -32,6 +32,7 @@ export const ROUTES = {
   "POST /api/media": TRIGGERS,
   "DELETE /api/media": TRIGGERS,
   "GET /spotify/login": { guard: "session", features: ["music"] },
+  "GET /api/spotify": { guard: "session", features: ["music"] },
   // Trennen bleibt auch bei abgeschalteter Funktion möglich
   "POST /spotify/logout": SESSION,
   "POST /api/twitch/disconnect": SESSION,

@@ -4,7 +4,7 @@
 // Login-state gehört, weiss der Router (Spotify kennt nur eine Callback-URL). Check: spotify.check.ts.
 import { readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
-import type { Track } from "../src/core/types.ts";
+import type { SpotifyDetails, Track } from "../src/core/types.ts";
 import { writeAtomic } from "./atomicFile.ts";
 
 // Die Spotify-App aus server.env; redirectUri aus redirectUri(PUBLIC_URL)
@@ -14,6 +14,7 @@ type TokenAnswer = { access_token?: string; refresh_token?: string; expires_in?:
 
 const SCOPES = "user-read-currently-playing user-read-playback-state";
 const PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing?additional_types=episode";
+const ME_URL = "https://api.spotify.com/v1/me";
 const POLL_MS = 3000;
 
 // Spotify erlaubt für lokale Redirects nur die Loopback-IP, nicht "localhost"; sonst gilt PUBLIC_URL
@@ -85,12 +86,13 @@ type Player = {
   track: Track | null; // zuletzt gesendeter Stand
   sentAt: number;
   blockedUntil: number; // nach 429 (zu viele Anfragen) bis dahin Pause
+  account: string | null; // Name des Spotify-Kontos, einmal geholt; null = noch unbekannt
 };
 
 // Spotify eines Streamers. folder: Profil-Ordner (spotify.json), emit: an die Overlays, listening: ist ein Overlay offen
 export async function spotifyClient(app: SpotifyApp, folder: string, emit: (track: Track | null) => void, listening: () => boolean) {
   const file = join(folder, "spotify.json");
-  const player: Player = { app, file, emit, tokens: await loadTokens(file), track: null, sentAt: 0, blockedUntil: 0 };
+  const player: Player = { app, file, emit, tokens: await loadTokens(file), track: null, sentAt: 0, blockedUntil: 0, account: null };
   const timer = setInterval(() => {
     if (!player.tokens || !listening() || Date.now() < player.blockedUntil) return;
     poll(player).catch((error: unknown) => console.error("Spotify poll failed:", error instanceof Error ? error.message : error));
@@ -100,6 +102,10 @@ export async function spotifyClient(app: SpotifyApp, folder: string, emit: (trac
     connected: () => player.tokens !== null,
     // Aktueller Stand mit weitergerechnetem Fortschritt, z.B. für frisch verbundene Overlays
     current: () => progressed(player.track, player.sentAt, Date.now()),
+    async details(): Promise<SpotifyDetails> {
+      if (player.tokens && !player.account) player.account = await loadAccount(player);
+      return { account: player.account, track: progressed(player.track, player.sentAt, Date.now()), polling: listening() };
+    },
     authorizeUrl(state: string) {
       const query = new URLSearchParams({ client_id: app.clientId, response_type: "code", redirect_uri: app.redirectUri, scope: SCOPES, state });
       return `https://accounts.spotify.com/authorize?${query}`;
@@ -107,7 +113,10 @@ export async function spotifyClient(app: SpotifyApp, folder: string, emit: (trac
     // Code aus dem Callback eintauschen; false = Code ungültig
     async connect(code: string) {
       const answer = await requestToken(app, { grant_type: "authorization_code", code, redirect_uri: app.redirectUri });
-      if (answer) await save(player, answer);
+      if (answer) {
+        player.account = null;
+        await save(player, answer);
+      }
       return answer !== null;
     },
     logout: () => logout(player),
@@ -148,6 +157,7 @@ async function save(player: Player, answer: TokenAnswer) {
 async function logout(player: Player) {
   player.tokens = null;
   player.track = null;
+  player.account = null;
   player.emit(null);
   await rm(player.file, { force: true });
 }
@@ -157,6 +167,21 @@ async function refresh(player: Player) {
   if (answer) return save(player, answer);
   console.error("Spotify login expired, please reconnect");
   await logout(player);
+}
+
+// Name des Kontos (Anzeigename, sonst die Spotify-ID); null bei jedem Fehler, die Details fragen dann später neu
+async function loadAccount(player: Player): Promise<string | null> {
+  try {
+    if (player.tokens && Date.now() > player.tokens.expiresAt - 60_000) await refresh(player);
+    if (!player.tokens) return null;
+    const response = await fetch(ME_URL, { headers: { Authorization: `Bearer ${player.tokens.access}` } });
+    if (!response.ok) return null;
+    const answer = (await response.json()) as { id?: string; display_name?: string | null };
+    return answer.display_name || answer.id || null;
+  } catch {
+    // Netzwerkfehler: Konto bleibt unbekannt
+    return null;
+  }
 }
 
 async function poll(player: Player) {

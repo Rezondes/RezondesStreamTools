@@ -41,6 +41,10 @@ export type ChatRemoval = { id?: string; login?: string };
 // features: welche Funktionen für den Streamer an sind (alerts, chat, music, fx, triggers, ...)
 export type ServerStatus = { login: string; live: boolean; spotify: boolean | null; features: Record<string, boolean> };
 
+// Antwort von GET /api/spotify (Verbindungsseite): verbundenes Konto, laufender Titel, ob gerade abgefragt wird
+// (das passiert nur, solange ein Overlay des Streamers offen ist)
+export type SpotifyDetails = { account: string | null; track: Track | null; polling: boolean };
+
 // Eingeklinkter Chatter als Figur in der Szene minimes. color: #rrggbb oder null = Standardfarbe des Themes;
 // variant: Typ (z.B. "mango") in Themes mit Typen, sonst null
 export type Minime = { login: string; user: string; color: string | null; variant: string | null };

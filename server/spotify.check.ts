@@ -55,6 +55,7 @@ globalThis.fetch = ((url: string) => {
 }) as typeof fetch;
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing";
+const ME_URL = "https://api.spotify.com/v1/me";
 const playing = { status: 200, body: { is_playing: true, progress_ms: 0, item: { id: "1", name: "Wake Up", duration_ms: 60_000 } } };
 const settle = () => new Promise(resolve => setImmediate(resolve));
 
@@ -79,6 +80,14 @@ try {
   assert.equal(client.connected(), true);
   assert.equal(toTokens(JSON.parse(await readFile(join(folder, "spotify.json"), "utf8")))?.refresh, "r1");
   if (process.platform !== "win32") assert.equal((await stat(join(folder, "spotify.json"))).mode & 0o777, 0o600);
+
+  // Details: Konto von /v1/me (Fehler = null und beim nächsten Mal neu fragen, danach aus dem Speicher), Titel, Abfrage
+  answers = { [ME_URL]: [{ status: 500 }, { status: 200, body: { id: "neo", display_name: "Neo" } }] };
+  assert.deepEqual(await client.details(), { account: null, track: null, polling: true });
+  assert.deepEqual(await client.details(), { account: "Neo", track: null, polling: true });
+  listening = false;
+  assert.deepEqual(await client.details(), { account: "Neo", track: null, polling: false });
+  listening = true;
 
   // Abfrage alle 3 s: neuer Titel wird gesendet, gleicher Stand nicht, Stille als null
   answers = { [PLAYING_URL]: [playing, playing, { status: 204 }] };
@@ -114,6 +123,8 @@ try {
   // Abmelden löscht spotify.json
   await client.logout();
   await assert.rejects(stat(join(folder, "spotify.json")));
+  // Ohne Login keine Anfrage und kein Konto
+  assert.deepEqual(await client.details(), { account: null, track: null, polling: true });
   client.stop();
 } finally {
   mock.timers.reset();
