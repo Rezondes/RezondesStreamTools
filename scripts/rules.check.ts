@@ -27,6 +27,7 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/core/params.ts": "reads the page URL once at load (browser entry)",
   "src/core/sound.ts": "Web Audio output",
   "src/themes/matrix/tones.ts": "Web Audio output",
+  "src/themes/suedfrucht/tones.ts": "Web Audio output",
   "src/dashboard/api.ts": "network client of the dashboard",
   "server/index.ts": "HTTP entry point",
   "server/chat.ts": "network client; parsing is checked in irc.ts",

@@ -159,22 +159,34 @@ Zurücksetzen je Feld oder für alles. Die Vorschau zeigt die gewählte Szene al
 gespeicherten Werten (`/s/<login>/<szene>?demo&preview`, Werte per `BroadcastChannel` nur von derselben Herkunft, auch in einem eigenen Tab).
 Ein Theme-Wechsel speichert sofort; Fehler beim Speichern erscheinen am jeweiligen Feld.
 
-Eingebaut sind `matrix` (Standard, Terminal-Look) und `starter` (klarer, moderner Look mit Verlauf, abgerundeten
-Karten und eigener Schrift; alle Szenen, Stinger und Banner eigenständig, nichts vom Matrix-Theme). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
+Eingebaut sind `matrix` (Standard, Terminal-Look), `starter` (klarer, moderner Look mit Verlauf, abgerundeten
+Karten und eigener Schrift; alle Szenen, Stinger und Banner eigenständig, nichts vom Matrix-Theme) und `suedfrucht`
+(Südfrucht: tropischer Strand mit Meer, Wellen, Palmen und Holzschildern; Tageszeit je Szene, Alerts als Postkarte,
+Surfbrett oder Flaschenpost, Chat als Luftblasen, Planken oder Muscheln, Rahmen aus Bambus, Holz oder Seil,
+Strandradio, Wellen-Stinger, Strand-Banner und hüpfende Frucht-Minimes). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
 
 ## Minimes (Szene `minimes`)
 
 Chatter klinken sich per Chatbefehl als kleine Figur ein, die unten im Bild schwebt, hin und her wandert, ihren Namen
 über dem Kopf trägt und zufällige Animationen zeigt. Im Theme `matrix` ist das ein Neon-Geist im Kapuzenpulli, ohne
 Beine, getragen von einer Düse aus fallenden Glyphen (Backflip, Glitch, Umschauen, Drehen, Schlafen, Blinzeln;
-Hüpfer mit Düsen-Boost, wenn der Chatter schreibt). Minimes sind eine Funktion des Themes: `starter` hat keine,
-dort bleibt die Szene leer und der Server ignoriert die Befehle.
+Hüpfer mit Düsen-Boost, wenn der Chatter schreibt). Im Theme `suedfrucht` sind es Cartoon-Früchte mit Gesicht, die
+über den Strand hüpfen (Freudensprünge, Pirouette, Wackeln, Sonnenbrille, Umschauen, Schlafen; Saftspritzer, wenn der
+Chatter schreibt). Minimes sind eine Funktion des Themes: `starter` hat keine, dort bleibt die Szene leer und der Server
+ignoriert die Befehle.
 
 | Befehl (Standard, einstellbar) | Wirkung |
 |---|---|
 | `!join` oder `!join <farbe>` | einklinken, optional mit Farbe |
 | `!color <farbe>` | Farbe ändern; klinkt auch ein (abschaltbar) |
 | `!leave` | raus; Mods (Rolle einstellbar) werfen mit `!leave @name` ein fremdes Minime raus |
+
+In `suedfrucht` wählen Chatter statt einer Farbe eine Frucht: `!join` gibt eine zufällige erlaubte Frucht,
+`!join mango` eine Mango, `!frucht karambole` wechselt zur Sternfrucht. 16 Früchte (Mango, Sternfrucht, Papaya,
+Ananasguave, Nashi-Birne, Birnenmelone, Kaktusfeige, Durian, Zitrone, Ananas, Kokosnuss, Drachenfrucht, Maracuja,
+Banane, Litschi, Wassermelone); die Namen im Chat sind je Frucht einstellbar (Gruppe "Minimes: Typen", leer = Frucht
+aus), Gross- und Kleinschreibung, Umlaute und Leerzeichen zählen nicht ("Asiatische Birne" = "asiatischebirne").
+Farben je Frucht stehen in "Früchte: Farben".
 
 Farben: `#ff00aa`, `ff00aa`, `#f0a`, `255 0 170`, `255,0,170` oder `rgb(255, 0, 170)`. Zu dunkle Farben werden bis zur
 eingestellten Mindesthelligkeit aufgehellt; ohne eigene Farbe gilt die Twitch-Namensfarbe (abschaltbar), sonst die
@@ -184,7 +196,8 @@ Alles Verhalten ist im Theme einstellbar (Gruppen "Minimes: Befehle", "Minimes: 
 im Matrix-Theme dazu "Minimes: Aussehen" und "Minimes: Animationen"): Befehlswörter, wer einklinken und rauswerfen darf,
 Höchstzahl und was bei voller Liste passiert, Verschwinden nach Minuten ohne Nachricht, Abklingzeit für Farbwechsel,
 Reaktion auf Chat, Leeren bei Streamende (`stream.offline`) und bei Ban oder Timeout, Tempo, Laufweite und Häufigkeiten.
-Die Liste und die gemerkten Farben stehen in `data/streamers/<login>/minimes.json` (höchstens alle 2 s geschrieben).
+Die Liste und die gemerkten Farben und Früchte stehen in `data/streamers/<login>/minimes.json` (höchstens alle 2 s
+geschrieben).
 
 ## Chat-Trigger (`triggers.json` im Profil)
 

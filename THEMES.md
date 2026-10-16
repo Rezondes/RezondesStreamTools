@@ -72,6 +72,13 @@ const catalog = useMemo(() => [{ name: "wave", durationMs: values.waveMs, weight
 const actors = useMinimes({ catalog, reaction: null, widthPx: innerWidth });
 ```
 
+**Typen statt Farben** (Beispiel `suedfrucht`: Früchte): Das Schema bekommt `minimeVariants` (`MinimeVariantSet` aus
+`src/core/theme.ts`: Befehl, z.B. `!frucht`, Bezeichnung und je Typ `id`, Name und Standard-Namen im Chat) und bindet
+statt `MINIME_FIELDS` die Felder `...MINIME_BASE_FIELDS` und `...minimeVariantFields(set)` ein (Gruppe `MINIME_VARIANTS`).
+Der Server vergibt dann Typen statt Farben; jedes Minime trägt `variant` (die id) und `color: null`. Ohne Wahl gibt es
+einen zufälligen erlaubten Typ, eine leere Namensliste schaltet einen Typ aus. In `?demo` kommen Minimes ohne Typ
+(`variant: null`); die Szene wählt dann selbst einen, z.B. nach `hash(seedOf(login))` aus `src/core/hash.ts`.
+
 ## Regeln, die automatisch geprüft werden
 
 `scripts/rules.check.ts` prüft jeden Theme-Ordner (ausser `settings.ts`):

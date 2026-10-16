@@ -3,8 +3,9 @@
 import type { ThemeSchema } from "../core/theme.ts";
 import { matrixSettings } from "./matrix/settings.ts";
 import { starterSettings } from "./starter/settings.ts";
+import { suedfruchtSettings } from "./suedfrucht/settings.ts";
 
-export const THEMES: readonly ThemeSchema[] = [matrixSettings, starterSettings];
+export const THEMES: readonly ThemeSchema[] = [matrixSettings, starterSettings, suedfruchtSettings];
 
 export const DEFAULT_THEME = THEMES[0].id;
 

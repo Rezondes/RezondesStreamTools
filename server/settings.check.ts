@@ -16,6 +16,10 @@ assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: { matrix: 
 assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: {} }))?.max, 30);
 assert.equal(minimeRules(parseSettingsFile({ theme: "starter", values: { matrix: { minimeMax: 5 } } })), null);
 assert.equal(minimeRules(parseSettingsFile({ theme: "matrix", values: {} }))?.variants, null);
+// Südfrucht: 16 Früchte als Typen, eine ausgeschaltete fehlt, Befehl !frucht
+assert.equal(minimeRules(parseSettingsFile({ theme: "suedfrucht", values: {} }))?.variants?.length, 16);
+assert.equal(minimeRules(parseSettingsFile({ theme: "suedfrucht", values: { suedfrucht: { minimeNames_durian: "" } } }))?.variants?.length, 15);
+assert.equal(minimeRules(parseSettingsFile({ theme: "suedfrucht", values: {} }))?.commands.look, "!frucht");
 // Ein Theme mit Typen: die eingeschalteten Typen mit ihren Namen kommen in die Regeln
 {
   const probe = { id: "probe", name: "Probe", fields: MINIME_BASE_FIELDS, minimeVariants: { command: "!frucht", label: "Frucht", variants: [{ id: "mango", label: "Mango", names: ["mango"] }, { id: "kiwi", label: "Kiwi", names: ["kiwi"] }] } };

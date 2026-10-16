@@ -4,7 +4,8 @@
 // kommen über bannerOptions aus den Einstellungen.
 import { fillTemplate } from "../../core/template.ts";
 import type { MatrixValues } from "./settings.ts";
-import { glyphAt, hash } from "./stinger.ts";
+import { hash } from "../../core/hash.ts";
+import { glyphAt } from "./stinger.ts";
 
 export type BannerOptions = {
   loop: number; // Sekunden

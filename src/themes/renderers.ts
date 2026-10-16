@@ -5,10 +5,12 @@ import type { SettingValues } from "../core/theme.ts";
 import { matrixClips } from "./matrix/render.ts";
 import { DEFAULT_THEME } from "./registry.ts";
 import { starterClips } from "./starter/render.ts";
+import { suedfruchtClips } from "./suedfrucht/render.ts";
 
 const THEME_CLIPS: Record<string, (values: SettingValues, login: string) => RenderClip[]> = {
   matrix: matrixClips,
   starter: starterClips,
+  suedfrucht: suedfruchtClips,
 };
 
 // values: gegen das Schema des Themes aufgelöst

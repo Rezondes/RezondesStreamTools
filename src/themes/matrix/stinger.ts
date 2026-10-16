@@ -3,6 +3,7 @@
 // Ablauf: Matrix-Spalten fallen herein und decken alles ab, Logo entschlüsselt sich,
 // am Übergangspunkt (cut) blitzt die Einschaltlinie, dann fallen die Spalten unten heraus.
 // Länge, Übergangspunkt, Texte, Farben und Schrift kommen über stingerOptions aus den Einstellungen.
+import { hash } from "../../core/hash.ts";
 import type { MatrixValues } from "./settings.ts";
 
 export const WIDTH = 1920;
@@ -43,14 +44,6 @@ export const stingerOptions = (values: MatrixValues): StingerOptions => ({
   flash: values.flash,
 });
 
-// Deterministischer Zufall aus einer Zahl, Ergebnis 0..1
-export function hash(seed: number) {
-  let mixed = Math.imul(seed ^ 0x9e3779b9, 0x85ebca6b);
-  mixed ^= mixed >>> 13;
-  mixed = Math.imul(mixed, 0xc2b2ae35);
-  mixed ^= mixed >>> 16;
-  return (mixed >>> 0) / 4294967296;
-}
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
 const easeIn = (progress: number) => progress * progress;
 // Zeichen aus dem Zeichensatz, für dasselbe seed immer dasselbe

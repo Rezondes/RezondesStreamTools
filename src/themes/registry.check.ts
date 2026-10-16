@@ -29,8 +29,11 @@ for (const theme of THEMES) {
 assert.deepEqual(Object.keys(findTheme("matrix")!.personalize!("neo")), ["channelName", "logo"]);
 assert.deepEqual(findTheme("starter")!.personalize!("neo"), { channelName: "NEO" });
 
-// Minimes hat vorerst nur das Matrix-Theme
+// Minimes haben Matrix (Farben) und Südfrucht (Früchte als Typen), Starter nicht
 assert.equal(hasMinimes(findTheme("matrix")!), true);
 assert.equal(hasMinimes(findTheme("starter")!), false);
+assert.equal(hasMinimes(findTheme("suedfrucht")!), true);
+assert.equal(findTheme("suedfrucht")!.minimeVariants?.variants.length, 16);
+assert.deepEqual(findTheme("suedfrucht")!.personalize!("neo_42"), { channelName: "Neo_42" });
 
 console.log("registry ok");

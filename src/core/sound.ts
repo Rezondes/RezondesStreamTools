@@ -7,13 +7,14 @@ import type { SoundValue } from "./theme.ts";
 
 let audio: AudioContext | undefined;
 
-export function beep(frequency: number, durationMs: number, delayMs = 0, volume = 1) {
+// wave: Klangfarbe (square = Piepen der Matrix, sine/triangle = weicher, z.B. Steel-Drum)
+export function beep(frequency: number, durationMs: number, delayMs = 0, volume = 1, wave: OscillatorType = "square") {
   if (params.get("sound") === "0") return;
   audio ??= new AudioContext();
   const start = audio.currentTime + delayMs / 1000;
   const oscillator = audio.createOscillator();
   const gain = audio.createGain();
-  oscillator.type = "square";
+  oscillator.type = wave;
   oscillator.frequency.value = frequency;
   gain.gain.setValueAtTime(0.08 * volume * numberParam("volume", 1), start);
   gain.gain.exponentialRampToValueAtTime(0.0001, start + durationMs / 1000);
