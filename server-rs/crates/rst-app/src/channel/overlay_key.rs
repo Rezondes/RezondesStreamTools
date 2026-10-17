@@ -6,6 +6,7 @@ use rst_domain::identity::values::StreamerId;
 use subtle::ConstantTimeEq;
 
 use crate::crypto::lookup::LookupKey;
+use crate::crypto::to_hex;
 use crate::ports::keys::KeyStore;
 use crate::ports::records::RecordStore;
 use crate::vault::{Vault, VaultError};
@@ -15,11 +16,6 @@ const KIND: &str = "overlay-key";
 /// 32 lower case hex digits
 fn is_key(value: &str) -> bool {
     value.len() == 32 && value.bytes().all(|byte| matches!(byte, b'0'..=b'9' | b'a'..=b'f'))
-}
-
-fn to_hex(bytes: [u8; 16]) -> String {
-    const HEX: &[u8; 16] = b"0123456789abcdef";
-    bytes.iter().flat_map(|byte| [HEX[usize::from(byte >> 4)], HEX[usize::from(byte & 15)]]).map(char::from).collect()
 }
 
 #[derive(Debug, Clone)]
@@ -54,7 +50,7 @@ impl<S: RecordStore, K: KeyStore> OverlayKeys<S, K> {
     /// # Errors
     /// See [`Vault::put`].
     pub async fn rotate(&self, id: &StreamerId, random: [u8; 16], now: i64) -> Result<String, VaultError> {
-        let key = to_hex(random);
+        let key = to_hex(&random);
         self.vault.put_json(id, KIND, "", &key, now).await?;
         Ok(key)
     }

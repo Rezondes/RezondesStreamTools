@@ -2,6 +2,7 @@
 //! passes the same contract tests.
 
 pub mod audit;
+pub mod files;
 pub mod keys;
 pub mod records;
 pub mod sessions;

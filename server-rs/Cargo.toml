@@ -29,6 +29,13 @@ tokio = { version = "1.53.3", features = ["rt", "macros"] }
 ts-rs = "12.0.1"
 zeroize = "1.9.1"
 
+# Debug builds lightly optimized and their dependencies (crypto, SQLite) more, so tests over large files stay fast
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 2
+
 [workspace.lints.rust]
 unsafe_code = "forbid"
 

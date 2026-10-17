@@ -7,7 +7,7 @@ use chacha20poly1305::aead::{Aead, KeyInit, Payload};
 use chacha20poly1305::{XChaCha20Poly1305, XNonce};
 use zeroize::Zeroizing;
 
-const NONCE_LEN: usize = 24;
+pub const NONCE_LEN: usize = 24;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum CryptoError {
@@ -66,6 +66,37 @@ pub fn open(key: &[u8; 32], sealed: &[u8], aad: &[u8]) -> Result<Zeroizing<Vec<u
     cipher
         .decrypt(&XNonce::from(nonce), Payload { msg: ciphertext, aad })
         .map(Zeroizing::new)
+        .map_err(|_| CryptoError::Decrypt)
+}
+
+/// Ciphertext of one block with a nonce the caller derives (block-wise files: prefix, counter, last flag). A nonce
+/// must never repeat for the same key.
+///
+/// # Errors
+/// When encrypting fails.
+pub fn seal_block(
+    key: &[u8; 32],
+    nonce: &[u8; NONCE_LEN],
+    plaintext: &[u8],
+    aad: &[u8],
+) -> Result<Vec<u8>, CryptoError> {
+    XChaCha20Poly1305::new(&(*key).into())
+        .encrypt(&XNonce::from(*nonce), Payload { msg: plaintext, aad })
+        .map_err(|_| CryptoError::Encrypt)
+}
+
+/// Plaintext of a block from [`seal_block`]
+///
+/// # Errors
+/// When the block was changed or nonce, key or associated data do not match.
+pub fn open_block(
+    key: &[u8; 32],
+    nonce: &[u8; NONCE_LEN],
+    ciphertext: &[u8],
+    aad: &[u8],
+) -> Result<Vec<u8>, CryptoError> {
+    XChaCha20Poly1305::new(&(*key).into())
+        .decrypt(&XNonce::from(*nonce), Payload { msg: ciphertext, aad })
         .map_err(|_| CryptoError::Decrypt)
 }
 
