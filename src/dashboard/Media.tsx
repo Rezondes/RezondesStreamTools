@@ -1,5 +1,5 @@
-// Medien-Bereich im Dashboard: Dateien des Streamers mit Grösse, Vorschau und den Triggern, die sie nutzen;
-// Hochladen (der Server lehnt Uploads über dem Speicherlimit ab) und Löschen mit Rückfrage.
+// Media section in the dashboard: files of the streamer with size, preview and the triggers that use them;
+// upload (the server rejects uploads above the storage limit) and delete with confirmation.
 import { useCallback, useEffect, useState } from "react";
 import { MEDIA_KIND } from "../core/settings.ts";
 import * as streamerPath from "../core/streamerPath.ts";
@@ -10,7 +10,7 @@ import UploadButton from "./UploadButton.tsx";
 const MEDIA_TEXT = TEXTS.media;
 const KILOBYTE = 1024;
 const MEGABYTE = KILOBYTE * KILOBYTE;
-// Kleine Dateien in KB, sonst MB mit einer Nachkommastelle
+// Small files in KB, otherwise MB with one decimal place
 const megabytes = (bytes: number) => (bytes < MEGABYTE ? `${Math.ceil(bytes / KILOBYTE)} KB` : `${(bytes / MEGABYTE).toFixed(1)} MB`);
 
 export default function Media({ login }: { login: string }) {

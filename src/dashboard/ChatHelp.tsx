@@ -1,5 +1,5 @@
-// Hilfe-Befehl auf der Übersicht mit Link zur öffentlichen Befehlsseite: an/aus, Befehl, Vorlage der Chat-Antwort und Abklingzeit (commands.json im
-// Profil, GET/POST /api/commands). Der Server prüft die Werte; ungültige bleiben ungespeichert.
+// Help command on the overview with a link to the public commands page: on/off, command, template of the chat reply and cooldown (commands.json in the
+// profile, GET/POST /api/commands). The server checks the values; invalid ones stay unsaved.
 import { useEffect, useState } from "react";
 import type { HelpConfig } from "../core/commands.ts";
 import * as streamerPath from "../core/streamerPath.ts";
@@ -7,7 +7,7 @@ import { getJson, postJson } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";
 
 const TEXT = TEXTS.help;
-// canChat vom Server: darf der Twitch-Login schreiben (false = Login von vor dem Hilfe-Befehl, neu verbinden)
+// canChat from the server: may the Twitch login write (false = login from before the help command, reconnect)
 type HelpState = HelpConfig & { canChat?: boolean | null };
 
 export default function ChatHelp({ login }: { login: string }) {

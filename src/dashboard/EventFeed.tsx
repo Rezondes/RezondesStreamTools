@@ -1,6 +1,6 @@
-// Ereignis-Protokoll auf der Verbindungsseite: hört live auf /s/<login>/events?log (dieselben Nachrichten wie die
-// Overlays, zählt aber nicht als Overlay) und zeigt sie als kurze Sätze mit Uhrzeit, filterbar nach Art. Die Texte
-// macht eventLog.ts. Nach einem Abbruch (z.B. 404, solange die Laufzeit nicht läuft) neuer Versuch nach 10 s.
+// Event log on the connections page: listens live to /s/<login>/events?log (the same messages as the
+// overlays, but does not count as an overlay) and shows them as short sentences with time, filterable by kind. The texts
+// come from eventLog.ts. After a disconnect (e.g. 404 while the runtime is not running) a new attempt after 10 s.
 import { useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
 import type { ServerMessage } from "../core/types.ts";
@@ -47,7 +47,7 @@ export default function EventFeed({ login }: { login: string }) {
   );
 }
 
-// Verbindung zum Ereignis-Strom; open = gerade verbunden. clear leert nur die Liste, der letzte Stand bleibt
+// Connection to the event stream; open = connected right now. clear only empties the list, the last state stays
 function useEventLog(login: string) {
   const [log, setLog] = useState(EMPTY_LOG);
   const [open, setOpen] = useState(false);

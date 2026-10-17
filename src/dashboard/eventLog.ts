@@ -1,19 +1,19 @@
-// Ereignis-Protokoll der Verbindungsseite: macht aus den SSE-Nachrichten des Servers (dieselben wie für die Overlays)
-// kurze Sätze. Nur Wichtiges: Alerts, Effekte, Titelwechsel, Minimes beitreten und verlassen; Einstellungen und
-// Minime-Reaktionen fallen weg. Reine Funktionen, getestet in eventLog.check.ts.
+// Event log of the connections page: turns the server's SSE messages (the same as for the overlays)
+// short sentences. Only what matters: alerts, effects, track changes, minimes joining and leaving; settings and
+// minime reactions drop out. Pure functions, tested in eventLog.check.ts.
 import type { Alert, Minime, ServerMessage, Track } from "../core/types.ts";
 import { TEXTS } from "./texts.de.ts";
 
 export type LogKind = "alert" | "fx" | "music" | "minimes";
 type LogEntry = { id: number; at: number; kind: LogKind; text: string };
-// entries: neueste zuerst; minimes und track: letzter Stand, um nur Änderungen zu melden (undefined = noch keiner)
+// entries: newest first; minimes and track: last state, to report only changes (undefined = none yet)
 export type LogState = { entries: LogEntry[]; next: number; minimes?: Minime[]; track?: { id: string; playing: boolean } | null };
 
 export const MAX_ENTRIES = 200;
 export const EMPTY_LOG: LogState = { entries: [], next: 0 };
 const LOG = TEXTS.connections.log;
 
-// Neuer Stand nach einer Nachricht; at = Zeitpunkt in ms
+// New state after a message; at = time in ms
 export function logMessage(state: LogState, message: ServerMessage, at: number): LogState {
   switch (message.type) {
     case "alert": return add(state, at, "alert", [alertText(message.alert)]);
@@ -46,7 +46,7 @@ function alertText(alert: Alert): string {
   }
 }
 
-// Nur Titelwechsel, Pause und Stopp; Spulen im selben Titel und Stille beim Verbinden zählen nicht
+// Only track changes, pause and stop; seeking within the same track and silence on connect do not count
 function music(state: LogState, track: Track | null, at: number): LogState {
   const before = state.track;
   const next = track ? { id: track.id, playing: track.playing } : null;
@@ -56,7 +56,7 @@ function music(state: LogState, track: Track | null, at: number): LogState {
   return { ...add(state, at, "music", [text]), track: next };
 }
 
-// Erste Liste = Stand beim Verbinden (nur gezählt), danach wer beigetreten ist und wer gegangen ist
+// First list = state on connect (only counted), afterwards who joined and who left
 function minimes(state: LogState, list: Minime[], at: number): LogState {
   const before = state.minimes;
   if (!before) return { ...(list.length > 0 ? add(state, at, "minimes", [LOG.minimesNow(list.length)]) : state), minimes: list };

@@ -1,9 +1,9 @@
-/* Skins des Dashboards: Werte der Tokens aus src/style.css und dashboard.css je aktivem Theme (data-skin am <html>,
-   gesetzt von skin.ts, nur auf der Dashboard-Seite). Die Tokens hängen bewusst nur an [data-skin]: Overlays und die
-   Befehlsseite haben keinen Skin, sonst überschrieben gleichnamige Tokens (--border, --radius, ...) die Variablen der
-   Themes. Charakter je Skin: DESIGN.md. */
+/* Skins of the dashboard: values of the tokens from src/style.css and dashboard.css per active theme (data-skin on <html>,
+   set by skin.ts, only on the dashboard page). The tokens deliberately hang only on [data-skin]: overlays and the
+   commands page have no skin, otherwise tokens with the same name (--border, --radius, ...) would override the variables
+   of the themes. Character per skin: DESIGN.md. */
 
-/* --- Standard: modern und schlicht. Dunkle Flächen, eine violette Signatur, weiche Karten, Inter --------------- */
+/* --- Standard: modern and plain. Dark surfaces, one violet signature, soft cards, Inter ---------------------- */
 :root[data-skin="standard"] {
   color-scheme: dark;
   --bg: #0b0b12;
@@ -59,7 +59,7 @@
   color: transparent;
 }
 
-/* --- Matrix: Terminal. Schwarz, Phosphorgrün, eine Monospace-Schrift, keine Rundungen, Klammern um Knöpfe -------- */
+/* --- Matrix: terminal. Black, phosphor green, one monospace font, no rounding, brackets around buttons ------- */
 :root[data-skin="matrix"] {
   color-scheme: dark;
   --bg: #000000;
@@ -114,8 +114,8 @@
 :root[data-skin="matrix"] .btn::before { content: "[\00a0"; }
 :root[data-skin="matrix"] .btn::after { content: "\00a0]"; }
 
-/* --- Südfrucht: Strand. Himmel, Meer und Sand als Seite, cremige Karten mit Holzrand, Meerblau als Signatur,
-       runde Knöpfe, Titel als Holzschild, Palmen am Rand (Szenerie aus Dashboard.tsx) ---------------------------- */
+/* --- Südfrucht: beach. Sky, sea and sand as the page, creamy cards with a wooden edge, sea blue as signature,
+       round buttons, title as a wooden sign, palms at the edge (scenery from Dashboard.tsx) ------------------------- */
 :root[data-skin="suedfrucht"] {
   color-scheme: light;
   --bg: #fff8ea;
@@ -166,7 +166,7 @@
   --scroll-thumb: #d39a5c;
   --scroll-track: #fff8ea;
 }
-/* Titel als Holzschild mit Schreibschrift */
+/* Title as a wooden sign with script font */
 :root[data-skin="suedfrucht"] .dashboard h1 {
   align-self: flex-start;
   padding: 6px 22px 2px;
@@ -180,22 +180,22 @@
 :root[data-skin="suedfrucht"] .btn.primary { box-shadow: 0 3px 0 #073f52; }
 :root[data-skin="suedfrucht"] .dashboard-nav { border-bottom: none; }
 
-/* Anmeldung als cremige Plakette, damit sie vor Himmel und Sonne lesbar bleibt */
+/* Login as a creamy plaque, so it stays readable in front of sky and sun */
 :root[data-skin="suedfrucht"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
 
-/* Szenerie hinter dem Dashboard: nur im Südfrucht-Skin sichtbar */
+/* Scenery behind the dashboard: visible only in the Südfrucht skin */
 .skin-scenery { display: none; }
 :root[data-skin="suedfrucht"] .skin-scenery { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 :root[data-skin="suedfrucht"] .dashboard { position: relative; z-index: 1; }
 .skin-sun { position: absolute; top: 2vh; right: 22vw; width: 110px; height: 110px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 60px 20px rgba(255, 210, 63, 0.55); }
-/* svg.: stärker als die Formregel des Themes (.theme-suedfrucht .sf-shape, volle Breite) */
+/* svg.: stronger than the theme's shape rule (.theme-suedfrucht .sf-shape, full width) */
 .skin-scenery svg.skin-palm { position: absolute; bottom: -2vh; width: clamp(160px, 18vw, 340px); }
 .skin-scenery .skin-palm-left { left: -7vw; }
 .skin-scenery .skin-palm-right { right: -7vw; scale: -1 1; }
 .skin-scenery .skin-palm .part-main { fill: var(--palmTrunk); }
 .skin-scenery .skin-palm .part-detail { fill: var(--palmLeaf); }
 .skin-scenery .skin-palm .part-line { stroke: var(--woodDark); stroke-width: 3; }
-/* Früchte sitzen oben in der Titelzeile, zwischen Holzschild und Sonne */
+/* Fruits sit at the top of the title row, between wooden sign and sun */
 .skin-fruits { position: absolute; top: 14px; left: 58%; translate: -50% 0; display: flex; gap: clamp(12px, 2vw, 32px); }
 .skin-fruit { display: block; width: clamp(34px, 3vw, 48px); }
 .skin-fruit:nth-child(even) { translate: 0 -10px; rotate: 8deg; }

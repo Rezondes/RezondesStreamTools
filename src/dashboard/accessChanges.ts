@@ -1,5 +1,5 @@
-// Was beim Speichern des Zugangs wegfällt (Admin-Bereich): Logins aus Allowlist oder Beta-Liste gestrichen,
-// Anmeldung wieder auf Allowlist beschränkt, Funktionen auf "aus" gestellt. Leer = nichts geht verloren.
+// What drops out when saving access (admin section): logins removed from the allowlist or beta list,
+// registration limited to the allowlist again, features set to "off". Empty = nothing is lost.
 import type { Access, Feature } from "../../server/access.ts";
 
 type AccessLosses = { revoked: string[]; betaRemoved: string[]; closed: boolean; off: Feature[] };
@@ -11,7 +11,7 @@ const removed = (before: string[], after: string[]) => {
 
 export function accessLosses(saved: Access, next: Access): AccessLosses {
   return {
-    // Bei offener Anmeldung verliert niemand den Zugang, nur weil er aus der Allowlist fällt
+    // With open registration nobody loses access just because they drop out of the allowlist
     revoked: next.registration === "allowlist" ? removed(saved.allowlist, next.allowlist) : [],
     betaRemoved: removed(saved.beta, next.beta),
     closed: saved.registration === "open" && next.registration === "allowlist",

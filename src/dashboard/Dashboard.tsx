@@ -1,8 +1,8 @@
-// Dashboard unter /: ohne Sitzung nur die Anmeldung mit Twitch, danach die Navigation über die Bereiche, die für den
-// Streamer freigegeben sind (navigation.ts), Bereich im Hash (#/theme). Konto von /api/me, alle 5 Sekunden aufgefrischt;
-// ?error=<code> nach einer abgebrochenen Anmeldung und Fehler von Aktionen zeigen den Text zum Code.
-// Die Seite scrollt nie als Ganzes (Terminal): Titel und Navigation stehen fest, der Bereich darunter scrollt in sich;
-// Theme und Rendern teilen ihn in Einstellungen (scrollen) und Vorschau (steht). Das Aussehen folgt dem aktiven Theme
+// Dashboard under /: without a session only the login with Twitch, afterwards the navigation over the sections that are
+// released for the streamer (navigation.ts), section in the hash (#/theme). Account from /api/me, refreshed every 5 seconds;
+// ?error=<code> after an aborted login and errors of actions show the text for the code.
+// The page never scrolls as a whole (terminal): title and navigation stay fixed, the section below scrolls inside;
+// theme and render split it into settings (scroll) and preview (fixed). The look follows the active theme
 // (skin.ts, skins.css).
 import { useEffect, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
@@ -22,7 +22,7 @@ import Triggers from "./Triggers.tsx";
 import "./dashboard.css";
 import "./skins.css";
 
-// Aktion an den Server; danach Konto neu laden und einen Fehler anzeigen
+// Action to the server; afterwards reload the account and show an error
 export type Act = (url: string) => void;
 
 const REFRESH_MS = 5000;
@@ -36,12 +36,12 @@ export default function Dashboard() {
     return isErrorCode(code) ? code : null;
   });
 
-  // Skin des aktiven Themes aus dem Konto (der gemerkte steht schon seit main.tsx)
+  // Skin of the active theme from the account (the remembered one is set since main.tsx)
   const theme = typeof account === "object" ? account.theme : null;
   useEffect(() => { if (theme) applySkin(theme); }, [theme]);
 
   useEffect(() => {
-    // Neuer Bereich: alte Fehlermeldung ausblenden
+    // New section: hide the old error message
     const update = () => { setHash(location.hash); setError(null); };
     addEventListener("hashchange", update);
     return () => removeEventListener("hashchange", update);

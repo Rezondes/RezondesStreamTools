@@ -1,8 +1,8 @@
-// "In OBS importieren" auf drei Wegen mit derselben Aufteilung: Starting, BRB und Ending je eine eigene Szene,
-// alle übrigen Overlays zusammen in einer Szene, die man als Quelle in die eigenen Szenen legt.
-// 1. Ziehen: Link mit layer-name/-width/-height, OBS legt beim Ablegen die Browserquelle an.
-// 2. Datei: Szenensammlung (JSON) für Szenensammlung > Importieren.
-// 3. obs-websocket 5: Anfragen, die fehlende Szenen und Quellen anlegen und vorhandene Quellen aktualisieren.
+// "Import into OBS" in three ways with the same split: Starting, BRB and Ending one scene each,
+// all other overlays together in one scene that one puts as a source into their own scenes.
+// 1. Dragging: link with layer-name/-width/-height, OBS creates the browser source on drop.
+// 2. File: scene collection (JSON) for Scene Collection > Import.
+// 3. obs-websocket 5: requests that create missing scenes and sources and update existing sources.
 import { OBS_SCENES, SCENE_SIZES, type SceneName } from "../core/theme.ts";
 
 type ObsSource = { scene: SceneName; name: string; url: string; width: number; height: number };
@@ -10,13 +10,13 @@ export type ObsScene = { name: string; sources: ObsSource[] };
 type ObsRequest = { requestType: string; requestData: Record<string, unknown> };
 
 const FULLSCREEN: readonly SceneName[] = ["starting", "brb", "ending"];
-// Ausrichtung der Szenenelemente: oben links (OBS_ALIGN_TOP | OBS_ALIGN_LEFT)
+// Alignment of the scene items: top left (OBS_ALIGN_TOP | OBS_ALIGN_LEFT)
 const ALIGN_TOP_LEFT = 5;
 
-// OBS-URL einer Szene mit dem geheimen Overlay-Schlüssel des Streamers (ohne ihn gibt es keine Live-Ereignisse)
+// OBS URL of a scene with the streamer's secret overlay key (without it there are no live events)
 export const sceneUrl = (base: string, scene: SceneName, key: string) => `${base}/${scene}?key=${encodeURIComponent(key)}`;
 
-// base: volle Adresse bis zum Login (https://.../s/<login>); Quellen heissen "<login> <szene>"; key: Overlay-Schlüssel
+// base: full URL up to the login (https://.../s/<login>); sources are named "<login> <scene>"; key: overlay key
 export function obsLayout(base: string, login: string, key: string, sceneNames: Record<SceneName, string>, overlayScene: string): ObsScene[] {
   const source = (scene: SceneName): ObsSource => ({ scene, name: `${login} ${scene}`, url: sceneUrl(base, scene, key), ...SCENE_SIZES[scene] });
   return [
@@ -25,9 +25,9 @@ export function obsLayout(base: string, login: string, key: string, sceneNames: 
   ];
 }
 
-// Einstellungen der Browserquelle; Ton läuft über den OBS-Mixer (Alerts, Effekte). Starting, BRB und Ending laden
-// neu, sobald ihre Szene aktiv wird (Timer, Countdown und Animationen beginnen von vorn), und schlafen sonst.
-// Die übrigen Overlays laufen durch, sonst gingen Alerts und Chat verloren, während ihre Szene nicht zu sehen ist.
+// Settings of the browser source; sound goes through the OBS mixer (alerts, effects). Starting, BRB and Ending reload
+// as soon as their scene becomes active (timer, countdown and animations start from the beginning), and sleep otherwise.
+// The other overlays keep running, otherwise alerts and chat would be lost while their scene is not visible.
 const browserSettings = (source: ObsSource) => ({
   url: source.url,
   width: source.width,
@@ -36,7 +36,7 @@ const browserSettings = (source: ObsSource) => ({
   ...(FULLSCREEN.includes(source.scene) ? { restart_when_active: true, shutdown: true } : {}),
 });
 
-// Link zum Ziehen auf das OBS-Fenster; OBS nimmt die layer-Parameter wieder aus der URL
+// Link for dragging onto the OBS window; OBS takes the layer parameters out of the URL again
 export function dragUrl(source: ObsSource) {
   const url = new URL(source.url);
   url.searchParams.set("layer-name", source.name);
@@ -45,7 +45,7 @@ export function dragUrl(source: ObsSource) {
   return url.toString();
 }
 
-// Szenensammlung im Format der OBS-Datei; uuid ist injiziert, damit der Check feste Werte bekommt
+// Scene collection in the format of the OBS file; uuid is injected so the check gets fixed values
 export function sceneCollection(name: string, layout: ObsScene[], uuid: () => string) {
   const inputs = layout.flatMap(scene => scene.sources.map(source => ({ source, uuid: uuid() })));
   const uuidOf = new Map(inputs.map(input => [input.source.name, input.uuid]));
@@ -85,8 +85,8 @@ export function sceneCollection(name: string, layout: ObsScene[], uuid: () => st
   };
 }
 
-// Anfragen an die laufende Sammlung: fehlende Szenen anlegen, vorhandene Quellen aktualisieren (Position bleibt),
-// fehlende Quellen in ihrer Szene anlegen
+// Requests to the running collection: create missing scenes, update existing sources (position stays),
+// create missing sources in their scene
 export function obsRequests(layout: ObsScene[], scenes: readonly string[], inputs: readonly string[]): ObsRequest[] {
   return layout.flatMap(scene => [
     ...(scenes.includes(scene.name) ? [] : [{ requestType: "CreateScene", requestData: { sceneName: scene.name } }]),

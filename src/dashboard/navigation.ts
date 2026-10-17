@@ -1,15 +1,15 @@
-// Bereiche des Dashboards und wer sie sieht: ein Bereich erscheint nur, wenn alle seine Funktionen für den Streamer
-// freigegeben sind (/api/me), Admin nur für Admins. Reine Funktionen, getestet in navigation.check.ts.
+// Sections of the dashboard and who sees them: a section only appears when all its features are released for the
+// streamer (/api/me), admin only for admins. Pure functions, tested in navigation.check.ts.
 
-// Antwort von GET /api/me
-// theme: das aktive Theme des Streamers (bestimmt den Skin des Dashboards)
-// overlayKey: geheimer Schlüssel für die OBS-URLs (?key=), ohne ihn bekommen Overlays keine Live-Ereignisse
+// Answer of GET /api/me
+// theme: the streamer's active theme (decides the skin of the dashboard)
+// overlayKey: secret key for the OBS URLs (?key=), without it overlays get no live events
 export type Me = { login: string; admin: boolean; live: boolean; spotify: boolean | null; features: Record<string, boolean>; theme: string; overlayKey: string };
 
 export type Section = "overview" | "theme" | "triggers" | "media" | "render" | "connections" | "admin";
 
-// Reihenfolge = Reihenfolge in der Navigation. needs: Liste von Alternativen, eine davon muss ganz an sein
-// (z.B. Rendern mit stinger oder mit banners), oder "admin"
+// Order = order in the navigation. needs: list of alternatives, one of them must be fully on
+// (e.g. render with stinger or with banners), or "admin"
 const SECTIONS: readonly { section: Section; needs: readonly (readonly string[])[] | "admin" }[] = [
   { section: "overview", needs: [[]] },
   { section: "theme", needs: [["themes"]] },
@@ -27,7 +27,7 @@ export function visibleSections(me: Me): Section[] {
     .map(({ section }) => section);
 }
 
-// #/theme oder #/theme?x=1 zum Bereich; unbekannte oder nicht sichtbare Bereiche zeigen die Übersicht
+// #/theme or #/theme?x=1 to the section; unknown or invisible sections show the overview
 export function sectionFromHash(hash: string, visible: readonly Section[]): Section {
   const name = hash.replace(/^#\/?/, "").split("?")[0];
   return visible.find(section => section === name) ?? "overview";

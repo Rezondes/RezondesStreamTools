@@ -1,5 +1,5 @@
-// ASCII-Logo aus einem Namen (Generator am Feld "ASCII-Logo"): FIGlet-Schriften aus dem Paket figlet, nur die hier
-// gelisteten werden geladen. Zeilen ohne Leerzeichen am Ende und gemeinsamen Einzug, leere Rand-Zeilen fallen weg.
+// ASCII logo from a name (generator at the field "ASCII-Logo"): FIGlet fonts from the package figlet, only the ones
+// listed here are loaded. Lines without trailing spaces and common indent, empty edge lines drop out.
 import figlet from "figlet";
 import ansiShadow from "figlet/fonts/ANSI Shadow";
 import big from "figlet/fonts/Big";
@@ -16,7 +16,7 @@ export const ASCII_FONTS = Object.keys(FONTS) as AsciiFont[];
 export function asciiLogo(name: string, font: AsciiFont) {
   if (!figlet.loadedFonts().includes(font)) figlet.parseFont(font, FONTS[font]);
   const rows = figlet.textSync(name, { font }).split("\n").map(row => row.trimEnd());
-  // Gemeinsamen Einzug links entfernen (manche Schriften beginnen mit einer leeren Spalte)
+  // Remove the common indent on the left (some fonts start with an empty column)
   const indent = Math.min(...rows.filter(Boolean).map(row => row.length - row.trimStart().length));
   return rows.map(row => row.slice(indent)).join("\n").replace(/^\n+|\n+$/g, "");
 }

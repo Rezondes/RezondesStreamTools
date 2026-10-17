@@ -1,6 +1,6 @@
-// Übersicht im Dashboard: die fertigen OBS-URLs des Streamers (/s/<login>/<szene>) mit Grösse, Kopieren und
-// Test (Fake-Events), dazu Test-Alerts und Trigger zum Auslösen, wenn die Funktionen freigegeben sind. Jede URL
-// lässt sich auf das OBS-Fenster ziehen; darunter der Import aller Szenen (ObsImport.tsx).
+// Overview in the dashboard: the ready OBS URLs of the streamer (/s/<login>/<scene>) with size, copy and
+// test (fake events), plus test alerts and triggers to fire when the features are released. Every URL
+// can be dragged onto the OBS window; below it the import of all scenes (ObsImport.tsx).
 import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
 import { OBS_SCENES, SCENE_SIZES } from "../core/theme.ts";
@@ -38,7 +38,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
             return (
               <tr key={scene}>
                 <td>{TEXTS.scenes[scene]}</td>
-                {/* Klick öffnet nichts, Ziehen auf OBS legt die Quelle an */}
+                {/* A click opens nothing, dragging onto OBS creates the source */}
                 <td><a className="obs-drag" href={dragUrl(sources.get(scene)!)} onClick={event => event.preventDefault()}><code>{url}</code></a></td>
                 <td>{SCENE_SIZES[scene].width}x{SCENE_SIZES[scene].height}</td>
                 <td className="actions">
@@ -72,7 +72,7 @@ function CopyButton({ text }: { text: string }) {
     return () => clearTimeout(timer);
   }, [copied]);
   const copy = (event: MouseEvent<HTMLButtonElement>) => {
-    // Ohne Zugriff auf die Zwischenablage (http ohne localhost, Rechte) die URL markieren, Strg+C bleibt
+    // Without clipboard access (http without localhost, permissions) select the URL, Ctrl+C still works
     const code = event.currentTarget.closest("tr")?.querySelector("code");
     navigator.clipboard.writeText(text).then(() => { setFailed(false); setCopied(true); }).catch(() => {
       if (code) getSelection()?.selectAllChildren(code);

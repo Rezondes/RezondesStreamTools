@@ -1,4 +1,4 @@
-// Check für settingsForm.ts: Gruppen in Schema-Reihenfolge, Zurücksetzen, Änderungen und Fehler je Feld. Läuft mit npm test.
+// Check for settingsForm.ts: groups in schema order, reset, changes and errors per field. Runs with npm test.
 import assert from "node:assert/strict";
 import type { ThemeSchema } from "../core/theme.ts";
 import { changedKeys, errorsByKey, groupFields, groupsForView, groupsWithoutScene, isDefault, resetAll, resetField } from "./settingsForm.ts";
@@ -7,37 +7,37 @@ const schema: ThemeSchema = {
   id: "probe",
   name: "Probe",
   fields: [
-    { key: "accent", type: "color", label: "Farbe", group: "Allgemein", default: "#39ff14" },
-    { key: "title", type: "text", label: "Titel", group: "Szenen", default: "HALLO" },
-    { key: "size", type: "number", label: "Grösse", group: "Allgemein", default: 10, min: 0, max: 100 },
-    { key: "lines", type: "lines", label: "Zeilen", group: "Szenen", default: ["a", "b"] },
+    { key: "accent", type: "color", label: "Color", group: "General", default: "#39ff14" },
+    { key: "title", type: "text", label: "Title", group: "Scenes", default: "HELLO" },
+    { key: "size", type: "number", label: "Size", group: "General", default: 10, min: 0, max: 100 },
+    { key: "lines", type: "lines", label: "Lines", group: "Scenes", default: ["a", "b"] },
   ],
 };
 
-// Gruppen in der Reihenfolge ihres ersten Feldes, Felder in Schema-Reihenfolge
+// Groups in the order of their first field, fields in schema order
 assert.deepEqual(groupFields(schema).map(({ group, fields }) => [group, fields.map(field => field.key)]), [
-  ["Allgemein", ["accent", "size"]],
-  ["Szenen", ["title", "lines"]],
+  ["General", ["accent", "size"]],
+  ["Scenes", ["title", "lines"]],
 ]);
 
-// Gruppen je Ansicht: "general" zeigt die Gruppen ohne Eintrag (sie wirken überall), eine Szene nur ihre eigenen
-const scoped: ThemeSchema = { ...schema, groupScenes: { Szenen: ["starting"], Stinger: [] } };
-assert.deepEqual(groupsForView(scoped, "general").map(({ group }) => group), ["Allgemein"]);
-assert.deepEqual(groupsForView(scoped, "starting").map(({ group }) => group), ["Szenen"]);
+// Groups per view: "general" shows the groups without an entry (they apply everywhere), a scene only its own
+const scoped: ThemeSchema = { ...schema, groupScenes: { Scenes: ["starting"], Stinger: [] } };
+assert.deepEqual(groupsForView(scoped, "general").map(({ group }) => group), ["General"]);
+assert.deepEqual(groupsForView(scoped, "starting").map(({ group }) => group), ["Scenes"]);
 assert.deepEqual(groupsForView(scoped, "chat").map(({ group }) => group), []);
-assert.deepEqual(groupsForView(schema, "general").map(({ group }) => group), ["Allgemein", "Szenen"]);
+assert.deepEqual(groupsForView(schema, "general").map(({ group }) => group), ["General", "Scenes"]);
 assert.deepEqual(groupsForView(schema, "chat").map(({ group }) => group), []);
 
-// Felder mit eigener Szene erscheinen nur dort, auch wenn ihre Gruppe in mehreren Szenen wirkt
+// Fields with their own scene appear only there, even if their group applies in several scenes
 const screens: ThemeSchema = {
   id: "probe",
   name: "Probe",
   fields: [
-    { key: "title", type: "text", label: "Titel", group: "Szenen", default: "X" },
-    { key: "startingLines", type: "lines", label: "Starting", group: "Szenen", default: [], scene: "starting" },
-    { key: "brbLines", type: "lines", label: "BRB", group: "Szenen", default: [], scene: "brb" },
+    { key: "title", type: "text", label: "Title", group: "Scenes", default: "X" },
+    { key: "startingLines", type: "lines", label: "Starting", group: "Scenes", default: [], scene: "starting" },
+    { key: "brbLines", type: "lines", label: "BRB", group: "Scenes", default: [], scene: "brb" },
   ],
-  groupScenes: { Szenen: ["starting", "brb", "ending"] },
+  groupScenes: { Scenes: ["starting", "brb", "ending"] },
 };
 const keysIn = (view: "starting" | "brb" | "ending") => groupsForView(screens, view).flatMap(({ fields }) => fields.map(field => field.key));
 assert.deepEqual(keysIn("starting"), ["title", "startingLines"]);
@@ -46,20 +46,20 @@ assert.deepEqual(keysIn("ending"), ["title"]);
 assert.deepEqual(groupsWithoutScene(scoped), ["Stinger"]);
 assert.deepEqual(groupsWithoutScene(schema), []);
 
-// Zurücksetzen: ein Feld oder alles auf den Standard
-const values = { accent: "#ff0000", title: "TSCHÜSS", size: 20, lines: ["x"] };
-assert.deepEqual(resetField(schema, values, "title"), { ...values, title: "HALLO" });
-assert.deepEqual(resetAll(schema), { accent: "#39ff14", title: "HALLO", size: 10, lines: ["a", "b"] });
+// Reset: one field or everything to the default
+const values = { accent: "#ff0000", title: "BYE", size: 20, lines: ["x"] };
+assert.deepEqual(resetField(schema, values, "title"), { ...values, title: "HELLO" });
+assert.deepEqual(resetAll(schema), { accent: "#39ff14", title: "HELLO", size: 10, lines: ["a", "b"] });
 
-// Standard erkannt, auch bei Listen
+// Default detected, also for lists
 assert.equal(isDefault(schema.fields[3], ["a", "b"]), true);
 assert.equal(isDefault(schema.fields[3], ["a"]), false);
 
-// Geänderte Schlüssel gegenüber dem gespeicherten Stand
+// Changed keys compared to the saved state
 assert.deepEqual(changedKeys(resetAll(schema), { ...resetAll(schema), size: 11, lines: ["a", "b"] }), ["size"]);
 assert.deepEqual(changedKeys(values, values), []);
 
-// Fehler aus der Server-Antwort je Feld
+// Errors from the server response per field
 assert.deepEqual(errorsByKey([{ key: "size", code: "out_of_range" }, { key: "accent", code: "invalid_color" }]), { size: "out_of_range", accent: "invalid_color" });
 
 console.log("settingsForm ok");

@@ -1,6 +1,6 @@
-// Ein Eingabefeld je Feldtyp des Theme-Schemas, mit sichtbarem Label (Regel 23), Fehlertext zum Code des Servers
-// und Zurücksetzen auf den Standard, sobald der Wert davon abweicht. Medien und Töne wählen aus dem Medienordner.
-// Felder mit ascii bieten den ASCII-Logo-Generator an (eigener Chunk, lädt erst beim Öffnen).
+// One input field per field type of the theme schema, with a visible label (rule 23), error text for the server's code
+// and reset to the default as soon as the value differs from it. Media and sounds choose from the media folder.
+// Fields with ascii offer the ASCII logo generator (own chunk, loads only when opened).
 import { lazy, Suspense, useState } from "react";
 import { MEDIA_KIND, type SettingErrorCode } from "../core/settings.ts";
 import type { SettingField, SettingValue, SoundValue } from "../core/theme.ts";
@@ -42,7 +42,7 @@ export default function SettingInput({ field, value, error, media, onChange, onR
   );
 }
 
-// Einheit und Bereich hinter dem Label, z.B. " (s, 0 bis 10)"
+// Unit and range after the label, e.g. " (s, 0 to 10)" (text from texts.de.ts)
 function numberHint(unit: string | undefined, range: string) {
   const parts = [unit, range].filter(Boolean);
   return parts.length > 0 ? ` (${parts.join(", ")})` : "";
@@ -103,7 +103,7 @@ function Input({ id, field, value, media, onChange, invalid }: InputProps) {
 }
 
 function MediaSelect({ id, value, files, none, onChange }: { id: string; value: string; files: readonly string[]; none: string; onChange: (file: string) => void }) {
-  // Eine gespeicherte, inzwischen gelöschte Datei bleibt wählbar, damit der Wert sichtbar ist
+  // A saved file that was deleted meanwhile stays selectable, so the value is visible
   const options = value && !files.includes(value) ? [value, ...files] : files;
   return (
     <select id={id} value={value} onChange={event => onChange(event.target.value)}>

@@ -1,5 +1,5 @@
-// Check für accessChanges.ts: gestrichene Logins, geschlossene Anmeldung und abgeschaltete Funktionen werden
-// erkannt, unveränderter Zugang meldet nichts. Läuft mit npm test.
+// Check for accessChanges.ts: removed logins, closed registration and switched-off features are
+// detected, unchanged access reports nothing. Runs with npm test.
 import assert from "node:assert/strict";
 import type { Access } from "../../server/access.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
@@ -11,16 +11,16 @@ const saved: Access = {
   features: { alerts: "all", chat: "all", music: "beta", fx: "all", triggers: "all", stinger: "off", banners: "all", themes: "all", minimes: "all" },
 };
 
-// Nichts geändert
+// Nothing changed
 assert.equal(hasLosses(accessLosses(saved, saved)), false);
 
-// Allowlist gekürzt, Anmeldung geschlossen, Beta-Tester gestrichen, Musik aus (Stinger war schon aus)
+// Allowlist shortened, registration closed, beta tester removed, music off (stinger was off already)
 const next: Access = { ...saved, registration: "allowlist", allowlist: ["trinity"], beta: [], features: { ...saved.features, music: "off" } };
 const losses = accessLosses(saved, next);
 assert.deepEqual(losses, { revoked: ["neo"], betaRemoved: ["morpheus"], closed: true, off: ["music"] });
 assert.equal(hasLosses(losses), true);
 
-// Offene Anmeldung: aus der Allowlist streichen nimmt niemandem den Zugang
+// Open registration: removing someone from the allowlist takes nobody's access
 assert.deepEqual(accessLosses(saved, { ...saved, allowlist: [] }).revoked, []);
 
 console.log("accessChanges ok");

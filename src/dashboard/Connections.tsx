@@ -1,7 +1,7 @@
-// Verbindungen im Dashboard: Status von Twitch (EventSub) und Spotify mit Verbinden und Trennen, darunter das live
-// Ereignis-Protokoll (EventFeed).
-// Twitch neu verbinden ist eine neue Anmeldung; Spotify erscheint nur, wenn Musik freigegeben und eingerichtet ist.
-// Verbunden zeigt Spotify Konto, laufenden Titel und ob gerade abgefragt wird (alle 5 s neu geladen).
+// Connections in the dashboard: status of Twitch (EventSub) and Spotify with connect and disconnect, below it the live
+// event log (EventFeed).
+// Reconnecting Twitch is a new login; Spotify only appears when music is released and set up.
+// When connected, Spotify shows account, current track and whether it is polling right now (reloaded every 5 s).
 import { useEffect, useState } from "react";
 import type { SpotifyDetails } from "../core/types.ts";
 import { getJson } from "./api.ts";
@@ -49,7 +49,7 @@ export default function Connections({ me, act }: { me: Me; act: Act }) {
 
 const REFRESH_MS = 5000;
 
-// Konto, laufender Titel und Abfrage-Status; null = noch nicht geladen oder Server nicht erreichbar
+// Account, current track and polling status; null = not loaded yet or server unreachable
 function SpotifyStatus() {
   const texts = TEXTS.connections;
   const [details, setDetails] = useState<SpotifyDetails | null>(null);

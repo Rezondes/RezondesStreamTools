@@ -1,5 +1,5 @@
-// Texte des Dashboards (Deutsch). Die Komponenten nehmen jeden sichtbaren Text von hier (Regel 20);
-// errors übersetzt die Fehlercodes des Servers (src/core/errorCodes.ts). Geprüft in texts.de.check.ts.
+// Texts of the dashboard (German). The components take every visible text from here (rule 20);
+// errors translates the server's error codes (src/core/errorCodes.ts). Checked in texts.de.check.ts.
 import type { Feature, Level } from "../../server/access.ts";
 import type { ErrorCode } from "../core/errorCodes.ts";
 import type { SceneName } from "../core/theme.ts";

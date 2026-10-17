@@ -1,13 +1,13 @@
-// "In OBS importieren" in der Übersicht: Szenensammlung als Datei herunterladen oder direkt über obs-websocket 5
-// anlegen. Die Verbindung baut der Browser auf diesem PC zu ws://localhost auf, der Overlay-Server ist nicht
-// beteiligt; das Passwort wird nirgends gespeichert. Das Ziehen einzelner URLs steht in der Tabelle (Overview.tsx).
+// "Import into OBS" on the overview: download the scene collection as a file or create it directly via obs-websocket 5.
+// The browser on this PC connects to ws://localhost, the overlay server is not
+// involved; the password is stored nowhere. Dragging single URLs is in the table (Overview.tsx).
 import { useState } from "react";
 import { obsAuth, obsRequests, sceneCollection, type ObsScene } from "./obsSetup.ts";
 import { TEXTS } from "./texts.de.ts";
 
 const OBS_TEXT = TEXTS.obs;
 const DEFAULT_PORT = 4455;
-// Schliesscode von obs-websocket bei falschem Passwort
+// Close code of obs-websocket for a wrong password
 const AUTH_FAILED = 4009;
 
 type ObsMessage =
@@ -62,7 +62,7 @@ export default function ObsImport({ login, layout }: { login: string; layout: Ob
   );
 }
 
-// Verbinden, anmelden, vorhandene Szenen und Quellen lesen, dann die Anfragen nacheinander senden; liefert die Anzahl
+// Connect, authenticate, read existing scenes and sources, then send the requests one after another; returns the number
 async function importViaWebSocket(port: number, password: string, layout: ObsScene[]) {
   const socket = new WebSocket(`ws://localhost:${port}`);
   const pending = new Map<string, { resolve: (data: unknown) => void; reject: (error: Error) => void }>();

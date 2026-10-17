@@ -1,6 +1,6 @@
-// Upload-Button für Medien (Medien- und Trigger-Seite): Dateien nacheinander hochladen, währenddessen
-// "Lade hoch (2/5)", danach je Datei eine Zeile mit Erfolg oder Fehlercode. Das Datei-Feld bleibt per Tastatur
-// erreichbar (visually-hidden statt hidden), der Fokusrahmen sitzt am Button (.btn:focus-within).
+// Upload button for media (media and trigger page): upload files one after another, meanwhile
+// "Lade hoch (2/5)", afterwards one line per file with success or error code. The file input stays reachable by
+// keyboard (visually-hidden instead of hidden), the focus ring sits on the button (.btn:focus-within).
 import { useState } from "react";
 import { uploadMedia } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";

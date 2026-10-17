@@ -1,8 +1,8 @@
-// Theme-Bereich im Dashboard: ein Theme zum Ansehen und Bearbeiten wählen (ändert die Overlays nicht), es erst per
-// Knopf als aktives Theme setzen; Ansicht wählen: Allgemein (Gruppen, die überall wirken) oder eine Szene (Vorschau und
-// die Gruppen, die in ihr wirken, siehe groupScenes; die Suche durchsucht alle), Formular aus dem Schema, gruppiert nach group; Speichern mit Fehlern je Feld, Zurücksetzen je
-// Feld und für alles, Vorschau mit den ungespeicherten Werten. Gespeicherte Werte des aktiven Themes übernehmen die
-// Overlays sofort (SSE).
+// Theme section in the dashboard: choose a theme to view and edit (does not change the overlays), set it as the
+// active theme only via a button; choose the view: general (groups that apply everywhere) or a scene (preview and
+// the groups that apply in it, see groupScenes; the search searches all), form from the schema, grouped by group; save with errors per field, reset per
+// field and for everything, preview with the unsaved values. The overlays take over saved values of the active theme
+// immediately (SSE).
 import { useCallback, useEffect, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
@@ -15,7 +15,7 @@ import SettingInput from "./SettingInput.tsx";
 import { changedKeys, errorsByKey, groupFields, groupsForView, groupsWithoutScene, resetAll, resetField, type FormView } from "./settingsForm.ts";
 import { TEXTS } from "./texts.de.ts";
 
-// Antwort von GET /api/settings: gewähltes Theme, gespeicherte Werte je Theme, verfügbare Themes
+// Answer of GET /api/settings: chosen theme, saved values per theme, available themes
 type SettingsFile = { theme: string; values: Record<string, Record<string, unknown>>; themes: { id: string; name: string }[] };
 type Notice = "saved" | "invalid" | ErrorCode | null;
 type Draft = { values: SettingValues; set: (update: (values: SettingValues) => SettingValues) => void };
@@ -26,7 +26,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
   const { file, viewed, showTheme, draft, setDraft, errors, notice, media, save, load } = useSettingsFile();
   const [search, setSearch] = useState("");
   const [view, setView] = useState<FormView>("general");
-  // Vorschau: die zuletzt gewählte Szene, auch während Allgemein angezeigt wird
+  // Preview: the last chosen scene, also while general is shown
   const [scene, setScene] = useState<SceneName>("alerts");
   const chooseView = (next: FormView) => {
     setView(next);
@@ -86,7 +86,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
   );
 }
 
-// Theme zum Ansehen wählen (das aktive ist markiert) und das gewählte als aktives Theme der Overlays setzen
+// Choose a theme to view (the active one is marked) and set the chosen one as the overlays' active theme
 type ChooserProps = { file: SettingsFile; viewed: string; onView: (id: string) => void; onActivate: () => void };
 function ThemeChooser({ file, viewed, onView, onActivate }: ChooserProps) {
   const activeName = file.themes.find(theme => theme.id === file.theme)?.name ?? file.theme;
@@ -112,7 +112,7 @@ function ThemeChooser({ file, viewed, onView, onActivate }: ChooserProps) {
   );
 }
 
-// Gruppen der Ansicht, aufklappbar und offen; mit Suche passende Felder aller Gruppen
+// Groups of the view, collapsible and open; with a search the matching fields of all groups
 type GroupsProps = { schema: ThemeSchema; view: FormView; search: string; draft: Draft; errors: Record<string, SettingErrorCode>; media: readonly string[] };
 function SettingsGroups({ schema, view, search, draft, errors, media }: GroupsProps) {
   const query = search.trim().toLowerCase();
@@ -142,8 +142,8 @@ function SettingsGroups({ schema, view, search, draft, errors, media }: GroupsPr
   );
 }
 
-// Gespeicherte Einstellungen laden, das angesehene Theme mit seinem Entwurf halten und speichern; Fehler des Servers je
-// Feld oder als Code. save(activate): Werte des angesehenen Themes speichern, mit activate zusätzlich als aktives Theme.
+// Loads saved settings, keeps the viewed theme with its draft and saves; server errors per
+// field or as a code. save(activate): save the values of the viewed theme, with activate also as the active theme.
 function useSettingsFile() {
   const [file, setFile] = useState<SettingsFile | null>(null);
   const [viewed, setViewed] = useState("");
@@ -152,7 +152,7 @@ function useSettingsFile() {
   const [notice, setNotice] = useState<Notice>(null);
   const [media, setMedia] = useState<string[]>([]);
 
-  // theme: das danach angesehene Theme, ohne Angabe das aktive
+  // theme: the theme viewed afterwards, without it the active one
   const load = useCallback(async (theme?: string) => {
     setNotice(null);
     const loaded = await getJson<SettingsFile | null>("/api/settings", null);
@@ -164,7 +164,7 @@ function useSettingsFile() {
     setErrors({});
   }, []);
 
-  // Anderes Theme ansehen: sein gespeicherter Stand wird der Entwurf, die Overlays bleiben wie sie sind
+  // View another theme: its saved state becomes the draft, the overlays stay as they are
   const showTheme = (id: string) => {
     setViewed(id);
     setDraft(resolveSettings(findTheme(id) ?? defaultSchema, file?.values[id]));
@@ -174,7 +174,7 @@ function useSettingsFile() {
 
   useEffect(() => {
     load().catch((error: unknown) => console.warn("Loading settings failed:", error));
-    // Medienliste nur mit freigegebenen Triggern; sonst bleibt die Auswahl leer
+    // Media list only with released triggers; otherwise the selection stays empty
     loadMedia().then(list => setMedia(list.files.map(file => file.name))).catch((error: unknown) => console.warn("Loading media failed:", error));
   }, [load]);
 
@@ -183,7 +183,7 @@ function useSettingsFile() {
       .then(async result => {
         if (result.ok) {
           await load(viewed);
-          // Anderes Theme aktiv: das Dashboard lädt neu und sieht danach wie das neue Theme aus
+          // Another theme active: the dashboard reloads and afterwards looks like the new theme
           if (activate) return location.reload();
           return setNotice("saved");
         }

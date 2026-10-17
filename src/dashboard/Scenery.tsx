@@ -1,6 +1,6 @@
-// Szenerie hinter dem Dashboard im Südfrucht-Skin: Sonne, Palmen links und rechts und ein paar Früchte im Sand, mit
-// den Formen und Standardfarben des Südfrucht-Themes. Immer im DOM, sichtbar nur mit data-skin="suedfrucht"
-// (skins.css). Reine Dekoration, für Screenreader verborgen.
+// Scenery behind the dashboard in the Südfrucht skin: sun, palms left and right and a few fruits in the sand, with
+// the shapes and default colors of the Südfrucht theme. Always in the DOM, visible only with data-skin="suedfrucht"
+// (skins.css). Pure decoration, hidden from screen readers.
 import { resolveSettings } from "../core/settings.ts";
 import { cssVariables } from "../core/themeRuntime.ts";
 import { PALM } from "../themes/suedfrucht/beach.ts";

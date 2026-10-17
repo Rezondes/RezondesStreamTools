@@ -1,6 +1,6 @@
-// Admin-Bereich im Dashboard (nur Admins, der Server prüft es selbst): Anmeldemodus, Allowlist, Beta-Tester und die
-// Stufe jeder Funktion (aus, nur Beta-Tester, alle) bearbeiten und speichern; dazu alle Profile mit Zugang,
-// Twitch-Verbindung, EventSub-Status und letzter Anmeldung.
+// Admin section in the dashboard (admins only, the server checks it itself): edit and save the registration mode,
+// allowlist, beta testers and the level of every feature (off, beta testers only, everyone); plus all profiles with
+// access, Twitch connection, EventSub status and last login.
 import { useCallback, useEffect, useState } from "react";
 import type { Access, Feature, Level } from "../../server/access.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
@@ -12,10 +12,10 @@ const ADMIN_TEXT = TEXTS.adminArea;
 const FEATURES = Object.keys(ADMIN_TEXT.featureNames) as Feature[];
 const LEVELS = Object.keys(ADMIN_TEXT.levels) as Level[];
 
-// Antwort von GET /api/admin/streamers
+// Answer of GET /api/admin/streamers
 type StreamerRow = { login: string; allowed: boolean; admin: boolean; connected: boolean; live: boolean; lastLogin: number | null };
 
-// Im Formular stehen die Listen als Text (ein Login pro Zeile), damit beim Tippen neue Zeilen möglich sind
+// The form holds the lists as text (one login per line), so new lines are possible while typing
 type AccessDraft = Omit<Access, "allowlist" | "beta"> & { allowlist: string; beta: string };
 const lines = (text: string) => text.split("\n").map(line => line.trim()).filter(Boolean);
 const toDraft = (access: Access): AccessDraft => ({ ...access, allowlist: access.allowlist.join("\n"), beta: access.beta.join("\n") });
@@ -67,7 +67,7 @@ export default function Admin() {
   );
 }
 
-// Rückfrage, wenn Streamer Zugang oder Funktionen verlieren; true = speichern
+// Asks back when streamers lose access or features; true = save
 function confirmLosses(saved: Access, next: Access) {
   const losses = accessLosses(saved, next);
   if (!hasLosses(losses)) return true;

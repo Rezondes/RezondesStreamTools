@@ -1,15 +1,15 @@
-// Check für skin.ts: welcher Skin zu welchem Theme gehört und was der Speicher liefert. Läuft mit npm test.
+// Check for skin.ts: which skin belongs to which theme and what the storage returns. Runs with npm test.
 import assert from "node:assert/strict";
 import { applySkin, rememberedSkin, skinOf } from "./skin.ts";
 
-// Jedes eingebaute Theme hat seinen Skin, alles andere (auch leer oder kaputt) bekommt den des Standard-Themes
+// Every built-in theme has its skin, everything else (also empty or broken) gets the one of the standard theme
 assert.equal(skinOf("matrix"), "matrix");
 assert.equal(skinOf("suedfrucht"), "suedfrucht");
 assert.equal(skinOf("standard"), "standard");
-assert.equal(skinOf("gibt-es-nicht"), "standard");
+assert.equal(skinOf("does-not-exist"), "standard");
 assert.equal(skinOf(null), "standard");
 
-// Setzen und merken mit nachgebautem document und Speicher; ohne Speicher (gesperrt) gilt der Skin trotzdem
+// Set and remember with a fake document and storage; without storage (blocked) the skin applies anyway
 const root = { dataset: {} as Record<string, string> };
 const stored = new Map<string, string>();
 Object.assign(globalThis, {

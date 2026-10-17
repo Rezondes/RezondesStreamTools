@@ -1,5 +1,5 @@
-// ASCII-Logo-Generator am Feld "ASCII-Logo": Name eingeben, Schrift wählen, Vorschau sehen, übernehmen. Lädt die
-// FIGlet-Schriften erst beim Öffnen (eigener Chunk, siehe lazy in SettingInput.tsx).
+// ASCII logo generator at the field "ASCII-Logo": enter a name, choose a font, see the preview, apply. Loads the
+// FIGlet fonts only when opened (own chunk, see lazy in SettingInput.tsx).
 import { useState } from "react";
 import { ASCII_FONTS, asciiLogo, type AsciiFont } from "./asciiLogo.ts";
 import { TEXTS } from "./texts.de.ts";

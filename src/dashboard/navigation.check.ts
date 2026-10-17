@@ -1,23 +1,23 @@
-// Check für navigation.ts: welche Bereiche ein Streamer sieht und welcher Bereich zum Hash gehört. Läuft mit npm test.
+// Check for navigation.ts: which sections a streamer sees and which section belongs to the hash. Runs with npm test.
 import assert from "node:assert/strict";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 
 const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo", admin, live: false, spotify: null, features, theme: "standard", overlayKey: "k1" });
 
-// Nur Grundbereiche, wenn keine Funktion an ist
+// Only base sections when no feature is on
 assert.deepEqual(visibleSections(me({})), ["overview", "connections"]);
-// Theme mit themes, Trigger und Medien nur mit triggers und fx zusammen
+// Theme with themes, triggers and media only with triggers and fx together
 assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true })), ["overview", "theme", "media", "triggers", "connections"]);
-// Reihenfolge mit allem: Übersicht, Theme, Rendern, Medien, Trigger, Verbindungen, Admin
+// Order with everything: overview, theme, render, media, triggers, connections, admin
 assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true, stinger: true }, true)), ["overview", "theme", "render", "media", "triggers", "connections", "admin"]);
-// Rendern mit stinger oder banners
+// Render with stinger or banners
 assert.deepEqual(visibleSections(me({ banners: true })), ["overview", "render", "connections"]);
 assert.deepEqual(visibleSections(me({ stinger: true, banners: false })), ["overview", "render", "connections"]);
 assert.deepEqual(visibleSections(me({ triggers: true, fx: false })), ["overview", "connections"]);
-// Admin nur für Admins
+// Admin only for admins
 assert.deepEqual(visibleSections(me({}, true)), ["overview", "connections", "admin"]);
 
-// Hash zu Bereich: nur sichtbare Bereiche, sonst die Übersicht
+// Hash to section: only visible sections, otherwise the overview
 const visible = visibleSections(me({ themes: true }));
 assert.equal(sectionFromHash("#/theme", visible), "theme");
 assert.equal(sectionFromHash("#/admin", visible), "overview");

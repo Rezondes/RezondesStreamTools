@@ -1,6 +1,6 @@
-// Trigger-Bereich im Dashboard: Editor für die Chat-Trigger des angemeldeten Streamers (triggers.json im Profil).
-// Speichern prüft die Regeln auf dem Server; bei Fehlern bleibt die Datei unverändert. Braucht die laufende
-// Twitch-Verbindung des Streamers (sonst kommt der Fehlercode not-connected).
+// Trigger section in the dashboard: editor for the chat triggers of the logged-in streamer (triggers.json in the profile).
+// Saving checks the rules on the server; on errors the file stays unchanged. Needs the running
+// Twitch connection of the streamer (otherwise the error code not-connected comes back).
 import { useEffect, useState } from "react";
 import type { ErrorCode } from "../core/errorCodes.ts";
 import type { Trigger, When } from "../../server/triggers.ts";
@@ -62,7 +62,7 @@ export default function Triggers() {
   );
 }
 
-// Regeln laden und speichern, Medien hochladen; dirty = ungespeicherte Änderungen
+// Loads and saves rules, uploads media; dirty = unsaved changes
 function useTriggerConfig() {
   const [list, setList] = useState<Trigger[] | null>(null);
   const [saved, setSaved] = useState("");
@@ -71,7 +71,7 @@ function useTriggerConfig() {
   const [note, setNote] = useState("");
   const dirty = list !== null && JSON.stringify(list) !== saved;
 
-  // Ohne Medienliste bleibt die Auswahl leer; Eintippen geht trotzdem
+  // Without a media list the selection stays empty; typing still works
   const refreshMedia = () => { loadMedia().then(loaded => setMedia(loaded.files.map(file => file.name))).catch(() => {}); };
   useEffect(() => {
     fetch("/api/triggers/config")
@@ -86,7 +86,7 @@ function useTriggerConfig() {
     refreshMedia();
   }, []);
 
-  // Ungespeicherte Änderungen nicht aus Versehen wegklicken
+  // Do not click away unsaved changes by accident
   useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => { if (dirty) event.preventDefault(); };
     addEventListener("beforeunload", warn);
@@ -110,10 +110,10 @@ function useTriggerConfig() {
 
 type CardProps = { trigger: Trigger; dirty: boolean; errors: string[]; onChange: (trigger: Trigger) => void; onCopy: () => void; onDelete: () => void };
 
-// Wer darf, wie oft, und wie der Trigger auf der Befehlsseite erscheint
+// Who may, how often, and how the trigger appears on the commands page
 function AudienceRows({ trigger, onChange }: { trigger: Trigger; onChange: (trigger: Trigger) => void }) {
   const who = trigger.who ?? ["everyone"];
-  // "alle" schliesst die anderen Rollen aus und umgekehrt
+  // "everyone" excludes the other roles and vice versa
   const toggleRole = (role: string) => {
     const rest = who.filter(current => current !== role && (role === "everyone" ? false : current !== "everyone"));
     const next = who.includes(role) ? rest : [...rest, role];
@@ -188,9 +188,9 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
   );
 }
 
-// Test löst den gespeicherten Trigger aus und meldet, ob es geklappt hat
+// Test fires the saved trigger and reports whether it worked
 function TestButton({ name, dirty }: { name: string; dirty: boolean }) {
-  // undefined = noch nicht getestet, null = ausgelöst, sonst der Fehlercode
+  // undefined = not tested yet, null = fired, otherwise the error code
   const [tested, setTested] = useState<ErrorCode | null | undefined>(undefined);
   return (
     <>
@@ -206,7 +206,7 @@ type RowProps = { action: FxAction; first: boolean; onChange: (action: FxAction)
 function ActionRow({ action, first, onChange, onUp, onDown, onRemove }: RowProps) {
   const set = (patch: Partial<FxAction>) => {
     const next: Record<string, unknown> = { ...action, ...patch };
-    // Leere Felder weglassen, damit die JSON-Datei übersichtlich bleibt
+    // Leave out empty fields so the JSON file stays readable
     for (const key of Object.keys(next)) if (next[key] === "" || next[key] === undefined) delete next[key];
     onChange(next as FxAction);
   };
@@ -238,7 +238,7 @@ function ActionRow({ action, first, onChange, onUp, onDown, onRemove }: RowProps
   );
 }
 
-// Zeiten, Grösse, Lautstärke, Zone und Position einer Aktion
+// Times, size, volume, zone and position of an action
 function ActionTiming({ action, first, set }: { action: FxAction; first: boolean; set: (patch: Partial<FxAction>) => void }) {
   const position = action.position ?? "center";
   const custom = typeof position === "object";
@@ -266,7 +266,7 @@ function ActionTiming({ action, first, set }: { action: FxAction; first: boolean
   );
 }
 
-// Zahlenfeld: leer = Standardwert (Feld wird weggelassen)
+// Number field: empty = default (the field is left out)
 function NumberField({ label, value, onChange, step = 0.5, placeholder }: {
   label: string; value?: number; onChange: (value: number | undefined) => void; step?: number; placeholder?: string;
 }) {

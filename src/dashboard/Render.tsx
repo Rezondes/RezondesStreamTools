@@ -1,7 +1,7 @@
-// Render-Bereich im Dashboard: Stinger (WebM mit Alpha) sowie Profil- und Offline-Banner (GIF mit Standbild) des
-// aktiven Themes (gewählt im Bereich THEME). Neben der Vorschau stehen die Einstellungen der Gruppe des Clips (Stinger oder Banner); die
-// Vorschau zeigt ungespeicherte Werte sofort, Speichern ändert das Overlay-Theme nicht. Rendern: der Browser zeichnet
-// jeden Frame und schickt ihn als PNG an den Server, der mit ffmpeg das Ergebnis baut (server/render.ts).
+// Render section in the dashboard: stinger (WebM with alpha) and profile and offline banners (GIF with still image) of the
+// active theme (chosen in the THEME section). Next to the preview are the settings of the clip's group (stinger or banners); the
+// preview shows unsaved values immediately, saving does not change the overlay theme. Rendering: the browser draws
+// every frame and sends it as PNG to the server, which builds the result with ffmpeg (server/render.ts).
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import type { ClipName, RenderClip } from "../core/renderClip.ts";
@@ -18,7 +18,7 @@ import { TEXTS } from "./texts.de.ts";
 const RENDER_TEXT = TEXTS.render;
 const SECOND_MS = 1000;
 const MEGABYTE = 1024 * 1024;
-// Beim Stinger eine Sekunde Pause nach jedem Durchlauf, damit man den Schnitt gut sieht
+// For the stinger a one-second pause after every pass, so the cut is easy to see
 const STINGER_PAUSE = 1;
 
 type SettingsFile = { theme: string; values: Record<string, Record<string, unknown>> };
@@ -51,7 +51,7 @@ export default function Render({ me }: { me: Me }) {
   );
 }
 
-// Einstellungen der Gruppe des Clips, mit Speichern und Verwerfen
+// Settings of the clip's group, with save and discard
 function ClipSettings({ clip, settings, canSave }: { clip: RenderClip; settings: ThemeDraft; canSave: boolean }) {
   const schema = findTheme(settings.theme) ?? findTheme(DEFAULT_THEME)!;
   const fields = schema.fields.filter(field => field.group === clip.group);
@@ -87,7 +87,7 @@ function ClipSettings({ clip, settings, canSave }: { clip: RenderClip; settings:
   );
 }
 
-// Vorschau mit Zeitleiste und Rendern
+// Preview with timeline and rendering
 function ClipPreview({ clip }: { clip: RenderClip }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const preview = usePreview(clip, canvas);
@@ -96,7 +96,7 @@ function ClipPreview({ clip }: { clip: RenderClip }) {
   return (
     <div className="scene-preview">
       <div className="render-view" style={{ aspectRatio: `${clip.width} / ${clip.height}` }}>
-        {/* Szenen hinter dem Stinger, damit man sieht, wo geschnitten wird */}
+        {/* Scenes behind the stinger, so one sees where it cuts */}
         {cut !== null && <div className={`fake-scene ${preview.time < cut ? "a" : "b"}`}>{preview.time < cut ? RENDER_TEXT.sceneA : RENDER_TEXT.sceneB}</div>}
         <canvas ref={canvas} width={clip.width} height={clip.height} />
       </div>
@@ -140,7 +140,7 @@ function RenderedFiles() {
 
 type ThemeDraft = ReturnType<typeof useThemeDraft>;
 
-// Gespeicherte Werte des aktiven Themes laden, Entwurf halten, speichern und verwerfen
+// Loads saved values of the active theme, keeps a draft, saves and discards
 function useThemeDraft() {
   const [file, setFile] = useState<SettingsFile | null>(null);
   const [ready, setReady] = useState(false);
@@ -151,7 +151,7 @@ function useThemeDraft() {
 
   const saved = useCallback((id: string, loaded: SettingsFile | null) => resolveSettings(findTheme(id) ?? findTheme(DEFAULT_THEME)!, loaded?.values[id]), []);
   useEffect(() => {
-    // Ohne freigegebene Themes (403) gelten die Standardwerte
+    // Without released themes (403) the defaults apply
     getJson<SettingsFile | null>("/api/settings", null)
       .then(loaded => {
         const id = loaded?.theme ?? DEFAULT_THEME;
@@ -180,7 +180,7 @@ function useThemeDraft() {
   return { ready, theme, draft, errors, notice, changed: changedKeys(saved(theme, file), draft), set: setDraft, save, discard };
 }
 
-// Vorschau: Endlosschleife über den Clip und Zeichnen des aktuellen Zeitpunkts
+// Preview: endless loop over the clip and drawing of the current point in time
 function usePreview(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement | null>) {
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(true);
@@ -203,11 +203,11 @@ function usePreview(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement 
   return { time, setTime, playing, setPlaying };
 }
 
-// Rendern: Start, alle Frames als PNG, Fertigstellen; danach meldet "render-done" die neue Datei
+// Rendering: start, all frames as PNG, finish; afterwards "render-done" reports the new file
 function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement | null>, setPlaying: (playing: boolean) => void) {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
-  // Abbrechen geht nur, solange Frames gesendet werden; ffmpeg läuft danach bis zum Ende
+  // Cancelling only works while frames are being sent; ffmpeg runs to the end afterwards
   const [canCancel, setCanCancel] = useState(false);
   const cancelled = useRef(false);
   const codeOf = async (response: Response): Promise<ErrorCode> => {

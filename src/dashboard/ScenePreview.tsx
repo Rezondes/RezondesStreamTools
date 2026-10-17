@@ -1,6 +1,6 @@
-// Vorschau einer Szene im Dashboard: das echte Overlay als iframe (/s/<login>/<szene>?demo&preview), skaliert auf
-// den verfügbaren Platz, und dieselbe Adresse in einem eigenen Tab. Die ungespeicherten Werte gehen über den
-// BroadcastChannel an alle Vorschauen, bei jeder Änderung und wenn eine Szene "ready" meldet (useSettings).
+// Preview of a scene in the dashboard: the real overlay as iframe (/s/<login>/<scene>?demo&preview), scaled to
+// the available space, and the same URL in its own tab. The unsaved values go via the
+// BroadcastChannel to all previews, on every change and when a scene reports "ready" (useSettings).
 import { useEffect, useRef, useState } from "react";
 import { PREVIEW } from "../core/hooks/useSettings.ts";
 import * as streamerPath from "../core/streamerPath.ts";
@@ -13,7 +13,7 @@ export default function ScenePreview({ login, overlayKey, scene, settings }: { l
   const box = useRef<HTMLDivElement>(null);
   const size = SCENE_SIZES[scene];
 
-  // Ein Kanal für die ganze Lebenszeit; latest hält die aktuellen Werte für Szenen, die erst später "ready" melden
+  // One channel for the whole lifetime; latest holds the current values for scenes that report "ready" later
   const channel = useRef<BroadcastChannel | null>(null);
   const latest = useRef(settings);
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function ScenePreview({ login, overlayKey, scene, settings }: { l
     channel.current?.postMessage({ type: PREVIEW.settings, settings });
   }, [settings]);
 
-  // Die Box hat das Seitenverhältnis der Szene und schrumpft in den Platz (CSS); die Szene passt in Breite und Höhe
+  // The box has the aspect ratio of the scene and shrinks into the space (CSS); the scene fits width and height
   useEffect(() => {
     const observer = new ResizeObserver(() => setRoom({ width: box.current?.clientWidth ?? 0, height: box.current?.clientHeight ?? 0 }));
     if (box.current) observer.observe(box.current);

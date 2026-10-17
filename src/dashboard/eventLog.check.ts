@@ -1,5 +1,5 @@
-// Check für eventLog.ts: Texte je Ereignis, nur Änderungen bei Musik, Beitreten und Verlassen bei Minimes, Rauschen
-// fällt weg, Obergrenze der Liste. Läuft mit npm test.
+// Check for eventLog.ts: texts per event, only changes for music, join and leave for minimes, noise
+// drops out, upper limit of the list. Runs with npm test.
 import assert from "node:assert/strict";
 import type { Minime, ServerMessage, Track } from "../core/types.ts";
 import { EMPTY_LOG, logMessage, MAX_ENTRIES, type LogState } from "./eventLog.ts";
@@ -7,7 +7,7 @@ import { EMPTY_LOG, logMessage, MAX_ENTRIES, type LogState } from "./eventLog.ts
 const run = (messages: ServerMessage[], start: LogState = EMPTY_LOG) => messages.reduce((state, message, index) => logMessage(state, message, 1000 + index), start);
 const texts = (state: LogState) => state.entries.map(entry => `${entry.kind}: ${entry.text}`);
 
-// Alerts: ein Satz je Art, Nachricht des Zuschauers in Anführungszeichen; neueste zuerst
+// Alerts: one sentence per kind, the viewer's message in quotes; newest first
 assert.deepEqual(texts(run([
   { type: "alert", alert: { kind: "follow", user: "neo" } },
   { type: "alert", alert: { kind: "sub", user: "neo", text: "hallo" } },
@@ -32,10 +32,10 @@ assert.deepEqual(texts(run([
   "alert: Hype Train beendet, Stufe 4",
 ]);
 
-// Effekte mit auslösender Nachricht
-assert.deepEqual(texts(run([{ type: "fx", event: { id: 1, zone: "mitte", action: { type: "text" }, user: "neo", message: "!boom" } }])), ["fx: neo löst einen Effekt aus: \"!boom\""]);
+// Effects with the triggering message
+assert.deepEqual(texts(run([{ type: "fx", event: { id: 1, zone: "middle", action: { type: "text" }, user: "neo", message: "!boom" } }])), ["fx: neo löst einen Effekt aus: \"!boom\""]);
 
-// Musik: Stille beim Verbinden zählt nicht, gleicher Titel (gespult) nicht doppelt, Pause und Stopp schon
+// Music: silence on connect does not count, the same track (seeked) not twice, pause and stop do
 const song: Track = { id: "1", title: "Wake Up", artist: "RATM", album: "", cover: null, durationMs: 1, progressMs: 0, playing: true };
 assert.deepEqual(texts(run([
   { type: "music", track: null },
@@ -45,7 +45,7 @@ assert.deepEqual(texts(run([
   { type: "music", track: null },
 ])).reverse(), ["music: Läuft: Wake Up von RATM", "music: Pausiert: Wake Up von RATM", "music: Musik gestoppt"]);
 
-// Minimes: die erste Liste ist der Stand (nur gezählt), danach Beitreten und Verlassen
+// Minimes: the first list is the state (only counted), afterwards join and leave
 const minime = (login: string): Minime => ({ login, user: login.toUpperCase(), color: null, variant: null });
 assert.deepEqual(texts(run([
   { type: "minimes", minimes: [minime("neo")] },
@@ -54,10 +54,10 @@ assert.deepEqual(texts(run([
 ])).reverse(), ["minimes: 1 Minimes in der Szene", "minimes: TRINITY ist als Minime beigetreten", "minimes: NEO hat die Szene verlassen"]);
 assert.deepEqual(texts(run([{ type: "minimes", minimes: [] }])), []);
 
-// Rauschen: Einstellungen und Minime-Reaktionen erscheinen nicht
+// Noise: settings and minime reactions do not appear
 assert.deepEqual(run([{ type: "minimeChat", login: "neo" }]).entries, []);
 
-// Zeit und fortlaufende id; Obergrenze schneidet die ältesten ab
+// Time and running id; the upper limit cuts off the oldest
 const one = run([{ type: "alert", alert: { kind: "follow", user: "neo" } }]);
 assert.deepEqual(one.entries[0], { id: 0, at: 1000, kind: "alert", text: "neo folgt jetzt" });
 const many = run(Array.from({ length: MAX_ENTRIES + 5 }, (): ServerMessage => ({ type: "alert", alert: { kind: "follow", user: "neo" } })));

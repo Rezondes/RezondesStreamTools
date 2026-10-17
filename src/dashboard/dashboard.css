@@ -1,7 +1,7 @@
-/* Dashboard: Kopf, Navigation über die Bereiche, Panels und die URL-Tabelle der Übersicht. Grundstil in src/style.css. */
-/* Die Seite ist genau so hoch wie das Fenster und scrollt nie als Ganzes (Terminal): Titel, Meldung und Navigation
-   stehen fest, nur .dashboard-content scrollt in sich. Theme und Rendern (.split) teilen ihn in Spalten mit eigenem
-   Scroll, Aktionsleisten bleiben stehen. */
+/* Dashboard: header, navigation over the sections, panels and the URL table of the overview. Base style in src/style.css. */
+/* The page is exactly as high as the window and never scrolls as a whole (terminal): title, message and navigation
+   stay fixed, only .dashboard-content scrolls inside. Theme and render (.split) divide it into columns with their own
+   scroll, action bars stay in place. */
 .dashboard { max-width: var(--dash-max, 1440px); height: 100dvh; margin: 0 auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
 .dashboard > * { flex: none; }
 .dashboard-content { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
@@ -29,11 +29,11 @@
 .dashboard th, .dashboard td { text-align: left; padding: 10px 8px; border-bottom: var(--border-w) solid var(--line); vertical-align: middle; }
 .dashboard th { color: var(--fg-dim); font-weight: normal; text-transform: var(--label-case); }
 .dashboard .obs-drag { color: inherit; text-decoration: none; cursor: grab; }
-/* Sonst markiert das Ziehen den Text, statt den Link mitzunehmen */
+/* Otherwise dragging selects the text instead of taking the link along */
 .dashboard .obs-drag code { user-select: none; }
 .dashboard .obs-import { display: grid; gap: 8px; padding-top: 12px; border-top: var(--border-w) solid var(--line); }
 .dashboard code { font-family: inherit; user-select: all; overflow-wrap: anywhere; }
-/* Rendern: Vorschau mit Zeitleiste; hinter dem Stinger zwei Test-Szenen, damit man den Schnitt sieht */
+/* Render: preview with timeline; behind the stinger two test scenes, so one sees the cut */
 .render-view { position: relative; aspect-ratio: 16 / 9; border: var(--border-w) solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
 .render-view canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 .fake-scene { position: absolute; inset: 0; display: grid; place-items: center; font-size: clamp(24px, 6vw, 72px); color: #fff; }
@@ -43,11 +43,11 @@
 .render-bar input { flex: 1; min-width: 160px; }
 .render-files { list-style: none; display: grid; gap: 8px; }
 
-/* Medien: kleine Vorschau je Datei */
+/* Media: small preview per file */
 .media-preview img, .media-preview video { display: block; max-width: 160px; max-height: 90px; }
 .media-preview audio { max-width: 220px; }
 
-/* Theme-Einstellungen: Formular links, Vorschau rechts (auf schmalen Bildschirmen untereinander) */
+/* Theme settings: form on the left, preview on the right (below each other on narrow screens) */
 .settings-bar { padding: 8px 0; border-bottom: var(--border-w) solid var(--line); }
 .settings-layout { display: grid; gap: 16px; align-items: start; }
 .settings-groups { display: grid; gap: 8px; min-width: 0; }
@@ -85,15 +85,15 @@
   .settings-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 }
 
-/* Schmal: Vorschau oben mit begrenzter Höhe, die Einstellungen scrollen darunter */
+/* Narrow: preview on top with limited height, the settings scroll below */
 @media (max-width: 1099px) {
   .dashboard-content.split .settings-layout { display: flex; flex-direction: column; }
   .dashboard-content.split .scene-preview { order: -1; flex: none; max-height: 42%; }
   .dashboard-content.split .settings-groups { flex: 1 1 auto; }
 }
 
-/* Wenig Platz (Handy, niedriges Fenster): Navigation einzeilig und seitlich scrollbar, Theme und Rendern scrollen als
-   Ganzes im Inhaltsbereich statt in zu kleinen Spalten; die Seite selbst scrollt weiter nicht */
+/* Little space (phone, low window): navigation in one line and scrollable sideways, theme and render scroll as
+   a whole in the content area instead of in too small columns; the page itself still does not scroll */
 @media (max-width: 719px), (max-height: 559px) {
   .dashboard-nav { flex-wrap: nowrap; overflow-x: auto; }
   .dashboard-nav > * { flex: none; }
