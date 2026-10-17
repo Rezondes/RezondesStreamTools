@@ -8,6 +8,7 @@ use crate::app::App;
 pub mod admin;
 pub mod auth;
 pub mod commands;
+pub mod events;
 pub mod media;
 pub mod overlay;
 pub mod settings;
@@ -36,6 +37,7 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::Me => auth::me(call).await,
         Route::OverlayKey => auth::rotate_overlay_key(call).await,
         Route::TwitchDisconnect => auth::disconnect(call).await,
+        Route::TestAlert => events::test_alert(call).await,
         Route::HelpConfig => commands::help(call).await,
         Route::SaveHelpConfig => commands::save(call).await,
         Route::TriggerConfig => triggers::config(call).await,
@@ -46,7 +48,6 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::UploadMedia => media::upload(call).await,
         Route::DeleteMedia => media::delete(call).await,
         Route::SpotifyCallback
-        | Route::TestAlert
         | Route::SpotifyLogin
         | Route::SpotifyDetails
         | Route::SpotifyLogout

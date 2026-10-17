@@ -49,11 +49,19 @@ export const MEDIA_CASES: Case[] = [
   {
     name: "media: a second upload while one runs is 409",
     async run(context) {
-      const slow = slowUpload(context);
-      const code = await refusedWhileBusy(context);
-      slow.finish();
-      await expect(await slow.response, 200, { ok: "boolean" });
-      if (code !== "upload-busy") fail(`second upload was not refused with upload-busy: ${code}`);
+      // A probe upload may hold the slot just when the slow one arrives; then the slow one is refused and the
+      // attempt starts over
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const slow = slowUpload(context);
+        const code = await refusedWhileBusy(context);
+        slow.finish();
+        const response = await slow.response;
+        if (response.status === 409) continue;
+        await expect(response, 200, { ok: "boolean" });
+        if (code !== "upload-busy") fail(`second upload was not refused with upload-busy: ${code}`);
+        return;
+      }
+      fail("the slow upload never got the slot");
     },
   },
   {

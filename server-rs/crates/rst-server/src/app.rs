@@ -11,6 +11,7 @@ use axum::http::{HeaderValue, header};
 use axum::response::Response;
 use rst_app::access::admin::AccessAdmin;
 use rst_app::commands::CommandService;
+use rst_app::events::Hubs;
 use rst_app::identity::login::LoginFlow;
 use rst_app::settings::SettingsService;
 use rst_app::triggers::TriggerService;
@@ -61,6 +62,7 @@ pub struct App {
     pub secure: bool,
     pub stores: Stores,
     pub twitch: TwitchClient,
+    pub hubs: Hubs,
     twitch_states: Mutex<LoginStates<()>>,
     uploads: Mutex<UploadSlots>,
 }
@@ -92,6 +94,7 @@ impl App {
             public_origin: origin_of(&config.public_url),
             secure: is_secure_url(&config.public_url),
             twitch,
+            hubs: Hubs::default(),
             twitch_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
             uploads: Mutex::new(UploadSlots::default()),
             config,
@@ -217,8 +220,9 @@ async fn route(app: &App, request: Request) -> Response {
         return text(404, "not-found");
     }
     if path.starts_with("/s/") {
+        let cookies = request.headers().get(header::COOKIE).and_then(|value| value.to_str().ok());
         return match StreamerPath::parse(&path) {
-            Some(streamer) => crate::handlers::overlay::serve(app, &streamer).await,
+            Some(streamer) => crate::handlers::overlay::serve(app, &streamer, request.uri(), cookies).await,
             None => text(404, "not-found"),
         };
     }

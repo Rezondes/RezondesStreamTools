@@ -6,6 +6,7 @@ pub mod audit;
 pub mod channel;
 pub mod commands;
 pub mod crypto;
+pub mod events;
 pub mod identity;
 pub mod import;
 pub mod media;

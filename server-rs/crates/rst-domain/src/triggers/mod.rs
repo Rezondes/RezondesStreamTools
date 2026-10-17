@@ -42,6 +42,17 @@ pub enum FxPosition {
     Point { x: f64, y: f64 },
 }
 
+/// What an effects overlay shows: one action of a fired trigger with who wrote what (template: `FxEvent` in
+/// `src/core/types.ts`)
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
+pub struct FxEvent {
+    pub id: u64,
+    pub zone: String,
+    pub action: FxAction,
+    pub user: String,
+    pub message: String,
+}
+
 /// One action of a trigger, as in `triggers.json`
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize, TS)]
 pub struct FxAction {

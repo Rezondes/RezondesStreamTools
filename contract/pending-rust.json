@@ -1,11 +1,5 @@
 [
-  "events: without or with a wrong key 403",
-  "events: with the key the stream delivers a test alert",
-  "events: the log needs the session of the same streamer",
-  "events: unknown alert kind is 400",
   "spotify: callback only connects with the state of a started login",
   "spotify: logout disconnects",
-  "render: unknown clip and switched-off feature",
-  "overlay key: a new key replaces the old one",
-  "twitch: disconnect revokes the token, ends the runtime and the session"
+  "render: unknown clip and switched-off feature"
 ]

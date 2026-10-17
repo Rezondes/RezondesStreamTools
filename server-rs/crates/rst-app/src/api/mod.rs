@@ -10,14 +10,9 @@ use rst_domain::settings::field::SettingValue;
 use rst_domain::settings::validate::SettingError;
 use rst_domain::themes::registry::themes;
 use rst_domain::themes::schema::ThemeSchema;
-use serde::{Deserialize, Serialize};
 use ts_rs::{Config, ExportError, TS};
 
-/// Sample type for the export chain, replaced by the real messages (RUST-PLAN.md, package 31).
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
-pub struct Ping {
-    pub at: u32,
-}
+use crate::events::ServerMessage;
 
 /// Export settings: imports with a `.ts` extension (like the frontend), large integers as `number` (JSON).
 fn export_config(dir: &Path) -> Config {
@@ -30,7 +25,7 @@ fn export_config(dir: &Path) -> Config {
 /// When `ts-rs` cannot write a type or a theme file cannot be written.
 pub fn export_all(dir: &Path) -> Result<(), ExportError> {
     let cfg = export_config(dir);
-    Ping::export_all(&cfg)?;
+    ServerMessage::export_all(&cfg)?;
     ThemeSchema::export_all(&cfg)?;
     SettingError::export_all(&cfg)?;
     SettingValue::export_all(&cfg)?;

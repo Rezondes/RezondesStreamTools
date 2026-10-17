@@ -5,6 +5,7 @@
 use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 use crate::minimes::command::parse_color;
 use crate::minimes::rules::{MinimeRules, WhenFull};
@@ -21,6 +22,26 @@ pub struct MinimeEntry {
     pub color: Option<String>,
     pub variant: Option<String>,
     pub last_seen: i64,
+}
+
+/// A minime as the overlays see it (template: `Minime` in `src/core/types.ts`)
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct Minime {
+    pub login: String,
+    pub user: String,
+    pub color: Option<String>,
+    pub variant: Option<String>,
+}
+
+impl From<&MinimeEntry> for Minime {
+    fn from(entry: &MinimeEntry) -> Self {
+        Self {
+            login: entry.login.clone(),
+            user: entry.user.clone(),
+            color: entry.color.clone(),
+            variant: entry.variant.clone(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

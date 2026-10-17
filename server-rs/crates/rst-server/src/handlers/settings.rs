@@ -2,6 +2,7 @@
 //! plus the schemas of all themes for the forms.
 
 use axum::response::Response;
+use rst_app::events::ServerMessage;
 use rst_app::settings::SaveError;
 use rst_domain::themes::registry::themes;
 use serde_json::{Value, json};
@@ -35,7 +36,11 @@ pub async fn save(call: Call<'_>) -> Response {
     // Broken JSON is like a body without a theme: the answer names the field
     let input = serde_json::from_slice::<Value>(&body).unwrap_or(Value::Null);
     match app.settings_service().save(&id, &actor, &input, now_ms()).await {
-        Ok(public) => json(&public, 200),
+        Ok(public) => {
+            // Open overlays take over the values right away, without reloading
+            app.hubs.emit(&id, &ServerMessage::Settings { settings: public.clone() });
+            json(&public, 200)
+        }
         Err(SaveError::Invalid(errors)) => json(&errors, 400),
         Err(SaveError::Vault(error)) => server_error(&error.to_string()),
     }

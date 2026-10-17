@@ -1,6 +1,7 @@
 //! Public overlay URLs under `/s/<login>/` (template: `overlay` in `server/index.ts`): status, settings, scenes.
 //! Unknown or locked logins are `404 not-found`. Events, commands and media follow with their packages.
 
+use axum::http::Uri;
 use axum::response::Response;
 use rst_domain::access::{AccessPolicy, Feature};
 use rst_domain::identity::values::{Login, StreamerId};
@@ -8,7 +9,7 @@ use rst_domain::paths::{OverlayRoute, StreamerPath};
 use serde_json::json;
 
 use crate::app::{App, serve_static};
-use crate::errors::{json, pending, server_error, text};
+use crate::errors::{json, server_error, text};
 
 /// The streamer behind `/s/<login>/` with the policy, if they exist and may use the server
 async fn streamer(app: &App, login: &Login) -> Result<Option<(StreamerId, AccessPolicy)>, String> {
@@ -19,7 +20,7 @@ async fn streamer(app: &App, login: &Login) -> Result<Option<(StreamerId, Access
     Ok(policy.can_use(&app.config.admins, login).then_some((id, policy)))
 }
 
-pub async fn serve(app: &App, path: &StreamerPath) -> Response {
+pub async fn serve(app: &App, path: &StreamerPath, uri: &Uri, cookies: Option<&str>) -> Response {
     let Some(route) = OverlayRoute::from_segments(&path.segments) else { return text(404, "not-found") };
     let (id, policy) = match streamer(app, &path.login).await {
         Ok(Some(found)) => found,
@@ -47,6 +48,6 @@ pub async fn serve(app: &App, path: &StreamerPath) -> Response {
                 Err(error) => server_error(&error.to_string()),
             }
         }
-        OverlayRoute::Events => pending(),
+        OverlayRoute::Events => crate::handlers::events::stream(app, &id, &path.login, &policy, uri, cookies).await,
     }
 }
