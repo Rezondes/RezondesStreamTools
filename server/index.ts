@@ -13,6 +13,7 @@ import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from
 import { createLoginStates } from "./loginStates.ts";
 import { deleteMedia, listMedia, storeMedia, uploadSlots } from "./media.ts";
 import { renderRoutes } from "./renderRoutes.ts";
+import { runtimeRegistry } from "./runtimeRegistry.ts";
 import * as profile from "./profile.ts";
 import { ensureSettings, loadSettings, minimeRules, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 import { THEMES } from "../src/themes/registry.ts";
@@ -63,27 +64,26 @@ const spotifyStates = createLoginStates<string>(600_000, 1000);
 const mediaUploads = uploadSlots();
 
 // --- Laufzeiten -------------------------------------------------------------------------------
-const runtimes = new Map<string, Streamer>();
+const runtimes = runtimeRegistry<Streamer>();
 
-// (Neu) starten, wenn der Login freigeschaltet ist und Tokens hat; sonst nur stoppen
-async function startRuntime(login: string): Promise<Streamer | null> {
-  runtimes.get(login)?.stop();
-  runtimes.delete(login);
-  const folder = profile.folder(DATA, login);
-  const tokens = access.canUse(login) ? await profile.loadTokens(folder) : null;
-  if (!tokens) return null;
-  const runtime: Streamer = await startStreamer({
-    login, folder, tokens, twitch, spotify: spotifyApp, features: access.features(login), minimeRules: minimeRules(await loadSettings(folder)), link: `${PUBLIC_URL}/s/${login}/`,
-    onEnd: () => { if (runtimes.get(login) === runtime) runtimes.delete(login); },
-  });
-  runtimes.set(login, runtime);
-  return runtime;
+// (Neu) starten, wenn der Login freigeschaltet ist und Tokens hat; sonst nur stoppen. Gleichzeitige Starts und
+// eine Sperre während des Starts löst runtimeRegistry auf
+function startRuntime(login: string): Promise<Streamer | null> {
+  return runtimes.start(login, async () => {
+    const folder = profile.folder(DATA, login);
+    const tokens = access.canUse(login) ? await profile.loadTokens(folder) : null;
+    if (!tokens) return null;
+    const runtime: Streamer = await startStreamer({
+      login, folder, tokens, twitch, spotify: spotifyApp, features: access.features(login), minimeRules: minimeRules(await loadSettings(folder)), link: `${PUBLIC_URL}/s/${login}/`,
+      onEnd: () => runtimes.ended(login, runtime),
+    });
+    return runtime;
+  }, () => access.canUse(login));
 }
 
 // Nach geänderten Zugängen oder Funktionsstufen: alle Laufzeiten neu, die Overlays verbinden sich selbst wieder
 async function restartAll() {
-  for (const runtime of runtimes.values()) runtime.stop();
-  runtimes.clear();
+  runtimes.stopAll();
   for (const login of await profile.list(DATA)) await startRuntime(login);
 }
 
@@ -265,8 +265,7 @@ async function spotifyLogout({ response, login, runtime }: Call) {
 // Twitch trennen: Token widerrufen und löschen, Laufzeit stoppen, abmelden
 async function twitchDisconnect({ response, login, runtime }: Call) {
   const folder = profile.folder(DATA, login);
-  runtime?.stop();
-  runtimes.delete(login);
+  runtimes.stop(login);
   // Erst nach einer laufenden Token-Prüfung lesen: sie kann noch erneuerte Tokens gespeichert haben
   await runtime?.tokensIdle();
   const tokens = runtime?.tokens() ?? (await profile.loadTokens(folder));
@@ -320,10 +319,9 @@ async function saveAccess({ request, response }: Call) {
   // alle anderen starten neu, damit geänderte Funktionsstufen gelten.
   const before = access.get();
   const saved = await access.save(value);
-  const revoked = revokedLogins(before, saved, ADMINS, [...runtimes.keys()]);
+  const revoked = revokedLogins(before, saved, ADMINS, runtimes.logins());
   for (const login of revoked) {
-    runtimes.get(login)?.stop();
-    runtimes.delete(login);
+    runtimes.stop(login);
     console.log(`Access revoked, runtime stopped: ${login}`);
   }
   await restartAll();
@@ -420,4 +418,4 @@ createServer((request, response) => {
     if (!tooLarge) console.error("Request failed:", error);
     if (!response.headersSent) send(response, tooLarge ? 413 : 500, tooLarge ? "too-large" : "server-error");
   });
-}).listen(PORT, () => console.log(`Overlay server on ${PUBLIC_URL} (${runtimes.size} streamers running)`));
+}).listen(PORT, () => console.log(`Overlay server on ${PUBLIC_URL} (${runtimes.count()} streamers running)`));
