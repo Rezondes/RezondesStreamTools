@@ -154,8 +154,14 @@ async function twitchCallback({ request, response, url }: Call) {
     return redirect(response, "/?error=not-allowed");
   }
   const folder = profile.folder(DATA, tokens.login);
+  if (await profile.ownedByOther(folder, tokens.userId)) {
+    // Gleicher Name, anderes Twitch-Konto (Name nach Umbenennung neu vergeben): Profil und Freischaltung nicht erben
+    await twitch.revoke(tokens.access).catch((error: unknown) => console.error("Revoking a token failed:", error));
+    console.log(`Login refused, profile ${tokens.login} belongs to another Twitch account`);
+    return redirect(response, "/?error=account-changed");
+  }
   await profile.saveTokens(folder, tokens);
-  await profile.saveLastLogin(folder, Date.now());
+  await profile.saveLogin(folder, Date.now(), tokens.userId);
   // Erster Login: Kanal-Name, Logo usw. der Themes mit dem eigenen Login statt der Beispiele (vor dem Start der Laufzeit)
   if (await ensureSettings(folder, tokens.login)) console.log(`Settings created for ${tokens.login}`);
   await startRuntime(tokens.login);

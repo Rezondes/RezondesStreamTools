@@ -335,6 +335,7 @@ export const TEXTS = {
     "not-found": "Nicht gefunden.",
     forbidden: "Zugriff verweigert.",
     "login-failed": "Twitch-Anmeldung abgebrochen oder ungültig. Bitte erneut anmelden.",
+    "account-changed": "Dieser Name gehört hier zu einem anderen Twitch-Konto. Bitte den Admin fragen.",
     "spotify-failed": "Spotify-Verbindung abgebrochen oder ungültig. Bitte erneut verbinden.",
     "spotify-not-configured": "Spotify ist auf dem Server nicht eingerichtet.",
     "not-connected": "Twitch ist nicht verbunden. Bitte unter Verbindungen neu verbinden.",

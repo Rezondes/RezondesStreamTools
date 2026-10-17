@@ -9,7 +9,7 @@ export type SettingErrorCode = (typeof SETTING_ERROR_CODES)[number];
 // Anfragen und Anmeldung (server/index.ts, server/routes.ts, server/http.ts, server/streamer.ts)
 const REQUEST_ERROR_CODES = [
   "unauthorized", "not-allowed", "admin-only", "feature-off", "cross-origin", "method-not-allowed", "not-found", "forbidden",
-  "login-failed", "spotify-failed", "spotify-not-configured", "not-connected", "not-running", "unavailable",
+  "login-failed", "account-changed", "spotify-failed", "spotify-not-configured", "not-connected", "not-running", "unavailable",
   "unknown-kind", "unknown-trigger", "invalid-name", "invalid-json", "too-large", "quota-exceeded", "upload-busy", "server-error",
   "unknown-clip", "render-busy", "render-not-started", "render-limit", "render-failed", "ffmpeg-missing",
 ] as const;

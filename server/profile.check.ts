@@ -30,8 +30,21 @@ try {
 
   // Letzte Anmeldung: ohne Datei null, sonst der gespeicherte Zeitpunkt
   assert.equal(await profile.loadLastLogin(folder), null);
-  await profile.saveLastLogin(folder, 1_700_000_000_000);
+  await profile.saveLogin(folder, 1_700_000_000_000, "123");
   assert.equal(await profile.loadLastLogin(folder), 1_700_000_000_000);
+
+  // Besitzer: das Profil gehört der Twitch-ID, nicht dem Namen. Ein anderes Konto mit demselben Login (Name nach
+  // Umbenennung neu vergeben) bekommt es nicht; ein neues Profil ohne Besitzer gehört dem ersten Konto
+  assert.equal(await profile.ownedByOther(folder, "123"), false);
+  assert.equal(await profile.ownedByOther(folder, "999"), true);
+  assert.equal(await profile.ownedByOther(profile.folder(dataDir, "freund"), "999"), false);
+  // Ältere Profile ohne gespeicherte ID: die ID aus tokens.json zählt
+  await writeFile(join(folder, "profile.json"), JSON.stringify({ lastLogin: 1 }));
+  await profile.saveTokens(folder, tokens);
+  assert.equal(await profile.ownedByOther(folder, "999"), true);
+  assert.equal(await profile.ownedByOther(folder, "123"), false);
+  await profile.deleteTokens(folder);
+
   await writeFile(join(folder, "profile.json"), "{kaputt");
   assert.equal(await profile.loadLastLogin(folder), null);
 
