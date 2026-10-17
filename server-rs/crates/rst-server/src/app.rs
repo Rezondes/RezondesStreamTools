@@ -2,6 +2,7 @@
 //! the rights table, overlay URLs under `/s/<login>/`, otherwise the dashboard and tools from `DIST`. Every answer
 //! carries `nosniff`; HTML may only be framed by the own origin.
 
+use std::collections::BTreeMap;
 use std::path::Path;
 use std::sync::{Arc, Mutex, MutexGuard};
 
@@ -11,7 +12,7 @@ use axum::http::{HeaderValue, header};
 use axum::response::Response;
 use rst_app::access::admin::AccessAdmin;
 use rst_app::channel::registry::Registry;
-use rst_app::channel::runtime::{StreamerRuntime, start_all};
+use rst_app::channel::runtime::{RuntimeSetup, StreamerRuntime, start_all};
 use rst_app::commands::CommandService;
 use rst_app::events::Hubs;
 use rst_app::identity::login::LoginFlow;
@@ -29,6 +30,7 @@ use rst_infra::db::sqlite_server_settings::SqliteServerSettings;
 use rst_infra::db::sqlite_sessions::SqliteSessions;
 use rst_infra::db::sqlite_streamers::SqliteStreamers;
 use rst_infra::keys::sqlite::SqliteKeyStore;
+use rst_infra::twitch::irc::WebSocketIrc;
 use rst_infra::twitch::oauth::TwitchClient;
 
 use crate::clock::now_ms;
@@ -66,7 +68,8 @@ pub struct App {
     pub secure: bool,
     pub stores: Stores,
     pub twitch: TwitchClient,
-    pub hubs: Hubs,
+    pub hubs: Arc<Hubs>,
+    pub irc: Arc<WebSocketIrc>,
     pub runtimes: Registry<AppRuntime>,
     twitch_states: Mutex<LoginStates<()>>,
     uploads: Mutex<UploadSlots>,
@@ -99,7 +102,8 @@ impl App {
             public_origin: origin_of(&config.public_url),
             secure: is_secure_url(&config.public_url),
             twitch,
-            hubs: Hubs::default(),
+            hubs: Arc::new(Hubs::default()),
+            irc: Arc::new(WebSocketIrc),
             runtimes: Registry::default(),
             twitch_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
             uploads: Mutex::new(UploadSlots::default()),
@@ -170,21 +174,31 @@ impl App {
     /// When the profile cannot be read.
     pub async fn start_runtime(&self, id: &StreamerId) -> Result<bool, String> {
         let login = self.stores.streamers.login_of(id).await.map_err(|error| error.to_string())?.ok_or("no profile")?;
+        let admins = &self.config.admins;
         let create = async {
-            let started = StreamerRuntime::start(
-                id.clone(),
-                login.clone(),
-                self.twitch.clone(),
-                self.stores.profile.clone(),
-                now_ms,
-            )
-            .await;
-            started.unwrap_or_else(|error| {
+            let features = match self.stores.access.load(admins).await {
+                Ok(policy) => policy.features(admins, &login),
+                Err(error) => {
+                    eprintln!("Access settings unreadable for {login}: {error}");
+                    BTreeMap::new()
+                }
+            };
+            let setup = RuntimeSetup {
+                id: id.clone(),
+                login: login.clone(),
+                twitch: self.twitch.clone(),
+                profile: self.stores.profile.clone(),
+                irc: Arc::clone(&self.irc),
+                irc_url: self.config.providers.twitch_irc.clone(),
+                hubs: Arc::clone(&self.hubs),
+                features,
+                now: now_ms,
+            };
+            StreamerRuntime::start(setup).await.unwrap_or_else(|error| {
                 eprintln!("Runtime of {login} did not start: {error}");
                 None
             })
         };
-        let admins = &self.config.admins;
         let allowed =
             async { self.stores.access.load(admins).await.is_ok_and(|policy| policy.can_use(admins, &login)) };
         Ok(self.runtimes.start(id, create, allowed).await.is_some())

@@ -14,12 +14,14 @@ use rst_domain::identity::values::StreamerId;
 use crate::crypto::cipher::random_bytes;
 use crate::ports::StoreError;
 use crate::ports::audit::{AuditStore, StoredEntry};
+use crate::ports::chat::{IrcConnector, IrcSocket};
 use crate::ports::files::{Blocks, FileStore, FileWriter};
 use crate::ports::keys::{DataKey, KeyStore};
 use crate::ports::records::{RecordStore, StoredRecord};
 use crate::ports::server_settings::ServerSettingsStore;
 use crate::ports::sessions::SessionStore;
 use crate::ports::streamers::{StreamerRepository, StreamerRow};
+use crate::ports::twitch::ProviderError;
 
 fn lock<T>(mutex: &Mutex<T>) -> MutexGuard<'_, T> {
     mutex.lock().unwrap_or_else(std::sync::PoisonError::into_inner)
@@ -286,5 +288,57 @@ impl FileStore for MemoryFiles {
     fn delete_streamer(&self, streamer: &StreamerId) -> Result<(), StoreError> {
         lock(&self.0).retain(|(owner, _), _| owner != streamer);
         Ok(())
+    }
+}
+
+/// Chat connections from scripts: each connect takes the next script (frames, then the connection ends); without
+/// scripts the connection stays open and silent. Sent lines are recorded.
+#[derive(Debug, Default, Clone)]
+pub struct MemoryIrc {
+    scripts: Arc<Mutex<std::collections::VecDeque<Vec<String>>>>,
+    sent: Arc<Mutex<Vec<String>>>,
+}
+
+impl MemoryIrc {
+    pub fn script(&self, frames: Vec<String>) {
+        lock(&self.scripts).push_back(frames);
+    }
+
+    pub fn sent(&self) -> Vec<String> {
+        lock(&self.sent).clone()
+    }
+}
+
+pub struct MemoryIrcSocket {
+    frames: std::collections::VecDeque<String>,
+    endless: bool,
+    sent: Arc<Mutex<Vec<String>>>,
+}
+
+impl IrcSocket for MemoryIrcSocket {
+    async fn recv(&mut self) -> Option<String> {
+        match self.frames.pop_front() {
+            Some(frame) => Some(frame),
+            None if self.endless => std::future::pending().await,
+            None => None,
+        }
+    }
+
+    async fn send(&mut self, line: &str) -> Result<(), ProviderError> {
+        lock(&self.sent).push(line.to_owned());
+        Ok(())
+    }
+}
+
+impl IrcConnector for MemoryIrc {
+    type Socket = MemoryIrcSocket;
+
+    async fn connect(&self, _url: &str) -> Result<MemoryIrcSocket, ProviderError> {
+        let script = lock(&self.scripts).pop_front();
+        Ok(MemoryIrcSocket {
+            endless: script.is_none(),
+            frames: script.unwrap_or_default().into(),
+            sent: Arc::clone(&self.sent),
+        })
     }
 }
