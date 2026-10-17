@@ -2,7 +2,7 @@ node_modules
 dist
 
 # Rendered videos, GIFs and frames from the old render page; today they are in the profile (data/)
-render
+/render
 
 # Logins and secrets: token store of the server and all env files, commit only templates
 data
