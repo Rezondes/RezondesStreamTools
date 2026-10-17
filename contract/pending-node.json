@@ -1,3 +1,4 @@
 [
-  "backups: only admins, created in the background, downloaded, restored and deleted"
+  "backups: only admins, created in the background, downloaded, restored and deleted",
+  "backups: the schedule is off by default and only admins change it"
 ]

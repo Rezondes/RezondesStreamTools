@@ -6,6 +6,7 @@ use std::path::Path;
 
 use rst_app::access::AccessSettings;
 use rst_app::audit::AuditLog;
+use rst_app::backup::schedule::ScheduleSettings;
 use rst_app::channel::overlay_key::OverlayKeys;
 use rst_app::crypto::lookup::LookupKey;
 use rst_app::identity::sessions::Sessions;
@@ -38,6 +39,7 @@ pub struct Stores {
     pub access: AccessSettings<SqliteServerSettings>,
     pub audit: AuditLog<SqliteAudit, SqliteKeyStore>,
     pub keys: SqliteKeyStore,
+    pub schedule: ScheduleSettings<SqliteServerSettings>,
 }
 
 fn create_parent(path: &Path) -> Result<(), String> {
@@ -62,6 +64,7 @@ pub async fn open(config: &StoreConfig) -> Result<Stores, String> {
         overlay_keys: OverlayKeys::new(vault.clone(), lookup),
         media: MediaLibrary::new(vault, EncryptedFiles::new(&config.files, config.file_cache_bytes)),
         access: AccessSettings::new(SqliteServerSettings::new(pool.clone()), server_key.clone()),
+        schedule: ScheduleSettings::new(SqliteServerSettings::new(pool.clone()), server_key.clone()),
         audit: AuditLog::new(SqliteAudit::new(pool.clone()), keys.clone(), server_key),
         keys,
         pool,

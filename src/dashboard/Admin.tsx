@@ -15,6 +15,9 @@ const LEVELS = Object.keys(ADMIN_TEXT.levels) as Level[];
 // Answer of GET /api/admin/streamers
 type StreamerRow = { login: string; allowed: boolean; admin: boolean; connected: boolean; live: boolean; lastLogin: number | null };
 
+// GET and POST /api/admin/backup-settings
+type BackupSchedule = { enabled: boolean; intervalHours: number; keep: number };
+
 // Answer of GET /api/admin/backups
 type BackupRow = { id: string; createdAt: number; bytes: number; automatic: boolean };
 type BackupListing = { running: boolean; backups: BackupRow[] };
@@ -74,6 +77,8 @@ export default function Admin() {
       <StreamerTable streamers={streamers} />
       <h2>{ADMIN_TEXT.backups}</h2>
       <Backups />
+      <h2>{ADMIN_TEXT.schedule}</h2>
+      <BackupScheduleForm />
     </section>
   );
 }
@@ -229,5 +234,44 @@ function BackupTable({ backups, running, onRestore, onDelete }: BackupTableProps
         ))}
       </tbody>
     </table>
+  );
+}
+
+// Schedule of the automatic backups; the server checks the limits
+function BackupScheduleForm() {
+  const [schedule, setSchedule] = useState<BackupSchedule | null | undefined>(undefined);
+  const [notice, setNotice] = useState<"saved" | ErrorCode | null>(null);
+  useEffect(() => {
+    getJson<BackupSchedule | null>("/api/admin/backup-settings", null).then(setSchedule).catch(() => setSchedule(null));
+  }, []);
+  if (schedule === undefined) return <p className="muted">{TEXTS.loading}</p>;
+  if (schedule === null) return <p className="muted">{ADMIN_TEXT.backupUnavailable}</p>;
+
+  const number = (value: string) => Math.trunc(Number(value));
+  const save = () => {
+    postJson("/api/admin/backup-settings", schedule)
+      .then(result => setNotice(result.ok ? "saved" : typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error"))
+      .catch(() => setNotice("server-error"));
+  };
+  return (
+    <>
+      <p className="muted">{ADMIN_TEXT.scheduleHint}</p>
+      <label className="setting">
+        {ADMIN_TEXT.scheduleEnabled}
+        <input type="checkbox" checked={schedule.enabled} onChange={event => setSchedule({ ...schedule, enabled: event.target.checked })} />
+      </label>
+      <label className="setting">
+        {ADMIN_TEXT.scheduleInterval}
+        <input type="number" min={1} max={720} value={schedule.intervalHours} onChange={event => setSchedule({ ...schedule, intervalHours: number(event.target.value) })} />
+      </label>
+      <label className="setting">
+        {ADMIN_TEXT.scheduleKeep}
+        <input type="number" min={1} max={100} value={schedule.keep} onChange={event => setSchedule({ ...schedule, keep: number(event.target.value) })} />
+      </label>
+      <div className="actions">
+        <button className="btn primary" onClick={save}>{ADMIN_TEXT.scheduleSave}</button>
+        <span role="status" className={notice === "saved" ? "" : "error"}>{notice === "saved" ? ADMIN_TEXT.scheduleSaved : notice ? TEXTS.errors[notice] : ""}</span>
+      </div>
+    </>
   );
 }

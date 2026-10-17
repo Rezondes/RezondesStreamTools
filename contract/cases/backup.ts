@@ -32,4 +32,17 @@ export const BACKUP_CASES: Case[] = [
       await expectCode(await request(context, `/api/admin/backup?id=${id}`, { method: "DELETE", session: admin }), 404, "not-found");
     },
   },
+  {
+    name: "backups: the schedule is off by default and only admins change it",
+    async run(context) {
+      const shape = { enabled: "boolean", intervalHours: "number", keep: "number" };
+      const schedule = (await expect(await request(context, "/api/admin/backup-settings", { session: admin }), 200, shape)) as { enabled: boolean };
+      if (schedule.enabled) fail("automatic backups are on by default");
+      await expectCode(await request(context, "/api/admin/backup-settings", { session: STREAMER.login }), 403, "admin-only");
+      const post = (body: unknown) => request(context, "/api/admin/backup-settings", { method: "POST", session: admin, body: JSON.stringify(body) });
+      await expectCode(await post({ enabled: true, intervalHours: 0, keep: 3 }), 400, "invalid-json");
+      await expect(await post({ enabled: true, intervalHours: 24, keep: 3 }), 200, shape);
+      await expect(await post({ enabled: false, intervalHours: 24, keep: 3 }), 200, shape);
+    },
+  },
 ];

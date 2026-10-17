@@ -98,6 +98,8 @@ routes! {
     DeleteBackup => "DELETE" "/api/admin/backup", Guard::Admin;
     UploadBackup => "POST" "/api/admin/backups/upload", Guard::Admin;
     RestoreBackup => "POST" "/api/admin/backup/restore", Guard::Admin;
+    BackupSettings => "GET" "/api/admin/backup-settings", Guard::Admin;
+    SaveBackupSettings => "POST" "/api/admin/backup-settings", Guard::Admin;
     // New: the schemas of all themes for the forms
     Themes => "GET" "/api/themes", SESSION;
 }

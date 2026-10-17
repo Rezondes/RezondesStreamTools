@@ -10,7 +10,9 @@ use axum::extract::Query;
 use axum::http::{HeaderValue, header};
 use axum::response::Response;
 use http_body_util::BodyExt;
+use rst_app::audit::AuditEntry;
 use rst_app::backup::BackupError;
+use rst_app::backup::schedule::BackupSchedule;
 use rst_app::crypto::cipher::random_bytes;
 use serde_json::json;
 use tokio::io::AsyncWriteExt;
@@ -18,7 +20,10 @@ use tokio_util::io::ReaderStream;
 
 use crate::clock::now_ms;
 use crate::errors::{json, server_error, text};
-use crate::handlers::Call;
+use crate::handlers::{Call, read_body};
+
+/// The schedule form is small
+const SETTINGS_LIMIT: usize = 4 * 1024;
 
 fn id_of(call: &Call<'_>) -> String {
     let query =
@@ -147,4 +152,40 @@ pub async fn delete(call: Call<'_>) -> Response {
         Ok(false) => text(404, "not-found"),
         Err(error) => server_error(&format!("{error:?}")),
     }
+}
+
+/// The schedule of the automatic backups
+pub async fn settings(call: Call<'_>) -> Response {
+    match call.app.stores.schedule.load().await {
+        Ok(schedule) => json(&schedule, 200),
+        Err(error) => server_error(&error.to_string()),
+    }
+}
+
+/// Saves the schedule; values outside the limits are `400 invalid-json`
+pub async fn save_settings(call: Call<'_>) -> Response {
+    let (app, actor) = (call.app, actor(&call));
+    let Some(body) = read_body(call.request, SETTINGS_LIMIT).await else { return text(413, "too-large") };
+    let input = serde_json::from_slice(&body).unwrap_or(serde_json::Value::Null);
+    let Some(schedule) = BackupSchedule::parse(&input) else { return text(400, "invalid-json") };
+    let before = match app.stores.schedule.load().await {
+        Ok(before) => before,
+        Err(error) => return server_error(&error.to_string()),
+    };
+    let now = now_ms();
+    if let Err(error) = app.stores.schedule.save(&schedule, now).await {
+        return server_error(&error.to_string());
+    }
+    let entry = AuditEntry {
+        id: 0,
+        created_at: 0,
+        actor,
+        action: "backup.settings".to_owned(),
+        before: Some(json!(before)),
+        after: Some(json!(schedule)),
+    };
+    if let Err(error) = app.stores.audit.append(None, &entry, now).await {
+        return server_error(&error.to_string());
+    }
+    json(&schedule, 200)
 }

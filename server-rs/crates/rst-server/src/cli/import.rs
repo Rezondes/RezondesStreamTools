@@ -50,6 +50,7 @@ mod tests {
             file_cache_bytes: 0,
             render_temp: folder.join("render-tmp"),
             backups: folder.join("backups"),
+            key_backups: folder.join("key-backups"),
             master: MasterKey::from_bytes([3; 32]),
         }
     }

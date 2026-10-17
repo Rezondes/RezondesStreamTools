@@ -251,6 +251,13 @@ export const TEXTS = {
     backupDelete: "Löschen",
     backupConfirmDelete: (time: string) => `Backup vom ${time} endgültig löschen?`,
     backupUpload: "Backup hochladen",
+    schedule: "Automatische Backups",
+    scheduleEnabled: "Automatisch sichern",
+    scheduleInterval: "Abstand in Stunden (1 bis 720)",
+    scheduleKeep: "Automatische Backups behalten (1 bis 100)",
+    scheduleHint: "Manuelle Backups bleiben immer. Schlüssel-Backups laufen getrennt davon täglich und werden nach 30 Tagen gelöscht.",
+    scheduleSave: "Zeitplan speichern",
+    scheduleSaved: "Zeitplan gespeichert.",
     backupRestore: "Wiederherstellen",
     backupConfirmRestore: (time: string) =>
       `Backup vom ${time} wiederherstellen? Alle heutigen Daten werden ersetzt, die Overlays sind kurz nicht erreichbar.`,

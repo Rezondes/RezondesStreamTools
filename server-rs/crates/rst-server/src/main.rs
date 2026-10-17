@@ -19,6 +19,8 @@ use std::sync::Arc;
 use cli::Command;
 use config::{ServerConfig, StoreConfig, env};
 
+/// How often the backup schedules are checked
+const SCHEDULE_EVERY: std::time::Duration = std::time::Duration::from_secs(60);
 const USAGE: &str = "usage: rst [--version] | rst serve | rst import --from <DATA>";
 
 fn main() -> ExitCode {
@@ -63,6 +65,13 @@ async fn serve() -> Result<ExitCode, String> {
     let app = Arc::new(app::App::new(config, stores));
     let running = app.restart_all().await;
     println!("Overlay server on {} ({running} streamers running)", app.config.public_url);
+    let scheduled = Arc::clone(&app);
+    tokio::spawn(async move {
+        loop {
+            scheduled.run_schedules().await;
+            tokio::time::sleep(SCHEDULE_EVERY).await;
+        }
+    });
     axum::serve(listener, app::router(app))
         .with_graceful_shutdown(async {
             let _ = tokio::signal::ctrl_c().await;

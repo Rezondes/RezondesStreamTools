@@ -73,6 +73,24 @@ impl SqliteKeyStore {
         Ok(rows.len())
     }
 
+    /// Closes the connections, e.g. before the file is moved or deleted
+    pub async fn close(&self) {
+        self.pool.close().await;
+    }
+
+    /// A consistent copy of the store at `target` (must not exist), without freed pages of shredded keys
+    ///
+    /// # Errors
+    /// When the copy cannot be written.
+    pub async fn copy_to(&self, target: &Path) -> Result<(), StoreError> {
+        sqlx::query("VACUUM INTO ?")
+            .bind(target.to_string_lossy().into_owned())
+            .execute(&self.pool)
+            .await
+            .map(|_| ())
+            .map_err(StoreError::new)
+    }
+
     async fn wrapped(&self, id: &StreamerId) -> Result<Option<Vec<u8>>, StoreError> {
         sqlx::query_scalar("SELECT wrapped FROM data_keys WHERE streamer_id = ?")
             .bind(id.as_str())

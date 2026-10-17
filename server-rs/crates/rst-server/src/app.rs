@@ -13,9 +13,11 @@ use axum::http::{HeaderValue, header};
 use axum::response::Response;
 use rst_app::access::admin::AccessAdmin;
 use rst_app::backup::Backups;
+use rst_app::backup::keys::run_key_backups;
 use rst_app::channel::registry::Registry;
 use rst_app::channel::runtime::{RuntimeSetup, StreamerRuntime, start_all};
 use rst_app::commands::CommandService;
+use rst_app::crypto::cipher::random_bytes;
 use rst_app::events::Hubs;
 use rst_app::identity::login::LoginFlow;
 use rst_app::settings::SettingsService;
@@ -29,6 +31,7 @@ use rst_domain::paths::StreamerPath;
 use rst_domain::render::jobs::RenderJobs;
 use rst_domain::spotify::redirect_uri;
 use rst_infra::backup::archive::ZipBackups;
+use rst_infra::backup::keys::FolderKeyBackups;
 use rst_infra::db::sqlite_audit::SqliteAudit;
 use rst_infra::db::sqlite_records::SqliteRecords;
 use rst_infra::db::sqlite_server_settings::SqliteServerSettings;
@@ -81,6 +84,7 @@ pub struct App {
     pub spotify: Option<Arc<SpotifyClient>>,
     pub runtimes: Registry<AppRuntime>,
     pub backups: Backups<ZipBackups, SqliteAudit, SqliteKeyStore>,
+    pub key_backups: FolderKeyBackups,
     /// During a restore overlays and the API of streamers answer 503
     pub maintenance: AtomicBool,
     twitch_states: Mutex<LoginStates<()>>,
@@ -126,8 +130,10 @@ impl App {
         });
         let archives = ZipBackups::new(stores.pool.clone(), &config.stores.files, &config.stores.backups);
         let backups = Backups::new(archives, stores.audit.clone(), stores.keys.clone());
+        let key_backups = FolderKeyBackups::new(stores.keys.clone(), &config.stores.key_backups);
         Self {
             backups,
+            key_backups,
             maintenance: AtomicBool::new(false),
             spotify,
             spotify_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
@@ -256,6 +262,22 @@ impl App {
             .get(id)
             .and_then(|runtime| runtime.spotify.as_ref().map(|spotify| spotify.connected()))
             .unwrap_or(false)
+    }
+
+    /// The scheduled backups: automatic data backups as the admins set them, a key backup once a day
+    pub async fn run_schedules(&self) {
+        match self.stores.schedule.load().await {
+            Ok(schedule) => {
+                let random = random_bytes::<4>().unwrap_or_default();
+                if let Err(error) = self.backups.run_schedule(&schedule, now_ms(), random).await {
+                    eprintln!("Scheduled backup failed: {error:?}");
+                }
+            }
+            Err(error) => eprintln!("Backup schedule unreadable: {error}"),
+        }
+        if let Err(error) = run_key_backups(&self.key_backups, now_ms()).await {
+            eprintln!("Key backup failed: {error}");
+        }
     }
 
     /// Stops every runtime and closes every stream, e.g. before a restore
@@ -406,6 +428,7 @@ mod tests {
             file_cache_bytes: 0,
             render_temp: folder.join("render-tmp"),
             backups: folder.join("backups"),
+            key_backups: folder.join("key-backups"),
             master: MasterKey::from_bytes([3; 32]),
         };
         let opened = crate::wiring::open(&stores).await.expect("stores");

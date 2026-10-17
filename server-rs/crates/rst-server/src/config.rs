@@ -7,6 +7,7 @@ use std::path::PathBuf;
 
 use rst_domain::identity::values::Login;
 use rst_infra::backup::archive::BACKUPS_VAR;
+use rst_infra::backup::keys::KEY_BACKUPS_VAR;
 use rst_infra::crypto::master::{MASTER_KEY_VAR, MasterKey, MasterKeyError};
 use rst_infra::db::pool::DATA_DB_VAR;
 use rst_infra::files::encrypted::{FILE_CACHE_VAR, cache_bytes};
@@ -50,6 +51,8 @@ pub struct StoreConfig {
     pub render_temp: PathBuf,
     /// Server-wide backups (never the key store)
     pub backups: PathBuf,
+    /// Daily copies of the key store, kept 30 days
+    pub key_backups: PathBuf,
     pub master: MasterKey,
 }
 
@@ -71,6 +74,7 @@ impl StoreConfig {
             file_cache_bytes: cache_bytes(lookup(FILE_CACHE_VAR).as_deref()),
             render_temp: path("RST_RENDER_DIR", "render-tmp"),
             backups: path(BACKUPS_VAR, "backups"),
+            key_backups: path(KEY_BACKUPS_VAR, "key-backups"),
             master,
         })
     }

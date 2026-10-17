@@ -2,6 +2,9 @@
 //! files, never the key store. Creating and restoring run one at a time; an uploaded archive is checked before it
 //! counts. Streamers whose data key is gone (deleted) are left out of a restore. Every action lands in the audit log.
 
+pub mod keys;
+pub mod schedule;
+
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -15,6 +18,10 @@ use crate::ports::audit::AuditStore;
 use crate::ports::backups::{ArchiveError, BackupInfo, BackupStore};
 use crate::ports::keys::KeyStore;
 use crate::vault::VaultError;
+use schedule::BackupSchedule;
+
+/// Who acts for the schedule in the audit log
+pub const SCHEDULE_ACTOR: &str = "schedule";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum BackupError {
@@ -203,6 +210,32 @@ where
         Ok(report)
     }
 
+    /// The scheduled step: deletes automatic backups beyond the ones to keep and starts one when it is due. Returns
+    /// the id of a started backup.
+    ///
+    /// # Errors
+    /// When the backup folder cannot be read or a surplus backup cannot be deleted.
+    pub async fn run_schedule(
+        &self,
+        schedule: &BackupSchedule,
+        now: i64,
+        random: [u8; 4],
+    ) -> Result<Option<String>, BackupError> {
+        let list = self.list().await?;
+        for id in schedule.surplus(&list) {
+            self.delete(SCHEDULE_ACTOR, &id, now).await?;
+        }
+        let newest = list.iter().filter(|backup| backup.automatic).map(|backup| backup.created_at).max();
+        if self.running() || !schedule.due(newest, now) {
+            return Ok(None);
+        }
+        match self.start(SCHEDULE_ACTOR, true, now, random) {
+            Ok(id) => Ok(Some(id)),
+            Err(BackupError::Busy) => Ok(None),
+            Err(error) => Err(error),
+        }
+    }
+
     /// `false` for an unknown id
     ///
     /// # Errors
@@ -356,5 +389,34 @@ mod tests {
         let actions: Vec<String> =
             audit.list(None, 10).await.expect("audit").into_iter().map(|entry| entry.action).collect();
         assert!(actions.contains(&"backup.restore".to_owned()) && actions.contains(&"backup.upload".to_owned()));
+    }
+
+    async fn finish(backups: &TestBackups) {
+        backups.store.release.notify_one();
+        while backups.running() {
+            tokio::time::sleep(Duration::from_millis(1)).await;
+        }
+    }
+
+    #[tokio::test]
+    async fn the_schedule_starts_when_due_and_keeps_only_the_newest_automatic_ones() {
+        let (backups, _audit, _keys) = backups();
+        let off = BackupSchedule::default();
+        assert_eq!(backups.run_schedule(&off, 0, [1; 4]).await.expect("off"), None);
+        let on = BackupSchedule { enabled: true, interval_hours: 1, keep: 1 };
+        for (hour, random) in [(0, 1_u8), (1, 2), (2, 3)] {
+            let now = hour * 3_600_000;
+            let started = backups.run_schedule(&on, now, [random; 4]).await.expect("run");
+            assert!(started.is_some_and(|id| id.starts_with("auto-")), "hour {hour}");
+            assert_eq!(backups.run_schedule(&on, now + 1, [9; 4]).await.expect("running"), None);
+            finish(&backups).await;
+        }
+        backups.start("rezondes", false, 5, [7; 4]).expect("manual");
+        finish(&backups).await;
+        // Not due yet, but the surplus automatic backups are gone; the manual one stays
+        assert_eq!(backups.run_schedule(&on, 2 * 3_600_000 + 10, [8; 4]).await.expect("prune"), None);
+        let kinds: Vec<bool> = backups.list().await.expect("list").iter().map(|backup| backup.automatic).collect();
+        assert_eq!(kinds.iter().filter(|automatic| **automatic).count(), 1);
+        assert_eq!(kinds.iter().filter(|automatic| !**automatic).count(), 1);
     }
 }
