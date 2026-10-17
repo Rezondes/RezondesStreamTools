@@ -1,4 +1,4 @@
-//! Port of the Twitch OAuth app: exchange a login code for tokens and revoke a token.
+//! Ports of Twitch: the OAuth app (exchange a login code for tokens, check and revoke them) and `EventSub` over Helix.
 
 use std::fmt;
 use std::future::Future;
@@ -36,4 +36,13 @@ pub trait TwitchAuth: Send + Sync {
         &self,
         tokens: &TwitchTokens,
     ) -> impl Future<Output = Result<Option<TwitchTokens>, ProviderError>> + Send;
+}
+
+/// Helix: requests an `EventSub` subscription (type, version, condition and transport) for a channel
+pub trait EventSubscriber: Send + Sync {
+    fn subscribe(
+        &self,
+        access: &str,
+        subscription: &serde_json::Value,
+    ) -> impl Future<Output = Result<(), ProviderError>> + Send;
 }

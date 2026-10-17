@@ -2,12 +2,12 @@
 //! passes the same contract tests.
 
 pub mod audit;
-pub mod chat;
 pub mod files;
 pub mod keys;
 pub mod records;
 pub mod server_settings;
 pub mod sessions;
+pub mod socket;
 pub mod streamers;
 pub mod twitch;
 

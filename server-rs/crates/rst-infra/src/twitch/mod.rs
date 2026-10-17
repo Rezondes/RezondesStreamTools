@@ -1,4 +1,3 @@
-//! Twitch: the OAuth app over HTTP and the chat over WebSocket.
+//! Twitch: the OAuth app over HTTP.
 
-pub mod irc;
 pub mod oauth;

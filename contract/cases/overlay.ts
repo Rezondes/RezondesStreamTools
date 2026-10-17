@@ -4,7 +4,7 @@ import { expect, expectCode, fail, request, STREAMER, type Case, type Context } 
 const base = `/s/${STREAMER.login}`;
 
 // Reads the event stream until text contains needle (or the time is up); the stream is closed afterwards
-async function readStream(response: Response, needle: string, trigger?: () => Promise<void>) {
+export async function readStream(response: Response, needle: string, trigger?: () => Promise<void>) {
   if (response.status !== 200) fail(`expected status 200, got ${response.status}`);
   if (!response.headers.get("content-type")?.startsWith("text/event-stream")) fail("not an event stream");
   const reader = response.body?.getReader() ?? fail("no body");

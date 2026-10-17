@@ -1,7 +1,7 @@
 //! Runtime of a streamer (template: `server/streamer.ts`): owns the connections of its profile and ends them in
 //! `stop`. It checks the Twitch tokens hourly (a rejected login ends the runtime and deletes the tokens) and reads
-//! the chat. Every task runs supervised: a panic ends only that task, which is logged and starts again after a
-//! pause, never the server. `EventSub`, triggers, minimes and Spotify join with their packages.
+//! the chat and, with the feature alerts, `EventSub`. Every task runs supervised: a panic ends only that task, which is
+//! logged and starts again after a pause, never the server. Triggers, minimes and Spotify join with their packages.
 
 use std::collections::BTreeMap;
 use std::future::Future;
@@ -10,16 +10,19 @@ use std::time::Duration;
 
 use rst_domain::access::Feature;
 use rst_domain::identity::values::{Login, StreamerId};
+use rst_domain::twitch::eventsub::{EventSubMessage, subscriptions};
+use serde_json::json;
 use tokio_util::sync::CancellationToken;
 
+use crate::channel::alerts;
 use crate::channel::chat::{listen, relay};
 use crate::channel::registry::Runtime;
 use crate::channel::token_keeper::{CHECK_SECONDS, TokenKeeper, Validity};
-use crate::events::Hubs;
-use crate::ports::chat::IrcConnector;
+use crate::events::{Hubs, ServerMessage};
 use crate::ports::keys::KeyStore;
 use crate::ports::records::RecordStore;
-use crate::ports::twitch::TwitchAuth;
+use crate::ports::socket::SocketConnector;
+use crate::ports::twitch::{EventSubscriber, TwitchAuth};
 use crate::profile::Profile;
 use crate::vault::VaultError;
 
@@ -59,8 +62,9 @@ pub struct RuntimeSetup<T, S, K, C> {
     pub login: Login,
     pub twitch: T,
     pub profile: Profile<S, K>,
-    pub irc: Arc<C>,
+    pub sockets: Arc<C>,
     pub irc_url: String,
+    pub eventsub_url: String,
     pub hubs: Arc<Hubs>,
     pub features: BTreeMap<Feature, bool>,
     /// The clock in ms
@@ -92,7 +96,7 @@ where
 
 impl<T, S, K> StreamerRuntime<T, S, K>
 where
-    T: TwitchAuth + 'static,
+    T: TwitchAuth + EventSubscriber + Clone + 'static,
     S: RecordStore + Clone + 'static,
     K: KeyStore + Clone + 'static,
 {
@@ -100,10 +104,10 @@ where
     ///
     /// # Errors
     /// `Unreadable` for a shredded streamer, `Store` when the database fails.
-    pub async fn start<C: IrcConnector>(setup: RuntimeSetup<T, S, K, C>) -> Result<Option<Self>, VaultError> {
-        let RuntimeSetup { id, login, twitch, profile, irc, irc_url, hubs, features, now } = setup;
+    pub async fn start<C: SocketConnector>(setup: RuntimeSetup<T, S, K, C>) -> Result<Option<Self>, VaultError> {
+        let RuntimeSetup { id, login, twitch, profile, sockets, irc_url, eventsub_url, hubs, features, now } = setup;
         let Some(tokens) = profile.twitch_tokens(&id).await? else { return Ok(None) };
-        let keeper = Arc::new(TokenKeeper::new(id.clone(), tokens, twitch, profile.clone()));
+        let keeper = Arc::new(TokenKeeper::new(id.clone(), tokens, twitch.clone(), profile.clone()));
         let cancel = CancellationToken::new();
         let check = {
             let (keeper, cancel, id, login) = (Arc::clone(&keeper), cancel.clone(), id.clone(), login.clone());
@@ -131,13 +135,46 @@ where
         };
         supervise(format!("Token check of {login}"), cancel.clone(), check);
         let chat_on = features.get(&Feature::Chat) == Some(&true);
+        if features.get(&Feature::Alerts) == Some(&true) {
+            let events = {
+                let (sockets, hubs, keeper, cancel, id) =
+                    (Arc::clone(&sockets), Arc::clone(&hubs), Arc::clone(&keeper), cancel.clone(), id.clone());
+                move || {
+                    let (sockets, url, hubs, keeper, twitch, cancel, id) = (
+                        Arc::clone(&sockets),
+                        eventsub_url.clone(),
+                        Arc::clone(&hubs),
+                        Arc::clone(&keeper),
+                        twitch.clone(),
+                        cancel.clone(),
+                        id.clone(),
+                    );
+                    async move {
+                        let subscribe = |session_id: String| subscribe_all(&keeper, &twitch, session_id, now);
+                        alerts::listen(&*sockets, &url, &cancel, subscribe, |message| {
+                            if let EventSubMessage::Alert(alert) = message {
+                                hubs.emit(&id, &ServerMessage::Alert { alert });
+                            }
+                        })
+                        .await;
+                    }
+                }
+            };
+            supervise(format!("EventSub of {login}"), cancel.clone(), events);
+        }
         let chat = {
             let (cancel, id, login) = (cancel.clone(), id.clone(), login.clone());
             move || {
-                let (irc, irc_url, hubs, cancel, id, login) =
-                    (Arc::clone(&irc), irc_url.clone(), Arc::clone(&hubs), cancel.clone(), id.clone(), login.clone());
+                let (sockets, irc_url, hubs, cancel, id, login) = (
+                    Arc::clone(&sockets),
+                    irc_url.clone(),
+                    Arc::clone(&hubs),
+                    cancel.clone(),
+                    id.clone(),
+                    login.clone(),
+                );
                 async move {
-                    listen(&*irc, &irc_url, login.as_str(), &cancel, |message| relay(message, &hubs, &id, chat_on))
+                    listen(&*sockets, &irc_url, login.as_str(), &cancel, |message| relay(message, &hubs, &id, chat_on))
                         .await;
                 }
             }
@@ -145,6 +182,24 @@ where
         supervise(format!("Chat of {login}"), cancel.clone(), chat);
         Ok(Some(Self { id, login, keeper, cancel }))
     }
+}
+
+/// Requests every subscription for the `EventSub` session with checked tokens; a refused one is logged
+async fn subscribe_all<T, S, K>(keeper: &TokenKeeper<T, S, K>, twitch: &T, session_id: String, now: fn() -> i64)
+where
+    T: TwitchAuth + EventSubscriber,
+    S: RecordStore,
+    K: KeyStore,
+{
+    let Validity::Valid(tokens) = keeper.valid(now()).await else { return };
+    let transport = json!({ "method": "websocket", "session_id": session_id });
+    for mut subscription in subscriptions(tokens.user_id.as_str()) {
+        subscription["transport"] = transport.clone();
+        if let Err(error) = twitch.subscribe(&tokens.access, &subscription).await {
+            eprintln!("EventSub subscription {} for {} failed: {error}", subscription["type"], tokens.login);
+        }
+    }
+    eprintln!("EventSub connected as {}", tokens.login);
 }
 
 /// Starts every streamer through `start`; a broken profile is logged and holds up nobody else. Returns how many run.
@@ -173,13 +228,14 @@ mod tests {
 
     use super::*;
     use crate::ports::twitch::ProviderError;
-    use crate::testing::{MemoryIrc, MemoryKeys, MemoryRecords};
+    use crate::testing::{MemoryKeys, MemoryRecords, MemorySockets};
     use crate::vault::Vault;
 
     /// Accepts every login while `valid` is true
-    #[derive(Clone)]
+    #[derive(Clone, Default)]
     struct FakeTwitch {
         valid: bool,
+        subscribed: Arc<std::sync::Mutex<Vec<String>>>,
     }
 
     #[allow(clippy::unused_async_trait_impl, reason = "the fake answers right away")]
@@ -194,6 +250,17 @@ mod tests {
 
         async fn validate(&self, tokens: &TwitchTokens) -> Result<Option<TwitchTokens>, ProviderError> {
             Ok(self.valid.then(|| tokens.clone()))
+        }
+    }
+
+    #[allow(clippy::unused_async_trait_impl, reason = "the fake answers right away")]
+    impl EventSubscriber for FakeTwitch {
+        async fn subscribe(&self, _access: &str, subscription: &serde_json::Value) -> Result<(), ProviderError> {
+            self.subscribed
+                .lock()
+                .expect("subscribed")
+                .push(subscription["type"].as_str().unwrap_or_default().to_owned());
+            Ok(())
         }
     }
 
@@ -213,15 +280,16 @@ mod tests {
         id: StreamerId,
         valid: bool,
         profile: Profile<MemoryRecords, MemoryKeys>,
-        irc: &MemoryIrc,
-    ) -> RuntimeSetup<FakeTwitch, MemoryRecords, MemoryKeys, MemoryIrc> {
+        irc: &MemorySockets,
+    ) -> RuntimeSetup<FakeTwitch, MemoryRecords, MemoryKeys, MemorySockets> {
         RuntimeSetup {
             id,
             login: login(),
-            twitch: FakeTwitch { valid },
+            twitch: FakeTwitch { valid, ..FakeTwitch::default() },
             profile,
-            irc: Arc::new(irc.clone()),
+            sockets: Arc::new(irc.clone()),
             irc_url: "wss://irc".to_owned(),
+            eventsub_url: "wss://eventsub".to_owned(),
             hubs: Arc::new(Hubs::default()),
             features: Feature::ALL.into_iter().map(|feature| (feature, true)).collect(),
             now: zero,
@@ -245,7 +313,7 @@ mod tests {
     #[tokio::test(start_paused = true)]
     async fn a_rejected_login_ends_the_runtime_and_deletes_the_tokens() {
         let profile = profile_with_tokens(&id(1)).await;
-        let irc = MemoryIrc::default();
+        let irc = MemorySockets::default();
         let runtime =
             StreamerRuntime::start(setup(id(1), false, profile.clone(), &irc)).await.expect("start").expect("runtime");
         assert!(!runtime.stopped());
@@ -258,10 +326,29 @@ mod tests {
         assert!(StreamerRuntime::start(setup(id(2), true, empty, &irc)).await.is_err());
     }
 
+    #[tokio::test(start_paused = true)]
+    async fn with_the_feature_alerts_eventsub_subscribes_and_sends_alerts() {
+        let profile = profile_with_tokens(&id(1)).await;
+        let sockets = MemorySockets::default();
+        let welcome = r#"{"metadata":{"message_type":"session_welcome"},"payload":{"session":{"id":"s1"}}}"#;
+        let follow = r#"{"metadata":{"message_type":"notification","subscription_type":"channel.follow"},"payload":{"event":{"user_name":"Neo"}}}"#;
+        sockets.script_at("wss://eventsub", vec![welcome.to_owned(), follow.to_owned()]);
+        let setup = setup(id(1), true, profile, &sockets);
+        let (twitch, hubs) = (setup.twitch.clone(), Arc::clone(&setup.hubs));
+        let mut stream = hubs.subscribe(&id(1), false).expect("stream");
+        let runtime = StreamerRuntime::start(setup).await.expect("start").expect("runtime");
+        let alert = stream.next().await.expect("alert");
+        assert!(alert.contains(r#""type":"alert""#) && alert.contains("Neo"), "{alert}");
+        let subscribed = twitch.subscribed.lock().expect("subscribed").clone();
+        assert_eq!(subscribed.len(), 10);
+        assert!(subscribed.iter().any(|kind| kind == "stream.offline"));
+        runtime.stop();
+    }
+
     #[tokio::test]
     async fn broken_profile_does_not_block() {
         let good = profile_with_tokens(&id(1)).await;
-        let irc = MemoryIrc::default();
+        let irc = MemorySockets::default();
         let started = start_all(vec![id(2), id(1)], |streamer| {
             let (good, irc) = (good.clone(), irc.clone());
             async move {

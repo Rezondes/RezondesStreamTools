@@ -1,9 +1,9 @@
 //! The Twitch OAuth app over HTTP (template: `twitchApp` in `server/twitch.ts`): login URL, code exchange with the
-//! login from Helix `/users`, and revoking a token. A refused code (400, 401) is `None`; other failures are errors,
-//! so a network problem never counts as an invalid login.
+//! login from Helix `/users`, revoking a token and `EventSub` subscriptions. A refused code (400, 401) is `None`;
+//! other failures are errors, so a network problem never counts as an invalid login.
 
 use reqwest::{Client, StatusCode, Url};
-use rst_app::ports::twitch::{ProviderError, TwitchAuth};
+use rst_app::ports::twitch::{EventSubscriber, ProviderError, TwitchAuth};
 use rst_domain::twitch::tokens::{SCOPES, TwitchTokens, to_tokens};
 use serde_json::{Value, json};
 
@@ -118,6 +118,26 @@ impl TwitchAuth for TwitchClient {
             Ok(())
         } else {
             Err(ProviderError::new(format!("Twitch revoke failed: {}", response.status())))
+        }
+    }
+}
+
+impl EventSubscriber for TwitchClient {
+    async fn subscribe(&self, access: &str, subscription: &Value) -> Result<(), ProviderError> {
+        let response = self
+            .http
+            .post(format!("{}/eventsub/subscriptions", self.api_url))
+            .header("Client-Id", &self.client_id)
+            .bearer_auth(access)
+            .json(subscription)
+            .send()
+            .await
+            .map_err(ProviderError::new)?;
+        if response.status().is_success() {
+            Ok(())
+        } else {
+            let status = response.status();
+            Err(ProviderError::new(format!("{status} {}", response.text().await.unwrap_or_default())))
         }
     }
 }

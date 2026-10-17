@@ -14,12 +14,12 @@ use rst_domain::identity::values::StreamerId;
 use crate::crypto::cipher::random_bytes;
 use crate::ports::StoreError;
 use crate::ports::audit::{AuditStore, StoredEntry};
-use crate::ports::chat::{IrcConnector, IrcSocket};
 use crate::ports::files::{Blocks, FileStore, FileWriter};
 use crate::ports::keys::{DataKey, KeyStore};
 use crate::ports::records::{RecordStore, StoredRecord};
 use crate::ports::server_settings::ServerSettingsStore;
 use crate::ports::sessions::SessionStore;
+use crate::ports::socket::{SocketConnector, TextSocket};
 use crate::ports::streamers::{StreamerRepository, StreamerRow};
 use crate::ports::twitch::ProviderError;
 
@@ -291,17 +291,36 @@ impl FileStore for MemoryFiles {
     }
 }
 
-/// Chat connections from scripts: each connect takes the next script (frames, then the connection ends); without
-/// scripts the connection stays open and silent. Sent lines are recorded.
+/// WebSocket connections from scripts: each connect takes the next script (frames, then the connection ends or stays
+/// silent); a script bound to a URL only serves that URL. Without a script the connection stays open and silent. Sent
+/// lines are recorded.
+#[derive(Debug)]
+struct Script {
+    url: Option<String>,
+    frames: Vec<String>,
+    endless: bool,
+}
+
 #[derive(Debug, Default, Clone)]
-pub struct MemoryIrc {
-    scripts: Arc<Mutex<std::collections::VecDeque<Vec<String>>>>,
+pub struct MemorySockets {
+    scripts: Arc<Mutex<Vec<Script>>>,
     sent: Arc<Mutex<Vec<String>>>,
 }
 
-impl MemoryIrc {
+impl MemorySockets {
+    /// The connection ends after the frames
     pub fn script(&self, frames: Vec<String>) {
-        lock(&self.scripts).push_back(frames);
+        lock(&self.scripts).push(Script { url: None, frames, endless: false });
+    }
+
+    /// The connection stays open and silent after the frames
+    pub fn script_then_silence(&self, frames: Vec<String>) {
+        lock(&self.scripts).push(Script { url: None, frames, endless: true });
+    }
+
+    /// Only a connection to `url` takes the frames, then it stays open and silent
+    pub fn script_at(&self, url: &str, frames: Vec<String>) {
+        lock(&self.scripts).push(Script { url: Some(url.to_owned()), frames, endless: true });
     }
 
     pub fn sent(&self) -> Vec<String> {
@@ -309,13 +328,13 @@ impl MemoryIrc {
     }
 }
 
-pub struct MemoryIrcSocket {
+pub struct MemorySocket {
     frames: std::collections::VecDeque<String>,
     endless: bool,
     sent: Arc<Mutex<Vec<String>>>,
 }
 
-impl IrcSocket for MemoryIrcSocket {
+impl TextSocket for MemorySocket {
     async fn recv(&mut self) -> Option<String> {
         match self.frames.pop_front() {
             Some(frame) => Some(frame),
@@ -330,15 +349,14 @@ impl IrcSocket for MemoryIrcSocket {
     }
 }
 
-impl IrcConnector for MemoryIrc {
-    type Socket = MemoryIrcSocket;
+impl SocketConnector for MemorySockets {
+    type Socket = MemorySocket;
 
-    async fn connect(&self, _url: &str) -> Result<MemoryIrcSocket, ProviderError> {
-        let script = lock(&self.scripts).pop_front();
-        Ok(MemoryIrcSocket {
-            endless: script.is_none(),
-            frames: script.unwrap_or_default().into(),
-            sent: Arc::clone(&self.sent),
-        })
+    async fn connect(&self, url: &str) -> Result<MemorySocket, ProviderError> {
+        let mut scripts = lock(&self.scripts);
+        let next = scripts.iter().position(|script| script.url.as_deref().is_none_or(|bound| bound == url));
+        let Script { frames, endless, .. } =
+            next.map_or(Script { url: None, frames: Vec::new(), endless: true }, |index| scripts.remove(index));
+        Ok(MemorySocket { endless, frames: frames.into(), sent: Arc::clone(&self.sent) })
     }
 }

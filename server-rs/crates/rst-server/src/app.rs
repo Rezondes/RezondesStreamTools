@@ -30,8 +30,8 @@ use rst_infra::db::sqlite_server_settings::SqliteServerSettings;
 use rst_infra::db::sqlite_sessions::SqliteSessions;
 use rst_infra::db::sqlite_streamers::SqliteStreamers;
 use rst_infra::keys::sqlite::SqliteKeyStore;
-use rst_infra::twitch::irc::WebSocketIrc;
 use rst_infra::twitch::oauth::TwitchClient;
+use rst_infra::websocket::WebSockets;
 
 use crate::clock::now_ms;
 use crate::config::ServerConfig;
@@ -69,7 +69,7 @@ pub struct App {
     pub stores: Stores,
     pub twitch: TwitchClient,
     pub hubs: Arc<Hubs>,
-    pub irc: Arc<WebSocketIrc>,
+    pub sockets: Arc<WebSockets>,
     pub runtimes: Registry<AppRuntime>,
     twitch_states: Mutex<LoginStates<()>>,
     uploads: Mutex<UploadSlots>,
@@ -103,7 +103,7 @@ impl App {
             secure: is_secure_url(&config.public_url),
             twitch,
             hubs: Arc::new(Hubs::default()),
-            irc: Arc::new(WebSocketIrc),
+            sockets: Arc::new(WebSockets),
             runtimes: Registry::default(),
             twitch_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
             uploads: Mutex::new(UploadSlots::default()),
@@ -188,8 +188,9 @@ impl App {
                 login: login.clone(),
                 twitch: self.twitch.clone(),
                 profile: self.stores.profile.clone(),
-                irc: Arc::clone(&self.irc),
+                sockets: Arc::clone(&self.sockets),
                 irc_url: self.config.providers.twitch_irc.clone(),
+                eventsub_url: self.config.providers.twitch_eventsub.clone(),
                 hubs: Arc::clone(&self.hubs),
                 features,
                 now: now_ms,

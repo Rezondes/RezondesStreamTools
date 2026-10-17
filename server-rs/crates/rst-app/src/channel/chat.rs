@@ -13,12 +13,12 @@ use tokio_util::sync::CancellationToken;
 
 use crate::crypto::cipher::random_bytes;
 use crate::events::{Hubs, ServerMessage};
-use crate::ports::chat::{IrcConnector, IrcSocket};
+use crate::ports::socket::{SocketConnector, TextSocket};
 
 pub const RECONNECT: Duration = Duration::from_secs(3);
 
 /// Listens until `cancel`; every IRC line goes to `handle`, PING is answered here
-pub async fn listen<C: IrcConnector>(
+pub async fn listen<C: SocketConnector>(
     connector: &C,
     url: &str,
     channel: &str,
@@ -42,7 +42,7 @@ pub async fn listen<C: IrcConnector>(
 }
 
 /// One connection; `true` when cancelled, `false` when it broke
-async fn session<S: IrcSocket>(
+async fn session<S: TextSocket>(
     socket: &mut S,
     channel: &str,
     cancel: &CancellationToken,
@@ -94,7 +94,7 @@ mod tests {
     use std::sync::Arc;
 
     use super::*;
-    use crate::testing::MemoryIrc;
+    use crate::testing::MemorySockets;
 
     fn neo() -> StreamerId {
         StreamerId::from_bytes([1; 16])
@@ -102,7 +102,7 @@ mod tests {
 
     #[tokio::test(start_paused = true)]
     async fn lines_become_events_ping_is_answered_and_the_chat_reconnects() {
-        let irc = MemoryIrc::default();
+        let irc = MemorySockets::default();
         irc.script(vec![
             "PING :tmi.twitch.tv\r\n".to_owned(),
             "@color=#FF0000;display-name=Neo;emotes=25:0-4 :neo!neo@neo.tmi.twitch.tv PRIVMSG #neo :Kappa hi\r\n:tmi.twitch.tv CLEARCHAT #neo :smith".to_owned(),
