@@ -32,6 +32,7 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/dashboard/api.ts": "network client of the dashboard",
   "server/index.ts": "HTTP entry point",
   "server/chat.ts": "network client; parsing is checked in irc.ts",
+  "server/renderRoutes.ts": "HTTP handlers and the ffmpeg process; job rules and arguments are checked in render.ts",
   "server/streamer.ts": "runtime wiring of the checked clients (twitch, spotify, triggers, chat) with timers and SSE",
 };
 

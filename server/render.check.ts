@@ -38,13 +38,20 @@ assert.equal(jobs.frame("neo", 10000, 100), "render-limit");
 assert.equal(jobs.frame("neo", -1, 100), "render-limit");
 assert.equal(jobs.frame("neo", 1, RENDER_LIMITS.frameBytes + 1), "too-large");
 
-// Fertigstellen: liefert den Clip des Streamers und gibt frei; fps nur 1 bis 60
+// Fertigstellen: liefert den Clip des Streamers; der Render bleibt belegt, bis ffmpeg fertig ist (done), damit ein
+// Streamer nicht mehrere ffmpeg gleichzeitig startet. Währenddessen kein Neustart, keine Frames, kein Abbruch
 assert.deepEqual(jobs.finish("neo", 10), { clip: "offline", frames: 1, fps: 10 });
+assert.equal(jobs.finish("neo", 10), "render-busy");
+assert.equal(jobs.start("neo", "stinger"), "render-busy");
+assert.equal(jobs.frame("neo", 0, 100), "render-busy");
+assert.equal(jobs.cancel("neo"), false);
+jobs.done("neo");
 assert.equal(jobs.finish("neo", 10), "render-not-started");
 assert.equal(jobs.start("neo", "stinger"), null);
+// fps nur 1 bis 60
 assert.equal(jobs.finish("neo", 0), "render-limit");
 assert.equal(jobs.finish("neo", 61), "render-limit");
-jobs.cancel("neo");
+assert.equal(jobs.cancel("neo"), true);
 assert.equal(jobs.start("neo", "stinger"), null);
 
 console.log("render ok");

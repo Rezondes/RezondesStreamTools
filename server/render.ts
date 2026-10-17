@@ -36,7 +36,8 @@ export function ffmpegArgs(format: "gif" | "webm", fps: number, frames: string, 
   return [...input, "-c:v", "libvpx-vp9", "-pix_fmt", "yuva420p", "-b:v", "0", "-crf", "20", "-auto-alt-ref", "0", "-row-mt", "1", target];
 }
 
-type Job = { clip: Clip; frames: number; startedAt: number };
+// encoding: ffmpeg läuft schon; der Job bleibt bis done() belegt
+type Job = { clip: Clip; frames: number; startedAt: number; encoding: boolean };
 type RenderError = "render-busy" | "render-not-started" | "render-limit" | "too-large";
 
 // Laufende Renders je Login; now ist injiziert, damit der Timeout testbar bleibt
@@ -49,12 +50,13 @@ export function createRenderJobs(now: () => number) {
   return {
     start(login: string, clip: Clip): RenderError | null {
       if (running(login)) return "render-busy";
-      jobs.set(login, { clip, frames: 0, startedAt: now() });
+      jobs.set(login, { clip, frames: 0, startedAt: now(), encoding: false });
       return null;
     },
     frame(login: string, index: number, bytes: number): RenderError | null {
       const job = running(login);
       if (!job) return "render-not-started";
+      if (job.encoding) return "render-busy";
       if (!Number.isInteger(index) || index < 0 || index >= RENDER_LIMITS.frames) return "render-limit";
       if (bytes > RENDER_LIMITS.frameBytes) return "too-large";
       job.frames = Math.max(job.frames, index + 1);
@@ -63,10 +65,18 @@ export function createRenderJobs(now: () => number) {
     finish(login: string, fps: number): { clip: Clip; frames: number; fps: number } | RenderError {
       const job = running(login);
       if (!job) return "render-not-started";
+      if (job.encoding) return "render-busy";
       if (!Number.isInteger(fps) || fps < 1 || fps > 60) return "render-limit";
-      jobs.delete(login);
+      job.encoding = true;
       return { clip: job.clip, frames: job.frames, fps };
     },
-    cancel: (login: string) => { jobs.delete(login); },
+    // ffmpeg ist fertig (oder gescheitert): der Streamer darf wieder rendern
+    done: (login: string) => { jobs.delete(login); },
+    // Abbrechen nur vor dem Kodieren; false, solange ffmpeg läuft
+    cancel(login: string) {
+      if (running(login)?.encoding) return false;
+      jobs.delete(login);
+      return true;
+    },
   };
 }
