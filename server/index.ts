@@ -19,7 +19,7 @@ import { ensureSettings, loadSettings, minimeRules, publicSettings, saveSettings
 import { THEMES } from "../src/themes/registry.ts";
 import { authorize, find, overlayRoute, ROUTES, type RouteKey, type Visitor } from "./routes.ts";
 import { createSession, isSecureUrl, loadSessionKey, oauthStateCookie, readSession, sessionCookie } from "./session.ts";
-import { deleteSpotifyTokens, redirectUri, type SpotifyApp } from "./spotify.ts";
+import { callbackHasSession, deleteSpotifyTokens, redirectUri, type SpotifyApp } from "./spotify.ts";
 import { startStreamer, type Streamer } from "./streamer.ts";
 import { isAlertKind, SAMPLE_ALERTS, twitchApp } from "./twitch.ts";
 
@@ -31,6 +31,7 @@ const DATA = resolve(process.env.DATA ?? "data");
 const ADMINS = (process.env.ADMINS ?? "").split(",").map(login => login.trim().toLowerCase()).filter(streamerPath.isLogin);
 const SECURE = isSecureUrl(PUBLIC_URL);
 const PUBLIC_HOST = new URL(PUBLIC_URL).host;
+const SPOTIFY_NEEDS_SESSION = callbackHasSession(PUBLIC_URL);
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID ?? "";
 const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET ?? "";
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID ?? "";
@@ -246,10 +247,12 @@ function spotifyLogin({ response, login, runtime }: Call) {
 }
 
 // Kommt über die Spotify-Redirect-URL (lokal 127.0.0.1, ohne Cookie): der Login steht am state
-async function spotifyCallback({ response, url }: Call) {
+async function spotifyCallback({ request, response, url }: Call) {
   const code = url.searchParams.get("code") ?? "";
   const login = spotifyStates.take(url.searchParams.get("state") ?? "", Date.now());
-  const spotify = login && access.hasFeature(login, "music") ? runtimes.get(login)?.spotify : undefined;
+  // Öffentlich: nur im Browser des Streamers, der die Verbindung begonnen hat (sonst hängt ein fremdes Spotify-Konto dran)
+  const ownBrowser = !SPOTIFY_NEEDS_SESSION || (login !== null && readSession(sessionKey, cookies(request).sid) === login);
+  const spotify = login && ownBrowser && access.hasFeature(login, "music") ? runtimes.get(login)?.spotify : undefined;
   const connected = spotify && OAUTH_CODE.test(code) ? await spotify.connect(code) : false;
   // Zurück auf die Übersicht unter der normalen Adresse, dort liegt das Cookie
   redirect(response, connected ? `${PUBLIC_URL}/` : `${PUBLIC_URL}/?error=spotify-failed`);

@@ -24,6 +24,10 @@ export function redirectUri(publicUrl: string) {
   return `${url.origin}/spotify/callback`;
 }
 
+// Kommt der Spotify-Callback auf dem Host des Dashboards an, trägt er das Sitzungs-Cookie: dann muss der Callback
+// vom selben Streamer kommen, der die Verbindung begonnen hat. Lokal (localhost -> 127.0.0.1) fehlt das Cookie.
+export const callbackHasSession = (publicUrl: string) => new URL(redirectUri(publicUrl)).host === new URL(publicUrl).host;
+
 // Nur bekannte Felder mit gültigen Werten (Regel 25), sonst null
 export function toTokens(value: unknown): SpotifyTokens | null {
   if (typeof value !== "object" || value === null) return null;

@@ -7,11 +7,14 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { mock } from "node:test";
 import type { Track } from "../src/core/types.ts";
-import { changed, deleteSpotifyTokens, progressed, redirectUri, spotifyClient, toTokens, toTrack } from "./spotify.ts";
+import { callbackHasSession, changed, deleteSpotifyTokens, progressed, redirectUri, spotifyClient, toTokens, toTrack } from "./spotify.ts";
 
 // Redirect: lokal über 127.0.0.1 (Spotify lehnt "localhost" ab), sonst PUBLIC_URL
 assert.equal(redirectUri("http://localhost:8089"), "http://127.0.0.1:8089/spotify/callback");
 assert.equal(redirectUri("https://overlays.example.org/"), "https://overlays.example.org/spotify/callback");
+// Öffentlich kommt der Callback mit Sitzungs-Cookie an, lokal (127.0.0.1 statt localhost) ohne
+assert.equal(callbackHasSession("https://overlays.example.org"), true);
+assert.equal(callbackHasSession("http://localhost:8089"), false);
 
 // Tokens: nur vollständige mit Ablaufzeit
 assert.deepEqual(toTokens({ access: "a", refresh: "r", expiresAt: 5, extra: 1 }), { access: "a", refresh: "r", expiresAt: 5 });
