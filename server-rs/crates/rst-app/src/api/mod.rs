@@ -8,6 +8,7 @@ use std::path::Path;
 
 use rst_domain::settings::field::SettingValue;
 use rst_domain::settings::validate::SettingError;
+use rst_domain::spotify::SpotifyDetails;
 use rst_domain::themes::registry::themes;
 use rst_domain::themes::schema::ThemeSchema;
 use ts_rs::{Config, ExportError, TS};
@@ -29,6 +30,7 @@ pub fn export_all(dir: &Path) -> Result<(), ExportError> {
     ThemeSchema::export_all(&cfg)?;
     SettingError::export_all(&cfg)?;
     SettingValue::export_all(&cfg)?;
+    SpotifyDetails::export_all(&cfg)?;
     let folder = dir.join("themes");
     std::fs::create_dir_all(&folder)?;
     for theme in themes() {

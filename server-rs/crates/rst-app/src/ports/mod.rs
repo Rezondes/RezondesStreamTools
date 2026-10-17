@@ -8,6 +8,7 @@ pub mod records;
 pub mod server_settings;
 pub mod sessions;
 pub mod socket;
+pub mod spotify;
 pub mod streamers;
 pub mod twitch;
 

@@ -1,5 +1,3 @@
 [
-  "spotify: callback only connects with the state of a started login",
-  "spotify: logout disconnects",
   "render: unknown clip and switched-off feature"
 ]

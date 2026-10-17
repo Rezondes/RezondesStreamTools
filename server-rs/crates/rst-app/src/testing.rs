@@ -20,6 +20,7 @@ use crate::ports::records::{RecordStore, StoredRecord};
 use crate::ports::server_settings::ServerSettingsStore;
 use crate::ports::sessions::SessionStore;
 use crate::ports::socket::{SocketConnector, TextSocket};
+use crate::ports::spotify::{Playing, SpotifyApi, TokenAnswer};
 use crate::ports::streamers::{StreamerRepository, StreamerRow};
 use crate::ports::twitch::ProviderError;
 
@@ -358,5 +359,27 @@ impl SocketConnector for MemorySockets {
         let Script { frames, endless, .. } =
             next.map_or(Script { url: None, frames: Vec::new(), endless: true }, |index| scripts.remove(index));
         Ok(MemorySocket { endless, frames: frames.into(), sent: Arc::clone(&self.sent) })
+    }
+}
+
+/// For runtimes without Spotify: every request fails
+#[derive(Debug, Default, Clone, Copy)]
+pub struct NoSpotify;
+
+impl SpotifyApi for NoSpotify {
+    async fn exchange(&self, _code: &str) -> Result<Option<TokenAnswer>, ProviderError> {
+        Err(ProviderError::new("no Spotify"))
+    }
+
+    async fn refresh(&self, _refresh: &str) -> Result<Option<TokenAnswer>, ProviderError> {
+        Err(ProviderError::new("no Spotify"))
+    }
+
+    async fn playing(&self, _access: &str) -> Result<Playing, ProviderError> {
+        Err(ProviderError::new("no Spotify"))
+    }
+
+    async fn account(&self, _access: &str) -> Option<String> {
+        None
     }
 }

@@ -10,6 +10,7 @@ pub mod auth;
 pub mod commands;
 pub mod events;
 pub mod media;
+pub mod music;
 pub mod overlay;
 pub mod settings;
 pub mod triggers;
@@ -47,11 +48,11 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::MediaList => media::list(call).await,
         Route::UploadMedia => media::upload(call).await,
         Route::DeleteMedia => media::delete(call).await,
-        Route::SpotifyCallback
-        | Route::SpotifyLogin
-        | Route::SpotifyDetails
-        | Route::SpotifyLogout
-        | Route::RenderStart
+        Route::SpotifyLogin => music::login(&call),
+        Route::SpotifyCallback => music::callback(call).await,
+        Route::SpotifyDetails => music::details(call).await,
+        Route::SpotifyLogout => music::logout(call).await,
+        Route::RenderStart
         | Route::RenderFrame
         | Route::RenderDone
         | Route::RenderCancel

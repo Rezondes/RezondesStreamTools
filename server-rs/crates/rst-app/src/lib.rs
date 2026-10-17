@@ -10,6 +10,7 @@ pub mod events;
 pub mod identity;
 pub mod import;
 pub mod media;
+pub mod music;
 pub mod ports;
 pub mod profile;
 pub mod settings;

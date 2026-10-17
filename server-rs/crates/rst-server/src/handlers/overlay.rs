@@ -32,8 +32,8 @@ pub async fn serve(app: &App, path: &StreamerPath, uri: &Uri, cookies: Option<&s
         OverlayRoute::Status => {
             let features = policy.features(&app.config.admins, &path.login);
             let music = features.get(&Feature::Music) == Some(&true);
-            // spotify: null = not set up or feature off, otherwise whether it is connected (runtime, package 37)
-            let spotify = (app.config.spotify.is_some() && music).then_some(false);
+            // spotify: null = not set up or feature off, otherwise whether it is connected
+            let spotify = (app.spotify.is_some() && music).then(|| app.spotify_connected(&id));
             json(&json!({ "login": path.login, "live": false, "spotify": spotify, "features": features }), 200)
         }
         OverlayRoute::Settings => match app.settings_service().public(&id).await {

@@ -18,18 +18,20 @@ use rst_app::events::Hubs;
 use rst_app::identity::login::LoginFlow;
 use rst_app::settings::SettingsService;
 use rst_app::triggers::TriggerService;
-use rst_domain::access::is_admin;
+use rst_domain::access::{Feature, is_admin};
 use rst_domain::identity::oauth::LoginStates;
 use rst_domain::identity::session::{OAUTH_STATE_SECONDS, is_secure_url};
 use rst_domain::identity::values::StreamerId;
 use rst_domain::media::library::UploadSlots;
 use rst_domain::paths::StreamerPath;
+use rst_domain::spotify::redirect_uri;
 use rst_infra::db::sqlite_audit::SqliteAudit;
 use rst_infra::db::sqlite_records::SqliteRecords;
 use rst_infra::db::sqlite_server_settings::SqliteServerSettings;
 use rst_infra::db::sqlite_sessions::SqliteSessions;
 use rst_infra::db::sqlite_streamers::SqliteStreamers;
 use rst_infra::keys::sqlite::SqliteKeyStore;
+use rst_infra::spotify::client::SpotifyClient;
 use rst_infra::twitch::oauth::TwitchClient;
 use rst_infra::websocket::WebSockets;
 
@@ -50,7 +52,7 @@ const FRAME_CSP: &str = "frame-ancestors 'self'";
 pub type AppAccessAdmin<'a> =
     AccessAdmin<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
 
-pub type AppRuntime = StreamerRuntime<TwitchClient, SqliteRecords, SqliteKeyStore>;
+pub type AppRuntime = StreamerRuntime<TwitchClient, SqliteRecords, SqliteKeyStore, SpotifyClient>;
 pub type AppCommands<'a> = CommandService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 pub type AppTriggers<'a> = TriggerService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 pub type AppSettings<'a> = SettingsService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
@@ -70,8 +72,12 @@ pub struct App {
     pub twitch: TwitchClient,
     pub hubs: Arc<Hubs>,
     pub sockets: Arc<WebSockets>,
+    /// `None` without Spotify credentials
+    pub spotify: Option<Arc<SpotifyClient>>,
     pub runtimes: Registry<AppRuntime>,
     twitch_states: Mutex<LoginStates<()>>,
+    /// Spotify knows only one callback URL: the state says which streamer started the connection
+    spotify_states: Mutex<LoginStates<StreamerId>>,
     uploads: Mutex<UploadSlots>,
 }
 
@@ -98,7 +104,18 @@ impl App {
             &config.providers.twitch_id,
             &config.providers.twitch_api,
         );
+        let spotify = config.spotify.as_ref().zip(redirect_uri(&config.public_url)).map(|(app, redirect)| {
+            Arc::new(SpotifyClient::new(
+                &app.client_id,
+                &app.client_secret,
+                &redirect,
+                &config.providers.spotify_accounts,
+                &config.providers.spotify_api,
+            ))
+        });
         Self {
+            spotify,
+            spotify_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
             public_origin: origin_of(&config.public_url),
             secure: is_secure_url(&config.public_url),
             twitch,
@@ -114,6 +131,10 @@ impl App {
 
     pub fn twitch_states(&self) -> MutexGuard<'_, LoginStates<()>> {
         self.twitch_states.lock().unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
+    pub fn spotify_states(&self) -> MutexGuard<'_, LoginStates<StreamerId>> {
+        self.spotify_states.lock().unwrap_or_else(std::sync::PoisonError::into_inner)
     }
 
     #[must_use]
@@ -192,6 +213,7 @@ impl App {
                 irc_url: self.config.providers.twitch_irc.clone(),
                 eventsub_url: self.config.providers.twitch_eventsub.clone(),
                 link: format!("{}/s/{login}/", self.config.public_url),
+                spotify: self.spotify.clone().filter(|_| features.get(&Feature::Music) == Some(&true)),
                 hubs: Arc::clone(&self.hubs),
                 features,
                 now: now_ms,
@@ -204,6 +226,15 @@ impl App {
         let allowed =
             async { self.stores.access.load(admins).await.is_ok_and(|policy| policy.can_use(admins, &login)) };
         Ok(self.runtimes.start(id, create, allowed).await.is_some())
+    }
+
+    /// Whether the running player of the streamer has a Spotify login
+    #[must_use]
+    pub fn spotify_connected(&self, id: &StreamerId) -> bool {
+        self.runtimes
+            .get(id)
+            .and_then(|runtime| runtime.spotify.as_ref().map(|spotify| spotify.connected()))
+            .unwrap_or(false)
     }
 
     /// Stops the runtime and closes every open stream of the streamer

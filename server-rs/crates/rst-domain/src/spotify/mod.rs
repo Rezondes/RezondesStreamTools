@@ -53,6 +53,14 @@ pub struct Track {
     pub playing: bool,
 }
 
+/// What the connection page shows: the account, the current track and whether an overlay is listening
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, TS)]
+pub struct SpotifyDetails {
+    pub account: Option<String>,
+    pub track: Option<Track>,
+    pub polling: bool,
+}
+
 fn text(value: &Value, path: &[&str]) -> Option<String> {
     path.iter().try_fold(value, |current, key| current.get(key)).and_then(Value::as_str).map(str::to_owned)
 }

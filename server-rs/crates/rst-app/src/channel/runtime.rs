@@ -2,7 +2,8 @@
 //! `stop`. It checks the Twitch tokens hourly (a rejected login ends the runtime and deletes the tokens) and reads
 //! the chat and, with the feature alerts, `EventSub`. Chat lines fire triggers (features triggers and fx), move the
 //! minimes (feature minimes) and ask for the help command. Every task runs supervised: a panic ends only that task,
-//! which is logged and starts again after a pause, never the server. Spotify joins with its package.
+//! which is logged and starts again after a pause, never the server. With the feature music and a Spotify app the
+//! current track goes to the overlays.
 
 use std::collections::BTreeMap;
 use std::future::Future;
@@ -27,9 +28,11 @@ use crate::channel::token_keeper::{CHECK_SECONDS, TokenKeeper, Validity};
 use crate::channel::triggers::TriggerRunner;
 use crate::commands::public_commands;
 use crate::events::{Hubs, ServerMessage};
+use crate::music::SpotifyPlayer;
 use crate::ports::keys::KeyStore;
 use crate::ports::records::RecordStore;
 use crate::ports::socket::SocketConnector;
+use crate::ports::spotify::SpotifyApi;
 use crate::ports::twitch::{ChatSender, EventSubscriber, ProviderError, Said, TwitchAuth};
 use crate::profile::Profile;
 use crate::vault::VaultError;
@@ -65,7 +68,7 @@ where
 }
 
 /// What a runtime needs
-pub struct RuntimeSetup<T, S, K, C> {
+pub struct RuntimeSetup<T, S, K, C, P> {
     pub id: StreamerId,
     pub login: Login,
     pub twitch: T,
@@ -77,11 +80,13 @@ pub struct RuntimeSetup<T, S, K, C> {
     pub features: BTreeMap<Feature, bool>,
     /// URL of the public commands page, for the help reply
     pub link: String,
+    /// The Spotify app; `None` when it is not set up or the feature music is off
+    pub spotify: Option<Arc<P>>,
     /// The clock in ms
     pub now: fn() -> i64,
 }
 
-pub struct StreamerRuntime<T, S, K> {
+pub struct StreamerRuntime<T, S, K, P> {
     pub id: StreamerId,
     pub login: Login,
     pub keeper: Arc<TokenKeeper<T, S, K>>,
@@ -90,6 +95,8 @@ pub struct StreamerRuntime<T, S, K> {
     /// Only with the feature minimes
     pub minimes: Option<Arc<MinimeRunner<S, K>>>,
     pub help: Arc<HelpResponder>,
+    /// Only with the feature music and a Spotify app
+    pub spotify: Option<Arc<SpotifyPlayer<P, S, K>>>,
     cancel: CancellationToken,
 }
 
@@ -190,11 +197,12 @@ where
     }
 }
 
-impl<T, S, K> Runtime for StreamerRuntime<T, S, K>
+impl<T, S, K, P> Runtime for StreamerRuntime<T, S, K, P>
 where
     T: TwitchAuth,
     S: RecordStore,
     K: KeyStore,
+    P: SpotifyApi,
 {
     fn stop(&self) {
         self.keeper.stop();
@@ -206,8 +214,9 @@ where
     }
 }
 
-impl<T, S, K> StreamerRuntime<T, S, K>
+impl<T, S, K, P> StreamerRuntime<T, S, K, P>
 where
+    P: SpotifyApi,
     T: TwitchAuth + EventSubscriber + ChatSender + Clone + 'static,
     S: RecordStore + Clone + 'static,
     K: KeyStore + Clone + 'static,
@@ -216,9 +225,21 @@ where
     ///
     /// # Errors
     /// `Unreadable` for a shredded streamer, `Store` when the database fails.
-    pub async fn start<C: SocketConnector>(setup: RuntimeSetup<T, S, K, C>) -> Result<Option<Self>, VaultError> {
-        let RuntimeSetup { id, login, twitch, profile, sockets, irc_url, eventsub_url, hubs, features, link, now } =
-            setup;
+    pub async fn start<C: SocketConnector>(setup: RuntimeSetup<T, S, K, C, P>) -> Result<Option<Self>, VaultError> {
+        let RuntimeSetup {
+            id,
+            login,
+            twitch,
+            profile,
+            sockets,
+            irc_url,
+            eventsub_url,
+            hubs,
+            features,
+            link,
+            spotify,
+            now,
+        } = setup;
         let Some(tokens) = profile.twitch_tokens(&id).await? else { return Ok(None) };
         let on = |feature: Feature| features.get(&feature) == Some(&true);
         let triggers = if on(Feature::Triggers) && on(Feature::Fx) {
@@ -233,6 +254,12 @@ where
             None
         };
         let help = Arc::new(HelpResponder::new(login.as_str(), &link, profile.help(&id).await?));
+        let spotify = match spotify {
+            Some(api) => {
+                Some(Arc::new(SpotifyPlayer::load(id.clone(), api, profile.clone(), Arc::clone(&hubs), now).await?))
+            }
+            None => None,
+        };
         let keeper = Arc::new(TokenKeeper::new(id.clone(), tokens, twitch.clone(), profile.clone()));
         let cancel = CancellationToken::new();
         {
@@ -258,6 +285,10 @@ where
             let (shared, stop) = (Arc::clone(&shared), cancel.clone());
             supervise(name("Token check"), cancel.clone(), move || Arc::clone(&shared).check_tokens(stop.clone()));
         }
+        if let Some(spotify) = &spotify {
+            let (spotify, stop) = (Arc::clone(spotify), cancel.clone());
+            supervise(name("Spotify"), cancel.clone(), move || Arc::clone(&spotify).poll_until(stop.clone()));
+        }
         if let Some(minimes) = &minimes {
             let (minimes, stop) = (Arc::clone(minimes), cancel.clone());
             supervise(name("Minimes"), cancel.clone(), move || Arc::clone(&minimes).prune_until(stop.clone()));
@@ -273,7 +304,7 @@ where
             let chat = move || Arc::clone(&shared).read_chat(Arc::clone(&sockets), irc_url.clone(), stop.clone());
             supervise(name("Chat"), cancel.clone(), chat);
         }
-        Ok(Some(Self { id, login, keeper, triggers, minimes, help, cancel }))
+        Ok(Some(Self { id, login, keeper, triggers, minimes, help, spotify, cancel }))
     }
 }
 
@@ -321,7 +352,7 @@ mod tests {
 
     use super::*;
     use crate::ports::twitch::ProviderError;
-    use crate::testing::{MemoryKeys, MemoryRecords, MemorySockets};
+    use crate::testing::{MemoryKeys, MemoryRecords, MemorySockets, NoSpotify};
     use crate::vault::Vault;
 
     /// Accepts every login while `valid` is true
@@ -387,7 +418,7 @@ mod tests {
         valid: bool,
         profile: Profile<MemoryRecords, MemoryKeys>,
         irc: &MemorySockets,
-    ) -> RuntimeSetup<FakeTwitch, MemoryRecords, MemoryKeys, MemorySockets> {
+    ) -> RuntimeSetup<FakeTwitch, MemoryRecords, MemoryKeys, MemorySockets, NoSpotify> {
         RuntimeSetup {
             id,
             login: login(),
@@ -397,6 +428,7 @@ mod tests {
             irc_url: "wss://irc".to_owned(),
             eventsub_url: "wss://eventsub".to_owned(),
             link: "https://x/s/neo/".to_owned(),
+            spotify: None,
             hubs: Arc::new(Hubs::default()),
             features: Feature::ALL.into_iter().map(|feature| (feature, true)).collect(),
             now: zero,

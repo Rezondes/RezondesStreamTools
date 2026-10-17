@@ -52,8 +52,10 @@ pub async fn stream(app: &App, id: &StreamerId, uri: &Uri, cookies: Option<&str>
         return text(403, "forbidden");
     }
     let Some(subscription) = app.hubs.subscribe(id, watcher) else { return text(503, "unavailable") };
-    let minimes = app.runtimes.get(id).and_then(|runtime| runtime.minimes.as_ref().map(|minimes| minimes.current()));
-    let mut first = vec![Event::default().comment("connected"), data(&ServerMessage::Music { track: None })];
+    let runtime = app.runtimes.get(id);
+    let minimes = runtime.as_ref().and_then(|runtime| runtime.minimes.as_ref().map(|minimes| minimes.current()));
+    let track = runtime.as_ref().and_then(|runtime| runtime.spotify.as_ref().and_then(|spotify| spotify.current()));
+    let mut first = vec![Event::default().comment("connected"), data(&ServerMessage::Music { track })];
     first.extend(minimes.map(|minimes| data(&ServerMessage::Minimes { minimes })));
     let live = stream::unfold(subscription, |mut subscription| async move {
         let message = subscription.next().await?;

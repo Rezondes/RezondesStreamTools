@@ -1,6 +1,7 @@
 // Contract cases: Spotify connection bound to the login state, rendering without the feature, a new overlay key
 // and disconnecting Twitch. Runs last: the disconnect ends the streamer's runtime.
 import { ADMIN, cookie, expect, expectCode, fail, location, request, setAccess, STREAMER, type Case } from "../client.ts";
+import { readStream } from "./overlay.ts";
 
 const session = STREAMER.login;
 
@@ -18,6 +19,18 @@ export const ACCOUNT_CASES: Case[] = [
       const callback = await request(context, `/spotify/callback?code=abc&state=${state}`);
       if (location(callback) !== `${context.base}/`) fail(`unexpected target ${location(callback)}`);
       await expect(await request(context, "/api/spotify", { session }), 200, { account: "string|null", track: "object|null", polling: "boolean" });
+    },
+  },
+  {
+    name: "spotify: the current track reaches an open overlay",
+    async run(context) {
+      const playing = { is_playing: true, progress_ms: 1000, item: { id: "contract-track", name: "Song", duration_ms: 200_000, artists: [{ name: "Band" }] } };
+      const set = await fetch(`${context.fake.url}/control/spotify`, { method: "POST", body: JSON.stringify({ playing }) });
+      if (set.status !== 204) fail(`fake control answered ${set.status}`);
+      const key = context.memory.get("overlayKey") ?? fail("no overlay key from an earlier case");
+      await readStream(await request(context, `/s/${STREAMER.login}/events?key=${key}`), "contract-track");
+      const details = (await expect(await request(context, "/api/spotify", { session }), 200, { account: "string|null", polling: "boolean" })) as { account: string | null };
+      if (details.account !== "Fake Spotify") fail(`unexpected account ${String(details.account)}`);
     },
   },
   {

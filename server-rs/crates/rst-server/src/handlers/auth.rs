@@ -21,15 +21,15 @@ use crate::guard::cookie;
 use crate::handlers::Call;
 
 /// Codes from the OAuth callback: `^[\w.~-]{1,1024}$`
-fn is_oauth_code(code: &str) -> bool {
+pub(crate) fn is_oauth_code(code: &str) -> bool {
     (1..=1024).contains(&code.len()) && code.bytes().all(|byte| byte.is_ascii_alphanumeric() || b"_.~-".contains(&byte))
 }
 
-fn cookies(call: &Call<'_>) -> Option<String> {
+pub(crate) fn cookies(call: &Call<'_>) -> Option<String> {
     call.request.headers().get(header::COOKIE).and_then(|value| value.to_str().ok()).map(str::to_owned)
 }
 
-fn query(call: &Call<'_>) -> HashMap<String, String> {
+pub(crate) fn query(call: &Call<'_>) -> HashMap<String, String> {
     Query::<HashMap<String, String>>::try_from_uri(call.request.uri()).map(|query| query.0).unwrap_or_default()
 }
 
@@ -99,8 +99,8 @@ pub async fn me(call: Call<'_>) -> Response {
         Err(error) => return server_error(&error.to_string()),
     };
     let music = call.visitor.features.get(&Feature::Music) == Some(&true);
-    // spotify: null = not set up or feature off, otherwise whether it is connected (runtime, package 37)
-    let spotify = (app.config.spotify.is_some() && music).then_some(false);
+    // spotify: null = not set up or feature off, otherwise whether it is connected
+    let spotify = (app.spotify.is_some() && music).then(|| app.spotify_connected(id));
     json(
         &json!({
             "login": call.visitor.login,
