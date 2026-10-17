@@ -114,7 +114,6 @@ pub struct ServerConfig {
     pub twitch: OAuthApp,
     /// `None` without Spotify credentials: no music
     pub spotify: Option<OAuthApp>,
-    #[cfg_attr(not(test), expect(dead_code, reason = "used by media uploads, package 29"))]
     pub media_quota_bytes: u64,
     pub providers: ProviderUrls,
 }

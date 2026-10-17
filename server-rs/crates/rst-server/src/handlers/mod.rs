@@ -7,8 +7,10 @@ use axum::response::Response;
 use crate::app::App;
 pub mod admin;
 pub mod auth;
+pub mod media;
 pub mod overlay;
 pub mod settings;
+pub mod triggers;
 
 use crate::errors::pending;
 use crate::routes::{Route, Visitor};
@@ -33,15 +35,15 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::Me => auth::me(call).await,
         Route::OverlayKey => auth::rotate_overlay_key(call).await,
         Route::TwitchDisconnect => auth::disconnect(call).await,
+        Route::TriggerConfig => triggers::config(call).await,
+        Route::SaveTriggerConfig => triggers::save(call).await,
+        Route::TriggerList => triggers::list(call).await,
+        Route::FireTrigger => triggers::fire(call).await,
+        Route::MediaList => media::list(call).await,
+        Route::UploadMedia => media::upload(call).await,
+        Route::DeleteMedia => media::delete(call).await,
         Route::SpotifyCallback
         | Route::TestAlert
-        | Route::TriggerConfig
-        | Route::SaveTriggerConfig
-        | Route::TriggerList
-        | Route::FireTrigger
-        | Route::MediaList
-        | Route::UploadMedia
-        | Route::DeleteMedia
         | Route::SpotifyLogin
         | Route::SpotifyDetails
         | Route::SpotifyLogout

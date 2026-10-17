@@ -12,9 +12,11 @@ use axum::response::Response;
 use rst_app::access::admin::AccessAdmin;
 use rst_app::identity::login::LoginFlow;
 use rst_app::settings::SettingsService;
+use rst_app::triggers::TriggerService;
 use rst_domain::access::is_admin;
 use rst_domain::identity::oauth::LoginStates;
 use rst_domain::identity::session::{OAUTH_STATE_SECONDS, is_secure_url};
+use rst_domain::media::library::UploadSlots;
 use rst_domain::paths::StreamerPath;
 use rst_infra::db::sqlite_audit::SqliteAudit;
 use rst_infra::db::sqlite_records::SqliteRecords;
@@ -41,6 +43,7 @@ const FRAME_CSP: &str = "frame-ancestors 'self'";
 pub type AppAccessAdmin<'a> =
     AccessAdmin<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
 
+pub type AppTriggers<'a> = TriggerService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 pub type AppSettings<'a> = SettingsService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 
 pub type AppLoginFlow<'a> =
@@ -57,6 +60,19 @@ pub struct App {
     pub stores: Stores,
     pub twitch: TwitchClient,
     twitch_states: Mutex<LoginStates<()>>,
+    uploads: Mutex<UploadSlots>,
+}
+
+/// A running upload of a streamer; dropping it frees the slot
+pub struct UploadSlot<'a> {
+    app: &'a App,
+    login: String,
+}
+
+impl Drop for UploadSlot<'_> {
+    fn drop(&mut self) {
+        self.app.uploads().release(&self.login);
+    }
 }
 
 impl App {
@@ -75,6 +91,7 @@ impl App {
             secure: is_secure_url(&config.public_url),
             twitch,
             twitch_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
+            uploads: Mutex::new(UploadSlots::default()),
             config,
             stores,
         }
@@ -134,6 +151,20 @@ impl App {
     #[must_use]
     pub fn settings_service(&self) -> AppSettings<'_> {
         SettingsService { profile: &self.stores.profile, audit: &self.stores.audit }
+    }
+
+    #[must_use]
+    pub fn trigger_service(&self) -> AppTriggers<'_> {
+        TriggerService { profile: &self.stores.profile, audit: &self.stores.audit }
+    }
+
+    fn uploads(&self) -> MutexGuard<'_, UploadSlots> {
+        self.uploads.lock().unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
+    /// The upload slot of the streamer; `None` while another upload of theirs runs
+    pub fn upload_slot(&self, login: &str) -> Option<UploadSlot<'_>> {
+        self.uploads().take(login).then(|| UploadSlot { app: self, login: login.to_owned() })
     }
 }
 

@@ -7,6 +7,8 @@
 use std::sync::Arc;
 
 use rst_domain::identity::values::StreamerId;
+use rst_domain::media::library::triggers_using;
+use rst_domain::triggers::Trigger;
 use serde::{Deserialize, Serialize};
 
 use crate::crypto::to_hex;
@@ -39,6 +41,23 @@ pub struct StoredFile {
     /// Random name in the file store
     #[serde(skip)]
     pub file: String,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct MediaEntry {
+    pub name: String,
+    pub size: u64,
+    #[serde(rename = "usedBy")]
+    pub used_by: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct MediaOverview {
+    pub files: Vec<MediaEntry>,
+    #[serde(rename = "usedBytes")]
+    pub used_bytes: u64,
+    #[serde(rename = "limitBytes")]
+    pub limit_bytes: u64,
 }
 
 fn store_error(error: StoreError) -> VaultError {
@@ -92,11 +111,37 @@ impl<S: RecordStore, K: KeyStore, F: FileStore> MediaLibrary<S, K, F> {
         random: [u8; 16],
         now: i64,
     ) -> Result<StoredFile, VaultError> {
-        let key = self.data_key(id).await?;
-        let file = to_hex(&random);
-        let mut writer = self.files.create(&key, id, &file).map_err(store_error)?;
+        let (mut writer, file) = self.writer(id, random).await?;
         writer.write(data).map_err(store_error)?;
         let size = writer.finish().map_err(store_error)?;
+        self.commit(id, place, name, file, size, now).await
+    }
+
+    /// A writer for a new file under a random name (drawn by the caller); after `finish`, [`Self::commit`] gives
+    /// it its name. An upload streams through it without being held in memory as a whole.
+    ///
+    /// # Errors
+    /// `Unreadable` after the streamer was shredded, `Store` when the file cannot be created.
+    pub async fn writer(&self, id: &StreamerId, random: [u8; 16]) -> Result<(F::Writer, String), VaultError> {
+        let key = self.data_key(id).await?;
+        let file = to_hex(&random);
+        let writer = self.files.create(&key, id, &file).map_err(store_error)?;
+        Ok((writer, file))
+    }
+
+    /// Names a finished file; a file of the same name is replaced
+    ///
+    /// # Errors
+    /// When a store fails.
+    pub async fn commit(
+        &self,
+        id: &StreamerId,
+        place: Shelf,
+        name: &str,
+        file: String,
+        size: u64,
+        now: i64,
+    ) -> Result<StoredFile, VaultError> {
         let stored = StoredFile { name: name.to_owned(), size, file: file.clone() };
         self.vault.put_json(id, place.kind(), &file, &stored, now).await?;
         for old in self.list(id, place).await?.into_iter().filter(|old| old.name == name && old.file != file) {
@@ -104,6 +149,29 @@ impl<S: RecordStore, K: KeyStore, F: FileStore> MediaLibrary<S, K, F> {
             self.files.delete(id, &old.file).map_err(store_error)?;
         }
         Ok(stored)
+    }
+
+    /// The media for the dashboard: size and the triggers that use each file, plus used and allowed storage
+    ///
+    /// # Errors
+    /// As [`Self::list`].
+    pub async fn overview(
+        &self,
+        id: &StreamerId,
+        triggers: &[Trigger],
+        limit_bytes: u64,
+    ) -> Result<MediaOverview, VaultError> {
+        let files: Vec<MediaEntry> = self
+            .list(id, Shelf::Media)
+            .await?
+            .into_iter()
+            .map(|stored| MediaEntry {
+                used_by: triggers_using(triggers, &stored.name),
+                name: stored.name,
+                size: stored.size,
+            })
+            .collect();
+        Ok(MediaOverview { used_bytes: files.iter().map(|file| file.size).sum(), files, limit_bytes })
     }
 
     /// `None` if there is no file of that name

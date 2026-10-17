@@ -39,6 +39,7 @@ pub async fn serve(app: &App, path: &StreamerPath) -> Response {
             Ok(settings) => json(&settings, 200),
             Err(error) => server_error(&error.to_string()),
         },
-        OverlayRoute::Events | OverlayRoute::Commands | OverlayRoute::Media(_) => pending(),
+        OverlayRoute::Media(name) => crate::handlers::media::deliver(app, &id, &name).await,
+        OverlayRoute::Events | OverlayRoute::Commands => pending(),
     }
 }

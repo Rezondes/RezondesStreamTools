@@ -13,4 +13,5 @@ pub mod profile;
 pub mod settings;
 #[cfg(test)]
 pub(crate) mod testing;
+pub mod triggers;
 pub mod vault;
