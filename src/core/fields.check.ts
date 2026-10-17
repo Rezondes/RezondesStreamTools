@@ -5,22 +5,22 @@ import { validateSettings } from "./settings.ts";
 import type { ThemeSchema } from "./theme.ts";
 
 const fields = [
-  color("accent", "Farbe", "A", "#39ff14"),
-  text("title", "Titel", "A", "HALLO", 40),
+  color("accent", "Color", "A", "#39ff14"),
+  text("title", "Title", "A", "HELLO", 40),
   textarea("logo", "Logo", "A", "X\nY"),
-  lines("terminal", "Zeilen", "A", ["a", "b"]),
+  lines("terminal", "Lines", "A", ["a", "b"]),
   flag("glow", "Glow", "A", true),
-  sound("beep", "Ton", "A"),
+  sound("beep", "Sound", "A"),
   choice("align", "Position", "A", "center", ["left", "center"]),
-  font("font", "Schrift", "A", "VT323", ["VT323", "Fira Mono"]),
+  font("font", "Font", "A", "VT323", ["VT323", "Fira Mono"]),
   number("size", "Size", "A", 10, 0, 100, "px", 0.5),
-  number("count", "Anzahl", "A", 3, 1, 9),
+  number("count", "Count", "A", 3, 1, 9),
   asciiArt("banner", "Banner", "A", "X"),
 ] as const;
 
 // Type, limits and default end up in the field; without unit and step the keys are missing
 assert.deepEqual(fields[8], { key: "size", type: "number", label: "Size", group: "A", default: 10, min: 0, max: 100, unit: "px", step: 0.5 });
-assert.deepEqual(fields[9], { key: "count", type: "number", label: "Anzahl", group: "A", default: 3, min: 1, max: 9 });
+assert.deepEqual(fields[9], { key: "count", type: "number", label: "Count", group: "A", default: 3, min: 1, max: 9 });
 assert.deepEqual(fields[5].default, { file: "", volume: 1 });
 // ASCII art is a multi-line text with a generator flag
 assert.deepEqual(fields[10], { key: "banner", type: "textarea", label: "Banner", group: "A", default: "X", maxLength: 4000, ascii: true });
@@ -31,6 +31,6 @@ const defaults = Object.fromEntries(fields.map(field => [field.key, field.defaul
 assert.deepEqual(validateSettings(schema, defaults).errors, []);
 
 // Field for one scene only: everything else stays the same
-assert.deepEqual(inScene("brb", text("brbTitle", "Titel", "A", "PAUSE")), { ...text("brbTitle", "Titel", "A", "PAUSE"), scene: "brb" });
+assert.deepEqual(inScene("brb", text("brbTitle", "Title", "A", "BREAK")), { ...text("brbTitle", "Title", "A", "BREAK"), scene: "brb" });
 
 console.log("fields ok");

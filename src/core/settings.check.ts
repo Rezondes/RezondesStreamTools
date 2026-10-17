@@ -7,27 +7,27 @@ const schema: ThemeSchema = {
   id: "probe",
   name: "Probe",
   fields: [
-    { key: "accent", type: "color", label: "Farbe", group: "Allgemein", default: "#39ff14" },
-    { key: "title", type: "text", label: "Titel", group: "Allgemein", default: "HALLO", maxLength: 10 },
-    { key: "lines", type: "lines", label: "Zeilen", group: "Terminal", default: ["a"], maxLines: 2 },
+    { key: "accent", type: "color", label: "Color", group: "General", default: "#39ff14" },
+    { key: "title", type: "text", label: "Title", group: "General", default: "HELLO", maxLength: 10 },
+    { key: "lines", type: "lines", label: "Lines", group: "Terminal", default: ["a"], maxLines: 2 },
     { key: "size", type: "number", label: "Size", group: "General", default: 10, min: 0, max: 100, unit: "px" },
     { key: "glow", type: "boolean", label: "Glow", group: "General", default: true },
-    { key: "art", type: "select", label: "Darstellung", group: "Musik", default: "cover", options: ["cover", "vinyl"] },
-    { key: "font", type: "font", label: "Schrift", group: "Allgemein", default: "Share Tech Mono", options: ["Share Tech Mono", "VT323"] },
-    { key: "logo", type: "media", label: "Logo", group: "Allgemein", default: "", accept: "image" },
-    { key: "ping", type: "sound", label: "Ton", group: "Alerts", default: { file: "", volume: 1 } },
+    { key: "art", type: "select", label: "Display", group: "Music", default: "cover", options: ["cover", "vinyl"] },
+    { key: "font", type: "font", label: "Font", group: "General", default: "Share Tech Mono", options: ["Share Tech Mono", "VT323"] },
+    { key: "logo", type: "media", label: "Logo", group: "General", default: "", accept: "image" },
+    { key: "ping", type: "sound", label: "Sound", group: "Alerts", default: { file: "", volume: 1 } },
   ],
 };
 
 // Resolve: valid saved values win, invalid and missing ones become the default, foreign keys drop out
 const resolved = resolveSettings(schema, { accent: "#ff0000", title: 42, stranger: "x" });
 assert.equal(resolved.accent, "#ff0000");
-assert.equal(resolved.title, "HALLO");
+assert.equal(resolved.title, "HELLO");
 assert.equal(resolved.size, 10);
 assert.equal("stranger" in resolved, false);
 assert.equal(Object.keys(resolved).length, schema.fields.length);
 // A broken store (not an object) gives only defaults
-assert.deepEqual(resolveSettings(schema, "kaputt"), resolveSettings(schema, {}));
+assert.deepEqual(resolveSettings(schema, "broken"), resolveSettings(schema, {}));
 
 // Validate: one valid value per field type without errors
 const good = validateSettings(schema, {
