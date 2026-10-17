@@ -1,0 +1,16 @@
+[package]
+name = "rst-server"
+edition.workspace = true
+version.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[[bin]]
+name = "rst"
+path = "src/main.rs"
+
+[dependencies]
+rst-app.workspace = true
+rst-infra.workspace = true

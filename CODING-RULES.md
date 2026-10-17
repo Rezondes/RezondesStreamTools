@@ -59,6 +59,13 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 32. **Time and chance are passed in.** Pure logic that depends on the clock takes `now` (as `readSession` does) and logic with randomness takes `random` (as `frames` does), so checks are deterministic. Only runtimes and components read `Date.now()` and `Math.random()`.
 33. **Every reconnect has a delay** (never an immediate retry loop) and stops when the owner stops.
 
+## Rust server (`server-rs/`, RUST-PLAN.md)
+
+34. **Layers by crate:** `rst-domain` holds pure rules (no IO, no tokio, no sqlx, no other project crate; checked by `crates/rst-domain/tests/dependencies.rs`), `rst-app` use cases and ports, `rst-infra` adapters, `rst-server` the HTTP server and `main`. One module per bounded context inside each crate.
+35. **Parse, don't validate:** values from outside become value objects (`Login`, `MediaName`, ...) at the edge; code behind it only sees valid values.
+36. **Edition 2024, `unsafe` forbidden, Clippy pedantic without warnings, no `unwrap`/`expect` outside tests.** Tests sit next to the code (`#[cfg(test)]`) or in `tests/`; a ported module takes over every case of its `*.check.ts`.
+37. **Types for the frontend are generated** with `ts-rs` into `src/generated/`, never written by hand.
+
 ## Checks
 
 - Every logic module (`.ts`) under `src/` and `server/` has a `<module>.check.ts` next to it, written with `node:assert/strict`. A module without one is listed with its reason in `WITHOUT_CHECK` of `scripts/rules.check.ts`. `npm test` finds every `*.check.ts` by itself.
@@ -77,6 +84,7 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 | Rule script (`scripts/rules.check.ts`) | part of `npm test` | 6, 8 (file names), 11, 14, 16 (network and imports), 20, a check per logic module |
 | Checks with coverage limits | `npm test` | checks; lines 90 %, branches 90 %, functions 95 % |
 | Build | `vite build` | the overlays still build |
+| Rust (`scripts/rust.ts`) | `npm run rust` | 34, 36: `cargo fmt --check`, `cargo clippy -D warnings`, `cargo test` |
 
 `eslint-suppressions.json` is empty: every older finding is fixed and new code gets no exception. Coverage limits only go up. A new rule names its check in the same commit; a rule without a check is a point of the review checklist.
 

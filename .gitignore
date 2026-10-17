@@ -13,3 +13,4 @@ server.env
 # Lokale Einstellungen und Logs
 .claude/settings.local.json
 *.log
+server-rs/target

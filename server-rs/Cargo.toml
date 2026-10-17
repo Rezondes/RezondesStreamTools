@@ -1,0 +1,22 @@
+# Rust-Server von RST (siehe RUST-PLAN.md): vier Crates nach Schicht. rst-domain (reine Regeln) hängt an keinem
+# anderen Projekt-Crate, rst-app (Use Cases, Ports) an rst-domain, rst-infra (Adapter) an rst-app, rst-server an allen.
+[workspace]
+resolver = "3"
+members = ["crates/rst-domain", "crates/rst-app", "crates/rst-infra", "crates/rst-server"]
+
+[workspace.package]
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+[workspace.dependencies]
+rst-domain = { path = "crates/rst-domain" }
+rst-app = { path = "crates/rst-app" }
+rst-infra = { path = "crates/rst-infra" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "warn"
