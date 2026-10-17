@@ -5,7 +5,8 @@ import { isMediaName } from "./streamerPath.ts";
 import type { SettingField, SettingValue, SettingValues, ThemeSchema } from "./theme.ts";
 
 export type { SettingErrorCode };
-export type SettingError = { key: string; code: SettingErrorCode };
+export type { SettingError } from "../generated/SettingError.ts";
+import type { SettingError } from "../generated/SettingError.ts";
 
 const TEXT_LIMIT = 2000;
 const LINE_LIMIT = 200;

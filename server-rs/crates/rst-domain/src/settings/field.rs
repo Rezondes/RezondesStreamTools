@@ -23,7 +23,7 @@ pub enum SettingValue {
     Flag(bool),
     Number(f64),
     Text(String),
-    Lines(Vec<String>),
+    Lines(#[ts(type = "readonly string[]")] Vec<String>),
     Sound(SoundValue),
 }
 

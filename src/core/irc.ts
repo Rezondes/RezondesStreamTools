@@ -1,7 +1,8 @@
 // Pure parsers for Twitch IRC, without DOM. Tested in irc.check.ts.
 
 export type IrcMessage = { tags: Record<string, string>; prefix: string; command: string; params: string[] };
-export type Part = string | { name: string; url: string };
+export type { Part } from "../generated/Part.ts";
+import type { Part } from "../generated/Part.ts";
 
 const ESCAPES: Record<string, string> = { s: " ", ":": ";", r: "\r", n: "\n", "\\": "\\" };
 const unescapeTag = (value: string) => value.replace(/\\(.)/g, (_, char: string) => ESCAPES[char] ?? char);

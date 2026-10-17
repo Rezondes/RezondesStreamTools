@@ -2,7 +2,7 @@
 // transitions, independent of the matrix theme (own scenes, fonts, stinger and banners). Template for own themes
 // (THEMES.md). The only place of the theme with fixed colors, texts and numbers. StandardValues is the type of the
 // resolved values that the scenes read via useStandard.
-import { choice, color, flag, font, inScene, number, sound, text, type ValuesOf } from "../../core/fields.ts";
+import { choice, color, flag, font, inScene, number, sound, text } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
@@ -118,7 +118,8 @@ const FIELDS = [
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 860, 400, 1600, "px"),
 ] as const satisfies readonly SettingField[];
 
-export type StandardValues = ValuesOf<typeof FIELDS>;
+// The resolved values as the server generates them (src/generated/themes, npm run gen:types)
+export type { StandardValues } from "../../generated/themes/standard.ts";
 
 const GROUP_SCENES = {
   [SCREENS]: ["starting", "brb", "ending"],

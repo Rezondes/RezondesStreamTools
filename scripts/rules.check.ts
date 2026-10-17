@@ -1,5 +1,6 @@
 // Checks the rules from CODING-RULES.md that ESLint does not cover: em dash, bag names,
-// header comment, ignored folder names, import boundaries between themes and core and that every logic module has a check.
+// header comment, ignored folder names, import boundaries between themes and core, that every logic module has a check
+// and that API types come from src/generated.
 // Runs automatically with npm test (like every *.check.ts).
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
@@ -85,9 +86,9 @@ for (const file of files.filter(file => PRESENTING.test(file))) {
   });
 }
 
-// Rule 16, boundaries: a theme imports only from its own folder and from src/core (rules, hooks and building blocks
-// that are the same for all themes), never from another theme, the dashboard or the server. The core never imports
-// from themes, dashboard or server. Checks are exempt (they may use schemaAudit, for example).
+// Rule 16, boundaries: a theme imports only from its own folder, from src/core (rules, hooks and building blocks
+// that are the same for all themes) and the generated types, never from another theme, the dashboard or the server.
+// The core never imports from themes, dashboard or server. Checks are exempt (they may use schemaAudit, for example).
 const IMPORT_FROM = /^\s*(?:import|export)\b[^"';]*?["']([^"']+)["']/gm;
 function importViolations(file: string, source: string): string[] {
   const theme = /^src\/themes\/([^/]+)\//.exec(file)?.[1];
@@ -95,7 +96,8 @@ function importViolations(file: string, source: string): string[] {
   return [...source.matchAll(IMPORT_FROM)].flatMap(([, specifier]) => {
     if (!specifier.startsWith(".")) return [];
     const target = posix.normalize(posix.join(posix.dirname(file), specifier));
-    const allowed = theme ? target.startsWith(`src/themes/${theme}/`) || target.startsWith("src/core/") : !/^(src\/themes|src\/dashboard|server)\//.test(target);
+    const shared = target.startsWith("src/core/") || target.startsWith("src/generated/");
+    const allowed = theme ? target.startsWith(`src/themes/${theme}/`) || shared : !/^(src\/themes|src\/dashboard|server)\//.test(target);
     return allowed ? [] : [`${file}: imports ${specifier} (rule 16)`];
   });
 }
@@ -159,6 +161,24 @@ assert.deepEqual(designLiterals("src/themes/probe/theme.css", ".x { animation: b
 assert.deepEqual(designLiterals("src/themes/probe/scenes/Probe.tsx", "const size = 1920;"), ["src/themes/probe/scenes/Probe.tsx:1: number 1920 (rule 20)"]);
 
 for (const file of files.filter(file => THEME_CODE.test(file))) failures.push(...designLiterals(file, readFileSync(file, "utf8")));
+
+// API types come from the Rust server (src/generated, npm run gen:types): no hand-written type of the same name in the
+// frontend. Exceptions: the theme authoring types, whose wire form is the generated one and assignable to them.
+const GENERATED_TYPES = new Set(files.filter(file => /^src\/generated\/[^/]+\.ts$/.test(file)).map(file => posix.basename(file, ".ts")));
+const AUTHORING_TYPES: Record<string, string[]> = {
+  "src/core/theme.ts": ["SettingField", "ThemeSchema", "MinimeVariantSet", "MinimeVariantInfo"],
+};
+function ownApiTypes(file: string, text: string, generated: ReadonlySet<string>): string[] {
+  return [...text.matchAll(/^\s*(?:export\s+)?(?:type|interface)\s+(\w+)/gm)]
+    .map(match => match[1])
+    .filter(name => generated.has(name) && !(AUTHORING_TYPES[file] ?? []).includes(name))
+    .map(name => `${file}: own type ${name}, use src/generated/${name}.ts`);
+}
+assert.deepEqual(ownApiTypes("src/core/probe.ts", "export type Track = { id: string };\ntype Local = number;", new Set(["Track"])), ["src/core/probe.ts: own type Track, use src/generated/Track.ts"]);
+assert.deepEqual(ownApiTypes("src/core/theme.ts", "export type ThemeSchema = { id: string };", new Set(["ThemeSchema"])), []);
+for (const file of files.filter(file => /^src\/.*\.tsx?$/.test(file) && !file.startsWith("src/generated/"))) {
+  failures.push(...ownApiTypes(file, readFileSync(file, "utf8"), GENERATED_TYPES));
+}
 
 // Test files are called *.check.ts so npm test finds them
 for (const file of files.filter(file => /\.(test|spec)\.tsx?$/.test(file))) failures.push(`${file}: name checks <module>.check.ts`);

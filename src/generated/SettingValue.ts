@@ -5,4 +5,4 @@ import type { SoundValue } from "./SoundValue.ts";
 /**
  * A resolved setting value
  */
-export type SettingValue = boolean | number | string | Array<string> | SoundValue;
+export type SettingValue = boolean | number | string | readonly string[] | SoundValue;

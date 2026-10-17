@@ -1,11 +1,14 @@
 // Theme interface: which scenes exist, how a theme describes its settings and what a theme has to
 // provide (ThemeModule without React for server and dashboard, ThemeView with the scenes for the overlays).
 import type { ComponentType } from "react";
+import type { SceneName } from "../generated/SceneName.ts";
+import type { SettingValue } from "../generated/SettingValue.ts";
+import type { SoundValue } from "../generated/SoundValue.ts";
 import type { RenderClip } from "./renderClip.ts";
 
 // info: public commands page for viewers (/s/<login>/), not a source for OBS
-export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes", "info"] as const;
-export type SceneName = (typeof SCENES)[number];
+export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes", "info"] as const satisfies readonly SceneName[];
+export type { SceneName } from "../generated/SceneName.ts";
 export const OBS_SCENES = SCENES.filter(scene => scene !== "info");
 
 // Recommended size of the browser source in OBS; themes design their scenes for these sizes
@@ -23,8 +26,8 @@ export const SCENE_SIZES: Record<SceneName, { width: number; height: number }> =
 };
 
 // Sound: own file from the media (file) or empty = built-in sound of the theme; volume 0 to 1
-export type SoundValue = { file: string; volume: number };
-export type SettingValue = string | number | boolean | readonly string[] | SoundValue;
+export type { SoundValue } from "../generated/SoundValue.ts";
+export type { SettingValue } from "../generated/SettingValue.ts";
 export type SettingValues = Record<string, SettingValue>;
 
 type FieldBase = {

@@ -1,9 +1,9 @@
 // Building blocks for theme schemas (src/themes/<id>/settings.ts): one function per field type that keeps the key as
 // a literal type. ValuesOf turns it into the type of the resolved values that the scenes of a theme read.
 // Check: fields.check.ts.
+import type { Unit } from "../generated/Unit.ts";
 import type { SceneName, SettingField, SoundValue } from "./theme.ts";
 
-type Unit = "px" | "ms" | "s" | "%";
 const SILENT: SoundValue = { file: "", volume: 1 };
 
 export const color = <K extends string>(key: K, label: string, group: string, value: string) =>

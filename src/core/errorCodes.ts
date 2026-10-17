@@ -1,10 +1,11 @@
 // Error codes the server sends to dashboard and overlays (response text, ?error= after a login,
 // { key, code } when saving settings). The texts for them are in the dashboard (src/dashboard/texts.de.ts),
 // checked in src/dashboard/texts.de.check.ts.
+import type { SettingErrorCode } from "../generated/SettingErrorCode.ts";
 
 // Settings of a theme (src/core/settings.ts)
-export const SETTING_ERROR_CODES = ["invalid_type", "invalid_color", "out_of_range", "too_long", "too_many_lines", "unknown_option", "invalid_media"] as const;
-export type SettingErrorCode = (typeof SETTING_ERROR_CODES)[number];
+export const SETTING_ERROR_CODES = ["invalid_type", "invalid_color", "out_of_range", "too_long", "too_many_lines", "unknown_option", "invalid_media"] as const satisfies readonly SettingErrorCode[];
+export type { SettingErrorCode } from "../generated/SettingErrorCode.ts";
 
 // Requests and login (server/index.ts, server/routes.ts, server/http.ts, server/streamer.ts)
 const REQUEST_ERROR_CODES = [

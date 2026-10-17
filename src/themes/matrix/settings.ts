@@ -2,7 +2,7 @@
 // the defaults give the original look. The only place of the theme with fixed colors, texts and numbers.
 // MatrixValues is the type of the resolved values that the scenes read via useMatrix (values.ts).
 import { asciiText } from "../../core/asciiText.ts";
-import { asciiArt, choice, color, flag, font, inScene, lines, number, text, type ValuesOf } from "../../core/fields.ts";
+import { asciiArt, choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
@@ -297,7 +297,8 @@ const FIELDS = [
   flag("infoRain", "Befehlsseite: Matrix-Regen im Hintergrund", INFO_GROUP, true),
 ] as const satisfies readonly SettingField[];
 
-export type MatrixValues = ValuesOf<typeof FIELDS>;
+// The resolved values as the server generates them (src/generated/themes, npm run gen:types)
+export type { MatrixValues } from "../../generated/themes/matrix.ts";
 
 const GROUP_SCENES = {
   [RAIN]: ["starting", "brb", "ending", "alerts", "info"],

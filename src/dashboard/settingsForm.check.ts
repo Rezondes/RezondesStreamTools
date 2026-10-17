@@ -1,7 +1,8 @@
 // Check for settingsForm.ts: groups in schema order, reset, changes and errors per field. Runs with npm test.
 import assert from "node:assert/strict";
 import type { ThemeSchema } from "../core/theme.ts";
-import { changedKeys, errorsByKey, groupFields, groupsForView, groupsWithoutScene, isDefault, resetAll, resetField } from "./settingsForm.ts";
+import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
+import { changedKeys, errorsByKey, groupFields, groupsForView, groupsWithoutScene, isDefault, pickSchema, resetAll, resetField } from "./settingsForm.ts";
 
 const schema: ThemeSchema = {
   id: "probe",
@@ -63,3 +64,11 @@ assert.deepEqual(changedKeys(values, values), []);
 assert.deepEqual(errorsByKey([{ key: "size", code: "out_of_range" }, { key: "accent", code: "invalid_color" }]), { size: "out_of_range", accent: "invalid_color" });
 
 console.log("settingsForm ok");
+
+// The server's schema (format of GET /api/themes) wins over the built-in one; unknown ids fall back to the default
+const fromServer: ServerSchema = JSON.parse(JSON.stringify({ ...schema, fields: [{ key: "accent", type: "color", label: "Color", group: "General", default: "#ff0000" }] })) as ServerSchema;
+const local = (id: string) => (id === "probe" ? schema : null);
+assert.equal(pickSchema([fromServer], local, scoped, "probe"), fromServer);
+assert.equal(pickSchema(null, local, scoped, "probe"), schema);
+assert.equal(pickSchema([fromServer], local, scoped, "nothing"), scoped);
+assert.deepEqual(resetAll(pickSchema([fromServer], local, scoped, "probe")), { accent: "#ff0000" });

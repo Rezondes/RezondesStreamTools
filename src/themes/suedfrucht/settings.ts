@@ -1,7 +1,7 @@
 // Settings schema of the Südfrucht theme: southern tropical coast and sea look (sea, waves, sand, palms,
 // wooden signs) for all scenes, stinger and banners, plus fruit minimes that hop. The only place of the theme with
 // fixed colors, texts and numbers. SuedfruchtValues is the type of the resolved values (useSuedfrucht).
-import { choice, color, flag, font, inScene, lines, number, text, type ValuesOf } from "../../core/fields.ts";
+import { choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
@@ -268,7 +268,8 @@ const FIELDS = [
   choice("timeInfo", "Befehlsseite: Tageszeit am Strand", INFO_GROUP, "mittag", TIMES),
 ] as const satisfies readonly SettingField[];
 
-export type SuedfruchtValues = ValuesOf<typeof FIELDS>;
+// The resolved values as the server generates them (src/generated/themes, npm run gen:types)
+export type { SuedfruchtValues } from "../../generated/themes/suedfrucht.ts";
 
 // Main and detail color per fruit (keys fruit<Id>Main, fruit<Id>Detail; CSS in minimes.css)
 const FRUIT_DEFAULT_COLORS: Record<string, readonly [string, string]> = {

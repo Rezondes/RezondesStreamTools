@@ -1,9 +1,10 @@
 // Theme section in the dashboard: choose a theme to view and edit (does not change the overlays), set it as the
 // active theme only via a button; choose the view: general (groups that apply everywhere) or a scene (preview and
-// the groups that apply in it, see groupScenes; the search searches all), form from the schema, grouped by group; save with errors per field, reset per
-// field and for everything, preview with the unsaved values. The overlays take over saved values of the active theme
-// immediately (SSE).
+// the groups that apply in it, see groupScenes; the search searches all), form from the server's schema
+// (GET /api/themes), grouped by group; save with errors per field, reset per field and for everything, preview with
+// the unsaved values. The overlays take over saved values of the active theme immediately (SSE).
 import { useCallback, useEffect, useState } from "react";
+import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
 import { SCENES, type SceneName, type SettingValues, type ThemeSchema } from "../core/theme.ts";
@@ -12,7 +13,7 @@ import { getJson, loadMedia, postJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
 import ScenePreview from "./ScenePreview.tsx";
 import SettingInput from "./SettingInput.tsx";
-import { changedKeys, errorsByKey, groupFields, groupsForView, groupsWithoutScene, resetAll, resetField, type FormView } from "./settingsForm.ts";
+import { changedKeys, errorsByKey, groupFields, groupsForView, groupsWithoutScene, pickSchema, resetAll, resetField, type FormView } from "./settingsForm.ts";
 import { TEXTS } from "./texts.de.ts";
 
 // Answer of GET /api/settings: chosen theme, saved values per theme, available themes
@@ -22,8 +23,18 @@ type Draft = { values: SettingValues; set: (update: (values: SettingValues) => S
 
 const defaultSchema = findTheme(DEFAULT_THEME)!;
 
+// Schemas of all themes from the server; null until it answered (or an old server without the route)
+function useServerSchemas() {
+  const [schemas, setSchemas] = useState<ServerSchema[] | null>(null);
+  useEffect(() => {
+    getJson<ServerSchema[] | null>("/api/themes", null).then(setSchemas).catch(() => setSchemas(null));
+  }, []);
+  return useCallback((id: string) => pickSchema(schemas, findTheme, defaultSchema, id), [schemas]);
+}
+
 export default function ThemeSettings({ me }: { me: Me }) {
-  const { file, viewed, showTheme, draft, setDraft, errors, notice, media, save, load } = useSettingsFile();
+  const schemaOf = useServerSchemas();
+  const { file, viewed, showTheme, draft, setDraft, errors, notice, media, save, load } = useSettingsFile(schemaOf);
   const [search, setSearch] = useState("");
   const [view, setView] = useState<FormView>("general");
   // Preview: the last chosen scene, also while general is shown
@@ -41,7 +52,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
       </p>
     );
   }
-  const schema = findTheme(viewed) ?? defaultSchema;
+  const schema = schemaOf(viewed);
   const saved = resolveSettings(schema, file.values[schema.id]);
   const changed = changedKeys(saved, draft);
   const switchTheme = (id: string) => {
@@ -144,7 +155,7 @@ function SettingsGroups({ schema, view, search, draft, errors, media }: GroupsPr
 
 // Loads saved settings, keeps the viewed theme with its draft and saves; server errors per
 // field or as a code. save(activate): save the values of the viewed theme, with activate also as the active theme.
-function useSettingsFile() {
+function useSettingsFile(schemaOf: (id: string) => ThemeSchema) {
   const [file, setFile] = useState<SettingsFile | null>(null);
   const [viewed, setViewed] = useState("");
   const [draft, setDraft] = useState<SettingValues>({});
@@ -160,14 +171,14 @@ function useSettingsFile() {
     const id = theme ?? loaded.theme;
     setFile(loaded);
     setViewed(id);
-    setDraft(resolveSettings(findTheme(id) ?? defaultSchema, loaded.values[id]));
+    setDraft(resolveSettings(schemaOf(id), loaded.values[id]));
     setErrors({});
-  }, []);
+  }, [schemaOf]);
 
   // View another theme: its saved state becomes the draft, the overlays stay as they are
   const showTheme = (id: string) => {
     setViewed(id);
-    setDraft(resolveSettings(findTheme(id) ?? defaultSchema, file?.values[id]));
+    setDraft(resolveSettings(schemaOf(id), file?.values[id]));
     setErrors({});
     setNotice(null);
   };

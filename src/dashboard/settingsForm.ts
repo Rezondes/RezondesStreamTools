@@ -1,7 +1,13 @@
-// Logic of the settings form: fields by group in schema order, reset to the default,
+// Logic of the settings form: the schema from the server, fields by group in schema order, reset to the default,
 // changed fields compared to the saved state and errors per field. Pure functions, tested in settingsForm.check.ts.
+import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
 import type { SettingError, SettingErrorCode } from "../core/settings.ts";
 import type { SceneName, SettingField, SettingValue, SettingValues, ThemeSchema } from "../core/theme.ts";
+
+// The schema of a theme: the server's (GET /api/themes) decides rules, limits and defaults; the built-in one only
+// stands in while the server has not answered, the default theme for an unknown id
+export const pickSchema = (server: readonly ServerSchema[] | null, local: (id: string) => ThemeSchema | null, fallback: ThemeSchema, id: string): ThemeSchema =>
+  server?.find(schema => schema.id === id) ?? local(id) ?? fallback;
 
 const same = (left: SettingValue | undefined, right: SettingValue | undefined) => JSON.stringify(left) === JSON.stringify(right);
 
