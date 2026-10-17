@@ -5,6 +5,7 @@ use axum::extract::Request;
 use axum::response::Response;
 
 use crate::app::App;
+pub mod admin;
 pub mod auth;
 
 use crate::errors::pending;
@@ -15,6 +16,11 @@ pub struct Call<'app> {
     pub app: &'app App,
     pub visitor: Visitor,
     pub request: Request,
+}
+
+/// The request body up to `limit` bytes; `None` when it is larger (answer `413 too-large`)
+pub async fn read_body(request: Request, limit: usize) -> Option<axum::body::Bytes> {
+    axum::body::to_bytes(request.into_body(), limit).await.ok()
 }
 
 pub async fn handle(route: Route, call: Call<'_>) -> Response {
@@ -46,9 +52,10 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         | Route::RenderDone
         | Route::RenderCancel
         | Route::RenderFiles
-        | Route::RenderFile
-        | Route::AdminAccess
-        | Route::SaveAdminAccess
-        | Route::AdminStreamers => pending(),
+        | Route::RenderFile => pending(),
+        Route::AdminAccess => admin::access(call).await,
+        Route::SaveAdminAccess => admin::save_access(call).await,
+        Route::AdminStreamers => admin::streamers(call).await,
+        Route::AdminAudit => admin::audit(call).await,
     }
 }

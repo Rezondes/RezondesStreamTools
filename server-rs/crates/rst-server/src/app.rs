@@ -9,6 +9,7 @@ use axum::Router;
 use axum::extract::{Request, State};
 use axum::http::{HeaderValue, header};
 use axum::response::Response;
+use rst_app::access::admin::AccessAdmin;
 use rst_app::identity::login::LoginFlow;
 use rst_domain::access::is_admin;
 use rst_domain::identity::oauth::LoginStates;
@@ -36,6 +37,9 @@ use crate::wiring::Stores;
 pub const SANDBOX_CSP: &str =
     "sandbox; default-src 'none'; img-src 'self' data:; media-src 'self'; style-src 'unsafe-inline'";
 const FRAME_CSP: &str = "frame-ancestors 'self'";
+
+pub type AppAccessAdmin<'a> =
+    AccessAdmin<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
 
 pub type AppLoginFlow<'a> =
     LoginFlow<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
@@ -76,6 +80,19 @@ impl App {
 
     pub fn twitch_states(&self) -> MutexGuard<'_, LoginStates<()>> {
         self.twitch_states.lock().unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
+    #[must_use]
+    pub fn access_admin(&self) -> AppAccessAdmin<'_> {
+        let stores = &self.stores;
+        AccessAdmin {
+            access: &stores.access,
+            audit: &stores.audit,
+            sessions: &stores.sessions,
+            streamers: &stores.streamers,
+            profile: &stores.profile,
+            admins: &self.config.admins,
+        }
     }
 
     #[must_use]

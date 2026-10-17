@@ -89,6 +89,8 @@ routes! {
     AdminAccess => "GET" "/api/admin/access", Guard::Admin;
     SaveAdminAccess => "POST" "/api/admin/access", Guard::Admin;
     AdminStreamers => "GET" "/api/admin/streamers", Guard::Admin;
+    // New: the audit log, server-wide or with ?login= of one streamer
+    AdminAudit => "GET" "/api/admin/audit", Guard::Admin;
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

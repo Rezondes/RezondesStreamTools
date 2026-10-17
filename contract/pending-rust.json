@@ -1,10 +1,5 @@
 [
-  "rights: allowlisted streamer logs in and sees /api/me",
-  "rights: admin routes are admin-only",
-  "rights: switched-off feature is feature-off",
   "rights: removed from the allowlist is not-allowed",
-  "rights: admin reads and saves access, invalid input is rejected",
-  "rights: admin lists the streamers",
   "overlay: status, settings and commands are public",
   "overlay: scenes are served as HTML, unknown logins and scenes are 404",
   "events: without or with a wrong key 403",

@@ -1,8 +1,13 @@
 //! The access policy of the server (template: `loadAccess` in `server/access.ts`), encrypted with the server key in
 //! the server-wide settings. Without a saved policy only the admins may log in.
 
+pub mod admin;
+
+use std::sync::Arc;
+
 use rst_domain::access::{AccessPolicy, RawAccess};
 use rst_domain::identity::values::Login;
+use tokio::sync::Mutex;
 
 use crate::crypto::cipher::{open, seal};
 use crate::ports::StoreError;
@@ -16,11 +21,30 @@ const KEY: &str = "access";
 pub struct AccessSettings<P> {
     store: P,
     server_key: DataKey,
+    /// Two admins saving at once: one after the other, never interleaved
+    changes: Arc<Mutex<()>>,
 }
 
 impl<P: ServerSettingsStore> AccessSettings<P> {
-    pub const fn new(store: P, server_key: DataKey) -> Self {
-        Self { store, server_key }
+    pub fn new(store: P, server_key: DataKey) -> Self {
+        Self { store, server_key, changes: Arc::new(Mutex::new(())) }
+    }
+
+    /// Replaces the policy with the sanitized input; returns the policy before and after
+    ///
+    /// # Errors
+    /// As [`Self::load`] and [`Self::save`].
+    pub async fn replace(
+        &self,
+        admins: &[Login],
+        raw: &RawAccess,
+        now: i64,
+    ) -> Result<(AccessPolicy, AccessPolicy), VaultError> {
+        let _change = self.changes.lock().await;
+        let before = self.load(admins).await?;
+        let after = AccessPolicy::sanitize(raw);
+        self.save(&after, now).await?;
+        Ok((before, after))
     }
 
     /// The saved policy, or the initial one with only the admins on the allowlist
