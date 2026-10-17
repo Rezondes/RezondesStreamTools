@@ -8,6 +8,7 @@ pub mod records;
 pub mod server_settings;
 pub mod sessions;
 pub mod streamers;
+pub mod twitch;
 
 use std::fmt;
 

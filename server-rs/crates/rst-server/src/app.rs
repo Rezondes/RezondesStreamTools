@@ -3,15 +3,25 @@
 //! carries `nosniff`; HTML may only be framed by the own origin.
 
 use std::path::Path;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex, MutexGuard};
 
 use axum::Router;
 use axum::extract::{Request, State};
 use axum::http::{HeaderValue, header};
 use axum::response::Response;
+use rst_app::identity::login::LoginFlow;
 use rst_domain::access::is_admin;
+use rst_domain::identity::oauth::LoginStates;
+use rst_domain::identity::session::{OAUTH_STATE_SECONDS, is_secure_url};
 use rst_domain::identity::values::Login;
 use rst_domain::paths::{OverlayRoute, StreamerPath};
+use rst_infra::db::sqlite_audit::SqliteAudit;
+use rst_infra::db::sqlite_records::SqliteRecords;
+use rst_infra::db::sqlite_server_settings::SqliteServerSettings;
+use rst_infra::db::sqlite_sessions::SqliteSessions;
+use rst_infra::db::sqlite_streamers::SqliteStreamers;
+use rst_infra::keys::sqlite::SqliteKeyStore;
+use rst_infra::twitch::oauth::TwitchClient;
 
 use crate::clock::now_ms;
 use crate::config::ServerConfig;
@@ -27,16 +37,59 @@ pub const SANDBOX_CSP: &str =
     "sandbox; default-src 'none'; img-src 'self' data:; media-src 'self'; style-src 'unsafe-inline'";
 const FRAME_CSP: &str = "frame-ancestors 'self'";
 
+pub type AppLoginFlow<'a> =
+    LoginFlow<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
+
+/// Pending Twitch logins: at most this many, each valid for 10 minutes
+const PENDING_LOGINS: usize = 1000;
+
 pub struct App {
     pub config: ServerConfig,
     pub public_origin: String,
+    /// Cookies only over HTTPS when the public URL is HTTPS
+    pub secure: bool,
     pub stores: Stores,
+    pub twitch: TwitchClient,
+    twitch_states: Mutex<LoginStates<()>>,
 }
 
 impl App {
     #[must_use]
     pub fn new(config: ServerConfig, stores: Stores) -> Self {
-        Self { public_origin: origin_of(&config.public_url), config, stores }
+        let redirect = format!("{}/auth/callback", config.public_url);
+        let twitch = TwitchClient::new(
+            &config.twitch.client_id,
+            &config.twitch.client_secret,
+            &redirect,
+            &config.providers.twitch_id,
+            &config.providers.twitch_api,
+        );
+        Self {
+            public_origin: origin_of(&config.public_url),
+            secure: is_secure_url(&config.public_url),
+            twitch,
+            twitch_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
+            config,
+            stores,
+        }
+    }
+
+    pub fn twitch_states(&self) -> MutexGuard<'_, LoginStates<()>> {
+        self.twitch_states.lock().unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
+    #[must_use]
+    pub fn login_flow(&self) -> AppLoginFlow<'_> {
+        let stores = &self.stores;
+        LoginFlow {
+            streamers: &stores.streamers,
+            profile: &stores.profile,
+            sessions: &stores.sessions,
+            overlay_keys: &stores.overlay_keys,
+            access: &stores.access,
+            audit: &stores.audit,
+            admins: &self.config.admins,
+        }
     }
 
     /// Caller from the session cookie and what the access policy grants; no session = an empty visitor
@@ -235,7 +288,7 @@ mod tests {
         let app = app(folder.path()).await;
         assert_eq!(call(&app, "POST", "/auth/logout", Some("http://evil.example")).await.2, "cross-origin");
         assert_eq!(call(&app, "POST", "/auth/logout", None).await.0, 403);
-        assert_eq!(call(&app, "POST", "/auth/logout", Some("http://localhost:8089")).await.0, 501);
+        assert_eq!(call(&app, "POST", "/auth/logout", Some("http://localhost:8089")).await.0, 200);
         assert_eq!(call(&app, "GET", "/api/test", None).await.0, 405);
         let (status, _, body) = call(&app, "GET", "/api/me", None).await;
         assert_eq!((status, body.as_str()), (401, "unauthorized"));

@@ -19,7 +19,6 @@ pub fn text(code: u16, body: &str) -> Response {
 }
 
 /// JSON answer that browsers never cache
-#[expect(dead_code, reason = "used by the API handlers, package 26 on")]
 #[must_use]
 pub fn json(value: &impl Serialize, code: u16) -> Response {
     let Ok(body) = serde_json::to_vec(value) else { return server_error("serializing an answer failed") };
@@ -28,6 +27,23 @@ pub fn json(value: &impl Serialize, code: u16) -> Response {
     let headers = response.headers_mut();
     headers.insert(header::CONTENT_TYPE, HeaderValue::from_static("application/json"));
     headers.insert(header::CACHE_CONTROL, HeaderValue::from_static("no-store"));
+    response
+}
+
+/// 302 to `location` with the given cookies
+#[must_use]
+pub fn redirect(location: &str, cookies: &[String]) -> Response {
+    let mut response = Response::new(Body::empty());
+    *response.status_mut() = StatusCode::FOUND;
+    let headers = response.headers_mut();
+    if let Ok(value) = HeaderValue::from_str(location) {
+        headers.insert(header::LOCATION, value);
+    }
+    for cookie in cookies {
+        if let Ok(value) = HeaderValue::from_str(cookie) {
+            headers.append(header::SET_COOKIE, value);
+        }
+    }
     response
 }
 

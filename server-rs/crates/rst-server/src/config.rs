@@ -111,14 +111,11 @@ pub struct ServerConfig {
     pub public_url: String,
     pub dist: PathBuf,
     pub admins: Vec<Login>,
-    #[expect(dead_code, reason = "used by the Twitch login, package 26")]
     pub twitch: OAuthApp,
     /// `None` without Spotify credentials: no music
-    #[cfg_attr(not(test), expect(dead_code, reason = "used by Spotify, package 37"))]
     pub spotify: Option<OAuthApp>,
     #[cfg_attr(not(test), expect(dead_code, reason = "used by media uploads, package 29"))]
     pub media_quota_bytes: u64,
-    #[cfg_attr(not(test), expect(dead_code, reason = "used by the provider clients, package 26 on"))]
     pub providers: ProviderUrls,
 }
 

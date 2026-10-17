@@ -5,6 +5,8 @@ use axum::extract::Request;
 use axum::response::Response;
 
 use crate::app::App;
+pub mod auth;
+
 use crate::errors::pending;
 use crate::routes::{Route, Visitor};
 
@@ -16,14 +18,14 @@ pub struct Call<'app> {
 }
 
 pub async fn handle(route: Route, call: Call<'_>) -> Response {
-    let _ = (&call.app, &call.visitor, &call.request);
     match route {
-        Route::AuthLogin
-        | Route::AuthCallback
-        | Route::AuthLogout
-        | Route::SpotifyCallback
-        | Route::Me
-        | Route::OverlayKey
+        Route::AuthLogin => auth::login(&call),
+        Route::AuthCallback => auth::callback(call).await,
+        Route::AuthLogout => auth::logout(call).await,
+        Route::Me => auth::me(call).await,
+        Route::OverlayKey => auth::rotate_overlay_key(call).await,
+        Route::TwitchDisconnect => auth::disconnect(call).await,
+        Route::SpotifyCallback
         | Route::TestAlert
         | Route::TriggerConfig
         | Route::SaveTriggerConfig
@@ -35,7 +37,6 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         | Route::SpotifyLogin
         | Route::SpotifyDetails
         | Route::SpotifyLogout
-        | Route::TwitchDisconnect
         | Route::HelpConfig
         | Route::SaveHelpConfig
         | Route::Settings

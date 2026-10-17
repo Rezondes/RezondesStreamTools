@@ -36,7 +36,6 @@ pub struct Stores {
     pub overlay_keys: OverlayKeys<SqliteRecords, SqliteKeyStore>,
     pub media: MediaLibrary<SqliteRecords, SqliteKeyStore, EncryptedFiles>,
     pub access: AccessSettings<SqliteServerSettings>,
-    #[expect(dead_code, reason = "written from package 26 on")]
     pub audit: AuditLog<SqliteAudit, SqliteKeyStore>,
 }
 
