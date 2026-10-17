@@ -37,10 +37,7 @@ mod tests {
 
     #[test]
     fn one_sound_per_alert_kind_and_fade_out() {
-        let keys: Vec<String> = alert_sound_fields("Alerts")
-            .into_iter()
-            .map(|field| field.key)
-            .collect();
+        let keys: Vec<String> = alert_sound_fields("Alerts").into_iter().map(|field| field.key).collect();
         assert_eq!(keys.len(), 9);
         assert_eq!(keys.last().map(String::as_str), Some("soundLeave"));
     }

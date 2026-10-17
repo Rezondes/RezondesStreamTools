@@ -9,19 +9,11 @@ use crate::error::InvalidValue;
 use crate::identity::values::string_value;
 
 /// Known media extensions, compared without case
-const MEDIA_EXTENSIONS: [&str; 11] = [
-    "gif", "png", "jpg", "jpeg", "webp", "svg", "mp4", "webm", "mp3", "wav", "ogg",
-];
+const MEDIA_EXTENSIONS: [&str; 11] = ["gif", "png", "jpg", "jpeg", "webp", "svg", "mp4", "webm", "mp3", "wav", "ogg"];
 /// At most this many characters before the extension
 const MEDIA_STEM_MAX: usize = 100;
 /// Files a render produces: the stinger video, the banner GIFs and their still images
-pub const OUTPUT_NAMES: [&str; 5] = [
-    "stinger.webm",
-    "profile.gif",
-    "profile.png",
-    "offline.gif",
-    "offline.png",
-];
+pub const OUTPUT_NAMES: [&str; 5] = ["stinger.webm", "profile.gif", "profile.png", "offline.gif", "offline.png"];
 
 const fn is_word(byte: u8) -> bool {
     byte.is_ascii_alphanumeric() || byte == b'_'
@@ -39,20 +31,12 @@ impl MediaName {
     pub fn parse(value: &str) -> Result<Self, InvalidValue> {
         let invalid = InvalidValue::new("media name");
         let (stem, extension) = value.rsplit_once('.').ok_or(invalid)?;
-        let known = MEDIA_EXTENSIONS
-            .iter()
-            .any(|known| known.eq_ignore_ascii_case(extension));
+        let known = MEDIA_EXTENSIONS.iter().any(|known| known.eq_ignore_ascii_case(extension));
         let bytes = stem.as_bytes();
         let valid_stem = bytes.first().is_some_and(|first| is_word(*first))
             && bytes.len() <= MEDIA_STEM_MAX
-            && bytes
-                .iter()
-                .all(|byte| is_word(*byte) || b" ()-".contains(byte));
-        if known && valid_stem {
-            Ok(Self(value.to_owned()))
-        } else {
-            Err(invalid)
-        }
+            && bytes.iter().all(|byte| is_word(*byte) || b" ()-".contains(byte));
+        if known && valid_stem { Ok(Self(value.to_owned())) } else { Err(invalid) }
     }
 
     #[must_use]
@@ -70,11 +54,7 @@ impl OutputName {
     /// # Errors
     /// When the name is not one of the render outputs.
     pub fn parse(value: &str) -> Result<Self, InvalidValue> {
-        if OUTPUT_NAMES.contains(&value) {
-            Ok(Self(value.to_owned()))
-        } else {
-            Err(InvalidValue::new("output name"))
-        }
+        if OUTPUT_NAMES.contains(&value) { Ok(Self(value.to_owned())) } else { Err(InvalidValue::new("output name")) }
     }
 
     #[must_use]
@@ -92,13 +72,7 @@ mod tests {
 
     #[test]
     fn media_name_accepts_simple_names() {
-        for value in [
-            "a.png",
-            "lizard.gif",
-            "Lizard (2).MP4",
-            "my lizard.webm",
-            "x_1-2.jpeg",
-        ] {
+        for value in ["a.png", "lizard.gif", "Lizard (2).MP4", "my lizard.webm", "x_1-2.jpeg"] {
             assert!(MediaName::parse(value).is_ok(), "{value}");
         }
         assert!(MediaName::parse(&format!("{}.png", "a".repeat(100))).is_ok());
@@ -107,18 +81,9 @@ mod tests {
     #[test]
     fn media_name_rejects_paths_hidden_and_unknown() {
         let too_long = format!("{}.png", "a".repeat(101));
-        for value in [
-            "",
-            "../a.png",
-            "a/b.png",
-            "a\\b.png",
-            "a.exe",
-            "lizard.html",
-            ".hidden.png",
-            "a.b.png",
-            "png",
-            &too_long,
-        ] {
+        for value in
+            ["", "../a.png", "a/b.png", "a\\b.png", "a.exe", "lizard.html", ".hidden.png", "a.b.png", "png", &too_long]
+        {
             assert!(MediaName::parse(value).is_err(), "{value}");
         }
     }

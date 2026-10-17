@@ -104,18 +104,10 @@ pub struct ThemeSchema {
     pub id: String,
     pub name: String,
     pub fields: Vec<SettingField>,
-    #[serde(
-        rename = "groupScenes",
-        default,
-        skip_serializing_if = "BTreeMap::is_empty"
-    )]
+    #[serde(rename = "groupScenes", default, skip_serializing_if = "BTreeMap::is_empty")]
     #[ts(optional, as = "Option<BTreeMap<String, Vec<SceneName>>>")]
     pub group_scenes: BTreeMap<String, Vec<SceneName>>,
-    #[serde(
-        rename = "minimeVariants",
-        default,
-        skip_serializing_if = "Option::is_none"
-    )]
+    #[serde(rename = "minimeVariants", default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub minime_variants: Option<MinimeVariantSet>,
 }
@@ -135,20 +127,8 @@ mod tests {
     #[test]
     fn every_scene_has_exactly_one_size() {
         assert_eq!(SceneName::ALL.len(), 10);
-        assert_eq!(
-            SceneName::Chat.size(),
-            SceneSize {
-                width: 500,
-                height: 900
-            }
-        );
-        assert_eq!(
-            SceneName::Info.size(),
-            SceneSize {
-                width: 1280,
-                height: 900
-            }
-        );
+        assert_eq!(SceneName::Chat.size(), SceneSize { width: 500, height: 900 });
+        assert_eq!(SceneName::Info.size(), SceneSize { width: 1280, height: 900 });
         for scene in SceneName::ALL {
             assert_eq!(SceneName::parse(scene.name()), Some(scene));
         }
@@ -157,9 +137,6 @@ mod tests {
 
     #[test]
     fn scene_names_serialize_lower_case() {
-        assert_eq!(
-            serde_json::to_string(&SceneName::Brb).expect("serialize"),
-            "\"brb\""
-        );
+        assert_eq!(serde_json::to_string(&SceneName::Brb).expect("serialize"), "\"brb\"");
     }
 }

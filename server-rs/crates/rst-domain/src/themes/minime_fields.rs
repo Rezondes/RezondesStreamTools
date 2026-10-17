@@ -16,7 +16,6 @@ const WHEN_FULL: [&str; 2] = ["replace", "reject"];
 
 /// For all themes with minimes: commands to join and leave, roles, rules of the list, movement
 #[must_use]
-#[expect(clippy::too_many_lines, reason = "one line per field of the schema")]
 pub fn minime_base_fields() -> Vec<SettingField> {
     let ms = Some(Unit::Ms);
     vec![
@@ -34,36 +33,10 @@ pub fn minime_base_fields() -> Vec<SettingField> {
             "!leave",
             Some(25),
         ),
-        choice(
-            "minimeJoinRole",
-            "Einklinken ab Rolle",
-            MINIME_COMMANDS,
-            "everyone",
-            &ROLES,
-        ),
-        choice(
-            "minimeKickRole",
-            "Fremde rauswerfen ab Rolle",
-            MINIME_COMMANDS,
-            "moderator",
-            &ROLES,
-        ),
-        flag(
-            "minimeColorJoins",
-            "Befehl für Farbe oder Typ klinkt auch ein",
-            MINIME_COMMANDS,
-            true,
-        ),
-        number(
-            "minimeMax",
-            "Höchstzahl gleichzeitig",
-            MINIME_RULES,
-            30.0,
-            1.0,
-            100.0,
-            None,
-            None,
-        ),
+        choice("minimeJoinRole", "Einklinken ab Rolle", MINIME_COMMANDS, "everyone", &ROLES),
+        choice("minimeKickRole", "Fremde rauswerfen ab Rolle", MINIME_COMMANDS, "moderator", &ROLES),
+        flag("minimeColorJoins", "Befehl für Farbe oder Typ klinkt auch ein", MINIME_COMMANDS, true),
+        number("minimeMax", "Höchstzahl gleichzeitig", MINIME_RULES, 30.0, 1.0, 100.0, None, None),
         choice(
             "minimeWhenFull",
             "Wenn voll: Inaktivsten ersetzen (replace) oder Neue abweisen (reject)",
@@ -91,143 +64,27 @@ pub fn minime_base_fields() -> Vec<SettingField> {
             Some(Unit::S),
             None,
         ),
-        flag(
-            "minimeChatKeepsAlive",
-            "Chatnachrichten halten das Minime im Bild",
-            MINIME_RULES,
-            true,
-        ),
-        flag(
-            "minimeReactToChat",
-            "Minime reagiert auf Chatnachrichten",
-            MINIME_RULES,
-            true,
-        ),
-        flag(
-            "minimeClearOffline",
-            "Alle entfernen, wenn der Stream endet",
-            MINIME_RULES,
-            true,
-        ),
-        flag(
-            "minimeRemoveOnBan",
-            "Bei Ban oder Timeout entfernen",
-            MINIME_RULES,
-            true,
-        ),
-        number(
-            "minimeSpeed",
-            "Laufgeschwindigkeit (px pro Sekunde)",
-            MINIME_MOTION,
-            60.0,
-            5.0,
-            600.0,
-            None,
-            None,
-        ),
-        number(
-            "minimeMargin",
-            "Abstand zum Rand",
-            MINIME_MOTION,
-            60.0,
-            0.0,
-            600.0,
-            Some(Unit::Px),
-            None,
-        ),
-        number(
-            "minimeWalkMin",
-            "Kürzeste Laufstrecke",
-            MINIME_MOTION,
-            100.0,
-            10.0,
-            1920.0,
-            Some(Unit::Px),
-            None,
-        ),
-        number(
-            "minimeWalkMax",
-            "Längste Laufstrecke",
-            MINIME_MOTION,
-            600.0,
-            10.0,
-            1920.0,
-            Some(Unit::Px),
-            None,
-        ),
-        number(
-            "minimeWalkWeight",
-            "Häufigkeit: wandern",
-            MINIME_MOTION,
-            40.0,
-            0.0,
-            100.0,
-            None,
-            None,
-        ),
-        number(
-            "minimeIdleWeight",
-            "Häufigkeit: auf der Stelle schweben",
-            MINIME_MOTION,
-            40.0,
-            0.0,
-            100.0,
-            None,
-            None,
-        ),
-        number(
-            "minimeIdleMinMs",
-            "Schweben mindestens",
-            MINIME_MOTION,
-            2000.0,
-            200.0,
-            60_000.0,
-            ms,
-            None,
-        ),
-        number(
-            "minimeIdleMaxMs",
-            "Schweben höchstens",
-            MINIME_MOTION,
-            6000.0,
-            200.0,
-            60_000.0,
-            ms,
-            None,
-        ),
-        number(
-            "minimeEnterMs",
-            "Dauer: erscheinen",
-            MINIME_MOTION,
-            1200.0,
-            0.0,
-            10_000.0,
-            ms,
-            None,
-        ),
-        number(
-            "minimeExitMs",
-            "Dauer: verschwinden",
-            MINIME_MOTION,
-            900.0,
-            0.0,
-            10_000.0,
-            ms,
-            None,
-        ),
+        flag("minimeChatKeepsAlive", "Chatnachrichten halten das Minime im Bild", MINIME_RULES, true),
+        flag("minimeReactToChat", "Minime reagiert auf Chatnachrichten", MINIME_RULES, true),
+        flag("minimeClearOffline", "Alle entfernen, wenn der Stream endet", MINIME_RULES, true),
+        flag("minimeRemoveOnBan", "Bei Ban oder Timeout entfernen", MINIME_RULES, true),
+        number("minimeSpeed", "Laufgeschwindigkeit (px pro Sekunde)", MINIME_MOTION, 60.0, 5.0, 600.0, None, None),
+        number("minimeMargin", "Abstand zum Rand", MINIME_MOTION, 60.0, 0.0, 600.0, Some(Unit::Px), None),
+        number("minimeWalkMin", "Kürzeste Laufstrecke", MINIME_MOTION, 100.0, 10.0, 1920.0, Some(Unit::Px), None),
+        number("minimeWalkMax", "Längste Laufstrecke", MINIME_MOTION, 600.0, 10.0, 1920.0, Some(Unit::Px), None),
+        number("minimeWalkWeight", "Häufigkeit: wandern", MINIME_MOTION, 40.0, 0.0, 100.0, None, None),
+        number("minimeIdleWeight", "Häufigkeit: auf der Stelle schweben", MINIME_MOTION, 40.0, 0.0, 100.0, None, None),
+        number("minimeIdleMinMs", "Schweben mindestens", MINIME_MOTION, 2000.0, 200.0, 60_000.0, ms, None),
+        number("minimeIdleMaxMs", "Schweben höchstens", MINIME_MOTION, 6000.0, 200.0, 60_000.0, ms, None),
+        number("minimeEnterMs", "Dauer: erscheinen", MINIME_MOTION, 1200.0, 0.0, 10_000.0, ms, None),
+        number("minimeExitMs", "Dauer: verschwinden", MINIME_MOTION, 900.0, 0.0, 10_000.0, ms, None),
     ]
 }
 
 /// Only for color themes: command to change color, minimum brightness, Twitch name color
 fn minime_color_fields() -> Vec<SettingField> {
     vec![
-        text(
-            "minimeColorCommand",
-            "Befehl: Farbe ändern",
-            MINIME_COMMANDS,
-            "!color",
-            Some(25),
-        ),
+        text("minimeColorCommand", "Befehl: Farbe ändern", MINIME_COMMANDS, "!color", Some(25)),
         number(
             "minimeMinBrightness",
             "Mindesthelligkeit der Farbe (0 bis 255)",
@@ -238,12 +95,7 @@ fn minime_color_fields() -> Vec<SettingField> {
             None,
             None,
         ),
-        flag(
-            "minimeUseTwitchColor",
-            "Ohne eigene Farbe die Twitch-Namensfarbe nehmen",
-            MINIME_RULES,
-            true,
-        ),
+        flag("minimeUseTwitchColor", "Ohne eigene Farbe die Twitch-Namensfarbe nehmen", MINIME_RULES, true),
     ]
 }
 
@@ -265,22 +117,11 @@ pub fn minime_names_key(id: &str) -> String {
 /// comma-separated; an empty list switches the variant off
 #[must_use]
 pub fn minime_variant_fields(set: &MinimeVariantSet) -> Vec<SettingField> {
-    let command = text(
-        "minimeVariantCommand",
-        &format!("Befehl: {} wählen", set.label),
-        MINIME_VARIANTS,
-        &set.command,
-        Some(25),
-    );
+    let command =
+        text("minimeVariantCommand", &format!("Befehl: {} wählen", set.label), MINIME_VARIANTS, &set.command, Some(25));
     let names = set.variants.iter().map(|variant| {
         let label = format!("{}: Namen im Chat (leer = aus)", variant.label);
-        text(
-            &minime_names_key(&variant.id),
-            &label,
-            MINIME_VARIANTS,
-            &variant.names.join(", "),
-            Some(200),
-        )
+        text(&minime_names_key(&variant.id), &label, MINIME_VARIANTS, &variant.names.join(", "), Some(200))
     });
     std::iter::once(command).chain(names).collect()
 }
@@ -314,19 +155,12 @@ mod tests {
             label: "Mango".to_owned(),
             names: vec!["mango".to_owned(), "mangos".to_owned()],
         };
-        let set = MinimeVariantSet {
-            command: "!fruit".to_owned(),
-            label: "Frucht".to_owned(),
-            variants: vec![mango],
-        };
+        let set = MinimeVariantSet { command: "!fruit".to_owned(), label: "Frucht".to_owned(), variants: vec![mango] };
         let fields = minime_variant_fields(&set);
         assert_eq!(fields.len(), 2);
         assert_eq!(fields[0].key, "minimeVariantCommand");
         assert_eq!(fields[1].key, "minimeNames_mango");
-        assert_eq!(
-            fields[1].default_value(),
-            SettingValue::Text("mango, mangos".to_owned())
-        );
+        assert_eq!(fields[1].default_value(), SettingValue::Text("mango, mangos".to_owned()));
         assert_eq!(fields[1].group, MINIME_VARIANTS);
     }
 }

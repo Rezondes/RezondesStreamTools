@@ -38,15 +38,9 @@ mod tests {
 
     #[test]
     fn ids_unique_default_present_unknown_none() {
-        let ids: BTreeSet<&str> = themes()
-            .iter()
-            .map(|theme| theme.schema.id.as_str())
-            .collect();
+        let ids: BTreeSet<&str> = themes().iter().map(|theme| theme.schema.id.as_str()).collect();
         assert_eq!(ids.len(), themes().len());
-        assert_eq!(
-            themes().first().map(|theme| theme.schema.id.as_str()),
-            Some(DEFAULT_THEME)
-        );
+        assert_eq!(themes().first().map(|theme| theme.schema.id.as_str()), Some(DEFAULT_THEME));
         assert!(find(DEFAULT_THEME).is_some());
         assert!(find("does-not-exist").is_none());
     }
@@ -55,11 +49,7 @@ mod tests {
     fn every_theme_enters_the_channel_name_on_first_login() {
         let neo = Login::parse("neo").expect("valid login");
         for theme in themes() {
-            assert!(
-                (theme.personalize)(&neo).contains_key("channelName"),
-                "{}",
-                theme.schema.id
-            );
+            assert!((theme.personalize)(&neo).contains_key("channelName"), "{}", theme.schema.id);
         }
     }
 }

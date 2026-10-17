@@ -17,9 +17,7 @@ const FX_KEYS: [&str; 4] = ["fxMax", "fxDuration", "fxSize", "fxMargin"];
 
 fn values_object<T: serde::Serialize>(pairs: impl Iterator<Item = (String, T)>) -> Value {
     Value::Object(
-        pairs
-            .map(|(key, value)| (key, serde_json::to_value(value).unwrap_or(Value::Null)))
-            .collect::<Map<_, _>>(),
+        pairs.map(|(key, value)| (key, serde_json::to_value(value).unwrap_or(Value::Null))).collect::<Map<_, _>>(),
     )
 }
 
@@ -37,20 +35,11 @@ pub fn audit(theme: &Theme) -> Vec<String> {
             problems.push(format!("field {} without label or group", field.key));
         }
     }
-    let defaults = values_object(
-        schema
-            .fields
-            .iter()
-            .map(|field| (field.key.clone(), field.default_value())),
-    );
+    let defaults = values_object(schema.fields.iter().map(|field| (field.key.clone(), field.default_value())));
     for error in validate_settings(schema, &defaults).errors {
         problems.push(format!("invalid default {}: {:?}", error.key, error.code));
     }
-    let groups: BTreeSet<&str> = schema
-        .fields
-        .iter()
-        .map(|field| field.group.as_str())
-        .collect();
+    let groups: BTreeSet<&str> = schema.fields.iter().map(|field| field.group.as_str()).collect();
     problems.extend(
         schema
             .group_scenes
@@ -62,21 +51,11 @@ pub fn audit(theme: &Theme) -> Vec<String> {
     if let Ok(longest) = Login::parse(&format!("{}_123456789", "a".repeat(15))) {
         let personalized = values_object((theme.personalize)(&longest).into_iter());
         for error in validate_settings(schema, &personalized).errors {
-            problems.push(format!(
-                "invalid personalization {}: {:?}",
-                error.key, error.code
-            ));
+            problems.push(format!("invalid personalization {}: {:?}", error.key, error.code));
         }
     }
-    let required = FX_KEYS
-        .iter()
-        .map(|key| (*key).to_owned())
-        .chain(info_fields().into_iter().map(|field| field.key));
-    problems.extend(
-        required
-            .filter(|key| !keys.contains(key.as_str()))
-            .map(|key| format!("missing core key {key}")),
-    );
+    let required = FX_KEYS.iter().map(|key| (*key).to_owned()).chain(info_fields().into_iter().map(|field| field.key));
+    problems.extend(required.filter(|key| !keys.contains(key.as_str())).map(|key| format!("missing core key {key}")));
     problems
 }
 
@@ -113,10 +92,7 @@ mod tests {
             group_scenes: BTreeMap::from([("Nothing".to_owned(), vec![])]),
             minime_variants: None,
         };
-        let problems = audit(&Theme {
-            schema,
-            personalize,
-        });
+        let problems = audit(&Theme { schema, personalize });
         for expected in [
             "duplicate key title",
             "field title without label or group",
@@ -126,10 +102,7 @@ mod tests {
             "missing core key fxMax",
             "missing core key infoTitle",
         ] {
-            assert!(
-                problems.iter().any(|problem| problem == expected),
-                "{expected} not in {problems:?}"
-            );
+            assert!(problems.iter().any(|problem| problem == expected), "{expected} not in {problems:?}");
         }
     }
 }

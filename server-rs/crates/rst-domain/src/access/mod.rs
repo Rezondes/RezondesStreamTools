@@ -37,9 +37,7 @@ impl Feature {
 
     #[must_use]
     pub fn parse(value: &str) -> Option<Self> {
-        Self::ALL
-            .into_iter()
-            .find(|feature| feature.name() == value)
+        Self::ALL.into_iter().find(|feature| feature.name() == value)
     }
 
     #[must_use]
@@ -110,10 +108,7 @@ pub struct AccessPolicy {
 /// Valid logins in input order, without duplicates
 fn logins(values: &[String]) -> Vec<Login> {
     let mut list: Vec<Login> = Vec::new();
-    for login in values
-        .iter()
-        .filter_map(|value| Login::parse(value.trim()).ok())
-    {
+    for login in values.iter().filter_map(|value| Login::parse(value.trim()).ok()) {
         if !list.contains(&login) {
             list.push(login);
         }
@@ -129,10 +124,7 @@ impl AccessPolicy {
         let features = Feature::ALL
             .into_iter()
             .map(|feature| {
-                let level = raw
-                    .features
-                    .get(feature.name())
-                    .and_then(|value| FeatureLevel::parse(value));
+                let level = raw.features.get(feature.name()).and_then(|value| FeatureLevel::parse(value));
                 (feature, level.unwrap_or(FeatureLevel::All))
             })
             .collect();
@@ -151,28 +143,18 @@ impl AccessPolicy {
     /// Without a saved policy: only the admins on the allowlist, all features for everyone
     #[must_use]
     pub fn initial(admins: &[Login]) -> Self {
-        let raw = RawAccess {
-            allowlist: admins.iter().map(ToString::to_string).collect(),
-            ..RawAccess::default()
-        };
+        let raw = RawAccess { allowlist: admins.iter().map(ToString::to_string).collect(), ..RawAccess::default() };
         Self::sanitize(&raw)
     }
 
     #[must_use]
     pub fn can_use(&self, admins: &[Login], login: &Login) -> bool {
-        is_admin(admins, login)
-            || self.registration == Registration::Open
-            || self.allowlist.contains(login)
+        is_admin(admins, login) || self.registration == Registration::Open || self.allowlist.contains(login)
     }
 
     #[must_use]
     pub fn has_feature(&self, admins: &[Login], login: &Login, feature: Feature) -> bool {
-        match self
-            .features
-            .get(&feature)
-            .copied()
-            .unwrap_or(FeatureLevel::All)
-        {
+        match self.features.get(&feature).copied().unwrap_or(FeatureLevel::All) {
             FeatureLevel::All => true,
             FeatureLevel::Beta => is_admin(admins, login) || self.beta.contains(login),
             FeatureLevel::Off => false,
@@ -182,10 +164,7 @@ impl AccessPolicy {
     /// For a profile: which features are on
     #[must_use]
     pub fn features(&self, admins: &[Login], login: &Login) -> BTreeMap<Feature, bool> {
-        Feature::ALL
-            .into_iter()
-            .map(|feature| (feature, self.has_feature(admins, login, feature)))
-            .collect()
+        Feature::ALL.into_iter().map(|feature| (feature, self.has_feature(admins, login, feature))).collect()
     }
 }
 
@@ -196,17 +175,8 @@ pub fn is_admin(admins: &[Login], login: &Login) -> bool {
 
 /// Logins from running that lose access when switching from before to after (their runtime stops immediately)
 #[must_use]
-pub fn revoked_logins(
-    before: &AccessPolicy,
-    after: &AccessPolicy,
-    admins: &[Login],
-    running: &[Login],
-) -> Vec<Login> {
-    running
-        .iter()
-        .filter(|login| before.can_use(admins, login) && !after.can_use(admins, login))
-        .cloned()
-        .collect()
+pub fn revoked_logins(before: &AccessPolicy, after: &AccessPolicy, admins: &[Login], running: &[Login]) -> Vec<Login> {
+    running.iter().filter(|login| before.can_use(admins, login) && !after.can_use(admins, login)).cloned().collect()
 }
 
 #[cfg(test)]
@@ -217,21 +187,13 @@ mod tests {
         Login::parse(value).expect("valid login")
     }
 
-    fn raw(
-        registration: Option<&str>,
-        allowlist: &[&str],
-        beta: &[&str],
-        features: &[(&str, &str)],
-    ) -> RawAccess {
+    fn raw(registration: Option<&str>, allowlist: &[&str], beta: &[&str], features: &[(&str, &str)]) -> RawAccess {
         let strings = |values: &[&str]| values.iter().map(|value| (*value).to_owned()).collect();
         RawAccess {
             registration: registration.map(str::to_owned),
             allowlist: strings(allowlist),
             beta: strings(beta),
-            features: features
-                .iter()
-                .map(|(key, value)| ((*key).to_owned(), (*value).to_owned()))
-                .collect(),
+            features: features.iter().map(|(key, value)| ((*key).to_owned(), (*value).to_owned())).collect(),
         }
     }
 
@@ -240,12 +202,7 @@ mod tests {
     }
 
     fn beta_policy() -> AccessPolicy {
-        AccessPolicy::sanitize(&raw(
-            Some("allowlist"),
-            &["Friend1"],
-            &["tester"],
-            &[("music", "beta"), ("fx", "off")],
-        ))
+        AccessPolicy::sanitize(&raw(Some("allowlist"), &["Friend1"], &["tester"], &[("music", "beta"), ("fx", "off")]))
     }
 
     #[test]
@@ -258,10 +215,7 @@ mod tests {
 
     #[test]
     fn open_registration_lets_everyone_in() {
-        let policy = AccessPolicy {
-            registration: Registration::Open,
-            ..beta_policy()
-        };
+        let policy = AccessPolicy { registration: Registration::Open, ..beta_policy() };
         assert!(policy.can_use(&admins(), &login("stranger")));
     }
 
@@ -290,10 +244,7 @@ mod tests {
         assert_eq!(odd.allowlist, vec![login("a")]);
         assert_eq!(odd.features.get(&Feature::Music), Some(&FeatureLevel::All));
         assert_eq!(odd.features.len(), 9);
-        assert_eq!(
-            odd.features.get(&Feature::Minimes),
-            Some(&FeatureLevel::All)
-        );
+        assert_eq!(odd.features.get(&Feature::Minimes), Some(&FeatureLevel::All));
     }
 
     #[test]
@@ -310,20 +261,12 @@ mod tests {
         let before = AccessPolicy::sanitize(&raw(None, &["friend1", "friend2"], &[], &[]));
         let only_second = AccessPolicy::sanitize(&raw(None, &["friend2"], &[], &[]));
         let running = [login("rezondes"), login("friend1"), login("friend2")];
-        assert_eq!(
-            revoked_logins(&before, &only_second, &admins(), &running),
-            vec![login("friend1")]
-        );
+        assert_eq!(revoked_logins(&before, &only_second, &admins(), &running), vec![login("friend1")]);
         let nobody = AccessPolicy::sanitize(&raw(None, &[], &[], &[]));
         assert!(revoked_logins(&before, &nobody, &admins(), &[login("rezondes")]).is_empty());
         let open = AccessPolicy::sanitize(&raw(Some("open"), &[], &[], &[]));
         assert_eq!(
-            revoked_logins(
-                &open,
-                &only_second,
-                &admins(),
-                &[login("stranger"), login("friend2")]
-            ),
+            revoked_logins(&open, &only_second, &admins(), &[login("stranger"), login("friend2")]),
             vec![login("stranger")]
         );
         assert!(revoked_logins(&before, &before, &admins(), &[login("friend1")]).is_empty());
@@ -335,12 +278,8 @@ mod tests {
         let json = serde_json::to_string(&policy).expect("serialize");
         assert!(json.contains("\"registration\":\"allowlist\""));
         assert!(json.contains("\"music\":\"beta\""));
-        assert_eq!(
-            serde_json::from_str::<AccessPolicy>(&json).expect("deserialize"),
-            policy
-        );
-        let raw: RawAccess =
-            serde_json::from_str("{\"allowlist\":[\"Neo\"]}").expect("lenient input");
+        assert_eq!(serde_json::from_str::<AccessPolicy>(&json).expect("deserialize"), policy);
+        let raw: RawAccess = serde_json::from_str("{\"allowlist\":[\"Neo\"]}").expect("lenient input");
         assert_eq!(AccessPolicy::sanitize(&raw).allowlist, vec![login("neo")]);
     }
 }

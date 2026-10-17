@@ -26,14 +26,8 @@ impl Login {
         let lower = value.to_ascii_lowercase();
         let valid = !lower.is_empty()
             && lower.len() <= LOGIN_MAX
-            && lower
-                .bytes()
-                .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'_');
-        if valid {
-            Ok(Self(lower))
-        } else {
-            Err(InvalidValue::new("login"))
-        }
+            && lower.bytes().all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'_');
+        if valid { Ok(Self(lower)) } else { Err(InvalidValue::new("login")) }
     }
 
     #[must_use]
@@ -51,14 +45,8 @@ impl TwitchUserId {
     /// # Errors
     /// When the value is empty, longer than 20 characters or contains anything but digits.
     pub fn parse(value: &str) -> Result<Self, InvalidValue> {
-        let valid = !value.is_empty()
-            && value.len() <= USER_ID_MAX
-            && value.bytes().all(|byte| byte.is_ascii_digit());
-        if valid {
-            Ok(Self(value.to_owned()))
-        } else {
-            Err(InvalidValue::new("twitch user id"))
-        }
+        let valid = !value.is_empty() && value.len() <= USER_ID_MAX && value.bytes().all(|byte| byte.is_ascii_digit());
+        if valid { Ok(Self(value.to_owned())) } else { Err(InvalidValue::new("twitch user id")) }
     }
 
     #[must_use]
@@ -102,30 +90,20 @@ mod tests {
 
     #[test]
     fn login_accepts_twitch_characters() {
-        assert_eq!(
-            Login::parse("rezondes_42").map(|login| login.to_string()),
-            Ok("rezondes_42".to_owned())
-        );
+        assert_eq!(Login::parse("rezondes_42").map(|login| login.to_string()), Ok("rezondes_42".to_owned()));
         assert!(Login::parse("_neo").is_ok());
         assert!(Login::parse(&"a".repeat(25)).is_ok());
     }
 
     #[test]
     fn login_normalizes_to_lower_case() {
-        assert_eq!(
-            Login::parse("Rezondes").map(|login| login.as_str().to_owned()),
-            Ok("rezondes".to_owned())
-        );
+        assert_eq!(Login::parse("Rezondes").map(|login| login.as_str().to_owned()), Ok("rezondes".to_owned()));
     }
 
     #[test]
     fn login_rejects_invalid_values() {
         for value in ["", "a b", "neo!", "../neo", &"a".repeat(26)] {
-            assert_eq!(
-                Login::parse(value),
-                Err(InvalidValue::new("login")),
-                "{value}"
-            );
+            assert_eq!(Login::parse(value), Err(InvalidValue::new("login")), "{value}");
         }
     }
 

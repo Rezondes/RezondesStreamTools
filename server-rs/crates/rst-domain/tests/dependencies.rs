@@ -19,14 +19,9 @@ fn dependencies(manifest: &str) -> Vec<&str> {
 
 #[test]
 fn domain_has_no_io_dependencies() {
-    let forbidden: Vec<&str> = dependencies(MANIFEST)
-        .into_iter()
-        .filter(|name| FORBIDDEN.iter().any(|bad| name.starts_with(bad)))
-        .collect();
-    assert!(
-        forbidden.is_empty(),
-        "rst-domain must not depend on: {forbidden:?}"
-    );
+    let forbidden: Vec<&str> =
+        dependencies(MANIFEST).into_iter().filter(|name| FORBIDDEN.iter().any(|bad| name.starts_with(bad))).collect();
+    assert!(forbidden.is_empty(), "rst-domain must not depend on: {forbidden:?}");
 }
 
 #[test]

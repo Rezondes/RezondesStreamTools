@@ -144,13 +144,7 @@ impl SettingField {
 }
 
 fn field(key: &str, label: &str, group: &str, kind: FieldKind) -> SettingField {
-    SettingField {
-        key: key.to_owned(),
-        label: label.to_owned(),
-        group: group.to_owned(),
-        scene: None,
-        kind,
-    }
+    SettingField { key: key.to_owned(), label: label.to_owned(), group: group.to_owned(), scene: None, kind }
 }
 
 fn strings(values: &[&str]) -> Vec<String> {
@@ -159,62 +153,26 @@ fn strings(values: &[&str]) -> Vec<String> {
 
 #[must_use]
 pub fn color(key: &str, label: &str, group: &str, value: &str) -> SettingField {
-    field(
-        key,
-        label,
-        group,
-        FieldKind::Color {
-            default: value.to_owned(),
-        },
-    )
+    field(key, label, group, FieldKind::Color { default: value.to_owned() })
 }
 
 /// Single-line text, at most `max_length` characters (default 200)
 #[must_use]
-pub fn text(
-    key: &str,
-    label: &str,
-    group: &str,
-    value: &str,
-    max_length: Option<u32>,
-) -> SettingField {
-    field(
-        key,
-        label,
-        group,
-        FieldKind::Text {
-            default: value.to_owned(),
-            max_length: Some(max_length.unwrap_or(200)),
-        },
-    )
+pub fn text(key: &str, label: &str, group: &str, value: &str, max_length: Option<u32>) -> SettingField {
+    field(key, label, group, FieldKind::Text { default: value.to_owned(), max_length: Some(max_length.unwrap_or(200)) })
 }
 
 /// Multi-line text, at most `max_length` characters (default 4000)
 #[must_use]
-pub fn textarea(
-    key: &str,
-    label: &str,
-    group: &str,
-    value: &str,
-    max_length: Option<u32>,
-) -> SettingField {
-    let kind = FieldKind::Textarea {
-        default: value.to_owned(),
-        max_length: Some(max_length.unwrap_or(4000)),
-        ascii: None,
-    };
+pub fn textarea(key: &str, label: &str, group: &str, value: &str, max_length: Option<u32>) -> SettingField {
+    let kind =
+        FieldKind::Textarea { default: value.to_owned(), max_length: Some(max_length.unwrap_or(4000)), ascii: None };
     field(key, label, group, kind)
 }
 
 /// Multi-line text for ASCII art; the dashboard offers a generator from a name
 #[must_use]
-pub fn ascii_art(
-    key: &str,
-    label: &str,
-    group: &str,
-    value: &str,
-    max_length: Option<u32>,
-) -> SettingField {
+pub fn ascii_art(key: &str, label: &str, group: &str, value: &str, max_length: Option<u32>) -> SettingField {
     let kind = FieldKind::Textarea {
         default: value.to_owned(),
         max_length: Some(max_length.unwrap_or(4000)),
@@ -225,22 +183,8 @@ pub fn ascii_art(
 
 /// Lines, at most `max_lines` (default 100)
 #[must_use]
-pub fn lines(
-    key: &str,
-    label: &str,
-    group: &str,
-    value: &[&str],
-    max_lines: Option<u32>,
-) -> SettingField {
-    field(
-        key,
-        label,
-        group,
-        FieldKind::Lines {
-            default: strings(value),
-            max_lines: Some(max_lines.unwrap_or(100)),
-        },
-    )
+pub fn lines(key: &str, label: &str, group: &str, value: &[&str], max_lines: Option<u32>) -> SettingField {
+    field(key, label, group, FieldKind::Lines { default: strings(value), max_lines: Some(max_lines.unwrap_or(100)) })
 }
 
 #[must_use]
@@ -251,65 +195,28 @@ pub fn flag(key: &str, label: &str, group: &str, value: bool) -> SettingField {
 /// Sound: without a file the theme plays its built-in sound (or none)
 #[must_use]
 pub fn sound(key: &str, label: &str, group: &str) -> SettingField {
-    field(
-        key,
-        label,
-        group,
-        FieldKind::Sound {
-            default: SoundValue {
-                file: String::new(),
-                volume: 1.0,
-            },
-        },
-    )
+    field(key, label, group, FieldKind::Sound { default: SoundValue { file: String::new(), volume: 1.0 } })
 }
 
 #[must_use]
 pub fn choice(key: &str, label: &str, group: &str, value: &str, options: &[&str]) -> SettingField {
-    field(
-        key,
-        label,
-        group,
-        FieldKind::Select {
-            default: value.to_owned(),
-            options: strings(options),
-        },
-    )
+    field(key, label, group, FieldKind::Select { default: value.to_owned(), options: strings(options) })
 }
 
 #[must_use]
 pub fn font(key: &str, label: &str, group: &str, value: &str, options: &[&str]) -> SettingField {
-    field(
-        key,
-        label,
-        group,
-        FieldKind::Font {
-            default: value.to_owned(),
-            options: strings(options),
-        },
-    )
+    field(key, label, group, FieldKind::Font { default: value.to_owned(), options: strings(options) })
 }
 
 /// Media file of one kind; empty default = no media
 #[must_use]
 pub fn media(key: &str, label: &str, group: &str, accept: MediaKind) -> SettingField {
-    field(
-        key,
-        label,
-        group,
-        FieldKind::Media {
-            default: String::new(),
-            accept,
-        },
-    )
+    field(key, label, group, FieldKind::Media { default: String::new(), accept })
 }
 
 /// Number from `min` to `max`, optionally with unit and step
 #[must_use]
-#[expect(
-    clippy::too_many_arguments,
-    reason = "mirrors the number() building block of the theme schemas"
-)]
+#[expect(clippy::too_many_arguments, reason = "mirrors the number() building block of the theme schemas")]
 pub fn number(
     key: &str,
     label: &str,
@@ -320,27 +227,13 @@ pub fn number(
     unit: Option<Unit>,
     step: Option<f64>,
 ) -> SettingField {
-    field(
-        key,
-        label,
-        group,
-        FieldKind::Number {
-            default: value,
-            min,
-            max,
-            step,
-            unit,
-        },
-    )
+    field(key, label, group, FieldKind::Number { default: value, min, max, step, unit })
 }
 
 /// Field that only affects one scene: the dashboard shows it only there
 #[must_use]
 pub fn in_scene(scene: SceneName, field: SettingField) -> SettingField {
-    SettingField {
-        scene: Some(scene),
-        ..field
-    }
+    SettingField { scene: Some(scene), ..field }
 }
 
 #[cfg(test)]
@@ -351,16 +244,7 @@ mod tests {
 
     #[test]
     fn number_keeps_limits_and_drops_missing_unit_and_step() {
-        let size = number(
-            "size",
-            "Size",
-            "A",
-            10.0,
-            0.0,
-            100.0,
-            Some(Unit::Px),
-            Some(0.5),
-        );
+        let size = number("size", "Size", "A", 10.0, 0.0, 100.0, Some(Unit::Px), Some(0.5));
         let expected = json!({ "key": "size", "type": "number", "label": "Size", "group": "A", "default": 10.0, "min": 0.0, "max": 100.0, "unit": "px", "step": 0.5 });
         assert_eq!(serde_json::to_value(&size).expect("serialize"), expected);
         let count = number("count", "Count", "A", 3.0, 1.0, 9.0, None, None);
@@ -372,10 +256,7 @@ mod tests {
     fn sound_default_is_silent_file_at_full_volume() {
         assert_eq!(
             sound("beep", "Sound", "A").default_value(),
-            SettingValue::Sound(SoundValue {
-                file: String::new(),
-                volume: 1.0
-            })
+            SettingValue::Sound(SoundValue { file: String::new(), volume: 1.0 })
         );
     }
 
@@ -390,17 +271,8 @@ mod tests {
     fn in_scene_only_adds_the_scene() {
         let title = text("brbTitle", "Title", "A", "BREAK", None);
         let scoped = in_scene(SceneName::Brb, title.clone());
-        assert_eq!(
-            scoped,
-            SettingField {
-                scene: Some(SceneName::Brb),
-                ..title
-            }
-        );
-        assert_eq!(
-            serde_json::to_value(&scoped).expect("serialize")["scene"],
-            json!("brb")
-        );
+        assert_eq!(scoped, SettingField { scene: Some(SceneName::Brb), ..title });
+        assert_eq!(serde_json::to_value(&scoped).expect("serialize")["scene"], json!("brb"));
     }
 
     #[test]
@@ -414,9 +286,6 @@ mod tests {
             flag("glow", "Glow", "A", true),
         ];
         let json = serde_json::to_string(&fields).expect("serialize");
-        assert_eq!(
-            serde_json::from_str::<Vec<SettingField>>(&json).expect("deserialize"),
-            fields
-        );
+        assert_eq!(serde_json::from_str::<Vec<SettingField>>(&json).expect("deserialize"), fields);
     }
 }

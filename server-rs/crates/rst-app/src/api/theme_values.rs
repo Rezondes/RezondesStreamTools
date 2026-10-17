@@ -10,10 +10,7 @@ use rst_domain::themes::schema::ThemeSchema;
 #[must_use]
 pub fn values_name(id: &str) -> String {
     let mut chars = id.chars();
-    let first = chars
-        .next()
-        .map(|first| first.to_uppercase().collect::<String>())
-        .unwrap_or_default();
+    let first = chars.next().map(|first| first.to_uppercase().collect::<String>()).unwrap_or_default();
     format!("{first}{}Values", chars.as_str())
 }
 
@@ -31,11 +28,7 @@ fn ts_type(kind: &FieldKind) -> &'static str {
 #[must_use]
 pub fn values_type(schema: &ThemeSchema) -> String {
     let mut text = String::new();
-    if schema
-        .fields
-        .iter()
-        .any(|field| matches!(field.kind, FieldKind::Sound { .. }))
-    {
+    if schema.fields.iter().any(|field| matches!(field.kind, FieldKind::Sound { .. })) {
         text.push_str("import type { SoundValue } from \"../SoundValue.ts\";\n\n");
     }
     let _ = writeln!(

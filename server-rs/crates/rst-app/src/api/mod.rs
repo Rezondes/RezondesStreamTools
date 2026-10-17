@@ -21,10 +21,7 @@ pub struct Ping {
 
 /// Export settings: imports with a `.ts` extension (like the frontend), large integers as `number` (JSON).
 fn export_config(dir: &Path) -> Config {
-    Config::new()
-        .with_out_dir(dir)
-        .with_import_extension(Some("ts"))
-        .with_large_int("number")
+    Config::new().with_out_dir(dir).with_import_extension(Some("ts")).with_large_int("number")
 }
 
 /// Writes all exported types with their dependencies and the values type of every theme into `dir`.
@@ -40,10 +37,7 @@ pub fn export_all(dir: &Path) -> Result<(), ExportError> {
     let folder = dir.join("themes");
     std::fs::create_dir_all(&folder)?;
     for theme in themes() {
-        std::fs::write(
-            folder.join(format!("{}.ts", theme.schema.id)),
-            theme_values::values_type(&theme.schema),
-        )?;
+        std::fs::write(folder.join(format!("{}.ts", theme.schema.id)), theme_values::values_type(&theme.schema))?;
     }
     Ok(())
 }

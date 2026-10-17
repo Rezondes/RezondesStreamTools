@@ -8,8 +8,8 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, Unit, ascii_art, choice, color, flag, font,
-    in_scene, lines, number, text,
+    SettingField, SettingValue, SettingValues, Unit, ascii_art, choice, color, flag, font, in_scene, lines, number,
+    text,
 };
 use crate::themes::ascii_text::ascii_text;
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
@@ -252,20 +252,8 @@ fn fields() -> Vec<SettingField> {
 
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     [
-        (
-            RAIN,
-            vec![
-                SceneName::Starting,
-                SceneName::Brb,
-                SceneName::Ending,
-                SceneName::Alerts,
-                SceneName::Info,
-            ],
-        ),
-        (
-            SCREENS,
-            vec![SceneName::Starting, SceneName::Brb, SceneName::Ending],
-        ),
+        (RAIN, vec![SceneName::Starting, SceneName::Brb, SceneName::Ending, SceneName::Alerts, SceneName::Info]),
+        (SCREENS, vec![SceneName::Starting, SceneName::Brb, SceneName::Ending]),
         (ALERTS, vec![SceneName::Alerts]),
         (CHAT, vec![SceneName::Chat]),
         (CAM, vec![SceneName::Cam]),
@@ -288,14 +276,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
 /// On first login: channel name and ASCII logo from the Twitch login instead of the samples
 fn personalize(login: &Login) -> SettingValues {
     BTreeMap::from([
-        (
-            "channelName".to_owned(),
-            SettingValue::Text(login.as_str().to_uppercase()),
-        ),
-        (
-            "logo".to_owned(),
-            SettingValue::Text(ascii_text(login.as_str())),
-        ),
+        ("channelName".to_owned(), SettingValue::Text(login.as_str().to_uppercase())),
+        ("logo".to_owned(), SettingValue::Text(ascii_text(login.as_str()))),
     ])
 }
 
@@ -308,10 +290,7 @@ pub fn matrix() -> Theme {
         group_scenes: group_scenes(),
         minime_variants: None,
     };
-    Theme {
-        schema,
-        personalize,
-    }
+    Theme { schema, personalize }
 }
 
 #[cfg(test)]
@@ -329,14 +308,8 @@ mod tests {
     fn personalize_sets_channel_name_and_logo_and_minimes_use_colors() {
         let neo = Login::parse("neo").expect("valid login");
         let values = personalize(&neo);
-        assert_eq!(
-            values.get("channelName"),
-            Some(&SettingValue::Text("NEO".to_owned()))
-        );
-        assert_eq!(
-            values.get("logo"),
-            Some(&SettingValue::Text(ascii_text("neo")))
-        );
+        assert_eq!(values.get("channelName"), Some(&SettingValue::Text("NEO".to_owned())));
+        assert_eq!(values.get("logo"), Some(&SettingValue::Text(ascii_text("neo"))));
         let theme = matrix();
         assert!(has_minimes(&theme.schema.fields));
         assert!(theme.schema.minime_variants.is_none());
