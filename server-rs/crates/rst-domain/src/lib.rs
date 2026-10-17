@@ -7,6 +7,7 @@ pub mod identity;
 pub mod media;
 pub mod minimes;
 pub mod paths;
+pub mod render;
 pub mod settings;
 pub mod themes;
 pub mod triggers;
