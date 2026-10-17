@@ -10,6 +10,7 @@ use axum::extract::{Request, State};
 use axum::http::{HeaderValue, header};
 use axum::response::Response;
 use rst_app::access::admin::AccessAdmin;
+use rst_app::commands::CommandService;
 use rst_app::identity::login::LoginFlow;
 use rst_app::settings::SettingsService;
 use rst_app::triggers::TriggerService;
@@ -43,6 +44,7 @@ const FRAME_CSP: &str = "frame-ancestors 'self'";
 pub type AppAccessAdmin<'a> =
     AccessAdmin<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
 
+pub type AppCommands<'a> = CommandService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 pub type AppTriggers<'a> = TriggerService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 pub type AppSettings<'a> = SettingsService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 
@@ -151,6 +153,11 @@ impl App {
     #[must_use]
     pub fn settings_service(&self) -> AppSettings<'_> {
         SettingsService { profile: &self.stores.profile, audit: &self.stores.audit }
+    }
+
+    #[must_use]
+    pub fn command_service(&self) -> AppCommands<'_> {
+        CommandService { profile: &self.stores.profile, audit: &self.stores.audit }
     }
 
     #[must_use]

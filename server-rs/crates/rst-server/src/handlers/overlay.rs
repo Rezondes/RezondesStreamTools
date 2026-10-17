@@ -40,6 +40,13 @@ pub async fn serve(app: &App, path: &StreamerPath) -> Response {
             Err(error) => server_error(&error.to_string()),
         },
         OverlayRoute::Media(name) => crate::handlers::media::deliver(app, &id, &name).await,
-        OverlayRoute::Events | OverlayRoute::Commands => pending(),
+        OverlayRoute::Commands => {
+            let features = policy.features(&app.config.admins, &path.login);
+            match app.command_service().public(&id, &path.login, &features).await {
+                Ok(list) => json(&list, 200),
+                Err(error) => server_error(&error.to_string()),
+            }
+        }
+        OverlayRoute::Events => pending(),
     }
 }
