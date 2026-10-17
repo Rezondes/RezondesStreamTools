@@ -1,12 +1,12 @@
 # Coding and layout rules
 
-Rules for this project: a TypeScript code base with React overlays and dashboard (Vite) and a Node server without dependencies. They are adapted from the C# rules of OpenVoiceSpeak and keep only what carries over, plus rules specific to TypeScript, React and the overlay domain. Every change follows them; where existing code breaks a rule, the change that touches that code fixes it.
+Rules for this project: a TypeScript code base with React overlays and dashboard (Vite) and a Rust server (`server-rs/`). They are adapted from the C# rules of OpenVoiceSpeak and keep only what carries over, plus rules specific to TypeScript, React and the overlay domain. Every change follows them; where existing code breaks a rule, the change that touches that code fixes it.
 
 ## Purpose and scope
 
 - Every module is found by its name: the file is named after what it exports, the folder after its area.
-- The rules apply to every `.ts`, `.tsx` and `.css` file under `src/` and `server/`. Exempt: `node_modules/`, `dist/`, `render/`, `data/` and the media in `config/media/`.
-- Every commit passes `npm run verify`: type check, ESLint, all checks with coverage limits, and the build.
+- The rules apply to every `.ts`, `.tsx` and `.css` file under `src/` and `scripts/`, and the Rust rules (34 to 37) to `server-rs/`. Exempt: `node_modules/`, `dist/`, `render/`, `data/` and the media in `config/media/`.
+- Every commit passes `npm run verify`: type check, ESLint, all checks with coverage limits, the build and the Rust checks.
 - Every commit stays reviewable in 15 to 25 minutes: at most about 400 non-mechanical changed lines.
 - Moves and renames are behaviour-neutral and never share a commit with a logic change. A behaviour change is listed in the commit that makes it.
 - Persisted files and the wire keep their names, so moves and renames do not change them: JSON keys in `triggers.json`, `settings.json`, `access.json` and the token files, SSE message types (`alert`, `music`, `fx`), URL paths and query parameters stay, and persisted files stay loadable with equal stored values. A new persisted key is optional and gets its default where the file is read.
@@ -16,8 +16,8 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 1. **One concept per file, file name = what it exports.** A React component file exports one component, named like the file in PascalCase (`Chat.tsx` exports `Chat`); sub-components used only by it may stay in the same file below it. A logic module covers one concept and is named after it in camelCase (`irc.ts`, `emotes.ts`, `typing.ts`).
 2. **Exports:** component files default-export their component; every other module uses named exports only. No barrel files (`index.ts` that only re-exports), except one `index.ts` per theme that describes the theme.
 3. **Types:** data shapes are `type` aliases; `interface` only where declaration merging is needed. No `I` prefix. No abstraction (an interface, a factory, a generic layer) with a single implementation that no check fakes; a function or a plain object is enough.
-4. **Folders by area:** `src/core/` holds logic and hooks without styling, `src/themes/<id>/` holds one theme (components, CSS, settings list), `server/` holds the server. A theme never imports from another theme; core never imports from a theme.
-5. **Erasable TypeScript only.** The server runs with Node's type stripping, and shared modules are imported by both sides. So: no `enum`, no `namespace`, no parameter properties, no decorators. Use a union of string literals or an `as const` array instead of an enum. Type-only imports use `import type`. Relative imports name the `.ts` / `.tsx` extension.
+4. **Folders by area:** `src/core/` holds logic and hooks without styling, `src/themes/<id>/` holds one theme (components, CSS, settings list), `src/generated/` the types generated from the server, `server-rs/` the server. A theme never imports from another theme; core never imports from a theme.
+5. **Erasable TypeScript only.** The checks and scripts run with Node's type stripping. So: no `enum`, no `namespace`, no parameter properties, no decorators. Use a union of string literals or an `as const` array instead of an enum. Type-only imports use `import type`. Relative imports name the `.ts` / `.tsx` extension.
 6. **No git-ignored folder names.** No source folder is named like a pattern in `.gitignore` (`dist`, `render`, `data`, `node_modules`).
 7. **No folder named like a module or a type inside it**, and no module named like its folder (`themes/matrix/matrix.ts` is wrong; `themes/matrix/index.ts` describes the theme).
 
@@ -25,11 +25,11 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 
 8. **Names say exactly what a thing is.** A module, type or component contains only what its name says; one that does more is split. No bag names: no file, type or function ends in `util`, `utils`, `helper`, `helpers`, `manager`, `common` or `misc`, and `service`, `info` and `data` appear only with a subject. Functions are verbs and do not repeat their module's name (`emotes.load`, not `emotes.loadEmotes`, when imported as a namespace). No `Async` suffix: the return type says `Promise`.
 9. **Every variable, parameter and callback parameter is a readable word that says what it holds.** Banned in new or changed code: one-letter names (`e`, `t`, `m`, `a`, `s`, `c`, `r`) and abbreviations such as `ctx`, `cfg`, `msg`, `btn`, `res` for anything that is not an HTTP response. Event handler parameters are `event`. Accepted words: `id`, `url`, `json`, `http`, `sse`, `irc`, `ui`, `fps`, and the unit suffixes `Ms`, `Px` (`durationMs`). A discarded parameter is `_`; a loop index names what it counts (`row`, `column`, `frame`). The established React names `ref` and `props` stay allowed.
-10. **English identifiers, log lines and error messages.** Code comments and project docs are German, like the rest of the project. User-facing text follows rule 20.
+10. **English identifiers, comments, log lines and error messages.** Project docs (README, plans) are German. User-facing text follows rule 20.
 11. **No em dash** (U+2014) anywhere: code, comments, CSS, JSON, docs and commit messages. Use a colon, a comma, parentheses or a new sentence.
 12. **Rule modules** are pure modules that decide one domain question: no React, no IO, no clock, no randomness of their own (both are passed in). They are named after the concept they decide (`access.ts`, `triggers.ts` for matching and scheduling, `typing.ts`). One concept, one word: the domain word (trigger, action, zone, alert, scene, theme, setting, streamer) is used in code, settings keys, docs and checks alike.
 13. **No tuple results.** A function with several results returns a named object type, also a custom hook (`{ track, progressMs }`, not `[track, progressMs]`). React's own `useState` pair stays.
-14. **Every file starts with a comment** that says what it is and how it is used (URL parameters for overlays, the run command for checks). Every export of `src/core/` and `server/` has a comment that states its contract.
+14. **Every file starts with a comment** that says what it is and how it is used (URL parameters for overlays, the run command for checks). Every export of `src/core/` has a comment that states its contract.
 15. **Strict compiler settings** carry the naming and safety rules the compiler can check: `strict`, `noUnusedLocals`, `noUnusedParameters`, `noFallthroughCasesInSwitch`, `noImplicitReturns`. `any` is allowed only where untyped JSON from an external API enters (`toAlert`, `toTrack`), marked with a comment and narrowed into a typed object right there. A non-null assertion (`!`) only follows a check in the same expression or reads a ref after mount.
 
 ## React and overlays
@@ -45,11 +45,11 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 
 ## Server
 
-24. **Node standard library only.** A new dependency needs a written reason in the commit and the user's decision.
+24. **Few dependencies.** A new dependency (npm package or crate) needs a written reason in the commit and the user's decision.
 25. **Every input is validated where it enters:** request bodies have a size limit, names and paths match an allowlist pattern, JSON is parsed in a `try` and passed through a sanitizer that returns only known keys with valid values.
 26. **The server decides every right.** Every dashboard API reads the streamer from the session cookie, never from the request; every feature check (`off`, `beta`, `all`) happens on the server. Public overlay endpoints answer only what an overlay needs: no tokens, no access lists, no other streamer's data.
-27. **Secrets never leave the server:** no token, client secret or session key in a log line, an answer, the frontend bundle or a URL. Token files are written with mode `0o600`.
-28. **Writes are atomic:** write a temporary file, then rename it over the target, so a crash never leaves half a JSON file.
+27. **Secrets never leave the server:** no token, client secret, master key or data key in a log line, an answer, the frontend bundle or a URL. Everything of a streamer is stored encrypted with their data key.
+28. **Writes are atomic:** one database transaction, or a temporary file renamed over the target, so a crash never leaves half a write.
 29. **One runtime per streamer** owns that streamer's connections (EventSub, chat, Spotify, SSE clients) and stops all of them in one `stop`.
 
 ## Async and timing
@@ -68,7 +68,7 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 
 ## Checks
 
-- Every logic module (`.ts`) under `src/` and `server/` has a `<module>.check.ts` next to it, written with `node:assert/strict`. A module without one is listed with its reason in `WITHOUT_CHECK` of `scripts/rules.check.ts`. `npm test` finds every `*.check.ts` by itself.
+- Every logic module (`.ts`) under `src/` has a `<module>.check.ts` next to it, written with `node:assert/strict`. A module without one is listed with its reason in `WITHOUT_CHECK` of `scripts/rules.check.ts`. `npm test` finds every `*.check.ts` by itself.
 - Checks are deterministic: fixed `now` and `random`, no network, no real timers, no files outside a temporary folder they delete again.
 - Each assertion group starts with a comment that states the behaviour it pins.
 - Behaviour that only a browser or OBS can show (animations, sound, layout) is listed as a manual check in the change description.

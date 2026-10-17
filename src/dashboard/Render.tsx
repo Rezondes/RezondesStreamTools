@@ -1,7 +1,7 @@
 // Render section in the dashboard: stinger (WebM with alpha) and profile and offline banners (GIF with still image) of the
 // active theme (chosen in the THEME section). Next to the preview are the settings of the clip's group (stinger or banners); the
 // preview shows unsaved values immediately, saving does not change the overlay theme. Rendering: the browser draws
-// every frame and sends it as PNG to the server, which builds the result with ffmpeg (server/render.ts).
+// every frame and sends it as PNG to the server, which builds the result with ffmpeg.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import type { ClipName, RenderClip } from "../core/renderClip.ts";

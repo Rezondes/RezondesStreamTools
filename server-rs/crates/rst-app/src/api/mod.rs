@@ -6,14 +6,17 @@ pub mod theme_values;
 
 use std::path::Path;
 
+use rst_domain::access::AccessPolicy;
 use rst_domain::settings::field::SettingValue;
 use rst_domain::settings::validate::SettingError;
 use rst_domain::spotify::SpotifyDetails;
 use rst_domain::themes::registry::themes;
 use rst_domain::themes::schema::ThemeSchema;
+use rst_domain::triggers::Trigger;
 use ts_rs::{Config, ExportError, TS};
 
 use crate::events::ServerMessage;
+use crate::media::MediaOverview;
 
 /// Export settings: imports with a `.ts` extension (like the frontend), large integers as `number` (JSON).
 fn export_config(dir: &Path) -> Config {
@@ -31,6 +34,9 @@ pub fn export_all(dir: &Path) -> Result<(), ExportError> {
     SettingError::export_all(&cfg)?;
     SettingValue::export_all(&cfg)?;
     SpotifyDetails::export_all(&cfg)?;
+    AccessPolicy::export_all(&cfg)?;
+    Trigger::export_all(&cfg)?;
+    MediaOverview::export_all(&cfg)?;
     let folder = dir.join("themes");
     std::fs::create_dir_all(&folder)?;
     for theme in themes() {

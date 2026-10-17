@@ -3,7 +3,8 @@
 // Twitch connection of the streamer (otherwise the error code not-connected comes back).
 import { useEffect, useState } from "react";
 import type { ErrorCode } from "../core/errorCodes.ts";
-import type { Trigger, When } from "../../server/triggers.ts";
+import type { Trigger } from "../generated/Trigger.ts";
+import type { When } from "../generated/When.ts";
 import { isErrorCode } from "../core/errorCodes.ts";
 import { MEDIA_KIND } from "../core/settings.ts";
 import type { FxAction } from "../core/types.ts";
@@ -12,7 +13,8 @@ import { TEXTS } from "./texts.de.ts";
 import UploadButton from "./UploadButton.tsx";
 
 const TRIGGER_TEXT = TEXTS.triggers;
-const WHEN_TYPES = Object.keys(TRIGGER_TEXT.whenTypes) as When["type"][];
+type WhenType = keyof typeof TRIGGER_TEXT.whenTypes;
+const WHEN_TYPES = Object.keys(TRIGGER_TEXT.whenTypes) as WhenType[];
 const ROLES = Object.keys(TRIGGER_TEXT.roles) as (keyof typeof TRIGGER_TEXT.roles)[];
 
 const newAction = (): FxAction => ({ type: "media", zone: "main", duration: 4, position: "center" });
@@ -161,7 +163,7 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
 
       <div className="row">
         <label>{TRIGGER_TEXT.when}
-          <select value={trigger.when.type} onChange={event => when({ type: event.target.value as When["type"] })}>
+          <select value={trigger.when.type} onChange={event => when({ type: event.target.value })}>
             {WHEN_TYPES.map(type => <option key={type} value={type}>{TRIGGER_TEXT.whenTypes[type]}</option>)}
           </select>
         </label>

@@ -4,13 +4,20 @@ services:
     # Reachable only on this machine; OBS runs locally anyway
     ports:
       - "127.0.0.1:8089:8080"
+    # server.env holds the Twitch app, ADMINS and RST_MASTER_KEY (see server.env.example)
     env_file: server.env
     environment:
       PUBLIC_URL: http://localhost:8089
+      # The key store and its daily copies live apart from the data, so a copy of the data volume holds no keys
+      RST_KEYS_DB: /keys/keys.db
+      RST_KEY_BACKUPS: /keys/backups
     volumes:
-      # Profiles of all streamers (data/streamers/<login>/: tokens, Spotify, triggers, media), access, session key
+      # Data database, encrypted media and render results, backups (and the profiles of the old Node server for
+      # rst import, which used the same volume)
       - tokens:/data
+      - keys:/keys
     restart: unless-stopped
 
 volumes:
   tokens:
+  keys:

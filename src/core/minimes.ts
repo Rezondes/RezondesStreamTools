@@ -1,6 +1,7 @@
 // Rules of the minimes (chatters as figures in the scene minimes): read colors or variants (e.g. fruits) from chat,
 // detect chat commands and keep the list of joined chatters. Pure (rule 12): time comes in as now, all thresholds and switches
-// as rules (settings of the streamer, see minimeFields.ts), randomness as random. Used by the server (server/minimes.ts).
+// as rules (settings of the streamer, see minimeFields.ts), randomness as random. The server applies the same
+// rules in Rust (rst-domain minimes).
 // Check: minimes.check.ts.
 import type { Minime } from "./types.ts";
 

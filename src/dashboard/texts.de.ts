@@ -1,6 +1,7 @@
 // Texts of the dashboard (German). The components take every visible text from here (rule 20);
 // errors translates the server's error codes (src/core/errorCodes.ts). Checked in texts.de.check.ts.
-import type { Feature, Level } from "../../server/access.ts";
+import type { Feature } from "../generated/Feature.ts";
+import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
 import type { ErrorCode } from "../core/errorCodes.ts";
 import type { SceneName } from "../core/theme.ts";
 import type { Section } from "./navigation.ts";
@@ -380,6 +381,7 @@ export const TEXTS = {
     "too-large": "Datei oder Anfrage zu gross.",
     "quota-exceeded": "Kein Platz mehr: dein Speicher für Medien ist voll. Lösche zuerst Dateien.",
     "upload-busy": "Es läuft schon ein Upload. Bitte warten, bis er fertig ist.",
+    "upload-broken": "Der Upload ist abgebrochen. Bitte erneut versuchen.",
     "server-error": "Der Server konnte die Anfrage nicht verarbeiten. Bitte erneut versuchen.",
     "unknown-clip": "Unbekannter Clip.",
     "render-busy": "Es läuft schon ein Render. Bitte warten, bis er fertig ist.",

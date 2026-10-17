@@ -1,6 +1,6 @@
 // Requests of the dashboard to the server: load the account (/api/me) and actions via POST.
 // post returns null on success, otherwise the error code from the response (texts in texts.de.ts).
-import type { MediaList } from "../../server/media.ts";
+import type { MediaOverview as MediaList } from "../generated/MediaOverview.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import type { Me } from "./navigation.ts";
 

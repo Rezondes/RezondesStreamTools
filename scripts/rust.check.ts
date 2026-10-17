@@ -2,7 +2,7 @@
 // Runs with npm test.
 import assert from "node:assert/strict";
 import { join } from "node:path";
-import { BUILD, findCargo, GEN_TYPES, STEPS } from "./rust.ts";
+import { BUILD, findCargo, GEN_TYPES, SERVE, STEPS } from "./rust.ts";
 
 const home = join("home", "neo");
 const exe = join(home, ".cargo", "bin", "cargo.exe");
@@ -22,5 +22,7 @@ assert.ok(STEPS[1].includes("-D") && STEPS[1].includes("warnings"));
 assert.ok(GEN_TYPES[0].includes("--ignored") && GEN_TYPES[0].includes("write_generated_files"));
 // build only builds the server binary for the contract tests
 assert.deepEqual(BUILD, [["build", "--quiet", "-p", "rst-server"]]);
+// serve starts the release build of the server
+assert.deepEqual(SERVE, [["run", "--release", "-p", "rst-server", "--", "serve"]]);
 
 console.log("rust ok");

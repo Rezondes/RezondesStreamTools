@@ -7,7 +7,7 @@ import type { MinimeRules, MinimeVariantRule } from "./minimes.ts";
 // Help command of the streamer (commands.json in the profile). reply: template of the chat reply with {commands} and {link}
 export type HelpConfig = { enabled: boolean; command: string; reply: string; cooldown: number };
 
-// The fields of a trigger (server/triggers.ts) that the overview reads. public: false = do not show
+// The fields of a trigger (src/generated/Trigger.ts) that the overview reads. public: false = do not show
 export type TriggerInfo = {
   name: string;
   enabled?: boolean;

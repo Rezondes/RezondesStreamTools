@@ -7,11 +7,11 @@ import type { SettingErrorCode } from "../generated/SettingErrorCode.ts";
 export const SETTING_ERROR_CODES = ["invalid_type", "invalid_color", "out_of_range", "too_long", "too_many_lines", "unknown_option", "invalid_media"] as const satisfies readonly SettingErrorCode[];
 export type { SettingErrorCode } from "../generated/SettingErrorCode.ts";
 
-// Requests and login (server/index.ts, server/routes.ts, server/http.ts, server/streamer.ts)
+// Requests and login (the Rust server, server-rs/crates/rst-server)
 const REQUEST_ERROR_CODES = [
   "unauthorized", "not-allowed", "admin-only", "feature-off", "cross-origin", "method-not-allowed", "not-found", "forbidden",
   "login-failed", "account-changed", "spotify-failed", "spotify-not-configured", "not-connected", "not-running", "unavailable",
-  "unknown-kind", "unknown-trigger", "invalid-name", "invalid-json", "too-large", "quota-exceeded", "upload-busy", "server-error",
+  "unknown-kind", "unknown-trigger", "invalid-name", "invalid-json", "too-large", "quota-exceeded", "upload-busy", "upload-broken", "server-error",
   "unknown-clip", "render-busy", "render-not-started", "render-limit", "render-failed", "ffmpeg-missing",
   "backup-busy", "backup-invalid", "maintenance", "admin-protected", "invalid-login",
 ] as const;

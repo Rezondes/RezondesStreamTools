@@ -1,9 +1,10 @@
 # Plan: ein Server, mehrere Streamer, Themes
 
-> **Backend wird nach Rust migriert (Entscheidung vom 2026-10-17).** Der Node-Server unter `server/` wird durch einen
-> Rust-Server ersetzt, der als einzige Source of Truth über Daten, Rechte und Regeln entscheidet. Entscheidungen,
-> Architektur und alle Packages dazu stehen ausführlich in [RUST-PLAN.md](RUST-PLAN.md). Dieser Plan bleibt für den
-> TypeScript- und React-Teil (Overlays, Dashboard, Themes).
+> **Backend ist nach Rust migriert (Entscheidung vom 2026-10-17, umgesetzt).** Der frühere Node-Server unter `server/`
+> ist entfernt; der Rust-Server (`server-rs/`) entscheidet als einzige Source of Truth über Daten, Rechte und Regeln.
+> Entscheidungen, Architektur und alle Packages dazu stehen in [RUST-PLAN.md](RUST-PLAN.md). Pfade unter `server/` in
+> diesem Plan beschreiben den damaligen Stand. Dieser Plan bleibt für den TypeScript- und React-Teil (Overlays,
+> Dashboard, Themes).
 
 Die Packages sind nach technischen Abhängigkeiten geordnet. Package 1 ist erledigt.
 Jedes Package endet mit grünem `npm run verify` und ist einzeln committbar. Regeln: [CODING-RULES.md](CODING-RULES.md).

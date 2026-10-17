@@ -1,5 +1,5 @@
 // Contract cases: the server reads the chat of every streamer with Twitch tokens anonymously and sends chat lines and
-// moderation to the overlays (the Node server leaves that to the browser, see pending-node.json).
+// moderation to the overlays.
 import { fail, request, STREAMER, type Case } from "../client.ts";
 import { readStream } from "./overlay.ts";
 

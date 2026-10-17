@@ -1,6 +1,7 @@
 // What drops out when saving access (admin section): logins removed from the allowlist or beta list,
 // registration limited to the allowlist again, features set to "off". Empty = nothing is lost.
-import type { Access, Feature } from "../../server/access.ts";
+import type { AccessPolicy as Access } from "../generated/AccessPolicy.ts";
+import type { Feature } from "../generated/Feature.ts";
 
 type AccessLosses = { revoked: string[]; betaRemoved: string[]; closed: boolean; off: Feature[] };
 

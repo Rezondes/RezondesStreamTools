@@ -1,6 +1,6 @@
 // Checks the Rust workspace server-rs/ (part of npm run verify): cargo fmt --check, clippy without warnings and the
-// tests. In Git Bash cargo is often missing from PATH, so findCargo tries CARGO first, then ~/.cargo/bin.
-// In CI without a Rust toolchain (until the switchover, RUST-PLAN.md package 45) it is skipped with a note.
+// tests; also builds the server for the contract tests, writes the generated types and starts the server (npm run
+// server). In Git Bash cargo is often missing from PATH, so findCargo tries CARGO first, then ~/.cargo/bin.
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
@@ -27,21 +27,20 @@ export const STEPS: readonly (readonly string[])[] = [
 export const GEN_TYPES: readonly (readonly string[])[] = [
   ["test", "--quiet", "-p", "rst-app", "--test", "export_types", "--", "--ignored", "write_generated_files"],
 ];
-// npm run contract:rust: builds the binary rst that the contract tests start
+// npm run contract: builds the binary rst that the contract tests start
 export const BUILD: readonly (readonly string[])[] = [["build", "--quiet", "-p", "rst-server"]];
+// npm run server: the server with the environment of server.env (node --env-file)
+export const SERVE: readonly (readonly string[])[] = [["run", "--release", "-p", "rst-server", "--", "serve"]];
+
+const COMMANDS: Record<string, readonly (readonly string[])[]> = { "gen:types": GEN_TYPES, build: BUILD, serve: SERVE };
 
 function main() {
   const cargo = findCargo(process.env, homedir(), existsSync);
   if (!cargo) {
-    if (process.env.CI === "true") {
-      console.log("Rust check skipped: no Rust toolchain in CI");
-      return;
-    }
     console.error("cargo not found: install Rust (rustup) or set CARGO");
     process.exit(1);
   }
-  const command = process.argv[2];
-  for (const step of command === "gen:types" ? GEN_TYPES : command === "build" ? BUILD : STEPS) {
+  for (const step of COMMANDS[process.argv[2] ?? ""] ?? STEPS) {
     const run = spawnSync(cargo, step, { cwd: "server-rs", stdio: "inherit" });
     if (run.status !== 0) {
       console.error(`Rust check failed: cargo ${step.join(" ")}`);

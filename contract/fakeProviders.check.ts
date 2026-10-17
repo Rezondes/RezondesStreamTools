@@ -1,9 +1,7 @@
 // Check for fakeProviders.ts: tokens and users, EventSub and IRC over WebSocket, Spotify control, frames.
-// The fake runs on a free loopback port; the OAuth app of the Node server talks to it like real Twitch.
-// Token values are placeholders. Runs with npm test.
+// The fake runs on a free loopback port and answers like real Twitch and Spotify. Token values are placeholders.
+// Runs with npm test.
 import assert from "node:assert/strict";
-import { providerUrls } from "../server/providers.ts";
-import { twitchApp } from "../server/twitch.ts";
 import { frame, parseFrame, startFakeProviders } from "./fakeProviders.ts";
 
 const fake = await startFakeProviders();
@@ -21,23 +19,25 @@ async function connect(url: string) {
 }
 
 try {
-  // Tokens and user: the Node server logs in against the fake, validate accepts the tokens, revoke remembers them
-  const app = twitchApp("client-id", "client-secret", "http://localhost:8089/auth/callback", providerUrls(fake.env));
-  const tokens = await app.exchange("code-neo-7");
-  assert.ok(tokens);
-  assert.equal(tokens.login, "neo");
-  assert.equal(tokens.userId, "7");
-  assert.equal(await app.exchange("wrong"), null);
-  assert.deepEqual(await app.validate(tokens), tokens);
-  assert.equal(await app.canChat(tokens), true);
-  assert.equal(await app.say(tokens, "hello"), "ok");
+  // Tokens and user: the code gives tokens, validate knows the scopes, revoke ends the token, refresh renews it
+  const form = (body: Record<string, string>) => post("/oauth2/token", new URLSearchParams(body).toString());
+  type Answer = { access_token: string; refresh_token: string };
+  const tokens = (await (await form({ grant_type: "authorization_code", code: "code-neo-7" })).json()) as Answer;
+  assert.ok(tokens.access_token && tokens.refresh_token);
+  assert.equal((await form({ grant_type: "authorization_code", code: "wrong" })).status, 400);
+  const bearer = (access: string) => ({ headers: { Authorization: `Bearer ${access}`, "Content-Type": "application/json" } });
+  const user = (await (await fetch(`${fake.url}/helix/users`, bearer(tokens.access_token))).json()) as { data: { id: string; login: string }[] };
+  assert.deepEqual([user.data[0].id, user.data[0].login], ["7", "neo"]);
+  const validate = await fetch(`${fake.url}/oauth2/validate`, { headers: { Authorization: `OAuth ${tokens.access_token}` } });
+  assert.ok(((await validate.json()) as { scopes: string[] }).scopes.includes("user:write:chat"));
+  const said = await fetch(`${fake.url}/helix/chat/messages`, { method: "POST", ...bearer(tokens.access_token), body: JSON.stringify({ broadcaster_id: "7", sender_id: "7", message: "hello" }) });
+  assert.equal(said.status, 200);
   assert.deepEqual(fake.chatMessages, [{ broadcaster_id: "7", sender_id: "7", message: "hello" }]);
-  await app.revoke(tokens.access);
-  assert.ok(fake.revoked.has(tokens.access));
-  // Revoked: validate renews with the refresh token
-  const renewed = await app.validate(tokens);
-  assert.notEqual(renewed?.access, tokens.access);
-  assert.equal(renewed?.login, "neo");
+  await post("/oauth2/revoke", new URLSearchParams({ client_id: "client-id", token: tokens.access_token }).toString());
+  assert.ok(fake.revoked.has(tokens.access_token));
+  assert.equal((await fetch(`${fake.url}/oauth2/validate`, { headers: { Authorization: `OAuth ${tokens.access_token}` } })).status, 401);
+  const renewed = (await (await form({ grant_type: "refresh_token", refresh_token: tokens.refresh_token })).json()) as Answer;
+  assert.notEqual(renewed.access_token, tokens.access_token);
   assert.equal((await fetch(`${fake.url}/helix/users`)).status, 401);
   assert.equal((await fetch(`${fake.url}/nowhere`)).status, 404);
 

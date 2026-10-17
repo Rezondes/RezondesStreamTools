@@ -2,7 +2,9 @@
 // allowlist, beta testers and the level of every feature (off, beta testers only, everyone); plus all profiles with
 // access, Twitch connection, EventSub status and last login, and the server-wide backups.
 import { useCallback, useEffect, useState } from "react";
-import type { Access, Feature, Level } from "../../server/access.ts";
+import type { AccessPolicy as Access } from "../generated/AccessPolicy.ts";
+import type { Feature } from "../generated/Feature.ts";
+import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
 import { createBackup, deleteBackup, deleteStreamer, getJson, postJson, restoreBackup, uploadBackup } from "./api.ts";

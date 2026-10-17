@@ -34,16 +34,21 @@ assert.ok(TEXTS.theme.elsewhere("Stinger").startsWith("Stinger"));
 assert.ok(TEXTS.obs.done(7).includes("7"));
 assert.ok(TEXTS.obs.failed("kaputt").endsWith("kaputt"));
 
-// Codes in the server: send(res, 4xx, "code"), redirects ?error=code and the decisions in routes.ts
-const folder = join(import.meta.dirname, "../../server");
-const source = readdirSync(folder)
-  .filter(file => file.endsWith(".ts") && !file.endsWith(".check.ts"))
-  .map(file => readFileSync(join(folder, file), "utf8"))
+// Codes of the Rust server: text(status, "code"), redirects ?error=code and the code() of refusals and errors
+const rust = join(import.meta.dirname, "../../server-rs/crates");
+const read = (file: string) => readFileSync(join(rust, file), "utf8");
+const handlers = join(rust, "rst-server/src");
+const serverSources = readdirSync(handlers, { recursive: true, encoding: "utf8" })
+  .filter(file => file.endsWith(".rs"))
+  .map(file => readFileSync(join(handlers, file), "utf8"))
+  .join("\n");
+const codeArms = ["rst-server/src/routes.rs", "rst-domain/src/render/jobs.rs", "rst-infra/src/render/ffmpeg.rs", "rst-app/src/identity/login.rs"]
+  .map(read)
   .join("\n");
 const sent = [
-  ...[...source.matchAll(/send\(\w+, \d+, (?:\w+ \? )?"([^"]+)"(?: : "([^"]+)")?\)/g)].flatMap(match => match.slice(1)),
-  ...[...source.matchAll(/\?error=([a-z-]+)/g)].map(match => match[1]),
-  ...(source.match(/export type Decision = (.*);/)?.[1].match(/"[a-z-]+"/g) ?? []).map(code => code.slice(1, -1)).filter(code => code !== "ok"),
+  ...[...serverSources.matchAll(/text\([\w.]+, "([a-z][a-z-]+)"\)/g)].map(match => match[1]),
+  ...[...serverSources.matchAll(/\?error=([a-z-]+)/g)].map(match => match[1]),
+  ...[...codeArms.matchAll(/=> (?:Some\()?"([a-z][a-z-]+)"\)?,/g)].map(match => match[1]),
 ].filter(Boolean);
 assert.ok(sent.length > 10, "no codes found in the server");
 const missing = [...new Set(sent)].filter(code => !(ERROR_CODES as readonly string[]).includes(code));

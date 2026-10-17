@@ -4,11 +4,12 @@
 use std::collections::BTreeMap;
 
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 use crate::identity::values::Login;
 
 /// Features that can be released individually for beta testers or for everyone
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize, TS)]
 #[serde(rename_all = "lowercase")]
 pub enum Feature {
     Alerts,
@@ -56,7 +57,7 @@ impl Feature {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "lowercase")]
 pub enum FeatureLevel {
     Off,
@@ -75,7 +76,7 @@ impl FeatureLevel {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(rename_all = "lowercase")]
 pub enum Registration {
     /// Only admins and logins on the allowlist
@@ -95,13 +96,16 @@ pub struct RawAccess {
 }
 
 /// Who may log in and which features are released; always valid, every feature has a level.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct AccessPolicy {
     pub registration: Registration,
     /// May log in while registration is allowlist
+    #[ts(type = "Array<string>")]
     pub allowlist: Vec<Login>,
     /// Additionally get features with level beta
+    #[ts(type = "Array<string>")]
     pub beta: Vec<Login>,
+    /// Every feature has a level
     pub features: BTreeMap<Feature, FeatureLevel>,
 }
 

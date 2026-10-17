@@ -1,7 +1,7 @@
 // Check for accessChanges.ts: removed logins, closed registration and switched-off features are
 // detected, unchanged access reports nothing. Runs with npm test.
 import assert from "node:assert/strict";
-import type { Access } from "../../server/access.ts";
+import type { AccessPolicy as Access } from "../generated/AccessPolicy.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
 
 const saved: Access = {

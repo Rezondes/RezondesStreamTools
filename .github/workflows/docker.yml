@@ -1,5 +1,6 @@
-# Docker image on ghcr.io: on every push to main (or by hand) first all checks (npm run verify),
-# then build and publish as ghcr.io/<owner>/<repo>:latest and :sha-<commit>.
+# Docker image on ghcr.io: on every push to main (or by hand) first all checks (npm run verify with the Rust workspace)
+# and the contract tests against the Rust server, then build and publish as ghcr.io/<owner>/<repo>:latest and
+# :sha-<commit>.
 # The package is private at first; switch it to public once under Package settings.
 name: Docker-Image
 
@@ -28,11 +29,41 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      # The same toolchain as server-rs/rust-toolchain.toml
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.98"
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server-rs
       - run: npm ci --ignore-scripts
       - run: npm run verify
 
-  image:
+  # The contract tests start the Rust server against the fake providers; they need the built pages (dist)
+  contract:
     needs: verify
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.98"
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: server-rs
+      - run: npm ci --ignore-scripts
+      - run: npx vite build
+      - run: npm run contract
+
+  image:
+    needs: [verify, contract]
     # Only main is published, also when started by hand on another branch
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest

@@ -13,8 +13,8 @@ const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclud
   .filter(file => file && existsSync(file));
 
 const TEXT = /\.(ts|tsx|js|css|html|json|md|yml|svg|example)$|Dockerfile$|Caddyfile$/;
-const SOURCE = /^(src|server|scripts)\/.*\.(ts|tsx)$/;
-const LOGIC = /^(src|server)\/.*(?<!\.check)\.ts$/;
+const SOURCE = /^(src|scripts)\/.*\.(ts|tsx)$/;
+const LOGIC = /^src\/.*(?<!\.check)\.ts$/;
 // React hooks (files use*.ts) need a browser; their logic is in checked pure modules
 const HOOK = /\/use[A-Z][^/]*\.ts$/;
 // Modules with types only (no export const/function/class) have nothing to check
@@ -31,10 +31,6 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/themes/matrix/tones.ts": "Web Audio output",
   "src/themes/suedfrucht/tones.ts": "Web Audio output",
   "src/dashboard/api.ts": "network client of the dashboard",
-  "server/index.ts": "HTTP entry point",
-  "server/chat.ts": "network client; parsing is checked in server/irc.ts",
-  "server/renderRoutes.ts": "HTTP handlers and the ffmpeg process; job rules and arguments are checked in render.ts",
-  "server/streamer.ts": "runtime wiring of the checked clients (twitch, spotify, triggers, chat) with timers and SSE",
 };
 
 // Bag names that arose before the rule set (empty: new exceptions only with a reason)
@@ -87,8 +83,8 @@ for (const file of files.filter(file => PRESENTING.test(file))) {
 }
 
 // Rule 16, boundaries: a theme imports only from its own folder, from src/core (rules, hooks and building blocks
-// that are the same for all themes) and the generated types, never from another theme, the dashboard or the server.
-// The core never imports from themes, dashboard or server. Checks are exempt (they may use schemaAudit, for example).
+// that are the same for all themes) and the generated types, never from another theme or the dashboard.
+// The core never imports from themes or the dashboard. Checks are exempt (they may use schemaAudit, for example).
 const IMPORT_FROM = /^\s*(?:import|export)\b[^"';]*?["']([^"']+)["']/gm;
 function importViolations(file: string, source: string): string[] {
   const theme = /^src\/themes\/([^/]+)\//.exec(file)?.[1];
@@ -97,12 +93,12 @@ function importViolations(file: string, source: string): string[] {
     if (!specifier.startsWith(".")) return [];
     const target = posix.normalize(posix.join(posix.dirname(file), specifier));
     const shared = target.startsWith("src/core/") || target.startsWith("src/generated/");
-    const allowed = theme ? target.startsWith(`src/themes/${theme}/`) || shared : !/^(src\/themes|src\/dashboard|server)\//.test(target);
+    const allowed = theme ? target.startsWith(`src/themes/${theme}/`) || shared : !/^src\/(themes|dashboard)\//.test(target);
     return allowed ? [] : [`${file}: imports ${specifier} (rule 16)`];
   });
 }
 
-// Self test: own folder and core allowed, another theme, dashboard and server not; the core never upwards
+// Self test: own folder and core allowed, another theme and the dashboard not; the core never upwards
 assert.deepEqual(importViolations("src/themes/probe/scenes/A.tsx", [
   "import { useProbe } from \"../useProbe.ts\";",
   "import Marquee from \"../../../core/music/Marquee.tsx\";",

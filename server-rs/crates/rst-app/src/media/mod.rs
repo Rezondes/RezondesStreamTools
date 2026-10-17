@@ -10,6 +10,7 @@ use rst_domain::identity::values::StreamerId;
 use rst_domain::media::library::triggers_using;
 use rst_domain::triggers::Trigger;
 use serde::{Deserialize, Serialize};
+use ts_rs::TS;
 
 use crate::crypto::to_hex;
 use crate::ports::StoreError;
@@ -43,7 +44,7 @@ pub struct StoredFile {
     pub file: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, TS)]
 pub struct MediaEntry {
     pub name: String,
     pub size: u64,
@@ -51,7 +52,8 @@ pub struct MediaEntry {
     pub used_by: Vec<String>,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+/// The media of a streamer with the triggers that use them, and the storage used and allowed
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, TS)]
 pub struct MediaOverview {
     pub files: Vec<MediaEntry>,
     #[serde(rename = "usedBytes")]

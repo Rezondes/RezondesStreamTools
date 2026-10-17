@@ -1,4 +1,4 @@
-// Contract cases: server-wide backups and deleting a streamer for admins (Rust server only, see pending-node.json).
+// Contract cases: server-wide backups and deleting a streamer for admins.
 import { ADMIN, expect, expectCode, fail, login, request, setAccess, STREAMER, type Case } from "../client.ts";
 
 const admin = ADMIN.login;
