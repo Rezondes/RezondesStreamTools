@@ -5,6 +5,7 @@ pub mod audit;
 pub mod files;
 pub mod keys;
 pub mod records;
+pub mod server_settings;
 pub mod sessions;
 pub mod streamers;
 

@@ -1,0 +1,4 @@
+{ "triggers": [
+  { "name": "lizard", "when": { "type": "word", "match": "lizard" }, "do": [{ "type": "media", "image": "lizard.gif" }] },
+  { "name": "ahead", "when": { "type": "regex", "match": "foo(?=bar)" }, "do": [{ "type": "text", "text": "FOO" }] }
+] }

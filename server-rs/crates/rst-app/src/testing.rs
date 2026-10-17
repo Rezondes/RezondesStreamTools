@@ -14,8 +14,10 @@ use rst_domain::identity::values::StreamerId;
 use crate::crypto::cipher::random_bytes;
 use crate::ports::StoreError;
 use crate::ports::audit::{AuditStore, StoredEntry};
+use crate::ports::files::{Blocks, FileStore, FileWriter};
 use crate::ports::keys::{DataKey, KeyStore};
 use crate::ports::records::{RecordStore, StoredRecord};
+use crate::ports::server_settings::ServerSettingsStore;
 use crate::ports::sessions::SessionStore;
 use crate::ports::streamers::{StreamerRepository, StreamerRow};
 
@@ -203,5 +205,86 @@ impl AuditStore for MemoryAudit {
             .take(usize::try_from(limit).unwrap_or(usize::MAX))
             .map(|(_, entry)| entry.clone())
             .collect())
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct MemoryServerSettings(Arc<Mutex<BTreeMap<String, Vec<u8>>>>);
+
+impl ServerSettingsStore for MemoryServerSettings {
+    async fn put(&self, key: &str, ciphertext: &[u8], _now: i64) -> Result<(), StoreError> {
+        lock(&self.0).insert(key.to_owned(), ciphertext.to_vec());
+        Ok(())
+    }
+
+    async fn get(&self, key: &str) -> Result<Option<Vec<u8>>, StoreError> {
+        Ok(lock(&self.0).get(key).cloned())
+    }
+}
+
+type StoredBytes = BTreeMap<(StreamerId, String), ([u8; 32], Vec<u8>)>;
+
+/// Files with the key they were written with; reading with another key fails like decryption would
+#[derive(Debug, Default, Clone)]
+pub struct MemoryFiles(Arc<Mutex<StoredBytes>>);
+
+impl MemoryFiles {
+    pub fn names(&self) -> usize {
+        lock(&self.0).len()
+    }
+}
+
+pub struct MemoryWriter {
+    files: MemoryFiles,
+    place: (StreamerId, String),
+    key: [u8; 32],
+    data: Vec<u8>,
+}
+
+impl FileWriter for MemoryWriter {
+    fn write(&mut self, chunk: &[u8]) -> Result<(), StoreError> {
+        self.data.extend_from_slice(chunk);
+        Ok(())
+    }
+
+    fn finish(self) -> Result<u64, StoreError> {
+        let size = self.data.len() as u64;
+        lock(&self.files.0).insert(self.place, (self.key, self.data));
+        Ok(size)
+    }
+}
+
+impl FileStore for MemoryFiles {
+    type Writer = MemoryWriter;
+
+    fn create(&self, key: &DataKey, streamer: &StreamerId, name: &str) -> Result<MemoryWriter, StoreError> {
+        Ok(MemoryWriter {
+            files: self.clone(),
+            place: (streamer.clone(), name.to_owned()),
+            key: *key.bytes(),
+            data: Vec::new(),
+        })
+    }
+
+    fn read(&self, key: &DataKey, streamer: &StreamerId, name: &str) -> Result<Option<Arc<Vec<u8>>>, StoreError> {
+        match lock(&self.0).get(&(streamer.clone(), name.to_owned())) {
+            Some((stored, _)) if stored != key.bytes() => Err(StoreError::new("wrong key")),
+            Some((_, data)) => Ok(Some(Arc::new(data.clone()))),
+            None => Ok(None),
+        }
+    }
+
+    fn blocks(&self, key: &DataKey, streamer: &StreamerId, name: &str) -> Result<Option<Blocks>, StoreError> {
+        let data = self.read(key, streamer, name)?;
+        Ok(data.map(|data| Box::new(std::iter::once(Ok(data.to_vec()))) as Blocks))
+    }
+
+    fn delete(&self, streamer: &StreamerId, name: &str) -> Result<bool, StoreError> {
+        Ok(lock(&self.0).remove(&(streamer.clone(), name.to_owned())).is_some())
+    }
+
+    fn delete_streamer(&self, streamer: &StreamerId) -> Result<(), StoreError> {
+        lock(&self.0).retain(|(owner, _), _| owner != streamer);
+        Ok(())
     }
 }

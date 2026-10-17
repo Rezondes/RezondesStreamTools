@@ -1,0 +1,1 @@
+{ "registration": "allowlist", "allowlist": ["neo", "trinity"], "beta": ["neo"], "features": { "minimes": "beta" } }

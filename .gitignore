@@ -6,6 +6,9 @@ render
 
 # Logins and secrets: token store of the server and all env files, commit only templates
 data
+# Except the made-up example data folder of the Rust import test (placeholder tokens only)
+!server-rs/crates/rst-app/tests/fixtures/data
+!server-rs/crates/rst-app/tests/fixtures/data/streamers/*/render
 server.env
 .env*
 !.env.example

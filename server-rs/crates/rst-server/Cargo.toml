@@ -14,3 +14,7 @@ path = "src/main.rs"
 [dependencies]
 rst-app.workspace = true
 rst-infra.workspace = true
+tokio.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
