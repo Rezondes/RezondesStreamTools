@@ -4,6 +4,7 @@ pub mod crypto;
 pub mod db;
 pub mod files;
 pub mod keys;
+pub mod render;
 pub mod spotify;
 pub mod twitch;
 pub mod websocket;

@@ -48,6 +48,7 @@ mod tests {
             keys_db: folder.join("keys").join("keys.db"),
             files: folder.join("files"),
             file_cache_bytes: 0,
+            render_temp: folder.join("render-tmp"),
             master: MasterKey::from_bytes([3; 32]),
         }
     }

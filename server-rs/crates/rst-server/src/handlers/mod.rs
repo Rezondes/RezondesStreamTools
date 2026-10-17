@@ -1,5 +1,5 @@
 //! One handler per route (template: `HANDLERS` in `server/index.ts`). The match lists every route, so a new route
-//! does not compile without a handler. Routes of later packages answer `501 not-implemented` until then.
+//! does not compile without a handler.
 
 use axum::extract::Request;
 use axum::response::Response;
@@ -12,10 +12,10 @@ pub mod events;
 pub mod media;
 pub mod music;
 pub mod overlay;
+pub mod render;
 pub mod settings;
 pub mod triggers;
 
-use crate::errors::pending;
 use crate::routes::{Route, Visitor};
 
 /// What a handler gets: the server, the authorized caller and the request
@@ -52,12 +52,12 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::SpotifyCallback => music::callback(call).await,
         Route::SpotifyDetails => music::details(call).await,
         Route::SpotifyLogout => music::logout(call).await,
-        Route::RenderStart
-        | Route::RenderFrame
-        | Route::RenderDone
-        | Route::RenderCancel
-        | Route::RenderFiles
-        | Route::RenderFile => pending(),
+        Route::RenderStart => render::start(call).await,
+        Route::RenderFrame => render::frame(call).await,
+        Route::RenderDone => render::done(call).await,
+        Route::RenderCancel => render::cancel(call).await,
+        Route::RenderFiles => render::files(call).await,
+        Route::RenderFile => render::file(call).await,
         Route::Settings => settings::settings(call).await,
         Route::SaveSettings => settings::save(call).await,
         Route::Themes => settings::schemas(),

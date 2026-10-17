@@ -24,6 +24,7 @@ use rst_domain::identity::session::{OAUTH_STATE_SECONDS, is_secure_url};
 use rst_domain::identity::values::StreamerId;
 use rst_domain::media::library::UploadSlots;
 use rst_domain::paths::StreamerPath;
+use rst_domain::render::jobs::RenderJobs;
 use rst_domain::spotify::redirect_uri;
 use rst_infra::db::sqlite_audit::SqliteAudit;
 use rst_infra::db::sqlite_records::SqliteRecords;
@@ -31,6 +32,7 @@ use rst_infra::db::sqlite_server_settings::SqliteServerSettings;
 use rst_infra::db::sqlite_sessions::SqliteSessions;
 use rst_infra::db::sqlite_streamers::SqliteStreamers;
 use rst_infra::keys::sqlite::SqliteKeyStore;
+use rst_infra::render::ffmpeg::Ffmpeg;
 use rst_infra::spotify::client::SpotifyClient;
 use rst_infra::twitch::oauth::TwitchClient;
 use rst_infra::websocket::WebSockets;
@@ -79,6 +81,9 @@ pub struct App {
     /// Spotify knows only one callback URL: the state says which streamer started the connection
     spotify_states: Mutex<LoginStates<StreamerId>>,
     uploads: Mutex<UploadSlots>,
+    /// At most one render per streamer
+    render_jobs: Mutex<RenderJobs>,
+    pub ffmpeg: Ffmpeg,
 }
 
 /// A running upload of a streamer; dropping it frees the slot
@@ -124,6 +129,8 @@ impl App {
             runtimes: Registry::default(),
             twitch_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
             uploads: Mutex::new(UploadSlots::default()),
+            render_jobs: Mutex::default(),
+            ffmpeg: Ffmpeg::from_env(),
             config,
             stores,
         }
@@ -131,6 +138,10 @@ impl App {
 
     pub fn twitch_states(&self) -> MutexGuard<'_, LoginStates<()>> {
         self.twitch_states.lock().unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
+    pub fn render_jobs(&self) -> MutexGuard<'_, RenderJobs> {
+        self.render_jobs.lock().unwrap_or_else(std::sync::PoisonError::into_inner)
     }
 
     pub fn spotify_states(&self) -> MutexGuard<'_, LoginStates<StreamerId>> {
@@ -370,6 +381,7 @@ mod tests {
             keys_db: folder.join("keys.db"),
             files: folder.join("files"),
             file_cache_bytes: 0,
+            render_temp: folder.join("render-tmp"),
             master: MasterKey::from_bytes([3; 32]),
         };
         let opened = crate::wiring::open(&stores).await.expect("stores");

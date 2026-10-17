@@ -17,7 +17,7 @@ rst-domain.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
 sqlx.workspace = true
-tokio.workspace = true
+tokio = { workspace = true, features = ["fs", "io-util", "process", "time"] }
 tokio-tungstenite.workspace = true
 zeroize.workspace = true
 

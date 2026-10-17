@@ -43,6 +43,8 @@ pub struct StoreConfig {
     pub keys_db: PathBuf,
     pub files: PathBuf,
     pub file_cache_bytes: usize,
+    /// Frames of a running render, unencrypted only until ffmpeg is done
+    pub render_temp: PathBuf,
     pub master: MasterKey,
 }
 
@@ -62,6 +64,7 @@ impl StoreConfig {
             keys_db: path(KEYS_DB_VAR, "keys.db"),
             files: path(FILES_VAR, "files"),
             file_cache_bytes: cache_bytes(lookup(FILE_CACHE_VAR).as_deref()),
+            render_temp: path("RST_RENDER_DIR", "render-tmp"),
             master,
         })
     }

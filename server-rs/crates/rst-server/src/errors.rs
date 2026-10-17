@@ -53,9 +53,3 @@ pub fn server_error(message: &str) -> Response {
     eprintln!("Request failed: {message}");
     text(500, "server-error")
 }
-
-/// A route whose handler comes with a later package of RUST-PLAN.md
-#[must_use]
-pub fn pending() -> Response {
-    text(501, "not-implemented")
-}

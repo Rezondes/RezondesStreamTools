@@ -50,6 +50,21 @@ export const ACCOUNT_CASES: Case[] = [
     },
   },
   {
+    name: "render: one render at a time, frames until cancel, the file list",
+    async run(context) {
+      const post = (path: string, body?: BodyInit) => request(context, path, { method: "POST", session, body });
+      await expect(await post("/api/render/start?clip=stinger"), 200, { ok: "boolean" });
+      await expectCode(await post("/api/render/start?clip=profile"), 409, "render-busy");
+      await expect(await post("/api/render/frame?i=0", new Uint8Array([137, 80, 78, 71])), 200, { ok: "boolean" });
+      await expectCode(await post("/api/render/frame?i=5000", new Uint8Array([1])), 400, "render-limit");
+      await expectCode(await post("/api/render/done?fps=0"), 400, "render-limit");
+      await expect(await post("/api/render/cancel"), 200, { ok: "boolean" });
+      await expectCode(await post("/api/render/frame?i=1", new Uint8Array([1])), 409, "render-not-started");
+      await expect(await request(context, "/api/render/files", { session }), 200, "array");
+      await expectCode(await request(context, "/api/render/file?name=../x", { session }), 400, "invalid-name");
+    },
+  },
+  {
     name: "overlay key: a new key replaces the old one",
     async run(context) {
       const old = context.memory.get("overlayKey") ?? fail("no overlay key from an earlier case");
