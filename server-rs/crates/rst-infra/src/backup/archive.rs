@@ -12,13 +12,16 @@ use base64::engine::general_purpose::STANDARD;
 use rst_app::backup::is_backup_id;
 use rst_app::crypto::to_hex;
 use rst_app::ports::StoreError;
-use rst_app::ports::backups::{BackupInfo, BackupStore};
+use rst_app::ports::backups::{ArchiveError, BackupInfo, BackupStore};
+use rst_domain::identity::values::StreamerId;
 use serde_json::{Map, Value, json};
 use sha2::{Digest, Sha256};
 use sqlx::sqlite::SqliteRow;
 use sqlx::{Row, SqlitePool};
 use zip::ZipWriter;
 use zip::write::SimpleFileOptions;
+
+use crate::backup::restore::{check, migration, restore};
 
 /// Version of the archive layout
 pub const ARCHIVE_FORMAT: u32 = 1;
@@ -151,6 +154,19 @@ impl ZipBackups {
         self.folder.join(format!("{id}.{EXTENSION}"))
     }
 
+    fn partial(&self, id: &str) -> PathBuf {
+        self.folder.join(format!("{id}.{EXTENSION}.{PARTIAL}"))
+    }
+
+    /// Checks an archive in a worker thread
+    async fn checked(&self, path: PathBuf) -> Result<Vec<StreamerId>, ArchiveError> {
+        let current = migration(&self.pool).await?;
+        tokio::task::spawn_blocking(move || check(&path, current))
+            .await
+            .map_err(|error| ArchiveError::Store(StoreError::new(error)))?
+            .map(|checked| checked.streamers)
+    }
+
     async fn tables(&self) -> Result<Vec<Table>, StoreError> {
         let fetch = |sql: &'static str| sqlx::query(sql).fetch_all(&self.pool);
         let streamers = fetch("SELECT id, user_id_hmac, login_hmac, created_at FROM streamers ORDER BY id").await;
@@ -205,14 +221,11 @@ impl ZipBackups {
 impl BackupStore for ZipBackups {
     async fn create(&self, id: &str, now: i64) -> Result<BackupInfo, StoreError> {
         let (automatic, _) = parse_id(id).ok_or_else(|| StoreError::new("invalid backup id"))?;
-        let migration: i64 = sqlx::query_scalar("SELECT COALESCE(MAX(version), 0) FROM _sqlx_migrations")
-            .fetch_one(&self.pool)
-            .await
-            .map_err(StoreError::new)?;
+        let migration = migration(&self.pool).await?;
         let tables = self.tables().await?;
         let head = json!({ "format": ARCHIVE_FORMAT, "migration": migration, "createdAt": now });
         let (files, folder, target) = (self.files.clone(), self.folder.clone(), self.path(id));
-        let partial = target.with_extension(format!("{EXTENSION}.{PARTIAL}"));
+        let partial = self.partial(id);
         let bytes = tokio::task::spawn_blocking(move || {
             fs::create_dir_all(&folder).map_err(StoreError::new)?;
             if let Err(error) = write_archive(&partial, &tables, &files, head) {
@@ -265,6 +278,33 @@ impl BackupStore for ZipBackups {
             Err(error) => Err(StoreError::new(error)),
         }
     }
+
+    fn incoming(&self, id: &str) -> PathBuf {
+        self.partial(id)
+    }
+
+    async fn accept(&self, id: &str) -> Result<BackupInfo, ArchiveError> {
+        let (automatic, created_at) = parse_id(id).ok_or(ArchiveError::NotFound)?;
+        let partial = self.partial(id);
+        if let Err(error) = self.checked(partial.clone()).await {
+            let _ = tokio::fs::remove_file(&partial).await;
+            return Err(error);
+        }
+        let target = self.path(id);
+        tokio::fs::rename(&partial, &target).await.map_err(StoreError::new)?;
+        let bytes = tokio::fs::metadata(&target).await.map_err(StoreError::new)?.len();
+        Ok(BackupInfo { id: id.to_owned(), created_at, bytes, automatic })
+    }
+
+    async fn inspect(&self, id: &str) -> Result<Vec<StreamerId>, ArchiveError> {
+        let path = self.file(id).ok_or(ArchiveError::NotFound)?;
+        self.checked(path).await
+    }
+
+    async fn restore(&self, id: &str, keep: &[StreamerId]) -> Result<(), ArchiveError> {
+        let path = self.file(id).ok_or(ArchiveError::NotFound)?;
+        restore(&self.pool, &self.files, &path, keep).await
+    }
 }
 
 #[cfg(test)]
@@ -280,6 +320,7 @@ mod tests {
     use rst_domain::twitch::tokens::TwitchTokens;
 
     use super::*;
+    use crate::backup::restore::TABLES;
     use crate::crypto::master::MasterKey;
     use crate::db::pool::open_data_db;
     use crate::db::sqlite_records::SqliteRecords;
@@ -346,5 +387,111 @@ mod tests {
         assert!(backups.delete(&info.id).await.expect("delete"));
         assert!(!backups.delete(&info.id).await.expect("delete again"));
         assert!(backups.list().await.expect("list").is_empty());
+    }
+
+    async fn count(pool: &SqlitePool, table: &str) -> i64 {
+        let sql = match table {
+            "streamers" => "SELECT COUNT(*) FROM streamers",
+            "records" => "SELECT COUNT(*) FROM records",
+            _ => "SELECT COUNT(*) FROM audit_log",
+        };
+        sqlx::query_scalar(sql).fetch_one(pool).await.expect("count")
+    }
+
+    /// Two streamers with one record and one file each
+    async fn filled(folder: &Path) -> (ZipBackups, SqlitePool, PathBuf) {
+        let pool = open_data_db(&folder.join("data.db")).await.expect("open");
+        for (id, byte) in [("aa".repeat(16), 1_u8), ("bb".repeat(16), 2)] {
+            sqlx::query("INSERT INTO streamers (id, user_id_hmac, login_hmac, created_at) VALUES (?, ?, ?, 1)")
+                .bind(&id)
+                .bind(vec![byte; 32])
+                .bind(vec![byte + 10; 32])
+                .execute(&pool)
+                .await
+                .expect("streamer");
+            sqlx::query(
+                "INSERT INTO records (streamer_id, kind, record_key, ciphertext, updated_at) \
+                 VALUES (?, 'settings', '', ?, 1)",
+            )
+            .bind(&id)
+            .bind(vec![byte; 8])
+            .execute(&pool)
+            .await
+            .expect("record");
+            fs::create_dir_all(folder.join("files").join(&id)).expect("folder");
+            fs::write(folder.join("files").join(&id).join("cd".repeat(16)), [byte; 4]).expect("file");
+        }
+        let files = folder.join("files");
+        (ZipBackups::new(pool.clone(), &files, &folder.join("backups")), pool, files)
+    }
+
+    #[tokio::test]
+    async fn restore_brings_back_the_state_and_skips_streamers_without_a_key() {
+        let folder = tempfile::tempdir().expect("temp folder");
+        let (backups, pool, files) = filled(folder.path()).await;
+        let info = backups.create("manual-1-00000001", 1).await.expect("create");
+        // Changes after the backup: one streamer gone, a record replaced, a file added
+        sqlx::query("DELETE FROM streamers WHERE id = ?").bind("bb".repeat(16)).execute(&pool).await.expect("delete");
+        sqlx::query("UPDATE records SET ciphertext = x'00'").execute(&pool).await.expect("update");
+        fs::write(files.join("aa".repeat(16)).join("ef".repeat(16)), b"new").expect("file");
+        let ids = backups.inspect(&info.id).await.expect("inspect");
+        assert_eq!(ids.len(), 2);
+        backups.restore(&info.id, &ids).await.expect("restore");
+        assert_eq!((count(&pool, "streamers").await, count(&pool, "records").await), (2, 2));
+        let restored: Vec<u8> = sqlx::query_scalar("SELECT ciphertext FROM records WHERE streamer_id = ?")
+            .bind("aa".repeat(16))
+            .fetch_one(&pool)
+            .await
+            .expect("record");
+        assert_eq!(restored, vec![1; 8]);
+        assert!(!files.join("aa".repeat(16)).join("ef".repeat(16)).exists());
+        assert!(files.join("bb".repeat(16)).join("cd".repeat(16)).exists());
+        // Only streamer aa still has a key: bb is left out with its rows and files
+        let keep = [StreamerId::parse(&"aa".repeat(16)).expect("id")];
+        backups.restore(&info.id, &keep).await.expect("restore");
+        assert_eq!((count(&pool, "streamers").await, count(&pool, "records").await), (1, 1));
+        assert!(!files.join("bb".repeat(16)).exists());
+    }
+
+    /// Writes an archive with `entries` and a manifest with the checksums of `sums`
+    fn forged(path: &Path, entries: &[(&str, &[u8])], sums: &[(&str, &[u8])]) {
+        let mut zip = ZipWriter::new(File::create(path).expect("create"));
+        for (name, data) in entries {
+            zip.start_file(*name, SimpleFileOptions::default()).expect("entry");
+            zip.write_all(data).expect("write");
+        }
+        let files: Map<String, Value> =
+            sums.iter().map(|(name, data)| ((*name).to_owned(), json!(to_hex(&Sha256::digest(data))))).collect();
+        zip.start_file("manifest.json", SimpleFileOptions::default()).expect("manifest");
+        zip.write_all(json!({ "format": 1, "migration": 1, "files": files }).to_string().as_bytes()).expect("write");
+        zip.finish().expect("finish");
+    }
+
+    #[tokio::test]
+    async fn tampered_uploads_are_rejected_and_change_nothing() {
+        let folder = tempfile::tempdir().expect("temp folder");
+        let (backups, pool, _files) = filled(folder.path()).await;
+        fs::create_dir_all(folder.path().join("backups")).expect("folder");
+        let names: Vec<String> = TABLES.iter().map(|table| format!("db/{table}.jsonl")).collect();
+        let good: Vec<(&str, &[u8])> = names.iter().map(|name| (name.as_str(), &b""[..])).collect();
+        forged(&backups.incoming("manual-2-00000002"), &good, &good);
+        assert!(backups.accept("manual-2-00000002").await.is_ok(), "a well formed empty archive passes");
+        let mut escaping = good.clone();
+        escaping.push(("../evil.txt", b"x"));
+        let wrong_sum = vec![(good[0].0, &b"other"[..]), good[1], good[2], good[3]];
+        let cases = [
+            ("manual-3-00000003", good.clone(), wrong_sum),
+            ("manual-4-00000004", escaping.clone(), escaping),
+            ("manual-5-00000005", good.clone(), good[..3].to_vec()),
+        ];
+        for (id, written, listed) in cases {
+            forged(&backups.incoming(id), &written, &listed);
+            assert!(matches!(backups.accept(id).await, Err(ArchiveError::Invalid(_))), "{id}");
+            assert!(!backups.incoming(id).exists(), "a rejected upload is deleted");
+        }
+        fs::write(backups.incoming("manual-6-00000006"), b"no zip").expect("write");
+        assert!(matches!(backups.accept("manual-6-00000006").await, Err(ArchiveError::Invalid(_))));
+        assert_eq!(backups.list().await.expect("list").len(), 1);
+        assert_eq!(count(&pool, "streamers").await, 2);
     }
 }

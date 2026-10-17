@@ -70,5 +70,7 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::CreateBackup => backups::create(&call),
         Route::DownloadBackup => backups::download(call).await,
         Route::DeleteBackup => backups::delete(call).await,
+        Route::UploadBackup => backups::upload(call).await,
+        Route::RestoreBackup => backups::restore(call).await,
     }
 }

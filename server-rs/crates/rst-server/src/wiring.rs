@@ -37,6 +37,7 @@ pub struct Stores {
     pub media: MediaLibrary<SqliteRecords, SqliteKeyStore, EncryptedFiles>,
     pub access: AccessSettings<SqliteServerSettings>,
     pub audit: AuditLog<SqliteAudit, SqliteKeyStore>,
+    pub keys: SqliteKeyStore,
 }
 
 fn create_parent(path: &Path) -> Result<(), String> {
@@ -61,7 +62,8 @@ pub async fn open(config: &StoreConfig) -> Result<Stores, String> {
         overlay_keys: OverlayKeys::new(vault.clone(), lookup),
         media: MediaLibrary::new(vault, EncryptedFiles::new(&config.files, config.file_cache_bytes)),
         access: AccessSettings::new(SqliteServerSettings::new(pool.clone()), server_key.clone()),
-        audit: AuditLog::new(SqliteAudit::new(pool.clone()), keys, server_key),
+        audit: AuditLog::new(SqliteAudit::new(pool.clone()), keys.clone(), server_key),
+        keys,
         pool,
     })
 }

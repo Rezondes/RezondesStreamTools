@@ -31,6 +31,20 @@ export const deleteMedia = (name: string) => request(`/api/media?name=${encodeUR
 // Backups (admins, new server only): start one in the background, delete one
 export const createBackup = () => request("/api/admin/backups", { method: "POST" });
 export const deleteBackup = (id: string) => request(`/api/admin/backup?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+export const uploadBackup = (file: File) => request("/api/admin/backups/upload", { method: "POST", body: file });
+
+// Restore: the answer names how many profiles came back and which were left out (deleted, no key)
+export type RestoreReport = { restored: number; skipped: string[] };
+export async function restoreBackup(id: string): Promise<RestoreReport | ErrorCode> {
+  try {
+    const response = await fetch(`/api/admin/backup/restore?id=${encodeURIComponent(id)}`, { method: "POST" });
+    if (response.ok) return (await response.json()) as RestoreReport;
+    const code = (await response.text()).trim();
+    return isErrorCode(code) ? code : "server-error";
+  } catch {
+    return "server-error";
+  }
+}
 
 // Request without response data: null on success, otherwise the error code from the response
 async function request(url: string, init: RequestInit): Promise<ErrorCode | null> {

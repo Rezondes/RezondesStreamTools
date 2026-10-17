@@ -250,6 +250,12 @@ export const TEXTS = {
     backupDownload: "Herunterladen",
     backupDelete: "Löschen",
     backupConfirmDelete: (time: string) => `Backup vom ${time} endgültig löschen?`,
+    backupUpload: "Backup hochladen",
+    backupRestore: "Wiederherstellen",
+    backupConfirmRestore: (time: string) =>
+      `Backup vom ${time} wiederherstellen? Alle heutigen Daten werden ersetzt, die Overlays sind kurz nicht erreichbar.`,
+    backupRestored: (restored: number, skipped: number) =>
+      skipped > 0 ? `Wiederhergestellt: ${restored} Profile, ${skipped} gelöschte übersprungen.` : `Wiederhergestellt: ${restored} Profile.`,
   },
   render: {
     clips: { stinger: "Stinger", profile: "Profilbanner", offline: "Offline-Banner" },
@@ -371,6 +377,8 @@ export const TEXTS = {
     "render-limit": "Zu viele Frames oder ungültige Bildrate.",
     "render-failed": "ffmpeg konnte das Video nicht bauen.",
     "ffmpeg-missing": "ffmpeg fehlt auf dem Server.",
-    "backup-busy": "Es wird schon ein Backup erstellt. Bitte warten, bis es fertig ist.",
+    "backup-busy": "Es läuft schon ein Backup oder eine Wiederherstellung. Bitte warten, bis es fertig ist.",
+    "backup-invalid": "Die Datei ist kein gültiges Backup dieses Servers.",
+    maintenance: "Der Server stellt gerade ein Backup wieder her. Bitte gleich erneut versuchen.",
   } satisfies Record<ErrorCode, string>,
 };

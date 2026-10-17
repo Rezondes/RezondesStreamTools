@@ -12,7 +12,7 @@ const REQUEST_ERROR_CODES = [
   "login-failed", "account-changed", "spotify-failed", "spotify-not-configured", "not-connected", "not-running", "unavailable",
   "unknown-kind", "unknown-trigger", "invalid-name", "invalid-json", "too-large", "quota-exceeded", "upload-busy", "server-error",
   "unknown-clip", "render-busy", "render-not-started", "render-limit", "render-failed", "ffmpeg-missing",
-  "backup-busy",
+  "backup-busy", "backup-invalid", "maintenance",
 ] as const;
 
 export const ERROR_CODES = [...SETTING_ERROR_CODES, ...REQUEST_ERROR_CODES] as const;

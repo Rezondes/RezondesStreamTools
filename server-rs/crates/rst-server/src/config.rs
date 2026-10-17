@@ -18,6 +18,8 @@ pub const FILES_VAR: &str = "RST_FILES";
 const DEFAULT_DATA_DIR: &str = "data";
 const DEFAULT_PORT: u16 = 8080;
 const DEFAULT_MEDIA_MB: u64 = 200;
+/// Largest uploaded backup without `BACKUP_UPLOAD_MB`
+const DEFAULT_BACKUP_UPLOAD_MB: u64 = 4096;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ConfigError {
@@ -122,6 +124,7 @@ pub struct ServerConfig {
     /// `None` without Spotify credentials: no music
     pub spotify: Option<OAuthApp>,
     pub media_quota_bytes: u64,
+    pub backup_upload_bytes: u64,
     pub providers: ProviderUrls,
 }
 
@@ -157,6 +160,7 @@ impl ServerConfig {
             .split(',')
             .filter_map(|login| Login::parse(login.trim()).ok())
             .collect();
+        let megabytes = |var: &str| lookup(var).and_then(|value| value.trim().parse::<u64>().ok()).filter(|mb| *mb > 0);
         let media_mb = lookup("MEDIA_LIMIT_MB").and_then(|value| value.trim().parse::<u64>().ok()).filter(|mb| *mb > 0);
         Ok(Self {
             stores,
@@ -167,6 +171,7 @@ impl ServerConfig {
             twitch,
             spotify,
             media_quota_bytes: media_mb.unwrap_or(DEFAULT_MEDIA_MB) * 1024 * 1024,
+            backup_upload_bytes: megabytes("BACKUP_UPLOAD_MB").unwrap_or(DEFAULT_BACKUP_UPLOAD_MB) * 1024 * 1024,
             providers: ProviderUrls::from_lookup(lookup),
         })
     }

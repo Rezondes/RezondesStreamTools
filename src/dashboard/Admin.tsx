@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Access, Feature, Level } from "../../server/access.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
-import { createBackup, deleteBackup, getJson, postJson } from "./api.ts";
+import { createBackup, deleteBackup, getJson, postJson, restoreBackup, uploadBackup } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";
 
 const ADMIN_TEXT = TEXTS.adminArea;
@@ -146,10 +146,12 @@ function StreamerTable({ streamers }: { streamers: StreamerRow[] }) {
   );
 }
 
-// Backups: create in the background, download, delete; the list is asked again while one is being written
+// Backups: create in the background, download, delete, upload and restore; the list is asked again while one is
+// being written
 function Backups() {
   const [listing, setListing] = useState<BackupListing | null | undefined>(undefined);
   const [error, setError] = useState<ErrorCode | null>(null);
+  const [done, setDone] = useState<string | null>(null);
   const load = useCallback(() => {
     getJson<BackupListing | null>("/api/admin/backups", null).then(setListing).catch(() => setListing(null));
   }, []);
@@ -164,8 +166,22 @@ function Backups() {
   if (listing === null) return <p className="muted">{ADMIN_TEXT.backupUnavailable}</p>;
 
   const act = (action: Promise<ErrorCode | null>) => {
+    setDone(null);
     action.then(code => {
       setError(code);
+      load();
+    }).catch(() => setError("server-error"));
+  };
+  const upload = (file: File | undefined) => {
+    if (file) act(uploadBackup(file));
+  };
+  const restore = (backup: BackupRow) => {
+    if (!confirm(ADMIN_TEXT.backupConfirmRestore(time(backup.createdAt)))) return;
+    setDone(null);
+    restoreBackup(backup.id).then(result => {
+      if (typeof result === "string") return setError(result);
+      setError(null);
+      setDone(ADMIN_TEXT.backupRestored(result.restored, result.skipped.length));
       load();
     }).catch(() => setError("server-error"));
   };
@@ -178,28 +194,40 @@ function Backups() {
       <p className="muted">{ADMIN_TEXT.backupHint}</p>
       <div className="actions">
         <button className="btn primary" disabled={listing.running} onClick={() => act(createBackup())}>{ADMIN_TEXT.backupCreate}</button>
-        <span role="status" className={error ? "error" : "muted"}>{error ? TEXTS.errors[error] : listing.running ? ADMIN_TEXT.backupRunning : ""}</span>
+        <label className="btn">
+          {ADMIN_TEXT.backupUpload}
+          <input type="file" accept=".zip,application/zip" hidden onChange={event => upload(event.target.files?.[0])} />
+        </label>
+        <span role="status" className={error ? "error" : "muted"}>{error ? TEXTS.errors[error] : listing.running ? ADMIN_TEXT.backupRunning : done ?? ""}</span>
       </div>
-      {listing.backups.length === 0 ? <p className="muted">{ADMIN_TEXT.backupNone}</p> : (
-        <table>
-          <thead>
-            <tr><th>{ADMIN_TEXT.backupTime}</th><th>{ADMIN_TEXT.backupSize}</th><th>{ADMIN_TEXT.backupKind}</th><th /></tr>
-          </thead>
-          <tbody>
-            {listing.backups.map(backup => (
-              <tr key={backup.id}>
-                <td>{time(backup.createdAt)}</td>
-                <td>{(backup.bytes / MEGABYTE).toFixed(1)} MB</td>
-                <td>{backup.automatic ? ADMIN_TEXT.backupKinds.automatic : ADMIN_TEXT.backupKinds.manual}</td>
-                <td>
-                  <a className="btn" href={`/api/admin/backup?id=${encodeURIComponent(backup.id)}`} download>{ADMIN_TEXT.backupDownload}</a>{" "}
-                  <button className="btn" onClick={() => remove(backup)}>{ADMIN_TEXT.backupDelete}</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <BackupTable backups={listing.backups} running={listing.running} onRestore={restore} onDelete={remove} />
     </>
+  );
+}
+
+type BackupTableProps = { backups: BackupRow[]; running: boolean; onRestore: (backup: BackupRow) => void; onDelete: (backup: BackupRow) => void };
+
+function BackupTable({ backups, running, onRestore, onDelete }: BackupTableProps) {
+  if (backups.length === 0) return <p className="muted">{ADMIN_TEXT.backupNone}</p>;
+  return (
+    <table>
+      <thead>
+        <tr><th>{ADMIN_TEXT.backupTime}</th><th>{ADMIN_TEXT.backupSize}</th><th>{ADMIN_TEXT.backupKind}</th><th /></tr>
+      </thead>
+      <tbody>
+        {backups.map(backup => (
+          <tr key={backup.id}>
+            <td>{time(backup.createdAt)}</td>
+            <td>{(backup.bytes / MEGABYTE).toFixed(1)} MB</td>
+            <td>{backup.automatic ? ADMIN_TEXT.backupKinds.automatic : ADMIN_TEXT.backupKinds.manual}</td>
+            <td>
+              <a className="btn" href={`/api/admin/backup?id=${encodeURIComponent(backup.id)}`} download>{ADMIN_TEXT.backupDownload}</a>{" "}
+              <button className="btn" disabled={running} onClick={() => onRestore(backup)}>{ADMIN_TEXT.backupRestore}</button>{" "}
+              <button className="btn" onClick={() => onDelete(backup)}>{ADMIN_TEXT.backupDelete}</button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

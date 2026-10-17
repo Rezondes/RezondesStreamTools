@@ -4,6 +4,7 @@
 
 use std::collections::BTreeMap;
 use std::path::Path;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};
 
 use axum::Router;
@@ -80,6 +81,8 @@ pub struct App {
     pub spotify: Option<Arc<SpotifyClient>>,
     pub runtimes: Registry<AppRuntime>,
     pub backups: Backups<ZipBackups, SqliteAudit, SqliteKeyStore>,
+    /// During a restore overlays and the API of streamers answer 503
+    pub maintenance: AtomicBool,
     twitch_states: Mutex<LoginStates<()>>,
     /// Spotify knows only one callback URL: the state says which streamer started the connection
     spotify_states: Mutex<LoginStates<StreamerId>>,
@@ -122,9 +125,10 @@ impl App {
             ))
         });
         let archives = ZipBackups::new(stores.pool.clone(), &config.stores.files, &config.stores.backups);
-        let backups = Backups::new(archives, stores.audit.clone());
+        let backups = Backups::new(archives, stores.audit.clone(), stores.keys.clone());
         Self {
             backups,
+            maintenance: AtomicBool::new(false),
             spotify,
             spotify_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
             public_origin: origin_of(&config.public_url),
@@ -254,6 +258,14 @@ impl App {
             .unwrap_or(false)
     }
 
+    /// Stops every runtime and closes every stream, e.g. before a restore
+    pub fn stop_all_runtimes(&self) {
+        for id in self.runtimes.ids() {
+            self.stop_runtime(&id);
+        }
+        self.runtimes.stop_all();
+    }
+
     /// Stops the runtime and closes every open stream of the streamer
     pub fn stop_runtime(&self, id: &StreamerId) {
         self.runtimes.stop(id);
@@ -320,6 +332,11 @@ async fn route(app: &App, request: Request) -> Response {
     let origin = request.headers().get(header::ORIGIN).and_then(|value| value.to_str().ok());
     if !same_origin(&method, origin, &app.public_origin) {
         return text(403, "cross-origin");
+    }
+    // A restore replaces the data: only the admin area stays reachable meanwhile
+    let streamer_path = path.starts_with("/s/") || (path.starts_with("/api/") && !path.starts_with("/api/admin/"));
+    if streamer_path && app.maintenance.load(Ordering::SeqCst) {
+        return text(503, "maintenance");
     }
     match find(&method, &path) {
         Some(Found::MethodNotAllowed) => return text(405, "method-not-allowed"),
@@ -401,6 +418,7 @@ mod tests {
             twitch: OAuthApp { client_id: "id".to_owned(), client_secret: "secret".to_owned() },
             spotify: None,
             media_quota_bytes: 1,
+            backup_upload_bytes: 1024 * 1024,
             providers: ProviderUrls::from_lookup(&|_| None),
         };
         Arc::new(App::new(config, opened))

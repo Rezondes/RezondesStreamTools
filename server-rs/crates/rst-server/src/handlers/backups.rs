@@ -1,15 +1,19 @@
-//! Server-wide backups for admins (new, no Node template): list, create in the background, download and delete.
-//! The id comes as `?id=`; only ids the server made are ever paths in the backup folder.
+//! Server-wide backups for admins (new, no Node template): list, create in the background, download, delete, upload
+//! and restore. The id comes as `?id=`; only ids the server made are ever paths in the backup folder. A restore runs in
+//! maintenance: every runtime stops, overlays answer 503, afterwards every allowed runtime starts again.
 
 use std::collections::HashMap;
+use std::sync::atomic::Ordering;
 
 use axum::body::Body;
 use axum::extract::Query;
 use axum::http::{HeaderValue, header};
 use axum::response::Response;
+use http_body_util::BodyExt;
 use rst_app::backup::BackupError;
 use rst_app::crypto::cipher::random_bytes;
 use serde_json::json;
+use tokio::io::AsyncWriteExt;
 use tokio_util::io::ReaderStream;
 
 use crate::clock::now_ms;
@@ -40,8 +44,79 @@ pub fn create(call: &Call<'_>) -> Response {
     let Ok(random) = random_bytes::<4>() else { return server_error("no random bytes for a backup id") };
     match call.app.backups.start(&actor(call), false, now_ms(), random) {
         Ok(id) => json(&json!({ "id": id }), 202),
-        Err(BackupError::Busy) => text(409, "backup-busy"),
-        Err(BackupError::Store(error)) => server_error(&error.to_string()),
+        Err(error) => failed(&error),
+    }
+}
+
+fn failed(error: &BackupError) -> Response {
+    match error {
+        BackupError::Busy => text(409, "backup-busy"),
+        BackupError::Invalid(reason) => {
+            eprintln!("Backup rejected: {reason}");
+            text(400, "backup-invalid")
+        }
+        BackupError::NotFound => text(404, "not-found"),
+        BackupError::Store(error) => server_error(&error.to_string()),
+    }
+}
+
+/// Uploads an archive (streamed to disk, at most `BACKUP_UPLOAD_MB`); it only becomes a backup after the check
+pub async fn upload(call: Call<'_>) -> Response {
+    let (app, actor) = (call.app, actor(&call));
+    let Ok(random) = random_bytes::<4>() else { return server_error("no random bytes for a backup id") };
+    let (id, path) = app.backups.upload_target(now_ms(), random);
+    if let Some(folder) = path.parent()
+        && let Err(error) = tokio::fs::create_dir_all(folder).await
+    {
+        return server_error(&error.to_string());
+    }
+    let mut file = match tokio::fs::File::create(&path).await {
+        Ok(file) => file,
+        Err(error) => return server_error(&error.to_string()),
+    };
+    let mut body = call.request.into_body();
+    let mut size: u64 = 0;
+    let mut refusal = None;
+    while let Some(frame) = body.frame().await {
+        let Ok(frame) = frame else {
+            refusal = Some(text(400, "upload-broken"));
+            break;
+        };
+        let Some(chunk) = frame.data_ref() else { continue };
+        size += chunk.len() as u64;
+        if size > app.config.backup_upload_bytes {
+            refusal = Some(text(413, "too-large"));
+            break;
+        }
+        if let Err(error) = file.write_all(chunk).await {
+            refusal = Some(server_error(&error.to_string()));
+            break;
+        }
+    }
+    let flushed = file.flush().await;
+    drop(file);
+    if let Some(refusal) = refusal.or_else(|| flushed.err().map(|error| server_error(&error.to_string()))) {
+        let _ = tokio::fs::remove_file(&path).await;
+        return refusal;
+    }
+    match app.backups.accept_upload(&actor, &id, now_ms()).await {
+        Ok(info) => json(&info, 200),
+        Err(error) => failed(&error),
+    }
+}
+
+/// Restores a backup in maintenance; streamers without a data key are left out and named in the answer
+pub async fn restore(call: Call<'_>) -> Response {
+    let (app, id, actor) = (call.app, id_of(&call), actor(&call));
+    app.maintenance.store(true, Ordering::SeqCst);
+    app.stop_all_runtimes();
+    let result = app.backups.restore(&actor, &id, now_ms()).await;
+    let running = app.restart_all().await;
+    app.maintenance.store(false, Ordering::SeqCst);
+    eprintln!("Restore of {id} done, {running} runtimes running");
+    match result {
+        Ok(report) => json(&report, 200),
+        Err(error) => failed(&error),
     }
 }
 
