@@ -4,7 +4,7 @@
 // Gestartet und gestoppt von server/index.ts.
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { MinimeRules } from "../src/core/minimes.ts";
-import type { Alert, Minime, ServerMessage, Track } from "../src/core/types.ts";
+import type { Alert } from "../src/core/types.ts";
 import type { Feature } from "./access.ts";
 import { chat } from "./chat.ts";
 import { loadHelp, publicCommands } from "./commands.ts";
@@ -13,6 +13,7 @@ import { send } from "./http.ts";
 import { startMinimes, type MinimeRuntime } from "./minimes.ts";
 import * as profile from "./profile.ts";
 import { spotifyClient, type SpotifyApp } from "./spotify.ts";
+import { openStream, streamHub } from "./streamHub.ts";
 import { startTriggers } from "./triggers.ts";
 import { eventSub, type TwitchApp, type TwitchTokens } from "./twitch.ts";
 
@@ -27,9 +28,6 @@ type StreamerSetup = {
   onEnd: () => void; // Login ungültig geworden, die Laufzeit hat sich selbst beendet
   link: string; // Adresse der öffentlichen Befehlsseite, für die Antwort auf den Hilfe-Befehl
 };
-
-// Obergrenze offener Overlays pro Streamer, damit niemand den Server mit Verbindungen füllt
-const MAX_OVERLAYS = 50;
 
 export async function startStreamer(setup: StreamerSetup) {
   const hub = streamHub();
@@ -92,32 +90,6 @@ export async function startStreamer(setup: StreamerSetup) {
   };
 }
 
-// Offene SSE-Verbindungen eines Streamers: Overlays und Dashboard-Protokolle (watchers) bekommen dieselben
-// Nachrichten, aber nur Overlays zählen als "jemand schaut zu" (Spotify fragt nur dann ab)
-function streamHub() {
-  const overlays = new Set<ServerResponse>();
-  const watchers = new Set<ServerResponse>();
-  const write = (line: string) => { for (const stream of [...overlays, ...watchers]) stream.write(line); };
-  // Kommentarzeile hält die Verbindung durch Proxys und OBS offen
-  const ping = setInterval(() => write(": ping\n\n"), 25_000);
-  return {
-    emit: (message: ServerMessage) => write(`data: ${JSON.stringify(message)}\n\n`),
-    overlayCount: () => overlays.size,
-    full: () => overlays.size + watchers.size >= MAX_OVERLAYS,
-    add(request: IncomingMessage, response: ServerResponse, watcher: boolean) {
-      const set = watcher ? watchers : overlays;
-      set.add(response);
-      request.on("close", () => set.delete(response));
-    },
-    close() {
-      clearInterval(ping);
-      for (const stream of [...overlays, ...watchers]) stream.end();
-      overlays.clear();
-      watchers.clear();
-    },
-  };
-}
-
 // Der Server liest den Chat mit, damit Trigger, Minimes und der Hilfe-Befehl auch ohne offenes Chat-Overlay laufen
 function listenToChat(login: string, triggers: ReturnType<typeof startTriggers> | null, minimes: MinimeRuntime | null, help: HelpRuntime) {
   return chat(login, line => {
@@ -146,14 +118,6 @@ async function helpFor(setup: StreamerSetup, tokens: ReturnType<typeof tokenKeep
   return help;
 }
 
-// Antwort als Server-Sent Events öffnen und sofort mit dem laufenden Titel und den Minimes versorgen
-// (minimes: null = Funktion aus, dann keine Nachricht)
-function openStream(response: ServerResponse, track: Track | null, minimes: Minime[] | null) {
-  response.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" });
-  response.write(": connected\n\n");
-  response.write(`data: ${JSON.stringify({ type: "music", track })}\n\n`);
-  if (minimes) response.write(`data: ${JSON.stringify({ type: "minimes", minimes })}\n\n`);
-}
 export type Streamer = Awaited<ReturnType<typeof startStreamer>>;
 
 // Hält die Twitch-Tokens aktuell: prüft sie stündlich und vor jedem EventSub-Abo, speichert erneuerte.
