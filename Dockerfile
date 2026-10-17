@@ -1,4 +1,4 @@
-# 1. Overlays bauen
+# 1. Build the overlays
 FROM node:24-alpine AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -6,15 +6,15 @@ RUN npm ci --ignore-scripts
 COPY . .
 RUN npm run build
 
-# 2. Schlankes Laufzeit-Image: nur dist/ und der Server, keine node_modules
+# 2. Slim runtime image: only dist/ and the server, no node_modules
 FROM node:24-alpine
 WORKDIR /app
-# ffmpeg baut Stinger (WebM mit Alpha) und Banner (GIF) aus den Frames, die das Dashboard schickt
+# ffmpeg builds stinger (WebM with alpha) and banners (GIF) from the frames the dashboard sends
 RUN apk add --no-cache ffmpeg
 ENV NODE_ENV=production DIST=/app/dist DATA=/data PORT=8080
 COPY --from=build /app/dist ./dist
 COPY server ./server
-# Der Server nutzt Kern-Module (IRC, Pfade, Einstellungen) und die Theme-Schemas der Overlays mit
+# The server shares core modules (IRC, paths, settings) and the theme schemas with the overlays
 COPY src ./src
 RUN mkdir /data && chown node:node /data
 USER node

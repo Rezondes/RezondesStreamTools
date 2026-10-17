@@ -1,7 +1,7 @@
-# Öffentlicher Betrieb auf einem Server mit Domain, zusätzlich zu docker-compose.yml:
+# Public operation on a server with a domain, in addition to docker-compose.yml:
 #   docker compose --env-file server.env -f docker-compose.yml -f docker-compose.public.yml up -d --build
-# DOMAIN steht in server.env. Caddy nimmt Port 80 und 443 an, holt das Zertifikat und spricht intern mit dem
-# Overlay-Server; dessen Port ist von aussen nicht erreichbar.
+# DOMAIN is in server.env. Caddy accepts ports 80 and 443, fetches the certificate and talks internally to the
+# overlay server; its port is not reachable from outside.
 services:
   overlays:
     ports: !reset []

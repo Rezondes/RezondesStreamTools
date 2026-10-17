@@ -1,8 +1,8 @@
-# Caddy vor dem Overlay-Server im öffentlichen Betrieb (docker-compose.public.yml): holt das Zertifikat für DOMAIN
-# automatisch (Let's Encrypt), leitet HTTP auf HTTPS um und reicht alles an den Overlay-Server weiter.
+# Caddy in front of the overlay server in public operation (docker-compose.public.yml): fetches the certificate for DOMAIN
+# automatically (Let's Encrypt), redirects HTTP to HTTPS and passes everything on to the overlay server.
 {$DOMAIN} {
 	reverse_proxy overlays:8080 {
-		# Server-Sent Events (/s/<login>/events) sofort weitergeben, nicht puffern
+		# Pass on server-sent events (/s/<login>/events) immediately, do not buffer
 		flush_interval -1
 	}
 }

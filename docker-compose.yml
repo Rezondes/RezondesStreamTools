@@ -1,14 +1,14 @@
 services:
   overlays:
     build: .
-    # Nur auf diesem Rechner erreichbar; OBS läuft ja lokal
+    # Reachable only on this machine; OBS runs locally anyway
     ports:
       - "127.0.0.1:8089:8080"
     env_file: server.env
     environment:
       PUBLIC_URL: http://localhost:8089
     volumes:
-      # Profile aller Streamer (data/streamers/<login>/: Tokens, Spotify, Trigger, Medien), Zugang, Sitzungs-Schlüssel
+      # Profiles of all streamers (data/streamers/<login>/: tokens, Spotify, triggers, media), access, session key
       - tokens:/data
     restart: unless-stopped
 

@@ -1,16 +1,16 @@
 node_modules
 dist
 
-# Gerenderte Videos, GIFs und Frames aus der alten Render-Seite; heute liegen sie im Profil (data/)
+# Rendered videos, GIFs and frames from the old render page; today they are in the profile (data/)
 render
 
-# Logins und Secrets: Token-Speicher des Servers und alle Env-Dateien, nur Vorlagen einchecken
+# Logins and secrets: token store of the server and all env files, commit only templates
 data
 server.env
 .env*
 !.env.example
 
-# Lokale Einstellungen und Logs
+# Local settings and logs
 .claude/settings.local.json
 *.log
 server-rs/target

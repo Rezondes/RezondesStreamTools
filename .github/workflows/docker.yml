@@ -1,6 +1,6 @@
-# Docker-Image auf ghcr.io: bei jedem Push auf main (oder von Hand) erst alle Prüfungen (npm run verify),
-# dann bauen und als ghcr.io/<owner>/<repo>:latest und :sha-<commit> veröffentlichen.
-# Das Package ist anfangs privat; einmalig unter Package settings auf Public stellen.
+# Docker image on ghcr.io: on every push to main (or by hand) first all checks (npm run verify),
+# then build and publish as ghcr.io/<owner>/<repo>:latest and :sha-<commit>.
+# The package is private at first; switch it to public once under Package settings.
 name: Docker-Image
 
 on:
@@ -8,12 +8,12 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Ein neuer Push bricht einen noch laufenden Lauf ab, veröffentlicht wird immer der neueste Stand
+# A new push cancels a run that is still going, the newest state is always the one published
 concurrency:
   group: docker-${{ github.ref }}
   cancel-in-progress: true
 
-# Nur der Image-Job darf veröffentlichen; verify führt Code aus devDependencies aus und braucht das nicht
+# Only the image job may publish; verify runs code from devDependencies and does not need it
 permissions:
   contents: read
 
@@ -33,7 +33,7 @@ jobs:
 
   image:
     needs: verify
-    # Veröffentlicht wird nur main, auch bei einem Start von Hand auf einem anderen Branch
+    # Only main is published, also when started by hand on another branch
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
@@ -49,7 +49,7 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # Name in Kleinbuchstaben, Tags latest und sha-<commit>, Label verknüpft das Package mit dem Repo
+      # Name in lower case, tags latest and sha-<commit>, the label links the package to the repo
       - id: meta
         uses: docker/metadata-action@v5
         with:
@@ -63,5 +63,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # Kein Layer-Cache: der Upload in den Actions-Cache (node_modules, ffmpeg) dauerte Minuten, der Build ohne Cache
-          # braucht nur Sekunden mehr
+          # No layer cache: the upload to the Actions cache (node_modules, ffmpeg) took minutes, the build without cache
+          # needs only seconds more

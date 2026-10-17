@@ -1,25 +1,25 @@
 import { defineConfig, type Plugin, type Rollup } from "vite";
 import react from "@vitejs/plugin-react";
 
-// base "/": Skripte liegen absolut unter /assets/, damit sie auch unter /s/<login>/<szene>.html gefunden werden
+// base "/": scripts are absolute under /assets/, so they are also found under /s/<login>/<scene>.html
 export default defineConfig({
   base: "/",
   plugins: [react(), sceneFiles()],
   server: {
     port: 5173,
     strictPort: true,
-    // Läuft der Overlay-Server (Docker), nutzt auch npm run dev dessen Anmeldung, APIs und Overlay-Daten (/s/<login>/...).
-    // "/s/" mit Schrägstrich, sonst fiele auch /src/... unter den Proxy.
+    // If the overlay server runs (Docker), npm run dev also uses its login, APIs and overlay data (/s/<login>/...).
+    // "/s/" with a slash, otherwise /src/... would fall under the proxy too.
     proxy: Object.fromEntries(["/s/", "/api", "/auth", "/spotify"].map(prefix => [prefix, "http://localhost:8089"])),
   },
   preview: { port: 4173, strictPort: true },
 });
 
-// Szenen, die als eigene HTML-Datei in dist/ landen (gleiche Namen wie die Routen in src/main.tsx)
+// Scenes that end up as their own HTML file in dist/ (same names as the routes in src/main.tsx)
 const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes", "info"];
 
-// Eine HTML-Datei je Szene (alerts.html, chat.html, ...) als Kopie von index.html. Der Server liefert sie unter
-// /s/<login>/<szene>.html aus; die Skripte liegen unter /assets/, je Theme ein eigener Chunk.
+// One HTML file per scene (alerts.html, chat.html, ...) as a copy of index.html. The server serves them under
+// /s/<login>/<scene>.html; the scripts are under /assets/, one chunk per theme.
 function sceneFiles(): Plugin {
   return {
     name: "scene-files",

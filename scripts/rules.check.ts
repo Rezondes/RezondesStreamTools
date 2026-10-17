@@ -1,12 +1,12 @@
-// Prüft die Regeln aus CODING-RULES.md, die ESLint nicht abdeckt: Gedankenstrich, Sammelnamen,
-// Kopfkommentar, ignorierte Ordnernamen, Importgrenzen zwischen Themes und Kern und dass jedes Logikmodul einen Check hat.
-// Läuft automatisch mit npm test (wie jede *.check.ts).
+// Checks the rules from CODING-RULES.md that ESLint does not cover: em dash, bag names,
+// header comment, ignored folder names, import boundaries between themes and core and that every logic module has a check.
+// Runs automatically with npm test (like every *.check.ts).
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { posix } from "node:path";
 
-// Alle Dateien im Repo, auch neue, aber ohne das, was .gitignore ausschliesst
+// All files in the repo, new ones too, but without what .gitignore excludes
 const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclude-standard"], { encoding: "utf8" })
   .split("\n")
   .filter(file => file && existsSync(file));
@@ -14,13 +14,13 @@ const files = execFileSync("git", ["ls-files", "--cached", "--others", "--exclud
 const TEXT = /\.(ts|tsx|js|css|html|json|md|yml|svg|example)$|Dockerfile$|Caddyfile$/;
 const SOURCE = /^(src|server|scripts)\/.*\.(ts|tsx)$/;
 const LOGIC = /^(src|server)\/.*(?<!\.check)\.ts$/;
-// React-Hooks (Dateien use*.ts) brauchen einen Browser; ihre Logik steckt in geprüften reinen Modulen
+// React hooks (files use*.ts) need a browser; their logic is in checked pure modules
 const HOOK = /\/use[A-Z][^/]*\.ts$/;
-// Module nur mit Typen (kein export const/function/class) haben nichts zu prüfen
+// Modules with types only (no export const/function/class) have nothing to check
 const typesOnly = (file: string) => !/^export (const|let|function|async function|class|default)/m.test(readFileSync(file, "utf8"));
 
-// Module ohne Check, mit Grund: nur Netzwerk, Ein- und Ausgabe im Browser und Einstiegspunkte.
-// Ihre Logik steckt in geprüften reinen Modulen. Neue Einträge nur mit Begründung.
+// Modules without a check, with a reason: only network, input and output in the browser and entry points.
+// Their logic is in checked pure modules. New entries only with a reason.
 const WITHOUT_CHECK: Record<string, string> = {
   "src/core/connection.ts": "network client (IRC, SSE); translation is checked in ircEvents.ts",
   "src/core/emotes.ts": "network loader; splitting is checked in irc.ts",
@@ -36,40 +36,40 @@ const WITHOUT_CHECK: Record<string, string> = {
   "server/streamer.ts": "runtime wiring of the checked clients (twitch, spotify, triggers, chat) with timers and SSE",
 };
 
-// Sammelnamen, die vor dem Regelwerk entstanden sind (leer: neue Ausnahmen nur mit Begründung)
+// Bag names that arose before the rule set (empty: new exceptions only with a reason)
 const BAG_NAME_EXCEPTIONS: string[] = [];
 
-// Als Zeichencode, damit diese Datei selbst kein Gedankenstrich enthält
+// As a character code, so this file itself contains no em dash
 const EM_DASH = String.fromCharCode(0x2014);
 
 const failures: string[] = [];
 
-// Regel 11: kein Gedankenstrich (U+2014) in irgendeiner Textdatei
+// Rule 11: no em dash (U+2014) in any text file
 for (const file of files.filter(file => TEXT.test(file))) {
   readFileSync(file, "utf8").split("\n").forEach((line, index) => {
     if (line.includes(EM_DASH)) failures.push(`${file}:${index + 1}: em dash (rule 11)`);
   });
 }
 
-// Regel 8: keine Sammelnamen für Dateien
+// Rule 8: no bag names for files
 for (const file of files.filter(file => SOURCE.test(file) && !BAG_NAME_EXCEPTIONS.includes(file))) {
   const name = file.split("/").pop()!.replace(/\.(check\.)?tsx?$/, "").toLowerCase();
   if (/(util|utils|helper|helpers|manager|common|misc)$/.test(name)) failures.push(`${file}: bag name (rule 8)`);
 }
 
-// Regel 14: jede Quelldatei beginnt mit einem Kommentar, der sagt, was sie ist
+// Rule 14: every source file starts with a comment that says what it is
 for (const file of files.filter(file => SOURCE.test(file))) {
-  const first = readFileSync(file, "utf8").trimStart() // trimStart entfernt auch eine BOM;
+  const first = readFileSync(file, "utf8").trimStart() // trimStart also removes a BOM;
   if (!first.startsWith("//") && !first.startsWith("/*")) failures.push(`${file}: missing file comment (rule 14)`);
 }
 
-// Regel 6: kein Quellordner heisst wie ein ignorierter Ordner
+// Rule 6: no source folder is named like an ignored folder
 for (const file of files.filter(file => SOURCE.test(file))) {
   const folders = file.split("/").slice(1, -1);
   if (folders.some(folder => ["dist", "render", "data", "node_modules"].includes(folder))) failures.push(`${file}: git-ignored folder name (rule 6)`);
 }
 
-// Checks: jedes Logikmodul hat <name>.check.ts daneben, ausser Hooks, reine Typen oder mit Grund in WITHOUT_CHECK
+// Checks: every logic module has <name>.check.ts next to it, except hooks, pure types or with a reason in WITHOUT_CHECK
 for (const file of files.filter(file => LOGIC.test(file) && !HOOK.test(file) && !file.endsWith(".d.ts") && !typesOnly(file))) {
   if (!existsSync(file.replace(/\.ts$/, ".check.ts")) && !(file in WITHOUT_CHECK)) failures.push(`${file}: no ${file.replace(/^.*\//, "").replace(/\.ts$/, ".check.ts")} (checks)`);
 }
@@ -77,7 +77,7 @@ for (const listed of Object.keys(WITHOUT_CHECK)) {
   if (!existsSync(listed)) failures.push(`scripts/rules.check.ts: WITHOUT_CHECK lists missing file ${listed}`);
 }
 
-// Regel 16: Overlay-Szenen und Themes präsentieren nur, Verbindungen laufen über die Kern-Hooks
+// Rule 16: overlay scenes and themes only present, connections run through the core hooks
 const PRESENTING = /^src\/themes\/.*\.tsx?$/;
 for (const file of files.filter(file => PRESENTING.test(file))) {
   readFileSync(file, "utf8").split("\n").forEach((line, index) => {
@@ -85,9 +85,9 @@ for (const file of files.filter(file => PRESENTING.test(file))) {
   });
 }
 
-// Regel 16, Grenzen: ein Theme importiert nur aus seinem eigenen Ordner und aus src/core (Regeln, Hooks und Bausteine,
-// die für alle Themes gleich sind), nie aus einem anderen Theme, dem Dashboard oder dem Server. Der Kern importiert nie
-// aus Themes, Dashboard oder Server. Checks sind ausgenommen (sie dürfen z.B. schemaAudit nutzen).
+// Rule 16, boundaries: a theme imports only from its own folder and from src/core (rules, hooks and building blocks
+// that are the same for all themes), never from another theme, the dashboard or the server. The core never imports
+// from themes, dashboard or server. Checks are exempt (they may use schemaAudit, for example).
 const IMPORT_FROM = /^\s*(?:import|export)\b[^"';]*?["']([^"']+)["']/gm;
 function importViolations(file: string, source: string): string[] {
   const theme = /^src\/themes\/([^/]+)\//.exec(file)?.[1];
@@ -100,7 +100,7 @@ function importViolations(file: string, source: string): string[] {
   });
 }
 
-// Selbsttest: eigener Ordner und Kern erlaubt, anderes Theme, Dashboard und Server nicht; der Kern nie nach oben
+// Self test: own folder and core allowed, another theme, dashboard and server not; the core never upwards
 assert.deepEqual(importViolations("src/themes/probe/scenes/A.tsx", [
   "import { useProbe } from \"../useProbe.ts\";",
   "import Marquee from \"../../../core/music/Marquee.tsx\";",
@@ -113,11 +113,11 @@ assert.deepEqual(importViolations("src/themes/probe/settings.check.ts", "import 
 
 for (const file of files.filter(file => SOURCE.test(file))) failures.push(...importViolations(file, readFileSync(file, "utf8")));
 
-// Regel 20: Theme-Code ohne feste Gestaltungswerte. Farben, sichtbare Texte, Masse und Zeiten kommen aus den
-// Einstellungen (src/themes/<id>/settings.ts, dort erlaubt). Gemeldet werden Farbliterale, sichtbarer JSX-Text,
-// px/ms/s in CSS ausserhalb von var(--name, Standardwert) und Zahlen über 1 in Szenen ausser Indizes.
-// JSX-Text zählt nur nach einem Tag-Ende; ">" nach Leerzeichen oder "=" ist ein Vergleich oder Pfeil.
-// Ausnahme nur mit "fixed: <Grund>" im Kommentar auf derselben Zeile oder direkt darüber.
+// Rule 20: theme code without fixed design values. Colors, visible texts, sizes and times come from the
+// settings (src/themes/<id>/settings.ts, allowed there). Reported are color literals, visible JSX text,
+// px/ms/s in CSS outside of var(--name, default) and numbers above 1 in scenes except indices.
+// JSX text only counts after a tag end; ">" after a space or "=" is a comparison or arrow.
+// Exception only with "fixed: <reason>" in the comment on the same line or directly above.
 const COLOR_LITERAL = /#[0-9a-f]{3,8}\b|\brgba?\(|\bhsla?\(/i;
 const VISIBLE = /[\p{L}\p{N}\p{So}]/u;
 const CSS_SIZE = /(?<![\w-])-?(\d+\.?\d*|\.\d+)(px|ms|s)\b/;
@@ -147,11 +147,11 @@ function designLiterals(file: string, source: string): string[] {
   return found;
 }
 
-// Selbsttest der Erkennung: drei Funde, keiner für die fixed-Ausnahme, keiner für var()-Standardwerte und Indizes
+// Self test of the detection: three findings, none for the fixed exception, none for var() defaults and indices
 assert.deepEqual(designLiterals("src/themes/probe/scenes/Probe.tsx", [
   "const color = \"#39FF14\";",
   "return <span>REC</span>;",
-  "// fixed: Bühnengrösse",
+  "// fixed: stage size",
   "const stage = 1920;",
   "const first = list[2] ?? 1;",
 ].join("\n")), ["src/themes/probe/scenes/Probe.tsx:1: color literal (rule 20)", "src/themes/probe/scenes/Probe.tsx:2: visible JSX text (rule 20)"]);
@@ -160,7 +160,7 @@ assert.deepEqual(designLiterals("src/themes/probe/scenes/Probe.tsx", "const size
 
 for (const file of files.filter(file => THEME_CODE.test(file))) failures.push(...designLiterals(file, readFileSync(file, "utf8")));
 
-// Testdateien heissen *.check.ts, damit npm test sie findet
+// Test files are called *.check.ts so npm test finds them
 for (const file of files.filter(file => /\.(test|spec)\.tsx?$/.test(file))) failures.push(`${file}: name checks <module>.check.ts`);
 
 assert.deepEqual(failures, [], `Rule violations:\n${failures.join("\n")}`);
