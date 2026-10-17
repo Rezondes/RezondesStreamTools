@@ -1,11 +1,11 @@
 // Anonymer Twitch-Chat auf dem Server (gleich wie im Overlay), Quelle für Chat-Trigger und Minimes.
-// onBan: Ban oder Timeout eines Chatters (CLEARCHAT mit Login).
+// onBan: Ban oder Timeout eines Chatters (CLEARCHAT mit Login). url: IRC-Adresse (providers.ts), Standard Twitch.
 import { anonymousLogin, IRC_URL, parseIrc } from "../src/core/irc.ts";
 
 // color: Twitch-Namensfarbe (#RRGGBB) oder nichts, wenn der Chatter keine gewählt hat
 export type ChatLine = { user: string; login: string; text: string; roles: string[]; color?: string };
 
-export function chat(channel: string, onLine: (line: ChatLine) => void, onBan: (login: string) => void = () => {}): () => void {
+export function chat(channel: string, onLine: (line: ChatLine) => void, onBan: (login: string) => void = () => {}, url = IRC_URL): () => void {
   let socket: WebSocket;
   let stopped = false;
   let retry: ReturnType<typeof setTimeout>;
@@ -27,7 +27,7 @@ export function chat(channel: string, onLine: (line: ChatLine) => void, onBan: (
   };
 
   const open = () => {
-    socket = new WebSocket(IRC_URL);
+    socket = new WebSocket(url);
     socket.onopen = () => {
       anonymousLogin(channel, Math.random).forEach(line => socket.send(line));
       console.log(`Chat triggers listening on #${channel}`);

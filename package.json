@@ -11,7 +11,7 @@
     "check": "npm test",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
-    "test": "node --test --experimental-test-coverage --test-coverage-lines=90 --test-coverage-branches=90 --test-coverage-functions=95 --test-coverage-exclude=\"**/*.check.ts\" --test-coverage-exclude=\"scripts/**\" \"src/**/*.check.ts\" \"server/**/*.check.ts\" \"scripts/**/*.check.ts\"",
+    "test": "node --test --experimental-test-coverage --test-coverage-lines=90 --test-coverage-branches=90 --test-coverage-functions=95 --test-coverage-exclude=\"**/*.check.ts\" --test-coverage-exclude=\"scripts/**\" --test-coverage-exclude=\"contract/**\" \"src/**/*.check.ts\" \"server/**/*.check.ts\" \"scripts/**/*.check.ts\" \"contract/**/*.check.ts\"",
     "rust": "node scripts/rust.ts",
     "gen:types": "node scripts/rust.ts gen:types",
     "verify": "npm run typecheck && npm run lint && npm test && vite build && npm run rust",

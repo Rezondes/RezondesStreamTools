@@ -3,6 +3,7 @@
 import assert from "node:assert/strict";
 import { mock } from "node:test";
 import type { Alert } from "../src/core/types.ts";
+import { providerUrls } from "./providers.ts";
 import { eventSub, isAlertKind, SAMPLE_ALERTS, toAlert, toTokens, twitchApp, type TwitchTokens } from "./twitch.ts";
 
 const tokens: TwitchTokens = { access: "access-1", refresh: "refresh-1", userId: "42", login: "rezondes" };
@@ -60,6 +61,12 @@ assert.equal(authorize.searchParams.get("state"), "state-1");
 assert.equal(authorize.searchParams.get("redirect_uri"), "http://localhost:8089/auth/callback");
 assert.match(authorize.searchParams.get("scope") ?? "", /channel:read:subscriptions/);
 assert.match(authorize.searchParams.get("scope") ?? "", /user:write:chat/);
+
+// Adressen aus der Umgebung: ohne Variablen echtes Twitch, sonst die gesetzte Adresse (Fake-Provider der Vertragstests)
+assert.equal(authorize.origin + authorize.pathname, "https://id.twitch.tv/oauth2/authorize");
+const faked = twitchApp("client-id", "client-secret", "http://localhost:8089/auth/callback", providerUrls({ TWITCH_ID_URL: "http://127.0.0.1:1/oauth2/" }));
+assert.ok(faked.authorizeUrl("s").startsWith("http://127.0.0.1:1/oauth2/authorize?"));
+assert.equal(faked.urls.twitchApi, "https://api.twitch.tv/helix");
 
 // exchange: Code gegen Tokens tauschen, Login dazu holen; ungültiger Code = null, Serverfehler werfen
 answers = {

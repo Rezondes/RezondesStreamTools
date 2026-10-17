@@ -7,14 +7,12 @@ import { join } from "node:path";
 import type { SpotifyDetails, Track } from "../src/core/types.ts";
 import { writeAtomic } from "./atomicFile.ts";
 
-// Die Spotify-App aus server.env; redirectUri aus redirectUri(PUBLIC_URL)
-export type SpotifyApp = { clientId: string; clientSecret: string; redirectUri: string };
+// Die Spotify-App aus server.env; redirectUri aus redirectUri(PUBLIC_URL), Adressen aus providerUrls (providers.ts)
+export type SpotifyApp = { clientId: string; clientSecret: string; redirectUri: string; accountsUrl: string; apiUrl: string };
 type SpotifyTokens = { access: string; refresh: string; expiresAt: number };
 type TokenAnswer = { access_token?: string; refresh_token?: string; expires_in?: number };
 
 const SCOPES = "user-read-currently-playing user-read-playback-state";
-const PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing?additional_types=episode";
-const ME_URL = "https://api.spotify.com/v1/me";
 const POLL_MS = 3000;
 
 // Spotify erlaubt für lokale Redirects nur die Loopback-IP, nicht "localhost"; sonst gilt PUBLIC_URL
@@ -114,7 +112,7 @@ export async function spotifyClient(app: SpotifyApp, folder: string, emit: (trac
     },
     authorizeUrl(state: string) {
       const query = new URLSearchParams({ client_id: app.clientId, response_type: "code", redirect_uri: app.redirectUri, scope: SCOPES, state });
-      return `https://accounts.spotify.com/authorize?${query}`;
+      return `${app.accountsUrl}/authorize?${query}`;
     },
     // Code aus dem Callback eintauschen; false = Code ungültig
     async connect(code: string) {
@@ -145,7 +143,7 @@ async function loadTokens(file: string) {
 
 // null = Code oder Refresh-Token ungültig (400, 401); andere Fehler werfen, damit ein Netzwerkproblem nie den Login löscht
 async function requestToken(app: SpotifyApp, body: Record<string, string>): Promise<TokenAnswer | null> {
-  const response = await fetch("https://accounts.spotify.com/api/token", {
+  const response = await fetch(`${app.accountsUrl}/api/token`, {
     method: "POST",
     headers: { Authorization: `Basic ${Buffer.from(`${app.clientId}:${app.clientSecret}`).toString("base64")}` },
     body: new URLSearchParams(body),
@@ -187,7 +185,7 @@ async function loadAccount(player: Player): Promise<string | null> {
   try {
     if (player.tokens && Date.now() > player.tokens.expiresAt - 60_000) await refresh(player);
     if (!player.tokens) return null;
-    const response = await fetch(ME_URL, { headers: { Authorization: `Bearer ${player.tokens.access}` } });
+    const response = await fetch(`${player.app.apiUrl}/me`, { headers: { Authorization: `Bearer ${player.tokens.access}` } });
     if (!response.ok) return null;
     const answer = (await response.json()) as { id?: string; display_name?: string | null };
     return answer.display_name || answer.id || null;
@@ -200,7 +198,7 @@ async function loadAccount(player: Player): Promise<string | null> {
 async function poll(player: Player) {
   if (player.tokens && Date.now() > player.tokens.expiresAt - 60_000) await refresh(player);
   if (!player.tokens) return;
-  const response = await fetch(PLAYING_URL, { headers: { Authorization: `Bearer ${player.tokens.access}` } });
+  const response = await fetch(`${player.app.apiUrl}/me/player/currently-playing?additional_types=episode`, { headers: { Authorization: `Bearer ${player.tokens.access}` } });
   if (response.status === 429) {
     player.blockedUntil = Date.now() + (Number(response.headers.get("retry-after")) || 30) * 1000;
     return;

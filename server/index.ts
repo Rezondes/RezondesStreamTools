@@ -23,6 +23,7 @@ import { createSession, isSecureUrl, loadSessionKey, oauthStateCookie, readSessi
 import { callbackHasSession, deleteSpotifyTokens, redirectUri, type SpotifyApp } from "./spotify.ts";
 import { startStreamer, type Streamer } from "./streamer.ts";
 import { isAlertKind, SAMPLE_ALERTS, twitchApp } from "./twitch.ts";
+import { providerUrls } from "./providers.ts";
 
 // --- Einstellungen aus server.env -------------------------------------------------------------
 const PORT = Number(process.env.PORT ?? 8080);
@@ -53,9 +54,10 @@ if (!TWITCH_CLIENT_ID || !TWITCH_CLIENT_SECRET) {
 }
 if (ADMINS.length === 0) console.warn("ADMINS is empty: nobody can manage access (see server.env.example)");
 
-const twitch = twitchApp(TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET, `${PUBLIC_URL}/auth/callback`);
+const PROVIDERS = providerUrls(process.env);
+const twitch = twitchApp(TWITCH_CLIENT_ID, TWITCH_CLIENT_SECRET, `${PUBLIC_URL}/auth/callback`, PROVIDERS);
 const spotifyApp: SpotifyApp | null = SPOTIFY_CLIENT_ID && SPOTIFY_CLIENT_SECRET
-  ? { clientId: SPOTIFY_CLIENT_ID, clientSecret: SPOTIFY_CLIENT_SECRET, redirectUri: redirectUri(PUBLIC_URL) }
+  ? { clientId: SPOTIFY_CLIENT_ID, clientSecret: SPOTIFY_CLIENT_SECRET, redirectUri: redirectUri(PUBLIC_URL), accountsUrl: PROVIDERS.spotifyAccounts, apiUrl: PROVIDERS.spotifyApi }
   : null;
 
 await mkdir(DATA, { recursive: true });

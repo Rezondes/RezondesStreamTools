@@ -43,7 +43,7 @@ export async function startStreamer(setup: StreamerSetup) {
   const events = setup.features.alerts ? eventSub(setup.twitch, tokens.valid, alert, () => minimes?.offline()) : null;
   const triggers = setup.features.triggers && setup.features.fx ? startTriggers(setup.folder, event => emit({ type: "fx", event })) : null;
   const help = await helpFor(setup, tokens);
-  const stopChat = listenToChat(setup.login, triggers, minimes, help);
+  const stopChat = listenToChat(setup.login, setup.twitch.urls.twitchIrc, triggers, minimes, help);
   const spotify = setup.spotify && setup.features.music
     ? await spotifyClient(setup.spotify, setup.folder, track => emit({ type: "music", track }), () => hub.overlayCount() > 0)
     : null;
@@ -94,13 +94,13 @@ export async function startStreamer(setup: StreamerSetup) {
 }
 
 // Der Server liest den Chat mit, damit Trigger, Minimes und der Hilfe-Befehl auch ohne offenes Chat-Overlay laufen
-function listenToChat(login: string, triggers: ReturnType<typeof startTriggers> | null, minimes: MinimeRuntime | null, help: HelpRuntime) {
+function listenToChat(login: string, ircUrl: string, triggers: ReturnType<typeof startTriggers> | null, minimes: MinimeRuntime | null, help: HelpRuntime) {
   return chat(login, line => {
     if (help.isEcho(line)) return;
     triggers?.handle(line);
     minimes?.handle(line);
     help.handle(line).catch((error: unknown) => console.error(`Help reply for ${login} failed:`, error));
-  }, banned => minimes?.ban(banned));
+  }, banned => minimes?.ban(banned), ircUrl);
 }
 
 // Hilfe-Befehl mit der gespeicherten Einstellung; antwortet mit gültigen Tokens als Streamer. Ob der Login schreiben

@@ -7,6 +7,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { mock } from "node:test";
 import type { Track } from "../src/core/types.ts";
+import { REAL_PROVIDERS } from "./providers.ts";
 import { callbackHasSession, changed, deleteSpotifyTokens, progressed, redirectUri, spotifyClient, toTokens, toTrack } from "./spotify.ts";
 
 // Redirect: lokal über 127.0.0.1 (Spotify lehnt "localhost" ab), sonst PUBLIC_URL
@@ -68,7 +69,7 @@ mock.timers.enable({ apis: ["setInterval", "Date"], now: 1_800_000_000_000 });
 try {
   const emitted: (Track | null)[] = [];
   let listening = true;
-  const app = { clientId: "id", clientSecret: "secret", redirectUri: "http://127.0.0.1:8089/spotify/callback" };
+  const app = { clientId: "id", clientSecret: "secret", redirectUri: "http://127.0.0.1:8089/spotify/callback", accountsUrl: REAL_PROVIDERS.spotifyAccounts, apiUrl: REAL_PROVIDERS.spotifyApi };
   const client = await spotifyClient(app, folder, next => emitted.push(next), () => listening);
 
   // Ohne spotify.json nicht verbunden; Anmelde-URL mit state und Redirect
@@ -152,7 +153,7 @@ try {
     [TOKEN_URL]: [{ status: 200, body: { access_token: "a2", refresh_token: "r2", expires_in: 3600 }, wait: new Promise<void>(resolve => { answerToken = resolve; }) }],
     [ME_URL]: [{ status: 200, body: { id: "neo" } }],
   };
-  const app = { clientId: "id", clientSecret: "secret", redirectUri: "http://127.0.0.1:8089/spotify/callback" };
+  const app = { clientId: "id", clientSecret: "secret", redirectUri: "http://127.0.0.1:8089/spotify/callback", accountsUrl: REAL_PROVIDERS.spotifyAccounts, apiUrl: REAL_PROVIDERS.spotifyApi };
   const client = await spotifyClient(app, late, () => {}, () => false);
   const details = client.details();
   await settle();

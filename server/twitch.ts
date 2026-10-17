@@ -3,12 +3,10 @@
 // Check: twitch.check.ts (mit nachgebautem fetch und WebSocket, ohne Netz).
 import type { Alert, AlertKind } from "../src/core/types.ts";
 import { isLogin } from "../src/core/streamerPath.ts";
+import { REAL_PROVIDERS, type ProviderUrls } from "./providers.ts";
 
 export type TwitchTokens = { access: string; refresh: string; userId: string; login: string };
 
-const ID_URL = "https://id.twitch.tv/oauth2";
-const HELIX_URL = "https://api.twitch.tv/helix";
-const EVENTSUB_URL = "wss://eventsub.wss.twitch.tv/ws";
 // user:write:chat: Antwort auf den Hilfe-Befehl als Streamer in den eigenen Chat
 const CHAT_SCOPE = "user:write:chat";
 const SCOPES = ["moderator:read:followers", "channel:read:subscriptions", "bits:read", "channel:read:redemptions", "channel:read:hype_train", CHAT_SCOPE];
@@ -26,28 +24,31 @@ type TokenAnswer = { access_token?: string; refresh_token?: string };
 
 // Token-Endpunkt. null = Code oder Refresh-Token ungültig (400, 401); andere Fehler werfen, damit ein
 // Netzwerkproblem nie einen gültigen Login löscht.
-async function requestToken(clientId: string, clientSecret: string, params: Record<string, string>): Promise<TokenAnswer | null> {
-  const response = await fetch(`${ID_URL}/token`, { method: "POST", body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, ...params }) });
+async function requestToken(idUrl: string, clientId: string, clientSecret: string, params: Record<string, string>): Promise<TokenAnswer | null> {
+  const response = await fetch(`${idUrl}/token`, { method: "POST", body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, ...params }) });
   if (response.status === 400 || response.status === 401) return null;
   if (!response.ok) throw new Error(`Twitch token request failed: ${response.status}`);
   return (await response.json()) as TokenAnswer;
 }
 
 // Die OAuth-App des Servers. redirectUri: PUBLIC_URL/auth/callback (wie in der Twitch-Konsole eingetragen).
-export function twitchApp(clientId: string, clientSecret: string, redirectUri: string) {
+export function twitchApp(clientId: string, clientSecret: string, redirectUri: string, urls: ProviderUrls = REAL_PROVIDERS) {
+  const idUrl = urls.twitchId;
+  const helixUrl = urls.twitchApi;
   return {
     clientId,
+    urls,
 
     authorizeUrl(state: string) {
       const query = new URLSearchParams({ client_id: clientId, redirect_uri: redirectUri, response_type: "code", scope: SCOPES.join(" "), state, force_verify: "true" });
-      return `${ID_URL}/authorize?${query}`;
+      return `${idUrl}/authorize?${query}`;
     },
 
     // Code aus dem Callback gegen Tokens tauschen und den Login dazu holen. null = Code ungültig.
     async exchange(code: string): Promise<TwitchTokens | null> {
-      const answer = await requestToken(clientId, clientSecret, { grant_type: "authorization_code", code, redirect_uri: redirectUri });
+      const answer = await requestToken(idUrl, clientId, clientSecret, { grant_type: "authorization_code", code, redirect_uri: redirectUri });
       if (!answer) return null;
-      const response = await fetch(`${HELIX_URL}/users`, { headers: { "Client-Id": clientId, Authorization: `Bearer ${answer.access_token}` } });
+      const response = await fetch(`${helixUrl}/users`, { headers: { "Client-Id": clientId, Authorization: `Bearer ${answer.access_token}` } });
       if (!response.ok) throw new Error(`Twitch user request failed: ${response.status}`);
       const user = ((await response.json()) as { data?: { id?: string; login?: string }[] }).data?.[0];
       return toTokens({ access: answer.access_token, refresh: answer.refresh_token, userId: user?.id, login: user?.login });
@@ -56,23 +57,23 @@ export function twitchApp(clientId: string, clientSecret: string, redirectUri: s
     // Twitch verlangt eine regelmässige Prüfung. Abgelaufen: mit dem Refresh-Token erneuern.
     // Liefert die gültigen (gleichen oder neuen) Tokens, null = Login ungültig. Netzwerkfehler werfen.
     async validate(tokens: TwitchTokens): Promise<TwitchTokens | null> {
-      const response = await fetch(`${ID_URL}/validate`, { headers: { Authorization: `OAuth ${tokens.access}` } });
+      const response = await fetch(`${idUrl}/validate`, { headers: { Authorization: `OAuth ${tokens.access}` } });
       if (response.ok) return tokens;
       if (response.status !== 401) throw new Error(`Twitch token validation failed: ${response.status}`);
-      const answer = await requestToken(clientId, clientSecret, { grant_type: "refresh_token", refresh_token: tokens.refresh });
+      const answer = await requestToken(idUrl, clientId, clientSecret, { grant_type: "refresh_token", refresh_token: tokens.refresh });
       return answer ? toTokens({ ...tokens, access: answer.access_token, refresh: answer.refresh_token ?? tokens.refresh }) : null;
     },
 
     // Darf der Login in den Chat schreiben? Logins von vor dem Scope nicht; null = Twitch nicht erreichbar
     async canChat(tokens: TwitchTokens): Promise<boolean | null> {
-      const response = await fetch(`${ID_URL}/validate`, { headers: { Authorization: `OAuth ${tokens.access}` } }).catch(() => null);
+      const response = await fetch(`${idUrl}/validate`, { headers: { Authorization: `OAuth ${tokens.access}` } }).catch(() => null);
       if (!response?.ok) return null;
       return ((await response.json()) as { scopes?: string[] }).scopes?.includes(CHAT_SCOPE) ?? false;
     },
 
     // Nachricht als Streamer in den eigenen Chat; missing-scope = Login ohne Schreibrecht (neu verbinden), andere Fehler werfen
     async say(tokens: TwitchTokens, message: string): Promise<"ok" | "missing-scope"> {
-      const response = await fetch(`${HELIX_URL}/chat/messages`, {
+      const response = await fetch(`${helixUrl}/chat/messages`, {
         method: "POST",
         headers: { "Client-Id": clientId, Authorization: `Bearer ${tokens.access}`, "Content-Type": "application/json" },
         body: JSON.stringify({ broadcaster_id: tokens.userId, sender_id: tokens.userId, message }),
@@ -84,7 +85,7 @@ export function twitchApp(clientId: string, clientSecret: string, redirectUri: s
 
     // Token bei Twitch ungültig machen (Trennen, nicht freigeschaltet)
     async revoke(access: string) {
-      const response = await fetch(`${ID_URL}/revoke`, { method: "POST", body: new URLSearchParams({ client_id: clientId, token: access }) });
+      const response = await fetch(`${idUrl}/revoke`, { method: "POST", body: new URLSearchParams({ client_id: clientId, token: access }) });
       if (!response.ok) throw new Error(`Twitch revoke failed: ${response.status}`);
     },
   };
@@ -198,7 +199,7 @@ export function eventSub(app: TwitchApp, tokens: () => Promise<TwitchTokens | nu
   return {
     start() {
       connection.wanted = true;
-      open(connection, EVENTSUB_URL, true);
+      open(connection, connection.app.urls.twitchEventSub, true);
     },
     stop() {
       connection.wanted = false;
@@ -235,7 +236,7 @@ function open(connection: Connection, url: string, subscribe: boolean) {
     clearTimeout(connection.keepalive);
     clearTimeout(connection.retry);
     // Neuer Versuch mit Pause (Regel 33), stop() löscht ihn
-    connection.retry = setTimeout(() => open(connection, EVENTSUB_URL, true), 5000);
+    connection.retry = setTimeout(() => open(connection, connection.app.urls.twitchEventSub, true), 5000);
   };
 }
 
@@ -277,7 +278,7 @@ async function subscribeAll(connection: Connection, sessionId: string) {
   const tokens = await connection.tokens();
   if (!tokens) return;
   for (const subscription of subscriptions(tokens.userId)) {
-    const response = await fetch(`${HELIX_URL}/eventsub/subscriptions`, {
+    const response = await fetch(`${connection.app.urls.twitchApi}/eventsub/subscriptions`, {
       method: "POST",
       headers: { "Client-Id": connection.app.clientId, Authorization: `Bearer ${tokens.access}`, "Content-Type": "application/json" },
       body: JSON.stringify({ ...subscription, transport: { method: "websocket", session_id: sessionId } }),
