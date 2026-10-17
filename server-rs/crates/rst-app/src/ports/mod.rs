@@ -2,6 +2,7 @@
 //! passes the same contract tests.
 
 pub mod keys;
+pub mod records;
 
 use std::fmt;
 
