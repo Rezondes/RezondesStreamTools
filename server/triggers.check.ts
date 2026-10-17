@@ -1,6 +1,9 @@
 // Ausführen: npm run check
 import assert from "node:assert/strict";
-import { allowed, compile, schedule, toRegex, type Trigger } from "./triggers.ts";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { allowed, compile, schedule, startTriggers, toRegex, type Trigger } from "./triggers.ts";
 
 const word = toRegex({ type: "word", match: "LIZARD" });
 assert.ok(word.test("LIZARD"));
@@ -53,5 +56,26 @@ assert.equal(bad.errors.length, 7);
 // Öffentlich und Beschreibung (für die Befehlsseite) sind erlaubt
 assert.deepEqual(compile([{ ...good, public: false, description: "Echse" }]).errors, []);
 assert.match(bad.errors[0], /doppelt/);
+
+// Regex-Trigger laufen im Worker: ein normales Muster löst aus, ein katastrophales blockiert den Server nicht
+// und wird abgeschaltet
+const folder = await mkdtemp(join(tmpdir(), "triggers-"));
+const fired: string[] = [];
+const runtime = startTriggers(folder, event => fired.push(event.action.text ?? ""));
+const text = (name: string, match: string): Trigger => ({ name, when: { type: "regex", match }, do: [{ type: "text", text: name, duration: 0 }] });
+assert.deepEqual(await runtime.save([text("lizard", "^l+i+z+"), text("evil", "^(a+)+$")]), []);
+const line = (value: string) => ({ user: "Neo", login: "neo", text: value, roles: [] });
+runtime.handle(line("LLLizzz"));
+const started = Date.now();
+runtime.handle(line("a".repeat(40) + "!"));
+assert.ok(Date.now() - started < 100, "handle() wartet nicht auf den Worker");
+await new Promise(resolve => setTimeout(resolve, 300));
+assert.deepEqual(fired, ["lizard"]);
+// Abgeschaltet: auch ein passender Text löst nicht mehr aus und startet keine Prüfung
+runtime.handle(line("aaa"));
+await new Promise(resolve => setTimeout(resolve, 100));
+assert.deepEqual(fired, ["lizard"]);
+runtime.stop();
+await rm(folder, { recursive: true, force: true });
 
 console.log("triggers ok");

@@ -4,6 +4,7 @@ import { readFile, rename, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { FxAction, FxEvent } from "../src/core/types.ts";
 import type { ChatLine } from "./chat.ts";
+import { REGEX_TIME_LIMIT_MS, regexMatcher } from "./regexMatch.ts";
 
 export type When = {
   // word: ganzes Wort irgendwo, contains: Teilstring, exact: ganze Nachricht,
@@ -126,14 +127,54 @@ function createCooldowns() {
   };
 }
 
+// Treffer prüfen und auslösen. active: gehört der Trigger noch zur aktuellen Liste (nach einer Regex-Prüfung im Worker)
+function createMatching(fire: (event: FxEvent) => void, active: (trigger: Loaded) => boolean) {
+  const ready = createCooldowns();
+  let nextId = 1;
+  // Zu langsame Regex-Trigger bleiben bis zum nächsten Speichern oder Laden abgeschaltet
+  const slow = new WeakSet<Loaded>();
+
+  function run(trigger: Trigger, user: string, message: string) {
+    const starts = schedule(trigger.do);
+    trigger.do.forEach((action, index) => setTimeout(() => fire({ id: nextId++, zone: action.zone ?? "main", action, user, message }), starts[index]));
+  }
+
+  function accept(trigger: Trigger, line: ChatLine, now: number) {
+    if (!allowed(trigger, line.roles) || !ready(trigger, line.login, now)) return;
+    console.log(`Trigger ${trigger.name} fired by ${line.user}`);
+    run(trigger, line.user, line.text);
+  }
+
+  async function matchRegex(trigger: Loaded, line: ChatLine, now: number) {
+    const result = await regexMatcher.test(trigger.regex.source, trigger.regex.flags, line.text);
+    if (result === "slow") {
+      slow.add(trigger);
+      console.error(`Trigger ${trigger.name}: regex took longer than ${REGEX_TIME_LIMIT_MS} ms and was switched off`);
+    }
+    if (result === true && active(trigger)) accept(trigger, line, now);
+  }
+
+  return {
+    run,
+    handle(triggers: Loaded[], line: ChatLine) {
+      const now = Date.now();
+      for (const trigger of triggers) {
+        if (trigger.enabled === false || slow.has(trigger)) continue;
+        // Eigene Regex des Streamers nur im Worker mit Zeitlimit, die festen Muster sind sicher
+        if (trigger.when.type === "regex") void matchRegex(trigger, line, now);
+        else if (trigger.regex.test(line.text)) accept(trigger, line, now);
+      }
+    },
+  };
+}
+
 // Trigger eines Streamers. folder: Profil-Ordner, fire: Effekt an die Overlays. stop() beendet das Nachladen.
 export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
   const file = join(folder, "triggers.json");
-  const ready = createCooldowns();
+  const matching = createMatching(fire, trigger => triggers.includes(trigger));
   let raw: Trigger[] = [];
   let triggers: Loaded[] = [];
   let modified = 0;
-  let nextId = 1;
 
   async function load() {
     const info = await stat(file).catch(() => null);
@@ -154,11 +195,6 @@ export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
   reload();
   const reloadTimer = setInterval(reload, 2000);
 
-  function run(trigger: Trigger, user: string, message: string) {
-    const starts = schedule(trigger.do);
-    trigger.do.forEach((action, index) => setTimeout(() => fire({ id: nextId++, zone: action.zone ?? "main", action, user, message }), starts[index]));
-  }
-
   return {
     list: () => triggers.map(trigger => ({ name: trigger.name, enabled: trigger.enabled !== false })),
     // Regeln so, wie sie in der Datei stehen (für den Editor im Browser)
@@ -174,19 +210,11 @@ export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
       console.log(`Triggers saved: ${namesOf(triggers)}`);
       return [];
     },
-    handle(line: ChatLine) {
-      const now = Date.now();
-      for (const trigger of triggers) {
-        if (trigger.enabled === false || !trigger.regex.test(line.text) || !allowed(trigger, line.roles)) continue;
-        if (!ready(trigger, line.login, now)) continue;
-        console.log(`Trigger ${trigger.name} fired by ${line.user}`);
-        run(trigger, line.user, line.text);
-      }
-    },
+    handle: (line: ChatLine) => matching.handle(triggers, line),
     // Zum Testen aus dem Dashboard, ohne Abklingzeit
     fire(name: string) {
       const trigger = triggers.find(candidate => candidate.name === name);
-      if (trigger) run(trigger, "Test", trigger.when.match);
+      if (trigger) matching.run(trigger, "Test", trigger.when.match);
       return Boolean(trigger);
     },
     stop: () => clearInterval(reloadTimer),
