@@ -127,6 +127,9 @@ export async function spotifyClient(app: SpotifyApp, folder: string, emit: (trac
   };
 }
 
+// Abmelden ohne laufenden Spotify-Client (Funktion Musik aus oder keine Laufzeit): spotify.json trotzdem löschen
+export const deleteSpotifyTokens = (folder: string) => rm(join(folder, "spotify.json"), { force: true });
+
 async function loadTokens(file: string) {
   try {
     return toTokens(JSON.parse(await readFile(file, "utf8")));

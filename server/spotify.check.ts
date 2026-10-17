@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { mock } from "node:test";
 import type { Track } from "../src/core/types.ts";
-import { changed, progressed, redirectUri, spotifyClient, toTokens, toTrack } from "./spotify.ts";
+import { changed, deleteSpotifyTokens, progressed, redirectUri, spotifyClient, toTokens, toTrack } from "./spotify.ts";
 
 // Redirect: lokal über 127.0.0.1 (Spotify lehnt "localhost" ab), sonst PUBLIC_URL
 assert.equal(redirectUri("http://localhost:8089"), "http://127.0.0.1:8089/spotify/callback");
@@ -131,6 +131,14 @@ try {
   mock.timers.reset();
   await rm(folder, { recursive: true, force: true });
 }
+
+// Abmelden ohne laufenden Client löscht spotify.json trotzdem
+const orphan = await mkdtemp(join(tmpdir(), "spotify-"));
+await writeFile(join(orphan, "spotify.json"), JSON.stringify({ access: "a", refresh: "r", expiresAt: 1 }));
+await deleteSpotifyTokens(orphan);
+await assert.rejects(stat(join(orphan, "spotify.json")));
+await deleteSpotifyTokens(orphan);
+await rm(orphan, { recursive: true, force: true });
 
 // Abmelden, während eine Erneuerung läuft: die späte Antwort legt spotify.json nicht wieder an
 const late = await mkdtemp(join(tmpdir(), "spotify-"));

@@ -20,7 +20,7 @@ import { ensureSettings, loadSettings, minimeRules, publicSettings, saveSettings
 import { THEMES } from "../src/themes/registry.ts";
 import { authorize, find, overlayRoute, ROUTES, type RouteKey, type Visitor } from "./routes.ts";
 import { createSession, isSecureUrl, loadSessionKey, readSession, sessionCookie } from "./session.ts";
-import { redirectUri, type SpotifyApp } from "./spotify.ts";
+import { deleteSpotifyTokens, redirectUri, type SpotifyApp } from "./spotify.ts";
 import { startStreamer, type Streamer } from "./streamer.ts";
 import { isAlertKind, SAMPLE_ALERTS, twitchApp } from "./twitch.ts";
 
@@ -255,8 +255,10 @@ async function spotifyDetails({ response, runtime }: Call) {
   json(response, await runtime.spotify.details());
 }
 
-async function spotifyLogout({ response, runtime }: Call) {
+// Auch ohne laufenden Spotify-Client (Musik aus, keine Laufzeit) wirklich trennen: spotify.json löschen
+async function spotifyLogout({ response, login, runtime }: Call) {
   await runtime?.spotify?.logout();
+  await deleteSpotifyTokens(profile.folder(DATA, login));
   json(response, { ok: true });
 }
 
