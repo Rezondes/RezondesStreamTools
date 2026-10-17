@@ -4,6 +4,7 @@
 use axum::response::Response;
 use rst_app::events::ServerMessage;
 use rst_app::settings::SaveError;
+use rst_domain::settings::file::minime_rules_of;
 use rst_domain::themes::registry::themes;
 use serde_json::{Value, json};
 
@@ -39,6 +40,13 @@ pub async fn save(call: Call<'_>) -> Response {
         Ok(public) => {
             // Open overlays take over the values right away, without reloading
             app.hubs.emit(&id, &ServerMessage::Settings { settings: public.clone() });
+            // Changed minime rules take effect at once
+            if let Some(minimes) = app.runtimes.get(&id).and_then(|runtime| runtime.minimes.clone()) {
+                match app.stores.profile.settings(&id).await {
+                    Ok(file) => minimes.set_rules(file.as_ref().and_then(minime_rules_of)),
+                    Err(error) => eprintln!("Reading the minime rules failed: {error}"),
+                }
+            }
             json(&public, 200)
         }
         Err(SaveError::Invalid(errors)) => json(&errors, 400),

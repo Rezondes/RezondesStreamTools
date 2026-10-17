@@ -1,4 +1,5 @@
-// Contract cases: settings with error codes, the help command and the triggers of a streamer, also fired from chat.
+// Contract cases: settings with error codes, the help command, the triggers and the minimes of a streamer, also from
+// chat.
 import { expect, expectCode, fail, request, STREAMER, type Case, type Context } from "../client.ts";
 import { readStream } from "./overlay.ts";
 
@@ -81,6 +82,14 @@ export const DATA_CASES: Case[] = [
       const reply = context.fake.chatMessages.at(-1) as { broadcaster_id?: string; message?: string } | undefined;
       if (context.fake.chatMessages.length === before || !reply) fail("no help reply");
       if (reply.broadcaster_id !== STREAMER.id || !reply.message?.includes("!lizard")) fail(`unexpected reply: ${JSON.stringify(reply)}`);
+    },
+  },
+  {
+    name: "minimes: a join in chat reaches the overlays",
+    async run(context) {
+      const key = context.memory.get("overlayKey") ?? fail("no overlay key from an earlier case");
+      const stream = await request(context, `/s/${STREAMER.login}/events?key=${key}`);
+      await readStream(stream, '"login":"trinity"', () => chatLine(context, "trinity", "!join"));
     },
   },
 ];

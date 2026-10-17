@@ -48,6 +48,6 @@ pub async fn serve(app: &App, path: &StreamerPath, uri: &Uri, cookies: Option<&s
                 Err(error) => server_error(&error.to_string()),
             }
         }
-        OverlayRoute::Events => crate::handlers::events::stream(app, &id, &path.login, &policy, uri, cookies).await,
+        OverlayRoute::Events => crate::handlers::events::stream(app, &id, uri, cookies).await,
     }
 }

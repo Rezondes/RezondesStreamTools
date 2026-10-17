@@ -1,8 +1,8 @@
 //! Runtime of a streamer (template: `server/streamer.ts`): owns the connections of its profile and ends them in
 //! `stop`. It checks the Twitch tokens hourly (a rejected login ends the runtime and deletes the tokens) and reads
-//! the chat and, with the feature alerts, `EventSub`. Chat lines fire triggers (features triggers and fx) and the help
-//! command. Every task runs supervised: a panic ends only that task, which is logged and starts again after a pause,
-//! never the server. Minimes and Spotify join with their packages.
+//! the chat and, with the feature alerts, `EventSub`. Chat lines fire triggers (features triggers and fx), move the
+//! minimes (feature minimes) and ask for the help command. Every task runs supervised: a panic ends only that task,
+//! which is logged and starts again after a pause, never the server. Spotify joins with its package.
 
 use std::collections::BTreeMap;
 use std::future::Future;
@@ -11,8 +11,9 @@ use std::time::Duration;
 
 use rst_domain::access::Feature;
 use rst_domain::chat::irc::IrcMessage;
-use rst_domain::chat::line::to_chat_line;
+use rst_domain::chat::line::{banned_login, to_chat_line};
 use rst_domain::identity::values::{Login, StreamerId};
+use rst_domain::settings::file::minime_rules_of;
 use rst_domain::twitch::eventsub::{EventSubMessage, subscriptions};
 use serde_json::json;
 use tokio_util::sync::CancellationToken;
@@ -20,6 +21,7 @@ use tokio_util::sync::CancellationToken;
 use crate::channel::alerts;
 use crate::channel::chat::{listen, relay};
 use crate::channel::help::HelpResponder;
+use crate::channel::minimes::MinimeRunner;
 use crate::channel::registry::Runtime;
 use crate::channel::token_keeper::{CHECK_SECONDS, TokenKeeper, Validity};
 use crate::channel::triggers::TriggerRunner;
@@ -85,17 +87,20 @@ pub struct StreamerRuntime<T, S, K> {
     pub keeper: Arc<TokenKeeper<T, S, K>>,
     /// Only with the features triggers and fx
     pub triggers: Option<Arc<TriggerRunner>>,
+    /// Only with the feature minimes
+    pub minimes: Option<Arc<MinimeRunner<S, K>>>,
     pub help: Arc<HelpResponder>,
     cancel: CancellationToken,
 }
 
-/// What happens with a chat line
-struct ChatReader<T, S, K> {
+/// What the tasks of a runtime share
+struct Shared<T, S, K> {
     id: StreamerId,
     login: Login,
     hubs: Arc<Hubs>,
     chat_on: bool,
     triggers: Option<Arc<TriggerRunner>>,
+    minimes: Option<Arc<MinimeRunner<S, K>>>,
     help: Arc<HelpResponder>,
     keeper: Arc<TokenKeeper<T, S, K>>,
     twitch: T,
@@ -104,14 +109,51 @@ struct ChatReader<T, S, K> {
     now: fn() -> i64,
 }
 
-impl<T, S, K> ChatReader<T, S, K>
+impl<T, S, K> Shared<T, S, K>
 where
-    T: TwitchAuth + ChatSender + Clone + 'static,
+    T: TwitchAuth + EventSubscriber + ChatSender + Clone + 'static,
     S: RecordStore + Clone + 'static,
     K: KeyStore + Clone + 'static,
 {
+    /// Checks the tokens hourly; a rejected login ends the runtime and deletes the tokens
+    async fn check_tokens(self: Arc<Self>, cancel: CancellationToken) {
+        loop {
+            tokio::select! {
+                () = cancel.cancelled() => return,
+                () = tokio::time::sleep(Duration::from_secs(CHECK_SECONDS)) => {}
+            }
+            if self.keeper.valid((self.now)()).await == Validity::Rejected {
+                eprintln!("Twitch login of {} is no longer valid, please reconnect", self.login);
+                self.keeper.stop();
+                cancel.cancel();
+                if let Err(error) = self.profile.delete_twitch_tokens(&self.id).await {
+                    eprintln!("Deleting the tokens of {} failed: {error}", self.login);
+                }
+                return;
+            }
+        }
+    }
+
+    /// `EventSub`: alerts to the overlays, the end of the stream to the minimes
+    async fn read_events<C: SocketConnector>(self: Arc<Self>, sockets: Arc<C>, url: String, cancel: CancellationToken) {
+        let subscribe = |session_id: String| subscribe_all(&self.keeper, &self.twitch, session_id, self.now);
+        alerts::listen(&*sockets, &url, &cancel, subscribe, |message| match message {
+            EventSubMessage::Alert(alert) => self.hubs.emit(&self.id, &ServerMessage::Alert { alert }),
+            EventSubMessage::Offline => self.minimes.iter().for_each(MinimeRunner::offline),
+            _ => {}
+        })
+        .await;
+    }
+
+    async fn read_chat<C: SocketConnector>(self: Arc<Self>, sockets: Arc<C>, url: String, cancel: CancellationToken) {
+        listen(&*sockets, &url, self.login.as_str(), &cancel, |message| self.read(message)).await;
+    }
+
     fn read(self: &Arc<Self>, message: &IrcMessage) {
         relay(message, &self.hubs, &self.id, self.chat_on);
+        if let (Some(minimes), Some(banned)) = (&self.minimes, banned_login(message)) {
+            minimes.ban(&banned);
+        }
         let Some(line) = to_chat_line(message) else { return };
         if self.help.is_echo(&line) {
             return;
@@ -119,6 +161,9 @@ where
         let now = (self.now)();
         if let Some(triggers) = &self.triggers {
             triggers.handle(&line, u64::try_from(now).unwrap_or_default());
+        }
+        if let Some(minimes) = &self.minimes {
+            minimes.handle(&line);
         }
         if self.help.wants_reply(&line, now) {
             let reader = Arc::clone(self);
@@ -181,92 +226,54 @@ where
         } else {
             None
         };
+        let minimes = if on(Feature::Minimes) {
+            let rules = profile.settings(&id).await?.as_ref().and_then(minime_rules_of);
+            Some(MinimeRunner::load(id.clone(), Arc::clone(&hubs), profile.clone(), rules, now).await?)
+        } else {
+            None
+        };
         let help = Arc::new(HelpResponder::new(login.as_str(), &link, profile.help(&id).await?));
         let keeper = Arc::new(TokenKeeper::new(id.clone(), tokens, twitch.clone(), profile.clone()));
         let cancel = CancellationToken::new();
-        let check = {
-            let (keeper, cancel, profile, id, login) =
-                (Arc::clone(&keeper), cancel.clone(), profile.clone(), id.clone(), login.clone());
-            move || {
-                let (keeper, cancel, profile, id, login) =
-                    (Arc::clone(&keeper), cancel.clone(), profile.clone(), id.clone(), login.clone());
-                async move {
-                    loop {
-                        tokio::select! {
-                            () = cancel.cancelled() => return,
-                            () = tokio::time::sleep(Duration::from_secs(CHECK_SECONDS)) => {}
-                        }
-                        if keeper.valid(now()).await == Validity::Rejected {
-                            eprintln!("Twitch login of {login} is no longer valid, please reconnect");
-                            keeper.stop();
-                            cancel.cancel();
-                            if let Err(error) = profile.delete_twitch_tokens(&id).await {
-                                eprintln!("Deleting the tokens of {login} failed: {error}");
-                            }
-                            return;
-                        }
-                    }
-                }
-            }
-        };
-        supervise(format!("Token check of {login}"), cancel.clone(), check);
         {
             let (help, twitch, tokens) = (Arc::clone(&help), twitch.clone(), keeper.current());
             tokio::spawn(async move { help.set_can_chat(twitch.can_chat(&tokens).await) });
         }
-        let reader = Arc::new(ChatReader {
+        let shared = Arc::new(Shared {
             id: id.clone(),
             login: login.clone(),
-            hubs: Arc::clone(&hubs),
+            hubs,
             chat_on: on(Feature::Chat),
             triggers: triggers.clone(),
+            minimes: minimes.clone(),
             help: Arc::clone(&help),
             keeper: Arc::clone(&keeper),
-            twitch: twitch.clone(),
-            profile: profile.clone(),
+            twitch,
+            profile,
             features: features.clone(),
             now,
         });
-        if on(Feature::Alerts) {
-            let events = {
-                let (sockets, hubs, keeper, cancel, id) =
-                    (Arc::clone(&sockets), Arc::clone(&hubs), Arc::clone(&keeper), cancel.clone(), id.clone());
-                move || {
-                    let (sockets, url, hubs, keeper, twitch, cancel, id) = (
-                        Arc::clone(&sockets),
-                        eventsub_url.clone(),
-                        Arc::clone(&hubs),
-                        Arc::clone(&keeper),
-                        twitch.clone(),
-                        cancel.clone(),
-                        id.clone(),
-                    );
-                    async move {
-                        let subscribe = |session_id: String| subscribe_all(&keeper, &twitch, session_id, now);
-                        alerts::listen(&*sockets, &url, &cancel, subscribe, |message| {
-                            if let EventSubMessage::Alert(alert) = message {
-                                hubs.emit(&id, &ServerMessage::Alert { alert });
-                            }
-                        })
-                        .await;
-                    }
-                }
-            };
-            supervise(format!("EventSub of {login}"), cancel.clone(), events);
+        let name = |task: &str| format!("{task} of {login}");
+        {
+            let (shared, stop) = (Arc::clone(&shared), cancel.clone());
+            supervise(name("Token check"), cancel.clone(), move || Arc::clone(&shared).check_tokens(stop.clone()));
         }
-        let chat = {
-            let cancel = cancel.clone();
-            move || {
-                let (sockets, irc_url, reader, cancel) =
-                    (Arc::clone(&sockets), irc_url.clone(), Arc::clone(&reader), cancel.clone());
-                async move {
-                    let channel = reader.login.as_str();
-                    listen(&*sockets, &irc_url, channel, &cancel, |message| reader.read(message)).await;
-                }
-            }
-        };
-        supervise(format!("Chat of {login}"), cancel.clone(), chat);
-        Ok(Some(Self { id, login, keeper, triggers, help, cancel }))
+        if let Some(minimes) = &minimes {
+            let (minimes, stop) = (Arc::clone(minimes), cancel.clone());
+            supervise(name("Minimes"), cancel.clone(), move || Arc::clone(&minimes).prune_until(stop.clone()));
+        }
+        if on(Feature::Alerts) {
+            let (shared, sockets, stop) = (Arc::clone(&shared), Arc::clone(&sockets), cancel.clone());
+            let events =
+                move || Arc::clone(&shared).read_events(Arc::clone(&sockets), eventsub_url.clone(), stop.clone());
+            supervise(name("EventSub"), cancel.clone(), events);
+        }
+        {
+            let (shared, stop) = (Arc::clone(&shared), cancel.clone());
+            let chat = move || Arc::clone(&shared).read_chat(Arc::clone(&sockets), irc_url.clone(), stop.clone());
+            supervise(name("Chat"), cancel.clone(), chat);
+        }
+        Ok(Some(Self { id, login, keeper, triggers, minimes, help, cancel }))
     }
 }
 

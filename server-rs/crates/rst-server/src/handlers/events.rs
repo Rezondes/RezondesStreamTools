@@ -13,15 +13,13 @@ use axum::response::sse::{Event, KeepAlive, Sse};
 use axum::response::{IntoResponse, Response};
 use futures_util::stream::{self, StreamExt};
 use rst_app::events::ServerMessage;
-use rst_domain::access::{AccessPolicy, Feature};
-use rst_domain::identity::values::{Login, StreamerId};
-use rst_domain::minimes::roster::Minime;
+use rst_domain::identity::values::StreamerId;
 use rst_domain::twitch::alerts::{AlertKind, sample_alert};
 use serde_json::json;
 
 use crate::app::App;
 use crate::clock::now_ms;
-use crate::errors::{json, server_error, text};
+use crate::errors::{json, text};
 use crate::guard::cookie;
 use crate::handlers::Call;
 
@@ -37,14 +35,7 @@ fn data(message: &ServerMessage) -> Event {
 }
 
 /// `/s/<login>/events`
-pub async fn stream(
-    app: &App,
-    id: &StreamerId,
-    login: &Login,
-    policy: &AccessPolicy,
-    uri: &Uri,
-    cookies: Option<&str>,
-) -> Response {
+pub async fn stream(app: &App, id: &StreamerId, uri: &Uri, cookies: Option<&str>) -> Response {
     if !running(app, id) {
         return text(404, "not-running");
     }
@@ -61,15 +52,7 @@ pub async fn stream(
         return text(403, "forbidden");
     }
     let Some(subscription) = app.hubs.subscribe(id, watcher) else { return text(503, "unavailable") };
-    let features = policy.features(&app.config.admins, login);
-    let minimes = if features.get(&Feature::Minimes) == Some(&true) {
-        match app.stores.profile.minimes(id).await {
-            Ok(state) => Some(state.roster.iter().map(Minime::from).collect()),
-            Err(error) => return server_error(&error.to_string()),
-        }
-    } else {
-        None
-    };
+    let minimes = app.runtimes.get(id).and_then(|runtime| runtime.minimes.as_ref().map(|minimes| minimes.current()));
     let mut first = vec![Event::default().comment("connected"), data(&ServerMessage::Music { track: None })];
     first.extend(minimes.map(|minimes| data(&ServerMessage::Minimes { minimes })));
     let live = stream::unfold(subscription, |mut subscription| async move {

@@ -3,6 +3,7 @@
 pub mod alerts;
 pub mod chat;
 pub mod help;
+pub mod minimes;
 pub mod overlay_key;
 pub mod registry;
 pub mod runtime;
