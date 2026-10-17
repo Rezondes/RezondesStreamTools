@@ -1,12 +1,12 @@
-// Renderbare Clips des Matrix-Themes: Stinger (Gruppe Stinger) sowie Profil- und Offline-Banner (Gruppe Banner),
-// gezeichnet mit den aufgelösten Einstellungen. Check: render.check.ts.
+// Renderable clips of the matrix theme: stinger (group Stinger) and profile and offline banners (group Banner),
+// drawn with the resolved settings. Check: render.check.ts.
 import type { RenderClip } from "../../core/renderClip.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import { bannerOptions, drawOfflineBanner, drawProfileBanner } from "./banners.ts";
 import type { MatrixValues } from "./settings.ts";
 import { drawStinger, FPS, HEIGHT, stingerOptions, WIDTH } from "./stinger.ts";
 
-// values: gegen das Matrix-Schema aufgelöst; login für {login} in den Bannern
+// values: resolved against the matrix schema; login for {login} in the banners
 export function matrixClips(values: SettingValues, login: string): RenderClip[] {
   const matrix = values as unknown as MatrixValues;
   const stinger = stingerOptions(matrix);

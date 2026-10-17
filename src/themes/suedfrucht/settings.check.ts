@@ -1,5 +1,5 @@
-// Check für settings.ts (Schema des Südfrucht-Themes): gültige Standardwerte, kein toter Schlüssel, Pflichtschlüssel je
-// Gruppe, Farben und Chat-Namen für jede Frucht, jede Gruppe einer Szene zugeordnet. Läuft mit npm test.
+// Check for settings.ts (schema of the Südfrucht theme): valid defaults, no dead key, required keys per
+// group, colors and chat names for every fruit, every group mapped to a scene. Runs with npm test.
 import assert from "node:assert/strict";
 import { hasMinimes, minimeNamesKey } from "../../core/minimeFields.ts";
 import { auditTheme } from "../schemaAudit.ts";
@@ -9,12 +9,12 @@ import { fruitColorKeys, suedfruchtSettings } from "./settings.ts";
 const fields = suedfruchtSettings.fields;
 const keys = new Set(fields.map(field => field.key));
 
-// Gültige Standardwerte und kein toter Schlüssel (jeder kommt im Theme-Code vor)
+// Valid defaults and no dead key (every one occurs in the theme code)
 const audit = auditTheme(suedfruchtSettings, import.meta.dirname);
 assert.deepEqual(audit.errors, []);
-assert.deepEqual(audit.unused, [], `unbenutzte Schlüssel: ${audit.unused.join(", ")}`);
+assert.deepEqual(audit.unused, [], `unused keys: ${audit.unused.join(", ")}`);
 
-// Pflichtschlüssel je Gruppe
+// Required keys per group
 const REQUIRED: Record<string, string[]> = {
   "Allgemein": ["channelName", "font", "titleFont", "wood", "sea", "sand", "palmLeaf", "accent", "accent2", "radius", "fadeDuration"],
   "Kulisse": ["timeStarting", "timeBrb", "timeEnding", "skyNightTop", "sun", "moon", "clouds", "waveLayers", "waveSpeed", "palmsLeft", "palmsRight", "palmSway", "boat", "gulls", "shells", "sandName"],
@@ -34,17 +34,17 @@ for (const [group, required] of Object.entries(REQUIRED)) {
   for (const key of required) assert.equal(fields.find(field => field.key === key)?.group, group, `${key} fehlt in ${group}`);
 }
 
-// Jede Frucht hat Haupt- und Detailfarbe und Namen im Chat
+// Every fruit has main and detail color and names in chat
 for (const id of FRUIT_IDS) {
   for (const key of [fruitColorKeys(id).main, fruitColorKeys(id).detail, minimeNamesKey(id)]) assert.ok(keys.has(key), `${key} fehlt`);
 }
 
-// Jede Gruppe ist ihren Szenen zugeordnet (Allgemein gilt überall)
+// Every group is mapped to its scenes (Allgemein applies everywhere)
 for (const group of new Set(fields.map(field => field.group))) {
-  if (group !== "Allgemein") assert.ok(group in (suedfruchtSettings.groupScenes ?? {}), `${group} ohne Szene`);
+  if (group !== "Allgemein") assert.ok(group in (suedfruchtSettings.groupScenes ?? {}), `${group} without a scene`);
 }
 
-// Minimes mit Früchten als Typen
+// Minimes with fruits as variants
 assert.equal(hasMinimes(suedfruchtSettings), true);
 assert.equal(suedfruchtSettings.minimeVariants?.variants.length, 16);
 

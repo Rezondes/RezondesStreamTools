@@ -1,6 +1,6 @@
-// Chat-Overlay, transparent, neue Nachrichten unten (oder oben). Empfohlen z.B. 500x900.
-// Prompt, Badges, Grössen, Ausblenden und Animationen kommen aus den Einstellungen. Nachrichten (useChat), Badge-Texte
-// (badgeLabel) und Inhalt mit Emotes (MessageParts) kommen aus dem Kern, hier das Matrix-Aussehen. Parameter: ?demo
+// Chat overlay, transparent, new messages at the bottom (or top). Recommended e.g. 500x900.
+// Prompt, badges, sizes, fading and animations come from the settings. Messages (useChat), badge texts
+// (badgeLabel) and content with emotes (MessageParts) come from the core, here the matrix look. Parameters: ?demo
 import { badgeLabel } from "../../../core/chat/chat.ts";
 import MessageParts from "../../../core/chat/MessageParts.tsx";
 import type { ChatMessage } from "../../../core/types.ts";

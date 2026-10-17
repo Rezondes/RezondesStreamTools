@@ -1,5 +1,5 @@
-// Webcam-Rahmen des Südfrucht-Themes, innen transparent: Rahmen aus Bambus, Holz oder Seil, Palmblätter in den
-// Ecken, Hibiskusblüte, Namensschild aus Holz und Live-Anzeige mit Seestern. Quelle so gross wie die Kamera anlegen.
+// Webcam frame of the Südfrucht theme, transparent inside: frame of bamboo, wood or rope, palm leaves in the
+// corners, hibiscus blossom, wooden name tag and live indicator with a starfish. Create the source as large as the camera.
 import { fillTemplate } from "../../../core/template.ts";
 import { ICONS, LEAF } from "../beach.ts";
 import ShapeIcon from "../ShapeIcon.tsx";

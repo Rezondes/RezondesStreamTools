@@ -1,7 +1,7 @@
-// Minimes des Matrix-Themes: eingeklinkte Chatter als Neon-Geister im Kapuzenpulli, ohne Beine, getragen von einer
-// Düse aus fallenden Glyphen, mit Namen über dem Kopf. Transparent, empfohlen 1920x360 am unteren Bildrand.
-// Wer drin ist und was jeder tut, kommt aus useMinimes; hier stehen das Aussehen und der Katalog der eigenen
-// Animationen (backflip, glitch, look, spin, sleep; boost als Reaktion auf Chat). Parameter: ?demo, ?demo=<n>
+// Minimes of the matrix theme: joined chatters as neon ghosts in a hoodie, without legs, carried by a
+// jet of falling glyphs, with the name above the head. Transparent, recommended 1920x360 at the bottom edge of the picture.
+// Who is in and what everyone does comes from useMinimes; here are the look and the catalog of the own
+// animations (backflip, glitch, look, spin, sleep; boost as reaction to chat). Parameters: ?demo, ?demo=<n>
 import { useMemo, useState, type CSSProperties } from "react";
 import { glyph } from "../../../core/glyphs.ts";
 import { useMinimes } from "../../../core/hooks/useMinimes.ts";
@@ -11,7 +11,7 @@ import "../minimes.css";
 
 export default function Minimes() {
   const values = useMatrix();
-  // Breite der Szene einmal beim Laden (OBS-Quelle), danach bleibt sie
+  // Width of the scene once on load (OBS source), it stays afterwards
   const [widthPx] = useState(() => innerWidth);
   const catalog = useMemo<MinimeAction[]>(() => [
     { name: "backflip", durationMs: values.minimeBackflipMs, weight: values.minimeBackflipWeight },
@@ -32,7 +32,7 @@ export default function Minimes() {
 function Ghost({ actor }: { actor: MinimeActor }) {
   const values = useMatrix();
   const showing = actor.action === "enter" || actor.action === "exit";
-  // Lage, Bewegung, Dauer und Blickrichtung aus dem Kern (actorStyle), dazu die Farbe des Geists
+  // Position, movement, duration and facing from the core (actorStyle), plus the color of the ghost
   const style = { ...actorStyle(actor), "--minime": actor.color ?? values.minimeDefaultColor } as CSSProperties;
   return (
     <div className={`minime action-${actor.action}`} style={style}>
@@ -51,8 +51,8 @@ function Ghost({ actor }: { actor: MinimeActor }) {
   );
 }
 
-// Der Geist als Linien: Kapuze mit Zipfel, dunkles Gesicht mit zwei Augen, Pulli mit Tasche und Kordeln, Ärmel,
-// unten ausgefranst statt Beinen (viewBox 100 x 110)
+// The ghost as lines: hood with a tip, dark face with two eyes, hoodie with pocket and cords, sleeves,
+// frayed at the bottom instead of legs (viewBox 100 x 110)
 function Shape() {
   return (
     <svg className="minime-shape" viewBox="0 0 100 110">
@@ -69,7 +69,7 @@ function Shape() {
   );
 }
 
-// Aufsteigende Schlaf-Zeichen über dem Kopf, nacheinander
+// Rising sleep characters above the head, one after another
 function Sleep() {
   const values = useMatrix();
   return (
@@ -79,8 +79,8 @@ function Sleep() {
   );
 }
 
-// Spalten fallender Glyphen (Düse unter dem Geist, beim Erscheinen und Verschwinden auch über ihm).
-// Jede Spalte steht doppelt im Text, damit das Fallen ohne Sprung weiterläuft.
+// Columns of falling glyphs (jet below the ghost, when appearing and disappearing also above it).
+// Every column is in the text twice, so the falling continues without a jump.
 function Glyphs({ className }: { className: string }) {
   const values = useMatrix();
   const columns = useMemo(

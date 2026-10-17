@@ -1,5 +1,5 @@
-// Renderbare Clips des Standard-Themes: Stinger (Gruppe Stinger) sowie Profil- und Offline-Banner (Gruppe Banner),
-// gezeichnet mit den aufgelösten Einstellungen. Check: render.check.ts.
+// Renderable clips of the standard theme: stinger (group Stinger) and profile and offline banners (group Banner),
+// drawn with the resolved settings. Check: render.check.ts.
 import type { RenderClip } from "../../core/renderClip.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
@@ -7,7 +7,7 @@ import { drawStandardOfflineBanner, drawStandardProfileBanner, type StandardBann
 import type { StandardValues } from "./settings.ts";
 import { drawStandardStinger, FPS, HEIGHT, WIDTH, type StandardStingerOptions } from "./stinger.ts";
 
-// values: gegen das Standard-Schema aufgelöst; login für {login} in den Texten
+// values: resolved against the standard schema; login for {login} in the texts
 export function standardClips(values: SettingValues, login: string): RenderClip[] {
   const standard = values as unknown as StandardValues;
   const names = { channel: standard.channelName, login };

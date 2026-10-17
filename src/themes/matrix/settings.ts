@@ -1,6 +1,6 @@
-// Einstellungs-Schema des eingebauten Themes "matrix": jeder sichtbare und hörbare Wert ist hier eine Einstellung,
-// die Standardwerte ergeben den bisherigen Look. Einzige Stelle des Themes mit festen Farben, Texten und Zahlen.
-// MatrixValues ist der Typ der aufgelösten Werte, den die Szenen über useMatrix (values.ts) lesen.
+// Settings schema of the built-in theme "matrix": every visible and audible value is a setting here,
+// the defaults give the original look. The only place of the theme with fixed colors, texts and numbers.
+// MatrixValues is the type of the resolved values that the scenes read via useMatrix (values.ts).
 import { asciiText } from "../../core/asciiText.ts";
 import { asciiArt, choice, color, flag, font, inScene, lines, number, text, type ValuesOf } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
@@ -10,7 +10,7 @@ import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
-// Beispiel-Logo; beim ersten Login erzeugt personalize das Logo aus dem Twitch-Login
+// Sample logo; on first login personalize creates the logo from the Twitch login
 const LOGO = asciiText("STREAM");
 
 export const FONTS = ["Share Tech Mono", "VT323", "Fira Mono", "IBM Plex Mono", "Courier New"] as const;
@@ -54,7 +54,7 @@ const FIELDS = [
   text("cursor", "Cursor-Zeichen", GENERAL, "█", 4),
   choice("locale", "Uhrzeit-Format", GENERAL, "de-DE", LOCALES),
 
-  // Matrix-Regen
+  // Matrix rain
   text("glyphs", "Zeichensatz (Regen, Entschlüsseln, Stinger)", RAIN, GLYPHS, 400),
   flag("rainScreens", "Regen in Starting/BRB/Ending", RAIN, true),
   flag("rainAlerts", "Regen in Alerts", RAIN, true),
@@ -149,7 +149,7 @@ const FIELDS = [
   number("frameWidth", "Rahmen-Breite", SCREENS, 1400, 400, 1920, "px"),
   number("frameHeight", "Rahmen-Höhe", SCREENS, 820, 300, 1080, "px"),
 
-  // Alerts: Platzhalter {user}, {amount}, {detail}, {text}
+  // Alerts: placeholders {user}, {amount}, {detail}, {text}
   text("alertHeader", "Kopfzeile ({tag})", ALERTS, "> INCOMING TRANSMISSION // {tag}"),
   text("tierSuffix", "Abo-Stufe an der Kopfzeile ({detail})", ALERTS, " // {detail}"),
   text("followTag", "Follow: Kopfzeile", ALERTS, "FOLLOW"),
@@ -197,7 +197,7 @@ const FIELDS = [
   choice("chatIn", "Einblenden", CHAT, "glitch", ANIMATIONS),
   choice("chatOut", "Ausblenden", CHAT, "glitch", ANIMATIONS),
 
-  // Kamera-Rahmen
+  // Camera frame
   text("camLabel", "Label ({channel})", CAM, "CAM_01 // {channel}"),
   flag("camRec", "REC-Anzeige", CAM, true),
   text("camRecDot", "REC-Punkt", CAM, "●", 4),
@@ -225,7 +225,7 @@ const FIELDS = [
   choice("musicIn", "Einblenden", MUSIC, "glitch", ANIMATIONS),
   choice("musicOut", "Ausblenden", MUSIC, "glitch", ANIMATIONS),
 
-  // Effekte (Chat-Trigger), gelten, wenn eine Aktion nichts anderes angibt
+  // Effects (chat triggers), apply when an action does not specify anything else
   number("fxDuration", "Standarddauer", FX, 4, 0.5, 120, "s", 0.5),
   number("fxSize", "Standardgrösse", FX, 360, 20, 1920, "px"),
   number("fxTextSize", "Textgrösse", FX, 64, 8, 300, "px"),
@@ -242,7 +242,7 @@ const FIELDS = [
   text("stingerText", "Text", STINGER, "> SZENENWECHSEL"),
   flag("stingerLogo", "Logo", STINGER, true),
 
-  // Twitch-Banner
+  // Twitch banners
   text("bannerProfileText", "Profilbanner: Text", BANNER, "> willkommen in der matrix"),
   text("bannerProfileSub", "Profilbanner: Untertitel", BANNER, "Games · Talk · Community"),
   text("bannerOfflineStatus", "Offline-Banner: Status", BANNER, "○ OFFLINE"),
@@ -253,7 +253,7 @@ const FIELDS = [
   number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
   number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
   number("bannerRainDensity", "Regen-Dichte", BANNER, 100, 0, 100, "%"),
-  // Minimes: Befehle, Regeln und Bewegung sind für alle Themes mit Minimes gleich
+  // Minimes: commands, rules and movement are the same for all themes with minimes
   ...MINIME_FIELDS,
   color("minimeDefaultColor", "Farbe ohne eigene Wahl", MINIME_LOOK, "#39ff14"),
   color("minimeFace", "Gesicht (Kapuzeninneres)", MINIME_LOOK, "#000000"),
@@ -271,7 +271,7 @@ const FIELDS = [
   flag("minimeNames", "Namen anzeigen", MINIME_LOOK, true),
   number("minimeNameSize", "Name: Schriftgrösse", MINIME_LOOK, 16, 8, 48, "px"),
   number("minimeNameGap", "Name: Abstand zum Kopf", MINIME_LOOK, 4, 0, 60, "px"),
-  // Idle-Animationen: Häufigkeit 0 = nie
+  // Idle animations: frequency 0 = never
   number("minimeBackflipWeight", "Backflip: Häufigkeit", MINIME_MOVES, 8, 0, 100),
   number("minimeBackflipMs", "Backflip: Dauer", MINIME_MOVES, 1300, 200, 10_000, "ms"),
   number("minimeBackflipHeight", "Backflip: Sprunghöhe", MINIME_MOVES, 60, 0, 300, "px"),
@@ -292,7 +292,7 @@ const FIELDS = [
   number("minimeBoostMs", "Reaktion auf Chat: Dauer", MINIME_MOVES, 700, 100, 5000, "ms"),
   number("minimeBoostHeight", "Reaktion auf Chat: Hüpfhöhe", MINIME_MOVES, 18, 0, 200, "px"),
   number("minimeBoostJet", "Reaktion auf Chat: Düse länger (Faktor)", MINIME_MOVES, 2, 1, 4, undefined, 0.1),
-  // Befehlsseite (öffentlich, /s/<login>/): gemeinsame Texte aus dem Kern, dazu das Aussehen
+  // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   flag("infoRain", "Befehlsseite: Matrix-Regen im Hintergrund", INFO_GROUP, true),
 ] as const satisfies readonly SettingField[];
@@ -317,7 +317,7 @@ const GROUP_SCENES = {
   [INFO_GROUP]: ["info"],
 } as const;
 
-// Beim ersten Login: Kanal-Name und ASCII-Logo aus dem Twitch-Login statt der Beispiele
+// On first login: channel name and ASCII logo from the Twitch login instead of the samples
 const personalize = (login: string) => ({ channelName: login.toUpperCase(), logo: asciiText(login) });
 
 export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: FIELDS, groupScenes: GROUP_SCENES, personalize };

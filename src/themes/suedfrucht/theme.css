@@ -1,6 +1,6 @@
-/* Südfrucht-Theme: süd-tropischer Küsten- und Meeres-Look mit Sand, Wellen, Palmen und Holzschildern. Gekapselt unter
-   .theme-suedfrucht; Farben, Grössen und Zeiten kommen als CSS-Variablen aus den Einstellungen, weitere Masse als
-   var(--name, Standard). Keyframes heissen suedfrucht-*. Die Minimes haben ihr eigenes CSS (minimes.css). */
+/* Südfrucht theme: southern tropical coast and sea look with sand, waves, palms and wooden signs. Encapsulated under
+   .theme-suedfrucht; colors, sizes and times come as CSS variables from the settings, further sizes as
+   var(--name, default). Keyframes are called suedfrucht-*. The minimes have their own CSS (minimes.css). */
 
 .theme-suedfrucht {
   font-family: var(--font), system-ui, sans-serif;
@@ -11,7 +11,7 @@
   --rope-pattern: repeating-linear-gradient(45deg, var(--wood) 0 var(--twist, 6px), var(--woodDark) var(--twist, 6px) calc(2 * var(--twist, 6px)));
 }
 
-/* Holz: Planken mit Fugen, dunkler Rand */
+/* Wood: planks with joints, dark edge */
 .theme-suedfrucht .sf-wood {
   background: repeating-linear-gradient(180deg, var(--wood) 0 var(--plank, 44px), var(--woodDark) var(--plank, 44px) calc(var(--plank, 44px) + var(--plank-gap, 3px)));
   border: var(--wood-border, 5px) solid var(--woodDark);
@@ -20,11 +20,11 @@
   box-shadow: var(--shadow);
 }
 
-/* Formen aus beach.ts: Farben je Ort weiter unten, Linien ohne Füllung */
+/* Shapes from beach.ts: colors per place further below, lines without fill */
 .theme-suedfrucht .sf-shape { display: block; width: 100%; height: auto; overflow: visible; }
 .theme-suedfrucht .sf-shape .part-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: var(--line-width, 4); }
 
-/* --- Kulisse ------------------------------------------------------------------------------------------------- */
+/* --- Backdrop ------------------------------------------------------------------------------------------------ */
 .theme-suedfrucht .sf-screen { position: fixed; inset: 0; overflow: hidden; background: var(--seaDeep); }
 .theme-suedfrucht .sf-beach { position: absolute; inset: 0; overflow: hidden; }
 .theme-suedfrucht .time-morgen { --sky-top: var(--skyMorningTop); --sky-bottom: var(--skyMorningBottom); --sun-x: 22%; --sun-y: 50%; --light: var(--sun); }
@@ -106,7 +106,7 @@
 
 /* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
 .theme-suedfrucht .sf-stage {
-  /* Lage, Grösse und Skalierung: stage-box aus src/core/screens/stage.css */
+  /* Position, size and scaling: stage-box from src/core/screens/stage.css */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -347,7 +347,7 @@
 .theme-suedfrucht .sf-badge { display: inline-block; margin-right: var(--badge-gap, 6px); padding: var(--badge-padding, 0 8px); border-radius: var(--pill, 999px); background: var(--accent); color: var(--textColor); font-size: 0.7em; font-weight: 700; }
 .theme-suedfrucht .sf-emote { height: var(--emoteSize); vertical-align: middle; }
 
-/* --- Kamera-Rahmen ------------------------------------------------------------------------------------------ */
+/* --- Camera frame ------------------------------------------------------------------------------------------- */
 .theme-suedfrucht .sf-cam { position: fixed; inset: 0; animation: suedfrucht-fade var(--fadeDuration) ease-out both; }
 .theme-suedfrucht .sf-cam-frame {
   position: absolute;
@@ -367,7 +367,7 @@
 .theme-suedfrucht .sf-cam-leaf { position: absolute; width: var(--camLeafSize); }
 .theme-suedfrucht .sf-cam-leaf .part-main { fill: var(--palmLeaf); }
 .theme-suedfrucht .sf-cam-leaf .part-line { stroke: color-mix(in srgb, var(--palmLeaf) 55%, var(--woodDark)); stroke-width: var(--leaf-line, 3); }
-/* Blätter wachsen aus der Ecke schräg ins Bild (Form: Stiel unten links, Spitze oben rechts), alles innerhalb der Quelle */
+/* Leaves grow diagonally into the picture from the corner (shape: stem bottom left, tip top right), all inside the source */
 .theme-suedfrucht .sf-cam-leaf.top-left { left: 0; top: 0; scale: 1 -1; }
 .theme-suedfrucht .sf-cam-leaf.top-right { right: 0; top: 0; scale: -1 -1; }
 .theme-suedfrucht .sf-cam-leaf.bottom-right { right: 0; bottom: 0; scale: -1 1; }
@@ -397,7 +397,7 @@
 .theme-suedfrucht .sf-cam-live .part-main { fill: var(--accent2); }
 .theme-suedfrucht .sf-cam-live .part-detail { fill: var(--accent); }
 
-/* --- Musik ---------------------------------------------------------------------------------------------------- */
+/* --- Music ---------------------------------------------------------------------------------------------------- */
 .theme-suedfrucht .sf-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 34px 14px 14px); }
 .theme-suedfrucht .sf-player { position: relative; width: 100%; display: flex; align-items: center; gap: var(--player-gap, 20px); padding: var(--player-padding, 16px 22px); animation: suedfrucht-rise-in var(--fadeDuration) ease-out both; }
 .theme-suedfrucht .sf-player.leaving { animation: suedfrucht-fade-out var(--fadeDuration) ease-in forwards; }
@@ -438,7 +438,7 @@
 .theme-suedfrucht .sf-eq i { width: var(--eq-bar, 7px); height: 100%; border-radius: var(--pill, 999px); background: linear-gradient(var(--foam), var(--sea)); transform-origin: bottom; animation: suedfrucht-eq var(--eq-time, 900ms) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--eq-time, 900ms) / -5); }
 .theme-suedfrucht .paused .sf-eq i { animation-play-state: paused; }
 
-/* --- Effekte -------------------------------------------------------------------------------------------------- */
+/* --- Effects -------------------------------------------------------------------------------------------------- */
 .theme-suedfrucht .sf-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
 .theme-suedfrucht .sf-fx-item {
   position: absolute;
@@ -493,7 +493,7 @@
 @keyframes suedfrucht-spin { to { rotate: 1turn; } }
 @keyframes suedfrucht-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
 
-/* --- Befehlsseite (öffentlich): Strand fest im Hintergrund, Holzschilder scrollen als normale Seite davor -------- */
+/* --- Commands page (public): beach fixed in the background, wooden signs scroll in front as a normal page ----------- */
 .theme-suedfrucht.theme-root:has(.sf-info) { min-height: 100vh; background: var(--seaDeep); }
 .theme-suedfrucht .sf-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-suedfrucht .sf-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }

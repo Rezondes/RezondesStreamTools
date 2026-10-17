@@ -1,5 +1,5 @@
-// Szenen des Matrix-Themes für die Theme-Liste (src/themes/scenes.tsx) samt seinem CSS.
-// Jede Szene wird per React.lazy geladen und landet im Build in einem eigenen Chunk.
+// Scenes of the matrix theme for the theme list (src/themes/scenes.tsx) with its CSS.
+// Every scene is loaded via React.lazy and ends up in its own chunk in the build.
 import { lazy } from "react";
 import { screenScenes } from "../../core/screens/screenScenes.tsx";
 import type { ThemeView } from "../../core/theme.ts";

@@ -1,5 +1,5 @@
-// Check für stinger.ts: der Übergang deckt am Übergangspunkt alles ab und ist am Anfang und Ende leer.
-// Ein Mock-Canvas zählt die gefüllten Rechtecke. Läuft mit npm test.
+// Check for stinger.ts: the transition covers everything at the transition point and is empty at the start and end.
+// A mock canvas counts the filled rectangles. Runs with npm test.
 import assert from "node:assert/strict";
 import { HEIGHT, WIDTH, drawStinger, type StingerOptions } from "./stinger.ts";
 
@@ -23,12 +23,12 @@ const options: StingerOptions = {
 const columns = WIDTH / options.column;
 const fullColumns = (rects: number[][]) => rects.filter(([, y, width, height]) => y === 0 && width === options.column && height === HEIGHT).length;
 
-// Am Übergangspunkt ist jede Spalte über die ganze Höhe schwarz
+// At the transition point every column is black over the full height
 const atCut = recorder();
 drawStinger(atCut.context, options.cut, options);
 assert.equal(fullColumns(atCut.rects), columns);
 
-// Am Anfang und am Ende wird nichts gezeichnet
+// Nothing is drawn at the start and at the end
 for (const time of [0, options.duration]) {
   const empty = recorder();
   drawStinger(empty.context, time, options);

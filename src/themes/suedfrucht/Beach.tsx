@@ -1,6 +1,6 @@
-// Strandkulisse der Vollbild-Szenen (1920 x 1080, skaliert mit der Bühne): Himmel je Tageszeit, Sonne oder Mond,
-// ziehende Wolken, Segelboot, Meer mit bis zu drei Wellenschichten und Glitzern, Sand mit Muscheln, Palmen links und
-// rechts, Möwen und der Kanal-Name im Sand. Jede Schicht ist in den Einstellungen abschaltbar.
+// Beach backdrop of the full-screen scenes (1920 x 1080, scaled with the stage): sky per time of day, sun or moon,
+// drifting clouds, sailboat, sea with up to three wave layers and glitter, sand with shells, palms left and
+// right, seagulls and the channel name in the sand. Every layer can be switched off in the settings.
 import type { CSSProperties } from "react";
 import { hash } from "../../core/hash.ts";
 import { CLOUD, GULL, ICONS, PALM, wavePath } from "./beach.ts";
@@ -9,7 +9,7 @@ import { useSuedfrucht } from "./useSuedfrucht.ts";
 
 export type TimeOfDay = "morgen" | "mittag" | "abend" | "nacht";
 
-// fixed: Bühne, Wellen (doppelte Breite für nahtloses Verschieben), Höhen der Schichten und Glitzer-Anzahl
+// fixed: stage, waves (double width for seamless shifting), heights of the layers and number of glitter points
 const STAGE = { width: 1920, height: 1080, waveWidth: 3840, wavelength: 480 };
 const WAVES = [
   { name: "far", top: 650, amplitude: 8 },

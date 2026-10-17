@@ -1,18 +1,18 @@
-// Formen der Strandkulisse und der Symbole des Südfrucht-Themes als SVG-Pfade (Text), dazu Pfad-Bausteine für Sterne,
-// Blüten, Kreise und Wellen. Nur Formen, keine Farben: die Szenen färben die Teile über CSS-Klassen (Einstellungen).
+// Shapes of the beach backdrop and the symbols of the Südfrucht theme as SVG paths (text), plus path building blocks for stars,
+// blossoms, circles and waves. Only shapes, no colors: the scenes color the parts via CSS classes (settings).
 // Check: beach.check.ts.
 
-// Teil einer Form: main/detail = Fläche in Haupt- bzw. Detailfarbe, line = nur Linie
+// Part of a shape: main/detail = area in main or detail color, line = line only
 type ShapePart = { kind: "main" | "detail" | "line"; d: string };
 export type Shape = { viewBox: string; parts: readonly ShapePart[] };
 
 const round = (value: number) => Math.round(value * 10) / 10;
 
-// Kreis als Pfad (zwei Bögen), damit alles einheitlich als <path> gezeichnet wird
+// Circle as a path (two arcs), so everything is drawn uniformly as <path>
 export const circle = (x: number, y: number, radius: number) =>
   `M${round(x - radius)} ${y} a${radius} ${radius} 0 1 0 ${radius * 2} 0 a${radius} ${radius} 0 1 0 ${-radius * 2} 0 Z`;
 
-// Stern oder Stachelkreis: count Spitzen um (x, y), Spitzen auf radius, Täler depth weiter innen
+// Star or spiky circle: count points around (x, y), points on radius, valleys depth further inside
 export function spikes(x: number, y: number, radius: number, depth: number, count: number) {
   const points = Array.from({ length: count * 2 }, (_, index) => {
     const angle = (index * Math.PI) / count - Math.PI / 2;
@@ -22,7 +22,7 @@ export function spikes(x: number, y: number, radius: number, depth: number, coun
   return `M${points.join(" L")} Z`;
 }
 
-// Blüte: count runde Blätter um (x, y)
+// Blossom: count round petals around (x, y)
 export function petals(x: number, y: number, distance: number, size: number, count: number) {
   return Array.from({ length: count }, (_, index) => {
     const angle = (index * 2 * Math.PI) / count - Math.PI / 2;
@@ -30,8 +30,8 @@ export function petals(x: number, y: number, distance: number, size: number, cou
   }).join(" ");
 }
 
-// Wellenfläche: Oberkante als Sinus um top (amplitude, wavelength), unten bis bottom geschlossen.
-// width sollte ein Vielfaches der Wellenlänge sein, dann lässt sich die Fläche nahtlos verschieben.
+// Wave area: top edge as a sine around top (amplitude, wavelength), closed at the bottom down to bottom.
+// width should be a multiple of the wavelength, then the area can be shifted seamlessly.
 export function wavePath(width: number, amplitude: number, wavelength: number, top: number, bottom: number) {
   const steps = Math.max(1, Math.round((width / wavelength) * 16));
   const points = Array.from({ length: steps + 1 }, (_, index) => {
@@ -41,7 +41,7 @@ export function wavePath(width: number, amplitude: number, wavelength: number, t
   return `M0 ${bottom} L${points.join(" L")} L${width} ${bottom} Z`;
 }
 
-// Kulisse (Szenen und Banner)
+// Backdrop (scenes and banners)
 export const PALM: Shape = {
   viewBox: "-80 0 320 320",
   parts: [
@@ -74,7 +74,7 @@ export const GULL: Shape = {
   parts: [{ kind: "line", d: "M2 10 C8 2 18 2 24 10 C30 2 40 2 46 10" }],
 };
 
-// Symbole der Alerts (und Deko), jeweils in 100 x 100
+// Symbols of the alerts (and decoration), each in 100 x 100
 export const ICONS = {
   muschel: { viewBox: "0 0 100 100", parts: [
     { kind: "main", d: "M50 90 L14 46 C14 26 30 12 50 12 C70 12 86 26 86 46 Z" },

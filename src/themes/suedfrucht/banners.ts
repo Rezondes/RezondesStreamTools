@@ -1,6 +1,6 @@
-// Twitch-Banner des Südfrucht-Themes: Profilbanner (1200x480) als Strandpanorama am Tag mit Kanal-Name und Text,
-// Offline-Banner (1920x1080) im Abendrot mit Holzschild für Titel, Text und Zeilen. Wellen, Glitzern und Palmen
-// bewegen sich einmal pro Schleife im Kreis, darum läuft das GIF nahtlos. Reine Funktionen der Zeit.
+// Twitch banners of the Südfrucht theme: profile banner (1200x480) as a beach panorama by day with channel name and text,
+// offline banner (1920x1080) in the sunset with a wooden sign for title, text and lines. Waves, glitter and palms
+// move in a circle once per loop, so the GIF loops seamlessly. Pure functions of time.
 // Check: banners.check.ts.
 import { hash } from "../../core/hash.ts";
 
@@ -31,14 +31,14 @@ export type SuedfruchtBannerOptions = {
 };
 
 const TURN = Math.PI * 2;
-// fixed: Glitzerpunkte auf dem Wasser
+// fixed: glitter points on the water
 const SPARKLES = 24;
-// Auf zwei Stellen gerundet, damit Bild 0 und das Bild am Schleifenende exakt gleich gezeichnet werden
-const round = (value: number) => Math.round(value * 100) / 100 + 0; // + 0 macht aus -0 eine 0
+// Rounded to two places, so frame 0 and the frame at the loop end are drawn exactly the same
+const round = (value: number) => Math.round(value * 100) / 100 + 0; // + 0 turns -0 into 0
 
 type Size = { width: number; height: number; horizon: number };
 
-// Himmel, Sonne, Meer mit drei Wellen, Glitzern und Sandstreifen
+// Sky, sun, sea with three waves, glitter and a sand strip
 function beach(context: CanvasRenderingContext2D, time: number, options: SuedfruchtBannerOptions, size: Size, sky: [string, string]) {
   const { width, height, horizon } = size;
   const phase = (time / options.loop) * TURN;
@@ -78,7 +78,7 @@ function beach(context: CanvasRenderingContext2D, time: number, options: Suedfru
   context.fill();
 }
 
-// Palme am Rand: Stamm und Blätter, die mit der Schleife wiegen
+// Palm at the edge: trunk and leaves that sway with the loop
 function palm(context: CanvasRenderingContext2D, time: number, options: SuedfruchtBannerOptions, x: number, scale: number, mirror: boolean) {
   context.save();
   context.translate(x, 0);
@@ -119,7 +119,7 @@ export function drawSuedfruchtOfflineBanner(context: CanvasRenderingContext2D, t
   beach(context, time, options, size, [options.eveningTop, options.eveningBottom]);
   palm(context, time, options, 160, 1, false);
   palm(context, time, options, 1760, 0.9, true);
-  // Holzschild in der Mitte
+  // Wooden sign in the middle
   context.fillStyle = options.woodDark;
   context.fillRect(470, 230, 980, 520);
   context.fillStyle = options.wood;

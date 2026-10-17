@@ -1,5 +1,5 @@
-// Check für stinger.ts des Standard-Themes: am Übergangspunkt decken die Streifen das ganze Bild, am Anfang und Ende
-// ist nichts zu sehen. Ein Mock-Canvas zählt die gefüllten Flächen. Läuft mit npm test.
+// Check for stinger.ts of the standard theme: at the transition point the stripes cover the whole picture, at the start and end
+// nothing is visible. A mock canvas counts the filled areas. Runs with npm test.
 import assert from "node:assert/strict";
 import { drawStandardStinger, HEIGHT, WIDTH, type StandardStingerOptions } from "./stinger.ts";
 
@@ -19,14 +19,14 @@ function recorder() {
 
 const options: StandardStingerOptions = { duration: 1.2, cut: 0.6, panels: 3, text: "REZONDES", font: "Inter", accent: "#7c5cff", accent2: "#22d3ee", textColor: "#ffffff" };
 
-// Am Übergangspunkt: jeder Streifen über die volle Breite, zusammen mindestens die volle Höhe (1 px Überlappung)
+// At the transition point: every stripe over the full width, together at least the full height (1 px overlap)
 const atCut = recorder();
 drawStandardStinger(atCut.context, options.cut, options);
 const stripes = atCut.rects.filter(([x, , width]) => x <= 0 && x + width >= WIDTH);
 assert.equal(stripes.length, options.panels);
 assert.ok(stripes.reduce((sum, [, , , height]) => sum + height, 0) >= HEIGHT);
 
-// Am Anfang und am Ende keine Fläche
+// No area at the start and at the end
 for (const time of [0, options.duration]) {
   const empty = recorder();
   drawStandardStinger(empty.context, time, options);

@@ -1,7 +1,7 @@
-// Renderbare Clips je Theme (Stinger und Banner) für den Render-Bereich, aus den Theme-Modulen in registry.ts.
-// Ein unbekanntes Theme bekommt die des Standard-Themes. Check: renderers.check.ts.
+// Renderable clips per theme (stinger and banners) for the render section, from the theme modules in registry.ts.
+// An unknown theme gets those of the standard theme. Check: renderers.check.ts.
 import type { SettingValues } from "../core/theme.ts";
 import { DEFAULT_THEME, findModule } from "./registry.ts";
 
-// values: gegen das Schema des Themes aufgelöst
+// values: resolved against the theme's schema
 export const clipsFor = (theme: string, values: SettingValues, login: string) => (findModule(theme) ?? findModule(DEFAULT_THEME)!).clips(values, login);

@@ -1,7 +1,7 @@
-// Vollbild-Szenen des Südfrucht-Themes (Starting, BRB, Ending): Strandkulisse je Tageszeit, Holzschild mit Überzeile,
-// Titel und Untertitel, darunter Countdown, Pausenzeit oder nächster Stream, wechselnde Sprüche und ein Ticker am
-// Flugzeug oder als Holzleiste. Für 1920x1080 gebaut, skaliert auf jede Quellgrösse.
-// Bühne, Countdown, Pausenzeit, Sprüche und Parameter kommen aus dem Screens-Kontext des Kerns (src/core/screens).
+// Full-screen scenes of the Südfrucht theme (Starting, BRB, Ending): beach backdrop per time of day, wooden sign with overline,
+// title and subtitle, below it countdown, break time or next stream, rotating quotes and a ticker on an
+// airplane or as a wooden bar. Built for 1920x1080, scaled to any source size.
+// Stage, countdown, break time, quotes and parameters come from the screens context of the core (src/core/screens).
 // Parameter pro Quelle: ?min=5, ?at=20:00, ?next=..., ?ticker=...
 import type { CSSProperties } from "react";
 import { rotating, shortClock, type ScreenKind } from "../../../core/screens/screens.ts";
@@ -12,7 +12,7 @@ import { PLANE } from "../beach.ts";
 import ShapeIcon from "../ShapeIcon.tsx";
 import { useSuedfrucht } from "../useSuedfrucht.ts";
 
-// fixed: Sekunden in ms für den Takt der Sprüche
+// fixed: seconds in ms for the rhythm of the quotes
 const SECOND_MS = 1000;
 
 export default function Screen({ kind }: { kind: ScreenKind }) {

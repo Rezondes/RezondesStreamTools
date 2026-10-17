@@ -1,6 +1,6 @@
-// Stinger des Südfrucht-Themes: eine grosse Welle mit Schaumkrone rollt von links ins Bild, deckt am Übergangspunkt
-// (cut) alles in Meeresfarben ab, zeigt kurz den Text und eine Palme und läuft rechts wieder hinaus. Davor und danach
-// transparent. Reine Funktion der Zeit, darum Frame für Frame renderbar. Check: stinger.check.ts.
+// Stinger of the Südfrucht theme: a big wave with a foam crest rolls into the picture from the left, covers everything in
+// sea colors at the transition point (cut), briefly shows the text and a palm and rolls out to the right again. Before and after
+// transparent. Pure function of time, so it can be rendered frame by frame. Check: stinger.check.ts.
 import { clamp01, easeInOut } from "../../core/easing.ts";
 
 export const WIDTH = 1920;
@@ -9,7 +9,7 @@ export const FPS = 60;
 
 export type SuedfruchtStingerOptions = {
   duration: number; // Sekunden
-  cut: number; // Sekunden, in OBS als Übergangspunkt eintragen
+  cut: number; // seconds, enter in OBS as transition point
   waves: number; // Wellenschichten
   foam: boolean;
   palm: boolean;
@@ -22,14 +22,14 @@ export type SuedfruchtStingerOptions = {
   palmColor: string;
 };
 
-// fixed: Tiefe der Wellenkrone, Abstand der Schichten, Wellenlänge der Krone, Breite der Schaumlinie
+// fixed: depth of the wave crest, distance of the layers, wavelength of the crest, width of the foam line
 const CREST = 160;
 const LAYER = 110;
 const CREST_WAVE = 220;
 const FOAM_WIDTH = 14;
 
 
-// Wellenkrone rechts an der Kante x: Bögen nach rechts, phase verschiebt sie mit der Zeit
+// Wave crest at the right of the edge x: arcs to the right, phase shifts them over time
 function crest(context: CanvasRenderingContext2D, x: number, phase: number) {
   context.beginPath();
   context.moveTo(x, 0);
@@ -40,7 +40,7 @@ function crest(context: CanvasRenderingContext2D, x: number, phase: number) {
   context.closePath();
 }
 
-// Palme als Silhouette: gebogener Stamm und fünf Blätter
+// Palm as a silhouette: curved trunk and five leaves
 function drawPalm(context: CanvasRenderingContext2D, color: string) {
   context.fillStyle = color;
   context.beginPath();
@@ -64,7 +64,7 @@ export function drawSuedfruchtStinger(context: CanvasRenderingContext2D, time: n
   context.clearRect(0, 0, WIDTH, HEIGHT);
   const enter = easeInOut(clamp01(time / (cut * 0.9)));
   const leave = easeInOut(clamp01((time - cut) / ((duration - cut) * 0.9)));
-  // Vorderkante kommt von links bis hinter den rechten Rand, Hinterkante folgt nach dem Übergangspunkt
+  // The front edge comes from the left until behind the right border, the back edge follows after the transition point
   const right = enter * (WIDTH + 2 * CREST) - CREST;
   const left = leave * (WIDTH + 2 * CREST) - CREST;
   if (right - left <= 0) return;
@@ -85,7 +85,7 @@ export function drawSuedfruchtStinger(context: CanvasRenderingContext2D, time: n
     context.stroke();
   }
 
-  // Text und Palme um den Übergangspunkt, nur auf der bedeckten Fläche (sonst stünden sie über dem durchsichtigen Bild)
+  // Text and palm around the transition point, only on the covered area (otherwise they would stand over the transparent picture)
   const shown = 1 - clamp01(Math.abs(time - cut) / (Math.min(cut, duration - cut) * 0.6));
   if (shown <= 0) return;
   context.save();

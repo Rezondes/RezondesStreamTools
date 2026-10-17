@@ -1,6 +1,6 @@
-// Eine Frucht als Cartoon-SVG: Form aus fruits.ts, Farben über CSS (Klasse fruit-<id>, Einstellungen), Gesicht mit
-// Augen, Bäckchen, Mund und Sonnenbrille an der Stelle, die die Frucht vorgibt. Die Aktion (Klasse am Minime) steuert
-// Blinzeln, Schlafen und Sonnenbrille.
+// A fruit as a cartoon SVG: shape from fruits.ts, colors via CSS (class fruit-<id>, settings), face with
+// eyes, cheeks, mouth and sunglasses at the spot the fruit defines. The action (class on the minime) controls
+// blinking, sleeping and sunglasses.
 import { findFruit } from "./fruits.ts";
 
 export default function Fruit({ id, faces }: { id: string; faces: boolean }) {

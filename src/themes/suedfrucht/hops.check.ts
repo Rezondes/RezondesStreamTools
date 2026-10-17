@@ -1,5 +1,5 @@
-// Check für hops.ts: Anzahl gerundet aus Dauer und Sprungtakt, mindestens ein Sprung, Takt teilt die Dauer genau.
-// Läuft mit npm test (einzeln: node src/themes/suedfrucht/hops.check.ts).
+// Check for hops.ts: count rounded from duration and hop interval, at least one hop, the interval divides the duration exactly.
+// Runs with npm test (alone: node src/themes/suedfrucht/hops.check.ts).
 import assert from "node:assert/strict";
 import { hopPlan } from "./hops.ts";
 

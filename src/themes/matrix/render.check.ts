@@ -1,5 +1,5 @@
-// Check für render.ts des Matrix-Themes: drei Clips mit Gruppen, Länge und Übergangspunkt aus den Einstellungen.
-// Läuft mit npm test.
+// Check for render.ts of the matrix theme: three clips with groups, length and transition point from the settings.
+// Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
 import { matrixClips } from "./render.ts";

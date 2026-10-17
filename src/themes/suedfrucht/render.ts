@@ -1,5 +1,5 @@
-// Renderbare Clips des Südfrucht-Themes: Stinger (Gruppe Stinger) sowie Profil- und Offline-Banner (Gruppe Banner),
-// gezeichnet mit den aufgelösten Einstellungen. Check: render.check.ts.
+// Renderable clips of the Südfrucht theme: stinger (group Stinger) and profile and offline banners (group Banner),
+// drawn with the resolved settings. Check: render.check.ts.
 import type { RenderClip } from "../../core/renderClip.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
@@ -7,7 +7,7 @@ import { drawSuedfruchtOfflineBanner, drawSuedfruchtProfileBanner, type Suedfruc
 import type { SuedfruchtValues } from "./settings.ts";
 import { drawSuedfruchtStinger, FPS, HEIGHT, WIDTH, type SuedfruchtStingerOptions } from "./stinger.ts";
 
-// values: gegen das Südfrucht-Schema aufgelöst; login für {login} in den Texten
+// values: resolved against the Südfrucht schema; login for {login} in the texts
 export function suedfruchtClips(values: SettingValues, login: string): RenderClip[] {
   const fruit = values as unknown as SuedfruchtValues;
   const names = { channel: fruit.channelName, login };

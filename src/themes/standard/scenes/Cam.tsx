@@ -1,5 +1,5 @@
-// Webcam-Rahmen des Standard-Themes, innen transparent: abgerundeter Rahmen im Farbverlauf, Namensschild unten links,
-// optional Live-Anzeige oben rechts. Quelle so gross wie die Kamera anlegen.
+// Webcam frame of the standard theme, transparent inside: rounded frame in a color gradient, name tag at the bottom left,
+// optional live indicator at the top right. Create the source as large as the camera.
 import { fillTemplate } from "../../../core/template.ts";
 import { standardNames, useStandard } from "../useStandard.ts";
 

@@ -1,7 +1,7 @@
-/* Matrix-Theme: Look aller Overlay-Szenen, gekapselt unter .theme-matrix.
-   Einstellungen kommen als CSS-Variablen (--accent, --alertWidth, ...) aus core/themeRuntime.ts; Schalter sind 1 oder 0.
-   Weitere Masse stehen als Standardwert in var(--name, Wert) und lassen sich so ebenfalls überschreiben.
-   Keyframes heissen matrix-*, damit sie nicht mit anderen Themes kollidieren. */
+/* Matrix theme: look of all overlay scenes, encapsulated under .theme-matrix.
+   Settings come as CSS variables (--accent, --alertWidth, ...) from core/themeRuntime.ts; switches are 1 or 0.
+   Further sizes are defaults in var(--name, value) and can be overridden that way too.
+   Keyframes are called matrix-*, so they do not collide with other themes. */
 
 .theme-matrix {
   font-family: var(--font), monospace;
@@ -21,7 +21,7 @@
 
 .theme-matrix .rain { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
 
-/* Scanlines (Stärke aus den Einstellungen, 0 wenn aus) und Vignette wie im CRT-Modus des Portfolios */
+/* Scanlines (strength from the settings, 0 when off) and vignette like in the CRT mode of the portfolio */
 .theme-matrix .crt::after, .theme-matrix .alert-body::after {
   content: "";
   position: absolute;
@@ -32,7 +32,7 @@
     repeating-linear-gradient(to bottom, color-mix(in srgb, var(--background) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * 100%)), transparent) 0 var(--scanline, 1px), transparent var(--scanline, 1px) var(--scanline-pitch, 3px)),
     radial-gradient(ellipse at center, transparent 55%, color-mix(in srgb, var(--background) 55%, transparent) 100%);
 }
-/* Langsam durchlaufender heller Balken wie bei einer alten Röhre */
+/* Slowly moving bright bar like on an old tube */
 .theme-matrix .crt::before, .theme-matrix .cam::before {
   content: "";
   position: absolute;
@@ -46,7 +46,7 @@
 }
 @keyframes matrix-roll { from { top: -25%; } to { top: 100%; } }
 
-/* Ein- und Ausblenden: die Klassen in-<art> und out-<art> (Einstellungen) setzen Keyframes und Verlauf */
+/* Fade in and out: the classes in-<kind> and out-<kind> (settings) set keyframes and easing */
 .theme-matrix .in-glitch { --in: matrix-glitch-in; --in-ease: steps(1, end); }
 .theme-matrix .in-fade { --in: matrix-fade-in; --in-ease: ease-out; }
 .theme-matrix .in-none { --in: none; --in-ease: linear; }
@@ -54,8 +54,8 @@
 .theme-matrix .out-fade { --out: matrix-fade-out; --out-ease: ease-in; }
 .theme-matrix .out-none { --out: matrix-fade-out; --out-ease: steps(1, start); }
 
-/* Glitch: Streifen des Elements blitzen versetzt auf, Farbe und Helligkeit zucken. Die Stärke skaliert alle
-   Versätze. Nutzt die Eigenschaft "translate", damit ein vorhandenes transform erhalten bleibt. */
+/* Glitch: stripes of the element flash offset, color and brightness twitch. The strength scales all
+   offsets. Uses the property "translate", so an existing transform is kept. */
 @keyframes matrix-glitch-in {
   0%   { opacity: 0; clip-path: inset(48% 0 48% 0); translate: calc(var(--glitchStrength) * -24) 0; }
   12%  { opacity: 1; clip-path: inset(8% 0 72% 0); translate: calc(var(--glitchStrength) * 18) 0; filter: hue-rotate(60deg) brightness(1.6); text-shadow: calc(var(--glitchStrength) * -3) 0 var(--highlight), calc(var(--glitchStrength) * 3) 0 var(--line); }
@@ -78,7 +78,7 @@
 @keyframes matrix-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes matrix-fade-out { from { opacity: 1; } to { opacity: 0; } }
 
-/* Glitch am Namen: zwei versetzte Kopien, die kurz aufflackern */
+/* Glitch on the name: two offset copies that flicker briefly */
 .theme-matrix .glitch::before, .theme-matrix .glitch::after {
   content: attr(data-text);
   position: absolute;
@@ -99,11 +99,11 @@
   95% { opacity: 0.8; transform: translate(calc(var(--glitchStrength) * -3), var(--glitchStrength)); clip-path: inset(0 0 75% 0); }
 }
 
-/* --- Vollbild-Szenen (starting, brb, ending) -------------------------------- */
+/* --- Full-screen scenes (starting, brb, ending) -------------------------------- */
 .theme-matrix .screen-scene { position: fixed; inset: 0; background: var(--background); overflow: hidden; }
 
 .theme-matrix .stage {
-  /* Lage, Grösse und Skalierung: stage-box aus src/core/screens/stage.css */
+  /* Position, size and scaling: stage-box from src/core/screens/stage.css */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -127,12 +127,12 @@
   text-shadow: 0 0 calc(var(--glowStrength) * var(--crt-text-glow, 4px)) color-mix(in srgb, var(--glow) 55%, transparent);
   overflow: hidden;
 }
-/* Einschalten: fliegt aus der Tiefe heran wie der Monitor im Portfolio, oder blendet ein */
+/* Power on: flies in from the depth like the monitor in the portfolio, or fades in */
 .theme-matrix .power-zoom .crt { animation: matrix-zoom-in var(--powerOnDuration) cubic-bezier(0.45, 0, 0.2, 1) both; }
 .theme-matrix .power-fade .crt { animation: matrix-fade-in var(--powerOnDuration) ease-out both; }
 @keyframes matrix-zoom-in { from { transform: scale(0.06); opacity: 0; } 30% { opacity: 1; } to { transform: none; opacity: 1; } }
 
-/* Am Ende des Einschaltens eine Linie in der Mitte, die sich aufzieht und verlischt */
+/* At the end of powering on a line in the middle that opens and fades */
 .theme-matrix .crt-flash { position: absolute; inset: 0; z-index: 4; background: var(--accent); opacity: 0; pointer-events: none; }
 .theme-matrix .power-zoom .crt-flash, .theme-matrix .power-fade .crt-flash {
   animation: matrix-power var(--flash-duration, 0.7s) calc(var(--powerOnDuration) * 0.9375) ease-out both;
@@ -160,7 +160,7 @@
 .theme-matrix .status { display: grid; gap: var(--status-gap, 12px); font-size: var(--status-size, 26px); }
 .theme-matrix .status .big { font-size: var(--status-big-size, 56px); }
 
-/* Terminal: Höhe für die sichtbaren Zeilen plus die Zeile, die gerade entsteht */
+/* Terminal: height for the visible lines plus the line being written right now */
 .theme-matrix .term {
   margin-top: auto;
   padding-top: var(--term-gap, 16px);
@@ -189,7 +189,7 @@
 .theme-matrix .alerts.align-left { justify-content: flex-start; }
 .theme-matrix .alerts.align-right { justify-content: flex-end; }
 
-/* Grösse (alertScale) wirkt zusätzlich zu den Animationen, verankert oben an der gewählten Seite */
+/* Size (alertScale) acts in addition to the animations, anchored at the top of the chosen side */
 .theme-matrix .alert { position: relative; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--glitchInDuration) var(--in-ease) both; }
 .theme-matrix .align-left .alert { transform-origin: top left; }
 .theme-matrix .align-right .alert { transform-origin: top right; }
@@ -206,7 +206,7 @@
     inset 0 0 var(--alert-inner-glow, 50px) color-mix(in srgb, var(--glow) 8%, transparent);
   animation: matrix-jolt var(--jolt, 0.35s) var(--glitchInDuration) steps(2) both;
 }
-/* Kurzer Bildfehler direkt nach dem Öffnen */
+/* Short image glitch right after opening */
 @keyframes matrix-jolt {
   0%   { transform: translate(calc(var(--glitchStrength) * 6), calc(var(--glitchStrength) * -2)); filter: hue-rotate(40deg); }
   50%  { transform: translate(calc(var(--glitchStrength) * -5), calc(var(--glitchStrength) * 2)); }
@@ -253,7 +253,7 @@
   overflow-wrap: anywhere;
   animation: var(--in) var(--glitchInDuration) var(--in-ease) both;
 }
-/* Erscheinen, nach chatFade verschwinden, dann zusammenklappen, damit keine Lücke bleibt */
+/* Appear, disappear after chatFade, then collapse so no gap stays */
 .theme-matrix .msg.fades {
   animation:
     var(--in) var(--glitchInDuration) var(--in-ease) both,
@@ -268,7 +268,7 @@
 .theme-matrix .msg.action .msg-body { font-style: italic; color: var(--dim); }
 .theme-matrix .emote { height: var(--emoteSize); vertical-align: middle; }
 
-/* --- Effekte (Chat-Trigger) ------------------------------------------------------------- */
+/* --- Effects (chat triggers) ------------------------------------------------------------- */
 .theme-matrix .fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
 .theme-matrix .fx-item {
   position: absolute;
@@ -284,7 +284,7 @@
 }
 .theme-matrix .fx-text { position: relative; margin-top: var(--fx-text-gap, 8px); font-size: var(--fxTextSize); text-align: center; overflow-wrap: anywhere; }
 
-/* --- Webcam-Rahmen ---------------------------------------------------------------- */
+/* --- Webcam frame ---------------------------------------------------------------- */
 .theme-matrix .cam {
   position: fixed;
   inset: 0;
@@ -352,7 +352,7 @@
   box-shadow:
     0 0 var(--music-glow, 24px) color-mix(in srgb, var(--glow) 30%, transparent),
     inset 0 0 var(--music-inner-glow, 40px) color-mix(in srgb, var(--glow) 6%, transparent);
-  /* Erscheinen und Titelwechsel (Box wird pro Titel neu aufgebaut) mit in-, Pause/Stopp mit out-Animation */
+  /* Appearing and track change (the box is rebuilt per track) with in-, pause/stop with out- animation */
   animation: var(--in) var(--glitchInDuration) var(--in-ease) both;
 }
 .theme-matrix .music-box.off { animation: var(--out) var(--glitchOutDuration) var(--out-ease) forwards; }
@@ -364,7 +364,7 @@
   background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--background) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * 89%)), transparent) 0 var(--scanline, 1px), transparent var(--scanline, 1px) var(--scanline-pitch, 3px));
 }
 
-/* Cover in der Hauptfarbe: Graustufen multipliziert mit farbigem Grund */
+/* Cover in the main color: grayscale multiplied with a colored ground */
 .theme-matrix .music-cover {
   position: relative;
   flex: none;
@@ -383,8 +383,8 @@
 }
 @keyframes matrix-cover-in { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
 
-/* Platte mit Cover: das Bild füllt die ganze Scheibe (gleiche Ellipse wie die ASCII-Platte),
-   dreht per JS mit, die Rillen liegen als ASCII darüber */
+/* Record with cover: the image fills the whole disc (same ellipse as the ASCII record),
+   turns along via JS, the grooves lie over it as ASCII */
 .theme-matrix .music-record { position: relative; flex: none; }
 .theme-matrix .music-record .music-vinyl { position: relative; z-index: 1; }
 .theme-matrix .record-cover {
@@ -396,7 +396,7 @@
   box-shadow: 0 0 var(--record-glow, 14px) color-mix(in srgb, var(--glow) 45%, transparent);
 }
 .theme-matrix .record-cover img { position: absolute; left: 50%; top: 50%; width: 110%; aspect-ratio: 1; object-fit: cover; filter: grayscale(1) contrast(1.25) brightness(0.8); mix-blend-mode: multiply; }
-/* Mittelloch */
+/* Center hole */
 .theme-matrix .record-cover::after {
   content: "";
   position: absolute;
@@ -421,7 +421,7 @@
 .theme-matrix .music-progress { margin-top: var(--music-progress-gap, 6px); font-size: var(--music-progress-size, 18px); white-space: pre; overflow: hidden; }
 
 
-/* --- Befehlsseite (öffentlich): Terminal-Spalte über dem Regen, scrollt als normale Seite ------------------------ */
+/* --- Commands page (public): terminal column over the rain, scrolls as a normal page --------------------------- */
 .theme-matrix.theme-root:has(.matrix-info) { min-height: 100vh; background: var(--background); }
 .theme-matrix .matrix-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-matrix .matrix-info-rain { position: fixed; inset: 0; pointer-events: none; }

@@ -1,6 +1,6 @@
-// Entschlüsseln im Matrix-Theme: Startverzögerung und ms pro Zeichen je Textstelle, aufeinander abgestimmt
-// (erst Kopfzeile, dann Name, dann Zeile). Das Tempo aus den Einstellungen teilt alle Zeiten, die Zufallszeichen
-// kommen aus dem Zeichensatz des Themes.
+// Decoding in the matrix theme: start delay and ms per character per text spot, tuned to each other
+// (first header, then name, then line). The speed from the settings divides all times, the random characters
+// come from the theme's character set.
 import { useDecode } from "../../core/hooks/useDecode.ts";
 import { useMatrix } from "./useMatrix.ts";
 

@@ -1,13 +1,13 @@
-// Die Früchte des Südfrucht-Themes (Minime-Typen): id, Name, Standard-Namen im Chat, Form als SVG-Pfade (Text) und
-// Lage des Gesichts. Farben kommen aus den Einstellungen (fruit<Id>Main, fruit<Id>Detail, Blatt, Stiel, Umriss).
+// The fruits of the Südfrucht theme (minime variants): id, name, default names in chat, shape as SVG paths (text) and
+// position of the face. Colors come from the settings (fruit<Id>Main, fruit<Id>Detail, leaf, stem, outline).
 // Check: fruits.check.ts.
 import type { MinimeVariantSet } from "../../core/theme.ts";
 import { circle, spikes } from "./beach.ts";
 
-// body = Fruchtfläche (Hauptfarbe, Umriss), detail = Fläche in Detailfarbe, line = Linie in Detailfarbe,
-// leaf = Blatt (Blattfarbe), stem = Stiel (Stielfarbe)
+// body = fruit area (main color, outline), detail = area in detail color, line = line in detail color,
+// leaf = leaf (leaf color), stem = stem (stem color)
 type FruitPart = { kind: "body" | "detail" | "line" | "leaf" | "stem"; d: string };
-// face: Mitte des Gesichts in der Form (100 x 100) und Grösse (1 = normal)
+// face: center of the face in the shape (100 x 100) and size (1 = normal)
 export type Fruit = { id: string; label: string; names: readonly string[]; parts: readonly FruitPart[]; face: { x: number; y: number; size: number } };
 
 const EGG = "M50 10 C70 10 82 32 81 56 C80 81 66 95 50 95 C34 95 20 81 19 56 C18 32 30 10 50 10 Z";
@@ -98,7 +98,7 @@ export const FRUITS: readonly Fruit[] = [
 
 export const FRUIT_IDS = FRUITS.map(fruit => fruit.id);
 
-// Minime-Typen für das Schema: Befehl !frucht, je Frucht id, Name und Namen im Chat
+// Minime variants for the schema: command !frucht, per fruit id, name and names in chat
 export const FRUIT_SET: MinimeVariantSet = {
   command: "!frucht",
   label: "Frucht",

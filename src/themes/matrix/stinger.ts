@@ -1,8 +1,8 @@
-// Stinger-Übergang für OBS. Reine Funktion der Zeit: gleiche Zeit (time) ergibt immer dasselbe Bild,
-// darum lässt er sich Frame für Frame exakt rendern (siehe scenes/Stinger.tsx und vite.config.ts).
-// Ablauf: Matrix-Spalten fallen herein und decken alles ab, Logo entschlüsselt sich,
-// am Übergangspunkt (cut) blitzt die Einschaltlinie, dann fallen die Spalten unten heraus.
-// Länge, Übergangspunkt, Texte, Farben und Schrift kommen über stingerOptions aus den Einstellungen.
+// Stinger transition for OBS. Pure function of time: the same time (time) always gives the same picture,
+// so it can be rendered exactly frame by frame (see scenes/Stinger.tsx and vite.config.ts).
+// Sequence: matrix columns fall in and cover everything, the logo decodes itself,
+// at the transition point (cut) the power-on line flashes, then the columns fall out at the bottom.
+// Length, transition point, texts, colors and font come from the settings via stingerOptions.
 import { hash } from "../../core/hash.ts";
 import { clamp01, easeIn } from "../../core/easing.ts";
 import type { MatrixValues } from "./settings.ts";
@@ -13,8 +13,8 @@ export const FPS = 60;
 
 export type StingerOptions = {
   duration: number; // Sekunden
-  cut: number; // Sekunden, in OBS als "Übergangspunkt" eintragen
-  fall: number; // Sekunden, die eine Spalte zum Herein- bzw. Herausfallen braucht
+  cut: number; // seconds, enter in OBS as "Transition Point"
+  fall: number; // seconds a column needs to fall in or out
   column: number; // Spaltenbreite in px
   text: string;
   cursor: string;
@@ -45,7 +45,7 @@ export const stingerOptions = (values: MatrixValues): StingerOptions => ({
   flash: values.flash,
 });
 
-// Zeichen aus dem Zeichensatz, für dasselbe seed immer dasselbe
+// Character from the character set, always the same for the same seed
 export function glyphAt(seed: number, glyphs: string) {
   const list = Array.from(glyphs);
   return list[(hash(seed) * list.length) | 0] ?? "";
@@ -58,10 +58,10 @@ export function drawStinger(context: CanvasRenderingContext2D, time: number, opt
   context.clearRect(0, 0, WIDTH, HEIGHT);
   context.textBaseline = "top";
   context.font = `${column}px "${options.font}", monospace`;
-  const tick = Math.floor(time * 18); // Zeichen flackern 18-mal pro Sekunde
+  const tick = Math.floor(time * 18); // characters flicker 18 times per second
 
   for (let index = 0; index < columns; index++) {
-    // Spalten starten versetzt; am cut sind alle unten angekommen, danach fallen sie heraus
+    // Columns start staggered; at cut all have arrived at the bottom, afterwards they fall out
     const inStart = hash(index) * Math.max(0, cut - fall - 0.02);
     const outStart = cut + 0.08 + hash(index + 5000) * Math.max(0, duration - cut - fall - 0.1);
     const bottom = easeIn(clamp01((time - inStart) / fall)) * HEIGHT;
@@ -72,13 +72,13 @@ export function drawStinger(context: CanvasRenderingContext2D, time: number, opt
     context.fillStyle = options.background;
     context.fillRect(x, top, column, bottom - top);
 
-    // Die führende Kante leuchtet: beim Hereinfallen unten, beim Herausfallen oben
+    // The leading edge glows: at the bottom when falling in, at the top when falling out
     const edge = bottom < HEIGHT ? bottom : top;
     for (let row = 0; row < rows; row++) {
       const y = row * column;
       if (y + column <= top || y >= bottom) continue;
-      if (hash(index * 977 + row * 131) < 0.35) continue; // Lücken wie im echten Regen
-      const distance = Math.abs(edge - y) / column; // Abstand zur Kante in Zeilen
+      if (hash(index * 977 + row * 131) < 0.35) continue; // gaps like in real rain
+      const distance = Math.abs(edge - y) / column; // distance to the edge in rows
       if (distance < 1.5) { context.fillStyle = options.flash; context.globalAlpha = 1; }
       else if (distance < 5) { context.fillStyle = options.accent; context.globalAlpha = 1; }
       else { context.fillStyle = options.dim; context.globalAlpha = 0.35 + 0.5 * hash(index * 31 + row + tick); }
@@ -95,7 +95,7 @@ function drawLogo(context: CanvasRenderingContext2D, time: number, options: Stin
   const start = options.cut - 0.3;
   const end = options.cut + 0.45;
   if (time < start || time > end) return;
-  const reveal = clamp01((time - start) / 0.28); // Anteil entschlüsselter Zeichen
+  const reveal = clamp01((time - start) / 0.28); // fraction of decoded characters
   const alpha = clamp01((end - time) / 0.15);
 
   const lines = options.logo.split("\n");
@@ -108,7 +108,7 @@ function drawLogo(context: CanvasRenderingContext2D, time: number, options: Stin
   const topLine = HEIGHT / 2 - (lines.length * lineHeight) / 2 - 20;
   const tick = Math.floor(time * 30);
 
-  // Fenster hinter dem Logo: zieht sich erst als Linie auf, dann in die Höhe
+  // Window behind the logo: opens first as a line, then in height
   const padding = 56;
   const boxWidth = (width + padding * 2) * clamp01((time - start) / 0.08);
   const boxHeight = (lines.length * lineHeight + 110) * Math.max(0.02, clamp01((time - start - 0.08) / 0.1));
@@ -124,11 +124,11 @@ function drawLogo(context: CanvasRenderingContext2D, time: number, options: Stin
   context.shadowColor = options.accent;
   context.shadowBlur = 24;
   lines.forEach((line, row) => {
-    // Glitch: einzelne Zeilen springen kurz zur Seite
+    // Glitch: single rows jump to the side briefly
     const shift = hash(tick * 13 + row) < 0.12 ? (hash(tick + row * 3) - 0.5) * 40 : 0;
     Array.from(line).forEach((char, index) => {
       if (char === " ") return;
-      const solved = hash(row * 100 + index) < reveal; // jedes Zeichen löst sich zu einem anderen Zeitpunkt auf
+      const solved = hash(row * 100 + index) < reveal; // every character resolves at a different time
       context.fillStyle = solved ? options.accent : options.dim;
       context.fillText(solved ? char : glyphAt(row * 1000 + index + tick, options.glyphs), left + index * charWidth + shift, topLine + row * lineHeight);
     });
@@ -142,7 +142,7 @@ function drawLogo(context: CanvasRenderingContext2D, time: number, options: Stin
   context.globalAlpha = 1;
 }
 
-// Die Einschaltlinie aus dem Portfolio genau am Übergangspunkt
+// The power-on line from the portfolio exactly at the transition point
 function drawFlash(context: CanvasRenderingContext2D, time: number, options: StingerOptions) {
   const progress = (time - (options.cut - 0.06)) / 0.2;
   if (progress < 0 || progress > 1) return;

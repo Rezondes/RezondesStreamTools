@@ -1,7 +1,7 @@
-// Alerts des Südfrucht-Themes: Postkarte mit Briefmarke und Poststempel, Surfbrett auf einer Welle oder Flaschenpost,
-// je Alert-Art Kopfzeile, Zeile, Symbol und Ton; dazu Hibiskus-Konfetti, Wasserspritzer und die Restzeit als Seil.
-// Texte, Zitat-Regel und Töne kommen aus dem Alerts-Kontext des Kerns (src/core/alerts), hier Schlüssel, Symbole und
-// das Strand-Aussehen. Parameter: ?sound=0, ?volume=0.5
+// Alerts of the Südfrucht theme: postcard with stamp and postmark, surfboard on a wave or message in a bottle,
+// per alert kind header, line, symbol and sound; plus hibiscus confetti, water splashes and the remaining time as a rope.
+// Texts, quote rule and sounds come from the alerts context of the core (src/core/alerts), here keys, symbols and
+// the beach look. Parameters: ?sound=0, ?volume=0.5
 import type { CSSProperties } from "react";
 import { ALERT_SOUND_KEYS, alertQuote, alertTextKeys, describeAlert } from "../../../core/alerts/alerts.ts";
 import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
@@ -17,12 +17,12 @@ import { useSuedfrucht } from "../useSuedfrucht.ts";
 
 type Key = keyof SuedfruchtValues;
 const KEYS = alertTextKeys("Tag");
-// Südfrucht-eigen: Symbol auf der Briefmarke je Alert-Art
+// Südfrucht-specific: symbol on the stamp per alert kind
 const ICONS_BY_KIND = {
   follow: "followIcon", sub: "subIcon", resub: "resubIcon", gift: "giftIcon", raid: "raidIcon", cheer: "cheerIcon", redeem: "redeemIcon", hype: "hypeIcon",
 } as const satisfies Record<AlertKind, Key>;
 
-// fixed: Anzahl der Wassertropfen beim Spritzer
+// fixed: number of water drops in the splash
 const DROPS = 9;
 
 function describe(alert: Alert, values: SuedfruchtValues) {
@@ -73,11 +73,11 @@ function Splash() {
   );
 }
 
-// Lage, Drehung und Start einer Blüte, je Blüte drei eigene Werte aus hash
-// fixed: drei Startwerte je Blüte (Lage, Drehung, Verzögerung)
+// Position, rotation and start of a blossom, three own values per blossom from hash
+// fixed: three start values per blossom (position, rotation, delay)
 const petalStyle = (index: number) => ({ "--x": hash(index * 3 + 1), "--spin": hash(index * 3 + 2), "--delay": hash(index * 3 + 3) }) as CSSProperties;
 
-// Hibiskusblüten fallen über das ganze Bild; Lage, Drehung und Start aus hash, damit jede Blüte anders fällt
+// Hibiscus blossoms fall over the whole picture; position, rotation and start from hash, so every blossom falls differently
 function Petals({ count }: { count: number }) {
   return (
     <div className="sf-petals" aria-hidden="true">

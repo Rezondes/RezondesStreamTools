@@ -1,9 +1,9 @@
-// Eingebaute Töne des Südfrucht-Themes: kleine Steel-Drum-Melodie beim Erscheinen eines Alerts, ein weicher Ton beim
-// Ausblenden. Gelten, wenn in den Einstellungen keine eigene Datei gewählt ist; die Lautstärke kommt aus dem Ton-Feld.
+// Built-in sounds of the Südfrucht theme: a small steel drum melody when an alert appears, a soft tone on
+// fade-out. They apply when no own file is chosen in the settings; the volume comes from the sound field.
 import { beep, playSound } from "../../core/sound.ts";
 import type { SoundValue } from "../../core/theme.ts";
 
-// fixed: Melodie (C-Dur-Dreiklang aufwärts), Länge und Abstand der Töne, Obertöne für den Steel-Drum-Klang
+// fixed: melody (C major triad upwards), length and spacing of the tones, overtones for the steel drum sound
 const MELODY = [523, 659, 784, 1047];
 const NOTE = { lengthMs: 320, stepMs: 120, overtone: 2, overtoneVolume: 0.35 };
 

@@ -1,6 +1,6 @@
-/* Standard-Theme: klarer, moderner Look mit Verlauf aus zwei Akzentfarben, abgerundeten Karten und weichen
-   Übergängen. Gekapselt unter .theme-standard; Farben, Grössen und Zeiten kommen als CSS-Variablen aus den
-   Einstellungen, weitere Masse als var(--name, Standard). Keyframes heissen standard-*. */
+/* Standard theme: clear, modern look with a gradient of two accent colors, rounded cards and soft
+   transitions. Encapsulated under .theme-standard; colors, sizes and times come as CSS variables from the
+   settings, further sizes as var(--name, default). Keyframes are called standard-*. */
 
 .theme-standard {
   font-family: var(--font), system-ui, sans-serif;
@@ -21,7 +21,7 @@
 }
 .theme-standard .standard-line { font-weight: 700; }
 
-/* Karte: Grundbaustein aller Szenen */
+/* Card: base building block of all scenes */
 .theme-standard .standard-card {
   position: relative;
   border-radius: var(--radius);
@@ -51,10 +51,10 @@
 }
 .theme-standard .standard-progress span { display: block; height: 100%; border-radius: inherit; background: var(--gradient); transition: width var(--fadeDuration) linear; }
 
-/* --- Vollbild-Szenen (starting, brb, ending) -------------------------------- */
+/* --- Full-screen scenes (starting, brb, ending) -------------------------------- */
 .theme-standard .standard-screen { position: fixed; inset: 0; overflow: hidden; background: var(--background); }
 
-/* Drei weiche Farbflächen, die langsam wandern */
+/* Three soft color areas that move slowly */
 .theme-standard .standard-blobs i {
   position: absolute;
   width: 55vmax;
@@ -69,7 +69,7 @@
 .theme-standard .standard-blobs i:nth-child(3) { left: 35%; top: 40%; width: 35vmax; height: 35vmax; background: var(--accent); opacity: 0.2; animation-duration: calc(var(--blobSpeed) * 1.5); }
 
 .theme-standard .standard-stage {
-  /* Lage, Grösse und Skalierung: stage-box aus src/core/screens/stage.css */
+  /* Position, size and scaling: stage-box from src/core/screens/stage.css */
   display: flex;
   flex-direction: column;
   padding: var(--stage-padding, 72px 96px);
@@ -89,7 +89,7 @@
   font-size: var(--title-size, 112px);
   font-weight: 800;
   line-height: 1.1;
-  /* Platz für Unterlängen, sonst schneidet der Verlaufs-Text (background-clip) sie ab */
+  /* Room for descenders, otherwise the gradient text (background-clip) cuts them off */
   padding-bottom: 0.08em;
   letter-spacing: -0.02em;
   background: linear-gradient(90deg, var(--textColor), color-mix(in srgb, var(--textColor) 70%, var(--accent2)));
@@ -119,7 +119,7 @@
   padding: var(--alert-padding, 20px 24px 24px);
   overflow: hidden;
 }
-/* Verlaufskante oben */
+/* Gradient edge at the top */
 .theme-standard .standard-alert::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: var(--edge, 4px); background: var(--gradient); }
 .theme-standard .standard-alert .standard-line { font-size: 1.3em; }
 .theme-standard .standard-timer {
@@ -143,14 +143,14 @@
   overflow: hidden;
 }
 .theme-standard .standard-row { flex: none; padding: var(--row-padding, 10px 14px); overflow-wrap: anywhere; }
-/* Erscheinen, nach chatFade ausblenden */
+/* Appear, fade out after chatFade */
 .theme-standard .standard-row.fades { animation: standard-in var(--fadeDuration) ease-out both, standard-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
 .theme-standard .standard-user { margin-right: var(--name-gap, 8px); background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .theme-standard .standard-emote { height: var(--emoteSize); vertical-align: middle; }
 
-/* --- Kamera-Rahmen ------------------------------------------------------------- */
+/* --- Camera frame ------------------------------------------------------------- */
 .theme-standard .standard-cam { position: fixed; inset: 0; animation: standard-fade var(--fadeDuration) ease-out both; }
-/* Rahmen im Verlauf: Fläche mit Verlauf, innen per Maske ausgeschnitten */
+/* Frame in a gradient: area with a gradient, cut out inside via a mask */
 .theme-standard .standard-cam::before {
   content: "";
   position: absolute;
@@ -176,7 +176,7 @@
 .theme-standard .standard-live { right: var(--pill-offset, 16px); top: var(--pill-offset, 16px); font-size: 0.75em; letter-spacing: 0.08em; }
 .theme-standard .standard-live i { width: var(--dot, 10px); height: var(--dot, 10px); border-radius: 50%; background: var(--accent2); animation: standard-pulse var(--pulse, 1.6s) ease-in-out infinite; }
 
-/* --- Musik --------------------------------------------------------------------- */
+/* --- Music --------------------------------------------------------------------- */
 .theme-standard .standard-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 12px); }
 .theme-standard .standard-player { width: 100%; display: flex; align-items: center; gap: var(--player-gap, 20px); padding: var(--player-padding, 16px 20px); }
 .theme-standard .standard-cover { flex: none; width: var(--coverSize); height: var(--coverSize); border-radius: calc(var(--radius) * 0.75); object-fit: cover; }
@@ -187,7 +187,7 @@
 .theme-standard .standard-time { display: flex; align-items: center; gap: var(--time-gap, 12px); color: var(--mutedColor); font-size: 0.75em; font-variant-numeric: tabular-nums; }
 .theme-standard .standard-time .standard-progress { flex: 1; }
 
-/* --- Effekte ------------------------------------------------------------------- */
+/* --- Effects ------------------------------------------------------------------- */
 .theme-standard .standard-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
 .theme-standard .standard-fx-item {
   position: absolute;
@@ -208,7 +208,7 @@
 @keyframes standard-pulse { 50% { opacity: 0.3; } }
 @keyframes standard-drift { from { translate: 0 0; } to { translate: 12vmax 8vmax; } }
 
-/* --- Befehlsseite (öffentlich): Spalte mit Karten auf dem Hintergrund, scrollt als normale Seite ------------------- */
+/* --- Commands page (public): column with cards on the background, scrolls as a normal page ---------------------- */
 .theme-standard.theme-root:has(.standard-info) { min-height: 100vh; background: var(--background); }
 .theme-standard .standard-info { min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-standard .standard-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--info-gap, 24px); }

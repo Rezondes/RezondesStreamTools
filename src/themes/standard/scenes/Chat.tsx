@@ -1,5 +1,5 @@
-// Chat des Standard-Themes: Nachrichten als abgerundete Karten untereinander, neue unten, optional mit Badges und
-// Ausblenden. Nachrichten (useChat) und ihr Inhalt mit Emotes (MessageParts) kommen aus dem Kern, hier das Aussehen.
+// Chat of the standard theme: messages as rounded cards below each other, new ones at the bottom, optionally with badges and
+// fading. Messages (useChat) and their content with emotes (MessageParts) come from the core, here the look.
 import MessageParts from "../../../core/chat/MessageParts.tsx";
 import type { ChatMessage } from "../../../core/types.ts";
 import { useChat } from "../../../core/hooks/useChat.ts";

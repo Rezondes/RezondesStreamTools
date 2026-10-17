@@ -1,6 +1,6 @@
-// Twitch-Banner des Standard-Themes: Profilbanner (1200x480) und Offline-Banner (1920x1080) auf dunklem Grund mit zwei
-// Farbflächen, die einmal pro Schleife im Kreis wandern (darum läuft das GIF nahtlos), dazu Titel und Text.
-// Reine Funktionen der Zeit. Check: banners.check.ts.
+// Twitch banners of the standard theme: profile banner (1200x480) and offline banner (1920x1080) on a dark ground with two
+// color areas that move in a circle once per loop (so the GIF loops seamlessly), plus title and text.
+// Pure functions of time. Check: banners.check.ts.
 export type StandardBannerOptions = {
   loop: number; // Sekunden
   font: string;
@@ -17,7 +17,7 @@ export type StandardBannerOptions = {
 
 const TURN = Math.PI * 2;
 
-// Farbfläche als weicher Kreis; Mittelpunkt kreist mit der Schleife
+// Color area as a soft circle; the center circles with the loop
 function blob(context: CanvasRenderingContext2D, time: number, options: StandardBannerOptions, center: [number, number], orbit: number, radius: number, color: string, phase: number) {
   const angle = (time / options.loop) * TURN + phase;
   const x = center[0] + Math.cos(angle) * orbit;
@@ -46,7 +46,7 @@ function write(context: CanvasRenderingContext2D, text: string, x: number, y: nu
   return context.measureText(text).width;
 }
 
-// Akzentbalken im Verlauf unter dem Titel
+// Accent bar with gradient below the title
 function bar(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, options: StandardBannerOptions) {
   const gradient = context.createLinearGradient(x, y, x + width, y);
   gradient.addColorStop(0, options.accent);
@@ -55,7 +55,7 @@ function bar(context: CanvasRenderingContext2D, x: number, y: number, width: num
   context.fillRect(x, y, width, height);
 }
 
-// Profilbanner 1200x480; unten links legt Twitch das Profilbild darüber, darum steht alles oben rechts der Mitte
+// Profile banner 1200x480; at the bottom left Twitch puts the profile picture over it, so everything is top right of center
 export function drawStandardProfileBanner(context: CanvasRenderingContext2D, time: number, options: StandardBannerOptions) {
   const width = 1200, height = 480;
   base(context, time, options, width, height);
@@ -65,7 +65,7 @@ export function drawStandardProfileBanner(context: CanvasRenderingContext2D, tim
   write(context, options.profileText, left, 312, 34, 500, options.mutedColor, options);
 }
 
-// Offline-Banner 1920x1080
+// Offline banner 1920x1080
 export function drawStandardOfflineBanner(context: CanvasRenderingContext2D, time: number, options: StandardBannerOptions) {
   const width = 1920, height = 1080;
   base(context, time, options, width, height);

@@ -1,5 +1,5 @@
-// Webcam-Rahmen, innen transparent. Quelle genau so gross wie die Kamera anlegen, z.B. 640x360.
-// Label, REC-Anzeige, Uhr und Ecken kommen aus den Einstellungen.
+// Webcam frame, transparent inside. Create the source exactly as large as the camera, e.g. 640x360.
+// Label, REC indicator, clock and corners come from the settings.
 import { fillTemplate } from "../../../core/template.ts";
 import { useNow } from "../../../core/hooks/useNow.ts";
 import { useMatrixDecode } from "../useMatrixDecode.ts";

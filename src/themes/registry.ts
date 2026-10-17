@@ -1,6 +1,6 @@
-// Liste der eingebauten Themes (Daten-Seite ohne React: Schema und Clips je Theme, Vertrag ThemeModule aus
-// src/core/theme.ts), für Server und Dashboard. Ein neues Theme wird hier und mit seiner Ansicht in scenes.tsx
-// eingetragen (registry.check.ts prüft, dass jeder Theme-Ordner in beiden steht); das erste ist der Standard.
+// List of the built-in themes (data side without React: schema and clips per theme, contract ThemeModule from
+// src/core/theme.ts), for server and dashboard. A new theme is registered here and with its view in scenes.tsx
+// (registry.check.ts checks that every theme folder is in both); the first one is the default.
 import type { ThemeModule, ThemeSchema } from "../core/theme.ts";
 import { matrixClips } from "./matrix/render.ts";
 import { matrixSettings } from "./matrix/settings.ts";

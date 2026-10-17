@@ -1,5 +1,5 @@
-// Gemeinsame Prüfung, die die settings.check.ts jedes Themes aufruft: die Standardwerte bestehen das eigene Schema,
-// und kein Schlüssel ist tot (jeder kommt im Theme-Code vor: values.key, { key }, "key" oder var(--key)).
+// Shared check that the settings.check.ts of every theme calls: the defaults pass their own schema,
+// and no key is dead (every one occurs in the theme code: values.key, { key }, "key" or var(--key)).
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ALERT_SOUND_KEYS, alertTextKeys } from "../core/alerts/alerts.ts";
@@ -10,10 +10,10 @@ import { MINIME_FIELDS, minimeNamesKey } from "../core/minimeFields.ts";
 import { validateSettings } from "../core/settings.ts";
 import type { ThemeSchema } from "../core/theme.ts";
 
-// Gemeinsame Felder einer Funktion liest der Kern (z.B. readMinimeOptions, describeCommands, useFxScene, badgeLabel), sie
-// gelten als benutzt; dazu die gebauten
-// Typ-Felder der Minimes (minimeVariantFields)
-// Alert-Texte nach dem Muster aus alertTextKeys (Kopfzeile <art>Tag oder <art>Label) und die Töne je Art
+// The core reads shared fields of a feature (e.g. readMinimeOptions, describeCommands, useFxScene, badgeLabel), they
+// count as used; plus the generated
+// variant fields of the minimes (minimeVariantFields)
+// Alert texts following the pattern from alertTextKeys (header <kind>Tag or <kind>Label) and the sounds per kind
 const ALERT_KEYS = ["Tag", "Label"].flatMap(suffix => {
   const keys = alertTextKeys(suffix);
   return [...Object.values(keys.tag), ...Object.values(keys.line), keys.hypeEndLine];
@@ -23,7 +23,7 @@ const CORE_KEYS = new Set<string>([
 ]);
 const CORE_PREFIX = minimeNamesKey("");
 
-// folder: Ordner des Themes; settings.ts und Checks zählen nicht als Nutzung
+// folder: folder of the theme; settings.ts and checks do not count as use
 export function auditTheme(schema: ThemeSchema, folder: string) {
   const defaults = Object.fromEntries(schema.fields.map(field => [field.key, field.default]));
   const files = readdirSync(folder, { recursive: true, encoding: "utf8" })

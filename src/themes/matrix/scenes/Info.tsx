@@ -1,6 +1,6 @@
-// Befehlsseite des Matrix-Themes (öffentlich unter /s/<login>/): Terminal-Spalte über dem Matrix-Regen, je Abschnitt
-// eine Überschrift und je Befehl eine Zeile mit Erklärung und Details. Liste, Texte und Einleitung kommen aus dem
-// Info-Kontext des Kerns (useInfoPage), hier nur das Matrix-Aussehen.
+// Commands page of the matrix theme (public under /s/<login>/): terminal column over the matrix rain, per section
+// a heading and per command a line with explanation and details. List, texts and intro come from the
+// info context of the core (useInfoPage), here only the matrix look.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import MatrixRain from "../MatrixRain.tsx";

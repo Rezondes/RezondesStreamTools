@@ -1,7 +1,7 @@
-// Spotify "Now Playing" des Südfrucht-Themes: Strandradio aus Holz, Muschel oder schlichte Karte, Cover rund oder
-// eckig, Kopfzeile, Titel (lange Titel laufen hin und her), Interpret, Album, Fortschritt als Wellenlinie und ein
-// Wellen-Equalizer. Bei Pause oder Stopp blendet der Player aus (abschaltbar). Sichtbarkeit, Fortschritt, Cover und
-// Lauftext kommen aus dem Musik-Kontext des Kerns (src/core/music). Parameter: ?demo
+// Spotify "Now Playing" of the Südfrucht theme: beach radio of wood, shell or a plain card, cover round or
+// square, header, title (long titles scroll back and forth), artist, album, progress as a wave line and a
+// wave equalizer. On pause or stop the player fades out (can be switched off). Visibility, progress, cover and
+// scrolling text come from the music context of the core (src/core/music). Parameters: ?demo
 import type { CSSProperties } from "react";
 import Marquee from "../../../core/music/Marquee.tsx";
 import { useCover } from "../../../core/music/useCover.ts";

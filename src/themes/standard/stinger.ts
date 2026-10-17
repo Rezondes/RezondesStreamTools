@@ -1,6 +1,6 @@
-// Stinger des Standard-Themes: Streifen im Farbverlauf gleiten von links herein, decken am Übergangspunkt (cut) das
-// ganze Bild, zeigen kurz den Text und gleiten nach rechts hinaus. Ausserhalb der Streifen transparent.
-// Reine Funktion der Zeit, darum Frame für Frame renderbar. Check: stinger.check.ts.
+// Stinger of the standard theme: stripes in a color gradient slide in from the left, cover the whole picture at the
+// transition point (cut), briefly show the text and slide out to the right. Transparent outside the stripes.
+// Pure function of time, so it can be rendered frame by frame. Check: stinger.check.ts.
 import { clamp01, easeInOut } from "../../core/easing.ts";
 
 export const WIDTH = 1920;
@@ -9,8 +9,8 @@ export const FPS = 60;
 
 export type StandardStingerOptions = {
   duration: number; // Sekunden
-  cut: number; // Sekunden, in OBS als Übergangspunkt eintragen
-  panels: number; // Anzahl der Streifen
+  cut: number; // seconds, enter in OBS as transition point
+  panels: number; // number of stripes
   text: string;
   font: string;
   accent: string;
@@ -29,7 +29,7 @@ export function drawStandardStinger(context: CanvasRenderingContext2D, time: num
   gradient.addColorStop(1, options.accent2);
   context.fillStyle = gradient;
 
-  // Jeder Streifen startet etwas später; alle sind am cut ganz drin und verlassen das Bild bis zum Ende
+  // Every stripe starts a bit later; all are fully in at cut and leave the picture by the end
   const inLength = cut * 0.7;
   const outLength = (duration - cut) * 0.7;
   for (let index = 0; index < count; index++) {
@@ -38,11 +38,11 @@ export function drawStandardStinger(context: CanvasRenderingContext2D, time: num
     const leave = easeInOut(clamp01((time - cut - delay * (duration - cut)) / outLength));
     const right = enter * WIDTH;
     const left = leave * WIDTH;
-    // 1 px Überlappung, damit zwischen den Streifen keine Haarlinie bleibt
+    // 1 px overlap, so no hairline stays between the stripes
     if (right - left > 0) context.fillRect(left, index * band, right - left, band + 1);
   }
 
-  // Text in der Mitte, nur solange alles bedeckt ist
+  // Text in the middle, only while everything is covered
   const shown = 1 - clamp01(Math.abs(time - cut) / (Math.min(cut, duration - cut) * 0.5));
   if (shown <= 0) return;
   context.globalAlpha = shown;

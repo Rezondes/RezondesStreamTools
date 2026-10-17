@@ -1,6 +1,6 @@
-// Chat des Südfrucht-Themes: Nachrichten als aufsteigende Luftblasen, Holzplanken oder Muscheln, neue unten (oder
-// oben), Badges als kleine Schilder, optional sanftes Schaukeln und Ausblenden. Nachrichten (useChat), Badge-Texte
-// (badgeLabel) und Inhalt mit Emotes (MessageParts) kommen aus dem Kern, hier das Strand-Aussehen.
+// Chat of the Südfrucht theme: messages as rising bubbles, wooden planks or shells, new ones at the bottom (or
+// top), badges as small signs, optional gentle swaying and fading. Messages (useChat), badge texts
+// (badgeLabel) and content with emotes (MessageParts) come from the core, here the beach look.
 import { badgeLabel } from "../../../core/chat/chat.ts";
 import MessageParts from "../../../core/chat/MessageParts.tsx";
 import { useChat } from "../../../core/hooks/useChat.ts";

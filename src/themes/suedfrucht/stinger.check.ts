@@ -1,6 +1,6 @@
-// Check für stinger.ts des Südfrucht-Themes: am Übergangspunkt deckt die Welle das ganze Bild, am Anfang und Ende
-// ist nichts zu sehen, gleiche Zeit ergibt dieselben Zeichenbefehle. Ein Mock-Canvas zeichnet alles auf.
-// Läuft mit npm test.
+// Check for stinger.ts of the Südfrucht theme: at the transition point the wave covers the whole picture, at the start and end
+// nothing is visible, the same time gives the same draw commands. A mock canvas records everything.
+// Runs with npm test.
 import assert from "node:assert/strict";
 import { drawSuedfruchtStinger, HEIGHT, WIDTH, type SuedfruchtStingerOptions } from "./stinger.ts";
 
@@ -20,13 +20,13 @@ const options: SuedfruchtStingerOptions = {
   sea: "#1fb5c9", seaDeep: "#0b6f8e", foamColor: "#f4fffd", textColor: "#ffffff", palmColor: "#3b2412",
 };
 
-// Am Übergangspunkt: eine Fläche über das ganze Bild, dazu der Text
+// At the transition point: one area over the whole picture, plus the text
 const atCut = recorder();
 drawSuedfruchtStinger(atCut.context, options.cut, options);
 assert.ok(atCut.rects().some(([x, y, width, height]) => x <= 0 && x + width >= WIDTH && y <= 0 && height >= HEIGHT));
 assert.ok(atCut.calls.some(call => call[0] === "fillText" && call[1] === "Strand"));
 
-// Am Anfang und am Ende keine Fläche und kein Text
+// No area and no text at the start and at the end
 for (const time of [0, options.duration]) {
   const empty = recorder();
   drawSuedfruchtStinger(empty.context, time, options);
@@ -34,7 +34,7 @@ for (const time of [0, options.duration]) {
   assert.ok(!empty.calls.some(call => call[0] === "fillText"), `t = ${time}`);
 }
 
-// Gleiche Zeit, gleiche Zeichenbefehle (kein Zufall)
+// Same time, same draw commands (no randomness)
 const first = recorder();
 const second = recorder();
 drawSuedfruchtStinger(first.context, 0.37, options);

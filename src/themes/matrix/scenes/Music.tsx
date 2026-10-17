@@ -1,7 +1,7 @@
-// Spotify "Now Playing", transparent. Empfohlen 900x240, Box sitzt unten in der Quelle.
-// Darstellung (cover, record, vinyl, none), Texte, Equalizer, Platte, Grössen und Animationen kommen aus den
-// Einstellungen. Sichtbarkeit, Fortschritt, Cover und Lauftext kommen aus dem Musik-Kontext des Kerns (src/core/music),
-// hier nur das Matrix-Aussehen mit Platte und Zeichen-Equalizer. Parameter: ?demo
+// Spotify "Now Playing", transparent. Recommended 900x240, the box sits at the bottom of the source.
+// Display (cover, record, vinyl, none), texts, equalizer, record, sizes and animations come from the
+// settings. Visibility, progress, cover and scrolling text come from the music context of the core (src/core/music),
+// here only the matrix look with record and character equalizer. Parameters: ?demo
 import { useEffect, useState } from "react";
 import type { Track } from "../../../core/types.ts";
 import Marquee from "../../../core/music/Marquee.tsx";
@@ -13,15 +13,15 @@ import { vinyl } from "../../../core/vinyl.ts";
 import { useMatrixDecode } from "../useMatrixDecode.ts";
 import { useMatrix } from "../useMatrix.ts";
 
-// fixed: Platte mit 12 Bildern pro Sekunde (wirkt wie ein Terminal, schont die CPU), Equalizer alle 130 ms
+// fixed: record at 12 frames per second (looks like a terminal, spares the CPU), equalizer every 130 ms
 const PACE = { vinylFrameMs: 1000 / 12, equalizerMs: 130 };
-// fixed: eine volle Umdrehung der Platte im Bogenmass
+// fixed: one full turn of the record in radians
 const TURN = Math.PI * 2;
 
 export default function Music() {
   const values = useMatrix();
   const playing = useNowPlaying(values.musicHide);
-  // Leerlauf als eigene Zeile im Player
+  // Idle state as its own line in the player
   const idle: Track = { id: "idle", title: values.musicIdleTitle, artist: values.musicIdleArtist, album: "", cover: null, durationMs: 0, progressMs: 0, playing: false };
   const shown = playing.shown ?? (values.musicHide ? null : idle);
   if (!shown) return null;
@@ -29,7 +29,7 @@ export default function Music() {
 
   return (
     <div className="music">
-      {/* key pro Titel: bei jedem Wechsel wird die Box neu aufgebaut und erscheint neu */}
+      {/* key per track: on every change the box is rebuilt and appears anew */}
       <div key={shown.id} className={`music-box in-${values.musicIn} out-${values.musicOut}${visible ? "" : " off"}`}>
         {values.musicArt !== "none" && <Art track={shown} />}
         <Info track={shown} at={playing.at} />
@@ -48,11 +48,11 @@ function Art({ track }: { track: Track }) {
       </div>
     );
   }
-  // record: Cover über die ganze Platte, sonst die reine ASCII-Platte
+  // record: cover over the whole record, otherwise the plain ASCII record
   return <Vinyl playing={track.playing} cover={values.musicArt === "record" ? cover.src : null} onBroken={cover.onError} />;
 }
 
-// Das Cover dreht mit demselben Winkel wie die Rillen; die runde Maske selbst steht still
+// The cover turns at the same angle as the grooves; the round mask itself stands still
 function Vinyl({ playing, cover, onBroken }: { playing: boolean; cover: string | null; onBroken: () => void }) {
   const values = useMatrix();
   const [angle, setAngle] = useState(0);
@@ -98,7 +98,7 @@ function Info({ track, at }: { track: Track; at: number }) {
   );
 }
 
-// Spotify liefert keine Audiodaten mehr, darum ein Zufalls-Equalizer, der nur bei Wiedergabe tanzt
+// Spotify no longer provides audio data, so a random equalizer that only dances while playing
 function Equalizer({ playing }: { playing: boolean }) {
   const { equalizerBars, equalizerChars } = useMatrix();
   const [bars, setBars] = useState("");

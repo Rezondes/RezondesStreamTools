@@ -1,6 +1,6 @@
-// Alert-Overlay, transparent. Empfohlen als Browserquelle 1920x1080. Texte je Alert-Art, Position, Grösse, Dauer,
-// Animationen und Töne kommen aus den Einstellungen. Texte, Zitat-Regel und Töne kommen aus dem Alerts-Kontext des Kerns
-// (src/core/alerts), hier nur die Schlüssel der Texte und das Matrix-Aussehen. Parameter: ?sound=0, ?volume=0.5, ?demo
+// Alert overlay, transparent. Recommended as browser source 1920x1080. Texts per alert kind, position, size, duration,
+// animations and sounds come from the settings. Texts, quote rule and sounds come from the alerts context of the core
+// (src/core/alerts), here only the keys of the texts and the matrix look. Parameters: ?sound=0, ?volume=0.5, ?demo
 import MatrixRain from "../MatrixRain.tsx";
 import { ALERT_SOUND_KEYS, alertQuote, alertTextKeys, describeAlert } from "../../../core/alerts/alerts.ts";
 import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
@@ -11,7 +11,7 @@ import { useMatrixDecode } from "../useMatrixDecode.ts";
 import { playLeave, playOpen } from "../tones.ts";
 import { useMatrix } from "../useMatrix.ts";
 
-// Texte nach dem üblichen Muster, dazu Matrix-eigen: einzelnes Geschenk-Abo und Abo-Stufe in Grossbuchstaben
+// Texts following the usual pattern, plus matrix-specific: single gift sub and sub tier in upper case
 const KEYS = alertTextKeys("Tag", { giftOneLine: "giftOneLine", giftToLine: "giftToLine", tierSuffix: "tierSuffix", tierUpper: true });
 
 export default function Alerts() {
@@ -23,7 +23,7 @@ export default function Alerts() {
 function AlertBox({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const values = useMatrix();
   const { tag, line } = describeAlert(alert, values, KEYS);
-  // Matrix-eigen: der Hype Train hat statt eines Namens einen eigenen Titel
+  // Matrix-specific: the hype train has its own title instead of a name
   const title = alert.kind === "hype" ? values.hypeTitle : alert.user;
   const header = useMatrixDecode(fillTemplate(values.alertHeader, { tag }), "alertHeader");
   const name = useMatrixDecode(title.toUpperCase(), "alertName");

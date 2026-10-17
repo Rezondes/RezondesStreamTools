@@ -1,7 +1,7 @@
-// Einstellungs-Schema des Standard-Themes: klarer, moderner Look mit Verlauf, abgerundeten Karten und weichen
-// Übergängen, unabhängig vom Matrix-Theme (eigene Szenen, Schriften, Stinger und Banner). Vorlage für eigene Themes
-// (THEMES.md). Einzige Stelle des Themes mit festen Farben, Texten und Zahlen. StandardValues ist der Typ der
-// aufgelösten Werte, den die Szenen über useStandard lesen.
+// Settings schema of the standard theme: clear, modern look with gradient, rounded cards and soft
+// transitions, independent of the matrix theme (own scenes, fonts, stinger and banners). Template for own themes
+// (THEMES.md). The only place of the theme with fixed colors, texts and numbers. StandardValues is the type of the
+// resolved values that the scenes read via useStandard.
 import { choice, color, flag, font, inScene, number, sound, text, type ValuesOf } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
@@ -51,7 +51,7 @@ const FIELDS = [
   flag("blobs", "Bewegter Farbhintergrund", SCREENS, true),
   number("blobSpeed", "Tempo des Farbhintergrunds", SCREENS, 24, 4, 120, "s"),
 
-  // Platzhalter: {user}, {amount}, {detail}, {text}
+  // Placeholders: {user}, {amount}, {detail}, {text}
   text("followLabel", "Follow: Kopfzeile", ALERTS, "Neuer Follower"),
   text("followLine", "Follow: Zeile", ALERTS, "{user} folgt jetzt!"),
   text("subLabel", "Sub: Kopfzeile", ALERTS, "Neues Abo"),
@@ -113,7 +113,7 @@ const FIELDS = [
   number("bannerLoop", "Schleifenlänge", BANNER, 6, 1, 20, "s"),
   number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
   number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
-  // Befehlsseite (öffentlich, /s/<login>/): gemeinsame Texte aus dem Kern, dazu das Aussehen
+  // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 860, 400, 1600, "px"),
 ] as const satisfies readonly SettingField[];
@@ -132,7 +132,7 @@ const GROUP_SCENES = {
   [INFO_GROUP]: ["info"],
 } as const;
 
-// Beim ersten Login: Kanal-Name aus dem Twitch-Login statt des Beispiels
+// On first login: channel name from the Twitch login instead of the sample
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 
 export const standardSettings: ThemeSchema = { id: "standard", name: "Standard", fields: FIELDS, groupScenes: GROUP_SCENES, personalize };

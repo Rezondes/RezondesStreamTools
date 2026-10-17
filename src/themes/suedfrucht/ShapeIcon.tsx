@@ -1,5 +1,5 @@
-// Eine Form aus beach.ts als SVG; die Teile tragen die Klassen part-main, part-detail und part-line, die Farben setzt
-// das CSS der Szene. Dekoration, darum für Screenreader verborgen.
+// A shape from beach.ts as SVG; the parts carry the classes part-main, part-detail and part-line, the colors are set by
+// the scene's CSS. Decoration, so hidden from screen readers.
 import type { Shape } from "./beach.ts";
 
 export default function ShapeIcon({ shape, className = "" }: { shape: Shape; className?: string }) {

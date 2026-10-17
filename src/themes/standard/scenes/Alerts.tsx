@@ -1,6 +1,6 @@
-// Alerts des Standard-Themes: eine abgerundete Karte mit Verlaufskante, Kopfzeile je Alert-Art, Zeile mit dem Namen,
-// optional der Nachricht und einem Restzeit-Balken. Ton nur mit eigener Datei. Texte, Zitat-Regel und Töne kommen aus
-// dem Alerts-Kontext des Kerns (src/core/alerts), hier nur die Schlüssel der Texte und das Aussehen.
+// Alerts of the standard theme: a rounded card with a gradient edge, header per alert kind, line with the name,
+// optionally the message and a remaining-time bar. Sound only with an own file. Texts, quote rule and sounds come from
+// the alerts context of the core (src/core/alerts), here only the keys of the texts and the look.
 import { alertQuote, alertTextKeys, describeAlert } from "../../../core/alerts/alerts.ts";
 import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
 import type { Alert } from "../../../core/types.ts";
@@ -8,7 +8,7 @@ import { useAlerts } from "../../../core/hooks/useAlerts.ts";
 import { playSound } from "../../../core/sound.ts";
 import { useStandard } from "../useStandard.ts";
 
-// Kopfzeilen heissen hier <art>Label
+// Headers are called <kind>Label here
 const KEYS = alertTextKeys("Label");
 
 export default function Alerts() {

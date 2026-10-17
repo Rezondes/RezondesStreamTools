@@ -1,5 +1,5 @@
-// Eingebaute Töne der Matrix-Alerts: kleiner Modem-Gruss beim Öffnen, tiefer Ton beim Ausblenden.
-// Gelten, wenn in den Einstellungen keine eigene Datei gewählt ist; die Lautstärke kommt aus dem Ton-Feld.
+// Built-in sounds of the matrix alerts: a small modem greeting on open, a low tone on fade-out.
+// They apply when no own file is chosen in the settings; the volume comes from the sound field.
 import { beep, playSound } from "../../core/sound.ts";
 import type { SoundValue } from "../../core/theme.ts";
 

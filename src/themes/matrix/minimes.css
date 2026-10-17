@@ -1,7 +1,7 @@
-/* Minimes des Matrix-Themes (scenes/Minimes.tsx), gekapselt unter .theme-matrix, nur mit der Szene geladen.
-   Einstellungen kommen als CSS-Variablen (--minimeSize, --minimeGlow, ...); je Geist setzt die Szene --x, --move,
-   --action-ms, --facing und --minime (Farbe des Chatters). Die laufende Aktion steht als Klasse action-<name> am Geist.
-   Keyframes heissen matrix-minime-*. */
+/* Minimes of the matrix theme (scenes/Minimes.tsx), encapsulated under .theme-matrix, loaded only with the scene.
+   Settings come as CSS variables (--minimeSize, --minimeGlow, ...); per ghost the scene sets --x, --move,
+   --action-ms, --facing and --minime (color of the chatter). The running action is the class action-<name> on the ghost.
+   Keyframes are called matrix-minime-*. */
 
 .theme-matrix .minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 
@@ -25,11 +25,11 @@
   text-shadow: 0 0 calc(var(--minimeGlow) * var(--minime-glow-near, 4px)) var(--minime);
 }
 
-/* Schweben: ständig leicht auf und ab, unabhängig von der Aktion */
+/* Floating: constantly a bit up and down, independent of the action */
 .theme-matrix .minime-float { width: 100%; animation: matrix-minime-float var(--minimeFloatMs) ease-in-out infinite alternate; }
 @keyframes matrix-minime-float { from { translate: 0 0; } to { translate: 0 calc(-1 * var(--minimeFloatHeight)); } }
 
-/* Blickrichtung (gespiegelt) und Neigung in Laufrichtung beim Wandern */
+/* Facing (mirrored) and tilt in the walking direction while walking */
 .theme-matrix .minime-flip { transform: scaleX(var(--facing)); transition: rotate var(--minime-tilt-time, 0.3s) ease-out; }
 .theme-matrix .action-walk .minime-flip { rotate: calc(var(--facing) * var(--minimeTilt) * 1deg); }
 
@@ -46,7 +46,7 @@
 .theme-matrix .minime-shape .hollow { fill: var(--minimeFace); stroke: color-mix(in srgb, var(--minime) 45%, transparent); stroke-width: var(--minimeStroke); }
 .theme-matrix .minime-shape .eye { fill: var(--minime); transform-box: fill-box; transform-origin: center; }
 
-/* Düse: Spalten fallender Glyphen unter dem Geist, nach unten ausgeblendet */
+/* Jet: columns of falling glyphs below the ghost, faded out downwards */
 .theme-matrix .minime-jet {
   display: flex;
   justify-content: center;
@@ -68,7 +68,7 @@
 }
 @keyframes matrix-minime-fall { from { translate: 0 -50%; } to { translate: 0 0; } }
 
-/* Erscheinen: von oben nach unten aufgebaut, darüber fallen Glyphen; Name und Düse blenden ein */
+/* Appearing: built from top to bottom, glyphs fall over it; name and jet fade in */
 .theme-matrix .action-enter .minime-shape { animation: matrix-minime-enter var(--action-ms) linear both; }
 @keyframes matrix-minime-enter {
   from { clip-path: inset(0 0 100% 0); opacity: 0.4; }
@@ -78,7 +78,7 @@
 }
 .theme-matrix .action-enter .minime-name, .theme-matrix .action-enter .minime-jet { animation: matrix-fade-in var(--action-ms) ease-out both; }
 
-/* Verschwinden: zerfällt nach unten, Name und Düse blenden aus */
+/* Disappearing: crumbles downwards, name and jet fade out */
 .theme-matrix .action-exit .minime-shape { animation: matrix-minime-exit var(--action-ms) ease-in forwards; }
 @keyframes matrix-minime-exit {
   from { clip-path: inset(0); opacity: 1; }
@@ -86,7 +86,7 @@
 }
 .theme-matrix .action-exit .minime-name, .theme-matrix .action-exit .minime-jet { animation: matrix-fade-out var(--action-ms) ease-in forwards; }
 
-/* Glyphen über dem Geist beim Erscheinen und Verschwinden */
+/* Glyphs above the ghost when appearing and disappearing */
 .theme-matrix .minime-decode {
   position: absolute;
   inset: 0;
@@ -98,11 +98,11 @@
   animation: matrix-fade-out var(--action-ms) ease-in forwards;
 }
 
-/* Augen: blinzeln unabhängig von der Aktion (minimeBlinkEvery, 0 = nie) */
+/* Eyes: blink independent of the action (minimeBlinkEvery, 0 = never) */
 .theme-matrix .minime-shape .eye { animation: matrix-minime-blink var(--minimeBlinkEvery) linear infinite; }
 @keyframes matrix-minime-blink { 0%, 95%, 100% { scale: 1 1; } 97.5% { scale: 1 0.1; } }
 
-/* Backflip: in die Hocke, hoch mit voller Rückwärtsdrehung (die Spiegelung dreht die Richtung mit), Düse flammt auf */
+/* Backflip: into a crouch, up with a full backward turn (the mirroring turns the direction along), the jet flares up */
 .theme-matrix .action-backflip .minime-action { animation: matrix-minime-backflip var(--action-ms) ease-in-out both; transform-origin: 50% 60%; }
 @keyframes matrix-minime-backflip {
   0%   { translate: 0 0; rotate: 0deg; }
@@ -115,7 +115,7 @@
 .theme-matrix .action-boost .minime-jet { transform-origin: top; animation: matrix-minime-flare var(--action-ms) ease-out both; }
 @keyframes matrix-minime-flare { 0%, 100% { scale: 1 1; filter: none; } 20% { scale: 1 var(--minimeBoostJet); filter: brightness(1.6); } }
 
-/* Glitch: Streifen versetzt, Farbsaum in Glitch-Farbe, der Name flackert */
+/* Glitch: stripes offset, color fringe in the glitch color, the name flickers */
 .theme-matrix .action-glitch .minime-action { animation: matrix-minime-glitch var(--action-ms) steps(1, end) both; }
 @keyframes matrix-minime-glitch {
   0%   { translate: var(--minimeGlitchShift) 0; clip-path: inset(10% 0 55% 0); filter: drop-shadow(var(--minimeGlitchShift) 0 0 var(--highlight)); }
@@ -128,7 +128,7 @@
 .theme-matrix .action-glitch .minime-name { animation: matrix-minime-flicker var(--action-ms) steps(1, end) both; }
 @keyframes matrix-minime-flicker { 0%, 40%, 80% { opacity: 1; } 20%, 60% { opacity: 0.2; } 100% { opacity: 1; } }
 
-/* Umschauen: Augen nach links, nach rechts, zurück (blinzeln läuft weiter) */
+/* Looking around: eyes to the left, to the right, back (blinking continues) */
 .theme-matrix .action-look .minime-shape .eye {
   animation: matrix-minime-blink var(--minimeBlinkEvery) linear infinite, matrix-minime-look var(--action-ms) ease-in-out both;
 }
@@ -138,13 +138,13 @@
   60%, 80% { translate: var(--minimeLookShift) 0; }
 }
 
-/* Drehen: Pirouette um die eigene Achse, so oft wie eingestellt */
+/* Spin: pirouette around its own axis, as often as configured */
 .theme-matrix .action-spin .minime-action {
   animation: matrix-minime-spin calc(var(--action-ms) / var(--minimeSpinTurns)) linear var(--minimeSpinTurns);
 }
 @keyframes matrix-minime-spin { 0%, 100% { scale: 1 1; } 25%, 75% { scale: 0.05 1; } 50% { scale: -1 1; } }
 
-/* Schlafen: sinkt ab, Augen zu, Düse gedimmt, Zeichen steigen auf */
+/* Sleeping: sinks down, eyes closed, jet dimmed, characters rise */
 .theme-matrix .action-sleep .minime-action { animation: matrix-minime-sleep var(--action-ms) ease-in-out both; }
 @keyframes matrix-minime-sleep { 0%, 100% { translate: 0 0; } 15%, 85% { translate: 0 var(--minimeSleepDrop); } }
 .theme-matrix .action-sleep .minime-shape .eye { animation: none; scale: 1 0.15; }
@@ -163,7 +163,7 @@
   to   { opacity: 0; translate: var(--minime-rise-x, 12px) calc(-1 * var(--minime-rise-y, 36px)); }
 }
 
-/* Reaktion auf Chat: Hüpfer, Düse länger und heller, Augen leuchten auf */
+/* Reaction to chat: a hop, the jet longer and brighter, the eyes light up */
 .theme-matrix .action-boost .minime-action { animation: matrix-minime-hop var(--action-ms) ease-out both; }
 @keyframes matrix-minime-hop { 0%, 100% { translate: 0 0; } 30% { translate: 0 calc(-1 * var(--minimeBoostHeight)); } }
 .theme-matrix .action-boost .minime-shape .eye { animation: matrix-minime-shine var(--action-ms) ease-out both; }

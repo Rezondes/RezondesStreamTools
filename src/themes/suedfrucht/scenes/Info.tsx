@@ -1,6 +1,6 @@
-// Befehlsseite des Südfrucht-Themes (öffentlich unter /s/<login>/): der Strand zur gewählten Tageszeit steht fest im
-// Hintergrund, davor Holzschilder mit den Befehlen (Früchte als Typen der Minimes). Liste, Texte und Einleitung kommen
-// aus dem Info-Kontext des Kerns (useInfoPage), hier nur das Strand-Aussehen.
+// Commands page of the Südfrucht theme (public under /s/<login>/): the beach at the chosen time of day stays fixed in the
+// background, in front of it wooden signs with the commands (fruits as minime variants). List, texts and intro come
+// from the info context of the core (useInfoPage), here only the beach look.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import Beach, { type TimeOfDay } from "../Beach.tsx";

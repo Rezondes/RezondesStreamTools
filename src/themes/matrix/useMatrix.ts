@@ -1,12 +1,12 @@
-// Werte des Matrix-Themes in einer Szene: die aufgelösten Einstellungen aus dem Kontext (gesetzt in main.tsx)
-// mit ihrem Typ, dazu die Platzhalter, die in vielen Texten vorkommen ({channel}, {login}).
+// Values of the matrix theme in a scene: the resolved settings from the context (set in main.tsx)
+// with their type, plus the placeholders that occur in many texts ({channel}, {login}).
 import { streamer } from "../../core/connection.ts";
 import { channelNames } from "../../core/template.ts";
 import { useThemeValues } from "../../core/hooks/useSettings.ts";
 import type { MatrixValues } from "./settings.ts";
 
-// main.tsx löst die Werte gegen dieses Schema auf (resolveSettings), darum hat jeder Schlüssel seinen Typ
+// main.tsx resolves the values against this schema (resolveSettings), so every key has its type
 export const useMatrix = () => useThemeValues() as unknown as MatrixValues;
 
-// {channel} = Kanal-Name aus den Einstellungen, {login} = Twitch-Login des Streamers (ohne Streamer der Kanal-Name klein)
+// {channel} = channel name from the settings, {login} = Twitch login of the streamer (without a streamer the channel name in lower case)
 export const placeholders = (values: MatrixValues) => channelNames(values.channelName, streamer);

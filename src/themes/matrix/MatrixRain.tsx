@@ -1,6 +1,6 @@
-// Matrix-Regen auf einem Canvas, füllt sein Elternelement (Vollbild-Szenen, Alerts).
-// size = Zeichengrösse in px, opacity = Deckkraft; Farben, Schrift, Zeichensatz, Dichte, Tempo und Bildrate
-// kommen aus den Einstellungen.
+// Matrix rain on a canvas, fills its parent element (full-screen scenes, alerts).
+// size = character size in px, opacity = opacity; colors, font, character set, density, speed and frame rate
+// come from the settings.
 import { useEffect, useRef } from "react";
 import { glyph } from "../../core/glyphs.ts";
 import { useMatrix } from "./useMatrix.ts";
@@ -15,10 +15,10 @@ export default function MatrixRain({ size, opacity }: { size: number; opacity: n
     const canvas = ref.current!;
     const context = canvas.getContext("2d")!;
     let rows = 0;
-    // null = Spalte ohne Regen (Dichte unter 100 %)
+    // null = column without rain (density below 100 %)
     let drops: (Drop | null)[] = [];
 
-    // Startet oberhalb des Bildes, darum setzt der Regen nach und nach ein
+    // Starts above the picture, so the rain sets in gradually
     const newDrop = (spread = 1): Drop => ({
       y: -Math.random() * rows * spread,
       speed: (0.5 + Math.random() * 0.6) * rainSpeed,

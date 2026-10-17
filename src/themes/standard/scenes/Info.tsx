@@ -1,6 +1,6 @@
-// Befehlsseite des Standard-Themes (öffentlich unter /s/<login>/): Titel mit Verlauf, je Abschnitt eine Karte mit den
-// Befehlen als Chips, Erklärung und Details. Liste, Texte und Einleitung kommen aus dem Info-Kontext des Kerns
-// (useInfoPage). Das Standard-Theme hat keine Minimes, darum zeigt die Demo nur Hilfe und Trigger.
+// Commands page of the standard theme (public under /s/<login>/): title with gradient, per section a card with the
+// commands as chips, explanation and details. List, texts and intro come from the info context of the core
+// (useInfoPage). The standard theme has no minimes, so the demo only shows help and triggers.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { standardNames, useStandard } from "../useStandard.ts";
 

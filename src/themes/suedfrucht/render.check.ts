@@ -1,5 +1,5 @@
-// Check für render.ts des Südfrucht-Themes: drei Clips mit Gruppen, Länge, Übergangspunkt und Schleife aus den
-// Einstellungen. Läuft mit npm test.
+// Check for render.ts of the Südfrucht theme: three clips with groups, length, transition point and loop from the
+// settings. Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
 import { suedfruchtClips } from "./render.ts";

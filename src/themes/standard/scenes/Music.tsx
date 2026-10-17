@@ -1,6 +1,6 @@
-// Spotify "Now Playing" des Standard-Themes: Karte mit Cover, Überzeile, Titel, Interpret und Fortschritt; lange
-// Zeilen laufen durch. Bei Pause oder Stopp blendet sie aus (abschaltbar). Sichtbarkeit, Fortschritt, Cover und
-// Lauftext kommen aus dem Musik-Kontext des Kerns (src/core/music). Parameter: ?demo
+// Spotify "Now Playing" of the standard theme: card with cover, overline, title, artist and progress; long
+// lines scroll. On pause or stop it fades out (can be switched off). Visibility, progress, cover and
+// scrolling text come from the music context of the core (src/core/music). Parameters: ?demo
 import Marquee from "../../../core/music/Marquee.tsx";
 import { useCover } from "../../../core/music/useCover.ts";
 import { useNowPlaying } from "../../../core/music/useNowPlaying.ts";
@@ -8,7 +8,7 @@ import { useTrackProgress } from "../../../core/music/useTrackProgress.ts";
 import type { Track } from "../../../core/types.ts";
 import { useStandard } from "../useStandard.ts";
 
-// fixed: Prozent für die Breite des Fortschrittsbalkens
+// fixed: percent for the width of the progress bar
 const PERCENT = 100;
 
 export default function Music() {

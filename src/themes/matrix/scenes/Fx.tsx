@@ -1,8 +1,8 @@
-// Effekt-Overlay für die Chat-Trigger des Streamers (/s/<login>/fx), transparent. Empfohlen 1920x1080.
-// Parameter: ?zone=main (nur Aktionen mit dieser zone), ?sound=0, ?volume=0.5
-// Braucht den Overlay-Server, denn dort laufen die Trigger. Zone, Standardwerte, Ablauf (angehalten, läuft, steht auf
-// dem letzten Bild), Lage und Text kommen aus dem Effekt-Kontext des Kerns (src/core/fx), die Medien zeigt
-// core/FxMedia.tsx; hier nur das Matrix-Aussehen mit Glitch-Text und Animationen aus den Einstellungen.
+// Effects overlay for the streamer's chat triggers (/s/<login>/fx), transparent. Recommended 1920x1080.
+// Parameters: ?zone=main (only actions with this zone), ?sound=0, ?volume=0.5
+// Needs the overlay server, because the triggers run there. Zone, defaults, sequence (paused, running, standing on
+// the last frame), position and text come from the effects context of the core (src/core/fx), the media are shown by
+// core/FxMedia.tsx; here only the matrix look with glitch text and animations from the settings.
 import FxMedia from "../../../core/FxMedia.tsx";
 import { useFxItem, useFxScene } from "../../../core/fx/useFxScene.ts";
 import type { ShownFx } from "../../../core/hooks/useFx.ts";

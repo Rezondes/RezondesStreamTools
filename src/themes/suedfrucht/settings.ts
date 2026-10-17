@@ -1,6 +1,6 @@
-// Einstellungs-Schema des Südfrucht-Themes: süd-tropischer Küsten- und Meeres-Look (Meer, Wellen, Sand, Palmen,
-// Holzschilder) für alle Szenen, Stinger und Banner, dazu Frucht-Minimes, die hüpfen. Einzige Stelle des Themes mit
-// festen Farben, Texten und Zahlen. SuedfruchtValues ist der Typ der aufgelösten Werte (useSuedfrucht).
+// Settings schema of the Südfrucht theme: southern tropical coast and sea look (sea, waves, sand, palms,
+// wooden signs) for all scenes, stinger and banners, plus fruit minimes that hop. The only place of the theme with
+// fixed colors, texts and numbers. SuedfruchtValues is the type of the resolved values (useSuedfrucht).
 import { choice, color, flag, font, inScene, lines, number, text, type ValuesOf } from "../../core/fields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
@@ -263,14 +263,14 @@ const FIELDS = [
   number("splashMs", "Reaktion auf Chat: Dauer", MINIME_MOVES, 900, 200, 5000, "ms"),
   number("splashHeight", "Reaktion auf Chat: Sprunghöhe", MINIME_MOVES, 50, 0, 300, "px"),
   number("splashDrops", "Reaktion auf Chat: Saftspritzer", MINIME_MOVES, 8, 0, 20),
-  // Befehlsseite (öffentlich, /s/<login>/): gemeinsame Texte aus dem Kern, dazu das Aussehen
+  // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   choice("timeInfo", "Befehlsseite: Tageszeit am Strand", INFO_GROUP, "mittag", TIMES),
 ] as const satisfies readonly SettingField[];
 
 export type SuedfruchtValues = ValuesOf<typeof FIELDS>;
 
-// Haupt- und Detailfarbe je Frucht (Schlüssel fruit<Id>Main, fruit<Id>Detail; CSS in minimes.css)
+// Main and detail color per fruit (keys fruit<Id>Main, fruit<Id>Detail; CSS in minimes.css)
 const FRUIT_DEFAULT_COLORS: Record<string, readonly [string, string]> = {
   mango: ["#ffb02e", "#ff5e3a"], sternfrucht: ["#ffd84a", "#e0a800"], papaya: ["#8fd14f", "#ff8a3d"],
   ananasguave: ["#6cbf4a", "#7a4a2a"], nashi: ["#f2d27a", "#b9873f"], pepino: ["#f5e6a8", "#8e4fb3"],
@@ -307,7 +307,7 @@ const GROUP_SCENES = {
   [INFO_GROUP]: ["info"],
 } as const;
 
-// Beim ersten Login: Kanal-Name aus dem Twitch-Login (erster Buchstabe gross)
+// On first login: channel name from the Twitch login (first letter upper case)
 const personalize = (login: string) => ({ channelName: capital(login) });
 
 export const suedfruchtSettings: ThemeSchema = {

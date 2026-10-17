@@ -1,7 +1,7 @@
-// Minimes des Südfrucht-Themes: eingeklinkte Chatter als Cartoon-Früchte mit Gesicht, die über den Strand hüpfen,
-// mit Namen auf einem Holzschild oder Band. Eigene Animationen: Freudensprünge, Pirouette, Wackeln, Sonnenbrille,
-// Umschauen, Schlafen; auf Chat reagieren sie mit einem Saftspritzer. Wer drin ist und was jeder tut, kommt aus
-// useMinimes. Transparent, empfohlen 1920x360 am unteren Bildrand. Parameter: ?demo, ?demo=<n>
+// Minimes of the Südfrucht theme: joined chatters as cartoon fruits with a face that hop across the beach,
+// with the name on a wooden sign or a ribbon. Own animations: jumps of joy, pirouette, wobble, sunglasses,
+// looking around, sleeping; they react to chat with a juice splash. Who is in and what everyone does comes from
+// useMinimes. Transparent, recommended 1920x360 at the bottom edge of the picture. Parameters: ?demo, ?demo=<n>
 import { useMemo, useState, type CSSProperties } from "react";
 import { useMinimes } from "../../../core/hooks/useMinimes.ts";
 import { actorRun, actorStyle, shownVariant, type MinimeAction, type MinimeActor } from "../../../core/minimeBehavior.ts";
@@ -17,7 +17,7 @@ const DEMO = params.has("demo");
 
 export default function Minimes() {
   const values = useSuedfrucht();
-  // Breite der Szene einmal beim Laden (OBS-Quelle), danach bleibt sie
+  // Width of the scene once on load (OBS source), it stays afterwards
   const [widthPx] = useState(() => innerWidth);
   const catalog = useMemo<MinimeAction[]>(() => [
     { name: "bounce", durationMs: values.bounceMs, weight: values.bounceWeight },
@@ -40,7 +40,7 @@ export default function Minimes() {
 function Character({ actor, fruit }: { actor: MinimeActor; fruit: string }) {
   const values = useSuedfrucht();
   const hops = hopPlan(actor.durationMs, values.hopMs);
-  // Lage, Bewegung, Dauer und Blickrichtung aus dem Kern (actorStyle), dazu die Sprünge der Frucht
+  // Position, movement, duration and facing from the core (actorStyle), plus the hops of the fruit
   const style = { ...actorStyle(actor), "--hops": hops.count, "--hop-ms": `${hops.periodMs}ms` } as CSSProperties;
   const run = actorRun(actor);
   return (

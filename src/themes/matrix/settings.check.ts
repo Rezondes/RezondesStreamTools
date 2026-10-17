@@ -1,17 +1,17 @@
-// Check für settings.ts (Schema des Matrix-Themes): gültige Standardwerte, jede Gruppe hat ihre Pflichtschlüssel
-// und jeder Schlüssel wird im Theme-Code benutzt (kein toter Schlüssel). Läuft mit npm test.
+// Check for settings.ts (schema of the matrix theme): valid defaults, every group has its required keys
+// and every key is used in the theme code (no dead key). Runs with npm test.
 import assert from "node:assert/strict";
 import { auditTheme } from "../schemaAudit.ts";
 import { matrixSettings } from "./settings.ts";
 
 const fields = matrixSettings.fields;
 
-// Gültige Standardwerte und kein toter Schlüssel (jeder kommt im Theme-Code vor)
+// Valid defaults and no dead key (every one occurs in the theme code)
 const audit = auditTheme(matrixSettings, import.meta.dirname);
 assert.deepEqual(audit.errors, []);
-assert.deepEqual(audit.unused, [], `unbenutzte Schlüssel: ${audit.unused.join(", ")}`);
+assert.deepEqual(audit.unused, [], `unused keys: ${audit.unused.join(", ")}`);
 
-// Pflichtschlüssel je Gruppe (Package 5, AC1); Lautstärke steckt in den Ton-Feldern
+// Required keys per group (package 5, AC1); the volume is part of the sound fields
 const REQUIRED: Record<string, string[]> = {
   "Allgemein": ["accent", "dim", "line", "background", "glow", "highlight", "flash", "font", "fontSize", "channelName", "logo", "glowStrength", "scanlines", "scanlineStrength", "glitchStrength", "glitchInDuration", "glitchOutDuration"],
   "Matrix-Regen": ["rainScreens", "rainAlerts", "glyphs", "rainSizeScreens", "rainSizeAlerts", "rainDensity", "rainSpeed", "rainOpacityScreens", "rainOpacityAlerts", "rainFps"],

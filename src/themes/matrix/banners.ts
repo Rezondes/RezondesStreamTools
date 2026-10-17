@@ -1,7 +1,7 @@
-// Twitch-Banner als GIF: Profilbanner (1200x480) und Offline-Banner des Video-Players (1920x1080).
-// Wie der Stinger eine reine Funktion der Zeit; alle Bewegungen wiederholen sich exakt nach loop Sekunden,
-// darum läuft das GIF ohne Sprung in Endlosschleife. Texte, Farben, Schrift, Schleifenlänge und Regen-Dichte
-// kommen über bannerOptions aus den Einstellungen.
+// Twitch banners as GIF: profile banner (1200x480) and offline banner of the video player (1920x1080).
+// Like the stinger a pure function of time; all movements repeat exactly after loop seconds,
+// so the GIF loops endlessly without a jump. Texts, colors, font, loop length and rain density
+// come from the settings via bannerOptions.
 import { fillTemplate } from "../../core/template.ts";
 import type { MatrixValues } from "./settings.ts";
 import { hash } from "../../core/hash.ts";
@@ -11,8 +11,8 @@ export type BannerOptions = {
   loop: number; // Sekunden
   profileFps: number;
   offlineFps: number;
-  density: number; // Anteil der Spalten mit Regen, 0..1
-  scanlines: number; // Deckkraft der Scanlines, 0 = aus
+  density: number; // fraction of columns with rain, 0..1
+  scanlines: number; // opacity of the scanlines, 0 = off
   font: string;
   logo: string;
   glyphs: string;
@@ -33,7 +33,7 @@ export type BannerOptions = {
   prompt: string;
 };
 
-// login: Twitch-Login für {login} in Prompt und Kopfzeile
+// login: Twitch login for {login} in prompt and header
 export function bannerOptions(values: MatrixValues, login: string): BannerOptions {
   const names = { channel: values.channelName, login };
   return {
@@ -63,15 +63,15 @@ export function bannerOptions(values: MatrixValues, login: string): BannerOption
   };
 }
 
-// Kurze Zeitfenster innerhalb der Schleife (Anteile von loop), in denen etwas glitcht
+// Short time windows within the loop (fractions of loop) in which something glitches
 const within = (time: number, loop: number, windows: [number, number][]) => windows.some(([from, to]) => time > from * loop && time < to * loop);
 
-// Matrix-Regen, der nach loop Sekunden wieder genau gleich aussieht:
-// jede Spalte läuft in dieser Zeit eine ganze Zahl von Durchgängen
+// Matrix rain that looks exactly the same again after loop seconds:
+// every column runs a whole number of passes in this time
 function rain(context: CanvasRenderingContext2D, time: number, width: number, height: number, size: number, alpha: number, options: BannerOptions) {
   const columns = Math.ceil(width / size);
   const rows = Math.ceil(height / size);
-  const tick = Math.floor(time * 8); // 8 Zeichenwechsel pro Sekunde
+  const tick = Math.floor(time * 8); // 8 character changes per second
   context.font = `${size}px "${options.font}", monospace`;
   context.textBaseline = "top";
   for (let column = 0; column < columns; column++) {
@@ -109,7 +109,7 @@ function text(context: CanvasRenderingContext2D, options: BannerOptions, content
   context.shadowBlur = 0;
 }
 
-// ASCII-Logo mit gelegentlichem Zeilen-Glitch (zwei kurze Zuckungen pro Schleife)
+// ASCII logo with an occasional line glitch (two short twitches per loop)
 function logo(context: CanvasRenderingContext2D, time: number, centerX: number, y: number, size: number, options: BannerOptions) {
   const lines = options.logo.split("\n");
   context.font = `${size}px "${options.font}", monospace`;
@@ -124,7 +124,7 @@ function logo(context: CanvasRenderingContext2D, time: number, centerX: number, 
   return { left, bottom: y + lines.length * size * 1.05 };
 }
 
-// Rahmen mit hellen Ecken wie beim Webcam-Rahmen
+// Frame with bright corners like the webcam frame
 function frame(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, corner: number, options: BannerOptions) {
   context.globalAlpha = 0.82;
   context.fillStyle = options.background;
@@ -149,8 +149,8 @@ function frame(context: CanvasRenderingContext2D, x: number, y: number, width: n
 
 const blink = (time: number) => Math.floor(time * 2) % 2 === 0;
 
-// Profilbanner 1200x480. Unten links legt Twitch je nach Ansicht Profilbild und Name darüber,
-// darum sitzt alles Wichtige mittig und oben.
+// Profile banner 1200x480. At the bottom left Twitch puts profile picture and name over it depending on the view,
+// so everything important sits in the center and at the top.
 export function drawProfileBanner(context: CanvasRenderingContext2D, time: number, options: BannerOptions) {
   const width = 1200, height = 480;
   context.fillStyle = options.background;
@@ -163,7 +163,7 @@ export function drawProfileBanner(context: CanvasRenderingContext2D, time: numbe
   scanlines(context, width, height, options);
 }
 
-// Offline-Banner 1920x1080, im Stil der Starting-/Ending-Szenen
+// Offline banner 1920x1080, in the style of the starting/ending scenes
 export function drawOfflineBanner(context: CanvasRenderingContext2D, time: number, options: BannerOptions) {
   const width = 1920, height = 1080;
   context.fillStyle = options.background;
@@ -178,7 +178,7 @@ export function drawOfflineBanner(context: CanvasRenderingContext2D, time: numbe
   context.fillRect(boxX + 48, boxY + 70, boxWidth - 96, 2);
 
   const placed = logo(context, time, width / 2, boxY + 120, 32, options);
-  // Titel mit kurzem Farbversatz-Glitch
+  // Title with a short color offset glitch
   context.font = `110px "${options.font}", monospace`;
   const titleX = width / 2 - context.measureText(options.offlineTitle).width / 2;
   const titleY = placed.bottom + 50;
@@ -191,7 +191,7 @@ export function drawOfflineBanner(context: CanvasRenderingContext2D, time: numbe
   context.font = `30px "${options.font}", monospace`;
   text(context, options, options.offlineText, width / 2 - context.measureText(options.offlineText).width / 2, titleY + 150, 30, options.dim);
 
-  // Terminal unten, die letzte Zeile mit Cursor
+  // Terminal at the bottom, the last line with cursor
   const lines = options.offlineLines;
   context.fillStyle = options.line;
   context.fillRect(boxX + 48, boxY + boxHeight - 180, boxWidth - 96, 2);
