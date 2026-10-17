@@ -35,6 +35,7 @@ tokio-tungstenite = { version = "0.30.0", features = ["rustls-tls-webpki-roots"]
 tower = { version = "0.5.3", features = ["util"] }
 ts-rs = "12.0.1"
 zeroize = "1.9.1"
+zip = { version = "9.0.5", default-features = false, features = ["deflate"] }
 
 # Debug builds lightly optimized and their dependencies (crypto, SQLite) more, so tests over large files stay fast
 [profile.dev]

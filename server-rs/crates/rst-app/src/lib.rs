@@ -3,6 +3,7 @@
 pub mod access;
 pub mod api;
 pub mod audit;
+pub mod backup;
 pub mod channel;
 pub mod commands;
 pub mod crypto;

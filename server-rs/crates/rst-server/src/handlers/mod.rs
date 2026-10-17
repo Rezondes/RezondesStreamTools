@@ -7,6 +7,7 @@ use axum::response::Response;
 use crate::app::App;
 pub mod admin;
 pub mod auth;
+pub mod backups;
 pub mod commands;
 pub mod events;
 pub mod media;
@@ -65,5 +66,9 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::SaveAdminAccess => admin::save_access(call).await,
         Route::AdminStreamers => admin::streamers(call).await,
         Route::AdminAudit => admin::audit(call).await,
+        Route::AdminBackups => backups::list(call).await,
+        Route::CreateBackup => backups::create(&call),
+        Route::DownloadBackup => backups::download(call).await,
+        Route::DeleteBackup => backups::delete(call).await,
     }
 }

@@ -28,6 +28,10 @@ export const loadMedia = () => getJson<MediaList>("/api/media", { files: [], use
 export const uploadMedia = (file: File) => request(`/api/media?name=${encodeURIComponent(file.name)}`, { method: "POST", body: file });
 export const deleteMedia = (name: string) => request(`/api/media?name=${encodeURIComponent(name)}`, { method: "DELETE" });
 
+// Backups (admins, new server only): start one in the background, delete one
+export const createBackup = () => request("/api/admin/backups", { method: "POST" });
+export const deleteBackup = (id: string) => request(`/api/admin/backup?id=${encodeURIComponent(id)}`, { method: "DELETE" });
+
 // Request without response data: null on success, otherwise the error code from the response
 async function request(url: string, init: RequestInit): Promise<ErrorCode | null> {
   try {

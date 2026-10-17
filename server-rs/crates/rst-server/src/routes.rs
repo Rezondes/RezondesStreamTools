@@ -91,6 +91,11 @@ routes! {
     AdminStreamers => "GET" "/api/admin/streamers", Guard::Admin;
     // New: the audit log, server-wide or with ?login= of one streamer
     AdminAudit => "GET" "/api/admin/audit", Guard::Admin;
+    // New: server-wide backups, one of them by ?id=
+    AdminBackups => "GET" "/api/admin/backups", Guard::Admin;
+    CreateBackup => "POST" "/api/admin/backups", Guard::Admin;
+    DownloadBackup => "GET" "/api/admin/backup", Guard::Admin;
+    DeleteBackup => "DELETE" "/api/admin/backup", Guard::Admin;
     // New: the schemas of all themes for the forms
     Themes => "GET" "/api/themes", SESSION;
 }

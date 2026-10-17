@@ -1,11 +1,11 @@
 // Admin section in the dashboard (admins only, the server checks it itself): edit and save the registration mode,
 // allowlist, beta testers and the level of every feature (off, beta testers only, everyone); plus all profiles with
-// access, Twitch connection, EventSub status and last login.
+// access, Twitch connection, EventSub status and last login, and the server-wide backups.
 import { useCallback, useEffect, useState } from "react";
 import type { Access, Feature, Level } from "../../server/access.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
-import { getJson, postJson } from "./api.ts";
+import { createBackup, deleteBackup, getJson, postJson } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";
 
 const ADMIN_TEXT = TEXTS.adminArea;
@@ -14,6 +14,15 @@ const LEVELS = Object.keys(ADMIN_TEXT.levels) as Level[];
 
 // Answer of GET /api/admin/streamers
 type StreamerRow = { login: string; allowed: boolean; admin: boolean; connected: boolean; live: boolean; lastLogin: number | null };
+
+// Answer of GET /api/admin/backups
+type BackupRow = { id: string; createdAt: number; bytes: number; automatic: boolean };
+type BackupListing = { running: boolean; backups: BackupRow[] };
+
+// How often the list is asked again while a backup is being written
+const BACKUP_POLL_MS = 2000;
+const MEGABYTE = 1024 * 1024;
+const time = (ms: number) => new Date(ms).toLocaleString("de-DE");
 
 // The form holds the lists as text (one login per line), so new lines are possible while typing
 type AccessDraft = Omit<Access, "allowlist" | "beta"> & { allowlist: string; beta: string };
@@ -63,6 +72,8 @@ export default function Admin() {
       </div>
       <h2>{ADMIN_TEXT.streamers}</h2>
       <StreamerTable streamers={streamers} />
+      <h2>{ADMIN_TEXT.backups}</h2>
+      <Backups />
     </section>
   );
 }
@@ -132,5 +143,63 @@ function StreamerTable({ streamers }: { streamers: StreamerRow[] }) {
         ))}
       </tbody>
     </table>
+  );
+}
+
+// Backups: create in the background, download, delete; the list is asked again while one is being written
+function Backups() {
+  const [listing, setListing] = useState<BackupListing | null | undefined>(undefined);
+  const [error, setError] = useState<ErrorCode | null>(null);
+  const load = useCallback(() => {
+    getJson<BackupListing | null>("/api/admin/backups", null).then(setListing).catch(() => setListing(null));
+  }, []);
+  useEffect(load, [load]);
+  useEffect(() => {
+    if (!listing?.running) return;
+    const timer = setTimeout(load, BACKUP_POLL_MS);
+    return () => clearTimeout(timer);
+  }, [listing, load]);
+
+  if (listing === undefined) return <p className="muted">{TEXTS.loading}</p>;
+  if (listing === null) return <p className="muted">{ADMIN_TEXT.backupUnavailable}</p>;
+
+  const act = (action: Promise<ErrorCode | null>) => {
+    action.then(code => {
+      setError(code);
+      load();
+    }).catch(() => setError("server-error"));
+  };
+  const remove = (backup: BackupRow) => {
+    if (confirm(ADMIN_TEXT.backupConfirmDelete(time(backup.createdAt)))) act(deleteBackup(backup.id));
+  };
+
+  return (
+    <>
+      <p className="muted">{ADMIN_TEXT.backupHint}</p>
+      <div className="actions">
+        <button className="btn primary" disabled={listing.running} onClick={() => act(createBackup())}>{ADMIN_TEXT.backupCreate}</button>
+        <span role="status" className={error ? "error" : "muted"}>{error ? TEXTS.errors[error] : listing.running ? ADMIN_TEXT.backupRunning : ""}</span>
+      </div>
+      {listing.backups.length === 0 ? <p className="muted">{ADMIN_TEXT.backupNone}</p> : (
+        <table>
+          <thead>
+            <tr><th>{ADMIN_TEXT.backupTime}</th><th>{ADMIN_TEXT.backupSize}</th><th>{ADMIN_TEXT.backupKind}</th><th /></tr>
+          </thead>
+          <tbody>
+            {listing.backups.map(backup => (
+              <tr key={backup.id}>
+                <td>{time(backup.createdAt)}</td>
+                <td>{(backup.bytes / MEGABYTE).toFixed(1)} MB</td>
+                <td>{backup.automatic ? ADMIN_TEXT.backupKinds.automatic : ADMIN_TEXT.backupKinds.manual}</td>
+                <td>
+                  <a className="btn" href={`/api/admin/backup?id=${encodeURIComponent(backup.id)}`} download>{ADMIN_TEXT.backupDownload}</a>{" "}
+                  <button className="btn" onClick={() => remove(backup)}>{ADMIN_TEXT.backupDelete}</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </>
   );
 }

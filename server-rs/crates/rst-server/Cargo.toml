@@ -21,6 +21,7 @@ rst-infra.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sqlx.workspace = true
+tokio-util = { workspace = true, features = ["io"] }
 tokio = { workspace = true, features = ["rt-multi-thread", "net", "signal", "fs"] }
 
 [dev-dependencies]

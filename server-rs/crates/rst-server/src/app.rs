@@ -11,6 +11,7 @@ use axum::extract::{Request, State};
 use axum::http::{HeaderValue, header};
 use axum::response::Response;
 use rst_app::access::admin::AccessAdmin;
+use rst_app::backup::Backups;
 use rst_app::channel::registry::Registry;
 use rst_app::channel::runtime::{RuntimeSetup, StreamerRuntime, start_all};
 use rst_app::commands::CommandService;
@@ -26,6 +27,7 @@ use rst_domain::media::library::UploadSlots;
 use rst_domain::paths::StreamerPath;
 use rst_domain::render::jobs::RenderJobs;
 use rst_domain::spotify::redirect_uri;
+use rst_infra::backup::archive::ZipBackups;
 use rst_infra::db::sqlite_audit::SqliteAudit;
 use rst_infra::db::sqlite_records::SqliteRecords;
 use rst_infra::db::sqlite_server_settings::SqliteServerSettings;
@@ -77,6 +79,7 @@ pub struct App {
     /// `None` without Spotify credentials
     pub spotify: Option<Arc<SpotifyClient>>,
     pub runtimes: Registry<AppRuntime>,
+    pub backups: Backups<ZipBackups, SqliteAudit, SqliteKeyStore>,
     twitch_states: Mutex<LoginStates<()>>,
     /// Spotify knows only one callback URL: the state says which streamer started the connection
     spotify_states: Mutex<LoginStates<StreamerId>>,
@@ -118,7 +121,10 @@ impl App {
                 &config.providers.spotify_api,
             ))
         });
+        let archives = ZipBackups::new(stores.pool.clone(), &config.stores.files, &config.stores.backups);
+        let backups = Backups::new(archives, stores.audit.clone());
         Self {
+            backups,
             spotify,
             spotify_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
             public_origin: origin_of(&config.public_url),
@@ -382,6 +388,7 @@ mod tests {
             files: folder.join("files"),
             file_cache_bytes: 0,
             render_temp: folder.join("render-tmp"),
+            backups: folder.join("backups"),
             master: MasterKey::from_bytes([3; 32]),
         };
         let opened = crate::wiring::open(&stores).await.expect("stores");
