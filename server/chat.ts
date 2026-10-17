@@ -1,6 +1,6 @@
 // Anonymous Twitch chat on the server (same as in the overlay), source for chat triggers and minimes.
 // onBan: ban or timeout of a chatter (CLEARCHAT with login). url: IRC URL (providers.ts), default Twitch.
-import { anonymousLogin, IRC_URL, parseIrc } from "../src/core/irc.ts";
+import { anonymousLogin, IRC_URL, parseIrc } from "./irc.ts";
 
 // color: Twitch name color (#RRGGBB) or nothing if the chatter has not chosen one
 export type ChatLine = { user: string; login: string; text: string; roles: string[]; color?: string };

@@ -23,8 +23,8 @@ const typesOnly = (file: string) => !/^export (const|let|function|async function
 // Modules without a check, with a reason: only network, input and output in the browser and entry points.
 // Their logic is in checked pure modules. New entries only with a reason.
 const WITHOUT_CHECK: Record<string, string> = {
-  "src/core/connection.ts": "network client (IRC, SSE); translation is checked in ircEvents.ts",
-  "src/core/emotes.ts": "network loader; splitting is checked in irc.ts",
+  "src/core/connection.ts": "network client (SSE); the server translates the chat, emote splitting is checked in parts.ts",
+  "src/core/emotes.ts": "network loader; splitting is checked in chat/parts.ts",
   "src/core/demo.ts": "timer-driven fake event source for ?demo, stands in for the network",
   "src/core/params.ts": "reads the page URL once at load (browser entry)",
   "src/core/sound.ts": "Web Audio output",
@@ -32,7 +32,7 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/themes/suedfrucht/tones.ts": "Web Audio output",
   "src/dashboard/api.ts": "network client of the dashboard",
   "server/index.ts": "HTTP entry point",
-  "server/chat.ts": "network client; parsing is checked in irc.ts",
+  "server/chat.ts": "network client; parsing is checked in server/irc.ts",
   "server/renderRoutes.ts": "HTTP handlers and the ffmpeg process; job rules and arguments are checked in render.ts",
   "server/streamer.ts": "runtime wiring of the checked clients (twitch, spotify, triggers, chat) with timers and SSE",
 };
@@ -178,6 +178,15 @@ assert.deepEqual(ownApiTypes("src/core/probe.ts", "export type Track = { id: str
 assert.deepEqual(ownApiTypes("src/core/theme.ts", "export type ThemeSchema = { id: string };", new Set(["ThemeSchema"])), []);
 for (const file of files.filter(file => /^src\/.*\.tsx?$/.test(file) && !file.startsWith("src/generated/"))) {
   failures.push(...ownApiTypes(file, readFileSync(file, "utf8"), GENERATED_TYPES));
+}
+
+// The overlays never connect to Twitch chat themselves: the server reads it and sends the lines as events
+for (const file of files.filter(file => /^src\/.*\.tsx?$/.test(file) && !file.endsWith(".check.ts"))) {
+  readFileSync(file, "utf8").split("\n").forEach((line, index) => {
+    // The dashboard may talk to OBS over a WebSocket, the overlays to nothing but the server
+    const socket = /^src\/(core|themes)\//.test(file) && /new WebSocket\(/.test(line);
+    if (socket || /irc-ws\.chat\.twitch\.tv/.test(line)) failures.push(`${file}:${index + 1}: chat connection in the browser`);
+  });
 }
 
 // Test files are called *.check.ts so npm test finds them

@@ -14,5 +14,6 @@ export type { SpotifyDetails } from "../generated/SpotifyDetails.ts";
 export type { Track } from "../generated/Track.ts";
 
 // Answer of /s/<login>/status. spotify: null = not set up or feature off, otherwise whether it is connected.
-// features: which features are on for the streamer (alerts, chat, music, fx, triggers, ...)
-export type ServerStatus = { login: string; live: boolean; spotify: boolean | null; features: Record<string, boolean> };
+// features: which features are on for the streamer (alerts, chat, music, fx, triggers, ...); channelId: Twitch id of
+// the channel for the emotes of 7TV, BTTV and FFZ (null without a running runtime, missing on the old server)
+export type ServerStatus = { login: string; live: boolean; spotify: boolean | null; features: Record<string, boolean>; channelId?: string | null };

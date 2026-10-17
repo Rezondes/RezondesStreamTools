@@ -2,7 +2,7 @@
 // ?demo=<n>: that many minimes (default 5, at most 100).
 import { commandList, type CommandList } from "./commands.ts";
 import type { MinimeRules } from "./minimes.ts";
-import { splitEmotes } from "./irc.ts";
+import { splitEmotes } from "./chat/parts.ts";
 import { numberParam } from "./params.ts";
 import type { Alert, Minime, Track } from "./types.ts";
 import type { Handlers } from "./connection.ts";

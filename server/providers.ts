@@ -1,6 +1,6 @@
 // Base URLs of Twitch and Spotify. Without variables the real services; the contract tests (contract/) point them at
 // the fake provider (contract/fakeProviders.ts). index.ts reads the environment and passes the result on.
-import { IRC_URL } from "../src/core/irc.ts";
+import { IRC_URL } from "./irc.ts";
 
 export type ProviderUrls = {
   twitchId: string;

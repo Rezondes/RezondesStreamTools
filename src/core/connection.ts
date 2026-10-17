@@ -1,12 +1,11 @@
 // Connection of an overlay page (used only by the hooks in core/hooks, rule 16):
 // - Streamer: from the path /s/<login>/<scene>.html, in Vite (npm run dev) from ?s=<login>
-// - Chat: always an anonymous IRC login (no token needed), channel = streamer (or ?channel=)
-// - Alerts with server: via server-sent events from /s/<login>/events, incl. follows, channel points and hype train
-// - Alerts without server or without a running runtime: subs, resubs, gifts, raids, bits from IRC
+// - Everything live comes from the server as server-sent events from /s/<login>/events: alerts, music, effects,
+//   settings, minimes and the chat (the server reads it; the browser never connects to Twitch chat itself)
+// - Chat emotes: Twitch emotes come with the message, 7TV/BTTV/FFZ are loaded here for the channel of the streamer
 // - ?demo in the URL: creates fake events for testing without a stream
+import { splitWords } from "./chat/parts.ts";
 import { loadEmotes } from "./emotes.ts";
-import { anonymousLogin, IRC_URL, parseIrc } from "./irc.ts";
-import { toIrcEvents } from "./ircEvents.ts";
 import { params } from "./params.ts";
 import * as streamerPath from "./streamerPath.ts";
 import { demo } from "./demo.ts";
@@ -31,16 +30,14 @@ export const streamer = streamerPath.parse(location.pathname)?.login ?? (streame
 // File from the streamer's media folder (/s/<login>/media/); full URLs and pages without a streamer unchanged
 export const mediaUrl = (name: string) => (/^https?:\/\//.test(name) || !streamer ? name : `${streamerPath.base(streamer)}/media/${encodeURIComponent(name)}`);
 
-const channel = (params.get("channel") ?? streamer ?? String(import.meta.env.VITE_TWITCH_CHANNEL ?? "")).toLowerCase().replace(/^#/, "");
-
-// null = no streamer, no server reachable or streamer unknown there
+// null = no streamer, no server reachable or streamer unknown there; without a server there is no live data
 async function serverStatus(): Promise<ServerStatus | null> {
   if (!streamer || !location.protocol.startsWith("http")) return null;
   try {
     const response = await fetch(`${streamerPath.base(streamer)}/status`);
     return response.ok ? ((await response.json()) as ServerStatus) : null;
   } catch {
-    // Network error: like without a server, the chat runs anyway
+    // Network error: like without a server
     return null;
   }
 }
@@ -119,17 +116,26 @@ function startSources(handlers: Handlers): () => void {
   const live: Handlers = isDemo ? { ...handlers, music: undefined, minimes: undefined, minimeChat: undefined } : handlers;
   serverStatus()
     .then(server => {
-      if (stopped) return;
-      const name = channel || server?.login;
-      // With a server, alerts only come from the server, otherwise subs would appear twice
-      if (name) stops.push(irc(name, live, !server));
-      if (server) stops.push(events(server.login, live));
+      if (!stopped && server) stops.push(events(server, live));
     })
     .catch((error: unknown) => console.error("Connecting failed:", error));
   return () => { stopped = true; stops.forEach(stop => stop()); };
 }
 
-function events(login: string, handlers: Handlers) {
+// Emotes of 7TV, BTTV and FFZ for the channel, refreshed every 10 minutes; without a channel id none
+function channelEmotes(channelId: string | null | undefined) {
+  let emotes = new Map<string, string>();
+  if (!channelId) return { current: () => emotes, stop: () => {} };
+  // loadEmotes never throws (allSettled); without a result the old emotes stay
+  const fetchEmotes = () => { loadEmotes(channelId).then(loaded => { emotes = loaded; }).catch(() => {}); };
+  fetchEmotes();
+  const reload = setInterval(fetchEmotes, 600_000);
+  return { current: () => emotes, stop: () => clearInterval(reload) };
+}
+
+function events(server: ServerStatus, handlers: Handlers) {
+  const login = server.login;
+  const emotes = channelEmotes(server.channelId);
   let source: EventSource;
   let retry: ReturnType<typeof setTimeout> | undefined;
   const open = () => {
@@ -143,6 +149,8 @@ function events(login: string, handlers: Handlers) {
       else if (message.type === "settings") handlers.settings?.(message.settings);
       else if (message.type === "minimes") handlers.minimes?.(message.minimes);
       else if (message.type === "minimeChat") handlers.minimeChat?.(message.login);
+      else if (message.type === "chat") handlers.chat?.({ ...message.message, parts: splitWords(message.message.parts, emotes.current()) });
+      else if (message.type === "remove") handlers.remove?.(message.removal);
     };
     // After an answer like 404 (runtime not started right now) EventSource gives up: reconnect ourselves after a pause
     source.onerror = () => {
@@ -150,42 +158,5 @@ function events(login: string, handlers: Handlers) {
     };
   };
   open();
-  return () => { clearTimeout(retry); source.close(); };
-}
-
-function irc(name: string, handlers: Handlers, withAlerts: boolean) {
-  let socket: WebSocket;
-  let stopped = false;
-  let retry: ReturnType<typeof setTimeout>;
-  // 7TV/BTTV/FFZ emotes, loaded as soon as the channel ID is known, refreshed every 10 minutes
-  let emotes = new Map<string, string>();
-  let roomId = "";
-  let reload: ReturnType<typeof setInterval> | undefined;
-  // loadEmotes never throws (allSettled); without a result the old emotes stay
-  const fetchEmotes = () => { loadEmotes(roomId).then(loaded => { emotes = loaded; }).catch(() => {}); };
-
-  const handleLine = (line: string) => {
-    for (const event of toIrcEvents(parseIrc(line), emotes, withAlerts, () => crypto.randomUUID())) {
-      if (event.type === "chat") handlers.chat?.(event.message);
-      else if (event.type === "alert") handlers.alert?.(event.alert);
-      else if (event.type === "remove") handlers.remove?.(event.removal);
-      else if (event.type === "ping") socket.send(`PONG :${event.token}`);
-      else if (event.roomId !== roomId) {
-        roomId = event.roomId;
-        fetchEmotes();
-        clearInterval(reload);
-        reload = setInterval(fetchEmotes, 600_000);
-      }
-    }
-  };
-
-  const open = () => {
-    socket = new WebSocket(IRC_URL);
-    socket.onopen = () => anonymousLogin(name, Math.random).forEach(line => socket.send(line));
-    socket.onmessage = event => String(event.data).split("\r\n").filter(Boolean).forEach(handleLine);
-    socket.onclose = () => { if (!stopped) retry = setTimeout(open, 3000); };
-  };
-
-  open();
-  return () => { stopped = true; clearTimeout(retry); clearInterval(reload); socket.close(); };
+  return () => { emotes.stop(); clearTimeout(retry); source.close(); };
 }

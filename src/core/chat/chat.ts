@@ -1,4 +1,4 @@
-// Context chat: display of the badges. The badges come as HOST, MOD, VIP, SUB from core/ircEvents.ts; a theme can
+// Context chat: display of the badges. The badges come as HOST, MOD, VIP, SUB from the server; a theme can
 // have texts for them (badgeFields: badgeHost, badgeMod, badgeVip, badgeSub), otherwise the abbreviation stays.
 // Pure; check: chat.check.ts.
 import { text } from "../fields.ts";

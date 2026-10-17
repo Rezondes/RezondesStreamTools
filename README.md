@@ -8,7 +8,6 @@ React + Vite + TypeScript. Dazu ein kleiner Node-Server (Docker) für mehrere St
 
 ```bash
 npm install
-cp .env.example .env.local   # Kanal eintragen
 npm run dev                  # http://localhost:5173
 ```
 
@@ -42,8 +41,8 @@ Mit Server liegt jede Szene unter `/s/<login>/<szene>` (z.B. `http://localhost:8
 die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Sie enthalten den geheimen Overlay-Schlüssel (`?key=`),
 ohne den eine Szene keine Live-Ereignisse bekommt; neu erzeugen lässt er sich in der Übersicht (danach OBS-Quellen neu
 einrichten). Unter `npm run dev` wählt `?s=<login>` den Streamer.
-Alle Szenen nehmen `?channel=name` (überschreibt den Streamer bzw. `.env.local`) und `?demo`.
-`music`, `fx` und `minimes` brauchen den Overlay-Server (Spotify, Chat-Trigger und Minimes laufen dort).
+Alle Szenen nehmen `?demo`. Live-Daten (auch der Chat) kommen nur vom Overlay-Server; die Szenen verbinden sich nie
+selbst mit dem Twitch-Chat.
 Die Befehlsseite `/s/<login>/` zeigt Zuschauern alle Chat-Befehle im Stil des gewählten Themes (Liste als JSON unter
 `/s/<login>/commands`); der Hilfe-Befehl (Standard `!befehle`, einstellbar in der Übersicht) antwortet im Chat als
 Streamer mit der Kurzliste und dem Link. Dafür braucht die Twitch-Anmeldung den Scope `user:write:chat`.
