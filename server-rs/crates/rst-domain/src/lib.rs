@@ -10,6 +10,7 @@ pub mod minimes;
 pub mod paths;
 pub mod render;
 pub mod settings;
+pub mod spotify;
 pub mod themes;
 pub mod triggers;
 pub mod twitch;
