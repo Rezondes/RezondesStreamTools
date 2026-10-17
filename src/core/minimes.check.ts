@@ -49,14 +49,14 @@ assert.equal(parseColor("#000000", 0), "#000000");
 // Commands: at the start of the message, case-insensitive, color optional
 assert.deepEqual(parseCommand("!join", [], RULES), { type: "join", color: null, variant: null });
 assert.deepEqual(parseCommand("!JOIN #f0a", [], RULES), { type: "join", color: "#ff00aa", variant: null });
-assert.deepEqual(parseCommand("!join kaputt", [], RULES), { type: "join", color: null, variant: null });
+assert.deepEqual(parseCommand("!join broken", [], RULES), { type: "join", color: null, variant: null });
 assert.deepEqual(parseCommand("!color 255 0 0", [], RULES), { type: "color", color: "#ff0000" });
-assert.equal(parseCommand("!color lila", [], RULES), null);
+assert.equal(parseCommand("!color purple", [], RULES), null);
 assert.deepEqual(parseCommand("!leave", [], RULES), { type: "leave" });
 assert.equal(parseCommand("!joinx", [], RULES), null);
 assert.equal(parseCommand("hello !join", [], RULES), null);
 // Command words are configurable
-assert.deepEqual(parseCommand("!geist", [], { ...RULES, commands: { ...RULES.commands, join: "!geist" } }), { type: "join", color: null, variant: null });
+assert.deepEqual(parseCommand("!ghost", [], { ...RULES, commands: { ...RULES.commands, join: "!ghost" } }), { type: "join", color: null, variant: null });
 
 // Roles: kicking other minimes only with an allowed role, joining only with an allowed role
 assert.deepEqual(parseCommand("!leave @Neo_42", ["moderator"], RULES), { type: "kick", login: "neo_42" });

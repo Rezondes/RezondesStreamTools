@@ -19,7 +19,7 @@ assert.deepEqual(parseMinimeFile({
   roster: [
     { login: "../a", user: "A", color: null, lastSeen: 1 },
     { login: "b", user: "B", color: "red", lastSeen: 1 },
-    { login: "c", user: "C", color: "#00ff00", lastSeen: "jetzt" },
+    { login: "c", user: "C", color: "#00ff00", lastSeen: "now" },
     { login: "neo", user: "Neo", color: "#ff00aa", lastSeen: 5 },
     { login: "neo", user: "Neo", color: null, lastSeen: 6 },
     { login: "trinity", user: "Trinity", color: null, lastSeen: 7 },
@@ -47,7 +47,7 @@ assert.deepEqual(toMinimeEvent(line("!color 0 255 0"), RULES), { type: "color", 
 assert.deepEqual(toMinimeEvent(line("!leave"), RULES), { type: "leave", login: "neo" });
 assert.deepEqual(toMinimeEvent(line("!leave @trinity", "mod", ["moderator"]), RULES), { type: "kick", login: "trinity" });
 assert.deepEqual(toMinimeEvent(line("hello"), RULES), { type: "chat", login: "neo" });
-assert.deepEqual(toMinimeEvent(line("!color lila"), RULES), { type: "chat", login: "neo" });
+assert.deepEqual(toMinimeEvent(line("!color purple"), RULES), { type: "chat", login: "neo" });
 
 // Runtime: timers are fired by hand, the clock stands still until the check moves it on
 function fakeTimers() {
