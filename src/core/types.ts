@@ -24,7 +24,7 @@ export type FxAction = {
   sound?: string;
   volume?: number;
   duration?: number;
-  // Ablauf in "do": Aktionen laufen nacheinander. delay = Sekunden sichtbar, aber angehalten (erstes Bild),
+  // Sequence in "do": actions run one after another. delay = seconds visible but paused (first frame),
   // after = seconds standing paused (last frame), together = appears with the previous action
   delay?: number;
   after?: number;
