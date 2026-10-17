@@ -8,7 +8,7 @@ export const HEIGHT = 1080;
 export const FPS = 60;
 
 export type StandardStingerOptions = {
-  duration: number; // Sekunden
+  duration: number; // seconds
   cut: number; // seconds, enter in OBS as transition point
   panels: number; // number of stripes
   text: string;

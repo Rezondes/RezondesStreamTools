@@ -63,7 +63,7 @@ assert.deepEqual(overlayRoute(["alerts"]), { kind: "scene", file: "alerts.html" 
 assert.deepEqual(overlayRoute(["starting"]), { kind: "scene", file: "starting.html" });
 assert.deepEqual(overlayRoute(["minimes"]), { kind: "scene", file: "minimes.html" });
 assert.equal(overlayRoute(["index"]), null);
-assert.equal(overlayRoute(["unbekannt"]), null);
+assert.equal(overlayRoute(["unknown"]), null);
 assert.deepEqual(overlayRoute(["media", "lizard.gif"]), { kind: "media", file: "lizard.gif" });
 // Everything else is not an overlay URL: dashboard, foreign files, paths out of the media folder
 assert.equal(overlayRoute(["index.html"]), null);

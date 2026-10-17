@@ -5,8 +5,8 @@ import { frames, parseLine } from "./typing.ts";
 const last = (list: { text: string }[]) => list.at(-1)!.text;
 const fixed = () => 0.5;
 
-assert.equal(last(frames("hallo", fixed)), "hallo");
-assert.equal(frames("hallo", fixed).length, 5);
+assert.equal(last(frames("hello", fixed)), "hello");
+assert.equal(frames("hello", fixed).length, 5);
 
 // Typo, delete, correct
 assert.equal(last(frames(["sudo sytsem", { del: 4 }, "stemctl"], fixed)), "sudo systemctl");

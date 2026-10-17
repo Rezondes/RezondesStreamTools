@@ -14,7 +14,7 @@ const fruits = readMinimeOptions({}, { command: "!frucht", label: "Frucht", vari
 // All three sections with heading, command, text and details (who, cooldowns)
 const sections = describeCommands(commandList("rezondes", HELP, colors, [
   { name: "lizard", description: "Eine Echse läuft durchs Bild", when: { type: "command", match: "!lizard" }, who: ["vip", "moderator"], cooldown: 5, userCooldown: 60 },
-  { name: "hallo", when: { type: "word", match: "hallo" } },
+  { name: "hello", when: { type: "word", match: "hello" } },
   { name: "muster", when: { type: "regex", match: "^a+$" } },
 ]), values);
 assert.deepEqual(sections.map(section => [section.id, section.heading]), [["help", "Hilfe"], ["minimes", "Minimes"], ["triggers", "Effekte"]]);
@@ -25,7 +25,7 @@ assert.equal(sections[1].entries[1].text, "Farbe deiner Figur ändern, z.B. !col
 assert.deepEqual(sections[1].entries[2].details, ["Mods: !leave @name wirft eine Figur raus."]);
 assert.deepEqual(sections[2].entries, [
   { command: "!lizard", text: "Eine Echse läuft durchs Bild", details: ["Tippe !lizard", "Für: VIPs, Mods", "Pause danach: 5 s", "Pro Person: 60 s"] },
-  { command: "hallo", text: "", details: ["Schreib das Wort hallo", "Für: alle"] },
+  { command: "hello", text: "", details: ["Schreib das Wort hello", "Für: alle"] },
   { command: "", text: "", details: ["Eine besondere Nachricht", "Für: alle"] },
 ]);
 

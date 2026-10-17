@@ -36,7 +36,7 @@ assert.equal(describeAlert({ kind: "sub", user: "neo", detail: "Tier 2" }, value
 assert.equal(describeAlert({ kind: "sub", user: "neo" }, values, keys({ tierSuffix: "tierSuffix" })).tag, "SUB");
 
 // Quote: the viewer's message, except for gift subs (there text is the recipient)
-assert.equal(alertQuote({ kind: "sub", user: "neo", text: "hallo" }), "hallo");
+assert.equal(alertQuote({ kind: "sub", user: "neo", text: "hello" }), "hello");
 assert.equal(alertQuote({ kind: "gift", user: "neo", amount: 1, text: "trinity" }), null);
 assert.equal(alertQuote({ kind: "follow", user: "neo" }), null);
 

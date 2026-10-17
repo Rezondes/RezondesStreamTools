@@ -8,7 +8,7 @@ export type RenderClip = {
   width: number;
   height: number;
   fps: number;
-  duration: number; // Sekunden
+  duration: number; // seconds
   cut: number | null; // transition point in seconds, only for the stinger
   group: string;
   font: string; // CSS font to preload, e.g. '24px "Inter"'

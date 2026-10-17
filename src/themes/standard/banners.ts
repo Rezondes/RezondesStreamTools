@@ -2,7 +2,7 @@
 // color areas that move in a circle once per loop (so the GIF loops seamlessly), plus title and text.
 // Pure functions of time. Check: banners.check.ts.
 export type StandardBannerOptions = {
-  loop: number; // Sekunden
+  loop: number; // seconds
   font: string;
   background: string;
   accent: string;

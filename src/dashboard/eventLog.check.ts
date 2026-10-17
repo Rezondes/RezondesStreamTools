@@ -10,7 +10,7 @@ const texts = (state: LogState) => state.entries.map(entry => `${entry.kind}: ${
 // Alerts: one sentence per kind, the viewer's message in quotes; newest first
 assert.deepEqual(texts(run([
   { type: "alert", alert: { kind: "follow", user: "neo" } },
-  { type: "alert", alert: { kind: "sub", user: "neo", text: "hallo" } },
+  { type: "alert", alert: { kind: "sub", user: "neo", text: "hello" } },
   { type: "alert", alert: { kind: "resub", user: "neo", amount: 12 } },
   { type: "alert", alert: { kind: "gift", user: "neo", amount: 5 } },
   { type: "alert", alert: { kind: "raid", user: "neo", amount: 42 } },
@@ -21,7 +21,7 @@ assert.deepEqual(texts(run([
   { type: "alert", alert: { kind: "hype", user: "HYPE", amount: 4, detail: "end" } },
 ])).reverse(), [
   "alert: neo folgt jetzt",
-  "alert: neo hat abonniert: \"hallo\"",
+  "alert: neo hat abonniert: \"hello\"",
   "alert: neo abonniert seit 12 Monaten",
   "alert: neo verschenkt 5 Abos",
   "alert: neo raidet mit 42 Zuschauern",

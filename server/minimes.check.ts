@@ -46,7 +46,7 @@ assert.deepEqual(toMinimeEvent(line("!join #f0a"), RULES), { type: "join", login
 assert.deepEqual(toMinimeEvent(line("!color 0 255 0"), RULES), { type: "color", login: "neo", user: "NEO", color: "#00ff00", twitchColor: "#ff0000" });
 assert.deepEqual(toMinimeEvent(line("!leave"), RULES), { type: "leave", login: "neo" });
 assert.deepEqual(toMinimeEvent(line("!leave @trinity", "mod", ["moderator"]), RULES), { type: "kick", login: "trinity" });
-assert.deepEqual(toMinimeEvent(line("hallo"), RULES), { type: "chat", login: "neo" });
+assert.deepEqual(toMinimeEvent(line("hello"), RULES), { type: "chat", login: "neo" });
 assert.deepEqual(toMinimeEvent(line("!color lila"), RULES), { type: "chat", login: "neo" });
 
 // Runtime: timers are fired by hand, the clock stands still until the check moves it on
@@ -73,8 +73,8 @@ try {
 
   // Join, write, change color: list and reaction go to the overlays
   runtime.handle(line("!join #f0a"));
-  runtime.handle(line("hallo"));
-  runtime.handle(line("hallo", "smith"));
+  runtime.handle(line("hello"));
+  runtime.handle(line("hello", "smith"));
   assert.deepEqual(messages, [
     { type: "minimes", minimes: [{ login: "neo", user: "NEO", color: "#ff00aa", variant: null }] },
     { type: "minimeChat", login: "neo" },

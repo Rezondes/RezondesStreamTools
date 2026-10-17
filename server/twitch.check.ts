@@ -74,7 +74,7 @@ answers = {
   "https://api.twitch.tv/helix/users": [{ status: 200, body: { data: [{ id: "42", login: "rezondes" }] } }],
 };
 assert.deepEqual(await app.exchange("code"), { access: "access-2", refresh: "refresh-2", userId: "42", login: "rezondes" });
-assert.equal(await app.exchange("falsch"), null);
+assert.equal(await app.exchange("wrong"), null);
 await assert.rejects(app.exchange("code"));
 
 // validate: valid = same tokens, expired = renewed, refresh rejected = null, other errors throw
@@ -95,11 +95,11 @@ assert.equal(await app.canChat(tokens), null);
 
 // say: message as the streamer in their own chat; ok, missing scope or error
 answers = { "https://api.twitch.tv/helix/chat/messages": [{ status: 200 }, { status: 403 }, { status: 401 }, { status: 500 }] };
-assert.equal(await app.say(tokens, "hallo"), "ok");
-assert.deepEqual(JSON.parse(requests.at(-1)!.body), { broadcaster_id: "42", sender_id: "42", message: "hallo" });
-assert.equal(await app.say(tokens, "hallo"), "missing-scope");
-assert.equal(await app.say(tokens, "hallo"), "missing-scope");
-await assert.rejects(app.say(tokens, "hallo"));
+assert.equal(await app.say(tokens, "hello"), "ok");
+assert.deepEqual(JSON.parse(requests.at(-1)!.body), { broadcaster_id: "42", sender_id: "42", message: "hello" });
+assert.equal(await app.say(tokens, "hello"), "missing-scope");
+assert.equal(await app.say(tokens, "hello"), "missing-scope");
+await assert.rejects(app.say(tokens, "hello"));
 
 // revoke: errors throw so the caller logs them
 answers = { "https://id.twitch.tv/oauth2/revoke": [{ status: 200 }, { status: 400 }] };

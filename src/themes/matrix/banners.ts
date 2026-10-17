@@ -8,7 +8,7 @@ import { hash } from "../../core/hash.ts";
 import { glyphAt } from "./stinger.ts";
 
 export type BannerOptions = {
-  loop: number; // Sekunden
+  loop: number; // seconds
   profileFps: number;
   offlineFps: number;
   density: number; // fraction of columns with rain, 0..1

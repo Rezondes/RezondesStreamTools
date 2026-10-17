@@ -5,7 +5,7 @@ import { channelNames, fillTemplate, textBar } from "./template.ts";
 // Known placeholders are replaced, also several times and numbers
 assert.equal(fillTemplate("{user} cheert {amount} Bits, danke {user}!", { user: "NEO", amount: 100 }), "NEO cheert 100 Bits, danke NEO!");
 // Unknown ones stay
-assert.equal(fillTemplate("hallo {wer}", { user: "NEO" }), "hallo {wer}");
+assert.equal(fillTemplate("hello {who}", { user: "NEO" }), "hello {who}");
 // Inserted values are not replaced again (chat message with "{user}")
 assert.equal(fillTemplate("{message}", { message: "{user}", user: "NEO" }), "{user}");
 

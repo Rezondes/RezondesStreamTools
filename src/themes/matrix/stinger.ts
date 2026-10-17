@@ -12,7 +12,7 @@ export const HEIGHT = 1080;
 export const FPS = 60;
 
 export type StingerOptions = {
-  duration: number; // Sekunden
+  duration: number; // seconds
   cut: number; // seconds, enter in OBS as "Transition Point"
   fall: number; // seconds a column needs to fall in or out
   column: number; // Spaltenbreite in px

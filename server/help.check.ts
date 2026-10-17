@@ -25,7 +25,7 @@ help.setCanChat(true);
 assert.equal(help.canChat(), true);
 
 // Command at the start, upper or lower case, with a rest; other messages not
-await help.handle(line("hallo !befehle"));
+await help.handle(line("hello !befehle"));
 await help.handle(line("!BEFEHLE bitte"));
 assert.deepEqual(sent, ["Befehle: !lizard | https://x/s/rezondes/"]);
 // Our own reply comes back in chat: detected as an echo (otherwise word triggers from the list would fire)

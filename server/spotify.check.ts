@@ -80,7 +80,7 @@ try {
 
   // Connect: invalid code = false, a valid one saves the tokens (readable only by the server)
   answers = { [TOKEN_URL]: [{ status: 400 }, { status: 200, body: { access_token: "a1", refresh_token: "r1", expires_in: 3600 } }] };
-  assert.equal(await client.connect("falsch"), false);
+  assert.equal(await client.connect("wrong"), false);
   assert.equal(await client.connect("code"), true);
   assert.equal(client.connected(), true);
   assert.equal(toTokens(JSON.parse(await readFile(join(folder, "spotify.json"), "utf8")))?.refresh, "r1");

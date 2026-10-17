@@ -54,7 +54,7 @@ assert.deepEqual(parseCommand("!color 255 0 0", [], RULES), { type: "color", col
 assert.equal(parseCommand("!color lila", [], RULES), null);
 assert.deepEqual(parseCommand("!leave", [], RULES), { type: "leave" });
 assert.equal(parseCommand("!joinx", [], RULES), null);
-assert.equal(parseCommand("hallo !join", [], RULES), null);
+assert.equal(parseCommand("hello !join", [], RULES), null);
 // Command words are configurable
 assert.deepEqual(parseCommand("!geist", [], { ...RULES, commands: { ...RULES.commands, join: "!geist" } }), { type: "join", color: null, variant: null });
 

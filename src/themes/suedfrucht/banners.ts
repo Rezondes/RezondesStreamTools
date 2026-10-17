@@ -5,7 +5,7 @@
 import { hash } from "../../core/hash.ts";
 
 export type SuedfruchtBannerOptions = {
-  loop: number; // Sekunden
+  loop: number; // seconds
   font: string;
   titleFont: string;
   skyTop: string;
