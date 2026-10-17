@@ -4,6 +4,7 @@ pub mod access;
 pub mod error;
 pub mod identity;
 pub mod media;
+pub mod minimes;
 pub mod paths;
 pub mod settings;
 pub mod themes;
