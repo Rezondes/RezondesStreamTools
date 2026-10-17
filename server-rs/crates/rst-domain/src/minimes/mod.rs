@@ -10,6 +10,7 @@ use std::collections::BTreeMap;
 
 use serde_json::{Map, Value};
 
+use crate::chat::line::ChatLine;
 use crate::minimes::command::{MinimeCommand, parse_command};
 use crate::minimes::roster::{MAX_STORED, MinimeEntry, MinimeEvent, MinimeState, StoredColor, StoredVariant};
 use crate::minimes::rules::MinimeRules;
@@ -91,17 +92,6 @@ pub fn parse_minime_file(raw: &Value) -> MinimeState {
     MinimeState { roster, colors, variants }
 }
 
-/// A chat line as the minimes see it
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ChatLine {
-    pub login: String,
-    pub user: String,
-    pub text: String,
-    pub roles: Vec<String>,
-    /// Twitch name color, if the chatter chose one
-    pub color: Option<String>,
-}
-
 /// Chat line as an event: a command or otherwise a normal message
 #[must_use]
 pub fn to_minime_event(line: &ChatLine, rules: &MinimeRules) -> MinimeEvent {
@@ -130,6 +120,7 @@ mod tests {
             text: text.to_owned(),
             roles: roles.iter().map(|role| (*role).to_owned()).collect(),
             color: Some("#ff0000".to_owned()),
+            emotes: Vec::new(),
         }
     }
 
