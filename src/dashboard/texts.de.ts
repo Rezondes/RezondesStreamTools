@@ -237,6 +237,9 @@ export const TEXTS = {
     no: "nein",
     never: "nie",
     adminMark: "(Admin)",
+    deleteStreamer: "Löschen",
+    confirmDeleteStreamer: (login: string) =>
+      `${login} endgültig löschen? Alle Daten, Medien und Sitzungen sind danach weg und kommen auch mit einem Backup nicht zurück.`,
     backups: "Backups",
     backupHint: "Ein Backup enthält alle Profile und Dateien verschlüsselt, aber nie die Schlüssel.",
     backupCreate: "Backup erstellen",
@@ -387,5 +390,7 @@ export const TEXTS = {
     "backup-busy": "Es läuft schon ein Backup oder eine Wiederherstellung. Bitte warten, bis es fertig ist.",
     "backup-invalid": "Die Datei ist kein gültiges Backup dieses Servers.",
     maintenance: "Der Server stellt gerade ein Backup wieder her. Bitte gleich erneut versuchen.",
+    "admin-protected": "Admins aus der Server-Konfiguration können nicht gelöscht werden.",
+    "invalid-login": "Ungültiger Twitch-Login.",
   } satisfies Record<ErrorCode, string>,
 };

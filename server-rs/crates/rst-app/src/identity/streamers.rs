@@ -125,6 +125,16 @@ impl<R: StreamerRepository, S: RecordStore, K: KeyStore> Streamers<R, S, K> {
         Ok(streamer)
     }
 
+    /// Removes the streamer for good: the data key is shredded first, then the records and the row go
+    ///
+    /// # Errors
+    /// When a store fails.
+    pub async fn remove(&self, id: &StreamerId) -> Result<(), StoreError> {
+        self.vault.keys().shred(id).await?;
+        self.vault.records().delete_streamer(id).await?;
+        self.repository.delete(id).await
+    }
+
     /// # Errors
     /// When the database fails.
     pub async fn find_by_login(&self, login: &Login) -> Result<Option<StreamerId>, StoreError> {

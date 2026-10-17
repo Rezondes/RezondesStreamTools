@@ -91,6 +91,8 @@ routes! {
     AdminStreamers => "GET" "/api/admin/streamers", Guard::Admin;
     // New: the audit log, server-wide or with ?login= of one streamer
     AdminAudit => "GET" "/api/admin/audit", Guard::Admin;
+    // New: deletes a streamer for good, ?login=
+    DeleteStreamer => "DELETE" "/api/admin/streamer", Guard::Admin;
     // New: server-wide backups, one of them by ?id=
     AdminBackups => "GET" "/api/admin/backups", Guard::Admin;
     CreateBackup => "POST" "/api/admin/backups", Guard::Admin;

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Access, Feature, Level } from "../../server/access.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
-import { createBackup, deleteBackup, getJson, postJson, restoreBackup, uploadBackup } from "./api.ts";
+import { createBackup, deleteBackup, deleteStreamer, getJson, postJson, restoreBackup, uploadBackup } from "./api.ts";
 import { TEXTS } from "./texts.de.ts";
 
 const ADMIN_TEXT = TEXTS.adminArea;
@@ -51,6 +51,14 @@ export default function Admin() {
 
   if (!access) return <p className="muted">{notice && notice !== "saved" ? TEXTS.errors[notice] : TEXTS.loading}</p>;
 
+  const remove = (login: string) => {
+    if (!confirm(ADMIN_TEXT.confirmDeleteStreamer(login))) return;
+    deleteStreamer(login).then(code => {
+      setNotice(code);
+      load();
+    }).catch(() => setNotice("server-error"));
+  };
+
   const save = () => {
     const next = fromDraft(access);
     if (saved && !confirmLosses(saved, next)) return;
@@ -74,7 +82,7 @@ export default function Admin() {
         <span role="status" className={notice === "saved" ? "" : "error"}>{notice === "saved" ? ADMIN_TEXT.saved : notice ? TEXTS.errors[notice] : ""}</span>
       </div>
       <h2>{ADMIN_TEXT.streamers}</h2>
-      <StreamerTable streamers={streamers} />
+      <StreamerTable streamers={streamers} onDelete={remove} />
       <h2>{ADMIN_TEXT.backups}</h2>
       <Backups />
       <h2>{ADMIN_TEXT.schedule}</h2>
@@ -129,12 +137,12 @@ function AccessForm({ access, onChange }: { access: AccessDraft; onChange: (acce
   );
 }
 
-function StreamerTable({ streamers }: { streamers: StreamerRow[] }) {
+function StreamerTable({ streamers, onDelete }: { streamers: StreamerRow[]; onDelete: (login: string) => void }) {
   const yesNo = (value: boolean) => (value ? ADMIN_TEXT.yes : ADMIN_TEXT.no);
   return (
     <table>
       <thead>
-        <tr><th>{ADMIN_TEXT.login}</th><th>{ADMIN_TEXT.allowed}</th><th>{ADMIN_TEXT.connected}</th><th>{ADMIN_TEXT.live}</th><th>{ADMIN_TEXT.lastLogin}</th></tr>
+        <tr><th>{ADMIN_TEXT.login}</th><th>{ADMIN_TEXT.allowed}</th><th>{ADMIN_TEXT.connected}</th><th>{ADMIN_TEXT.live}</th><th>{ADMIN_TEXT.lastLogin}</th><th /></tr>
       </thead>
       <tbody>
         {streamers.map(row => (
@@ -144,6 +152,7 @@ function StreamerTable({ streamers }: { streamers: StreamerRow[] }) {
             <td className={row.connected ? "" : "muted"}>{yesNo(row.connected)}</td>
             <td className={row.live ? "glow" : "muted"}>{yesNo(row.live)}</td>
             <td>{row.lastLogin ? new Date(row.lastLogin).toLocaleString("de-DE") : ADMIN_TEXT.never}</td>
+            <td>{!row.admin && <button className="btn" onClick={() => onDelete(row.login)}>{ADMIN_TEXT.deleteStreamer}</button>}</td>
           </tr>
         ))}
       </tbody>

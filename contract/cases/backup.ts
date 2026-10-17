@@ -1,5 +1,5 @@
-// Contract cases: server-wide backups for admins (Rust server only, see pending-node.json).
-import { ADMIN, expect, expectCode, fail, request, STREAMER, type Case } from "../client.ts";
+// Contract cases: server-wide backups and deleting a streamer for admins (Rust server only, see pending-node.json).
+import { ADMIN, expect, expectCode, fail, login, request, setAccess, STREAMER, type Case } from "../client.ts";
 
 const admin = ADMIN.login;
 type Listing = { running: boolean; backups: { id: string; bytes: number }[] };
@@ -43,6 +43,21 @@ export const BACKUP_CASES: Case[] = [
       await expectCode(await post({ enabled: true, intervalHours: 0, keep: 3 }), 400, "invalid-json");
       await expect(await post({ enabled: true, intervalHours: 24, keep: 3 }), 200, shape);
       await expect(await post({ enabled: false, intervalHours: 24, keep: 3 }), 200, shape);
+    },
+  },
+  {
+    name: "streamers: an admin deletes a streamer for good",
+    async run(context) {
+      await setAccess(context, [STREAMER.login, "morpheus"]);
+      await login(context, "morpheus", "13");
+      await expect(await request(context, "/api/me", { session: "morpheus" }), 200, { login: "string" });
+      await expectCode(await request(context, "/api/admin/streamer?login=morpheus", { method: "DELETE", session: STREAMER.login }), 403, "admin-only");
+      await expectCode(await request(context, `/api/admin/streamer?login=${admin}`, { method: "DELETE", session: admin }), 400, "admin-protected");
+      await expect(await request(context, "/api/admin/streamer?login=morpheus", { method: "DELETE", session: admin }), 200, { ok: "boolean" });
+      await expectCode(await request(context, "/api/me", { session: "morpheus" }), 401, "unauthorized");
+      await expectCode(await request(context, "/s/morpheus/status"), 404, "not-found");
+      await expectCode(await request(context, "/api/admin/streamer?login=morpheus", { method: "DELETE", session: admin }), 404, "not-found");
+      await setAccess(context, [STREAMER.login]);
     },
   },
 ];

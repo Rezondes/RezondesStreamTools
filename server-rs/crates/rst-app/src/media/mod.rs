@@ -184,6 +184,14 @@ impl<S: RecordStore, K: KeyStore, F: FileStore> MediaLibrary<S, K, F> {
         self.files.read(&key, id, &stored.file).map_err(|_| VaultError::Unreadable)
     }
 
+    /// Deletes every file of a streamer (after the data key was shredded)
+    ///
+    /// # Errors
+    /// When the files cannot be deleted.
+    pub fn delete_files(&self, id: &StreamerId) -> Result<(), VaultError> {
+        self.files.delete_streamer(id).map_err(store_error)
+    }
+
     /// `true` if there was a file
     ///
     /// # Errors

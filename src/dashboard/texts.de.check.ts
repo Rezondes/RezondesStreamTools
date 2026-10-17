@@ -25,6 +25,7 @@ assert.ok(TEXTS.adminArea.revoked("neo").endsWith("neo"));
 assert.ok(TEXTS.adminArea.betaRemoved("neo").endsWith("neo"));
 assert.ok(TEXTS.adminArea.off("Chat").endsWith("Chat"));
 assert.ok(TEXTS.adminArea.backupConfirmDelete("1.1.2026").includes("1.1.2026"));
+assert.ok(TEXTS.adminArea.confirmDeleteStreamer("neo").startsWith("neo"));
 assert.ok(TEXTS.adminArea.backupConfirmRestore("1.1.2026").includes("1.1.2026"));
 assert.ok(TEXTS.adminArea.backupRestored(2, 1).includes("1 gelöschte"));
 assert.ok(!TEXTS.adminArea.backupRestored(2, 0).includes("gelöschte"));

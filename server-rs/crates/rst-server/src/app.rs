@@ -19,6 +19,7 @@ use rst_app::channel::runtime::{RuntimeSetup, StreamerRuntime, start_all};
 use rst_app::commands::CommandService;
 use rst_app::crypto::cipher::random_bytes;
 use rst_app::events::Hubs;
+use rst_app::identity::delete::StreamerDeletion;
 use rst_app::identity::login::LoginFlow;
 use rst_app::settings::SettingsService;
 use rst_app::triggers::TriggerService;
@@ -37,6 +38,7 @@ use rst_infra::db::sqlite_records::SqliteRecords;
 use rst_infra::db::sqlite_server_settings::SqliteServerSettings;
 use rst_infra::db::sqlite_sessions::SqliteSessions;
 use rst_infra::db::sqlite_streamers::SqliteStreamers;
+use rst_infra::files::encrypted::EncryptedFiles;
 use rst_infra::keys::sqlite::SqliteKeyStore;
 use rst_infra::render::ffmpeg::Ffmpeg;
 use rst_infra::spotify::client::SpotifyClient;
@@ -59,6 +61,9 @@ const FRAME_CSP: &str = "frame-ancestors 'self'";
 
 pub type AppAccessAdmin<'a> =
     AccessAdmin<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
+
+pub type AppStreamerDeletion<'a> =
+    StreamerDeletion<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, EncryptedFiles, SqliteAudit>;
 
 pub type AppRuntime = StreamerRuntime<TwitchClient, SqliteRecords, SqliteKeyStore, SpotifyClient>;
 pub type AppCommands<'a> = CommandService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
@@ -162,6 +167,18 @@ impl App {
 
     pub fn spotify_states(&self) -> MutexGuard<'_, LoginStates<StreamerId>> {
         self.spotify_states.lock().unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
+    #[must_use]
+    pub fn streamer_deletion(&self) -> AppStreamerDeletion<'_> {
+        let stores = &self.stores;
+        StreamerDeletion {
+            streamers: &stores.streamers,
+            sessions: &stores.sessions,
+            profile: &stores.profile,
+            media: &stores.media,
+            audit: &stores.audit,
+        }
     }
 
     #[must_use]

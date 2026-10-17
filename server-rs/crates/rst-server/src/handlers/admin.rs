@@ -1,5 +1,5 @@
 //! Admin routes (template: `GET /api/admin/access`, `saveAccess` and `adminStreamers` in `server/index.ts`), plus the
-//! audit log. Only admins get here (rights table).
+//! audit log and deleting a streamer. Only admins get here (rights table).
 
 use std::collections::HashMap;
 
@@ -73,6 +73,35 @@ pub async fn audit(call: Call<'_>) -> Response {
     };
     match app.access_admin().audit(streamer.as_ref(), AUDIT_LIMIT).await {
         Ok(rows) => json(&rows, 200),
+        Err(error) => server_error(&error.to_string()),
+    }
+}
+
+/// `?login=<login>`: deletes the streamer for good; admins from `ADMINS` cannot be deleted
+pub async fn delete_streamer(call: Call<'_>) -> Response {
+    let app = call.app;
+    let query =
+        Query::<HashMap<String, String>>::try_from_uri(call.request.uri()).map(|query| query.0).unwrap_or_default();
+    let Some(login) = query.get("login").and_then(|login| Login::parse(login).ok()) else {
+        return text(400, "invalid-login");
+    };
+    if app.config.admins.contains(&login) {
+        return text(400, "admin-protected");
+    }
+    let id = match app.stores.streamers.find_by_login(&login).await {
+        Ok(Some(id)) => id,
+        Ok(None) => return text(404, "not-found"),
+        Err(error) => return server_error(&error.to_string()),
+    };
+    // Stop first and wait for a running token check, it may still save renewed tokens
+    let runtime = app.runtimes.get(&id);
+    app.stop_runtime(&id);
+    if let Some(runtime) = runtime {
+        runtime.keeper.idle().await;
+    }
+    let actor = call.visitor.login.as_deref().unwrap_or("unknown");
+    match app.streamer_deletion().delete(&app.twitch, &id, actor, now_ms()).await {
+        Ok(()) => json(&serde_json::json!({ "ok": true }), 200),
         Err(error) => server_error(&error.to_string()),
     }
 }
