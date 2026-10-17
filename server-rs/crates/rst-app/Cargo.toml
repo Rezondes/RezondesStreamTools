@@ -11,3 +11,4 @@ workspace = true
 rst-domain.workspace = true
 serde.workspace = true
 ts-rs.workspace = true
+zeroize.workspace = true

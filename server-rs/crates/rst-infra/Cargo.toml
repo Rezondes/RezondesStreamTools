@@ -8,4 +8,16 @@ publish.workspace = true
 workspace = true
 
 [dependencies]
+base64.workspace = true
+chacha20poly1305.workspace = true
+getrandom.workspace = true
+hkdf.workspace = true
 rst-app.workspace = true
+rst-domain.workspace = true
+sha2.workspace = true
+sqlx.workspace = true
+tokio.workspace = true
+zeroize.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

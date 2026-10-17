@@ -1,5 +1,6 @@
-//! Value objects of the identity context: a Twitch login and a Twitch user ID. Both are checked on creation and on
-//! deserialization, so a value of these types is always valid (template: `src/core/streamerPath.ts`, `isLogin`).
+//! Value objects of the identity context: a Twitch login, a Twitch user ID and the internal streamer ID. All are
+//! checked on creation and on deserialization, so a value of these types is always valid
+//! (template: `src/core/streamerPath.ts`, `isLogin`).
 
 use std::fmt;
 
@@ -55,6 +56,39 @@ impl TwitchUserId {
     }
 }
 
+/// Internal ID of a streamer: 16 random bytes as 32 lower case hex digits. It never changes, unlike the login, and
+/// does not reveal the Twitch account (e.g. in the key store).
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(try_from = "String", into = "String")]
+pub struct StreamerId(String);
+
+impl StreamerId {
+    /// From random bytes (the caller draws them)
+    #[must_use]
+    pub fn from_bytes(bytes: [u8; 16]) -> Self {
+        const HEX: &[u8; 16] = b"0123456789abcdef";
+        Self(
+            bytes
+                .iter()
+                .flat_map(|byte| [HEX[usize::from(byte >> 4)], HEX[usize::from(byte & 15)]])
+                .map(char::from)
+                .collect(),
+        )
+    }
+
+    /// # Errors
+    /// When the value is not 32 lower case hex digits.
+    pub fn parse(value: &str) -> Result<Self, InvalidValue> {
+        let valid = value.len() == 32 && value.bytes().all(|byte| matches!(byte, b'0'..=b'9' | b'a'..=b'f'));
+        if valid { Ok(Self(value.to_owned())) } else { Err(InvalidValue::new("streamer id")) }
+    }
+
+    #[must_use]
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
 macro_rules! string_value {
     ($name:ident) => {
         impl fmt::Display for $name {
@@ -83,6 +117,7 @@ pub(crate) use string_value;
 
 string_value!(Login);
 string_value!(TwitchUserId);
+string_value!(StreamerId);
 
 #[cfg(test)]
 mod tests {
@@ -113,6 +148,16 @@ mod tests {
         assert!(TwitchUserId::parse(&"9".repeat(20)).is_ok());
         for value in ["", "4a", "-1", " 42", &"9".repeat(21)] {
             assert!(TwitchUserId::parse(value).is_err(), "{value}");
+        }
+    }
+
+    #[test]
+    fn streamer_id_is_hex_of_16_bytes() {
+        let id = StreamerId::from_bytes([0xab; 16]);
+        assert_eq!(id.as_str(), "ab".repeat(16));
+        assert_eq!(StreamerId::parse(id.as_str()), Ok(id));
+        for value in ["", "AB".repeat(16).as_str(), "ab".repeat(15).as_str(), "zz".repeat(16).as_str()] {
+            assert!(StreamerId::parse(value).is_err(), "{value}");
         }
     }
 
