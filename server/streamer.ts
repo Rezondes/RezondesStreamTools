@@ -14,6 +14,7 @@ import { startMinimes, type MinimeRuntime } from "./minimes.ts";
 import * as profile from "./profile.ts";
 import { spotifyClient, type SpotifyApp } from "./spotify.ts";
 import { openStream, streamHub } from "./streamHub.ts";
+import { tokenKeeper } from "./tokenKeeper.ts";
 import { startTriggers } from "./triggers.ts";
 import { eventSub, type TwitchApp, type TwitchTokens } from "./twitch.ts";
 
@@ -37,7 +38,7 @@ export async function startStreamer(setup: StreamerSetup) {
     console.log(`Alert ${value.kind} for ${setup.login}: ${value.user} (${hub.overlayCount()} overlays)`);
   };
 
-  const tokens = tokenKeeper(setup, () => end());
+  const tokens = tokenKeeper({ login: setup.login, tokens: setup.tokens, twitch: setup.twitch, save: value => profile.saveTokens(setup.folder, value) }, () => end());
   const minimes = setup.features.minimes ? await startMinimes({ folder: setup.folder, emit, now: Date.now, rules: setup.minimeRules }) : null;
   const events = setup.features.alerts ? eventSub(setup.twitch, tokens.valid, alert, () => minimes?.offline()) : null;
   const triggers = setup.features.triggers && setup.features.fx ? startTriggers(setup.folder, event => emit({ type: "fx", event })) : null;
@@ -119,24 +120,3 @@ async function helpFor(setup: StreamerSetup, tokens: ReturnType<typeof tokenKeep
 }
 
 export type Streamer = Awaited<ReturnType<typeof startStreamer>>;
-
-// Hält die Twitch-Tokens aktuell: prüft sie stündlich und vor jedem EventSub-Abo, speichert erneuerte.
-// onInvalid: Twitch hat den Login abgelehnt.
-function tokenKeeper(setup: StreamerSetup, onInvalid: () => Promise<void>) {
-  let tokens = setup.tokens;
-  async function valid(): Promise<TwitchTokens | null> {
-    const checked = await setup.twitch.validate(tokens);
-    if (!checked) {
-      await onInvalid();
-      return null;
-    }
-    if (checked !== tokens) {
-      tokens = checked;
-      await profile.saveTokens(setup.folder, checked);
-    }
-    return checked;
-  }
-  // Twitch verlangt eine stündliche Prüfung
-  const check = setInterval(() => { valid().catch((error: unknown) => console.error(`Token check for ${setup.login} failed:`, error)); }, 3_600_000);
-  return { valid, current: () => tokens, stop: () => clearInterval(check) };
-}
