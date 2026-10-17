@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { deleteMedia, listMedia, quotaError, triggersUsing } from "./media.ts";
+import { deleteMedia, listMedia, quotaError, storeMedia, triggersUsing, uploadSlots } from "./media.ts";
 import type { Trigger } from "./triggers.ts";
 
 const MB = 1024 * 1024;
@@ -54,5 +54,21 @@ try {
 } finally {
   await rm(profile, { recursive: true, force: true });
 }
+
+// Speichern: passt ins Limit = gespeichert, sonst Fehlercode und nichts geschrieben; Ersetzen zählt die alte Datei ab
+const store = await mkdtemp(join(tmpdir(), "media-store-"));
+assert.equal(await storeMedia(store, "a.png", Buffer.alloc(6), 10), null);
+assert.equal(await storeMedia(store, "b.png", Buffer.alloc(6), 10), "quota-exceeded");
+assert.equal(await storeMedia(store, "a.png", Buffer.alloc(9), 10), null);
+assert.deepEqual((await listMedia(store, 10)).files.map(file => [file.name, file.size]), [["a.png", 9]]);
+await rm(store, { recursive: true, force: true });
+
+// Ein Upload pro Streamer zur Zeit, andere Streamer laufen parallel
+const slots = uploadSlots();
+assert.equal(slots.take("neo"), true);
+assert.equal(slots.take("neo"), false);
+assert.equal(slots.take("trinity"), true);
+slots.release("neo");
+assert.equal(slots.take("neo"), true);
 
 console.log("media ok");

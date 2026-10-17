@@ -346,6 +346,7 @@ export const TEXTS = {
     "invalid-json": "Ungültige Daten.",
     "too-large": "Datei oder Anfrage zu gross.",
     "quota-exceeded": "Kein Platz mehr: dein Speicher für Medien ist voll. Lösche zuerst Dateien.",
+    "upload-busy": "Es läuft schon ein Upload. Bitte warten, bis er fertig ist.",
     "server-error": "Der Server konnte die Anfrage nicht verarbeiten. Bitte erneut versuchen.",
     "unknown-clip": "Unbekannter Clip.",
     "render-busy": "Es läuft schon ein Render. Bitte warten, bis er fertig ist.",

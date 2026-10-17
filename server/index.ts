@@ -9,11 +9,10 @@ import { join, resolve } from "node:path";
 import { randomBytes } from "node:crypto";
 import * as streamerPath from "../src/core/streamerPath.ts";
 import { loadAccess, revokedLogins, type Feature } from "./access.ts";
-import { writeAtomic } from "./atomicFile.ts";
 import { loadHelp, publicCommands, saveHelp, toHelpConfig } from "./commands.ts";
 import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from "./http.ts";
 import { createLoginStates } from "./loginStates.ts";
-import { deleteMedia, listMedia, quotaError } from "./media.ts";
+import { deleteMedia, listMedia, storeMedia, uploadSlots } from "./media.ts";
 import { CLIPS, createRenderJobs, ffmpegArgs, isClip, isOutputName, outputNames, RENDER_LIMITS } from "./render.ts";
 import * as profile from "./profile.ts";
 import { ensureSettings, loadSettings, minimeRules, publicSettings, saveSettings, updateSettings } from "./settings.ts";
@@ -62,6 +61,7 @@ const sessionKey = await loadSessionKey(DATA);
 // Offene Anmeldungen: Twitch braucht nur den state, Spotify merkt sich dazu den Login
 const twitchStates = createLoginStates<true>(600_000, 1000);
 const spotifyStates = createLoginStates<string>(600_000, 1000);
+const mediaUploads = uploadSlots();
 
 // --- Laufzeiten -------------------------------------------------------------------------------
 const runtimes = new Map<string, Streamer>();
@@ -212,14 +212,15 @@ async function mediaList({ response, login }: Call) {
 async function uploadMedia({ request, response, url, login }: Call) {
   const name = url.searchParams.get("name") ?? "";
   if (!streamerPath.isMediaName(name)) return send(response, 400, "invalid-name");
-  const body = await readBody(request, MEDIA_LIMIT);
-  const folder = profile.folder(DATA, login);
-  const media = await listMedia(folder, MEDIA_QUOTA);
-  const replaced = media.files.find(file => file.name === name)?.size ?? 0;
-  if (quotaError(media.usedBytes, body.length, replaced, MEDIA_QUOTA)) return send(response, 413, "quota-exceeded");
-  await writeAtomic(join(folder, "media", name), body);
-  console.log(`Media uploaded by ${login}: ${name}`);
-  json(response, { ok: true, name });
+  if (!mediaUploads.take(login)) return send(response, 409, "upload-busy");
+  try {
+    const error = await storeMedia(profile.folder(DATA, login), name, await readBody(request, MEDIA_LIMIT), MEDIA_QUOTA);
+    if (error) return send(response, 413, error);
+    console.log(`Media uploaded by ${login}: ${name}`);
+    json(response, { ok: true, name });
+  } finally {
+    mediaUploads.release(login);
+  }
 }
 
 // Löscht nur im eigenen Medienordner und nur gültige Namen
