@@ -878,8 +878,14 @@ checksum = "d6f6ff9a378485b298a5286656da665ba74413d36db0979633275d2e708145d4"
 name = "rst-app"
 version = "0.1.0"
 dependencies = [
+ "chacha20poly1305",
+ "getrandom",
+ "hmac",
  "rst-domain",
  "serde",
+ "serde_json",
+ "sha2 0.11.1",
+ "tokio",
  "ts-rs",
  "zeroize",
 ]
@@ -902,8 +908,6 @@ name = "rst-infra"
 version = "0.1.0"
 dependencies = [
  "base64 0.23.1",
- "chacha20poly1305",
- "getrandom",
  "hkdf",
  "rst-app",
  "rst-domain",

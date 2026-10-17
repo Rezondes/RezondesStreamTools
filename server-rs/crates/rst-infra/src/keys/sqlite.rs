@@ -11,8 +11,8 @@ use rst_domain::identity::values::StreamerId;
 use sqlx::SqlitePool;
 use sqlx::sqlite::{SqliteConnectOptions, SqlitePoolOptions};
 
-use crate::crypto::cipher::{open, random_bytes, seal};
 use crate::crypto::master::MasterKey;
+use rst_app::crypto::cipher::{open, random_bytes, seal};
 
 pub const KEYS_DB_VAR: &str = "RST_KEYS_DB";
 

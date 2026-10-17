@@ -2,3 +2,4 @@
 
 pub mod pool;
 pub mod sqlite_records;
+pub mod sqlite_streamers;

@@ -1,8 +1,8 @@
 //! Contract of the `KeyStore` port: every adapter must pass these checks. Runs against SQLite in a temp folder.
 
+use rst_app::crypto::cipher::{open, seal};
 use rst_app::ports::keys::KeyStore;
 use rst_domain::identity::values::StreamerId;
-use rst_infra::crypto::cipher::{open, seal};
 use rst_infra::crypto::master::MasterKey;
 use rst_infra::keys::sqlite::SqliteKeyStore;
 

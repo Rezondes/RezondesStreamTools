@@ -3,6 +3,7 @@
 
 pub mod keys;
 pub mod records;
+pub mod streamers;
 
 use std::fmt;
 

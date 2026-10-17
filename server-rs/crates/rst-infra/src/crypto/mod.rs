@@ -1,4 +1,3 @@
-//! Cryptography: authenticated encryption and the master key.
+//! Cryptography of the infrastructure: the master key (the cipher itself is `rst_app::crypto`).
 
-pub mod cipher;
 pub mod master;
