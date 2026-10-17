@@ -25,6 +25,8 @@ use crate::backup::archive::ARCHIVE_FORMAT;
 pub const TABLES: [&str; 4] = ["streamers", "records", "audit_log", "server_settings"];
 /// A manifest is small; anything bigger is not ours
 const MANIFEST_LIMIT: u64 = 64 * 1024 * 1024;
+/// All entries of an archive together, unpacked
+const UNPACKED_LIMIT: u64 = 256 * 1024 * 1024 * 1024;
 
 fn invalid(reason: impl Into<String>) -> ArchiveError {
     ArchiveError::Invalid(reason.into())
@@ -55,14 +57,17 @@ pub struct Checked {
     pub migration: i64,
 }
 
-fn hash(reader: &mut impl Read) -> io::Result<String> {
+/// SHA-256 and length of everything `reader` gives
+fn hash(reader: &mut impl Read) -> io::Result<(String, u64)> {
     let mut hasher = Sha256::new();
     let mut buffer = vec![0; 64 * 1024];
+    let mut total: u64 = 0;
     loop {
         let read = reader.read(&mut buffer)?;
         if read == 0 {
-            return Ok(to_hex(&hasher.finalize()));
+            return Ok((to_hex(&hasher.finalize()), total));
         }
+        total += read as u64;
         hasher.update(&buffer[..read]);
     }
 }
@@ -102,6 +107,7 @@ pub fn check(path: &Path, migration: i64) -> Result<Checked, ArchiveError> {
     }
     let sums = checksums(&manifest)?;
     let mut seen = BTreeSet::new();
+    let mut unpacked: u64 = 0;
     for index in 0..zip.len() {
         let mut entry = zip.by_index(index).map_err(|_| invalid("broken entry"))?;
         let name = entry.name().map_err(|_| invalid("entry name is no text"))?.into_owned();
@@ -113,7 +119,18 @@ pub fn check(path: &Path, migration: i64) -> Result<Checked, ArchiveError> {
             return Err(invalid(format!("unexpected entry {name}")));
         }
         let expected = sums.get(&name).ok_or_else(|| invalid(format!("{name} is not in the manifest")))?;
-        if hash(&mut entry).map_err(|_| invalid(format!("{name} cannot be read")))? != *expected {
+        // Never more than the declared size, and all entries together within the limit (zip bombs)
+        let declared = entry.size();
+        unpacked = unpacked.saturating_add(declared);
+        if unpacked > UNPACKED_LIMIT {
+            return Err(invalid("archive too large"));
+        }
+        let mut limited = (&mut entry).take(declared.saturating_add(1));
+        let (sum, read) = hash(&mut limited).map_err(|_| invalid(format!("{name} cannot be read")))?;
+        if read != declared {
+            return Err(invalid(format!("size of {name} does not match")));
+        }
+        if sum != *expected {
             return Err(invalid(format!("checksum of {name} does not match")));
         }
     }

@@ -3,7 +3,7 @@
 //! maintenance: every runtime stops, overlays answer 503, afterwards every allowed runtime starts again.
 
 use std::collections::HashMap;
-use std::sync::atomic::Ordering;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use axum::body::Body;
 use axum::extract::Query;
@@ -110,14 +110,27 @@ pub async fn upload(call: Call<'_>) -> Response {
     }
 }
 
+/// Ends maintenance when the restore is over, also when it panics
+struct Maintenance<'a>(&'a AtomicBool);
+
+impl Drop for Maintenance<'_> {
+    fn drop(&mut self) {
+        self.0.store(false, Ordering::SeqCst);
+    }
+}
+
 /// Restores a backup in maintenance; streamers without a data key are left out and named in the answer
 pub async fn restore(call: Call<'_>) -> Response {
     let (app, id, actor) = (call.app, id_of(&call), actor(&call));
+    // Another backup runs: nothing to stop and restart
+    if app.backups.running() {
+        return text(409, "backup-busy");
+    }
     app.maintenance.store(true, Ordering::SeqCst);
+    let _maintenance = Maintenance(&app.maintenance);
     app.stop_all_runtimes();
     let result = app.backups.restore(&actor, &id, now_ms()).await;
     let running = app.restart_all().await;
-    app.maintenance.store(false, Ordering::SeqCst);
     eprintln!("Restore of {id} done, {running} runtimes running");
     match result {
         Ok(report) => json(&report, 200),

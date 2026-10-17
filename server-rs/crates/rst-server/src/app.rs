@@ -373,7 +373,8 @@ async fn route(app: &App, request: Request) -> Response {
         return text(403, "cross-origin");
     }
     // A restore replaces the data: only the admin area stays reachable meanwhile
-    let streamer_path = path.starts_with("/s/") || (path.starts_with("/api/") && !path.starts_with("/api/admin/"));
+    let api = path.starts_with("/api/") && !path.starts_with("/api/admin/");
+    let streamer_path = api || ["/s/", "/auth/", "/spotify/"].iter().any(|prefix| path.starts_with(prefix));
     if streamer_path && app.maintenance.load(Ordering::SeqCst) {
         return text(503, "maintenance");
     }
@@ -526,5 +527,19 @@ mod tests {
         assert_eq!(call(&app, "GET", "/..%2Fsecret.txt", None).await.0, 403);
         assert_eq!(call(&app, "GET", "/s/nobody/alerts", None).await.0, 404);
         assert_eq!(call(&app, "GET", "/s/Not%20A%20Login/", None).await.0, 404);
+    }
+
+    #[tokio::test]
+    async fn maintenance_leaves_only_the_dashboard_and_the_admin_area() {
+        let folder = tempfile::tempdir().expect("temp folder");
+        let app = app(folder.path()).await;
+        app.maintenance.store(true, Ordering::SeqCst);
+        for path in ["/s/nobody/alerts", "/api/me", "/auth/login", "/spotify/callback"] {
+            assert_eq!(call(&app, "GET", path, None).await.2, "maintenance", "{path}");
+        }
+        assert_eq!(call(&app, "GET", "/", None).await.0, 200);
+        assert_eq!(call(&app, "GET", "/api/admin/backups", None).await.2, "unauthorized");
+        app.maintenance.store(false, Ordering::SeqCst);
+        assert_eq!(call(&app, "GET", "/api/me", None).await.2, "unauthorized");
     }
 }
