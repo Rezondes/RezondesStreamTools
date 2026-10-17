@@ -2,7 +2,7 @@
 // Läuft mit npm test.
 import assert from "node:assert/strict";
 import { join } from "node:path";
-import { findCargo, STEPS } from "./rust.ts";
+import { findCargo, GEN_TYPES, STEPS } from "./rust.ts";
 
 const home = join("home", "neo");
 const exe = join(home, ".cargo", "bin", "cargo.exe");
@@ -17,5 +17,8 @@ assert.equal(findCargo({}, home, path => path === plain), plain);
 // Erst Format, dann clippy ohne Warnungen, dann Tests
 assert.deepEqual(STEPS.map(step => step[0]), ["fmt", "clippy", "test"]);
 assert.ok(STEPS[1].includes("-D") && STEPS[1].includes("warnings"));
+
+// gen:types führt nur den ignorierten Schreib-Test aus
+assert.ok(GEN_TYPES[0].includes("--ignored") && GEN_TYPES[0].includes("write_generated_files"));
 
 console.log("rust ok");

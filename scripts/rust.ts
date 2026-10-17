@@ -23,6 +23,10 @@ export const STEPS: readonly (readonly string[])[] = [
   ["clippy", "--all-targets", "--quiet", "--", "-D", "warnings"],
   ["test", "--quiet"],
 ];
+// npm run gen:types: schreibt src/generated/ neu (ignorierter Test in rst-app/tests/export_types.rs)
+export const GEN_TYPES: readonly (readonly string[])[] = [
+  ["test", "--quiet", "-p", "rst-app", "--test", "export_types", "--", "--ignored", "write_generated_files"],
+];
 
 function main() {
   const cargo = findCargo(process.env, homedir(), existsSync);
@@ -34,7 +38,7 @@ function main() {
     console.error("cargo nicht gefunden: Rust installieren (rustup) oder CARGO setzen");
     process.exit(1);
   }
-  for (const step of STEPS) {
+  for (const step of process.argv[2] === "gen:types" ? GEN_TYPES : STEPS) {
     const run = spawnSync(cargo, step, { cwd: "server-rs", stdio: "inherit" });
     if (run.status !== 0) {
       console.error(`Rust-Prüfung fehlgeschlagen: cargo ${step.join(" ")}`);
