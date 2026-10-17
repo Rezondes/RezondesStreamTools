@@ -44,11 +44,17 @@ impl<S: RecordStore, K: KeyStore, A: AuditStore> TriggerService<'_, S, K, A> {
             .collect())
     }
 
-    /// Checks and stores the list from the editor; with any error nothing changes
+    /// Checks and stores the list from the editor; with any error nothing changes. Returns the stored rules.
     ///
     /// # Errors
     /// `Invalid` with one message per problem, otherwise when a store fails.
-    pub async fn save(&self, id: &StreamerId, actor: &str, list: &[Value], now: i64) -> Result<(), ProfileError> {
+    pub async fn save(
+        &self,
+        id: &StreamerId,
+        actor: &str,
+        list: &[Value],
+        now: i64,
+    ) -> Result<Vec<Trigger>, ProfileError> {
         let saved = self.profile.save_triggers(id, list, now).await?;
         let names: Vec<&str> = saved.iter().map(|trigger| trigger.name.as_str()).collect();
         let entry = AuditEntry {
@@ -60,7 +66,7 @@ impl<S: RecordStore, K: KeyStore, A: AuditStore> TriggerService<'_, S, K, A> {
             after: Some(json!({ "triggers": names })),
         };
         self.audit.append(Some(id), &entry, now).await?;
-        Ok(())
+        Ok(saved)
     }
 }
 

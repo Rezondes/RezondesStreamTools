@@ -1,4 +1,4 @@
-//! Ports of Twitch: the OAuth app (exchange a login code for tokens, check and revoke them) and `EventSub` over Helix.
+//! Ports of Twitch: the OAuth app (exchange a login code for tokens, check and revoke them), `EventSub` and the chat over Helix.
 
 use std::fmt;
 use std::future::Future;
@@ -45,4 +45,22 @@ pub trait EventSubscriber: Send + Sync {
         access: &str,
         subscription: &serde_json::Value,
     ) -> impl Future<Output = Result<(), ProviderError>> + Send;
+}
+
+/// Result of a chat message as the streamer
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Said {
+    Sent,
+    /// The login may not write to chat: the streamer has to reconnect Twitch
+    MissingScope,
+}
+
+/// Helix chat: messages as the streamer in the own chat
+pub trait ChatSender: Send + Sync {
+    /// # Errors
+    /// Network problems and answers other than success, 401 and 403.
+    fn say(&self, tokens: &TwitchTokens, message: &str) -> impl Future<Output = Result<Said, ProviderError>> + Send;
+
+    /// Whether the login has the chat scope; `None` when Twitch cannot tell
+    fn can_chat(&self, tokens: &TwitchTokens) -> impl Future<Output = Option<bool>> + Send;
 }

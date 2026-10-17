@@ -1,7 +1,8 @@
 //! Runtime of a streamer (template: `server/streamer.ts`): owns the connections of its profile and ends them in
 //! `stop`. It checks the Twitch tokens hourly (a rejected login ends the runtime and deletes the tokens) and reads
-//! the chat and, with the feature alerts, `EventSub`. Every task runs supervised: a panic ends only that task, which is
-//! logged and starts again after a pause, never the server. Triggers, minimes and Spotify join with their packages.
+//! the chat and, with the feature alerts, `EventSub`. Chat lines fire triggers (features triggers and fx) and the help
+//! command. Every task runs supervised: a panic ends only that task, which is logged and starts again after a pause,
+//! never the server. Minimes and Spotify join with their packages.
 
 use std::collections::BTreeMap;
 use std::future::Future;
@@ -9,6 +10,8 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use rst_domain::access::Feature;
+use rst_domain::chat::irc::IrcMessage;
+use rst_domain::chat::line::to_chat_line;
 use rst_domain::identity::values::{Login, StreamerId};
 use rst_domain::twitch::eventsub::{EventSubMessage, subscriptions};
 use serde_json::json;
@@ -16,13 +19,16 @@ use tokio_util::sync::CancellationToken;
 
 use crate::channel::alerts;
 use crate::channel::chat::{listen, relay};
+use crate::channel::help::HelpResponder;
 use crate::channel::registry::Runtime;
 use crate::channel::token_keeper::{CHECK_SECONDS, TokenKeeper, Validity};
+use crate::channel::triggers::TriggerRunner;
+use crate::commands::public_commands;
 use crate::events::{Hubs, ServerMessage};
 use crate::ports::keys::KeyStore;
 use crate::ports::records::RecordStore;
 use crate::ports::socket::SocketConnector;
-use crate::ports::twitch::{EventSubscriber, TwitchAuth};
+use crate::ports::twitch::{ChatSender, EventSubscriber, ProviderError, Said, TwitchAuth};
 use crate::profile::Profile;
 use crate::vault::VaultError;
 
@@ -67,6 +73,8 @@ pub struct RuntimeSetup<T, S, K, C> {
     pub eventsub_url: String,
     pub hubs: Arc<Hubs>,
     pub features: BTreeMap<Feature, bool>,
+    /// URL of the public commands page, for the help reply
+    pub link: String,
     /// The clock in ms
     pub now: fn() -> i64,
 }
@@ -75,7 +83,66 @@ pub struct StreamerRuntime<T, S, K> {
     pub id: StreamerId,
     pub login: Login,
     pub keeper: Arc<TokenKeeper<T, S, K>>,
+    /// Only with the features triggers and fx
+    pub triggers: Option<Arc<TriggerRunner>>,
+    pub help: Arc<HelpResponder>,
     cancel: CancellationToken,
+}
+
+/// What happens with a chat line
+struct ChatReader<T, S, K> {
+    id: StreamerId,
+    login: Login,
+    hubs: Arc<Hubs>,
+    chat_on: bool,
+    triggers: Option<Arc<TriggerRunner>>,
+    help: Arc<HelpResponder>,
+    keeper: Arc<TokenKeeper<T, S, K>>,
+    twitch: T,
+    profile: Profile<S, K>,
+    features: BTreeMap<Feature, bool>,
+    now: fn() -> i64,
+}
+
+impl<T, S, K> ChatReader<T, S, K>
+where
+    T: TwitchAuth + ChatSender + Clone + 'static,
+    S: RecordStore + Clone + 'static,
+    K: KeyStore + Clone + 'static,
+{
+    fn read(self: &Arc<Self>, message: &IrcMessage) {
+        relay(message, &self.hubs, &self.id, self.chat_on);
+        let Some(line) = to_chat_line(message) else { return };
+        if self.help.is_echo(&line) {
+            return;
+        }
+        let now = (self.now)();
+        if let Some(triggers) = &self.triggers {
+            triggers.handle(&line, u64::try_from(now).unwrap_or_default());
+        }
+        if self.help.wants_reply(&line, now) {
+            let reader = Arc::clone(self);
+            tokio::spawn(async move {
+                if let Err(error) = reader.reply().await {
+                    eprintln!("Help reply for {} failed: {error}", reader.login);
+                }
+            });
+        }
+    }
+
+    /// The help reply as the streamer; without valid tokens it counts as a missing scope
+    async fn reply(&self) -> Result<(), ProviderError> {
+        let commands = public_commands(&self.profile, &self.id, &self.login, &self.features)
+            .await
+            .map_err(|error| ProviderError::new(error.to_string()))?;
+        let say = |message: String| async move {
+            match self.keeper.valid((self.now)()).await {
+                Validity::Valid(tokens) => self.twitch.say(&tokens, &message).await,
+                Validity::Rejected | Validity::Unknown => Ok(Said::MissingScope),
+            }
+        };
+        self.help.reply(&commands, say).await
+    }
 }
 
 impl<T, S, K> Runtime for StreamerRuntime<T, S, K>
@@ -96,7 +163,7 @@ where
 
 impl<T, S, K> StreamerRuntime<T, S, K>
 where
-    T: TwitchAuth + EventSubscriber + Clone + 'static,
+    T: TwitchAuth + EventSubscriber + ChatSender + Clone + 'static,
     S: RecordStore + Clone + 'static,
     K: KeyStore + Clone + 'static,
 {
@@ -105,12 +172,21 @@ where
     /// # Errors
     /// `Unreadable` for a shredded streamer, `Store` when the database fails.
     pub async fn start<C: SocketConnector>(setup: RuntimeSetup<T, S, K, C>) -> Result<Option<Self>, VaultError> {
-        let RuntimeSetup { id, login, twitch, profile, sockets, irc_url, eventsub_url, hubs, features, now } = setup;
+        let RuntimeSetup { id, login, twitch, profile, sockets, irc_url, eventsub_url, hubs, features, link, now } =
+            setup;
         let Some(tokens) = profile.twitch_tokens(&id).await? else { return Ok(None) };
+        let on = |feature: Feature| features.get(&feature) == Some(&true);
+        let triggers = if on(Feature::Triggers) && on(Feature::Fx) {
+            Some(Arc::new(TriggerRunner::new(id.clone(), Arc::clone(&hubs), &profile.triggers(&id).await?)))
+        } else {
+            None
+        };
+        let help = Arc::new(HelpResponder::new(login.as_str(), &link, profile.help(&id).await?));
         let keeper = Arc::new(TokenKeeper::new(id.clone(), tokens, twitch.clone(), profile.clone()));
         let cancel = CancellationToken::new();
         let check = {
-            let (keeper, cancel, id, login) = (Arc::clone(&keeper), cancel.clone(), id.clone(), login.clone());
+            let (keeper, cancel, profile, id, login) =
+                (Arc::clone(&keeper), cancel.clone(), profile.clone(), id.clone(), login.clone());
             move || {
                 let (keeper, cancel, profile, id, login) =
                     (Arc::clone(&keeper), cancel.clone(), profile.clone(), id.clone(), login.clone());
@@ -134,8 +210,24 @@ where
             }
         };
         supervise(format!("Token check of {login}"), cancel.clone(), check);
-        let chat_on = features.get(&Feature::Chat) == Some(&true);
-        if features.get(&Feature::Alerts) == Some(&true) {
+        {
+            let (help, twitch, tokens) = (Arc::clone(&help), twitch.clone(), keeper.current());
+            tokio::spawn(async move { help.set_can_chat(twitch.can_chat(&tokens).await) });
+        }
+        let reader = Arc::new(ChatReader {
+            id: id.clone(),
+            login: login.clone(),
+            hubs: Arc::clone(&hubs),
+            chat_on: on(Feature::Chat),
+            triggers: triggers.clone(),
+            help: Arc::clone(&help),
+            keeper: Arc::clone(&keeper),
+            twitch: twitch.clone(),
+            profile: profile.clone(),
+            features: features.clone(),
+            now,
+        });
+        if on(Feature::Alerts) {
             let events = {
                 let (sockets, hubs, keeper, cancel, id) =
                     (Arc::clone(&sockets), Arc::clone(&hubs), Arc::clone(&keeper), cancel.clone(), id.clone());
@@ -163,24 +255,18 @@ where
             supervise(format!("EventSub of {login}"), cancel.clone(), events);
         }
         let chat = {
-            let (cancel, id, login) = (cancel.clone(), id.clone(), login.clone());
+            let cancel = cancel.clone();
             move || {
-                let (sockets, irc_url, hubs, cancel, id, login) = (
-                    Arc::clone(&sockets),
-                    irc_url.clone(),
-                    Arc::clone(&hubs),
-                    cancel.clone(),
-                    id.clone(),
-                    login.clone(),
-                );
+                let (sockets, irc_url, reader, cancel) =
+                    (Arc::clone(&sockets), irc_url.clone(), Arc::clone(&reader), cancel.clone());
                 async move {
-                    listen(&*sockets, &irc_url, login.as_str(), &cancel, |message| relay(message, &hubs, &id, chat_on))
-                        .await;
+                    let channel = reader.login.as_str();
+                    listen(&*sockets, &irc_url, channel, &cancel, |message| reader.read(message)).await;
                 }
             }
         };
         supervise(format!("Chat of {login}"), cancel.clone(), chat);
-        Ok(Some(Self { id, login, keeper, cancel }))
+        Ok(Some(Self { id, login, keeper, triggers, help, cancel }))
     }
 }
 
@@ -236,6 +322,7 @@ mod tests {
     struct FakeTwitch {
         valid: bool,
         subscribed: Arc<std::sync::Mutex<Vec<String>>>,
+        said: Arc<std::sync::Mutex<Vec<String>>>,
     }
 
     #[allow(clippy::unused_async_trait_impl, reason = "the fake answers right away")]
@@ -250,6 +337,18 @@ mod tests {
 
         async fn validate(&self, tokens: &TwitchTokens) -> Result<Option<TwitchTokens>, ProviderError> {
             Ok(self.valid.then(|| tokens.clone()))
+        }
+    }
+
+    #[allow(clippy::unused_async_trait_impl, reason = "the fake answers right away")]
+    impl ChatSender for FakeTwitch {
+        async fn say(&self, _tokens: &TwitchTokens, message: &str) -> Result<Said, ProviderError> {
+            self.said.lock().expect("said").push(message.to_owned());
+            Ok(Said::Sent)
+        }
+
+        async fn can_chat(&self, _tokens: &TwitchTokens) -> Option<bool> {
+            Some(true)
         }
     }
 
@@ -290,6 +389,7 @@ mod tests {
             sockets: Arc::new(irc.clone()),
             irc_url: "wss://irc".to_owned(),
             eventsub_url: "wss://eventsub".to_owned(),
+            link: "https://x/s/neo/".to_owned(),
             hubs: Arc::new(Hubs::default()),
             features: Feature::ALL.into_iter().map(|feature| (feature, true)).collect(),
             now: zero,
@@ -342,6 +442,36 @@ mod tests {
         let subscribed = twitch.subscribed.lock().expect("subscribed").clone();
         assert_eq!(subscribed.len(), 10);
         assert!(subscribed.iter().any(|kind| kind == "stream.offline"));
+        runtime.stop();
+    }
+
+    #[tokio::test(start_paused = true)]
+    async fn chat_lines_fire_triggers_and_the_help_reply_without_its_echo() {
+        let profile = profile_with_tokens(&id(1)).await;
+        let lizard = serde_json::json!([{ "name": "lizard", "when": { "type": "word", "match": "lizard" }, "do": [{ "type": "text", "text": "x" }] }]);
+        profile.save_triggers(&id(1), lizard.as_array().expect("list"), 0).await.expect("triggers");
+        let sockets = MemorySockets::default();
+        let say = |login: &str, text: &str| format!(":{login}!{login}@{login}.tmi.twitch.tv PRIVMSG #neo :{text}");
+        sockets.script_at("wss://irc", vec![say("smith", "lizard"), say("smith", "!befehle")]);
+        let setup = setup(id(1), true, profile, &sockets);
+        let (twitch, hubs) = (setup.twitch.clone(), Arc::clone(&setup.hubs));
+        let mut stream = hubs.subscribe(&id(1), false).expect("stream");
+        let runtime = StreamerRuntime::start(setup).await.expect("start").expect("runtime");
+        let fx = loop {
+            let message = stream.next().await.expect("event");
+            if message.contains(r#""type":"fx""#) {
+                break message;
+            }
+        };
+        assert!(fx.contains(r#""user":"smith""#), "{fx}");
+        tokio::time::sleep(Duration::from_millis(10)).await;
+        let said = twitch.said.lock().expect("said").clone();
+        assert_eq!(said.len(), 1);
+        let echo =
+            rst_domain::chat::line::ChatLine { login: "neo".to_owned(), text: said[0].clone(), ..Default::default() };
+        assert!(runtime.help.is_echo(&echo));
+        assert_eq!(runtime.help.can_chat(), Some(true));
+        assert!(runtime.triggers.as_ref().expect("triggers").fire("lizard"));
         runtime.stop();
     }
 

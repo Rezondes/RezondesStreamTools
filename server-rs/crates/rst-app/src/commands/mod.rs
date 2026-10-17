@@ -61,16 +61,25 @@ impl<S: RecordStore, K: KeyStore, A: AuditStore> CommandService<'_, S, K, A> {
         login: &Login,
         features: &BTreeMap<Feature, bool>,
     ) -> Result<CommandList, VaultError> {
-        let on = |feature: Feature| features.get(&feature) == Some(&true);
-        let minimes = if on(Feature::Minimes) {
-            self.profile.settings(id).await?.as_ref().and_then(minime_rules_of)
-        } else {
-            None
-        };
-        let triggers =
-            if on(Feature::Triggers) && on(Feature::Fx) { self.profile.triggers(id).await? } else { Vec::new() };
-        Ok(command_list(login.as_str(), Some(&self.help(id).await?), minimes.as_ref(), &triggers))
+        public_commands(self.profile, id, login, features).await
     }
+}
+
+/// See [`CommandService::public`]; the runtime needs the list for the help reply without an audit log
+///
+/// # Errors
+/// `Unreadable` after the streamer was shredded.
+pub async fn public_commands<S: RecordStore, K: KeyStore>(
+    profile: &Profile<S, K>,
+    id: &StreamerId,
+    login: &Login,
+    features: &BTreeMap<Feature, bool>,
+) -> Result<CommandList, VaultError> {
+    let on = |feature: Feature| features.get(&feature) == Some(&true);
+    let minimes =
+        if on(Feature::Minimes) { profile.settings(id).await?.as_ref().and_then(minime_rules_of) } else { None };
+    let triggers = if on(Feature::Triggers) && on(Feature::Fx) { profile.triggers(id).await? } else { Vec::new() };
+    Ok(command_list(login.as_str(), Some(&profile.help(id).await?), minimes.as_ref(), &triggers))
 }
 
 #[cfg(test)]

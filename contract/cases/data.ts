@@ -1,9 +1,17 @@
-// Contract cases: settings with error codes, the help command and the triggers of a streamer.
-import { expect, expectCode, fail, request, STREAMER, type Case } from "../client.ts";
+// Contract cases: settings with error codes, the help command and the triggers of a streamer, also fired from chat.
+import { expect, expectCode, fail, request, STREAMER, type Case, type Context } from "../client.ts";
+import { readStream } from "./overlay.ts";
 
 const session = STREAMER.login;
 const post = (body: unknown) => ({ method: "POST", session, body: JSON.stringify(body) });
 const LIZARD = { name: "lizard", when: { type: "command", match: "!lizard" }, do: [{ type: "text", text: "hi" }] };
+
+// A chat line as a viewer writes it, through the fake IRC server
+async function chatLine(context: Context, login: string, text: string) {
+  const line = `:${login}!${login}@${login}.tmi.twitch.tv PRIVMSG #${STREAMER.login} :${text}`;
+  const sent = await fetch(`${context.fake.url}/control/irc`, { method: "POST", body: line });
+  if (sent.status !== 204) fail(`fake control answered ${sent.status}`);
+}
 
 export const DATA_CASES: Case[] = [
   {
@@ -54,6 +62,25 @@ export const DATA_CASES: Case[] = [
       await expect(await request(context, "/api/triggers", { session }), 200, [{ name: "string" }]);
       await expect(await request(context, "/api/trigger?name=lizard", { method: "POST", session }), 200, { ok: "boolean" });
       await expectCode(await request(context, "/api/trigger?name=nothing", { method: "POST", session }), 404, "unknown-trigger");
+    },
+  },
+  {
+    name: "triggers: a chat line fires the trigger as an fx event",
+    async run(context) {
+      const key = context.memory.get("overlayKey") ?? fail("no overlay key from an earlier case");
+      const stream = await request(context, `/s/${STREAMER.login}/events?key=${key}`);
+      await readStream(stream, '"type":"fx"', () => chatLine(context, "smith", "!lizard now"));
+    },
+  },
+  {
+    name: "commands: the help command is answered as the streamer",
+    async run(context) {
+      const before = context.fake.chatMessages.length;
+      await chatLine(context, "smith", "!befehle");
+      for (let tries = 0; tries < 50 && context.fake.chatMessages.length === before; tries++) await new Promise(resolve => setTimeout(resolve, 100));
+      const reply = context.fake.chatMessages.at(-1) as { broadcaster_id?: string; message?: string } | undefined;
+      if (context.fake.chatMessages.length === before || !reply) fail("no help reply");
+      if (reply.broadcaster_id !== STREAMER.id || !reply.message?.includes("!lizard")) fail(`unexpected reply: ${JSON.stringify(reply)}`);
     },
   },
 ];

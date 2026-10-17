@@ -191,6 +191,7 @@ impl App {
                 sockets: Arc::clone(&self.sockets),
                 irc_url: self.config.providers.twitch_irc.clone(),
                 eventsub_url: self.config.providers.twitch_eventsub.clone(),
+                link: format!("{}/s/{login}/", self.config.public_url),
                 hubs: Arc::clone(&self.hubs),
                 features,
                 now: now_ms,

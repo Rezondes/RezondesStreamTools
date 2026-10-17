@@ -1,5 +1,5 @@
 //! Trigger editor (template: `triggerConfig`, `saveTriggerConfig`, `triggerList` and `fireTrigger` in
-//! `server/index.ts`). Unlike the Node server the rules do not need a running Twitch connection.
+//! `server/index.ts`). Unlike the Node server the rules do not need a running Twitch connection; firing does.
 
 use std::collections::HashMap;
 
@@ -33,7 +33,12 @@ pub async fn save(call: Call<'_>) -> Response {
     let input = serde_json::from_slice::<Value>(&body).unwrap_or(Value::Null);
     let Some(list) = input.get("triggers").and_then(Value::as_array) else { return json(&["invalid-json"], 400) };
     match app.trigger_service().save(&id, &actor, list, now_ms()).await {
-        Ok(()) => json(&json!({ "ok": true }), 200),
+        Ok(saved) => {
+            if let Some(triggers) = app.runtimes.get(&id).and_then(|runtime| runtime.triggers.clone()) {
+                triggers.replace(&saved);
+            }
+            json(&json!({ "ok": true }), 200)
+        }
         Err(ProfileError::Invalid(errors)) => json(&errors, 400),
         Err(ProfileError::Vault(error)) => server_error(&error.to_string()),
     }
@@ -47,15 +52,14 @@ pub async fn list(call: Call<'_>) -> Response {
     }
 }
 
-/// Test button of the dashboard; the overlays get the trigger with the event stream (package 31 on)
-pub async fn fire(call: Call<'_>) -> Response {
+/// Test button of the dashboard: fires without cooldown; needs the running runtime with triggers
+pub fn fire(call: &Call<'_>) -> Response {
     let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
     let query =
         Query::<HashMap<String, String>>::try_from_uri(call.request.uri()).map(|query| query.0).unwrap_or_default();
     let name: String = query.get("name").map(|name| name.chars().take(200).collect()).unwrap_or_default();
-    match call.app.trigger_service().rules(id).await {
-        Ok(rules) if rules.iter().any(|trigger| trigger.name == name) => json(&json!({ "ok": true }), 200),
-        Ok(_) => text(404, "unknown-trigger"),
-        Err(error) => server_error(&error.to_string()),
-    }
+    let Some(triggers) = call.app.runtimes.get(id).and_then(|runtime| runtime.triggers.clone()) else {
+        return text(409, "not-connected");
+    };
+    if triggers.fire(&name) { json(&json!({ "ok": true }), 200) } else { text(404, "unknown-trigger") }
 }

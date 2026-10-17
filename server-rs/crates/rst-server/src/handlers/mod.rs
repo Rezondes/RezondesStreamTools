@@ -43,7 +43,7 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::TriggerConfig => triggers::config(call).await,
         Route::SaveTriggerConfig => triggers::save(call).await,
         Route::TriggerList => triggers::list(call).await,
-        Route::FireTrigger => triggers::fire(call).await,
+        Route::FireTrigger => triggers::fire(&call),
         Route::MediaList => media::list(call).await,
         Route::UploadMedia => media::upload(call).await,
         Route::DeleteMedia => media::delete(call).await,
