@@ -35,6 +35,8 @@ function serverEnv(port: number, data: string, providers: Record<string, string>
     ...base, ...providers, PORT: String(port), PUBLIC_URL: `http://localhost:${port}`, DATA: data, DIST: resolve("dist"),
     ADMINS: ADMIN.login, TWITCH_CLIENT_ID: "contract-client", TWITCH_CLIENT_SECRET: "contract-secret",
     SPOTIFY_CLIENT_ID: "contract-spotify", SPOTIFY_CLIENT_SECRET: "contract-spotify-secret", MEDIA_LIMIT_MB: "1",
+    // Rust server only: a dummy master key, the key store lands in the temporary DATA folder
+    RST_MASTER_KEY: "Y29udHJhY3QtbWFzdGVyLWtleS1vZi0zMi1ieXRlcyE=",
   };
 }
 

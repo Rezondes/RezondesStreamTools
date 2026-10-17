@@ -12,9 +12,16 @@ name = "rst"
 path = "src/main.rs"
 
 [dependencies]
+axum.workspace = true
 rst-app.workspace = true
+rst-domain.workspace = true
 rst-infra.workspace = true
-tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+sqlx.workspace = true
+tokio = { workspace = true, features = ["rt-multi-thread", "net", "signal", "fs"] }
 
 [dev-dependencies]
+http-body-util.workspace = true
 tempfile.workspace = true
+tower.workspace = true

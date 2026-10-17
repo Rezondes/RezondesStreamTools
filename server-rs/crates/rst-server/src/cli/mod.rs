@@ -6,6 +6,7 @@ pub mod import;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Command {
     Version,
+    Serve,
     Import { from: String },
     Usage,
 }
@@ -16,6 +17,7 @@ pub fn parse(args: &[String]) -> Command {
     match args {
         [] => Command::Version,
         [flag] if flag == "--version" => Command::Version,
+        [command] if command == "serve" => Command::Serve,
         [command, flag, from] if command == "import" && flag == "--from" => Command::Import { from: from.clone() },
         _ => Command::Usage,
     }
@@ -35,6 +37,7 @@ mod tests {
         assert_eq!(parse(&args(&["--version"])), Command::Version);
         assert_eq!(parse(&args(&["import", "--from", "data"])), Command::Import { from: "data".to_owned() });
         assert_eq!(parse(&args(&["import", "data"])), Command::Usage);
+        assert_eq!(parse(&args(&["serve"])), Command::Serve);
         assert_eq!(parse(&args(&["serve", "--now"])), Command::Usage);
     }
 }

@@ -27,6 +27,8 @@ export const STEPS: readonly (readonly string[])[] = [
 export const GEN_TYPES: readonly (readonly string[])[] = [
   ["test", "--quiet", "-p", "rst-app", "--test", "export_types", "--", "--ignored", "write_generated_files"],
 ];
+// npm run contract:rust: builds the binary rst that the contract tests start
+export const BUILD: readonly (readonly string[])[] = [["build", "--quiet", "-p", "rst-server"]];
 
 function main() {
   const cargo = findCargo(process.env, homedir(), existsSync);
@@ -38,7 +40,8 @@ function main() {
     console.error("cargo not found: install Rust (rustup) or set CARGO");
     process.exit(1);
   }
-  for (const step of process.argv[2] === "gen:types" ? GEN_TYPES : STEPS) {
+  const command = process.argv[2];
+  for (const step of command === "gen:types" ? GEN_TYPES : command === "build" ? BUILD : STEPS) {
     const run = spawnSync(cargo, step, { cwd: "server-rs", stdio: "inherit" });
     if (run.status !== 0) {
       console.error(`Rust check failed: cargo ${step.join(" ")}`);

@@ -17,9 +17,12 @@ export type Case = { name: string; run: (context: Context) => Promise<void> };
 type Init = { method?: string; session?: string; headers?: Record<string, string>; body?: BodyInit; duplex?: "half" };
 
 export function request(context: Context, path: string, init: Init = {}) {
-  const headers: Record<string, string> = { ...init.headers };
+  const method = init.method ?? "GET";
+  // Browsers send Origin with every writing request; a case may set a foreign one
+  const origin: Record<string, string> = method === "GET" || method === "HEAD" ? {} : { Origin: context.base };
+  const headers: Record<string, string> = { ...origin, ...init.headers };
   if (init.session) headers.Cookie = context.sessions.get(init.session) ?? "";
-  return fetch(`${context.base}${path}`, { method: init.method ?? "GET", headers, body: init.body, redirect: "manual", duplex: init.duplex } as RequestInit);
+  return fetch(`${context.base}${path}`, { method, headers, body: init.body, redirect: "manual", duplex: init.duplex } as RequestInit);
 }
 
 export function fail(message: string): never {

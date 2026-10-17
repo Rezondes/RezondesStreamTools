@@ -15,6 +15,7 @@
     "rust": "node scripts/rust.ts",
     "gen:types": "node scripts/rust.ts gen:types",
     "contract:node": "node contract/run.ts --server \"node server/index.ts\"",
+    "contract:rust": "node scripts/rust.ts build && node contract/run.ts --server \"server-rs/target/debug/rst serve\" --pending contract/pending-rust.json",
     "verify": "npm run typecheck && npm run lint && npm test && vite build && npm run rust",
     "prepare": "git config core.hooksPath .githooks"
   },
