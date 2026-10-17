@@ -80,6 +80,8 @@ export function compile(list: Trigger[]): { triggers: Loaded[]; errors: string[]
       names.add(trigger.name);
       if (!WHEN_TYPES.includes(trigger.when?.type)) throw new Error(`when.type muss ${WHEN_TYPES.join(", ")} sein`);
       if (!trigger.when.match) throw new Error("Suchtext (when.match) fehlt");
+      // allowed() erwartet eine Liste; etwas anderes würde beim ersten Chat-Treffer den ganzen Server beenden
+      if (trigger.who !== undefined && !(Array.isArray(trigger.who) && trigger.who.every(role => typeof role === "string"))) throw new Error("who muss eine Liste von Rollen sein");
       if ((trigger.description ?? "").length > MAX_DESCRIPTION) throw new Error(`Beschreibung länger als ${MAX_DESCRIPTION} Zeichen`);
       if (!Array.isArray(trigger.do) || trigger.do.length === 0) throw new Error("mindestens eine Aktion nötig");
       trigger.do.forEach((action, index) => {

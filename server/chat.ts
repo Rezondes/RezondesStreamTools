@@ -10,6 +10,22 @@ export function chat(channel: string, onLine: (line: ChatLine) => void, onBan: (
   let stopped = false;
   let retry: ReturnType<typeof setTimeout>;
 
+  const handleLine = (raw: string) => {
+    const message = parseIrc(raw);
+    if (message.command === "PING") socket.send(`PONG :${message.params[0]}`);
+    if (message.command === "CLEARCHAT" && message.params[1]) onBan(message.params[1].toLowerCase());
+    if (message.command !== "PRIVMSG") return;
+    const login = message.prefix.split("!")[0];
+    onLine({
+      user: message.tags["display-name"] || login,
+      login,
+      text: message.params[1] ?? "",
+      // badges=broadcaster/1,subscriber/12 -> ["broadcaster", "subscriber"]
+      roles: (message.tags.badges ?? "").split(",").map(badge => badge.split("/")[0]).filter(Boolean),
+      ...(message.tags.color ? { color: message.tags.color } : {}),
+    });
+  };
+
   const open = () => {
     socket = new WebSocket(IRC_URL);
     socket.onopen = () => {
@@ -19,19 +35,12 @@ export function chat(channel: string, onLine: (line: ChatLine) => void, onBan: (
     socket.onmessage = event => {
       for (const raw of String(event.data).split("\r\n")) {
         if (!raw) continue;
-        const message = parseIrc(raw);
-        if (message.command === "PING") socket.send(`PONG :${message.params[0]}`);
-        if (message.command === "CLEARCHAT" && message.params[1]) onBan(message.params[1].toLowerCase());
-        if (message.command !== "PRIVMSG") continue;
-        const login = message.prefix.split("!")[0];
-        onLine({
-          user: message.tags["display-name"] || login,
-          login,
-          text: message.params[1] ?? "",
-          // badges=broadcaster/1,subscriber/12 -> ["broadcaster", "subscriber"]
-          roles: (message.tags.badges ?? "").split(",").map(badge => badge.split("/")[0]).filter(Boolean),
-          ...(message.tags.color ? { color: message.tags.color } : {}),
-        });
+        // Ein Fehler in einer Zeile darf nie den Server aller Streamer beenden (Fehler im WebSocket-Handler wären ungefangen)
+        try {
+          handleLine(raw);
+        } catch (error) {
+          console.error(`Chat line for #${channel} failed:`, error);
+        }
       }
     };
     socket.onclose = () => { if (!stopped) retry = setTimeout(open, 3000); };

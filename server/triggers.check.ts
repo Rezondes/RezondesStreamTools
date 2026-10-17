@@ -45,9 +45,11 @@ const bad = compile([
   { ...good, name: "c", do: [{ type: "media" }] },                  // Medium fehlt
   { ...good, name: "d", do: [] },                                   // keine Aktion
   { ...good, name: "e", description: "x".repeat(201) },             // Beschreibung zu lang
+  { ...good, name: "f", who: "moderator" as unknown as string[] },  // who keine Liste: würde handle() abstürzen lassen
+  { ...good, name: "g", who: [1] as unknown as string[] },          // who mit Nicht-Text
 ]);
 assert.equal(bad.triggers.length, 1);
-assert.equal(bad.errors.length, 5);
+assert.equal(bad.errors.length, 7);
 // Öffentlich und Beschreibung (für die Befehlsseite) sind erlaubt
 assert.deepEqual(compile([{ ...good, public: false, description: "Echse" }]).errors, []);
 assert.match(bad.errors[0], /doppelt/);
