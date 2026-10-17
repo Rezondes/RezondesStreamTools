@@ -1,13 +1,13 @@
-// Theme zur Laufzeit anwenden: welche Szenen-Komponente gilt (fehlende erbt das Standard-Theme) und welche
-// Einstellungen als CSS-Variablen am Wurzelelement der Szene landen. Reine Funktionen, getestet in themeRuntime.check.ts.
+// Applies a theme at runtime: which scene component applies (the standard theme provides missing ones) and which
+// settings end up as CSS variables on the root element of the scene. Pure functions, tested in themeRuntime.check.ts.
 import { SCENES, type SceneName, type SettingValues, type ThemeSchema } from "./theme.ts";
 
 const isScene = (name: string): name is SceneName => (SCENES as readonly string[]).includes(name);
 
-// Theme-eigene Funktionen: diese Szenen hat nur ein Theme, das sie selbst mitbringt, sie werden nie geerbt
+// Theme-specific features: only a theme that brings these scenes itself has them, they are never inherited
 const OWN_SCENES: readonly SceneName[] = ["minimes"];
 
-// Szene des Themes, sonst die des Standard-Themes (ausser OWN_SCENES); null für unbekannte Szenen oder wenn keiner sie hat
+// Scene of the theme, otherwise the one of the standard theme (except OWN_SCENES); null for unknown scenes or if none has it
 export function resolveScene<Component>(
   scenes: Record<string, Partial<Record<SceneName, Component>>>,
   themeId: string,
@@ -20,8 +20,8 @@ export function resolveScene<Component>(
   return own ?? scenes[fallbackTheme]?.[scene] ?? null;
 }
 
-// Farben, Zahlen (mit Einheit laut Schema), Schalter (1/0, zum Rechnen in calc) und Schriften als --<key>.
-// Texte, Auswahlen und Medien liest die Szene direkt.
+// Colors, numbers (with unit according to the schema), switches (1/0, for computing in calc) and fonts as --<key>.
+// The scene reads texts, choices and media directly.
 export function cssVariables(schema: ThemeSchema, values: SettingValues): Record<string, string> {
   const variables: Record<string, string> = {};
   for (const field of schema.fields) {

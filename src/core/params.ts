@@ -1,10 +1,10 @@
-// URL-Parameter einer Overlay-Seite, gelesen beim Laden: aus ?a=1 und aus #/szene?a=1,
-// damit beide Schreibweisen in OBS funktionieren. Pro OBS-Quelle ergänzen sie die Einstellungen (z.B. ?min=5, ?zone=main, ?demo).
+// URL parameters of an overlay page, read on load: from ?a=1 and from #/scene?a=1,
+// so both notations work in OBS. Per OBS source they add to the settings (e.g. ?min=5, ?zone=main, ?demo).
 export const params = new URLSearchParams(
   [location.search.slice(1), location.hash.split("?")[1] ?? ""].filter(Boolean).join("&"),
 );
 
-// Zahl aus einem Parameter, sonst fallback
+// Number from a parameter, otherwise fallback
 export function numberParam(key: string, fallback: number) {
   const value = Number(params.get(key));
   return params.has(key) && Number.isFinite(value) ? value : fallback;

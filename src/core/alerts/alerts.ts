@@ -1,14 +1,14 @@
-// Kontext Alerts: Kopfzeile und Zeile eines Alerts aus den Texten eines Themes und welche Nachricht als Zitat gilt.
-// Die Regeln (Platzhalter, Hype-Ende, Geschenk an eine Person, Abo-Stufe) sind für jedes Theme gleich; das Theme sagt
-// nur, unter welchen Schlüsseln seine Texte stehen (AlertTextKeys), und gestaltet. Rein; Check: alerts.check.ts.
+// Context alerts: header and line of an alert from the texts of a theme, and which message counts as a quote.
+// The rules (placeholders, hype end, gift to one person, sub tier) are the same for every theme; the theme only says
+// under which keys its texts are (AlertTextKeys), and does the styling. Pure; check: alerts.check.ts.
 import { sound } from "../fields.ts";
 import { fillTemplate } from "../template.ts";
 import type { Alert, AlertKind } from "../types.ts";
 
 const KINDS: readonly AlertKind[] = ["follow", "sub", "resub", "gift", "raid", "cheer", "redeem", "hype"];
 
-// Schlüssel der Texte im Schema eines Themes. Optional: giftOneLine/giftToLine (ein einzelnes Geschenk-Abo, mit oder
-// ohne Beschenkten in text), tierSuffix (hinter der Kopfzeile von Subs mit {detail} = Stufe, tierUpper in Grossbuchstaben)
+// Keys of the texts in a theme's schema. Optional: giftOneLine/giftToLine (a single gift sub, with or
+// without recipient in text), tierSuffix (after the header of subs with {detail} = tier, tierUpper in upper case)
 export type AlertTextKeys = {
   tag: Record<AlertKind, string>;
   line: Record<AlertKind, string>;
@@ -19,15 +19,15 @@ export type AlertTextKeys = {
   tierUpper?: boolean;
 };
 
-// Schlüssel nach dem üblichen Muster: Kopfzeile <art><tagSuffix> (z.B. followTag), Zeile <art>Line, beim Hype Train
-// hypeBeginLine und hypeEndLine; extra ergänzt die optionalen Texte
+// Keys following the usual pattern: header <kind><tagSuffix> (e.g. followTag), line <kind>Line, for the hype train
+// hypeBeginLine and hypeEndLine; extra adds the optional texts
 export function alertTextKeys(tagSuffix: string, extra: Partial<AlertTextKeys> = {}): AlertTextKeys {
   const per = (key: (kind: AlertKind) => string) => Object.fromEntries(KINDS.map(kind => [kind, key(kind)])) as Record<AlertKind, string>;
   return { tag: per(kind => kind + tagSuffix), line: per(kind => (kind === "hype" ? "hypeBeginLine" : `${kind}Line`)), hypeEndLine: "hypeEndLine", ...extra };
 }
 
-// Töne je Alert-Art für Themes mit eingebauten Tönen: Schlüssel und die Felder dazu (leer = eingebauter Ton des Themes),
-// samt Ton beim Ausblenden
+// Sounds per alert kind for themes with built-in sounds: keys and their fields (empty = the theme's built-in sound),
+// plus the sound on fade-out
 export const ALERT_SOUND_KEYS = {
   follow: "soundFollow", sub: "soundSub", resub: "soundResub", gift: "soundGift", raid: "soundRaid", cheer: "soundCheer", redeem: "soundRedeem", hype: "soundHype",
 } as const satisfies Record<AlertKind, string>;
@@ -43,7 +43,7 @@ export const alertSoundFields = (group: string) => [
   sound("soundLeave", "Ton beim Ausblenden", group),
 ] as const;
 
-// Werte für die Platzhalter {user}, {amount}, {detail}, {text}
+// Values for the placeholders {user}, {amount}, {detail}, {text}
 const alertVars = (alert: Alert) => ({ user: alert.user, amount: alert.amount ?? 0, detail: alert.detail ?? "", text: alert.text ?? "" });
 
 export function describeAlert(alert: Alert, values: Record<string, unknown>, keys: AlertTextKeys): { tag: string; line: string } {
@@ -62,5 +62,5 @@ function tier(alert: Alert, text: (key: string | undefined) => string, keys: Ale
   return fillTemplate(text(keys.tierSuffix), { detail: keys.tierUpper ? alert.detail.toUpperCase() : alert.detail });
 }
 
-// Nachricht des Zuschauers als Zitat; bei Geschenk-Abos steht in text der Beschenkte, das ist kein Zitat
+// The viewer's message as a quote; for gift subs text holds the recipient, which is not a quote
 export const alertQuote = (alert: Alert) => (alert.text && alert.kind !== "gift" ? alert.text : null);

@@ -1,6 +1,6 @@
-// Hook der Befehlsseite (Szene info): Liste der Chat-Befehle (useCommands) als Abschnitte mit den Texten des Themes
-// (describeCommands, INFO_FIELDS) und die Einleitung mit {channel} und {login}. null, bis die Liste geladen ist.
-// demoMinimes: Regeln der Minimes des Themes für die Demo-Liste, null = Theme ohne Minimes.
+// Hook of the commands page (scene info): list of chat commands (useCommands) as sections with the texts of the theme
+// (describeCommands, INFO_FIELDS) and the intro with {channel} and {login}. null until the list is loaded.
+// demoMinimes: minime rules of the theme for the demo list, null = theme without minimes.
 import { useCommands } from "../hooks/useCommands.ts";
 import { describeCommands, type InfoValues } from "../infoFields.ts";
 import type { MinimeRules } from "../minimes.ts";

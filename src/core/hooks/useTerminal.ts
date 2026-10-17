@@ -1,5 +1,5 @@
-// Hook: tippt Zeilen nacheinander ab (inklusive Vertipper aus typing.ts), endlos im Kreis.
-// shown = die letzten visible fertigen Zeilen, typing = die Zeile, die gerade entsteht.
+// Hook: types lines one after another (including typos from typing.ts), endlessly in a loop.
+// shown = the last visible finished lines, typing = the line being written right now.
 import { useEffect, useState } from "react";
 import { frames, type Line } from "../typing.ts";
 

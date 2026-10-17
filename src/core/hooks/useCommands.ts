@@ -1,6 +1,6 @@
-// Hook: Chat-Befehle für die Befehlsseite (Szene info), alle 60 s neu geladen. Mit ?demo oder ohne Streamer eine
-// Beispielliste; demoMinimes: Regeln der Minimes des Themes aus seinen aktuellen Werten (null = Theme ohne Minimes),
-// damit die Vorschau im Dashboard zum Theme passt. null, bis die Liste geladen ist.
+// Hook: chat commands for the commands page (scene info), reloaded every 60 s. With ?demo or without a streamer a
+// sample list; demoMinimes: minime rules of the theme from its current values (null = theme without minimes),
+// so the preview in the dashboard matches the theme. null until the list is loaded.
 import { useEffect, useState } from "react";
 import type { CommandList } from "../commands.ts";
 import { fetchCommands, streamer } from "../connection.ts";

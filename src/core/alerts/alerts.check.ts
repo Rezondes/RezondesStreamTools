@@ -1,5 +1,5 @@
-// Check für alerts.ts: Kopfzeile und Zeile eines Alerts aus den Texten eines Themes, Platzhalter und Zitat.
-// Läuft mit npm test.
+// Check for alerts.ts: header and line of an alert from the texts of a theme, placeholders and quote.
+// Runs with npm test.
 import assert from "node:assert/strict";
 import type { AlertKind } from "../types.ts";
 import { ALERT_SOUND_KEYS, alertQuote, alertSoundFields, alertTextKeys, describeAlert, type AlertTextKeys } from "./alerts.ts";
@@ -19,14 +19,14 @@ const values: Record<string, unknown> = {
   tierSuffix: " [{detail}]",
 };
 
-// Platzhalter {user}, {amount}, {detail}, {text}; fehlende Werte sind leer bzw. 0
+// Placeholders {user}, {amount}, {detail}, {text}; missing values are empty or 0
 assert.deepEqual(describeAlert({ kind: "follow", user: "neo" }, values, keys()), { tag: "FOLLOW", line: "follow neo 0  " });
 assert.deepEqual(describeAlert({ kind: "raid", user: "smith", amount: 42 }, values, keys()), { tag: "RAID", line: "raid smith 42  " });
 
-// Hype Train: eigene Zeile für das Ende
+// Hype Train: own line for the end
 assert.equal(describeAlert({ kind: "hype", user: "HYPE", amount: 4, detail: "end" }, values, keys()).line, "ende 4");
 
-// Geschenk-Varianten und Abo-Stufe nur, wenn das Theme die Texte dafür hat
+// Gift variants and sub tier only if the theme has the texts for them
 assert.equal(describeAlert({ kind: "gift", user: "neo", amount: 1 }, values, keys()).line, "gift neo 1  ");
 assert.equal(describeAlert({ kind: "gift", user: "neo", amount: 1 }, values, keys({ giftOneLine: "giftOneLine", giftToLine: "giftToLine" })).line, "ein Abo von neo");
 assert.equal(describeAlert({ kind: "gift", user: "neo", amount: 1, text: "trinity" }, values, keys({ giftOneLine: "giftOneLine", giftToLine: "giftToLine" })).line, "Abo an trinity");
@@ -35,17 +35,17 @@ assert.equal(describeAlert({ kind: "sub", user: "neo", detail: "Tier 2" }, value
 assert.equal(describeAlert({ kind: "sub", user: "neo", detail: "Tier 2" }, values, keys({ tierSuffix: "tierSuffix", tierUpper: true })).tag, "SUB [TIER 2]");
 assert.equal(describeAlert({ kind: "sub", user: "neo" }, values, keys({ tierSuffix: "tierSuffix" })).tag, "SUB");
 
-// Zitat: die Nachricht des Zuschauers, ausser bei Geschenk-Abos (dort ist text der Beschenkte)
+// Quote: the viewer's message, except for gift subs (there text is the recipient)
 assert.equal(alertQuote({ kind: "sub", user: "neo", text: "hallo" }), "hallo");
 assert.equal(alertQuote({ kind: "gift", user: "neo", amount: 1, text: "trinity" }), null);
 assert.equal(alertQuote({ kind: "follow", user: "neo" }), null);
 
-// Schlüssel nach dem üblichen Muster, mit eigener Endung der Kopfzeile und optionalen Texten
+// Keys following the usual pattern, with an own header suffix and optional texts
 assert.deepEqual(alertTextKeys("Tag"), { ...keys(), line: { ...keys().line, hype: "hypeBeginLine" } });
 assert.equal(alertTextKeys("Label").tag.follow, "followLabel");
 assert.equal(alertTextKeys("Tag", { tierSuffix: "tierSuffix" }).tierSuffix, "tierSuffix");
 
-// Ton-Felder: eins je Alert-Art (Schlüssel wie ALERT_SOUND_KEYS) und eins fürs Ausblenden, alle in der Gruppe
+// Sound fields: one per alert kind (keys like ALERT_SOUND_KEYS) and one for fading out, all in the group
 const sounds = alertSoundFields("Alerts");
 assert.deepEqual(sounds.map(field => field.key), [...Object.values(ALERT_SOUND_KEYS), "soundLeave"]);
 assert.ok(sounds.every(field => field.group === "Alerts" && field.type === "sound"));

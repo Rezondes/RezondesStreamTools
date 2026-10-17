@@ -1,14 +1,14 @@
-// Theme-Schnittstelle: welche Szenen es gibt, wie ein Theme seine Einstellungen beschreibt und was ein Theme liefern
-// muss (ThemeModule ohne React für Server und Dashboard, ThemeView mit den Szenen für die Overlays).
+// Theme interface: which scenes exist, how a theme describes its settings and what a theme has to
+// provide (ThemeModule without React for server and dashboard, ThemeView with the scenes for the overlays).
 import type { ComponentType } from "react";
 import type { RenderClip } from "./renderClip.ts";
 
-// info: öffentliche Befehlsseite für Zuschauer (/s/<login>/), keine Quelle für OBS
+// info: public commands page for viewers (/s/<login>/), not a source for OBS
 export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes", "info"] as const;
 export type SceneName = (typeof SCENES)[number];
 export const OBS_SCENES = SCENES.filter(scene => scene !== "info");
 
-// Empfohlene Grösse der Browserquelle in OBS; Themes gestalten ihre Szenen für diese Grössen
+// Recommended size of the browser source in OBS; themes design their scenes for these sizes
 export const SCENE_SIZES: Record<SceneName, { width: number; height: number }> = {
   starting: { width: 1920, height: 1080 },
   brb: { width: 1920, height: 1080 },
@@ -22,7 +22,7 @@ export const SCENE_SIZES: Record<SceneName, { width: number; height: number }> =
   info: { width: 1280, height: 900 },
 };
 
-// Ton: eigene Datei aus den Medien (file) oder leer = eingebauter Ton des Themes; volume 0 bis 1
+// Sound: own file from the media (file) or empty = built-in sound of the theme; volume 0 to 1
 export type SoundValue = { file: string; volume: number };
 export type SettingValue = string | number | boolean | readonly string[] | SoundValue;
 export type SettingValues = Record<string, SettingValue>;
@@ -30,13 +30,13 @@ export type SettingValues = Record<string, SettingValue>;
 type FieldBase = {
   key: string;
   label: string;
-  group: string; // Abschnitt im Formular
-  scene?: SceneName; // für die Vorschau im Dashboard
+  group: string; // section in the form
+  scene?: SceneName; // for the preview in the dashboard
 };
 
 export type SettingField =
   | (FieldBase & { type: "color"; default: string })
-  // ascii: das Dashboard bietet dazu den ASCII-Logo-Generator an
+  // ascii: the dashboard offers the ASCII logo generator for it
   | (FieldBase & { type: "text" | "textarea"; default: string; maxLength?: number; ascii?: boolean })
   | (FieldBase & { type: "lines"; default: readonly string[]; maxLines?: number })
   | (FieldBase & { type: "number"; default: number; min: number; max: number; step?: number; unit?: "px" | "ms" | "s" | "%" })
@@ -45,16 +45,16 @@ export type SettingField =
   | (FieldBase & { type: "media"; default: string; accept: "image" | "video" | "audio" })
   | (FieldBase & { type: "sound"; default: SoundValue });
 
-// groupScenes: in welchen Szenen eine Gruppe wirkt (das Dashboard zeigt nur die Gruppen der Szene in der Vorschau);
-// fehlt eine Gruppe, wirkt sie überall (Allgemein), [] = in keiner Szene (Stinger, Banner: Bereich Rendern)
-// Typen der Minimes eines Themes (z.B. Früchte) statt Farben: Befehl zum Wählen (Standardwort), Bezeichnung im
-// Dashboard und je Typ id (Kleinbuchstaben und Ziffern), Name und Standard-Namen im Chat
+// groupScenes: in which scenes a group has an effect (the dashboard only shows the groups of the scene in the preview);
+// if a group is missing, it applies everywhere (general), [] = in no scene (stinger, banners: render section)
+// Minime variants of a theme (e.g. fruits) instead of colors: command to choose (default word), label in the
+// dashboard and per variant id (lower case letters and digits), name and default names in chat
 type MinimeVariantInfo = { id: string; label: string; names: readonly string[] };
 export type MinimeVariantSet = { command: string; label: string; variants: readonly MinimeVariantInfo[] };
 
-// minimeVariants: Typen der Minimes; fehlt es, wählen Chatter Farben (siehe src/core/minimeFields.ts)
-// personalize: Werte, die das Theme beim ersten Login mit dem Twitch-Login des Streamers füllt (Kanal-Name, Logo, ...),
-// statt allgemeiner Beispiele; fehlt es, gelten die Standardwerte
+// minimeVariants: variants of the minimes; if missing, chatters choose colors (see src/core/minimeFields.ts)
+// personalize: values the theme fills with the streamer's Twitch login on first login (channel name, logo, ...),
+// instead of general samples; if missing, the defaults apply
 export type ThemeSchema = {
   id: string;
   name: string;
@@ -64,10 +64,10 @@ export type ThemeSchema = {
   minimeVariants?: MinimeVariantSet;
 };
 
-// Vertrag eines Themes, Daten-Seite (ohne React, auch für den Server): sein Schema und die Clips für Stinger und Banner
-// (Render-Bereich), berechnet aus den gegen das Schema aufgelösten Werten. Eingetragen in src/themes/registry.ts.
+// Contract of a theme, data side (without React, also for the server): its schema and the clips for stinger and banners
+// (render section), computed from the values resolved against the schema. Registered in src/themes/registry.ts.
 export type ThemeModule = { schema: ThemeSchema; clips: (values: SettingValues, login: string) => RenderClip[] };
 
-// Vertrag eines Themes, Ansicht: seine Szenen (React.lazy), id gleich schema.id. Eingetragen in src/themes/scenes.tsx.
-// Fehlende Szenen kommen vom Standard-Theme, ausser theme-eigenen Funktionen (src/core/themeRuntime.ts).
+// Contract of a theme, view: its scenes (React.lazy), id equal to schema.id. Registered in src/themes/scenes.tsx.
+// Missing scenes come from the standard theme, except theme-specific features (src/core/themeRuntime.ts).
 export type ThemeView = { id: string; scenes: Partial<Record<SceneName, ComponentType>> };

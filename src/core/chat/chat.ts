@@ -1,14 +1,14 @@
-// Kontext Chat: Anzeige der Badges. Die Badges kommen als HOST, MOD, VIP, SUB aus core/ircEvents.ts; ein Theme kann
-// dafür Texte haben (badgeFields: badgeHost, badgeMod, badgeVip, badgeSub), sonst bleibt das Kürzel.
-// Rein; Check: chat.check.ts.
+// Context chat: display of the badges. The badges come as HOST, MOD, VIP, SUB from core/ircEvents.ts; a theme can
+// have texts for them (badgeFields: badgeHost, badgeMod, badgeVip, badgeSub), otherwise the abbreviation stays.
+// Pure; check: chat.check.ts.
 import { text } from "../fields.ts";
 
 const KEYS: Record<string, string> = { HOST: "badgeHost", MOD: "badgeMod", VIP: "badgeVip", SUB: "badgeSub" };
 
-// Schlüssel der Badge-Texte; gelten im Schema-Check als benutzt
+// Keys of the badge texts; count as used in the schema check
 export const BADGE_KEYS = Object.values(KEYS);
 
-// Felder für die Badge-Texte, für Themes, die Badges beschriften
+// Fields for the badge texts, for themes that label badges
 export const badgeFields = (group: string) => [
   text("badgeHost", "Badge Streamer", group, "HOST", 20),
   text("badgeMod", "Badge Moderator", group, "MOD", 20),

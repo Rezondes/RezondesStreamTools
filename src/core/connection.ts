@@ -1,9 +1,9 @@
-// Verbindung einer Overlay-Seite (nur von den Hooks in core/hooks genutzt, Regel 16):
-// - Streamer: aus dem Pfad /s/<login>/<szene>.html, in Vite (npm run dev) aus ?s=<login>
-// - Chat: immer anonymer IRC-Login (kein Token nötig), Kanal = Streamer (oder ?channel=)
-// - Alerts mit Server: per Server-Sent Events von /s/<login>/events, inkl. Follows, Kanalpunkten und Hype Train
-// - Alerts ohne Server oder ohne laufende Laufzeit: Subs, Resubs, Gifts, Raids, Bits aus dem IRC
-// - ?demo in der URL: erzeugt Fake-Ereignisse zum Testen ohne Stream
+// Connection of an overlay page (used only by the hooks in core/hooks, rule 16):
+// - Streamer: from the path /s/<login>/<scene>.html, in Vite (npm run dev) from ?s=<login>
+// - Chat: always an anonymous IRC login (no token needed), channel = streamer (or ?channel=)
+// - Alerts with server: via server-sent events from /s/<login>/events, incl. follows, channel points and hype train
+// - Alerts without server or without a running runtime: subs, resubs, gifts, raids, bits from IRC
+// - ?demo in the URL: creates fake events for testing without a stream
 import { loadEmotes } from "./emotes.ts";
 import { anonymousLogin, IRC_URL, parseIrc } from "./irc.ts";
 import { toIrcEvents } from "./ircEvents.ts";
@@ -24,30 +24,30 @@ export type Handlers = {
   minimeChat?: (login: string) => void;
 };
 
-// Login des Streamers, dessen Overlay das ist; null ohne /s/<login>/ und ohne gültiges ?s=
+// Login of the streamer whose overlay this is; null without /s/<login>/ and without a valid ?s=
 const loginFromQuery = (params.get("s") ?? "").toLowerCase();
 export const streamer = streamerPath.parse(location.pathname)?.login ?? (streamerPath.isLogin(loginFromQuery) ? loginFromQuery : null);
 
-// Datei aus dem Medienordner des Streamers (/s/<login>/media/); volle URLs und Seiten ohne Streamer unverändert
+// File from the streamer's media folder (/s/<login>/media/); full URLs and pages without a streamer unchanged
 export const mediaUrl = (name: string) => (/^https?:\/\//.test(name) || !streamer ? name : `${streamerPath.base(streamer)}/media/${encodeURIComponent(name)}`);
 
 const channel = (params.get("channel") ?? streamer ?? String(import.meta.env.VITE_TWITCH_CHANNEL ?? "")).toLowerCase().replace(/^#/, "");
 
-// null = kein Streamer, kein Server erreichbar oder Streamer dort unbekannt
+// null = no streamer, no server reachable or streamer unknown there
 async function serverStatus(): Promise<ServerStatus | null> {
   if (!streamer || !location.protocol.startsWith("http")) return null;
   try {
     const response = await fetch(`${streamerPath.base(streamer)}/status`);
     return response.ok ? ((await response.json()) as ServerStatus) : null;
   } catch {
-    // Netzwerkfehler: wie ohne Server, der Chat läuft trotzdem
+    // Network error: like without a server, the chat runs anyway
     return null;
   }
 }
 
-// Alle Hooks einer Seite teilen sich eine Verbindung: der erste Abonnent startet die Quellen, der letzte stoppt sie.
-// Der Server schickt den laufenden Titel und die Minimes nur beim Verbinden; wer später abonniert (die Szene lädt nach
-// den Einstellungen), bekommt sie aus lastTrack und lastMinimes. undefined = noch keine Nachricht.
+// All hooks of a page share one connection: the first subscriber starts the sources, the last one stops them.
+// The server sends the current track and the minimes only on connect; whoever subscribes later (the scene loads after
+// the settings) gets them from lastTrack and lastMinimes. undefined = no message yet.
 const subscribers = new Set<Handlers>();
 let stopSources: (() => void) | null = null;
 let lastTrack: Track | null | undefined;
@@ -69,7 +69,7 @@ const fanout: Handlers = {
   minimeChat: login => subscribers.forEach(handlers => handlers.minimeChat?.(login)),
 };
 
-// Meldet Ereignisse an handlers; die Rückgabe meldet wieder ab
+// Reports events to handlers; the return value unsubscribes again
 export function connect(handlers: Handlers): () => void {
   subscribers.add(handlers);
   stopSources ??= startSources(fanout);
@@ -85,43 +85,43 @@ export function connect(handlers: Handlers): () => void {
   };
 }
 
-// Gewähltes Theme und Einstellungen des Streamers; null ohne Streamer oder Server
+// Chosen theme and settings of the streamer; null without streamer or server
 export async function fetchSettings(): Promise<PublicSettings | null> {
   if (!streamer || !location.protocol.startsWith("http")) return null;
   try {
     const response = await fetch(`${streamerPath.base(streamer)}/settings`);
     return response.ok ? ((await response.json()) as PublicSettings) : null;
   } catch {
-    // Netzwerkfehler: die Szene läuft mit den Standardwerten
+    // Network error: the scene runs with the defaults
     return null;
   }
 }
 
-// Chat-Befehle des Streamers für die Befehlsseite; null ohne Streamer, Server oder bei Netzwerkfehlern
+// Chat commands of the streamer for the commands page; null without streamer, server or on network errors
 export async function fetchCommands(): Promise<CommandList | null> {
   if (!streamer || !location.protocol.startsWith("http")) return null;
   try {
     const response = await fetch(`${streamerPath.base(streamer)}/commands`);
     return response.ok ? ((await response.json()) as CommandList) : null;
   } catch {
-    // Netzwerkfehler: die Seite zeigt die Liste dann nicht
+    // Network error: the page then does not show the list
     return null;
   }
 }
 
-// Verbindet alle Quellen und meldet Ereignisse an handlers; die Rückgabe trennt alles wieder
+// Connects all sources and reports events to handlers; the return value disconnects everything again
 function startSources(handlers: Handlers): () => void {
   let stopped = false;
   const isDemo = params.has("demo");
   const stops = [isDemo ? demo(handlers) : () => {}];
-  // Mit ?demo zeigen Musik und Minimes nur die Demo: der Server schickt beim Verbinden seinen Stand (oft kein Titel,
-  // keine Minimes) und würde die Demo sonst überschreiben
+  // With ?demo music and minimes only show the demo: the server sends its state on connect (often no track,
+  // no minimes) and would otherwise overwrite the demo
   const live: Handlers = isDemo ? { ...handlers, music: undefined, minimes: undefined, minimeChat: undefined } : handlers;
   serverStatus()
     .then(server => {
       if (stopped) return;
       const name = channel || server?.login;
-      // Mit Server kommen Alerts nur vom Server, sonst gäbe es Subs doppelt
+      // With a server, alerts only come from the server, otherwise subs would appear twice
       if (name) stops.push(irc(name, live, !server));
       if (server) stops.push(events(server.login, live));
     })
@@ -133,7 +133,7 @@ function events(login: string, handlers: Handlers) {
   let source: EventSource;
   let retry: ReturnType<typeof setTimeout> | undefined;
   const open = () => {
-    // Ohne den Overlay-Schlüssel aus der OBS-URL lehnt der Server den Live-Stream ab
+    // Without the overlay key from the OBS URL the server rejects the live stream
     source = new EventSource(`${streamerPath.base(login)}/events?key=${encodeURIComponent(params.get("key") ?? "")}`);
     source.onmessage = event => {
       const message = JSON.parse(String(event.data)) as ServerMessage;
@@ -144,7 +144,7 @@ function events(login: string, handlers: Handlers) {
       else if (message.type === "minimes") handlers.minimes?.(message.minimes);
       else if (message.type === "minimeChat") handlers.minimeChat?.(message.login);
     };
-    // Nach einer Antwort wie 404 (Laufzeit gerade nicht gestartet) gibt EventSource auf: selbst mit Pause neu verbinden
+    // After an answer like 404 (runtime not started right now) EventSource gives up: reconnect ourselves after a pause
     source.onerror = () => {
       if (source.readyState === EventSource.CLOSED) retry = setTimeout(open, 10_000);
     };
@@ -157,11 +157,11 @@ function irc(name: string, handlers: Handlers, withAlerts: boolean) {
   let socket: WebSocket;
   let stopped = false;
   let retry: ReturnType<typeof setTimeout>;
-  // 7TV/BTTV/FFZ-Emotes, geladen sobald die Kanal-ID bekannt ist, alle 10 Minuten aufgefrischt
+  // 7TV/BTTV/FFZ emotes, loaded as soon as the channel ID is known, refreshed every 10 minutes
   let emotes = new Map<string, string>();
   let roomId = "";
   let reload: ReturnType<typeof setInterval> | undefined;
-  // loadEmotes wirft nie (allSettled); ohne Ergebnis bleiben die alten Emotes
+  // loadEmotes never throws (allSettled); without a result the old emotes stay
   const fetchEmotes = () => { loadEmotes(roomId).then(loaded => { emotes = loaded; }).catch(() => {}); };
 
   const handleLine = (line: string) => {

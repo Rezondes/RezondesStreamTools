@@ -1,7 +1,7 @@
-// Zeichensatz für Matrix-Regen, Entschlüsseln und Glitches, und ein zufälliges Zeichen daraus.
+// Character set for matrix rain, decoding and glitches, and a random character from it.
 export const GLYPHS = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789{}<>=;#ABCDEF";
 
-// chars: eigener Zeichensatz aus den Einstellungen; Array.from, damit auch Zeichen ausserhalb der BMP ganz bleiben
+// chars: own character set from the settings; Array.from so characters outside the BMP stay whole
 export function glyph(chars = GLYPHS) {
   const list = Array.from(chars);
   return list[(Math.random() * list.length) | 0] ?? "";

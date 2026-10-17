@@ -1,4 +1,4 @@
-// Hook: was der Spotify-Player zeigt (nowPlaying in music.ts) aus dem laufenden Titel von useMusic.
+// Hook: what the Spotify player shows (nowPlaying in music.ts) from the current track of useMusic.
 import { useMusic } from "../hooks/useMusic.ts";
 import { nowPlaying } from "./music.ts";
 

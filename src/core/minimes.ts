@@ -1,39 +1,39 @@
-// Regeln der Minimes (Chatter als Figuren in der Szene minimes): Farben oder Typen (z.B. Früchte) aus dem Chat lesen,
-// Chatbefehle erkennen und die Liste der eingeklinkten Chatter führen. Rein (Regel 12): Zeit kommt als now herein, alle Schwellen und Schalter
-// als rules (Einstellungen des Streamers, siehe minimeFields.ts), Zufall als random. Genutzt vom Server (server/minimes.ts).
+// Rules of the minimes (chatters as figures in the scene minimes): read colors or variants (e.g. fruits) from chat,
+// detect chat commands and keep the list of joined chatters. Pure (rule 12): time comes in as now, all thresholds and switches
+// as rules (settings of the streamer, see minimeFields.ts), randomness as random. Used by the server (server/minimes.ts).
 // Check: minimes.check.ts.
 import type { Minime } from "./types.ts";
 
-// Alle Einstellungen, die bestimmen, was die Liste tut. Rollen: Twitch-Badges (subscriber, vip, moderator,
-// broadcaster) oder everyone; der Streamer (broadcaster) darf immer alles. look: Befehl für Farbe oder Typ.
-// variants: erlaubte Typen mit ihren Namen im Chat (vereinheitlicht, siehe normalizeName); null = das Theme nutzt Farben.
+// All settings that decide what the list does. Roles: Twitch badges (subscriber, vip, moderator,
+// broadcaster) or everyone; the streamer (broadcaster) may always do everything. look: command for color or variant.
+// variants: allowed variants with their names in chat (normalized, see normalizeName); null = the theme uses colors.
 export type MinimeRules = {
   commands: { join: string; look: string; leave: string };
   joinRoles: readonly string[];
   kickRoles: readonly string[];
-  colorJoins: boolean; // !color klinkt Nicht-Eingeklinkte ein
+  colorJoins: boolean; // !color joins chatters who have not joined
   max: number;
-  whenFull: "replace" | "reject"; // replace: der am längsten Inaktive fliegt raus
-  idleMinutes: number; // 0 = nie
+  whenFull: "replace" | "reject"; // replace: the longest inactive one is removed
+  idleMinutes: number; // 0 = never
   colorCooldownS: number;
-  minBrightness: number; // 0 bis 255, hellster Kanal einer Farbe
+  minBrightness: number; // 0 to 255, brightest channel of a color
   useTwitchColor: boolean;
   chatKeepsAlive: boolean;
   reactToChat: boolean;
-  clearOffline: boolean; // vom Server bei stream.offline ausgewertet
+  clearOffline: boolean; // evaluated by the server on stream.offline
   removeOnBan: boolean;
   variants: readonly MinimeVariantRule[] | null;
 };
 export type MinimeVariantRule = { id: string; names: readonly string[] };
 
 export type MinimeEntry = Minime & { lastSeen: number };
-// Farben bleiben gemerkt, auch wenn das Minime verschwindet. usedAt: zuletzt benutzt (für die Obergrenze),
-// changedAt: zuletzt geändert (für den Cooldown)
+// Colors stay remembered even when the minime disappears. usedAt: last used (for the upper limit),
+// changedAt: last changed (for the cooldown)
 type StoredColor = { color: string; usedAt: number; changedAt: number };
 type StoredVariant = { variant: string; usedAt: number; changedAt: number };
 export type MinimeState = { roster: MinimeEntry[]; colors: Record<string, StoredColor>; variants: Record<string, StoredVariant> };
 
-// Ereignisse aus dem Chat und vom Server. twitchColor: Namensfarbe aus dem Twitch-Tag color (oder null)
+// Events from chat and from the server. twitchColor: name color from the Twitch tag color (or null)
 export type MinimeEvent =
   | { type: "join"; login: string; user: string; color: string | null; variant: string | null; twitchColor: string | null }
   | { type: "color"; login: string; user: string; color: string; twitchColor: string | null }
@@ -48,10 +48,10 @@ type MinimeCommand =
   | { type: "leave" }
   | { type: "kick"; login: string };
 
-// changed: die sichtbare Liste hat sich geändert; react: Login, dessen Minime auf Chat reagieren soll
+// changed: the visible list changed; react: login whose minime should react to chat
 type MinimeResult = { state: MinimeState; changed: boolean; react: string | null };
 
-// fixed: Speicherschutz, damit minimes.json nicht unbegrenzt wächst
+// fixed: memory guard, so minimes.json does not grow without limit
 export const MAX_STORED_COLORS = 2000;
 
 const LOGIN = /^[a-z0-9_]{1,25}$/;
@@ -59,21 +59,21 @@ const HEX = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i;
 const RGB_CALL = /^rgb\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i;
 const RGB_LIST = /^(\d{1,3})(?:\s*,\s*|\s+)(\d{1,3})(?:\s*,\s*|\s+)(\d{1,3})$/;
 
-// Leerer Zustand: niemand eingeklinkt, keine Farben und Typen gemerkt
+// Empty state: nobody joined, no colors and variants remembered
 export const emptyMinimeState = (): MinimeState => ({ roster: [], colors: {}, variants: {} });
 
 const SPELLED: Record<string, string> = { "ä": "ae", "ö": "oe", "ü": "ue", "ß": "ss" };
 
-// Name aus dem Chat oder den Einstellungen vergleichbar machen: klein, ä/ö/ü/ß ausgeschrieben, ohne Leerzeichen und Bindestriche
+// Makes a name from chat or the settings comparable: lower case, ä/ö/ü/ß spelled out, without spaces and hyphens
 export function normalizeName(text: string): string {
   return text.toLowerCase().replace(/[äöüß]/g, letter => SPELLED[letter]).replace(/[\s-]+/g, "");
 }
 
-// Typ zu einem Namen aus dem Chat, null wenn kein erlaubter Typ so heisst
+// Variant for a name from chat, null if no allowed variant has that name
 const findVariant = (text: string, variants: readonly MinimeVariantRule[]) =>
   variants.find(variant => variant.names.includes(normalizeName(text)))?.id ?? null;
 
-// Kanäle 0 bis 255 aus einer Eingabe, null wenn kein unterstütztes Format
+// Channels 0 to 255 from an input, null if not a supported format
 function channels(text: string): number[] | null {
   const hex = HEX.exec(text);
   if (hex) {
@@ -85,8 +85,8 @@ function channels(text: string): number[] | null {
   return values && values.every(value => value <= 255) ? values : null;
 }
 
-// Farbe aus dem Chat (#ff00aa, ff00aa, #f0a, "255 0 170", "255,0,170", "rgb(255, 0, 170)") als #rrggbb, sonst null.
-// Liegt der hellste Kanal unter minBrightness, wird die Farbe proportional bis dahin aufgehellt.
+// Color from chat (#ff00aa, ff00aa, #f0a, "255 0 170", "255,0,170", "rgb(255, 0, 170)") as #rrggbb, otherwise null.
+// If the brightest channel is below minBrightness, the color is brightened proportionally up to it.
 export function parseColor(text: string, minBrightness: number): string | null {
   const values = channels(text.trim());
   if (!values) return null;
@@ -100,8 +100,8 @@ export function parseColor(text: string, minBrightness: number): string | null {
 const hasRole = (roles: readonly string[], allowed: readonly string[]) =>
   allowed.includes("everyone") || roles.includes("broadcaster") || roles.some(role => allowed.includes(role));
 
-// Befehl am Anfang einer Chatnachricht, null für alles andere oder ohne erlaubte Rolle.
-// Leave mit Ziel (@name) wirft ein fremdes Minime raus, wenn die Rolle das darf, sonst ist es ein normales Leave.
+// Command at the start of a chat message, null for everything else or without an allowed role.
+// Leave with a target (@name) kicks another minime if the role may, otherwise it is a normal leave.
 export function parseCommand(text: string, roles: readonly string[], rules: MinimeRules): MinimeCommand | null {
   const [word = "", ...rest] = text.trim().split(/\s+/);
   const argument = rest.join(" ");
@@ -127,8 +127,8 @@ export function parseCommand(text: string, roles: readonly string[], rules: Mini
 
 type Remembered = { usedAt: number; changedAt: number };
 
-// Neue Farbe oder neuen Typ merken, wenn der Cooldown um ist (same: gleicher Wert wie gemerkt, make: neuer Eintrag mit
-// changedAt); der am längsten unbenutzte Eintrag fällt über der Obergrenze heraus
+// Remember a new color or variant when the cooldown is over (same: same value as remembered, make: new entry with
+// changedAt); the longest unused entry drops out above the upper limit
 function remember<Entry extends Remembered>(map: Record<string, Entry>, login: string, same: (stored: Entry) => boolean, make: (changedAt: number) => Entry, now: number, rules: MinimeRules) {
   const stored = map[login] as Entry | undefined;
   if (stored && !same(stored) && now - stored.changedAt < rules.colorCooldownS * 1000) return map;
@@ -145,11 +145,11 @@ const storeColor = (colors: MinimeState["colors"], login: string, color: string,
 const storeVariant = (variants: MinimeState["variants"], login: string, variant: string, now: number, rules: MinimeRules) =>
   remember(variants, login, stored => stored.variant === variant, changedAt => ({ variant, usedAt: now, changedAt }), now, rules);
 
-// Erlaubte Typ-ids; leer im Farb-Modus
+// Allowed variant ids; empty in color mode
 const allowedVariants = (rules: MinimeRules) => rules.variants?.map(variant => variant.id) ?? [];
 
-// Typ eines Chatters: gewählt und erlaubt, sonst gemerkt und erlaubt, sonst zufällig erlaubt (sofort wieder wechselbar).
-// Ohne erlaubte Typen oder im Farb-Modus null.
+// Variant of a chatter: chosen and allowed, otherwise remembered and allowed, otherwise random allowed (switchable right away).
+// Without allowed variants or in color mode null.
 function resolveVariant(variants: MinimeState["variants"], login: string, chosen: string | null, now: number, rules: MinimeRules, random: () => number) {
   const allowed = allowedVariants(rules);
   if (!allowed.length) return { variants, variant: null };
@@ -161,7 +161,7 @@ function resolveVariant(variants: MinimeState["variants"], login: string, chosen
   return { variants: { ...picked, [login]: { variant, usedAt: now, changedAt: free } }, variant };
 }
 
-// Liste ohne die am längsten Inaktiven, bis höchstens max übrig sind (Reihenfolge bleibt)
+// List without the longest inactive ones, until at most max are left (order stays)
 function trim(roster: MinimeEntry[], max: number) {
   const kept = new Set([...roster].sort((first, second) => second.lastSeen - first.lastSeen).slice(0, Math.max(0, max)));
   return roster.filter(entry => kept.has(entry));
@@ -169,7 +169,7 @@ function trim(roster: MinimeEntry[], max: number) {
 
 type LookEvent = Extract<MinimeEvent, { type: "join" | "color" | "variant" }>;
 
-// Farbe eines Chatters: gewählt, sonst gemerkt, sonst Twitch-Farbe (wenn eingeschaltet); im Typ-Modus null
+// Color of a chatter: chosen, otherwise remembered, otherwise Twitch color (if switched on); null in variant mode
 function resolveColor(state: MinimeState, event: LookEvent, now: number, rules: MinimeRules) {
   if (rules.variants || event.type === "variant") return { colors: state.colors, color: null };
   const stored = event.color ? storeColor(state.colors, event.login, event.color, now, rules) : state.colors;
@@ -178,7 +178,7 @@ function resolveColor(state: MinimeState, event: LookEvent, now: number, rules: 
   return { colors, color: colors[event.login]?.color ?? twitchColor };
 }
 
-// Einklinken (oder Farbe, Typ und Name eines Eingeklinkten aktualisieren)
+// Join (or update color, variant and name of a joined chatter)
 function join(state: MinimeState, event: LookEvent, now: number, rules: MinimeRules, random: () => number): MinimeResult {
   const { colors, color } = resolveColor(state, event, now, rules);
   const chosen = event.type === "color" ? null : event.variant;
@@ -204,10 +204,10 @@ function chat(state: MinimeState, login: string, now: number, rules: MinimeRules
   return { state: { ...state, roster }, changed: false, react: rules.reactToChat ? login : null };
 }
 
-// Hat der Eintrag einen Typ, den er laut Regeln haben darf? (erlaubt, oder null wenn keine erlaubt sind)
+// Does the entry have a variant it may have according to the rules? (allowed, or null if none are allowed)
 const variantFits = (entry: MinimeEntry, allowed: readonly string[]) => (entry.variant === null ? !allowed.length : allowed.includes(entry.variant));
 
-// Inaktive entfernen, auf max kürzen, und im Typ-Modus jedem einen erlaubten Typ geben (ausgeschaltete ersetzen)
+// Remove inactive ones, shorten to max, and in variant mode give everyone an allowed variant (replace switched-off ones)
 function prune(state: MinimeState, now: number, rules: MinimeRules, random: () => number): MinimeResult {
   const active = rules.idleMinutes > 0 ? state.roster.filter(entry => now - entry.lastSeen <= rules.idleMinutes * 60_000) : state.roster;
   const kept = trim(active, rules.max);
@@ -223,8 +223,8 @@ function prune(state: MinimeState, now: number, rules: MinimeRules, random: () =
   return { state: { ...state, roster, variants }, changed, react: null };
 }
 
-// Ein Ereignis auf die Liste anwenden. prune entfernt Inaktive, kürzt die Liste auf max und ersetzt ausgeschaltete Typen.
-// random: Zufall für die Vergabe von Typen (0 bis unter 1)
+// Applies an event to the list. prune removes inactive ones, shortens the list to max and replaces switched-off variants.
+// random: randomness for assigning variants (0 to below 1)
 export function applyMinime(state: MinimeState, event: MinimeEvent, now: number, rules: MinimeRules, random: () => number): MinimeResult {
   const present = "login" in event && state.roster.some(entry => entry.login === event.login);
   switch (event.type) {

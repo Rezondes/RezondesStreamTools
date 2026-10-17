@@ -1,5 +1,5 @@
-// Hook: laufender Spotify-Titel. track = aktueller Stand (null = nichts läuft), last = zuletzt bekannter Titel
-// (für Ausblend-Animationen), receivedAt = Empfangszeit für currentProgress.
+// Hook: current Spotify track. track = current state (null = nothing playing), last = last known track
+// (for fade-out animations), receivedAt = time of receipt for currentProgress.
 import { useEffect, useState } from "react";
 import { connect } from "../connection.ts";
 import type { Track } from "../types.ts";

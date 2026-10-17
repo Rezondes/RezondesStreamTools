@@ -1,5 +1,5 @@
-/* Lauftext (Marquee.tsx): zu lange Zeilen fahren hin und her. Stehen 15 % am Anfang und Ende, fahren in den 70 %
-   dazwischen (passend zu marqueeSeconds). --shift und --marquee-time setzt der Baustein. */
+/* Scrolling text (Marquee.tsx): too long lines move back and forth. They stand still 15 % at the start and end, move in the 70 %
+   between (matching marqueeSeconds). The component sets --shift and --marquee-time. */
 .marquee { display: block; overflow: hidden; white-space: pre; }
 .marquee-text { display: inline-block; }
 .marquee-text.moving { animation: core-marquee var(--marquee-time) ease-in-out infinite alternate; }

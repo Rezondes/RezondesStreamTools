@@ -1,5 +1,5 @@
-/* Bühne der Vollbild-Szenen (useStage): 1920x1080 in der Mitte der Quelle, per --s auf sie skaliert. Das Layout auf
-   der Bühne (Flex, Abstände) bestimmt das Theme über seine eigene Klasse. */
+/* Stage of the full-screen scenes (useStage): 1920x1080 in the center of the source, scaled to it via --s. The theme
+   decides the layout on the stage (flex, spacing) through its own class. */
 .stage-box {
   position: absolute;
   left: 50%;

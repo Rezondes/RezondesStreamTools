@@ -1,5 +1,5 @@
-// Hook: Töne eines Alerts genau einmal, open beim Erscheinen und leave beim Ausblenden. Beide werden beim Erscheinen
-// festgehalten, damit geänderte Einstellungen einen laufenden Alert nicht noch einmal klingen lassen. null = kein Ton.
+// Hook: sounds of an alert exactly once, open on appearing and leave on fading out. Both are captured on
+// appearing, so changed settings never make a running alert sound again. null = no sound.
 import { useEffect, useState } from "react";
 
 export function useAlertSounds(open: (() => void) | null, leave: (() => void) | null, leaving: boolean) {

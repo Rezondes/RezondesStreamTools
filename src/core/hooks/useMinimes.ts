@@ -1,7 +1,7 @@
-// Hook: die Minimes der Szene, jedes mit seiner laufenden Aktion (enter, exit, idle, walk oder aus dem Katalog des
-// Themes) und Position. Die Bewegung kommt aus den Minime-Einstellungen des Themes (minimeFields.ts), die Liste vom
-// Server (SSE minimes), Chat löst die Reaktion aus (SSE minimeChat). Rendert nur, wenn eine Aktion wechselt.
-// catalog und reaction sollten stabil sein (useMemo), widthPx ist die Breite der Szene in px.
+// Hook: the minimes of the scene, each with its running action (enter, exit, idle, walk or from the catalog of the
+// theme) and position. The movement comes from the theme's minime settings (minimeFields.ts), the list from the
+// server (SSE minimes), chat triggers the reaction (SSE minimeChat). Renders only when an action changes.
+// catalog and reaction should be stable (useMemo), widthPx is the width of the scene in px.
 import { useEffect, useMemo, useRef, useState } from "react";
 import { connect } from "../connection.ts";
 import { advance, nextEnd, react, syncRoster, type MinimeAction, type MinimeActor, type MinimeStage } from "../minimeBehavior.ts";
@@ -13,7 +13,7 @@ type MinimeSceneOptions = { catalog: readonly MinimeAction[]; reaction: MinimeAc
 export function useMinimes({ catalog, reaction, widthPx }: MinimeSceneOptions): readonly MinimeActor[] {
   const values = useThemeValues();
   const stage = useMemo<MinimeStage>(() => ({ motion: readMinimeOptions(values).motion, catalog, widthPx }), [values, catalog, widthPx]);
-  // Für die Rückrufe der Verbindung immer die aktuelle Bühne und Reaktion, ohne neu zu verbinden
+  // For the connection callbacks always the current stage and reaction, without reconnecting
   const latest = useRef({ stage, reaction });
   useEffect(() => { latest.current = { stage, reaction }; }, [stage, reaction]);
 
@@ -26,7 +26,7 @@ export function useMinimes({ catalog, reaction, widthPx }: MinimeSceneOptions): 
     },
   }), []);
 
-  // Ein Timer auf das nächste Aktionsende, nicht pro Bild (Regel 21)
+  // One timer for the next action end, not per frame (rule 21)
   useEffect(() => {
     const end = nextEnd(actors);
     if (end === null) return;

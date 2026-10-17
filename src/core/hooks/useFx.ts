@@ -1,7 +1,7 @@
-// Hooks für Chat-Effekte: useFx liefert die sichtbaren Effekte einer Zone mit Position, useFxPhase die
-// aktuelle Phase eines Effekts (pre, play, post, done) nach fxPhase.
-// defaults: Werte des Themes für alles, was eine Aktion nicht selbst angibt (z.B. duration, size);
-// margin: Abstand zufälliger Positionen zum Rand in Prozent.
+// Hooks for chat effects: useFx returns the visible effects of a zone with position, useFxPhase the
+// current phase of an effect (pre, play, post, done) according to fxPhase.
+// defaults: values of the theme for everything an action does not specify itself (e.g. duration, size);
+// margin: distance of random positions to the edge in percent.
 import { useEffect, useState } from "react";
 import { connect } from "../connection.ts";
 import { fxLifetime, fxPhase, placeFx, type FxPhase } from "../overlayTiming.ts";
@@ -30,7 +30,7 @@ export function useFx(zone: string, max: number, defaults: Partial<FxAction>, ma
   return shown;
 }
 
-// Phase ab Erscheinen; wechselt genau zu den Grenzen von delay, duration und after
+// Phase from appearing; switches exactly at the boundaries of delay, duration and after
 export function useFxPhase(action: FxAction): FxPhase {
   const [phase, setPhase] = useState<FxPhase>(() => fxPhase(action, 0));
   useEffect(() => {

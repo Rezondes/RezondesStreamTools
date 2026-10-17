@@ -1,8 +1,8 @@
-// Einstellungen der Minimes, die für jedes Theme mit Minimes gleich sind: Befehle, Regeln der Liste und Bewegung.
-// Ein Theme hat Minimes genau dann, wenn sein Schema MINIME_BASE_FIELDS einbindet (hasMinimes). Farb-Themes nehmen
-// MINIME_FIELDS (Grundfelder und Farb-Felder), Typ-Themes die Grundfelder und minimeVariantFields ihrer Typen.
-// Aussehen und eigene Animationen legt das Theme selbst an. readMinimeOptions liest die Werte für Server (Regeln)
-// und Hook (Bewegung).
+// Settings of the minimes that are the same for every theme with minimes: commands, rules of the list and movement.
+// A theme has minimes exactly when its schema includes MINIME_BASE_FIELDS (hasMinimes). Color themes take
+// MINIME_FIELDS (base fields and color fields), variant themes the base fields and minimeVariantFields of their variants.
+// The theme creates the look and its own animations itself. readMinimeOptions reads the values for the server (rules)
+// and the hook (movement).
 // Check: minimeFields.check.ts.
 import { choice, flag, number, text, type ValuesOf } from "./fields.ts";
 import { normalizeName, type MinimeRules, type MinimeVariantRule } from "./minimes.ts";
@@ -14,12 +14,12 @@ export const MINIME_RULES = "Minimes: Regeln";
 export const MINIME_MOTION = "Minimes: Bewegung";
 export const MINIME_VARIANTS = "Minimes: Typen";
 
-// Mindestrolle: wer sie oder eine darüber hat, darf (Reihenfolge = Rang)
+// Minimum role: whoever has it or one above may (order = rank)
 const ROLES = ["everyone", "subscriber", "vip", "moderator", "broadcaster"] as const;
 const WHEN_FULL = ["replace", "reject"] as const;
 const COMMAND = /^!\S{1,24}$/;
 
-// Für alle Themes mit Minimes: Befehle zum Einklinken und Verlassen, Rollen, Regeln der Liste, Bewegung
+// For all themes with minimes: commands to join and leave, roles, rules of the list, movement
 export const MINIME_BASE_FIELDS = [
   text("minimeJoinCommand", "Befehl: einklinken (optional mit Farbe oder Typ)", MINIME_COMMANDS, "!join", 25),
   text("minimeLeaveCommand", "Befehl: verlassen (Mods: mit @name rauswerfen)", MINIME_COMMANDS, "!leave", 25),
@@ -46,23 +46,23 @@ export const MINIME_BASE_FIELDS = [
   number("minimeExitMs", "Dauer: verschwinden", MINIME_MOTION, 900, 0, 10_000, "ms"),
 ] as const satisfies readonly SettingField[];
 
-// Nur für Farb-Themes: Befehl zum Farbwechsel, Mindesthelligkeit, Twitch-Namensfarbe
+// Only for color themes: command to change color, minimum brightness, Twitch name color
 const MINIME_COLOR_FIELDS = [
   text("minimeColorCommand", "Befehl: Farbe ändern", MINIME_COMMANDS, "!color", 25),
   number("minimeMinBrightness", "Mindesthelligkeit der Farbe (0 bis 255)", MINIME_RULES, 80, 0, 255),
   flag("minimeUseTwitchColor", "Ohne eigene Farbe die Twitch-Namensfarbe nehmen", MINIME_RULES, true),
 ] as const satisfies readonly SettingField[];
 
-// Alle Felder eines Farb-Themes
+// All fields of a color theme
 export const MINIME_FIELDS = [...MINIME_BASE_FIELDS, ...MINIME_COLOR_FIELDS] as const;
 
 type MinimeValues = ValuesOf<typeof MINIME_FIELDS>;
 
-// Schlüssel der Namen eines Typs im Chat
+// Key of the names of a variant in chat
 export const minimeNamesKey = (id: string) => `minimeNames_${id}`;
 
-// Felder eines Typ-Themes: Befehl zum Wählen (Standardwort des Themes) und je Typ die Namen im Chat, Komma-getrennt;
-// eine leere Liste schaltet den Typ aus
+// Fields of a variant theme: command to choose (the theme's default word) and per variant the names in chat, comma-separated;
+// an empty list switches the variant off
 export function minimeVariantFields(set: MinimeVariantSet): SettingField[] {
   return [
     text("minimeVariantCommand", `Befehl: ${set.label} wählen`, MINIME_VARIANTS, set.command, 25),
@@ -70,7 +70,7 @@ export function minimeVariantFields(set: MinimeVariantSet): SettingField[] {
   ];
 }
 
-// Bewegung aller Minimes; die themeeigenen Animationen kommen aus dem Katalog der Szene
+// Movement of all minimes; the theme's own animations come from the catalog of the scene
 export type MinimeMotion = {
   speedPxPerS: number;
   marginPx: number;
@@ -87,14 +87,14 @@ type MinimeOptions = { rules: MinimeRules; motion: MinimeMotion };
 
 const SCHEMA: ThemeSchema = { id: "minimes", name: "Minimes", fields: MINIME_FIELDS };
 
-// Hat dieses Theme Minimes? (bindet es die gemeinsamen Felder ein)
+// Does this theme have minimes? (does it include the shared fields)
 export const hasMinimes = (schema: ThemeSchema) => schema.fields.some(field => field.key === MINIME_BASE_FIELDS[0].key);
 
 const rolesFrom = (role: string): string[] => (role === "everyone" ? ["everyone"] : ROLES.slice(Math.max(0, ROLES.indexOf(role as (typeof ROLES)[number]))));
 const command = (value: string, fallback: string) => (COMMAND.test(value) ? value : fallback);
 const ordered = (first: number, second: number) => [Math.min(first, second), Math.max(first, second)];
 
-// Erlaubte Typen mit vereinheitlichten Namen; ein Name gehört dem ersten Typ, der ihn nennt, Typen ohne Namen fallen weg
+// Allowed variants with normalized names; a name belongs to the first variant that lists it, variants without names drop out
 function variantRules(set: MinimeVariantSet, values: SettingValues): MinimeVariantRule[] {
   const taken = new Set<string>();
   return set.variants.flatMap(variant => {
@@ -104,8 +104,8 @@ function variantRules(set: MinimeVariantSet, values: SettingValues): MinimeVaria
   });
 }
 
-// Regeln und Bewegung aus beliebigen Einstellungswerten; Fehlendes und Ungültiges wird zum Standardwert.
-// set: Typen des Themes (Typ-Modus), ohne set wählen Chatter Farben.
+// Rules and movement from arbitrary settings values; missing and invalid ones become the default.
+// set: variants of the theme (variant mode), without set chatters choose colors.
 export function readMinimeOptions(stored: unknown, set?: MinimeVariantSet): MinimeOptions {
   const resolved = resolveSettings(set ? { ...SCHEMA, fields: [...MINIME_FIELDS, ...minimeVariantFields(set)] } : SCHEMA, stored);
   const values = resolved as MinimeValues;

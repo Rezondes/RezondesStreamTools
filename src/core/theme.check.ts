@@ -1,4 +1,4 @@
-// Check für theme.ts: jede Szene hat genau eine empfohlene Grösse. Läuft mit npm test.
+// Check for theme.ts: every scene has exactly one recommended size. Runs with npm test.
 import assert from "node:assert/strict";
 import { SCENE_SIZES, SCENES } from "./theme.ts";
 

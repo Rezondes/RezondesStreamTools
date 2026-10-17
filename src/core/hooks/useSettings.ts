@@ -1,23 +1,23 @@
-// Hook: gewähltes Theme und Einstellungen des Streamers. null, bis /s/<login>/settings geladen ist; ohne Streamer
-// oder Server gilt fallback (Standardwerte). Änderungen aus dem Dashboard kommen sofort an (SSE "settings").
-// Mit ?preview (Vorschau im Dashboard, als iframe oder im eigenen Tab) kommen ungespeicherte Werte über einen
-// BroadcastChannel, den nur Seiten derselben Herkunft im selben Browser erreichen.
-// useThemeValues liest die Werte in einer Szene aus dem Kontext, den main.tsx setzt.
+// Hook: chosen theme and settings of the streamer. null until /s/<login>/settings is loaded; without a streamer
+// or server fallback applies (defaults). Changes from the dashboard arrive immediately (SSE "settings").
+// With ?preview (preview in the dashboard, as iframe or in its own tab) unsaved values arrive via a
+// BroadcastChannel that only pages of the same origin in the same browser can reach.
+// useThemeValues reads the values in a scene from the context that main.tsx sets.
 import { createContext, useContext, useEffect, useState } from "react";
 import { connect, fetchSettings } from "../connection.ts";
 import { params } from "../params.ts";
 import type { SettingValues } from "../theme.ts";
 import type { PublicSettings } from "../types.ts";
 
-// Kanal zwischen Dashboard und Vorschau: ready = eine Szene hört zu, settings = neue Werte für die Szenen
+// Channel between dashboard and preview: ready = a scene is listening, settings = new values for the scenes
 export const PREVIEW = { channel: "rezondes-preview", ready: "ready", settings: "settings" } as const;
 
-// live: false = nur einmal laden, keine SSE-Verbindung (öffentliche Befehlsseite: Besucher sind keine Overlays)
+// live: false = load only once, no SSE connection (public commands page: visitors are not overlays)
 export function useSettings(fallback: PublicSettings, live = true): PublicSettings | null {
   const [settings, setSettings] = useState<PublicSettings | null>(null);
   useEffect(() => {
     let active = true;
-    // fetchSettings fängt Netzwerkfehler selbst ab und liefert dann null; eine SSE-Nachricht kann schneller sein
+    // fetchSettings catches network errors itself and then returns null; an SSE message can be faster
     fetchSettings()
       .then(loaded => { if (active) setSettings(current => current ?? loaded ?? fallback); })
       .catch((error: unknown) => console.warn("Loading settings failed:", error));

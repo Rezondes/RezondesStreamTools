@@ -1,50 +1,50 @@
-// Check für overlayTiming.ts: Zeitanzeige, Musik-Fortschritt, Effekt-Phasen und -Position, Alert-Zeiten,
-// Entschlüsselungs-Effekt. Läuft mit npm test.
+// Check for overlayTiming.ts: time display, music progress, effect phases and position, alert times,
+// decode effect. Runs with npm test.
 import assert from "node:assert/strict";
 import { alertTiming, clock, countdownEnd, currentProgress, decodeFrame, fxLifetime, fxPhase, placeFx } from "./overlayTiming.ts";
 
-// Uhr: Stunden:Minuten:Sekunden, nie negativ
+// Clock: hours:minutes:seconds, never negative
 assert.equal(clock(3725), "01:02:05");
 assert.equal(clock(-5), "00:00:00");
 
-// Musik: läuft weiter ab Empfang, gedeckelt bei der Länge; bei Pause unverändert
+// Music: moves on from receipt, capped at the length; unchanged while paused
 const track = { durationMs: 10_000, progressMs: 2000, playing: true };
 assert.equal(currentProgress(track, 1000, 4000), 5000);
 assert.equal(currentProgress(track, 1000, 99_000), 10_000);
 assert.equal(currentProgress({ ...track, playing: false }, 1000, 4000), 2000);
 
-// Effekt-Phasen: delay angehalten, duration abspielen, after stehen bleiben, dann vorbei
+// Effect phases: delay paused, duration playing, after standing, then over
 const action = { type: "media" as const, delay: 1, duration: 3, after: 2 };
 assert.equal(fxPhase(action, 500), "pre");
 assert.equal(fxPhase(action, 2000), "play");
 assert.equal(fxPhase(action, 4500), "post");
 assert.equal(fxPhase(action, 6000), "done");
 assert.equal(fxLifetime(action), 6000);
-// Standarddauer 4 s, ohne delay sofort abspielen
+// Default duration 4 s, without delay play immediately
 assert.equal(fxPhase({ type: "media" }, 0), "play");
 assert.equal(fxLifetime({ type: "media" }), 4000);
 
-// Position: Mitte, fest, zufällig im Bereich 20 bis 80 Prozent
+// Position: center, fixed, random in the range 20 to 80 percent
 assert.deepEqual(placeFx("center", () => 0.5), { x: 50, y: 50 });
 assert.deepEqual(placeFx({ x: 10, y: 90 }, () => 0.5), { x: 10, y: 90 });
 assert.deepEqual(placeFx("random", () => 0), { x: 20, y: 20 });
 assert.deepEqual(placeFx("random", () => 1), { x: 80, y: 80 });
 assert.deepEqual(placeFx(undefined, () => 0.5), { x: 50, y: 50 });
-// Eigener Rand für Zufallspositionen
+// Own margin for random positions
 assert.deepEqual(placeFx("random", () => 0, 10), { x: 10, y: 10 });
 assert.deepEqual(placeFx("random", () => 1, 10), { x: 90, y: 90 });
 
-// Countdown-Ende: ?at=HH:MM heute (oder morgen, wenn schon vorbei), sonst die Sekunden ab now
+// Countdown end: ?at=HH:MM today (or tomorrow if already past), otherwise the seconds from now
 const now = new Date(2026, 9, 15, 19, 30, 0);
 assert.equal(countdownEnd("20:00", 300, now), new Date(2026, 9, 15, 20, 0, 0).getTime());
 assert.equal(countdownEnd("19:00", 300, now), new Date(2026, 9, 16, 19, 0, 0).getTime());
 assert.equal(countdownEnd(null, 300, now), now.getTime() + 300_000);
 assert.equal(countdownEnd("kaputt", 60, now), now.getTime() + 60_000);
 
-// Alert: Ausblenden beginnt 600 ms vor Ende, der nächste kommt 400 ms nach Ende
+// Alert: fading out starts 600 ms before the end, the next one comes 400 ms after the end
 assert.deepEqual(alertTiming(7000), { leaveAtMs: 6400, nextAtMs: 7400 });
 
-// Entschlüsseln: vor dem Start leer, dann Zeichen für Zeichen mit bis zu 6 Zufallszeichen davor, Leerzeichen bleiben
+// Decode: empty before the start, then character by character with up to 6 random characters before it, spaces stay
 const scrambled = () => "?";
 assert.equal(decodeFrame("ABC DEF", -1, 10, scrambled), "");
 assert.equal(decodeFrame("ABC DEF", 25, 10, scrambled), "AB? ???");

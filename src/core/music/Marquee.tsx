@@ -1,7 +1,7 @@
-// Lauftext für eine Zeile: passt sie nicht in ihren Rahmen, fährt sie mit speed px pro Sekunde hin und her, sodass
-// jedes Zeichen einmal zu sehen ist. Messung (useOverflow) und Dauer (marqueeSeconds) sind für alle Themes gleich;
-// das Theme gibt die Klasse, das Aussehen (Schrift, Farbe, Gewicht) kommt aus seinem CSS. enabled: false = abgeschnitten
-// stehen lassen.
+// Scrolling text for one line: if it does not fit its frame, it moves back and forth at speed px per second, so
+// every character is visible once. Measuring (useOverflow) and duration (marqueeSeconds) are the same for all themes;
+// the theme gives the class, the look (font, color, weight) comes from its CSS. enabled: false = leave it
+// cut off.
 import type { CSSProperties } from "react";
 import { marqueeSeconds } from "./music.ts";
 import { useOverflow } from "./useOverflow.ts";

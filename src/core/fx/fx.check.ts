@@ -1,4 +1,4 @@
-// Check für fx.ts: Standardwerte einer Aktion aus den Einstellungen. Läuft mit npm test.
+// Check for fx.ts: defaults of an action from the settings. Runs with npm test.
 import assert from "node:assert/strict";
 import { FX_KEYS, fxDefaults } from "./fx.ts";
 

@@ -1,5 +1,5 @@
-// Check für errorCodes.ts: Codes eindeutig, Einstellungs-Codes Teil der Gesamtliste, isErrorCode erkennt nur bekannte.
-// Läuft mit npm test.
+// Check for errorCodes.ts: codes unique, settings codes part of the full list, isErrorCode only recognizes known ones.
+// Runs with npm test.
 import assert from "node:assert/strict";
 import { ERROR_CODES, isErrorCode, SETTING_ERROR_CODES } from "./errorCodes.ts";
 

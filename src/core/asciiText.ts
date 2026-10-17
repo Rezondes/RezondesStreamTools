@@ -1,8 +1,8 @@
-// ASCII-Schrift für Namen ohne Abhängigkeit: die Zeichen der FIGlet-Schrift "Standard" (volle Breite) für
-// A bis Z, 0 bis 9 und den Unterstrich, also alles, was in einem Twitch-Login vorkommt. Der Server erzeugt damit
-// beim ersten Login das Logo (im Docker-Image gibt es kein figlet). Check: asciiText.check.ts (Vergleich mit figlet).
+// ASCII font for names without a dependency: the characters of the FIGlet font "Standard" (full width) for
+// A to Z, 0 to 9 and the underscore, i.e. everything that occurs in a Twitch login. The server uses it to create
+// the logo on first login (the Docker image has no figlet). Check: asciiText.check.ts (comparison with figlet).
 
-// fixed: Zeichendaten der Schrift, je Zeichen sechs gleich breite Zeilen
+// fixed: glyph data of the font, six equally wide lines per character
 const GLYPHS: Record<string, readonly string[]> = {
   "A": ["     _    ","    / \\   ","   / _ \\  ","  / ___ \\ "," /_/   \\_\\","          "],
   "B": ["  ____  "," | __ ) "," |  _ \\ "," | |_) |"," |____/ ","        "],
@@ -44,8 +44,8 @@ const GLYPHS: Record<string, readonly string[]> = {
 };
 const ROWS = 6;
 
-// Name als ASCII-Kunst in Grossbuchstaben; nicht unterstützte Zeichen fallen weg, ohne Zeichen bleibt es leer.
-// Wie der Generator im Dashboard: ohne Leerzeichen am Zeilenende, ohne gemeinsamen Einzug und leere Randzeilen.
+// Name as ASCII art in upper case; unsupported characters drop out, without characters it stays empty.
+// Like the generator in the dashboard: without trailing spaces, without common indent and empty edge lines.
 export function asciiText(name: string): string {
   const glyphs = [...name.toUpperCase()].map(character => GLYPHS[character]).filter(Boolean);
   if (!glyphs.length) return "";

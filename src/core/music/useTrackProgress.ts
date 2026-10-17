@@ -1,4 +1,4 @@
-// Hook: Fortschritt eines Titels (trackProgress in music.ts), viermal pro Sekunde neu berechnet.
+// Hook: progress of a track (trackProgress in music.ts), recalculated four times per second.
 import { useNow } from "../hooks/useNow.ts";
 import type { Track } from "../types.ts";
 import { trackProgress } from "./music.ts";

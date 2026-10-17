@@ -1,25 +1,25 @@
-// Adressen eines Streamers: seine Overlays und ihre Daten liegen unter /s/<login>/... (z.B. /s/rezondes/alerts.html).
-// Gemeinsam für den Server (Routing, erlaubte Namen) und die Overlays (welcher Streamer). Check: streamerPath.check.ts.
+// URLs of a streamer: their overlays and data are under /s/<login>/... (e.g. /s/rezondes/alerts.html).
+// Shared by the server (routing, allowed names) and the overlays (which streamer). Check: streamerPath.check.ts.
 
-// Twitch-Logins: Kleinbuchstaben, Ziffern, Unterstrich, höchstens 25 Zeichen
+// Twitch logins: lower case letters, digits, underscore, at most 25 characters
 const LOGIN = /^[a-z0-9_]{1,25}$/;
-// Mediendateien: einfacher Name ohne Pfad, höchstens 100 Zeichen vor der Endung, bekannte Endung
+// Media files: a simple name without path, at most 100 characters before the extension, known extension
 const MEDIA_NAME = /^\w[\w .()-]{0,99}\.(gif|png|jpe?g|webp|svg|mp4|webm|mp3|wav|ogg)$/i;
 
-// true, wenn value ein gültiger Twitch-Login ist (schon kleingeschrieben)
+// true if value is a valid Twitch login (already lower case)
 export const isLogin = (value: string) => LOGIN.test(value);
 
-// true, wenn value ein erlaubter Name für eine Mediendatei ist (kein Pfad, bekannte Endung)
+// true if value is an allowed name for a media file (no path, known extension)
 export const isMediaName = (value: string) => MEDIA_NAME.test(value);
 
-// Pfad-Anfang aller Adressen eines Streamers
+// Path prefix of all URLs of a streamer
 export const base = (login: string) => `/s/${login}`;
 
-// Login und die einzeln dekodierten Pfadteile danach (["media", "lizard.gif"])
+// Login and the individually decoded path parts after it (["media", "lizard.gif"])
 export type StreamerPath = { login: string; segments: string[] };
 
-// Zerlegt /s/<login>/<rest>. null, wenn der Pfad nicht so aussieht, der Login ungültig ist
-// oder ein Pfadteil nicht dekodierbar ist. Dekodiert wird erst nach dem Zerlegen, so wird %2F nie zum Trenner.
+// Splits /s/<login>/<rest>. null if the path does not look like that, the login is invalid
+// or a path part cannot be decoded. Decoding happens only after splitting, so %2F never becomes a separator.
 export function parse(pathname: string): StreamerPath | null {
   const [empty, prefix, login, ...rest] = pathname.split("/");
   if (empty !== "" || prefix !== "s" || login === undefined) return null;
@@ -33,7 +33,7 @@ function decodeAll(segments: string[]): string[] | null {
   try {
     return segments.map(segment => decodeURIComponent(segment));
   } catch {
-    // Kaputte Prozent-Kodierung (z.B. "%E0"): Pfad gilt als ungültig
+    // Broken percent encoding (e.g. "%E0"): the path counts as invalid
     return null;
   }
 }

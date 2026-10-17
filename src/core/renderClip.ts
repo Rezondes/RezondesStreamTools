@@ -1,5 +1,5 @@
-// Ein renderbarer Clip eines Themes (Stinger, Profil- oder Offline-Banner) für den Render-Bereich im Dashboard.
-// draw ist eine reine Funktion der Zeit; group nennt die Einstellungsgruppe des Schemas, die den Clip steuert.
+// A renderable clip of a theme (stinger, profile or offline banner) for the render section in the dashboard.
+// draw is a pure function of time; group names the settings group of the schema that controls the clip.
 export type ClipName = "stinger" | "profile" | "offline";
 
 export type RenderClip = {
@@ -9,8 +9,8 @@ export type RenderClip = {
   height: number;
   fps: number;
   duration: number; // Sekunden
-  cut: number | null; // Übergangspunkt in Sekunden, nur beim Stinger
+  cut: number | null; // transition point in seconds, only for the stinger
   group: string;
-  font: string; // CSS-Schrift zum Vorladen, z.B. '24px "Inter"'
+  font: string; // CSS font to preload, e.g. '24px "Inter"'
   draw: (context: CanvasRenderingContext2D, time: number) => void;
 };

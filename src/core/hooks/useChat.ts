@@ -1,4 +1,4 @@
-// Hook: die letzten max Chatnachrichten. Gebannte Nutzer und gelöschte Nachrichten verschwinden sofort.
+// Hook: the last max chat messages. Banned users and deleted messages disappear immediately.
 import { useEffect, useState } from "react";
 import { connect } from "../connection.ts";
 import type { ChatMessage } from "../types.ts";

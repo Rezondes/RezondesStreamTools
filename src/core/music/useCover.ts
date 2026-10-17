@@ -1,4 +1,4 @@
-// Hook: Cover-Adresse eines Titels; lädt das Bild nicht (onError), ist src null, bis ein anderes Cover kommt.
+// Hook: cover URL of a track; if the image does not load (onError), src is null until another cover arrives.
 import { useEffect, useState } from "react";
 
 export function useCover(url: string | null) {

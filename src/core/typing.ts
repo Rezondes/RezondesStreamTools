@@ -1,7 +1,7 @@
-// Simuliertes Tippen fürs Terminal der Vollbild-Szenen. Eine Zeile ist entweder Text oder ein
-// kleines Drehbuch aus Schritten: tippen, löschen, kurz stocken oder auf die Tastatur hauen.
-// frames() macht daraus Einzelbilder (Text + Wartezeit danach), parseLine() ein Drehbuch aus einer Textzeile der
-// Einstellungen. Reine Funktionen, getestet in typing.check.ts.
+// Simulated typing for the terminal of the full-screen scenes. A line is either text or a
+// small script of steps: type, delete, hesitate briefly or smash the keyboard.
+// frames() turns it into frames (text + wait afterwards), parseLine() a script from a text line of the
+// settings. Pure functions, tested in typing.check.ts.
 
 type Step = string | { del: number } | { pause: number } | { smash: number };
 export type Line = string | Step[];
@@ -9,7 +9,7 @@ export type Frame = { text: string; wait: number };
 
 const SMASH = "asdfghjklöä#qwertzuiopü+yxcvbnm,.-1234567890ß!§$%&/()=?";
 
-// speed: 2 tippt doppelt so schnell (gilt für Tippen, Löschen und Tastatur-Hauen, nicht für feste Pausen)
+// speed: 2 types twice as fast (applies to typing, deleting and keyboard smashing, not to fixed pauses)
 export function frames(line: Line, random: () => number = Math.random, speed = 1): Frame[] {
   const steps = typeof line === "string" ? [line] : line;
   const result: Frame[] = [];
@@ -18,11 +18,11 @@ export function frames(line: Line, random: () => number = Math.random, speed = 1
     if (typeof step === "string") {
       for (const char of step) {
         text += char;
-        // Menschliches Tempo, ab und zu ein kurzes Nachdenken mitten im Wort
+        // Human speed, now and then a short pause to think in the middle of a word
         result.push({ text, wait: (55 + random() * 110 + (random() < 0.05 ? 400 : 0)) / speed });
       }
     } else if ("del" in step) {
-      // Erst merken, dass es falsch ist, dann langsam zurück
+      // First notice that it is wrong, then go back slowly
       result.push({ text, wait: 700 / speed });
       for (let count = 0; count < step.del && text; count++) {
         text = Array.from(text).slice(0, -1).join("");
@@ -40,8 +40,8 @@ export function frames(line: Line, random: () => number = Math.random, speed = 1
   return result;
 }
 
-// Drehbuch aus Text: {del 4} löscht 4 Zeichen, {pause 900} wartet 900 ms, {smash 18} haut 18-mal auf die Tastatur.
-// Ohne solche Befehle bleibt die Zeile einfacher Text.
+// Script from text: {del 4} deletes 4 characters, {pause 900} waits 900 ms, {smash 18} smashes the keyboard 18 times.
+// Without such commands the line stays plain text.
 const COMMAND = /\{(del|pause|smash) (\d+)\}/g;
 
 export function parseLine(text: string): Line {

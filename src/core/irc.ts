@@ -1,4 +1,4 @@
-// Reine Parser für Twitch-IRC, ohne DOM. Getestet in irc.check.ts.
+// Pure parsers for Twitch IRC, without DOM. Tested in irc.check.ts.
 
 export type IrcMessage = { tags: Record<string, string>; prefix: string; command: string; params: string[] };
 export type Part = string | { name: string; url: string };
@@ -31,7 +31,7 @@ export function parseIrc(line: string): IrcMessage {
   return { tags, prefix, command, params };
 }
 
-// Tag "emotes" sieht so aus: "25:0-4,12-16/1902:6-10". Positionen zählen Codepoints, nicht UTF-16.
+// The tag "emotes" looks like this: "25:0-4,12-16/1902:6-10". Positions count code points, not UTF-16.
 export function splitEmotes(text: string, emotes = ""): Part[] {
   const chars = Array.from(text);
   const ranges = emotes
@@ -57,7 +57,7 @@ export function splitEmotes(text: string, emotes = ""): Part[] {
   return parts;
 }
 
-// Emotes von 7TV, BTTV und FFZ stehen nicht in den Tags, sondern sind einfach Wörter im Text
+// Emotes from 7TV, BTTV and FFZ are not in the tags, they are just words in the text
 export function splitWords(parts: Part[], emotes: Map<string, string>): Part[] {
   if (!emotes.size) return parts;
   return parts.flatMap(part => {
@@ -66,8 +66,8 @@ export function splitWords(parts: Part[], emotes: Map<string, string>): Part[] {
   });
 }
 
-// Adresse des Twitch-Chats und die Zeilen für eine anonyme Anmeldung (kein Token nötig, nur lesen) im Kanal channel;
-// random wählt die Nummer des Gast-Namens justinfan<n>. Gleich für Overlays und Server.
+// URL of the Twitch chat and the lines for an anonymous login (no token needed, read only) in the channel channel;
+// random chooses the number of the guest name justinfan<n>. The same for overlays and server.
 export const IRC_URL = "wss://irc-ws.chat.twitch.tv:443";
 export const anonymousLogin = (channel: string, random: () => number) => [
   "CAP REQ :twitch.tv/tags twitch.tv/commands",

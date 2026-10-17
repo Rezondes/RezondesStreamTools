@@ -1,4 +1,4 @@
-// Hook: aktuelle Zeit in ms, aktualisiert alle intervalMs (Uhren, Countdowns, Fortschritt).
+// Hook: current time in ms, updated every intervalMs (clocks, countdowns, progress).
 import { useEffect, useState } from "react";
 
 export function useNow(intervalMs = 1000) {

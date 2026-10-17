@@ -1,5 +1,5 @@
-// Die drei Vollbild-Szenen eines Themes (Starting, BRB, Ending) aus seiner einen Screen-Komponente, für den
-// scenes-Teil seiner ThemeView (src/core/theme.ts). Gleich für jedes Theme.
+// The three full-screen scenes of a theme (Starting, BRB, Ending) from its one screen component, for the
+// scenes part of its ThemeView (src/core/theme.ts). The same for every theme.
 import type { ComponentType } from "react";
 import type { ScreenKind } from "./screens.ts";
 

@@ -1,5 +1,5 @@
-// Einstellungen eines Themes: gespeicherte Werte auflösen (Standard für alles Fehlende oder Ungültige) und
-// Eingaben aus dem Dashboard prüfen. Reine Funktionen für Server und Dashboard, getestet in settings.check.ts.
+// Settings of a theme: resolve saved values (default for everything missing or invalid) and
+// validate input from the dashboard. Pure functions for server and dashboard, tested in settings.check.ts.
 import type { SettingErrorCode } from "./errorCodes.ts";
 import { isMediaName } from "./streamerPath.ts";
 import type { SettingField, SettingValue, SettingValues, ThemeSchema } from "./theme.ts";
@@ -10,13 +10,13 @@ export type SettingError = { key: string; code: SettingErrorCode };
 const TEXT_LIMIT = 2000;
 const LINE_LIMIT = 200;
 const COLOR = /^#[0-9a-f]{6}([0-9a-f]{2})?$/i;
-// Erlaubte Dateiendungen je Medienart (auch für die Auswahl im Dashboard)
+// Allowed file extensions per media kind (also for the selection in the dashboard)
 export const MEDIA_KIND = { image: /\.(gif|png|jpe?g|webp|svg)$/i, video: /\.(mp4|webm)$/i, audio: /\.(mp3|wav|ogg)$/i } as const;
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 const isText = (value: unknown, limit: number): SettingErrorCode | null => (typeof value !== "string" ? "invalid_type" : value.length > limit ? "too_long" : null);
 
-// Fehlercode für einen Wert, null wenn er gültig ist
+// Error code for a value, null if it is valid
 function checkValue(field: SettingField, value: unknown): SettingErrorCode | null {
   switch (field.type) {
     case "color": return typeof value !== "string" ? "invalid_type" : COLOR.test(value) ? null : "invalid_color";
@@ -40,14 +40,14 @@ function checkValue(field: SettingField, value: unknown): SettingErrorCode | nul
   }
 }
 
-// Leer = kein Medium; sonst ein erlaubter Dateiname der passenden Art
+// Empty = no media; otherwise an allowed file name of the matching kind
 function checkMedia(value: unknown, accept: keyof typeof MEDIA_KIND): SettingErrorCode | null {
   if (typeof value !== "string") return "invalid_type";
   if (value === "") return null;
   return isMediaName(value) && MEDIA_KIND[accept].test(value) ? null : "invalid_media";
 }
 
-// Für jedes Feld ein Wert: gespeichert und gültig, sonst Standard. Fremde Schlüssel fallen weg.
+// One value per field: saved and valid, otherwise the default. Foreign keys drop out.
 export function resolveSettings(schema: ThemeSchema, stored: unknown): SettingValues {
   const source = isObject(stored) ? stored : {};
   const values: SettingValues = {};
@@ -58,7 +58,7 @@ export function resolveSettings(schema: ThemeSchema, stored: unknown): SettingVa
   return values;
 }
 
-// Eingabe prüfen: Fehler je ungültigem Feld (nur für vorhandene Schlüssel), values = aufgelöst ohne die ungültigen
+// Validates input: errors per invalid field (only for present keys), values = resolved without the invalid ones
 export function validateSettings(schema: ThemeSchema, input: unknown): { values: SettingValues; errors: SettingError[] } {
   if (!isObject(input)) return { values: resolveSettings(schema, {}), errors: [{ key: "", code: "invalid_type" }] };
   const errors: SettingError[] = [];

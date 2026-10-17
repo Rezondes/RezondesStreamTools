@@ -1,16 +1,16 @@
-// Verhalten der Minimes in der Szene: welche Aktion jedes Minime gerade macht, wohin es wandert, wann es erscheint
-// und verschwindet. Eingebaut sind enter, exit, idle und walk; alles andere bringt das Theme als Katalog mit
-// (Name, Dauer, Gewicht) und zeigt es über den Namen an. Rein (Regel 12): Zeit und Zufall kommen herein.
-// Genutzt von hooks/useMinimes.ts. Check: minimeBehavior.check.ts.
+// Behavior of the minimes in the scene: which action every minime is doing, where it walks, when it appears
+// and disappears. Built in are enter, exit, idle and walk; everything else the theme brings as a catalog
+// (name, duration, weight) and shows it via the name. Pure (rule 12): time and randomness come in from outside.
+// Used by hooks/useMinimes.ts. Check: minimeBehavior.check.ts.
 import { hash, seedOf } from "./hash.ts";
 import type { MinimeMotion } from "./minimeFields.ts";
 import type { Minime } from "./types.ts";
 
-// Themeeigene Aktion: weight 0 = kommt nie von selbst (z.B. die Reaktion auf Chat)
+// Theme's own action: weight 0 = never comes by itself (e.g. the reaction to chat)
 export type MinimeAction = { name: string; durationMs: number; weight: number };
 
-// Ein Minime mit seiner laufenden Aktion. Position in px: fromX zu Beginn, toX am Ende (nur walk ändert sie).
-// facing: 1 = schaut nach rechts, -1 = nach links. leaving: verschwindet gerade (exit) und fällt danach weg.
+// A minime with its running action. Position in px: fromX at the start, toX at the end (only walk changes it).
+// facing: 1 = looks right, -1 = left. leaving: is disappearing (exit) and drops out afterwards.
 export type MinimeActor = Minime & {
   action: string;
   startedAt: number;
@@ -21,13 +21,13 @@ export type MinimeActor = Minime & {
   leaving: boolean;
 };
 
-// Alles, was die Wahl braucht: Bewegung aus den Einstellungen, Katalog des Themes, Breite der Szene in px
+// Everything the choice needs: movement from the settings, catalog of the theme, width of the scene in px
 export type MinimeStage = { motion: MinimeMotion; catalog: readonly MinimeAction[]; widthPx: number };
 
-// fixed: Mindestdauer jeder Aktion, damit eine Dauer von 0 keine Schleife ohne Pause ergibt
+// fixed: minimum duration of every action, so a duration of 0 does not give a loop without a pause
 const MIN_DURATION_MS = 50;
 
-// Position zum Zeitpunkt now: während walk anteilig zwischen fromX und toX, sonst toX
+// Position at time now: proportional between fromX and toX during walk, otherwise toX
 export function positionAt(actor: MinimeActor, now: number): number {
   if (actor.action !== "walk" || actor.durationMs <= 0) return actor.toX;
   const progress = Math.min(1, Math.max(0, (now - actor.startedAt) / actor.durationMs));
@@ -37,7 +37,7 @@ export function positionAt(actor: MinimeActor, now: number): number {
 const at = (actor: MinimeActor, action: string, now: number, durationMs: number, x: number): MinimeActor =>
   ({ ...actor, action, startedAt: now, durationMs: Math.max(MIN_DURATION_MS, durationMs), fromX: x, toX: x });
 
-// Ziel einer Wanderung: Richtung zufällig; passt sie nicht ins Bild, die andere; passt keine, bis an den Rand
+// Target of a walk: random direction; if it does not fit the picture, the other one; if none fits, up to the edge
 function walk(actor: MinimeActor, stage: MinimeStage, now: number, random: () => number): MinimeActor {
   const { marginPx, walkMinPx, walkMaxPx, speedPxPerS } = stage.motion;
   const low = marginPx, high = Math.max(marginPx, stage.widthPx - marginPx);
@@ -50,7 +50,7 @@ function walk(actor: MinimeActor, stage: MinimeStage, now: number, random: () =>
   return { ...actor, action: "walk", startedAt: now, durationMs: Math.max(MIN_DURATION_MS, durationMs), fromX: actor.toX, toX, facing };
 }
 
-// Nächste Aktion nach Gewicht: idle, walk oder eine aus dem Katalog; alle Gewichte 0 ergeben idle
+// Next action by weight: idle, walk or one from the catalog; all weights 0 give idle
 export function nextAction(actor: MinimeActor, stage: MinimeStage, now: number, random: () => number): MinimeActor {
   const choices = [{ name: "idle", weight: stage.motion.idleWeight }, { name: "walk", weight: stage.motion.walkWeight }, ...stage.catalog];
   const total = choices.reduce((sum, choice) => sum + Math.max(0, choice.weight), 0);
@@ -63,8 +63,8 @@ export function nextAction(actor: MinimeActor, stage: MinimeStage, now: number, 
   return at(actor, "idle", now, idleMinMs + random() * (idleMaxMs - idleMinMs), actor.toX);
 }
 
-// Gezeigte Minimes an die Liste vom Server anpassen: Neue erscheinen (enter) an zufälliger Stelle, Fehlende
-// verschwinden (exit), Bekannte übernehmen Name und Farbe, wer während exit zurückkommt, erscheint dort neu
+// Adapts the shown minimes to the list from the server: new ones appear (enter) at a random place, missing ones
+// disappear (exit), known ones take over name and color, whoever comes back during exit appears there again
 export function syncRoster(actors: readonly MinimeActor[], minimes: readonly Minime[], stage: MinimeStage, now: number, random: () => number): MinimeActor[] {
   const wanted = new Map(minimes.map(minime => [minime.login, minime]));
   const shown = actors.map(actor => {
@@ -82,35 +82,35 @@ export function syncRoster(actors: readonly MinimeActor[], minimes: readonly Min
   return [...shown, ...joined];
 }
 
-// Abgelaufene Aktionen weiterschalten, Verschwundene entfernen. Ohne Änderung bleibt actors dasselbe Array.
+// Advances expired actions, removes vanished ones. Without a change actors stays the same array.
 export function advance(actors: readonly MinimeActor[], stage: MinimeStage, now: number, random: () => number): readonly MinimeActor[] {
   const ended = (actor: MinimeActor) => actor.startedAt + actor.durationMs <= now;
   if (!actors.some(ended)) return actors;
   return actors.filter(actor => !(actor.leaving && ended(actor))).map(actor => (ended(actor) ? nextAction(actor, stage, now, random) : actor));
 }
 
-// Wann die nächste Aktion endet; null = keine Minimes
+// When the next action ends; null = no minimes
 export function nextEnd(actors: readonly MinimeActor[]): number | null {
   return actors.length ? Math.min(...actors.map(actor => actor.startedAt + actor.durationMs)) : null;
 }
 
-// Reaktion auf Chat: unterbricht alles ausser Erscheinen und Verschwinden, an der aktuellen Stelle
+// Reaction to chat: interrupts everything except appearing and disappearing, at the current place
 export function react(actor: MinimeActor, reaction: MinimeAction, now: number): MinimeActor {
   if (actor.leaving || actor.action === "enter" || actor.action === "exit") return actor;
   return at(actor, reaction.name, now, reaction.durationMs, positionAt(actor, now));
 }
 
-// CSS-Variablen einer Figur, gleich für jedes Theme: Lage (--x), Laufzeit der Bewegung (--move, nur beim Gehen, die
-// Bewegung macht eine CSS-Transition), Dauer der Aktion (--action-ms) und Blickrichtung (--facing, 1 oder -1)
+// CSS variables of a figure, the same for every theme: position (--x), duration of the movement (--move, only when
+// walking, the movement is a CSS transition), duration of the action (--action-ms) and facing (--facing, 1 or -1)
 export function actorStyle(actor: MinimeActor): Record<string, string | number> {
   return { "--x": `${actor.toX}px`, "--move": actor.action === "walk" ? `${actor.durationMs}ms` : "0ms", "--action-ms": `${actor.durationMs}ms`, "--facing": actor.facing };
 }
 
-// Schlüssel einer laufenden Aktion: neu bei jeder Aktion, damit ihre Animation auch zweimal hintereinander von vorn läuft
+// Key of a running action: new for every action, so its animation also plays from the start twice in a row
 export const actorRun = (actor: MinimeActor) => `${actor.action}-${actor.startedAt}`;
 
-// Typ, den eine Figur zeigt (Themes mit Typen): der vom Server; ohne Typ in der Demo ein erlaubter nach dem Login
-// (immer derselbe), sonst der Standardtyp des Themes
+// Variant a figure shows (themes with variants): the one from the server; without variant in the demo an allowed one by
+// login (always the same), otherwise the default variant of the theme
 export function shownVariant(actor: MinimeActor, enabled: readonly string[], fallback: string, demo: boolean) {
   if (actor.variant) return actor.variant;
   if (demo && enabled.length) return enabled[Math.floor(hash(seedOf(actor.login)) * enabled.length)];

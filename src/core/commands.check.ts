@@ -1,5 +1,5 @@
-// Check für commands.ts: Liste der Chat-Befehle aus Hilfe-Befehl, Minimes (Farben oder Typen) und öffentlichen
-// Triggern. Läuft mit npm test.
+// Check for commands.ts: list of chat commands from the help command, minimes (colors or variants) and public
+// triggers. Runs with npm test.
 import assert from "node:assert/strict";
 import { commandList, helpReply, MAX_CHAT, type TriggerInfo } from "./commands.ts";
 import { readMinimeOptions } from "./minimeFields.ts";
@@ -10,13 +10,13 @@ const fruits = readMinimeOptions({}, { command: "!frucht", label: "Frucht", vari
 
 const TRIGGERS: TriggerInfo[] = [
   { name: "lizard", when: { type: "command", match: "!lizard" }, who: ["vip"], cooldown: 5, userCooldown: 60, description: "Echse" },
-  { name: "aus", enabled: false, when: { type: "word", match: "aus" } },
+  { name: "off", enabled: false, when: { type: "word", match: "off" } },
   { name: "geheim", public: false, when: { type: "word", match: "geheim" } },
   { name: "muster", when: { type: "regex", match: "^a+$" } },
 ];
 
-// Alles an: Hilfe, Minimes mit Farben (Rollen aus den Einstellungen), nur aktive und öffentliche Trigger,
-// Regex ohne Suchtext; fehlende Felder bekommen Standardwerte
+// Everything on: help, minimes with colors (roles from the settings), only active and public triggers,
+// regex without search text; missing fields get defaults
 assert.deepEqual(commandList("rezondes", HELP, colors, TRIGGERS), {
   channel: "rezondes",
   items: [
@@ -29,14 +29,14 @@ assert.deepEqual(commandList("rezondes", HELP, colors, TRIGGERS), {
   ],
 });
 
-// Typen statt Farben: der Befehl des Themes und die erlaubten Typen mit Namen; ohne Hilfe, Minimes und Trigger leer
+// Variants instead of colors: the theme's command and the allowed variants with names; without help, minimes and triggers empty
 const typed = commandList("rezondes", null, fruits, []).items;
 assert.deepEqual(typed.find(item => item.kind === "look"), { kind: "look", command: "!frucht", who: ["everyone"], variants: [{ id: "mango", names: ["mango"] }] });
 assert.deepEqual(typed.find(item => item.kind === "join"), { kind: "join", command: "!join", who: ["everyone"], variants: [{ id: "mango", names: ["mango"] }] });
 assert.deepEqual(commandList("rezondes", { ...HELP, enabled: false }, null, []).items, []);
 
-// Chat-Antwort: Befehle ohne Doppelte (Wörter und Befehle der Trigger, keine Teilstrings oder Muster), Platzhalter
-// ersetzt, nie länger als Twitch erlaubt
+// Chat reply: commands without duplicates (words and commands of the triggers, no substrings or patterns), placeholders
+// replaced, never longer than Twitch allows
 const list = commandList("rezondes", HELP, colors, [...TRIGGERS, { name: "zwei", when: { type: "word", match: "!lizard" } }, { name: "teil", when: { type: "contains", match: "lol" } }]);
 assert.equal(helpReply("Befehle: {commands} | {link}", list, "https://x/s/rezondes/"), "Befehle: !join, !color, !leave, !lizard | https://x/s/rezondes/");
 assert.equal(helpReply("{link}", commandList("rezondes", null, null, []), "L"), "L");

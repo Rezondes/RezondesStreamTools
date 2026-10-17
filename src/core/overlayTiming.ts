@@ -1,17 +1,17 @@
-// Wann und wo Overlay-Teile erscheinen: Zeitanzeige, Musik-Fortschritt, Phasen und Position der Chat-Effekte,
-// Zeitpunkte der Alerts und das Einzelbild des Entschlüsselungs-Effekts. Reine Funktionen (Zeit und Zufall
-// werden übergeben), getestet in overlayTiming.check.ts.
+// When and where overlay parts appear: time display, music progress, phases and position of the chat effects,
+// times of the alerts and the single frame of the decode effect. Pure functions (time and randomness
+// are passed in), tested in overlayTiming.check.ts.
 import type { FxAction, FxPosition, Track } from "./types.ts";
 
 const pad = (value: number) => String(Math.max(0, Math.floor(value))).padStart(2, "0");
 
-// Sekunden als HH:MM:SS
+// Seconds as HH:MM:SS
 export function clock(seconds: number) {
   const safe = Math.max(0, seconds);
   return `${pad(safe / 3600)}:${pad((safe % 3600) / 60)}:${pad(safe % 60)}`;
 }
 
-// Fortschritt eines Titels zum Zeitpunkt now, wenn er bei receivedAt mit progressMs ankam
+// Progress of a track at time now, if it arrived at receivedAt with progressMs
 export function currentProgress(track: Pick<Track, "durationMs" | "progressMs" | "playing">, receivedAt: number, now: number) {
   return track.playing ? Math.min(track.durationMs, track.progressMs + now - receivedAt) : track.progressMs;
 }
@@ -26,7 +26,7 @@ export function fxLifetime(action: FxAction) {
   return times.delay + times.duration + times.after;
 }
 
-// Phase eines Effekts elapsedMs nach seinem Erscheinen
+// Phase of an effect elapsedMs after it appeared
 export function fxPhase(action: FxAction, elapsedMs: number): FxPhase {
   const times = fxTimes(action);
   if (elapsedMs < times.delay) return "pre";
@@ -35,7 +35,7 @@ export function fxPhase(action: FxAction, elapsedMs: number): FxPhase {
   return "done";
 }
 
-// Position in Prozent der Overlay-Fläche; zufällig nur mit margin Prozent Abstand zum Rand, damit nichts am Rand klebt
+// Position in percent of the overlay area; random only with margin percent distance to the edge, so nothing sticks to the edge
 export function placeFx(position: FxPosition | undefined, random: () => number, margin = 20) {
   const span = 100 - 2 * margin;
   if (position === "random") return { x: margin + random() * span, y: margin + random() * span };
@@ -43,7 +43,7 @@ export function placeFx(position: FxPosition | undefined, random: () => number, 
   return { x: 50, y: 50 };
 }
 
-// Ende eines Countdowns in ms: at = "HH:MM" (heute, oder morgen, wenn die Zeit schon vorbei ist), sonst seconds ab now
+// End of a countdown in ms: at = "HH:MM" (today, or tomorrow if the time is already past), otherwise seconds from now
 export function countdownEnd(at: string | null, seconds: number, now: Date) {
   const time = at?.match(/^(\d{1,2}):(\d{2})$/);
   if (!time) return now.getTime() + seconds * 1000;
@@ -53,12 +53,12 @@ export function countdownEnd(at: string | null, seconds: number, now: Date) {
   return end.getTime();
 }
 
-// Ein Alert beginnt 600 ms vor Ablauf auszublenden; der nächste kommt 400 ms nach Ablauf
+// An alert starts fading out 600 ms before it expires; the next one comes 400 ms after it expires
 export function alertTiming(durationMs: number) {
   return { leaveAtMs: durationMs - 600, nextAtMs: durationMs + 400 };
 }
 
-// Entschlüsseln: Text erscheint von links, davor läuft ein Streifen aus bis zu 6 Zufallszeichen
+// Decode: text appears from the left, before it runs a strip of up to 6 random characters
 export function decodeFrame(text: string, elapsedMs: number, msPerChar: number, glyph: () => string) {
   if (elapsedMs < 0) return "";
   const done = Math.floor(elapsedMs / msPerChar);

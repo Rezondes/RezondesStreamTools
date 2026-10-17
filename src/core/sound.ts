@@ -1,13 +1,13 @@
-// Töne der Overlays: eigene Datei aus dem Medienordner oder synthetische Pieptöne des Themes.
-// ?sound=0 schaltet ab, ?volume=0..1 regelt zusätzlich.
-// In OBS bei der Browserquelle "Audio über OBS steuern" aktivieren, dann erscheint ein eigener Mixer-Kanal.
+// Sounds of the overlays: own file from the media folder or synthetic beeps of the theme.
+// ?sound=0 switches off, ?volume=0..1 adjusts additionally.
+// In OBS enable "Control audio via OBS" on the browser source, then an own mixer channel appears.
 import { mediaUrl } from "./connection.ts";
 import { numberParam, params } from "./params.ts";
 import type { SoundValue } from "./theme.ts";
 
 let audio: AudioContext | undefined;
 
-// wave: Klangfarbe (square = Piepen der Matrix, sine/triangle = weicher, z.B. Steel-Drum)
+// wave: timbre (square = beeping of the matrix, sine/triangle = softer, e.g. steel drum)
 export function beep(frequency: number, durationMs: number, delayMs = 0, volume = 1, wave: OscillatorType = "square") {
   if (params.get("sound") === "0") return;
   audio ??= new AudioContext();
@@ -23,7 +23,7 @@ export function beep(frequency: number, durationMs: number, delayMs = 0, volume 
   oscillator.stop(start + durationMs / 1000);
 }
 
-// Ton aus den Einstellungen: mit Datei diese abspielen, sonst builtIn (der eingebaute Ton des Themes) mit der Lautstärke
+// Sound from the settings: with a file play it, otherwise builtIn (the theme's built-in sound) at the volume
 export function playSound(sound: SoundValue, builtIn: (volume: number) => void) {
   if (params.get("sound") === "0") return;
   if (!sound.file) return builtIn(sound.volume);

@@ -1,5 +1,5 @@
-// Fake-Ereignisse für ?demo: Chat, Alerts, Musik und Minimes, dazu eine Beispiel-Befehlsliste, damit sich jedes Overlay ohne Stream testen lässt.
-// ?demo=<n>: so viele Minimes (Standard 5, höchstens 100).
+// Fake events for ?demo: chat, alerts, music and minimes, plus a sample commands list, so every overlay can be tested without a stream.
+// ?demo=<n>: that many minimes (default 5, at most 100).
 import { commandList, type CommandList } from "./commands.ts";
 import type { MinimeRules } from "./minimes.ts";
 import { splitEmotes } from "./irc.ts";
@@ -13,9 +13,9 @@ const LINES = [
   "C# > alles", "kannst du das nochmal erklären?", "gg", "follow ist raus <3",
   "wie lange streamst du heute noch?", "Kappa", "das ist ein etwas längerer Text, damit man sieht wie der Umbruch aussieht",
 ];
-// 25 = Kappa, 425618 = LUL (öffentliche Twitch-Emotes)
+// 25 = Kappa, 425618 = LUL (public Twitch emotes)
 const EMOTE_IDS: Record<string, number> = { Kappa: 25, LUL: 425618 };
-// Selbst gezeichnetes Demo-Cover (Verlauf mit Kreisen und Schrift), damit ?art=cover|record ohne Spotify testbar ist
+// Self-drawn demo cover (gradient with circles and lettering), so ?art=cover|record can be tested without Spotify
 const DEMO_COVER = "data:image/svg+xml," + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x2="1" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#222"/></linearGradient></defs>'
   + '<rect width="100" height="100" fill="url(#g)"/><circle cx="30" cy="35" r="18" fill="#000"/><circle cx="68" cy="62" r="24" fill="none" stroke="#000" stroke-width="5"/>'
@@ -38,18 +38,18 @@ const TRACKS: Track[] = [
 
 const pick = <T,>(list: T[]) => list[(Math.random() * list.length) | 0];
 
-// Demo-Minimes mit verschiedenen Farben, null = Standardfarbe des Themes
+// Demo minimes with different colors, null = default color of the theme
 const MINIME_COLORS = ["#39ff14", "#00e5ff", "#ff2bd6", "#ffd400", "#ff6a00", null];
 function demoMinimes(): Minime[] {
   const count = Math.min(100, Math.max(0, numberParam("demo", 5) || 5));
   return Array.from({ length: count }, (_, index) => {
     const user = `${NAMES[index % NAMES.length]}${index >= NAMES.length ? index : ""}`;
-    // Typ null: ein Theme mit Typen verteilt Demo-Minimes selbst
+    // Variant null: a theme with variants assigns demo minimes itself
     return { login: user.toLowerCase(), user, color: MINIME_COLORS[index % MINIME_COLORS.length], variant: null };
   });
 }
 
-// Startet die Fake-Ereignisse; die Rückgabe stoppt sie
+// Starts the fake events; the return value stops them
 export function demo(handlers: Handlers) {
   const chat = setInterval(() => {
     const user = pick(NAMES);
@@ -79,7 +79,7 @@ export function demo(handlers: Handlers) {
   return () => { clearInterval(chat); clearInterval(alerts); clearInterval(music); clearInterval(minimeChat); clearTimeout(first); };
 }
 
-// Beispiel-Befehle für die Befehlsseite mit ?demo oder ohne Streamer; minimes: Regeln des Themes (null = keine Minimes)
+// Sample commands for the commands page with ?demo or without a streamer; minimes: rules of the theme (null = no minimes)
 export function demoCommands(minimes: MinimeRules | null): CommandList {
   return commandList("demo", { enabled: true, command: "!befehle", reply: "", cooldown: 30 }, minimes, [
     { name: "lizard", description: "Eine Echse läuft quer durchs Bild.", when: { type: "command", match: "!lizard" }, cooldown: 10, userCooldown: 60 },

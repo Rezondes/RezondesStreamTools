@@ -1,5 +1,5 @@
-// Hook: Alert-Warteschlange. Liefert den aktuellen Alert und ob er gerade ausblendet; der nächste folgt
-// nach alertTiming. Ein Alert bekommt einen key, damit die Szene pro Alert neu startet.
+// Hook: alert queue. Returns the current alert and whether it is fading out; the next one follows
+// after alertTiming. An alert gets a key so the scene restarts per alert.
 import { useEffect, useState } from "react";
 import { connect } from "../connection.ts";
 import { alertTiming } from "../overlayTiming.ts";

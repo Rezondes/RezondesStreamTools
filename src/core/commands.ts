@@ -1,13 +1,13 @@
-// Übersicht der Chat-Befehle eines Streamers, für die öffentliche Befehlsseite und die Antwort auf den Hilfe-Befehl:
-// der Hilfe-Befehl selbst, die Befehle der Minimes (je nach Theme Farben oder Typen, mit den Rollen aus den
-// Einstellungen) und die aktiven, öffentlichen Trigger. Nur Daten, die sichtbaren Texte macht jede Seite selbst.
-// Rein (Regel 12); genutzt vom Server, Check: commands.check.ts.
+// Overview of a streamer's chat commands, for the public commands page and the reply to the help command:
+// the help command itself, the commands of the minimes (depending on the theme colors or variants, with the roles from the
+// settings) and the active, public triggers. Data only, every page builds the visible texts itself.
+// Pure (rule 12); used by the server, check: commands.check.ts.
 import type { MinimeRules, MinimeVariantRule } from "./minimes.ts";
 
-// Hilfe-Befehl des Streamers (commands.json im Profil). reply: Vorlage der Chat-Antwort mit {commands} und {link}
+// Help command of the streamer (commands.json in the profile). reply: template of the chat reply with {commands} and {link}
 export type HelpConfig = { enabled: boolean; command: string; reply: string; cooldown: number };
 
-// Die Felder eines Triggers (server/triggers.ts), die die Übersicht liest. public: false = nicht zeigen
+// The fields of a trigger (server/triggers.ts) that the overview reads. public: false = do not show
 export type TriggerInfo = {
   name: string;
   enabled?: boolean;
@@ -19,8 +19,8 @@ export type TriggerInfo = {
   userCooldown?: number;
 };
 
-// variants: erlaubte Typen mit ihren Namen im Chat, null = das Theme nutzt Farben. match null: Regex (nur die
-// Beschreibung ist für Menschen lesbar)
+// variants: allowed variants with their names in chat, null = the theme uses colors. match null: regex (only the
+// description is readable for humans)
 export type CommandItem =
   | { kind: "help"; command: string; cooldown: number }
   | { kind: "join" | "look"; command: string; who: readonly string[]; variants: readonly MinimeVariantRule[] | null }
@@ -29,7 +29,7 @@ export type CommandItem =
 
 export type CommandList = { channel: string; items: CommandItem[] };
 
-// help null oder aus, minimes null (Funktion aus oder Theme ohne Minimes): diese Teile fehlen
+// help null or off, minimes null (feature off or theme without minimes): these parts are missing
 export function commandList(channel: string, help: HelpConfig | null, minimes: MinimeRules | null, triggers: readonly TriggerInfo[]): CommandList {
   return {
     channel,
@@ -62,11 +62,11 @@ function triggerItem(trigger: TriggerInfo): CommandItem {
   };
 }
 
-// Twitch nimmt höchstens 500 Zeichen pro Chatnachricht
+// Twitch accepts at most 500 characters per chat message
 export const MAX_CHAT = 500;
 
-// Antwort auf den Hilfe-Befehl: {commands} = alle Befehle, die man tippen kann (der Hilfe-Befehl selbst nicht, bei
-// Triggern nur Befehle, ganze Nachrichten und Wörter), {link} = die Befehlsseite; gekürzt auf MAX_CHAT
+// Reply to the help command: {commands} = all commands one can type (not the help command itself, for
+// triggers only commands, whole messages and words), {link} = the commands page; shortened to MAX_CHAT
 export function helpReply(template: string, list: CommandList, link: string): string {
   const typed = list.items.flatMap(item => {
     if (item.kind === "help") return [];

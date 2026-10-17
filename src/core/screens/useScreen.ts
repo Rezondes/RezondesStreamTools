@@ -1,5 +1,5 @@
-// Hook: Uhr einer Vollbild-Szene. Countdown bis ?at=20:00 oder für ?min=5 (sonst countdownSeconds aus den
-// Einstellungen), Pausenzeit seit dem Öffnen, ?ticker und ?next überschreiben die Texte aus den Einstellungen.
+// Hook: clock of a full-screen scene. Countdown until ?at=20:00 or for ?min=5 (otherwise countdownSeconds from the
+// settings), break time since opening, ?ticker and ?next override the texts from the settings.
 import { useMemo, useState } from "react";
 import { useNow } from "../hooks/useNow.ts";
 import { countdownEnd } from "../overlayTiming.ts";

@@ -1,7 +1,7 @@
-// Befehlsseite (Szene info, öffentlich unter /s/<login>/): gemeinsame Textfelder, die jedes Theme mit Befehlsseite
-// in sein Schema aufnimmt, und describeCommands, das aus der Befehlsliste (commands.ts) und diesen Texten Abschnitte
-// macht. Das Aussehen bestimmt jedes Theme selbst. Platzhalter: {channel} im Intro, sonst wie beim Feld angegeben.
-// Rein; Check: infoFields.check.ts.
+// Commands page (scene info, public under /s/<login>/): shared text fields that every theme with a commands page
+// adds to its schema, and describeCommands, which builds sections from the commands list (commands.ts) and these
+// texts. Every theme decides the look itself. Placeholders: {channel} in the intro, otherwise as given at the field.
+// Pure; check: infoFields.check.ts.
 import type { CommandItem, CommandList } from "./commands.ts";
 import { text, textarea, type ValuesOf } from "./fields.ts";
 import type { SettingField, SettingValues } from "./theme.ts";
@@ -42,7 +42,7 @@ export const INFO_FIELDS = [
 
 export type InfoValues = ValuesOf<typeof INFO_FIELDS>;
 
-// command: was man tippt ("" bei Mustern), text: Erklärung, details: kurze Zusatzzeilen (wer, wie oft, Auswahl)
+// command: what one types ("" for patterns), text: explanation, details: short extra lines (who, how often, choice)
 type InfoEntry = { command: string; text: string; details: string[] };
 type InfoSection = { id: "help" | "minimes" | "triggers"; heading: string; entries: InfoEntry[] };
 
@@ -51,7 +51,7 @@ const ROLE_KEYS = {
 } as const;
 const WHEN_KEYS = { command: "infoWhenCommand", word: "infoWhenWord", exact: "infoWhenExact", contains: "infoWhenContains", regex: "infoWhenRegex" } as const;
 
-// Abschnitte in fester Reihenfolge; leere fallen weg. values: aufgelöste Werte eines Themes mit INFO_FIELDS
+// Sections in a fixed order; empty ones drop out. values: resolved values of a theme with INFO_FIELDS
 export function describeCommands(list: CommandList, stored: SettingValues): InfoSection[] {
   const values = stored as unknown as InfoValues;
   const of = (kinds: CommandItem["kind"][]) => list.items.filter(item => kinds.includes(item.kind)).map(item => describe(item, values));
@@ -63,7 +63,7 @@ export function describeCommands(list: CommandList, stored: SettingValues): Info
   return sections.filter(section => section.entries.length > 0);
 }
 
-// Rollen als Text: "alle" schliesst den Rest ein, der Streamer wird nur genannt, wenn er allein ist
+// Roles as text: "alle" (everyone) includes the rest, the streamer is only named when alone
 function roles(who: readonly string[], values: InfoValues) {
   if (who.includes("everyone")) return values.infoRoleEveryone;
   const named = who.length > 1 ? who.filter(role => role !== "broadcaster") : who;
@@ -89,7 +89,7 @@ function describe(item: CommandItem, values: InfoValues): InfoEntry {
     }
     case "look": {
       if (!item.variants) return { command: item.command, text: fillTemplate(values.infoLookColor, { command: item.command }), details: [who(item.who)] };
-      // Je Typ der erste Name; weitere Namen (andere Sprachen, Schreibweisen) versteht der Chat auch, sie blähen die Liste nur auf
+      // The first name per variant; further names (other languages, spellings) are understood by chat too, they only bloat the list
       const names = item.variants.map(variant => variant.names[0]).join(", ");
       return { command: item.command, text: fillTemplate(values.infoLookVariant, { command: item.command }), details: [who(item.who), fillTemplate(values.infoVariants, { names })] };
     }

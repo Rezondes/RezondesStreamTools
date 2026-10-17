@@ -1,6 +1,6 @@
-// Medien eines Chat-Effekts für jedes Theme: Bild/GIF, Video und Ton passend zur Phase (useFxPhase).
-// Vor und nach dem Abspielen steht das Bild still: ein GIF lässt sich nicht pausieren, darum zeigt dann ein Canvas
-// das festgehaltene Bild. Das Theme legt nur Rahmen, Position und Text drumherum.
+// Media of a chat effect for every theme: image/GIF, video and sound matching the phase (useFxPhase).
+// Before and after playing, the image stands still: a GIF cannot be paused, so a canvas then shows
+// the frozen image. The theme only adds frame, position and text around it.
 import { useEffect, useRef } from "react";
 import { mediaUrl } from "./connection.ts";
 import type { ShownFx } from "./hooks/useFx.ts";
@@ -23,7 +23,7 @@ export default function FxMedia({ item, phase }: { item: ShownFx; phase: FxPhase
 
   useEffect(() => {
     if (phase === "post") freeze();
-    // Abspielen kann der Browser ohne Nutzerklick verweigern; dann bleibt das Standbild stehen
+    // The browser may refuse to play without a user click; then the still image stays
     if (video.current && phase === "play") video.current.play().catch(() => {});
     else if (video.current) video.current.pause();
     if (phase === "play" && action.sound) playSound({ file: action.sound, volume: action.volume ?? 1 }, () => {});
@@ -34,7 +34,7 @@ export default function FxMedia({ item, phase }: { item: ShownFx; phase: FxPhase
     <>
       {action.image && (
         <>
-          {/* Ab dem Abspielen eigene Adresse (?play=id): das GIF lädt neu und beginnt beim ersten Bild */}
+          {/* From playback on its own URL (?play=id): the GIF reloads and starts at the first frame */}
           <img
             ref={image}
             src={phase === "pre" ? mediaUrl(action.image) : `${mediaUrl(action.image)}${action.image.includes("?") ? "&" : "?"}play=${item.id}`}
@@ -45,7 +45,7 @@ export default function FxMedia({ item, phase }: { item: ShownFx; phase: FxPhase
           <canvas ref={still} style={{ display: playing ? "none" : "block" }} />
         </>
       )}
-      {/* Eigener Ton des Videos nur, wenn kein separater sound angegeben ist */}
+      {/* The video's own sound only if no separate sound is given */}
       {action.video && <video ref={video} src={mediaUrl(action.video)} preload="auto" muted={Boolean(action.sound)} playsInline />}
     </>
   );

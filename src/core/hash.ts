@@ -1,7 +1,7 @@
-// Deterministischer Zufall für Renderer (Stinger, Banner) und Szenen: gleiche Zahl, gleicher Wert (Regel 21).
+// Deterministic randomness for renderers (stinger, banners) and scenes: same number, same value (rule 21).
 // Check: hash.check.ts.
 
-// Wert 0 bis unter 1 aus einer ganzen Zahl
+// Value from 0 to below 1 from an integer
 export function hash(seed: number) {
   let mixed = Math.imul(seed ^ 0x9e3779b9, 0x85ebca6b);
   mixed ^= mixed >>> 13;
@@ -10,7 +10,7 @@ export function hash(seed: number) {
   return (mixed >>> 0) / 4294967296;
 }
 
-// Zahl aus einem Text (z.B. einem Login) als seed für hash
+// Number from a text (e.g. a login) as seed for hash
 export function seedOf(text: string) {
   let seed = 0;
   for (const character of text) seed = Math.imul(seed, 31) + (character.codePointAt(0) ?? 0);

@@ -1,5 +1,5 @@
-// Hook: skaliert die Bühne (1920x1080, STAGE in screens.ts) auf das Fenster bzw. die OBS-Quelle; setzt --s am Element.
-// Das Element bekommt die Klasse stage-box (stage.css: Mitte der Quelle, Grösse, Skalierung).
+// Hook: scales the stage (1920x1080, STAGE in screens.ts) to the window or the OBS source; sets --s on the element.
+// The element gets the class stage-box (stage.css: center of the source, size, scaling).
 import { useLayoutEffect, useRef } from "react";
 import { stageScale } from "./screens.ts";
 import "./stage.css";
