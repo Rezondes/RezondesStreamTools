@@ -3,7 +3,8 @@
 
 // Antwort von GET /api/me
 // theme: das aktive Theme des Streamers (bestimmt den Skin des Dashboards)
-export type Me = { login: string; admin: boolean; live: boolean; spotify: boolean | null; features: Record<string, boolean>; theme: string };
+// overlayKey: geheimer Schlüssel für die OBS-URLs (?key=), ohne ihn bekommen Overlays keine Live-Ereignisse
+export type Me = { login: string; admin: boolean; live: boolean; spotify: boolean | null; features: Record<string, boolean>; theme: string; overlayKey: string };
 
 export type Section = "overview" | "theme" | "triggers" | "media" | "render" | "connections" | "admin";
 

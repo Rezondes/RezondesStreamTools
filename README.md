@@ -39,7 +39,9 @@ Alles andere (Texte, Farben, Schrift, Dauer, Grösse, Position, Animationen, Tö
 des Chats, Kamera-Label, Countdown-Standard, Ticker) stellt der Streamer im Theme ein, siehe "Themes und Einstellungen".
 
 Mit Server liegt jede Szene unter `/s/<login>/<szene>` (z.B. `http://localhost:8089/s/rezondes/alerts`, mit `.html` geht es auch);
-die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Unter `npm run dev` wählt `?s=<login>` den Streamer.
+die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Sie enthalten den geheimen Overlay-Schlüssel (`?key=`),
+ohne den eine Szene keine Live-Ereignisse bekommt; neu erzeugen lässt er sich in der Übersicht (danach OBS-Quellen neu
+einrichten). Unter `npm run dev` wählt `?s=<login>` den Streamer.
 Alle Szenen nehmen `?channel=name` (überschreibt den Streamer bzw. `.env.local`) und `?demo`.
 `music`, `fx` und `minimes` brauchen den Overlay-Server (Spotify, Chat-Trigger und Minimes laufen dort).
 Die Befehlsseite `/s/<login>/` zeigt Zuschauern alle Chat-Befehle im Stil des gewählten Themes (Liste als JSON unter
@@ -62,7 +64,7 @@ Jeder Streamer meldet sich im Dashboard mit Twitch an und bekommt ein eigenes Pr
 4. `http://localhost:8089` öffnen, `[ MIT TWITCH ANMELDEN ]` klicken, bei Twitch zustimmen.
    Das Profil liegt im Docker-Volume `tokens` und überlebt Neustarts. Der Server prüft die Tokens stündlich und erneuert sie selbst;
    lehnt Twitch den Login ab, endet die Laufzeit des Streamers und er meldet sich neu an.
-5. In OBS die Browserquellen auf die URLs aus der Übersicht stellen, z.B. `http://localhost:8089/s/<login>/alerts`.
+5. In OBS die Browserquellen auf die URLs aus der Übersicht stellen, z.B. `http://localhost:8089/s/<login>/alerts?key=<schlüssel>`.
 
 Der Port (8089, in `docker-compose.yml` änderbar) ist nur auf diesem Rechner erreichbar (`127.0.0.1`). Client-Secret und Tokens bleiben im Server, nie im Browser.
 Für den öffentlichen Betrieb mit eigener Domain siehe "Öffentlicher Betrieb (Caddy, HTTPS)".
@@ -120,10 +122,10 @@ offene Overlays verbinden sich nach dem Neustart selbst wieder.
 | `/s/<login>/<szene>` (auch `.html`) | öffentlich | Overlay-Szene für OBS |
 | `/s/<login>/status` | öffentlich | `{ login, live, spotify, features }` |
 | `/s/<login>/settings` | öffentlich | gewähltes Theme und seine Einstellungen `{ theme, values }` |
-| `/s/<login>/events` | öffentlich | Server-Sent Events (`alert`, `music`, `fx`), 404 ohne laufende Laufzeit |
+| `/s/<login>/events` | mit `?key=` (Overlay) oder Sitzung (`?log`, Dashboard) | Server-Sent Events (`alert`, `music`, `fx`), 403 ohne gültigen Schlüssel, 404 ohne laufende Laufzeit |
 | `/s/<login>/media/<datei>` | öffentlich | Medien des Streamers (ohne Script-Ausführung) |
 | `/auth/login`, `/auth/callback`, `POST /auth/logout` | alle | Anmeldung mit Twitch, Abmelden |
-| `/api/me`, `/api/test`, `/api/triggers`, `/api/trigger`, `/api/triggers/config`, `/api/media`, `/spotify/*`, `POST /api/twitch/disconnect` | angemeldet | Dashboard; Login aus dem Sitzungs-Cookie, Funktionsstufe geprüft |
+| `/api/me`, `POST /api/overlay-key`, `/api/test`, `/api/triggers`, `/api/trigger`, `/api/triggers/config`, `/api/media`, `/spotify/*`, `POST /api/twitch/disconnect` | angemeldet | Dashboard; Login aus dem Sitzungs-Cookie, Funktionsstufe geprüft |
 | `/api/admin/access` | Admins | Zugang und Funktionsstufen |
 | `/api/admin/streamers` | Admins | Profile mit Status |
 

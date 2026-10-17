@@ -64,6 +64,9 @@ export const TEXTS = {
     testAlerts: "Test-Alert, erscheint auch live im Stream, wenn die Alerts-Quelle in OBS aktiv ist:",
     fireTriggers: "Trigger auslösen:",
     noTriggers: "keine geladen",
+    keyHint: "Die URLs enthalten deinen geheimen Overlay-Schlüssel (key=...). Nicht zeigen oder teilen: wer ihn hat, kann die Verbindungen deiner Overlays belegen.",
+    rotateKey: "Schlüssel neu erzeugen",
+    rotateConfirm: "Neuen Overlay-Schlüssel erzeugen? Alle bisherigen OBS-Quellen bekommen danach keine Live-Ereignisse mehr, bis du sie mit den neuen URLs einrichtest (OBS-Import).",
     dragHint: "Tipp: eine URL aus der Tabelle auf das OBS-Fenster ziehen, OBS legt die Browserquelle mit Name und Grösse an. Bei Starting, BRB und Ending danach in den Eigenschaften \"Browser aktualisieren, wenn Szene aktiv wird\" anhaken, sonst läuft der Timer weiter.",
   },
   help: {

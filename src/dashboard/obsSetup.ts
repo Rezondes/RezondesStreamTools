@@ -13,9 +13,12 @@ const FULLSCREEN: readonly SceneName[] = ["starting", "brb", "ending"];
 // Ausrichtung der Szenenelemente: oben links (OBS_ALIGN_TOP | OBS_ALIGN_LEFT)
 const ALIGN_TOP_LEFT = 5;
 
-// base: volle Adresse bis zum Login (https://.../s/<login>); Quellen heissen "<login> <szene>"
-export function obsLayout(base: string, login: string, sceneNames: Record<SceneName, string>, overlayScene: string): ObsScene[] {
-  const source = (scene: SceneName): ObsSource => ({ scene, name: `${login} ${scene}`, url: `${base}/${scene}`, ...SCENE_SIZES[scene] });
+// OBS-URL einer Szene mit dem geheimen Overlay-Schlüssel des Streamers (ohne ihn gibt es keine Live-Ereignisse)
+export const sceneUrl = (base: string, scene: SceneName, key: string) => `${base}/${scene}?key=${encodeURIComponent(key)}`;
+
+// base: volle Adresse bis zum Login (https://.../s/<login>); Quellen heissen "<login> <szene>"; key: Overlay-Schlüssel
+export function obsLayout(base: string, login: string, key: string, sceneNames: Record<SceneName, string>, overlayScene: string): ObsScene[] {
+  const source = (scene: SceneName): ObsSource => ({ scene, name: `${login} ${scene}`, url: sceneUrl(base, scene, key), ...SCENE_SIZES[scene] });
   return [
     ...FULLSCREEN.map(scene => ({ name: sceneNames[scene], sources: [source(scene)] })),
     { name: overlayScene, sources: OBS_SCENES.filter(scene => !FULLSCREEN.includes(scene)).map(source) },

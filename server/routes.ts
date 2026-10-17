@@ -23,6 +23,7 @@ export const ROUTES = {
   // Spotify kennt nur eine Callback-URL (lokal über 127.0.0.1, dort fehlt das Cookie): der Login kommt aus dem state
   "GET /spotify/callback": PUBLIC,
   "GET /api/me": SESSION,
+  "POST /api/overlay-key": SESSION,
   "POST /api/test": { guard: "session", features: ["alerts"] },
   "GET /api/triggers/config": TRIGGERS,
   "POST /api/triggers/config": TRIGGERS,

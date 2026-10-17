@@ -8,7 +8,7 @@ import { SCENE_SIZES, type SceneName } from "../core/theme.ts";
 import type { PublicSettings } from "../core/types.ts";
 import { TEXTS } from "./texts.de.ts";
 
-export default function ScenePreview({ login, scene, settings }: { login: string; scene: SceneName; settings: PublicSettings }) {
+export default function ScenePreview({ login, overlayKey, scene, settings }: { login: string; overlayKey: string; scene: SceneName; settings: PublicSettings }) {
   const [room, setRoom] = useState({ width: 0, height: 0 });
   const box = useRef<HTMLDivElement>(null);
   const size = SCENE_SIZES[scene];
@@ -37,7 +37,7 @@ export default function ScenePreview({ login, scene, settings }: { login: string
   }, []);
 
   const scale = room.width && room.height ? Math.min(1, room.width / size.width, room.height / size.height) : 0;
-  const src = `${streamerPath.base(login)}/${scene}?demo&preview`;
+  const src = `${streamerPath.base(login)}/${scene}?demo&preview&key=${encodeURIComponent(overlayKey)}`;
   return (
     <div className="scene-preview">
       <p className="actions">

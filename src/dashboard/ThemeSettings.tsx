@@ -80,7 +80,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
           <SettingsGroups schema={schema} view={view} search={search} draft={{ values: draft, set: setDraft }} errors={errors} media={media} />
           {groupsWithoutScene(schema).length > 0 && <p className="muted">{TEXTS.theme.elsewhere(groupsWithoutScene(schema).join(", "))}</p>}
         </div>
-        <ScenePreview login={me.login} scene={scene} settings={{ theme: schema.id, values: resolveSettings(schema, draft) }} />
+        <ScenePreview login={me.login} overlayKey={me.overlayKey} scene={scene} settings={{ theme: schema.id, values: resolveSettings(schema, draft) }} />
       </div>
     </section>
   );

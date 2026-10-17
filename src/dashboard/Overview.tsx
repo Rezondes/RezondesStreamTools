@@ -20,17 +20,21 @@ type TriggerInfo = { name: string; enabled: boolean };
 
 export default function Overview({ me, act }: { me: Me; act: Act }) {
   const base = `${location.origin}${streamerPath.base(me.login)}`;
-  const layout = obsLayout(base, me.login, TEXTS.scenes, TEXTS.obs.overlayScene);
+  const layout = obsLayout(base, me.login, me.overlayKey, TEXTS.scenes, TEXTS.obs.overlayScene);
   const sources = new Map(layout.flatMap(scene => scene.sources).map(source => [source.scene, source]));
   return (
     <section className="panel">
       <p className="muted">{TEXTS.overview.obsHint}</p>
       <p className="muted">{TEXTS.overview.dragHint}</p>
+      <p className="actions">
+        <span className="muted">{TEXTS.overview.keyHint}</span>
+        <button className="btn" onClick={() => { if (confirm(TEXTS.overview.rotateConfirm)) act("/api/overlay-key"); }}>{TEXTS.overview.rotateKey}</button>
+      </p>
       <table>
         <thead><tr><th>{TEXTS.overview.scene}</th><th>{TEXTS.overview.url}</th><th>{TEXTS.overview.size}</th><th /></tr></thead>
         <tbody>
           {OBS_SCENES.map(scene => {
-            const url = `${base}/${scene}`;
+            const url = sources.get(scene)!.url;
             return (
               <tr key={scene}>
                 <td>{TEXTS.scenes[scene]}</td>
@@ -39,7 +43,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
                 <td>{SCENE_SIZES[scene].width}x{SCENE_SIZES[scene].height}</td>
                 <td className="actions">
                   <CopyButton text={url} />
-                  <a className="btn" href={`${url}?demo`} target="_blank" rel="noreferrer">{TEXTS.overview.test}</a>
+                  <a className="btn" href={`${url}&demo`} target="_blank" rel="noreferrer">{TEXTS.overview.test}</a>
                 </td>
               </tr>
             );

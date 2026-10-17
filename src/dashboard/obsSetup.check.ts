@@ -5,16 +5,16 @@ import { createHash } from "node:crypto";
 import { dragUrl, obsAuth, obsLayout, obsRequests, sceneCollection } from "./obsSetup.ts";
 import { TEXTS } from "./texts.de.ts";
 
-const layout = obsLayout("https://overlays.example/s/neo", "neo", TEXTS.scenes, "Overlays");
+const layout = obsLayout("https://overlays.example/s/neo", "neo", "k1", TEXTS.scenes, "Overlays");
 
 // Drei Vollbild-Szenen mit je einer Quelle, dazu eine Szene mit den übrigen fünf Overlays
 assert.deepEqual(layout.map(scene => scene.name), [TEXTS.scenes.starting, TEXTS.scenes.brb, TEXTS.scenes.ending, "Overlays"]);
 assert.deepEqual(layout[3].sources.map(source => source.name), ["neo alerts", "neo chat", "neo cam", "neo music", "neo fx", "neo minimes"]);
 const chat = layout[3].sources[1];
-assert.deepEqual(chat, { scene: "chat", name: "neo chat", url: "https://overlays.example/s/neo/chat", width: 500, height: 900 });
+assert.deepEqual(chat, { scene: "chat", name: "neo chat", url: "https://overlays.example/s/neo/chat?key=k1", width: 500, height: 900 });
 
 // Ziehen: Name und Grösse als layer-Parameter
-assert.equal(dragUrl(chat), "https://overlays.example/s/neo/chat?layer-name=neo+chat&layer-width=500&layer-height=900");
+assert.equal(dragUrl(chat), "https://overlays.example/s/neo/chat?key=k1&layer-name=neo+chat&layer-width=500&layer-height=900");
 
 // Szenensammlung: Szenenelemente verweisen per Name und uuid auf die Browserquellen
 let counter = 0;
@@ -25,7 +25,7 @@ const input = collection.sources.find(source => source.name === "neo chat")!;
 assert.deepEqual(input.settings, { url: chat.url, width: 500, height: 900, reroute_audio: true });
 // Starting, BRB, Ending laden beim Aktivieren der Szene neu (Timer von vorn), die anderen laufen durch
 const brb = collection.sources.find(source => source.name === "neo brb")!;
-assert.deepEqual(brb.settings, { url: "https://overlays.example/s/neo/brb", width: 1920, height: 1080, reroute_audio: true, restart_when_active: true, shutdown: true });
+assert.deepEqual(brb.settings, { url: "https://overlays.example/s/neo/brb?key=k1", width: 1920, height: 1080, reroute_audio: true, restart_when_active: true, shutdown: true });
 const overlays = collection.sources.find(source => source.name === "Overlays") as { settings: { items: { name: string; source_uuid?: string }[] } };
 assert.deepEqual(overlays.settings.items.find(item => item.name === "neo chat")?.source_uuid, input.uuid);
 

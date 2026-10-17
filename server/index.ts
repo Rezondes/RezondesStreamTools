@@ -12,6 +12,7 @@ import { loadHelp, publicCommands, saveHelp, toHelpConfig } from "./commands.ts"
 import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from "./http.ts";
 import { createLoginStates, sameBrowser } from "./loginStates.ts";
 import { deleteMedia, listMedia, storeMedia, uploadSlots } from "./media.ts";
+import { overlayKeys } from "./overlayKeys.ts";
 import { renderRoutes } from "./renderRoutes.ts";
 import { runtimeRegistry } from "./runtimeRegistry.ts";
 import * as profile from "./profile.ts";
@@ -64,6 +65,7 @@ const sessionKey = await loadSessionKey(DATA);
 const twitchStates = createLoginStates<true>(600_000, 1000);
 const spotifyStates = createLoginStates<string>(600_000, 1000);
 const mediaUploads = uploadSlots();
+const keys = overlayKeys(login => profile.folder(DATA, login));
 
 // --- Laufzeiten -------------------------------------------------------------------------------
 const runtimes = runtimeRegistry<Streamer>();
@@ -106,12 +108,22 @@ async function overlay(request: IncomingMessage, response: ServerResponse, path:
       return json(response, { login: path.login, live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features });
     }
     case "settings": return json(response, publicSettings(await loadSettings(folder)));
-    // ?log: Ereignis-Protokoll im Dashboard, zählt nicht als offenes Overlay
-    case "events": return runtime ? runtime.attach(request, response, new URL(request.url ?? "/", "http://x").searchParams.has("log")) : send(response, 404, "not-running");
+    case "events": return events(request, response, path.login, runtime);
     case "commands": return json(response, await publicCommands(folder, path.login, access.features(path.login)));
     case "scene": return serveStatic(response, DIST, `/${route.file}`);
     case "media": return serveStatic(response, join(folder, "media"), `/${route.file}`, true);
   }
+}
+
+// Live-Stream: Overlays nur mit dem geheimen Overlay-Schlüssel (?key=), das Ereignis-Protokoll im Dashboard (?log,
+// zählt nicht als offenes Overlay) nur mit der Sitzung desselben Streamers. Fremde können so keine Plätze belegen.
+async function events(request: IncomingMessage, response: ServerResponse, login: string, runtime: Streamer | undefined) {
+  if (!runtime) return send(response, 404, "not-running");
+  const query = new URL(request.url ?? "/", "http://x").searchParams;
+  const watcher = query.has("log");
+  const allowed = watcher ? readSession(sessionKey, cookies(request).sid) === login : await keys.matches(login, query.get("key") ?? "");
+  if (!allowed) return send(response, 403, "forbidden");
+  runtime.attach(request, response, watcher);
 }
 
 // --- Dashboard und Anmeldung ------------------------------------------------------------------
@@ -179,7 +191,14 @@ function logout({ response }: Call) {
 async function me({ response, login, runtime }: Call) {
   const features = access.features(login);
   const { theme } = await loadSettings(profile.folder(DATA, login));
-  json(response, { login, admin: access.isAdmin(login), live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features, theme });
+  json(response, { login, admin: access.isAdmin(login), live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features, theme, overlayKey: await keys.get(login) });
+}
+
+// Neuer Overlay-Schlüssel (z.B. wenn eine OBS-URL in falsche Hände geraten ist); der Neustart trennt alle Overlays
+async function rotateOverlayKey({ response, login }: Call) {
+  const overlayKey = await keys.rotate(login);
+  await startRuntime(login);
+  json(response, { overlayKey });
 }
 
 function testAlert({ response, url, runtime }: Call) {
@@ -369,6 +388,7 @@ const HANDLERS: Record<RouteKey, Handler> = {
   "POST /auth/logout": logout,
   "GET /spotify/callback": spotifyCallback,
   "GET /api/me": me,
+  "POST /api/overlay-key": rotateOverlayKey,
   "POST /api/test": testAlert,
   "GET /api/triggers/config": triggerConfig,
   "POST /api/triggers/config": saveTriggerConfig,

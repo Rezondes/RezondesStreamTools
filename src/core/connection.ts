@@ -133,7 +133,8 @@ function events(login: string, handlers: Handlers) {
   let source: EventSource;
   let retry: ReturnType<typeof setTimeout> | undefined;
   const open = () => {
-    source = new EventSource(`${streamerPath.base(login)}/events`);
+    // Ohne den Overlay-Schlüssel aus der OBS-URL lehnt der Server den Live-Stream ab
+    source = new EventSource(`${streamerPath.base(login)}/events?key=${encodeURIComponent(params.get("key") ?? "")}`);
     source.onmessage = event => {
       const message = JSON.parse(String(event.data)) as ServerMessage;
       if (message.type === "alert") handlers.alert?.(message.alert);

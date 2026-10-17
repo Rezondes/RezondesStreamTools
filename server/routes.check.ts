@@ -26,6 +26,9 @@ assert.equal(authorize(ROUTES["GET /spotify/callback"], { login: null, allowed: 
 assert.equal(authorize(ROUTES["GET /api/me"], { login: null, allowed: false, admin: false, features: {} }), "unauthorized");
 assert.equal(authorize(ROUTES["GET /api/me"], { ...streamer, allowed: false }), "not-allowed");
 assert.equal(authorize(ROUTES["GET /api/me"], streamer), "ok");
+// Overlay-Schlüssel neu erzeugen: nur mit eigener Sitzung
+assert.equal(authorize(ROUTES["POST /api/overlay-key"], { login: null, allowed: false, admin: false, features: {} }), "unauthorized");
+assert.equal(authorize(ROUTES["POST /api/overlay-key"], streamer), "ok");
 
 // Funktionsstufen: Test-Alerts brauchen alerts, Trigger und Medien brauchen triggers und fx, Spotify music
 assert.equal(authorize(ROUTES["POST /api/test"], { ...streamer, features: { ...allOn, alerts: false } }), "feature-off");
