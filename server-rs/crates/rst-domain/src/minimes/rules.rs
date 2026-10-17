@@ -19,7 +19,7 @@ pub enum WhenFull {
 }
 
 /// An allowed variant with its normalized names in chat
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize, ts_rs::TS)]
 pub struct MinimeVariantRule {
     pub id: String,
     pub names: Vec<String>,
