@@ -1,6 +1,6 @@
-// Laufende Streamer-Laufzeiten: genau eine pro Login. Ein Start wartet auf Dateien und Verbindungen; startet oder
-// stoppt währenddessen jemand anderes denselben Login (zweite Anmeldung, Admin speichert Zugänge, Trennen), wird
-// der überholte Start verworfen statt eine zweite, nirgends verwaltete Laufzeit zu hinterlassen.
+// Running streamer runtimes: exactly one per login. A start waits for files and connections; if someone else starts
+// or stops the same login meanwhile (second login, admin saves access, disconnect), the overtaken start is
+// discarded instead of leaving behind a second runtime that nobody manages.
 type Runtime = { stop: () => void };
 
 export function runtimeRegistry<R extends Runtime>() {
@@ -23,11 +23,11 @@ export function runtimeRegistry<R extends Runtime>() {
     logins: () => [...runtimes.keys()],
     count: () => runtimes.size,
     stop,
-    // Alle stoppen, auch Starts, die gerade laufen
+    // Stop all, including starts that are running right now
     stopAll() {
       for (const login of new Set([...runtimes.keys(), ...generations.keys()])) stop(login);
     },
-    // create baut die Laufzeit (null = nichts zu starten); allowed wird danach erneut geprüft
+    // create builds the runtime (null = nothing to start); allowed is checked again afterwards
     async start(login: string, create: () => Promise<R | null>, allowed: () => boolean): Promise<R | null> {
       stop(login);
       const mine = generations.get(login);
@@ -40,7 +40,7 @@ export function runtimeRegistry<R extends Runtime>() {
       runtimes.set(login, runtime);
       return runtime;
     },
-    // Laufzeit hat sich selbst beendet (Login ungültig): nur austragen, wenn sie noch die aktuelle ist
+    // The runtime ended itself (login invalid): only remove it if it is still the current one
     ended(login: string, runtime: R) {
       if (runtimes.get(login) === runtime) runtimes.delete(login);
     },

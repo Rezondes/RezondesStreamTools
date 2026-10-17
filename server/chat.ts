@@ -1,8 +1,8 @@
-// Anonymer Twitch-Chat auf dem Server (gleich wie im Overlay), Quelle für Chat-Trigger und Minimes.
-// onBan: Ban oder Timeout eines Chatters (CLEARCHAT mit Login). url: IRC URL (providers.ts), default Twitch.
+// Anonymous Twitch chat on the server (same as in the overlay), source for chat triggers and minimes.
+// onBan: ban or timeout of a chatter (CLEARCHAT with login). url: IRC URL (providers.ts), default Twitch.
 import { anonymousLogin, IRC_URL, parseIrc } from "../src/core/irc.ts";
 
-// color: Twitch-Namensfarbe (#RRGGBB) oder nichts, wenn der Chatter keine gewählt hat
+// color: Twitch name color (#RRGGBB) or nothing if the chatter has not chosen one
 export type ChatLine = { user: string; login: string; text: string; roles: string[]; color?: string };
 
 export function chat(channel: string, onLine: (line: ChatLine) => void, onBan: (login: string) => void = () => {}, url = IRC_URL): () => void {
@@ -35,7 +35,7 @@ export function chat(channel: string, onLine: (line: ChatLine) => void, onBan: (
     socket.onmessage = event => {
       for (const raw of String(event.data).split("\r\n")) {
         if (!raw) continue;
-        // Ein Fehler in einer Zeile darf nie den Server aller Streamer beenden (Fehler im WebSocket-Handler wären ungefangen)
+        // An error in one line must never stop the server of all streamers (errors in the WebSocket handler would be uncaught)
         try {
           handleLine(raw);
         } catch (error) {

@@ -1,13 +1,13 @@
-// Spotify "Now Playing" pro Streamer: OAuth-Login, Token-Erneuerung und Abfrage des laufenden Titels.
-// spotifyClient ist die Fabrik für die Laufzeit eines Streamers (Profil-Ordner, emit, "hört jemand zu");
-// die Abfrage läuft nur, solange mindestens ein Overlay des Streamers verbunden ist. Welcher Streamer zu einem
-// Login-state gehört, weiss der Router (Spotify kennt nur eine Callback-URL). Check: spotify.check.ts.
+// Spotify "Now Playing" per streamer: OAuth login, token renewal and polling of the current track.
+// spotifyClient is the factory for a streamer's runtime (profile folder, emit, "is anyone listening");
+// polling only runs while at least one overlay of the streamer is connected. Which streamer a login state
+// belongs to is known by the router (Spotify knows only one callback URL). Check: spotify.check.ts.
 import { readFile, rm } from "node:fs/promises";
 import { join } from "node:path";
 import type { SpotifyDetails, Track } from "../src/core/types.ts";
 import { writeAtomic } from "./atomicFile.ts";
 
-// Die Spotify-App aus server.env; redirectUri aus redirectUri(PUBLIC_URL), URLs from providerUrls (providers.ts)
+// The Spotify app from server.env; redirectUri from redirectUri(PUBLIC_URL), URLs from providerUrls (providers.ts)
 export type SpotifyApp = { clientId: string; clientSecret: string; redirectUri: string; accountsUrl: string; apiUrl: string };
 type SpotifyTokens = { access: string; refresh: string; expiresAt: number };
 type TokenAnswer = { access_token?: string; refresh_token?: string; expires_in?: number };
@@ -15,18 +15,18 @@ type TokenAnswer = { access_token?: string; refresh_token?: string; expires_in?:
 const SCOPES = "user-read-currently-playing user-read-playback-state";
 const POLL_MS = 3000;
 
-// Spotify erlaubt für lokale Redirects nur die Loopback-IP, nicht "localhost"; sonst gilt PUBLIC_URL
+// For local redirects Spotify only allows the loopback IP, not "localhost"; otherwise PUBLIC_URL applies
 export function redirectUri(publicUrl: string) {
   const url = new URL(publicUrl);
   if (url.hostname === "localhost") url.hostname = "127.0.0.1";
   return `${url.origin}/spotify/callback`;
 }
 
-// Kommt der Spotify-Callback auf dem Host des Dashboards an, trägt er das Sitzungs-Cookie: dann muss der Callback
-// vom selben Streamer kommen, der die Verbindung begonnen hat. Lokal (localhost -> 127.0.0.1) fehlt das Cookie.
+// If the Spotify callback arrives on the dashboard's host, it carries the session cookie: then the callback must
+// come from the same streamer who started the connection. Locally (localhost -> 127.0.0.1) the cookie is missing.
 export const callbackHasSession = (publicUrl: string) => new URL(redirectUri(publicUrl)).host === new URL(publicUrl).host;
 
-// Nur bekannte Felder mit gültigen Werten (Regel 25), sonst null
+// Only known fields with valid values (rule 25), otherwise null
 export function toTokens(value: unknown): SpotifyTokens | null {
   if (typeof value !== "object" || value === null) return null;
   const { access, refresh, expiresAt } = value as Record<string, unknown>;
@@ -34,7 +34,7 @@ export function toTokens(value: unknown): SpotifyTokens | null {
   return { access, refresh, expiresAt };
 }
 
-// Die Felder der Spotify-Antwort, die toTrack liest
+// The fields of the Spotify answer that toTrack reads
 type SpotifyImage = { url?: string };
 type PlayingAnswer = {
   is_playing?: boolean;
@@ -51,7 +51,7 @@ type PlayingAnswer = {
   } | null;
 };
 
-// Songs haben artists und album, Podcast-Folgen show und eigene Bilder. null = nichts läuft.
+// Songs have artists and album, podcast episodes have show and their own images. null = nothing is playing.
 export function toTrack(answer: PlayingAnswer): Track | null {
   const item = answer.item;
   if (!item) return null;
@@ -67,33 +67,33 @@ export function toTrack(answer: PlayingAnswer): Track | null {
   };
 }
 
-// Stand zum Zeitpunkt now: läuft der Titel, ist der Fortschritt seit sentAt weitergelaufen
+// State at time now: if the track is playing, the progress has moved on since sentAt
 export function progressed(track: Track | null, sentAt: number, now: number): Track | null {
   if (!track) return null;
   return { ...track, progressMs: track.playing ? Math.min(track.durationMs, track.progressMs + now - sentAt) : track.progressMs };
 }
 
-// Nur Änderungen senden: anderer Titel, Play/Pause, gespult (Abweichung > 3 s) oder Wechsel zwischen Titel und Stille
+// Only send changes: different track, play/pause, seeked (deviation > 3 s) or a switch between track and silence
 export function changed(before: Track | null, next: Track | null): boolean {
   if (!before || !next) return before !== next;
   return next.id !== before.id || next.playing !== before.playing || Math.abs(next.progressMs - before.progressMs) > 3000;
 }
 
-// Zustand eines Streamers
+// State of a streamer
 type Player = {
   app: SpotifyApp;
   file: string;
   emit: (track: Track | null) => void;
   tokens: SpotifyTokens | null;
-  track: Track | null; // zuletzt gesendeter Stand
+  track: Track | null; // last sent state
   sentAt: number;
-  blockedUntil: number; // nach 429 (zu viele Anfragen) bis dahin Pause
-  account: string | null; // Name des Spotify-Kontos, einmal geholt; null = noch unbekannt
-  // Zählt Abmelden und Verbinden: eine Erneuerung, die vorher begann, darf danach nichts mehr speichern
+  blockedUntil: number; // after 429 (too many requests) pause until then
+  account: string | null; // name of the Spotify account, fetched once; null = not known yet
+  // Counts logouts and connects: a renewal that started before must not save anything afterwards
   generation: number;
 };
 
-// Spotify eines Streamers. folder: Profil-Ordner (spotify.json), emit: an die Overlays, listening: ist ein Overlay offen
+// Spotify of a streamer. folder: profile folder (spotify.json), emit: to the overlays, listening: is an overlay open
 export async function spotifyClient(app: SpotifyApp, folder: string, emit: (track: Track | null) => void, listening: () => boolean) {
   const file = join(folder, "spotify.json");
   const player: Player = { app, file, emit, tokens: await loadTokens(file), track: null, sentAt: 0, blockedUntil: 0, account: null, generation: 0 };
@@ -104,7 +104,7 @@ export async function spotifyClient(app: SpotifyApp, folder: string, emit: (trac
 
   return {
     connected: () => player.tokens !== null,
-    // Aktueller Stand mit weitergerechnetem Fortschritt, z.B. für frisch verbundene Overlays
+    // Current state with progress moved on, e.g. for freshly connected overlays
     current: () => progressed(player.track, player.sentAt, Date.now()),
     async details(): Promise<SpotifyDetails> {
       if (player.tokens && !player.account) player.account = await loadAccount(player);
@@ -114,7 +114,7 @@ export async function spotifyClient(app: SpotifyApp, folder: string, emit: (trac
       const query = new URLSearchParams({ client_id: app.clientId, response_type: "code", redirect_uri: app.redirectUri, scope: SCOPES, state });
       return `${app.accountsUrl}/authorize?${query}`;
     },
-    // Code aus dem Callback eintauschen; false = Code ungültig
+    // Exchange the code from the callback; false = code invalid
     async connect(code: string) {
       const generation = ++player.generation;
       const answer = await requestToken(app, { grant_type: "authorization_code", code, redirect_uri: app.redirectUri });
@@ -129,19 +129,19 @@ export async function spotifyClient(app: SpotifyApp, folder: string, emit: (trac
   };
 }
 
-// Abmelden ohne laufenden Spotify-Client (Funktion Musik aus oder keine Laufzeit): spotify.json trotzdem löschen
+// Log out without a running Spotify client (music feature off or no runtime): delete spotify.json anyway
 export const deleteSpotifyTokens = (folder: string) => rm(join(folder, "spotify.json"), { force: true });
 
 async function loadTokens(file: string) {
   try {
     return toTokens(JSON.parse(await readFile(file, "utf8")));
   } catch {
-    // Fehlt oder kein JSON: nicht verbunden
+    // Missing or not JSON: not connected
     return null;
   }
 }
 
-// null = Code oder Refresh-Token ungültig (400, 401); andere Fehler werfen, damit ein Netzwerkproblem nie den Login löscht
+// null = code or refresh token invalid (400, 401); other errors throw, so a network problem never deletes the login
 async function requestToken(app: SpotifyApp, body: Record<string, string>): Promise<TokenAnswer | null> {
   const response = await fetch(`${app.accountsUrl}/api/token`, {
     method: "POST",
@@ -154,7 +154,7 @@ async function requestToken(app: SpotifyApp, body: Record<string, string>): Prom
 }
 
 async function save(player: Player, answer: TokenAnswer) {
-  // Beim Erneuern schickt Spotify nicht immer einen neuen Refresh-Token mit
+  // On renewal Spotify does not always send a new refresh token
   const tokens = toTokens({ access: answer.access_token, refresh: answer.refresh_token ?? player.tokens?.refresh, expiresAt: Date.now() + (answer.expires_in ?? 3600) * 1000 });
   if (!tokens) throw new Error("Spotify sent incomplete tokens");
   player.tokens = tokens;
@@ -173,14 +173,14 @@ async function logout(player: Player) {
 async function refresh(player: Player) {
   const generation = player.generation;
   const answer = player.tokens ? await requestToken(player.app, { grant_type: "refresh_token", refresh_token: player.tokens.refresh }) : null;
-  // Inzwischen abgemeldet oder neu verbunden: die Antwort gehört zu einem alten Login
+  // Logged out or reconnected meanwhile: the answer belongs to an old login
   if (generation !== player.generation) return;
   if (answer) return save(player, answer);
   console.error("Spotify login expired, please reconnect");
   await logout(player);
 }
 
-// Name des Kontos (Anzeigename, sonst die Spotify-ID); null bei jedem Fehler, die Details fragen dann später neu
+// Name of the account (display name, otherwise the Spotify ID); null on any error, the details ask again later
 async function loadAccount(player: Player): Promise<string | null> {
   try {
     if (player.tokens && Date.now() > player.tokens.expiresAt - 60_000) await refresh(player);
@@ -190,7 +190,7 @@ async function loadAccount(player: Player): Promise<string | null> {
     const answer = (await response.json()) as { id?: string; display_name?: string | null };
     return answer.display_name || answer.id || null;
   } catch {
-    // Netzwerkfehler: Konto bleibt unbekannt
+    // Network error: the account stays unknown
     return null;
   }
 }

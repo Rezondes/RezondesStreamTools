@@ -1,5 +1,5 @@
-// Check für http.ts: Cookies lesen, gleiche Herkunft, Body mit Obergrenze und Dateien nur aus root ausliefern.
-// Anfragen und Antworten sind kleine Attrappen, Dateien liegen in einem Temp-Ordner. Läuft mit npm test.
+// Check for http.ts: read cookies, same origin, body with an upper limit and serve files only from root.
+// Requests and responses are small fakes, files are in a temp folder. Runs with npm test.
 import assert from "node:assert/strict";
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
@@ -7,24 +7,24 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { cookies, readBody, sameOrigin, serveStatic } from "./http.ts";
 
-// Ein Array ist für "for await" iterierbar wie der Body-Stream einer echten Anfrage
+// An array is iterable with "for await" like the body stream of a real request
 const request = (headers: Record<string, string>, chunks: Buffer[] = []) => Object.assign([...chunks], { headers }) as unknown as IncomingMessage;
 
-// Cookies: mehrere, mit Gleichheitszeichen im Wert, kaputte Kodierung bleibt roh
+// Cookies: several, with equals signs in the value, broken encoding stays raw
 assert.deepEqual(cookies(request({ cookie: "sid=a.b=c; theme=%7Bx%7D; broken=%E0%A4" })), { sid: "a.b=c", theme: "{x}", broken: "%E0%A4" });
 assert.deepEqual(cookies(request({})), {});
 
-// Gleiche Herkunft: ohne Origin erlaubt, gleiche Host erlaubt, fremd oder "null" abgelehnt
+// Same origin: allowed without Origin, same host allowed, foreign or "null" rejected
 assert.ok(sameOrigin(request({ host: "overlays.example.de" })));
 assert.ok(sameOrigin(request({ host: "overlays.example.de", origin: "https://overlays.example.de" })));
 assert.ok(!sameOrigin(request({ host: "overlays.example.de", origin: "https://evil.example" })));
 assert.ok(!sameOrigin(request({ host: "overlays.example.de", origin: "null" })));
 
-// Body: zusammengesetzt, über der Grenze Fehler mit Status 413
+// Body: assembled, above the limit an error with status 413
 assert.equal(String(await readBody(request({}, [Buffer.from("ab"), Buffer.from("cd")]), 10)), "abcd");
 await assert.rejects(readBody(request({}, [Buffer.alloc(8), Buffer.alloc(8)]), 10), (error: Error & { status?: number }) => error.status === 413);
 
-// Dateien: aus root mit Typ, Sandbox-CSP auf Wunsch, ausserhalb 403, fehlend 404
+// Files: from root with type, sandbox CSP on request, outside 403, missing 404
 type Captured = { status: number; headers: Record<string, string>; body: string };
 function response() {
   const captured: Captured = { status: 0, headers: {}, body: "" };

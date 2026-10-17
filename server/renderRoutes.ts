@@ -1,6 +1,6 @@
-// HTTP-Handler fürs Rendern (Stinger, Banner): Frames kommen als PNG vom Dashboard, ffmpeg (FFMPEG, sonst aus dem
-// PATH; im Docker-Image per apk) baut das Ergebnis in DATA/streamers/<login>/render/. Die Regeln (ein Render pro
-// Streamer, Grenzen, Dateinamen, ffmpeg-Argumente) stehen geprüft in render.ts.
+// HTTP handlers for rendering (stinger, banners): frames arrive as PNG from the dashboard, ffmpeg (FFMPEG, otherwise
+// from PATH; in the Docker image via apk) builds the result in DATA/streamers/<login>/render/. The rules (one render
+// per streamer, limits, file names, ffmpeg arguments) are in render.ts, with checks.
 import { spawn } from "node:child_process";
 import { copyFile, mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -14,7 +14,7 @@ type Job = Exclude<ReturnType<ReturnType<typeof createRenderJobs>["finish"]>, st
 
 const FFMPEG = process.env.FFMPEG ?? "ffmpeg";
 
-// renderFolder: render/-Ordner im Profil des Streamers; hasFeature: darf der Streamer diesen Clip rendern
+// renderFolder: render/ folder in the streamer's profile; hasFeature: may the streamer render this clip
 export function renderRoutes(renderFolder: (login: string) => string, hasFeature: (login: string, feature: Feature) => boolean) {
   const jobs = createRenderJobs(Date.now);
 
@@ -41,20 +41,20 @@ export function renderRoutes(renderFolder: (login: string) => string, hasFeature
     done: async ({ response, url, login }: RenderCall) => {
       const job = jobs.finish(login, Number(url.searchParams.get("fps")));
       if (typeof job === "string") return send(response, job === "render-limit" ? 400 : 409, job);
-      // Der Job bleibt belegt, bis ffmpeg fertig ist: nie mehrere ffmpeg für einen Streamer
+      // The job stays taken until ffmpeg is finished: never several ffmpeg runs for one streamer
       try {
         await encode(response, renderFolder(login), login, job);
       } finally {
         jobs.done(login);
       }
     },
-    // Abbrechen vor dem Kodieren: Job freigeben und die bisherigen Frames löschen
+    // Cancel before encoding: release the job and delete the frames so far
     cancel: async ({ response, login }: RenderCall) => {
       if (!jobs.cancel(login)) return send(response, 409, "render-busy");
       await rm(join(renderFolder(login), "frames"), { recursive: true, force: true });
       json(response, { ok: true });
     },
-    // Fertige Dateien des Streamers mit Grösse
+    // Finished files of the streamer with size
     files: async ({ response, login }: RenderCall) => {
       const folder = renderFolder(login);
       const names = (await readdir(folder).catch(() => [] as string[])).filter(isOutputName).sort();
@@ -69,13 +69,13 @@ export function renderRoutes(renderFolder: (login: string) => string, hasFeature
   };
 }
 
-// ffmpeg baut Video (und Standbild) aus den Frames, danach sind die Frames weg
+// ffmpeg builds the video (and still image) from the frames, afterwards the frames are gone
 async function encode(response: ServerResponse, folder: string, login: string, job: Job) {
   const frames = join(folder, "frames");
   const [video, still] = outputNames(job.clip);
   const target = join(folder, video);
   const result = await runFfmpeg(ffmpegArgs(CLIPS[job.clip].format, job.fps, frames, target));
-  // Standbild aus dem ersten Frame für Stellen, an denen Twitch kein animiertes GIF zeigt
+  // Still image from the first frame for places where Twitch shows no animated GIF
   if (result === 0 && still) await copyFile(join(frames, "0000.png"), join(folder, still));
   await rm(frames, { recursive: true, force: true });
   if (result !== 0) return send(response, 500, result === "missing" ? "ffmpeg-missing" : "render-failed");
@@ -84,7 +84,7 @@ async function encode(response: ServerResponse, folder: string, login: string, j
   json(response, { files: outputNames(job.clip), bytes, tooLarge: CLIPS[job.clip].format === "gif" && bytes > RENDER_LIMITS.gifWarnBytes });
 }
 
-// Exit-Code von ffmpeg, "missing" wenn es nicht startet
+// Exit code of ffmpeg, "missing" if it does not start
 function runFfmpeg(args: string[]): Promise<number | "missing"> {
   return new Promise(done => {
     const child = spawn(FFMPEG, args, { stdio: ["ignore", "ignore", "pipe"] });

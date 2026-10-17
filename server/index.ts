@@ -1,7 +1,7 @@
-// Overlay-Server für mehrere Streamer: nur Routing und Start. Keine Abhängigkeiten, läuft direkt mit Node 24
-// (TypeScript wird beim Start entfernt): npm run server (liest server.env) oder im Docker-Container.
-// Öffentlich: Overlays unter /s/<login>/... (Szenen, status, events per SSE, media). Dashboard: Anmeldung per Twitch,
-// APIs mit Login aus dem Sitzungs-Cookie (Regel 26). Wer was darf, steht in routes.ts und access.ts.
+// Overlay server for multiple streamers: routing and startup only. No dependencies, runs directly on Node 24
+// (TypeScript is stripped at startup): npm run server (reads server.env) or in the Docker container.
+// Public: overlays under /s/<login>/... (scenes, status, events via SSE, media). Dashboard: login via Twitch,
+// APIs with the login from the session cookie (rule 26). Who may do what is in routes.ts and access.ts.
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { mkdir, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
@@ -25,7 +25,7 @@ import { startStreamer, type Streamer } from "./streamer.ts";
 import { isAlertKind, SAMPLE_ALERTS, twitchApp } from "./twitch.ts";
 import { providerUrls } from "./providers.ts";
 
-// --- Einstellungen aus server.env -------------------------------------------------------------
+// --- Settings from server.env ----------------------------------------------------------------
 const PORT = Number(process.env.PORT ?? 8080);
 const PUBLIC_URL = (process.env.PUBLIC_URL ?? `http://localhost:${PORT}`).replace(/\/+$/, "");
 const DIST = resolve(process.env.DIST ?? "dist");
@@ -40,12 +40,12 @@ const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID ?? "";
 const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET ?? "";
 
 const MEDIA_LIMIT = 50 * 1024 * 1024;
-// Speicherplatz aller Medien eines Streamers zusammen (MEDIA_LIMIT_MB, Standard 200 MB)
+// Storage for all media of a streamer together (MEDIA_LIMIT_MB, default 200 MB)
 const MEDIA_QUOTA = (Number(process.env.MEDIA_LIMIT_MB) || 200) * 1024 * 1024;
 const TRIGGER_LIMIT = 1024 * 1024;
 const ACCESS_LIMIT = 64 * 1024;
 const SETTINGS_LIMIT = 512 * 1024;
-// Codes aus dem OAuth-Callback (Twitch, Spotify)
+// Codes from the OAuth callback (Twitch, Spotify)
 const OAUTH_CODE = /^[\w.~-]{1,1024}$/;
 
 if (!TWITCH_CLIENT_ID || !TWITCH_CLIENT_SECRET) {
@@ -63,17 +63,17 @@ const spotifyApp: SpotifyApp | null = SPOTIFY_CLIENT_ID && SPOTIFY_CLIENT_SECRET
 await mkdir(DATA, { recursive: true });
 const access = await loadAccess(DATA, ADMINS);
 const sessionKey = await loadSessionKey(DATA);
-// Offene Anmeldungen: Twitch braucht nur den state, Spotify merkt sich dazu den Login
+// Pending logins: Twitch only needs the state, Spotify also remembers the login
 const twitchStates = createLoginStates<true>(600_000, 1000);
 const spotifyStates = createLoginStates<string>(600_000, 1000);
 const mediaUploads = uploadSlots();
 const keys = overlayKeys(login => profile.folder(DATA, login));
 
-// --- Laufzeiten -------------------------------------------------------------------------------
+// --- Runtimes ---------------------------------------------------------------------------------
 const runtimes = runtimeRegistry<Streamer>();
 
-// (Neu) starten, wenn der Login freigeschaltet ist und Tokens hat; sonst nur stoppen. Gleichzeitige Starts und
-// eine Sperre während des Starts löst runtimeRegistry auf
+// (Re)start when the login is enabled and has tokens; otherwise only stop. runtimeRegistry resolves simultaneous
+// starts and a lock during startup
 function startRuntime(login: string): Promise<Streamer | null> {
   return runtimes.start(login, async () => {
     const folder = profile.folder(DATA, login);
@@ -87,13 +87,13 @@ function startRuntime(login: string): Promise<Streamer | null> {
   }, () => access.canUse(login));
 }
 
-// Nach geänderten Zugängen oder Funktionsstufen: alle Laufzeiten neu, die Overlays verbinden sich selbst wieder
+// After changed access or feature levels: restart all runtimes, the overlays reconnect on their own
 async function restartAll() {
   runtimes.stopAll();
   for (const login of await profile.list(DATA)) await startRuntime(login);
 }
 
-// spotify im Status: null = nicht eingerichtet oder Funktion aus, sonst ob verbunden
+// spotify in the status: null = not set up or feature off, otherwise whether it is connected
 const spotifyStatus = (features: Record<Feature, boolean>, runtime: Streamer | undefined) =>
   (spotifyApp && features.music ? runtime?.spotify?.connected() ?? false : null);
 
@@ -117,8 +117,8 @@ async function overlay(request: IncomingMessage, response: ServerResponse, path:
   }
 }
 
-// Live-Stream: Overlays nur mit dem geheimen Overlay-Schlüssel (?key=), das Ereignis-Protokoll im Dashboard (?log,
-// zählt nicht als offenes Overlay) nur mit der Sitzung desselben Streamers. Fremde können so keine Plätze belegen.
+// Live stream: overlays only with the secret overlay key (?key=), the event log in the dashboard (?log, does not
+// count as an open overlay) only with the session of the same streamer. Strangers cannot take up slots this way.
 async function events(request: IncomingMessage, response: ServerResponse, login: string, runtime: Streamer | undefined) {
   if (!runtime) return send(response, 404, "not-running");
   const query = new URL(request.url ?? "/", "http://x").searchParams;
@@ -128,22 +128,22 @@ async function events(request: IncomingMessage, response: ServerResponse, login:
   runtime.attach(request, response, watcher);
 }
 
-// --- Dashboard und Anmeldung ------------------------------------------------------------------
-// Eine Anfrage an eine Route aus ROUTES. login: aus dem Cookie, bei öffentlichen Routen evtl. leer.
+// --- Dashboard and login ---------------------------------------------------------------------
+// A request to a route from ROUTES. login: from the cookie, possibly empty for public routes.
 type Call = { request: IncomingMessage; response: ServerResponse; url: URL; login: string; runtime: Streamer | undefined };
 type Handler = (call: Call) => Promise<void> | void;
 
-// JSON aus einem Body; undefined bei kaputtem JSON
+// JSON from a body; undefined for broken JSON
 function parseJson(text: string): unknown {
   try {
     return JSON.parse(text);
   } catch {
-    // Der Aufrufer antwortet mit 400
+    // The caller answers with 400
     return undefined;
   }
 }
 
-// Das state-Cookie muss auf dem Host liegen, auf den Twitch zurückleitet (PUBLIC_URL)
+// The state cookie must be on the host Twitch redirects back to (PUBLIC_URL)
 function twitchLogin({ request, response }: Call) {
   if (request.headers.host !== PUBLIC_HOST) return redirect(response, `${PUBLIC_URL}/auth/login`);
   const state = randomBytes(16).toString("hex");
@@ -151,52 +151,52 @@ function twitchLogin({ request, response }: Call) {
   redirect(response, twitch.authorizeUrl(state), { "Set-Cookie": oauthStateCookie(state, SECURE) });
 }
 
-// Tokens tauschen, Freischaltung prüfen, speichern, Laufzeit starten, Sitzung setzen.
-// Fehler gehen als Code (?error=) an das Dashboard, das den Text dazu zeigt (Regel 20).
+// Exchange tokens, check access, save, start the runtime, set the session.
+// Errors go as a code (?error=) to the dashboard, which shows the text for it (rule 20).
 async function twitchCallback({ request, response, url }: Call) {
   const code = url.searchParams.get("code") ?? "";
   const state = url.searchParams.get("state") ?? "";
-  // Nur im Browser, der die Anmeldung begonnen hat (Login-CSRF); das state-Cookie gilt einmal
+  // Only in the browser that started the login (login CSRF); the state cookie is valid once
   response.setHeader("Set-Cookie", oauthStateCookie("", SECURE, 0));
   const stateValid = sameBrowser(cookies(request).oauth_state, state) && twitchStates.take(state, Date.now()) !== null;
   const tokens = stateValid && OAUTH_CODE.test(code) ? await twitch.exchange(code) : null;
   if (!tokens) return redirect(response, "/?error=login-failed");
   if (!access.canUse(tokens.login)) {
-    // Nicht freigeschaltet: nichts speichern, Token gleich widerrufen
+    // Not enabled: save nothing, revoke the token right away
     await twitch.revoke(tokens.access).catch((error: unknown) => console.error("Revoking a token failed:", error));
     console.log(`Login refused, not on the allowlist: ${tokens.login}`);
     return redirect(response, "/?error=not-allowed");
   }
   const folder = profile.folder(DATA, tokens.login);
   if (await profile.ownedByOther(folder, tokens.userId)) {
-    // Gleicher Name, anderes Twitch-Konto (Name nach Umbenennung neu vergeben): Profil und Freischaltung nicht erben
+    // Same name, different Twitch account (name reassigned after a rename): do not inherit profile and access
     await twitch.revoke(tokens.access).catch((error: unknown) => console.error("Revoking a token failed:", error));
     console.log(`Login refused, profile ${tokens.login} belongs to another Twitch account`);
     return redirect(response, "/?error=account-changed");
   }
   await profile.saveTokens(folder, tokens);
   await profile.saveLogin(folder, Date.now(), tokens.userId);
-  // Erster Login: Kanal-Name, Logo usw. der Themes mit dem eigenen Login statt der Beispiele (vor dem Start der Laufzeit)
+  // First login: channel name, logo etc. of the themes with the own login instead of the samples (before the runtime starts)
   if (await ensureSettings(folder, tokens.login)) console.log(`Settings created for ${tokens.login}`);
   await startRuntime(tokens.login);
   console.log(`Twitch login: ${tokens.login}`);
   redirect(response, "/", { "Set-Cookie": [oauthStateCookie("", SECURE, 0), sessionCookie(createSession(sessionKey, tokens.login), SECURE)] });
 }
 
-// Abmelden: Cookie löschen, die Laufzeit (Overlays) läuft weiter
+// Log out: delete the cookie, the runtime (overlays) keeps running
 function logout({ response }: Call) {
   response.setHeader("Set-Cookie", sessionCookie("", SECURE, 0));
   json(response, { ok: true });
 }
 
-// theme: das aktive Theme; das Dashboard sieht danach aus (Skin)
+// theme: the active theme; the dashboard looks like it (skin)
 async function me({ response, login, runtime }: Call) {
   const features = access.features(login);
   const { theme } = await loadSettings(profile.folder(DATA, login));
   json(response, { login, admin: access.isAdmin(login), live: runtime?.live() ?? false, spotify: spotifyStatus(features, runtime), features, theme, overlayKey: await keys.get(login) });
 }
 
-// Neuer Overlay-Schlüssel (z.B. wenn eine OBS-URL in falsche Hände geraten ist); der Neustart trennt alle Overlays
+// New overlay key (e.g. when an OBS URL got into the wrong hands); the restart disconnects all overlays
 async function rotateOverlayKey({ response, login }: Call) {
   const overlayKey = await keys.rotate(login);
   await startRuntime(login);
@@ -216,7 +216,7 @@ function triggerConfig({ response, runtime }: Call) {
   json(response, runtime.triggers.config());
 }
 
-// Vom Editor: der Server prüft die Regeln; bei Fehlern bleibt die Datei unverändert
+// From the editor: the server checks the rules; on errors the file stays unchanged
 async function saveTriggerConfig({ request, response, runtime }: Call) {
   if (!runtime?.triggers) return send(response, 409, "not-connected");
   const body = parseJson(String(await readBody(request, TRIGGER_LIMIT))) as { triggers?: unknown } | null | undefined;
@@ -237,7 +237,7 @@ function fireTrigger({ response, url, runtime }: Call) {
   json(response, { ok: true });
 }
 
-// Medien mit Grösse und den Triggern, die sie nutzen, dazu belegter und erlaubter Speicher
+// Media with size and the triggers that use them, plus used and allowed storage
 async function mediaList({ response, login }: Call) {
   json(response, await listMedia(profile.folder(DATA, login), MEDIA_QUOTA));
 }
@@ -256,7 +256,7 @@ async function uploadMedia({ request, response, url, login }: Call) {
   }
 }
 
-// Löscht nur im eigenen Medienordner und nur gültige Namen
+// Deletes only in the own media folder and only valid names
 async function removeMedia({ response, url, login }: Call) {
   const name = url.searchParams.get("name") ?? "";
   if (!streamerPath.isMediaName(name)) return send(response, 400, "invalid-name");
@@ -273,36 +273,36 @@ function spotifyLogin({ response, login, runtime }: Call) {
   redirect(response, runtime.spotify.authorizeUrl(state));
 }
 
-// Kommt über die Spotify-Redirect-URL (lokal 127.0.0.1, ohne Cookie): der Login steht am state
+// Arrives via the Spotify redirect URL (locally 127.0.0.1, without cookie): the login is tied to the state
 async function spotifyCallback({ request, response, url }: Call) {
   const code = url.searchParams.get("code") ?? "";
   const login = spotifyStates.take(url.searchParams.get("state") ?? "", Date.now());
-  // Öffentlich: nur im Browser des Streamers, der die Verbindung begonnen hat (sonst hängt ein fremdes Spotify-Konto dran)
+  // Public: only in the browser of the streamer who started the connection (otherwise a foreign Spotify account gets attached)
   const ownBrowser = !SPOTIFY_NEEDS_SESSION || (login !== null && readSession(sessionKey, cookies(request).sid) === login);
   const spotify = login && ownBrowser && access.hasFeature(login, "music") ? runtimes.get(login)?.spotify : undefined;
   const connected = spotify && OAUTH_CODE.test(code) ? await spotify.connect(code) : false;
-  // Zurück auf die Übersicht unter der normalen Adresse, dort liegt das Cookie
+  // Back to the overview under the normal URL, the cookie is there
   redirect(response, connected ? `${PUBLIC_URL}/` : `${PUBLIC_URL}/?error=spotify-failed`);
 }
 
-// Konto, laufender Titel und Abfrage-Status für die Verbindungsseite; 409 ohne Spotify-Login
+// Account, current track and polling status for the connection page; 409 without Spotify login
 async function spotifyDetails({ response, runtime }: Call) {
   if (!runtime?.spotify?.connected()) return send(response, 409, "not-connected");
   json(response, await runtime.spotify.details());
 }
 
-// Auch ohne laufenden Spotify-Client (Musik aus, keine Laufzeit) wirklich trennen: spotify.json löschen
+// Really disconnect even without a running Spotify client (music off, no runtime): delete spotify.json
 async function spotifyLogout({ response, login, runtime }: Call) {
   await runtime?.spotify?.logout();
   await deleteSpotifyTokens(profile.folder(DATA, login));
   json(response, { ok: true });
 }
 
-// Twitch trennen: Token widerrufen und löschen, Laufzeit stoppen, abmelden
+// Disconnect Twitch: revoke and delete the token, stop the runtime, log out
 async function twitchDisconnect({ response, login, runtime }: Call) {
   const folder = profile.folder(DATA, login);
   runtimes.stop(login);
-  // Erst nach einer laufenden Token-Prüfung lesen: sie kann noch erneuerte Tokens gespeichert haben
+  // Read only after a running token check: it may still have saved renewed tokens
   await runtime?.tokensIdle();
   const tokens = runtime?.tokens() ?? (await profile.loadTokens(folder));
   if (tokens) await twitch.revoke(tokens.access).catch((error: unknown) => console.error("Revoking a token failed:", error));
@@ -312,8 +312,8 @@ async function twitchDisconnect({ response, login, runtime }: Call) {
   json(response, { ok: true });
 }
 
-// Dashboard: gewähltes Theme, gespeicherte Werte je Theme und die verfügbaren Themes
-// canChat: darf der Twitch-Login in den Chat schreiben (false = neu verbinden, null = unbekannt)
+// Dashboard: chosen theme, saved values per theme and the available themes
+// canChat: may the Twitch login write to chat (false = reconnect, null = unknown)
 async function helpConfig({ response, login, runtime }: Call) {
   json(response, { ...(await loadHelp(profile.folder(DATA, login))), canChat: runtime?.help.canChat() ?? null });
 }
@@ -331,19 +331,19 @@ async function settings({ response, login }: Call) {
   json(response, { ...file, themes: THEMES.map(theme => ({ id: theme.id, name: theme.name })) });
 }
 
-// Theme wählen und dessen Werte speichern; der Server prüft gegen das Schema, Fehler kommen als Codes je Feld
+// Choose a theme and save its values; the server checks against the schema, errors come as codes per field
 async function saveSettingsRequest({ request, response, login }: Call) {
   const body = parseJson(String(await readBody(request, SETTINGS_LIMIT))) as { theme?: unknown; values?: unknown; choose?: unknown } | null | undefined;
   if (typeof body?.theme !== "string") return json(response, [{ key: "theme", code: "invalid_type" }], 400);
   const folder = profile.folder(DATA, login);
-  // choose: false speichert nur die Werte (z.B. von der Render-Seite), das Overlay-Theme bleibt
+  // choose: false only saves the values (e.g. from the render page), the overlay theme stays
   const result = updateSettings(await loadSettings(folder), body.theme, body.values ?? {}, body.choose !== false);
   if (!result.file) return json(response, result.errors, 400);
   await saveSettings(folder, result.file);
   const settings = publicSettings(result.file);
-  // Offene Overlays übernehmen die Werte sofort, ohne Neuladen
+  // Open overlays take over the values immediately, without reloading
   runtimes.get(login)?.broadcast({ type: "settings", settings });
-  // Die Minimes gelten mit den neuen Regeln weiter (oder ruhen, wenn das Theme keine hat)
+  // The minimes continue with the new rules (or rest if the theme has none)
   runtimes.get(login)?.minimes?.setRules(minimeRules(result.file));
   json(response, settings);
 }
@@ -351,8 +351,8 @@ async function saveSettingsRequest({ request, response, login }: Call) {
 async function saveAccess({ request, response }: Call) {
   const value = parseJson(String(await readBody(request, ACCESS_LIMIT)));
   if (typeof value !== "object" || value === null || Array.isArray(value)) return send(response, 400, "invalid-json");
-  // access.save bringt alles auf gültige Werte (sanitize). Wer den Zugang verliert, dessen Laufzeit endet sofort;
-  // alle anderen starten neu, damit geänderte Funktionsstufen gelten.
+  // access.save brings everything to valid values (sanitize). Whoever loses access, their runtime ends immediately;
+  // all others restart so that changed feature levels apply.
   const before = access.get();
   const saved = await access.save(value);
   const revoked = revokedLogins(before, saved, ADMINS, runtimes.logins());
@@ -364,7 +364,7 @@ async function saveAccess({ request, response }: Call) {
   json(response, saved);
 }
 
-// Alle Profile mit Zugang, Verbindung (Tokens), EventSub-Status und letzter Anmeldung
+// All profiles with access, connection (tokens), EventSub status and last login
 async function adminStreamers({ response }: Call) {
   const rows = await Promise.all((await profile.list(DATA)).map(async login => {
     const folder = profile.folder(DATA, login);
@@ -380,10 +380,10 @@ async function adminStreamers({ response }: Call) {
   json(response, rows);
 }
 
-// --- Rendern (Stinger, Banner): Handler in renderRoutes.ts ----------------------------------------
+// --- Rendering (stinger, banners): handlers in renderRoutes.ts ----------------------------------
 const render = renderRoutes(login => join(profile.folder(DATA, login), "render"), (login, feature) => access.hasFeature(login, feature));
 
-// Jede Route aus ROUTES hat genau einen Handler (der Typ erzwingt es)
+// Every route from ROUTES has exactly one handler (the type enforces it)
 const HANDLERS: Record<RouteKey, Handler> = {
   "GET /auth/login": twitchLogin,
   "GET /auth/callback": twitchCallback,
@@ -418,7 +418,7 @@ const HANDLERS: Record<RouteKey, Handler> = {
   "GET /api/admin/streamers": adminStreamers,
 };
 
-// Login aus dem Cookie, und was er darf (Regel 26: nie aus der Anfrage selbst)
+// Login from the cookie, and what it may do (rule 26: never from the request itself)
 function visitor(request: IncomingMessage): Visitor {
   const login = readSession(sessionKey, cookies(request).sid);
   if (!login) return { login: null, allowed: false, admin: false, features: {} };
@@ -428,7 +428,7 @@ function visitor(request: IncomingMessage): Visitor {
 async function route(request: IncomingMessage, response: ServerResponse) {
   const url = new URL(request.url ?? "/", PUBLIC_URL);
   const method = request.method ?? "GET";
-  // Schreibende Anfragen (POST, DELETE) von fremden Webseiten abweisen
+  // Reject writing requests (POST, DELETE) from foreign websites
   if (method !== "GET" && method !== "HEAD" && !sameOrigin(request)) return send(response, 403, "cross-origin");
   const key = find(method, url.pathname);
   if (key === "method-not-allowed") return send(response, 405, "method-not-allowed");
@@ -442,7 +442,7 @@ async function route(request: IncomingMessage, response: ServerResponse) {
   if (method !== "GET" && method !== "HEAD") return send(response, 404, "not-found");
   const path = streamerPath.parse(url.pathname);
   if (path) return overlay(request, response, path);
-  // Dashboard und Werkzeuge (index.html mit #/triggers, #/stinger)
+  // Dashboard and tools (index.html with #/triggers, #/stinger)
   return serveStatic(response, DIST, url.pathname === "/" ? "/index.html" : url.pathname);
 }
 

@@ -1,4 +1,4 @@
-// Check für profile.ts: Profil-Ordner und Twitch-Tokens in einem temporären Ordner, der danach gelöscht wird. Läuft mit npm test.
+// Check for profile.ts: profile folders and Twitch tokens in a temporary folder that is deleted afterwards. Runs with npm test.
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -7,10 +7,10 @@ import * as profile from "./profile.ts";
 
 const dataDir = await mkdtemp(join(tmpdir(), "profile-"));
 try {
-  // Ohne Profile: leere Liste
+  // Without profiles: empty list
   assert.deepEqual(await profile.list(dataDir), []);
 
-  // Profile sind Ordner mit gültigem Login-Namen; Dateien und fremde Namen zählen nicht
+  // Profiles are folders with a valid login name; files and foreign names do not count
   const folder = profile.folder(dataDir, "rezondes");
   assert.equal(folder, join(dataDir, "streamers", "rezondes"));
   await mkdir(folder, { recursive: true });
@@ -19,7 +19,7 @@ try {
   await mkdir(join(dataDir, "streamers", "freund"));
   assert.deepEqual(await profile.list(dataDir), ["freund", "rezondes"]);
 
-  // Tokens: speichern, lesen, löschen
+  // Tokens: save, read, delete
   const tokens = { access: "access-value", refresh: "refresh-value", userId: "123", login: "rezondes" };
   assert.equal(await profile.loadTokens(folder), null);
   await profile.saveTokens(folder, tokens);
@@ -28,17 +28,17 @@ try {
   await profile.deleteTokens(folder);
   assert.equal(await profile.loadTokens(folder), null);
 
-  // Letzte Anmeldung: ohne Datei null, sonst der gespeicherte Zeitpunkt
+  // Last login: without a file null, otherwise the saved time
   assert.equal(await profile.loadLastLogin(folder), null);
   await profile.saveLogin(folder, 1_700_000_000_000, "123");
   assert.equal(await profile.loadLastLogin(folder), 1_700_000_000_000);
 
-  // Besitzer: das Profil gehört der Twitch-ID, nicht dem Namen. Ein anderes Konto mit demselben Login (Name nach
-  // Umbenennung neu vergeben) bekommt es nicht; ein neues Profil ohne Besitzer gehört dem ersten Konto
+  // Owner: the profile belongs to the Twitch ID, not to the name. Another account with the same login (name
+  // reassigned after a rename) does not get it; a new profile without an owner belongs to the first account
   assert.equal(await profile.ownedByOther(folder, "123"), false);
   assert.equal(await profile.ownedByOther(folder, "999"), true);
   assert.equal(await profile.ownedByOther(profile.folder(dataDir, "freund"), "999"), false);
-  // Ältere Profile ohne gespeicherte ID: die ID aus tokens.json zählt
+  // Older profiles without a saved ID: the ID from tokens.json counts
   await writeFile(join(folder, "profile.json"), JSON.stringify({ lastLogin: 1 }));
   await profile.saveTokens(folder, tokens);
   assert.equal(await profile.ownedByOther(folder, "999"), true);
@@ -48,7 +48,7 @@ try {
   await writeFile(join(folder, "profile.json"), "{kaputt");
   assert.equal(await profile.loadLastLogin(folder), null);
 
-  // Kaputte oder unvollständige Dateien gelten als nicht verbunden
+  // Broken or incomplete files count as not connected
   await writeFile(join(folder, "tokens.json"), "{kaputt");
   assert.equal(await profile.loadTokens(folder), null);
   await writeFile(join(folder, "tokens.json"), JSON.stringify({ ...tokens, login: "../x" }));

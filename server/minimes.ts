@@ -1,7 +1,7 @@
-// Minimes eines Streamers auf dem Server: liest Chatzeilen, führt die Liste mit den Regeln aus src/core/minimes.ts,
-// speichert sie gebündelt in minimes.json im Profil-Ordner und schickt jede Änderung an die Overlays (SSE).
-// rules = null: das gewählte Theme hat keine Minimes, dann ruht alles und die Overlays bekommen eine leere Liste.
-// Gestartet von server/streamer.ts. Check: minimes.check.ts.
+// Minimes of a streamer on the server: reads chat lines, keeps the list with the rules from src/core/minimes.ts,
+// saves it batched to minimes.json in the profile folder and sends every change to the overlays (SSE).
+// rules = null: the chosen theme has no minimes, then everything rests and the overlays get an empty list.
+// Started by server/streamer.ts. Check: minimes.check.ts.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { applyMinime, emptyMinimeState, MAX_STORED_COLORS, parseCommand, type MinimeEntry, type MinimeEvent, type MinimeRules, type MinimeState } from "../src/core/minimes.ts";
@@ -9,7 +9,7 @@ import type { Minime, ServerMessage } from "../src/core/types.ts";
 import { writeAtomic } from "./atomicFile.ts";
 import type { ChatLine } from "./chat.ts";
 
-// Timer von aussen, damit der Check sie von Hand auslösen kann (Regel 32)
+// Timers from outside, so the check can fire them by hand (rule 32)
 export type MinimeTimers = {
   setTimeout: (run: () => void, delayMs: number) => unknown;
   clearTimeout: (id: unknown) => void;
@@ -30,14 +30,14 @@ type MinimeSetup = {
   now: () => number;
   rules: MinimeRules | null;
   timers?: MinimeTimers;
-  random?: () => number; // Zufall für die Vergabe von Typen, Standard Math.random
+  random?: () => number; // randomness for assigning variants, default Math.random
 };
 
-// fixed: Schreiblast, viele Chatnachrichten ergeben höchstens eine Datei alle 2 s
+// fixed: write load, many chat messages result in at most one file every 2 s
 const SAVE_DELAY_MS = 2000;
-// fixed: Takt des Aufräumens; wie lange ein Minime ohne Nachricht bleibt, ist einstellbar
+// fixed: cleanup interval; how long a minime stays without a message is configurable
 const PRUNE_EVERY_MS = 60_000;
-// fixed: Speicherschutz für die Liste in der Datei (die Einstellung erlaubt höchstens 100)
+// fixed: memory guard for the list in the file (the setting allows at most 100)
 const MAX_ROSTER = 100;
 
 const LOGIN = /^[a-z0-9_]{1,25}$/;
@@ -50,12 +50,12 @@ function toEntry(value: unknown): MinimeEntry | null {
   if (!isObject(value) || typeof value.login !== "string" || !LOGIN.test(value.login)) return null;
   if (typeof value.user !== "string" || !value.user || value.user.length > 50 || !isTime(value.lastSeen)) return null;
   if (value.color !== null && !(typeof value.color === "string" && COLOR.test(value.color))) return null;
-  // Typ fehlt in Dateien von vor den Typen, ungültige Typen werden zu null
+  // The variant is missing in files from before variants, invalid variants become null
   const variant = typeof value.variant === "string" && VARIANT.test(value.variant) ? value.variant : null;
   return { login: value.login, user: value.user, color: value.color, variant, lastSeen: value.lastSeen };
 }
 
-// Gemerkte Farben (key "color") oder Typen (key "variant"): nur gültige Einträge, die neuesten bis zur Obergrenze
+// Remembered colors (key "color") or variants (key "variant"): only valid entries, the newest up to the limit
 function toRemembered(value: unknown, key: "color" | "variant", pattern: RegExp) {
   if (!isObject(value)) return {};
   const valid = Object.entries(value).flatMap(([login, stored]) => {
@@ -66,7 +66,7 @@ function toRemembered(value: unknown, key: "color" | "variant", pattern: RegExp)
   return Object.fromEntries(newest.map(({ login, entry }) => [login, entry]));
 }
 
-// Gelesene minimes.json auf gültige Form bringen: ungültige und doppelte Einträge fallen weg
+// Brings a read minimes.json into valid shape: invalid and duplicate entries drop out
 export function parseMinimeFile(raw: unknown): MinimeState {
   if (!isObject(raw)) return emptyMinimeState();
   const roster: MinimeEntry[] = [];
@@ -80,7 +80,7 @@ export function parseMinimeFile(raw: unknown): MinimeState {
   };
 }
 
-// Chatzeile als Ereignis: ein Befehl oder sonst eine normale Nachricht
+// Chat line as an event: a command or otherwise a normal message
 export function toMinimeEvent(line: ChatLine, rules: MinimeRules): MinimeEvent {
   const command = parseCommand(line.text, line.roles, rules);
   const twitchColor = line.color ?? null;
@@ -98,13 +98,13 @@ async function readState(file: string): Promise<MinimeState> {
   try {
     return parseMinimeFile(JSON.parse(await readFile(file, "utf8")));
   } catch {
-    // Keine oder kaputte Datei: leer anfangen
+    // No file or a broken one: start empty
     return emptyMinimeState();
   }
 }
 
-// Startet die Minimes eines Streamers. handle: jede Chatzeile, ban: Ban oder Timeout, offline: Stream beendet,
-// setRules: geänderte Einstellungen, current: die Liste für ein neu verbundenes Overlay, stop: Timer aus und speichern.
+// Starts the minimes of a streamer. handle: every chat line, ban: ban or timeout, offline: stream ended,
+// setRules: changed settings, current: the list for a newly connected overlay, stop: timers off and save.
 export async function startMinimes(setup: MinimeSetup) {
   const timers = setup.timers ?? REAL_TIMERS;
   const file = join(setup.folder, "minimes.json");
@@ -114,7 +114,7 @@ export async function startMinimes(setup: MinimeSetup) {
 
   const random = setup.random ?? Math.random;
   const current = (): Minime[] => (rules ? state.roster.map(({ login, user, color, variant }) => ({ login, user, color, variant })) : []);
-  // Speichern nacheinander, mit dem Stand zum Zeitpunkt des Schreibens: ein älterer Vorgang überschreibt nie einen neueren
+  // Save one after another, with the state at the time of writing: an older operation never overwrites a newer one
   let saving = Promise.resolve();
   const save = () => {
     saving = saving.then(() => writeAtomic(file, JSON.stringify(state))).catch((error: unknown) => console.error("Saving minimes failed:", error));
@@ -123,7 +123,7 @@ export async function startMinimes(setup: MinimeSetup) {
   const scheduleSave = () => {
     saveTimer ??= timers.setTimeout(() => { saveTimer = null; void save(); }, SAVE_DELAY_MS);
   };
-  // announce: false, wenn der Aufrufer die Liste danach selbst schickt
+  // announce: false when the caller sends the list itself afterwards
   const apply = (event: MinimeEvent, announce = true) => {
     if (!rules) return;
     const result = applyMinime(state, event, setup.now(), rules, random);

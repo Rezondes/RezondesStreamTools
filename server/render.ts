@@ -1,7 +1,7 @@
-// Rendern von Stinger und Bannern pro Streamer: der Browser zeichnet die Frames mit den Einstellungen des Streamers
-// und schickt sie als PNG, der Server baut daraus mit ffmpeg WebM (Stinger, mit Alpha) oder GIF (Banner, mit Standbild).
-// Hier die reinen Teile: Clips, ffmpeg-Argumente, Grenzen und höchstens ein Render pro Streamer. Die Datei-IO und der
-// Aufruf von ffmpeg stehen in server/index.ts. Check: render.check.ts.
+// Rendering of stinger and banners per streamer: the browser draws the frames with the streamer's settings
+// and sends them as PNG, the server builds WebM (stinger, with alpha) or GIF (banner, with still image) with ffmpeg.
+// Here the pure parts: clips, ffmpeg arguments, limits and at most one render per streamer. File IO and the
+// ffmpeg call are in server/renderRoutes.ts. Check: render.check.ts.
 import type { Feature } from "./access.ts";
 
 export const CLIPS = {
@@ -14,33 +14,33 @@ export type Clip = keyof typeof CLIPS;
 export const isClip = (value: string): value is Clip => Object.hasOwn(CLIPS, value);
 
 export const RENDER_LIMITS = {
-  frames: 1200, // 20 s mit 60 fps
-  frameBytes: 8 * 1024 * 1024, // ein PNG in 1920x1080
-  timeoutMs: 10 * 60_000, // ein abgebrochener Render gibt danach frei
-  gifWarnBytes: 10 * 1024 * 1024, // Twitch nimmt keine grösseren Banner-GIFs
+  frames: 1200, // 20 s at 60 fps
+  frameBytes: 8 * 1024 * 1024, // one PNG at 1920x1080
+  timeoutMs: 10 * 60_000, // an abandoned render is released afterwards
+  gifWarnBytes: 10 * 1024 * 1024, // Twitch does not accept larger banner GIFs
 };
 
-// Dateien, die ein Clip erzeugt: das Video und bei GIFs ein Standbild aus dem ersten Frame
+// Files a clip produces: the video and for GIFs a still image from the first frame
 export const outputNames = (clip: Clip) => (CLIPS[clip].format === "gif" ? [`${clip}.gif`, `${clip}.png`] : [`${clip}.webm`]);
 
 export const isOutputName = (name: string) => (Object.keys(CLIPS) as Clip[]).some(clip => outputNames(clip).includes(name));
 
-// Argumente für ffmpeg: Frames frames/0000.png, 0001.png, ... mit fps nach target
+// Arguments for ffmpeg: frames frames/0000.png, 0001.png, ... with fps to target
 export function ffmpegArgs(format: "gif" | "webm", fps: number, frames: string, target: string): string[] {
   const input = ["-y", "-framerate", String(fps), "-i", `${frames}/%04d.png`];
   if (format === "gif") {
-    // Eigene Palette aus allen Frames, nur geänderte Bildbereiche speichern, Endlosschleife
+    // Own palette from all frames, store only changed image areas, endless loop
     return [...input, "-filter_complex", "[0:v]split[a][b];[a]palettegen=max_colors=64:stats_mode=full[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle", "-loop", "0", target];
   }
-  // VP9 mit Alpha-Kanal, damit OBS den Stinger durchsichtig abspielt
+  // VP9 with alpha channel so OBS plays the stinger transparently
   return [...input, "-c:v", "libvpx-vp9", "-pix_fmt", "yuva420p", "-b:v", "0", "-crf", "20", "-auto-alt-ref", "0", "-row-mt", "1", target];
 }
 
-// encoding: ffmpeg läuft schon; der Job bleibt bis done() belegt
+// encoding: ffmpeg is already running; the job stays taken until done()
 type Job = { clip: Clip; frames: number; startedAt: number; encoding: boolean };
 type RenderError = "render-busy" | "render-not-started" | "render-limit" | "too-large";
 
-// Laufende Renders je Login; now ist injiziert, damit der Timeout testbar bleibt
+// Running renders per login; now is injected so the timeout stays testable
 export function createRenderJobs(now: () => number) {
   const jobs = new Map<string, Job>();
   const running = (login: string) => {
@@ -70,9 +70,9 @@ export function createRenderJobs(now: () => number) {
       job.encoding = true;
       return { clip: job.clip, frames: job.frames, fps };
     },
-    // ffmpeg ist fertig (oder gescheitert): der Streamer darf wieder rendern
+    // ffmpeg is finished (or failed): the streamer may render again
     done: (login: string) => { jobs.delete(login); },
-    // Abbrechen nur vor dem Kodieren; false, solange ffmpeg läuft
+    // Cancel only before encoding; false while ffmpeg runs
     cancel(login: string) {
       if (running(login)?.encoding) return false;
       jobs.delete(login);

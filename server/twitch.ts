@@ -1,17 +1,17 @@
-// Twitch für den Server: OAuth-App (Anmeldung, Token-Prüfung mit Erneuerung, Widerruf), Übersetzung der
-// EventSub-Ereignisse in Alerts und die EventSub-Verbindung eines Streamers. Netzwerk nur über fetch und WebSocket.
-// Check: twitch.check.ts (mit nachgebautem fetch und WebSocket, ohne Netz).
+// Twitch for the server: OAuth app (login, token check with renewal, revocation), translation of the
+// EventSub events into alerts and the EventSub connection of a streamer. Network only via fetch and WebSocket.
+// Check: twitch.check.ts (with fake fetch and WebSocket, without network).
 import type { Alert, AlertKind } from "../src/core/types.ts";
 import { isLogin } from "../src/core/streamerPath.ts";
 import { REAL_PROVIDERS, type ProviderUrls } from "./providers.ts";
 
 export type TwitchTokens = { access: string; refresh: string; userId: string; login: string };
 
-// user:write:chat: Antwort auf den Hilfe-Befehl als Streamer in den eigenen Chat
+// user:write:chat: reply to the help command as the streamer in their own chat
 const CHAT_SCOPE = "user:write:chat";
 const SCOPES = ["moderator:read:followers", "channel:read:subscriptions", "bits:read", "channel:read:redemptions", "channel:read:hype_train", CHAT_SCOPE];
 
-// Nur bekannte Felder mit gültigen Werten (Regel 25), sonst null. Für tokens.json und Antworten von Twitch.
+// Only known fields with valid values (rule 25), otherwise null. For tokens.json and answers from Twitch.
 export function toTokens(value: unknown): TwitchTokens | null {
   if (typeof value !== "object" || value === null) return null;
   const { access, refresh, userId, login } = value as Record<string, unknown>;
@@ -22,8 +22,8 @@ export function toTokens(value: unknown): TwitchTokens | null {
 
 type TokenAnswer = { access_token?: string; refresh_token?: string };
 
-// Token-Endpunkt. null = Code oder Refresh-Token ungültig (400, 401); andere Fehler werfen, damit ein
-// Netzwerkproblem nie einen gültigen Login löscht.
+// Token endpoint. null = code or refresh token invalid (400, 401); other errors throw, so a
+// network problem never deletes a valid login.
 async function requestToken(idUrl: string, clientId: string, clientSecret: string, params: Record<string, string>): Promise<TokenAnswer | null> {
   const response = await fetch(`${idUrl}/token`, { method: "POST", body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, ...params }) });
   if (response.status === 400 || response.status === 401) return null;
@@ -31,7 +31,7 @@ async function requestToken(idUrl: string, clientId: string, clientSecret: strin
   return (await response.json()) as TokenAnswer;
 }
 
-// Die OAuth-App des Servers. redirectUri: PUBLIC_URL/auth/callback (wie in der Twitch-Konsole eingetragen).
+// The OAuth app of the server. redirectUri: PUBLIC_URL/auth/callback (as entered in the Twitch console).
 export function twitchApp(clientId: string, clientSecret: string, redirectUri: string, urls: ProviderUrls = REAL_PROVIDERS) {
   const idUrl = urls.twitchId;
   const helixUrl = urls.twitchApi;
@@ -44,7 +44,7 @@ export function twitchApp(clientId: string, clientSecret: string, redirectUri: s
       return `${idUrl}/authorize?${query}`;
     },
 
-    // Code aus dem Callback gegen Tokens tauschen und den Login dazu holen. null = Code ungültig.
+    // Exchange the code from the callback for tokens and fetch the login. null = code invalid.
     async exchange(code: string): Promise<TwitchTokens | null> {
       const answer = await requestToken(idUrl, clientId, clientSecret, { grant_type: "authorization_code", code, redirect_uri: redirectUri });
       if (!answer) return null;
@@ -54,8 +54,8 @@ export function twitchApp(clientId: string, clientSecret: string, redirectUri: s
       return toTokens({ access: answer.access_token, refresh: answer.refresh_token, userId: user?.id, login: user?.login });
     },
 
-    // Twitch verlangt eine regelmässige Prüfung. Abgelaufen: mit dem Refresh-Token erneuern.
-    // Liefert die gültigen (gleichen oder neuen) Tokens, null = Login ungültig. Netzwerkfehler werfen.
+    // Twitch requires a regular check. Expired: renew with the refresh token.
+    // Returns the valid (same or new) tokens, null = login invalid. Network errors throw.
     async validate(tokens: TwitchTokens): Promise<TwitchTokens | null> {
       const response = await fetch(`${idUrl}/validate`, { headers: { Authorization: `OAuth ${tokens.access}` } });
       if (response.ok) return tokens;
@@ -64,14 +64,14 @@ export function twitchApp(clientId: string, clientSecret: string, redirectUri: s
       return answer ? toTokens({ ...tokens, access: answer.access_token, refresh: answer.refresh_token ?? tokens.refresh }) : null;
     },
 
-    // Darf der Login in den Chat schreiben? Logins von vor dem Scope nicht; null = Twitch nicht erreichbar
+    // May the login write to chat? Logins from before the scope may not; null = Twitch unreachable
     async canChat(tokens: TwitchTokens): Promise<boolean | null> {
       const response = await fetch(`${idUrl}/validate`, { headers: { Authorization: `OAuth ${tokens.access}` } }).catch(() => null);
       if (!response?.ok) return null;
       return ((await response.json()) as { scopes?: string[] }).scopes?.includes(CHAT_SCOPE) ?? false;
     },
 
-    // Nachricht als Streamer in den eigenen Chat; missing-scope = Login ohne Schreibrecht (neu verbinden), andere Fehler werfen
+    // Message as the streamer in their own chat; missing-scope = login without write permission (reconnect), other errors throw
     async say(tokens: TwitchTokens, message: string): Promise<"ok" | "missing-scope"> {
       const response = await fetch(`${helixUrl}/chat/messages`, {
         method: "POST",
@@ -83,7 +83,7 @@ export function twitchApp(clientId: string, clientSecret: string, redirectUri: s
       return "ok";
     },
 
-    // Token bei Twitch ungültig machen (Trennen, nicht freigeschaltet)
+    // Invalidate the token at Twitch (disconnect, not enabled)
     async revoke(access: string) {
       const response = await fetch(`${idUrl}/revoke`, { method: "POST", body: new URLSearchParams({ client_id: clientId, token: access }) });
       if (!response.ok) throw new Error(`Twitch revoke failed: ${response.status}`);
@@ -94,7 +94,7 @@ export type TwitchApp = ReturnType<typeof twitchApp>;
 
 // --- Alerts ---------------------------------------------------------------------------------
 
-// Die Felder der EventSub-Ereignisse, die toAlert liest (alle optional, Twitch schickt je nach Typ andere)
+// The fields of the EventSub events that toAlert reads (all optional, Twitch sends different ones per type)
 type TwitchEvent = {
   user_name?: string | null;
   is_anonymous?: boolean;
@@ -115,18 +115,18 @@ const TIERS: Record<string, string> = { "2000": "Tier 2", "3000": "Tier 3" };
 const tier = (event: TwitchEvent) => (event.tier && Object.hasOwn(TIERS, event.tier) ? TIERS[event.tier] : undefined);
 const messageText = (event: TwitchEvent) => (typeof event.message === "string" ? event.message : event.message?.text ?? "");
 
-// Übersetzt ein EventSub-Ereignis in das Alert-Format der Overlays; null = kein Alert
+// Translates an EventSub event into the alert format of the overlays; null = no alert
 export function toAlert(type: string, event: TwitchEvent): Alert | null {
   const user = event.user_name ?? "";
-  // Geschenke und Bits dürfen anonym sein
+  // Gifts and bits may be anonymous
   const giver = event.is_anonymous || !user ? "Anonym" : user;
   switch (type) {
     case "channel.follow": return { kind: "follow", user };
-    // Verschenkte Subs meldet schon channel.subscription.gift, sonst gäbe es pro Empfänger einen Alert
+    // channel.subscription.gift already reports gifted subs, otherwise there would be one alert per recipient
     case "channel.subscribe": return event.is_gift ? null : { kind: "sub", user, detail: tier(event) };
     case "channel.subscription.message": return { kind: "resub", user, amount: event.cumulative_months, text: messageText(event) || undefined, detail: tier(event) };
     case "channel.subscription.gift": return { kind: "gift", user: giver, amount: event.total };
-    // Cheermotes wie "Cheer100" aus dem Text nehmen
+    // Remove cheermotes like "Cheer100" from the text
     case "channel.cheer": return { kind: "cheer", user: giver, amount: event.bits, text: messageText(event).replace(/\b[a-zA-Z]+\d+\b/g, "").trim() || undefined };
     case "channel.raid": return { kind: "raid", user: event.from_broadcaster_user_name ?? "", amount: event.viewers };
     case "channel.channel_points_custom_reward_redemption.add": return { kind: "redeem", user, amount: event.reward?.cost, detail: event.reward?.title, text: event.user_input || undefined };
@@ -136,7 +136,7 @@ export function toAlert(type: string, event: TwitchEvent): Alert | null {
   return null;
 }
 
-// Beispiel-Alerts für die Test-Knöpfe im Dashboard, einer pro Art
+// Sample alerts for the test buttons in the dashboard, one per kind
 export const SAMPLE_ALERTS: Record<AlertKind, Alert> = {
   follow: { kind: "follow", user: "neo_42" },
   sub: { kind: "sub", user: "Trinity", text: "Endlich abonniert!" },
@@ -152,7 +152,7 @@ export const isAlertKind = (value: string): value is AlertKind => Object.hasOwn(
 
 // --- EventSub ---------------------------------------------------------------------------------
 
-// Abos eines Kanals: Typ, Version und Bedingung, wie Twitch sie verlangt
+// Subscriptions of a channel: type, version and condition as Twitch requires them
 function subscriptions(userId: string) {
   const broadcaster = { broadcaster_user_id: userId };
   return [
@@ -165,12 +165,12 @@ function subscriptions(userId: string) {
     { type: "channel.channel_points_custom_reward_redemption.add", version: "1", condition: broadcaster },
     { type: "channel.hype_train.begin", version: "2", condition: broadcaster },
     { type: "channel.hype_train.end", version: "2", condition: broadcaster },
-    // Stream beendet (z.B. Minimes leeren), braucht keinen Scope
+    // Stream ended (e.g. clear minimes), needs no scope
     { type: "stream.offline", version: "1", condition: broadcaster },
   ];
 }
 
-// Die Felder der EventSub-Nachrichten, die hier gelesen werden
+// The fields of the EventSub messages that are read here
 type EventSubMessage = {
   metadata?: { message_type?: string; subscription_type?: string };
   payload?: {
@@ -185,15 +185,15 @@ type Connection = {
   tokens: () => Promise<TwitchTokens | null>;
   onAlert: (alert: Alert) => void;
   onOffline: () => void;
-  socket: WebSocket | null; // aktive Verbindung (nach session_welcome)
+  socket: WebSocket | null; // active connection (after session_welcome)
   wanted: boolean;
   keepalive?: ReturnType<typeof setTimeout>;
   retry?: ReturnType<typeof setTimeout>;
 };
 
-// EventSub-Verbindung eines Streamers. tokens liefert gültige (geprüfte, evtl. erneuerte) Tokens oder null.
-// live: verbunden und Abos angefragt. stop beendet die Verbindung und jeden geplanten Neuversuch.
-// onOffline: der Stream wurde beendet (stream.offline).
+// EventSub connection of a streamer. tokens returns valid (checked, possibly renewed) tokens or null.
+// live: connected and subscriptions requested. stop ends the connection and every scheduled retry.
+// onOffline: the stream ended (stream.offline).
 export function eventSub(app: TwitchApp, tokens: () => Promise<TwitchTokens | null>, onAlert: (alert: Alert) => void, onOffline: () => void = () => {}) {
   const connection: Connection = { app, tokens, onAlert, onOffline, socket: null, wanted: false };
   return {
@@ -224,7 +224,7 @@ function open(connection: Connection, url: string, subscribe: boolean) {
     } else {
       dispatch(connection, message);
     }
-    // Twitch schickt regelmässig Keepalives. Bleiben sie aus, ist die Verbindung tot.
+    // Twitch sends keepalives regularly. If they stop, the connection is dead.
     if (socket === connection.socket) {
       clearTimeout(connection.keepalive);
       connection.keepalive = setTimeout(() => socket.close(), timeoutMs + 5000);
@@ -235,7 +235,7 @@ function open(connection: Connection, url: string, subscribe: boolean) {
     connection.socket = null;
     clearTimeout(connection.keepalive);
     clearTimeout(connection.retry);
-    // Neuer Versuch mit Pause (Regel 33), stop() löscht ihn
+    // New attempt after a pause (rule 33), stop() clears it
     connection.retry = setTimeout(() => open(connection, connection.app.urls.twitchEventSub, true), 5000);
   };
 }
@@ -244,7 +244,7 @@ function parseMessage(text: string): EventSubMessage {
   try {
     return JSON.parse(text) as EventSubMessage;
   } catch {
-    // Kein JSON: wie eine leere Nachricht behandeln, zählt trotzdem als Lebenszeichen
+    // Not JSON: treat like an empty message, still counts as a sign of life
     return {};
   }
 }
@@ -254,7 +254,7 @@ function welcome(connection: Connection, socket: WebSocket, message: EventSubMes
   connection.socket = socket;
   if (old && old !== socket) old.close();
   const sessionId = message.payload?.session?.id;
-  // Nach session_reconnect bleiben die Abos bestehen
+  // After session_reconnect the subscriptions stay in place
   if (!subscribe || !sessionId) return;
   subscribeAll(connection, sessionId).catch((error: unknown) => console.error("EventSub subscribing failed:", error));
 }

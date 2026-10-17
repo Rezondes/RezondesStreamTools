@@ -1,11 +1,11 @@
-// Offene OAuth-Anmeldungen (Twitch, Spotify): zufälliger state -> Wert (z.B. der Login), gültig für ttlMs.
-// Der Callback löst den state genau einmal ein; so kann keine fremde Seite einen Login unterschieben.
-// state und now kommen von aussen (Regel 32). Check: loginStates.check.ts.
+// Pending OAuth logins (Twitch, Spotify): random state -> value (e.g. the login), valid for ttlMs.
+// The callback redeems the state exactly once; this way no foreign page can slip in a login.
+// state and now come from outside (rule 32). Check: loginStates.check.ts.
 
 import { timingSafeEqual } from "node:crypto";
 
-// Der Callback gehört zum Browser, der die Anmeldung begonnen hat: der state steht dort auch im Cookie oauth_state.
-// Sonst könnte ein Angreifer seinen eigenen Callback-Link unterschieben (Login-CSRF).
+// The callback belongs to the browser that started the login: the state is also in its cookie oauth_state.
+// Otherwise an attacker could slip in their own callback link (login CSRF).
 export function sameBrowser(cookieState: string | undefined, queryState: string) {
   if (!cookieState || !queryState) return false;
   const given = Buffer.from(cookieState);
@@ -13,19 +13,19 @@ export function sameBrowser(cookieState: string | undefined, queryState: string)
   return given.length === expected.length && timingSafeEqual(given, expected);
 }
 
-// ttlMs: Gültigkeit; limit: höchstens so viele offene Anmeldungen, die ältesten fallen zuerst weg
+// ttlMs: validity; limit: at most this many pending logins, the oldest drop out first
 export function createLoginStates<Value>(ttlMs: number, limit: number) {
   const open = new Map<string, { value: Value; expiresAt: number }>();
   return {
     add(state: string, value: Value, now: number) {
       open.set(state, { value, expiresAt: now + ttlMs });
-      // Viele Login-Klicks füllen so nie den Speicher
+      // Many login clicks never fill up the memory this way
       for (const oldest of open.keys()) {
         if (open.size <= limit) break;
         open.delete(oldest);
       }
     },
-    // Wert zum state; null, wenn unbekannt, schon eingelöst oder abgelaufen
+    // Value for the state; null if unknown, already redeemed or expired
     take(state: string, now: number): Value | null {
       const entry = open.get(state);
       open.delete(state);

@@ -1,10 +1,10 @@
-// Offene SSE-Verbindungen eines Streamers: Overlays und Dashboard-Protokolle (watchers) bekommen dieselben
-// Nachrichten, aber nur Overlays zählen als "jemand schaut zu" (Spotify fragt nur dann ab).
-// Eine Verbindung, die nicht mehr liest, wird getrennt, statt ihre Nachrichten unbegrenzt im Server zu puffern.
+// Open SSE connections of a streamer: overlays and dashboard logs (watchers) get the same messages,
+// but only overlays count as "someone is watching" (Spotify only polls then).
+// A connection that no longer reads is disconnected instead of buffering its messages in the server without limit.
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { Minime, ServerMessage, Track } from "../src/core/types.ts";
 
-// fixed: Server-Schutzgrenzen gegen Verbindungs- und Speicherfluten
+// fixed: server protection limits against connection and memory floods
 export const MAX_STREAMS = 50;
 export const MAX_PENDING_BYTES = 1024 * 1024;
 
@@ -14,7 +14,7 @@ export function streamHub(pingMs = 25_000) {
   const write = (line: string) => {
     for (const set of [overlays, watchers]) {
       for (const stream of [...set]) {
-        // Ein Client, der nicht liest, lässt writableLength wachsen: trennen
+        // A client that does not read lets writableLength grow: disconnect
         if (stream.writableLength > MAX_PENDING_BYTES) {
           set.delete(stream);
           stream.destroy();
@@ -24,7 +24,7 @@ export function streamHub(pingMs = 25_000) {
       }
     }
   };
-  // Kommentarzeile hält die Verbindung durch Proxys und OBS offen
+  // A comment line keeps the connection open through proxies and OBS
   const ping = setInterval(() => write(": ping\n\n"), pingMs);
   return {
     emit: (message: ServerMessage) => write(`data: ${JSON.stringify(message)}\n\n`),
@@ -44,8 +44,8 @@ export function streamHub(pingMs = 25_000) {
   };
 }
 
-// Antwort als Server-Sent Events öffnen und sofort mit dem laufenden Titel und den Minimes versorgen
-// (minimes: null = Funktion aus, dann keine Nachricht)
+// Opens the response as server-sent events and immediately supplies the current track and the minimes
+// (minimes: null = feature off, then no message)
 export function openStream(response: ServerResponse, track: Track | null, minimes: Minime[] | null) {
   response.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-cache", Connection: "keep-alive" });
   response.write(": connected\n\n");

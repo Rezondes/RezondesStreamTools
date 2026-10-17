@@ -1,6 +1,6 @@
-// Geheimer Overlay-Schlüssel je Streamer: die OBS-URLs tragen ihn als ?key=, nur damit bekommt ein Overlay den
-// Live-Stream /s/<login>/events. So kann niemand Fremdes die Verbindungen eines Streamers belegen und seine Overlays
-// aussperren. Gespeichert in overlay.key im Profil (nur für den Server lesbar), im Speicher zwischengespeichert.
+// Secret overlay key per streamer: the OBS URLs carry it as ?key=, only with it does an overlay get the
+// live stream /s/<login>/events. This way no stranger can take up a streamer's connections and lock out their
+// overlays. Stored in overlay.key in the profile (readable only by the server), cached in memory.
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -8,7 +8,7 @@ import { writeAtomic } from "./atomicFile.ts";
 
 const KEY = /^[0-9a-f]{32}$/;
 
-// folderOf: Profil-Ordner eines Logins
+// folderOf: profile folder of a login
 export function overlayKeys(folderOf: (login: string) => string) {
   const known = new Map<string, string>();
 
@@ -30,7 +30,7 @@ export function overlayKeys(folderOf: (login: string) => string) {
 
   return {
     get,
-    // Neuer Schlüssel: alle bisherigen OBS-URLs gelten nicht mehr
+    // New key: all previous OBS URLs stop working
     rotate: create,
     async matches(login: string, given: string) {
       const expected = Buffer.from(await get(login));

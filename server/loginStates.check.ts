@@ -1,29 +1,29 @@
-// Check für loginStates.ts: offene OAuth-Anmeldungen. Läuft mit npm test.
+// Check for loginStates.ts: pending OAuth logins. Runs with npm test.
 import assert from "node:assert/strict";
 import { createLoginStates, sameBrowser } from "./loginStates.ts";
 
 const now = 1_800_000_000_000;
 
-// Ein state liefert seinen Wert genau einmal
+// A state returns its value exactly once
 const states = createLoginStates<string>(600_000, 3);
 states.add("a", "rezondes", now);
 assert.equal(states.take("a", now + 1000), "rezondes");
 assert.equal(states.take("a", now + 1000), null);
-// Unbekannt oder leer: null
+// Unknown or empty: null
 assert.equal(states.take("", now), null);
 assert.equal(states.take("fremd", now), null);
 
-// Abgelaufen nach ttlMs
+// Expired after ttlMs
 states.add("b", "freund", now);
 assert.equal(states.take("b", now + 600_000), null);
 
-// Über dem Limit fallen die ältesten weg
+// Above the limit the oldest drop out
 for (const state of ["c", "d", "e", "f"]) states.add(state, state, now);
 assert.equal(states.take("c", now), null);
 assert.equal(states.take("f", now), "f");
 assert.equal(states.take("d", now), "d");
 
-// Der Callback gilt nur im Browser, der die Anmeldung begonnen hat: Cookie-state und Query-state gleich
+// The callback only counts in the browser that started the login: cookie state and query state equal
 assert.equal(sameBrowser("abc123", "abc123"), true);
 assert.equal(sameBrowser(undefined, "abc123"), false);
 assert.equal(sameBrowser("abc124", "abc123"), false);

@@ -1,7 +1,7 @@
-// Laufzeit eines Streamers (Regel 29): besitzt alle Verbindungen seines Profils (EventSub, Chat-Listener mit
-// Triggern, Minimes und Hilfe-Befehl, Spotify, SSE-Overlays) und beendet sie in stop(). Welche Teile laufen, sagen die Funktionsstufen.
-// Prüft die Twitch-Tokens stündlich; ein ungültiger Login beendet die Laufzeit und löscht die Tokens.
-// Gestartet und gestoppt von server/index.ts.
+// Runtime of a streamer (rule 29): owns all connections of its profile (EventSub, chat listener with
+// triggers, minimes and help command, Spotify, SSE overlays) and ends them in stop(). The feature levels say which parts run.
+// Checks the Twitch tokens hourly; an invalid login ends the runtime and deletes the tokens.
+// Started and stopped by server/index.ts.
 import type { IncomingMessage, ServerResponse } from "node:http";
 import type { MinimeRules } from "../src/core/minimes.ts";
 import type { Alert } from "../src/core/types.ts";
@@ -20,14 +20,14 @@ import { eventSub, type TwitchApp, type TwitchTokens } from "./twitch.ts";
 
 type StreamerSetup = {
   login: string;
-  folder: string; // Profil-Ordner
+  folder: string; // profile folder
   tokens: TwitchTokens;
   twitch: TwitchApp;
-  spotify: SpotifyApp | null; // null = Spotify nicht eingerichtet
+  spotify: SpotifyApp | null; // null = Spotify not set up
   features: Record<Feature, boolean>;
-  minimeRules: MinimeRules | null; // null = das gewählte Theme hat keine Minimes
-  onEnd: () => void; // Login ungültig geworden, die Laufzeit hat sich selbst beendet
-  link: string; // Adresse der öffentlichen Befehlsseite, für die Antwort auf den Hilfe-Befehl
+  minimeRules: MinimeRules | null; // null = the chosen theme has no minimes
+  onEnd: () => void; // login became invalid, the runtime ended itself
+  link: string; // URL of the public commands page, for the reply to the help command
 };
 
 export async function startStreamer(setup: StreamerSetup) {
@@ -77,14 +77,14 @@ export async function startStreamer(setup: StreamerSetup) {
     minimes,
     help,
     alert,
-    // Nachricht an alle offenen Overlays, z.B. geänderte Einstellungen
+    // Message to all open overlays, e.g. changed settings
     broadcast: emit,
     stop,
     live: () => events?.live() ?? false,
     tokens: tokens.current,
-    // Nach stop(): wartet, bis keine Token-Prüfung mehr läuft, die tokens.json noch schreiben könnte
+    // After stop(): waits until no token check is running that could still write tokens.json
     tokensIdle: tokens.idle,
-    // Neues Overlay (SSE); watcher = Ereignis-Protokoll im Dashboard statt Overlay
+    // New overlay (SSE); watcher = event log in the dashboard instead of an overlay
     attach(request: IncomingMessage, response: ServerResponse, watcher = false) {
       if (stopped || hub.full()) return send(response, 503, "unavailable");
       openStream(response, spotify?.current() ?? null, minimes?.current() ?? null);
@@ -93,7 +93,7 @@ export async function startStreamer(setup: StreamerSetup) {
   };
 }
 
-// Der Server liest den Chat mit, damit Trigger, Minimes und der Hilfe-Befehl auch ohne offenes Chat-Overlay laufen
+// The server reads the chat along, so triggers, minimes and the help command run even without an open chat overlay
 function listenToChat(login: string, ircUrl: string, triggers: ReturnType<typeof startTriggers> | null, minimes: MinimeRuntime | null, help: HelpRuntime) {
   return chat(login, line => {
     if (help.isEcho(line)) return;
@@ -103,8 +103,8 @@ function listenToChat(login: string, ircUrl: string, triggers: ReturnType<typeof
   }, banned => minimes?.ban(banned), ircUrl);
 }
 
-// Hilfe-Befehl mit der gespeicherten Einstellung; antwortet mit gültigen Tokens als Streamer. Ob der Login schreiben
-// darf, fragt er einmal beim Start bei Twitch nach
+// Help command with the saved setting; replies with valid tokens as the streamer. Whether the login may write,
+// it asks Twitch once at startup
 async function helpFor(setup: StreamerSetup, tokens: ReturnType<typeof tokenKeeper>) {
   const help = startHelp({
     login: setup.login,

@@ -1,5 +1,5 @@
-// Medien eines Streamers (Profil-Ordner media/): Liste mit Grössen und den Triggern, die eine Datei nutzen,
-// Speicherlimit beim Hochladen und Löschen. Erlaubte Namen prüft streamerPath.isMediaName (kein Pfad, bekannte Endung).
+// Media of a streamer (profile folder media/): list with sizes and the triggers that use a file,
+// storage limit on upload, and deletion. streamerPath.isMediaName checks allowed names (no path, known extension).
 // Check: media.check.ts.
 import { readdir, readFile, stat, unlink } from "node:fs/promises";
 import { join } from "node:path";
@@ -10,20 +10,20 @@ import type { Trigger } from "./triggers.ts";
 type MediaFile = { name: string; size: number; usedBy: string[] };
 export type MediaList = { files: MediaFile[]; usedBytes: number; limitBytes: number };
 
-// Namen der Trigger, deren Aktionen die Datei als Bild, Video oder Ton verwenden
+// Names of the triggers whose actions use the file as image, video or sound
 export function triggersUsing(triggers: readonly Trigger[], name: string): string[] {
   return triggers
     .filter(trigger => Array.isArray(trigger.do) && trigger.do.some(action => [action.image, action.video, action.sound].includes(name)))
     .map(trigger => trigger.name);
 }
 
-// null, wenn der Upload ins Limit passt, sonst der Fehlercode. replacedBytes: Grösse der gleichnamigen Datei, die ersetzt wird
+// null if the upload fits the limit, otherwise the error code. replacedBytes: size of the same-named file being replaced
 export function quotaError(usedBytes: number, uploadBytes: number, replacedBytes: number, limitBytes: number) {
   return usedBytes - replacedBytes + uploadBytes > limitBytes ? ("quota-exceeded" as const) : null;
 }
 
-// Ein Upload pro Streamer zur Zeit: Prüfen des Limits und Schreiben liegen auseinander, gleichzeitige Uploads
-// sähen alle denselben alten Stand und kämen zusammen über das Limit
+// One upload per streamer at a time: checking the limit and writing are apart, simultaneous uploads
+// would all see the same old state and together exceed the limit
 export function uploadSlots() {
   const busy = new Set<string>();
   return {
@@ -40,7 +40,7 @@ export async function listMedia(profileFolder: string, limitBytes: number): Prom
   return { files, usedBytes: files.reduce((sum, file) => sum + file.size, 0), limitBytes };
 }
 
-// Speichert einen Upload, wenn er ins Limit passt (eine gleichnamige Datei wird ersetzt); sonst der Fehlercode
+// Saves an upload if it fits the limit (a same-named file is replaced); otherwise the error code
 export async function storeMedia(profileFolder: string, name: string, body: Buffer, limitBytes: number) {
   const media = await listMedia(profileFolder, limitBytes);
   const replaced = media.files.find(file => file.name === name)?.size ?? 0;
@@ -49,13 +49,13 @@ export async function storeMedia(profileFolder: string, name: string, body: Buff
   return error;
 }
 
-// Löscht eine Datei aus dem Medienordner des Streamers; false bei ungültigem Namen oder wenn es sie nicht gibt
+// Deletes a file from the streamer's media folder; false for an invalid name or when it does not exist
 export async function deleteMedia(profileFolder: string, name: string): Promise<boolean> {
   if (!isMediaName(name)) return false;
   return unlink(join(profileFolder, "media", name)).then(() => true, () => false);
 }
 
-// Regeln aus triggers.json; ohne oder mit kaputter Datei keine
+// Rules from triggers.json; without or with a broken file none
 async function readTriggers(profileFolder: string): Promise<Trigger[]> {
   try {
     const parsed = JSON.parse(await readFile(join(profileFolder, "triggers.json"), "utf8")) as { triggers?: unknown };

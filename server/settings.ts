@@ -1,5 +1,5 @@
-// Einstellungen eines Streamers: Datei settings.json im Profil-Ordner = { theme, values: { <theme-id>: { ... } } }.
-// Werte bleiben je Theme getrennt, damit ein Theme-Wechsel nichts verliert. Geprüft wird gegen das Schema des Themes
+// Settings of a streamer: file settings.json in the profile folder = { theme, values: { <theme-id>: { ... } } }.
+// Values stay separate per theme so a theme switch loses nothing. They are checked against the theme's schema
 // (src/core/settings.ts). Check: settings.check.ts.
 import { readFile, stat } from "node:fs/promises";
 import { join } from "node:path";
@@ -14,12 +14,12 @@ export type SettingsFile = { theme: string; values: Record<string, Record<string
 
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 
-// Alte Theme-ids aus gespeicherten Dateien und ihr heutiger Name (das Theme "starter" heisst seit RST "standard")
+// Old theme ids from saved files and their current name (the theme "starter" is called "standard" since RST)
 const RENAMED: Record<string, string> = { starter: "standard" };
 const currentId = (id: string) => RENAMED[id] ?? id;
 
-// Gelesene Datei auf gültige Form bringen: alte ids werden umbenannt, unbekanntes Theme wird der Standard, Werte nur
-// als Objekte je Theme
+// Brings a read file into valid shape: old ids are renamed, an unknown theme becomes the default, values only
+// as objects per theme
 export function parseSettingsFile(raw: unknown): SettingsFile {
   const source = isObject(raw) ? raw : {};
   const named = typeof source.theme === "string" ? currentId(source.theme) : "";
@@ -29,25 +29,25 @@ export function parseSettingsFile(raw: unknown): SettingsFile {
   return { theme, values };
 }
 
-// Was Overlays sehen: das gewählte Theme mit aufgelösten Werten (keine fremden Schlüssel, nichts Geheimes)
+// What overlays see: the chosen theme with resolved values (no foreign keys, nothing secret)
 export function publicSettings(file: SettingsFile): { theme: string; values: SettingValues } {
   const schema = findTheme(file.theme) ?? findTheme(DEFAULT_THEME)!;
   return { theme: schema.id, values: resolveSettings(schema, file.values[schema.id]) };
 }
 
-// Regeln der Minimes eines Themes aus seinen Werten (mit seinen Typen, falls es welche hat); null ohne Minimes
+// Minime rules of a theme from its values (with its variants, if it has any); null without minimes
 export function rulesFor(schema: ThemeSchema, values: unknown): MinimeRules | null {
   return hasMinimes(schema) ? readMinimeOptions(values, schema.minimeVariants).rules : null;
 }
 
-// Regeln der Minimes aus den Werten des gewählten Themes; null, wenn dieses Theme keine Minimes hat
+// Minime rules from the values of the chosen theme; null if this theme has no minimes
 export function minimeRules(file: SettingsFile): MinimeRules | null {
   const settings = publicSettings(file);
   const schema = findTheme(settings.theme);
   return schema ? rulesFor(schema, settings.values) : null;
 }
 
-// Werte eines Themes setzen und es (choose) als Overlay-Theme wählen. Nur fehlerfreie Eingaben ergeben eine neue Datei.
+// Sets the values of a theme and selects it (choose) as overlay theme. Only error-free input results in a new file.
 export function updateSettings(file: SettingsFile, theme: string, input: unknown, choose = true): { file: SettingsFile | null; errors: SettingError[] } {
   const schema = findTheme(theme);
   if (!schema) return { file: null, errors: [{ key: "theme", code: "unknown_option" }] };
@@ -61,18 +61,18 @@ export async function loadSettings(profileFolder: string): Promise<SettingsFile>
   try {
     return parseSettingsFile(text ? JSON.parse(text) : {});
   } catch {
-    // Kaputtes JSON: wie ohne Datei, der nächste Speichervorgang schreibt sie neu
+    // Broken JSON: like no file, the next save rewrites it
     return parseSettingsFile({});
   }
 }
 
-// Einstellungen beim ersten Login: Standard-Theme gewählt, jedes Theme mit den Werten aus seiner Personalisierung
+// Settings on first login: default theme chosen, every theme with the values from its personalization
 export function firstSettings(login: string): SettingsFile {
   const values = Object.fromEntries(THEMES.flatMap(theme => (theme.personalize ? [[theme.id, theme.personalize(login)]] : [])));
   return { theme: DEFAULT_THEME, values };
 }
 
-// Legt settings.json beim ersten Login an; true = neu angelegt, eine vorhandene Datei bleibt unverändert
+// Creates settings.json on first login; true = newly created, an existing file stays unchanged
 export async function ensureSettings(profileFolder: string, login: string): Promise<boolean> {
   const exists = await stat(join(profileFolder, "settings.json")).then(() => true, () => false);
   if (!exists) await saveSettings(profileFolder, firstSettings(login));

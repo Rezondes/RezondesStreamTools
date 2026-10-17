@@ -1,8 +1,8 @@
-// Hält die Twitch-Tokens eines Streamers aktuell: prüft sie stündlich und vor jedem Gebrauch, speichert erneuerte.
-// Gleichzeitige Prüfungen teilen sich eine Anfrage: zwei parallele Erneuerungen mit demselben Refresh-Token würden
-// die zweite scheitern lassen, und das sähe aus wie ein abgelehnter Login.
-// Nach stop() (z.B. Trennen) speichert eine noch laufende Prüfung nichts mehr; neue Tokens aus ihr werden widerrufen.
-// onInvalid: Twitch hat den Login abgelehnt.
+// Keeps the Twitch tokens of a streamer current: checks them hourly and before every use, saves renewed ones.
+// Simultaneous checks share one request: two parallel renewals with the same refresh token would make the
+// second one fail, and that would look like a rejected login.
+// After stop() (e.g. disconnect) a still running check saves nothing; new tokens from it are revoked.
+// onInvalid: Twitch rejected the login.
 import type { TwitchApp, TwitchTokens } from "./twitch.ts";
 
 type KeeperSetup = {
@@ -12,7 +12,7 @@ type KeeperSetup = {
   save: (tokens: TwitchTokens) => Promise<void>;
 };
 
-// fixed: Twitch verlangt eine stündliche Prüfung
+// fixed: Twitch requires an hourly check
 const CHECK_MS = 3_600_000;
 
 export function tokenKeeper(setup: KeeperSetup, onInvalid: () => Promise<void>, checkMs = CHECK_MS) {
@@ -47,7 +47,7 @@ export function tokenKeeper(setup: KeeperSetup, onInvalid: () => Promise<void>, 
     valid,
     current: () => tokens,
     stop: () => { stopped = true; clearInterval(timer); },
-    // Wartet auf eine laufende Prüfung (auch ihr Speichern), danach ändert sich tokens.json nicht mehr
+    // Waits for a running check (including its save), afterwards tokens.json no longer changes
     idle: () => (inFlight ?? Promise.resolve(null)).then(() => {}, () => {}),
   };
 }

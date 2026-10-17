@@ -1,5 +1,5 @@
-// Check für runtimeRegistry.ts: eine Laufzeit pro Login, überholte oder inzwischen gesperrte Starts werden
-// verworfen und gestoppt. Läuft mit npm test.
+// Check for runtimeRegistry.ts: one runtime per login, overtaken or meanwhile locked starts are
+// discarded and stopped. Runs with npm test.
 import assert from "node:assert/strict";
 import { runtimeRegistry } from "./runtimeRegistry.ts";
 
@@ -9,7 +9,7 @@ const fake = (): Fake => {
   const runtime: Fake = { id: nextId++, stopped: false, stop: () => { runtime.stopped = true; } };
   return runtime;
 };
-// Start, dessen Aufbau erst auf release() fertig wird (wie Dateien lesen und Verbindungen öffnen)
+// A start whose setup only finishes on release() (like reading files and opening connections)
 function held() {
   let release: () => void = () => {};
   const runtime = fake();
@@ -20,7 +20,7 @@ function held() {
 const registry = runtimeRegistry<Fake>();
 let allowed = true;
 
-// Normaler Start, Neustart stoppt die alte Laufzeit
+// Normal start, a restart stops the old runtime
 const first = await registry.start("neo", () => Promise.resolve(fake()), () => allowed);
 assert.ok(first);
 const second = await registry.start("neo", () => Promise.resolve(fake()), () => allowed);
@@ -28,7 +28,7 @@ assert.equal(first.stopped, true);
 assert.equal(registry.get("neo"), second);
 assert.deepEqual(registry.logins(), ["neo"]);
 
-// Zwei Starts gleichzeitig (zwei Anmeldungen): nur der neuere bleibt, der ältere wird gestoppt, nie zwei
+// Two starts at once (two logins): only the newer one stays, the older one is stopped, never two
 const older = held();
 const newer = held();
 const startOlder = registry.start("trinity", older.create, () => allowed);
@@ -40,7 +40,7 @@ assert.equal(await startNewer, newer.runtime);
 assert.equal(older.runtime.stopped, true);
 assert.equal(registry.get("trinity"), newer.runtime);
 
-// Gesperrt, während der Start läuft (Admin speichert Zugänge): die neue Laufzeit wird gestoppt, keine verwaltet
+// Locked while the start runs (admin saves access): the new runtime is stopped, none is managed
 const revoked = held();
 const startRevoked = registry.start("morpheus", revoked.create, () => allowed);
 allowed = false;
@@ -51,7 +51,7 @@ assert.equal(revoked.runtime.stopped, true);
 assert.equal(registry.get("morpheus"), undefined);
 allowed = true;
 
-// Nur der Zugang wird entzogen (der Start steht noch nicht in der Liste, die Sperre sieht ihn nicht): verworfen
+// Only the access is revoked (the start is not in the list yet, the lock does not see it): discarded
 const unlisted = held();
 const startUnlisted = registry.start("niobe", unlisted.create, () => allowed);
 allowed = false;
@@ -60,7 +60,7 @@ assert.equal(await startUnlisted, null);
 assert.equal(unlisted.runtime.stopped, true);
 allowed = true;
 
-// stopAll erwischt auch laufende Starts
+// stopAll also catches running starts
 const pending = held();
 const startPending = registry.start("oracle", pending.create, () => allowed);
 registry.stopAll();
@@ -69,7 +69,7 @@ assert.equal(await startPending, null);
 assert.equal(pending.runtime.stopped, true);
 assert.equal(registry.count(), 0);
 
-// Nichts zu starten (keine Tokens); eine beendete Laufzeit trägt sich nur aus, wenn sie noch aktuell ist
+// Nothing to start (no tokens); an ended runtime only removes itself if it is still current
 assert.equal(await registry.start("neo", () => Promise.resolve(null), () => allowed), null);
 const current = await registry.start("neo", () => Promise.resolve(fake()), () => allowed);
 assert.ok(current);

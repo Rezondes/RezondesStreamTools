@@ -1,5 +1,5 @@
-// Chat-Trigger: Regeln aus triggers.json im Profil-Ordner des Streamers. Wann (when), wer (who), wie oft (cooldown),
-// was und wo (do: Aktionen mit zone). Die Datei wird alle 2 s auf Änderungen geprüft, kein Neustart nötig.
+// Chat triggers: rules from triggers.json in the streamer's profile folder. When (when), who (who), how often (cooldown),
+// what and where (do: actions with zone). The file is checked for changes every 2 s, no restart needed.
 import { readFile, rename, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { FxAction, FxEvent } from "../src/core/types.ts";
@@ -7,8 +7,8 @@ import type { ChatLine } from "./chat.ts";
 import { REGEX_TIME_LIMIT_MS, regexMatcher } from "./regexMatch.ts";
 
 export type When = {
-  // word: ganzes Wort irgendwo, contains: Teilstring, exact: ganze Nachricht,
-  // command: Nachricht beginnt mit diesem Wort (z.B. "!lizard"), regex: regulärer Ausdruck
+  // word: whole word anywhere, contains: substring, exact: whole message,
+  // command: message starts with this word (e.g. "!lizard"), regex: regular expression
   type: "word" | "contains" | "exact" | "command" | "regex";
   match: string;
   caseSensitive?: boolean;
@@ -17,14 +17,14 @@ export type When = {
 export type Trigger = {
   name: string;
   enabled?: boolean;
-  // Auf der Befehlsseite und in der Chat-Hilfe zeigen (Standard ja), mit Erklärung für die Zuschauer
+  // Show on the commands page and in the chat help (default yes), with an explanation for viewers
   public?: boolean;
   description?: string;
   when: When;
-  // everyone, subscriber, vip, moderator, broadcaster (eine Rolle reicht)
+  // everyone, subscriber, vip, moderator, broadcaster (one role is enough)
   who?: string[];
-  cooldown?: number; // Sekunden, für alle
-  userCooldown?: number; // Sekunden, pro Zuschauer
+  cooldown?: number; // seconds, for everyone
+  userCooldown?: number; // seconds, per viewer
   do: FxAction[];
 };
 
@@ -34,7 +34,7 @@ export function toRegex(when: When): RegExp {
   const flags = when.caseSensitive ? "u" : "iu";
   const pattern = escape(when.match);
   switch (when.type) {
-    // Wortgrenze: davor und danach kein Buchstabe und keine Ziffer, "LIZARD!" zählt also
+    // Word boundary: no letter and no digit before and after, so "LIZARD!" counts
     case "word": return new RegExp(`(?<![\\p{L}\\p{N}_])${pattern}(?![\\p{L}\\p{N}_])`, flags);
     case "contains": return new RegExp(pattern, flags);
     case "exact": return new RegExp(`^\\s*${pattern}\\s*$`, flags);
@@ -45,17 +45,17 @@ export function toRegex(when: When): RegExp {
 
 export function allowed(trigger: Trigger, roles: string[]) {
   const who = trigger.who ?? ["everyone"];
-  // Der Streamer darf immer, Mods dürfen alles, was Subs/VIPs dürfen
+  // The streamer may always, mods may do everything subs/VIPs may
   return who.includes("everyone") || roles.includes("broadcaster") || who.some(role => roles.includes(role))
     || (roles.includes("moderator") && who.some(role => role === "subscriber" || role === "vip"));
 }
 
-// Startzeit jeder Aktion in ms. Aktionen laufen nacheinander: die nächste beginnt erst nach
-// delay + duration + after der vorherigen. together: erscheint gleichzeitig mit der vorherigen.
-// Die Aktion wird schon zu Beginn von delay geschickt: das Overlay zeigt sie dann angehalten
-// (delay), spielt sie ab (duration) und lässt sie angehalten stehen (after).
+// Start time of every action in ms. Actions run one after another: the next starts only after
+// delay + duration + after of the previous one. together: appears at the same time as the previous one.
+// The action is sent already at the start of delay: the overlay then shows it paused
+// (delay), plays it (duration) and leaves it standing paused (after).
 export function schedule(actions: FxAction[]): number[] {
-  let next = 0; // frühester Start für die nächste Aktion in der Abfolge
+  let next = 0; // earliest start for the next action in the sequence
   let previousStart = 0;
   return actions.map(action => {
     const start = action.together ? previousStart : next;
@@ -70,7 +70,7 @@ type Loaded = Trigger & { regex: RegExp };
 const WHEN_TYPES = ["word", "contains", "exact", "command", "regex"];
 const MAX_DESCRIPTION = 200;
 
-// Prüft Regeln und baut die Suchmuster. Fehlerhafte Regeln landen in errors und werden übersprungen.
+// Checks rules and builds the search patterns. Faulty rules end up in errors and are skipped.
 export function compile(list: Trigger[]): { triggers: Loaded[]; errors: string[] } {
   const errors: string[] = [];
   const names = new Set<string>();
@@ -81,7 +81,7 @@ export function compile(list: Trigger[]): { triggers: Loaded[]; errors: string[]
       names.add(trigger.name);
       if (!WHEN_TYPES.includes(trigger.when?.type)) throw new Error(`when.type muss ${WHEN_TYPES.join(", ")} sein`);
       if (!trigger.when.match) throw new Error("Suchtext (when.match) fehlt");
-      // allowed() erwartet eine Liste; etwas anderes würde beim ersten Chat-Treffer den ganzen Server beenden
+      // allowed() expects a list; anything else would end the whole server on the first chat match
       if (trigger.who !== undefined && !(Array.isArray(trigger.who) && trigger.who.every(role => typeof role === "string"))) throw new Error("who muss eine Liste von Rollen sein");
       if ((trigger.description ?? "").length > MAX_DESCRIPTION) throw new Error(`Beschreibung länger als ${MAX_DESCRIPTION} Zeichen`);
       if (!Array.isArray(trigger.do) || trigger.do.length === 0) throw new Error("mindestens eine Aktion nötig");
@@ -101,20 +101,20 @@ export function compile(list: Trigger[]): { triggers: Loaded[]; errors: string[]
 
 const namesOf = (triggers: Loaded[]) => triggers.map(trigger => trigger.name).join(", ") || "none";
 
-// Regeln aus der Datei; wirft bei kaputtem JSON
+// Rules from the file; throws on broken JSON
 async function readTriggerFile(file: string): Promise<Trigger[]> {
   const parsed = JSON.parse(await readFile(file, "utf8")) as { triggers?: Trigger[] };
   return parsed.triggers ?? [];
 }
 
-// Über eine temporäre Datei, damit ein Absturz beim Schreiben nie eine halbe triggers.json hinterlässt
+// Via a temporary file, so a crash while writing never leaves half a triggers.json behind
 async function writeTriggerFile(file: string, list: Trigger[]) {
   const partial = `${file}.tmp`;
   await writeFile(partial, JSON.stringify({ triggers: list }, null, 2) + "\n");
   await rename(partial, file);
 }
 
-// Abklingzeiten für alle (name) und pro Zuschauer (name:login); ready merkt sich den Zeitpunkt, wenn es auslöst
+// Cooldowns for everyone (name) and per viewer (name:login); ready remembers the time when it fires
 function createCooldowns() {
   const lastFired = new Map<string, number>();
   return function ready(trigger: Trigger, login: string, now: number) {
@@ -127,11 +127,11 @@ function createCooldowns() {
   };
 }
 
-// Treffer prüfen und auslösen. active: gehört der Trigger noch zur aktuellen Liste (nach einer Regex-Prüfung im Worker)
+// Checks matches and fires. active: does the trigger still belong to the current list (after a regex check in the worker)
 function createMatching(fire: (event: FxEvent) => void, active: (trigger: Loaded) => boolean) {
   const ready = createCooldowns();
   let nextId = 1;
-  // Zu langsame Regex-Trigger bleiben bis zum nächsten Speichern oder Laden abgeschaltet
+  // Too slow regex triggers stay switched off until the next save or load
   const slow = new WeakSet<Loaded>();
 
   function run(trigger: Trigger, user: string, message: string) {
@@ -160,7 +160,7 @@ function createMatching(fire: (event: FxEvent) => void, active: (trigger: Loaded
       const now = Date.now();
       for (const trigger of triggers) {
         if (trigger.enabled === false || slow.has(trigger)) continue;
-        // Eigene Regex des Streamers nur im Worker mit Zeitlimit, die festen Muster sind sicher
+        // The streamer's own regex only in the worker with a time limit, the fixed patterns are safe
         if (trigger.when.type === "regex") void matchRegex(trigger, line, now);
         else if (trigger.regex.test(line.text)) accept(trigger, line, now);
       }
@@ -168,7 +168,7 @@ function createMatching(fire: (event: FxEvent) => void, active: (trigger: Loaded
   };
 }
 
-// Trigger eines Streamers. folder: Profil-Ordner, fire: Effekt an die Overlays. stop() beendet das Nachladen.
+// Triggers of a streamer. folder: profile folder, fire: effect to the overlays. stop() ends the reloading.
 export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
   const file = join(folder, "triggers.json");
   const matching = createMatching(fire, trigger => triggers.includes(trigger));
@@ -182,7 +182,7 @@ export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
     modified = info.mtimeMs;
     try {
       raw = await readTriggerFile(file);
-      // Fehlerhafte Regeln überspringen, damit eine Tippfehler-Regel nicht alle anderen abschaltet
+      // Skip faulty rules so that a rule with a typo does not switch off all the others
       const result = compile(raw);
       triggers = result.triggers;
       result.errors.forEach(error => console.error(error));
@@ -197,9 +197,9 @@ export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
 
   return {
     list: () => triggers.map(trigger => ({ name: trigger.name, enabled: trigger.enabled !== false })),
-    // Regeln so, wie sie in der Datei stehen (für den Editor im Browser)
+    // Rules as they are in the file (for the editor in the browser)
     config: () => ({ triggers: raw }),
-    // Vom Editor: erst prüfen, nur fehlerfreie Listen schreiben
+    // From the editor: check first, write only error-free lists
     async save(list: Trigger[]) {
       const result = compile(list);
       if (result.errors.length) return result.errors;
@@ -211,7 +211,7 @@ export function startTriggers(folder: string, fire: (event: FxEvent) => void) {
       return [];
     },
     handle: (line: ChatLine) => matching.handle(triggers, line),
-    // Zum Testen aus dem Dashboard, ohne Abklingzeit
+    // For testing from the dashboard, without cooldown
     fire(name: string) {
       const trigger = triggers.find(candidate => candidate.name === name);
       if (trigger) matching.run(trigger, "Test", trigger.when.match);

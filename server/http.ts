@@ -1,4 +1,4 @@
-// Kleine HTTP-Helfer ohne Abhängigkeiten
+// Small HTTP helpers without dependencies
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, resolve, sep } from "node:path";
@@ -36,26 +36,26 @@ export const redirect = (res: ServerResponse, to: string, headers: Record<string
   res.end();
 };
 
-// POSTs von fremden Webseiten abweisen (sonst könnte jede Seite im Browser in fremdem Namen handeln)
+// Rejects POSTs from foreign websites (otherwise any page in the browser could act on someone else's behalf)
 export function sameOrigin(req: IncomingMessage) {
   const origin = req.headers.origin;
-  // Kaputte Herkunft (z.B. "null" aus einer Sandbox) zählt als fremd
+  // A broken origin (e.g. "null" from a sandbox) counts as foreign
   return !origin || (URL.canParse(origin) && new URL(origin).host === req.headers.host);
 }
 
-// Request-Body lesen, mit Obergrenze gegen riesige Uploads
+// Reads the request body, with an upper limit against huge uploads
 export async function readBody(req: IncomingMessage, limit: number) {
   const chunks: Buffer[] = [];
   let size = 0;
   for await (const chunk of req as AsyncIterable<Buffer>) {
     size += chunk.length;
-    if (size > limit) throw Object.assign(new Error("zu gross"), { status: 413 });
+    if (size > limit) throw Object.assign(new Error("too large"), { status: 413 });
     chunks.push(chunk);
   }
   return Buffer.concat(chunks);
 }
 
-// Cookies der Anfrage. Kaputte Prozent-Kodierung (z.B. von einer anderen App auf localhost) bleibt roh stehen.
+// Cookies of the request. Broken percent encoding (e.g. from another app on localhost) stays raw.
 export function cookies(req: IncomingMessage): Record<string, string> {
   const pairs = (req.headers.cookie ?? "").split(";").map(pair => pair.trim().split("=")).filter(([name]) => name);
   return Object.fromEntries(pairs.map(([name, ...value]) => [name, decodeCookie(value.join("="))]));
@@ -65,13 +65,13 @@ function decodeCookie(value: string) {
   try {
     return decodeURIComponent(value);
   } catch {
-    // Nicht dekodierbar: unverändert, eine Sitzung erkennt readSession daran ohnehin nicht
+    // Not decodable: unchanged, readSession does not recognize a session from it anyway
     return value;
   }
 }
 
-// Datei aus root ausliefern; Pfade ausserhalb von root sind verboten.
-// sandbox: Medien direkt geöffnet (z.B. eine hochgeladene SVG) dürfen kein Script ausführen.
+// Serves a file from root; paths outside of root are forbidden.
+// sandbox: media opened directly (e.g. an uploaded SVG) must not run scripts.
 export async function serveStatic(res: ServerResponse, root: string, path: string, sandbox = false) {
   const base = resolve(root);
   const file = resolve(join(base, decodeURIComponent(path)));

@@ -1,4 +1,4 @@
-// Check für atomicFile.ts: atomares Schreiben in einen temporären Ordner, der danach gelöscht wird. Läuft mit npm test.
+// Check for atomicFile.ts: atomic writes into a temporary folder that is deleted afterwards. Runs with npm test.
 import assert from "node:assert/strict";
 import { mkdtemp, readdir, readFile, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -7,17 +7,17 @@ import { writeAtomic } from "./atomicFile.ts";
 
 const folder = await mkdtemp(join(tmpdir(), "atomic-"));
 try {
-  // Legt fehlende Ordner an, überschreibt und lässt keine temporäre Datei liegen
+  // Creates missing folders, overwrites and leaves no temporary file behind
   const file = join(folder, "deep", "tokens.json");
   await writeAtomic(file, "old", 0o600);
   await writeAtomic(file, "new", 0o600);
   assert.equal(await readFile(file, "utf8"), "new");
   assert.deepEqual(await readdir(join(folder, "deep")), ["tokens.json"]);
 
-  // Token-Dateien nur für den Besitzer lesbar (Windows kennt keine Unix-Rechte)
+  // Token files readable only by the owner (Windows has no Unix permissions)
   if (process.platform !== "win32") assert.equal((await stat(file)).mode & 0o777, 0o600);
 
-  // Binärdaten bleiben unverändert
+  // Binary data stays unchanged
   await writeAtomic(join(folder, "media.bin"), Buffer.from([0, 1, 255]));
   assert.deepEqual([...(await readFile(join(folder, "media.bin")))], [0, 1, 255]);
 } finally {

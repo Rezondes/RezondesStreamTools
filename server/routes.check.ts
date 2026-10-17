@@ -1,9 +1,9 @@
-// Check für routes.ts: welche Route zu Methode und Pfad gehört, wer sie aufrufen darf und
-// welche Overlay-Adresse ein Pfad unter /s/<login>/ ist. Läuft mit npm test.
+// Check for routes.ts: which route belongs to method and path, who may call it and
+// which overlay URL a path under /s/<login>/ is. Runs with npm test.
 import assert from "node:assert/strict";
 import { authorize, find, overlayRoute, ROUTES, type Visitor } from "./routes.ts";
 
-// Methode und Pfad: bekannte Route, bekannter Pfad mit falscher Methode, unbekannt
+// Method and path: known route, known path with the wrong method, unknown
 assert.equal(find("GET", "/api/me"), "GET /api/me");
 assert.equal(find("POST", "/api/triggers/config"), "POST /api/triggers/config");
 assert.equal(find("GET", "/api/test"), "method-not-allowed");
@@ -12,43 +12,43 @@ assert.equal(find("PUT", "/api/media"), "method-not-allowed");
 assert.equal(find("GET", "/api/admin/streamers"), "GET /api/admin/streamers");
 assert.equal(find("GET", "/alerts.html"), null);
 assert.equal(find("GET", "/api/triggers/config/x"), null);
-// Schlüssel aus dem Prototyp von Object sind keine Routen
+// Keys from the prototype of Object are not routes
 assert.equal(find("GET", "constructor"), null);
 
 const allOn = { alerts: true, chat: true, music: true, fx: true, triggers: true, stinger: true, banners: true };
 const streamer: Visitor = { login: "freund", allowed: true, admin: false, features: allOn };
 
-// Öffentliche Routen brauchen keine Sitzung
+// Public routes need no session
 assert.equal(authorize(ROUTES["GET /auth/login"], { login: null, allowed: false, admin: false, features: {} }), "ok");
 assert.equal(authorize(ROUTES["GET /spotify/callback"], { login: null, allowed: false, admin: false, features: {} }), "ok");
 
-// Dashboard: ohne Sitzung 401, nicht freigeschaltet 403, sonst ok
+// Dashboard: without session 401, not enabled 403, otherwise ok
 assert.equal(authorize(ROUTES["GET /api/me"], { login: null, allowed: false, admin: false, features: {} }), "unauthorized");
 assert.equal(authorize(ROUTES["GET /api/me"], { ...streamer, allowed: false }), "not-allowed");
 assert.equal(authorize(ROUTES["GET /api/me"], streamer), "ok");
-// Overlay-Schlüssel neu erzeugen: nur mit eigener Sitzung
+// Regenerate the overlay key: only with an own session
 assert.equal(authorize(ROUTES["POST /api/overlay-key"], { login: null, allowed: false, admin: false, features: {} }), "unauthorized");
 assert.equal(authorize(ROUTES["POST /api/overlay-key"], streamer), "ok");
 
-// Funktionsstufen: Test-Alerts brauchen alerts, Trigger und Medien brauchen triggers und fx, Spotify music
+// Feature levels: test alerts need alerts, triggers and media need triggers and fx, Spotify music
 assert.equal(authorize(ROUTES["POST /api/test"], { ...streamer, features: { ...allOn, alerts: false } }), "feature-off");
 assert.equal(authorize(ROUTES["POST /api/media"], { ...streamer, features: { ...allOn, fx: false } }), "feature-off");
 assert.equal(authorize(ROUTES["DELETE /api/media"], { ...streamer, features: { ...allOn, triggers: false } }), "feature-off");
 assert.equal(authorize(ROUTES["GET /api/triggers"], { ...streamer, features: { ...allOn, triggers: false } }), "feature-off");
 assert.equal(authorize(ROUTES["GET /spotify/login"], { ...streamer, features: { ...allOn, music: false } }), "feature-off");
 assert.equal(authorize(ROUTES["GET /spotify/login"], { ...streamer, features: {} }), "feature-off");
-// Spotify trennen und Twitch trennen gehen immer
+// Disconnecting Spotify and Twitch always works
 assert.equal(authorize(ROUTES["POST /spotify/logout"], { ...streamer, features: {} }), "ok");
 assert.equal(authorize(ROUTES["POST /api/twitch/disconnect"], { ...streamer, features: {} }), "ok");
 
-// Admin-Routen nur für Admins
+// Admin routes only for admins
 assert.equal(authorize(ROUTES["GET /api/admin/access"], streamer), "admin-only");
 assert.equal(authorize(ROUTES["POST /api/admin/access"], { ...streamer, admin: true }), "ok");
-// Beide Admin-Routen nur für Admins
+// Both admin routes only for admins
 assert.equal(authorize(ROUTES["GET /api/admin/streamers"], streamer), "admin-only");
 assert.equal(authorize(ROUTES["GET /api/admin/streamers"], { ...streamer, admin: true }), "ok");
 
-// Overlay-Adressen unter /s/<login>/
+// Overlay URLs under /s/<login>/
 assert.deepEqual(overlayRoute(["status"]), { kind: "status" });
 assert.deepEqual(overlayRoute(["settings"]), { kind: "settings" });
 assert.equal(overlayRoute(["settings", "x"]), null);
@@ -58,14 +58,14 @@ assert.deepEqual(overlayRoute([""]), { kind: "scene", file: "info.html" });
 assert.deepEqual(overlayRoute([]), { kind: "scene", file: "info.html" });
 assert.deepEqual(overlayRoute(["info"]), { kind: "scene", file: "info.html" });
 assert.deepEqual(overlayRoute(["alerts.html"]), { kind: "scene", file: "alerts.html" });
-// Ohne Endung: nur bekannte Szenen, sie zeigen auf dieselbe Datei
+// Without extension: only known scenes, they point to the same file
 assert.deepEqual(overlayRoute(["alerts"]), { kind: "scene", file: "alerts.html" });
 assert.deepEqual(overlayRoute(["starting"]), { kind: "scene", file: "starting.html" });
 assert.deepEqual(overlayRoute(["minimes"]), { kind: "scene", file: "minimes.html" });
 assert.equal(overlayRoute(["index"]), null);
 assert.equal(overlayRoute(["unbekannt"]), null);
 assert.deepEqual(overlayRoute(["media", "lizard.gif"]), { kind: "media", file: "lizard.gif" });
-// Alles andere ist keine Overlay-Adresse: Dashboard, fremde Dateien, Pfade aus dem Medienordner hinaus
+// Everything else is not an overlay URL: dashboard, foreign files, paths out of the media folder
 assert.equal(overlayRoute(["index.html"]), null);
 assert.equal(overlayRoute(["../tokens.json"]), null);
 assert.equal(overlayRoute(["status", "x"]), null);

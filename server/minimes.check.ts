@@ -1,5 +1,5 @@
-// Check für minimes.ts (Server): Datei einlesen, Chatzeilen übersetzen und die Laufzeit mit falscher Uhr und
-// falschen Timern. Läuft mit npm test (einzeln: node server/minimes.check.ts).
+// Check for minimes.ts (server): read the file, translate chat lines and the runtime with a fake clock and
+// fake timers. Runs with npm test (alone: node server/minimes.check.ts).
 import assert from "node:assert/strict";
 import { mkdtemp, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -12,7 +12,7 @@ import { parseMinimeFile, startMinimes, toMinimeEvent, type MinimeTimers } from 
 const RULES = readMinimeOptions({}).rules;
 const line = (text: string, login = "neo", roles: string[] = []): ChatLine => ({ user: login.toUpperCase(), login, text, roles, color: "#ff0000" });
 
-// Datei: kaputte oder fremde Inhalte ergeben einen leeren Zustand, nur gültige Einträge bleiben
+// File: broken or foreign content gives an empty state, only valid entries stay
 assert.deepEqual(parseMinimeFile(null), { roster: [], colors: {}, variants: {} });
 assert.deepEqual(parseMinimeFile("x"), { roster: [], colors: {}, variants: {} });
 assert.deepEqual(parseMinimeFile({
@@ -31,7 +31,7 @@ assert.deepEqual(parseMinimeFile({
   variants: {},
 });
 
-// Datei mit Typen: gültige bleiben, ungültige ids werden zu null bzw. fallen weg
+// File with variants: valid ones stay, invalid ids become null or drop out
 assert.deepEqual(parseMinimeFile({
   roster: [{ login: "neo", user: "Neo", color: null, variant: "mango", lastSeen: 1 }, { login: "smith", user: "Smith", color: null, variant: "../x", lastSeen: 1 }],
   variants: { neo: { variant: "mango", usedAt: 1, changedAt: 1 }, smith: { variant: "../x", usedAt: 1, changedAt: 1 } },
@@ -41,7 +41,7 @@ assert.deepEqual(parseMinimeFile({
   variants: { neo: { variant: "mango", usedAt: 1, changedAt: 1 } },
 });
 
-// Chatzeilen: Befehle werden zu Ereignissen, alles andere zählt als Chat
+// Chat lines: commands become events, everything else counts as chat
 assert.deepEqual(toMinimeEvent(line("!join #f0a"), RULES), { type: "join", login: "neo", user: "NEO", color: "#ff00aa", variant: null, twitchColor: "#ff0000" });
 assert.deepEqual(toMinimeEvent(line("!color 0 255 0"), RULES), { type: "color", login: "neo", user: "NEO", color: "#00ff00", twitchColor: "#ff0000" });
 assert.deepEqual(toMinimeEvent(line("!leave"), RULES), { type: "leave", login: "neo" });
@@ -49,7 +49,7 @@ assert.deepEqual(toMinimeEvent(line("!leave @trinity", "mod", ["moderator"]), RU
 assert.deepEqual(toMinimeEvent(line("hallo"), RULES), { type: "chat", login: "neo" });
 assert.deepEqual(toMinimeEvent(line("!color lila"), RULES), { type: "chat", login: "neo" });
 
-// Laufzeit: Timer werden von Hand ausgelöst, die Uhr steht, bis der Check sie weiterdreht
+// Runtime: timers are fired by hand, the clock stands still until the check moves it on
 function fakeTimers() {
   let next = 0;
   const pending = new Map<number, { run: () => void; every: boolean }>();
@@ -59,7 +59,7 @@ function fakeTimers() {
     setInterval: run => { pending.set(++next, { run, every: true }); return next; },
     clearInterval: id => { pending.delete(id as number); },
   };
-  // Alle fälligen Timer einmal laufen lassen (einmalige danach entfernen)
+  // Run all due timers once (remove one-shot timers afterwards)
   const fire = () => { for (const [id, timer] of [...pending]) { if (!timer.every) pending.delete(id); timer.run(); } };
   return { timers, fire, count: () => pending.size };
 }
@@ -71,7 +71,7 @@ try {
   const clock = fakeTimers();
   const runtime = await startMinimes({ folder, emit: message => messages.push(message), now: () => now, timers: clock.timers, rules: RULES });
 
-  // Einklinken, schreiben, Farbe ändern: Liste und Reaktion gehen an die Overlays
+  // Join, write, change color: list and reaction go to the overlays
   runtime.handle(line("!join #f0a"));
   runtime.handle(line("hallo"));
   runtime.handle(line("hallo", "smith"));
@@ -81,7 +81,7 @@ try {
   ]);
   assert.deepEqual(runtime.current(), [{ login: "neo", user: "NEO", color: "#ff00aa", variant: null }]);
 
-  // Gebündeltes Speichern: ein Schreib-Timer, der Stand landet in minimes.json
+  // Batched saving: one write timer, the state lands in minimes.json
   now = 2000;
   runtime.handle(line("!join", "trinity"));
   clock.fire();
@@ -89,7 +89,7 @@ try {
   const saved = JSON.parse(await readFile(join(folder, "minimes.json"), "utf8")) as { roster: { login: string }[] };
   assert.deepEqual(saved.roster.map(entry => entry.login), ["neo", "trinity"]);
 
-  // Weniger Platz in den Einstellungen kürzt sofort, Ban entfernt, Offline leert
+  // Less room in the settings shortens immediately, a ban removes, offline clears
   messages.length = 0;
   runtime.setRules({ ...RULES, max: 1 });
   assert.deepEqual(messages, [{ type: "minimes", minimes: [{ login: "trinity", user: "TRINITY", color: "#ff0000", variant: null }] }]);
@@ -99,7 +99,7 @@ try {
   runtime.offline();
   assert.deepEqual(runtime.current(), []);
 
-  // Theme ohne Minimes (null): leere Liste, Befehle werden ignoriert, die Datei bleibt erhalten
+  // Theme without minimes (null): empty list, commands are ignored, the file is kept
   runtime.handle(line("!join"));
   messages.length = 0;
   runtime.setRules(null);
@@ -109,12 +109,12 @@ try {
   runtime.setRules(RULES);
   assert.deepEqual(runtime.current().map(minime => minime.login), ["neo"]);
 
-  // Aufräumen per Intervall: nach 21 Minuten ohne Nachricht ist neo weg
+  // Cleanup by interval: after 21 minutes without a message neo is gone
   now += 21 * 60_000;
   clock.fire();
   assert.deepEqual(runtime.current(), []);
 
-  // stop: keine Timer mehr, letzter Stand gespeichert, neuer Start liest ihn wieder
+  // stop: no timers anymore, last state saved, a new start reads it again
   runtime.handle(line("!join #00f", "oracle"));
   await runtime.stop();
   assert.equal(clock.count(), 0);
@@ -122,7 +122,7 @@ try {
   assert.deepEqual(again.current(), [{ login: "oracle", user: "ORACLE", color: "#0000ff", variant: null }]);
   await again.stop();
 
-  // Mit echten Timern: Speichern planen und stop räumt alles ab (der Check endet ohne hängende Timer)
+  // With real timers: schedule a save and stop cleans up everything (the check ends without hanging timers)
   const real = await startMinimes({ folder, emit: () => {}, now: () => now, rules: RULES });
   real.handle(line("!leave", "oracle"));
   await real.stop();
@@ -131,7 +131,7 @@ try {
   await rm(folder, { recursive: true, force: true });
 }
 
-// Typ-Modus: !join ohne Wahl gibt einen zufälligen erlaubten Typ, !frucht wechselt; die Liste trägt den Typ
+// Variant mode: !join without a choice gives a random allowed variant, !frucht switches; the list carries the variant
 {
   const typed = await mkdtemp(join(tmpdir(), "minimes-types-"));
   try {

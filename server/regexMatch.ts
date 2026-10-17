@@ -1,9 +1,9 @@
-// Regex-Trigger der Streamer laufen nicht im Server-Prozess, sondern in einem eigenen Worker-Thread mit Zeitlimit:
-// ein Muster mit katastrophalem Backtracking (z.B. ^(a+)+$) würde sonst den Server aller Streamer einfrieren.
-// Läuft eine Prüfung zu lange, wird der Worker beendet und neu gestartet; das Ergebnis ist dann null.
+// Regex triggers of the streamers do not run in the server process but in their own worker thread with a time limit:
+// a pattern with catastrophic backtracking (e.g. ^(a+)+$) would otherwise freeze the server of all streamers.
+// If a check takes too long, the worker is terminated and restarted; the result is then null.
 import { Worker } from "node:worker_threads";
 
-// fixed: Server-Schutzgrenze, eine normale Prüfung dauert unter 1 ms
+// fixed: server protection limit, a normal check takes under 1 ms
 export const REGEX_TIME_LIMIT_MS = 50;
 
 const WORKER_CODE = `
@@ -21,13 +21,13 @@ parentPort.on("message", ({ id, pattern, flags, text }) => {
 });
 `;
 
-// "slow": diese Prüfung lief zu lange; null: verworfen, weil eine andere Prüfung den Worker blockiert hat
+// "slow": this check ran too long; null: dropped because another check blocked the worker
 export type RegexResult = boolean | "slow" | null;
 type Pending = { resolve: (matched: RegexResult) => void; timer?: ReturnType<typeof setTimeout> };
 
 export function createRegexMatcher(limitMs = REGEX_TIME_LIMIT_MS) {
   let worker: Worker | null = null;
-  // Erst wenn der Worker läuft, zählt die Zeit: sein Start (unter Last auch über 50 ms) ist keine langsame Regex
+  // Time only counts once the worker runs: its startup (over 50 ms under load) is not a slow regex
   let online: Promise<void> = Promise.resolve();
   const pending = new Map<number, Pending>();
   let nextId = 1;
@@ -35,7 +35,7 @@ export function createRegexMatcher(limitMs = REGEX_TIME_LIMIT_MS) {
   function restart() {
     void worker?.terminate();
     worker = null;
-    // Alles, was hinter der hängenden Prüfung wartete, gilt als nicht getroffen
+    // Everything that waited behind the hanging check counts as not matched
     for (const entry of pending.values()) { clearTimeout(entry.timer); entry.resolve(null); }
     pending.clear();
   }
@@ -49,7 +49,7 @@ export function createRegexMatcher(limitMs = REGEX_TIME_LIMIT_MS) {
       if (!entry) return;
       pending.delete(id);
       clearTimeout(entry.timer);
-      // Ohne offene Prüfung hält der Worker den Prozess nicht am Leben
+      // Without a pending check the worker does not keep the process alive
       if (pending.size === 0) started.unref();
       entry.resolve(matched);
     });
@@ -79,5 +79,5 @@ export function createRegexMatcher(limitMs = REGEX_TIME_LIMIT_MS) {
   };
 }
 
-// Ein Worker für alle Streamer
+// One worker for all streamers
 export const regexMatcher = createRegexMatcher();

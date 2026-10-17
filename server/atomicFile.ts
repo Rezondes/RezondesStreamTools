@@ -1,12 +1,12 @@
-// Atomares Schreiben (Regel 28): erst eine temporäre Datei daneben, dann umbenennen.
-// Ein Absturz hinterlässt so nie eine halbe Datei. Check: atomicFile.check.ts.
+// Atomic writes (rule 28): first a temporary file next to the target, then rename.
+// A crash never leaves half a file behind. Check: atomicFile.check.ts.
 import { mkdir, rename, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 
-// Zähler statt Zufall: zwei gleichzeitige Schreibvorgänge auf dieselbe Datei kommen sich nicht in die Quere
+// Counter instead of randomness: two simultaneous writes to the same file never get in each other's way
 let counter = 0;
 
-// Schreibt content nach file und legt den Ordner an. mode z.B. 0o600 für Token-Dateien (Regel 27).
+// Writes content to file and creates the folder. mode e.g. 0o600 for token files (rule 27).
 export async function writeAtomic(file: string, content: string | Buffer, mode = 0o644) {
   await mkdir(dirname(file), { recursive: true });
   counter += 1;

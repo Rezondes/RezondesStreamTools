@@ -1,5 +1,5 @@
-// Check für streamHub.ts: Nachrichten an alle Streams, Grenze für offene Streams, ein nicht lesender Client wird
-// getrennt statt unbegrenzt gepuffert. Läuft mit npm test.
+// Check for streamHub.ts: messages to all streams, limit for open streams, a client that does not read is
+// disconnected instead of buffered without limit. Runs with npm test.
 import assert from "node:assert/strict";
 import { EventEmitter } from "node:events";
 import type { IncomingMessage, ServerResponse } from "node:http";
@@ -29,28 +29,28 @@ hub.emit({ type: "music", track: null });
 assert.deepEqual(overlay.lines, [`data: {"type":"music","track":null}\n\n`]);
 assert.deepEqual(watcher.lines, overlay.lines);
 
-// Ein Client, der nicht mehr liest: sein Puffer ist über der Grenze, er wird getrennt und bekommt nichts mehr
+// A client that no longer reads: its buffer is above the limit, it is disconnected and gets nothing more
 watcher.writableLength = MAX_PENDING_BYTES + 1;
 hub.emit({ type: "music", track: null });
 assert.equal(watcher.destroyed, true);
 assert.equal(watcher.lines.length, 1);
 assert.equal(overlay.lines.length, 2);
 
-// Ping hält die Verbindung offen
+// Ping keeps the connection open
 await new Promise(resolve => setTimeout(resolve, 30));
 assert.ok(overlay.lines.includes(": ping\n\n"));
 
-// Geschlossene Verbindung zählt nicht mehr
+// A closed connection no longer counts
 overlayRequest.emit("close");
 assert.equal(hub.overlayCount(), 0);
 
-// Grenze für offene Streams
+// Limit for open streams
 for (let index = 0; index < MAX_STREAMS; index++) hub.add(request(), fakeStream(), false);
 assert.equal(hub.full(), true);
 hub.close();
 assert.equal(hub.overlayCount(), 0);
 
-// Öffnen schickt sofort Titel und Minimes (ohne Minimes-Funktion keine Minimes-Nachricht)
+// Opening immediately sends track and minimes (without the minimes feature no minimes message)
 const opened = fakeStream();
 openStream(opened, null, []);
 assert.equal(opened.head, 200);

@@ -1,15 +1,15 @@
-// Hilfe-Befehl im Chat (z.B. !befehle): antwortet als Streamer mit der Liste der Befehle und dem Link zur
-// Befehlsseite. Abklingzeit gilt für alle. canChat: darf der Twitch-Login schreiben (null = noch unbekannt);
-// false heisst, der Streamer muss Twitch neu verbinden. Gestartet von streamer.ts, Check: help.check.ts.
+// Help command in chat (e.g. !befehle): replies as the streamer with the list of commands and the link to the
+// commands page. The cooldown applies to everyone. canChat: may the Twitch login write (null = not known yet);
+// false means the streamer has to reconnect Twitch. Started by streamer.ts, check: help.check.ts.
 import { helpReply, type CommandList, type HelpConfig } from "../src/core/commands.ts";
 import type { ChatLine } from "./chat.ts";
 
 type HelpSetup = {
-  login: string; // der Streamer, als der geantwortet wird
+  login: string; // the streamer the reply is sent as
   help: HelpConfig;
-  link: string; // Adresse der Befehlsseite
+  link: string; // URL of the commands page
   now: () => number;
-  commands: () => Promise<CommandList>; // aktuelle Liste (Theme, Trigger und Einstellungen können sich ändern)
+  commands: () => Promise<CommandList>; // current list (theme, triggers and settings can change)
   say: (message: string) => Promise<"ok" | "missing-scope">;
 };
 
@@ -19,7 +19,7 @@ export function startHelp(setup: HelpSetup) {
   let canChat: boolean | null = null;
   let lastSent = "";
   return {
-    // Die eigene Antwort, wie sie im Chat zurückkommt; Trigger und Minimes sollen sie nicht sehen
+    // Our own reply as it comes back in chat; triggers and minimes must not see it
     isEcho: (line: ChatLine) => line.login === setup.login && line.text === lastSent,
     setConfig: (next: HelpConfig) => { help = next; },
     canChat: () => canChat,

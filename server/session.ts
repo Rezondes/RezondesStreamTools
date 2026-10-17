@@ -1,5 +1,5 @@
-// Anmeldung im Dashboard: signiertes Cookie "sid" = login.ablauf.signatur (HMAC-SHA256).
-// Der Schlüssel liegt in data/session.key und wird beim ersten Start erzeugt.
+// Dashboard login: signed cookie "sid" = login.expiry.signature (HMAC-SHA256).
+// The key is in data/session.key and is created on first start.
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
@@ -22,7 +22,7 @@ export function createSession(key: string, login: string, now = Date.now()) {
   return `${data}.${sign(key, data)}`;
 }
 
-// Liefert den Login oder null, wenn Signatur falsch oder abgelaufen
+// Returns the login, or null if the signature is wrong or expired
 export function readSession(key: string, value: string | undefined, now = Date.now()): string | null {
   const parts = (value ?? "").split(".");
   if (parts.length !== 3) return null;
@@ -33,10 +33,10 @@ export function readSession(key: string, value: string | undefined, now = Date.n
   return Number(exp) > now ? login : null;
 }
 
-// Secure-Cookies nur, wenn der Server öffentlich über HTTPS erreichbar ist (PUBLIC_URL, z.B. hinter Caddy)
+// Secure cookies only when the server is reachable publicly via HTTPS (PUBLIC_URL, e.g. behind Caddy)
 export const isSecureUrl = (publicUrl: string) => publicUrl.startsWith("https://");
 
-// state einer begonnenen OAuth-Anmeldung, nur 10 Minuten (siehe loginStates.ts sameBrowser); maxAge 0 löscht
+// state of a started OAuth login, only 10 minutes (see loginStates.ts sameBrowser); maxAge 0 deletes
 export function oauthStateCookie(state: string, secure: boolean, maxAge = 600) {
   return `oauth_state=${state}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure ? "; Secure" : ""}`;
 }
