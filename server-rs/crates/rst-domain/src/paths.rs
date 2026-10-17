@@ -3,11 +3,7 @@
 
 use crate::identity::values::Login;
 use crate::media::values::MediaName;
-
-/// Scenes of the overlays; a scene is served as `<scene>.html`
-pub const SCENES: [&str; 10] = [
-    "starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes", "info",
-];
+use crate::themes::schema::SceneName;
 
 /// Login and the individually decoded path parts after it, e.g. `["media", "lizard.gif"]`.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -92,7 +88,7 @@ impl OverlayRoute {
             "index.html" => None,
             _ if is_scene_file(segment) => Some(Self::Scene(segment.to_owned())),
             // Short URL without extension, only for known scenes
-            _ if SCENES.contains(&segment) => Some(Self::Scene(format!("{segment}.html"))),
+            _ if SceneName::parse(segment).is_some() => Some(Self::Scene(format!("{segment}.html"))),
             _ => None,
         }
     }

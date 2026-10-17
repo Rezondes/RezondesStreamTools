@@ -5,3 +5,5 @@ pub mod error;
 pub mod identity;
 pub mod media;
 pub mod paths;
+pub mod settings;
+pub mod themes;
