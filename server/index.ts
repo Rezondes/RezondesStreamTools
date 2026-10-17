@@ -10,7 +10,7 @@ import * as streamerPath from "../src/core/streamerPath.ts";
 import { loadAccess, revokedLogins, type Feature } from "./access.ts";
 import { loadHelp, publicCommands, saveHelp, toHelpConfig } from "./commands.ts";
 import { cookies, json, readBody, redirect, sameOrigin, send, serveStatic } from "./http.ts";
-import { createLoginStates } from "./loginStates.ts";
+import { createLoginStates, sameBrowser } from "./loginStates.ts";
 import { deleteMedia, listMedia, storeMedia, uploadSlots } from "./media.ts";
 import { renderRoutes } from "./renderRoutes.ts";
 import { runtimeRegistry } from "./runtimeRegistry.ts";
@@ -18,7 +18,7 @@ import * as profile from "./profile.ts";
 import { ensureSettings, loadSettings, minimeRules, publicSettings, saveSettings, updateSettings } from "./settings.ts";
 import { THEMES } from "../src/themes/registry.ts";
 import { authorize, find, overlayRoute, ROUTES, type RouteKey, type Visitor } from "./routes.ts";
-import { createSession, isSecureUrl, loadSessionKey, readSession, sessionCookie } from "./session.ts";
+import { createSession, isSecureUrl, loadSessionKey, oauthStateCookie, readSession, sessionCookie } from "./session.ts";
 import { deleteSpotifyTokens, redirectUri, type SpotifyApp } from "./spotify.ts";
 import { startStreamer, type Streamer } from "./streamer.ts";
 import { isAlertKind, SAMPLE_ALERTS, twitchApp } from "./twitch.ts";
@@ -30,6 +30,7 @@ const DIST = resolve(process.env.DIST ?? "dist");
 const DATA = resolve(process.env.DATA ?? "data");
 const ADMINS = (process.env.ADMINS ?? "").split(",").map(login => login.trim().toLowerCase()).filter(streamerPath.isLogin);
 const SECURE = isSecureUrl(PUBLIC_URL);
+const PUBLIC_HOST = new URL(PUBLIC_URL).host;
 const TWITCH_CLIENT_ID = process.env.TWITCH_CLIENT_ID ?? "";
 const TWITCH_CLIENT_SECRET = process.env.TWITCH_CLIENT_SECRET ?? "";
 const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID ?? "";
@@ -127,17 +128,22 @@ function parseJson(text: string): unknown {
   }
 }
 
-function twitchLogin({ response }: Call) {
+// Das state-Cookie muss auf dem Host liegen, auf den Twitch zurückleitet (PUBLIC_URL)
+function twitchLogin({ request, response }: Call) {
+  if (request.headers.host !== PUBLIC_HOST) return redirect(response, `${PUBLIC_URL}/auth/login`);
   const state = randomBytes(16).toString("hex");
   twitchStates.add(state, true, Date.now());
-  redirect(response, twitch.authorizeUrl(state));
+  redirect(response, twitch.authorizeUrl(state), { "Set-Cookie": oauthStateCookie(state, SECURE) });
 }
 
 // Tokens tauschen, Freischaltung prüfen, speichern, Laufzeit starten, Sitzung setzen.
 // Fehler gehen als Code (?error=) an das Dashboard, das den Text dazu zeigt (Regel 20).
-async function twitchCallback({ response, url }: Call) {
+async function twitchCallback({ request, response, url }: Call) {
   const code = url.searchParams.get("code") ?? "";
-  const stateValid = twitchStates.take(url.searchParams.get("state") ?? "", Date.now()) !== null;
+  const state = url.searchParams.get("state") ?? "";
+  // Nur im Browser, der die Anmeldung begonnen hat (Login-CSRF); das state-Cookie gilt einmal
+  response.setHeader("Set-Cookie", oauthStateCookie("", SECURE, 0));
+  const stateValid = sameBrowser(cookies(request).oauth_state, state) && twitchStates.take(state, Date.now()) !== null;
   const tokens = stateValid && OAUTH_CODE.test(code) ? await twitch.exchange(code) : null;
   if (!tokens) return redirect(response, "/?error=login-failed");
   if (!access.canUse(tokens.login)) {
@@ -153,7 +159,7 @@ async function twitchCallback({ response, url }: Call) {
   if (await ensureSettings(folder, tokens.login)) console.log(`Settings created for ${tokens.login}`);
   await startRuntime(tokens.login);
   console.log(`Twitch login: ${tokens.login}`);
-  redirect(response, "/", { "Set-Cookie": sessionCookie(createSession(sessionKey, tokens.login), SECURE) });
+  redirect(response, "/", { "Set-Cookie": [oauthStateCookie("", SECURE, 0), sessionCookie(createSession(sessionKey, tokens.login), SECURE)] });
 }
 
 // Abmelden: Cookie löschen, die Laufzeit (Overlays) läuft weiter

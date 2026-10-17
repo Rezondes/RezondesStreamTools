@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { createSession, isSecureUrl, loadSessionKey, readSession, sessionCookie } from "./session.ts";
+import { createSession, isSecureUrl, loadSessionKey, oauthStateCookie, readSession, sessionCookie } from "./session.ts";
 
 const key = "test-key";
 const now = 1_800_000_000_000;
@@ -25,6 +25,9 @@ assert.doesNotMatch(sessionCookie(value, false), /Secure/);
 // Hinter Caddy mit PUBLIC_URL=https://<DOMAIN>: Secure; lokal mit http: ohne
 assert.match(sessionCookie(value, isSecureUrl("https://overlays.example.de")), /; Secure$/);
 assert.doesNotMatch(sessionCookie(value, isSecureUrl("http://localhost:8089")), /Secure/);
+// state einer begonnenen Anmeldung: nur für den Callback, kurz gültig; leer = löschen
+assert.equal(oauthStateCookie("s1", true), "oauth_state=s1; Path=/; HttpOnly; SameSite=Lax; Max-Age=600; Secure");
+assert.equal(oauthStateCookie("", false, 0), "oauth_state=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0");
 
 // Schlüssel: beim ersten Start erzeugt, danach derselbe (temporärer Ordner, danach gelöscht)
 const folder = await mkdtemp(join(tmpdir(), "session-"));

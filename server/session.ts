@@ -36,6 +36,11 @@ export function readSession(key: string, value: string | undefined, now = Date.n
 // Secure-Cookies nur, wenn der Server öffentlich über HTTPS erreichbar ist (PUBLIC_URL, z.B. hinter Caddy)
 export const isSecureUrl = (publicUrl: string) => publicUrl.startsWith("https://");
 
+// state einer begonnenen OAuth-Anmeldung, nur 10 Minuten (siehe loginStates.ts sameBrowser); maxAge 0 löscht
+export function oauthStateCookie(state: string, secure: boolean, maxAge = 600) {
+  return `oauth_state=${state}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure ? "; Secure" : ""}`;
+}
+
 export function sessionCookie(value: string, secure: boolean, maxAge = DAYS * 86_400) {
   return `sid=${value}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${maxAge}${secure ? "; Secure" : ""}`;
 }
