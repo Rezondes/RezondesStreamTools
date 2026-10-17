@@ -2,7 +2,7 @@
 // Spotify-Client eines Streamers. fetch und Timer sind nachgebaut, Dateien liegen in einem temporären Ordner,
 // der danach gelöscht wird. Token-Werte sind Platzhalter. Läuft mit npm test.
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
+import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { mock } from "node:test";
@@ -42,16 +42,17 @@ assert.ok(changed(track, { ...track, id: "2" }));
 assert.ok(changed(track, { ...track, playing: false }));
 
 // --- Client eines Streamers ---
-type Answer = { status: number; body?: unknown; headers?: Record<string, string> };
+type Answer = { status: number; body?: unknown; headers?: Record<string, string>; wait?: Promise<void> };
 let answers: Record<string, Answer[]> = {};
 let requestCount = 0;
-globalThis.fetch = ((url: string) => {
+globalThis.fetch = (async (url: string) => {
   requestCount += 1;
   const prefix = Object.keys(answers).find(start => url.startsWith(start));
   const answer = prefix ? answers[prefix].shift() : undefined;
-  if (!answer) return Promise.reject(new Error(`unexpected request ${url}`));
+  if (!answer) throw new Error(`unexpected request ${url}`);
+  await answer.wait;
   const body = answer.status === 204 ? null : JSON.stringify(answer.body ?? {});
-  return Promise.resolve(new Response(body, { status: answer.status, headers: answer.headers }));
+  return new Response(body, { status: answer.status, headers: answer.headers });
 }) as typeof fetch;
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 const PLAYING_URL = "https://api.spotify.com/v1/me/player/currently-playing";
@@ -129,6 +130,29 @@ try {
 } finally {
   mock.timers.reset();
   await rm(folder, { recursive: true, force: true });
+}
+
+// Abmelden, während eine Erneuerung läuft: die späte Antwort legt spotify.json nicht wieder an
+const late = await mkdtemp(join(tmpdir(), "spotify-"));
+try {
+  await writeFile(join(late, "spotify.json"), JSON.stringify({ access: "a1", refresh: "r1", expiresAt: 1 }));
+  let answerToken: () => void = () => {};
+  answers = {
+    [TOKEN_URL]: [{ status: 200, body: { access_token: "a2", refresh_token: "r2", expires_in: 3600 }, wait: new Promise<void>(resolve => { answerToken = resolve; }) }],
+    [ME_URL]: [{ status: 200, body: { id: "neo" } }],
+  };
+  const app = { clientId: "id", clientSecret: "secret", redirectUri: "http://127.0.0.1:8089/spotify/callback" };
+  const client = await spotifyClient(app, late, () => {}, () => false);
+  const details = client.details();
+  await settle();
+  await client.logout();
+  answerToken();
+  await details;
+  assert.equal(client.connected(), false);
+  await assert.rejects(stat(join(late, "spotify.json")));
+  client.stop();
+} finally {
+  await rm(late, { recursive: true, force: true });
 }
 
 console.log("spotify ok");

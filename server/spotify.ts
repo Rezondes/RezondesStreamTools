@@ -87,12 +87,14 @@ type Player = {
   sentAt: number;
   blockedUntil: number; // nach 429 (zu viele Anfragen) bis dahin Pause
   account: string | null; // Name des Spotify-Kontos, einmal geholt; null = noch unbekannt
+  // Zählt Abmelden und Verbinden: eine Erneuerung, die vorher begann, darf danach nichts mehr speichern
+  generation: number;
 };
 
 // Spotify eines Streamers. folder: Profil-Ordner (spotify.json), emit: an die Overlays, listening: ist ein Overlay offen
 export async function spotifyClient(app: SpotifyApp, folder: string, emit: (track: Track | null) => void, listening: () => boolean) {
   const file = join(folder, "spotify.json");
-  const player: Player = { app, file, emit, tokens: await loadTokens(file), track: null, sentAt: 0, blockedUntil: 0, account: null };
+  const player: Player = { app, file, emit, tokens: await loadTokens(file), track: null, sentAt: 0, blockedUntil: 0, account: null, generation: 0 };
   const timer = setInterval(() => {
     if (!player.tokens || !listening() || Date.now() < player.blockedUntil) return;
     poll(player).catch((error: unknown) => console.error("Spotify poll failed:", error instanceof Error ? error.message : error));
@@ -112,8 +114,9 @@ export async function spotifyClient(app: SpotifyApp, folder: string, emit: (trac
     },
     // Code aus dem Callback eintauschen; false = Code ungültig
     async connect(code: string) {
+      const generation = ++player.generation;
       const answer = await requestToken(app, { grant_type: "authorization_code", code, redirect_uri: app.redirectUri });
-      if (answer) {
+      if (answer && generation === player.generation) {
         player.account = null;
         await save(player, answer);
       }
@@ -154,6 +157,7 @@ async function save(player: Player, answer: TokenAnswer) {
 }
 
 async function logout(player: Player) {
+  player.generation += 1;
   player.tokens = null;
   player.track = null;
   player.account = null;
@@ -162,7 +166,10 @@ async function logout(player: Player) {
 }
 
 async function refresh(player: Player) {
+  const generation = player.generation;
   const answer = player.tokens ? await requestToken(player.app, { grant_type: "refresh_token", refresh_token: player.tokens.refresh }) : null;
+  // Inzwischen abgemeldet oder neu verbunden: die Antwort gehört zu einem alten Login
+  if (generation !== player.generation) return;
   if (answer) return save(player, answer);
   console.error("Spotify login expired, please reconnect");
   await logout(player);
