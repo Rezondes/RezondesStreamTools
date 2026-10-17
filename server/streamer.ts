@@ -82,6 +82,8 @@ export async function startStreamer(setup: StreamerSetup) {
     stop,
     live: () => events?.live() ?? false,
     tokens: tokens.current,
+    // Nach stop(): wartet, bis keine Token-Prüfung mehr läuft, die tokens.json noch schreiben könnte
+    tokensIdle: tokens.idle,
     // Neues Overlay (SSE); watcher = Ereignis-Protokoll im Dashboard statt Overlay
     attach(request: IncomingMessage, response: ServerResponse, watcher = false) {
       if (stopped || hub.full()) return send(response, 503, "unavailable");

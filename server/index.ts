@@ -263,9 +263,11 @@ async function spotifyLogout({ response, runtime }: Call) {
 // Twitch trennen: Token widerrufen und löschen, Laufzeit stoppen, abmelden
 async function twitchDisconnect({ response, login, runtime }: Call) {
   const folder = profile.folder(DATA, login);
-  const tokens = runtime?.tokens() ?? (await profile.loadTokens(folder));
   runtime?.stop();
   runtimes.delete(login);
+  // Erst nach einer laufenden Token-Prüfung lesen: sie kann noch erneuerte Tokens gespeichert haben
+  await runtime?.tokensIdle();
+  const tokens = runtime?.tokens() ?? (await profile.loadTokens(folder));
   if (tokens) await twitch.revoke(tokens.access).catch((error: unknown) => console.error("Revoking a token failed:", error));
   await profile.deleteTokens(folder);
   console.log(`Twitch disconnected: ${login}`);
