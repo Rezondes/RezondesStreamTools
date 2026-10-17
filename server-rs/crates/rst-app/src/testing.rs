@@ -13,8 +13,10 @@ use rst_domain::identity::values::StreamerId;
 
 use crate::crypto::cipher::random_bytes;
 use crate::ports::StoreError;
+use crate::ports::audit::{AuditStore, StoredEntry};
 use crate::ports::keys::{DataKey, KeyStore};
 use crate::ports::records::{RecordStore, StoredRecord};
+use crate::ports::sessions::SessionStore;
 use crate::ports::streamers::{StreamerRepository, StreamerRow};
 
 fn lock<T>(mutex: &Mutex<T>) -> MutexGuard<'_, T> {
@@ -131,5 +133,75 @@ impl StreamerRepository for MemoryStreamers {
     async fn delete(&self, id: &StreamerId) -> Result<(), StoreError> {
         lock(&self.0).retain(|row| row.id != *id);
         Ok(())
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct MemorySessions(Arc<Mutex<BTreeMap<[u8; 32], (StreamerId, i64)>>>);
+
+impl MemorySessions {
+    pub fn hashes(&self) -> Vec<[u8; 32]> {
+        lock(&self.0).keys().copied().collect()
+    }
+}
+
+impl SessionStore for MemorySessions {
+    async fn insert(&self, hash: &[u8; 32], streamer: &StreamerId, expires_at: i64) -> Result<(), StoreError> {
+        lock(&self.0).insert(*hash, (streamer.clone(), expires_at));
+        Ok(())
+    }
+
+    async fn find(&self, hash: &[u8; 32]) -> Result<Option<(StreamerId, i64)>, StoreError> {
+        Ok(lock(&self.0).get(hash).cloned())
+    }
+
+    async fn delete(&self, hash: &[u8; 32]) -> Result<(), StoreError> {
+        lock(&self.0).remove(hash);
+        Ok(())
+    }
+
+    async fn delete_streamer(&self, streamer: &StreamerId) -> Result<(), StoreError> {
+        lock(&self.0).retain(|_, (owner, _)| owner != streamer);
+        Ok(())
+    }
+
+    async fn delete_expired(&self, now: i64) -> Result<u64, StoreError> {
+        let mut sessions = lock(&self.0);
+        let before = sessions.len();
+        sessions.retain(|_, (_, expires_at)| *expires_at > now);
+        Ok(u64::try_from(before - sessions.len()).unwrap_or(u64::MAX))
+    }
+}
+
+#[derive(Debug, Default, Clone)]
+pub struct MemoryAudit(Arc<Mutex<Vec<(Option<StreamerId>, StoredEntry)>>>);
+
+impl MemoryAudit {
+    pub fn ciphertexts(&self) -> Vec<Vec<u8>> {
+        lock(&self.0).iter().map(|(_, entry)| entry.ciphertext.clone()).collect()
+    }
+}
+
+impl AuditStore for MemoryAudit {
+    async fn append(
+        &self,
+        streamer: Option<&StreamerId>,
+        created_at: i64,
+        ciphertext: &[u8],
+    ) -> Result<i64, StoreError> {
+        let mut entries = lock(&self.0);
+        let id = i64::try_from(entries.len()).unwrap_or(i64::MAX) + 1;
+        entries.push((streamer.cloned(), StoredEntry { id, created_at, ciphertext: ciphertext.to_vec() }));
+        Ok(id)
+    }
+
+    async fn list(&self, streamer: Option<&StreamerId>, limit: u32) -> Result<Vec<StoredEntry>, StoreError> {
+        Ok(lock(&self.0)
+            .iter()
+            .rev()
+            .filter(|(owner, _)| owner.as_ref() == streamer)
+            .take(usize::try_from(limit).unwrap_or(usize::MAX))
+            .map(|(_, entry)| entry.clone())
+            .collect())
     }
 }

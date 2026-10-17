@@ -1,3 +1,4 @@
-//! Identity: streamers, their sessions and logins.
+//! Identity: streamers and their dashboard sessions.
 
+pub mod sessions;
 pub mod streamers;

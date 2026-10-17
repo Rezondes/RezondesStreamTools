@@ -1,8 +1,10 @@
 //! Ports: what the use cases need from the outside (storage, keys). The adapters live in `rst-infra`; every adapter
 //! passes the same contract tests.
 
+pub mod audit;
 pub mod keys;
 pub mod records;
+pub mod sessions;
 pub mod streamers;
 
 use std::fmt;
