@@ -1,3 +1,3 @@
-//! Use Cases (Commands und Queries), Ports (Traits) und Domain Events von RST (Application-Schicht).
+//! Use cases (commands and queries), ports (traits) and domain events of RST (application layer).
 
 pub mod api;

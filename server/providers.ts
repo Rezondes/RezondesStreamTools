@@ -1,5 +1,5 @@
-// Basis-Adressen von Twitch und Spotify. Ohne Variablen die echten Dienste; die Vertragstests (contract/) setzen sie
-// auf den Fake-Provider (contract/fakeProviders.ts). index.ts liest die Umgebung und reicht das Ergebnis weiter.
+// Base URLs of Twitch and Spotify. Without variables the real services; the contract tests (contract/) point them at
+// the fake provider (contract/fakeProviders.ts). index.ts reads the environment and passes the result on.
 import { IRC_URL } from "../src/core/irc.ts";
 
 export type ProviderUrls = {

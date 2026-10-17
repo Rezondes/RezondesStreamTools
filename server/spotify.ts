@@ -7,7 +7,7 @@ import { join } from "node:path";
 import type { SpotifyDetails, Track } from "../src/core/types.ts";
 import { writeAtomic } from "./atomicFile.ts";
 
-// Die Spotify-App aus server.env; redirectUri aus redirectUri(PUBLIC_URL), Adressen aus providerUrls (providers.ts)
+// Die Spotify-App aus server.env; redirectUri aus redirectUri(PUBLIC_URL), URLs from providerUrls (providers.ts)
 export type SpotifyApp = { clientId: string; clientSecret: string; redirectUri: string; accountsUrl: string; apiUrl: string };
 type SpotifyTokens = { access: string; refresh: string; expiresAt: number };
 type TokenAnswer = { access_token?: string; refresh_token?: string; expires_in?: number };

@@ -1,1 +1,1 @@
-//! Adapter von RST (Infrastructure-Schicht): Datenbank, Schlüssel, Krypto, Twitch, Spotify, Dateien, ffmpeg.
+//! Adapters of RST (infrastructure layer): database, keys, crypto, Twitch, Spotify, files, ffmpeg.

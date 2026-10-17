@@ -1,16 +1,16 @@
-//! Typen, die über HTTP und SSE gehen. Jeder Wurzeltyp steht in [`export_all`]; der Test `export_types` schreibt sie
-//! samt ihrer Abhängigkeiten als TypeScript nach `src/generated/` und bricht ab, wenn die Dateien veraltet sind.
+//! Types sent over HTTP and SSE. Every root type is listed in [`export_all`]; the test `export_types` writes them with
+//! their dependencies as TypeScript to `src/generated/` and fails when the files are stale.
 
 use serde::{Deserialize, Serialize};
 use ts_rs::{Config, ExportError, TS};
 
-/// Beispieltyp für die Export-Kette, wird durch die echten Nachrichten ersetzt (RUST-PLAN.md, Package 31).
+/// Sample type for the export chain, replaced by the real messages (RUST-PLAN.md, package 31).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct Ping {
     pub at: u32,
 }
 
-/// Einstellungen des Exports: Importe mit `.ts`-Endung (wie im Frontend), grosse Zahlen als `number` (JSON).
+/// Export settings: imports with a `.ts` extension (like the frontend), large integers as `number` (JSON).
 #[must_use]
 pub fn export_config(dir: &std::path::Path) -> Config {
     Config::new()
@@ -19,10 +19,10 @@ pub fn export_config(dir: &std::path::Path) -> Config {
         .with_large_int("number")
 }
 
-/// Schreibt alle exportierten Typen samt Abhängigkeiten in das Verzeichnis aus `cfg`.
+/// Writes all exported types with their dependencies to the directory from `cfg`.
 ///
 /// # Errors
-/// Wenn `ts-rs` einen Typ nicht schreiben kann.
+/// When `ts-rs` cannot write a type.
 pub fn export_all(cfg: &Config) -> Result<(), ExportError> {
     Ping::export_all(cfg)?;
     Ok(())

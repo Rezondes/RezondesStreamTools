@@ -1,4 +1,4 @@
-# Erzeugte Typen
+# Generated types
 
-Diese Dateien entstehen aus dem Rust-Server (`server-rs/crates/rst-app/src/api`) und werden nie von Hand geändert.
-Neu schreiben: `npm run gen:types`. `npm run verify` bricht ab, wenn sie nicht zum Rust-Stand passen.
+These files are generated from the Rust server (`server-rs/crates/rst-app/src/api`) and are never edited by hand.
+Regenerate: `npm run gen:types`. `npm run verify` fails when they do not match the Rust code.

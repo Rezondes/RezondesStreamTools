@@ -1,5 +1,5 @@
 // Anonymer Twitch-Chat auf dem Server (gleich wie im Overlay), Quelle für Chat-Trigger und Minimes.
-// onBan: Ban oder Timeout eines Chatters (CLEARCHAT mit Login). url: IRC-Adresse (providers.ts), Standard Twitch.
+// onBan: Ban oder Timeout eines Chatters (CLEARCHAT mit Login). url: IRC URL (providers.ts), default Twitch.
 import { anonymousLogin, IRC_URL, parseIrc } from "../src/core/irc.ts";
 
 // color: Twitch-Namensfarbe (#RRGGBB) oder nichts, wenn der Chatter keine gewählt hat

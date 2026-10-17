@@ -1,1 +1,1 @@
-//! Reine Regeln von RST (Domain-Schicht): keine IO, kein tokio, kein sqlx. Ein Modul je Bounded Context.
+//! Pure rules of RST (domain layer): no IO, no tokio, no sqlx. One module per bounded context.

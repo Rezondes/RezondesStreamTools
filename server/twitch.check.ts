@@ -62,7 +62,7 @@ assert.equal(authorize.searchParams.get("redirect_uri"), "http://localhost:8089/
 assert.match(authorize.searchParams.get("scope") ?? "", /channel:read:subscriptions/);
 assert.match(authorize.searchParams.get("scope") ?? "", /user:write:chat/);
 
-// Adressen aus der Umgebung: ohne Variablen echtes Twitch, sonst die gesetzte Adresse (Fake-Provider der Vertragstests)
+// URLs from the environment: without variables real Twitch, otherwise the given URL (fake provider of the contract tests)
 assert.equal(authorize.origin + authorize.pathname, "https://id.twitch.tv/oauth2/authorize");
 const faked = twitchApp("client-id", "client-secret", "http://localhost:8089/auth/callback", providerUrls({ TWITCH_ID_URL: "http://127.0.0.1:1/oauth2/" }));
 assert.ok(faked.authorizeUrl("s").startsWith("http://127.0.0.1:1/oauth2/authorize?"));

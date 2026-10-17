@@ -1,6 +1,6 @@
-// Check für fakeProviders.ts: Tokens und Benutzer, EventSub und IRC über WebSocket, Spotify-Steuerung, Frames.
-// Der Fake läuft auf einem freien Loopback-Port; die OAuth-App des Node-Servers spricht ihn wie echtes Twitch an.
-// Token-Werte sind Platzhalter. Läuft mit npm test.
+// Check for fakeProviders.ts: tokens and users, EventSub and IRC over WebSocket, Spotify control, frames.
+// The fake runs on a free loopback port; the OAuth app of the Node server talks to it like real Twitch.
+// Token values are placeholders. Runs with npm test.
 import assert from "node:assert/strict";
 import { providerUrls } from "../server/providers.ts";
 import { twitchApp } from "../server/twitch.ts";
@@ -9,7 +9,7 @@ import { frame, parseFrame, startFakeProviders } from "./fakeProviders.ts";
 const fake = await startFakeProviders();
 const post = (path: string, body: string) => fetch(`${fake.url}${path}`, { method: "POST", body });
 
-// Nächste Nachricht eines WebSocket-Clients
+// Next message of a WebSocket client
 function nextMessage(socket: WebSocket) {
   return new Promise<string>(done => socket.addEventListener("message", event => done(String(event.data)), { once: true }));
 }
@@ -21,27 +21,27 @@ async function connect(url: string) {
 }
 
 try {
-  // Token und Benutzer: der Node-Server meldet sich gegen den Fake an, validate nimmt die Tokens an, revoke merkt sie sich
+  // Tokens and user: the Node server logs in against the fake, validate accepts the tokens, revoke remembers them
   const app = twitchApp("client-id", "client-secret", "http://localhost:8089/auth/callback", providerUrls(fake.env));
   const tokens = await app.exchange("code-neo-7");
   assert.ok(tokens);
   assert.equal(tokens.login, "neo");
   assert.equal(tokens.userId, "7");
-  assert.equal(await app.exchange("falsch"), null);
+  assert.equal(await app.exchange("wrong"), null);
   assert.deepEqual(await app.validate(tokens), tokens);
   assert.equal(await app.canChat(tokens), true);
-  assert.equal(await app.say(tokens, "hallo"), "ok");
-  assert.deepEqual(fake.chatMessages, [{ broadcaster_id: "7", sender_id: "7", message: "hallo" }]);
+  assert.equal(await app.say(tokens, "hello"), "ok");
+  assert.deepEqual(fake.chatMessages, [{ broadcaster_id: "7", sender_id: "7", message: "hello" }]);
   await app.revoke(tokens.access);
   assert.ok(fake.revoked.has(tokens.access));
-  // Widerrufen: validate erneuert mit dem Refresh-Token
+  // Revoked: validate renews with the refresh token
   const renewed = await app.validate(tokens);
   assert.notEqual(renewed?.access, tokens.access);
   assert.equal(renewed?.login, "neo");
   assert.equal((await fetch(`${fake.url}/helix/users`)).status, 401);
-  assert.equal((await fetch(`${fake.url}/nirgends`)).status, 404);
+  assert.equal((await fetch(`${fake.url}/nowhere`)).status, 404);
 
-  // EventSub: erst session_welcome, dann die Notification aus der Steuerung
+  // EventSub: first session_welcome, then the notification from the control endpoint
   const eventsub = await connect(fake.env.TWITCH_EVENTSUB_URL);
   const welcome = JSON.parse(await eventsub.first) as { metadata: { message_type: string }; payload: { session: { id: string } } };
   assert.equal(welcome.metadata.message_type, "session_welcome");
@@ -52,31 +52,31 @@ try {
   assert.deepEqual(JSON.parse(await received), notification);
   eventsub.socket.close();
 
-  // IRC: Zeilen des Clients kommen an, Zeilen aus der Steuerung gehen an den Client
+  // IRC: lines of the client arrive, lines from the control endpoint go to the client
   const irc = await connect(fake.env.TWITCH_IRC_URL);
   irc.socket.send("JOIN #neo");
-  await post("/control/irc", ":neo!neo@neo.tmi.twitch.tv PRIVMSG #neo :hallo");
-  assert.equal(await irc.first, ":neo!neo@neo.tmi.twitch.tv PRIVMSG #neo :hallo\r\n");
+  await post("/control/irc", ":neo!neo@neo.tmi.twitch.tv PRIVMSG #neo :hello");
+  assert.equal(await irc.first, ":neo!neo@neo.tmi.twitch.tv PRIVMSG #neo :hello\r\n");
   assert.deepEqual(fake.ircReceived, ["JOIN #neo"]);
   irc.socket.close();
 
-  // Spotify: Token, Konto und laufender Titel über die Steuerung
+  // Spotify: token, account and current track via the control endpoint
   const token = await (await post("/spotify-accounts/api/token", "grant_type=authorization_code&code=x")).json() as { access_token: string };
   const auth = { headers: { Authorization: `Bearer ${token.access_token}` } };
   const playing = `${fake.url}/spotify-api/me/player/currently-playing`;
   assert.equal((await fetch(playing, auth)).status, 204);
-  await post("/control/spotify", JSON.stringify({ playing: { is_playing: true, item: { name: "Lied" } }, account: "Neo" }));
-  assert.deepEqual(await (await fetch(playing, auth)).json(), { is_playing: true, item: { name: "Lied" } });
+  await post("/control/spotify", JSON.stringify({ playing: { is_playing: true, item: { name: "Song" } }, account: "Neo" }));
+  assert.deepEqual(await (await fetch(playing, auth)).json(), { is_playing: true, item: { name: "Song" } });
   assert.deepEqual(await (await fetch(`${fake.url}/spotify-api/me`, auth)).json(), { id: "fake", display_name: "Neo" });
   assert.equal((await fetch(playing)).status, 401);
   await post("/control/spotify", JSON.stringify({ token: null }));
   assert.equal((await post("/spotify-accounts/api/token", "code=x")).status, 400);
-  assert.equal((await post("/control/unbekannt", "")).status, 404);
+  assert.equal((await post("/control/unknown", "")).status, 404);
 } finally {
   await fake.stop();
 }
 
-// Frames: alle drei Längenformen hin und zurück, maskierte Client-Frames, unvollständige Frames
+// Frames: all three length forms round trip, masked client frames, incomplete frames
 for (const size of [5, 300, 70_000]) {
   const text = "x".repeat(size);
   const parsed = parseFrame(frame(text));

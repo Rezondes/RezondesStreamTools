@@ -1,5 +1,5 @@
-# Rust-Server von RST (siehe RUST-PLAN.md): vier Crates nach Schicht. rst-domain (reine Regeln) hängt an keinem
-# anderen Projekt-Crate, rst-app (Use Cases, Ports) an rst-domain, rst-infra (Adapter) an rst-app, rst-server an allen.
+# Rust server of RST (see RUST-PLAN.md): four crates by layer. rst-domain (pure rules) depends on no other project
+# crate, rst-app (use cases, ports) on rst-domain, rst-infra (adapters) on rst-app, rst-server on all of them.
 [workspace]
 resolver = "3"
 members = ["crates/rst-domain", "crates/rst-app", "crates/rst-infra", "crates/rst-server"]

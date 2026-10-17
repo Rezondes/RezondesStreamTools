@@ -1,9 +1,9 @@
-//! Die Domain-Schicht bleibt frei von IO und von den anderen Projekt-Crates (RUST-PLAN.md, Package 1).
+//! The domain layer stays free of IO and of the other project crates (RUST-PLAN.md, package 1).
 
 const MANIFEST: &str = include_str!("../Cargo.toml");
 const FORBIDDEN: [&str; 5] = ["tokio", "sqlx", "axum", "reqwest", "rst-"];
 
-/// Namen der Abhängigkeiten aus dem Abschnitt `[dependencies]` des Manifests.
+/// Dependency names from the `[dependencies]` section of the manifest.
 fn dependencies(manifest: &str) -> Vec<&str> {
     let mut in_dependencies = false;
     let mut names = Vec::new();
@@ -23,10 +23,7 @@ fn domain_has_no_io_dependencies() {
         .into_iter()
         .filter(|name| FORBIDDEN.iter().any(|bad| name.starts_with(bad)))
         .collect();
-    assert!(
-        forbidden.is_empty(),
-        "rst-domain darf nicht abhängen von: {forbidden:?}"
-    );
+    assert!(forbidden.is_empty(), "rst-domain must not depend on: {forbidden:?}");
 }
 
 #[test]

@@ -1,12 +1,12 @@
-// Fake für Twitch und Spotify (RUST-PLAN.md Package 3): ein lokaler HTTP-Server, den die Vertragstests über die
-// Variablen aus env (providers.ts) statt der echten Dienste einsetzen. Kein echtes Konto, kein Netz nach aussen.
-//   Twitch-OAuth  /oauth2/token|validate|revoke   Code "code-<login>-<id>" ergibt Tokens für diesen Benutzer
+// Fake for Twitch and Spotify (RUST-PLAN.md package 3): a local HTTP server that the contract tests put in place of
+// the real services via the variables from env (providers.ts). No real account, no network to the outside.
+//   Twitch OAuth  /oauth2/token|validate|revoke   code "code-<login>-<id>" yields tokens for that user
 //   Helix         /helix/users|eventsub/subscriptions|chat/messages
 //   Spotify       /spotify-accounts/api/token, /spotify-api/me, /spotify-api/me/player/currently-playing
-//   WebSocket     /eventsub (schickt session_welcome), /irc
-//   Steuerung     POST /control/eventsub (JSON an alle EventSub-Clients), /control/irc (Zeilen an alle IRC-Clients),
-//                 /control/spotify (Token-Antwort, Konto, laufender Titel setzen)
-// WebSocket-Handshake und Frames sind von Hand (nur Text, Ping, Close), damit keine npm-Abhängigkeit nötig ist.
+//   WebSocket     /eventsub (sends session_welcome), /irc
+//   Control       POST /control/eventsub (JSON to all EventSub clients), /control/irc (lines to all IRC clients),
+//                 /control/spotify (set token answer, account, current track)
+// WebSocket handshake and frames are hand-written (text, ping, close only), so no npm dependency is needed.
 // Check: fakeProviders.check.ts.
 import { createHash } from "node:crypto";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
@@ -17,12 +17,12 @@ type SpotifyState = { token: Record<string, unknown> | null; account: string; pl
 
 export type FakeProviders = {
   url: string;
-  // Die Umgebung für den Server unter Test (providerUrls)
+  // The environment for the server under test (providerUrls)
   env: Record<string, string>;
   revoked: Set<string>;
   subscriptions: unknown[];
   chatMessages: unknown[];
-  // Zeilen, die IRC-Clients geschickt haben (PASS, NICK, JOIN ...)
+  // Lines that IRC clients sent (PASS, NICK, JOIN ...)
   ircReceived: string[];
   stop(): Promise<void>;
 };
@@ -79,7 +79,7 @@ function send(response: ServerResponse, status: number, body?: unknown) {
   response.end(body === undefined ? undefined : JSON.stringify(body));
 }
 
-// Der Benutzer zum Token aus "Authorization: Bearer|OAuth <token>"; widerrufene Tokens gelten nicht
+// The user of the token from "Authorization: Bearer|OAuth <token>"; revoked tokens do not count
 function bearer(state: State, request: IncomingMessage): User | null {
   const token = /^(?:Bearer|OAuth) (.+)$/.exec(request.headers.authorization ?? "")?.[1] ?? "";
   return state.revoked.has(token) ? null : state.tokens.get(token) ?? null;
@@ -187,7 +187,7 @@ function upgrade(state: State, request: IncomingMessage, socket: Socket) {
   }
 }
 
-// Server-Frame: unmaskiert, FIN gesetzt. opcode 1 = Text, 8 = Close, 10 = Pong
+// Server frame: unmasked, FIN set. opcode 1 = text, 8 = close, 10 = pong
 export function frame(text: string | Buffer, opcode = 1): Buffer {
   const payload = typeof text === "string" ? Buffer.from(text, "utf8") : text;
   const length = payload.length;
@@ -198,7 +198,7 @@ export function frame(text: string | Buffer, opcode = 1): Buffer {
   return Buffer.concat([Buffer.from([0x80 | opcode, 127]), big, payload]);
 }
 
-// Client-Frames lesen (immer maskiert). Text geht an onText, Ping bekommt Pong, Close wird beantwortet
+// Reads client frames (always masked). Text goes to onText, ping gets a pong, close is answered
 function readFrames(socket: Socket, onText: (text: string) => void) {
   let buffer = Buffer.alloc(0);
   socket.on("data", (chunk: Buffer) => {
@@ -212,7 +212,7 @@ function readFrames(socket: Socket, onText: (text: string) => void) {
   });
 }
 
-// Ein vollständiger Frame am Anfang von buffer oder null, wenn noch Bytes fehlen
+// A complete frame at the start of buffer, or null while bytes are missing
 export function parseFrame(buffer: Buffer): { opcode: number; payload: Buffer; size: number } | null {
   if (buffer.length < 2) return null;
   let length = buffer[1] & 0x7f;

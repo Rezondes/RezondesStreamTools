@@ -1,12 +1,12 @@
-// Prüft den Rust-Workspace server-rs/ (Teil von npm run verify): cargo fmt --check, clippy ohne Warnungen und die
-// Tests. cargo liegt in der Git-Bash oft nicht im PATH, deshalb sucht findCargo erst CARGO, dann ~/.cargo/bin.
-// In der CI ohne Rust-Toolchain (bis zum Umstieg, RUST-PLAN.md Package 45) wird mit Hinweis übersprungen.
+// Checks the Rust workspace server-rs/ (part of npm run verify): cargo fmt --check, clippy without warnings and the
+// tests. In Git Bash cargo is often missing from PATH, so findCargo tries CARGO first, then ~/.cargo/bin.
+// In CI without a Rust toolchain (until the switchover, RUST-PLAN.md package 45) it is skipped with a note.
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-// Pfad zu cargo; null, wenn es keins gibt. env, home und exists kommen von aussen, damit der Check sie setzen kann
+// Path to cargo; null if there is none. env, home and exists are passed in so the check can set them
 export function findCargo(env: Record<string, string | undefined>, home: string, exists: (path: string) => boolean): string | null {
   if (env.CARGO) return env.CARGO;
   for (const name of ["cargo.exe", "cargo"]) {
@@ -17,13 +17,13 @@ export function findCargo(env: Record<string, string | undefined>, home: string,
   return onPath.status === 0 ? "cargo" : null;
 }
 
-// Die drei Prüfungen in dieser Reihenfolge; die erste, die scheitert, beendet den Lauf
+// The three checks in this order; the first one that fails ends the run
 export const STEPS: readonly (readonly string[])[] = [
   ["fmt", "--all", "--check"],
   ["clippy", "--all-targets", "--quiet", "--", "-D", "warnings"],
   ["test", "--quiet"],
 ];
-// npm run gen:types: schreibt src/generated/ neu (ignorierter Test in rst-app/tests/export_types.rs)
+// npm run gen:types: rewrites src/generated/ (ignored test in rst-app/tests/export_types.rs)
 export const GEN_TYPES: readonly (readonly string[])[] = [
   ["test", "--quiet", "-p", "rst-app", "--test", "export_types", "--", "--ignored", "write_generated_files"],
 ];
@@ -32,16 +32,16 @@ function main() {
   const cargo = findCargo(process.env, homedir(), existsSync);
   if (!cargo) {
     if (process.env.CI === "true") {
-      console.log("Rust-Prüfung übersprungen: keine Rust-Toolchain in der CI");
+      console.log("Rust check skipped: no Rust toolchain in CI");
       return;
     }
-    console.error("cargo nicht gefunden: Rust installieren (rustup) oder CARGO setzen");
+    console.error("cargo not found: install Rust (rustup) or set CARGO");
     process.exit(1);
   }
   for (const step of process.argv[2] === "gen:types" ? GEN_TYPES : STEPS) {
     const run = spawnSync(cargo, step, { cwd: "server-rs", stdio: "inherit" });
     if (run.status !== 0) {
-      console.error(`Rust-Prüfung fehlgeschlagen: cargo ${step.join(" ")}`);
+      console.error(`Rust check failed: cargo ${step.join(" ")}`);
       process.exit(run.status ?? 1);
     }
   }

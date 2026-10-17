@@ -1,5 +1,5 @@
-// Check für rust.ts: cargo wird über CARGO oder ~/.cargo/bin gefunden, die Prüfungen laufen in fester Reihenfolge.
-// Läuft mit npm test.
+// Check for rust.ts: cargo is found via CARGO or ~/.cargo/bin, the checks run in a fixed order.
+// Runs with npm test.
 import assert from "node:assert/strict";
 import { join } from "node:path";
 import { findCargo, GEN_TYPES, STEPS } from "./rust.ts";
@@ -8,17 +8,17 @@ const home = join("home", "neo");
 const exe = join(home, ".cargo", "bin", "cargo.exe");
 const plain = join(home, ".cargo", "bin", "cargo");
 
-// CARGO gewinnt immer
+// CARGO always wins
 assert.equal(findCargo({ CARGO: "C:/rust/cargo.exe" }, home, () => true), "C:/rust/cargo.exe");
-// Sonst ~/.cargo/bin, unter Windows cargo.exe zuerst
+// Otherwise ~/.cargo/bin, on Windows cargo.exe first
 assert.equal(findCargo({}, home, path => path === exe), exe);
 assert.equal(findCargo({}, home, path => path === plain), plain);
 
-// Erst Format, dann clippy ohne Warnungen, dann Tests
+// Format first, then clippy without warnings, then tests
 assert.deepEqual(STEPS.map(step => step[0]), ["fmt", "clippy", "test"]);
 assert.ok(STEPS[1].includes("-D") && STEPS[1].includes("warnings"));
 
-// gen:types führt nur den ignorierten Schreib-Test aus
+// gen:types only runs the ignored write test
 assert.ok(GEN_TYPES[0].includes("--ignored") && GEN_TYPES[0].includes("write_generated_files"));
 
 console.log("rust ok");

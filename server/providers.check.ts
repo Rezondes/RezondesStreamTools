@@ -1,4 +1,4 @@
-// Check für providers.ts: ohne Variablen die echten Adressen, gesetzte Variablen ohne / am Ende. Läuft mit npm test.
+// Check for providers.ts: without variables the real URLs, set variables without a trailing /. Runs with npm test.
 import assert from "node:assert/strict";
 import { providerUrls, REAL_PROVIDERS } from "./providers.ts";
 
