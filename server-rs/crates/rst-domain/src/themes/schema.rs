@@ -104,10 +104,18 @@ pub struct ThemeSchema {
     pub id: String,
     pub name: String,
     pub fields: Vec<SettingField>,
-    #[serde(rename = "groupScenes", default, skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(
+        rename = "groupScenes",
+        default,
+        skip_serializing_if = "BTreeMap::is_empty"
+    )]
     #[ts(optional, as = "Option<BTreeMap<String, Vec<SceneName>>>")]
     pub group_scenes: BTreeMap<String, Vec<SceneName>>,
-    #[serde(rename = "minimeVariants", default, skip_serializing_if = "Option::is_none")]
+    #[serde(
+        rename = "minimeVariants",
+        default,
+        skip_serializing_if = "Option::is_none"
+    )]
     #[ts(optional)]
     pub minime_variants: Option<MinimeVariantSet>,
 }
@@ -149,6 +157,9 @@ mod tests {
 
     #[test]
     fn scene_names_serialize_lower_case() {
-        assert_eq!(serde_json::to_string(&SceneName::Brb).expect("serialize"), "\"brb\"");
+        assert_eq!(
+            serde_json::to_string(&SceneName::Brb).expect("serialize"),
+            "\"brb\""
+        );
     }
 }

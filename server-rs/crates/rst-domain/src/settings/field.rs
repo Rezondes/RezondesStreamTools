@@ -171,7 +171,13 @@ pub fn color(key: &str, label: &str, group: &str, value: &str) -> SettingField {
 
 /// Single-line text, at most `max_length` characters (default 200)
 #[must_use]
-pub fn text(key: &str, label: &str, group: &str, value: &str, max_length: Option<u32>) -> SettingField {
+pub fn text(
+    key: &str,
+    label: &str,
+    group: &str,
+    value: &str,
+    max_length: Option<u32>,
+) -> SettingField {
     field(
         key,
         label,
@@ -185,7 +191,13 @@ pub fn text(key: &str, label: &str, group: &str, value: &str, max_length: Option
 
 /// Multi-line text, at most `max_length` characters (default 4000)
 #[must_use]
-pub fn textarea(key: &str, label: &str, group: &str, value: &str, max_length: Option<u32>) -> SettingField {
+pub fn textarea(
+    key: &str,
+    label: &str,
+    group: &str,
+    value: &str,
+    max_length: Option<u32>,
+) -> SettingField {
     let kind = FieldKind::Textarea {
         default: value.to_owned(),
         max_length: Some(max_length.unwrap_or(4000)),
@@ -196,7 +208,13 @@ pub fn textarea(key: &str, label: &str, group: &str, value: &str, max_length: Op
 
 /// Multi-line text for ASCII art; the dashboard offers a generator from a name
 #[must_use]
-pub fn ascii_art(key: &str, label: &str, group: &str, value: &str, max_length: Option<u32>) -> SettingField {
+pub fn ascii_art(
+    key: &str,
+    label: &str,
+    group: &str,
+    value: &str,
+    max_length: Option<u32>,
+) -> SettingField {
     let kind = FieldKind::Textarea {
         default: value.to_owned(),
         max_length: Some(max_length.unwrap_or(4000)),
@@ -207,7 +225,13 @@ pub fn ascii_art(key: &str, label: &str, group: &str, value: &str, max_length: O
 
 /// Lines, at most `max_lines` (default 100)
 #[must_use]
-pub fn lines(key: &str, label: &str, group: &str, value: &[&str], max_lines: Option<u32>) -> SettingField {
+pub fn lines(
+    key: &str,
+    label: &str,
+    group: &str,
+    value: &[&str],
+    max_lines: Option<u32>,
+) -> SettingField {
     field(
         key,
         label,
@@ -327,7 +351,16 @@ mod tests {
 
     #[test]
     fn number_keeps_limits_and_drops_missing_unit_and_step() {
-        let size = number("size", "Size", "A", 10.0, 0.0, 100.0, Some(Unit::Px), Some(0.5));
+        let size = number(
+            "size",
+            "Size",
+            "A",
+            10.0,
+            0.0,
+            100.0,
+            Some(Unit::Px),
+            Some(0.5),
+        );
         let expected = json!({ "key": "size", "type": "number", "label": "Size", "group": "A", "default": 10.0, "min": 0.0, "max": 100.0, "unit": "px", "step": 0.5 });
         assert_eq!(serde_json::to_value(&size).expect("serialize"), expected);
         let count = number("count", "Count", "A", 3.0, 1.0, 9.0, None, None);
@@ -364,7 +397,10 @@ mod tests {
                 ..title
             }
         );
-        assert_eq!(serde_json::to_value(&scoped).expect("serialize")["scene"], json!("brb"));
+        assert_eq!(
+            serde_json::to_value(&scoped).expect("serialize")["scene"],
+            json!("brb")
+        );
     }
 
     #[test]

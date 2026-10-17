@@ -7,7 +7,9 @@ use serde_json::{Map, Value};
 use ts_rs::TS;
 
 use crate::media::values::MediaName;
-use crate::settings::field::{FieldKind, MediaKind, SettingField, SettingValue, SettingValues, SoundValue};
+use crate::settings::field::{
+    FieldKind, MediaKind, SettingField, SettingValue, SettingValues, SoundValue,
+};
 use crate::themes::schema::ThemeSchema;
 
 /// Limit of texts and lines without an own maximum
@@ -46,9 +48,9 @@ fn utf16_len(value: &str) -> usize {
 
 /// `^#[0-9a-f]{6}([0-9a-f]{2})?$`, case-insensitive
 fn is_color(value: &str) -> bool {
-    value
-        .strip_prefix('#')
-        .is_some_and(|hex| (hex.len() == 6 || hex.len() == 8) && hex.bytes().all(|byte| byte.is_ascii_hexdigit()))
+    value.strip_prefix('#').is_some_and(|hex| {
+        (hex.len() == 6 || hex.len() == 8) && hex.bytes().all(|byte| byte.is_ascii_hexdigit())
+    })
 }
 
 fn extensions(kind: MediaKind) -> &'static [&'static str] {
@@ -115,7 +117,9 @@ fn check_sound(value: &Value) -> Option<SettingErrorCode> {
 }
 
 fn limit(value: Option<u32>, fallback: usize) -> usize {
-    value.map_or(fallback, |limit| usize::try_from(limit).unwrap_or(usize::MAX))
+    value.map_or(fallback, |limit| {
+        usize::try_from(limit).unwrap_or(usize::MAX)
+    })
 }
 
 /// Error code for a value, `None` if it is valid
@@ -130,12 +134,16 @@ fn check_value(field: &SettingField, value: &Value) -> Option<SettingErrorCode> 
         }
         FieldKind::Lines { max_lines, .. } => check_lines(value, limit(*max_lines, LINE_LIMIT)),
         FieldKind::Number { min, max, .. } => match value.as_f64() {
-            Some(number) => (number < *min || number > *max).then_some(SettingErrorCode::OutOfRange),
+            Some(number) => {
+                (number < *min || number > *max).then_some(SettingErrorCode::OutOfRange)
+            }
             None => Some(SettingErrorCode::InvalidType),
         },
         FieldKind::Boolean { .. } => (!value.is_boolean()).then_some(SettingErrorCode::InvalidType),
         FieldKind::Select { options, .. } | FieldKind::Font { options, .. } => match value {
-            Value::String(option) => (!options.contains(option)).then_some(SettingErrorCode::UnknownOption),
+            Value::String(option) => {
+                (!options.contains(option)).then_some(SettingErrorCode::UnknownOption)
+            }
             _ => Some(SettingErrorCode::InvalidType),
         },
         FieldKind::Media { accept, .. } => check_media(value, *accept),
@@ -146,13 +154,23 @@ fn check_value(field: &SettingField, value: &Value) -> Option<SettingErrorCode> 
 /// A valid JSON value as the setting value of its field
 fn to_setting(field: &SettingField, value: &Value) -> SettingValue {
     match (&field.kind, value) {
-        (FieldKind::Number { .. }, Value::Number(number)) => SettingValue::Number(number.as_f64().unwrap_or_default()),
-        (FieldKind::Boolean { .. }, Value::Bool(flag)) => SettingValue::Flag(*flag),
-        (FieldKind::Lines { .. }, Value::Array(items)) => {
-            SettingValue::Lines(items.iter().filter_map(Value::as_str).map(str::to_owned).collect())
+        (FieldKind::Number { .. }, Value::Number(number)) => {
+            SettingValue::Number(number.as_f64().unwrap_or_default())
         }
+        (FieldKind::Boolean { .. }, Value::Bool(flag)) => SettingValue::Flag(*flag),
+        (FieldKind::Lines { .. }, Value::Array(items)) => SettingValue::Lines(
+            items
+                .iter()
+                .filter_map(Value::as_str)
+                .map(str::to_owned)
+                .collect(),
+        ),
         (FieldKind::Sound { .. }, sound) => SettingValue::Sound(SoundValue {
-            file: sound.get("file").and_then(Value::as_str).unwrap_or_default().to_owned(),
+            file: sound
+                .get("file")
+                .and_then(Value::as_str)
+                .unwrap_or_default()
+                .to_owned(),
             volume: sound.get("volume").and_then(Value::as_f64).unwrap_or(1.0),
         }),
         (_, Value::String(text)) => SettingValue::Text(text.clone()),
@@ -217,7 +235,9 @@ mod tests {
     use serde_json::json;
 
     use super::*;
-    use crate::settings::field::{Unit, choice, color, flag, font, lines, media, number, sound, text};
+    use crate::settings::field::{
+        Unit, choice, color, flag, font, lines, media, number, sound, text,
+    };
 
     fn probe() -> ThemeSchema {
         ThemeSchema {
@@ -227,7 +247,16 @@ mod tests {
                 color("accent", "Color", "General", "#39ff14"),
                 text("title", "Title", "General", "HELLO", Some(10)),
                 lines("lines", "Lines", "Terminal", &["a"], Some(2)),
-                number("size", "Size", "General", 10.0, 0.0, 100.0, Some(Unit::Px), None),
+                number(
+                    "size",
+                    "Size",
+                    "General",
+                    10.0,
+                    0.0,
+                    100.0,
+                    Some(Unit::Px),
+                    None,
+                ),
                 flag("glow", "Glow", "General", true),
                 choice("art", "Display", "Music", "cover", &["cover", "vinyl"]),
                 font(
@@ -262,9 +291,18 @@ mod tests {
 
     #[test]
     fn resolve_keeps_valid_values_and_drops_foreign_keys() {
-        let resolved = resolve_settings(&probe(), &json!({ "accent": "#ff0000", "title": 42, "stranger": "x" }));
-        assert_eq!(resolved.get("accent"), Some(&SettingValue::Text("#ff0000".to_owned())));
-        assert_eq!(resolved.get("title"), Some(&SettingValue::Text("HELLO".to_owned())));
+        let resolved = resolve_settings(
+            &probe(),
+            &json!({ "accent": "#ff0000", "title": 42, "stranger": "x" }),
+        );
+        assert_eq!(
+            resolved.get("accent"),
+            Some(&SettingValue::Text("#ff0000".to_owned()))
+        );
+        assert_eq!(
+            resolved.get("title"),
+            Some(&SettingValue::Text("HELLO".to_owned()))
+        );
         assert_eq!(resolved.get("size"), Some(&SettingValue::Number(10.0)));
         assert!(!resolved.contains_key("stranger"));
         assert_eq!(resolved.len(), probe().fields.len());
@@ -286,7 +324,10 @@ mod tests {
         });
         let good = validate_settings(&probe(), &input);
         assert!(good.errors.is_empty(), "{:?}", good.errors);
-        assert_eq!(good.values.get("art"), Some(&SettingValue::Text("vinyl".to_owned())));
+        assert_eq!(
+            good.values.get("art"),
+            Some(&SettingValue::Text("vinyl".to_owned()))
+        );
         let ping = SoundValue {
             file: "ping.mp3".to_owned(),
             volume: 0.5,
@@ -327,12 +368,17 @@ mod tests {
             codes(&validate_settings(&probe(), &json!({ "logo": "clip.mp4" }))),
             ["logo:invalid_media"]
         );
-        assert!(validate_settings(&probe(), &json!({ "logo": "" })).errors.is_empty());
+        assert!(
+            validate_settings(&probe(), &json!({ "logo": "" }))
+                .errors
+                .is_empty()
+        );
     }
 
     #[test]
     fn wrong_types_inside_lines_and_sound_and_utf16_lengths() {
-        let input = json!({ "lines": [1], "ping": { "file": 3, "volume": 0.5 }, "title": "é".repeat(10) });
+        let input =
+            json!({ "lines": [1], "ping": { "file": 3, "volume": 0.5 }, "title": "é".repeat(10) });
         assert_eq!(
             codes(&validate_settings(&probe(), &input)),
             ["lines:invalid_type", "ping:invalid_type"]
@@ -342,7 +388,10 @@ mod tests {
             ["ping:invalid_type"]
         );
         assert_eq!(
-            codes(&validate_settings(&probe(), &json!({ "title": "😀".repeat(6) }))),
+            codes(&validate_settings(
+                &probe(),
+                &json!({ "title": "😀".repeat(6) })
+            )),
             ["title:too_long"]
         );
     }
@@ -372,6 +421,10 @@ mod tests {
                 )
             })
             .collect();
-        assert!(validate_settings(&schema, &Value::Object(defaults)).errors.is_empty());
+        assert!(
+            validate_settings(&schema, &Value::Object(defaults))
+                .errors
+                .is_empty()
+        );
     }
 }

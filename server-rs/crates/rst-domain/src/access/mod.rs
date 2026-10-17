@@ -37,7 +37,9 @@ impl Feature {
 
     #[must_use]
     pub fn parse(value: &str) -> Option<Self> {
-        Self::ALL.into_iter().find(|feature| feature.name() == value)
+        Self::ALL
+            .into_iter()
+            .find(|feature| feature.name() == value)
     }
 
     #[must_use]
@@ -108,7 +110,10 @@ pub struct AccessPolicy {
 /// Valid logins in input order, without duplicates
 fn logins(values: &[String]) -> Vec<Login> {
     let mut list: Vec<Login> = Vec::new();
-    for login in values.iter().filter_map(|value| Login::parse(value.trim()).ok()) {
+    for login in values
+        .iter()
+        .filter_map(|value| Login::parse(value.trim()).ok())
+    {
         if !list.contains(&login) {
             list.push(login);
         }
@@ -155,12 +160,19 @@ impl AccessPolicy {
 
     #[must_use]
     pub fn can_use(&self, admins: &[Login], login: &Login) -> bool {
-        is_admin(admins, login) || self.registration == Registration::Open || self.allowlist.contains(login)
+        is_admin(admins, login)
+            || self.registration == Registration::Open
+            || self.allowlist.contains(login)
     }
 
     #[must_use]
     pub fn has_feature(&self, admins: &[Login], login: &Login, feature: Feature) -> bool {
-        match self.features.get(&feature).copied().unwrap_or(FeatureLevel::All) {
+        match self
+            .features
+            .get(&feature)
+            .copied()
+            .unwrap_or(FeatureLevel::All)
+        {
             FeatureLevel::All => true,
             FeatureLevel::Beta => is_admin(admins, login) || self.beta.contains(login),
             FeatureLevel::Off => false,
@@ -184,7 +196,12 @@ pub fn is_admin(admins: &[Login], login: &Login) -> bool {
 
 /// Logins from running that lose access when switching from before to after (their runtime stops immediately)
 #[must_use]
-pub fn revoked_logins(before: &AccessPolicy, after: &AccessPolicy, admins: &[Login], running: &[Login]) -> Vec<Login> {
+pub fn revoked_logins(
+    before: &AccessPolicy,
+    after: &AccessPolicy,
+    admins: &[Login],
+    running: &[Login],
+) -> Vec<Login> {
     running
         .iter()
         .filter(|login| before.can_use(admins, login) && !after.can_use(admins, login))
@@ -200,7 +217,12 @@ mod tests {
         Login::parse(value).expect("valid login")
     }
 
-    fn raw(registration: Option<&str>, allowlist: &[&str], beta: &[&str], features: &[(&str, &str)]) -> RawAccess {
+    fn raw(
+        registration: Option<&str>,
+        allowlist: &[&str],
+        beta: &[&str],
+        features: &[(&str, &str)],
+    ) -> RawAccess {
         let strings = |values: &[&str]| values.iter().map(|value| (*value).to_owned()).collect();
         RawAccess {
             registration: registration.map(str::to_owned),
@@ -268,7 +290,10 @@ mod tests {
         assert_eq!(odd.allowlist, vec![login("a")]);
         assert_eq!(odd.features.get(&Feature::Music), Some(&FeatureLevel::All));
         assert_eq!(odd.features.len(), 9);
-        assert_eq!(odd.features.get(&Feature::Minimes), Some(&FeatureLevel::All));
+        assert_eq!(
+            odd.features.get(&Feature::Minimes),
+            Some(&FeatureLevel::All)
+        );
     }
 
     #[test]
@@ -293,7 +318,12 @@ mod tests {
         assert!(revoked_logins(&before, &nobody, &admins(), &[login("rezondes")]).is_empty());
         let open = AccessPolicy::sanitize(&raw(Some("open"), &[], &[], &[]));
         assert_eq!(
-            revoked_logins(&open, &only_second, &admins(), &[login("stranger"), login("friend2")]),
+            revoked_logins(
+                &open,
+                &only_second,
+                &admins(),
+                &[login("stranger"), login("friend2")]
+            ),
             vec![login("stranger")]
         );
         assert!(revoked_logins(&before, &before, &admins(), &[login("friend1")]).is_empty());
@@ -309,7 +339,8 @@ mod tests {
             serde_json::from_str::<AccessPolicy>(&json).expect("deserialize"),
             policy
         );
-        let raw: RawAccess = serde_json::from_str("{\"allowlist\":[\"Neo\"]}").expect("lenient input");
+        let raw: RawAccess =
+            serde_json::from_str("{\"allowlist\":[\"Neo\"]}").expect("lenient input");
         assert_eq!(AccessPolicy::sanitize(&raw).allowlist, vec![login("neo")]);
     }
 }

@@ -88,7 +88,9 @@ impl OverlayRoute {
             "index.html" => None,
             _ if is_scene_file(segment) => Some(Self::Scene(segment.to_owned())),
             // Short URL without extension, only for known scenes
-            _ if SceneName::parse(segment).is_some() => Some(Self::Scene(format!("{segment}.html"))),
+            _ if SceneName::parse(segment).is_some() => {
+                Some(Self::Scene(format!("{segment}.html")))
+            }
             _ => None,
         }
     }
@@ -175,7 +177,10 @@ mod tests {
         assert_eq!(route(&["info"]), Some(scene("info.html")));
         assert_eq!(route(&["alerts.html"]), Some(scene("alerts.html")));
         let lizard = MediaName::parse("lizard.gif").expect("valid name");
-        assert_eq!(route(&["media", "lizard.gif"]), Some(OverlayRoute::Media(lizard)));
+        assert_eq!(
+            route(&["media", "lizard.gif"]),
+            Some(OverlayRoute::Media(lizard))
+        );
     }
 
     #[test]

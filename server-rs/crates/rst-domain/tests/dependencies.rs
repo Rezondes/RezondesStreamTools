@@ -23,7 +23,10 @@ fn domain_has_no_io_dependencies() {
         .into_iter()
         .filter(|name| FORBIDDEN.iter().any(|bad| name.starts_with(bad)))
         .collect();
-    assert!(forbidden.is_empty(), "rst-domain must not depend on: {forbidden:?}");
+    assert!(
+        forbidden.is_empty(),
+        "rst-domain must not depend on: {forbidden:?}"
+    );
 }
 
 #[test]

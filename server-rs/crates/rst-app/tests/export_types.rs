@@ -5,7 +5,8 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
-const HEADER: &str = "// Generated from server-rs (rst-app/src/api), do not edit by hand: npm run gen:types\n";
+const HEADER: &str =
+    "// Generated from server-rs (rst-app/src/api), do not edit by hand: npm run gen:types\n";
 /// Files in `src/generated/` that do not come from the export
 const KEEP: [&str; 1] = ["README.md"];
 
@@ -16,13 +17,17 @@ fn generated_dir() -> PathBuf {
 /// All files of a directory tree: relative path with `/` -> content
 fn read_tree(root: &Path) -> BTreeMap<String, String> {
     fn walk(root: &Path, dir: &Path, files: &mut BTreeMap<String, String>) {
-        let Ok(entries) = fs::read_dir(dir) else { return };
+        let Ok(entries) = fs::read_dir(dir) else {
+            return;
+        };
         for entry in entries.flatten() {
             let path = entry.path();
             if path.is_dir() {
                 walk(root, &path, files);
             } else if let Ok(text) = fs::read_to_string(&path) {
-                let relative = path.strip_prefix(root).map_or_else(|_| path.clone(), Path::to_path_buf);
+                let relative = path
+                    .strip_prefix(root)
+                    .map_or_else(|_| path.clone(), Path::to_path_buf);
                 files.insert(
                     relative.to_string_lossy().replace('\\', "/"),
                     text.replace("\r\n", "\n"),
@@ -39,7 +44,7 @@ fn read_tree(root: &Path) -> BTreeMap<String, String> {
 fn expected() -> BTreeMap<String, String> {
     let dir = std::env::temp_dir().join(format!("rst-export-{}", std::process::id()));
     let _ = fs::remove_dir_all(&dir);
-    rst_app::api::export_all(&rst_app::api::export_config(&dir)).expect("export");
+    rst_app::api::export_all(&dir).expect("export");
     let files = read_tree(&dir)
         .into_iter()
         .map(|(name, text)| (name, format!("{HEADER}{text}")))
@@ -56,7 +61,10 @@ fn actual() -> BTreeMap<String, String> {
 }
 
 /// Differences as a readable list; empty = everything current
-fn differences(expected: &BTreeMap<String, String>, actual: &BTreeMap<String, String>) -> Vec<String> {
+fn differences(
+    expected: &BTreeMap<String, String>,
+    actual: &BTreeMap<String, String>,
+) -> Vec<String> {
     let mut problems = Vec::new();
     for (name, text) in expected {
         match actual.get(name) {

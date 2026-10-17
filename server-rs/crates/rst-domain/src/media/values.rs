@@ -45,7 +45,9 @@ impl MediaName {
         let bytes = stem.as_bytes();
         let valid_stem = bytes.first().is_some_and(|first| is_word(*first))
             && bytes.len() <= MEDIA_STEM_MAX
-            && bytes.iter().all(|byte| is_word(*byte) || b" ()-".contains(byte));
+            && bytes
+                .iter()
+                .all(|byte| is_word(*byte) || b" ()-".contains(byte));
         if known && valid_stem {
             Ok(Self(value.to_owned()))
         } else {
@@ -90,7 +92,13 @@ mod tests {
 
     #[test]
     fn media_name_accepts_simple_names() {
-        for value in ["a.png", "lizard.gif", "Lizard (2).MP4", "my lizard.webm", "x_1-2.jpeg"] {
+        for value in [
+            "a.png",
+            "lizard.gif",
+            "Lizard (2).MP4",
+            "my lizard.webm",
+            "x_1-2.jpeg",
+        ] {
             assert!(MediaName::parse(value).is_ok(), "{value}");
         }
         assert!(MediaName::parse(&format!("{}.png", "a".repeat(100))).is_ok());

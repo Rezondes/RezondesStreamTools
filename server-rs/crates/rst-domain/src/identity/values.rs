@@ -51,7 +51,9 @@ impl TwitchUserId {
     /// # Errors
     /// When the value is empty, longer than 20 characters or contains anything but digits.
     pub fn parse(value: &str) -> Result<Self, InvalidValue> {
-        let valid = !value.is_empty() && value.len() <= USER_ID_MAX && value.bytes().all(|byte| byte.is_ascii_digit());
+        let valid = !value.is_empty()
+            && value.len() <= USER_ID_MAX
+            && value.bytes().all(|byte| byte.is_ascii_digit());
         if valid {
             Ok(Self(value.to_owned()))
         } else {
@@ -119,7 +121,11 @@ mod tests {
     #[test]
     fn login_rejects_invalid_values() {
         for value in ["", "a b", "neo!", "../neo", &"a".repeat(26)] {
-            assert_eq!(Login::parse(value), Err(InvalidValue::new("login")), "{value}");
+            assert_eq!(
+                Login::parse(value),
+                Err(InvalidValue::new("login")),
+                "{value}"
+            );
         }
     }
 
