@@ -14,11 +14,12 @@ hmac.workspace = true
 rst-domain.workspace = true
 serde.workspace = true
 serde_json.workspace = true
-tokio = { workspace = true, features = ["sync"] }
+tokio = { workspace = true, features = ["sync", "rt", "time"] }
 sha2.workspace = true
 subtle.workspace = true
 ts-rs.workspace = true
 zeroize.workspace = true
+tokio-util.workspace = true
 
 [dev-dependencies]
-tokio.workspace = true
+tokio = { workspace = true, features = ["test-util"] }

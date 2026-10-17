@@ -27,9 +27,9 @@ use crate::handlers::Call;
 
 const PING: Duration = Duration::from_secs(25);
 
-/// Until the runtime (package 32): a streamer with Twitch tokens counts as running
-async fn running(app: &App, id: &StreamerId) -> Result<bool, String> {
-    Ok(app.stores.profile.twitch_tokens(id).await.map_err(|error| error.to_string())?.is_some())
+/// A streamer is running when the registry holds a runtime for them
+fn running(app: &App, id: &StreamerId) -> bool {
+    app.runtimes.get(id).is_some()
 }
 
 fn data(message: &ServerMessage) -> Event {
@@ -45,10 +45,8 @@ pub async fn stream(
     uri: &Uri,
     cookies: Option<&str>,
 ) -> Response {
-    match running(app, id).await {
-        Ok(true) => {}
-        Ok(false) => return text(404, "not-running"),
-        Err(error) => return server_error(&error),
+    if !running(app, id) {
+        return text(404, "not-running");
     }
     let query = Query::<HashMap<String, String>>::try_from_uri(uri).map(|query| query.0).unwrap_or_default();
     let watcher = query.contains_key("log");
@@ -83,7 +81,7 @@ pub async fn stream(
 }
 
 /// Test buttons of the dashboard: one sample alert per kind
-pub async fn test_alert(call: Call<'_>) -> Response {
+pub fn test_alert(call: &Call<'_>) -> Response {
     let app = call.app;
     let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
     let query =
@@ -91,10 +89,8 @@ pub async fn test_alert(call: Call<'_>) -> Response {
     let Some(kind) = query.get("kind").and_then(|kind| AlertKind::parse(kind)) else {
         return text(400, "unknown-kind");
     };
-    match running(app, id).await {
-        Ok(true) => {}
-        Ok(false) => return text(409, "not-connected"),
-        Err(error) => return server_error(&error),
+    if !running(app, id) {
+        return text(409, "not-connected");
     }
     app.hubs.emit(id, &ServerMessage::Alert { alert: sample_alert(kind) });
     json(&json!({ "ok": true }), 200)

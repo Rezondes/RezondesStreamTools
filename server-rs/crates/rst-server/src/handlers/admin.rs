@@ -38,8 +38,10 @@ pub async fn save_access(call: Call<'_>) -> Response {
     match app.access_admin().change(&raw, &actor, now_ms()).await {
         Ok((policy, revoked)) => {
             for login in &revoked {
-                println!("Access revoked, sessions ended: {login}");
+                println!("Access revoked, sessions ended and runtime stopped: {login}");
             }
+            // Changed feature levels apply to every runtime
+            app.restart_all().await;
             json(&policy, 200)
         }
         Err(error) => server_error(&error.to_string()),

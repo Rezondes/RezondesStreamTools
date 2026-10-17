@@ -202,6 +202,10 @@ mod tests {
             }))
         }
 
+        async fn validate(&self, tokens: &TwitchTokens) -> Result<Option<TwitchTokens>, ProviderError> {
+            Ok(Some(tokens.clone()))
+        }
+
         async fn revoke(&self, access: &str) -> Result<(), ProviderError> {
             self.revoked.lock().map_err(|_| ProviderError::new("lock"))?.push(access.to_owned());
             Ok(())

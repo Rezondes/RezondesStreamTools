@@ -29,4 +29,11 @@ pub trait TwitchAuth: Send + Sync {
 
     /// Invalidates the token at Twitch
     fn revoke(&self, access: &str) -> impl Future<Output = Result<(), ProviderError>> + Send;
+
+    /// Twitch requires a regular check: the same tokens when valid, renewed ones when expired, `None` when the login
+    /// is rejected; network problems are errors, so they never end a login
+    fn validate(
+        &self,
+        tokens: &TwitchTokens,
+    ) -> impl Future<Output = Result<Option<TwitchTokens>, ProviderError>> + Send;
 }

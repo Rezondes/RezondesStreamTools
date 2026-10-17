@@ -89,6 +89,27 @@ impl TwitchAuth for TwitchClient {
         })))
     }
 
+    async fn validate(&self, tokens: &TwitchTokens) -> Result<Option<TwitchTokens>, ProviderError> {
+        let response = self
+            .http
+            .get(format!("{}/validate", self.id_url))
+            .header("Authorization", format!("OAuth {}", tokens.access))
+            .send()
+            .await
+            .map_err(ProviderError::new)?;
+        if response.status().is_success() {
+            return Ok(Some(tokens.clone()));
+        }
+        if response.status() != StatusCode::UNAUTHORIZED {
+            return Err(ProviderError::new(format!("Twitch token validation failed: {}", response.status())));
+        }
+        let form = [("grant_type", "refresh_token"), ("refresh_token", tokens.refresh.as_str())];
+        let Some(answer) = self.token(&form).await? else { return Ok(None) };
+        let text = |key: &str| answer.get(key).and_then(Value::as_str).map(str::to_owned);
+        let (Some(access), refresh) = (text("access_token"), text("refresh_token")) else { return Ok(None) };
+        Ok(Some(TwitchTokens { access, refresh: refresh.unwrap_or_else(|| tokens.refresh.clone()), ..tokens.clone() }))
+    }
+
     async fn revoke(&self, access: &str) -> Result<(), ProviderError> {
         let form = [("client_id", self.client_id.as_str()), ("token", access)];
         let response =

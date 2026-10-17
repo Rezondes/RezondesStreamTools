@@ -60,8 +60,9 @@ async fn serve() -> Result<ExitCode, String> {
     let stores = wiring::open(&config.stores).await?;
     let address = SocketAddr::from(([0, 0, 0, 0], config.port));
     let listener = tokio::net::TcpListener::bind(address).await.map_err(|error| format!("{address}: {error}"))?;
-    println!("Overlay server on {}", config.public_url);
     let app = Arc::new(app::App::new(config, stores));
+    let running = app.restart_all().await;
+    println!("Overlay server on {} ({running} streamers running)", app.config.public_url);
     axum::serve(listener, app::router(app))
         .with_graceful_shutdown(async {
             let _ = tokio::signal::ctrl_c().await;

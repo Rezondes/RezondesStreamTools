@@ -64,7 +64,10 @@ pub async fn callback(call: Call<'_>) -> Response {
         return redirect("/?error=login-failed", &[clear_state]);
     }
     match app.login_flow().complete(&app.twitch, code, now_ms()).await {
-        Ok(LoginOutcome::Session { token, .. }) => {
+        Ok(LoginOutcome::Session { streamer, token }) => {
+            if let Err(error) = app.start_runtime(&streamer).await {
+                eprintln!("Runtime after login did not start: {error}");
+            }
             let session = session_cookie(&token.to_text(), app.secure, SESSION_DAYS * 86_400);
             redirect("/", &[clear_state, session])
         }
@@ -117,7 +120,11 @@ pub async fn rotate_overlay_key(call: Call<'_>) -> Response {
     let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
     let Ok(random) = random_bytes::<16>() else { return server_error("no random bytes for the overlay key") };
     match call.app.stores.overlay_keys.rotate(id, random, now_ms()).await {
-        Ok(overlay_key) => json(&json!({ "overlayKey": overlay_key }), 200),
+        Ok(overlay_key) => {
+            // Streams opened with the old key end; the overlays reconnect with the new one
+            call.app.hubs.close(id);
+            json(&json!({ "overlayKey": overlay_key }), 200)
+        }
         Err(error) => server_error(&error.to_string()),
     }
 }
@@ -126,6 +133,12 @@ pub async fn rotate_overlay_key(call: Call<'_>) -> Response {
 pub async fn disconnect(call: Call<'_>) -> Response {
     let app = call.app;
     let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
+    // Stop first and wait for a running token check, it may still save renewed tokens
+    let runtime = app.runtimes.get(id);
+    app.stop_runtime(id);
+    if let Some(runtime) = runtime {
+        runtime.keeper.idle().await;
+    }
     let actor = call.visitor.login.as_deref().unwrap_or("unknown");
     if let Err(error) = app.login_flow().disconnect(&app.twitch, id, actor, now_ms()).await {
         return server_error(&error.to_string());

@@ -10,6 +10,8 @@ use axum::extract::{Request, State};
 use axum::http::{HeaderValue, header};
 use axum::response::Response;
 use rst_app::access::admin::AccessAdmin;
+use rst_app::channel::registry::Registry;
+use rst_app::channel::runtime::{StreamerRuntime, start_all};
 use rst_app::commands::CommandService;
 use rst_app::events::Hubs;
 use rst_app::identity::login::LoginFlow;
@@ -18,6 +20,7 @@ use rst_app::triggers::TriggerService;
 use rst_domain::access::is_admin;
 use rst_domain::identity::oauth::LoginStates;
 use rst_domain::identity::session::{OAUTH_STATE_SECONDS, is_secure_url};
+use rst_domain::identity::values::StreamerId;
 use rst_domain::media::library::UploadSlots;
 use rst_domain::paths::StreamerPath;
 use rst_infra::db::sqlite_audit::SqliteAudit;
@@ -45,6 +48,7 @@ const FRAME_CSP: &str = "frame-ancestors 'self'";
 pub type AppAccessAdmin<'a> =
     AccessAdmin<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
 
+pub type AppRuntime = StreamerRuntime<TwitchClient, SqliteRecords, SqliteKeyStore>;
 pub type AppCommands<'a> = CommandService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 pub type AppTriggers<'a> = TriggerService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 pub type AppSettings<'a> = SettingsService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
@@ -63,6 +67,7 @@ pub struct App {
     pub stores: Stores,
     pub twitch: TwitchClient,
     pub hubs: Hubs,
+    pub runtimes: Registry<AppRuntime>,
     twitch_states: Mutex<LoginStates<()>>,
     uploads: Mutex<UploadSlots>,
 }
@@ -95,6 +100,7 @@ impl App {
             secure: is_secure_url(&config.public_url),
             twitch,
             hubs: Hubs::default(),
+            runtimes: Registry::default(),
             twitch_states: Mutex::new(LoginStates::new(OAUTH_STATE_SECONDS * 1000, PENDING_LOGINS)),
             uploads: Mutex::new(UploadSlots::default()),
             config,
@@ -156,6 +162,57 @@ impl App {
     #[must_use]
     pub fn settings_service(&self) -> AppSettings<'_> {
         SettingsService { profile: &self.stores.profile, audit: &self.stores.audit }
+    }
+
+    /// (Re)starts the runtime of a streamer with tokens who may use the server; `false` when none runs
+    ///
+    /// # Errors
+    /// When the profile cannot be read.
+    pub async fn start_runtime(&self, id: &StreamerId) -> Result<bool, String> {
+        let login = self.stores.streamers.login_of(id).await.map_err(|error| error.to_string())?.ok_or("no profile")?;
+        let create = async {
+            let started = StreamerRuntime::start(
+                id.clone(),
+                login.clone(),
+                self.twitch.clone(),
+                self.stores.profile.clone(),
+                now_ms,
+            )
+            .await;
+            started.unwrap_or_else(|error| {
+                eprintln!("Runtime of {login} did not start: {error}");
+                None
+            })
+        };
+        let admins = &self.config.admins;
+        let allowed =
+            async { self.stores.access.load(admins).await.is_ok_and(|policy| policy.can_use(admins, &login)) };
+        Ok(self.runtimes.start(id, create, allowed).await.is_some())
+    }
+
+    /// Stops the runtime and closes every open stream of the streamer
+    pub fn stop_runtime(&self, id: &StreamerId) {
+        self.runtimes.stop(id);
+        self.hubs.close(id);
+    }
+
+    /// After changed access or feature levels: every allowed streamer restarts, the others stop
+    pub async fn restart_all(&self) -> usize {
+        let ids = match self.stores.streamers.list().await {
+            Ok(streamers) => streamers.into_iter().filter_map(|streamer| streamer.id).collect(),
+            Err(error) => {
+                eprintln!("Listing the streamers failed: {error}");
+                Vec::new()
+            }
+        };
+        start_all(ids, |id| async move {
+            let running = self.start_runtime(&id).await?;
+            if !running {
+                self.stop_runtime(&id);
+            }
+            Ok(running)
+        })
+        .await
     }
 
     #[must_use]
