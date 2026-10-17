@@ -31,12 +31,12 @@ assert.equal(minimeRules(parseSettingsFile({ theme: "suedfrucht", values: {} }))
 }
 
 // Public view: resolved values of the chosen theme, nothing else
-const file = parseSettingsFile({ theme: "matrix", values: { matrix: { accent: "#ff0000", fremd: 1 } } });
+const file = parseSettingsFile({ theme: "matrix", values: { matrix: { accent: "#ff0000", foreign: 1 } } });
 const view = publicSettings(file);
 assert.equal(view.theme, "matrix");
 assert.equal(view.values.accent, "#ff0000");
 assert.equal(view.values.channelName, "STREAM");
-assert.equal("fremd" in view.values, false);
+assert.equal("foreign" in view.values, false);
 
 // Save: valid gives the new file, invalid errors and no file, an unknown theme its own code
 const saved = updateSettings(file, "matrix", { accent: "#00ff00" });

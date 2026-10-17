@@ -11,10 +11,10 @@ assert.equal(states.take("a", now + 1000), "rezondes");
 assert.equal(states.take("a", now + 1000), null);
 // Unknown or empty: null
 assert.equal(states.take("", now), null);
-assert.equal(states.take("fremd", now), null);
+assert.equal(states.take("foreign", now), null);
 
 // Expired after ttlMs
-states.add("b", "freund", now);
+states.add("b", "friend", now);
 assert.equal(states.take("b", now + 600_000), null);
 
 // Above the limit the oldest drop out

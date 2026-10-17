@@ -134,7 +134,7 @@ assert.equal(run([[join("neo", null, "#000000"), 0]], { ...RULES, useTwitchColor
   const cleared = apply(state, { type: "clear" }, 1, RULES);
   assert.deepEqual({ roster: cleared.state.roster, changed: cleared.changed }, { roster: [], changed: true });
   assert.equal(apply(cleared.state, { type: "clear" }, 2, RULES).changed, false);
-  assert.equal(apply(state, { type: "leave", login: "fremd" }, 1, RULES).changed, false);
+  assert.equal(apply(state, { type: "leave", login: "foreign" }, 1, RULES).changed, false);
 }
 
 // Color memory: limited, the longest unused one drops out

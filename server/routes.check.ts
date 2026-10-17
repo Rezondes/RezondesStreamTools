@@ -16,7 +16,7 @@ assert.equal(find("GET", "/api/triggers/config/x"), null);
 assert.equal(find("GET", "constructor"), null);
 
 const allOn = { alerts: true, chat: true, music: true, fx: true, triggers: true, stinger: true, banners: true };
-const streamer: Visitor = { login: "freund", allowed: true, admin: false, features: allOn };
+const streamer: Visitor = { login: "friend", allowed: true, admin: false, features: allOn };
 
 // Public routes need no session
 assert.equal(authorize(ROUTES["GET /auth/login"], { login: null, allowed: false, admin: false, features: {} }), "ok");

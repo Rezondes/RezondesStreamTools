@@ -16,8 +16,8 @@ try {
   await mkdir(folder, { recursive: true });
   await mkdir(join(dataDir, "streamers", "Kein Login"));
   await writeFile(join(dataDir, "streamers", "datei.txt"), "");
-  await mkdir(join(dataDir, "streamers", "freund"));
-  assert.deepEqual(await profile.list(dataDir), ["freund", "rezondes"]);
+  await mkdir(join(dataDir, "streamers", "friend"));
+  assert.deepEqual(await profile.list(dataDir), ["friend", "rezondes"]);
 
   // Tokens: save, read, delete
   const tokens = { access: "access-value", refresh: "refresh-value", userId: "123", login: "rezondes" };
@@ -37,7 +37,7 @@ try {
   // reassigned after a rename) does not get it; a new profile without an owner belongs to the first account
   assert.equal(await profile.ownedByOther(folder, "123"), false);
   assert.equal(await profile.ownedByOther(folder, "999"), true);
-  assert.equal(await profile.ownedByOther(profile.folder(dataDir, "freund"), "999"), false);
+  assert.equal(await profile.ownedByOther(profile.folder(dataDir, "friend"), "999"), false);
   // Older profiles without a saved ID: the ID from tokens.json counts
   await writeFile(join(folder, "profile.json"), JSON.stringify({ lastLogin: 1 }));
   await profile.saveTokens(folder, tokens);
