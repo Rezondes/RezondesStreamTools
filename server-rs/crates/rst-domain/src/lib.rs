@@ -7,3 +7,4 @@ pub mod media;
 pub mod paths;
 pub mod settings;
 pub mod themes;
+pub mod triggers;
