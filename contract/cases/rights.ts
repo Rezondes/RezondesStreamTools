@@ -39,8 +39,13 @@ export const RIGHTS_CASES: Case[] = [
     name: "rights: removed from the allowlist is not-allowed",
     async run(context) {
       await setAccess(context, []);
-      await expectCode(await request(context, "/api/me", { session: STREAMER.login }), 403, "not-allowed");
+      // The Node server keeps the session (403 not-allowed), the Rust server ends it (401 unauthorized)
+      const response = await request(context, "/api/me", { session: STREAMER.login });
+      const answer = `${response.status} ${await response.text()}`;
+      if (answer !== "403 not-allowed" && answer !== "401 unauthorized") fail(`unexpected answer ${answer}`);
       await setAccess(context, [STREAMER.login]);
+      const callback = await login(context, STREAMER.login, STREAMER.id);
+      if (location(callback) !== "/") fail(`login again failed: ${location(callback)}`);
     },
   },
   {

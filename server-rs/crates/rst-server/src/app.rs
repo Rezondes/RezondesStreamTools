@@ -11,11 +11,11 @@ use axum::http::{HeaderValue, header};
 use axum::response::Response;
 use rst_app::access::admin::AccessAdmin;
 use rst_app::identity::login::LoginFlow;
+use rst_app::settings::SettingsService;
 use rst_domain::access::is_admin;
 use rst_domain::identity::oauth::LoginStates;
 use rst_domain::identity::session::{OAUTH_STATE_SECONDS, is_secure_url};
-use rst_domain::identity::values::Login;
-use rst_domain::paths::{OverlayRoute, StreamerPath};
+use rst_domain::paths::StreamerPath;
 use rst_infra::db::sqlite_audit::SqliteAudit;
 use rst_infra::db::sqlite_records::SqliteRecords;
 use rst_infra::db::sqlite_server_settings::SqliteServerSettings;
@@ -26,7 +26,7 @@ use rst_infra::twitch::oauth::TwitchClient;
 
 use crate::clock::now_ms;
 use crate::config::ServerConfig;
-use crate::errors::{pending, server_error, text};
+use crate::errors::{server_error, text};
 use crate::guard::{cookie, origin_of, same_origin};
 use crate::handlers::{Call, handle};
 use crate::routes::{Found, Visitor, authorize, find};
@@ -40,6 +40,8 @@ const FRAME_CSP: &str = "frame-ancestors 'self'";
 
 pub type AppAccessAdmin<'a> =
     AccessAdmin<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
+
+pub type AppSettings<'a> = SettingsService<'a, SqliteRecords, SqliteKeyStore, SqliteAudit>;
 
 pub type AppLoginFlow<'a> =
     LoginFlow<'a, SqliteStreamers, SqliteRecords, SqliteKeyStore, SqliteSessions, SqliteServerSettings, SqliteAudit>;
@@ -129,13 +131,9 @@ impl App {
         })
     }
 
-    /// Whether `/s/<login>/` belongs to an enabled streamer
-    async fn known(&self, login: &Login) -> Result<bool, String> {
-        if self.stores.streamers.find_by_login(login).await.map_err(|error| error.to_string())?.is_none() {
-            return Ok(false);
-        }
-        let policy = self.stores.access.load(&self.config.admins).await.map_err(|error| error.to_string())?;
-        Ok(policy.can_use(&self.config.admins, login))
+    #[must_use]
+    pub fn settings_service(&self) -> AppSettings<'_> {
+        SettingsService { profile: &self.stores.profile, audit: &self.stores.audit }
     }
 }
 
@@ -182,28 +180,11 @@ async fn route(app: &App, request: Request) -> Response {
     }
     if path.starts_with("/s/") {
         return match StreamerPath::parse(&path) {
-            Some(streamer) => overlay(app, &streamer).await,
+            Some(streamer) => crate::handlers::overlay::serve(app, &streamer).await,
             None => text(404, "not-found"),
         };
     }
     serve_static(&app.config.dist, if path == "/" { "/index.html" } else { &path }, false).await
-}
-
-async fn overlay(app: &App, path: &StreamerPath) -> Response {
-    let Some(route) = OverlayRoute::from_segments(&path.segments) else { return text(404, "not-found") };
-    match app.known(&path.login).await {
-        Ok(true) => {}
-        Ok(false) => return text(404, "not-found"),
-        Err(error) => return server_error(&error),
-    }
-    match route {
-        OverlayRoute::Scene(file) => serve_static(&app.config.dist, &format!("/{file}"), false).await,
-        OverlayRoute::Status
-        | OverlayRoute::Settings
-        | OverlayRoute::Events
-        | OverlayRoute::Commands
-        | OverlayRoute::Media(_) => pending(),
-    }
 }
 
 /// A file under `root`; `sandbox` for media that must not run scripts

@@ -7,6 +7,8 @@ use axum::response::Response;
 use crate::app::App;
 pub mod admin;
 pub mod auth;
+pub mod overlay;
+pub mod settings;
 
 use crate::errors::pending;
 use crate::routes::{Route, Visitor};
@@ -45,14 +47,15 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         | Route::SpotifyLogout
         | Route::HelpConfig
         | Route::SaveHelpConfig
-        | Route::Settings
-        | Route::SaveSettings
         | Route::RenderStart
         | Route::RenderFrame
         | Route::RenderDone
         | Route::RenderCancel
         | Route::RenderFiles
         | Route::RenderFile => pending(),
+        Route::Settings => settings::settings(call).await,
+        Route::SaveSettings => settings::save(call).await,
+        Route::Themes => settings::schemas(),
         Route::AdminAccess => admin::access(call).await,
         Route::SaveAdminAccess => admin::save_access(call).await,
         Route::AdminStreamers => admin::streamers(call).await,

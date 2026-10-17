@@ -10,6 +10,7 @@ pub mod import;
 pub mod media;
 pub mod ports;
 pub mod profile;
+pub mod settings;
 #[cfg(test)]
 pub(crate) mod testing;
 pub mod vault;
