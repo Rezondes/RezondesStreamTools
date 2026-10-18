@@ -60,19 +60,7 @@ export function furrows(width: number, top: number, bottom: number, count: numbe
 // A mango (100 x 100): body and a leaf at the stem
 const MANGO_BODY = "M48 12 C74 10 92 36 86 64 C80 90 50 98 30 86 C12 75 12 46 26 28 C32 19 40 13 48 12 Z";
 
-// Backdrop (scenes and banners)
-export const MANGO_TREE: Shape = {
-  viewBox: "0 0 240 300",
-  parts: [
-    { kind: "main", d: "M108 300 C112 240 104 200 112 160 L128 160 C136 200 128 240 132 300 Z M116 200 C96 180 80 176 66 180 L70 188 C84 186 100 192 114 210 Z M124 190 C144 170 160 168 172 172 L170 180 C156 178 140 186 126 202 Z" },
-    { kind: "detail", d: "M120 18 C170 14 216 52 222 96 C230 140 200 176 160 174 C140 190 100 190 82 176 C40 180 10 146 18 104 C22 60 70 22 120 18 Z" },
-    { kind: "line", d: "M60 80 C80 70 100 72 116 84 M140 66 C160 60 180 66 194 80 M50 130 C70 120 92 124 104 138 M140 120 C160 112 182 118 196 132" },
-  ],
-};
-export const CLOUD: Shape = {
-  viewBox: "0 0 120 70",
-  parts: [{ kind: "main", d: "M20 60 C10 60 4 52 6 44 C8 34 20 30 28 34 C32 20 48 14 60 20 C68 10 86 12 92 26 C104 26 112 36 108 48 C106 56 98 60 90 60 Z" }],
-};
+// Leaf of the alerts and the camera frame
 export const LEAF: Shape = {
   viewBox: "0 0 160 80",
   parts: [
@@ -86,18 +74,6 @@ export const PLANE: Shape = {
   parts: [
     { kind: "main", d: "M10 30 L84 26 C100 26 112 28 116 32 C112 36 100 38 84 38 L10 34 Z M40 26 L34 4 L48 4 L60 26 Z M40 38 L34 56 L48 56 L60 38 Z M12 30 L4 18 L12 18 L22 30 Z" },
     { kind: "detail", d: "M116 22 L118 22 L118 42 L116 42 Z" },
-  ],
-};
-export const BIRD: Shape = {
-  viewBox: "0 0 48 16",
-  parts: [{ kind: "line", d: "M2 10 C8 2 18 2 24 10 C30 2 40 2 46 10" }],
-};
-export const CRATE: Shape = {
-  viewBox: "0 0 120 80",
-  parts: [
-    { kind: "main", d: "M4 14 L116 14 L116 78 L4 78 Z" },
-    { kind: "line", d: "M4 36 L116 36 M4 58 L116 58 M10 14 L10 78 M110 14 L110 78" },
-    { kind: "detail", d: `${circle(30, 10, 10)} ${circle(56, 8, 10)} ${circle(84, 10, 10)}` },
   ],
 };
 

@@ -1,7 +1,7 @@
 // Check for field.ts: path building blocks give valid, closed paths, every shape has parts with paths.
 // Runs with npm test (alone: node src/themes/plantage/field.check.ts).
 import assert from "node:assert/strict";
-import { BIRD, blobs, circle, CLOUD, CRATE, furrows, hillPath, ICON_NAMES, ICONS, LEAF, MANGO_TREE, PLANE, spikes, type Shape } from "./field.ts";
+import { blobs, circle, furrows, hillPath, ICON_NAMES, ICONS, LEAF, PLANE, spikes, type Shape } from "./field.ts";
 
 // Stars: count points give 2 * count points, closed
 const star = spikes(50, 50, 40, 20, 5);
@@ -44,7 +44,7 @@ assert.equal(circle(50, 50, 10), "M40 50 a10 10 0 1 0 20 0 a10 10 0 1 0 -20 0 Z"
 }
 
 // Every shape has at least one part, every path starts with M
-const shapes: Shape[] = [MANGO_TREE, CLOUD, LEAF, PLANE, BIRD, CRATE, ...ICON_NAMES.map(name => ICONS[name])];
+const shapes: Shape[] = [LEAF, PLANE, ...ICON_NAMES.map(name => ICONS[name])];
 for (const shape of shapes) {
   assert.ok(shape.parts.length > 0);
   for (const part of shape.parts) assert.match(part.d, /^M/);

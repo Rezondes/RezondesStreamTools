@@ -183,19 +183,19 @@
 /* Login as a creamy plaque, so it stays readable in front of sky and sun */
 :root[data-skin="urlaub"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
 
-/* --- Plantage: mango plantation. Sky over rows of green field as the page, harvest-slip cards with a crate edge,
+/* --- Plantage: mango plantation. The illustrated field of the scenes as the page, frosted harvest-paper cards,
        leaf green as signature, mango orange for emphasis, title as a crate label (scenery from Scenery.tsx) ------- */
 :root[data-skin="plantage"] {
   color-scheme: light;
   --bg: #fff6df;
-  --page: linear-gradient(180deg, #3aa0e0 0%, #c8ecff 40%, #8fbf5a 41%, #5f9a3a 58%, #8b5e3c 59%, #6e4a2e 100%) fixed;
-  --surface: #fff6df;
-  --surface-2: #fffbef;
+  --page: linear-gradient(180deg, #3aa0e0 0%, #c8ecff 55%, #8b5e3c 56%, #5e3b22 100%) fixed;
+  --surface: rgba(255, 246, 223, 0.88);
+  --surface-2: rgba(255, 251, 239, 0.8);
   --field: #ffffff;
   --fg: #3a2410;
   --fg-dim: #8a5a2b;
   --line: #ecdcb4;
-  --border: #c8935a;
+  --border: rgba(200, 147, 90, 0.55);
   --heading: #2e7d32;
   --title-color: #3a2410;
   --accent: #2e7d32;
@@ -210,7 +210,7 @@
   --btn-bg: #fff6df;
   --btn-fg: #3a2410;
   --btn-border: #c8935a;
-  --btn-shadow: 0 3px 0 #7a4a24;
+  --btn-shadow: 0 6px 14px -6px rgba(94, 59, 34, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.7);
   --btn-weight: 700;
   --hover-bg: #ffe3b0;
   --hover-fg: #3a2410;
@@ -220,7 +220,7 @@
   --radius-sm: 10px;
   --radius-btn: 12px;
   --radius-check: 5px;
-  --shadow: 0 8px 0 rgba(122, 74, 36, 0.28), 0 16px 36px rgba(29, 94, 39, 0.25);
+  --shadow: 0 26px 56px -18px rgba(58, 36, 16, 0.55), inset 0 2px 0 rgba(255, 255, 255, 0.6);
   --font: "Baloo 2", "Nunito", system-ui, sans-serif;
   --font-title: "Fredoka", "Baloo 2", system-ui, sans-serif;
   --title-size: 30px;
@@ -235,19 +235,26 @@
   --scroll-thumb: #c8935a;
   --scroll-track: #fff6df;
 }
-/* Title as a crate label: wooden planks, a stamped mango-orange edge */
+/* Cards as frosted harvest paper over the illustrated field, like the cards of the scenes */
+:root[data-skin="plantage"] .dashboard .panel { backdrop-filter: blur(18px) saturate(1.15); }
+/* Title as a crate label: lit planks with soft joints, a thin dark edge, lifted off the field */
 :root[data-skin="plantage"] .dashboard h1 {
   align-self: flex-start;
   padding: 4px 22px;
-  background: repeating-linear-gradient(180deg, #c8935a 0 16px, #7a4a24 16px 18px);
-  border: 4px solid #7a4a24;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 3px #ff8c1a, 0 6px 0 rgba(58, 36, 16, 0.35);
+  background:
+    linear-gradient(180deg, rgba(255, 246, 223, 0.25), transparent 45%, rgba(122, 74, 36, 0.3)),
+    repeating-linear-gradient(180deg, transparent 0 18px, rgba(122, 74, 36, 0.5) 18px 20px),
+    #c8935a;
+  border: 2px solid rgba(122, 74, 36, 0.7);
+  border-radius: 12px;
+  box-shadow: 0 18px 36px -14px rgba(58, 36, 16, 0.6), inset 0 2px 0 rgba(255, 246, 223, 0.55);
 }
-:root[data-skin="plantage"] .btn:active:not(:disabled) { box-shadow: 0 1px 0 #7a4a24; }
-:root[data-skin="plantage"] .btn.primary { box-shadow: 0 3px 0 #1d5e27; }
+:root[data-skin="plantage"] .btn:active:not(:disabled) { box-shadow: 0 2px 6px -2px rgba(94, 59, 34, 0.55); }
+:root[data-skin="plantage"] .btn.primary { background: linear-gradient(180deg, #3f9a44, #2e7d32 55%, #256628); box-shadow: 0 8px 16px -6px rgba(29, 94, 39, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
 :root[data-skin="plantage"] .dashboard-nav { border-bottom: none; }
-:root[data-skin="plantage"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 12px; background: var(--surface); border: var(--border-w) solid var(--border); }
+/* Loose lines on the page (the login hint) get a frosted pill, so they stay readable in front of the sky */
+:root[data-skin="plantage"] .dashboard > p { align-self: flex-start; margin: 0; padding: 4px 4px 4px 16px; border-radius: 999px; background: var(--surface); backdrop-filter: blur(18px); box-shadow: 0 10px 30px -10px rgba(58, 36, 16, 0.55); }
+:root[data-skin="plantage"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); backdrop-filter: blur(18px); border: var(--border-w) solid var(--border); box-shadow: 0 10px 30px -10px rgba(58, 36, 16, 0.55); }
 
 /* --- KOTH: King of the Hill. Dark olive page, steel-olive cards, signal orange as signature, radio green for
        emphasis, stencil title on hazard stripes, square corners (scenery from Scenery.tsx) ------------------------- */
@@ -331,14 +338,6 @@
 .skin-figure:nth-child(odd) { rotate: -6deg; }
 .skin-scenery-koth .skin-figure { rotate: 0deg; translate: 0 0; }
 
-/* Plantage: a mango tree with ripe mangos at each edge */
-.skin-scenery svg.skin-tree { position: absolute; bottom: -1vh; width: clamp(170px, 19vw, 360px); }
-.skin-scenery .skin-tree-left { left: -6vw; }
-.skin-scenery .skin-tree-right { right: -6vw; scale: -1 1; }
-.skin-scenery .skin-tree .part-main { fill: var(--trunk); }
-.skin-scenery .skin-tree .part-detail { fill: var(--leaf); }
-.skin-scenery .skin-tree .part-line { stroke: var(--leafDark); stroke-width: 5; }
-.skin-scenery .skin-tree-mango { fill: var(--mango); stroke: var(--mangoBlush); stroke-width: 2; }
 
 /* KOTH: the hill with radio mast and flag rises at the bottom edge */
 .skin-scenery svg.skin-hill { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; opacity: 0.55; }
@@ -349,5 +348,5 @@
 .skin-scenery .skin-tower .part-line { stroke: var(--steel); stroke-width: 4; }
 .skin-scenery .skin-tower .part-main { fill: var(--steel); }
 
-@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-scenery .skin-tree, .skin-sun, .skin-figures { display: none; } }
+@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-sun, .skin-figures { display: none; } }
 @media (max-width: 1099px) { .skin-figures { display: none; } }
