@@ -11,6 +11,8 @@ data
 !server-rs/crates/rst-app/tests/fixtures/data/streamers/*/render
 server.env
 .env*
+# Backups of scripts/migrate.sh: the old profiles with their tokens in plain text
+migration-backups
 
 # Local settings and logs
 .claude/settings.local.json
