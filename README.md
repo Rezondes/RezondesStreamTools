@@ -32,16 +32,18 @@ kommen vom Server.
 
 | URL | Grösse | Optionen pro Quelle |
 |-----|--------|----------|
-| `#/starting` | 1920x1080 | `?min=5` oder `?at=20:00`, `?ticker=Text` |
-| `#/brb` | 1920x1080 | `?ticker=Text` |
-| `#/ending` | 1920x1080 | `?next=Freitag 20 Uhr`, `?ticker=Text` |
-| `#/alerts` | 1920x1080 | `?sound=0`, `?volume=0.5` |
-| `#/chat` | 500x900 | |
-| `#/cam` | wie Kamera | |
-| `#/music` | 900x240 | |
-| `#/fx` | 1920x1080 | `?zone=main`, `?sound=0`, `?volume=0.5` |
-| `#/minimes` | 1920x360 | `?demo=<n>` (so viele Demo-Minimes, Standard 5; in Themes mit Gefechten ist das erste der Medic) |
-| `#/info` | Seite | öffentliche Befehlsseite für Zuschauer, mit Server unter `/s/<login>/` |
+| `/s/<login>/starting` | 1920x1080 | `?min=5` oder `?at=20:00`, `?ticker=Text` |
+| `/s/<login>/brb` | 1920x1080 | `?ticker=Text` |
+| `/s/<login>/ending` | 1920x1080 | `?next=Freitag 20 Uhr`, `?ticker=Text` |
+| `/s/<login>/alerts` | 1920x1080 | `?sound=0`, `?volume=0.5` |
+| `/s/<login>/chat` | 500x900 | |
+| `/s/<login>/cam` | wie Kamera | |
+| `/s/<login>/music` | 900x240 | |
+| `/s/<login>/fx` | 1920x1080 | `?zone=main`, `?sound=0`, `?volume=0.5` |
+| `/s/<login>/minimes` | 1920x360 | `?demo=<n>` (so viele Demo-Minimes, Standard 5; in Themes mit Gefechten ist das erste der Medic) |
+| `/s/<login>/` | Seite | öffentliche Befehlsseite für Zuschauer (Szene `info`) |
+
+Unter `npm run dev` geht dieselbe Szene als `http://localhost:5173/starting.html?s=<login>` (oder `#/starting?s=<login>`).
 
 Alles andere (Texte, Farben, Schrift, Dauer, Grösse, Position, Animationen, Töne, Darstellung der Musik, Ausblendzeit
 des Chats, Kamera-Label, Countdown-Standard, Ticker) stellt der Streamer im Theme ein, siehe "Themes und Einstellungen".
@@ -49,7 +51,7 @@ des Chats, Kamera-Label, Countdown-Standard, Ticker) stellt der Streamer im Them
 Jede Szene liegt unter `/s/<login>/<szene>` (z.B. `http://localhost:8089/s/rezondes/alerts`, mit `.html` geht es auch);
 die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Sie enthalten den geheimen Overlay-Schlüssel (`?key=`),
 ohne den eine Szene keine Live-Ereignisse bekommt; neu erzeugen lässt er sich in der Übersicht (danach OBS-Quellen neu
-einrichten). Unter `npm run dev` wählt `?s=<login>` den Streamer.
+einrichten).
 Alle Szenen nehmen `?demo`. Live-Daten (auch der Chat) kommen nur vom Server; die Szenen verbinden sich nie
 selbst mit dem Twitch-Chat.
 Die Befehlsseite `/s/<login>/` zeigt Zuschauern alle Chat-Befehle im Stil des gewählten Themes (Liste als JSON unter
