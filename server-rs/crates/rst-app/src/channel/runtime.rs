@@ -157,6 +157,10 @@ where
     }
 
     fn read(self: &Arc<Self>, message: &IrcMessage) {
+        // Only the own channel: a line of another channel must not fire triggers or help replies here
+        if message.channel().is_some_and(|channel| channel != self.login.as_str()) {
+            return;
+        }
         relay(message, &self.hubs, &self.id, self.chat_on);
         if let (Some(minimes), Some(banned)) = (&self.minimes, banned_login(message)) {
             minimes.ban(&banned);

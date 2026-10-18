@@ -35,6 +35,12 @@ impl IrcMessage {
     pub fn param(&self, index: usize) -> Option<&str> {
         self.params.get(index).map(String::as_str)
     }
+
+    /// Channel login of a channel message (`PRIVMSG #neo :hi` -> `neo`), `None` for messages without a channel
+    #[must_use]
+    pub fn channel(&self) -> Option<&str> {
+        self.param(0).and_then(|target| target.strip_prefix('#'))
+    }
 }
 
 /// A piece of a chat message: text or an emote with its image
@@ -216,6 +222,13 @@ mod tests {
 
     fn kappa() -> Part {
         Part::Emote { name: "Kappa".to_owned(), url: emote_url("25") }
+    }
+
+    #[test]
+    fn channel_of_channel_messages_only() {
+        assert_eq!(parse_irc(":neo!neo@neo.tmi.twitch.tv PRIVMSG #neo :hi").channel(), Some("neo"));
+        assert_eq!(parse_irc("CLEARCHAT #trinity :smith").channel(), Some("trinity"));
+        assert_eq!(parse_irc("PING :tmi.twitch.tv").channel(), None);
     }
 
     #[test]

@@ -53,7 +53,8 @@ impl SqliteKeyStore {
     /// # Errors
     /// When a key cannot be unwrapped with the current master key or the database fails; then nothing changed.
     pub async fn rewrap_all(&mut self, new: MasterKey) -> Result<usize, StoreError> {
-        let mut transaction = self.pool.begin().await.map_err(StoreError::new)?;
+        // IMMEDIATE: reads and then writes; a deferred transaction would fail at once when another connection writes
+        let mut transaction = self.pool.begin_with("BEGIN IMMEDIATE").await.map_err(StoreError::new)?;
         let rows: Vec<(String, Vec<u8>)> = sqlx::query_as("SELECT streamer_id, wrapped FROM data_keys")
             .fetch_all(&mut *transaction)
             .await

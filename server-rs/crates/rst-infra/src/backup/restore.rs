@@ -220,7 +220,9 @@ fn kept_rows(path: &Path, keep: &BTreeSet<String>) -> Result<BTreeMap<&'static s
 
 /// Replaces every row in one transaction; sessions of streamers that stay are kept
 async fn replace_rows(pool: &SqlitePool, rows: &BTreeMap<&'static str, Vec<Value>>) -> Result<(), ArchiveError> {
-    let mut transaction = pool.begin().await.map_err(store)?;
+    // IMMEDIATE: takes the write lock up front and waits for it (busy timeout); a deferred transaction that reads first
+    // fails at once with "database is locked" when another connection wrote meanwhile
+    let mut transaction = pool.begin_with("BEGIN IMMEDIATE").await.map_err(store)?;
     let kept: BTreeSet<String> = rows["streamers"].iter().filter_map(|row| optional_text(row, "id")).collect();
     let current: Vec<String> =
         sqlx::query_scalar("SELECT id FROM streamers").fetch_all(&mut *transaction).await.map_err(store)?;
