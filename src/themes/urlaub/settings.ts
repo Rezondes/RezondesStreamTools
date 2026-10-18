@@ -1,5 +1,5 @@
 // Settings schema of the Urlaub theme: southern tropical coast and sea look (sea, waves, sand, palms,
-// wooden signs) for all scenes, stinger and banners, plus fruit minimes that hop. The only place of the theme with
+// wooden signs) for all scenes, stinger and banners, plus beach thing minimes that hop. The only place of the theme with
 // fixed colors, texts and numbers. UrlaubValues is the type of the resolved values (useUrlaub).
 import { choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
@@ -8,7 +8,7 @@ import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./beach.ts";
-import { FRUIT_IDS, FRUIT_SET, FRUITS } from "./fruits.ts";
+import { BEACH_THINGS, THING_IDS, THING_SET } from "./beachThings.ts";
 
 export const FONTS = ["Fredoka", "Baloo 2", "Nunito", "Inter", "DM Sans"] as const;
 const TITLE_FONTS = ["Pacifico", "Fredoka", "Baloo 2", "Nunito"] as const;
@@ -28,7 +28,7 @@ const STINGER = "Stinger";
 const BANNER = "Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
-const FRUIT_COLORS = "Früchte: Farben";
+const THING_COLORS = "Typen: Farben";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "Strand", 40),
@@ -230,9 +230,9 @@ const FIELDS = [
   color("fruitMouth", "Mund", MINIME_LOOK, "#6b2a1f"),
   color("fruitOutline", "Umriss", MINIME_LOOK, "#5a3a22"),
   number("fruitOutlineWidth", "Umriss: Stärke", MINIME_LOOK, 2.5, 0, 8, undefined, 0.5),
-  color("fruitLeaf", "Blätter", MINIME_LOOK, "#3aa655"),
-  color("fruitStem", "Stiele", MINIME_LOOK, "#6b4423"),
-  choice("fruitDefault", "Frucht ohne Wahl (alle aus)", MINIME_LOOK, "mango", FRUIT_IDS),
+  color("fruitLeaf", "Akzent", MINIME_LOOK, "#3aa655"),
+  color("fruitStem", "Holz und Griffe", MINIME_LOOK, "#6b4423"),
+  choice("fruitDefault", "Typ ohne Wahl (alle aus)", MINIME_LOOK, "rettungsring", THING_IDS),
   flag("fruitNames", "Namen zeigen", MINIME_LOOK, true),
   choice("fruitNameStyle", "Namen auf", MINIME_LOOK, "schild", ["schild", "band"]),
   number("fruitNameSize", "Name: Schriftgrösse", MINIME_LOOK, 15, 8, 48, "px"),
@@ -259,7 +259,7 @@ const FIELDS = [
   text("sleepText", "Schlafen: aufsteigendes Zeichen", MINIME_MOVES, "z", 4),
   number("splashMs", "Reaktion auf Chat: Dauer", MINIME_MOVES, 900, 200, 5000, "ms"),
   number("splashHeight", "Reaktion auf Chat: Sprunghöhe", MINIME_MOVES, 50, 0, 300, "px"),
-  number("splashDrops", "Reaktion auf Chat: Saftspritzer", MINIME_MOVES, 8, 0, 20),
+  number("splashDrops", "Reaktion auf Chat: Wasserspritzer", MINIME_MOVES, 8, 0, 20),
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   choice("timeInfo", "Befehlsseite: Tageszeit am Strand", INFO_GROUP, "mittag", TIMES),
@@ -268,19 +268,19 @@ const FIELDS = [
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
 export type { UrlaubValues } from "../../generated/themes/urlaub.ts";
 
-// Main and detail color per fruit (keys fruit<Id>Main, fruit<Id>Detail; CSS in minimes.css)
-const FRUIT_DEFAULT_COLORS: Record<string, readonly [string, string]> = {
-  mango: ["#ffb02e", "#ff5e3a"], sternfrucht: ["#ffd84a", "#e0a800"], papaya: ["#8fd14f", "#ff8a3d"],
-  ananasguave: ["#6cbf4a", "#7a4a2a"], nashi: ["#f2d27a", "#b9873f"], pepino: ["#f5e6a8", "#8e4fb3"],
-  kaktusfeige: ["#e0457b", "#7cc35a"], durian: ["#a7b83a", "#6b7a1e"], zitrone: ["#fff04a", "#e6c700"],
-  ananas: ["#f7b733", "#b9741a"], kokosnuss: ["#8b5a2b", "#4a2c14"], drachenfrucht: ["#ff3e8a", "#ffd1e3"],
-  maracuja: ["#6b2f6b", "#3f163f"], banane: ["#ffe135", "#8b5a2b"], litschi: ["#e5394b", "#a3172a"], wassermelone: ["#3fa34d", "#1f6b2a"],
+// Main and detail color per beach thing (keys thing<Id>Main, thing<Id>Detail; set on the SVG in BeachThing.tsx)
+const THING_DEFAULT_COLORS: Record<string, readonly [string, string]> = {
+  rettungsring: ["#ff3b30", "#ffffff"], badeente: ["#ffd22e", "#ff8c1a"], wasserball: ["#ffffff", "#ff4f6d"],
+  surfbrett: ["#29b6f6", "#ffd166"], sonnenschirm: ["#ff6f61", "#fff3d6"], flamingo: ["#ff8fb8", "#ff5c99"],
+  liegestuhl: ["#4fc3f7", "#ffffff"], sandeimer: ["#ff9f1c", "#ffe066"], eis: ["#ff8fab", "#fff1c1"],
+  muschel: ["#ffd8c2", "#e8a07e"], seestern: ["#ff9a52", "#ffd27a"], krebs: ["#ff5a4e", "#c9372c"],
+  schnorchel: ["#ffdd00", "#bfefff"], sonnenbrille: ["#2b2b3a", "#7fd8ff"], cocktail: ["#e8f8ff", "#ff7aa8"], strandtasche: ["#2ec4b6", "#ffe28a"],
 };
 const capital = (id: string) => id[0].toUpperCase() + id.slice(1);
-export const fruitColorKeys = (id: string) => ({ main: `fruit${capital(id)}Main`, detail: `fruit${capital(id)}Detail` });
-const FRUIT_COLOR_FIELDS: SettingField[] = FRUITS.flatMap(fruit => [
-  color(fruitColorKeys(fruit.id).main, `${fruit.label}: Hauptfarbe`, FRUIT_COLORS, FRUIT_DEFAULT_COLORS[fruit.id][0]),
-  color(fruitColorKeys(fruit.id).detail, `${fruit.label}: Detailfarbe`, FRUIT_COLORS, FRUIT_DEFAULT_COLORS[fruit.id][1]),
+export const thingColorKeys = (id: string) => ({ main: `thing${capital(id)}Main`, detail: `thing${capital(id)}Detail` });
+const THING_COLOR_FIELDS: SettingField[] = BEACH_THINGS.flatMap(thing => [
+  color(thingColorKeys(thing.id).main, `${thing.label}: Hauptfarbe`, THING_COLORS, THING_DEFAULT_COLORS[thing.id][0]),
+  color(thingColorKeys(thing.id).detail, `${thing.label}: Detailfarbe`, THING_COLORS, THING_DEFAULT_COLORS[thing.id][1]),
 ]);
 
 const SCREEN_SCENES = ["starting", "brb", "ending"] as const;
@@ -301,7 +301,7 @@ const GROUP_SCENES = {
   [MINIME_LOOK]: ["minimes"],
   [MINIME_HOP]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
-  [FRUIT_COLORS]: ["minimes"],
+  [THING_COLORS]: ["minimes"],
   [INFO_GROUP]: ["info"],
 } as const;
 
@@ -311,8 +311,8 @@ const personalize = (login: string) => ({ channelName: capital(login) });
 export const urlaubSettings: ThemeSchema = {
   id: "urlaub",
   name: "Urlaub",
-  fields: [...FIELDS, ...minimeVariantFields(FRUIT_SET), ...FRUIT_COLOR_FIELDS],
+  fields: [...FIELDS, ...minimeVariantFields(THING_SET), ...THING_COLOR_FIELDS],
   groupScenes: GROUP_SCENES,
   personalize,
-  minimeVariants: FRUIT_SET,
+  minimeVariants: THING_SET,
 };

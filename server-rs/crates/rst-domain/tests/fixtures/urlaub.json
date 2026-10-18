@@ -2101,40 +2101,40 @@
     {
       "key": "fruitLeaf",
       "type": "color",
-      "label": "Blätter",
+      "label": "Akzent",
       "group": "Minimes: Aussehen",
       "default": "#3aa655"
     },
     {
       "key": "fruitStem",
       "type": "color",
-      "label": "Stiele",
+      "label": "Holz und Griffe",
       "group": "Minimes: Aussehen",
       "default": "#6b4423"
     },
     {
       "key": "fruitDefault",
       "type": "select",
-      "label": "Frucht ohne Wahl (alle aus)",
+      "label": "Typ ohne Wahl (alle aus)",
       "group": "Minimes: Aussehen",
-      "default": "mango",
+      "default": "rettungsring",
       "options": [
-        "mango",
-        "sternfrucht",
-        "papaya",
-        "ananasguave",
-        "nashi",
-        "pepino",
-        "kaktusfeige",
-        "durian",
-        "zitrone",
-        "ananas",
-        "kokosnuss",
-        "drachenfrucht",
-        "maracuja",
-        "banane",
-        "litschi",
-        "wassermelone"
+        "rettungsring",
+        "badeente",
+        "wasserball",
+        "surfbrett",
+        "sonnenschirm",
+        "flamingo",
+        "liegestuhl",
+        "sandeimer",
+        "eis",
+        "muschel",
+        "seestern",
+        "krebs",
+        "schnorchel",
+        "sonnenbrille",
+        "cocktail",
+        "strandtasche"
       ]
     },
     {
@@ -2407,7 +2407,7 @@
     {
       "key": "splashDrops",
       "type": "number",
-      "label": "Reaktion auf Chat: Saftspritzer",
+      "label": "Reaktion auf Chat: Wasserspritzer",
       "group": "Minimes: Animationen",
       "default": 8,
       "min": 0,
@@ -2653,362 +2653,362 @@
     {
       "key": "minimeVariantCommand",
       "type": "text",
-      "label": "Befehl: Frucht wählen",
+      "label": "Befehl: Typ wählen",
       "group": "Minimes: Typen",
-      "default": "!frucht",
+      "default": "!typ",
       "maxLength": 25
     },
     {
-      "key": "minimeNames_mango",
+      "key": "minimeNames_rettungsring",
       "type": "text",
-      "label": "Mango: Namen im Chat (leer = aus)",
+      "label": "Rettungsring: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "mango, mangos",
+      "default": "rettungsring, ring, lifebuoy",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_sternfrucht",
+      "key": "minimeNames_badeente",
       "type": "text",
-      "label": "Sternfrucht: Namen im Chat (leer = aus)",
+      "label": "Badeente: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "sternfrucht, karambole, starfruit",
+      "default": "badeente, ente, duck, rubberduck",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_papaya",
+      "key": "minimeNames_wasserball",
       "type": "text",
-      "label": "Papaya: Namen im Chat (leer = aus)",
+      "label": "Wasserball: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "papaya",
+      "default": "wasserball, ball, beachball",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_ananasguave",
+      "key": "minimeNames_surfbrett",
       "type": "text",
-      "label": "Ananasguave: Namen im Chat (leer = aus)",
+      "label": "Surfbrett: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "ananasguave, feijoa, guave",
+      "default": "surfbrett, surf, surfboard",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_nashi",
+      "key": "minimeNames_sonnenschirm",
       "type": "text",
-      "label": "Nashi-Birne: Namen im Chat (leer = aus)",
+      "label": "Sonnenschirm: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "nashi, nashibirne, asiatischebirne, asianpear",
+      "default": "sonnenschirm, schirm, umbrella",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_pepino",
+      "key": "minimeNames_flamingo",
       "type": "text",
-      "label": "Birnenmelone: Namen im Chat (leer = aus)",
+      "label": "Flamingo-Schwimmring: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "birnenmelone, pepino",
+      "default": "flamingo, flamingoring, schwimmring",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_kaktusfeige",
+      "key": "minimeNames_liegestuhl",
       "type": "text",
-      "label": "Kaktusfeige: Namen im Chat (leer = aus)",
+      "label": "Liegestuhl: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "kaktusfeige, feige, pricklypear",
+      "default": "liegestuhl, stuhl, deckchair",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_durian",
+      "key": "minimeNames_sandeimer",
       "type": "text",
-      "label": "Durian: Namen im Chat (leer = aus)",
+      "label": "Sandeimer: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "durian, stinkfrucht",
+      "default": "sandeimer, eimer, bucket",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_zitrone",
+      "key": "minimeNames_eis",
       "type": "text",
-      "label": "Zitrone: Namen im Chat (leer = aus)",
+      "label": "Eis am Stiel: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "zitrone, lemon",
+      "default": "eis, eisamstiel, popsicle, icecream",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_ananas",
+      "key": "minimeNames_muschel",
       "type": "text",
-      "label": "Ananas: Namen im Chat (leer = aus)",
+      "label": "Muschel: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "ananas, pineapple",
+      "default": "muschel, shell",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_kokosnuss",
+      "key": "minimeNames_seestern",
       "type": "text",
-      "label": "Kokosnuss: Namen im Chat (leer = aus)",
+      "label": "Seestern: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "kokosnuss, kokos, coconut",
+      "default": "seestern, starfish",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_drachenfrucht",
+      "key": "minimeNames_krebs",
       "type": "text",
-      "label": "Drachenfrucht: Namen im Chat (leer = aus)",
+      "label": "Krebs: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "drachenfrucht, pitaya, dragonfruit",
+      "default": "krebs, krabbe, crab",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_maracuja",
+      "key": "minimeNames_schnorchel",
       "type": "text",
-      "label": "Maracuja: Namen im Chat (leer = aus)",
+      "label": "Schnorchelmaske: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "maracuja, passionsfrucht, passionfruit",
+      "default": "schnorchel, schnorchelmaske, snorkel",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_banane",
+      "key": "minimeNames_sonnenbrille",
       "type": "text",
-      "label": "Banane: Namen im Chat (leer = aus)",
+      "label": "Sonnenbrille: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "banane, banana",
+      "default": "sonnenbrille, brille, shades",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_litschi",
+      "key": "minimeNames_cocktail",
       "type": "text",
-      "label": "Litschi: Namen im Chat (leer = aus)",
+      "label": "Cocktail: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "litschi, lychee",
+      "default": "cocktail, drink",
       "maxLength": 200
     },
     {
-      "key": "minimeNames_wassermelone",
+      "key": "minimeNames_strandtasche",
       "type": "text",
-      "label": "Wassermelone: Namen im Chat (leer = aus)",
+      "label": "Strandtasche: Namen im Chat (leer = aus)",
       "group": "Minimes: Typen",
-      "default": "wassermelone, melone, watermelon",
+      "default": "strandtasche, tasche, beachbag, bag",
       "maxLength": 200
     },
     {
-      "key": "fruitMangoMain",
+      "key": "thingRettungsringMain",
       "type": "color",
-      "label": "Mango: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#ffb02e"
+      "label": "Rettungsring: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff3b30"
     },
     {
-      "key": "fruitMangoDetail",
+      "key": "thingRettungsringDetail",
       "type": "color",
-      "label": "Mango: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#ff5e3a"
+      "label": "Rettungsring: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffffff"
     },
     {
-      "key": "fruitSternfruchtMain",
+      "key": "thingBadeenteMain",
       "type": "color",
-      "label": "Sternfrucht: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#ffd84a"
+      "label": "Badeente: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffd22e"
     },
     {
-      "key": "fruitSternfruchtDetail",
+      "key": "thingBadeenteDetail",
       "type": "color",
-      "label": "Sternfrucht: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#e0a800"
+      "label": "Badeente: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff8c1a"
     },
     {
-      "key": "fruitPapayaMain",
+      "key": "thingWasserballMain",
       "type": "color",
-      "label": "Papaya: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#8fd14f"
+      "label": "Wasserball: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffffff"
     },
     {
-      "key": "fruitPapayaDetail",
+      "key": "thingWasserballDetail",
       "type": "color",
-      "label": "Papaya: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#ff8a3d"
+      "label": "Wasserball: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff4f6d"
     },
     {
-      "key": "fruitAnanasguaveMain",
+      "key": "thingSurfbrettMain",
       "type": "color",
-      "label": "Ananasguave: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#6cbf4a"
+      "label": "Surfbrett: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#29b6f6"
     },
     {
-      "key": "fruitAnanasguaveDetail",
+      "key": "thingSurfbrettDetail",
       "type": "color",
-      "label": "Ananasguave: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#7a4a2a"
+      "label": "Surfbrett: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffd166"
     },
     {
-      "key": "fruitNashiMain",
+      "key": "thingSonnenschirmMain",
       "type": "color",
-      "label": "Nashi-Birne: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#f2d27a"
+      "label": "Sonnenschirm: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff6f61"
     },
     {
-      "key": "fruitNashiDetail",
+      "key": "thingSonnenschirmDetail",
       "type": "color",
-      "label": "Nashi-Birne: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#b9873f"
+      "label": "Sonnenschirm: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#fff3d6"
     },
     {
-      "key": "fruitPepinoMain",
+      "key": "thingFlamingoMain",
       "type": "color",
-      "label": "Birnenmelone: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#f5e6a8"
+      "label": "Flamingo-Schwimmring: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff8fb8"
     },
     {
-      "key": "fruitPepinoDetail",
+      "key": "thingFlamingoDetail",
       "type": "color",
-      "label": "Birnenmelone: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#8e4fb3"
+      "label": "Flamingo-Schwimmring: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff5c99"
     },
     {
-      "key": "fruitKaktusfeigeMain",
+      "key": "thingLiegestuhlMain",
       "type": "color",
-      "label": "Kaktusfeige: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#e0457b"
+      "label": "Liegestuhl: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#4fc3f7"
     },
     {
-      "key": "fruitKaktusfeigeDetail",
+      "key": "thingLiegestuhlDetail",
       "type": "color",
-      "label": "Kaktusfeige: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#7cc35a"
+      "label": "Liegestuhl: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffffff"
     },
     {
-      "key": "fruitDurianMain",
+      "key": "thingSandeimerMain",
       "type": "color",
-      "label": "Durian: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#a7b83a"
+      "label": "Sandeimer: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff9f1c"
     },
     {
-      "key": "fruitDurianDetail",
+      "key": "thingSandeimerDetail",
       "type": "color",
-      "label": "Durian: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#6b7a1e"
+      "label": "Sandeimer: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffe066"
     },
     {
-      "key": "fruitZitroneMain",
+      "key": "thingEisMain",
       "type": "color",
-      "label": "Zitrone: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#fff04a"
+      "label": "Eis am Stiel: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff8fab"
     },
     {
-      "key": "fruitZitroneDetail",
+      "key": "thingEisDetail",
       "type": "color",
-      "label": "Zitrone: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#e6c700"
+      "label": "Eis am Stiel: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#fff1c1"
     },
     {
-      "key": "fruitAnanasMain",
+      "key": "thingMuschelMain",
       "type": "color",
-      "label": "Ananas: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#f7b733"
+      "label": "Muschel: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffd8c2"
     },
     {
-      "key": "fruitAnanasDetail",
+      "key": "thingMuschelDetail",
       "type": "color",
-      "label": "Ananas: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#b9741a"
+      "label": "Muschel: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#e8a07e"
     },
     {
-      "key": "fruitKokosnussMain",
+      "key": "thingSeesternMain",
       "type": "color",
-      "label": "Kokosnuss: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#8b5a2b"
+      "label": "Seestern: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff9a52"
     },
     {
-      "key": "fruitKokosnussDetail",
+      "key": "thingSeesternDetail",
       "type": "color",
-      "label": "Kokosnuss: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#4a2c14"
+      "label": "Seestern: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffd27a"
     },
     {
-      "key": "fruitDrachenfruchtMain",
+      "key": "thingKrebsMain",
       "type": "color",
-      "label": "Drachenfrucht: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#ff3e8a"
+      "label": "Krebs: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff5a4e"
     },
     {
-      "key": "fruitDrachenfruchtDetail",
+      "key": "thingKrebsDetail",
       "type": "color",
-      "label": "Drachenfrucht: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#ffd1e3"
+      "label": "Krebs: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#c9372c"
     },
     {
-      "key": "fruitMaracujaMain",
+      "key": "thingSchnorchelMain",
       "type": "color",
-      "label": "Maracuja: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#6b2f6b"
+      "label": "Schnorchelmaske: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffdd00"
     },
     {
-      "key": "fruitMaracujaDetail",
+      "key": "thingSchnorchelDetail",
       "type": "color",
-      "label": "Maracuja: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#3f163f"
+      "label": "Schnorchelmaske: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#bfefff"
     },
     {
-      "key": "fruitBananeMain",
+      "key": "thingSonnenbrilleMain",
       "type": "color",
-      "label": "Banane: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#ffe135"
+      "label": "Sonnenbrille: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#2b2b3a"
     },
     {
-      "key": "fruitBananeDetail",
+      "key": "thingSonnenbrilleDetail",
       "type": "color",
-      "label": "Banane: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#8b5a2b"
+      "label": "Sonnenbrille: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#7fd8ff"
     },
     {
-      "key": "fruitLitschiMain",
+      "key": "thingCocktailMain",
       "type": "color",
-      "label": "Litschi: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#e5394b"
+      "label": "Cocktail: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#e8f8ff"
     },
     {
-      "key": "fruitLitschiDetail",
+      "key": "thingCocktailDetail",
       "type": "color",
-      "label": "Litschi: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#a3172a"
+      "label": "Cocktail: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ff7aa8"
     },
     {
-      "key": "fruitWassermeloneMain",
+      "key": "thingStrandtascheMain",
       "type": "color",
-      "label": "Wassermelone: Hauptfarbe",
-      "group": "Früchte: Farben",
-      "default": "#3fa34d"
+      "label": "Strandtasche: Hauptfarbe",
+      "group": "Typen: Farben",
+      "default": "#2ec4b6"
     },
     {
-      "key": "fruitWassermeloneDetail",
+      "key": "thingStrandtascheDetail",
       "type": "color",
-      "label": "Wassermelone: Detailfarbe",
-      "group": "Früchte: Farben",
-      "default": "#1f6b2a"
+      "label": "Strandtasche: Detailfarbe",
+      "group": "Typen: Farben",
+      "default": "#ffe28a"
     }
   ],
   "groupScenes": {
@@ -3061,7 +3061,7 @@
     "Minimes: Animationen": [
       "minimes"
     ],
-    "Früchte: Farben": [
+    "Typen: Farben": [
       "minimes"
     ],
     "Befehlsseite": [
@@ -3069,143 +3069,151 @@
     ]
   },
   "minimeVariants": {
-    "command": "!frucht",
-    "label": "Frucht",
+    "command": "!typ",
+    "label": "Typ",
     "variants": [
       {
-        "id": "mango",
-        "label": "Mango",
+        "id": "rettungsring",
+        "label": "Rettungsring",
         "names": [
-          "mango",
-          "mangos"
+          "rettungsring",
+          "ring",
+          "lifebuoy"
         ]
       },
       {
-        "id": "sternfrucht",
-        "label": "Sternfrucht",
+        "id": "badeente",
+        "label": "Badeente",
         "names": [
-          "sternfrucht",
-          "karambole",
-          "starfruit"
+          "badeente",
+          "ente",
+          "duck",
+          "rubberduck"
         ]
       },
       {
-        "id": "papaya",
-        "label": "Papaya",
+        "id": "wasserball",
+        "label": "Wasserball",
         "names": [
-          "papaya"
+          "wasserball",
+          "ball",
+          "beachball"
         ]
       },
       {
-        "id": "ananasguave",
-        "label": "Ananasguave",
+        "id": "surfbrett",
+        "label": "Surfbrett",
         "names": [
-          "ananasguave",
-          "feijoa",
-          "guave"
+          "surfbrett",
+          "surf",
+          "surfboard"
         ]
       },
       {
-        "id": "nashi",
-        "label": "Nashi-Birne",
+        "id": "sonnenschirm",
+        "label": "Sonnenschirm",
         "names": [
-          "nashi",
-          "nashibirne",
-          "asiatischebirne",
-          "asianpear"
+          "sonnenschirm",
+          "schirm",
+          "umbrella"
         ]
       },
       {
-        "id": "pepino",
-        "label": "Birnenmelone",
+        "id": "flamingo",
+        "label": "Flamingo-Schwimmring",
         "names": [
-          "birnenmelone",
-          "pepino"
+          "flamingo",
+          "flamingoring",
+          "schwimmring"
         ]
       },
       {
-        "id": "kaktusfeige",
-        "label": "Kaktusfeige",
+        "id": "liegestuhl",
+        "label": "Liegestuhl",
         "names": [
-          "kaktusfeige",
-          "feige",
-          "pricklypear"
+          "liegestuhl",
+          "stuhl",
+          "deckchair"
         ]
       },
       {
-        "id": "durian",
-        "label": "Durian",
+        "id": "sandeimer",
+        "label": "Sandeimer",
         "names": [
-          "durian",
-          "stinkfrucht"
+          "sandeimer",
+          "eimer",
+          "bucket"
         ]
       },
       {
-        "id": "zitrone",
-        "label": "Zitrone",
+        "id": "eis",
+        "label": "Eis am Stiel",
         "names": [
-          "zitrone",
-          "lemon"
+          "eis",
+          "eisamstiel",
+          "popsicle",
+          "icecream"
         ]
       },
       {
-        "id": "ananas",
-        "label": "Ananas",
+        "id": "muschel",
+        "label": "Muschel",
         "names": [
-          "ananas",
-          "pineapple"
+          "muschel",
+          "shell"
         ]
       },
       {
-        "id": "kokosnuss",
-        "label": "Kokosnuss",
+        "id": "seestern",
+        "label": "Seestern",
         "names": [
-          "kokosnuss",
-          "kokos",
-          "coconut"
+          "seestern",
+          "starfish"
         ]
       },
       {
-        "id": "drachenfrucht",
-        "label": "Drachenfrucht",
+        "id": "krebs",
+        "label": "Krebs",
         "names": [
-          "drachenfrucht",
-          "pitaya",
-          "dragonfruit"
+          "krebs",
+          "krabbe",
+          "crab"
         ]
       },
       {
-        "id": "maracuja",
-        "label": "Maracuja",
+        "id": "schnorchel",
+        "label": "Schnorchelmaske",
         "names": [
-          "maracuja",
-          "passionsfrucht",
-          "passionfruit"
+          "schnorchel",
+          "schnorchelmaske",
+          "snorkel"
         ]
       },
       {
-        "id": "banane",
-        "label": "Banane",
+        "id": "sonnenbrille",
+        "label": "Sonnenbrille",
         "names": [
-          "banane",
-          "banana"
+          "sonnenbrille",
+          "brille",
+          "shades"
         ]
       },
       {
-        "id": "litschi",
-        "label": "Litschi",
+        "id": "cocktail",
+        "label": "Cocktail",
         "names": [
-          "litschi",
-          "lychee"
+          "cocktail",
+          "drink"
         ]
       },
       {
-        "id": "wassermelone",
-        "label": "Wassermelone",
+        "id": "strandtasche",
+        "label": "Strandtasche",
         "names": [
-          "wassermelone",
-          "melone",
-          "watermelon"
+          "strandtasche",
+          "tasche",
+          "beachbag",
+          "bag"
         ]
       }
     ]

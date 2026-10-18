@@ -1,10 +1,10 @@
 // Check for settings.ts (schema of the Urlaub theme): valid defaults, no dead key, required keys per
-// group, colors and chat names for every fruit, every group mapped to a scene. Runs with npm test.
+// group, colors and chat names for every beach thing, every group mapped to a scene. Runs with npm test.
 import assert from "node:assert/strict";
 import { hasMinimes, minimeNamesKey } from "../../core/minimeFields.ts";
 import { auditTheme } from "../schemaAudit.ts";
-import { FRUIT_IDS } from "./fruits.ts";
-import { fruitColorKeys, urlaubSettings } from "./settings.ts";
+import { THING_IDS } from "./beachThings.ts";
+import { thingColorKeys, urlaubSettings } from "./settings.ts";
 
 const fields = urlaubSettings.fields;
 const keys = new Set(fields.map(field => field.key));
@@ -34,9 +34,9 @@ for (const [group, required] of Object.entries(REQUIRED)) {
   for (const key of required) assert.equal(fields.find(field => field.key === key)?.group, group, `${key} fehlt in ${group}`);
 }
 
-// Every fruit has main and detail color and names in chat
-for (const id of FRUIT_IDS) {
-  for (const key of [fruitColorKeys(id).main, fruitColorKeys(id).detail, minimeNamesKey(id)]) assert.ok(keys.has(key), `${key} fehlt`);
+// Every beach thing has main and detail color and names in chat
+for (const id of THING_IDS) {
+  for (const key of [thingColorKeys(id).main, thingColorKeys(id).detail, minimeNamesKey(id)]) assert.ok(keys.has(key), `${key} fehlt`);
 }
 
 // Every group is mapped to its scenes (Allgemein applies everywhere)
@@ -44,7 +44,7 @@ for (const group of new Set(fields.map(field => field.group))) {
   if (group !== "Allgemein") assert.ok(group in (urlaubSettings.groupScenes ?? {}), `${group} without a scene`);
 }
 
-// Minimes with fruits as variants
+// Minimes with beach things as variants, chosen with !typ
 assert.equal(hasMinimes(urlaubSettings), true);
 assert.equal(urlaubSettings.minimeVariants?.variants.length, 16);
 

@@ -1,6 +1,6 @@
-// Minimes of the Urlaub theme: joined chatters as cartoon fruits with a face that hop across the beach,
-// with the name on a wooden sign or a ribbon. Own animations: jumps of joy, pirouette, wobble, sunglasses,
-// looking around, sleeping; they react to chat with a juice splash. Who is in and what everyone does comes from
+// Minimes of the Urlaub theme: joined chatters as cartoon beach things (life ring, rubber duck, beach ball, ...) with a
+// face that hop across the beach, with the name on a wooden sign or a ribbon. Own animations: jumps of joy, pirouette,
+// wobble, sunglasses, looking around, sleeping; they react to chat with a water splash. Who is in and what everyone does comes from
 // useMinimes. Transparent, recommended 1920x360 at the bottom edge of the picture. Parameters: ?demo, ?demo=<n>
 import { useMemo, useState, type CSSProperties } from "react";
 import { useMinimes } from "../../../core/hooks/useMinimes.ts";
@@ -8,8 +8,8 @@ import { actorRun, actorStyle, shownVariant, type MinimeAction, type MinimeActor
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import { hopStyle } from "../../../core/minimeHops.ts";
 import { params } from "../../../core/params.ts";
-import Fruit from "../Fruit.tsx";
-import { FRUIT_SET } from "../fruits.ts";
+import BeachThing from "../BeachThing.tsx";
+import { THING_SET } from "../beachThings.ts";
 import { useUrlaub } from "../useUrlaub.ts";
 import "../../../core/minimeHops.css";
 import "../minimes.css";
@@ -30,25 +30,25 @@ export default function Minimes() {
   ], [values]);
   const reaction = useMemo<MinimeAction>(() => ({ name: "splash", durationMs: values.splashMs, weight: 0 }), [values.splashMs]);
   const actors = useMinimes({ catalog, reaction, widthPx });
-  const enabled = useMemo(() => readMinimeOptions(values, FRUIT_SET).rules.variants?.map(variant => variant.id) ?? [], [values]);
+  const enabled = useMemo(() => readMinimeOptions(values, THING_SET).rules.variants?.map(variant => variant.id) ?? [], [values]);
   return (
     <div className={`sf-minimes enter-${values.fruitEnter} exit-${values.fruitExit}`} aria-hidden="true">
-      {actors.map(actor => <Character key={actor.login} actor={actor} fruit={shownVariant(actor, enabled, values.fruitDefault, DEMO)} />)}
+      {actors.map(actor => <Character key={actor.login} actor={actor} thing={shownVariant(actor, enabled, values.fruitDefault, DEMO)} />)}
     </div>
   );
 }
 
-function Character({ actor, fruit }: { actor: MinimeActor; fruit: string }) {
+function Character({ actor, thing }: { actor: MinimeActor; thing: string }) {
   const values = useUrlaub();
   // Position, movement, duration and facing from the core (actorStyle), plus the hops of the core (hopStyle)
   const style = { ...actorStyle(actor), ...hopStyle(actor, values.hopMs) } as CSSProperties;
   const run = actorRun(actor);
   return (
-    <div className={`sf-minime fruit-${fruit} action-${actor.action}`} style={style}>
+    <div className={`sf-minime thing-${thing} action-${actor.action}`} style={style}>
       {values.fruitNames && <span className={`sf-minime-name name-${values.fruitNameStyle}`}>{actor.user}</span>}
       <div key={run} className="minime-hop">
         <div className="sf-minime-body">
-          <div className="sf-minime-flip"><Fruit id={fruit} faces={values.fruitFaces} /></div>
+          <div className="sf-minime-flip"><BeachThing id={thing} faces={values.fruitFaces} /></div>
           {actor.action === "sleep" && <span className="sf-minime-zz">{values.sleepText}</span>}
           {actor.action === "splash" && <Drops count={values.splashDrops} />}
         </div>

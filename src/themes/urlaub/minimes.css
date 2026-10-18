@@ -1,24 +1,25 @@
 /* Minimes of the Urlaub theme (scenes/Minimes.tsx), encapsulated under .theme-urlaub, loaded only with the scene.
    Per minime the scene sets --x, --move, --action-ms, --facing, --hops and --hop-ms; the running action is the
-   class action-<name>, the fruit is fruit-<id> on the minime. Keyframes are called urlaub-minime-*. */
+   class action-<name>, the beach thing is thing-<id> on the minime. Keyframes are called urlaub-minime-*. */
 
-/* Colors per fruit (settings "Früchte: Farben") */
-.theme-urlaub .fruit-mango { --main: var(--fruitMangoMain); --detail: var(--fruitMangoDetail); }
-.theme-urlaub .fruit-sternfrucht { --main: var(--fruitSternfruchtMain); --detail: var(--fruitSternfruchtDetail); }
-.theme-urlaub .fruit-papaya { --main: var(--fruitPapayaMain); --detail: var(--fruitPapayaDetail); }
-.theme-urlaub .fruit-ananasguave { --main: var(--fruitAnanasguaveMain); --detail: var(--fruitAnanasguaveDetail); }
-.theme-urlaub .fruit-nashi { --main: var(--fruitNashiMain); --detail: var(--fruitNashiDetail); }
-.theme-urlaub .fruit-pepino { --main: var(--fruitPepinoMain); --detail: var(--fruitPepinoDetail); }
-.theme-urlaub .fruit-kaktusfeige { --main: var(--fruitKaktusfeigeMain); --detail: var(--fruitKaktusfeigeDetail); }
-.theme-urlaub .fruit-durian { --main: var(--fruitDurianMain); --detail: var(--fruitDurianDetail); }
-.theme-urlaub .fruit-zitrone { --main: var(--fruitZitroneMain); --detail: var(--fruitZitroneDetail); }
-.theme-urlaub .fruit-ananas { --main: var(--fruitAnanasMain); --detail: var(--fruitAnanasDetail); }
-.theme-urlaub .fruit-kokosnuss { --main: var(--fruitKokosnussMain); --detail: var(--fruitKokosnussDetail); }
-.theme-urlaub .fruit-drachenfrucht { --main: var(--fruitDrachenfruchtMain); --detail: var(--fruitDrachenfruchtDetail); }
-.theme-urlaub .fruit-maracuja { --main: var(--fruitMaracujaMain); --detail: var(--fruitMaracujaDetail); }
-.theme-urlaub .fruit-banane { --main: var(--fruitBananeMain); --detail: var(--fruitBananeDetail); }
-.theme-urlaub .fruit-litschi { --main: var(--fruitLitschiMain); --detail: var(--fruitLitschiDetail); }
-.theme-urlaub .fruit-wassermelone { --main: var(--fruitWassermeloneMain); --detail: var(--fruitWassermeloneDetail); }
+/* Colors per beach thing (settings "Typen: Farben") */
+.theme-urlaub .thing-rettungsring { --main: var(--thingRettungsringMain); --detail: var(--thingRettungsringDetail); }
+.theme-urlaub .thing-badeente { --main: var(--thingBadeenteMain); --detail: var(--thingBadeenteDetail); }
+.theme-urlaub .thing-wasserball { --main: var(--thingWasserballMain); --detail: var(--thingWasserballDetail); }
+.theme-urlaub .thing-surfbrett { --main: var(--thingSurfbrettMain); --detail: var(--thingSurfbrettDetail); }
+.theme-urlaub .thing-sonnenschirm { --main: var(--thingSonnenschirmMain); --detail: var(--thingSonnenschirmDetail); }
+.theme-urlaub .thing-flamingo { --main: var(--thingFlamingoMain); --detail: var(--thingFlamingoDetail); }
+.theme-urlaub .thing-liegestuhl { --main: var(--thingLiegestuhlMain); --detail: var(--thingLiegestuhlDetail); }
+.theme-urlaub .thing-sandeimer { --main: var(--thingSandeimerMain); --detail: var(--thingSandeimerDetail); }
+.theme-urlaub .thing-eis { --main: var(--thingEisMain); --detail: var(--thingEisDetail); }
+.theme-urlaub .thing-muschel { --main: var(--thingMuschelMain); --detail: var(--thingMuschelDetail); }
+.theme-urlaub .thing-seestern { --main: var(--thingSeesternMain); --detail: var(--thingSeesternDetail); }
+.theme-urlaub .thing-krebs { --main: var(--thingKrebsMain); --detail: var(--thingKrebsDetail); }
+.theme-urlaub .thing-schnorchel { --main: var(--thingSchnorchelMain); --detail: var(--thingSchnorchelDetail); }
+.theme-urlaub .thing-sonnenbrille { --main: var(--thingSonnenbrilleMain); --detail: var(--thingSonnenbrilleDetail); }
+.theme-urlaub .thing-cocktail { --main: var(--thingCocktailMain); --detail: var(--thingCocktailDetail); }
+.theme-urlaub .thing-strandtasche { --main: var(--thingStrandtascheMain); --detail: var(--thingStrandtascheDetail); }
+
 
 .theme-urlaub .sf-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
 .theme-urlaub .sf-minime {
@@ -51,19 +52,20 @@
   background: color-mix(in srgb, black calc(var(--fruitShadow) * 100%), transparent);
 }
 
-/* Fruit (Fruit.tsx) */
-.theme-urlaub .sf-fruit { display: block; width: 100%; height: auto; overflow: visible; }
-.theme-urlaub .fruit-body { fill: var(--main); stroke: var(--fruitOutline); stroke-width: var(--fruitOutlineWidth); stroke-linejoin: round; }
-.theme-urlaub .fruit-detail { fill: var(--detail); }
-.theme-urlaub .fruit-line { fill: none; stroke: var(--detail); stroke-width: var(--fruitOutlineWidth); stroke-linecap: round; }
-.theme-urlaub .fruit-leaf { fill: var(--fruitLeaf); stroke: var(--fruitOutline); stroke-width: var(--fruitOutlineWidth); stroke-linejoin: round; }
-.theme-urlaub .fruit-stem { fill: var(--fruitStem); stroke: var(--fruitOutline); stroke-width: calc(var(--fruitOutlineWidth) * 0.6); }
-.theme-urlaub .fruit-cheek { fill: var(--fruitCheek); opacity: 0.6; }
-.theme-urlaub .fruit-eye { fill: var(--fruitEye); transform-box: fill-box; transform-origin: center; animation: urlaub-minime-blink var(--fruitBlinkEvery) linear infinite; }
-.theme-urlaub .fruit-mouth { fill: none; stroke: var(--fruitMouth); stroke-width: var(--mouth-width, 2); stroke-linecap: round; }
-.theme-urlaub .fruit-sleepy { display: none; fill: none; stroke: var(--fruitEye); stroke-width: var(--mouth-width, 2); stroke-linecap: round; }
-.theme-urlaub .fruit-snore { display: none; fill: var(--fruitMouth); }
-.theme-urlaub .fruit-glasses { display: none; fill: var(--sunglasses); }
+/* Beach thing (BeachThing.tsx) */
+.theme-urlaub .sf-thing { display: block; width: 100%; height: auto; overflow: visible; }
+/* evenodd: a second subpath cuts a hole (rings) */
+.theme-urlaub .thing-body { fill: var(--main); fill-rule: evenodd; stroke: var(--fruitOutline); stroke-width: var(--fruitOutlineWidth); stroke-linejoin: round; }
+.theme-urlaub .thing-detail { fill: var(--detail); }
+.theme-urlaub .thing-line { fill: none; stroke: var(--detail); stroke-width: var(--fruitOutlineWidth); stroke-linecap: round; }
+.theme-urlaub .thing-leaf { fill: var(--fruitLeaf); stroke: var(--fruitOutline); stroke-width: var(--fruitOutlineWidth); stroke-linejoin: round; }
+.theme-urlaub .thing-stem { fill: var(--fruitStem); stroke: var(--fruitOutline); stroke-width: calc(var(--fruitOutlineWidth) * 0.6); }
+.theme-urlaub .thing-cheek { fill: var(--fruitCheek); opacity: 0.6; }
+.theme-urlaub .thing-eye { fill: var(--fruitEye); transform-box: fill-box; transform-origin: center; animation: urlaub-minime-blink var(--fruitBlinkEvery) linear infinite; }
+.theme-urlaub .thing-mouth { fill: none; stroke: var(--fruitMouth); stroke-width: var(--mouth-width, 2); stroke-linecap: round; }
+.theme-urlaub .thing-sleepy { display: none; fill: none; stroke: var(--fruitEye); stroke-width: var(--mouth-width, 2); stroke-linecap: round; }
+.theme-urlaub .thing-snore { display: none; fill: var(--fruitMouth); }
+.theme-urlaub .thing-glasses { display: none; fill: var(--sunglasses); }
 
 /* Hopping while walking comes from the core (minimeHops.css); breathing pauses meanwhile */
 .theme-urlaub .action-walk .sf-minime-body { animation: none; }
@@ -73,14 +75,14 @@
 .theme-urlaub .action-bounce .sf-minime-shadow { animation: urlaub-minime-shadow calc(var(--action-ms) / 3) ease-in-out 3; }
 .theme-urlaub .action-spin .sf-minime-flip { animation: urlaub-minime-spin calc(var(--action-ms) / var(--spinTurns)) linear var(--spinTurns); }
 .theme-urlaub .action-wobble .sf-minime-body { animation: urlaub-minime-wobble var(--action-ms) ease-in-out both; }
-.theme-urlaub .action-sunglasses .fruit-glasses { display: inline; animation: urlaub-minime-glasses var(--action-ms) ease both; }
-.theme-urlaub .action-look .fruit-eyes { animation: urlaub-minime-look var(--action-ms) ease-in-out both; }
+.theme-urlaub .action-sunglasses .thing-glasses { display: inline; animation: urlaub-minime-glasses var(--action-ms) ease both; }
+.theme-urlaub .action-look .thing-eyes { animation: urlaub-minime-look var(--action-ms) ease-in-out both; }
 .theme-urlaub .action-sleep .sf-minime-body { animation: urlaub-minime-doze var(--action-ms) ease-in-out both; }
-.theme-urlaub .action-sleep .fruit-eyes, .theme-urlaub .action-sleep .fruit-mouth { display: none; }
-.theme-urlaub .action-sleep .fruit-sleepy, .theme-urlaub .action-sleep .fruit-snore { display: inline; }
+.theme-urlaub .action-sleep .thing-eyes, .theme-urlaub .action-sleep .thing-mouth { display: none; }
+.theme-urlaub .action-sleep .thing-sleepy, .theme-urlaub .action-sleep .thing-snore { display: inline; }
 .theme-urlaub .sf-minime-zz { position: absolute; top: 0; right: 0; color: var(--textColor); font-weight: 700; animation: urlaub-minime-zz var(--zz-time, 2s) ease-out infinite; }
 
-/* Reaction to chat: a big jump with juice splashes in the fruit color */
+/* Reaction to chat: a big jump with water splashes in the main color */
 .theme-urlaub .action-splash .sf-minime-body { animation: urlaub-minime-splash var(--action-ms) ease-out both; }
 .theme-urlaub .sf-juice { position: absolute; left: 50%; top: 40%; }
 .theme-urlaub .sf-juice i {

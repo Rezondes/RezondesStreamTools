@@ -1,5 +1,5 @@
 // Commands page of the Urlaub theme (public under /s/<login>/): the beach at the chosen time of day stays fixed in the
-// background, in front of it wooden signs with the commands (fruits as minime variants). List, texts and intro come
+// background, in front of it wooden signs with the commands (beach things as minime variants). List, texts and intro come
 // from the info context of the core (useInfoPage), here only the beach look.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";

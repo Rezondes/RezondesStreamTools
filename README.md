@@ -219,16 +219,16 @@ Eingebaut sind `standard` (das Standard-Theme: klarer, moderner Look mit Verlauf
 Schrift; alle Szenen, Stinger und Banner eigenständig), `matrix` (Terminal-Look) und `urlaub`
 (Urlaub: tropischer Strand mit Meer, Wellen, Palmen und Holzschildern; Tageszeit je Szene, Alerts als Postkarte,
 Surfbrett oder Flaschenpost, Chat als Luftblasen, Planken oder Muscheln, Rahmen aus Bambus, Holz oder Seil,
-Strandradio, Wellen-Stinger, Strand-Banner und hüpfende Frucht-Minimes). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
+Strandradio, Wellen-Stinger, Strand-Banner und hüpfende Strand-Minimes). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
 
 ## Minimes (Szene `minimes`)
 
 Chatter klinken sich per Chatbefehl als kleine Figur ein, die unten im Bild schwebt, hin und her wandert, ihren Namen
 über dem Kopf trägt und zufällige Animationen zeigt. Im Theme `matrix` ist das ein Neon-Geist im Kapuzenpulli, ohne
 Beine, getragen von einer Düse aus fallenden Glyphen (Backflip, Glitch, Umschauen, Drehen, Schlafen, Blinzeln;
-Hüpfer mit Düsen-Boost, wenn der Chatter schreibt). Im Theme `urlaub` sind es Cartoon-Früchte mit Gesicht, die
-über den Strand hüpfen (Freudensprünge, Pirouette, Wackeln, Sonnenbrille, Umschauen, Schlafen; Saftspritzer, wenn der
-Chatter schreibt). Minimes sind eine Funktion des Themes: `standard` hat keine, dort bleibt die Szene leer und der Server
+Hüpfer mit Düsen-Boost, wenn der Chatter schreibt). Im Theme `urlaub` sind es Strandsachen mit Gesicht (Rettungsring,
+Badeente, Wasserball, ...), die über den Strand hüpfen (Freudensprünge, Pirouette, Wackeln, Sonnenbrille, Umschauen,
+Schlafen; Wasserspritzer, wenn der Chatter schreibt). Minimes sind eine Funktion des Themes: `standard` hat keine, dort bleibt die Szene leer und der Server
 ignoriert die Befehle.
 
 | Befehl (Standard, einstellbar) | Wirkung |
@@ -237,12 +237,14 @@ ignoriert die Befehle.
 | `!color <farbe>` | Farbe ändern; klinkt auch ein (abschaltbar) |
 | `!leave` | raus; Mods (Rolle einstellbar) werfen mit `!leave @name` ein fremdes Minime raus |
 
-In `urlaub` wählen Chatter statt einer Farbe eine Frucht: `!join` gibt eine zufällige erlaubte Frucht,
-`!join mango` eine Mango, `!frucht karambole` wechselt zur Sternfrucht. 16 Früchte (Mango, Sternfrucht, Papaya,
-Ananasguave, Nashi-Birne, Birnenmelone, Kaktusfeige, Durian, Zitrone, Ananas, Kokosnuss, Drachenfrucht, Maracuja,
-Banane, Litschi, Wassermelone); die Namen im Chat sind je Frucht einstellbar (Gruppe "Minimes: Typen", leer = Frucht
-aus), Gross- und Kleinschreibung, Umlaute und Leerzeichen zählen nicht ("Asiatische Birne" = "asiatischebirne").
-Farben je Frucht stehen in "Früchte: Farben".
+In `urlaub` wählen Chatter statt einer Farbe einen Typ: `!join` gibt einen zufälligen erlaubten Typ,
+`!join rettungsring` einen Rettungsring, `!typ eis am stiel` wechselt zum Eis am Stiel. 16 Typen (Rettungsring,
+Badeente, Wasserball, Surfbrett, Sonnenschirm, Flamingo-Schwimmring, Liegestuhl, Sandeimer, Eis am Stiel, Muschel,
+Seestern, Krebs, Schnorchelmaske, Sonnenbrille, Cocktail, Strandtasche); die Namen im Chat sind je Typ einstellbar
+(deutsch und englisch vorbelegt, Gruppe "Minimes: Typen", leer = Typ aus), Gross- und Kleinschreibung, Umlaute und
+Leerzeichen zählen nicht ("Eis am Stiel" = "eisamstiel"). Farben je Typ stehen in "Typen: Farben". Wer noch den
+alten Befehl `!frucht` als Standard gespeichert hat, bekommt `!typ`; gespeicherte Früchte werden beim Aufräumen zu
+einem erlaubten Typ.
 
 Themes mit Fraktionen (z.B. King of the Hill) haben zusätzlich `!team <fraktion>`. Rolle und Fraktion gehen auch in
 einem Befehl, die Reihenfolge ist egal: `!join blau medic` oder `!join medic blau`. Ohne Angabe kommt der Chatter in die
@@ -257,7 +259,7 @@ Alles Verhalten ist im Theme einstellbar (Gruppen "Minimes: Befehle", "Minimes: 
 im Matrix-Theme dazu "Minimes: Aussehen" und "Minimes: Animationen"): Befehlswörter, wer einklinken und rauswerfen darf,
 Höchstzahl und was bei voller Liste passiert, Verschwinden nach Minuten ohne Nachricht, Abklingzeit für Farbwechsel,
 Reaktion auf Chat, Leeren bei Streamende (`stream.offline`) und bei Ban oder Timeout, Tempo, Laufweite und Häufigkeiten.
-Die Liste und die gemerkten Farben und Früchte speichert der Server verschlüsselt im Profil (höchstens alle 2 s).
+Die Liste und die gemerkten Farben, Typen und Fraktionen speichert der Server verschlüsselt im Profil (höchstens alle 2 s).
 
 ## Chat-Trigger
 

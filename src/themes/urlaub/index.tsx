@@ -1,5 +1,5 @@
 // Scenes of the Urlaub theme for the theme list (src/themes/scenes.tsx) with its CSS. The theme brings all
-// scenes itself, including the minimes (fruits). Every scene is loaded via React.lazy as its own chunk.
+// scenes itself, including the minimes (beach things). Every scene is loaded via React.lazy as its own chunk.
 import { lazy } from "react";
 import { screenScenes } from "../../core/screens/screenScenes.tsx";
 import type { ThemeView } from "../../core/theme.ts";

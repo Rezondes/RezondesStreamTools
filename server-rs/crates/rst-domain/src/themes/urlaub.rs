@@ -45,7 +45,41 @@ const STINGER: &str = "Stinger";
 const BANNER: &str = "Banner";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
-const FRUIT_COLORS: &str = "Früchte: Farben";
+const THING_COLORS: &str = "Typen: Farben";
+
+/// The beach things (minime variants): id, name, names in chat, main and detail color
+const BEACH_THINGS: [(&str, &str, &[&str], &str, &str); 16] = [
+    ("rettungsring", "Rettungsring", &["rettungsring", "ring", "lifebuoy"], "#ff3b30", "#ffffff"),
+    ("badeente", "Badeente", &["badeente", "ente", "duck", "rubberduck"], "#ffd22e", "#ff8c1a"),
+    ("wasserball", "Wasserball", &["wasserball", "ball", "beachball"], "#ffffff", "#ff4f6d"),
+    ("surfbrett", "Surfbrett", &["surfbrett", "surf", "surfboard"], "#29b6f6", "#ffd166"),
+    ("sonnenschirm", "Sonnenschirm", &["sonnenschirm", "schirm", "umbrella"], "#ff6f61", "#fff3d6"),
+    ("flamingo", "Flamingo-Schwimmring", &["flamingo", "flamingoring", "schwimmring"], "#ff8fb8", "#ff5c99"),
+    ("liegestuhl", "Liegestuhl", &["liegestuhl", "stuhl", "deckchair"], "#4fc3f7", "#ffffff"),
+    ("sandeimer", "Sandeimer", &["sandeimer", "eimer", "bucket"], "#ff9f1c", "#ffe066"),
+    ("eis", "Eis am Stiel", &["eis", "eisamstiel", "popsicle", "icecream"], "#ff8fab", "#fff1c1"),
+    ("muschel", "Muschel", &["muschel", "shell"], "#ffd8c2", "#e8a07e"),
+    ("seestern", "Seestern", &["seestern", "starfish"], "#ff9a52", "#ffd27a"),
+    ("krebs", "Krebs", &["krebs", "krabbe", "crab"], "#ff5a4e", "#c9372c"),
+    ("schnorchel", "Schnorchelmaske", &["schnorchel", "schnorchelmaske", "snorkel"], "#ffdd00", "#bfefff"),
+    ("sonnenbrille", "Sonnenbrille", &["sonnenbrille", "brille", "shades"], "#2b2b3a", "#7fd8ff"),
+    ("cocktail", "Cocktail", &["cocktail", "drink"], "#e8f8ff", "#ff7aa8"),
+    ("strandtasche", "Strandtasche", &["strandtasche", "tasche", "beachbag", "bag"], "#2ec4b6", "#ffe28a"),
+];
+
+/// Main and detail color per beach thing (keys `thing<Id>Main`, `thing<Id>Detail`)
+fn thing_color_fields() -> Vec<SettingField> {
+    BEACH_THINGS
+        .iter()
+        .flat_map(|(id, label, _, main, detail)| {
+            let key = capital(id);
+            [
+                color(&format!("thing{key}Main"), &format!("{label}: Hauptfarbe"), THING_COLORS, main),
+                color(&format!("thing{key}Detail"), &format!("{label}: Detailfarbe"), THING_COLORS, detail),
+            ]
+        })
+        .collect()
+}
 
 fn fields() -> Vec<SettingField> {
     [
@@ -390,31 +424,14 @@ fn fields() -> Vec<SettingField> {
             color("fruitMouth", "Mund", MINIME_LOOK, "#6b2a1f"),
             color("fruitOutline", "Umriss", MINIME_LOOK, "#5a3a22"),
             number("fruitOutlineWidth", "Umriss: Stärke", MINIME_LOOK, 2.5, 0.0, 8.0, None, Some(0.5)),
-            color("fruitLeaf", "Blätter", MINIME_LOOK, "#3aa655"),
-            color("fruitStem", "Stiele", MINIME_LOOK, "#6b4423"),
+            color("fruitLeaf", "Akzent", MINIME_LOOK, "#3aa655"),
+            color("fruitStem", "Holz und Griffe", MINIME_LOOK, "#6b4423"),
             choice(
                 "fruitDefault",
-                "Frucht ohne Wahl (alle aus)",
+                "Typ ohne Wahl (alle aus)",
                 MINIME_LOOK,
-                "mango",
-                &[
-                    "mango",
-                    "sternfrucht",
-                    "papaya",
-                    "ananasguave",
-                    "nashi",
-                    "pepino",
-                    "kaktusfeige",
-                    "durian",
-                    "zitrone",
-                    "ananas",
-                    "kokosnuss",
-                    "drachenfrucht",
-                    "maracuja",
-                    "banane",
-                    "litschi",
-                    "wassermelone",
-                ],
+                "rettungsring",
+                &BEACH_THINGS.map(|thing| thing.0),
             ),
             flag("fruitNames", "Namen zeigen", MINIME_LOOK, true),
             choice("fruitNameStyle", "Namen auf", MINIME_LOOK, "schild", &["schild", "band"]),
@@ -444,7 +461,7 @@ fn fields() -> Vec<SettingField> {
             text("sleepText", "Schlafen: aufsteigendes Zeichen", MINIME_MOVES, "z", Some(4)),
             number("splashMs", "Reaktion auf Chat: Dauer", MINIME_MOVES, 900.0, 200.0, 5000.0, MS, None),
             number("splashHeight", "Reaktion auf Chat: Sprunghöhe", MINIME_MOVES, 50.0, 0.0, 300.0, PX, None),
-            number("splashDrops", "Reaktion auf Chat: Saftspritzer", MINIME_MOVES, 8.0, 0.0, 20.0, None, None),
+            number("splashDrops", "Reaktion auf Chat: Wasserspritzer", MINIME_MOVES, 8.0, 0.0, 20.0, None, None),
         ],
         info_fields(),
         vec![choice(
@@ -455,40 +472,7 @@ fn fields() -> Vec<SettingField> {
             &["morgen", "mittag", "abend", "nacht"],
         )],
         minime_variant_fields(&variants()),
-        vec![
-            color("fruitMangoMain", "Mango: Hauptfarbe", FRUIT_COLORS, "#ffb02e"),
-            color("fruitMangoDetail", "Mango: Detailfarbe", FRUIT_COLORS, "#ff5e3a"),
-            color("fruitSternfruchtMain", "Sternfrucht: Hauptfarbe", FRUIT_COLORS, "#ffd84a"),
-            color("fruitSternfruchtDetail", "Sternfrucht: Detailfarbe", FRUIT_COLORS, "#e0a800"),
-            color("fruitPapayaMain", "Papaya: Hauptfarbe", FRUIT_COLORS, "#8fd14f"),
-            color("fruitPapayaDetail", "Papaya: Detailfarbe", FRUIT_COLORS, "#ff8a3d"),
-            color("fruitAnanasguaveMain", "Ananasguave: Hauptfarbe", FRUIT_COLORS, "#6cbf4a"),
-            color("fruitAnanasguaveDetail", "Ananasguave: Detailfarbe", FRUIT_COLORS, "#7a4a2a"),
-            color("fruitNashiMain", "Nashi-Birne: Hauptfarbe", FRUIT_COLORS, "#f2d27a"),
-            color("fruitNashiDetail", "Nashi-Birne: Detailfarbe", FRUIT_COLORS, "#b9873f"),
-            color("fruitPepinoMain", "Birnenmelone: Hauptfarbe", FRUIT_COLORS, "#f5e6a8"),
-            color("fruitPepinoDetail", "Birnenmelone: Detailfarbe", FRUIT_COLORS, "#8e4fb3"),
-            color("fruitKaktusfeigeMain", "Kaktusfeige: Hauptfarbe", FRUIT_COLORS, "#e0457b"),
-            color("fruitKaktusfeigeDetail", "Kaktusfeige: Detailfarbe", FRUIT_COLORS, "#7cc35a"),
-            color("fruitDurianMain", "Durian: Hauptfarbe", FRUIT_COLORS, "#a7b83a"),
-            color("fruitDurianDetail", "Durian: Detailfarbe", FRUIT_COLORS, "#6b7a1e"),
-            color("fruitZitroneMain", "Zitrone: Hauptfarbe", FRUIT_COLORS, "#fff04a"),
-            color("fruitZitroneDetail", "Zitrone: Detailfarbe", FRUIT_COLORS, "#e6c700"),
-            color("fruitAnanasMain", "Ananas: Hauptfarbe", FRUIT_COLORS, "#f7b733"),
-            color("fruitAnanasDetail", "Ananas: Detailfarbe", FRUIT_COLORS, "#b9741a"),
-            color("fruitKokosnussMain", "Kokosnuss: Hauptfarbe", FRUIT_COLORS, "#8b5a2b"),
-            color("fruitKokosnussDetail", "Kokosnuss: Detailfarbe", FRUIT_COLORS, "#4a2c14"),
-            color("fruitDrachenfruchtMain", "Drachenfrucht: Hauptfarbe", FRUIT_COLORS, "#ff3e8a"),
-            color("fruitDrachenfruchtDetail", "Drachenfrucht: Detailfarbe", FRUIT_COLORS, "#ffd1e3"),
-            color("fruitMaracujaMain", "Maracuja: Hauptfarbe", FRUIT_COLORS, "#6b2f6b"),
-            color("fruitMaracujaDetail", "Maracuja: Detailfarbe", FRUIT_COLORS, "#3f163f"),
-            color("fruitBananeMain", "Banane: Hauptfarbe", FRUIT_COLORS, "#ffe135"),
-            color("fruitBananeDetail", "Banane: Detailfarbe", FRUIT_COLORS, "#8b5a2b"),
-            color("fruitLitschiMain", "Litschi: Hauptfarbe", FRUIT_COLORS, "#e5394b"),
-            color("fruitLitschiDetail", "Litschi: Detailfarbe", FRUIT_COLORS, "#a3172a"),
-            color("fruitWassermeloneMain", "Wassermelone: Hauptfarbe", FRUIT_COLORS, "#3fa34d"),
-            color("fruitWassermeloneDetail", "Wassermelone: Detailfarbe", FRUIT_COLORS, "#1f6b2a"),
-        ],
+        thing_color_fields(),
     ]
     .concat()
 }
@@ -511,7 +495,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MINIME_LOOK, vec![SceneName::Minimes]),
         (MINIME_HOP, vec![SceneName::Minimes]),
         (MINIME_MOVES, vec![SceneName::Minimes]),
-        (FRUIT_COLORS, vec![SceneName::Minimes]),
+        (THING_COLORS, vec![SceneName::Minimes]),
         (INFO_GROUP, vec![SceneName::Info]),
     ]
     .into_iter()
@@ -521,26 +505,9 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
 
 fn variants() -> MinimeVariantSet {
     MinimeVariantSet {
-        command: "!frucht".to_owned(),
-        label: "Frucht".to_owned(),
-        variants: vec![
-            variant("mango", "Mango", &["mango", "mangos"]),
-            variant("sternfrucht", "Sternfrucht", &["sternfrucht", "karambole", "starfruit"]),
-            variant("papaya", "Papaya", &["papaya"]),
-            variant("ananasguave", "Ananasguave", &["ananasguave", "feijoa", "guave"]),
-            variant("nashi", "Nashi-Birne", &["nashi", "nashibirne", "asiatischebirne", "asianpear"]),
-            variant("pepino", "Birnenmelone", &["birnenmelone", "pepino"]),
-            variant("kaktusfeige", "Kaktusfeige", &["kaktusfeige", "feige", "pricklypear"]),
-            variant("durian", "Durian", &["durian", "stinkfrucht"]),
-            variant("zitrone", "Zitrone", &["zitrone", "lemon"]),
-            variant("ananas", "Ananas", &["ananas", "pineapple"]),
-            variant("kokosnuss", "Kokosnuss", &["kokosnuss", "kokos", "coconut"]),
-            variant("drachenfrucht", "Drachenfrucht", &["drachenfrucht", "pitaya", "dragonfruit"]),
-            variant("maracuja", "Maracuja", &["maracuja", "passionsfrucht", "passionfruit"]),
-            variant("banane", "Banane", &["banane", "banana"]),
-            variant("litschi", "Litschi", &["litschi", "lychee"]),
-            variant("wassermelone", "Wassermelone", &["wassermelone", "melone", "watermelon"]),
-        ],
+        command: "!typ".to_owned(),
+        label: "Typ".to_owned(),
+        variants: BEACH_THINGS.iter().map(|(id, label, names, ..)| variant(id, label, names)).collect(),
     }
 }
 
@@ -582,7 +549,8 @@ mod tests {
     fn variants_and_personalize() {
         let set = variants();
         assert_eq!(set.variants.len(), 16);
-        assert_eq!(set.variants.first().map(|variant| variant.id.as_str()), Some("mango"));
+        assert_eq!(set.variants.first().map(|variant| variant.id.as_str()), Some("rettungsring"));
+        assert_eq!(set.command, "!typ");
         let neo = Login::parse("neo_42").expect("valid login");
         assert_eq!(
             personalize(&neo),

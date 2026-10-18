@@ -44,7 +44,10 @@ fn default_theme() -> &'static Theme {
 /// Defaults a theme has changed: theme, key, old default, new default. Whoever still has the old default stored gets
 /// the new one when reading; values chosen by the streamer stay. Entries come with the theme plan that needs them.
 type OldDefault = (&'static str, &'static str, &'static str, &'static str);
-const OLD_DEFAULTS: &[OldDefault] = &[];
+const OLD_DEFAULTS: &[OldDefault] = &[
+    // plans/PLAN-URLAUB.md package 4: the minimes are beach things, chosen with !typ instead of !frucht
+    ("urlaub", "minimeVariantCommand", "!frucht", "!typ"),
+];
 
 /// Brings stored settings into valid shape: old IDs are renamed, an unknown theme becomes the default, values only
 /// as objects per theme, old defaults become the current ones
@@ -184,11 +187,64 @@ mod tests {
         assert_eq!(rules(json!({ "theme": "matrix", "values": {} })).map(|rules| rules.max), Some(30));
         assert!(rules(json!({ "theme": "standard", "values": { "matrix": { "minimeMax": 5 } } })).is_none());
         assert_eq!(rules(json!({ "theme": "matrix" })).and_then(|rules| rules.variants), None);
-        let fruits =
+        let things =
             |values: Value| rules(json!({ "theme": "urlaub", "values": { "urlaub": values } })).expect("rules");
-        assert_eq!(fruits(json!({})).variants.map(|variants| variants.len()), Some(16));
-        assert_eq!(fruits(json!({ "minimeNames_durian": "" })).variants.map(|variants| variants.len()), Some(15));
-        assert_eq!(fruits(json!({})).commands.look, "!frucht");
+        assert_eq!(things(json!({})).variants.map(|variants| variants.len()), Some(16));
+        assert_eq!(things(json!({ "minimeNames_krebs": "" })).variants.map(|variants| variants.len()), Some(15));
+        assert_eq!(things(json!({})).commands.look, "!typ");
+    }
+
+    #[test]
+    fn urlaub_reads_join_rettungsring_and_no_fruit_names() {
+        let file = parse_settings_file(&json!({ "theme": "urlaub", "values": {} }));
+        let rules = minime_rules_of(&file).expect("rules");
+        let join = |text: &str| crate::minimes::command::parse_command(text, &[], &rules);
+        let rettungsring = Some(crate::minimes::command::MinimeCommand::Join {
+            color: None,
+            variant: Some("rettungsring".to_owned()),
+            team: None,
+        });
+        assert_eq!(join("!join rettungsring"), rettungsring);
+        assert_eq!(
+            join("!join Eis am Stiel").and_then(|command| match command {
+                crate::minimes::command::MinimeCommand::Join { variant, .. } => variant,
+                _ => None,
+            }),
+            Some("eis".to_owned())
+        );
+        assert!(matches!(
+            join("!join mango"),
+            Some(crate::minimes::command::MinimeCommand::Join { variant: None, .. })
+        ));
+    }
+
+    #[test]
+    fn old_fruit_command_becomes_typ_and_own_commands_stay() {
+        let command = |theme: &str, value: &str| {
+            let file =
+                parse_settings_file(&json!({ "theme": theme, "values": { theme: { "minimeVariantCommand": value } } }));
+            file.values["urlaub"]["minimeVariantCommand"].clone()
+        };
+        assert_eq!(command("urlaub", "!frucht"), "!typ");
+        assert_eq!(command("suedfrucht", "!frucht"), "!typ");
+        assert_eq!(command("urlaub", "!obst"), "!obst");
+    }
+
+    #[test]
+    fn stored_fruit_minimes_get_an_allowed_beach_thing_on_prune() {
+        use crate::minimes::roster::{MinimeEntry, MinimeEvent, MinimeState, apply};
+        let rules = minime_rules_of(&parse_settings_file(&json!({ "theme": "urlaub" }))).expect("rules");
+        let mango = MinimeEntry {
+            login: "neo".to_owned(),
+            user: "Neo".to_owned(),
+            color: None,
+            variant: Some("mango".to_owned()),
+            team: None,
+            last_seen: 0,
+        };
+        let state = MinimeState { roster: vec![mango], ..MinimeState::default() };
+        let pruned = apply(&state, &MinimeEvent::Prune, 1, &rules, &mut || 0.0);
+        assert_eq!(pruned.state.roster[0].variant.as_deref(), Some("rettungsring"));
     }
 
     #[test]

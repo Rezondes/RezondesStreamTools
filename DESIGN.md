@@ -29,7 +29,7 @@ benutzen nur Tokens (`--bg`, `--surface`, `--fg`, `--accent`, `--radius`, `--fon
 - **Farbe:** Strand als Seite (Himmel, Meer, Sand), cremige Karten `#fff8ea` mit braunem Text `#3b2412` (13.7:1).
   Signatur Meerblau `#0b6f8e` (weisse Schrift 5.7:1) für Primärknopf und aktiven Tab, Hibiskus für Hervorhebungen.
 - **Raum:** luftiger, grosse Radien.
-- **Abschluss:** Holzrand (2px) und Holzschatten unter Knöpfen und Karten, runde Knöpfe. Sonne, Palmen und Früchte
+- **Abschluss:** Holzrand (2px) und Holzschatten unter Knöpfen und Karten, runde Knöpfe. Sonne, Palmen und Strandsachen
   aus dem Urlaub-Theme als Szenerie (`Scenery.tsx`); das Dashboard wird schmaler, damit die Palmen sichtbar bleiben.
 
 ## Layout: die Seite scrollt nie als Ganzes
