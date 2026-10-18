@@ -2,7 +2,7 @@
 // disappearing and reaction to chat. Runs with npm test (alone: node src/core/minimeBehavior.check.ts).
 import assert from "node:assert/strict";
 import {
-  actorRun, actorStyle, advance, nextAction, nextEnd, positionAt, react, shownTeam, shownVariant, syncRoster, teamCounts, type MinimeActor, type MinimeStage,
+  actorRun, actorStyle, advance, nextAction, nextEnd, positionAt, react, resettle, shownTeam, shownVariant, syncRoster, teamCounts, type MinimeActor, type MinimeStage,
 } from "./minimeBehavior.ts";
 import { readMinimeOptions } from "./minimeFields.ts";
 
@@ -104,5 +104,39 @@ assert.ok(new Set(demoTeams).size > 1, "demo spreads the logins over the faction
 
 // Members per faction: leaving figures and switched-off factions do not count
 assert.deepEqual(teamCounts([actor({ login: "a", team: "blau" }), actor({ login: "b", team: "blau" }), actor({ login: "c", team: "rot", leaving: true }), actor({ login: "d", team: "alt" })], ["blau", "rot"], false), { blau: 2, rot: 0 });
+
+// Fixed places: never two on one place, all in the picture, a free place is given again; walking stays off
+{
+  const motion = { ...readMinimeOptions({}).motion, marginPx: 100, speedPxPerS: 100 };
+  const fixed: MinimeStage = { motion, catalog: [], widthPx: 1100, slots: { count: 4, teams: [], teamOf: () => null } };
+  const minime = (login: string, team?: string) => ({ login, user: login, color: null, variant: null, ...(team ? { team } : {}) });
+  const three = syncRoster([], ["a", "b", "c"].map(login => minime(login)), fixed, 0, () => 0);
+  assert.deepEqual(three.map(entry => entry.slot), [0, 3, 1]);
+  assert.deepEqual(three.map(entry => entry.toX), [212.5, 887.5, 437.5]);
+  const left = syncRoster(three, [minime("a"), minime("c")], fixed, 10, () => 0);
+  const back = syncRoster(left.filter(entry => !entry.leaving), [minime("a"), minime("c"), minime("d")], fixed, 20, () => 0);
+  assert.equal(back.find(entry => entry.login === "d")?.slot, 3);
+  assert.equal(nextAction({ ...three[0], action: "idle" }, { ...fixed, motion: { ...motion, idleWeight: 0, walkWeight: 100 } }, 0, () => 0.9).action, "idle");
+
+  // Factions: every faction in its area; a faction change walks to a place in the new area
+  const teamOf = (entry: { team?: string }) => entry.team ?? null;
+  const areas: MinimeStage = { ...fixed, slots: { count: 2, teams: ["blau", "rot"], teamOf } };
+  const split = syncRoster([], [minime("a", "blau"), minime("b", "rot"), minime("c", "blau")], areas, 0, () => 0);
+  assert.ok(split.filter(entry => entry.team === "blau").every(entry => entry.toX >= 100 && entry.toX <= 550));
+  assert.ok(split.filter(entry => entry.team === "rot").every(entry => entry.toX >= 550 && entry.toX <= 1000));
+  const moved = syncRoster(split, [minime("a", "rot"), minime("b", "rot"), minime("c", "blau")], areas, 100, () => 0).find(entry => entry.login === "a");
+  assert.ok(moved && moved.action === "walk" && moved.toX >= 550 && moved.slot !== split.find(entry => entry.login === "b")?.slot);
+
+  // Away from the place (e.g. a medic after reviving): back first; fewer places: places outside get a free one
+  const away = { ...three[0], action: "idle", toX: 600, fromX: 600 };
+  const home = nextAction(away, fixed, 0, () => 0);
+  assert.deepEqual([home.action, home.toX, home.durationMs], ["walk", 212.5, 3875]);
+  const resting = three.map(entry => ({ ...entry, action: "idle" }));
+  const fewer = resettle(resting, { ...fixed, slots: { count: 2, teams: [], teamOf: () => null } }, 0);
+  assert.ok(fewer.every(entry => (entry.slot ?? 0) < 2));
+  assert.equal(new Set(fewer.map(entry => entry.slot)).size, 2, "a and c keep or get different places, b is out of range");
+  assert.equal(resettle(fewer.map(entry => ({ ...entry, action: "idle", fromX: entry.toX })), { ...fixed, slots: { count: 2, teams: [], teamOf: () => null } }, 0).length, 3);
+  assert.equal(resettle(three, STAGE, 0), three, "random placement changes nothing");
+}
 
 console.log("minimeBehavior ok");

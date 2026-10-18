@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { connect } from "../connection.ts";
 import { DEMO_FIRST_LOGIN } from "../demo.ts";
-import { advance, react, syncRoster, type MinimeAction, type MinimeActor, type MinimeStage } from "../minimeBehavior.ts";
+import { advance, react, resettle, shownTeam, syncRoster, type MinimeAction, type MinimeActor, type MinimeStage } from "../minimeBehavior.ts";
 import { advanceWithCombat, combatCast, nextFightAt, nextWake, readCombat, releaseOrphans, startFight, type CombatSound } from "../minimeCombat.ts";
 import { COMBAT_SOUNDS, readMinimeOptions } from "../minimeFields.ts";
 import { params } from "../params.ts";
@@ -25,7 +25,14 @@ type MinimeSceneOptions = { catalog: readonly MinimeAction[]; reaction: MinimeAc
 
 export function useMinimes({ catalog, reaction, widthPx, combat }: MinimeSceneOptions): readonly MinimeActor[] {
   const values = useThemeValues();
-  const stage = useMemo<MinimeStage>(() => ({ motion: readMinimeOptions(values).motion, catalog, widthPx }), [values, catalog, widthPx]);
+  const stage = useMemo<MinimeStage>(() => {
+    const { motion, rules } = readMinimeOptions(values, combat?.roles, combat?.teams);
+    if (motion.placement !== "slots") return { motion, catalog, widthPx };
+    // Fixed places: as many as minimes may join, per faction its own area
+    const teams = (rules.teams ?? []).map(team => team.id);
+    const demo = params.has("demo");
+    return { motion, catalog, widthPx, slots: { count: rules.max, teams, teamOf: minime => (teams.length ? shownTeam(minime, teams, demo) : null) } };
+  }, [values, catalog, widthPx, combat]);
   const fight = useMemo(() => {
     const options = combat ? readCombat(values, combat.explosive) : null;
     if (!combat || !options) return null;
@@ -53,6 +60,9 @@ export function useMinimes({ catalog, reaction, widthPx, combat }: MinimeSceneOp
       if (chosen) commit(current.current.map(actor => (actor.login === login ? react(actor, chosen, Date.now()) : actor)));
     },
   }), []);
+
+  // Places changed (number, width, placement): minimes with a place go to its new position
+  useEffect(() => commit(resettle(current.current, stage, Date.now())), [stage]);
 
   // The next try for a fight; null without fights
   const [fightAt, setFightAt] = useState<number | null>(null);
