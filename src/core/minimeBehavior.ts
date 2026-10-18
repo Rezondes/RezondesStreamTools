@@ -9,8 +9,12 @@ import type { Minime } from "./types.ts";
 // Theme's own action: weight 0 = never comes by itself (e.g. the reaction to chat)
 export type MinimeAction = { name: string; durationMs: number; weight: number };
 
-// A minime with its running action. Position in px: fromX at the start, toX at the end (only walk changes it).
-// facing: 1 = looks right, -1 = left. leaving: is disappearing (exit) and drops out afterwards.
+// Part of a minime in a fight (minimeCombat.ts): its role there, the logins of shooter, target and medic, the variant
+// (weapon) from the start of the fight and whether the target was hit
+export type Combat = { role: "shooter" | "target" | "medic"; shooter: string; target: string; medic: string; variant: string | null; hit: boolean };
+
+// A minime with its running action. Position in px: fromX at the start, toX at the end (walk and approach move).
+// facing: 1 = looks right, -1 = left. leaving: is disappearing (exit) and drops out afterwards. combat: in a fight.
 export type MinimeActor = Minime & {
   action: string;
   startedAt: number;
@@ -19,7 +23,11 @@ export type MinimeActor = Minime & {
   toX: number;
   facing: 1 | -1;
   leaving: boolean;
+  combat?: Combat;
 };
+
+// Actions that move the figure from fromX to toX
+const MOVING = new Set(["walk", "approach"]);
 
 // Everything the choice needs: movement from the settings, catalog of the theme, width of the scene in px
 export type MinimeStage = { motion: MinimeMotion; catalog: readonly MinimeAction[]; widthPx: number };
@@ -27,14 +35,15 @@ export type MinimeStage = { motion: MinimeMotion; catalog: readonly MinimeAction
 // fixed: minimum duration of every action, so a duration of 0 does not give a loop without a pause
 const MIN_DURATION_MS = 50;
 
-// Position at time now: proportional between fromX and toX during walk, otherwise toX
+// Position at time now: proportional between fromX and toX while moving, otherwise toX
 export function positionAt(actor: MinimeActor, now: number): number {
-  if (actor.action !== "walk" || actor.durationMs <= 0) return actor.toX;
+  if (!MOVING.has(actor.action) || actor.durationMs <= 0) return actor.toX;
   const progress = Math.min(1, Math.max(0, (now - actor.startedAt) / actor.durationMs));
   return actor.fromX + (actor.toX - actor.fromX) * progress;
 }
 
-const at = (actor: MinimeActor, action: string, now: number, durationMs: number, x: number): MinimeActor =>
+// The minime starts an action at its place x
+export const at = (actor: MinimeActor, action: string, now: number, durationMs: number, x: number): MinimeActor =>
   ({ ...actor, action, startedAt: now, durationMs: Math.max(MIN_DURATION_MS, durationMs), fromX: x, toX: x });
 
 // Target of a walk: random direction; if it does not fit the picture, the other one; if none fits, up to the edge
@@ -94,16 +103,16 @@ export function nextEnd(actors: readonly MinimeActor[]): number | null {
   return actors.length ? Math.min(...actors.map(actor => actor.startedAt + actor.durationMs)) : null;
 }
 
-// Reaction to chat: interrupts everything except appearing and disappearing, at the current place
+// Reaction to chat: interrupts everything except appearing, disappearing and fights, at the current place
 export function react(actor: MinimeActor, reaction: MinimeAction, now: number): MinimeActor {
-  if (actor.leaving || actor.action === "enter" || actor.action === "exit") return actor;
+  if (actor.leaving || actor.combat || actor.action === "enter" || actor.action === "exit") return actor;
   return at(actor, reaction.name, now, reaction.durationMs, positionAt(actor, now));
 }
 
-// CSS variables of a figure, the same for every theme: position (--x), duration of the movement (--move, only when
-// walking, the movement is a CSS transition), duration of the action (--action-ms) and facing (--facing, 1 or -1)
+// CSS variables of a figure, the same for every theme: position (--x), duration of the movement (--move, only while
+// moving, the movement is a CSS transition), duration of the action (--action-ms) and facing (--facing, 1 or -1)
 export function actorStyle(actor: MinimeActor): Record<string, string | number> {
-  return { "--x": `${actor.toX}px`, "--move": actor.action === "walk" ? `${actor.durationMs}ms` : "0ms", "--action-ms": `${actor.durationMs}ms`, "--facing": actor.facing };
+  return { "--x": `${actor.toX}px`, "--move": MOVING.has(actor.action) ? `${actor.durationMs}ms` : "0ms", "--action-ms": `${actor.durationMs}ms`, "--facing": actor.facing };
 }
 
 // Key of a running action: new for every action, so its animation also plays from the start twice in a row

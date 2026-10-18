@@ -102,6 +102,17 @@ mit `teamCounts` (z.B. wer einen Hügel hält); `enabled` sind die erlaubten Fra
 `readMinimeOptions(values, variants, teams).rules.teams`. Die Info-Seite übergibt das Set ebenfalls an
 `readMinimeOptions`, dann erscheint `!team` in der Befehlsliste.
 
+**Gefechte** (nur mit Typen; die Typen sind die Rollen, eine davon muss `medic` heissen): Das Schema bindet
+`...minimeCombatFields(set)` ein (Gruppe `MINIME_COMBAT`: an/aus, Abstand, gleichzeitige Gefechte, Trefferchance,
+Liegezeit, Wiederbeleben, Medic-Tempo, Töne, je Rolle Zielen und Schuss). Die Szene übergibt
+`useMinimes({ ..., combat: { roles, teams, explosive, sounds } })` (mit `useMemo`): `roles` und `teams` sind die Sets
+des Schemas, `explosive` die Rollen, deren Schuss eine Explosion ist, `sounds` die eingebauten Töne je Ereignis
+(`shot`, `explosion`, `hit`, `revive`). Der Kern plant die Gefechte und setzt die Aktionen `aim`, `fire`, `down`,
+`approach` (bewegt wie `walk`, mit Hüpfen), `revive` und `up`; das Theme zeigt sie über `action-<name>`. Am Minime steht
+`combat` (`role`, `variant` = Waffe vom Beginn des Gefechts); die Rolle für die Anzeige liefert
+`shownRole(actor, enabled, fallback, demoMedic)` (in `?demo` ist das erste Demo-Minime der Medic). Diese Aktionsnamen
+darf der eigene Katalog nicht nutzen (`COMBAT_ACTIONS`, geprüft).
+
 **Eigene Standardwerte für Kern-Felder**: `withDefaults(MINIME_BASE_FIELDS, { minimeWalkWeight: 0 })` aus
 `src/core/fields.ts` ändert nur die Standards (z.B. Figuren, die nicht laufen), die Grenzen bleiben. Rust spiegelt das
 mit `with_defaults`.

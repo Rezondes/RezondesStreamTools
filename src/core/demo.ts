@@ -8,6 +8,8 @@ import type { Alert, Minime, Track } from "./types.ts";
 import type { Handlers } from "./connection.ts";
 
 const NAMES = ["neo_42", "Trinity", "MorpheusTV", "agent_smith", "Oracle", "Tank", "Dozer", "Switch"];
+// Login of the first demo minime; in themes with fights it is the medic, so ?demo shows fights
+export const DEMO_FIRST_LOGIN = NAMES[0].toLowerCase();
 const LINES = [
   "hallo zusammen!", "was programmierst du heute?", "LUL", "der matrix style ist krass",
   "C# > alles", "kannst du das nochmal erklären?", "gg", "follow ist raus <3",
