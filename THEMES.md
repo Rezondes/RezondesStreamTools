@@ -116,7 +116,9 @@ darf der eigene Katalog nicht nutzen (`COMBAT_ACTIONS`, geprüft).
 **Feste Plätze**: Mit `minimePlacement = slots` (Kern-Feld in jedem Theme mit Minimes, Standard `random`) verteilt der
 Kern `minimeMax` Plätze gleichmässig zwischen den Rändern, mit Fraktionen je Fraktion einen eigenen Bereich (Reihenfolge
 der Fraktionen von links nach rechts). Neue Minimes bekommen den freien Platz mit dem grössten Abstand zu den belegten
-(`slot` am Minime), wer weg ist (z.B. der Medic nach dem Wiederbeleben), geht zurück, Laufen ist aus. Ein Theme, das
+(`slot` am Minime), wer weg ist (z.B. der Medic nach dem Wiederbeleben), geht zurück, Laufen ist aus. Mehr Minimes
+als Plätze gibt es nur, wenn `minimeMax` gesenkt wird, während die Szene voll ist; die Überzähligen teilen sich dann
+den ersten Platz, bis jemand geht (bewusst kein Rauswurf, das entscheidet der Streamer). Ein Theme, das
 das als Standard will, setzt es mit `withDefaults`.
 
 **Eigene Standardwerte für Kern-Felder**: `withDefaults(MINIME_BASE_FIELDS, { minimeWalkWeight: 0 })` aus
