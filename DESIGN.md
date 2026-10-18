@@ -9,7 +9,7 @@ Entscheidungen je Theme stehen im Ordner `docs` des Themes, neben seinem Plan (`
 | `standard` | [DESIGN-STANDARD.md](src/themes/standard/docs/DESIGN-STANDARD.md) | klar und modern, ein Verlauf aus zwei Akzenten auf Dunkel |
 | `matrix` | [DESIGN-MATRIX.md](src/themes/matrix/docs/DESIGN-MATRIX.md) | Terminal: Phosphorgrün auf Schwarz, eine Monospace-Schrift |
 | `urlaub` | [DESIGN-URLAUB.md](src/themes/urlaub/docs/DESIGN-URLAUB.md) | Strand: Himmel, Meer, Sand und Holzschilder |
-| `plantage` | [DESIGN-PLANTAGE.md](src/themes/plantage/docs/DESIGN-PLANTAGE.md) | Mangoplantage: Baumreihen, Erde, Kisten und Erntezettel |
+| `plantage` | [DESIGN-PLANTAGE.md](src/themes/plantage/docs/DESIGN-PLANTAGE.md) | Mangoplantage als Illustration mit Tiefe: Baumreihen, Erde, Kisten und Milchglas-Erntepapier |
 | `koth` | [DESIGN-KOTH.md](src/themes/koth/docs/DESIGN-KOTH.md) | Militär: Hügel mit Funkmast, Oliv, Stahl und Schablonenschrift |
 
 Ein neues Theme bekommt seine eigene `DESIGN-<ID>.md` im selben Commit wie das Theme.
