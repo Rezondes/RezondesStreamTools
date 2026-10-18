@@ -6,7 +6,7 @@ gegenseitig ab, solange ein Medic da ist, der sie wiederbelebt. Kein Strandgefü
 die Plantage.
 
 Testbefehl: `npm run verify` (dazu `npm run contract`, wo der Server betroffen ist). Regeln:
-[CODING-RULES.md](../CODING-RULES.md), Theme-Aufbau: [THEMES.md](../THEMES.md), Übersicht aller Pläne: [PLAN.md](../PLAN.md).
+[CODING-RULES.md](../../../../CODING-RULES.md), Theme-Aufbau: [THEMES.md](../../../../THEMES.md), Übersicht aller Pläne: [PLAN.md](../../../../PLAN.md).
 
 ## Überblick
 
@@ -24,7 +24,7 @@ Testbefehl: `npm run verify` (dazu `npm run contract`, wo der Server betroffen i
 - **Gefechte** (entschieden 2026-10-18: zufällig als Animation, nie per Chatbefehl): geschossen wird nur,
   wenn ein freier Medic da ist; Medics schiessen nicht und sind nie Ziel; ein Getroffener liegt, bis ein Medic ihn
   wiederbelebt, oder steht nach einer einstellbaren Liegezeit von selbst auf. Kein Blut.
-- **Regeln der Gefechte:** Kern, siehe [PLAN-MINIMES.md](PLAN-MINIMES.md) Packages 8 und 11.
+- **Regeln der Gefechte:** Kern, siehe [PLAN-MINIMES.md](../../../../plans/PLAN-MINIMES.md) Packages 8 und 11.
 - **Alles einstellbar** (Gedächtnis): Häufigkeit und Dauer jeder Animation, Gefechtsrate, Liegezeit, Rollen, Farben,
   Texte, Töne. Fest bleiben nur Formen (SVG) und Server-Schutzgrenzen.
 - **Kern statt Theme:** Das Theme bindet Hüpfen und Gefechte aus dem Kern ein und liefert nur Aussehen,
@@ -42,7 +42,7 @@ Testbefehl: `npm run verify` (dazu `npm run contract`, wo der Server betroffen i
 
 **Ziel:** Das Theme `plantage` bringt alle Szenen, Stinger, Banner, Töne und hüpfende Mango-Soldaten im Plantagen-Look.
 
-**Abhängigkeiten:** [PLAN-MINIMES.md](PLAN-MINIMES.md) Packages 8 (Hüpfen) und 11 (Gefechte)
+**Abhängigkeiten:** [PLAN-MINIMES.md](../../../../plans/PLAN-MINIMES.md) Packages 8 (Hüpfen) und 11 (Gefechte)
 
 **Betroffene Dateien:** `src/themes/plantage/` (neu, Aufbau wie in THEMES.md), `src/themes/registry.ts`,
 `src/themes/scenes.tsx`, `src/dashboard/skin.ts`, `server-rs/crates/rst-domain/src/themes/plantage.rs` und Registry,
@@ -67,7 +67,7 @@ Fixture, `src/generated/themes/plantage.ts`, `index.html` (Schriften), `README.m
 ### Acceptance Criteria
 
 - [ ] AC1: Alle Szenen, Stinger und Banner im Plantagen-Look; kein fester Wert im Theme-Code (Regel-Skript).
-- [ ] AC2: Minimes wählen Rollen per Befehl (Namen einstellbar), hüpfen und kämpfen nach [PLAN-MINIMES.md](PLAN-MINIMES.md) Package 11.
+- [ ] AC2: Minimes wählen Rollen per Befehl (Namen einstellbar), hüpfen und kämpfen nach [PLAN-MINIMES.md](../../../../plans/PLAN-MINIMES.md) Package 11.
 - [ ] AC3: Schema in Rust und TS gleich (Fixture), `GET /api/themes` liefert es, das Formular entsteht daraus.
 - [ ] AC4: Stinger und Banner rendern deterministisch (Checks mit aufzeichnendem Canvas).
 

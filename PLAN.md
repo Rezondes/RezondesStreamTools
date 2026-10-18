@@ -19,9 +19,12 @@ Kern-Feature und für jedes Theme. Regeln für die Pläne:
 |------|--------|
 | [RUST-PLAN.md](RUST-PLAN.md) | Rust-Server (`server-rs/`) |
 | [plans/PLAN-MINIMES.md](plans/PLAN-MINIMES.md) | Kern-Feature Minimes: Regeln, Szene, Server, Verhalten (erledigt); TS-Spiegel entfernen, Hüpfen, Fraktionen, Gefechte, feste Plätze (geplant) |
-| [plans/PLAN-URLAUB.md](plans/PLAN-URLAUB.md) | Theme Urlaub (früher Südfrucht) |
-| [plans/PLAN-MANGOPLANTAGE.md](plans/PLAN-MANGOPLANTAGE.md) | Theme Südfrucht-Plantage |
-| [plans/PLAN-KOTH.md](plans/PLAN-KOTH.md) | Theme King of the Hill |
+| [src/themes/urlaub/docs/PLAN-URLAUB.md](src/themes/urlaub/docs/PLAN-URLAUB.md) | Theme Urlaub (früher Südfrucht) |
+| [src/themes/plantage/docs/PLAN-PLANTAGE.md](src/themes/plantage/docs/PLAN-PLANTAGE.md) | Theme Südfrucht-Plantage |
+| [src/themes/koth/docs/PLAN-KOTH.md](src/themes/koth/docs/PLAN-KOTH.md) | Theme King of the Hill |
+
+Pläne eines Themes liegen im Ordner `docs` des Themes (`src/themes/<id>/docs/PLAN-<ID>.md`, daneben `DESIGN-<ID>.md`),
+Kern-Pläne in `plans/`.
 
 Die Packages sind nach technischen Abhängigkeiten geordnet. Package 1 ist erledigt.
 Jedes Package endet mit grünem `npm run verify` und ist einzeln committbar. Regeln: [CODING-RULES.md](CODING-RULES.md).

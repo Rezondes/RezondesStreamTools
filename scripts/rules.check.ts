@@ -50,10 +50,10 @@ for (const file of files.filter(file => TEXT.test(file))) {
   });
 }
 
-// The theme Südfrucht is called Urlaub (plans/PLAN-URLAUB.md package 3): its old ID stays only in the rename rule of the
+// The theme Südfrucht is called Urlaub (src/themes/urlaub/docs/PLAN-URLAUB.md package 3): its old ID stays only in the rename rule of the
 // server with its test and in the plans that tell the history (joined, so this file does not contain it)
 const OLD_THEME_ID = ["sued", "frucht"].join("");
-const OLD_ID_ALLOWED = /^(plans\/|PLAN\.md$|RUST-PLAN\.md$|server-rs\/crates\/rst-domain\/src\/settings\/file\.rs$)/;
+const OLD_ID_ALLOWED = /^(plans\/|src\/themes\/[^/]+\/docs\/PLAN-[A-Z]+\.md$|PLAN\.md$|RUST-PLAN\.md$|server-rs\/crates\/rst-domain\/src\/settings\/file\.rs$)/;
 for (const file of files.filter(file => (TEXT.test(file) || file.endsWith(".rs")) && !OLD_ID_ALLOWED.test(file))) {
   if (readFileSync(file, "utf8").toLowerCase().includes(OLD_THEME_ID)) failures.push(`${file}: old theme ID ${OLD_THEME_ID}, the theme is called urlaub`);
 }

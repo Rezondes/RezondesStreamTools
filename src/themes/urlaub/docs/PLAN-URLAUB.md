@@ -2,7 +2,7 @@
 
 > Packages 1 und 2 sind erledigt und haben das Theme unter dem Namen "Südfrucht" (id `suedfrucht`) gebaut; Pfade und
 > Namen in diesen beiden Packages beschreiben den damaligen Stand. Packages 3 und 4 benennen das Theme in "Urlaub"
-> (id `urlaub`) um und ersetzen die Frucht-Minimes durch Strandsachen. Übersicht aller Pläne: [PLAN.md](../PLAN.md).
+> (id `urlaub`) um und ersetzen die Frucht-Minimes durch Strandsachen. Übersicht aller Pläne: [PLAN.md](../../../../PLAN.md).
 
 Ein drittes eingebautes Theme im süd-tropischen Küsten- und Meeres-Look: Meer, Wellen, Sand, Palmen, Sonne,
 Hibiskus, Holzschilder. Jede Szene hat einen eigenen Stil (Starting, BRB, Ending, Alerts, Chat, Kamera-Rahmen,
@@ -10,7 +10,7 @@ Musik, Effekte), dazu Stinger und Twitch-Banner. Die Minimes sind Cartoon-Früch
 Chatter wählen eine Frucht, die Früchte hüpfen über den Strand.
 
 Zwei Packages und damit zwei Commits (entschieden). Beide liegen deutlich über der Richtgrösse von etwa 400 Zeilen
-pro Commit aus [CODING-RULES.md](../CODING-RULES.md); das ist eine bewusste Ausnahme auf Wunsch, die in beiden
+pro Commit aus [CODING-RULES.md](../../../../CODING-RULES.md); das ist eine bewusste Ausnahme auf Wunsch, die in beiden
 Commit-Beschreibungen steht. Jedes Package endet mit grünem `npm run verify`.
 
 ## Überblick
@@ -502,7 +502,7 @@ Die Theme-ID steht in jedem gespeicherten Einstellungs-Datensatz (`{ theme, valu
 
 **Ziel:** Die Urlaub-Minimes sind Strandsachen statt Früchte; der Rest des Themes bleibt.
 
-**Abhängigkeiten:** Package 3, [RUST-PLAN.md](../RUST-PLAN.md) Package 49 (alte Standardwerte ersetzen)
+**Abhängigkeiten:** Package 3, [RUST-PLAN.md](../../../../RUST-PLAN.md) Package 49 (alte Standardwerte ersetzen)
 
 **Betroffene Dateien:**
 - `src/themes/urlaub/fruits.ts` wird `beachThings.ts` (Formen und Typen), `Fruit.tsx` wird `BeachThing.tsx`
@@ -540,4 +540,4 @@ Chat-Namen, an/aus je Typ, Farben je Typ) bleibt; nur der Inhalt ändert sich.
 
 ### Out of Scope
 
-- Hüpf-Logik (unverändert; sie wandert mit [PLAN-MINIMES.md](PLAN-MINIMES.md) Package 8 in den Kern).
+- Hüpf-Logik (unverändert; sie wandert mit [PLAN-MINIMES.md](../../../../plans/PLAN-MINIMES.md) Package 8 in den Kern).

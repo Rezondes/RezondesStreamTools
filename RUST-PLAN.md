@@ -1839,7 +1839,7 @@ alter Wert, neuer Wert; die Tabelle startet leer, der erste Eintrag kommt mit de
 ### Kontext
 
 Das Formular speichert alle Werte, auch unveränderte Standards. Ändert ein Theme einen Standard (Theme-Plan
-[plans/PLAN-URLAUB.md](plans/PLAN-URLAUB.md) Package 4: `!frucht` zu `!typ`), bliebe bei allen Streamern der alte Wert
+[src/themes/urlaub/docs/PLAN-URLAUB.md](src/themes/urlaub/docs/PLAN-URLAUB.md) Package 4: `!frucht` zu `!typ`), bliebe bei allen Streamern der alte Wert
 stehen. Die Übernahme läuft beim Lesen wie `current_id`, also auch für `rst import` und Backups.
 
 ### Acceptance Criteria

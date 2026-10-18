@@ -5,7 +5,7 @@ Fraktionen kämpfen darum. Die Zuschauer sind kleine Soldaten in Rollen (Sturmso
 Scharfschütze, Grenadier), die nicht laufen und nicht hüpfen.
 
 Testbefehl: `npm run verify` (dazu `npm run contract`, wo der Server betroffen ist). Regeln:
-[CODING-RULES.md](../CODING-RULES.md), Theme-Aufbau: [THEMES.md](../THEMES.md), Übersicht aller Pläne: [PLAN.md](../PLAN.md).
+[CODING-RULES.md](../../../../CODING-RULES.md), Theme-Aufbau: [THEMES.md](../../../../THEMES.md), Übersicht aller Pläne: [PLAN.md](../../../../PLAN.md).
 
 ## Überblick
 
@@ -26,7 +26,7 @@ Testbefehl: `npm run verify` (dazu `npm run contract`, wo der Server betroffen i
 - **Gefechte** (entschieden 2026-10-18: zufällig als Animation, nie per Chatbefehl): geschossen wird nur,
   wenn ein freier Medic aus der Fraktion des Ziels da ist; Medics schiessen nicht und sind nie Ziel; ein Getroffener liegt, bis ein Medic ihn
   wiederbelebt, oder steht nach einer einstellbaren Liegezeit von selbst auf. Kein Blut.
-- **Regeln der Gefechte und Fraktionen:** Kern, siehe [PLAN-MINIMES.md](PLAN-MINIMES.md) Packages 10 bis 12.
+- **Regeln der Gefechte und Fraktionen:** Kern, siehe [PLAN-MINIMES.md](../../../../plans/PLAN-MINIMES.md) Packages 10 bis 12.
 - **Alles einstellbar** (Gedächtnis): Häufigkeit und Dauer jeder Animation, Gefechtsrate, Liegezeit, Rollen, Farben,
   Texte, Töne. Fest bleiben nur Formen (SVG) und Server-Schutzgrenzen.
 - **Kern statt Theme:** Das Theme bindet Fraktionen und Gefechte aus dem Kern ein und liefert nur Aussehen,
@@ -48,7 +48,7 @@ Testbefehl: `npm run verify` (dazu `npm run contract`, wo der Server betroffen i
 
 **Ziel:** Das Theme `koth` bringt alle Szenen, Stinger, Banner, Töne und stehende Soldaten-Minimes in drei Fraktionen.
 
-**Abhängigkeiten:** [PLAN-MINIMES.md](PLAN-MINIMES.md) Packages 10 (Fraktionen), 11 (Gefechte) und 12 (feste Plätze)
+**Abhängigkeiten:** [PLAN-MINIMES.md](../../../../plans/PLAN-MINIMES.md) Packages 10 (Fraktionen), 11 (Gefechte) und 12 (feste Plätze)
 
 **Betroffene Dateien:** `src/themes/koth/` (neu), Registry, Scenes, Skin, `server-rs/crates/rst-domain/src/themes/koth.rs`
 und Registry, Fixture, `src/generated/themes/koth.ts`, `index.html` (Schrift im Schablonen-Stil), `README.md`.

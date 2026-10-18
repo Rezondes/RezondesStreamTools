@@ -175,4 +175,7 @@ Standardwerte von `standard`. Ausnahme: Szenen theme-eigener Funktionen (z.B. `m
 - [ ] Szenen nutzen nur Kern-Hooks und -Bausteine, keine eigene Kopie gemeinsamer Logik, kein `fetch`, `EventSource` oder `WebSocket`
 - [ ] CSS komplett unter `.theme-<id>`, Keyframes mit Präfix
 - [ ] in `registry.ts` und `scenes.tsx` eingetragen
+- [ ] eigener Dashboard-Skin in `skin.ts` und `skins.css` (Kontraste gerechnet), Grundsätze in [DESIGN.md](DESIGN.md)
+- [ ] `src/themes/<id>/docs/DESIGN-<ID>.md` mit den Designentscheidungen des Themes (Skin und Overlays), in der Tabelle in
+  `DESIGN.md` verlinkt; der Plan des Themes liegt daneben als `PLAN-<ID>.md`
 - [ ] `npm run verify` grün, im Dashboard ausprobiert

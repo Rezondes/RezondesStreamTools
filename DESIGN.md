@@ -1,59 +1,68 @@
-# Design: Dashboard
+# Design: Grundsätze
 
-Gilt für das Dashboard (`src/dashboard`). Es sieht aus wie das **aktive Theme** des Streamers: `/api/me` liefert das
-Theme, `skin.ts` setzt `data-skin` am `<html>`, `skins.css` belegt die Tokens. `src/style.css` und `dashboard.css`
-benutzen nur Tokens (`--bg`, `--surface`, `--fg`, `--accent`, `--radius`, `--font`, ...), nie feste Farben. Nach
-"Als aktives Theme setzen" lädt die Seite neu und zeigt den neuen Skin. Die Overlays haben ihr Aussehen je Theme.
+Gilt für alles, was man sieht: Dashboard (`src/dashboard`), Overlays und Befehlsseite (`src/themes/<id>`). Die
+Entscheidungen je Theme stehen im Ordner `docs` des Themes, neben seinem Plan (`src/themes/<id>/docs/DESIGN-<ID>.md`,
+`PLAN-<ID>.md`):
 
-## Skins
+| Theme | Datei | Charakter in einem Satz |
+|---|---|---|
+| `standard` | [DESIGN-STANDARD.md](src/themes/standard/docs/DESIGN-STANDARD.md) | klar und modern, ein Verlauf aus zwei Akzenten auf Dunkel |
+| `matrix` | [DESIGN-MATRIX.md](src/themes/matrix/docs/DESIGN-MATRIX.md) | Terminal: Phosphorgrün auf Schwarz, eine Monospace-Schrift |
+| `urlaub` | [DESIGN-URLAUB.md](src/themes/urlaub/docs/DESIGN-URLAUB.md) | Strand: Himmel, Meer, Sand und Holzschilder |
+| `plantage` | [DESIGN-PLANTAGE.md](src/themes/plantage/docs/DESIGN-PLANTAGE.md) | Mangoplantage: Baumreihen, Erde, Kisten und Erntezettel |
+| `koth` | [DESIGN-KOTH.md](src/themes/koth/docs/DESIGN-KOTH.md) | Militär: Hügel mit Funkmast, Oliv, Stahl und Schablonenschrift |
 
-### Standard (Standard-Theme)
+Ein neues Theme bekommt seine eigene `DESIGN-<ID>.md` im selben Commit wie das Theme.
 
-- **Schrift:** Inter, wenig Grössenkontrast, Gewicht trägt die Hierarchie (Titel 800, Knöpfe 600).
-- **Farbe:** dunkle, leicht kühle Flächen (`#0b0b12`, Karten `#14141c`), eine Signatur Violett `#6d4aff` (weisse
-  Schrift 5.2:1) nur für Primärknopf und aktiven Tab; Cyan `#22d3ee` für Hervorhebungen und Fokus. Titel als Verlauf.
-- **Raum:** ruhig, Karten mit 16px Innenabstand.
-- **Abschluss:** weiche Karten (Radius 14px) mit Schatten, 1px-Linien innen.
+## Das Dashboard sieht aus wie das aktive Theme
 
-### Matrix
+`/api/me` liefert das Theme, `skin.ts` setzt `data-skin` am `<html>`, `skins.css` belegt die Tokens. Jedes Theme hat
+einen eigenen Skin (`skin.check.ts` verlangt das). Nach "Als aktives Theme setzen" lädt die Seite neu und zeigt den
+neuen Skin; der letzte Skin wird im Browser gemerkt, damit beim Laden nicht kurz der falsche aufblitzt.
 
-- **Schrift:** eine Monospace-Familie (Share Tech Mono), bewusst niedriger Kontrast: Hierarchie über Grossbuchstaben,
-  Klammern (`[ KNOPF ]`, per CSS) und Helligkeit. Terminal, kein Magazin.
-- **Farbe:** Phosphorgrün auf Schwarz, monochrom. Primär und aktiv sind invertiert. Glühen am Titel und an Hervorhebungen.
-- **Raum:** dicht.
-- **Abschluss:** 1px-Linien, keine Rundungen, keine Schatten.
+- **Nur Tokens:** `src/style.css` und `dashboard.css` benutzen nur Tokens, nie feste Farben, Masse oder Schriften.
+  Ein Skin belegt alle: `--bg`, `--page`, `--surface`, `--surface-2`, `--field`, `--fg`, `--fg-dim`, `--line`,
+  `--border`, `--heading`, `--title-color`, `--accent`, `--accent-hover`, `--on-accent`, `--emph`, `--glow`, `--focus`,
+  `--error`, `--error-bg`, `--on-error`, `--btn-*`, `--hover-*`, `--press`, `--border-w`, `--radius*`, `--shadow`,
+  `--font`, `--font-title`, `--title-*`, `--heading-weight`, `--*-case`, `--checker`, `--scroll-*`.
+  Warum: ein neuer Skin ist dann nur ein Block in `skins.css`, kein Umbau der Seiten.
+- **Tokens nur an `[data-skin]`:** Overlays und Befehlsseite haben keinen Skin, sonst würden gleichnamige Tokens
+  (`--border`, `--radius`, ...) die Variablen der Themes überschreiben.
+- **Szenerie:** Themes mit eigener Welt zeigen hinter dem Dashboard Formen aus dem Theme (`Scenery.tsx`, eine Szenerie
+  je Skin, sichtbar nur im passenden Skin). Das Dashboard wird dann schmaler (`--dash-max`), damit die Szenerie am Rand
+  sichtbar bleibt. Unter 1100px Breite fallen die Figuren weg, unter 720px die ganze Szenerie.
 
-### Urlaub
+## Eine Entscheidung je Achse
 
-- **Schrift:** Nunito für Text, Baloo 2 für Überschriften, Pacifico nur im Titel-Holzschild.
-- **Farbe:** Strand als Seite (Himmel, Meer, Sand), cremige Karten `#fff8ea` mit braunem Text `#3b2412` (13.7:1).
-  Signatur Meerblau `#0b6f8e` (weisse Schrift 5.7:1) für Primärknopf und aktiven Tab, Hibiskus für Hervorhebungen.
-- **Raum:** luftiger, grosse Radien.
-- **Abschluss:** Holzrand (2px) und Holzschatten unter Knöpfen und Karten, runde Knöpfe. Sonne, Palmen und Strandsachen
-  aus dem Urlaub-Theme als Szenerie (`Scenery.tsx`); das Dashboard wird schmaler, damit die Palmen sichtbar bleiben.
+Jeder Skin und jedes Theme legt fest (und schreibt es in seine `DESIGN-<ID>.md`):
 
-### Plantage
+- **Schrift:** wo der Kontrast liegt (Grösse, Gewicht oder zweite Familie), höchstens zwei Familien. Jede Schrift
+  wird in `index.html` geladen.
+- **Farbe:** eine Signaturfarbe nur für Primärknopf und aktiven Tab (Dashboard) bzw. für das, was man finden muss
+  (Overlays). Eine zweite Farbe für Hervorhebungen. Statusfarben (`--error`) nur für Status.
+- **Raum:** dicht oder luftig, bewusst gewählt; eng innerhalb einer Gruppe, grosszügig dazwischen.
+- **Abschluss:** eine Trennsprache je Skin (Linien, Schatten oder Flächen), nicht alles zugleich.
 
-- **Schrift:** Baloo 2 für Text, Fredoka für Überschriften und das Titel-Kistenetikett.
-- **Farbe:** Himmel über grünen Feldreihen und Erde als Seite, Erntezettel-Karten `#fff6df` mit braunem Text `#3a2410`
-  (13.5:1). Signatur Blattgrün `#2e7d32` (weisse Schrift 5.1:1) für Primärknopf und aktiven Tab, Mango-Orange `#b24d00`
-  (4.9:1) für Hervorhebungen.
-- **Raum:** luftig, mittlere Radien.
-- **Abschluss:** Kistenrand (2px) und Holzschatten, Titel als Kistenetikett mit orangem Stempelrand. Sonne, Mangobäume
-  und Mango-Soldaten aus dem Plantage-Theme als Szenerie.
+## Kontrast wird gerechnet, nicht geschätzt
 
-### KOTH
+Text auf Fläche mindestens 4.5:1, Signatur gegen ihre Fläche mindestens 3:1, Schrift auf der Signatur mindestens 4.5:1.
+Die Werte stehen mit Verhältnis in der `DESIGN-<ID>.md`. Eine Farbe, die das nicht schafft, wird heller oder dunkler
+gemacht oder ersetzt, nicht trotzdem benutzt.
 
-- **Schrift:** Inter für Text, Black Ops One (Schablone) für Titel; Titel, Labels und Knöpfe in Grossbuchstaben.
-- **Farbe:** dunkles Oliv `#171a0e` als Seite, Karten `#22261a` mit Text `#e9e4d0` (12.1:1). Signatur Signal-Orange
-  `#ff8a1f` mit dunkler Schrift (7.2:1) für Primärknopf und aktiven Tab, Funk-Grün `#7cff6b` für Hervorhebungen und Fokus.
-- **Raum:** dicht.
-- **Abschluss:** 2px-Linien in Oliv, fast eckig, Titel auf einer Platte mit Warnstreifen. Hügel mit Funkmast und je ein
-  Soldat jeder Fraktion als Szenerie.
+## Overlays: alles einstellbar, nichts fest
 
-Die öffentliche Befehlsseite (`/s/<login>/`) hat in jedem Theme ihr eigenes Aussehen (`scenes/Info.tsx` des Themes).
+- **Kein fester Wert im Theme-Code** (Regel 20, `scripts/rules.check.ts`): Farben, sichtbare Texte, Grössen und Zeiten
+  kommen aus `settings.ts` und kommen als CSS-Variablen an (`var(--accent)`). Weitere Masse stehen als Standard in
+  `var(--name, wert)`, damit man sie überschreiben kann. Ausnahmen nur mit `fixed: <Grund>` im Kommentar.
+- **Gekapselt:** jedes Theme hängt unter `.theme-<id>`, seine Klassen haben ein eigenes Präfix, seine Keyframes heissen
+  `<id>-*`. Warum: mehrere Themes laufen in einem Build, ohne sich zu stören.
+- **Formen statt Bilder:** Kulissen, Symbole und Figuren sind SVG-Pfade im Theme (nur Formen, keine Farben); gefärbt wird
+  über CSS-Klassen (`part-main`, `part-detail`, `part-line`). So bleiben alle Farben einstellbar.
+- **Stinger und Banner** sind reine Funktionen der Zeit (deterministisch, Banner schliessen nach einer Schleife nahtlos).
+- **Befehlsseite** (`/s/<login>/`): jedes Theme zeigt sie in seinem Look (`scenes/Info.tsx`). Sie ist eine normale,
+  scrollbare Seite für Zuschauer, die Kulisse steht fest dahinter.
 
-## Layout: die Seite scrollt nie als Ganzes
+## Layout des Dashboards: die Seite scrollt nie als Ganzes
 
 Gilt in jedem Skin. Titel und Navigation stehen fest, nur der Bereich darunter scrollt in sich (`.dashboard` ist
 `100dvh`, `.dashboard-content` scrollt). Seiten mit Einstellungen und Vorschau (Theme, Rendern) teilen den Bereich
@@ -62,4 +71,9 @@ daneben. Wird es eng (unter 720px Breite oder 560px Höhe), läuft die Navigatio
 scrollt als Ganzes, die Seite weiterhin nicht.
 
 Neue Seiten folgen dem: jeder Bereich liegt in einem `.panel`, lange Listen bekommen eine eigene scrollende Box, nie
-wächst die Seite selbst. Texte von Knöpfen in normaler Schreibweise; Grossbuchstaben und Klammern macht der Skin.
+wächst die Seite selbst.
+
+## Sprache
+
+Texte in der Oberfläche auf Deutsch. Knöpfe in normaler Schreibweise und als Verb ("Speichern", "Als aktives Theme
+setzen"); Grossbuchstaben und Klammern macht der Skin (`--btn-case`, Matrix-Klammern per CSS).
