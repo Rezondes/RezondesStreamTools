@@ -1,7 +1,9 @@
 // Check for minimeBehavior.ts: which action a minime does next, where it walks, appearing,
 // disappearing and reaction to chat. Runs with npm test (alone: node src/core/minimeBehavior.check.ts).
 import assert from "node:assert/strict";
-import { actorRun, actorStyle, advance, nextAction, nextEnd, positionAt, react, shownVariant, syncRoster, type MinimeActor, type MinimeStage } from "./minimeBehavior.ts";
+import {
+  actorRun, actorStyle, advance, nextAction, nextEnd, positionAt, react, shownTeam, shownVariant, syncRoster, teamCounts, type MinimeActor, type MinimeStage,
+} from "./minimeBehavior.ts";
 import { readMinimeOptions } from "./minimeFields.ts";
 
 const MOTION = readMinimeOptions({}).motion;
@@ -91,5 +93,16 @@ assert.equal(shownVariant(actor({ variant: "mango" }), ["kiwi"], "zitrone", true
 assert.equal(shownVariant(actor(), ["kiwi"], "zitrone", true), "kiwi");
 assert.equal(shownVariant(actor(), ["kiwi"], "zitrone", false), "zitrone");
 assert.equal(shownVariant(actor(), [], "zitrone", true), "zitrone");
+
+// Faction of the figure: the one from the server, otherwise in the demo an allowed one by login, otherwise the first allowed
+assert.equal(shownTeam(actor({ team: "rot" }), ["blau"], false), "rot");
+assert.equal(shownTeam(actor(), ["blau"], true), "blau");
+assert.equal(shownTeam(actor(), ["blau", "rot"], false), "blau");
+assert.equal(shownTeam(actor(), [], true), null);
+const demoTeams = ["a", "b", "c", "d", "e", "f"].map(login => shownTeam(actor({ login }), ["blau", "rot", "gruen"], true));
+assert.ok(new Set(demoTeams).size > 1, "demo spreads the logins over the factions");
+
+// Members per faction: leaving figures and switched-off factions do not count
+assert.deepEqual(teamCounts([actor({ login: "a", team: "blau" }), actor({ login: "b", team: "blau" }), actor({ login: "c", team: "rot", leaving: true }), actor({ login: "d", team: "alt" })], ["blau", "rot"], false), { blau: 2, rot: 0 });
 
 console.log("minimeBehavior ok");

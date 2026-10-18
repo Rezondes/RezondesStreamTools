@@ -116,3 +116,21 @@ export function shownVariant(actor: MinimeActor, enabled: readonly string[], fal
   if (demo && enabled.length) return enabled[Math.floor(hash(seedOf(actor.login)) * enabled.length)];
   return fallback;
 }
+
+// Faction a figure shows (themes with factions): the one from the server; without one in the demo an allowed one by login
+// (always the same, independent of the variant), otherwise the first allowed; null without allowed factions
+export function shownTeam(actor: MinimeActor, enabled: readonly string[], demo: boolean): string | null {
+  if (actor.team) return actor.team;
+  if (demo && enabled.length) return enabled[Math.floor(hash(seedOf(`team:${actor.login}`)) * enabled.length)];
+  return enabled[0] ?? null;
+}
+
+// Members per allowed faction among the figures that are not leaving, every allowed faction with its count (also 0)
+export function teamCounts(actors: readonly MinimeActor[], enabled: readonly string[], demo: boolean): Record<string, number> {
+  const counts = Object.fromEntries(enabled.map(id => [id, 0]));
+  for (const actor of actors.filter(actor => !actor.leaving)) {
+    const team = shownTeam(actor, enabled, demo);
+    if (team !== null && team in counts) counts[team] += 1;
+  }
+  return counts;
+}

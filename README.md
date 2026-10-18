@@ -244,6 +244,11 @@ Banane, Litschi, Wassermelone); die Namen im Chat sind je Frucht einstellbar (Gr
 aus), Gross- und Kleinschreibung, Umlaute und Leerzeichen zählen nicht ("Asiatische Birne" = "asiatischebirne").
 Farben je Frucht stehen in "Früchte: Farben".
 
+Themes mit Fraktionen (z.B. King of the Hill) haben zusätzlich `!team <fraktion>`. Rolle und Fraktion gehen auch in
+einem Befehl, die Reihenfolge ist egal: `!join blau medic` oder `!join medic blau`. Ohne Angabe kommt der Chatter in die
+Fraktion mit den wenigsten Mitgliedern, eine gemerkte Fraktion bleibt. Name, Farbe und Namen im Chat je Fraktion sind
+einstellbar (Gruppe "Minimes: Fraktionen", leere Namensliste = Fraktion aus).
+
 Farben: `#ff00aa`, `ff00aa`, `#f0a`, `255 0 170`, `255,0,170` oder `rgb(255, 0, 170)`. Zu dunkle Farben werden bis zur
 eingestellten Mindesthelligkeit aufgehellt; ohne eigene Farbe gilt die Twitch-Namensfarbe (abschaltbar), sonst die
 Standardfarbe des Themes. Ungültige Eingaben werden ignoriert, der Server kann nicht im Chat antworten.

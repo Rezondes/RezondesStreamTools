@@ -94,6 +94,14 @@ Der Server vergibt dann Typen statt Farben; jedes Minime trägt `variant` (die i
 einen zufälligen erlaubten Typ, eine leere Namensliste schaltet einen Typ aus. In `?demo` kommen Minimes ohne Typ
 (`variant: null`); die Szene wählt dann selbst einen, z.B. nach `hash(seedOf(login))` aus `src/core/hash.ts`.
 
+**Fraktionen** (nur zusammen mit Typen, die Typen sind dann die Rollen): Das Schema bekommt `minimeTeams` im selben
+Format wie `minimeVariants` (je Fraktion `id`, Name, Chat-Namen und Standardfarbe `color`) und bindet
+`...minimeTeamFields(set)` ein (Gruppe `MINIME_TEAMS`: Befehl, Texte der Befehlsseite, je Fraktion Namen, Anzeigename,
+Farbe). Der Server gibt jedem Minime `team`. Die Szene zeigt die Fraktion mit `shownTeam(actor, enabled, demo)` und zählt
+mit `teamCounts` (z.B. wer einen Hügel hält); `enabled` sind die erlaubten Fraktionen aus
+`readMinimeOptions(values, variants, teams).rules.teams`. Die Info-Seite übergibt das Set ebenfalls an
+`readMinimeOptions`, dann erscheint `!team` in der Befehlsliste.
+
 **Eigene Standardwerte für Kern-Felder**: `withDefaults(MINIME_BASE_FIELDS, { minimeWalkWeight: 0 })` aus
 `src/core/fields.ts` ändert nur die Standards (z.B. Figuren, die nicht laufen), die Grenzen bleiben. Rust spiegelt das
 mit `with_defaults`.
