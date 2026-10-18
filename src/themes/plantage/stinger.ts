@@ -1,7 +1,8 @@
 // Stinger of the Plantage theme: a ripe mango falls from the top into the picture, grows until it fills everything in
 // mango colors at the transition point (cut), briefly shows the text with leaves flying around, and drops out at the
-// bottom again. Before and after transparent. Pure function of time, so it can be rendered frame by frame.
-// Check: stinger.check.ts.
+// bottom again. Drawn like the illustrated backdrop: the mango glows from the upper left into its blush, has a gloss and
+// a soft shadow, the leaves shade from light to dark with a vein. Before and after transparent. Pure function of time,
+// so it can be rendered frame by frame. Check: stinger.check.ts.
 import { clamp01, easeIn, easeInOut } from "../../core/easing.ts";
 
 export const WIDTH = 1920;
@@ -17,6 +18,9 @@ export type PlantageStingerOptions = {
   mango: string;
   blush: string;
   leaf: string;
+  leafDark: string;
+  paper: string;
+  shadow: string;
   textColor: string;
 };
 
@@ -26,38 +30,60 @@ const COVER_RADIUS = 1200;
 const LEAVES = 6;
 const TURN = Math.PI * 2;
 
-// The mango as a slightly tilted oval with its blush; covering the whole picture it is one rectangle
+// A leaf as an ellipse turned by angle, shaded from light (top) to dark, with a vein along its length
+function leaf(context: CanvasRenderingContext2D, x: number, y: number, length: number, angle: number, options: PlantageStingerOptions) {
+  const shade = context.createLinearGradient(x, y - length * 0.4, x, y + length * 0.4);
+  shade.addColorStop(0, options.leaf);
+  shade.addColorStop(1, options.leafDark);
+  context.fillStyle = shade;
+  context.beginPath();
+  context.ellipse(x, y, length, length * 0.37, angle, 0, TURN);
+  context.fill();
+  context.strokeStyle = options.leafDark;
+  context.lineWidth = Math.max(1, length * 0.05);
+  context.beginPath();
+  context.moveTo(x - Math.cos(angle) * length * 0.85, y - Math.sin(angle) * length * 0.85);
+  context.lineTo(x + Math.cos(angle) * length * 0.85, y + Math.sin(angle) * length * 0.85);
+  context.stroke();
+}
+
+// The mango: glows from the upper left into its blush, with a gloss and a soft shadow; covering the whole picture it is
+// one rectangle in the same glow
 function mango(context: CanvasRenderingContext2D, x: number, y: number, radius: number, options: PlantageStingerOptions) {
   const covers = [[0, 0], [WIDTH, 0], [0, HEIGHT], [WIDTH, HEIGHT]].every(([cornerX, cornerY]) => Math.hypot(cornerX - x, cornerY - y) <= radius);
-  context.fillStyle = options.mango;
+  const glow = context.createRadialGradient(x - radius * 0.35, y - radius * 0.4, radius * 0.05, x, y, radius * 1.1);
+  glow.addColorStop(0, options.mango);
+  glow.addColorStop(0.55, options.mango);
+  glow.addColorStop(1, options.blush);
+  context.fillStyle = glow;
   if (covers) context.fillRect(0, 0, WIDTH, HEIGHT);
   else {
+    context.save();
+    context.shadowColor = options.shadow;
+    context.shadowBlur = radius * 0.25;
+    context.shadowOffsetY = radius * 0.08;
     context.beginPath();
     context.ellipse(x, y, radius * 0.86, radius, -0.3, 0, TURN);
     context.fill();
+    context.restore();
   }
-  context.fillStyle = options.blush;
-  context.globalAlpha = 0.55;
+  // Gloss at the upper left
+  context.fillStyle = options.paper;
+  context.globalAlpha = 0.45;
   context.beginPath();
-  context.ellipse(x + radius * 0.35, y - radius * 0.3, radius * 0.38, radius * 0.5, -0.3, 0, TURN);
+  context.ellipse(x - radius * 0.38, y - radius * 0.45, radius * 0.16, radius * 0.1, -0.7, 0, TURN);
   context.fill();
   context.globalAlpha = 1;
   // The leaf at the stem, above the mango
-  context.fillStyle = options.leaf;
-  context.beginPath();
-  context.ellipse(x + radius * 0.25, y - radius * 1.02, radius * 0.32, radius * 0.12, -0.5, 0, TURN);
-  context.fill();
+  leaf(context, x + radius * 0.25, y - radius * 1.02, radius * 0.32, -0.5, options);
 }
 
 // Leaves fly outward from the middle around the transition point
 function leaves(context: CanvasRenderingContext2D, shown: number, options: PlantageStingerOptions) {
-  context.fillStyle = options.leaf;
   for (let index = 0; index < LEAVES; index++) {
     const angle = (index / LEAVES) * TURN;
     const reach = 260 + 420 * (1 - shown);
-    context.beginPath();
-    context.ellipse(WIDTH / 2 + Math.cos(angle) * reach * 1.6, HEIGHT / 2 + Math.sin(angle) * reach, 70, 26, angle, 0, TURN);
-    context.fill();
+    leaf(context, WIDTH / 2 + Math.cos(angle) * reach * 1.6, HEIGHT / 2 + Math.sin(angle) * reach, 70, angle, options);
   }
 }
 
@@ -79,6 +105,9 @@ export function drawPlantageStinger(context: CanvasRenderingContext2D, time: num
   context.globalAlpha = shown;
   if (options.leaves) leaves(context, shown, options);
   context.fillStyle = options.textColor;
+  context.shadowColor = options.shadow;
+  context.shadowBlur = 30;
+  context.shadowOffsetY = 8;
   context.font = `700 140px "${options.font}", sans-serif`;
   context.textBaseline = "middle";
   const width = context.measureText(options.text).width;

@@ -4,9 +4,12 @@
 import assert from "node:assert/strict";
 import { drawPlantageStinger, HEIGHT, WIDTH, type PlantageStingerOptions } from "./stinger.ts";
 
+// One gradient for all recordings, so equal pictures give equal calls
+const gradient = { addColorStop: () => {} };
+
 function recorder() {
   const calls: unknown[][] = [];
-  const target: Record<string, unknown> = { measureText: () => ({ width: 10 }) };
+  const target: Record<string, unknown> = { measureText: () => ({ width: 10 }), createLinearGradient: () => gradient, createRadialGradient: () => gradient };
   const context = new Proxy(target, {
     get: (object, key: string) => object[key] ?? ((...args: unknown[]) => { calls.push([key, ...args]); }),
     set: (_, key: string, value) => { calls.push([`set ${key}`, value]); return true; },
@@ -17,7 +20,7 @@ function recorder() {
 
 const options: PlantageStingerOptions = {
   duration: 1.4, cut: 0.7, leaves: true, text: "Plantage", font: "Fredoka",
-  mango: "#ffb02e", blush: "#ff5e3a", leaf: "#2f8f3a", textColor: "#ffffff",
+  mango: "#ffb02e", blush: "#ff5e3a", leaf: "#2f8f3a", leafDark: "#1d5e27", paper: "#fff6df", shadow: "#5e3b22", textColor: "#ffffff",
 };
 
 // At the transition point: one area over the whole picture, plus the text and the leaves

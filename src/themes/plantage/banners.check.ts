@@ -8,7 +8,7 @@ const gradient = { addColorStop: () => {} };
 
 function recorder() {
   const calls: unknown[][] = [];
-  const target: Record<string, unknown> = { measureText: () => ({ width: 300 }), createLinearGradient: () => gradient };
+  const target: Record<string, unknown> = { measureText: () => ({ width: 300 }), createLinearGradient: () => gradient, createRadialGradient: () => gradient };
   const context = new Proxy(target, {
     get: (object, key: string) => object[key] ?? ((...args: unknown[]) => { calls.push([key, ...args]); }),
     set: (_, key: string, value) => { calls.push([`set ${key}`, value]); return true; },
@@ -18,7 +18,8 @@ function recorder() {
 
 const options: PlantageBannerOptions = {
   loop: 6, font: "Baloo 2", titleFont: "Fredoka", skyTop: "#3aa0e0", skyBottom: "#c8ecff", eveningTop: "#ff6f61", eveningBottom: "#ffc371",
-  sun: "#ffd23f", hill: "#8fbf5a", soil: "#8b5e3c", soilDark: "#5e3b22", leaf: "#2f8f3a", trunk: "#6d4c2f", mango: "#ffb02e",
+  sun: "#ffd23f", hill: "#8fbf5a", hillFar: "#6f9f4a", soil: "#8b5e3c", soilDark: "#5e3b22", leaf: "#2f8f3a", leafDark: "#1d5e27",
+  trunk: "#6d4c2f", mango: "#ffb02e", blush: "#ff5e3a", paper: "#fff6df",
   wood: "#c8935a", woodDark: "#7a4a24", textColor: "#ffffff", textOnWood: "#3a2410",
   title: "Plantage", profileText: "Mangos and streams", offlineTitle: "Out in the field", offlineText: "Follow the channel", offlineLines: ["Live soon", "See you soon"],
 };

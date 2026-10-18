@@ -14,12 +14,14 @@ export function plantageClips(values: SettingValues, login: string): RenderClip[
   const stinger: PlantageStingerOptions = {
     duration: field.stingerDuration, cut: field.stingerCut, leaves: field.stingerLeaves,
     text: fillTemplate(field.stingerText, names), font: field.titleFont,
-    mango: field.mango, blush: field.mangoBlush, leaf: field.leaf, textColor: field.textColor,
+    mango: field.mango, blush: field.mangoBlush, leaf: field.leaf, leafDark: field.leafDark, paper: field.paper, shadow: field.soilDark,
+    textColor: field.textColor,
   };
   const banner: PlantageBannerOptions = {
     loop: field.bannerLoop, font: field.font, titleFont: field.titleFont,
     skyTop: field.skyDayTop, skyBottom: field.skyDayBottom, eveningTop: field.skyEveningTop, eveningBottom: field.skyEveningBottom,
-    sun: field.sun, hill: field.hillColor, soil: field.soil, soilDark: field.soilDark, leaf: field.leaf, trunk: field.trunk, mango: field.mango,
+    sun: field.sun, hill: field.hillColor, hillFar: field.hillFarColor, soil: field.soil, soilDark: field.soilDark, leaf: field.leaf, leafDark: field.leafDark,
+    trunk: field.trunk, mango: field.mango, blush: field.mangoBlush, paper: field.paper,
     wood: field.wood, woodDark: field.woodDark, textColor: field.textColor, textOnWood: field.textOnWood,
     title: fillTemplate(field.bannerTitle, names), profileText: field.bannerProfileText,
     offlineTitle: field.bannerOfflineTitle, offlineText: field.bannerOfflineText, offlineLines: field.bannerOfflineLines,
