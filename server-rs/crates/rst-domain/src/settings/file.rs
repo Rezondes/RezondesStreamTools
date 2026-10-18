@@ -39,13 +39,22 @@ fn default_theme() -> &'static Theme {
     find(DEFAULT_THEME).unwrap_or_else(|| unreachable!("the default theme is built in"))
 }
 
+/// Defaults a theme has changed: theme, key, old default, new default. Whoever still has the old default stored gets
+/// the new one when reading; values chosen by the streamer stay. Entries come with the theme plan that needs them.
+type OldDefault = (&'static str, &'static str, &'static str, &'static str);
+const OLD_DEFAULTS: &[OldDefault] = &[];
+
 /// Brings stored settings into valid shape: old IDs are renamed, an unknown theme becomes the default, values only
-/// as objects per theme
+/// as objects per theme, old defaults become the current ones
 #[must_use]
 pub fn parse_settings_file(raw: &Value) -> SettingsFile {
+    parse_with_old_defaults(raw, OLD_DEFAULTS)
+}
+
+fn parse_with_old_defaults(raw: &Value, old_defaults: &[OldDefault]) -> SettingsFile {
     let named = raw.get("theme").and_then(Value::as_str).map(current_id).unwrap_or_default();
     let theme = if find(named).is_some() { named } else { DEFAULT_THEME };
-    let values = raw
+    let mut values: BTreeMap<String, Map<String, Value>> = raw
         .get("values")
         .and_then(Value::as_object)
         .map(|values| {
@@ -55,6 +64,13 @@ pub fn parse_settings_file(raw: &Value) -> SettingsFile {
                 .collect()
         })
         .unwrap_or_default();
+    for (theme, key, old, new) in old_defaults {
+        if let Some(stored) = values.get_mut(*theme)
+            && stored.get(*key).and_then(Value::as_str) == Some(*old)
+        {
+            stored.insert((*key).to_owned(), Value::String((*new).to_owned()));
+        }
+    }
     SettingsFile { theme: theme.to_owned(), values }
 }
 
@@ -215,5 +231,18 @@ mod tests {
         assert_eq!(first.values["matrix"]["logo"], json!(ascii_text("neo_42")));
         assert_eq!(first.values["standard"], *json!({ "channelName": "NEO_42" }).as_object().expect("object"));
         assert_eq!(parse_settings_file(&serde_json::to_value(&first).expect("json")), first);
+    }
+
+    #[test]
+    fn old_defaults_are_replaced_and_own_values_stay() {
+        let table: &[OldDefault] = &[("standard", "helpWord", "!alt", "!neu")];
+        let read = |values: Value| parse_with_old_defaults(&json!({ "theme": "standard", "values": values }), table);
+        let replaced = read(json!({ "standard": { "helpWord": "!alt", "other": 1 } }));
+        assert_eq!(replaced.values["standard"]["helpWord"], "!neu");
+        assert_eq!(replaced.values["standard"]["other"], 1);
+        assert_eq!(read(json!({ "standard": { "helpWord": "!eigen" } })).values["standard"]["helpWord"], "!eigen");
+        // After the rename of an old theme ID
+        assert_eq!(read(json!({ "starter": { "helpWord": "!alt" } })).values["standard"]["helpWord"], "!neu");
+        assert!(OLD_DEFAULTS.iter().all(|(theme, ..)| find(theme).is_some()));
     }
 }
