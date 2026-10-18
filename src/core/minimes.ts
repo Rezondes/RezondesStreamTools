@@ -8,8 +8,9 @@ import type { Minime } from "./types.ts";
 // All settings that decide what the list does. Roles: Twitch badges (subscriber, vip, moderator,
 // broadcaster) or everyone; the streamer (broadcaster) may always do everything. look: command for color or variant.
 // variants: allowed variants with their names in chat (normalized, see normalizeName); null = the theme uses colors.
+// teams and commands.team: factions and the command to choose one, missing = the theme has none.
 export type MinimeRules = {
-  commands: { join: string; look: string; leave: string };
+  commands: { join: string; look: string; leave: string; team?: string };
   joinRoles: readonly string[];
   kickRoles: readonly string[];
   colorJoins: boolean; // !color joins chatters who have not joined
@@ -24,6 +25,7 @@ export type MinimeRules = {
   clearOffline: boolean; // evaluated by the server on stream.offline
   removeOnBan: boolean;
   variants: readonly MinimeVariantRule[] | null;
+  teams?: readonly MinimeVariantRule[];
 };
 export type MinimeVariantRule = { id: string; names: readonly string[] };
 

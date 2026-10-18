@@ -2,13 +2,15 @@
 //! (template: `src/core/minimeFields.ts`). Color themes take [`minime_fields`], variant themes the base fields and
 //! [`minime_variant_fields`] of their variants. Reading the values into rules follows with the minimes context.
 
-use crate::settings::field::{SettingField, Unit, choice, flag, number, text};
+use crate::settings::field::{SettingField, Unit, choice, color, flag, number, text};
+use crate::themes::info_fields::INFO_GROUP;
 use crate::themes::schema::MinimeVariantSet;
 
 pub const MINIME_COMMANDS: &str = "Minimes: Befehle";
 pub const MINIME_RULES: &str = "Minimes: Regeln";
 pub const MINIME_MOTION: &str = "Minimes: Bewegung";
 pub const MINIME_VARIANTS: &str = "Minimes: Typen";
+pub const MINIME_TEAMS: &str = "Minimes: Fraktionen";
 
 /// Minimum role: whoever has it or one above may (order = rank)
 pub const ROLES: [&str; 5] = ["everyone", "subscriber", "vip", "moderator", "broadcaster"];
@@ -126,6 +128,55 @@ pub fn minime_variant_fields(set: &MinimeVariantSet) -> Vec<SettingField> {
     std::iter::once(command).chain(names).collect()
 }
 
+/// Key of the names of a faction in chat
+#[must_use]
+pub fn minime_team_names_key(id: &str) -> String {
+    format!("minimeTeamNames_{id}")
+}
+
+/// Key of the shown name of a faction
+#[must_use]
+pub fn minime_team_label_key(id: &str) -> String {
+    format!("minimeTeamLabel_{id}")
+}
+
+/// Key of the color of a faction
+#[must_use]
+pub fn minime_team_color_key(id: &str) -> String {
+    format!("minimeTeamColor_{id}")
+}
+
+/// Fields of a theme with factions: command to choose, its texts on the commands page and per faction the names in
+/// chat (empty = off), the shown name and the color
+#[must_use]
+pub fn minime_team_fields(set: &MinimeVariantSet) -> Vec<SettingField> {
+    let mut fields = vec![
+        text("minimeTeamCommand", &format!("Befehl: {} wählen", set.label), MINIME_TEAMS, &set.command, Some(25)),
+        text(
+            "infoTeamText",
+            &format!("{} wählen: Erklärung ({{command}})", set.label),
+            INFO_GROUP,
+            &format!("{} wählen: {{command}} <Name>", set.label),
+            None,
+        ),
+        text("infoTeams", "Liste der Fraktionen ({names})", INFO_GROUP, "Zur Wahl: {names}", None),
+    ];
+    for team in &set.variants {
+        let names = format!("{}: Namen im Chat (leer = aus)", team.label);
+        fields.push(text(&minime_team_names_key(&team.id), &names, MINIME_TEAMS, &team.names.join(", "), Some(200)));
+        fields.push(text(
+            &minime_team_label_key(&team.id),
+            &format!("{}: Anzeigename", team.label),
+            MINIME_TEAMS,
+            &team.label,
+            Some(40),
+        ));
+        let default = team.color.as_deref().unwrap_or("#ffffff");
+        fields.push(color(&minime_team_color_key(&team.id), &format!("{}: Farbe", team.label), MINIME_TEAMS, default));
+    }
+    fields
+}
+
 /// Does this schema have minimes? (does it include the shared fields)
 #[must_use]
 pub fn has_minimes(fields: &[SettingField]) -> bool {
@@ -154,6 +205,7 @@ mod tests {
             id: "mango".to_owned(),
             label: "Mango".to_owned(),
             names: vec!["mango".to_owned(), "mangos".to_owned()],
+            color: None,
         };
         let set = MinimeVariantSet { command: "!fruit".to_owned(), label: "Frucht".to_owned(), variants: vec![mango] };
         let fields = minime_variant_fields(&set);
@@ -162,5 +214,40 @@ mod tests {
         assert_eq!(fields[1].key, "minimeNames_mango");
         assert_eq!(fields[1].default_value(), SettingValue::Text("mango, mangos".to_owned()));
         assert_eq!(fields[1].group, MINIME_VARIANTS);
+    }
+
+    #[test]
+    fn team_fields_with_command_texts_and_per_team_names_label_color() {
+        let blau = MinimeVariantInfo {
+            id: "blau".to_owned(),
+            label: "BLUFOR".to_owned(),
+            names: vec!["blau".to_owned(), "blue".to_owned()],
+            color: Some("#3366ff".to_owned()),
+        };
+        let set = MinimeVariantSet { command: "!team".to_owned(), label: "Fraktion".to_owned(), variants: vec![blau] };
+        let keys: Vec<String> = minime_team_fields(&set).into_iter().map(|field| field.key).collect();
+        assert_eq!(
+            keys,
+            [
+                "minimeTeamCommand",
+                "infoTeamText",
+                "infoTeams",
+                "minimeTeamNames_blau",
+                "minimeTeamLabel_blau",
+                "minimeTeamColor_blau"
+            ]
+        );
+        let fields = minime_team_fields(&set);
+        assert_eq!(fields[3].default_value(), SettingValue::Text("blau, blue".to_owned()));
+        assert_eq!(fields[5].default_value(), SettingValue::Text("#3366ff".to_owned()));
+        assert_eq!(fields[1].group, INFO_GROUP);
+    }
+
+    #[test]
+    fn feature_fields_match_the_typescript_fixture() {
+        let fixture: serde_json::Value =
+            serde_json::from_str(include_str!("../../tests/fixtures/minime-features.json")).expect("fixture is JSON");
+        let teams: MinimeVariantSet = serde_json::from_value(fixture["teams"]["set"].clone()).expect("sample set");
+        crate::themes::fixture::assert_same_fields(&minime_team_fields(&teams), &fixture["teams"]["fields"]);
     }
 }

@@ -51,11 +51,13 @@ export type SettingField =
 // groupScenes: in which scenes a group has an effect (the dashboard only shows the groups of the scene in the preview);
 // if a group is missing, it applies everywhere (general), [] = in no scene (stinger, banners: render section)
 // Minime variants of a theme (e.g. fruits) instead of colors: command to choose (default word), label in the
-// dashboard and per variant id (lower case letters and digits), name and default names in chat
-type MinimeVariantInfo = { id: string; label: string; names: readonly string[] };
+// dashboard and per variant id (lower case letters and digits), name and default names in chat. The same shape holds
+// the factions of a theme; color: default color of a faction
+type MinimeVariantInfo = { id: string; label: string; names: readonly string[]; color?: string };
 export type MinimeVariantSet = { command: string; label: string; variants: readonly MinimeVariantInfo[] };
 
-// minimeVariants: variants of the minimes; if missing, chatters choose colors (see src/core/minimeFields.ts)
+// minimeVariants: variants of the minimes; if missing, chatters choose colors (see src/core/minimeFields.ts).
+// minimeTeams: factions of the minimes, only together with minimeVariants (the variants are the roles)
 // personalize: values the theme fills with the streamer's Twitch login on first login (channel name, logo, ...),
 // instead of general samples; if missing, the defaults apply
 export type ThemeSchema = {
@@ -65,6 +67,7 @@ export type ThemeSchema = {
   groupScenes?: Readonly<Record<string, readonly SceneName[]>>;
   personalize?: (login: string) => SettingValues;
   minimeVariants?: MinimeVariantSet;
+  minimeTeams?: MinimeVariantSet;
 };
 
 // Contract of a theme, data side (without React, also for the server): its schema and the clips for stinger and banners

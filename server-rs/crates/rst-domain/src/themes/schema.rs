@@ -81,12 +81,16 @@ impl SceneName {
     }
 }
 
-/// One minime variant (e.g. a fruit): id (lower case letters and digits), label and default names in chat
+/// One minime variant (e.g. a fruit) or faction: id (lower case letters and digits), label and default names in
+/// chat; `color`: default color of a faction (`#rrggbb`), unused for variants
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct MinimeVariantInfo {
     pub id: String,
     pub label: String,
     pub names: Vec<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub color: Option<String>,
 }
 
 /// Minime variants of a theme instead of colors: command to choose (default word), label in the dashboard, variants
@@ -110,6 +114,10 @@ pub struct ThemeSchema {
     #[serde(rename = "minimeVariants", default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub minime_variants: Option<MinimeVariantSet>,
+    /// Factions of the minimes, only together with variants (the variants are the roles)
+    #[serde(rename = "minimeTeams", default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub minime_teams: Option<MinimeVariantSet>,
 }
 
 impl ThemeSchema {

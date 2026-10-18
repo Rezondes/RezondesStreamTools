@@ -7,7 +7,9 @@ use serde_json::Value;
 use crate::minimes::command::normalize_name;
 use crate::settings::field::{SettingValue, SettingValues};
 use crate::settings::validate::resolve_settings;
-use crate::themes::minime_fields::{ROLES, minime_fields, minime_names_key, minime_variant_fields};
+use crate::themes::minime_fields::{
+    ROLES, minime_fields, minime_names_key, minime_team_fields, minime_team_names_key, minime_variant_fields,
+};
 use crate::themes::schema::{MinimeVariantSet, ThemeSchema};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -31,6 +33,8 @@ pub struct MinimeCommands {
     /// Command for color or variant
     pub look: String,
     pub leave: String,
+    /// Command to choose a faction, `None` without factions
+    pub team: Option<String>,
 }
 
 /// Everything that decides what the list does. Roles: Twitch badges or `everyone`; the streamer may always.
@@ -57,6 +61,8 @@ pub struct MinimeRules {
     pub remove_on_ban: bool,
     /// `None` = the theme uses colors
     pub variants: Option<Vec<MinimeVariantRule>>,
+    /// Allowed factions, `None` = the theme has none
+    pub teams: Option<Vec<MinimeVariantRule>>,
 }
 
 fn text(values: &SettingValues, key: &str) -> String {
@@ -94,12 +100,17 @@ fn command(value: &str, fallback: &str) -> String {
     if valid { value.to_owned() } else { fallback.to_owned() }
 }
 
-/// Allowed variants: a name belongs to the first variant that lists it, variants without names drop out
-fn variant_rules(set: &MinimeVariantSet, values: &SettingValues) -> Vec<MinimeVariantRule> {
-    let mut taken: Vec<String> = Vec::new();
+/// Allowed entries of a set: a name belongs to the first entry that lists it (`taken` carries names over from an
+/// earlier set), entries without names drop out
+fn variant_rules(
+    set: &MinimeVariantSet,
+    values: &SettingValues,
+    names_key: fn(&str) -> String,
+    taken: &mut Vec<String>,
+) -> Vec<MinimeVariantRule> {
     let mut rules = Vec::new();
     for variant in &set.variants {
-        let names: Vec<String> = text(values, &minime_names_key(&variant.id))
+        let names: Vec<String> = text(values, &names_key(&variant.id))
             .split(',')
             .map(normalize_name)
             .filter(|name| !name.is_empty() && !taken.contains(name))
@@ -118,12 +129,17 @@ fn variant_rules(set: &MinimeVariantSet, values: &SettingValues) -> Vec<MinimeVa
     rules
 }
 
-/// Rules from arbitrary settings values; `set`: variants of the theme, without it chatters choose colors
+/// Rules from arbitrary settings values; `set`: variants of the theme, without it chatters choose colors; `teams`:
+/// factions of the theme, only together with variants. A name of a variant wins over the same name of a faction.
 #[must_use]
-pub fn minime_rules(stored: &Value, set: Option<&MinimeVariantSet>) -> MinimeRules {
+pub fn minime_rules(stored: &Value, set: Option<&MinimeVariantSet>, teams: Option<&MinimeVariantSet>) -> MinimeRules {
+    let teams = teams.filter(|_| set.is_some());
     let mut fields = minime_fields();
     if let Some(set) = set {
         fields.extend(minime_variant_fields(set));
+    }
+    if let Some(teams) = teams {
+        fields.extend(minime_team_fields(teams));
     }
     let schema = ThemeSchema {
         id: "minimes".to_owned(),
@@ -131,8 +147,12 @@ pub fn minime_rules(stored: &Value, set: Option<&MinimeVariantSet>) -> MinimeRul
         fields,
         group_scenes: std::collections::BTreeMap::new(),
         minime_variants: None,
+        minime_teams: None,
     };
     let values = resolve_settings(&schema, stored);
+    let mut taken = Vec::new();
+    let variants = set.map(|set| variant_rules(set, &values, minime_names_key, &mut taken));
+    let team_rules = teams.map(|teams| variant_rules(teams, &values, minime_team_names_key, &mut taken));
     let look = match set {
         Some(set) => command(&text(&values, "minimeVariantCommand"), &set.command),
         None => command(&text(&values, "minimeColorCommand"), "!color"),
@@ -144,6 +164,7 @@ pub fn minime_rules(stored: &Value, set: Option<&MinimeVariantSet>) -> MinimeRul
             join: command(&text(&values, "minimeJoinCommand"), "!join"),
             look,
             leave: command(&text(&values, "minimeLeaveCommand"), "!leave"),
+            team: teams.map(|teams| command(&text(&values, "minimeTeamCommand"), &teams.command)),
         },
         join_roles: roles_from(&text(&values, "minimeJoinRole")),
         kick_roles: roles_from(&text(&values, "minimeKickRole")),
@@ -158,7 +179,8 @@ pub fn minime_rules(stored: &Value, set: Option<&MinimeVariantSet>) -> MinimeRul
         react_to_chat: flag(&values, "minimeReactToChat"),
         clear_offline: flag(&values, "minimeClearOffline"),
         remove_on_ban: flag(&values, "minimeRemoveOnBan"),
-        variants: set.map(|set| variant_rules(set, &values)),
+        variants,
+        teams: team_rules,
     }
 }
 
@@ -175,9 +197,13 @@ mod tests {
 
     #[test]
     fn defaults_without_saved_values() {
-        let rules = minime_rules(&json!({}), None);
-        let commands =
-            MinimeCommands { join: "!join".to_owned(), look: "!color".to_owned(), leave: "!leave".to_owned() };
+        let rules = minime_rules(&json!({}), None, None);
+        let commands = MinimeCommands {
+            join: "!join".to_owned(),
+            look: "!color".to_owned(),
+            leave: "!leave".to_owned(),
+            team: None,
+        };
         assert_eq!(
             rules,
             MinimeRules {
@@ -196,18 +222,24 @@ mod tests {
                 clear_offline: true,
                 remove_on_ban: true,
                 variants: None,
+                teams: None,
             }
         );
-        assert_eq!(minime_rules(&Value::Null, None), rules);
+        assert_eq!(minime_rules(&Value::Null, None, None), rules);
     }
 
     #[test]
     fn invalid_values_give_the_defaults() {
         let stored = json!({ "minimeJoinCommand": "join", "minimeColorCommand": "!change color", "minimeLeaveCommand": "!café", "minimeMax": 999 });
-        let rules = minime_rules(&stored, None);
+        let rules = minime_rules(&stored, None, None);
         assert_eq!(
             rules.commands,
-            MinimeCommands { join: "!join".to_owned(), look: "!color".to_owned(), leave: "!café".to_owned() }
+            MinimeCommands {
+                join: "!join".to_owned(),
+                look: "!color".to_owned(),
+                leave: "!café".to_owned(),
+                team: None
+            }
         );
         assert_eq!(rules.max, 30);
     }
@@ -215,14 +247,14 @@ mod tests {
     #[test]
     fn roles_from_the_chosen_minimum() {
         assert_eq!(
-            minime_rules(&json!({ "minimeJoinRole": "vip" }), None).join_roles,
+            minime_rules(&json!({ "minimeJoinRole": "vip" }), None, None).join_roles,
             strings(&["vip", "moderator", "broadcaster"])
         );
         assert_eq!(
-            minime_rules(&json!({ "minimeKickRole": "broadcaster" }), None).kick_roles,
+            minime_rules(&json!({ "minimeKickRole": "broadcaster" }), None, None).kick_roles,
             strings(&["broadcaster"])
         );
-        assert_eq!(minime_rules(&json!({ "minimeWhenFull": "reject" }), None).when_full, WhenFull::Reject);
+        assert_eq!(minime_rules(&json!({ "minimeWhenFull": "reject" }), None, None).when_full, WhenFull::Reject);
     }
 
     #[test]
@@ -231,6 +263,7 @@ mod tests {
             id: id.to_owned(),
             label: label.to_owned(),
             names: strings(names),
+            color: None,
         };
         let set = MinimeVariantSet {
             command: "!frucht".to_owned(),
@@ -243,6 +276,7 @@ mod tests {
         let rules = minime_rules(
             &json!({ "minimeNames_mango": "Mango,  MANGOS, ", "minimeVariantCommand": "!fruit" }),
             Some(&set),
+            None,
         );
         assert_eq!(rules.commands.look, "!fruit");
         let expected = vec![
@@ -250,11 +284,45 @@ mod tests {
             MinimeVariantRule { id: "kiwi".to_owned(), names: strings(&["kiwi"]) },
         ];
         assert_eq!(rules.variants, Some(expected));
-        let without_mango = minime_rules(&json!({ "minimeNames_mango": "" }), Some(&set)).variants;
+        let without_mango = minime_rules(&json!({ "minimeNames_mango": "" }), Some(&set), None).variants;
         assert_eq!(
             without_mango,
             Some(vec![MinimeVariantRule { id: "kiwi".to_owned(), names: strings(&["kiwi", "mango"]) }])
         );
-        assert_eq!(minime_rules(&json!({ "minimeVariantCommand": "fruit" }), Some(&set)).commands.look, "!frucht");
+        assert_eq!(
+            minime_rules(&json!({ "minimeVariantCommand": "fruit" }), Some(&set), None).commands.look,
+            "!frucht"
+        );
+    }
+
+    #[test]
+    fn factions_only_with_variants_and_variant_names_first() {
+        let info = |id: &str, names: &[&str]| MinimeVariantInfo {
+            id: id.to_owned(),
+            label: id.to_uppercase(),
+            names: strings(names),
+            color: None,
+        };
+        let roles = MinimeVariantSet {
+            command: "!rolle".to_owned(),
+            label: "Rolle".to_owned(),
+            variants: vec![info("medic", &["medic", "rot"])],
+        };
+        let teams = MinimeVariantSet {
+            command: "!team".to_owned(),
+            label: "Fraktion".to_owned(),
+            variants: vec![info("blau", &["blau"]), info("rot", &["rot", "red"])],
+        };
+        let read = minime_rules(&json!({ "minimeTeamCommand": "!seite" }), Some(&roles), Some(&teams));
+        assert_eq!(read.commands.team.as_deref(), Some("!seite"));
+        let expected = vec![
+            MinimeVariantRule { id: "blau".to_owned(), names: strings(&["blau"]) },
+            MinimeVariantRule { id: "rot".to_owned(), names: strings(&["red"]) },
+        ];
+        assert_eq!(read.teams, Some(expected));
+        let off = minime_rules(&json!({ "minimeTeamNames_blau": "" }), Some(&roles), Some(&teams));
+        assert_eq!(off.teams.map(|teams| teams.len()), Some(1));
+        let colors = minime_rules(&json!({}), None, Some(&teams));
+        assert_eq!((colors.teams, colors.commands.team), (None, None));
     }
 }

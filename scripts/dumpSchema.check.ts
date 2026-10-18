@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { THEMES } from "../src/themes/registry.ts";
-import { FIXTURES, fixtureText, SAMPLE_LOGINS, schemaFixture } from "./dumpSchema.ts";
+import { FEATURES_FILE, featuresText, FIXTURES, fixtureText, SAMPLE_LOGINS, schemaFixture } from "./dumpSchema.ts";
 
 // All three themes, personalize as sample values for every sample login
 assert.deepEqual(THEMES.map(theme => theme.id), ["standard", "matrix", "suedfrucht"]);
@@ -19,5 +19,10 @@ for (const theme of THEMES) {
   assert.ok(existsSync(file), `missing fixture ${file}: run node scripts/dumpSchema.ts`);
   assert.equal(readFileSync(file, "utf8").replace(/\r\n/g, "\n"), fixtureText(theme), `stale fixture ${file}: run node scripts/dumpSchema.ts`);
 }
+
+// The opt-in feature fields are current too
+const features = join(FIXTURES, FEATURES_FILE);
+assert.ok(existsSync(features), `missing fixture ${features}: run node scripts/dumpSchema.ts`);
+assert.equal(readFileSync(features, "utf8").replace(/\r\n/g, "\n"), featuresText(), `stale fixture ${features}: run node scripts/dumpSchema.ts`);
 
 console.log("dumpSchema ok");

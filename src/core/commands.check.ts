@@ -43,4 +43,12 @@ assert.equal(helpReply("{link}", commandList("rezondes", null, null, []), "L"), 
 assert.equal(helpReply("{commands}", commandList("rezondes", null, null, []), "L"), "");
 assert.equal(helpReply("x".repeat(600), list, "L").length, MAX_CHAT);
 
+// Factions: the team command comes before leave and is in the help reply
+const roles = { command: "!rolle", label: "Rolle", variants: [{ id: "medic", label: "Medic", names: ["medic"] }] };
+const teams = { command: "!team", label: "Fraktion", variants: [{ id: "blau", label: "Blau", names: ["blau"] }] };
+const army = commandList("rezondes", null, readMinimeOptions({}, roles, teams).rules, []);
+assert.deepEqual(army.items.map(item => item.kind), ["join", "look", "team", "leave"]);
+assert.deepEqual(army.items[2], { kind: "team", command: "!team", who: ["everyone"], teams: [{ id: "blau", names: ["blau"] }] });
+assert.equal(helpReply("{commands}", army, ""), "!join, !rolle, !team, !leave");
+
 console.log("commands ok");

@@ -81,6 +81,12 @@ pub enum CommandItem {
         #[serde(rename = "kickWho")]
         kick_who: Vec<String>,
     },
+    /// Choosing a faction (only in themes with factions)
+    Team {
+        command: String,
+        who: Vec<String>,
+        teams: Vec<MinimeVariantRule>,
+    },
     Trigger {
         name: String,
         when: String,
@@ -101,20 +107,24 @@ pub struct CommandList {
     pub items: Vec<CommandItem>,
 }
 
-fn minime_items(rules: &MinimeRules) -> [CommandItem; 3] {
-    [
-        CommandItem::Join {
-            command: rules.commands.join.clone(),
-            who: rules.join_roles.clone(),
-            variants: rules.variants.clone(),
-        },
-        CommandItem::Look {
-            command: rules.commands.look.clone(),
-            who: rules.join_roles.clone(),
-            variants: rules.variants.clone(),
-        },
-        CommandItem::Leave { command: rules.commands.leave.clone(), kick_who: rules.kick_roles.clone() },
-    ]
+fn minime_items(rules: &MinimeRules) -> Vec<CommandItem> {
+    let team = rules.commands.team.as_ref().zip(rules.teams.as_ref()).map(|(command, teams)| CommandItem::Team {
+        command: command.clone(),
+        who: rules.join_roles.clone(),
+        teams: teams.clone(),
+    });
+    let join = CommandItem::Join {
+        command: rules.commands.join.clone(),
+        who: rules.join_roles.clone(),
+        variants: rules.variants.clone(),
+    };
+    let look = CommandItem::Look {
+        command: rules.commands.look.clone(),
+        who: rules.join_roles.clone(),
+        variants: rules.variants.clone(),
+    };
+    let leave = CommandItem::Leave { command: rules.commands.leave.clone(), kick_who: rules.kick_roles.clone() };
+    [join, look].into_iter().chain(team).chain([leave]).collect()
 }
 
 fn trigger_item(trigger: &Trigger) -> CommandItem {
@@ -169,7 +179,8 @@ pub fn help_reply(template: &str, list: &CommandList, link: &str) -> String {
             CommandItem::Help { .. } => None,
             CommandItem::Join { command, .. }
             | CommandItem::Look { command, .. }
-            | CommandItem::Leave { command, .. } => Some(command.as_str()),
+            | CommandItem::Leave { command, .. }
+            | CommandItem::Team { command, .. } => Some(command.as_str()),
             CommandItem::Trigger { when, text, .. } => text.as_deref().filter(|_| when != "contains"),
         };
         if let Some(command) = command
@@ -263,7 +274,7 @@ mod tests {
 
     #[test]
     fn everything_on_with_colors_and_only_active_public_triggers() {
-        let colors = minime_rules(&json!({ "minimeJoinRole": "subscriber" }), None);
+        let colors = minime_rules(&json!({ "minimeJoinRole": "subscriber" }), None, None);
         let list = command_list("rezondes", Some(&help()), Some(&colors), &triggers());
         let subs = strings(&["subscriber", "vip", "moderator", "broadcaster"]);
         let expected = vec![
@@ -295,9 +306,14 @@ mod tests {
 
     #[test]
     fn variants_instead_of_colors_and_empty_list() {
-        let mango = MinimeVariantInfo { id: "mango".to_owned(), label: "Mango".to_owned(), names: strings(&["mango"]) };
+        let mango = MinimeVariantInfo {
+            id: "mango".to_owned(),
+            label: "Mango".to_owned(),
+            names: strings(&["mango"]),
+            color: None,
+        };
         let set = MinimeVariantSet { command: "!frucht".to_owned(), label: "Frucht".to_owned(), variants: vec![mango] };
-        let fruits = minime_rules(&json!({}), Some(&set));
+        let fruits = minime_rules(&json!({}), Some(&set), None);
         let items = command_list("rezondes", None, Some(&fruits), &[]).items;
         let variants = Some(vec![MinimeVariantRule { id: "mango".to_owned(), names: strings(&["mango"]) }]);
         let look = CommandItem::Look {
@@ -316,6 +332,24 @@ mod tests {
     }
 
     #[test]
+    fn team_command_is_listed_before_leave_and_in_the_help_reply() {
+        let rules = crate::minimes::command::tests::team_rules();
+        let list = command_list("rezondes", None, Some(&rules), &[]);
+        let kinds: Vec<String> = list
+            .items
+            .iter()
+            .map(|item| serde_json::to_value(item).expect("serialize")["kind"].as_str().unwrap_or_default().to_owned())
+            .collect();
+        assert_eq!(kinds, ["join", "look", "team", "leave"]);
+        let json = serde_json::to_value(&list.items[2]).expect("serialize");
+        assert_eq!(json["command"], "!team");
+        assert_eq!(json["teams"][1]["id"], "rot");
+        assert!(help_reply("{commands}", &list, "").contains("!team"));
+        let fruits = command_list("rezondes", None, Some(&crate::minimes::command::tests::variant_rules()), &[]);
+        assert_eq!(fruits.items.len(), 3);
+    }
+
+    #[test]
     fn list_serializes_like_the_typescript_union() {
         let list = command_list("rezondes", Some(&help()), None, &[trigger("pattern", "regex", "^a+$")]);
         let json = serde_json::to_value(&list).expect("serialize");
@@ -326,7 +360,7 @@ mod tests {
 
     #[test]
     fn help_reply_lists_typed_commands_once_and_fits_twitch() {
-        let colors = minime_rules(&json!({ "minimeJoinRole": "subscriber" }), None);
+        let colors = minime_rules(&json!({ "minimeJoinRole": "subscriber" }), None, None);
         let mut all = triggers();
         all.push(trigger("two", "word", "!lizard"));
         all.push(trigger("part", "contains", "lol"));

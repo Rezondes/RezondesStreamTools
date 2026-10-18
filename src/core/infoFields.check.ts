@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { commandList } from "./commands.ts";
 import { describeCommands, INFO_FIELDS } from "./infoFields.ts";
-import { readMinimeOptions } from "./minimeFields.ts";
+import { minimeTeamFields, readMinimeOptions } from "./minimeFields.ts";
 import { resolveSettings } from "./settings.ts";
 
 const values = resolveSettings({ id: "probe", name: "Probe", fields: INFO_FIELDS }, {});
@@ -36,5 +36,13 @@ assert.equal(typed[1].text, "Typ deiner Figur wählen: !frucht <Name>");
 assert.deepEqual(typed[1].details, ["Für: alle", "Zur Wahl: mango"]);
 assert.deepEqual(typed[0].details, ["Für: alle", "Mit Typ: !join mango"]);
 assert.deepEqual(describeCommands(commandList("rezondes", null, null, []), values), []);
+
+// Factions: own entry before leave, its texts come with the faction fields
+const roles = { command: "!rolle", label: "Rolle", variants: [{ id: "medic", label: "Medic", names: ["medic"] }] };
+const teams = { command: "!team", label: "Fraktion", variants: [{ id: "blau", label: "Blau", names: ["blau", "blue"] }, { id: "rot", label: "Rot", names: ["rot"] }] };
+const withTeams = { ...values, ...resolveSettings({ id: "probe", name: "Probe", fields: minimeTeamFields(teams) }, {}) };
+const team = describeCommands(commandList("rezondes", null, readMinimeOptions({}, roles, teams).rules, []), withTeams)[0].entries;
+assert.deepEqual(team.map(entry => entry.command), ["!join", "!rolle", "!team", "!leave"]);
+assert.deepEqual(team[2], { command: "!team", text: "Fraktion wählen: !team <Name>", details: ["Für: alle", "Zur Wahl: blau, rot"] });
 
 console.log("infoFields ok");

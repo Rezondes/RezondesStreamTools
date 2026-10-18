@@ -72,6 +72,7 @@ mod tests {
             ],
             group_scenes: BTreeMap::new(),
             minime_variants: None,
+            minime_teams: None,
         };
         let text = values_type(&schema);
         assert!(text.starts_with("import type { SoundValue } from \"../SoundValue.ts\";"));

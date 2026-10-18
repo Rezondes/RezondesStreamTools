@@ -13,7 +13,8 @@ use crate::minimes::rules::{MinimeRules, WhenFull};
 /// Memory guard, so the saved state does not grow without limit
 pub const MAX_STORED: usize = 2000;
 
-/// A joined chatter; `color`: `#rrggbb` or `None` = default color of the theme, `variant` in themes with variants
+/// A joined chatter; `color`: `#rrggbb` or `None` = default color of the theme, `variant` in themes with variants,
+/// `team` in themes with factions
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct MinimeEntry {
@@ -21,6 +22,8 @@ pub struct MinimeEntry {
     pub user: String,
     pub color: Option<String>,
     pub variant: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub team: Option<String>,
     pub last_seen: i64,
 }
 
@@ -31,6 +34,9 @@ pub struct Minime {
     pub user: String,
     pub color: Option<String>,
     pub variant: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub team: Option<String>,
 }
 
 impl From<&MinimeEntry> for Minime {
@@ -40,6 +46,7 @@ impl From<&MinimeEntry> for Minime {
             user: entry.user.clone(),
             color: entry.color.clone(),
             variant: entry.variant.clone(),
+            team: entry.team.clone(),
         }
     }
 }
@@ -67,6 +74,9 @@ pub struct MinimeState {
     pub roster: Vec<MinimeEntry>,
     pub colors: BTreeMap<String, StoredColor>,
     pub variants: BTreeMap<String, StoredVariant>,
+    /// Remembered factions, in the same shape as the variants
+    #[serde(default)]
+    pub teams: BTreeMap<String, StoredVariant>,
 }
 
 /// Events from chat and from the server. `twitch_color`: name color from the Twitch tag (or none)
@@ -77,6 +87,7 @@ pub enum MinimeEvent {
         user: String,
         color: Option<String>,
         variant: Option<String>,
+        team: Option<String>,
         twitch_color: Option<String>,
     },
     Color {
@@ -89,6 +100,11 @@ pub enum MinimeEvent {
         login: String,
         user: String,
         variant: String,
+    },
+    Team {
+        login: String,
+        user: String,
+        team: String,
     },
     Leave {
         login: String,
@@ -194,6 +210,43 @@ fn allowed_variants(rules: &MinimeRules) -> Vec<String> {
     rules.variants.iter().flatten().map(|variant| variant.id.clone()).collect()
 }
 
+fn allowed_teams(rules: &MinimeRules) -> Vec<String> {
+    rules.teams.iter().flatten().map(|team| team.id.clone()).collect()
+}
+
+/// Faction of a chatter: chosen and allowed, otherwise remembered and allowed, otherwise the allowed faction with the
+/// fewest members in `roster` (the first on a tie; switchable right away). Without factions `None`.
+fn resolve_team(
+    teams: &BTreeMap<String, StoredVariant>,
+    roster: &[MinimeEntry],
+    login: &str,
+    chosen: Option<&str>,
+    now: i64,
+    rules: &MinimeRules,
+) -> (BTreeMap<String, StoredVariant>, Option<String>) {
+    let allowed = allowed_teams(rules);
+    if allowed.is_empty() {
+        return (teams.clone(), None);
+    }
+    let mut picked = match chosen {
+        Some(chosen) if allowed.iter().any(|id| id == chosen) => remember(teams, login, chosen, now, rules),
+        _ => teams.clone(),
+    };
+    if let Some(stored) = picked.get_mut(login)
+        && allowed.contains(&stored.variant)
+    {
+        stored.used_at = now;
+        let team = stored.variant.clone();
+        return (picked, Some(team));
+    }
+    let members =
+        |id: &String| roster.iter().filter(|entry| entry.login != login && entry.team.as_ref() == Some(id)).count();
+    let team = allowed.iter().min_by_key(|id| members(id)).cloned().unwrap_or_default();
+    let free = now - millis(rules.color_cooldown_s);
+    picked.insert(login.to_owned(), StoredVariant { variant: team.clone(), used_at: now, changed_at: free });
+    (picked, Some(team))
+}
+
 /// Variant of a chatter: chosen and allowed, otherwise remembered and allowed, otherwise random allowed (switchable
 /// right away). Without allowed variants or in color mode `None`.
 fn resolve_variant(
@@ -246,6 +299,7 @@ struct Look<'a> {
     user: &'a str,
     color: Option<&'a str>,
     variant: Option<&'a str>,
+    team: Option<&'a str>,
     twitch_color: Option<&'a str>,
     /// A variant event never changes the color
     variant_event: bool,
@@ -284,21 +338,25 @@ fn join(
 ) -> MinimeResult {
     let (colors, color) = resolve_color(state, look, now, rules);
     let (variants, variant) = resolve_variant(&state.variants, look.login, look.variant, now, rules, random);
+    let (teams, team) = resolve_team(&state.teams, &state.roster, look.login, look.team, now, rules);
     let minime =
-        MinimeEntry { login: look.login.to_owned(), user: look.user.to_owned(), color, variant, last_seen: now };
+        MinimeEntry { login: look.login.to_owned(), user: look.user.to_owned(), color, variant, team, last_seen: now };
     if let Some(index) = state.roster.iter().position(|entry| entry.login == look.login) {
         let present = &state.roster[index];
-        let changed = present.user != minime.user || present.color != minime.color || present.variant != minime.variant;
+        let changed = present.user != minime.user
+            || present.color != minime.color
+            || present.variant != minime.variant
+            || present.team != minime.team;
         let mut roster = state.roster.clone();
         roster[index] = minime;
-        return MinimeResult { state: MinimeState { roster, colors, variants }, changed, react: None };
+        return MinimeResult { state: MinimeState { roster, colors, variants, teams }, changed, react: None };
     }
     if state.roster.len() >= rules.max && rules.when_full == WhenFull::Reject {
-        return unchanged(MinimeState { roster: state.roster.clone(), colors, variants });
+        return unchanged(MinimeState { roster: state.roster.clone(), colors, variants, teams });
     }
     let mut roster = trim(&state.roster, rules.max.saturating_sub(1));
     roster.push(minime);
-    MinimeResult { state: MinimeState { roster, colors, variants }, changed: true, react: None }
+    MinimeResult { state: MinimeState { roster, colors, variants, teams }, changed: true, react: None }
 }
 
 fn remove(state: &MinimeState, login: &str) -> MinimeResult {
@@ -320,7 +378,7 @@ fn chat(state: &MinimeState, login: &str, now: i64, rules: &MinimeRules) -> Mini
     MinimeResult { state: next, changed: false, react: rules.react_to_chat.then(|| login.to_owned()) }
 }
 
-/// Removes inactive ones, shortens to max, and in variant mode gives everyone an allowed variant
+/// Removes inactive ones, shortens to max, and gives everyone an allowed variant and faction
 fn prune(state: &MinimeState, now: i64, rules: &MinimeRules, random: &mut dyn FnMut() -> f64) -> MinimeResult {
     #[expect(clippy::cast_possible_truncation, reason = "settings limit idle minutes to 0..=240")]
     let idle_ms = (rules.idle_minutes * 60_000.0).round() as i64;
@@ -332,7 +390,7 @@ fn prune(state: &MinimeState, now: i64, rules: &MinimeRules, random: &mut dyn Fn
     let kept = trim(&active, rules.max);
     let allowed = allowed_variants(rules);
     let mut variants = state.variants.clone();
-    let roster: Vec<MinimeEntry> = kept
+    let mut roster: Vec<MinimeEntry> = kept
         .iter()
         .map(|entry| {
             let fits = entry.variant.as_ref().map_or(allowed.is_empty(), |variant| allowed.contains(variant));
@@ -344,8 +402,20 @@ fn prune(state: &MinimeState, now: i64, rules: &MinimeRules, random: &mut dyn Fn
             MinimeEntry { variant, ..entry.clone() }
         })
         .collect();
+    let allowed = allowed_teams(rules);
+    let mut teams = state.teams.clone();
+    for index in 0..roster.len() {
+        if roster[index].team.as_ref().map_or(allowed.is_empty(), |team| allowed.contains(team)) {
+            continue;
+        }
+        let login = roster[index].login.clone();
+        let (next, team) = resolve_team(&teams, &roster, &login, None, now, rules);
+        teams = next;
+        roster[index].team = team;
+    }
     let changed = roster.len() != state.roster.len() || roster != kept;
-    MinimeResult { state: MinimeState { roster, colors: state.colors.clone(), variants }, changed, react: None }
+    let state = MinimeState { roster, colors: state.colors.clone(), variants, teams };
+    MinimeResult { state, changed, react: None }
 }
 
 /// Applies an event to the list
@@ -358,12 +428,13 @@ pub fn apply(
 ) -> MinimeResult {
     let present = |login: &str| state.roster.iter().any(|entry| entry.login == login);
     match event {
-        MinimeEvent::Join { login, user, color, variant, twitch_color } => {
+        MinimeEvent::Join { login, user, color, variant, team, twitch_color } => {
             let look = Look {
                 login,
                 user,
                 color: color.as_deref(),
                 variant: variant.as_deref(),
+                team: team.as_deref(),
                 twitch_color: twitch_color.as_deref(),
                 variant_event: false,
             };
@@ -372,18 +443,48 @@ pub fn apply(
         MinimeEvent::Color { login, user, color, twitch_color } => {
             if present(login) || rules.color_joins {
                 let twitch_color = twitch_color.as_deref();
-                let look = Look { login, user, color: Some(color), variant: None, twitch_color, variant_event: false };
+                let look = Look {
+                    login,
+                    user,
+                    color: Some(color),
+                    variant: None,
+                    team: None,
+                    twitch_color,
+                    variant_event: false,
+                };
                 return join(state, &look, now, rules, random);
             }
             unchanged(MinimeState { colors: remember(&state.colors, login, color, now, rules), ..state.clone() })
         }
         MinimeEvent::Variant { login, user, variant } => {
             if present(login) || rules.color_joins {
-                let look =
-                    Look { login, user, color: None, variant: Some(variant), twitch_color: None, variant_event: true };
+                let look = Look {
+                    login,
+                    user,
+                    color: None,
+                    variant: Some(variant),
+                    team: None,
+                    twitch_color: None,
+                    variant_event: true,
+                };
                 return join(state, &look, now, rules, random);
             }
             unchanged(MinimeState { variants: remember(&state.variants, login, variant, now, rules), ..state.clone() })
+        }
+        MinimeEvent::Team { login, user, team } => {
+            if present(login) || rules.color_joins {
+                let look = Look {
+                    login,
+                    user,
+                    color: None,
+                    variant: None,
+                    team: Some(team),
+                    twitch_color: None,
+                    variant_event: true,
+                };
+                return join(state, &look, now, rules, random);
+            }
+            unchanged(MinimeState { teams: remember(&state.teams, login, team, now, rules), ..state.clone() })
         }
         MinimeEvent::Leave { login } | MinimeEvent::Kick { login } => remove(state, login),
         MinimeEvent::Ban { login } => {
@@ -405,7 +506,7 @@ pub fn apply(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::minimes::command::tests::{rules, variant_rules};
+    use crate::minimes::command::tests::{rules, team_rules, variant_rules};
     use crate::minimes::rules::MinimeVariantRule;
 
     const MINUTE: i64 = 60_000;
@@ -428,6 +529,7 @@ mod tests {
             user: login.to_uppercase(),
             color: color.map(str::to_owned),
             variant: variant.map(str::to_owned),
+            team: None,
             twitch_color: twitch_color.map(str::to_owned),
         }
     }
@@ -442,6 +544,7 @@ mod tests {
             user: login.to_uppercase(),
             color: color.map(str::to_owned),
             variant: variant.map(str::to_owned),
+            team: None,
             last_seen,
         }
     }
@@ -597,5 +700,65 @@ mod tests {
         assert_eq!((pruned.state.roster[0].variant.as_deref(), pruned.changed), (Some("sternfrucht"), true));
         let next = apply(&pruned.state, &plain("trinity"), 1000, &only_star, &mut || 0.0).state;
         assert_eq!(next.roster[1].variant.as_deref(), Some("sternfrucht"));
+    }
+
+    fn team_of<'a>(state: &'a MinimeState, login: &str) -> Option<&'a str> {
+        state.roster.iter().find(|entry| entry.login == login).and_then(|entry| entry.team.as_deref())
+    }
+
+    fn team_join(login: &str, team: Option<&str>) -> MinimeEvent {
+        MinimeEvent::Join {
+            login: login.to_owned(),
+            user: login.to_uppercase(),
+            color: None,
+            variant: None,
+            team: team.map(str::to_owned),
+            twitch_color: None,
+        }
+    }
+
+    #[test]
+    fn join_picks_smallest_team() {
+        let rules = team_rules();
+        let state = run(&[(team_join("neo", Some("blau")), 0), (plain("smith"), 0), (plain("trinity"), 0)], &rules);
+        assert_eq!(team_of(&state, "neo"), Some("blau"));
+        assert_eq!(team_of(&state, "smith"), Some("rot"));
+        // A tie gives the first faction
+        assert_eq!(team_of(&state, "trinity"), Some("blau"));
+        assert!(state.roster.iter().all(|entry| entry.variant.is_some()));
+    }
+
+    #[test]
+    fn remembered_team_wins_and_team_changes_wait_for_the_cooldown() {
+        let rules = team_rules();
+        let team = |login: &str, team: &str| MinimeEvent::Team {
+            login: login.to_owned(),
+            user: login.to_uppercase(),
+            team: team.to_owned(),
+        };
+        let leave = MinimeEvent::Leave { login: "neo".to_owned() };
+        let state =
+            run(&[(team_join("neo", Some("rot")), 0), (leave, 1), (plain("smith"), 2), (plain("neo"), 3)], &rules);
+        assert_eq!(team_of(&state, "neo"), Some("rot"));
+        let changed = run_with(&[(team("neo", "blau"), 4)], &rules, state.clone());
+        assert_eq!(team_of(&changed, "neo"), Some("rot"), "cooldown of 10 s");
+        let later = run_with(&[(team("neo", "blau"), 20_000)], &rules, state);
+        assert_eq!(team_of(&later, "neo"), Some("blau"));
+        // The team command joins like the look command
+        let joined = run(&[(team("trinity", "rot"), 0)], &rules);
+        assert_eq!(team_of(&joined, "trinity"), Some("rot"));
+    }
+
+    #[test]
+    fn disabled_team_is_reassigned() {
+        let mut rules = team_rules();
+        let state = run(&[(team_join("neo", Some("rot")), 0)], &rules);
+        rules.teams = Some(rules.teams.unwrap_or_default().into_iter().filter(|team| team.id != "rot").collect());
+        let pruned = apply(&state, &MinimeEvent::Prune, 1, &rules, &mut || 0.0);
+        assert!(pruned.changed);
+        assert_eq!(team_of(&pruned.state, "neo"), Some("blau"));
+        // Without factions nobody has one
+        let plain_state = run(&[(plain("smith"), 0)], &variant_rules());
+        assert_eq!(team_of(&plain_state, "smith"), None);
     }
 }

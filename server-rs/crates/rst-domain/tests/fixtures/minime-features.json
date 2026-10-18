@@ -1,0 +1,98 @@
+{
+  "teams": {
+    "set": {
+      "command": "!team",
+      "label": "Fraktion",
+      "variants": [
+        {
+          "id": "blau",
+          "label": "Blau",
+          "names": [
+            "blau",
+            "blue"
+          ],
+          "color": "#3366ff"
+        },
+        {
+          "id": "rot",
+          "label": "Rot",
+          "names": [
+            "rot"
+          ]
+        }
+      ]
+    },
+    "fields": [
+      {
+        "key": "minimeTeamCommand",
+        "type": "text",
+        "label": "Befehl: Fraktion wählen",
+        "group": "Minimes: Fraktionen",
+        "default": "!team",
+        "maxLength": 25
+      },
+      {
+        "key": "infoTeamText",
+        "type": "text",
+        "label": "Fraktion wählen: Erklärung ({command})",
+        "group": "Befehlsseite",
+        "default": "Fraktion wählen: {command} <Name>",
+        "maxLength": 200
+      },
+      {
+        "key": "infoTeams",
+        "type": "text",
+        "label": "Liste der Fraktionen ({names})",
+        "group": "Befehlsseite",
+        "default": "Zur Wahl: {names}",
+        "maxLength": 200
+      },
+      {
+        "key": "minimeTeamNames_blau",
+        "type": "text",
+        "label": "Blau: Namen im Chat (leer = aus)",
+        "group": "Minimes: Fraktionen",
+        "default": "blau, blue",
+        "maxLength": 200
+      },
+      {
+        "key": "minimeTeamLabel_blau",
+        "type": "text",
+        "label": "Blau: Anzeigename",
+        "group": "Minimes: Fraktionen",
+        "default": "Blau",
+        "maxLength": 40
+      },
+      {
+        "key": "minimeTeamColor_blau",
+        "type": "color",
+        "label": "Blau: Farbe",
+        "group": "Minimes: Fraktionen",
+        "default": "#3366ff"
+      },
+      {
+        "key": "minimeTeamNames_rot",
+        "type": "text",
+        "label": "Rot: Namen im Chat (leer = aus)",
+        "group": "Minimes: Fraktionen",
+        "default": "rot",
+        "maxLength": 200
+      },
+      {
+        "key": "minimeTeamLabel_rot",
+        "type": "text",
+        "label": "Rot: Anzeigename",
+        "group": "Minimes: Fraktionen",
+        "default": "Rot",
+        "maxLength": 40
+      },
+      {
+        "key": "minimeTeamColor_rot",
+        "type": "color",
+        "label": "Rot: Farbe",
+        "group": "Minimes: Fraktionen",
+        "default": "#ffffff"
+      }
+    ]
+  }
+}

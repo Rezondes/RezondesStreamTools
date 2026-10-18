@@ -185,7 +185,7 @@ mod tests {
     }
 
     fn rules(values: &serde_json::Value) -> MinimeRules {
-        minime_rules(values, None)
+        minime_rules(values, None, None)
     }
 
     fn line(login: &str, text: &str) -> ChatLine {

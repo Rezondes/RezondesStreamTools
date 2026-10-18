@@ -1,10 +1,12 @@
 // Settings of the minimes that are the same for every theme with minimes: commands, rules of the list and movement.
 // A theme has minimes exactly when its schema includes MINIME_BASE_FIELDS (hasMinimes). Color themes take
-// MINIME_FIELDS (base fields and color fields), variant themes the base fields and minimeVariantFields of their variants.
+// MINIME_FIELDS (base fields and color fields), variant themes the base fields and minimeVariantFields of their variants,
+// themes with factions additionally minimeTeamFields.
 // The theme creates the look and its own animations itself. readMinimeOptions reads the values for the server (rules)
 // and the hook (movement).
 // Check: minimeFields.check.ts.
-import { choice, flag, number, text, type ValuesOf } from "./fields.ts";
+import { choice, color, flag, number, text, type ValuesOf } from "./fields.ts";
+import { INFO_GROUP } from "./infoFields.ts";
 import { normalizeName, type MinimeRules, type MinimeVariantRule } from "./minimes.ts";
 import { resolveSettings } from "./settings.ts";
 import type { MinimeVariantSet, SettingField, SettingValues, ThemeSchema } from "./theme.ts";
@@ -13,6 +15,7 @@ export const MINIME_COMMANDS = "Minimes: Befehle";
 export const MINIME_RULES = "Minimes: Regeln";
 export const MINIME_MOTION = "Minimes: Bewegung";
 export const MINIME_VARIANTS = "Minimes: Typen";
+export const MINIME_TEAMS = "Minimes: Fraktionen";
 
 // Minimum role: whoever has it or one above may (order = rank)
 const ROLES = ["everyone", "subscriber", "vip", "moderator", "broadcaster"] as const;
@@ -70,6 +73,26 @@ export function minimeVariantFields(set: MinimeVariantSet): SettingField[] {
   ];
 }
 
+// Keys of a faction: names in chat, shown name, color
+export const minimeTeamNamesKey = (id: string) => `minimeTeamNames_${id}`;
+export const minimeTeamLabelKey = (id: string) => `minimeTeamLabel_${id}`;
+export const minimeTeamColorKey = (id: string) => `minimeTeamColor_${id}`;
+
+// Fields of a theme with factions: command to choose, its texts on the commands page and per faction the names in chat
+// (empty = off), the shown name and the color
+export function minimeTeamFields(set: MinimeVariantSet): SettingField[] {
+  return [
+    text("minimeTeamCommand", `Befehl: ${set.label} wählen`, MINIME_TEAMS, set.command, 25),
+    text("infoTeamText", `${set.label} wählen: Erklärung ({command})`, INFO_GROUP, `${set.label} wählen: {command} <Name>`),
+    text("infoTeams", "Liste der Fraktionen ({names})", INFO_GROUP, "Zur Wahl: {names}"),
+    ...set.variants.flatMap(team => [
+      text(minimeTeamNamesKey(team.id), `${team.label}: Namen im Chat (leer = aus)`, MINIME_TEAMS, team.names.join(", "), 200),
+      text(minimeTeamLabelKey(team.id), `${team.label}: Anzeigename`, MINIME_TEAMS, team.label, 40),
+      color(minimeTeamColorKey(team.id), `${team.label}: Farbe`, MINIME_TEAMS, team.color ?? "#ffffff"),
+    ]),
+  ];
+}
+
 // Movement of all minimes; the theme's own animations come from the catalog of the scene
 export type MinimeMotion = {
   speedPxPerS: number;
@@ -94,20 +117,25 @@ const rolesFrom = (role: string): string[] => (role === "everyone" ? ["everyone"
 const command = (value: string, fallback: string) => (COMMAND.test(value) ? value : fallback);
 const ordered = (first: number, second: number) => [Math.min(first, second), Math.max(first, second)];
 
-// Allowed variants with normalized names; a name belongs to the first variant that lists it, variants without names drop out
-function variantRules(set: MinimeVariantSet, values: SettingValues): MinimeVariantRule[] {
-  const taken = new Set<string>();
+// Allowed entries of a set with normalized names; a name belongs to the first entry that lists it (taken carries names over
+// from an earlier set), entries without names drop out
+function variantRules(set: MinimeVariantSet, values: SettingValues, namesKey: (id: string) => string, taken: Set<string>): MinimeVariantRule[] {
   return set.variants.flatMap(variant => {
-    const names = (values[minimeNamesKey(variant.id)] as string).split(",").map(normalizeName).filter(name => name && !taken.has(name));
+    const names = (values[namesKey(variant.id)] as string).split(",").map(normalizeName).filter(name => name && !taken.has(name));
     names.forEach(name => taken.add(name));
     return names.length ? [{ id: variant.id, names: [...new Set(names)] }] : [];
   });
 }
 
 // Rules and movement from arbitrary settings values; missing and invalid ones become the default.
-// set: variants of the theme (variant mode), without set chatters choose colors.
-export function readMinimeOptions(stored: unknown, set?: MinimeVariantSet): MinimeOptions {
-  const resolved = resolveSettings(set ? { ...SCHEMA, fields: [...MINIME_FIELDS, ...minimeVariantFields(set)] } : SCHEMA, stored);
+// set: variants of the theme (variant mode), without set chatters choose colors. teams: factions, only with set; a name of a
+// variant wins over the same name of a faction.
+export function readMinimeOptions(stored: unknown, set?: MinimeVariantSet, teams?: MinimeVariantSet): MinimeOptions {
+  const factions = set ? teams : undefined;
+  const fields = [...MINIME_FIELDS, ...(set ? minimeVariantFields(set) : []), ...(factions ? minimeTeamFields(factions) : [])];
+  const resolved = resolveSettings({ ...SCHEMA, fields }, stored);
+  const taken = new Set<string>();
+  const variants = set ? variantRules(set, resolved, minimeNamesKey, taken) : null;
   const values = resolved as MinimeValues;
   const [walkMinPx, walkMaxPx] = ordered(values.minimeWalkMin, values.minimeWalkMax);
   const [idleMinMs, idleMaxMs] = ordered(values.minimeIdleMinMs, values.minimeIdleMaxMs);
@@ -117,6 +145,7 @@ export function readMinimeOptions(stored: unknown, set?: MinimeVariantSet): Mini
         join: command(values.minimeJoinCommand, MINIME_BASE_FIELDS[0].default),
         look: set ? command(resolved.minimeVariantCommand as string, set.command) : command(values.minimeColorCommand, MINIME_COLOR_FIELDS[0].default),
         leave: command(values.minimeLeaveCommand, MINIME_BASE_FIELDS[1].default),
+        ...(factions ? { team: command(resolved.minimeTeamCommand as string, factions.command) } : {}),
       },
       joinRoles: rolesFrom(values.minimeJoinRole),
       kickRoles: rolesFrom(values.minimeKickRole),
@@ -131,7 +160,8 @@ export function readMinimeOptions(stored: unknown, set?: MinimeVariantSet): Mini
       reactToChat: values.minimeReactToChat,
       clearOffline: values.minimeClearOffline,
       removeOnBan: values.minimeRemoveOnBan,
-      variants: set ? variantRules(set, resolved) : null,
+      variants,
+      ...(factions ? { teams: variantRules(factions, resolved, minimeTeamNamesKey, taken) } : {}),
     },
     motion: {
       speedPxPerS: values.minimeSpeed, marginPx: values.minimeMargin, walkMinPx, walkMaxPx,

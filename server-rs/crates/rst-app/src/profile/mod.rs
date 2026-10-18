@@ -228,7 +228,8 @@ mod tests {
                 login: "neo".to_owned(),
                 user: "Neo".to_owned(),
                 color: None,
-                variant: None,
+                variant: Some("medic".to_owned()),
+                team: Some("blau".to_owned()),
                 last_seen: 1,
             }],
             ..MinimeState::default()

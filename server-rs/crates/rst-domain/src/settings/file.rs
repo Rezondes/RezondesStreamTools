@@ -75,8 +75,10 @@ pub fn public_settings(file: &SettingsFile) -> PublicSettings {
 #[must_use]
 pub fn minime_rules_of(file: &SettingsFile) -> Option<MinimeRules> {
     let theme = find(&file.theme).unwrap_or_else(default_theme);
-    has_minimes(&theme.schema.fields)
-        .then(|| minime_rules(&stored_values(file, &theme.schema.id), theme.schema.minime_variants.as_ref()))
+    let schema = &theme.schema;
+    has_minimes(&schema.fields).then(|| {
+        minime_rules(&stored_values(file, &schema.id), schema.minime_variants.as_ref(), schema.minime_teams.as_ref())
+    })
 }
 
 /// Sets the values of a theme and, with `choose`, selects it as the overlay theme. Only error-free input gives a

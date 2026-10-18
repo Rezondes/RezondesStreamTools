@@ -1,7 +1,7 @@
 // Check for minimeFields.ts: defaults and validation of the minime settings, which schema has minimes.
 // Runs with npm test (alone: node src/core/minimeFields.check.ts).
 import assert from "node:assert/strict";
-import { hasMinimes, MINIME_BASE_FIELDS, MINIME_FIELDS, minimeVariantFields, readMinimeOptions } from "./minimeFields.ts";
+import { hasMinimes, MINIME_BASE_FIELDS, MINIME_FIELDS, MINIME_TEAMS, minimeTeamFields, minimeVariantFields, readMinimeOptions } from "./minimeFields.ts";
 import type { MinimeVariantSet } from "./theme.ts";
 import { validateSettings } from "./settings.ts";
 
@@ -78,6 +78,24 @@ assert.deepEqual(MINIME_FIELDS.map(field => field.key).sort(), [
   assert.deepEqual(rules.variants, [{ id: "mango", names: ["mango", "mangos"] }, { id: "kiwi", names: ["kiwi"] }]);
   assert.deepEqual(readMinimeOptions({ minimeNames_mango: "" }, set).rules.variants, [{ id: "kiwi", names: ["kiwi", "mango"] }]);
   assert.equal(readMinimeOptions({ minimeVariantCommand: "obst" }, set).rules.commands.look, "!frucht");
+}
+
+// Factions: fields per faction (names, shown name, color), only together with variants; a variant name wins
+{
+  const roles: MinimeVariantSet = { command: "!rolle", label: "Rolle", variants: [{ id: "medic", label: "Medic", names: ["medic", "rot"] }] };
+  const teams: MinimeVariantSet = { command: "!team", label: "Fraktion", variants: [{ id: "blau", label: "BLUFOR", names: ["blau"], color: "#3366ff" }, { id: "rot", label: "Rot", names: ["rot", "red"] }] };
+  const fields = minimeTeamFields(teams);
+  assert.deepEqual(fields.map(field => field.key), [
+    "minimeTeamCommand", "infoTeamText", "infoTeams",
+    "minimeTeamNames_blau", "minimeTeamLabel_blau", "minimeTeamColor_blau", "minimeTeamNames_rot", "minimeTeamLabel_rot", "minimeTeamColor_rot",
+  ]);
+  assert.deepEqual([fields[4].default, fields[5].default, fields[8].default, fields[3].group], ["BLUFOR", "#3366ff", "#ffffff", MINIME_TEAMS]);
+  const rules = readMinimeOptions({ minimeTeamCommand: "!seite" }, roles, teams).rules;
+  assert.equal(rules.commands.team, "!seite");
+  assert.deepEqual(rules.teams, [{ id: "blau", names: ["blau"] }, { id: "rot", names: ["red"] }]);
+  assert.deepEqual(readMinimeOptions({ minimeTeamNames_blau: "" }, roles, teams).rules.teams, [{ id: "rot", names: ["red"] }]);
+  const colorsOnly = readMinimeOptions({}, undefined, teams).rules;
+  assert.deepEqual([colorsOnly.teams, colorsOnly.commands.team], [undefined, undefined]);
 }
 
 console.log("minimeFields ok");

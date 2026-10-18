@@ -47,10 +47,10 @@ fn entry(value: &Value) -> Option<MinimeEntry> {
         Value::String(color) if is_color(color) => Some(color.clone()),
         _ => return None,
     };
-    // The variant is missing in files from before variants, invalid variants become none
-    let variant =
-        object.get("variant").and_then(Value::as_str).filter(|variant| is_variant(variant)).map(str::to_owned);
-    Some(MinimeEntry { login: login.to_owned(), user: user.to_owned(), color, variant, last_seen })
+    // Variant and faction are missing in older files, invalid ones become none
+    let id = |key: &str| object.get(key).and_then(Value::as_str).filter(|id| is_variant(id)).map(str::to_owned);
+    let (variant, team) = (id("variant"), id("team"));
+    Some(MinimeEntry { login: login.to_owned(), user: user.to_owned(), color, variant, team, last_seen })
 }
 
 /// Remembered values under `key` that pass `valid`, the newest up to the limit
@@ -85,11 +85,13 @@ pub fn parse_minime_file(raw: &Value) -> MinimeState {
         .into_iter()
         .map(|(login, color, used_at, changed_at)| (login, StoredColor { color, used_at, changed_at }))
         .collect();
-    let variants: BTreeMap<String, StoredVariant> = remembered(object.get("variants"), "variant", is_variant)
-        .into_iter()
-        .map(|(login, variant, used_at, changed_at)| (login, StoredVariant { variant, used_at, changed_at }))
-        .collect();
-    MinimeState { roster, colors, variants }
+    let ids = |key: &str| -> BTreeMap<String, StoredVariant> {
+        remembered(object.get(key), "variant", is_variant)
+            .into_iter()
+            .map(|(login, variant, used_at, changed_at)| (login, StoredVariant { variant, used_at, changed_at }))
+            .collect()
+    };
+    MinimeState { roster, colors, variants: ids("variants"), teams: ids("teams") }
 }
 
 /// Chat line as an event: a command or otherwise a normal message
@@ -97,9 +99,12 @@ pub fn parse_minime_file(raw: &Value) -> MinimeState {
 pub fn to_minime_event(line: &ChatLine, rules: &MinimeRules) -> MinimeEvent {
     let (login, user, twitch_color) = (line.login.clone(), line.user.clone(), line.color.clone());
     match parse_command(&line.text, &line.roles, rules) {
-        Some(MinimeCommand::Join { color, variant }) => MinimeEvent::Join { login, user, color, variant, twitch_color },
+        Some(MinimeCommand::Join { color, variant, team }) => {
+            MinimeEvent::Join { login, user, color, variant, team, twitch_color }
+        }
         Some(MinimeCommand::Color { color }) => MinimeEvent::Color { login, user, color, twitch_color },
         Some(MinimeCommand::Variant { variant }) => MinimeEvent::Variant { login, user, variant },
+        Some(MinimeCommand::Team { team }) => MinimeEvent::Team { login, user, team },
         Some(MinimeCommand::Leave) => MinimeEvent::Leave { login },
         Some(MinimeCommand::Kick { login }) => MinimeEvent::Kick { login },
         None => MinimeEvent::Chat { login },
@@ -112,6 +117,7 @@ mod tests {
 
     use super::*;
     use crate::minimes::command::tests::rules;
+    use crate::minimes::roster::Minime;
 
     fn line(text: &str, login: &str, roles: &[&str]) -> ChatLine {
         ChatLine {
@@ -130,6 +136,7 @@ mod tests {
             user: user.to_owned(),
             color: color.map(str::to_owned),
             variant: variant.map(str::to_owned),
+            team: None,
             last_seen,
         }
     }
@@ -184,6 +191,29 @@ mod tests {
     }
 
     #[test]
+    fn factions_in_the_file_round_trip_and_old_files_have_none() {
+        let state = parse_minime_file(&json!({
+            "roster": [
+                { "login": "neo", "user": "Neo", "color": null, "variant": "medic", "team": "blau", "lastSeen": 1 },
+                { "login": "smith", "user": "Smith", "color": null, "variant": "medic", "team": "../x", "lastSeen": 1 }
+            ],
+            "teams": { "neo": { "variant": "blau", "usedAt": 1, "changedAt": 1 } }
+        }));
+        assert_eq!(state.roster[0].team.as_deref(), Some("blau"));
+        assert_eq!(state.roster[1].team, None);
+        assert_eq!(state.teams.keys().collect::<Vec<_>>(), ["neo"]);
+        let saved = serde_json::to_value(&state).expect("serialize");
+        assert_eq!(parse_minime_file(&saved), state);
+        // Without factions nothing about them is written
+        let old =
+            parse_minime_file(&json!({ "roster": [{ "login": "neo", "user": "Neo", "color": null, "lastSeen": 1 }] }));
+        let written = serde_json::to_string(&old).expect("serialize");
+        assert!(!written.contains("\"team\""), "{written}");
+        let minime = serde_json::to_string(&Minime::from(&old.roster[0])).expect("serialize");
+        assert!(!minime.contains("team"), "{minime}");
+    }
+
+    #[test]
     fn roster_is_limited_and_state_round_trips() {
         let roster: Vec<Value> = (0..150)
             .map(|index| json!({ "login": format!("c{index}"), "user": "C", "color": null, "lastSeen": index }))
@@ -204,6 +234,7 @@ mod tests {
             user: "NEO".to_owned(),
             color: Some("#ff00aa".to_owned()),
             variant: None,
+            team: None,
             twitch_color: twitch.clone(),
         };
         assert_eq!(event, join);

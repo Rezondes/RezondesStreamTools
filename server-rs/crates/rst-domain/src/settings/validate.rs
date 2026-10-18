@@ -204,6 +204,7 @@ mod tests {
             ],
             group_scenes: BTreeMap::new(),
             minime_variants: None,
+            minime_teams: None,
         }
     }
 

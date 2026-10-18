@@ -8,4 +8,8 @@ import type { SettingField } from "./SettingField.ts";
  * The settings schema of a theme. `group_scenes`: in which scenes a group has an effect; a missing group applies
  * everywhere, an empty list in no scene (render section).
  */
-export type ThemeSchema = { id: string, name: string, fields: Array<SettingField>, groupScenes?: { [key in string]: Array<SceneName> }, minimeVariants?: MinimeVariantSet, };
+export type ThemeSchema = { id: string, name: string, fields: Array<SettingField>, groupScenes?: { [key in string]: Array<SceneName> }, minimeVariants?: MinimeVariantSet, 
+/**
+ * Factions of the minimes, only together with variants (the variants are the roles)
+ */
+minimeTeams?: MinimeVariantSet, };

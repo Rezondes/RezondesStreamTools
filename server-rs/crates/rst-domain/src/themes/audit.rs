@@ -91,6 +91,7 @@ mod tests {
             ],
             group_scenes: BTreeMap::from([("Nothing".to_owned(), vec![])]),
             minime_variants: None,
+            minime_teams: None,
         };
         let problems = audit(&Theme { schema, personalize });
         for expected in [

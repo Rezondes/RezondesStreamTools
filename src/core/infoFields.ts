@@ -57,7 +57,7 @@ export function describeCommands(list: CommandList, stored: SettingValues): Info
   const of = (kinds: CommandItem["kind"][]) => list.items.filter(item => kinds.includes(item.kind)).map(item => describe(item, values));
   const sections: InfoSection[] = [
     { id: "help", heading: values.infoHelpHeading, entries: of(["help"]) },
-    { id: "minimes", heading: values.infoMinimesHeading, entries: of(["join", "look", "leave"]) },
+    { id: "minimes", heading: values.infoMinimesHeading, entries: of(["join", "look", "team", "leave"]) },
     { id: "triggers", heading: values.infoTriggersHeading, entries: of(["trigger"]) },
   ];
   return sections.filter(section => section.entries.length > 0);
@@ -92,6 +92,12 @@ function describe(item: CommandItem, values: InfoValues): InfoEntry {
       // The first name per variant; further names (other languages, spellings) are understood by chat too, they only bloat the list
       const names = item.variants.map(variant => variant.names[0]).join(", ");
       return { command: item.command, text: fillTemplate(values.infoLookVariant, { command: item.command }), details: [who(item.who), fillTemplate(values.infoVariants, { names })] };
+    }
+    case "team": {
+      // The texts come with the faction fields (minimeTeamFields), only themes with factions have them
+      const texts = values as unknown as { infoTeamText: string; infoTeams: string };
+      const names = item.teams.map(team => team.names[0]).join(", ");
+      return { command: item.command, text: fillTemplate(texts.infoTeamText, { command: item.command }), details: [who(item.who), fillTemplate(texts.infoTeams, { names })] };
     }
     case "leave": return { command: item.command, text: values.infoLeaveText, details: [fillTemplate(values.infoKick, { roles: roles(item.kickWho, values), command: item.command })] };
     case "trigger": {

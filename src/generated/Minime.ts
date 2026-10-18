@@ -4,4 +4,4 @@
 /**
  * A minime as the overlays see it (template: `Minime` in `src/core/types.ts`)
  */
-export type Minime = { login: string, user: string, color: string | null, variant: string | null, };
+export type Minime = { login: string, user: string, color: string | null, variant: string | null, team?: string, };

@@ -46,6 +46,14 @@ mod tests {
     }
 
     #[test]
+    fn teams_need_variants() {
+        for theme in themes() {
+            let schema = &theme.schema;
+            assert!(schema.minime_teams.is_none() || schema.minime_variants.is_some(), "{}", schema.id);
+        }
+    }
+
+    #[test]
     fn every_theme_enters_the_channel_name_on_first_login() {
         let neo = Login::parse("neo").expect("valid login");
         for theme in themes() {

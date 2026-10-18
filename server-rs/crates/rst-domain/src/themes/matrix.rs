@@ -289,6 +289,7 @@ pub fn matrix() -> Theme {
         fields: fields(),
         group_scenes: group_scenes(),
         minime_variants: None,
+        minime_teams: None,
     };
     Theme { schema, personalize }
 }

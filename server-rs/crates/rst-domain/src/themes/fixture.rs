@@ -4,6 +4,7 @@
 use serde_json::{Map, Number, Value};
 
 use crate::identity::values::Login;
+use crate::settings::field::SettingField;
 use crate::themes::registry::Theme;
 
 /// Logins the fixture holds personalize samples for
@@ -43,4 +44,16 @@ pub fn assert_same_as_fixture(theme: &Theme, fixture: &str) {
     }
     assert_eq!(actual_fields.len(), expected_fields.len(), "number of fields");
     assert_eq!(actual, expected, "schema without fields");
+}
+
+/// Compares generated fields with the `fields` of a fixture entry (`minime-features.json`), field by field
+pub fn assert_same_fields(fields: &[SettingField], fixture: &Value) {
+    let actual = normalize(serde_json::to_value(fields).expect("serialize fields"));
+    let expected = normalize(fixture.clone());
+    let (actual, expected) =
+        (actual.as_array().cloned().unwrap_or_default(), expected.as_array().cloned().unwrap_or_default());
+    for (index, (want, got)) in expected.iter().zip(&actual).enumerate() {
+        assert_eq!(got, want, "field {index} ({})", want["key"]);
+    }
+    assert_eq!(actual.len(), expected.len(), "number of fields");
 }

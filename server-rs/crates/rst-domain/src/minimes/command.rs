@@ -1,5 +1,6 @@
 //! Minime commands in chat (template: `parseCommand`, `parseColor`, `normalizeName` in `src/core/minimes.ts`):
-//! join with an optional color or variant, change the look, leave, and kick another minime with an allowed role.
+//! join with an optional color or variant (and faction), change the look or the faction, leave, and kick another
+//! minime with an allowed role.
 
 use std::sync::LazyLock;
 
@@ -19,9 +20,10 @@ static RGB_LIST: LazyLock<Regex> = LazyLock::new(|| {
 /// A command at the start of a chat message
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum MinimeCommand {
-    Join { color: Option<String>, variant: Option<String> },
+    Join { color: Option<String>, variant: Option<String>, team: Option<String> },
     Color { color: String },
     Variant { variant: String },
+    Team { team: String },
     Leave,
     Kick { login: String },
 }
@@ -99,6 +101,30 @@ fn find_variant(text: &str, variants: &[MinimeVariantRule]) -> Option<String> {
     variants.iter().find(|variant| variant.names.contains(&name)).map(|variant| variant.id.clone())
 }
 
+/// Variant and faction from the argument of a join: the argument is cut at every word boundary, the first cut where
+/// every non-empty part names exactly one of them wins (variant before faction, so a whole name is a variant first).
+/// Nothing fits: neither. Without factions the whole argument names the variant.
+fn join_choice(
+    argument: &str,
+    variants: &[MinimeVariantRule],
+    teams: Option<&[MinimeVariantRule]>,
+) -> (Option<String>, Option<String>) {
+    let Some(teams) = teams else { return (find_variant(argument, variants), None) };
+    let words: Vec<&str> = argument.split_whitespace().collect();
+    let part = |found: &[MinimeVariantRule], text: &str| -> Option<Option<String>> {
+        if text.is_empty() { Some(None) } else { find_variant(text, found).map(Some) }
+    };
+    for cut in (0..=words.len()).rev() {
+        let (first, second) = (words[..cut].join(" "), words[cut..].join(" "));
+        for (variant, team) in [(&first, &second), (&second, &first)] {
+            if let (Some(variant), Some(team)) = (part(variants, variant), part(teams, team)) {
+                return (variant, team);
+            }
+        }
+    }
+    (None, None)
+}
+
 /// Command at the start of a chat message; `None` for everything else or without an allowed role. Leave with a
 /// target (`@name`) kicks another minime if the role may, otherwise it is a normal leave.
 #[must_use]
@@ -117,9 +143,21 @@ pub fn parse_command(text: &str, badges: &[String], rules: &MinimeRules) -> Opti
     if command == rules.commands.join.to_lowercase() {
         let chosen = |found: Option<String>| if argument.is_empty() { None } else { found };
         return Some(match &rules.variants {
-            Some(variants) => MinimeCommand::Join { color: None, variant: chosen(find_variant(&argument, variants)) },
-            None => MinimeCommand::Join { color: chosen(parse_color(&argument, rules.min_brightness)), variant: None },
+            Some(variants) => {
+                let (variant, team) = join_choice(&argument, variants, rules.teams.as_deref());
+                MinimeCommand::Join { color: None, variant, team }
+            }
+            None => MinimeCommand::Join {
+                color: chosen(parse_color(&argument, rules.min_brightness)),
+                variant: None,
+                team: None,
+            },
         });
+    }
+    if let (Some(team), Some(teams)) = (&rules.commands.team, &rules.teams)
+        && command == team.to_lowercase()
+    {
+        return find_variant(&argument, teams).map(|team| MinimeCommand::Team { team });
     }
     if command != rules.commands.look.to_lowercase() {
         return None;
@@ -138,7 +176,7 @@ pub(crate) mod tests {
     use crate::minimes::rules::minime_rules;
 
     pub(crate) fn rules() -> MinimeRules {
-        minime_rules(&json!({}), None)
+        minime_rules(&json!({}), None, None)
     }
 
     pub(crate) fn variant_rules() -> MinimeRules {
@@ -154,13 +192,32 @@ pub(crate) mod tests {
         rules
     }
 
+    /// Roles as variants (one with a name of several words) and two factions
+    pub(crate) fn team_rules() -> MinimeRules {
+        let rule = |id: &str, names: &[&str]| MinimeVariantRule {
+            id: id.to_owned(),
+            names: names.iter().map(|name| normalize_name(name)).collect(),
+        };
+        let mut rules = rules();
+        rules.commands.look = "!rolle".to_owned();
+        rules.commands.team = Some("!team".to_owned());
+        rules.variants = Some(vec![rule("medic", &["medic"]), rule("eis", &["eis am stiel"])]);
+        rules.teams = Some(vec![rule("blau", &["blau"]), rule("rot", &["rot"])]);
+        rules
+    }
+
+    #[allow(clippy::unnecessary_wraps, reason = "compared with the results of parse_command")]
+    fn team_join(variant: Option<&str>, team: Option<&str>) -> Option<MinimeCommand> {
+        Some(MinimeCommand::Join { color: None, variant: variant.map(str::to_owned), team: team.map(str::to_owned) })
+    }
+
     fn roles(values: &[&str]) -> Vec<String> {
         values.iter().map(|value| (*value).to_owned()).collect()
     }
 
     #[allow(clippy::unnecessary_wraps, reason = "compared with the results of parse_command")]
     fn join(color: Option<&str>, variant: Option<&str>) -> Option<MinimeCommand> {
-        Some(MinimeCommand::Join { color: color.map(str::to_owned), variant: variant.map(str::to_owned) })
+        Some(MinimeCommand::Join { color: color.map(str::to_owned), variant: variant.map(str::to_owned), team: None })
     }
 
     #[test]
@@ -234,5 +291,28 @@ pub(crate) mod tests {
         assert_eq!(parse_command("!frucht Karambole", &[], &rules), star);
         assert_eq!(parse_command("!frucht xyz", &[], &rules), None);
         assert_eq!(parse_command("!join mango", &[], &self::rules()), join(None, None));
+    }
+
+    #[test]
+    fn join_reads_role_and_faction_in_any_order() {
+        let rules = team_rules();
+        assert_eq!(parse_command("!join blau medic", &[], &rules), team_join(Some("medic"), Some("blau")));
+        assert_eq!(parse_command("!join medic blau", &[], &rules), team_join(Some("medic"), Some("blau")));
+        assert_eq!(parse_command("!join blau", &[], &rules), team_join(None, Some("blau")));
+        assert_eq!(parse_command("!join medic", &[], &rules), team_join(Some("medic"), None));
+        assert_eq!(parse_command("!join eis am stiel rot", &[], &rules), team_join(Some("eis"), Some("rot")));
+        assert_eq!(parse_command("!join rot Eis am Stiel", &[], &rules), team_join(Some("eis"), Some("rot")));
+        assert_eq!(parse_command("!join", &[], &rules), team_join(None, None));
+        assert_eq!(parse_command("!join gelb medic", &[], &rules), team_join(None, None));
+    }
+
+    #[test]
+    fn team_command_only_with_factions() {
+        let rules = team_rules();
+        assert_eq!(parse_command("!team Rot", &[], &rules), Some(MinimeCommand::Team { team: "rot".to_owned() }));
+        assert_eq!(parse_command("!team gelb", &[], &rules), None);
+        assert_eq!(parse_command("!team rot", &[], &variant_rules()), None);
+        let subs = MinimeRules { join_roles: roles(&["subscriber"]), ..rules };
+        assert_eq!(parse_command("!team rot", &[], &subs), None);
     }
 }

@@ -25,6 +25,7 @@ export type CommandItem =
   | { kind: "help"; command: string; cooldown: number }
   | { kind: "join" | "look"; command: string; who: readonly string[]; variants: readonly MinimeVariantRule[] | null }
   | { kind: "leave"; command: string; kickWho: readonly string[] }
+  | { kind: "team"; command: string; who: readonly string[]; teams: readonly MinimeVariantRule[] }
   | { kind: "trigger"; name: string; when: TriggerInfo["when"]["type"]; match: string | null; description: string; who: readonly string[]; cooldown: number; userCooldown: number };
 
 export type CommandList = { channel: string; items: CommandItem[] };
@@ -41,10 +42,13 @@ export function commandList(channel: string, help: HelpConfig | null, minimes: M
   };
 }
 
+// The factions come before leave, like on the server
 function minimeItems(rules: MinimeRules): CommandItem[] {
+  const team = rules.commands.team && rules.teams ? [{ kind: "team" as const, command: rules.commands.team, who: rules.joinRoles, teams: rules.teams }] : [];
   return [
     { kind: "join", command: rules.commands.join, who: rules.joinRoles, variants: rules.variants },
     { kind: "look", command: rules.commands.look, who: rules.joinRoles, variants: rules.variants },
+    ...team,
     { kind: "leave", command: rules.commands.leave, kickWho: rules.kickRoles },
   ];
 }

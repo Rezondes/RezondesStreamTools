@@ -28,6 +28,7 @@ fn variant(id: &str, label: &str, names: &[&str]) -> MinimeVariantInfo {
         id: id.to_owned(),
         label: label.to_owned(),
         names: names.iter().map(|name| (*name).to_owned()).collect(),
+        color: None,
     }
 }
 
@@ -562,6 +563,7 @@ pub fn suedfrucht() -> Theme {
         fields: fields(),
         group_scenes: group_scenes(),
         minime_variants: Some(variants()),
+        minime_teams: None,
     };
     Theme { schema, personalize }
 }
