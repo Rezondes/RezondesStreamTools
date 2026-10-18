@@ -708,10 +708,10 @@
     "semantic_hash": "345bdcdf8ce404531accd18ff7e45e49"
   },
   "server-rs/crates/rst-domain/src/settings/field.rs": {
-    "mtime": 1792285490.6785283,
-    "seen": 1792328835.0281262,
-    "ast_hash": "aaff6adf9d328938cf0558c6ec64a4f0",
-    "semantic_hash": "aaff6adf9d328938cf0558c6ec64a4f0"
+    "mtime": 1792335403.1634858,
+    "seen": 1792335707.7071967,
+    "ast_hash": "32c960006c90167441336f6139d216f8",
+    "semantic_hash": ""
   },
   "server-rs/crates/rst-domain/src/settings/file.rs": {
     "mtime": 1792291911.2837346,
@@ -798,10 +798,10 @@
     "semantic_hash": "3f8e06d8238540867ce448a4f70a0f80"
   },
   "server-rs/crates/rst-domain/src/themes/registry.rs": {
-    "mtime": 1792296380.9659753,
-    "seen": 1792328835.0281262,
-    "ast_hash": "24ce84c293e51bf8622c8f7b5d321d63",
-    "semantic_hash": "24ce84c293e51bf8622c8f7b5d321d63"
+    "mtime": 1792335451.4469981,
+    "seen": 1792335707.7071967,
+    "ast_hash": "f1aef7f0c951f193aa229c9cef954b14",
+    "semantic_hash": ""
   },
   "server-rs/crates/rst-domain/src/themes/schema.rs": {
     "mtime": 1792283779.7160802,
@@ -1182,10 +1182,10 @@
     "semantic_hash": "b069fc476b93118bbbcd729fe6d4a382"
   },
   "server-rs/crates/rst-server/src/handlers/mod.rs": {
-    "mtime": 1792271659.9200354,
-    "seen": 1792328835.0281262,
-    "ast_hash": "b96825a7be64181f0dfbef51f8907335",
-    "semantic_hash": "b96825a7be64181f0dfbef51f8907335"
+    "mtime": 1792335450.7515645,
+    "seen": 1792335707.7071967,
+    "ast_hash": "24328ddb14b241d84917a0e4fe5c7ece",
+    "semantic_hash": ""
   },
   "server-rs/crates/rst-server/src/handlers/music.rs": {
     "mtime": 1792267907.5102508,
@@ -1206,10 +1206,10 @@
     "semantic_hash": "91fb55ca8df47f82c0d52f9355607e3c"
   },
   "server-rs/crates/rst-server/src/handlers/settings.rs": {
-    "mtime": 1792265925.4841075,
-    "seen": 1792328835.0281262,
-    "ast_hash": "885ca50252e23fe8d629eabfd4bb7c83",
-    "semantic_hash": "885ca50252e23fe8d629eabfd4bb7c83"
+    "mtime": 1792335451.5164797,
+    "seen": 1792335707.7071967,
+    "ast_hash": "988d8ceba1696c0f2989b2ddf19e0fc6",
+    "semantic_hash": ""
   },
   "server-rs/crates/rst-server/src/handlers/triggers.rs": {
     "mtime": 1792265489.7214077,
@@ -1782,10 +1782,10 @@
     "semantic_hash": "eb47aac260fea8996a6918d624fd820a"
   },
   "src/dashboard/Dashboard.tsx": {
-    "mtime": 1792246200.2973168,
-    "seen": 1792328835.0281262,
-    "ast_hash": "d0bcab522155c513e85b64ff57618c43",
-    "semantic_hash": "d0bcab522155c513e85b64ff57618c43"
+    "mtime": 1792335855.1560502,
+    "seen": 1792336013.1060197,
+    "ast_hash": "8eb51d5c7df6625d300bbe0a1c3f2884",
+    "semantic_hash": ""
   },
   "src/dashboard/EventFeed.tsx": {
     "mtime": 1792246200.2973168,
@@ -2970,10 +2970,10 @@
     "semantic_hash": "6d5bef126f8a45fd8597f37d4bb076fa"
   },
   "DESIGN.md": {
-    "mtime": 1792324102.172664,
-    "seen": 1792328835.0281262,
-    "ast_hash": "0042806c7af4d34b779b2772c3f8fb97",
-    "semantic_hash": "0042806c7af4d34b779b2772c3f8fb97"
+    "mtime": 1792335952.2678397,
+    "seen": 1792336013.1060197,
+    "ast_hash": "eb0f30656dd578593e85e3edcb309e6f",
+    "semantic_hash": ""
   },
   "PLAN.md": {
     "mtime": 1792324113.240058,
@@ -2982,10 +2982,10 @@
     "semantic_hash": "22c6ccfcab5461c9352b135dfa5a01e9"
   },
   "README.md": {
-    "mtime": 1792325943.9063778,
-    "seen": 1792328835.0281262,
-    "ast_hash": "5cfc3e5feedc68249357b781c3fa4db9",
-    "semantic_hash": "5cfc3e5feedc68249357b781c3fa4db9"
+    "mtime": 1792335603.8570309,
+    "seen": 1792335707.7071967,
+    "ast_hash": "e51068d0a485a57041e10fcdd038e096",
+    "semantic_hash": ""
   },
   "RUST-PLAN.md": {
     "mtime": 1792324137.2428815,
@@ -3054,10 +3054,10 @@
     "semantic_hash": "35d55903400077689e91f9e517ceeb0d"
   },
   "src/themes/plantage/docs/DESIGN-PLANTAGE.md": {
-    "mtime": 1792324043.979659,
-    "seen": 1792328835.0281262,
-    "ast_hash": "3963f6751f2255ada253a35137cf1ddb",
-    "semantic_hash": "3963f6751f2255ada253a35137cf1ddb"
+    "mtime": 1792334776.2594075,
+    "seen": 1792335707.7071967,
+    "ast_hash": "6382f1b5ea81318c4af9338d99d47ae7",
+    "semantic_hash": ""
   },
   "src/themes/plantage/docs/PLAN-PLANTAGE.md": {
     "mtime": 1792324009.5926561,
