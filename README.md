@@ -219,7 +219,10 @@ Eingebaut sind `standard` (das Standard-Theme: klarer, moderner Look mit Verlauf
 Schrift; alle Szenen, Stinger und Banner eigenständig), `matrix` (Terminal-Look) und `urlaub`
 (Urlaub: tropischer Strand mit Meer, Wellen, Palmen und Holzschildern; Tageszeit je Szene, Alerts als Postkarte,
 Surfbrett oder Flaschenpost, Chat als Luftblasen, Planken oder Muscheln, Rahmen aus Bambus, Holz oder Seil,
-Strandradio, Wellen-Stinger, Strand-Banner und hüpfende Strand-Minimes). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
+Strandradio, Wellen-Stinger, Strand-Banner und hüpfende Strand-Minimes) und `plantage` (Südfrucht-Plantage: Mangofeld
+mit Baumreihen, Erde, Kisten und dem Streamer als Mangopflücker; Alerts als Kistenetikett, Erntezettel oder Korb, Chat
+als Zettel, Bretter oder Blätter, Rahmen als Kiste, Holz oder Seil, Transistorradio, Mango-Stinger, Feld-Banner und
+Mango-Soldaten als Minimes, die hüpfen und sich beschiessen). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
 
 ## Minimes (Szene `minimes`)
 
@@ -245,6 +248,14 @@ Seestern, Krebs, Schnorchelmaske, Sonnenbrille, Cocktail, Strandtasche); die Nam
 Leerzeichen zählen nicht ("Eis am Stiel" = "eisamstiel"). Farben je Typ stehen in "Typen: Farben". Wer noch den
 alten Befehl `!frucht` als Standard gespeichert hat, bekommt `!typ`; gespeicherte Früchte werden beim Aufräumen zu
 einem erlaubten Typ.
+
+In `plantage` sind die Minimes Mango-Soldaten mit Helm und der Waffe ihrer Rolle: `!join medic` oder `!rolle sniper`
+wählt Sturmsoldat, Medic, MG-Schütze, Scharfschütze oder Grenadier (Namen im Chat je Rolle einstellbar, leer = Rolle
+aus; ohne Angabe eine zufällige erlaubte Rolle). Eigene Animationen: Nachladen, Helm richten, Umschauen, Schlafen,
+Freudensprung, wenn der Chatter schreibt. Ab und zu schiesst eine Mango auf eine andere (Gruppe "Minimes: Gefechte",
+nie per Chatbefehl): nur, wenn ein freier Medic da ist; ein Treffer spritzt Mangosaft, die Mango kippt mit
+Kreuzchen-Augen um, und der Medic hüpft hin und belebt sie wieder (sonst steht sie nach der Liegezeit von selbst auf).
+Medics schiessen nicht und werden nie getroffen; der Grenadier trifft mit einer kleinen Explosion.
 
 Themes mit Fraktionen (z.B. King of the Hill) haben zusätzlich `!team <fraktion>`. Rolle und Fraktion gehen auch in
 einem Befehl, die Reihenfolge ist egal: `!join blau medic` oder `!join medic blau`. Ohne Angabe kommt der Chatter in die

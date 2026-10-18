@@ -1,0 +1,490 @@
+/* Plantage theme: mango plantation look with rows of mango trees, furrowed soil, crates, harvest slips and wooden signs.
+   Encapsulated under .theme-plantage; colors, sizes and times come as CSS variables from the settings, further sizes as
+   var(--name, default). Keyframes are called plantage-*. The minimes have their own CSS (minimes.css). */
+
+.theme-plantage {
+  font-family: var(--font), system-ui, sans-serif;
+  font-size: var(--fontSize);
+  line-height: 1.3;
+  color: var(--textColor);
+  --shadow: 0 var(--shadow-y, 10px) var(--shadow-blur, 24px) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent);
+  --rope-pattern: repeating-linear-gradient(45deg, var(--wood) 0 var(--twist, 6px), var(--woodDark) var(--twist, 6px) calc(2 * var(--twist, 6px)));
+  --planks: repeating-linear-gradient(180deg, var(--wood) 0 var(--plank, 44px), var(--woodDark) var(--plank, 44px) calc(var(--plank, 44px) + var(--plank-gap, 3px)));
+}
+
+/* Wood: crate planks with joints, dark edge */
+.theme-plantage .pl-wood {
+  background: var(--planks);
+  border: var(--wood-border, 5px) solid var(--woodDark);
+  border-radius: var(--radius);
+  color: var(--textOnWood);
+  box-shadow: var(--shadow);
+}
+
+/* Shapes from field.ts: colors per place further below, lines without fill */
+.theme-plantage .pl-shape { display: block; width: 100%; height: auto; overflow: visible; }
+.theme-plantage .pl-shape .part-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: var(--line-width, 4); }
+
+/* --- Backdrop ------------------------------------------------------------------------------------------------ */
+.theme-plantage .pl-screen { position: fixed; inset: 0; overflow: hidden; background: var(--soilDark); }
+.theme-plantage .pl-field { position: absolute; inset: 0; overflow: hidden; }
+.theme-plantage .time-morgen { --sky-top: var(--skyMorningTop); --sky-bottom: var(--skyMorningBottom); --sun-x: 20%; --sun-y: 40%; --light: var(--sun); --dim: 0.92; }
+.theme-plantage .time-mittag { --sky-top: var(--skyDayTop); --sky-bottom: var(--skyDayBottom); --sun-x: 70%; --sun-y: 14%; --light: var(--sun); --dim: 1; }
+.theme-plantage .time-abend { --sky-top: var(--skyEveningTop); --sky-bottom: var(--skyEveningBottom); --sun-x: 80%; --sun-y: 42%; --light: var(--sun); --dim: 0.85; }
+.theme-plantage .time-nacht { --sky-top: var(--skyNightTop); --sky-bottom: var(--skyNightBottom); --sun-x: 80%; --sun-y: 14%; --light: var(--moon); --dim: 0.55; }
+.theme-plantage .pl-sky { position: absolute; inset: 0; background: linear-gradient(var(--sky-top), var(--sky-bottom) 60%); }
+.theme-plantage .pl-sun {
+  position: absolute;
+  left: var(--sun-x);
+  top: var(--sun-y);
+  width: var(--sun-size, 11vmin);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--light);
+  translate: -50% -50%;
+  box-shadow: 0 0 calc(var(--sunGlow) * var(--glow-size, 8vmin)) var(--light);
+}
+.theme-plantage .pl-cloud {
+  position: absolute;
+  left: 0;
+  top: calc(var(--y) * 28%);
+  width: calc(var(--cloud-size, 14vw) * (0.6 + var(--size) * 0.8));
+  opacity: 0.9;
+  animation: plantage-drift var(--cloudSpeed) linear infinite;
+  animation-delay: calc(var(--i) * var(--cloudSpeed) / -4 - var(--y) * var(--cloudSpeed));
+}
+.theme-plantage .pl-cloud .part-main { fill: var(--paper); }
+.theme-plantage .pl-hills { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(var(--dim)); }
+.theme-plantage .pl-hill-far { fill: var(--hillFarColor); }
+.theme-plantage .pl-hill-near { fill: var(--hillColor); }
+/* Soil from the near hill down, furrows as stripes that narrow towards the horizon */
+.theme-plantage .pl-soil {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 60%;
+  bottom: 0;
+  background: repeating-linear-gradient(180deg, var(--soil) 0 var(--furrow, 38px), var(--soilDark) var(--furrow, 38px) calc(var(--furrow, 38px) + var(--furrow-gap, 10px)));
+  filter: brightness(var(--dim));
+}
+/* Tree rows: the back row small and high, the front row big and low */
+.theme-plantage .pl-trees {
+  position: absolute;
+  left: calc(-1 * var(--row-edge, 4vw));
+  right: calc(-1 * var(--row-edge, 4vw));
+  bottom: calc(46% - var(--row) / var(--rows) * 40%);
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  --scale: calc(var(--treeSize) * (0.55 + (var(--row) + 1) / var(--rows) * 0.45));
+  filter: brightness(var(--dim));
+}
+.theme-plantage .pl-tree {
+  width: calc(var(--tree-width, 13vw) * var(--scale));
+  margin: 0 calc(var(--tree-gap, 1vw) * (var(--lean) - 0.5));
+  transform-origin: 50% 100%;
+  animation: plantage-sway var(--treeSwaySpeed) ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * var(--treeSwaySpeed) / -5);
+}
+.theme-plantage .pl-tree .part-main { fill: var(--trunk); }
+.theme-plantage .pl-tree .part-detail { fill: var(--leaf); }
+.theme-plantage .pl-tree .part-line { stroke: var(--leafDark); stroke-width: var(--vein, 5); }
+.theme-plantage .pl-tree-mango ellipse { fill: var(--mango); stroke: color-mix(in srgb, var(--mango) 60%, var(--trunk)); stroke-width: var(--mango-line, 1.5); }
+.theme-plantage .pl-tree-mango .pl-tree-mango-blush { fill: var(--mangoBlush); stroke: none; opacity: 0.6; }
+.theme-plantage .pl-crate { position: absolute; left: calc(var(--x) * 1%); bottom: var(--crate-bottom, 3%); width: var(--crate-size, 9vw); rotate: calc(var(--i) * 3deg - 2deg); }
+.theme-plantage .pl-crate .part-main { fill: var(--wood); stroke: var(--woodDark); stroke-width: var(--crate-line, 3); }
+.theme-plantage .pl-crate .part-line { stroke: var(--woodDark); }
+.theme-plantage .pl-crate .part-detail { fill: var(--mango); }
+.theme-plantage .pl-crate-name {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 52%;
+  text-align: center;
+  font-family: var(--titleFont), sans-serif;
+  font-size: var(--crate-name-size, 1.4vw);
+  font-weight: 700;
+  color: var(--textOnWood);
+}
+.theme-plantage .pl-birds { position: absolute; top: 14%; left: 0; display: flex; gap: var(--bird-gap, 1.4vw); width: var(--bird-size, 8vw); animation: plantage-fly var(--birdEvery) linear infinite; }
+.theme-plantage .pl-birds .part-line { stroke: var(--textOnWood); stroke-width: var(--bird-line, 3); }
+
+/* The mango picker (Picker.tsx) stands in the front row of the field */
+.theme-plantage .pl-picker { position: absolute; bottom: var(--picker-bottom, 4%); width: calc(var(--picker-width, 13vw) * var(--pickerSize)); display: grid; justify-items: center; gap: var(--picker-gap, 6px); }
+.theme-plantage .pl-picker-links { left: var(--picker-edge, 20%); }
+.theme-plantage .pl-picker-rechts { right: var(--picker-edge, 20%); scale: -1 1; }
+.theme-plantage .pl-picker-rechts .pl-picker-name { scale: -1 1; }
+.theme-plantage .pl-picker-figure { width: 100%; height: auto; overflow: visible; }
+.theme-plantage .pl-picker-hat { fill: var(--pickerHat); stroke: var(--woodDark); stroke-width: var(--picker-line, 2); }
+.theme-plantage .pl-picker-band { fill: var(--accent); }
+.theme-plantage .pl-picker-skin { fill: var(--pickerSkin); }
+.theme-plantage .pl-picker-face { fill: none; stroke: var(--textOnWood); stroke-width: var(--face-line, 3); stroke-linecap: round; }
+.theme-plantage .pl-picker-shirt { fill: var(--pickerShirt); }
+.theme-plantage .pl-picker-legs { fill: var(--woodDark); }
+.theme-plantage .pl-picker-pole { fill: none; stroke: var(--trunk); stroke-width: var(--pole, 6); stroke-linecap: round; }
+.theme-plantage .pl-picker-basket { fill: var(--wood); stroke: var(--woodDark); stroke-width: var(--picker-line, 2); }
+.theme-plantage .pl-picker-weave { fill: none; stroke: var(--woodDark); stroke-width: var(--picker-line, 2); }
+.theme-plantage .pl-picker-mango { fill: var(--mango); stroke: var(--mangoBlush); stroke-width: var(--picker-line, 2); }
+.theme-plantage .pl-picker-arm, .theme-plantage .pl-picker-pole { transform-box: view-box; transform-origin: 70% 40%; }
+.theme-plantage .pl-picker-starting .pl-picker-arm, .theme-plantage .pl-picker-starting .pl-picker-pole { animation: plantage-reach var(--reach-time, 3s) ease-in-out infinite alternate; }
+.theme-plantage .pl-picker-brb .pl-picker-arm, .theme-plantage .pl-picker-brb .pl-picker-pole { animation: plantage-pick var(--pick-time, 1.6s) ease-in-out infinite; }
+.theme-plantage .pl-picker-falling { animation: plantage-drop var(--pick-time, 1.6s) ease-in infinite; }
+.theme-plantage .pl-picker-ending .pl-picker-arm { animation: plantage-wave var(--wave-time, 0.8s) ease-in-out infinite alternate; }
+.theme-plantage .pl-picker-name { padding: var(--name-padding, 2px 14px); border-radius: var(--radius); background: var(--planks); border: var(--name-border, 3px) solid var(--woodDark); color: var(--textOnWood); font-weight: 700; font-size: var(--picker-name, 1.3vw); white-space: nowrap; }
+
+/* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
+.theme-plantage .pl-stage {
+  /* Position, size and scaling: stage-box from src/core/screens/stage.css */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--stage-gap, 26px);
+  padding-top: var(--sign-top, 150px);
+}
+.theme-plantage .pl-clock {
+  position: absolute;
+  top: var(--clock-top, 32px);
+  right: var(--clock-right, 44px);
+  padding: var(--clock-padding, 6px 18px);
+  border-radius: var(--pill, 999px);
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  color: var(--textOnWood);
+  font-size: var(--clock-size, 28px);
+  font-variant-numeric: tabular-nums;
+}
+.theme-plantage .pl-sign { position: relative; width: var(--signWidth); padding: var(--sign-padding, 34px 56px 42px); text-align: center; }
+.theme-plantage .pl-sign-haengend { transform-origin: 50% calc(-1 * var(--rope, 150px)); animation: plantage-swing var(--swing, 7s) ease-in-out infinite alternate; }
+.theme-plantage .pl-sign-haengend::before, .theme-plantage .pl-sign-haengend::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  width: var(--rope-width, 7px);
+  height: var(--rope, 150px);
+  background: var(--rope-pattern);
+}
+.theme-plantage .pl-sign-haengend::before { left: 14%; }
+.theme-plantage .pl-sign-haengend::after { right: 14%; }
+.theme-plantage .pl-sign-pfahl::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: var(--post, 42px);
+  height: var(--post-height, 600px);
+  translate: -50% 0;
+  background: var(--trunk);
+  z-index: -1;
+}
+.theme-plantage .pl-eyebrow { font-size: var(--eyebrow-size, 32px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent2); }
+.theme-plantage .pl-title {
+  margin: var(--title-margin, 6px 0);
+  font-family: var(--titleFont), sans-serif;
+  font-size: var(--titleSize);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--textOnWood);
+  text-shadow: 0 var(--title-shadow, 4px) 0 color-mix(in srgb, var(--mango) 70%, transparent);
+}
+.theme-plantage .pl-note { font-size: var(--note-size, 32px); }
+.theme-plantage .pl-board { display: flex; flex-direction: column; align-items: center; gap: var(--board-gap, 12px); min-width: var(--board-width, 520px); padding: var(--board-padding, 16px 40px); }
+.theme-plantage .pl-big { font-size: var(--big-size, 80px); font-variant-numeric: tabular-nums; }
+.theme-plantage .pl-next { font-size: var(--next-size, 40px); }
+.theme-plantage .pl-progress-korb { display: flex; gap: var(--basket-gap, 10px); padding: var(--basket-padding, 8px 18px); border-radius: var(--basket-round, 0 0 40px 40px); background: color-mix(in srgb, var(--woodDark) 40%, transparent); }
+.theme-plantage .pl-progress-korb span { width: var(--basket-mango, 52px); opacity: 0.25; filter: grayscale(1); transition: opacity var(--fadeDuration), filter var(--fadeDuration); }
+.theme-plantage .pl-progress-korb .full { opacity: 1; filter: none; animation: plantage-plop var(--fadeDuration) ease-out both; }
+.theme-plantage .pl-progress-korb .part-main, .theme-plantage .pl-progress-ast .part-main { fill: var(--mango); }
+.theme-plantage .pl-progress-korb .part-detail, .theme-plantage .pl-progress-ast .part-detail { fill: var(--leaf); }
+.theme-plantage .pl-progress-ast { position: relative; width: var(--progress-width, 520px); height: var(--branch, 10px); margin: var(--branch-room, 22px) 0 var(--branch-drop, 34px); border-radius: var(--pill, 999px); background: var(--trunk); }
+.theme-plantage .pl-progress-ast span { position: absolute; top: 50%; left: calc(var(--part) * 100%); width: var(--branch-mango, 46px); translate: -50% 0; transition: left var(--tick, 1s) linear; }
+.theme-plantage .pl-saying {
+  max-width: var(--signWidth);
+  padding: var(--saying-padding, 10px 28px);
+  border-radius: var(--slip-round, 4px);
+  background: var(--paper);
+  color: var(--textOnWood);
+  font-size: var(--saying-size, 32px);
+  box-shadow: var(--shadow);
+  rotate: -1deg;
+  animation: plantage-unroll var(--fadeDuration) ease-out both;
+}
+.theme-plantage .pl-plane { position: absolute; top: var(--plane-top, 8%); left: 0; display: flex; align-items: center; white-space: nowrap; animation: plantage-plane var(--tickerSpeed) linear infinite; }
+.theme-plantage .pl-plane .pl-shape { width: var(--plane-size, 7vw); }
+.theme-plantage .pl-plane .part-main { fill: var(--accent); stroke: var(--woodDark); stroke-width: var(--plane-line, 2); }
+.theme-plantage .pl-plane .part-detail { fill: var(--woodDark); }
+.theme-plantage .pl-banner {
+  margin-right: var(--banner-rope, 2vw);
+  padding: var(--banner-padding, 0.3em 1em);
+  background: var(--paper);
+  border: var(--banner-border, 3px) solid var(--accent2);
+  color: var(--textOnWood);
+  font-size: var(--banner-size, 2.2vw);
+  font-weight: 700;
+}
+.theme-plantage .pl-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--ticker-padding, 10px 0); overflow: hidden; white-space: nowrap; font-size: var(--ticker-size, 2vw); border-radius: 0; }
+.theme-plantage .pl-ticker span { display: inline-block; padding-left: 100%; animation: plantage-marquee var(--tickerSpeed) linear infinite; }
+.theme-plantage .power-sonnenaufgang .pl-field { animation: plantage-sunrise var(--powerOnDuration) ease-out both; }
+.theme-plantage .power-sonnenaufgang .pl-sun { animation: plantage-sun-up var(--powerOnDuration) ease-out both; }
+.theme-plantage .power-sonnenaufgang .pl-stage, .theme-plantage .power-blenden .pl-stage { animation: plantage-fade var(--powerOnDuration) ease-out both; }
+.theme-plantage .power-blenden .pl-field { animation: plantage-fade var(--powerOnDuration) ease-out both; }
+
+/* --- Alerts ------------------------------------------------------------------------------------------------- */
+.theme-plantage .pl-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
+.theme-plantage .pl-alerts.align-left { justify-content: flex-start; }
+.theme-plantage .pl-alerts.align-right { justify-content: flex-end; }
+.theme-plantage .pl-alert { position: relative; display: flex; align-items: center; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
+.theme-plantage .pl-alert.leaving { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
+.theme-plantage .in-fallen { --in: plantage-fall-in; --in-ease: cubic-bezier(0.3, 1.4, 0.5, 1); }
+.theme-plantage .in-plopp { --in: plantage-pop-in; --in-ease: cubic-bezier(0.3, 1.6, 0.5, 1); }
+.theme-plantage .in-gleiten { --in: plantage-slide-in; }
+.theme-plantage .in-blenden { --in: plantage-fade; }
+.theme-plantage .in-keins { --in: none; }
+.theme-plantage .out-fallen { --out: plantage-fall-out; }
+.theme-plantage .out-plopp { --out: plantage-pop-out; }
+.theme-plantage .out-gleiten { --out: plantage-slide-out; }
+.theme-plantage .out-blenden { --out: plantage-fade-out; }
+.theme-plantage .out-keins { --out: plantage-fade-out; --out-ease: steps(1, start); }
+.theme-plantage .pl-alert-body { position: relative; flex: 1; display: flex; align-items: center; gap: var(--alert-gap, 22px); padding: var(--alert-padding, 22px 30px); box-shadow: var(--shadow); }
+.theme-plantage .pl-label {
+  flex: none;
+  width: var(--label-size, 104px);
+  aspect-ratio: 1;
+  padding: var(--label-padding, 10px);
+  background: var(--paper);
+  border: var(--label-border, 4px) solid var(--accent2);
+  border-radius: 50%;
+  rotate: -6deg;
+}
+.theme-plantage .pl-label .part-main { fill: var(--mango); }
+.theme-plantage .pl-label .part-detail { fill: var(--leaf); }
+.theme-plantage .pl-label .part-line { stroke: var(--woodDark); }
+.theme-plantage .pl-alert-text { display: grid; gap: var(--text-gap, 4px); min-width: 0; }
+.theme-plantage .pl-tag { font-family: var(--titleFont), sans-serif; font-size: 1.35em; font-weight: 700; color: var(--accent); }
+.theme-plantage .pl-alert-line { font-size: 1.3em; overflow-wrap: anywhere; }
+.theme-plantage .pl-quote { opacity: 0.85; overflow-wrap: anywhere; }
+.theme-plantage .pl-alert-kiste .pl-alert-body { background: var(--planks); border: var(--wood-border, 6px) solid var(--woodDark); border-radius: var(--radius); color: var(--textOnWood); }
+.theme-plantage .pl-stamp {
+  position: absolute;
+  right: var(--stamp-right, 18px);
+  bottom: var(--stamp-bottom, 10px);
+  padding: var(--stamp-padding, 4px 12px);
+  border: var(--stamp-border, 3px) solid color-mix(in srgb, var(--mangoBlush) 70%, transparent);
+  color: color-mix(in srgb, var(--mangoBlush) 80%, transparent);
+  font-size: 0.65em;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  rotate: -8deg;
+}
+.theme-plantage .pl-alert-zettel .pl-alert-body {
+  background: var(--paper);
+  color: var(--textOnWood);
+  border-radius: var(--slip-round, 4px);
+  border-top: var(--slip-tape, 14px) solid color-mix(in srgb, var(--accent2) 60%, transparent);
+  rotate: -1.5deg;
+}
+.theme-plantage .pl-alert-korb .pl-alert-body {
+  background: repeating-linear-gradient(90deg, var(--wood) 0 var(--weave, 16px), var(--woodDark) var(--weave, 16px) calc(var(--weave, 16px) + var(--weave-gap, 4px)));
+  border-radius: var(--basket-round, 18px 18px 60px 60px);
+  border: var(--wood-border, 5px) solid var(--woodDark);
+  color: var(--textOnWood);
+}
+.theme-plantage .pl-alert-korb .pl-alert-text { padding: var(--basket-text, 6px 14px); border-radius: var(--radius); background: color-mix(in srgb, var(--paper) 88%, transparent); }
+.theme-plantage .pl-branch { position: absolute; left: var(--branch-inset, 26px); right: var(--branch-inset, 26px); bottom: calc(-1 * var(--branch-drop, 16px)); height: var(--branch, 10px); border-radius: var(--pill, 999px); background: var(--trunk); transform-origin: left; animation: plantage-timer var(--alertDuration) linear forwards; }
+.theme-plantage .pl-branch::after { content: ""; position: absolute; right: 0; top: 50%; width: var(--twig-leaf, 28px); height: var(--twig-leaf-height, 14px); border-radius: 0 100% 0 100%; background: var(--leaf); translate: 50% -50%; }
+.theme-plantage .pl-splash { position: absolute; left: var(--splash-x, 70px); top: 50%; }
+.theme-plantage .pl-splash i {
+  position: absolute;
+  width: var(--drop, 14px);
+  aspect-ratio: 1;
+  border-radius: 50% 50% 50% 0;
+  background: var(--mango);
+  animation: plantage-burst var(--splash-time, 900ms) ease-out both;
+}
+.theme-plantage .pl-leaves { position: absolute; inset: 0; pointer-events: none; }
+.theme-plantage .pl-leaf { position: absolute; top: calc(-1 * var(--leaf-size, 60px)); left: calc(var(--x) * 100%); width: var(--leaf-size, 60px); animation: plantage-fall var(--alertDuration) linear both; animation-delay: calc(var(--delay) * var(--alertDuration) / -3); }
+.theme-plantage .pl-leaf .part-main { fill: var(--leaf); }
+.theme-plantage .pl-leaf .part-line { stroke: var(--leafDark); stroke-width: var(--vein, 3); }
+
+/* --- Chat ----------------------------------------------------------------------------------------------------- */
+.theme-plantage .pl-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chat-padding, 14px); overflow: hidden; font-size: var(--chatFontSize); }
+.theme-plantage .pl-chat-top { flex-direction: column-reverse; }
+.theme-plantage .pl-row { flex: none; position: relative; padding: var(--row-padding, 10px 16px); overflow-wrap: anywhere; color: var(--textOnWood); animation: plantage-rise-in var(--fadeDuration) ease-out both; }
+.theme-plantage .pl-row.fades { animation: plantage-rise-in var(--fadeDuration) ease-out both, plantage-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
+.theme-plantage .pl-row.action { font-style: italic; }
+.theme-plantage .pl-msg { display: block; }
+.theme-plantage .sway .pl-msg { animation: plantage-rock var(--rock, 5s) ease-in-out infinite alternate; }
+.theme-plantage .pl-chat-zettel .pl-row {
+  background: color-mix(in srgb, var(--paper) calc(var(--chatOpacity) * 100%), transparent);
+  border-top: var(--slip-tape, 8px) solid color-mix(in srgb, var(--accent2) 55%, transparent);
+  border-radius: var(--slip-round, 4px);
+  box-shadow: var(--shadow);
+}
+.theme-plantage .pl-chat-brett .pl-row {
+  background: color-mix(in srgb, var(--wood) calc(var(--chatOpacity) * 100%), transparent);
+  border-left: var(--trunk-edge, 12px) solid var(--trunk);
+  border-radius: var(--radius);
+}
+.theme-plantage .pl-chat-blatt .pl-row {
+  background: color-mix(in srgb, var(--leaf) calc(var(--chatOpacity) * 100%), transparent);
+  border-radius: var(--leaf-round, 4px 40px 4px 40px);
+  color: var(--textColor);
+}
+.theme-plantage .pl-user { margin-right: var(--name-gap, 8px); color: var(--accent); }
+.theme-plantage .pl-chat-blatt .pl-user { color: var(--mango); }
+.theme-plantage .pl-badge { display: inline-block; margin-right: var(--badge-gap, 6px); padding: var(--badge-padding, 0 8px); border-radius: var(--pill, 999px); background: var(--accent2); color: var(--textColor); font-size: 0.7em; font-weight: 700; }
+.theme-plantage .pl-emote { height: var(--emoteSize); vertical-align: middle; }
+
+/* --- Camera frame ------------------------------------------------------------------------------------------- */
+.theme-plantage .pl-cam { position: fixed; inset: 0; animation: plantage-fade var(--fadeDuration) ease-out both; }
+.theme-plantage .pl-cam-frame {
+  position: absolute;
+  inset: 0;
+  padding: var(--camFrameWidth);
+  border-radius: var(--camRadius);
+  -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+.theme-plantage .pl-cam-kiste .pl-cam-frame { background: repeating-linear-gradient(90deg, var(--wood) 0 var(--slat, 90px), var(--woodDark) var(--slat, 90px) calc(var(--slat, 90px) + var(--slat-gap, 5px))); }
+.theme-plantage .pl-cam-holz .pl-cam-frame { background: repeating-linear-gradient(90deg, var(--trunk) 0 var(--grain, 18px), var(--woodDark) var(--grain, 18px) calc(var(--grain, 18px) + var(--grain-line, 3px))); }
+.theme-plantage .pl-cam-seil .pl-cam-frame { background: var(--rope-pattern); }
+.theme-plantage .pl-cam-leaf { position: absolute; width: var(--camLeafSize); }
+.theme-plantage .pl-cam-leaf .part-main { fill: var(--leaf); }
+.theme-plantage .pl-cam-leaf .part-line { stroke: var(--leafDark); stroke-width: var(--leaf-line, 3); }
+/* Leaves grow diagonally into the picture from the corner (shape: stem bottom left, tip top right), all inside the source */
+.theme-plantage .pl-cam-leaf.top-left { left: 0; top: 0; scale: 1 -1; }
+.theme-plantage .pl-cam-leaf.top-right { right: 0; top: 0; scale: -1 -1; }
+.theme-plantage .pl-cam-leaf.bottom-right { right: 0; bottom: 0; scale: -1 1; }
+.theme-plantage .pl-cam-leaf.bottom-left { left: 0; bottom: 0; }
+.theme-plantage .sway .pl-cam-leaf .pl-shape { transform-origin: 3% 88%; animation: plantage-leaf var(--leaf-time, 4s) ease-in-out infinite alternate; }
+.theme-plantage .pl-cam-mango { position: absolute; right: var(--mango-inset, 10px); bottom: var(--mango-inset, 10px); width: var(--cam-mango, 84px); rotate: 12deg; }
+.theme-plantage .pl-cam-mango .part-main, .theme-plantage .pl-cam-live .part-main { fill: var(--mango); }
+.theme-plantage .pl-cam-mango .part-detail, .theme-plantage .pl-cam-live .part-detail { fill: var(--leaf); }
+.theme-plantage .pl-cam-label { position: absolute; left: var(--label-left, 28px); bottom: var(--label-bottom, 14px); padding: var(--label-padding, 4px 18px); font-family: var(--titleFont), sans-serif; font-weight: 700; font-size: 1.2em; rotate: -2deg; }
+.theme-plantage .pl-cam-live {
+  position: absolute;
+  right: var(--live-right, 22px);
+  top: var(--live-top, 18px);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--live-gap, 8px);
+  padding: var(--live-padding, 4px 14px 4px 6px);
+  border-radius: var(--pill, 999px);
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  color: var(--textOnWood);
+  font-size: 0.8em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.theme-plantage .pl-cam-live .pl-shape { width: var(--live-mango, 26px); animation: plantage-plop var(--live-time, 1.2s) ease-in-out infinite alternate; }
+
+/* --- Music ---------------------------------------------------------------------------------------------------- */
+.theme-plantage .pl-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 34px 14px 14px); }
+.theme-plantage .pl-player { position: relative; width: 100%; display: flex; align-items: center; gap: var(--player-gap, 20px); padding: var(--player-padding, 16px 22px); animation: plantage-rise-in var(--fadeDuration) ease-out both; }
+.theme-plantage .pl-player.leaving { animation: plantage-fade-out var(--fadeDuration) ease-in forwards; }
+/* Transistor radio: case in the accent color with a speaker grille, antenna, standing on a crate */
+.theme-plantage .pl-music-radio .pl-player {
+  background: radial-gradient(circle, color-mix(in srgb, var(--woodDark) 40%, transparent) var(--hole, 2px), transparent calc(var(--hole, 2px) + var(--hole-edge, 1px))) 0 0 / var(--grille, 10px) var(--grille, 10px), var(--accent);
+  border: var(--case-border, 5px) solid var(--woodDark);
+  border-radius: var(--radio-round, 22px);
+  color: var(--textOnWood);
+  box-shadow: 0 var(--crate-under, 14px) 0 var(--wood), var(--shadow);
+}
+.theme-plantage .pl-music-radio .pl-player::before {
+  content: "";
+  position: absolute;
+  right: 16%;
+  bottom: 100%;
+  width: var(--antenna, 4px);
+  height: var(--antenna-height, 40px);
+  background: var(--woodDark);
+  rotate: 20deg;
+  transform-origin: bottom;
+}
+.theme-plantage .pl-music-radio .pl-track { padding: var(--display-padding, 8px 14px); border-radius: var(--radius); background: color-mix(in srgb, var(--paper) 92%, transparent); }
+.theme-plantage .pl-music-kiste .pl-player { background: var(--planks); border: var(--wood-border, 5px) solid var(--woodDark); border-radius: var(--radius); color: var(--textOnWood); box-shadow: var(--shadow); }
+.theme-plantage .pl-music-schlicht .pl-player { background: color-mix(in srgb, var(--soilDark) 90%, transparent); border-radius: var(--radius); color: var(--textColor); box-shadow: var(--shadow); }
+.theme-plantage .pl-cover { flex: none; width: var(--coverSize); height: var(--coverSize); object-fit: cover; border: var(--cover-border, 5px) solid var(--paper); box-shadow: var(--shadow); }
+.theme-plantage .cover-rund { border-radius: 50%; }
+.theme-plantage .cover-eckig { border-radius: var(--radius); }
+.theme-plantage .pl-cover-empty { padding: var(--empty-padding, 16px); background: var(--leaf); }
+.theme-plantage .pl-cover-empty .part-main { fill: var(--mango); }
+.theme-plantage .pl-cover-empty .part-detail { fill: var(--leafDark); }
+.theme-plantage .pl-cover-empty .part-line { stroke: var(--sun); }
+.theme-plantage .pl-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
+.theme-plantage .pl-head { font-size: 0.72em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent2); }
+.theme-plantage .pl-song { font-weight: bold; font-size: var(--musicTitleSize); }
+.theme-plantage .pl-artist, .theme-plantage .pl-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: 0.85; }
+.theme-plantage .pl-vine { position: relative; height: var(--vine, 8px); border-radius: var(--pill, 999px); background: color-mix(in srgb, currentColor 20%, transparent); overflow: hidden; }
+.theme-plantage .pl-vine span { display: block; height: 100%; width: calc(var(--part) * 100%); background: linear-gradient(90deg, var(--leafDark), var(--leaf)); transition: width var(--tick, 250ms) linear; }
+.theme-plantage .pl-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eq-gap, 5px); height: var(--eq-height, 44px); }
+.theme-plantage .pl-eq i { width: var(--eq-bar, 9px); height: 100%; border-radius: var(--pill, 999px) var(--pill, 999px) var(--eq-foot, 3px) var(--eq-foot, 3px); background: linear-gradient(var(--leaf), var(--leafDark)); transform-origin: bottom; animation: plantage-eq var(--eq-time, 900ms) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--eq-time, 900ms) / -5); }
+.theme-plantage .paused .pl-eq i { animation-play-state: paused; }
+
+/* --- Effects -------------------------------------------------------------------------------------------------- */
+.theme-plantage .pl-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-plantage .pl-fx-item {
+  position: absolute;
+  display: grid;
+  gap: var(--fx-gap, 12px);
+  justify-items: center;
+  transform: translate(-50%, -50%);
+  animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both, var(--out) var(--fadeDuration) var(--out-ease, ease-in) calc(var(--life) - var(--fadeDuration)) forwards;
+}
+.theme-plantage .pl-fx-item img, .theme-plantage .pl-fx-item video, .theme-plantage .pl-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); }
+.theme-plantage .pl-fx-text { font-size: var(--fxTextSize); font-weight: 700; text-align: center; overflow-wrap: anywhere; text-shadow: 0 var(--text-shadow, 3px) 0 var(--soilDark); }
+.theme-plantage .pl-fx-text.slip {
+  padding: var(--fx-padding, 12px 24px);
+  border-radius: var(--slip-round, 4px);
+  border-top: var(--slip-tape, 10px) solid color-mix(in srgb, var(--accent2) 60%, transparent);
+  background: var(--paper);
+  color: var(--textOnWood);
+  text-shadow: none;
+  box-shadow: var(--shadow);
+  rotate: -1.5deg;
+}
+
+/* --- Keyframes ------------------------------------------------------------------------------------------------ */
+@keyframes plantage-drift { from { translate: -30vw 0; } to { translate: 110vw 0; } }
+@keyframes plantage-sway { from { rotate: calc(var(--treeSway) * -1deg); } to { rotate: calc(var(--treeSway) * 1deg); } }
+@keyframes plantage-fly { 0% { translate: -10vw 0; } 45% { translate: 110vw -6vh; } 100% { translate: 110vw -6vh; } }
+@keyframes plantage-reach { from { rotate: 0deg; } to { rotate: -14deg; } }
+@keyframes plantage-pick { 0%, 100% { rotate: 0deg; } 40% { rotate: -22deg; } 55% { rotate: 6deg; } }
+@keyframes plantage-drop { 0%, 45% { translate: 0 0; opacity: 1; } 90% { translate: var(--drop-x, -150px) var(--drop-y, 270px); opacity: 1; } 100% { translate: var(--drop-x, -150px) var(--drop-y, 270px); opacity: 0; } }
+@keyframes plantage-wave { from { rotate: 0deg; } to { rotate: -30deg; } }
+@keyframes plantage-swing { from { rotate: -1.2deg; } to { rotate: 1.2deg; } }
+@keyframes plantage-unroll { from { opacity: 0; scale: 0.2 1; } to { opacity: 1; scale: 1 1; } }
+@keyframes plantage-plop { from { scale: 0.6; } to { scale: 1; } }
+@keyframes plantage-plane { from { translate: -100% 0; } to { translate: 110vw 0; } }
+@keyframes plantage-marquee { to { translate: -100% 0; } }
+@keyframes plantage-sunrise { from { filter: brightness(0.25) saturate(0.4); } to { filter: none; } }
+@keyframes plantage-sun-up { from { transform: translateY(35vh); } to { transform: none; } }
+@keyframes plantage-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes plantage-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes plantage-fall-in { 0% { opacity: 0; translate: 0 -120%; rotate: 5deg; } 70% { opacity: 1; translate: 0 4%; rotate: -1deg; } 100% { translate: 0 0; rotate: 0deg; } }
+@keyframes plantage-fall-out { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 0 60vh; rotate: -8deg; } }
+@keyframes plantage-pop-in { from { opacity: 0; scale: 0.4; } to { opacity: 1; scale: 1; } }
+@keyframes plantage-pop-out { from { opacity: 1; scale: 1; } to { opacity: 0; scale: 0.4; } }
+@keyframes plantage-slide-in { from { opacity: 0; translate: -60vw 0; } to { opacity: 1; translate: 0 0; } }
+@keyframes plantage-slide-out { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 60vw 0; } }
+@keyframes plantage-timer { from { scale: 1 1; } to { scale: 0 1; } }
+@keyframes plantage-burst {
+  from { opacity: 1; transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(0); }
+  to { opacity: 0; transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(calc(-1 * var(--splash-reach, 110px))); }
+}
+@keyframes plantage-fall { from { translate: 0 0; rotate: 0turn; } to { translate: calc((var(--spin) - 0.5) * 30vw) 120vh; rotate: calc(var(--spin) * 3turn); } }
+@keyframes plantage-rise-in { from { opacity: 0; translate: 0 var(--rise, 20px); scale: 0.96; } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes plantage-rock { from { rotate: -0.6deg; } to { rotate: 0.6deg; } }
+@keyframes plantage-leaf { from { rotate: -5deg; } to { rotate: 5deg; } }
+@keyframes plantage-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
+
+/* --- Commands page (public): field fixed in the background, wooden signs scroll in front as a normal page ----------- */
+.theme-plantage.theme-root:has(.pl-info) { min-height: 100vh; background: var(--soilDark); }
+.theme-plantage .pl-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-plantage .pl-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-plantage .pl-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; gap: var(--info-gap, 28px); }
+.theme-plantage .pl-info-sign { padding: var(--info-inner, 28px 32px); text-align: center; display: grid; gap: var(--info-line-gap, 8px); }
+.theme-plantage .pl-info-board { padding: var(--info-inner, 28px 32px); display: grid; gap: var(--info-entry-gap, 16px); }
+.theme-plantage .pl-info-entry { display: grid; gap: var(--info-detail-gap, 2px); padding-left: var(--info-indent, 14px); border-left: var(--info-rope, 4px) solid var(--leaf); }
+.theme-plantage .pl-info-command { color: var(--accent); font-size: 1.2em; }
+.theme-plantage .pl-info-detail { opacity: 0.8; font-size: 0.9em; }

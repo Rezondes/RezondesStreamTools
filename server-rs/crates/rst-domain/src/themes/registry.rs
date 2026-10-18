@@ -5,6 +5,7 @@ use std::sync::LazyLock;
 use crate::identity::values::Login;
 use crate::settings::field::SettingValues;
 use crate::themes::matrix::matrix;
+use crate::themes::plantage::plantage;
 use crate::themes::schema::ThemeSchema;
 use crate::themes::standard::standard;
 use crate::themes::urlaub::urlaub;
@@ -18,7 +19,7 @@ pub struct Theme {
 
 pub const DEFAULT_THEME: &str = "standard";
 
-static THEMES: LazyLock<Vec<Theme>> = LazyLock::new(|| vec![standard(), matrix(), urlaub()]);
+static THEMES: LazyLock<Vec<Theme>> = LazyLock::new(|| vec![standard(), matrix(), urlaub(), plantage()]);
 
 #[must_use]
 pub fn themes() -> &'static [Theme] {

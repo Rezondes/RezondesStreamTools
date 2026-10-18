@@ -4,6 +4,8 @@
 import type { ThemeModule, ThemeSchema } from "../core/theme.ts";
 import { matrixClips } from "./matrix/render.ts";
 import { matrixSettings } from "./matrix/settings.ts";
+import { plantageClips } from "./plantage/render.ts";
+import { plantageSettings } from "./plantage/settings.ts";
 import { standardClips } from "./standard/render.ts";
 import { standardSettings } from "./standard/settings.ts";
 import { urlaubClips } from "./urlaub/render.ts";
@@ -13,6 +15,7 @@ export const THEME_MODULES: readonly ThemeModule[] = [
   { schema: standardSettings, clips: standardClips },
   { schema: matrixSettings, clips: matrixClips },
   { schema: urlaubSettings, clips: urlaubClips },
+  { schema: plantageSettings, clips: plantageClips },
 ];
 
 export const THEMES: readonly ThemeSchema[] = THEME_MODULES.map(module => module.schema);

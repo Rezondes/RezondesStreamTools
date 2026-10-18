@@ -1,0 +1,2975 @@
+{
+  "id": "plantage",
+  "name": "Südfrucht-Plantage",
+  "fields": [
+    {
+      "key": "channelName",
+      "type": "text",
+      "label": "Kanal-Name",
+      "group": "Allgemein",
+      "default": "Plantage",
+      "maxLength": 40
+    },
+    {
+      "key": "font",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Allgemein",
+      "default": "Baloo 2",
+      "options": [
+        "Baloo 2",
+        "Fredoka",
+        "Nunito",
+        "Inter",
+        "DM Sans"
+      ]
+    },
+    {
+      "key": "titleFont",
+      "type": "font",
+      "label": "Titelschrift",
+      "group": "Allgemein",
+      "default": "Fredoka",
+      "options": [
+        "Fredoka",
+        "Baloo 2",
+        "Pacifico",
+        "Nunito"
+      ]
+    },
+    {
+      "key": "fontSize",
+      "type": "number",
+      "label": "Schriftgrösse",
+      "group": "Allgemein",
+      "default": 22,
+      "min": 10,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "textColor",
+      "type": "color",
+      "label": "Textfarbe",
+      "group": "Allgemein",
+      "default": "#ffffff"
+    },
+    {
+      "key": "textOnWood",
+      "type": "color",
+      "label": "Text auf Holz und Papier",
+      "group": "Allgemein",
+      "default": "#3a2410"
+    },
+    {
+      "key": "wood",
+      "type": "color",
+      "label": "Holz",
+      "group": "Allgemein",
+      "default": "#c8935a"
+    },
+    {
+      "key": "woodDark",
+      "type": "color",
+      "label": "Holz dunkel (Maserung, Rand)",
+      "group": "Allgemein",
+      "default": "#7a4a24"
+    },
+    {
+      "key": "paper",
+      "type": "color",
+      "label": "Erntezettel",
+      "group": "Allgemein",
+      "default": "#fff6df"
+    },
+    {
+      "key": "soil",
+      "type": "color",
+      "label": "Erde",
+      "group": "Allgemein",
+      "default": "#8b5e3c"
+    },
+    {
+      "key": "soilDark",
+      "type": "color",
+      "label": "Erde dunkel",
+      "group": "Allgemein",
+      "default": "#5e3b22"
+    },
+    {
+      "key": "leaf",
+      "type": "color",
+      "label": "Blätter",
+      "group": "Allgemein",
+      "default": "#2f8f3a"
+    },
+    {
+      "key": "leafDark",
+      "type": "color",
+      "label": "Blätter dunkel",
+      "group": "Allgemein",
+      "default": "#1d5e27"
+    },
+    {
+      "key": "trunk",
+      "type": "color",
+      "label": "Baumstamm",
+      "group": "Allgemein",
+      "default": "#6d4c2f"
+    },
+    {
+      "key": "mango",
+      "type": "color",
+      "label": "Mango",
+      "group": "Allgemein",
+      "default": "#ffb02e"
+    },
+    {
+      "key": "mangoBlush",
+      "type": "color",
+      "label": "Mango rot",
+      "group": "Allgemein",
+      "default": "#ff5e3a"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "label": "Akzent (Mango-Orange)",
+      "group": "Allgemein",
+      "default": "#ff8c1a"
+    },
+    {
+      "key": "accent2",
+      "type": "color",
+      "label": "Akzent 2 (Blattgrün)",
+      "group": "Allgemein",
+      "default": "#4caf50"
+    },
+    {
+      "key": "shadowStrength",
+      "type": "number",
+      "label": "Schatten (Stärke)",
+      "group": "Allgemein",
+      "default": 0.35,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "radius",
+      "type": "number",
+      "label": "Eckenradius",
+      "group": "Allgemein",
+      "default": 14,
+      "min": 0,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "fadeDuration",
+      "type": "number",
+      "label": "Ein- und Ausblenden",
+      "group": "Allgemein",
+      "default": 500,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "locale",
+      "type": "select",
+      "label": "Uhrzeit-Format",
+      "group": "Allgemein",
+      "default": "de-DE",
+      "options": [
+        "de-DE",
+        "de-CH",
+        "de-AT",
+        "en-US",
+        "en-GB",
+        "fr-FR",
+        "es-ES",
+        "nl-NL"
+      ]
+    },
+    {
+      "key": "timeStarting",
+      "type": "select",
+      "label": "Tageszeit Starting",
+      "group": "Plantage",
+      "default": "morgen",
+      "options": [
+        "morgen",
+        "mittag",
+        "abend",
+        "nacht"
+      ],
+      "scene": "starting"
+    },
+    {
+      "key": "timeBrb",
+      "type": "select",
+      "label": "Tageszeit BRB",
+      "group": "Plantage",
+      "default": "mittag",
+      "options": [
+        "morgen",
+        "mittag",
+        "abend",
+        "nacht"
+      ],
+      "scene": "brb"
+    },
+    {
+      "key": "timeEnding",
+      "type": "select",
+      "label": "Tageszeit Ending",
+      "group": "Plantage",
+      "default": "abend",
+      "options": [
+        "morgen",
+        "mittag",
+        "abend",
+        "nacht"
+      ],
+      "scene": "ending"
+    },
+    {
+      "key": "skyMorningTop",
+      "type": "color",
+      "label": "Himmel Morgen oben",
+      "group": "Plantage",
+      "default": "#ff9a76"
+    },
+    {
+      "key": "skyMorningBottom",
+      "type": "color",
+      "label": "Himmel Morgen unten",
+      "group": "Plantage",
+      "default": "#ffe2b0"
+    },
+    {
+      "key": "skyDayTop",
+      "type": "color",
+      "label": "Himmel Mittag oben",
+      "group": "Plantage",
+      "default": "#3aa0e0"
+    },
+    {
+      "key": "skyDayBottom",
+      "type": "color",
+      "label": "Himmel Mittag unten",
+      "group": "Plantage",
+      "default": "#c8ecff"
+    },
+    {
+      "key": "skyEveningTop",
+      "type": "color",
+      "label": "Himmel Abend oben",
+      "group": "Plantage",
+      "default": "#ff6f61"
+    },
+    {
+      "key": "skyEveningBottom",
+      "type": "color",
+      "label": "Himmel Abend unten",
+      "group": "Plantage",
+      "default": "#ffc371"
+    },
+    {
+      "key": "skyNightTop",
+      "type": "color",
+      "label": "Himmel Nacht oben",
+      "group": "Plantage",
+      "default": "#0b1d3a"
+    },
+    {
+      "key": "skyNightBottom",
+      "type": "color",
+      "label": "Himmel Nacht unten",
+      "group": "Plantage",
+      "default": "#2c4a5a"
+    },
+    {
+      "key": "sun",
+      "type": "color",
+      "label": "Sonne",
+      "group": "Plantage",
+      "default": "#ffd23f"
+    },
+    {
+      "key": "sunGlow",
+      "type": "number",
+      "label": "Sonnenschein (Stärke)",
+      "group": "Plantage",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "moon",
+      "type": "color",
+      "label": "Mond",
+      "group": "Plantage",
+      "default": "#f5f1d6"
+    },
+    {
+      "key": "clouds",
+      "type": "boolean",
+      "label": "Wolken",
+      "group": "Plantage",
+      "default": true
+    },
+    {
+      "key": "cloudCount",
+      "type": "number",
+      "label": "Anzahl Wolken",
+      "group": "Plantage",
+      "default": 4,
+      "min": 0,
+      "max": 8
+    },
+    {
+      "key": "cloudSpeed",
+      "type": "number",
+      "label": "Wolken: Zeit für eine Durchquerung",
+      "group": "Plantage",
+      "default": 90,
+      "min": 10,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "hills",
+      "type": "boolean",
+      "label": "Hügel im Hintergrund",
+      "group": "Plantage",
+      "default": true
+    },
+    {
+      "key": "hillColor",
+      "type": "color",
+      "label": "Hügel",
+      "group": "Plantage",
+      "default": "#8fbf5a"
+    },
+    {
+      "key": "hillFarColor",
+      "type": "color",
+      "label": "Hügel fern",
+      "group": "Plantage",
+      "default": "#bcd88a"
+    },
+    {
+      "key": "treeRows",
+      "type": "number",
+      "label": "Baumreihen",
+      "group": "Plantage",
+      "default": 2,
+      "min": 1,
+      "max": 3
+    },
+    {
+      "key": "treesPerRow",
+      "type": "number",
+      "label": "Bäume je Reihe",
+      "group": "Plantage",
+      "default": 6,
+      "min": 2,
+      "max": 10
+    },
+    {
+      "key": "treeSize",
+      "type": "number",
+      "label": "Baumgrösse (Faktor)",
+      "group": "Plantage",
+      "default": 1,
+      "min": 0.4,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "key": "treeSway",
+      "type": "number",
+      "label": "Bäume wiegen (Grad)",
+      "group": "Plantage",
+      "default": 2,
+      "min": 0,
+      "max": 15
+    },
+    {
+      "key": "treeSwaySpeed",
+      "type": "number",
+      "label": "Bäume wiegen (Dauer)",
+      "group": "Plantage",
+      "default": 6,
+      "min": 1,
+      "max": 30,
+      "unit": "s"
+    },
+    {
+      "key": "mangosOnTrees",
+      "type": "boolean",
+      "label": "Mangos an den Bäumen",
+      "group": "Plantage",
+      "default": true
+    },
+    {
+      "key": "crates",
+      "type": "boolean",
+      "label": "Kisten am Feldrand",
+      "group": "Plantage",
+      "default": true
+    },
+    {
+      "key": "birds",
+      "type": "boolean",
+      "label": "Vögel",
+      "group": "Plantage",
+      "default": true
+    },
+    {
+      "key": "birdEvery",
+      "type": "number",
+      "label": "Vögel: alle",
+      "group": "Plantage",
+      "default": 18,
+      "min": 4,
+      "max": 120,
+      "unit": "s"
+    },
+    {
+      "key": "crateName",
+      "type": "boolean",
+      "label": "Kanal-Name auf der Kiste",
+      "group": "Plantage",
+      "default": true
+    },
+    {
+      "key": "startingEyebrow",
+      "type": "text",
+      "label": "Starting: Überzeile",
+      "group": "Starting, BRB, Ending",
+      "default": "Gleich geht's los",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "startingTitle",
+      "type": "text",
+      "label": "Starting: Titel",
+      "group": "Starting, BRB, Ending",
+      "default": "Stream startet gleich",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "startingNote",
+      "type": "text",
+      "label": "Starting: Untertitel",
+      "group": "Starting, BRB, Ending",
+      "default": "Die Mangos sind fast reif!",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "brbEyebrow",
+      "type": "text",
+      "label": "BRB: Überzeile",
+      "group": "Starting, BRB, Ending",
+      "default": "Kurze Pause",
+      "maxLength": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "brbTitle",
+      "type": "text",
+      "label": "BRB: Titel",
+      "group": "Starting, BRB, Ending",
+      "default": "Bin gleich zurück",
+      "maxLength": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "brbNote",
+      "type": "text",
+      "label": "BRB: Untertitel",
+      "group": "Starting, BRB, Ending",
+      "default": "Kurz eine Reihe abernten.",
+      "maxLength": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "endingEyebrow",
+      "type": "text",
+      "label": "Ending: Überzeile",
+      "group": "Starting, BRB, Ending",
+      "default": "Danke fürs Zuschauen",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "endingTitle",
+      "type": "text",
+      "label": "Ending: Titel",
+      "group": "Starting, BRB, Ending",
+      "default": "Stream beendet",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "endingNote",
+      "type": "text",
+      "label": "Ending: Untertitel",
+      "group": "Starting, BRB, Ending",
+      "default": "Bis zur nächsten Ernte!",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "signStyle",
+      "type": "select",
+      "label": "Schild",
+      "group": "Starting, BRB, Ending",
+      "default": "haengend",
+      "options": [
+        "haengend",
+        "pfahl"
+      ]
+    },
+    {
+      "key": "signWidth",
+      "type": "number",
+      "label": "Schild: Breite",
+      "group": "Starting, BRB, Ending",
+      "default": 1100,
+      "min": 400,
+      "max": 1800,
+      "unit": "px"
+    },
+    {
+      "key": "titleSize",
+      "type": "number",
+      "label": "Titelgrösse",
+      "group": "Starting, BRB, Ending",
+      "default": 110,
+      "min": 30,
+      "max": 240,
+      "unit": "px"
+    },
+    {
+      "key": "picker",
+      "type": "boolean",
+      "label": "Mangopflücker zeigen",
+      "group": "Starting, BRB, Ending",
+      "default": true
+    },
+    {
+      "key": "pickerSide",
+      "type": "select",
+      "label": "Mangopflücker: Seite",
+      "group": "Starting, BRB, Ending",
+      "default": "links",
+      "options": [
+        "links",
+        "rechts"
+      ]
+    },
+    {
+      "key": "pickerSize",
+      "type": "number",
+      "label": "Mangopflücker: Grösse (Faktor)",
+      "group": "Starting, BRB, Ending",
+      "default": 1,
+      "min": 0.4,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "key": "pickerHat",
+      "type": "color",
+      "label": "Mangopflücker: Hut",
+      "group": "Starting, BRB, Ending",
+      "default": "#e8c770"
+    },
+    {
+      "key": "pickerShirt",
+      "type": "color",
+      "label": "Mangopflücker: Hemd",
+      "group": "Starting, BRB, Ending",
+      "default": "#3f7fbf"
+    },
+    {
+      "key": "pickerSkin",
+      "type": "color",
+      "label": "Mangopflücker: Haut",
+      "group": "Starting, BRB, Ending",
+      "default": "#f1c27d"
+    },
+    {
+      "key": "countdown",
+      "type": "number",
+      "label": "Countdown-Standard",
+      "group": "Starting, BRB, Ending",
+      "default": 300,
+      "min": 0,
+      "max": 86400,
+      "unit": "s",
+      "scene": "starting"
+    },
+    {
+      "key": "countdownPrefix",
+      "type": "text",
+      "label": "Countdown-Präfix",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "countdownDone",
+      "type": "text",
+      "label": "Text nach dem Countdown",
+      "group": "Starting, BRB, Ending",
+      "default": "Gleich live!",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "progressStyle",
+      "type": "select",
+      "label": "Fortschritt",
+      "group": "Starting, BRB, Ending",
+      "default": "korb",
+      "options": [
+        "korb",
+        "ast",
+        "aus"
+      ],
+      "scene": "starting"
+    },
+    {
+      "key": "afkPrefix",
+      "type": "text",
+      "label": "BRB-Zähler-Präfix",
+      "group": "Starting, BRB, Ending",
+      "default": "Pause seit ",
+      "maxLength": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "endingNextLabel",
+      "type": "text",
+      "label": "Nächster Stream (Beschriftung)",
+      "group": "Starting, BRB, Ending",
+      "default": "Nächster Stream",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "endingNext",
+      "type": "text",
+      "label": "Nächster Stream (leer = ausblenden)",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "startingLines",
+      "type": "lines",
+      "label": "Sprüche Starting",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "Mangos werden gezählt ...",
+        "Leiter wird aufgestellt ...",
+        "Körbe werden geflochten ...",
+        "Pflückstange wird geschärft ..."
+      ],
+      "maxLines": 100,
+      "scene": "starting"
+    },
+    {
+      "key": "brbLines",
+      "type": "lines",
+      "label": "Sprüche BRB",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "Kurz eine Reihe abernten ...",
+        "Mangosaft wird gepresst ...",
+        "Kisten werden gestapelt ..."
+      ],
+      "maxLines": 100,
+      "scene": "brb"
+    },
+    {
+      "key": "endingLines",
+      "type": "lines",
+      "label": "Sprüche Ending",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "Die Körbe sind voll ...",
+        "Die Sonne geht über der Plantage unter ...",
+        "Bis zur nächsten Ernte!"
+      ],
+      "maxLines": 100,
+      "scene": "ending"
+    },
+    {
+      "key": "linesEvery",
+      "type": "number",
+      "label": "Sprüche wechseln alle",
+      "group": "Starting, BRB, Ending",
+      "default": 6,
+      "min": 2,
+      "max": 120,
+      "unit": "s"
+    },
+    {
+      "key": "ticker",
+      "type": "text",
+      "label": "Ticker-Text (leer = aus)",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 300
+    },
+    {
+      "key": "tickerStyle",
+      "type": "select",
+      "label": "Ticker",
+      "group": "Starting, BRB, Ending",
+      "default": "flugzeug",
+      "options": [
+        "flugzeug",
+        "leiste"
+      ]
+    },
+    {
+      "key": "tickerSpeed",
+      "type": "number",
+      "label": "Ticker: Zeit pro Durchlauf",
+      "group": "Starting, BRB, Ending",
+      "default": 30,
+      "min": 5,
+      "max": 300,
+      "unit": "s"
+    },
+    {
+      "key": "powerOn",
+      "type": "select",
+      "label": "Einschalten",
+      "group": "Starting, BRB, Ending",
+      "default": "sonnenaufgang",
+      "options": [
+        "sonnenaufgang",
+        "blenden",
+        "keins"
+      ]
+    },
+    {
+      "key": "powerOnDuration",
+      "type": "number",
+      "label": "Einschalten (Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": 1800,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "alertStyle",
+      "type": "select",
+      "label": "Stil",
+      "group": "Alerts",
+      "default": "kiste",
+      "options": [
+        "kiste",
+        "zettel",
+        "korb"
+      ]
+    },
+    {
+      "key": "followTag",
+      "type": "text",
+      "label": "Follow: Kopfzeile",
+      "group": "Alerts",
+      "default": "Neuer Follower",
+      "maxLength": 200
+    },
+    {
+      "key": "followLine",
+      "type": "text",
+      "label": "Follow: Zeile",
+      "group": "Alerts",
+      "default": "{user} hilft bei der Ernte!",
+      "maxLength": 200
+    },
+    {
+      "key": "followIcon",
+      "type": "select",
+      "label": "Follow: Symbol",
+      "group": "Alerts",
+      "default": "blatt",
+      "options": [
+        "mango",
+        "blatt",
+        "kiste",
+        "korb",
+        "leiter",
+        "sonne",
+        "baum",
+        "stern"
+      ]
+    },
+    {
+      "key": "subTag",
+      "type": "text",
+      "label": "Sub: Kopfzeile",
+      "group": "Alerts",
+      "default": "Neues Abo",
+      "maxLength": 200
+    },
+    {
+      "key": "subLine",
+      "type": "text",
+      "label": "Sub: Zeile",
+      "group": "Alerts",
+      "default": "{user} kommt in die Kiste!",
+      "maxLength": 200
+    },
+    {
+      "key": "subIcon",
+      "type": "select",
+      "label": "Sub: Symbol",
+      "group": "Alerts",
+      "default": "kiste",
+      "options": [
+        "mango",
+        "blatt",
+        "kiste",
+        "korb",
+        "leiter",
+        "sonne",
+        "baum",
+        "stern"
+      ]
+    },
+    {
+      "key": "resubTag",
+      "type": "text",
+      "label": "Resub: Kopfzeile",
+      "group": "Alerts",
+      "default": "Abo x{amount}",
+      "maxLength": 200
+    },
+    {
+      "key": "resubLine",
+      "type": "text",
+      "label": "Resub: Zeile",
+      "group": "Alerts",
+      "default": "{user} pflückt seit {amount} Monaten mit!",
+      "maxLength": 200
+    },
+    {
+      "key": "resubIcon",
+      "type": "select",
+      "label": "Resub: Symbol",
+      "group": "Alerts",
+      "default": "baum",
+      "options": [
+        "mango",
+        "blatt",
+        "kiste",
+        "korb",
+        "leiter",
+        "sonne",
+        "baum",
+        "stern"
+      ]
+    },
+    {
+      "key": "giftTag",
+      "type": "text",
+      "label": "Gift: Kopfzeile",
+      "group": "Alerts",
+      "default": "Abos verschenkt",
+      "maxLength": 200
+    },
+    {
+      "key": "giftLine",
+      "type": "text",
+      "label": "Gift: Zeile",
+      "group": "Alerts",
+      "default": "{user} verschenkt {amount} Abos!",
+      "maxLength": 200
+    },
+    {
+      "key": "giftIcon",
+      "type": "select",
+      "label": "Gift: Symbol",
+      "group": "Alerts",
+      "default": "korb",
+      "options": [
+        "mango",
+        "blatt",
+        "kiste",
+        "korb",
+        "leiter",
+        "sonne",
+        "baum",
+        "stern"
+      ]
+    },
+    {
+      "key": "raidTag",
+      "type": "text",
+      "label": "Raid: Kopfzeile",
+      "group": "Alerts",
+      "default": "Raid",
+      "maxLength": 200
+    },
+    {
+      "key": "raidLine",
+      "type": "text",
+      "label": "Raid: Zeile",
+      "group": "Alerts",
+      "default": "{user} kommt mit {amount} Erntehelfern!",
+      "maxLength": 200
+    },
+    {
+      "key": "raidIcon",
+      "type": "select",
+      "label": "Raid: Symbol",
+      "group": "Alerts",
+      "default": "leiter",
+      "options": [
+        "mango",
+        "blatt",
+        "kiste",
+        "korb",
+        "leiter",
+        "sonne",
+        "baum",
+        "stern"
+      ]
+    },
+    {
+      "key": "cheerTag",
+      "type": "text",
+      "label": "Bits: Kopfzeile",
+      "group": "Alerts",
+      "default": "{amount} Bits",
+      "maxLength": 200
+    },
+    {
+      "key": "cheerLine",
+      "type": "text",
+      "label": "Bits: Zeile",
+      "group": "Alerts",
+      "default": "{user} wirft {amount} Bits in den Korb!",
+      "maxLength": 200
+    },
+    {
+      "key": "cheerIcon",
+      "type": "select",
+      "label": "Bits: Symbol",
+      "group": "Alerts",
+      "default": "stern",
+      "options": [
+        "mango",
+        "blatt",
+        "kiste",
+        "korb",
+        "leiter",
+        "sonne",
+        "baum",
+        "stern"
+      ]
+    },
+    {
+      "key": "redeemTag",
+      "type": "text",
+      "label": "Kanalpunkte: Kopfzeile",
+      "group": "Alerts",
+      "default": "Kanalpunkte",
+      "maxLength": 200
+    },
+    {
+      "key": "redeemLine",
+      "type": "text",
+      "label": "Kanalpunkte: Zeile",
+      "group": "Alerts",
+      "default": "{user} löst {detail} ein.",
+      "maxLength": 200
+    },
+    {
+      "key": "redeemIcon",
+      "type": "select",
+      "label": "Kanalpunkte: Symbol",
+      "group": "Alerts",
+      "default": "mango",
+      "options": [
+        "mango",
+        "blatt",
+        "kiste",
+        "korb",
+        "leiter",
+        "sonne",
+        "baum",
+        "stern"
+      ]
+    },
+    {
+      "key": "hypeTag",
+      "type": "text",
+      "label": "Hype Train: Kopfzeile",
+      "group": "Alerts",
+      "default": "Hype Train",
+      "maxLength": 200
+    },
+    {
+      "key": "hypeBeginLine",
+      "type": "text",
+      "label": "Hype Train: Start",
+      "group": "Alerts",
+      "default": "Der Hype Train fährt zur Ernte!",
+      "maxLength": 200
+    },
+    {
+      "key": "hypeEndLine",
+      "type": "text",
+      "label": "Hype Train: Ende",
+      "group": "Alerts",
+      "default": "Hype Train Level {amount} geschafft!",
+      "maxLength": 200
+    },
+    {
+      "key": "hypeIcon",
+      "type": "select",
+      "label": "Hype Train: Symbol",
+      "group": "Alerts",
+      "default": "sonne",
+      "options": [
+        "mango",
+        "blatt",
+        "kiste",
+        "korb",
+        "leiter",
+        "sonne",
+        "baum",
+        "stern"
+      ]
+    },
+    {
+      "key": "alertQuote",
+      "type": "boolean",
+      "label": "Nachricht zeigen",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "quoteFormat",
+      "type": "text",
+      "label": "Nachricht ({text})",
+      "group": "Alerts",
+      "default": "\"{text}\"",
+      "maxLength": 200
+    },
+    {
+      "key": "alertDuration",
+      "type": "number",
+      "label": "Dauer",
+      "group": "Alerts",
+      "default": 7000,
+      "min": 2000,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "alertScale",
+      "type": "number",
+      "label": "Grösse",
+      "group": "Alerts",
+      "default": 1,
+      "min": 0.3,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "key": "alertTop",
+      "type": "number",
+      "label": "Abstand oben",
+      "group": "Alerts",
+      "default": 80,
+      "min": 0,
+      "max": 1000,
+      "unit": "px"
+    },
+    {
+      "key": "alertAlign",
+      "type": "select",
+      "label": "Position",
+      "group": "Alerts",
+      "default": "center",
+      "options": [
+        "left",
+        "center",
+        "right"
+      ]
+    },
+    {
+      "key": "alertWidth",
+      "type": "number",
+      "label": "Breite",
+      "group": "Alerts",
+      "default": 760,
+      "min": 300,
+      "max": 1800,
+      "unit": "px"
+    },
+    {
+      "key": "alertIn",
+      "type": "select",
+      "label": "Einblenden",
+      "group": "Alerts",
+      "default": "fallen",
+      "options": [
+        "fallen",
+        "plopp",
+        "gleiten",
+        "blenden",
+        "keins"
+      ]
+    },
+    {
+      "key": "alertOut",
+      "type": "select",
+      "label": "Ausblenden",
+      "group": "Alerts",
+      "default": "fallen",
+      "options": [
+        "fallen",
+        "plopp",
+        "gleiten",
+        "blenden",
+        "keins"
+      ]
+    },
+    {
+      "key": "alertTimer",
+      "type": "boolean",
+      "label": "Restzeit als Ast",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "leafConfetti",
+      "type": "boolean",
+      "label": "Blätter-Konfetti",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "leafCount",
+      "type": "number",
+      "label": "Anzahl Blätter",
+      "group": "Alerts",
+      "default": 14,
+      "min": 0,
+      "max": 40
+    },
+    {
+      "key": "juice",
+      "type": "boolean",
+      "label": "Saftspritzer",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "alertSound",
+      "type": "boolean",
+      "label": "Töne",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "soundFollow",
+      "type": "sound",
+      "label": "Ton Follow (leer = eingebaut)",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundSub",
+      "type": "sound",
+      "label": "Ton Sub",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundResub",
+      "type": "sound",
+      "label": "Ton Resub",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundGift",
+      "type": "sound",
+      "label": "Ton Gift",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundRaid",
+      "type": "sound",
+      "label": "Ton Raid",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundCheer",
+      "type": "sound",
+      "label": "Ton Bits",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundRedeem",
+      "type": "sound",
+      "label": "Ton Kanalpunkte",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundHype",
+      "type": "sound",
+      "label": "Ton Hype Train",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundLeave",
+      "type": "sound",
+      "label": "Ton beim Ausblenden",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "chatStyle",
+      "type": "select",
+      "label": "Stil",
+      "group": "Chat",
+      "default": "zettel",
+      "options": [
+        "zettel",
+        "brett",
+        "blatt"
+      ]
+    },
+    {
+      "key": "badgeHost",
+      "type": "text",
+      "label": "Badge Streamer",
+      "group": "Chat",
+      "default": "HOST",
+      "maxLength": 20
+    },
+    {
+      "key": "badgeMod",
+      "type": "text",
+      "label": "Badge Moderator",
+      "group": "Chat",
+      "default": "MOD",
+      "maxLength": 20
+    },
+    {
+      "key": "badgeVip",
+      "type": "text",
+      "label": "Badge VIP",
+      "group": "Chat",
+      "default": "VIP",
+      "maxLength": 20
+    },
+    {
+      "key": "badgeSub",
+      "type": "text",
+      "label": "Badge Abonnent",
+      "group": "Chat",
+      "default": "SUB",
+      "maxLength": 20
+    },
+    {
+      "key": "chatBadges",
+      "type": "boolean",
+      "label": "Badges zeigen",
+      "group": "Chat",
+      "default": true
+    },
+    {
+      "key": "chatFontSize",
+      "type": "number",
+      "label": "Schriftgrösse",
+      "group": "Chat",
+      "default": 20,
+      "min": 8,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "emoteSize",
+      "type": "number",
+      "label": "Emote-Grösse",
+      "group": "Chat",
+      "default": 28,
+      "min": 8,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "chatFade",
+      "type": "number",
+      "label": "Ausblenden nach (0 = nie)",
+      "group": "Chat",
+      "default": 30,
+      "min": 0,
+      "max": 3600,
+      "unit": "s"
+    },
+    {
+      "key": "chatMax",
+      "type": "number",
+      "label": "Max. Nachrichten",
+      "group": "Chat",
+      "default": 12,
+      "min": 1,
+      "max": 100
+    },
+    {
+      "key": "chatAlign",
+      "type": "select",
+      "label": "Neue Nachrichten",
+      "group": "Chat",
+      "default": "bottom",
+      "options": [
+        "bottom",
+        "top"
+      ]
+    },
+    {
+      "key": "chatOpacity",
+      "type": "number",
+      "label": "Deckkraft",
+      "group": "Chat",
+      "default": 0.94,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "chatGap",
+      "type": "number",
+      "label": "Abstand",
+      "group": "Chat",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chatSway",
+      "type": "boolean",
+      "label": "Sanft schaukeln",
+      "group": "Chat",
+      "default": true
+    },
+    {
+      "key": "camStyle",
+      "type": "select",
+      "label": "Rahmen",
+      "group": "Kamera-Rahmen",
+      "default": "kiste",
+      "options": [
+        "kiste",
+        "holz",
+        "seil"
+      ]
+    },
+    {
+      "key": "camFrameWidth",
+      "type": "number",
+      "label": "Rahmenbreite",
+      "group": "Kamera-Rahmen",
+      "default": 18,
+      "min": 2,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "camRadius",
+      "type": "number",
+      "label": "Eckenradius",
+      "group": "Kamera-Rahmen",
+      "default": 16,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "camLeaves",
+      "type": "number",
+      "label": "Mangoblätter in den Ecken",
+      "group": "Kamera-Rahmen",
+      "default": 3,
+      "min": 0,
+      "max": 4
+    },
+    {
+      "key": "camLeafSize",
+      "type": "number",
+      "label": "Mangoblatt: Grösse",
+      "group": "Kamera-Rahmen",
+      "default": 150,
+      "min": 40,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "camLeafSway",
+      "type": "boolean",
+      "label": "Blätter wiegen",
+      "group": "Kamera-Rahmen",
+      "default": true
+    },
+    {
+      "key": "camMango",
+      "type": "boolean",
+      "label": "Mango in der Ecke",
+      "group": "Kamera-Rahmen",
+      "default": true
+    },
+    {
+      "key": "camLabel",
+      "type": "text",
+      "label": "Namensschild ({channel})",
+      "group": "Kamera-Rahmen",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "camLive",
+      "type": "boolean",
+      "label": "Live-Anzeige",
+      "group": "Kamera-Rahmen",
+      "default": true
+    },
+    {
+      "key": "camLiveText",
+      "type": "text",
+      "label": "Live-Text",
+      "group": "Kamera-Rahmen",
+      "default": "LIVE",
+      "maxLength": 200
+    },
+    {
+      "key": "musicStyle",
+      "type": "select",
+      "label": "Stil",
+      "group": "Musik",
+      "default": "radio",
+      "options": [
+        "radio",
+        "kiste",
+        "schlicht"
+      ]
+    },
+    {
+      "key": "musicHeadPlaying",
+      "type": "text",
+      "label": "Kopfzeile bei Wiedergabe",
+      "group": "Musik",
+      "default": "Plantagenradio",
+      "maxLength": 200
+    },
+    {
+      "key": "musicHeadPaused",
+      "type": "text",
+      "label": "Kopfzeile bei Pause",
+      "group": "Musik",
+      "default": "Pause",
+      "maxLength": 200
+    },
+    {
+      "key": "musicIdleTitle",
+      "type": "text",
+      "label": "Titel ohne Wiedergabe",
+      "group": "Musik",
+      "default": "Keine Musik",
+      "maxLength": 200
+    },
+    {
+      "key": "musicIdleArtist",
+      "type": "text",
+      "label": "Interpret ohne Wiedergabe",
+      "group": "Musik",
+      "default": "Nur Grillenzirpen",
+      "maxLength": 200
+    },
+    {
+      "key": "musicAlbum",
+      "type": "boolean",
+      "label": "Album zeigen",
+      "group": "Musik",
+      "default": false
+    },
+    {
+      "key": "musicProgress",
+      "type": "boolean",
+      "label": "Fortschritt zeigen",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "equalizer",
+      "type": "boolean",
+      "label": "Mango-Equalizer",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "equalizerBars",
+      "type": "number",
+      "label": "Equalizer: Balken",
+      "group": "Musik",
+      "default": 7,
+      "min": 1,
+      "max": 16
+    },
+    {
+      "key": "coverShape",
+      "type": "select",
+      "label": "Cover-Form",
+      "group": "Musik",
+      "default": "eckig",
+      "options": [
+        "rund",
+        "eckig"
+      ]
+    },
+    {
+      "key": "coverSize",
+      "type": "number",
+      "label": "Cover-Grösse",
+      "group": "Musik",
+      "default": 120,
+      "min": 40,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "musicTitleSize",
+      "type": "number",
+      "label": "Titelgrösse",
+      "group": "Musik",
+      "default": 26,
+      "min": 10,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "musicHide",
+      "type": "boolean",
+      "label": "Bei Pause ausblenden",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "musicMarquee",
+      "type": "boolean",
+      "label": "Lange Titel laufen durch",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "musicMarqueeSpeed",
+      "type": "number",
+      "label": "Lange Titel: Lauftempo (px pro Sekunde)",
+      "group": "Musik",
+      "default": 40,
+      "min": 5,
+      "max": 400
+    },
+    {
+      "key": "fxDuration",
+      "type": "number",
+      "label": "Standarddauer",
+      "group": "Effekte",
+      "default": 4,
+      "min": 0.5,
+      "max": 120,
+      "unit": "s",
+      "step": 0.5
+    },
+    {
+      "key": "fxSize",
+      "type": "number",
+      "label": "Standardgrösse",
+      "group": "Effekte",
+      "default": 360,
+      "min": 20,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "fxTextSize",
+      "type": "number",
+      "label": "Textgrösse",
+      "group": "Effekte",
+      "default": 44,
+      "min": 8,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "fxMargin",
+      "type": "number",
+      "label": "Zufallsposition: Abstand zum Rand",
+      "group": "Effekte",
+      "default": 20,
+      "min": 0,
+      "max": 50,
+      "unit": "%"
+    },
+    {
+      "key": "fxMax",
+      "type": "number",
+      "label": "Max. gleichzeitig",
+      "group": "Effekte",
+      "default": 8,
+      "min": 1,
+      "max": 30
+    },
+    {
+      "key": "fxIn",
+      "type": "select",
+      "label": "Einblenden",
+      "group": "Effekte",
+      "default": "plopp",
+      "options": [
+        "fallen",
+        "plopp",
+        "gleiten",
+        "blenden",
+        "keins"
+      ]
+    },
+    {
+      "key": "fxOut",
+      "type": "select",
+      "label": "Ausblenden",
+      "group": "Effekte",
+      "default": "blenden",
+      "options": [
+        "fallen",
+        "plopp",
+        "gleiten",
+        "blenden",
+        "keins"
+      ]
+    },
+    {
+      "key": "fxBubble",
+      "type": "boolean",
+      "label": "Text auf einem Erntezettel",
+      "group": "Effekte",
+      "default": true
+    },
+    {
+      "key": "stingerDuration",
+      "type": "number",
+      "label": "Länge",
+      "group": "Stinger",
+      "default": 1.4,
+      "min": 0.5,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerCut",
+      "type": "number",
+      "label": "Übergangspunkt",
+      "group": "Stinger",
+      "default": 0.7,
+      "min": 0.1,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerText",
+      "type": "text",
+      "label": "Text ({channel})",
+      "group": "Stinger",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "stingerLeaves",
+      "type": "boolean",
+      "label": "Blätter fliegen mit",
+      "group": "Stinger",
+      "default": true
+    },
+    {
+      "key": "bannerTitle",
+      "type": "text",
+      "label": "Titel ({channel})",
+      "group": "Banner",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerProfileText",
+      "type": "text",
+      "label": "Profilbanner: Text",
+      "group": "Banner",
+      "default": "Mangos, Ernte und gute Streams",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineTitle",
+      "type": "text",
+      "label": "Offline-Banner: Titel",
+      "group": "Banner",
+      "default": "Gerade auf der Plantage",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineText",
+      "type": "text",
+      "label": "Offline-Banner: Text",
+      "group": "Banner",
+      "default": "Folge dem Kanal und verpasse keine Ernte.",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineLines",
+      "type": "lines",
+      "label": "Offline-Banner: Zeilen",
+      "group": "Banner",
+      "default": [
+        "Bald wieder live",
+        "Die Mangos reifen noch"
+      ],
+      "maxLines": 100
+    },
+    {
+      "key": "bannerLoop",
+      "type": "number",
+      "label": "Schleifenlänge",
+      "group": "Banner",
+      "default": 6,
+      "min": 1,
+      "max": 20,
+      "unit": "s"
+    },
+    {
+      "key": "bannerProfileFps",
+      "type": "number",
+      "label": "Profilbanner: Bildrate",
+      "group": "Banner",
+      "default": 12,
+      "min": 1,
+      "max": 30
+    },
+    {
+      "key": "bannerOfflineFps",
+      "type": "number",
+      "label": "Offline-Banner: Bildrate",
+      "group": "Banner",
+      "default": 10,
+      "min": 1,
+      "max": 30
+    },
+    {
+      "key": "minimeJoinCommand",
+      "type": "text",
+      "label": "Befehl: einklinken (optional mit Farbe oder Typ)",
+      "group": "Minimes: Befehle",
+      "default": "!join",
+      "maxLength": 25
+    },
+    {
+      "key": "minimeLeaveCommand",
+      "type": "text",
+      "label": "Befehl: verlassen (Mods: mit @name rauswerfen)",
+      "group": "Minimes: Befehle",
+      "default": "!leave",
+      "maxLength": 25
+    },
+    {
+      "key": "minimeJoinRole",
+      "type": "select",
+      "label": "Einklinken ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "everyone",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeKickRole",
+      "type": "select",
+      "label": "Fremde rauswerfen ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "moderator",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeColorJoins",
+      "type": "boolean",
+      "label": "Befehl für Farbe oder Typ klinkt auch ein",
+      "group": "Minimes: Befehle",
+      "default": true
+    },
+    {
+      "key": "minimeMax",
+      "type": "number",
+      "label": "Höchstzahl gleichzeitig",
+      "group": "Minimes: Regeln",
+      "default": 30,
+      "min": 1,
+      "max": 100
+    },
+    {
+      "key": "minimeWhenFull",
+      "type": "select",
+      "label": "Wenn voll: Inaktivsten ersetzen (replace) oder Neue abweisen (reject)",
+      "group": "Minimes: Regeln",
+      "default": "replace",
+      "options": [
+        "replace",
+        "reject"
+      ]
+    },
+    {
+      "key": "minimeIdleMinutes",
+      "type": "number",
+      "label": "Verschwindet nach Minuten ohne Nachricht (0 = nie)",
+      "group": "Minimes: Regeln",
+      "default": 20,
+      "min": 0,
+      "max": 240
+    },
+    {
+      "key": "minimeColorCooldown",
+      "type": "number",
+      "label": "Abklingzeit Farb- oder Typwechsel",
+      "group": "Minimes: Regeln",
+      "default": 10,
+      "min": 0,
+      "max": 300,
+      "unit": "s"
+    },
+    {
+      "key": "minimeChatKeepsAlive",
+      "type": "boolean",
+      "label": "Chatnachrichten halten das Minime im Bild",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeReactToChat",
+      "type": "boolean",
+      "label": "Minime reagiert auf Chatnachrichten",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeClearOffline",
+      "type": "boolean",
+      "label": "Alle entfernen, wenn der Stream endet",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeRemoveOnBan",
+      "type": "boolean",
+      "label": "Bei Ban oder Timeout entfernen",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeSpeed",
+      "type": "number",
+      "label": "Laufgeschwindigkeit (px pro Sekunde)",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeMargin",
+      "type": "number",
+      "label": "Abstand zum Rand",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 0,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMin",
+      "type": "number",
+      "label": "Kürzeste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 100,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMax",
+      "type": "number",
+      "label": "Längste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 600,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkWeight",
+      "type": "number",
+      "label": "Häufigkeit: wandern",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleWeight",
+      "type": "number",
+      "label": "Häufigkeit: auf der Stelle schweben",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleMinMs",
+      "type": "number",
+      "label": "Schweben mindestens",
+      "group": "Minimes: Bewegung",
+      "default": 2000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeIdleMaxMs",
+      "type": "number",
+      "label": "Schweben höchstens",
+      "group": "Minimes: Bewegung",
+      "default": 6000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeEnterMs",
+      "type": "number",
+      "label": "Dauer: erscheinen",
+      "group": "Minimes: Bewegung",
+      "default": 1200,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeExitMs",
+      "type": "number",
+      "label": "Dauer: verschwinden",
+      "group": "Minimes: Bewegung",
+      "default": 900,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimePlacement",
+      "type": "select",
+      "label": "Plätze: frei verteilt (random) oder feste Plätze (slots)",
+      "group": "Minimes: Bewegung",
+      "default": "random",
+      "options": [
+        "random",
+        "slots"
+      ]
+    },
+    {
+      "key": "mangoSize",
+      "type": "number",
+      "label": "Grösse",
+      "group": "Minimes: Aussehen",
+      "default": 84,
+      "min": 30,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "mangoGround",
+      "type": "number",
+      "label": "Abstand zum unteren Rand",
+      "group": "Minimes: Aussehen",
+      "default": 20,
+      "min": 0,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "mangoShadow",
+      "type": "number",
+      "label": "Schatten (Stärke)",
+      "group": "Minimes: Aussehen",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "mangoFaces",
+      "type": "boolean",
+      "label": "Gesichter",
+      "group": "Minimes: Aussehen",
+      "default": true
+    },
+    {
+      "key": "mangoEye",
+      "type": "color",
+      "label": "Augen",
+      "group": "Minimes: Aussehen",
+      "default": "#2b1b17"
+    },
+    {
+      "key": "mangoCheek",
+      "type": "color",
+      "label": "Bäckchen",
+      "group": "Minimes: Aussehen",
+      "default": "#ff7a9a"
+    },
+    {
+      "key": "mangoMouth",
+      "type": "color",
+      "label": "Mund",
+      "group": "Minimes: Aussehen",
+      "default": "#6b2a1f"
+    },
+    {
+      "key": "mangoOutline",
+      "type": "color",
+      "label": "Umriss",
+      "group": "Minimes: Aussehen",
+      "default": "#5a3a22"
+    },
+    {
+      "key": "mangoOutlineWidth",
+      "type": "number",
+      "label": "Umriss: Stärke",
+      "group": "Minimes: Aussehen",
+      "default": 2.5,
+      "min": 0,
+      "max": 8,
+      "step": 0.5
+    },
+    {
+      "key": "helmet",
+      "type": "color",
+      "label": "Helm",
+      "group": "Minimes: Aussehen",
+      "default": "#5b6b3a"
+    },
+    {
+      "key": "weapon",
+      "type": "color",
+      "label": "Waffen",
+      "group": "Minimes: Aussehen",
+      "default": "#3a3a42"
+    },
+    {
+      "key": "weaponMark",
+      "type": "color",
+      "label": "Zielfernrohr und Streifen",
+      "group": "Minimes: Aussehen",
+      "default": "#9fb3c8"
+    },
+    {
+      "key": "medicCross",
+      "type": "color",
+      "label": "Medic: Kreuz",
+      "group": "Minimes: Aussehen",
+      "default": "#e53935"
+    },
+    {
+      "key": "muzzle",
+      "type": "color",
+      "label": "Mündungsfeuer",
+      "group": "Minimes: Aussehen",
+      "default": "#ffd23f"
+    },
+    {
+      "key": "mangoDefault",
+      "type": "select",
+      "label": "Rolle ohne Wahl (alle aus)",
+      "group": "Minimes: Aussehen",
+      "default": "sturm",
+      "options": [
+        "sturm",
+        "medic",
+        "mg",
+        "sniper",
+        "grenadier"
+      ]
+    },
+    {
+      "key": "mangoNames",
+      "type": "boolean",
+      "label": "Namen zeigen",
+      "group": "Minimes: Aussehen",
+      "default": true
+    },
+    {
+      "key": "mangoNameStyle",
+      "type": "select",
+      "label": "Namen auf",
+      "group": "Minimes: Aussehen",
+      "default": "kiste",
+      "options": [
+        "kiste",
+        "band"
+      ]
+    },
+    {
+      "key": "mangoNameSize",
+      "type": "number",
+      "label": "Name: Schriftgrösse",
+      "group": "Minimes: Aussehen",
+      "default": 15,
+      "min": 8,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "mangoBlinkEvery",
+      "type": "number",
+      "label": "Blinzeln alle (0 = nie)",
+      "group": "Minimes: Aussehen",
+      "default": 4000,
+      "min": 0,
+      "max": 30000,
+      "unit": "ms"
+    },
+    {
+      "key": "mangoEnter",
+      "type": "select",
+      "label": "Erscheinen",
+      "group": "Minimes: Aussehen",
+      "default": "fallen",
+      "options": [
+        "fallen",
+        "blenden"
+      ]
+    },
+    {
+      "key": "mangoExit",
+      "type": "select",
+      "label": "Verschwinden",
+      "group": "Minimes: Aussehen",
+      "default": "wegspringen",
+      "options": [
+        "wegspringen",
+        "versinken"
+      ]
+    },
+    {
+      "key": "hopHeight",
+      "type": "number",
+      "label": "Sprunghöhe",
+      "group": "Minimes: Hüpfen",
+      "default": 26,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "hopMs",
+      "type": "number",
+      "label": "Dauer eines Sprungs",
+      "group": "Minimes: Hüpfen",
+      "default": 420,
+      "min": 150,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "hopSquash",
+      "type": "number",
+      "label": "Stauchen beim Aufkommen",
+      "group": "Minimes: Hüpfen",
+      "default": 0.2,
+      "min": 0,
+      "max": 0.6,
+      "step": 0.05
+    },
+    {
+      "key": "reloadWeight",
+      "type": "number",
+      "label": "Nachladen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 10,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "reloadMs",
+      "type": "number",
+      "label": "Nachladen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1400,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "helmetWeight",
+      "type": "number",
+      "label": "Helm richten: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 8,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "helmetMs",
+      "type": "number",
+      "label": "Helm richten: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1200,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "lookWeight",
+      "type": "number",
+      "label": "Umschauen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 12,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "lookMs",
+      "type": "number",
+      "label": "Umschauen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 2400,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "sleepWeight",
+      "type": "number",
+      "label": "Schlafen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 4,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "sleepMs",
+      "type": "number",
+      "label": "Schlafen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 7000,
+      "min": 1000,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "sleepText",
+      "type": "text",
+      "label": "Schlafen: aufsteigendes Zeichen",
+      "group": "Minimes: Animationen",
+      "default": "z",
+      "maxLength": 4
+    },
+    {
+      "key": "cheerMs",
+      "type": "number",
+      "label": "Reaktion auf Chat: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 900,
+      "min": 200,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "cheerHeight",
+      "type": "number",
+      "label": "Reaktion auf Chat: Sprunghöhe",
+      "group": "Minimes: Animationen",
+      "default": 50,
+      "min": 0,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "infoTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "Befehlsseite",
+      "default": "Chat-Befehle",
+      "maxLength": 200
+    },
+    {
+      "key": "infoIntro",
+      "type": "textarea",
+      "label": "Einleitung ({channel})",
+      "group": "Befehlsseite",
+      "default": "Das kannst du im Chat von {channel} tippen.",
+      "maxLength": 500
+    },
+    {
+      "key": "infoEmpty",
+      "type": "text",
+      "label": "Text, wenn es keine Befehle gibt",
+      "group": "Befehlsseite",
+      "default": "Gerade gibt es hier keine Befehle.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoHelpHeading",
+      "type": "text",
+      "label": "Überschrift: Hilfe",
+      "group": "Befehlsseite",
+      "default": "Hilfe",
+      "maxLength": 200
+    },
+    {
+      "key": "infoMinimesHeading",
+      "type": "text",
+      "label": "Überschrift: Minimes",
+      "group": "Befehlsseite",
+      "default": "Minimes",
+      "maxLength": 200
+    },
+    {
+      "key": "infoTriggersHeading",
+      "type": "text",
+      "label": "Überschrift: Trigger",
+      "group": "Befehlsseite",
+      "default": "Effekte",
+      "maxLength": 200
+    },
+    {
+      "key": "infoHelpText",
+      "type": "text",
+      "label": "Hilfe-Befehl: Erklärung",
+      "group": "Befehlsseite",
+      "default": "Zeigt die Befehle im Chat.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoJoinText",
+      "type": "text",
+      "label": "Minimes einklinken: Erklärung",
+      "group": "Befehlsseite",
+      "default": "Mit deiner Figur in die Szene einsteigen.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoJoinColor",
+      "type": "text",
+      "label": "Einklinken mit Farbe ({command})",
+      "group": "Befehlsseite",
+      "default": "Mit Farbe: {command} #ff00aa oder {command} 255 0 170",
+      "maxLength": 200
+    },
+    {
+      "key": "infoJoinVariant",
+      "type": "text",
+      "label": "Einklinken mit Typ ({command}, {example})",
+      "group": "Befehlsseite",
+      "default": "Mit Typ: {command} {example}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoLookColor",
+      "type": "text",
+      "label": "Farbe ändern: Erklärung ({command})",
+      "group": "Befehlsseite",
+      "default": "Farbe deiner Figur ändern, z.B. {command} #00ffaa",
+      "maxLength": 200
+    },
+    {
+      "key": "infoLookVariant",
+      "type": "text",
+      "label": "Typ wählen: Erklärung ({command})",
+      "group": "Befehlsseite",
+      "default": "Typ deiner Figur wählen: {command} <Name>",
+      "maxLength": 200
+    },
+    {
+      "key": "infoVariants",
+      "type": "text",
+      "label": "Liste der Typen ({names})",
+      "group": "Befehlsseite",
+      "default": "Zur Wahl: {names}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoLeaveText",
+      "type": "text",
+      "label": "Verlassen: Erklärung",
+      "group": "Befehlsseite",
+      "default": "Deine Figur verlässt die Szene.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoKick",
+      "type": "text",
+      "label": "Rauswerfen ({roles}, {command})",
+      "group": "Befehlsseite",
+      "default": "{roles}: {command} @name wirft eine Figur raus.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenCommand",
+      "type": "text",
+      "label": "Trigger als Befehl ({match})",
+      "group": "Befehlsseite",
+      "default": "Tippe {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenWord",
+      "type": "text",
+      "label": "Trigger als Wort ({match})",
+      "group": "Befehlsseite",
+      "default": "Schreib das Wort {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenExact",
+      "type": "text",
+      "label": "Trigger als ganze Nachricht ({match})",
+      "group": "Befehlsseite",
+      "default": "Schreib genau {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenContains",
+      "type": "text",
+      "label": "Trigger als Textteil ({match})",
+      "group": "Befehlsseite",
+      "default": "Schreib etwas mit {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenRegex",
+      "type": "text",
+      "label": "Trigger mit Muster",
+      "group": "Befehlsseite",
+      "default": "Eine besondere Nachricht",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWho",
+      "type": "text",
+      "label": "Wer darf ({roles})",
+      "group": "Befehlsseite",
+      "default": "Für: {roles}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleEveryone",
+      "type": "text",
+      "label": "Rolle: alle",
+      "group": "Befehlsseite",
+      "default": "alle",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleSubscriber",
+      "type": "text",
+      "label": "Rolle: Subs",
+      "group": "Befehlsseite",
+      "default": "Subs",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleVip",
+      "type": "text",
+      "label": "Rolle: VIPs",
+      "group": "Befehlsseite",
+      "default": "VIPs",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleModerator",
+      "type": "text",
+      "label": "Rolle: Mods",
+      "group": "Befehlsseite",
+      "default": "Mods",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleBroadcaster",
+      "type": "text",
+      "label": "Rolle: Streamer",
+      "group": "Befehlsseite",
+      "default": "Streamer",
+      "maxLength": 200
+    },
+    {
+      "key": "infoCooldown",
+      "type": "text",
+      "label": "Abklingzeit für alle ({seconds})",
+      "group": "Befehlsseite",
+      "default": "Pause danach: {seconds} s",
+      "maxLength": 200
+    },
+    {
+      "key": "infoUserCooldown",
+      "type": "text",
+      "label": "Abklingzeit pro Person ({seconds})",
+      "group": "Befehlsseite",
+      "default": "Pro Person: {seconds} s",
+      "maxLength": 200
+    },
+    {
+      "key": "timeInfo",
+      "type": "select",
+      "label": "Befehlsseite: Tageszeit auf der Plantage",
+      "group": "Befehlsseite",
+      "default": "mittag",
+      "options": [
+        "morgen",
+        "mittag",
+        "abend",
+        "nacht"
+      ]
+    },
+    {
+      "key": "minimeVariantCommand",
+      "type": "text",
+      "label": "Befehl: Rolle wählen",
+      "group": "Minimes: Typen",
+      "default": "!rolle",
+      "maxLength": 25
+    },
+    {
+      "key": "minimeNames_sturm",
+      "type": "text",
+      "label": "Sturmsoldat: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "sturm, sturmsoldat, rifleman, assault",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_medic",
+      "type": "text",
+      "label": "Medic: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "medic, sani, sanitaeter",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_mg",
+      "type": "text",
+      "label": "MG-Schütze: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "mg, lmg, maschinengewehr, machinegun",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_sniper",
+      "type": "text",
+      "label": "Scharfschütze: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "sniper, scharfschuetze",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_grenadier",
+      "type": "text",
+      "label": "Grenadier: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "grenadier, granate, grenade",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeCombat",
+      "type": "boolean",
+      "label": "Gefechte an",
+      "group": "Minimes: Gefechte",
+      "default": true
+    },
+    {
+      "key": "minimeCombatMinS",
+      "type": "number",
+      "label": "Abstand zwischen Gefechten: mindestens",
+      "group": "Minimes: Gefechte",
+      "default": 20,
+      "min": 5,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "minimeCombatMaxS",
+      "type": "number",
+      "label": "Abstand zwischen Gefechten: höchstens",
+      "group": "Minimes: Gefechte",
+      "default": 60,
+      "min": 5,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "minimeCombatMax",
+      "type": "number",
+      "label": "Gleichzeitige Gefechte",
+      "group": "Minimes: Gefechte",
+      "default": 2,
+      "min": 1,
+      "max": 10
+    },
+    {
+      "key": "minimeHitChance",
+      "type": "number",
+      "label": "Trefferchance",
+      "group": "Minimes: Gefechte",
+      "default": 70,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "minimeDownMs",
+      "type": "number",
+      "label": "Liegezeit bis zum Selbst-Aufstehen",
+      "group": "Minimes: Gefechte",
+      "default": 12000,
+      "min": 1000,
+      "max": 120000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeReviveMs",
+      "type": "number",
+      "label": "Wiederbeleben: Dauer",
+      "group": "Minimes: Gefechte",
+      "default": 2500,
+      "min": 200,
+      "max": 20000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeMedicSpeed",
+      "type": "number",
+      "label": "Medic: Tempo (px pro Sekunde)",
+      "group": "Minimes: Gefechte",
+      "default": 140,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeCombatSounds",
+      "type": "boolean",
+      "label": "Gefechtstöne",
+      "group": "Minimes: Gefechte",
+      "default": false
+    },
+    {
+      "key": "minimeSoundShot",
+      "type": "sound",
+      "label": "Ton: Schuss",
+      "group": "Minimes: Gefechte",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "minimeSoundExplosion",
+      "type": "sound",
+      "label": "Ton: Explosion",
+      "group": "Minimes: Gefechte",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "minimeSoundHit",
+      "type": "sound",
+      "label": "Ton: Treffer",
+      "group": "Minimes: Gefechte",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "minimeSoundRevive",
+      "type": "sound",
+      "label": "Ton: Wiederbeleben",
+      "group": "Minimes: Gefechte",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "minimeAimMs_sturm",
+      "type": "number",
+      "label": "Sturmsoldat: Zielen",
+      "group": "Minimes: Gefechte",
+      "default": 800,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeFireMs_sturm",
+      "type": "number",
+      "label": "Sturmsoldat: Schuss",
+      "group": "Minimes: Gefechte",
+      "default": 600,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeAimMs_mg",
+      "type": "number",
+      "label": "MG-Schütze: Zielen",
+      "group": "Minimes: Gefechte",
+      "default": 800,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeFireMs_mg",
+      "type": "number",
+      "label": "MG-Schütze: Schuss",
+      "group": "Minimes: Gefechte",
+      "default": 1400,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeAimMs_sniper",
+      "type": "number",
+      "label": "Scharfschütze: Zielen",
+      "group": "Minimes: Gefechte",
+      "default": 1600,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeFireMs_sniper",
+      "type": "number",
+      "label": "Scharfschütze: Schuss",
+      "group": "Minimes: Gefechte",
+      "default": 300,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeAimMs_grenadier",
+      "type": "number",
+      "label": "Grenadier: Zielen",
+      "group": "Minimes: Gefechte",
+      "default": 800,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeFireMs_grenadier",
+      "type": "number",
+      "label": "Grenadier: Schuss",
+      "group": "Minimes: Gefechte",
+      "default": 900,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    }
+  ],
+  "groupScenes": {
+    "Plantage": [
+      "starting",
+      "brb",
+      "ending",
+      "info"
+    ],
+    "Starting, BRB, Ending": [
+      "starting",
+      "brb",
+      "ending"
+    ],
+    "Alerts": [
+      "alerts"
+    ],
+    "Chat": [
+      "chat"
+    ],
+    "Kamera-Rahmen": [
+      "cam"
+    ],
+    "Musik": [
+      "music"
+    ],
+    "Effekte": [
+      "fx"
+    ],
+    "Stinger": [],
+    "Banner": [],
+    "Minimes: Befehle": [
+      "minimes"
+    ],
+    "Minimes: Regeln": [
+      "minimes"
+    ],
+    "Minimes: Bewegung": [
+      "minimes"
+    ],
+    "Minimes: Typen": [
+      "minimes"
+    ],
+    "Minimes: Aussehen": [
+      "minimes"
+    ],
+    "Minimes: Hüpfen": [
+      "minimes"
+    ],
+    "Minimes: Animationen": [
+      "minimes"
+    ],
+    "Minimes: Gefechte": [
+      "minimes"
+    ],
+    "Befehlsseite": [
+      "info"
+    ]
+  },
+  "minimeVariants": {
+    "command": "!rolle",
+    "label": "Rolle",
+    "variants": [
+      {
+        "id": "sturm",
+        "label": "Sturmsoldat",
+        "names": [
+          "sturm",
+          "sturmsoldat",
+          "rifleman",
+          "assault"
+        ]
+      },
+      {
+        "id": "medic",
+        "label": "Medic",
+        "names": [
+          "medic",
+          "sani",
+          "sanitaeter"
+        ]
+      },
+      {
+        "id": "mg",
+        "label": "MG-Schütze",
+        "names": [
+          "mg",
+          "lmg",
+          "maschinengewehr",
+          "machinegun"
+        ]
+      },
+      {
+        "id": "sniper",
+        "label": "Scharfschütze",
+        "names": [
+          "sniper",
+          "scharfschuetze"
+        ]
+      },
+      {
+        "id": "grenadier",
+        "label": "Grenadier",
+        "names": [
+          "grenadier",
+          "granate",
+          "grenade"
+        ]
+      }
+    ]
+  },
+  "personalize": {
+    "neo": {
+      "channelName": "Neo"
+    },
+    "rezondes": {
+      "channelName": "Rezondes"
+    },
+    "neo_42": {
+      "channelName": "Neo_42"
+    }
+  }
+}

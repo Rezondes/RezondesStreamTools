@@ -8,6 +8,7 @@ mod fixture;
 pub mod info_fields;
 pub mod matrix;
 pub mod minime_fields;
+pub mod plantage;
 pub mod registry;
 pub mod schema;
 pub mod standard;
