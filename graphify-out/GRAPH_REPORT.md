@@ -1,17 +1,17 @@
 # Graph Report - RezondesStream  (2026-10-18)
 
 ## Corpus Check
-- 514 files · ~275,257 words
+- 514 files · ~275,856 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 23 file(s) not represented in the graph (top: .css 15, (none) 5, .toml 2)
 
 ## Summary
-- 4645 nodes · 12649 edges · 197 communities (161 shown, 36 thin omitted)
+- 4653 nodes · 12650 edges · 207 communities (166 shown, 41 thin omitted)
 - Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 483 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `2e5ba939`
+- Built from commit: `00f3c25f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -19,25 +19,25 @@
 - Audit Log Ports
 - Commands and Admin Access
 - Audit Log and Records
-- koth/scenes/Minimes.tsx
-- Shared Setting Fields
+- useMinimes.ts
+- matrix/settings.ts
 - Alert Scenes
-- Encryption and File Cache
+- encrypted.rs
 - eventLog.ts
-- Twitch Login and Scopes
+- ProviderError
 - useMatrix
-- Streamer Identity
-- Access Policy Admin
+- Login
+- rst-domain/src/access/mod.rs
 - Rust Setting Field Builders
-- Key Backups
-- ref_node_assert
+- path
+- urlaub/settings.ts
 - Backup Schedule
 - Rust Minime Combat Fields
-- TS Minime Fields
-- Server Route Guards
-- matrix/scenes/Screen.tsx
-- Dashboard Theme Settings
-- Plantage Field Shapes
+- minimeFields.ts
+- ProviderError
+- Field.tsx
+- RecordStore
+- template.ts
 - KOTH Hill Shapes
 - channel/triggers.rs
 - KOTH Rust Schema
@@ -45,113 +45,113 @@
 - Rust Minime Rules and ASCII
 - Live Event Hubs
 - Settings Validation
-- Matrix Banners and Hash
+- session.rs
 - Urlaub Beach Shapes
 - rst-domain/src/spotify/mod.rs
-- Server Settings Store
+- ServerMessage
 - Chat Command List
 - Effects Overlay
 - Backup Archives
-- Server App Wiring
-- handlers/backups.rs
+- open_data_db
+- server_error
 - OAuth Callback
 - client.ts
 - Admin.tsx
-- urlaub/scenes/Minimes.tsx
+- Triggers.tsx
 - Runtime Registry
 - Minime Roster
 - Minime Chat Commands
 - channel minimes.rs
 - rst-server routes.rs
 - koth/render.ts
-- urlaub settings.ts
+- koth/scenes/Screen.tsx
 - themes standard.rs
 - settings file.rs
 - dashboard obsSetup.ts
-- backup/schedule.rs
+- ThemeSettings.tsx
 - themes minime_fields.rs
-- sessions_audit_contract.rs
+- MinimeRules
 - backup archive.rs
-- server_error
+- json
 - urlaub/render.ts
 - import/mod.rs
-- scenes Chat.tsx
-- runtime.rs
-- Triggers.tsx
+- matrix/scenes/Chat.tsx
+- music/mod.rs
 - token_keeper.rs
+- rst-app/src/settings/mod.rs
 - triggers pattern.rs
-- public_commands
+- audit/mod.rs
 - rst-domain paths.rs
 - music music.ts
 - chat events.rs
-- themes schema.rs
-- theme.ts
+- btreemap
+- Scenery.tsx
 - identity oauth.rs
-- RecordStore
+- Scenery.tsx
 - crypto master.rs
-- minimes rules.rs
-- spotify mod.rs
-- demo.ts
+- twitch/oauth.rs
+- connection.ts
+- commands.ts
 - standard/render.ts
 - ChatLine
 - db sqlite_streamers.rs
 - themes registry.rs
 - plantage stinger.ts
 - themes generatedValues.check.ts
-- channel triggers.rs
+- KeyStore
 - media values.rs
 - triggers mod.rs
-- SqliteKeyStore
+- Dashboard.tsx
 - chat irc.rs
 - ports socket.rs
 - handlers render.rs
-- types.ts
+- dumpSchema.ts
 - .start
 - cipher.rs
-- media mod.rs
+- ServerConfig
 - minimes mod.rs
 - twitch alerts.rs
 - backup archive.rs
-- SettingInput.tsx
+- Validity
 - handlers events.rs
-- identity session.rs
-- Render.tsx
+- dumpSchema.ts
+- identity/streamers.rs
 - rst-app/src/media/mod.rs
 - channel alerts.rs
 - chat.rs
-- rst-server config.rs
-- themes audit.rs
+- config.rs
+- SqliteAudit
 - minimes roster.rs
-- soldiers.ts
-- texts.de.ts
+- koth/settings.check.ts
+- identity/values.rs
 - tsconfig.json
-- mangos.ts
+- matrix/scenes/Minimes.tsx
 - package.json
 - twitch eventsub.rs
 - plantage banners.ts
 - plans PLAN-MINIMES.md
+- errorCodes.ts
+- session.rs
 - .complete
-- identity sessions.rs
-- music mod.rs
 - CODING-RULES.md
 - package.json
 - IrcMessage
 - render clips.rs
-- koth soldiers.ts
+- FxAction
 - tests export_types.rs
 - .replace
-- MinimeCommand
+- store
 - access mod.rs
 - core emotes.ts
 - README.md
 - media library.rs
 - package.json
-- FxAction
+- SpotifyPlayer<A, S, K>
 - RUST-PLAN.md
 - plans PLAN-MINIMES.md
 - rst-server main.rs
-- cli import.rs
-- MinimeEvent
+- import/mod.rs
+- media.rs
 - triggers cooldowns.rs
 - triggers mod.rs
 - twitch alerts.rs
@@ -160,20 +160,23 @@
 - app.rs
 - minimes roster.rs
 - LoginOutcome
-- tests keystore_contract.rs
+- KeyStore
 - docker-compose.yml
 - plans PLAN-MINIMES.md
 - docs PLAN-URLAUB.md
+- EncryptedFiles
 - cli mod.rs
-- core streamerPath.ts
+- ref_node_assert
 - triggers schedule.rs
 - RUST-PLAN.md
-- drills sse-load.ts
-- crypto lookup.rs
+- RegisterError
+- Serialize
 - render clips.rs
+- lookup.rs
 - DESIGN.md
 - docs PLAN-KOTH.md
 - workflows docker.yml
+- EventSubMessage
 - plans PLAN-MINIMES.md
 - THEMES.md
 - scripts migrate.sh
@@ -187,6 +190,12 @@
 - DESIGN.md
 - media lizard.gif
 - docs DESIGN-STANDARD.md
+- theme_values.rs
+- hash
+- tokens.rs
+- PatternError
+- EncryptedWriter
+- .read
 
 ## God Nodes (most connected - your core abstractions)
 1. `StreamerId` - 266 edges
@@ -194,8 +203,8 @@
 3. `VaultError` - 105 edges
 4. `ProviderError` - 71 edges
 5. `Login` - 70 edges
-6. `App` - 62 edges
-7. `react` - 62 edges
+6. `react` - 63 edges
+7. `App` - 62 edges
 8. `server_error()` - 54 edges
 9. `DataKey` - 52 edges
 10. `fillTemplate()` - 45 edges
@@ -236,187 +245,187 @@
 - **Per-theme design docs following DESIGN.md axis decisions** — design_one_decision_per_axis, src_themes_standard_docs_design_standard_dashboard_skin, src_themes_matrix_docs_design_matrix_dashboard_skin, src_themes_urlaub_docs_design_urlaub_dashboard_skin, src_themes_plantage_docs_design_plantage_dashboard_skin, src_themes_koth_docs_design_koth_dashboard_skin [INFERRED 0.85]
 - **Verification pipeline before publish** — _github_workflows_docker_verify_job, coding_rules_npm_run_verify, coding_rules_rules_check_script, readme_contract_tests, rust_plan_fake_providers [INFERRED 0.85]
 
-## Communities (197 total, 36 thin omitted)
+## Communities (207 total, 41 thin omitted)
 
 ### Community 0 - "Audit Log Ports"
-Cohesion: 0.03
-Nodes (17): StoredEntry, FileStore, FileWriter, StoreError, SessionStore, SocketConnector, StreamerRepository, StreamerRow (+9 more)
+Cohesion: 0.04
+Nodes (16): FileStore, FileWriter, StoreError, SessionStore, StreamerRepository, StreamerRow, lock(), MemoryFiles (+8 more)
 
 ### Community 1 - "Commands and Admin Access"
 Cohesion: 0.05
-Nodes (52): AccessAdmin, login(), raw(), revoked_access_ends_every_session_and_is_audited(), saving_at_once_never_mixes_two_changes(), streamer_rows(), World, AccessSettings (+44 more)
+Nodes (43): AccessAdmin, AccessAdmin<'_, R, S, K, Q, P, A>, AuditRow, json_of(), login(), raw(), revoked_access_ends_every_session_and_is_audited(), saving_at_once_never_mixes_two_changes() (+35 more)
 
 ### Community 2 - "Audit Log and Records"
-Cohesion: 0.05
-Nodes (32): AccessAdmin<'_, R, S, K, Q, P, A>, AuditRow, json_of(), StreamerRow, aad(), AuditLog<A, K>, is_key(), OverlayKeys<S, K> (+24 more)
-
-### Community 3 - "koth/scenes/Minimes.tsx"
 Cohesion: 0.06
-Nodes (76): DEMO_FIRST_LOGIN, seedOf(), MinimeCombatScene, MinimeSceneOptions, useMinimes(), actorRun(), actorStyle(), advance() (+68 more)
+Nodes (29): created_once_then_the_same(), import_takes_only_valid_keys(), is_key(), keys(), KIND, matches_only_the_current_key(), neo(), OverlayKeys<S, K> (+21 more)
 
-### Community 4 - "Shared Setting Fields"
-Cohesion: 0.04
-Nodes (89): alertSoundFields(), BADGE_KEYS, badgeFields(), labels, KEYS, asciiArt(), defaults, fields (+81 more)
+### Community 3 - "useMinimes.ts"
+Cohesion: 0.06
+Nodes (86): DEMO_FIRST_LOGIN, seedOf(), MinimeCombatScene, MinimeSceneOptions, useMinimes(), actorRun(), actorStyle(), advance() (+78 more)
+
+### Community 4 - "matrix/settings.ts"
+Cohesion: 0.06
+Nodes (40): figlet, asciiText(), GLYPHS, BADGE_KEYS, badgeFields(), labels, KEYS, asciiArt() (+32 more)
 
 ### Community 5 - "Alert Scenes"
 Cohesion: 0.06
-Nodes (69): ALERT_SOUND_KEYS, alertQuote(), alertTextKeys, alertVars(), KINDS, sounds, values, describeAlert() (+61 more)
+Nodes (71): ALERT_SOUND_KEYS, alertQuote(), alertSoundFields(), alertTextKeys, alertVars(), KINDS, sounds, values (+63 more)
 
-### Community 6 - "Encryption and File Cache"
-Cohesion: 0.08
-Nodes (26): aad(), an_unfinished_write_leaves_nothing_behind(), BLOCK, BlockReader, Cache, cache_holds_at_most_its_limit_and_gives_the_same_bytes(), cut_reordered_or_foreign_blocks_fail(), DEFAULT_CACHE_MB (+18 more)
+### Community 6 - "encrypted.rs"
+Cohesion: 0.13
+Nodes (7): aad(), BLOCK, DEFAULT_CACHE_MB, FILE_CACHE_VAR, MAGIC, PREFIX, TAG
 
 ### Community 7 - "eventLog.ts"
 Cohesion: 0.15
 Nodes (19): EventFeed(), KINDS, time(), useEventLog(), add(), alertText(), many, one (+11 more)
 
-### Community 8 - "Twitch Login and Scopes"
-Cohesion: 0.04
-Nodes (30): FakeTwitch, Arc<FakeTwitch>, FakeTwitch, StreamerDeletion<'_, R, S, K, P, F, A>, the_streamer_is_gone_with_sessions_key_rows_and_files(), FakeTwitch, FakeSpotify, Playing (+22 more)
+### Community 8 - "ProviderError"
+Cohesion: 0.08
+Nodes (15): FakeTwitch, Arc<FakeTwitch>, FakeTwitch, StreamerDeletion<'_, R, S, K, P, F, A>, the_streamer_is_gone_with_sessions_key_rows_and_files(), FakeTwitch, ChatSender, EventSubscriber (+7 more)
 
 ### Community 9 - "useMatrix"
-Cohesion: 0.14
-Nodes (21): emoji, standard, glyph(), GLYPHS, useDecode(), useNow(), decodeFrame(), Drop (+13 more)
+Cohesion: 0.08
+Nodes (40): emoji, standard, glyph(), GLYPHS, useDecode(), useNow(), useThemeValues(), TerminalTiming (+32 more)
 
-### Community 10 - "Streamer Identity"
-Cohesion: 0.07
-Nodes (20): a_rename_keeps_the_profile(), id(), list_leaves_out_shredded_streamers(), login(), PROFILE_KIND, register_and_find(), RegisterError, AccountChanged (+12 more)
-
-### Community 11 - "Access Policy Admin"
+### Community 10 - "Login"
 Cohesion: 0.30
-Nodes (13): admins(), allowlist_only_admins_and_listed_logins(), beta_policy(), initial_policy_allows_the_admins_and_everything(), levels_all_beta_off(), login(), logins(), open_registration_lets_everyone_in() (+5 more)
+Nodes (4): Streamer, Streamers<R, S, K>, Login, TwitchUserId
+
+### Community 11 - "rst-domain/src/access/mod.rs"
+Cohesion: 0.14
+Nodes (23): AccessPolicy, admins(), allowlist_only_admins_and_listed_logins(), beta_policy(), FeatureLevel, All, Beta, Off (+15 more)
 
 ### Community 12 - "Rust Setting Field Builders"
 Cohesion: 0.07
 Nodes (47): ts_type(), ascii_art(), ascii_art_is_a_textarea_with_generator_flag(), choice(), color(), field(), FieldKind, Boolean (+39 more)
 
-### Community 13 - "Key Backups"
-Cohesion: 0.19
-Nodes (7): copies_without_shredded_keys_and_deleted_after_thirty_days(), delete_waits_for_a_copy_held_open_by_another_process(), FolderKeyBackups, KEY_BACKUPS_VAR, DELETE_ATTEMPTS, DELETE_PAUSE, remove_patiently()
+### Community 13 - "path"
+Cohesion: 0.24
+Nodes (5): percent_decode(), resolve(), StaticError, BadEncoding, Forbidden
 
-### Community 14 - "ref_node_assert"
-Cohesion: 0.04
-Nodes (52): figlet, HookInput, input, features, standard, FEATURES_FILE, featuresText(), FIXTURES (+44 more)
+### Community 14 - "urlaub/settings.ts"
+Cohesion: 0.10
+Nodes (26): color(), MINIME_VARIANTS, BeachThing(), BEACH_THINGS, BeachThing, names, findThing(), THING_IDS (+18 more)
 
 ### Community 15 - "Backup Schedule"
-Cohesion: 0.09
-Nodes (19): BackupError, Busy, Invalid, NotFound, Store, Backups, backups(), Backups<B, A, K> (+11 more)
+Cohesion: 0.11
+Nodes (14): BackupError, Busy, Invalid, NotFound, Store, Backups<B, A, K>, entry(), finish() (+6 more)
 
 ### Community 16 - "Rust Minime Combat Fields"
 Cohesion: 0.07
 Nodes (41): combat(), combat_fields_are_opt_in_without_medic_durations(), minime_aim_key(), minime_combat_fields(), minime_fire_key(), alerts(), ALERTS, BANNER (+33 more)
 
-### Community 17 - "TS Minime Fields"
-Cohesion: 0.07
-Nodes (51): sound(), defaults, probe, COMBAT_SOUNDS, command(), hasMinimes(), MEDIC, MINIME_BASE_FIELDS (+43 more)
+### Community 17 - "minimeFields.ts"
+Cohesion: 0.06
+Nodes (53): flag(), number(), defaults, probe, COMBAT_SOUNDS, hasMinimes(), MINIME_BASE_FIELDS, MINIME_COLOR_FIELDS (+45 more)
 
-### Community 18 - "Server Route Guards"
-Cohesion: 0.24
-Nodes (5): percent_decode(), resolve(), StaticError, BadEncoding, Forbidden
-
-### Community 19 - "matrix/scenes/Screen.tsx"
-Cohesion: 0.10
-Nodes (36): TerminalTiming, useTerminal(), clock(), countdownEnd(), countdown(), rotating(), ScreenKind, shortClock() (+28 more)
-
-### Community 20 - "Dashboard Theme Settings"
-Cohesion: 0.08
-Nodes (38): PREVIEW, SettingValues, ScenePreview(), changedKeys(), fromServer, keysIn(), schema, scoped (+30 more)
-
-### Community 21 - "Plantage Field Shapes"
+### Community 18 - "ProviderError"
 Cohesion: 0.09
-Nodes (37): BIRD, Blob, blobs(), shapes, star, circle(), CRATES, DEPTHS (+29 more)
+Nodes (13): FakeSpotify, Playing, Answer, Limited, Nothing, Unauthorized, SpotifyApi, TokenAnswer (+5 more)
+
+### Community 19 - "Field.tsx"
+Cohesion: 0.10
+Nodes (28): Blob, blobs(), shapes, star, circle(), CRATES, DEPTHS, Field() (+20 more)
+
+### Community 20 - "RecordStore"
+Cohesion: 0.12
+Nodes (6): RecordStore, StoredRecord, SqliteRecords, contract_tests!, sqlite(), streamer()
+
+### Community 21 - "template.ts"
+Cohesion: 0.19
+Nodes (15): fetchCommands(), streamer, demoCommands(), useCommands(), useInfoPage(), InfoValues, MinimeRules, channelNames() (+7 more)
 
 ### Community 22 - "KOTH Hill Shapes"
-Cohesion: 0.13
-Nodes (24): shapes, star, circle(), FLAG, HELI, ICON_NAMES, IconName, ICONS (+16 more)
+Cohesion: 0.10
+Nodes (35): useCover(), shapes, star, circle(), FLAG, HELI, ICON_NAMES, IconName (+27 more)
 
 ### Community 23 - "channel/triggers.rs"
-Cohesion: 0.20
-Nodes (9): compiled(), fire_ignores_the_cooldown_and_replace_takes_effect(), line(), lock(), matching_lines_fire_in_the_planned_order_with_cooldowns(), neo(), rules(), TriggerRunner (+1 more)
+Cohesion: 0.21
+Nodes (8): compiled(), fire_ignores_the_cooldown_and_replace_takes_effect(), line(), lock(), matching_lines_fire_in_the_planned_order_with_cooldowns(), neo(), rules(), TriggerRunner
 
 ### Community 24 - "KOTH Rust Schema"
 Cohesion: 0.08
 Nodes (38): alerts(), ALERTS, BANNER, CAM, capital(), CHAT, chat_cam_music_fx(), fields() (+30 more)
 
 ### Community 25 - "Rust Minime Variants"
-Cohesion: 0.06
-Nodes (26): one_readonly_key_per_field_with_its_type(), values_type(), ALERTS, BANNER, BEACH, BEACH_THINGS, CAM, capital() (+18 more)
+Cohesion: 0.09
+Nodes (27): ALERTS, BANNER, BEACH, BEACH_THINGS, CAM, capital(), CHAT, fields() (+19 more)
 
 ### Community 26 - "Rust Minime Rules and ASCII"
 Cohesion: 0.07
 Nodes (28): ascii_text(), ROWS, alert_sound_fields(), badge_fields(), badge_texts_default_to_the_abbreviation(), one_sound_per_alert_kind_and_fade_out(), ALERTS, BANNER (+20 more)
 
 ### Community 27 - "Live Event Hubs"
-Cohesion: 0.08
-Nodes (19): alert(), at_most_fifty_streams_and_places_come_back(), CAPACITY, Channel, Hubs, MAX_STREAMS, messages_reach_every_stream_of_the_streamer(), neo() (+11 more)
+Cohesion: 0.15
+Nodes (10): alert(), at_most_fifty_streams_and_places_come_back(), CAPACITY, Channel, Hubs, MAX_STREAMS, messages_reach_every_stream_of_the_streamer(), neo() (+2 more)
 
 ### Community 28 - "Settings Validation"
 Cohesion: 0.11
 Nodes (31): check_lines(), check_media(), check_sound(), check_text(), check_value(), codes(), defaults_of_all_building_blocks_pass(), extensions() (+23 more)
 
-### Community 29 - "Matrix Banners and Hash"
-Cohesion: 0.16
-Nodes (24): clamp01(), hash(), bannerOptions, blink(), drawOfflineBanner(), drawProfileBanner(), frame(), logo() (+16 more)
+### Community 29 - "session.rs"
+Cohesion: 0.13
+Nodes (10): cookie(), cookies_http_only_lax_and_secure_with_https(), debug_hides_the_token(), is_secure_url(), oauth_state_cookie(), OAUTH_STATE_SECONDS, session_cookie(), SESSION_DAYS (+2 more)
 
 ### Community 30 - "Urlaub Beach Shapes"
 Cohesion: 0.12
-Nodes (28): Beach(), shapes, star, circle(), CLOUD, GULL, ICON_NAMES, IconName (+20 more)
+Nodes (31): Beach(), shapes, star, circle(), CLOUD, GULL, ICON_NAMES, IconName (+23 more)
 
 ### Community 31 - "rst-domain/src/spotify/mod.rs"
-Cohesion: 0.08
-Nodes (24): export_all(), export_config(), Player, SpotifyPlayer<A, S, K>, callback_has_session(), changed(), changes_worth_sending(), millis() (+16 more)
+Cohesion: 0.13
+Nodes (20): callback_has_session(), changed(), changes_worth_sending(), millis(), only_complete_tokens_with_expiry(), origin(), POLL_MS, progress_moves_only_while_playing() (+12 more)
 
-### Community 32 - "Server Settings Store"
-Cohesion: 0.14
-Nodes (9): DATA_DB_VAR, migrations_twice(), open_data_db(), pragmas(), put_replaces_and_get_reads(), SqliteServerSettings, no_plaintext_in_file(), row() (+1 more)
+### Community 32 - "ServerMessage"
+Cohesion: 0.12
+Nodes (9): ServerMessage, Alert, Chat, Fx, MinimeChat, Minimes, Music, Remove (+1 more)
 
 ### Community 33 - "Chat Command List"
 Cohesion: 0.07
 Nodes (38): a_missing_scope_is_remembered_and_the_config_can_change(), help(), HelpResponder, line(), lock(), replies_once_per_cooldown_and_ignores_its_echo(), command_list(), CommandItem (+30 more)
 
 ### Community 34 - "Effects Overlay"
-Cohesion: 0.15
-Nodes (27): FX_KEYS, fxDefaults(), FxSettings, useFxItem(), useFxScene(), FxMedia(), ShownFx, useFx() (+19 more)
+Cohesion: 0.16
+Nodes (26): FX_KEYS, fxDefaults(), FxSettings, useFxItem(), useFxScene(), FxMedia(), ShownFx, useFx() (+18 more)
 
 ### Community 35 - "Backup Archives"
 Cohesion: 0.13
-Nodes (29): ArchiveError, Invalid, NotFound, Store, ARCHIVE_FORMAT, allowed_name(), bytes(), check() (+21 more)
+Nodes (27): ArchiveError, Invalid, NotFound, Store, allowed_name(), bytes(), check(), Checked (+19 more)
 
-### Community 36 - "Server App Wiring"
-Cohesion: 0.07
-Nodes (5): start_all(), App, UploadSlot, serve(), streamer()
+### Community 36 - "open_data_db"
+Cohesion: 0.08
+Nodes (17): ServerSettingsStore, DELETE_ATTEMPTS, DELETE_PAUSE, DATA_DB_VAR, migrations_twice(), open_data_db(), pragmas(), put_replaces_and_get_reads() (+9 more)
 
-### Community 37 - "handlers/backups.rs"
+### Community 37 - "server_error"
 Cohesion: 0.28
 Nodes (14): now_ms(), actor(), create(), delete(), download(), failed(), id_of(), list() (+6 more)
 
 ### Community 38 - "OAuth Callback"
-Cohesion: 0.10
-Nodes (22): random_bytes(), to_hex(), cookie(), cookies_http_only_lax_and_secure_with_https(), is_secure_url(), oauth_state_cookie(), OAUTH_STATE_SECONDS, session_cookie() (+14 more)
+Cohesion: 0.15
+Nodes (14): to_hex(), redirect(), callback(), cookies(), disconnect(), is_oauth_code(), login(), logout() (+6 more)
 
 ### Community 39 - "client.ts"
 Cohesion: 0.05
 Nodes (91): ACCOUNT_CASES, ALERT_CASES, Subscription, AUTH_CASES, BACKUP_CASES, Listing, CHAT_CASES, chatLine() (+83 more)
 
 ### Community 40 - "Admin.tsx"
-Cohesion: 0.09
-Nodes (44): isErrorCode(), AccessDraft, AccessForm(), Admin(), BackupListing, BackupRow, Backups(), BackupSchedule (+36 more)
+Cohesion: 0.08
+Nodes (41): accessLosses, losses, next, saved, hasLosses(), removed(), AccessDraft, AccessForm() (+33 more)
 
-### Community 41 - "urlaub/scenes/Minimes.tsx"
-Cohesion: 0.17
-Nodes (15): actor, plan, hopPlan(), hopStyle(), BeachThing(), BEACH_THINGS, BeachThing, names (+7 more)
+### Community 41 - "Triggers.tsx"
+Cohesion: 0.13
+Nodes (24): loadMedia(), Media(), megabytes(), Preview(), TEXTS, ActionRow(), ActionTiming(), AudienceRows() (+16 more)
 
 ### Community 42 - "Runtime Registry"
 Cohesion: 0.11
 Nodes (13): a_restart_stops_the_old_runtime(), Entries, Fake, held(), id(), locked_or_stopped_starts_are_discarded(), NEXT, nothing_to_start_and_runtimes_that_ended_themselves() (+5 more)
 
 ### Community 43 - "Minime Roster"
-Cohesion: 0.15
-Nodes (29): allowed_teams(), allowed_variants(), apply(), chat(), color_memory_is_limited(), entry(), join(), join_leave_and_come_back_with_the_remembered_color() (+21 more)
+Cohesion: 0.18
+Nodes (30): apply(), chat(), chat_keeps_alive_and_reacts(), color_cooldown_and_color_joins(), disabled_team_is_reassigned(), entry(), full_list_replaces_or_rejects(), join() (+22 more)
 
 ### Community 44 - "Minime Chat Commands"
-Cohesion: 0.15
-Nodes (21): channels(), commands_at_the_start_case_insensitive(), find_variant(), has_role(), HEX, is_login(), join_choice(), join_reads_role_and_faction_in_any_order() (+13 more)
+Cohesion: 0.10
+Nodes (32): channels(), commands_at_the_start_case_insensitive(), find_variant(), has_role(), HEX, is_login(), join(), join_choice() (+24 more)
 
 ### Community 45 - "channel minimes.rs"
 Cohesion: 0.13
@@ -430,117 +439,113 @@ Nodes (26): Call, handle(), read_body(), all_on(), authorize(), find(), Found, M
 Cohesion: 0.10
 Nodes (23): battlefield(), centered(), gradient, options, drawKothOfflineBanner(), drawKothProfileBanner(), KothBannerOptions, PEAKS (+15 more)
 
-### Community 48 - "urlaub settings.ts"
-Cohesion: 0.14
-Nodes (13): screenScenes(), ThemeView, kothView, Screen, matrixView, Screen, plantageView, Screen (+5 more)
+### Community 48 - "koth/scenes/Screen.tsx"
+Cohesion: 0.09
+Nodes (34): countdownEnd(), countdown(), rotating(), ScreenKind, shortClock(), STAGE, stageScale(), screenScenes() (+26 more)
 
 ### Community 49 - "themes standard.rs"
-Cohesion: 0.10
-Nodes (23): alerts(), ALERTS, BANNER, CAM, CHAT, chat_cam_music(), FONTS, FX (+15 more)
+Cohesion: 0.09
+Nodes (25): info_fields(), INFO_GROUP, alerts(), ALERTS, BANNER, CAM, CHAT, chat_cam_music() (+17 more)
 
 ### Community 50 - "settings file.rs"
-Cohesion: 0.14
-Nodes (25): broken_unknown_and_renamed_files(), current_id(), default_theme(), first_login_personalizes_every_theme(), first_settings(), minime_rules_from_the_chosen_theme(), minime_rules_of(), OLD_DEFAULTS (+17 more)
+Cohesion: 0.13
+Nodes (26): broken_unknown_and_renamed_files(), current_id(), default_theme(), first_login_personalizes_every_theme(), first_settings(), minime_rules_from_the_chosen_theme(), minime_rules_of(), OLD_DEFAULTS (+18 more)
 
 ### Community 51 - "dashboard obsSetup.ts"
-Cohesion: 0.12
-Nodes (26): OBS_SCENES, Act, importViaWebSocket(), ObsError, ObsImport(), ObsMessage, browserSettings(), collection (+18 more)
+Cohesion: 0.09
+Nodes (33): react, FieldBase, MinimeVariantInfo, OBS_SCENES, SCENE_SIZES, SCENES, ChatHelp(), HelpState (+25 more)
 
-### Community 52 - "backup/schedule.rs"
-Cohesion: 0.12
-Nodes (10): backup(), BackupSchedule, HOUR_MS, KEY, MAX_INTERVAL_HOURS, MAX_KEEP, off_never_due_on_after_the_interval(), only_old_automatic_backups_are_surplus() (+2 more)
+### Community 52 - "ThemeSettings.tsx"
+Cohesion: 0.06
+Nodes (62): isErrorCode(), ClipName, RenderClip, MEDIA_KIND, SettingField, BackupScheduleForm(), getJson(), postJson() (+54 more)
 
 ### Community 53 - "themes minime_fields.rs"
-Cohesion: 0.11
-Nodes (29): color_themes_get_base_and_color_fields(), COMBAT_SOUNDS, feature_fields_match_the_typescript_fixture(), has_minimes(), MEDIC, minime_base_fields(), minime_color_fields(), MINIME_COMBAT (+21 more)
+Cohesion: 0.07
+Nodes (45): command(), defaults_without_saved_values(), factions_only_with_variants_and_variant_names_first(), flag(), invalid_values_give_the_defaults(), minime_rules(), MinimeCommands, MinimeRules (+37 more)
 
-### Community 54 - "sessions_audit_contract.rs"
-Cohesion: 0.29
-Nodes (5): audit_appends_and_lists_newest_first(), database(), id(), sessions_find_delete_and_expire(), sessions_go_with_their_streamer()
+### Community 54 - "MinimeRules"
+Cohesion: 0.25
+Nodes (10): allowed_teams(), allowed_variants(), Look, millis(), prune(), remember(), resolve_color(), resolve_team() (+2 more)
 
 ### Community 55 - "backup archive.rs"
-Cohesion: 0.11
-Nodes (11): BACKUPS_VAR, bytes(), copy_hashed(), EXTENSION, number(), PARTIAL, Table, text() (+3 more)
+Cohesion: 0.09
+Nodes (17): ARCHIVE_FORMAT, BACKUPS_VAR, bytes(), copy_hashed(), entries(), EXTENSION, forged(), number() (+9 more)
 
-### Community 56 - "server_error"
-Cohesion: 0.11
-Nodes (32): MediaName, json(), server_error(), text(), access(), ACCESS_LIMIT, audit(), AUDIT_LIMIT (+24 more)
+### Community 56 - "json"
+Cohesion: 0.12
+Nodes (25): json(), server_error(), status(), text(), access(), ACCESS_LIMIT, audit(), AUDIT_LIMIT (+17 more)
 
 ### Community 57 - "urlaub/render.ts"
-Cohesion: 0.12
-Nodes (22): beach(), centered(), gradient, options, drawUrlaubOfflineBanner(), drawUrlaubProfileBanner(), palm(), Size (+14 more)
+Cohesion: 0.13
+Nodes (21): beach(), centered(), gradient, options, drawUrlaubOfflineBanner(), drawUrlaubProfileBanner(), palm(), Size (+13 more)
 
 ### Community 58 - "import/mod.rs"
 Cohesion: 0.06
-Nodes (38): broken_files(), fixture(), fixture_roundtrip(), id_of(), idempotent(), importer(), Importer<R, S, K, F, P>, ImportReport (+30 more)
+Nodes (26): CommandService, CommandService<'_, S, K, A>, help_setting_and_public_list_by_features(), neo(), public_commands(), after_shred(), defaults_before_the_first_save(), filled() (+18 more)
 
-### Community 59 - "scenes Chat.tsx"
-Cohesion: 0.23
-Nodes (15): badgeLabel(), MessageParts(), useChat(), ChatMessage, Part, Chat(), Row(), useKoth() (+7 more)
+### Community 59 - "matrix/scenes/Chat.tsx"
+Cohesion: 0.29
+Nodes (14): badgeLabel(), MessageParts(), useChat(), ChatMessage, Chat(), Row(), Chat(), Line() (+6 more)
 
-### Community 60 - "runtime.rs"
-Cohesion: 0.07
-Nodes (21): a_rejected_login_ends_the_runtime_and_deletes_the_tokens(), broken_profile_does_not_block(), chat_lines_fire_triggers_and_the_help_reply_without_its_echo(), id(), login(), profile_with_tokens(), RESTART_PAUSE, setup() (+13 more)
+### Community 60 - "music/mod.rs"
+Cohesion: 0.19
+Nodes (9): answer(), DEFAULT_LIFETIME_S, neo(), NOW, polls_only_with_an_open_overlay_and_pauses_after_429(), RENEW_EARLY_MS, renewals_share_one_request_and_late_answers_after_logout_are_dropped(), song() (+1 more)
 
-### Community 61 - "Triggers.tsx"
-Cohesion: 0.11
-Nodes (27): deleteMedia(), loadMedia(), uploadMedia(), Media(), megabytes(), Preview(), ActionRow(), ActionTiming() (+19 more)
+### Community 61 - "token_keeper.rs"
+Cohesion: 0.24
+Nodes (6): a_rejected_login_is_reported(), FakeTwitch, keeper(), simultaneous_checks_share_one_renewal(), TokenKeeper, tokens()
 
-### Community 62 - "token_keeper.rs"
-Cohesion: 0.15
-Nodes (12): a_rejected_login_is_reported(), after_stop_nothing_is_saved_and_late_tokens_are_revoked(), FakeTwitch, keeper(), simultaneous_checks_share_one_renewal(), TokenKeeper, TokenKeeper<T, S, K>, tokens() (+4 more)
+### Community 62 - "rst-app/src/settings/mod.rs"
+Cohesion: 0.14
+Nodes (7): neo(), save_checks_chooses_and_audits(), SaveError, Invalid, Vault, SettingsService, SettingsService<'_, S, K, A>
 
 ### Community 63 - "triggers pattern.rs"
-Cohesion: 0.10
-Nodes (16): linear(), MAX_PATTERN, Pattern, pattern(), PatternError, Invalid, TooLong, Unsupported (+8 more)
+Cohesion: 0.12
+Nodes (12): linear(), MAX_PATTERN, Pattern, pattern(), SIZE_LIMIT, WhenKind, Command, Contains (+4 more)
 
-### Community 64 - "public_commands"
-Cohesion: 0.19
-Nodes (5): CommandService, CommandService<'_, S, K, A>, help_setting_and_public_list_by_features(), neo(), public_commands()
+### Community 64 - "audit/mod.rs"
+Cohesion: 0.28
+Nodes (8): aad(), AuditEntry, AuditLog<A, K>, entries_are_ciphertext_and_unreadable_after_shred(), entries_per_streamer_and_server_newest_first(), entry(), log(), neo()
 
 ### Community 65 - "rst-domain paths.rs"
-Cohesion: 0.13
-Nodes (13): encoded_slash_stays_one_part_and_is_no_media_name(), is_scene_file(), OverlayRoute, Commands, Events, Media, Scene, Settings (+5 more)
+Cohesion: 0.11
+Nodes (14): encoded_slash_stays_one_part_and_is_no_media_name(), is_scene_file(), OverlayRoute, Commands, Events, Media, Scene, Settings (+6 more)
 
 ### Community 66 - "music music.ts"
-Cohesion: 0.12
-Nodes (33): react, useMusic(), Marquee(), Props, song, marqueeSeconds(), MusicState, nowPlaying() (+25 more)
+Cohesion: 0.14
+Nodes (24): useMusic(), Marquee(), Props, song, marqueeSeconds(), MusicState, nowPlaying(), trackClock() (+16 more)
 
 ### Community 67 - "chat events.rs"
 Cohesion: 0.14
 Nodes (18): ACTION_END, ACTION_START, alert(), CHAT_CHEERMOTE, chat_with_badges_and_emotes(), ChatMessage, ChatRemoval, events() (+10 more)
 
-### Community 68 - "themes schema.rs"
-Cohesion: 0.10
-Nodes (16): MinimeVariantInfo, MinimeVariantSet, SceneName, Alerts, .ALL, Brb, Cam, Chat (+8 more)
+### Community 68 - "btreemap"
+Cohesion: 0.08
+Nodes (18): export_all(), export_config(), MinimeVariantInfo, MinimeVariantSet, SceneName, Alerts, .ALL, Brb (+10 more)
 
-### Community 69 - "theme.ts"
-Cohesion: 0.06
-Nodes (44): ThemeValues, bad, good, resolved, schema, checkMedia(), checkValue(), isObject() (+36 more)
+### Community 69 - "Scenery.tsx"
+Cohesion: 0.08
+Nodes (30): SettingValues, ThemeModule, scenes, schema, withMinimes, cssVariables(), isScene(), OWN_SCENES (+22 more)
 
 ### Community 70 - "identity oauth.rs"
 Cohesion: 0.20
 Nodes (7): a_state_returns_its_value_once_and_expires(), above_the_limit_the_oldest_drop_out(), LoginStates, LoginStates<V>, NOW, Pending, same_browser()
 
-### Community 71 - "RecordStore"
-Cohesion: 0.12
-Nodes (6): RecordStore, StoredRecord, SqliteRecords, contract_tests!, sqlite(), streamer()
+### Community 71 - "Scenery.tsx"
+Cohesion: 0.13
+Nodes (8): KOTH, KOTH_VALUES, PLANTAGE, PLANTAGE_VALUES, ROLES, THINGS, TROOPS, URLAUB
 
 ### Community 72 - "crypto master.rs"
-Cohesion: 0.13
+Cohesion: 0.17
 Nodes (9): accepts_32_bytes_in_base64(), debug_never_shows_the_key(), derived_keys_depend_on_purpose_and_master(), encoded(), MASTER_KEY_VAR, MasterKeyError, Missing, NotBase64 (+1 more)
 
-### Community 73 - "minimes rules.rs"
-Cohesion: 0.17
-Nodes (18): command(), defaults_without_saved_values(), factions_only_with_variants_and_variant_names_first(), flag(), invalid_values_give_the_defaults(), minime_rules(), MinimeCommands, MinimeRules (+10 more)
-
-### Community 74 - "spotify mod.rs"
-Cohesion: 0.12
-Nodes (26): splitWords(), channelEmotes(), connect(), events(), fanout, fetchSettings(), loginFromQuery, serverStatus() (+18 more)
-
-### Community 75 - "demo.ts"
+### Community 74 - "connection.ts"
 Cohesion: 0.07
-Nodes (35): cat, extra, kappa, splitEmotes(), army, HELP, list, roles (+27 more)
+Nodes (40): cat, extra, kappa, splitEmotes(), splitWords(), channelEmotes(), connect(), events() (+32 more)
+
+### Community 75 - "commands.ts"
+Cohesion: 0.09
+Nodes (30): army, HELP, list, roles, teams, TRIGGERS, CommandItem, commandList (+22 more)
 
 ### Community 76 - "standard/render.ts"
 Cohesion: 0.17
@@ -555,32 +560,32 @@ Cohesion: 0.16
 Nodes (10): EncodeError, Failed, Missing, TimedOut, exit_codes_time_limit_and_a_missing_program(), Ffmpeg, FFMPEG_VAR, LIMIT (+2 more)
 
 ### Community 79 - "themes registry.rs"
-Cohesion: 0.17
-Nodes (16): built_in_themes_pass(), assert_same_as_fixture(), assert_same_fields(), normalize(), SAMPLE_LOGINS, samples(), take_fields(), DEFAULT_THEME (+8 more)
+Cohesion: 0.11
+Nodes (19): audit(), built_in_themes_pass(), FX_KEYS, personalize(), reports_every_kind_of_problem(), values_object(), assert_same_as_fixture(), assert_same_fields() (+11 more)
 
 ### Community 80 - "plantage stinger.ts"
-Cohesion: 0.15
-Nodes (17): easeIn(), easeInOut(), clips, plantageClips(), atCut, bare, early, first (+9 more)
+Cohesion: 0.16
+Nodes (16): easeIn(), easeInOut(), atCut, bare, early, first, gradient, options (+8 more)
 
 ### Community 81 - "themes generatedValues.check.ts"
-Cohesion: 0.17
-Nodes (6): SettingValue, SoundValue, MatrixValues, PlantageValues, StandardValues, UrlaubValues
+Cohesion: 0.13
+Nodes (8): MediaKind, SettingField, SoundValue, KothValues, PlantageValues, StandardValues, UrlaubValues, Unit
 
-### Community 82 - "channel triggers.rs"
-Cohesion: 0.18
-Nodes (6): EVERY_MS, KeyBackupStore, MemoryKeyBackups, one_copy_a_day_and_none_older_than_thirty_days(), RETENTION_MS, run_key_backups()
+### Community 82 - "KeyStore"
+Cohesion: 0.08
+Nodes (10): EVERY_MS, KeyBackupStore, MemoryKeyBackups, one_copy_a_day_and_none_older_than_thirty_days(), RETENTION_MS, run_key_backups(), copies_without_shredded_keys_and_deleted_after_thirty_days(), delete_waits_for_a_copy_held_open_by_another_process() (+2 more)
 
 ### Community 83 - "media values.rs"
 Cohesion: 0.10
 Nodes (6): InvalidValue, string_value!, is_word(), MEDIA_EXTENSIONS, MEDIA_STEM_MAX, OutputName
 
 ### Community 84 - "triggers mod.rs"
-Cohesion: 0.22
-Nodes (14): check(), check_action(), compile(), Compiled, compiled_triggers_match_chat_lines(), good(), limits(), MAX_ACTION_SECONDS (+6 more)
+Cohesion: 0.23
+Nodes (15): check(), check_action(), compile(), Compiled, compiled_triggers_match_chat_lines(), CompiledTrigger, good(), limits() (+7 more)
 
-### Community 85 - "SqliteKeyStore"
-Cohesion: 0.13
-Nodes (5): MasterKey, KEYS_DB_VAR, now_ms(), SqliteKeyStore, unwrap_key()
+### Community 85 - "Dashboard.tsx"
+Cohesion: 0.18
+Nodes (14): Account, loadAccount(), post(), Connections(), SpotifyStatus(), Act, Content(), Dashboard() (+6 more)
 
 ### Community 86 - "chat irc.rs"
 Cohesion: 0.15
@@ -588,58 +593,58 @@ Nodes (16): emote_positions(), emote_url(), garbage_never_panics(), IRC_URL, kap
 
 ### Community 87 - "ports socket.rs"
 Cohesion: 0.14
-Nodes (3): TextSocket, WebSockets, WebSocketText
+Nodes (4): SocketConnector, TextSocket, WebSockets, WebSocketText
 
 ### Community 88 - "handlers render.rs"
-Cohesion: 0.26
-Nodes (15): allowed(), cancel(), done(), encode(), file(), files(), folder(), frame() (+7 more)
+Cohesion: 0.28
+Nodes (14): allowed(), cancel(), done(), encode(), file(), files(), folder(), frame() (+6 more)
 
-### Community 89 - "types.ts"
-Cohesion: 0.18
-Nodes (11): ServerStatus, ActionKind, ChatRemoval, FxAction, FxEvent, FxPosition, Minime, NamedPosition (+3 more)
+### Community 89 - "dumpSchema.ts"
+Cohesion: 0.27
+Nodes (11): features, standard, FEATURES_FILE, featuresText(), FIXTURES, fixtureText(), main(), SAMPLE_LOGINS (+3 more)
 
 ### Community 90 - ".start"
-Cohesion: 0.20
-Nodes (8): panic_is_contained(), RuntimeSetup, Shared, Shared<T, S, K>, StreamerRuntime, StreamerRuntime<T, S, K, P>, subscribe_all(), supervise()
+Cohesion: 0.09
+Nodes (19): a_rejected_login_ends_the_runtime_and_deletes_the_tokens(), broken_profile_does_not_block(), chat_lines_fire_triggers_and_the_help_reply_without_its_echo(), id(), login(), panic_is_contained(), profile_with_tokens(), RESTART_PAUSE (+11 more)
 
 ### Community 91 - "cipher.rs"
-Cohesion: 0.14
-Nodes (12): changed_data_wrong_owner_or_key_fail(), CryptoError, Decrypt, Encrypt, Random, KEY, NONCE_LEN, open() (+4 more)
+Cohesion: 0.13
+Nodes (10): changed_data_wrong_owner_or_key_fail(), CryptoError, Decrypt, Encrypt, Random, KEY, NONCE_LEN, open() (+2 more)
 
-### Community 92 - "media mod.rs"
-Cohesion: 0.18
-Nodes (3): LOGIN_MAX, streamer_id_is_hex_of_16_bytes(), USER_ID_MAX
+### Community 92 - "ServerConfig"
+Cohesion: 0.19
+Nodes (12): cache_bytes(), ConfigError, Invalid, MasterKey, Missing, lookup(), OAuthApp, ProviderUrls (+4 more)
 
 ### Community 93 - "minimes mod.rs"
-Cohesion: 0.18
-Nodes (16): chat_lines_become_events(), entry(), factions_in_the_file_round_trip_and_old_files_have_none(), is_color(), is_login(), is_variant(), line(), MAX_ROSTER (+8 more)
+Cohesion: 0.10
+Nodes (27): chat_lines_become_events(), entry(), factions_in_the_file_round_trip_and_old_files_have_none(), is_color(), is_login(), is_variant(), line(), MAX_ROSTER (+19 more)
 
 ### Community 94 - "twitch alerts.rs"
 Cohesion: 0.23
 Nodes (10): Alert, alert(), EVENT_CHEERMOTE, message_text(), number(), sample_alert(), string(), tier() (+2 more)
 
 ### Community 95 - "backup archive.rs"
-Cohesion: 0.19
-Nodes (9): archive_with_all_rows_and_files_matching_checksums_and_no_plaintext(), count(), entries(), filled(), forged(), parse_id(), restore_brings_back_the_state_and_skips_streamers_without_a_key(), tampered_uploads_are_rejected_and_change_nothing() (+1 more)
+Cohesion: 0.22
+Nodes (7): is_backup_id(), archive_with_all_rows_and_files_matching_checksums_and_no_plaintext(), count(), filled(), parse_id(), restore_brings_back_the_state_and_skips_streamers_without_a_key(), ZipBackups
 
-### Community 96 - "SettingInput.tsx"
-Cohesion: 0.17
-Nodes (16): MEDIA_KIND, AsciiGenerator(), ASCII_FONTS, AsciiFont, asciiLogo(), FONTS, AsciiGenerator, asText() (+8 more)
+### Community 96 - "Validity"
+Cohesion: 0.26
+Nodes (6): after_stop_nothing_is_saved_and_late_tokens_are_revoked(), TokenKeeper<T, S, K>, Validity, Rejected, Unknown, Valid
 
 ### Community 97 - "handlers events.rs"
-Cohesion: 0.11
-Nodes (6): PRUNE_EVERY_MS, data(), PING, running(), stream(), test_alert()
+Cohesion: 0.16
+Nodes (5): data(), PING, running(), stream(), test_alert()
 
-### Community 98 - "identity session.rs"
-Cohesion: 0.17
-Nodes (4): debug_hides_the_token(), SessionHash, SessionToken, token_text_and_hash_are_deterministic()
+### Community 98 - "dumpSchema.ts"
+Cohesion: 0.08
+Nodes (21): HookInput, input, AUTHORING_TYPES, BAG_NAME_EXCEPTIONS, EM_DASH, failures, files, GENERATED_TYPES (+13 more)
 
-### Community 99 - "Render.tsx"
-Cohesion: 0.19
-Nodes (16): ClipName, RenderClip, ClipPreview(), ClipSettings(), Render(), RenderedFile, RenderedFiles(), SettingsFile (+8 more)
+### Community 99 - "identity/streamers.rs"
+Cohesion: 0.40
+Nodes (9): a_rename_keeps_the_profile(), id(), list_leaves_out_shredded_streamers(), login(), PROFILE_KIND, register_and_find(), streamers(), the_same_login_with_another_twitch_account_is_rejected() (+1 more)
 
 ### Community 100 - "rst-app/src/media/mod.rs"
-Cohesion: 0.22
+Cohesion: 0.26
 Nodes (7): library(), MediaEntry, MediaLibrary, MediaOverview, neo(), store_error(), store_list_read_replace_and_delete()
 
 ### Community 101 - "channel alerts.rs"
@@ -650,61 +655,57 @@ Nodes (9): follow(), frame(), KEEPALIVE_GRACE, listen(), RETRY, session(), silen
 Cohesion: 0.18
 Nodes (9): chat_lines_only_with_the_feature_moderation_always(), lines_become_events_ping_is_answered_and_the_chat_reconnects(), listen(), neo(), NEXT_ID, RECONNECT, relay(), session() (+1 more)
 
-### Community 103 - "rst-server config.rs"
-Cohesion: 0.09
-Nodes (19): cache_bytes(), ConfigError, Invalid, MasterKey, Missing, DATA_DIR_VAR, DEFAULT_BACKUP_UPLOAD_MB, DEFAULT_DATA_DIR (+11 more)
-
-### Community 104 - "themes audit.rs"
-Cohesion: 0.17
-Nodes (7): audit(), FX_KEYS, personalize(), reports_every_kind_of_problem(), values_object(), info_fields(), INFO_GROUP
+### Community 103 - "config.rs"
+Cohesion: 0.12
+Nodes (7): DATA_DIR_VAR, DEFAULT_BACKUP_UPLOAD_MB, DEFAULT_DATA_DIR, DEFAULT_MEDIA_MB, DEFAULT_PORT, FILES_VAR, KEY
 
 ### Community 105 - "minimes roster.rs"
 Cohesion: 0.24
 Nodes (9): Minimes Package 1: Minime rules (parseColor, parseCommand, applyMinime), Minimes Package 8: Hopping in core, current_id theme id migration (suedfrucht to urlaub, starter to standard), hopPlan(durationMs, hopMs) jump plan, Urlaub Package 1: Minime variants in core, Urlaub Package 2: Theme Suedfrucht (fruit minimes), Urlaub Package 3: Rename suedfrucht to urlaub, Urlaub Package 4: Beach-thing minimes replace fruits (+1 more)
 
-### Community 106 - "soldiers.ts"
-Cohesion: 0.25
-Nodes (11): Soldier(), names, EXPLOSIVE, findRole(), hillState, Role, ROLE_IDS, ROLE_SET (+3 more)
-
-### Community 107 - "texts.de.ts"
+### Community 106 - "koth/settings.check.ts"
 Cohesion: 0.09
-Nodes (23): ERROR_CODES, ErrorCode, REQUEST_ERROR_CODES, SETTING_ERROR_CODES, accessLosses, losses, next, saved (+15 more)
+Nodes (30): MEDIC, variantRules(), MinimeVariantRule, normalizeName(), SPELLED, audit, keys, REQUIRED (+22 more)
+
+### Community 107 - "identity/values.rs"
+Cohesion: 0.18
+Nodes (3): LOGIN_MAX, streamer_id_is_hex_of_16_bytes(), USER_ID_MAX
 
 ### Community 108 - "tsconfig.json"
 Cohesion: 0.12
 Nodes (16): compilerOptions, allowImportingTsExtensions, jsx, lib, module, moduleResolution, noEmit, noFallthroughCasesInSwitch (+8 more)
 
-### Community 109 - "mangos.ts"
-Cohesion: 0.27
-Nodes (10): Mango(), names, EXPLOSIVE, findRole(), MANGO, Role, ROLE_IDS, ROLE_SET (+2 more)
+### Community 109 - "matrix/scenes/Minimes.tsx"
+Cohesion: 0.48
+Nodes (5): Ghost(), Glyphs(), Minimes(), Shape(), Sleep()
 
 ### Community 110 - "package.json"
 Cohesion: 0.15
 Nodes (14): name, private, type, version, eslint, @eslint/js, eslint-plugin-react-hooks, globals (+6 more)
 
 ### Community 111 - "twitch eventsub.rs"
-Cohesion: 0.13
-Nodes (17): DEFAULT_KEEPALIVE_SECONDS, EventSubError, NoMetadata, NotJson, EventSubMessage, Alert, Ignored, Offline (+9 more)
+Cohesion: 0.20
+Nodes (10): DEFAULT_KEEPALIVE_SECONDS, EventSubError, NoMetadata, NotJson, is_twitch_reconnect_url(), parse(), parse_message(), subscriptions() (+2 more)
 
 ### Community 112 - "plantage banners.ts"
-Cohesion: 0.21
-Nodes (9): centered(), gradient, options, drawPlantageOfflineBanner(), drawPlantageProfileBanner(), field(), PlantageBannerOptions, Size (+1 more)
+Cohesion: 0.14
+Nodes (18): centered(), gradient, options, crateSign(), CROWN, disc(), drawPlantageOfflineBanner(), drawPlantageProfileBanner() (+10 more)
 
 ### Community 113 - "plans PLAN-MINIMES.md"
 Cohesion: 0.29
 Nodes (3): Minimes Package 3: Server runtime (minimes.json, SSE), Minime state on server (data/streamers/<login>/minimes.json), scripts/rules.check.ts automatic theme rules
 
-### Community 114 - ".complete"
-Cohesion: 0.33
-Nodes (5): entry(), first_login_creates_streamer_settings_key_and_session(), LoginFlow<'_, R, S, K, Q, P, A>, logout_and_disconnect_end_sessions(), random()
+### Community 114 - "errorCodes.ts"
+Cohesion: 0.18
+Nodes (10): ERROR_CODES, ErrorCode, REQUEST_ERROR_CODES, SETTING_ERROR_CODES, codeArms, handlers, missing, rust (+2 more)
 
-### Community 115 - "identity sessions.rs"
-Cohesion: 0.23
-Nodes (6): a_session_resolves_until_it_expires(), log_out_and_disconnect_end_sessions_at_once(), neo(), only_the_hash_is_stored(), SESSION_MS, Sessions<P>
+### Community 115 - "session.rs"
+Cohesion: 0.17
+Nodes (7): a_session_resolves_until_it_expires(), log_out_and_disconnect_end_sessions_at_once(), neo(), only_the_hash_is_stored(), SESSION_MS, Sessions<P>, SessionToken
 
-### Community 116 - "music mod.rs"
-Cohesion: 0.20
-Nodes (6): Call, empty, full, options, quiet, values
+### Community 116 - ".complete"
+Cohesion: 0.50
+Nodes (3): entry(), LoginFlow<'_, R, S, K, Q, P, A>, logout_and_disconnect_end_sessions()
 
 ### Community 117 - "CODING-RULES.md"
 Cohesion: 0.19
@@ -722,9 +723,9 @@ Nodes (7): amount(), badge(), chat_events(), notice_alert(), tag_or(), to_irc_ev
 Cohesion: 0.07
 Nodes (26): OUTPUT_NAMES, Clip, .ALL, Offline, Profile, Stinger, Format, Gif (+18 more)
 
-### Community 121 - "koth soldiers.ts"
-Cohesion: 0.23
-Nodes (8): AccessPolicy, is_admin(), Registration, Allowlist, Open, revoked_logins(), Login, StreamerPath
+### Community 121 - "FxAction"
+Cohesion: 0.29
+Nodes (7): ActionKind, Media, Text, FxAction, FxEvent, Trigger, When
 
 ### Community 122 - "tests export_types.rs"
 Cohesion: 0.30
@@ -734,9 +735,9 @@ Nodes (9): actual(), differences(), expected(), generated_dir(), generated_files
 Cohesion: 0.39
 Nodes (3): AccessSettings<P>, initial_policy_then_the_saved_one(), login()
 
-### Community 124 - "MinimeCommand"
-Cohesion: 0.22
-Nodes (9): join(), MinimeCommand, Color, Join, Kick, Leave, Team, Variant (+1 more)
+### Community 124 - "store"
+Cohesion: 0.32
+Nodes (12): an_unfinished_write_leaves_nothing_behind(), cache_holds_at_most_its_limit_and_gives_the_same_bytes(), cut_reordered_or_foreign_blocks_fail(), delete_one_and_the_folder_of_a_streamer(), is_name(), key(), large_files_stream_block_by_block(), neo() (+4 more)
 
 ### Community 125 - "access mod.rs"
 Cohesion: 0.17
@@ -758,9 +759,9 @@ Nodes (4): MB, one_upload_per_streamer(), triggers_using(), UploadSlots
 Cohesion: 0.17
 Nodes (12): devDependencies, eslint, @eslint/js, eslint-plugin-react-hooks, globals, @types/node, @types/react, @types/react-dom (+4 more)
 
-### Community 130 - "FxAction"
-Cohesion: 0.29
-Nodes (7): ActionKind, Media, Text, FxAction, FxEvent, Trigger, When
+### Community 130 - "SpotifyPlayer<A, S, K>"
+Cohesion: 0.16
+Nodes (4): now(), Player, SpotifyPlayer, SpotifyPlayer<A, S, K>
 
 ### Community 131 - "RUST-PLAN.md"
 Cohesion: 0.24
@@ -774,13 +775,17 @@ Nodes (11): DESIGN.md: Design principles, PLAN-MINIMES.md: Minimes plan, Minimes
 Cohesion: 0.33
 Nodes (6): import(), main(), run(), SCHEDULE_EVERY, serve(), USAGE
 
-### Community 134 - "cli import.rs"
-Cohesion: 0.33
-Nodes (5): profile_folders(), config(), imports_the_fixture_twice_into_sqlite(), run(), StoreConfig
+### Community 134 - "import/mod.rs"
+Cohesion: 0.12
+Nodes (21): broken_files(), fixture(), fixture_roundtrip(), id_of(), idempotent(), importer(), Importer<R, S, K, F, P>, ImportReport (+13 more)
 
-### Community 135 - "MinimeEvent"
-Cohesion: 0.13
-Nodes (24): chat_keeps_alive_and_reacts(), color_cooldown_and_color_joins(), disabled_team_is_reassigned(), full_list_replaces_or_rejects(), join_picks_smallest_team(), kick_ban_and_clear(), MinimeEvent, Ban (+16 more)
+### Community 135 - "media.rs"
+Cohesion: 0.28
+Nodes (10): MediaName, SANDBOX_CSP, audit(), delete(), deliver(), list(), MEDIA_LIMIT, name_of() (+2 more)
+
+### Community 136 - "triggers cooldowns.rs"
+Cohesion: 0.22
+Nodes (3): Cooldowns, millis(), PRUNE_EVERY_MS
 
 ### Community 137 - "triggers mod.rs"
 Cohesion: 0.33
@@ -795,16 +800,16 @@ Cohesion: 0.32
 Nodes (5): Minimes Package 11: Combat (minimeCombat.ts), Minimes Package 12: Fixed slots, KOTH Package 1: Theme King of the Hill, Soldier roles (assault, medic, MG, sniper, grenadier), Plantage Package 1: Theme Suedfrucht-Plantage
 
 ### Community 141 - "app.rs"
-Cohesion: 0.06
-Nodes (19): app(), call(), dispatch(), FRAME_CSP, headers(), maintenance_leaves_only_the_dashboard_and_the_admin_area(), origin_and_routes(), PENDING_LOGINS (+11 more)
+Cohesion: 0.04
+Nodes (21): App, app(), call(), dispatch(), FRAME_CSP, headers(), maintenance_leaves_only_the_dashboard_and_the_admin_area(), origin_and_routes() (+13 more)
 
 ### Community 143 - "LoginOutcome"
 Cohesion: 0.33
 Nodes (5): LoginOutcome, AccountChanged, Failed, NotAllowed, Session
 
-### Community 144 - "tests keystore_contract.rs"
-Cohesion: 0.42
-Nodes (8): contract(), keys_survive_a_restart_and_need_the_right_master(), rewrap_keeps_data_readable(), separate_file(), shred_makes_data_unreadable(), sqlite(), sqlite_passes_the_contract(), streamer()
+### Community 144 - "KeyStore"
+Cohesion: 0.09
+Nodes (16): KEY, seal(), KeyStore, MasterKey, KEYS_DB_VAR, now_ms(), SqliteKeyStore, unwrap_key() (+8 more)
 
 ### Community 145 - "docker-compose.yml"
 Cohesion: 0.22
@@ -822,9 +827,9 @@ Nodes (8): KOTH soldier minimes (helmet, faction uniform, role weapon), Mango so
 Cohesion: 0.25
 Nodes (6): Command, Import, Serve, Usage, Version, parse()
 
-### Community 150 - "core streamerPath.ts"
-Cohesion: 0.39
-Nodes (7): base(), traversal, decodeAll(), isLogin(), isMediaName(), parse(), StreamerPath
+### Community 150 - "ref_node_assert"
+Cohesion: 0.08
+Nodes (34): bad, good, resolved, schema, checkMedia(), checkValue(), isObject(), isText() (+26 more)
 
 ### Community 151 - "triggers schedule.rs"
 Cohesion: 0.39
@@ -834,9 +839,13 @@ Nodes (4): action(), actions_follow_each_other_and_together_joins_the_previous()
 Cohesion: 0.43
 Nodes (4): rst-app crate, rst-domain crate, rst-infra crate, rst-server crate (binary rst)
 
-### Community 153 - "drills sse-load.ts"
+### Community 153 - "RegisterError"
 Cohesion: 0.40
-Nodes (4): FeatureLevel, All, Beta, Off
+Nodes (3): RegisterError, AccountChanged, Vault
+
+### Community 154 - "Serialize"
+Cohesion: 0.13
+Nodes (10): backup(), BackupSchedule, HOUR_MS, KEY, MAX_INTERVAL_HOURS, MAX_KEEP, off_never_due_on_after_the_interval(), only_old_automatic_backups_are_surplus() (+2 more)
 
 ### Community 158 - "docs PLAN-KOTH.md"
 Cohesion: 0.29
@@ -845,6 +854,10 @@ Nodes (6): Minimes Package 10: Factions, Minimes Package 9: Remove TS mirror of 
 ### Community 161 - "workflows docker.yml"
 Cohesion: 0.40
 Nodes (6): Docker-Image Workflow, image job (ghcr.io publish), verify job (npm run verify + contract), npm run contract, Vertragstests (Package 4), Fake-Provider Twitch/Spotify (Package 3)
+
+### Community 162 - "EventSubMessage"
+Cohesion: 0.25
+Nodes (7): EventSubMessage, Alert, Ignored, Offline, Reconnect, Revocation, Welcome
 
 ### Community 163 - "plans PLAN-MINIMES.md"
 Cohesion: 0.40
@@ -882,30 +895,46 @@ Nodes (3): caddy service, Package 12: Deployment (Caddy, HTTPS), Oeffentlicher B
 Cohesion: 0.67
 Nodes (3): Theme folder structure (settings.ts, use<Id>.ts, index.tsx, render.ts, theme.css, scenes), ThemeModule (THEME_MODULES in registry.ts), ThemeView (THEME_VIEWS in scenes.tsx)
 
+### Community 201 - "hash"
+Cohesion: 0.11
+Nodes (30): clamp01(), hash(), MatrixValues, bannerOptions, blink(), Call, empty, full (+22 more)
+
+### Community 202 - "tokens.rs"
+Cohesion: 0.29
+Nodes (5): CHAT_SCOPE, only_complete_tokens(), SCOPES, to_tokens(), tokens()
+
+### Community 203 - "PatternError"
+Cohesion: 0.40
+Nodes (4): PatternError, Invalid, TooLong, Unsupported
+
+### Community 204 - "EncryptedWriter"
+Cohesion: 0.24
+Nodes (5): open_block(), BlockReader, EncryptedWriter, nonce(), read_chunk()
+
 ## Ambiguous Edges - Review These
 - `Non-media fixture file in import test data` → `rst import (Package 24)`  [AMBIGUOUS]
   server-rs/crates/rst-app/tests/fixtures/data/streamers/neo/media/notes.txt · relation: conceptually_related_to
 
 ## Knowledge Gaps
-- **209 isolated node(s):** `AccountChanged`, `Vault`, `MasterKey`, `eslint`, `@types/node` (+204 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1316 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **36 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **209 isolated node(s):** `AccountChanged`, `Vault`, `eslint`, `@types/node`, `@types/react` (+204 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1321 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **41 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `scripts` connect `package.json` to `package.json`?**
-  _High betweenness centrality (0.449) - this node is a cross-community bridge._
-- **What connects `AccountChanged`, `Vault`, `MasterKey` to the rest of the system?**
+  _High betweenness centrality (0.462) - this node is a cross-community bridge._
+- **What connects `AccountChanged`, `Vault`, `eslint` to the rest of the system?**
   _209 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Audit Log Ports` be split into smaller, more focused modules?**
-  _Cohesion score 0.031246094238220223 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.04144144144144144 - nodes in this community are weakly interconnected._
 - **Why does `check` connect `package.json` to `backup archive.rs`?**
-  _High betweenness centrality (0.448) - this node is a cross-community bridge._
+  _High betweenness centrality (0.461) - this node is a cross-community bridge._
 - **Should `Commands and Admin Access` be split into smaller, more focused modules?**
-  _Cohesion score 0.04508050089445438 - nodes in this community are weakly interconnected._
-- **Why does `react` connect `music music.ts` to `koth/scenes/Minimes.tsx`, `Alert Scenes`, `eventLog.ts`, `useMatrix`, `matrix/scenes/Screen.tsx`, `Dashboard Theme Settings`, `Plantage Field Shapes`, `KOTH Hill Shapes`, `Urlaub Beach Shapes`, `Effects Overlay`, `Admin.tsx`, `urlaub/scenes/Minimes.tsx`, `urlaub settings.ts`, `dashboard obsSetup.ts`, `scenes Chat.tsx`, `Triggers.tsx`, `theme.ts`, `spotify mod.rs`, `demo.ts`, `SettingInput.tsx`, `Render.tsx`, `package.json`?**
-  _High betweenness centrality (0.408) - this node is a cross-community bridge._
+  _Cohesion score 0.04567095750308588 - nodes in this community are weakly interconnected._
+- **Why does `react` connect `dashboard obsSetup.ts` to `useMinimes.ts`, `matrix/settings.ts`, `Alert Scenes`, `eventLog.ts`, `useMatrix`, `Field.tsx`, `template.ts`, `KOTH Hill Shapes`, `Urlaub Beach Shapes`, `Effects Overlay`, `Admin.tsx`, `Triggers.tsx`, `koth/scenes/Screen.tsx`, `ThemeSettings.tsx`, `matrix/scenes/Chat.tsx`, `music music.ts`, `Scenery.tsx`, `Scenery.tsx`, `connection.ts`, `Dashboard.tsx`, `matrix/scenes/Minimes.tsx`, `package.json`?**
+  _High betweenness centrality (0.425) - this node is a cross-community bridge._
 
 ### Low-confidence Hints
 _AMBIGUOUS edges — the extractor was unsure. Verify before acting on these._
