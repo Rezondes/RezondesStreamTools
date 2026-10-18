@@ -4,6 +4,7 @@
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicUsize, Ordering};
 
 const HEADER: &str = "// Generated from server-rs (rst-app/src/api), do not edit by hand: npm run gen:types\n";
 /// Files in `src/generated/` that do not come from the export
@@ -34,9 +35,12 @@ fn read_tree(root: &Path) -> BTreeMap<String, String> {
     files
 }
 
-/// Fresh export with header, as it must be in `src/generated/`
+/// Fresh export with header, as it must be in `src/generated/`. Every call gets its own folder: the tests run in
+/// parallel in one process, a shared folder was deleted by one test while another was still reading it.
 fn expected() -> BTreeMap<String, String> {
-    let dir = std::env::temp_dir().join(format!("rst-export-{}", std::process::id()));
+    static CALLS: AtomicUsize = AtomicUsize::new(0);
+    let call = CALLS.fetch_add(1, Ordering::Relaxed);
+    let dir = std::env::temp_dir().join(format!("rst-export-{}-{call}", std::process::id()));
     let _ = fs::remove_dir_all(&dir);
     rst_app::api::export_all(&dir).expect("export");
     let files = read_tree(&dir).into_iter().map(|(name, text)| (name, format!("{HEADER}{text}"))).collect();
