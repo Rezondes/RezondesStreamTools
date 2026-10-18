@@ -32,6 +32,27 @@ benutzen nur Tokens (`--bg`, `--surface`, `--fg`, `--accent`, `--radius`, `--fon
 - **Abschluss:** Holzrand (2px) und Holzschatten unter Knöpfen und Karten, runde Knöpfe. Sonne, Palmen und Strandsachen
   aus dem Urlaub-Theme als Szenerie (`Scenery.tsx`); das Dashboard wird schmaler, damit die Palmen sichtbar bleiben.
 
+### Plantage
+
+- **Schrift:** Baloo 2 für Text, Fredoka für Überschriften und das Titel-Kistenetikett.
+- **Farbe:** Himmel über grünen Feldreihen und Erde als Seite, Erntezettel-Karten `#fff6df` mit braunem Text `#3a2410`
+  (13.5:1). Signatur Blattgrün `#2e7d32` (weisse Schrift 5.1:1) für Primärknopf und aktiven Tab, Mango-Orange `#b24d00`
+  (4.9:1) für Hervorhebungen.
+- **Raum:** luftig, mittlere Radien.
+- **Abschluss:** Kistenrand (2px) und Holzschatten, Titel als Kistenetikett mit orangem Stempelrand. Sonne, Mangobäume
+  und Mango-Soldaten aus dem Plantage-Theme als Szenerie.
+
+### KOTH
+
+- **Schrift:** Inter für Text, Black Ops One (Schablone) für Titel; Titel, Labels und Knöpfe in Grossbuchstaben.
+- **Farbe:** dunkles Oliv `#171a0e` als Seite, Karten `#22261a` mit Text `#e9e4d0` (12.1:1). Signatur Signal-Orange
+  `#ff8a1f` mit dunkler Schrift (7.2:1) für Primärknopf und aktiven Tab, Funk-Grün `#7cff6b` für Hervorhebungen und Fokus.
+- **Raum:** dicht.
+- **Abschluss:** 2px-Linien in Oliv, fast eckig, Titel auf einer Platte mit Warnstreifen. Hügel mit Funkmast und je ein
+  Soldat jeder Fraktion als Szenerie.
+
+Die öffentliche Befehlsseite (`/s/<login>/`) hat in jedem Theme ihr eigenes Aussehen (`scenes/Info.tsx` des Themes).
+
 ## Layout: die Seite scrollt nie als Ganzes
 
 Gilt in jedem Skin. Titel und Navigation stehen fest, nur der Bereich darunter scrollt in sich (`.dashboard` ist

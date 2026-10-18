@@ -183,10 +183,139 @@
 /* Login as a creamy plaque, so it stays readable in front of sky and sun */
 :root[data-skin="urlaub"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
 
-/* Scenery behind the dashboard: visible only in the Urlaub skin */
+/* --- Plantage: mango plantation. Sky over rows of green field as the page, harvest-slip cards with a crate edge,
+       leaf green as signature, mango orange for emphasis, title as a crate label (scenery from Scenery.tsx) ------- */
+:root[data-skin="plantage"] {
+  color-scheme: light;
+  --bg: #fff6df;
+  --page: linear-gradient(180deg, #3aa0e0 0%, #c8ecff 40%, #8fbf5a 41%, #5f9a3a 58%, #8b5e3c 59%, #6e4a2e 100%) fixed;
+  --surface: #fff6df;
+  --surface-2: #fffbef;
+  --field: #ffffff;
+  --fg: #3a2410;
+  --fg-dim: #8a5a2b;
+  --line: #ecdcb4;
+  --border: #c8935a;
+  --heading: #2e7d32;
+  --title-color: #3a2410;
+  --accent: #2e7d32;
+  --accent-hover: #256628;
+  --on-accent: #ffffff;
+  --emph: #b24d00;
+  --glow: none;
+  --focus: #ff8c1a;
+  --error: #b42318;
+  --error-bg: #fff1ee;
+  --on-error: #ffffff;
+  --btn-bg: #fff6df;
+  --btn-fg: #3a2410;
+  --btn-border: #c8935a;
+  --btn-shadow: 0 3px 0 #7a4a24;
+  --btn-weight: 700;
+  --hover-bg: #ffe3b0;
+  --hover-fg: #3a2410;
+  --press: translateY(2px);
+  --border-w: 2px;
+  --radius: 18px;
+  --radius-sm: 10px;
+  --radius-btn: 12px;
+  --radius-check: 5px;
+  --shadow: 0 8px 0 rgba(122, 74, 36, 0.28), 0 16px 36px rgba(29, 94, 39, 0.25);
+  --font: "Baloo 2", "Nunito", system-ui, sans-serif;
+  --font-title: "Fredoka", "Baloo 2", system-ui, sans-serif;
+  --title-size: 30px;
+  --title-weight: 700;
+  --heading-weight: 700;
+  --title-case: none;
+  --label-case: none;
+  --btn-case: none;
+  --thumb-w: 20px;
+  --dash-max: min(1440px, calc(100vw - 2 * clamp(60px, 9vw, 200px)));
+  --checker: repeating-conic-gradient(#f1e4c2 0 25%, #fff6df 0 50%) 0 0 / 24px 24px;
+  --scroll-thumb: #c8935a;
+  --scroll-track: #fff6df;
+}
+/* Title as a crate label: wooden planks, a stamped mango-orange edge */
+:root[data-skin="plantage"] .dashboard h1 {
+  align-self: flex-start;
+  padding: 4px 22px;
+  background: repeating-linear-gradient(180deg, #c8935a 0 16px, #7a4a24 16px 18px);
+  border: 4px solid #7a4a24;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 3px #ff8c1a, 0 6px 0 rgba(58, 36, 16, 0.35);
+}
+:root[data-skin="plantage"] .btn:active:not(:disabled) { box-shadow: 0 1px 0 #7a4a24; }
+:root[data-skin="plantage"] .btn.primary { box-shadow: 0 3px 0 #1d5e27; }
+:root[data-skin="plantage"] .dashboard-nav { border-bottom: none; }
+:root[data-skin="plantage"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 12px; background: var(--surface); border: var(--border-w) solid var(--border); }
+
+/* --- KOTH: King of the Hill. Dark olive page, steel-olive cards, signal orange as signature, radio green for
+       emphasis, stencil title on hazard stripes, square corners (scenery from Scenery.tsx) ------------------------- */
+:root[data-skin="koth"] {
+  color-scheme: dark;
+  --bg: #171a0e;
+  --page: radial-gradient(900px 420px at 50% 110%, #4a5628 0%, transparent 70%), #171a0e;
+  --surface: #22261a;
+  --surface-2: #2a2f1f;
+  --field: #171a0e;
+  --fg: #e9e4d0;
+  --fg-dim: #a8a58f;
+  --line: #3a4026;
+  --border: #4b5320;
+  --heading: #7cff6b;
+  --title-color: #e9e4d0;
+  --accent: #ff8a1f;
+  --accent-hover: #ff9f45;
+  --on-accent: #1d1d1d;
+  --emph: #7cff6b;
+  --glow: none;
+  --focus: #7cff6b;
+  --error: #ff6b5e;
+  --error-bg: #2a1512;
+  --on-error: #1d1d1d;
+  --btn-bg: #2a2f1f;
+  --btn-fg: #e9e4d0;
+  --btn-border: #6b7a3a;
+  --btn-shadow: none;
+  --btn-weight: 700;
+  --hover-bg: #3a4026;
+  --hover-fg: #e9e4d0;
+  --press: translateY(1px);
+  --border-w: 2px;
+  --radius: 4px;
+  --radius-sm: 2px;
+  --radius-btn: 2px;
+  --radius-check: 2px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --font: "Inter", system-ui, sans-serif;
+  --font-title: "Black Ops One", "Stardos Stencil", "Inter", sans-serif;
+  --title-size: 30px;
+  --title-weight: 400;
+  --heading-weight: 700;
+  --title-case: uppercase;
+  --label-case: uppercase;
+  --btn-case: uppercase;
+  --thumb-w: 18px;
+  --dash-max: min(1440px, calc(100vw - 2 * clamp(60px, 9vw, 200px)));
+  --checker: repeating-conic-gradient(#2a2f1f 0 25%, #22261a 0 50%) 0 0 / 24px 24px;
+  --scroll-thumb: #6b7a3a;
+  --scroll-track: #171a0e;
+}
+/* Title stencilled on a plate with hazard stripes along its lower edge */
+:root[data-skin="koth"] .dashboard h1 {
+  align-self: flex-start;
+  padding: 4px 18px 10px;
+  letter-spacing: 0.06em;
+  background: linear-gradient(#4b5320, #4b5320) top / 100% calc(100% - 8px) no-repeat, repeating-linear-gradient(-45deg, #ff8a1f 0 10px, #171a0e 10px 20px);
+}
+:root[data-skin="koth"] .dashboard-nav { border-bottom: 2px solid #4b5320; }
+
+/* Scenery behind the dashboard: each themed skin shows its own, the others stay hidden */
 .skin-scenery { display: none; }
-:root[data-skin="urlaub"] .skin-scenery { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-:root[data-skin="urlaub"] .dashboard { position: relative; z-index: 1; }
+:root[data-skin="urlaub"] .skin-scenery-urlaub,
+:root[data-skin="plantage"] .skin-scenery-plantage,
+:root[data-skin="koth"] .skin-scenery-koth { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+:root[data-skin="urlaub"] .dashboard, :root[data-skin="plantage"] .dashboard, :root[data-skin="koth"] .dashboard { position: relative; z-index: 1; }
 .skin-sun { position: absolute; top: 2vh; right: 22vw; width: 110px; height: 110px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 60px 20px rgba(255, 210, 63, 0.55); }
 /* svg.: stronger than the theme's shape rule (.theme-urlaub .ul-shape, full width) */
 .skin-scenery svg.skin-palm { position: absolute; bottom: -2vh; width: clamp(160px, 18vw, 340px); }
@@ -195,10 +324,30 @@
 .skin-scenery .skin-palm .part-main { fill: var(--palmTrunk); }
 .skin-scenery .skin-palm .part-detail { fill: var(--palmLeaf); }
 .skin-scenery .skin-palm .part-line { stroke: var(--woodDark); stroke-width: 3; }
-/* Fruits sit at the top of the title row, between wooden sign and sun */
-.skin-fruits { position: absolute; top: 14px; left: 58%; translate: -50% 0; display: flex; gap: clamp(12px, 2vw, 32px); }
-.skin-fruit { display: block; width: clamp(34px, 3vw, 48px); }
-.skin-fruit:nth-child(even) { translate: 0 -10px; rotate: 8deg; }
-.skin-fruit:nth-child(odd) { rotate: -6deg; }
-@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-sun, .skin-fruits { display: none; } }
-@media (max-width: 1099px) { .skin-fruits { display: none; } }
+/* Figures of the theme (beach things, mango soldiers, soldiers) sit at the top of the title row */
+.skin-figures { position: absolute; top: 14px; left: 58%; translate: -50% 0; display: flex; gap: clamp(12px, 2vw, 32px); }
+.skin-figure { display: block; width: clamp(34px, 3vw, 48px); }
+.skin-figure:nth-child(even) { translate: 0 -10px; rotate: 8deg; }
+.skin-figure:nth-child(odd) { rotate: -6deg; }
+.skin-scenery-koth .skin-figure { rotate: 0deg; translate: 0 0; }
+
+/* Plantage: a mango tree with ripe mangos at each edge */
+.skin-scenery svg.skin-tree { position: absolute; bottom: -1vh; width: clamp(170px, 19vw, 360px); }
+.skin-scenery .skin-tree-left { left: -6vw; }
+.skin-scenery .skin-tree-right { right: -6vw; scale: -1 1; }
+.skin-scenery .skin-tree .part-main { fill: var(--trunk); }
+.skin-scenery .skin-tree .part-detail { fill: var(--leaf); }
+.skin-scenery .skin-tree .part-line { stroke: var(--leafDark); stroke-width: 5; }
+.skin-scenery .skin-tree-mango { fill: var(--mango); stroke: var(--mangoBlush); stroke-width: 2; }
+
+/* KOTH: the hill with radio mast and flag rises at the bottom edge */
+.skin-scenery svg.skin-hill { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; opacity: 0.55; }
+.skin-scenery .skin-hill .part-main { fill: var(--hillColor); }
+.skin-scenery .skin-hill .part-detail { fill: var(--hillDark); }
+.skin-scenery .skin-hill .part-line { stroke: var(--oliveDark); stroke-width: 8; }
+.skin-scenery svg.skin-tower { position: absolute; left: 50%; bottom: 23.4vw; /* hilltop: 450 of 600 in a 1920 wide hill */ width: clamp(50px, 5vw, 90px); translate: -50% 0; opacity: 0.7; }
+.skin-scenery .skin-tower .part-line { stroke: var(--steel); stroke-width: 4; }
+.skin-scenery .skin-tower .part-main { fill: var(--steel); }
+
+@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-scenery .skin-tree, .skin-sun, .skin-figures { display: none; } }
+@media (max-width: 1099px) { .skin-figures { display: none; } }

@@ -1,11 +1,10 @@
 // Check for skin.ts: which skin belongs to which theme and what the storage returns. Runs with npm test.
 import assert from "node:assert/strict";
+import { THEMES } from "../themes/registry.ts";
 import { applySkin, rememberedSkin, skinOf } from "./skin.ts";
 
 // Every built-in theme has its skin, everything else (also empty or broken) gets the one of the standard theme
-assert.equal(skinOf("matrix"), "matrix");
-assert.equal(skinOf("urlaub"), "urlaub");
-assert.equal(skinOf("standard"), "standard");
+for (const theme of THEMES) assert.equal(skinOf(theme.id), theme.id);
 assert.equal(skinOf("does-not-exist"), "standard");
 assert.equal(skinOf(null), "standard");
 
