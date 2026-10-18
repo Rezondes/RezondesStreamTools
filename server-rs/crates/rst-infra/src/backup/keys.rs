@@ -6,6 +6,7 @@ use std::path::{Path, PathBuf};
 use rst_app::backup::keys::KeyBackupStore;
 use rst_app::ports::StoreError;
 
+use crate::backup::remove_patiently;
 use crate::keys::sqlite::SqliteKeyStore;
 
 /// `RST_KEY_BACKUPS` names the folder, otherwise `<data>/key-backups`
@@ -56,11 +57,7 @@ impl KeyBackupStore for FolderKeyBackups {
     }
 
     async fn delete(&self, made_at: i64) -> Result<(), StoreError> {
-        match tokio::fs::remove_file(self.path(made_at)).await {
-            Ok(()) => Ok(()),
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
-            Err(error) => Err(StoreError::new(error)),
-        }
+        remove_patiently(&self.path(made_at)).await.map(|_| ()).map_err(StoreError::new)
     }
 }
 
@@ -91,5 +88,27 @@ mod tests {
         copy.close().await;
         run_key_backups(&backups, 1000 + 31 * EVERY_MS).await.expect("later");
         assert_eq!(backups.list().await.expect("list"), [1000 + 31 * EVERY_MS]);
+    }
+
+    /// Reproduces the flaky run on Windows: another process holds the old copy open without delete sharing for a
+    /// moment; deleting waits for it instead of failing
+    #[cfg(windows)]
+    #[tokio::test]
+    async fn delete_waits_for_a_copy_held_open_by_another_process() {
+        use std::os::windows::fs::OpenOptionsExt;
+
+        let folder = tempfile::tempdir().expect("temp folder");
+        let master = MasterKey::from_bytes([4; 32]);
+        let keys = SqliteKeyStore::open(&folder.path().join("keys.db"), master).await.expect("keys");
+        let backups = FolderKeyBackups::new(keys, &folder.path().join("key-backups"));
+        run_key_backups(&backups, 1000).await.expect("backup");
+        let held = std::fs::OpenOptions::new().read(true).share_mode(0).open(backups.path(1000)).expect("hold");
+        let release = std::thread::spawn(move || {
+            std::thread::sleep(std::time::Duration::from_millis(150));
+            drop(held);
+        });
+        backups.delete(1000).await.expect("delete after the release");
+        release.join().expect("release");
+        assert!(backups.list().await.expect("list").is_empty());
     }
 }

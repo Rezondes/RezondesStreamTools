@@ -21,6 +21,7 @@ use sqlx::{Row, SqlitePool};
 use zip::ZipWriter;
 use zip::write::SimpleFileOptions;
 
+use crate::backup::remove_patiently;
 use crate::backup::restore::{check, migration, restore};
 
 /// Version of the archive layout
@@ -272,11 +273,7 @@ impl BackupStore for ZipBackups {
         if !is_backup_id(id) {
             return Ok(false);
         }
-        match tokio::fs::remove_file(self.path(id)).await {
-            Ok(()) => Ok(true),
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(false),
-            Err(error) => Err(StoreError::new(error)),
-        }
+        remove_patiently(&self.path(id)).await.map_err(StoreError::new)
     }
 
     fn incoming(&self, id: &str) -> PathBuf {
