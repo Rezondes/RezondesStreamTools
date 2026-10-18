@@ -105,14 +105,24 @@ Läuft der Server, nutzt auch `npm run dev` dessen Anmeldung und Events (Proxy a
 ### Umstieg vom alten Node-Server
 
 Der alte Server legte die Profile unter `DATA/streamers/<login>/` ab (im selben Volume `tokens`). `rst import` übernimmt
-sie verschlüsselt in Datenbank, Schlüsselspeicher und Dateiordner und meldet, was übernommen wurde:
+sie verschlüsselt in Datenbank, Schlüsselspeicher und Dateiordner und meldet, was übernommen wurde. Das Skript macht den
+ganzen Umstieg in einem Schritt (auch unter Git Bash auf Windows):
 
 ```bash
-docker compose run --rm overlays rst import --from /data
+scripts/migrate.sh
 ```
 
+Für den öffentlichen Betrieb mit Caddy: `scripts/migrate.sh --public`. Es prüft `server.env` (`RST_MASTER_KEY`, mit
+`--public` auch `DOMAIN`), baut das Image, stoppt den Container, sichert das Volume als `migration-backups/data-<zeit>.tar.gz`,
+übergibt die Volumes dem Nutzer `rst` des neuen Images (der alte Container schrieb sie als ein anderer Nutzer), führt
+`rst import --from /data` aus (Ausgabe auch in `migration-backups/import-<zeit>.log`) und startet den Container wieder.
+Schlägt der Import fehl, bleibt der Container aus und die alten Profile sind unverändert. Meldet er nur Probleme mit
+einzelnen Einträgen, ist der Rest übernommen und der Container startet. `rst import` lässt sich ohne Dubletten wiederholen.
+
 Trigger mit regulären Ausdrücken, die Rückverweise oder Lookarounds nutzen, laufen im neuen Server nicht mehr; der
-Import nennt sie. Nach einem erfolgreichen Import können die alten Ordner unter `/data/streamers` gelöscht werden.
+Import nennt sie. Nach einem erfolgreichen Import können die alten Ordner unter `/data/streamers` gelöscht werden (den
+Befehl zeigt das Skript am Ende). `migration-backups/` enthält die alten Profile mit Tokens im Klartext: sicher
+aufbewahren oder löschen, wenn alles läuft.
 
 ### Öffentlicher Betrieb (Caddy, HTTPS)
 
