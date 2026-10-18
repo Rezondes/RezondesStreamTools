@@ -1,7 +1,7 @@
-// Check for banners.ts of the Südfrucht theme: both banners draw title and texts and look exactly the same after one
+// Check for banners.ts of the Urlaub theme: both banners draw title and texts and look exactly the same after one
 // loop (seamless GIF). A mock canvas records the calls. Runs with npm test.
 import assert from "node:assert/strict";
-import { drawSuedfruchtOfflineBanner, drawSuedfruchtProfileBanner, type SuedfruchtBannerOptions } from "./banners.ts";
+import { drawUrlaubOfflineBanner, drawUrlaubProfileBanner, type UrlaubBannerOptions } from "./banners.ts";
 
 // One gradient for all recordings, so equal pictures give equal calls
 const gradient = { addColorStop: () => {} };
@@ -16,7 +16,7 @@ function recorder() {
   return { context: context as unknown as CanvasRenderingContext2D, calls };
 }
 
-const options: SuedfruchtBannerOptions = {
+const options: UrlaubBannerOptions = {
   loop: 6, font: "Fredoka", titleFont: "Pacifico", skyTop: "#2fa8ec", skyBottom: "#b8ecff", eveningTop: "#ff5f6d", eveningBottom: "#ffc371",
   sun: "#ffd23f", sea: "#1fb5c9", seaDeep: "#0b6f8e", foam: "#f4fffd", sand: "#f2d49b", palmLeaf: "#2e9e4f", palmTrunk: "#8b5a2b",
   wood: "#d39a5c", woodDark: "#8a5527", textColor: "#ffffff", textOnWood: "#3b2412",
@@ -25,8 +25,8 @@ const options: SuedfruchtBannerOptions = {
 const texts = (calls: unknown[][]) => calls.filter(call => call[0] === "fillText").map(call => call[1]);
 
 for (const [draw, expected] of [
-  [drawSuedfruchtProfileBanner, ["Beach", "Sun and streams"]],
-  [drawSuedfruchtOfflineBanner, ["At the beach right now", "Follow the channel", "Live soon", "See you soon"]],
+  [drawUrlaubProfileBanner, ["Beach", "Sun and streams"]],
+  [drawUrlaubOfflineBanner, ["At the beach right now", "Follow the channel", "Live soon", "See you soon"]],
 ] as const) {
   // Title and texts are in the picture
   const frame = recorder();
@@ -38,4 +38,4 @@ for (const [draw, expected] of [
   assert.deepEqual(end.calls, frame.calls, draw.name);
 }
 
-console.log("suedfrucht banners ok");
+console.log("urlaub banners ok");

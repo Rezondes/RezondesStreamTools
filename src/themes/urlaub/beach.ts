@@ -1,4 +1,4 @@
-// Shapes of the beach backdrop and the symbols of the Südfrucht theme as SVG paths (text), plus path building blocks for stars,
+// Shapes of the beach backdrop and the symbols of the Urlaub theme as SVG paths (text), plus path building blocks for stars,
 // blossoms, circles and waves. Only shapes, no colors: the scenes color the parts via CSS classes (settings).
 // Check: beach.check.ts.
 

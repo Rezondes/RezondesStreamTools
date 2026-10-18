@@ -29,7 +29,7 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/core/params.ts": "reads the page URL once at load (browser entry)",
   "src/core/sound.ts": "Web Audio output",
   "src/themes/matrix/tones.ts": "Web Audio output",
-  "src/themes/suedfrucht/tones.ts": "Web Audio output",
+  "src/themes/urlaub/tones.ts": "Web Audio output",
   "src/dashboard/api.ts": "network client of the dashboard",
 };
 
@@ -46,6 +46,14 @@ for (const file of files.filter(file => TEXT.test(file))) {
   readFileSync(file, "utf8").split("\n").forEach((line, index) => {
     if (line.includes(EM_DASH)) failures.push(`${file}:${index + 1}: em dash (rule 11)`);
   });
+}
+
+// The theme Südfrucht is called Urlaub (plans/PLAN-URLAUB.md package 3): its old ID stays only in the rename rule of the
+// server with its test and in the plans that tell the history (joined, so this file does not contain it)
+const OLD_THEME_ID = ["sued", "frucht"].join("");
+const OLD_ID_ALLOWED = /^(plans\/|PLAN\.md$|RUST-PLAN\.md$|server-rs\/crates\/rst-domain\/src\/settings\/file\.rs$)/;
+for (const file of files.filter(file => (TEXT.test(file) || file.endsWith(".rs")) && !OLD_ID_ALLOWED.test(file))) {
+  if (readFileSync(file, "utf8").toLowerCase().includes(OLD_THEME_ID)) failures.push(`${file}: old theme ID ${OLD_THEME_ID}, the theme is called urlaub`);
 }
 
 // Rule 8: no bag names for files

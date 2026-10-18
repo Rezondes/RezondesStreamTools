@@ -87,7 +87,7 @@ const catalog = useMemo(() => [{ name: "wave", durationMs: values.waveMs, weight
 const actors = useMinimes({ catalog, reaction: null, widthPx: innerWidth });
 ```
 
-**Typen statt Farben** (Beispiel `suedfrucht`: Früchte): Das Schema bekommt `minimeVariants` (`MinimeVariantSet` aus
+**Typen statt Farben** (Beispiel `urlaub`: Früchte): Das Schema bekommt `minimeVariants` (`MinimeVariantSet` aus
 `src/core/theme.ts`: Befehl, z.B. `!frucht`, Bezeichnung und je Typ `id`, Name und Standard-Namen im Chat) und bindet
 statt `MINIME_FIELDS` die Felder `...MINIME_BASE_FIELDS` und `...minimeVariantFields(set)` ein (Gruppe `MINIME_VARIANTS`).
 Der Server vergibt dann Typen statt Farben; jedes Minime trägt `variant` (die id) und `color: null`. Ohne Wahl gibt es

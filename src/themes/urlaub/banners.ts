@@ -1,10 +1,10 @@
-// Twitch banners of the Südfrucht theme: profile banner (1200x480) as a beach panorama by day with channel name and text,
+// Twitch banners of the Urlaub theme: profile banner (1200x480) as a beach panorama by day with channel name and text,
 // offline banner (1920x1080) in the sunset with a wooden sign for title, text and lines. Waves, glitter and palms
 // move in a circle once per loop, so the GIF loops seamlessly. Pure functions of time.
 // Check: banners.check.ts.
 import { hash } from "../../core/hash.ts";
 
-export type SuedfruchtBannerOptions = {
+export type UrlaubBannerOptions = {
   loop: number; // seconds
   font: string;
   titleFont: string;
@@ -39,7 +39,7 @@ const round = (value: number) => Math.round(value * 100) / 100 + 0; // + 0 turns
 type Size = { width: number; height: number; horizon: number };
 
 // Sky, sun, sea with three waves, glitter and a sand strip
-function beach(context: CanvasRenderingContext2D, time: number, options: SuedfruchtBannerOptions, size: Size, sky: [string, string]) {
+function beach(context: CanvasRenderingContext2D, time: number, options: UrlaubBannerOptions, size: Size, sky: [string, string]) {
   const { width, height, horizon } = size;
   const phase = (time / options.loop) * TURN;
   const gradient = context.createLinearGradient(0, 0, 0, horizon);
@@ -79,7 +79,7 @@ function beach(context: CanvasRenderingContext2D, time: number, options: Suedfru
 }
 
 // Palm at the edge: trunk and leaves that sway with the loop
-function palm(context: CanvasRenderingContext2D, time: number, options: SuedfruchtBannerOptions, x: number, scale: number, mirror: boolean) {
+function palm(context: CanvasRenderingContext2D, time: number, options: UrlaubBannerOptions, x: number, scale: number, mirror: boolean) {
   context.save();
   context.translate(x, 0);
   context.scale(mirror ? -scale : scale, scale);
@@ -101,7 +101,7 @@ function centered(context: CanvasRenderingContext2D, text: string, y: number, wi
   context.fillText(text, round((width - context.measureText(text).width) / 2), y);
 }
 
-export function drawSuedfruchtProfileBanner(context: CanvasRenderingContext2D, time: number, options: SuedfruchtBannerOptions) {
+export function drawUrlaubProfileBanner(context: CanvasRenderingContext2D, time: number, options: UrlaubBannerOptions) {
   const size = { width: 1200, height: 480, horizon: 250 };
   beach(context, time, options, size, [options.skyTop, options.skyBottom]);
   palm(context, time, options, 70, 0.55, false);
@@ -114,7 +114,7 @@ export function drawSuedfruchtProfileBanner(context: CanvasRenderingContext2D, t
   centered(context, options.profileText, 270, size.width);
 }
 
-export function drawSuedfruchtOfflineBanner(context: CanvasRenderingContext2D, time: number, options: SuedfruchtBannerOptions) {
+export function drawUrlaubOfflineBanner(context: CanvasRenderingContext2D, time: number, options: UrlaubBannerOptions) {
   const size = { width: 1920, height: 1080, horizon: 600 };
   beach(context, time, options, size, [options.eveningTop, options.eveningBottom]);
   palm(context, time, options, 160, 1, false);

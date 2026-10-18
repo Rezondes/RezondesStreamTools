@@ -1,5 +1,5 @@
 // Check for beach.ts: path building blocks give valid, closed paths, every shape has parts with paths.
-// Runs with npm test (alone: node src/themes/suedfrucht/beach.check.ts).
+// Runs with npm test (alone: node src/themes/urlaub/beach.check.ts).
 import assert from "node:assert/strict";
 import { circle, CLOUD, GULL, ICON_NAMES, ICONS, LEAF, PALM, petals, PLANE, spikes, wavePath, type Shape } from "./beach.ts";
 
@@ -32,4 +32,4 @@ for (const shape of shapes) {
 }
 assert.deepEqual(ICON_NAMES, ["muschel", "seestern", "sonne", "welle", "hibiskus", "boot", "kokosnuss", "ananas"]);
 
-console.log("suedfrucht beach ok");
+console.log("urlaub beach ok");

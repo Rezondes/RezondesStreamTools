@@ -1,6 +1,6 @@
-//! Settings schema of the Südfrucht theme: southern tropical coast and sea look (sea, waves, sand, palms, wooden
-//! signs) for all scenes, stinger and banners, plus fruit minimes that hop (template: `src/themes/suedfrucht/settings.ts`,
-//! fruits from `src/themes/suedfrucht/fruits.ts`). Labels, groups and defaults are the German UI texts and stay equal
+//! Settings schema of the Urlaub theme: southern tropical coast and sea look (sea, waves, sand, palms, wooden
+//! signs) for all scenes, stinger and banners, plus fruit minimes that hop (template: `src/themes/urlaub/settings.ts`,
+//! fruits from `src/themes/urlaub/fruits.ts`). Labels, groups and defaults are the German UI texts and stay equal
 //! to the TypeScript schema (fixture test). The field list was ported once from the fixture.
 
 #![allow(clippy::too_many_lines, reason = "schema data: one line per field")]
@@ -556,10 +556,10 @@ fn personalize(login: &Login) -> SettingValues {
 }
 
 #[must_use]
-pub fn suedfrucht() -> Theme {
+pub fn urlaub() -> Theme {
     let schema = ThemeSchema {
-        id: "suedfrucht".to_owned(),
-        name: "Südfrucht".to_owned(),
+        id: "urlaub".to_owned(),
+        name: "Urlaub".to_owned(),
         fields: fields(),
         group_scenes: group_scenes(),
         minime_variants: Some(variants()),
@@ -575,7 +575,7 @@ mod tests {
 
     #[test]
     fn same_as_typescript() {
-        assert_same_as_fixture(&suedfrucht(), include_str!("../../tests/fixtures/suedfrucht.json"));
+        assert_same_as_fixture(&urlaub(), include_str!("../../tests/fixtures/urlaub.json"));
     }
 
     #[test]

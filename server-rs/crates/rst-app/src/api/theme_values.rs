@@ -55,7 +55,7 @@ mod tests {
     #[test]
     fn names_from_ids() {
         assert_eq!(values_name("standard"), "StandardValues");
-        assert_eq!(values_name("suedfrucht"), "SuedfruchtValues");
+        assert_eq!(values_name("urlaub"), "UrlaubValues");
     }
 
     #[test]

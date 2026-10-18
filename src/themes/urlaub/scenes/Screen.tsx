@@ -1,4 +1,4 @@
-// Full-screen scenes of the Südfrucht theme (Starting, BRB, Ending): beach backdrop per time of day, wooden sign with overline,
+// Full-screen scenes of the Urlaub theme (Starting, BRB, Ending): beach backdrop per time of day, wooden sign with overline,
 // title and subtitle, below it countdown, break time or next stream, rotating quotes and a ticker on an
 // airplane or as a wooden bar. Built for 1920x1080, scaled to any source size.
 // Stage, countdown, break time, quotes and parameters come from the screens context of the core (src/core/screens).
@@ -10,13 +10,13 @@ import { useStage } from "../../../core/screens/useStage.ts";
 import Beach, { type TimeOfDay } from "../Beach.tsx";
 import { PLANE } from "../beach.ts";
 import ShapeIcon from "../ShapeIcon.tsx";
-import { useSuedfrucht } from "../useSuedfrucht.ts";
+import { useUrlaub } from "../useUrlaub.ts";
 
 // fixed: seconds in ms for the rhythm of the quotes
 const SECOND_MS = 1000;
 
 export default function Screen({ kind }: { kind: ScreenKind }) {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   const stage = useStage();
   const { now, start, left, progress, away, ticker, next } = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
   const [eyebrow, title, note] = {

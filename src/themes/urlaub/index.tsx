@@ -1,15 +1,15 @@
-// Scenes of the Südfrucht theme for the theme list (src/themes/scenes.tsx) with its CSS. The theme brings all
+// Scenes of the Urlaub theme for the theme list (src/themes/scenes.tsx) with its CSS. The theme brings all
 // scenes itself, including the minimes (fruits). Every scene is loaded via React.lazy as its own chunk.
 import { lazy } from "react";
 import { screenScenes } from "../../core/screens/screenScenes.tsx";
 import type { ThemeView } from "../../core/theme.ts";
-import { suedfruchtSettings } from "./settings.ts";
+import { urlaubSettings } from "./settings.ts";
 import "./theme.css";
 
 const Screen = lazy(() => import("./scenes/Screen.tsx"));
 
-export const suedfruchtView: ThemeView = {
-  id: suedfruchtSettings.id,
+export const urlaubView: ThemeView = {
+  id: urlaubSettings.id,
   scenes: {
     ...screenScenes(Screen),
     alerts: lazy(() => import("./scenes/Alerts.tsx")),

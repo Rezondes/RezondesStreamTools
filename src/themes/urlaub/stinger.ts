@@ -1,4 +1,4 @@
-// Stinger of the Südfrucht theme: a big wave with a foam crest rolls into the picture from the left, covers everything in
+// Stinger of the Urlaub theme: a big wave with a foam crest rolls into the picture from the left, covers everything in
 // sea colors at the transition point (cut), briefly shows the text and a palm and rolls out to the right again. Before and after
 // transparent. Pure function of time, so it can be rendered frame by frame. Check: stinger.check.ts.
 import { clamp01, easeInOut } from "../../core/easing.ts";
@@ -7,7 +7,7 @@ export const WIDTH = 1920;
 export const HEIGHT = 1080;
 export const FPS = 60;
 
-export type SuedfruchtStingerOptions = {
+export type UrlaubStingerOptions = {
   duration: number; // Sekunden
   cut: number; // seconds, enter in OBS as transition point
   waves: number; // Wellenschichten
@@ -59,7 +59,7 @@ function drawPalm(context: CanvasRenderingContext2D, color: string) {
   }
 }
 
-export function drawSuedfruchtStinger(context: CanvasRenderingContext2D, time: number, options: SuedfruchtStingerOptions) {
+export function drawUrlaubStinger(context: CanvasRenderingContext2D, time: number, options: UrlaubStingerOptions) {
   const { cut, duration } = options;
   context.clearRect(0, 0, WIDTH, HEIGHT);
   const enter = easeInOut(clamp01(time / (cut * 0.9)));

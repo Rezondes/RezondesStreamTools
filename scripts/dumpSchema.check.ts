@@ -7,7 +7,7 @@ import { THEMES } from "../src/themes/registry.ts";
 import { FEATURES_FILE, featuresText, FIXTURES, fixtureText, SAMPLE_LOGINS, schemaFixture } from "./dumpSchema.ts";
 
 // All three themes, personalize as sample values for every sample login
-assert.deepEqual(THEMES.map(theme => theme.id), ["standard", "matrix", "suedfrucht"]);
+assert.deepEqual(THEMES.map(theme => theme.id), ["standard", "matrix", "urlaub"]);
 const standard = schemaFixture(THEMES[0]);
 assert.deepEqual(Object.keys(standard.personalize), [...SAMPLE_LOGINS]);
 assert.deepEqual(standard.personalize.neo, { channelName: "NEO" });

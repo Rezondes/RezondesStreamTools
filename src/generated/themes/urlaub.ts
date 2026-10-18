@@ -2,9 +2,9 @@
 import type { SoundValue } from "../SoundValue.ts";
 
 /**
- * Resolved settings of the theme "suedfrucht", one value per field of its schema
+ * Resolved settings of the theme "urlaub", one value per field of its schema
  */
-export type SuedfruchtValues = {
+export type UrlaubValues = {
   readonly channelName: string;
   readonly font: string;
   readonly titleFont: string;

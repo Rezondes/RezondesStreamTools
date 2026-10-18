@@ -27,10 +27,12 @@ pub struct PublicSettings {
     pub values: SettingValues,
 }
 
-/// Old theme IDs from saved files and their current name (`starter` is called `standard` since RST)
+/// Old theme IDs from saved files and their current name (`starter` is called `standard` since RST, `suedfrucht` is
+/// called `urlaub` since its minimes are beach things)
 fn current_id(id: &str) -> &str {
     match id {
         "starter" => "standard",
+        "suedfrucht" => "urlaub",
         other => other,
     }
 }
@@ -183,7 +185,7 @@ mod tests {
         assert!(rules(json!({ "theme": "standard", "values": { "matrix": { "minimeMax": 5 } } })).is_none());
         assert_eq!(rules(json!({ "theme": "matrix" })).and_then(|rules| rules.variants), None);
         let fruits =
-            |values: Value| rules(json!({ "theme": "suedfrucht", "values": { "suedfrucht": values } })).expect("rules");
+            |values: Value| rules(json!({ "theme": "urlaub", "values": { "urlaub": values } })).expect("rules");
         assert_eq!(fruits(json!({})).variants.map(|variants| variants.len()), Some(16));
         assert_eq!(fruits(json!({ "minimeNames_durian": "" })).variants.map(|variants| variants.len()), Some(15));
         assert_eq!(fruits(json!({})).commands.look, "!frucht");
@@ -203,9 +205,17 @@ mod tests {
 
     #[test]
     fn stored_hop_values_stay_after_the_fields_moved_to_the_core() {
-        let file =
-            parse_settings_file(&json!({ "theme": "suedfrucht", "values": { "suedfrucht": { "hopHeight": 50 } } }));
+        let file = parse_settings_file(&json!({ "theme": "urlaub", "values": { "urlaub": { "hopHeight": 50 } } }));
         assert_eq!(public_settings(&file).values.get("hopHeight"), Some(&SettingValue::Number(50.0)));
+    }
+
+    #[test]
+    fn suedfrucht_is_read_as_urlaub() {
+        let file =
+            parse_settings_file(&json!({ "theme": "suedfrucht", "values": { "suedfrucht": { "fruitSize": 120 } } }));
+        assert_eq!(file.theme, "urlaub");
+        assert_eq!(file.values.keys().collect::<Vec<_>>(), ["urlaub"]);
+        assert_eq!(public_settings(&file).values.get("fruitSize"), Some(&SettingValue::Number(120.0)));
     }
 
     #[test]

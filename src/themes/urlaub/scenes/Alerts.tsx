@@ -1,4 +1,4 @@
-// Alerts of the Südfrucht theme: postcard with stamp and postmark, surfboard on a wave or message in a bottle,
+// Alerts of the Urlaub theme: postcard with stamp and postmark, surfboard on a wave or message in a bottle,
 // per alert kind header, line, symbol and sound; plus hibiscus confetti, water splashes and the remaining time as a rope.
 // Texts, quote rule and sounds come from the alerts context of the core (src/core/alerts), here keys, symbols and
 // the beach look. Parameters: ?sound=0, ?volume=0.5
@@ -10,14 +10,14 @@ import { useAlerts } from "../../../core/hooks/useAlerts.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import type { Alert, AlertKind } from "../../../core/types.ts";
 import { ICONS, type IconName } from "../beach.ts";
-import type { SuedfruchtValues } from "../settings.ts";
+import type { UrlaubValues } from "../settings.ts";
 import ShapeIcon from "../ShapeIcon.tsx";
 import { playChime, playLeave } from "../tones.ts";
-import { useSuedfrucht } from "../useSuedfrucht.ts";
+import { useUrlaub } from "../useUrlaub.ts";
 
-type Key = keyof SuedfruchtValues;
+type Key = keyof UrlaubValues;
 const KEYS = alertTextKeys("Tag");
-// Südfrucht-specific: symbol on the stamp per alert kind
+// Urlaub-specific: symbol on the stamp per alert kind
 const ICONS_BY_KIND = {
   follow: "followIcon", sub: "subIcon", resub: "resubIcon", gift: "giftIcon", raid: "raidIcon", cheer: "cheerIcon", redeem: "redeemIcon", hype: "hypeIcon",
 } as const satisfies Record<AlertKind, Key>;
@@ -25,12 +25,12 @@ const ICONS_BY_KIND = {
 // fixed: number of water drops in the splash
 const DROPS = 9;
 
-function describe(alert: Alert, values: SuedfruchtValues) {
+function describe(alert: Alert, values: UrlaubValues) {
   return { ...describeAlert(alert, values, KEYS), icon: values[ICONS_BY_KIND[alert.kind]] as IconName, sound: values[ALERT_SOUND_KEYS[alert.kind]] };
 }
 
 export default function Alerts() {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   const { current, leaving } = useAlerts(values.alertDuration);
   return (
     <div className={`sf-alerts align-${values.alertAlign}`}>
@@ -41,7 +41,7 @@ export default function Alerts() {
 }
 
 function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   const { tag, line, icon, sound } = describe(alert, values);
   const closing = values.soundLeave;
   useAlertSounds(values.alertSound ? () => playChime(sound) : null, values.alertSound ? () => playLeave(closing) : null, leaving);

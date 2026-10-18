@@ -1,16 +1,16 @@
-// Check for settings.ts (schema of the Südfrucht theme): valid defaults, no dead key, required keys per
+// Check for settings.ts (schema of the Urlaub theme): valid defaults, no dead key, required keys per
 // group, colors and chat names for every fruit, every group mapped to a scene. Runs with npm test.
 import assert from "node:assert/strict";
 import { hasMinimes, minimeNamesKey } from "../../core/minimeFields.ts";
 import { auditTheme } from "../schemaAudit.ts";
 import { FRUIT_IDS } from "./fruits.ts";
-import { fruitColorKeys, suedfruchtSettings } from "./settings.ts";
+import { fruitColorKeys, urlaubSettings } from "./settings.ts";
 
-const fields = suedfruchtSettings.fields;
+const fields = urlaubSettings.fields;
 const keys = new Set(fields.map(field => field.key));
 
 // Valid defaults and no dead key (every one occurs in the theme code)
-const audit = auditTheme(suedfruchtSettings, import.meta.dirname);
+const audit = auditTheme(urlaubSettings, import.meta.dirname);
 assert.deepEqual(audit.errors, []);
 assert.deepEqual(audit.unused, [], `unused keys: ${audit.unused.join(", ")}`);
 
@@ -41,11 +41,11 @@ for (const id of FRUIT_IDS) {
 
 // Every group is mapped to its scenes (Allgemein applies everywhere)
 for (const group of new Set(fields.map(field => field.group))) {
-  if (group !== "Allgemein") assert.ok(group in (suedfruchtSettings.groupScenes ?? {}), `${group} without a scene`);
+  if (group !== "Allgemein") assert.ok(group in (urlaubSettings.groupScenes ?? {}), `${group} without a scene`);
 }
 
 // Minimes with fruits as variants
-assert.equal(hasMinimes(suedfruchtSettings), true);
-assert.equal(suedfruchtSettings.minimeVariants?.variants.length, 16);
+assert.equal(hasMinimes(urlaubSettings), true);
+assert.equal(urlaubSettings.minimeVariants?.variants.length, 16);
 
-console.log("suedfrucht settings ok");
+console.log("urlaub settings ok");

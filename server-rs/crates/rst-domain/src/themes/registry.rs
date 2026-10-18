@@ -7,7 +7,7 @@ use crate::settings::field::SettingValues;
 use crate::themes::matrix::matrix;
 use crate::themes::schema::ThemeSchema;
 use crate::themes::standard::standard;
-use crate::themes::suedfrucht::suedfrucht;
+use crate::themes::urlaub::urlaub;
 
 /// A built-in theme: its schema and the values it fills from the Twitch login on first login
 #[derive(Debug, Clone)]
@@ -18,7 +18,7 @@ pub struct Theme {
 
 pub const DEFAULT_THEME: &str = "standard";
 
-static THEMES: LazyLock<Vec<Theme>> = LazyLock::new(|| vec![standard(), matrix(), suedfrucht()]);
+static THEMES: LazyLock<Vec<Theme>> = LazyLock::new(|| vec![standard(), matrix(), urlaub()]);
 
 #[must_use]
 pub fn themes() -> &'static [Theme] {

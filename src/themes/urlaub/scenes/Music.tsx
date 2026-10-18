@@ -1,4 +1,4 @@
-// Spotify "Now Playing" of the Südfrucht theme: beach radio of wood, shell or a plain card, cover round or
+// Spotify "Now Playing" of the Urlaub theme: beach radio of wood, shell or a plain card, cover round or
 // square, header, title (long titles scroll back and forth), artist, album, progress as a wave line and a
 // wave equalizer. On pause or stop the player fades out (can be switched off). Visibility, progress, cover and
 // scrolling text come from the music context of the core (src/core/music). Parameters: ?demo
@@ -10,10 +10,10 @@ import { useTrackProgress } from "../../../core/music/useTrackProgress.ts";
 import type { Track } from "../../../core/types.ts";
 import { ICONS } from "../beach.ts";
 import ShapeIcon from "../ShapeIcon.tsx";
-import { useSuedfrucht } from "../useSuedfrucht.ts";
+import { useUrlaub } from "../useUrlaub.ts";
 
 export default function Music() {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   const { shown, visible, at } = useNowPlaying(values.musicHide);
   return (
     <div className={`sf-music sf-music-${values.musicStyle}`}>
@@ -25,7 +25,7 @@ export default function Music() {
 }
 
 function Playing({ track, at }: { track: Track; at: number }) {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   const { part } = useTrackProgress(track, at);
   const cover = useCover(track.cover);
   return (
@@ -46,7 +46,7 @@ function Playing({ track, at }: { track: Track; at: number }) {
 }
 
 function Idle() {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   return (
     <>
       <div className={`sf-cover sf-cover-empty cover-${values.coverShape}`}><ShapeIcon shape={ICONS.welle} /></div>
@@ -59,7 +59,7 @@ function Idle() {
 }
 
 function Equalizer() {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   return (
     <div className="sf-eq" aria-hidden="true">
       {Array.from({ length: values.equalizerBars }, (_, index) => <i key={index} style={{ "--i": index } as CSSProperties} />)}

@@ -5,7 +5,7 @@ import type { CSSProperties } from "react";
 import { hash } from "../../core/hash.ts";
 import { CLOUD, GULL, ICONS, PALM, wavePath } from "./beach.ts";
 import ShapeIcon from "./ShapeIcon.tsx";
-import { useSuedfrucht } from "./useSuedfrucht.ts";
+import { useUrlaub } from "./useUrlaub.ts";
 
 export type TimeOfDay = "morgen" | "mittag" | "abend" | "nacht";
 
@@ -20,7 +20,7 @@ const SPARKLES = 18;
 const SHELLS = [{ icon: ICONS.muschel, x: 18 }, { icon: ICONS.seestern, x: 63 }, { icon: ICONS.muschel, x: 82 }];
 
 export default function Beach({ time }: { time: TimeOfDay }) {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   const waves = WAVES.slice(WAVES.length - values.waveLayers);
   const palms = [
     ...Array.from({ length: values.palmsLeft }, (_, index) => ({ side: "left", index })),

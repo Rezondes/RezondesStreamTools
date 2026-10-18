@@ -11,4 +11,4 @@ pub mod minime_fields;
 pub mod registry;
 pub mod schema;
 pub mod standard;
-pub mod suedfrucht;
+pub mod urlaub;

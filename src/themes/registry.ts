@@ -6,13 +6,13 @@ import { matrixClips } from "./matrix/render.ts";
 import { matrixSettings } from "./matrix/settings.ts";
 import { standardClips } from "./standard/render.ts";
 import { standardSettings } from "./standard/settings.ts";
-import { suedfruchtClips } from "./suedfrucht/render.ts";
-import { suedfruchtSettings } from "./suedfrucht/settings.ts";
+import { urlaubClips } from "./urlaub/render.ts";
+import { urlaubSettings } from "./urlaub/settings.ts";
 
 export const THEME_MODULES: readonly ThemeModule[] = [
   { schema: standardSettings, clips: standardClips },
   { schema: matrixSettings, clips: matrixClips },
-  { schema: suedfruchtSettings, clips: suedfruchtClips },
+  { schema: urlaubSettings, clips: urlaubClips },
 ];
 
 export const THEMES: readonly ThemeSchema[] = THEME_MODULES.map(module => module.schema);

@@ -4,7 +4,7 @@ import { applySkin, rememberedSkin, skinOf } from "./skin.ts";
 
 // Every built-in theme has its skin, everything else (also empty or broken) gets the one of the standard theme
 assert.equal(skinOf("matrix"), "matrix");
-assert.equal(skinOf("suedfrucht"), "suedfrucht");
+assert.equal(skinOf("urlaub"), "urlaub");
 assert.equal(skinOf("standard"), "standard");
 assert.equal(skinOf("does-not-exist"), "standard");
 assert.equal(skinOf(null), "standard");
@@ -17,9 +17,9 @@ Object.assign(globalThis, {
   localStorage: { getItem: (key: string) => stored.get(key) ?? null, setItem: (key: string, value: string) => stored.set(key, value) },
 });
 assert.equal(rememberedSkin(), null);
-applySkin("suedfrucht");
-assert.equal(root.dataset.skin, "suedfrucht");
-assert.equal(rememberedSkin(), "suedfrucht");
+applySkin("urlaub");
+assert.equal(root.dataset.skin, "urlaub");
+assert.equal(rememberedSkin(), "urlaub");
 Object.assign(globalThis, { localStorage: { getItem: () => { throw new Error("gesperrt"); }, setItem: () => { throw new Error("gesperrt"); } } });
 applySkin("matrix");
 assert.equal(root.dataset.skin, "matrix");

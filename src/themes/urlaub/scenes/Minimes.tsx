@@ -1,4 +1,4 @@
-// Minimes of the Südfrucht theme: joined chatters as cartoon fruits with a face that hop across the beach,
+// Minimes of the Urlaub theme: joined chatters as cartoon fruits with a face that hop across the beach,
 // with the name on a wooden sign or a ribbon. Own animations: jumps of joy, pirouette, wobble, sunglasses,
 // looking around, sleeping; they react to chat with a juice splash. Who is in and what everyone does comes from
 // useMinimes. Transparent, recommended 1920x360 at the bottom edge of the picture. Parameters: ?demo, ?demo=<n>
@@ -10,14 +10,14 @@ import { hopStyle } from "../../../core/minimeHops.ts";
 import { params } from "../../../core/params.ts";
 import Fruit from "../Fruit.tsx";
 import { FRUIT_SET } from "../fruits.ts";
-import { useSuedfrucht } from "../useSuedfrucht.ts";
+import { useUrlaub } from "../useUrlaub.ts";
 import "../../../core/minimeHops.css";
 import "../minimes.css";
 
 const DEMO = params.has("demo");
 
 export default function Minimes() {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   // Width of the scene once on load (OBS source), it stays afterwards
   const [widthPx] = useState(() => innerWidth);
   const catalog = useMemo<MinimeAction[]>(() => [
@@ -39,7 +39,7 @@ export default function Minimes() {
 }
 
 function Character({ actor, fruit }: { actor: MinimeActor; fruit: string }) {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   // Position, movement, duration and facing from the core (actorStyle), plus the hops of the core (hopStyle)
   const style = { ...actorStyle(actor), ...hopStyle(actor, values.hopMs) } as CSSProperties;
   const run = actorRun(actor);

@@ -1,4 +1,4 @@
-// The fruits of the Südfrucht theme (minime variants): id, name, default names in chat, shape as SVG paths (text) and
+// The fruits of the Urlaub theme (minime variants): id, name, default names in chat, shape as SVG paths (text) and
 // position of the face. Colors come from the settings (fruit<Id>Main, fruit<Id>Detail, leaf, stem, outline).
 // Check: fruits.check.ts.
 import type { MinimeVariantSet } from "../../core/theme.ts";

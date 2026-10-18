@@ -31,12 +31,12 @@ for (const theme of THEMES) {
 assert.deepEqual(Object.keys(findTheme("matrix")!.personalize!("neo")), ["channelName", "logo"]);
 assert.deepEqual(findTheme("standard")!.personalize!("neo"), { channelName: "NEO" });
 
-// Matrix (colors) and Südfrucht (fruits as variants) have minimes, Standard does not
+// Matrix (colors) and Urlaub (fruits as variants) have minimes, Standard does not
 assert.equal(hasMinimes(findTheme("matrix")!), true);
 assert.equal(hasMinimes(findTheme("standard")!), false);
-assert.equal(hasMinimes(findTheme("suedfrucht")!), true);
-assert.equal(findTheme("suedfrucht")!.minimeVariants?.variants.length, 16);
-assert.deepEqual(findTheme("suedfrucht")!.personalize!("neo_42"), { channelName: "Neo_42" });
+assert.equal(hasMinimes(findTheme("urlaub")!), true);
+assert.equal(findTheme("urlaub")!.minimeVariants?.variants.length, 16);
+assert.deepEqual(findTheme("urlaub")!.personalize!("neo_42"), { channelName: "Neo_42" });
 
 // Every theme folder fulfills the contract twice: as ThemeModule in registry.ts (folder name = id) and with its
 // view <id>View in scenes.tsx; modules provide their schema and their clips

@@ -1,4 +1,4 @@
-// Built-in sounds of the Südfrucht theme: a small steel drum melody when an alert appears, a soft tone on
+// Built-in sounds of the Urlaub theme: a small steel drum melody when an alert appears, a soft tone on
 // fade-out. They apply when no own file is chosen in the settings; the volume comes from the sound field.
 import { beep, playSound } from "../../core/sound.ts";
 import type { SoundValue } from "../../core/theme.ts";

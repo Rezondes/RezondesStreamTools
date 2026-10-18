@@ -1,15 +1,15 @@
-// Commands page of the Südfrucht theme (public under /s/<login>/): the beach at the chosen time of day stays fixed in the
+// Commands page of the Urlaub theme (public under /s/<login>/): the beach at the chosen time of day stays fixed in the
 // background, in front of it wooden signs with the commands (fruits as minime variants). List, texts and intro come
 // from the info context of the core (useInfoPage), here only the beach look.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import Beach, { type TimeOfDay } from "../Beach.tsx";
-import { suedfruchtSettings } from "../settings.ts";
-import { suedfruchtNames, useSuedfrucht } from "../useSuedfrucht.ts";
+import { urlaubSettings } from "../settings.ts";
+import { urlaubNames, useUrlaub } from "../useUrlaub.ts";
 
 export default function Info() {
-  const values = useSuedfrucht();
-  const page = useInfoPage(values, suedfruchtNames(values), readMinimeOptions(values, suedfruchtSettings.minimeVariants).rules);
+  const values = useUrlaub();
+  const page = useInfoPage(values, urlaubNames(values), readMinimeOptions(values, urlaubSettings.minimeVariants).rules);
   if (!page) return null;
   return (
     <div className="sf-info">

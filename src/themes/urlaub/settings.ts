@@ -1,6 +1,6 @@
-// Settings schema of the Südfrucht theme: southern tropical coast and sea look (sea, waves, sand, palms,
+// Settings schema of the Urlaub theme: southern tropical coast and sea look (sea, waves, sand, palms,
 // wooden signs) for all scenes, stinger and banners, plus fruit minimes that hop. The only place of the theme with
-// fixed colors, texts and numbers. SuedfruchtValues is the type of the resolved values (useSuedfrucht).
+// fixed colors, texts and numbers. UrlaubValues is the type of the resolved values (useUrlaub).
 import { choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
@@ -266,7 +266,7 @@ const FIELDS = [
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
-export type { SuedfruchtValues } from "../../generated/themes/suedfrucht.ts";
+export type { UrlaubValues } from "../../generated/themes/urlaub.ts";
 
 // Main and detail color per fruit (keys fruit<Id>Main, fruit<Id>Detail; CSS in minimes.css)
 const FRUIT_DEFAULT_COLORS: Record<string, readonly [string, string]> = {
@@ -308,9 +308,9 @@ const GROUP_SCENES = {
 // On first login: channel name from the Twitch login (first letter upper case)
 const personalize = (login: string) => ({ channelName: capital(login) });
 
-export const suedfruchtSettings: ThemeSchema = {
-  id: "suedfrucht",
-  name: "Südfrucht",
+export const urlaubSettings: ThemeSchema = {
+  id: "urlaub",
+  name: "Urlaub",
   fields: [...FIELDS, ...minimeVariantFields(FRUIT_SET), ...FRUIT_COLOR_FIELDS],
   groupScenes: GROUP_SCENES,
   personalize,

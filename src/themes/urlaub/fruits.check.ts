@@ -1,5 +1,5 @@
 // Check for fruits.ts: exactly the 16 fruits, valid ids, unique names in chat, each with a fruit area and
-// a face in the shape. Runs with npm test (alone: node src/themes/suedfrucht/fruits.check.ts).
+// a face in the shape. Runs with npm test (alone: node src/themes/urlaub/fruits.check.ts).
 import assert from "node:assert/strict";
 import { normalizeName } from "../../core/minimes.ts";
 import { findFruit, FRUIT_IDS, FRUIT_SET, FRUITS } from "./fruits.ts";
@@ -27,4 +27,4 @@ assert.deepEqual(FRUIT_SET.variants.map(variant => variant.id), FRUIT_IDS);
 assert.equal(findFruit("papaya").label, "Papaya");
 assert.equal(findFruit("does-not-exist").id, "mango");
 
-console.log("suedfrucht fruits ok");
+console.log("urlaub fruits ok");

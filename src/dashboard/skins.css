@@ -114,9 +114,9 @@
 :root[data-skin="matrix"] .btn::before { content: "[\00a0"; }
 :root[data-skin="matrix"] .btn::after { content: "\00a0]"; }
 
-/* --- Südfrucht: beach. Sky, sea and sand as the page, creamy cards with a wooden edge, sea blue as signature,
+/* --- Urlaub: beach. Sky, sea and sand as the page, creamy cards with a wooden edge, sea blue as signature,
        round buttons, title as a wooden sign, palms at the edge (scenery from Dashboard.tsx) ------------------------- */
-:root[data-skin="suedfrucht"] {
+:root[data-skin="urlaub"] {
   color-scheme: light;
   --bg: #fff8ea;
   --page: linear-gradient(180deg, #2fa8ec 0%, #8fd9f5 38%, #b8ecff 55%, #1fb5c9 56%, #0b6f8e 74%, #f2d49b 75%, #d9b26f 100%) fixed;
@@ -167,7 +167,7 @@
   --scroll-track: #fff8ea;
 }
 /* Title as a wooden sign with script font */
-:root[data-skin="suedfrucht"] .dashboard h1 {
+:root[data-skin="urlaub"] .dashboard h1 {
   align-self: flex-start;
   padding: 6px 22px 2px;
   font-family: "Pacifico", "Baloo 2", cursive;
@@ -176,19 +176,19 @@
   border-radius: 14px;
   box-shadow: 0 6px 0 rgba(59, 36, 18, 0.35);
 }
-:root[data-skin="suedfrucht"] .btn:active:not(:disabled) { box-shadow: 0 1px 0 #8a5527; }
-:root[data-skin="suedfrucht"] .btn.primary { box-shadow: 0 3px 0 #073f52; }
-:root[data-skin="suedfrucht"] .dashboard-nav { border-bottom: none; }
+:root[data-skin="urlaub"] .btn:active:not(:disabled) { box-shadow: 0 1px 0 #8a5527; }
+:root[data-skin="urlaub"] .btn.primary { box-shadow: 0 3px 0 #073f52; }
+:root[data-skin="urlaub"] .dashboard-nav { border-bottom: none; }
 
 /* Login as a creamy plaque, so it stays readable in front of sky and sun */
-:root[data-skin="suedfrucht"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
+:root[data-skin="urlaub"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
 
-/* Scenery behind the dashboard: visible only in the Südfrucht skin */
+/* Scenery behind the dashboard: visible only in the Urlaub skin */
 .skin-scenery { display: none; }
-:root[data-skin="suedfrucht"] .skin-scenery { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-:root[data-skin="suedfrucht"] .dashboard { position: relative; z-index: 1; }
+:root[data-skin="urlaub"] .skin-scenery { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+:root[data-skin="urlaub"] .dashboard { position: relative; z-index: 1; }
 .skin-sun { position: absolute; top: 2vh; right: 22vw; width: 110px; height: 110px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 60px 20px rgba(255, 210, 63, 0.55); }
-/* svg.: stronger than the theme's shape rule (.theme-suedfrucht .sf-shape, full width) */
+/* svg.: stronger than the theme's shape rule (.theme-urlaub .sf-shape, full width) */
 .skin-scenery svg.skin-palm { position: absolute; bottom: -2vh; width: clamp(160px, 18vw, 340px); }
 .skin-scenery .skin-palm-left { left: -7vw; }
 .skin-scenery .skin-palm-right { right: -7vw; scale: -1 1; }

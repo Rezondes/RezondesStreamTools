@@ -1,8 +1,8 @@
-// Check for stinger.ts of the Südfrucht theme: at the transition point the wave covers the whole picture, at the start and end
+// Check for stinger.ts of the Urlaub theme: at the transition point the wave covers the whole picture, at the start and end
 // nothing is visible, the same time gives the same draw commands. A mock canvas records everything.
 // Runs with npm test.
 import assert from "node:assert/strict";
-import { drawSuedfruchtStinger, HEIGHT, WIDTH, type SuedfruchtStingerOptions } from "./stinger.ts";
+import { drawUrlaubStinger, HEIGHT, WIDTH, type UrlaubStingerOptions } from "./stinger.ts";
 
 function recorder() {
   const calls: unknown[][] = [];
@@ -15,21 +15,21 @@ function recorder() {
   return { context: context as unknown as CanvasRenderingContext2D, calls, rects };
 }
 
-const options: SuedfruchtStingerOptions = {
+const options: UrlaubStingerOptions = {
   duration: 1.4, cut: 0.7, waves: 3, foam: true, palm: true, text: "Strand", font: "Pacifico",
   sea: "#1fb5c9", seaDeep: "#0b6f8e", foamColor: "#f4fffd", textColor: "#ffffff", palmColor: "#3b2412",
 };
 
 // At the transition point: one area over the whole picture, plus the text
 const atCut = recorder();
-drawSuedfruchtStinger(atCut.context, options.cut, options);
+drawUrlaubStinger(atCut.context, options.cut, options);
 assert.ok(atCut.rects().some(([x, y, width, height]) => x <= 0 && x + width >= WIDTH && y <= 0 && height >= HEIGHT));
 assert.ok(atCut.calls.some(call => call[0] === "fillText" && call[1] === "Strand"));
 
 // No area and no text at the start and at the end
 for (const time of [0, options.duration]) {
   const empty = recorder();
-  drawSuedfruchtStinger(empty.context, time, options);
+  drawUrlaubStinger(empty.context, time, options);
   assert.deepEqual(empty.rects().filter(([, , width]) => width > 0), [], `t = ${time}`);
   assert.ok(!empty.calls.some(call => call[0] === "fillText"), `t = ${time}`);
 }
@@ -37,8 +37,8 @@ for (const time of [0, options.duration]) {
 // Same time, same draw commands (no randomness)
 const first = recorder();
 const second = recorder();
-drawSuedfruchtStinger(first.context, 0.37, options);
-drawSuedfruchtStinger(second.context, 0.37, options);
+drawUrlaubStinger(first.context, 0.37, options);
+drawUrlaubStinger(second.context, 0.37, options);
 assert.deepEqual(first.calls, second.calls);
 
-console.log("suedfrucht stinger ok");
+console.log("urlaub stinger ok");

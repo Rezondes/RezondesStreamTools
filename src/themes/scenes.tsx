@@ -4,8 +4,8 @@
 import type { ThemeView } from "../core/theme.ts";
 import { matrixView } from "./matrix/index.tsx";
 import { standardView } from "./standard/index.tsx";
-import { suedfruchtView } from "./suedfrucht/index.tsx";
+import { urlaubView } from "./urlaub/index.tsx";
 
-const THEME_VIEWS: readonly ThemeView[] = [standardView, matrixView, suedfruchtView];
+const THEME_VIEWS: readonly ThemeView[] = [standardView, matrixView, urlaubView];
 
 export const THEME_SCENES: Record<string, ThemeView["scenes"]> = Object.fromEntries(THEME_VIEWS.map(view => [view.id, view.scenes]));

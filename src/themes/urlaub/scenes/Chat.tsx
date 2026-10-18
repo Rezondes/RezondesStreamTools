@@ -1,14 +1,14 @@
-// Chat of the Südfrucht theme: messages as rising bubbles, wooden planks or shells, new ones at the bottom (or
+// Chat of the Urlaub theme: messages as rising bubbles, wooden planks or shells, new ones at the bottom (or
 // top), badges as small signs, optional gentle swaying and fading. Messages (useChat), badge texts
 // (badgeLabel) and content with emotes (MessageParts) come from the core, here the beach look.
 import { badgeLabel } from "../../../core/chat/chat.ts";
 import MessageParts from "../../../core/chat/MessageParts.tsx";
 import { useChat } from "../../../core/hooks/useChat.ts";
 import type { ChatMessage } from "../../../core/types.ts";
-import { useSuedfrucht } from "../useSuedfrucht.ts";
+import { useUrlaub } from "../useUrlaub.ts";
 
 export default function Chat() {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   const messages = useChat(values.chatMax);
   return (
     <div className={`sf-chat sf-chat-${values.chatStyle} sf-chat-${values.chatAlign}${values.chatSway ? " sway" : ""}`}>
@@ -18,7 +18,7 @@ export default function Chat() {
 }
 
 function Row({ message }: { message: ChatMessage }) {
-  const values = useSuedfrucht();
+  const values = useUrlaub();
   return (
     <div className={`sf-row${values.chatFade > 0 ? " fades" : ""}${message.action ? " action" : ""}`}>
       <span className="sf-msg">
