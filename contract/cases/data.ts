@@ -92,4 +92,13 @@ export const DATA_CASES: Case[] = [
       await readStream(stream, '"login":"trinity"', () => chatLine(context, "trinity", "!join"));
     },
   },
+  {
+    name: "minimes: faction and role in one join reach the overlays (koth)",
+    async run(context) {
+      const key = context.memory.get("overlayKey") ?? fail("no overlay key from an earlier case");
+      await expect(await request(context, "/api/settings", post({ theme: "koth", values: {} })), 200, { theme: "string", values: "object" });
+      const stream = await request(context, `/s/${STREAMER.login}/events?key=${key}`);
+      await readStream(stream, '"variant":"medic","team":"blufor"', () => chatLine(context, "morpheus", "!join blau medic"));
+    },
+  },
 ];

@@ -2,6 +2,8 @@
 // src/core/theme.ts), for server and dashboard. A new theme is registered here and with its view in scenes.tsx
 // (registry.check.ts checks that every theme folder is in both); the first one is the default.
 import type { ThemeModule, ThemeSchema } from "../core/theme.ts";
+import { kothClips } from "./koth/render.ts";
+import { kothSettings } from "./koth/settings.ts";
 import { matrixClips } from "./matrix/render.ts";
 import { matrixSettings } from "./matrix/settings.ts";
 import { plantageClips } from "./plantage/render.ts";
@@ -16,6 +18,7 @@ export const THEME_MODULES: readonly ThemeModule[] = [
   { schema: matrixSettings, clips: matrixClips },
   { schema: urlaubSettings, clips: urlaubClips },
   { schema: plantageSettings, clips: plantageClips },
+  { schema: kothSettings, clips: kothClips },
 ];
 
 export const THEMES: readonly ThemeSchema[] = THEME_MODULES.map(module => module.schema);

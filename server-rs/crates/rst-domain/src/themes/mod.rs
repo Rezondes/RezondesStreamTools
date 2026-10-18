@@ -6,6 +6,7 @@ pub mod core_fields;
 #[cfg(test)]
 mod fixture;
 pub mod info_fields;
+pub mod koth;
 pub mod matrix;
 pub mod minime_fields;
 pub mod plantage;

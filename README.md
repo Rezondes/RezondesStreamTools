@@ -222,7 +222,10 @@ Surfbrett oder Flaschenpost, Chat als Luftblasen, Planken oder Muscheln, Rahmen 
 Strandradio, Wellen-Stinger, Strand-Banner und hüpfende Strand-Minimes) und `plantage` (Südfrucht-Plantage: Mangofeld
 mit Baumreihen, Erde, Kisten und dem Streamer als Mangopflücker; Alerts als Kistenetikett, Erntezettel oder Korb, Chat
 als Zettel, Bretter oder Blätter, Rahmen als Kiste, Holz oder Seil, Transistorradio, Mango-Stinger, Feld-Banner und
-Mango-Soldaten als Minimes, die hüpfen und sich beschiessen). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
+Mango-Soldaten als Minimes, die hüpfen und sich beschiessen) und `koth` (King of the Hill: Militär-Look nach dem
+KOTH-Modus aus Arma; Hügel mit Funkmast und Flagge, Sandsäcke und Tarnnetze, Einsatzbesprechung mit Lagekarte,
+Alerts als Funkspruch, Akte oder Schild, Chat als Funkprotokoll mit Zeitstempel, Helmkamera- oder Zielfernrohr-Rahmen,
+Feldfunkgerät, Rauchgranaten-Stinger mit Flaggenwechsel und Soldaten-Minimes in drei Fraktionen). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
 
 ## Minimes (Szene `minimes`)
 
@@ -256,6 +259,13 @@ Freudensprung, wenn der Chatter schreibt. Ab und zu schiesst eine Mango auf eine
 nie per Chatbefehl): nur, wenn ein freier Medic da ist; ein Treffer spritzt Mangosaft, die Mango kippt mit
 Kreuzchen-Augen um, und der Medic hüpft hin und belebt sie wieder (sonst steht sie nach der Liegezeit von selbst auf).
 Medics schiessen nicht und werden nie getroffen; der Grenadier trifft mit einer kleinen Explosion.
+
+In `koth` sind es kleine Soldaten mit Helm, Uniform in der Fraktionsfarbe und der Waffe ihrer Rolle (dieselben fünf
+Rollen). Sie stehen auf festen Plätzen am Hügel (Standard "Plätze: slots", "Häufigkeit: wandern" 0) und bewegen sich
+nur auf der Stelle (anvisieren, nachladen, Deckung, hinlegen, umschauen, salutieren, jubeln bei Chat). Geschossen wird
+nur auf andere Fraktionen und nur, wenn ein freier Medic der Fraktion des Ziels da ist; ein Getroffener fällt in einer
+Staubwolke um, der Medic kriecht hin. Oben zeigt die Szene, welche Fraktion den Hügel hält (die mit den meisten
+Soldaten, bei Gleichstand "umkämpft").
 
 Themes mit Fraktionen (z.B. King of the Hill) haben zusätzlich `!team <fraktion>`. Rolle und Fraktion gehen auch in
 einem Befehl, die Reihenfolge ist egal: `!join blau medic` oder `!join medic blau`. Ohne Angabe kommt der Chatter in die
