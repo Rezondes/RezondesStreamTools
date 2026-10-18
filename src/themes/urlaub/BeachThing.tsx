@@ -7,7 +7,7 @@ export default function BeachThing({ id, faces }: { id: string; faces: boolean }
   const thing = findThing(id);
   const { x, y, size } = thing.face;
   return (
-    <svg className={`sf-thing thing-${thing.id}`} viewBox="0 -4 100 104" aria-hidden="true">
+    <svg className={`ul-thing thing-${thing.id}`} viewBox="0 -4 100 104" aria-hidden="true">
       {thing.parts.map((part, index) => <path key={index} className={`thing-${part.kind}`} d={part.d} />)}
       {faces && (
         <g className="thing-face" transform={`translate(${x} ${y}) scale(${size})`}>

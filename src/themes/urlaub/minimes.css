@@ -21,8 +21,8 @@
 .theme-urlaub .thing-strandtasche { --main: var(--thingStrandtascheMain); --detail: var(--thingStrandtascheDetail); }
 
 
-.theme-urlaub .sf-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-urlaub .sf-minime {
+.theme-urlaub .ul-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-urlaub .ul-minime {
   position: absolute;
   left: 0;
   bottom: var(--fruitGround);
@@ -33,7 +33,7 @@
   transform: translateX(calc(var(--x) - 50%));
   transition: transform var(--move) linear;
 }
-.theme-urlaub .sf-minime-name {
+.theme-urlaub .ul-minime-name {
   margin-bottom: var(--name-gap, 4px);
   padding: var(--name-padding, 1px 10px);
   font-size: var(--fruitNameSize);
@@ -42,9 +42,9 @@
 }
 .theme-urlaub .name-schild { background: var(--wood); border: var(--name-border, 2px) solid var(--woodDark); border-radius: var(--name-round, 6px); color: var(--textOnWood); }
 .theme-urlaub .name-band { background: var(--accent); border-radius: var(--pill, 999px); color: var(--textColor); }
-.theme-urlaub .sf-minime-body { position: relative; width: 100%; transform-origin: 50% 100%; animation: urlaub-minime-breathe var(--breathe, 2.4s) ease-in-out infinite alternate; }
-.theme-urlaub .sf-minime-flip { transform: scaleX(var(--facing)); }
-.theme-urlaub .sf-minime-shadow {
+.theme-urlaub .ul-minime-body { position: relative; width: 100%; transform-origin: 50% 100%; animation: urlaub-minime-breathe var(--breathe, 2.4s) ease-in-out infinite alternate; }
+.theme-urlaub .ul-minime-flip { transform: scaleX(var(--facing)); }
+.theme-urlaub .ul-minime-shadow {
   width: 70%;
   height: var(--shadow-height, 10px);
   margin-top: calc(-1 * var(--shadow-overlap, 5px));
@@ -53,7 +53,7 @@
 }
 
 /* Beach thing (BeachThing.tsx) */
-.theme-urlaub .sf-thing { display: block; width: 100%; height: auto; overflow: visible; }
+.theme-urlaub .ul-thing { display: block; width: 100%; height: auto; overflow: visible; }
 /* evenodd: a second subpath cuts a hole (rings) */
 .theme-urlaub .thing-body { fill: var(--main); fill-rule: evenodd; stroke: var(--fruitOutline); stroke-width: var(--fruitOutlineWidth); stroke-linejoin: round; }
 .theme-urlaub .thing-detail { fill: var(--detail); }
@@ -68,24 +68,24 @@
 .theme-urlaub .thing-glasses { display: none; fill: var(--sunglasses); }
 
 /* Hopping while walking comes from the core (minimeHops.css); breathing pauses meanwhile */
-.theme-urlaub .action-walk .sf-minime-body { animation: none; }
+.theme-urlaub .action-walk .ul-minime-body { animation: none; }
 
 /* Own animations */
-.theme-urlaub .action-bounce .sf-minime-body { animation: urlaub-minime-bounce calc(var(--action-ms) / 3) ease-in-out 3; }
-.theme-urlaub .action-bounce .sf-minime-shadow { animation: urlaub-minime-shadow calc(var(--action-ms) / 3) ease-in-out 3; }
-.theme-urlaub .action-spin .sf-minime-flip { animation: urlaub-minime-spin calc(var(--action-ms) / var(--spinTurns)) linear var(--spinTurns); }
-.theme-urlaub .action-wobble .sf-minime-body { animation: urlaub-minime-wobble var(--action-ms) ease-in-out both; }
+.theme-urlaub .action-bounce .ul-minime-body { animation: urlaub-minime-bounce calc(var(--action-ms) / 3) ease-in-out 3; }
+.theme-urlaub .action-bounce .ul-minime-shadow { animation: urlaub-minime-shadow calc(var(--action-ms) / 3) ease-in-out 3; }
+.theme-urlaub .action-spin .ul-minime-flip { animation: urlaub-minime-spin calc(var(--action-ms) / var(--spinTurns)) linear var(--spinTurns); }
+.theme-urlaub .action-wobble .ul-minime-body { animation: urlaub-minime-wobble var(--action-ms) ease-in-out both; }
 .theme-urlaub .action-sunglasses .thing-glasses { display: inline; animation: urlaub-minime-glasses var(--action-ms) ease both; }
 .theme-urlaub .action-look .thing-eyes { animation: urlaub-minime-look var(--action-ms) ease-in-out both; }
-.theme-urlaub .action-sleep .sf-minime-body { animation: urlaub-minime-doze var(--action-ms) ease-in-out both; }
+.theme-urlaub .action-sleep .ul-minime-body { animation: urlaub-minime-doze var(--action-ms) ease-in-out both; }
 .theme-urlaub .action-sleep .thing-eyes, .theme-urlaub .action-sleep .thing-mouth { display: none; }
 .theme-urlaub .action-sleep .thing-sleepy, .theme-urlaub .action-sleep .thing-snore { display: inline; }
-.theme-urlaub .sf-minime-zz { position: absolute; top: 0; right: 0; color: var(--textColor); font-weight: 700; animation: urlaub-minime-zz var(--zz-time, 2s) ease-out infinite; }
+.theme-urlaub .ul-minime-zz { position: absolute; top: 0; right: 0; color: var(--textColor); font-weight: 700; animation: urlaub-minime-zz var(--zz-time, 2s) ease-out infinite; }
 
 /* Reaction to chat: a big jump with water splashes in the main color */
-.theme-urlaub .action-splash .sf-minime-body { animation: urlaub-minime-splash var(--action-ms) ease-out both; }
-.theme-urlaub .sf-juice { position: absolute; left: 50%; top: 40%; }
-.theme-urlaub .sf-juice i {
+.theme-urlaub .action-splash .ul-minime-body { animation: urlaub-minime-splash var(--action-ms) ease-out both; }
+.theme-urlaub .ul-juice { position: absolute; left: 50%; top: 40%; }
+.theme-urlaub .ul-juice i {
   position: absolute;
   width: var(--juice-drop, 10px);
   aspect-ratio: 1;
@@ -95,12 +95,12 @@
 }
 
 /* Appearing and disappearing (settings) */
-.theme-urlaub .enter-fallen .action-enter .sf-minime-body { animation: urlaub-minime-drop var(--action-ms) cubic-bezier(0.4, 0, 0.6, 1.4) both; }
-.theme-urlaub .enter-blenden .action-enter .sf-minime-body { animation: urlaub-minime-fade-in var(--action-ms) ease-out both; }
-.theme-urlaub .action-enter .sf-minime-name { animation: urlaub-minime-fade-in var(--action-ms) ease-out both; }
-.theme-urlaub .exit-wegspringen .action-exit .sf-minime-body { animation: urlaub-minime-leap var(--action-ms) ease-in forwards; }
-.theme-urlaub .exit-versinken .action-exit .sf-minime-body { animation: urlaub-minime-sink var(--action-ms) ease-in forwards; }
-.theme-urlaub .action-exit .sf-minime-name, .theme-urlaub .action-exit .sf-minime-shadow { animation: urlaub-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-urlaub .enter-fallen .action-enter .ul-minime-body { animation: urlaub-minime-drop var(--action-ms) cubic-bezier(0.4, 0, 0.6, 1.4) both; }
+.theme-urlaub .enter-blenden .action-enter .ul-minime-body { animation: urlaub-minime-fade-in var(--action-ms) ease-out both; }
+.theme-urlaub .action-enter .ul-minime-name { animation: urlaub-minime-fade-in var(--action-ms) ease-out both; }
+.theme-urlaub .exit-wegspringen .action-exit .ul-minime-body { animation: urlaub-minime-leap var(--action-ms) ease-in forwards; }
+.theme-urlaub .exit-versinken .action-exit .ul-minime-body { animation: urlaub-minime-sink var(--action-ms) ease-in forwards; }
+.theme-urlaub .action-exit .ul-minime-name, .theme-urlaub .action-exit .ul-minime-shadow { animation: urlaub-minime-fade-out var(--action-ms) ease-in forwards; }
 
 @keyframes urlaub-minime-breathe { from { scale: 1 1; } to { scale: 1.03 0.97; } }
 @keyframes urlaub-minime-blink { 0%, 95%, 100% { scale: 1 1; } 97.5% { scale: 1 0.1; } }

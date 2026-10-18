@@ -11,7 +11,7 @@ export default function Chat() {
   const values = useUrlaub();
   const messages = useChat(values.chatMax);
   return (
-    <div className={`sf-chat sf-chat-${values.chatStyle} sf-chat-${values.chatAlign}${values.chatSway ? " sway" : ""}`}>
+    <div className={`ul-chat ul-chat-${values.chatStyle} ul-chat-${values.chatAlign}${values.chatSway ? " sway" : ""}`}>
       {messages.map(message => <Row key={message.id} message={message} />)}
     </div>
   );
@@ -20,11 +20,11 @@ export default function Chat() {
 function Row({ message }: { message: ChatMessage }) {
   const values = useUrlaub();
   return (
-    <div className={`sf-row${values.chatFade > 0 ? " fades" : ""}${message.action ? " action" : ""}`}>
-      <span className="sf-msg">
-        {values.chatBadges && message.badges.map(badge => <span key={badge} className="sf-badge">{badgeLabel(badge, values)}</span>)}
-        <b className="sf-user">{message.user}</b>
-        <MessageParts parts={message.parts} emoteClassName="sf-emote" />
+    <div className={`ul-row${values.chatFade > 0 ? " fades" : ""}${message.action ? " action" : ""}`}>
+      <span className="ul-msg">
+        {values.chatBadges && message.badges.map(badge => <span key={badge} className="ul-badge">{badgeLabel(badge, values)}</span>)}
+        <b className="ul-user">{message.user}</b>
+        <MessageParts parts={message.parts} emoteClassName="ul-emote" />
       </span>
     </div>
   );

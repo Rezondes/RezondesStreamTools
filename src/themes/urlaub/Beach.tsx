@@ -27,36 +27,36 @@ export default function Beach({ time }: { time: TimeOfDay }) {
     ...Array.from({ length: values.palmsRight }, (_, index) => ({ side: "right", index })),
   ];
   return (
-    <div className={`sf-beach time-${time}`} aria-hidden="true">
-      <div className="sf-sky" />
-      <div className="sf-sun" />
+    <div className={`ul-beach time-${time}`} aria-hidden="true">
+      <div className="ul-sky" />
+      <div className="ul-sun" />
       {values.clouds && Array.from({ length: values.cloudCount }, (_, index) => (
-        <div key={index} className="sf-cloud" style={{ "--i": index, "--y": hash(index * 7 + 1), "--size": hash(index * 7 + 2) } as CSSProperties}>
+        <div key={index} className="ul-cloud" style={{ "--i": index, "--y": hash(index * 7 + 1), "--size": hash(index * 7 + 2) } as CSSProperties}>
           <ShapeIcon shape={CLOUD} />
         </div>
       ))}
-      {values.boat && <div className="sf-boat"><ShapeIcon shape={ICONS.boot} /></div>}
-      <svg className="sf-sea" viewBox={`0 0 ${STAGE.width} ${STAGE.height}`} preserveAspectRatio="none">
-        <rect className="sf-sea-deep" x="0" y={WAVES[0].top - WAVES[0].amplitude} width={STAGE.width} height={STAGE.height} />
+      {values.boat && <div className="ul-boat"><ShapeIcon shape={ICONS.boot} /></div>}
+      <svg className="ul-sea" viewBox={`0 0 ${STAGE.width} ${STAGE.height}`} preserveAspectRatio="none">
+        <rect className="ul-sea-deep" x="0" y={WAVES[0].top - WAVES[0].amplitude} width={STAGE.width} height={STAGE.height} />
         {waves.map(wave => (
-          <path key={wave.name} className={`sf-wave sf-wave-${wave.name}`} d={wavePath(STAGE.waveWidth, wave.amplitude * values.waveHeight, STAGE.wavelength, wave.top, STAGE.height)} />
+          <path key={wave.name} className={`ul-wave ul-wave-${wave.name}`} d={wavePath(STAGE.waveWidth, wave.amplitude * values.waveHeight, STAGE.wavelength, wave.top, STAGE.height)} />
         ))}
         {values.sparkles && Array.from({ length: SPARKLES }, (_, index) => (
-          <circle key={index} className="sf-sparkle" cx={hash(index * 13 + 5) * STAGE.width} cy={660 + hash(index * 13 + 6) * 200} r={2 + hash(index * 13 + 7) * 3} style={{ "--i": index } as CSSProperties} />
+          <circle key={index} className="ul-sparkle" cx={hash(index * 13 + 5) * STAGE.width} cy={660 + hash(index * 13 + 6) * 200} r={2 + hash(index * 13 + 7) * 3} style={{ "--i": index } as CSSProperties} />
         ))}
       </svg>
-      <div className="sf-sand">
+      <div className="ul-sand">
         {values.shells && SHELLS.map((shell, index) => (
-          <div key={index} className="sf-shell" style={{ "--x": shell.x, "--i": index } as CSSProperties}><ShapeIcon shape={shell.icon} /></div>
+          <div key={index} className="ul-shell" style={{ "--x": shell.x, "--i": index } as CSSProperties}><ShapeIcon shape={shell.icon} /></div>
         ))}
-        {values.sandName && <span className="sf-sand-name">{values.channelName}</span>}
+        {values.sandName && <span className="ul-sand-name">{values.channelName}</span>}
       </div>
       {palms.map(palm => (
-        <div key={`${palm.side}-${palm.index}`} className={`sf-palm sf-palm-${palm.side}`} style={{ "--i": palm.index } as CSSProperties}>
+        <div key={`${palm.side}-${palm.index}`} className={`ul-palm ul-palm-${palm.side}`} style={{ "--i": palm.index } as CSSProperties}>
           <ShapeIcon shape={PALM} />
         </div>
       ))}
-      {values.gulls && <div className="sf-gulls"><ShapeIcon shape={GULL} /><ShapeIcon shape={GULL} /></div>}
+      {values.gulls && <div className="ul-gulls"><ShapeIcon shape={GULL} /><ShapeIcon shape={GULL} /></div>}
     </div>
   );
 }

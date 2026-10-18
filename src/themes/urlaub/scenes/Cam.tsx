@@ -10,14 +10,14 @@ const CORNERS = ["top-left", "bottom-right", "top-right", "bottom-left"] as cons
 export default function Cam() {
   const values = useUrlaub();
   return (
-    <div className={`sf-cam sf-cam-${values.camStyle}${values.camLeafSway ? " sway" : ""}`}>
-      <div className="sf-cam-frame" />
+    <div className={`ul-cam ul-cam-${values.camStyle}${values.camLeafSway ? " sway" : ""}`}>
+      <div className="ul-cam-frame" />
       {CORNERS.slice(0, values.camLeaves).map(corner => (
-        <div key={corner} className={`sf-cam-leaf ${corner}`}><ShapeIcon shape={LEAF} /></div>
+        <div key={corner} className={`ul-cam-leaf ${corner}`}><ShapeIcon shape={LEAF} /></div>
       ))}
-      {values.camFlower && <div className="sf-cam-flower"><ShapeIcon shape={ICONS.hibiskus} /></div>}
-      <span className="sf-cam-label sf-wood">{fillTemplate(values.camLabel, urlaubNames(values))}</span>
-      {values.camLive && <span className="sf-cam-live"><ShapeIcon shape={ICONS.seestern} />{values.camLiveText}</span>}
+      {values.camFlower && <div className="ul-cam-flower"><ShapeIcon shape={ICONS.hibiskus} /></div>}
+      <span className="ul-cam-label ul-wood">{fillTemplate(values.camLabel, urlaubNames(values))}</span>
+      {values.camLive && <span className="ul-cam-live"><ShapeIcon shape={ICONS.seestern} />{values.camLiveText}</span>}
     </div>
   );
 }

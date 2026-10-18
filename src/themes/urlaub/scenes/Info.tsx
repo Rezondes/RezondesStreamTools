@@ -12,22 +12,22 @@ export default function Info() {
   const page = useInfoPage(values, urlaubNames(values), readMinimeOptions(values, urlaubSettings.minimeVariants).rules);
   if (!page) return null;
   return (
-    <div className="sf-info">
-      <div className="sf-info-backdrop"><Beach time={values.timeInfo as TimeOfDay} /></div>
-      <main className="sf-info-column">
-        <header className="sf-wood sf-info-sign">
-          <h1 className="sf-title">{page.title}</h1>
+    <div className="ul-info">
+      <div className="ul-info-backdrop"><Beach time={values.timeInfo as TimeOfDay} /></div>
+      <main className="ul-info-column">
+        <header className="ul-wood ul-info-sign">
+          <h1 className="ul-title">{page.title}</h1>
           <p>{page.intro}</p>
         </header>
-        {page.sections.length === 0 && <p className="sf-wood sf-info-board">{page.empty}</p>}
+        {page.sections.length === 0 && <p className="ul-wood ul-info-board">{page.empty}</p>}
         {page.sections.map(section => (
-          <section key={section.id} className="sf-wood sf-info-board">
-            <h2 className="sf-eyebrow">{section.heading}</h2>
+          <section key={section.id} className="ul-wood ul-info-board">
+            <h2 className="ul-eyebrow">{section.heading}</h2>
             {section.entries.map((entry, index) => (
-              <article key={index} className="sf-info-entry">
-                {entry.command && <b className="sf-info-command">{entry.command}</b>}
+              <article key={index} className="ul-info-entry">
+                {entry.command && <b className="ul-info-command">{entry.command}</b>}
                 {entry.text && <p>{entry.text}</p>}
-                {entry.details.map(detail => <p key={detail} className="sf-info-detail">{detail}</p>)}
+                {entry.details.map(detail => <p key={detail} className="ul-info-detail">{detail}</p>)}
               </article>
             ))}
           </section>

@@ -12,7 +12,7 @@
 }
 
 /* Wood: planks with joints, dark edge */
-.theme-urlaub .sf-wood {
+.theme-urlaub .ul-wood {
   background: repeating-linear-gradient(180deg, var(--wood) 0 var(--plank, 44px), var(--woodDark) var(--plank, 44px) calc(var(--plank, 44px) + var(--plank-gap, 3px)));
   border: var(--wood-border, 5px) solid var(--woodDark);
   border-radius: var(--radius);
@@ -21,18 +21,18 @@
 }
 
 /* Shapes from beach.ts: colors per place further below, lines without fill */
-.theme-urlaub .sf-shape { display: block; width: 100%; height: auto; overflow: visible; }
-.theme-urlaub .sf-shape .part-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: var(--line-width, 4); }
+.theme-urlaub .ul-shape { display: block; width: 100%; height: auto; overflow: visible; }
+.theme-urlaub .ul-shape .part-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: var(--line-width, 4); }
 
 /* --- Backdrop ------------------------------------------------------------------------------------------------ */
-.theme-urlaub .sf-screen { position: fixed; inset: 0; overflow: hidden; background: var(--seaDeep); }
-.theme-urlaub .sf-beach { position: absolute; inset: 0; overflow: hidden; }
+.theme-urlaub .ul-screen { position: fixed; inset: 0; overflow: hidden; background: var(--seaDeep); }
+.theme-urlaub .ul-beach { position: absolute; inset: 0; overflow: hidden; }
 .theme-urlaub .time-morgen { --sky-top: var(--skyMorningTop); --sky-bottom: var(--skyMorningBottom); --sun-x: 22%; --sun-y: 50%; --light: var(--sun); }
 .theme-urlaub .time-mittag { --sky-top: var(--skyDayTop); --sky-bottom: var(--skyDayBottom); --sun-x: 72%; --sun-y: 16%; --light: var(--sun); }
 .theme-urlaub .time-abend { --sky-top: var(--skyEveningTop); --sky-bottom: var(--skyEveningBottom); --sun-x: 78%; --sun-y: 52%; --light: var(--sun); }
 .theme-urlaub .time-nacht { --sky-top: var(--skyNightTop); --sky-bottom: var(--skyNightBottom); --sun-x: 80%; --sun-y: 16%; --light: var(--moon); }
-.theme-urlaub .sf-sky { position: absolute; inset: 0; background: linear-gradient(var(--sky-top), var(--sky-bottom) 62%); }
-.theme-urlaub .sf-sun {
+.theme-urlaub .ul-sky { position: absolute; inset: 0; background: linear-gradient(var(--sky-top), var(--sky-bottom) 62%); }
+.theme-urlaub .ul-sun {
   position: absolute;
   left: var(--sun-x);
   top: var(--sun-y);
@@ -43,7 +43,7 @@
   translate: -50% -50%;
   box-shadow: 0 0 calc(var(--sunGlow) * var(--glow-size, 8vmin)) var(--light);
 }
-.theme-urlaub .sf-cloud {
+.theme-urlaub .ul-cloud {
   position: absolute;
   left: 0;
   top: calc(var(--y) * 30%);
@@ -52,19 +52,19 @@
   animation: urlaub-drift var(--cloudSpeed) linear infinite;
   animation-delay: calc(var(--i) * var(--cloudSpeed) / -4 - var(--y) * var(--cloudSpeed));
 }
-.theme-urlaub .sf-cloud .part-main { fill: var(--foam); }
-.theme-urlaub .sf-boat { position: absolute; left: 60%; top: calc(60% - var(--boat-size, 5vw) * 0.85); width: var(--boat-size, 5vw); animation: urlaub-bob var(--bob, 4s) ease-in-out infinite alternate; }
-.theme-urlaub .sf-boat .part-main { fill: var(--woodDark); }
-.theme-urlaub .sf-boat .part-detail { fill: var(--foam); }
-.theme-urlaub .sf-boat .part-line { stroke: var(--woodDark); }
-.theme-urlaub .sf-sea { position: absolute; inset: 0; width: 100%; height: 100%; }
-.theme-urlaub .sf-sea-deep { fill: var(--seaDeep); }
-.theme-urlaub .sf-wave { transform-box: fill-box; animation: urlaub-waves var(--waveSpeed) linear infinite; }
-.theme-urlaub .sf-wave-far { fill: color-mix(in srgb, var(--sea) 55%, var(--seaDeep)); animation-duration: calc(var(--waveSpeed) * 1.6); }
-.theme-urlaub .sf-wave-mid { fill: color-mix(in srgb, var(--sea) 80%, var(--seaDeep)); animation-duration: calc(var(--waveSpeed) * 1.25); animation-direction: reverse; }
-.theme-urlaub .sf-wave-near { fill: var(--sea); stroke: var(--foam); stroke-width: var(--foam-width, 4); }
-.theme-urlaub .sf-sparkle { fill: var(--foam); animation: urlaub-twinkle var(--twinkle, 2.4s) ease-in-out infinite; animation-delay: calc(var(--i) * var(--twinkle, 2.4s) / -7); }
-.theme-urlaub .sf-sand {
+.theme-urlaub .ul-cloud .part-main { fill: var(--foam); }
+.theme-urlaub .ul-boat { position: absolute; left: 60%; top: calc(60% - var(--boat-size, 5vw) * 0.85); width: var(--boat-size, 5vw); animation: urlaub-bob var(--bob, 4s) ease-in-out infinite alternate; }
+.theme-urlaub .ul-boat .part-main { fill: var(--woodDark); }
+.theme-urlaub .ul-boat .part-detail { fill: var(--foam); }
+.theme-urlaub .ul-boat .part-line { stroke: var(--woodDark); }
+.theme-urlaub .ul-sea { position: absolute; inset: 0; width: 100%; height: 100%; }
+.theme-urlaub .ul-sea-deep { fill: var(--seaDeep); }
+.theme-urlaub .ul-wave { transform-box: fill-box; animation: urlaub-waves var(--waveSpeed) linear infinite; }
+.theme-urlaub .ul-wave-far { fill: color-mix(in srgb, var(--sea) 55%, var(--seaDeep)); animation-duration: calc(var(--waveSpeed) * 1.6); }
+.theme-urlaub .ul-wave-mid { fill: color-mix(in srgb, var(--sea) 80%, var(--seaDeep)); animation-duration: calc(var(--waveSpeed) * 1.25); animation-direction: reverse; }
+.theme-urlaub .ul-wave-near { fill: var(--sea); stroke: var(--foam); stroke-width: var(--foam-width, 4); }
+.theme-urlaub .ul-sparkle { fill: var(--foam); animation: urlaub-twinkle var(--twinkle, 2.4s) ease-in-out infinite; animation-delay: calc(var(--i) * var(--twinkle, 2.4s) / -7); }
+.theme-urlaub .ul-sand {
   position: absolute;
   left: -5%;
   right: -5%;
@@ -74,11 +74,11 @@
   border-radius: 50% 50% 0 0 / var(--dune, 70px) var(--dune, 70px) 0 0;
   box-shadow: 0 calc(-1 * var(--foam-line, 6px)) 0 var(--foam);
 }
-.theme-urlaub .sf-shell { position: absolute; left: calc(var(--x) * 1%); top: 28%; width: var(--shell-size, 3.4vw); rotate: calc(var(--i) * 25deg - 20deg); }
-.theme-urlaub .sf-shell .part-main { fill: color-mix(in srgb, var(--accent2) 70%, var(--sand)); }
-.theme-urlaub .sf-shell .part-detail { fill: var(--accent); }
-.theme-urlaub .sf-shell .part-line { stroke: var(--woodDark); }
-.theme-urlaub .sf-sand-name {
+.theme-urlaub .ul-shell { position: absolute; left: calc(var(--x) * 1%); top: 28%; width: var(--shell-size, 3.4vw); rotate: calc(var(--i) * 25deg - 20deg); }
+.theme-urlaub .ul-shell .part-main { fill: color-mix(in srgb, var(--accent2) 70%, var(--sand)); }
+.theme-urlaub .ul-shell .part-detail { fill: var(--accent); }
+.theme-urlaub .ul-shell .part-line { stroke: var(--woodDark); }
+.theme-urlaub .ul-sand-name {
   position: absolute;
   left: 40%;
   top: 16%;
@@ -88,7 +88,7 @@
   rotate: -4deg;
   opacity: 0.75;
 }
-.theme-urlaub .sf-palm {
+.theme-urlaub .ul-palm {
   position: absolute;
   bottom: 3%;
   width: calc(var(--palm-width, 22vw) * var(--palmSize));
@@ -96,16 +96,16 @@
   animation: urlaub-sway var(--palmSwaySpeed) ease-in-out infinite alternate;
   animation-delay: calc(var(--i) * var(--palmSwaySpeed) / -3);
 }
-.theme-urlaub .sf-palm-left { left: calc(var(--i) * var(--palm-step, 11vw) - var(--palm-edge, 6vw)); }
-.theme-urlaub .sf-palm-right { right: calc(var(--i) * var(--palm-step, 11vw) - var(--palm-edge, 6vw)); scale: -1 1; }
-.theme-urlaub .sf-palm .part-main { fill: var(--palmTrunk); }
-.theme-urlaub .sf-palm .part-detail { fill: var(--palmLeaf); }
-.theme-urlaub .sf-palm .part-line { stroke: var(--woodDark); stroke-width: var(--trunk-line, 3); }
-.theme-urlaub .sf-gulls { position: absolute; top: 16%; left: 0; display: flex; gap: var(--gull-gap, 2vw); width: var(--gull-size, 7vw); animation: urlaub-fly var(--gullEvery) linear infinite; }
-.theme-urlaub .sf-gulls .part-line { stroke: var(--textOnWood); stroke-width: var(--gull-line, 3); }
+.theme-urlaub .ul-palm-left { left: calc(var(--i) * var(--palm-step, 11vw) - var(--palm-edge, 6vw)); }
+.theme-urlaub .ul-palm-right { right: calc(var(--i) * var(--palm-step, 11vw) - var(--palm-edge, 6vw)); scale: -1 1; }
+.theme-urlaub .ul-palm .part-main { fill: var(--palmTrunk); }
+.theme-urlaub .ul-palm .part-detail { fill: var(--palmLeaf); }
+.theme-urlaub .ul-palm .part-line { stroke: var(--woodDark); stroke-width: var(--trunk-line, 3); }
+.theme-urlaub .ul-gulls { position: absolute; top: 16%; left: 0; display: flex; gap: var(--gull-gap, 2vw); width: var(--gull-size, 7vw); animation: urlaub-fly var(--gullEvery) linear infinite; }
+.theme-urlaub .ul-gulls .part-line { stroke: var(--textOnWood); stroke-width: var(--gull-line, 3); }
 
 /* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
-.theme-urlaub .sf-stage {
+.theme-urlaub .ul-stage {
   /* Position, size and scaling: stage-box from src/core/screens/stage.css */
   display: flex;
   flex-direction: column;
@@ -113,7 +113,7 @@
   gap: var(--stage-gap, 28px);
   padding-top: var(--sign-top, 170px);
 }
-.theme-urlaub .sf-clock {
+.theme-urlaub .ul-clock {
   position: absolute;
   top: var(--clock-top, 32px);
   right: var(--clock-right, 44px);
@@ -124,9 +124,9 @@
   font-size: var(--clock-size, 28px);
   font-variant-numeric: tabular-nums;
 }
-.theme-urlaub .sf-sign { position: relative; width: var(--signWidth); padding: var(--sign-padding, 34px 56px 42px); text-align: center; }
-.theme-urlaub .sf-sign-haengend { transform-origin: 50% calc(-1 * var(--rope, 170px)); animation: urlaub-swing var(--swing, 7s) ease-in-out infinite alternate; }
-.theme-urlaub .sf-sign-haengend::before, .theme-urlaub .sf-sign-haengend::after {
+.theme-urlaub .ul-sign { position: relative; width: var(--signWidth); padding: var(--sign-padding, 34px 56px 42px); text-align: center; }
+.theme-urlaub .ul-sign-haengend { transform-origin: 50% calc(-1 * var(--rope, 170px)); animation: urlaub-swing var(--swing, 7s) ease-in-out infinite alternate; }
+.theme-urlaub .ul-sign-haengend::before, .theme-urlaub .ul-sign-haengend::after {
   content: "";
   position: absolute;
   bottom: 100%;
@@ -134,9 +134,9 @@
   height: var(--rope, 170px);
   background: var(--rope-pattern);
 }
-.theme-urlaub .sf-sign-haengend::before { left: 14%; }
-.theme-urlaub .sf-sign-haengend::after { right: 14%; }
-.theme-urlaub .sf-sign-pfahl::after {
+.theme-urlaub .ul-sign-haengend::before { left: 14%; }
+.theme-urlaub .ul-sign-haengend::after { right: 14%; }
+.theme-urlaub .ul-sign-pfahl::after {
   content: "";
   position: absolute;
   left: 50%;
@@ -147,8 +147,8 @@
   background: var(--woodDark);
   z-index: -1;
 }
-.theme-urlaub .sf-eyebrow { font-size: var(--eyebrow-size, 32px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--woodDark); }
-.theme-urlaub .sf-title {
+.theme-urlaub .ul-eyebrow { font-size: var(--eyebrow-size, 32px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--woodDark); }
+.theme-urlaub .ul-title {
   margin: var(--title-margin, 6px 0);
   font-family: var(--titleFont), cursive;
   font-size: var(--titleSize);
@@ -157,13 +157,13 @@
   color: var(--textOnWood);
   text-shadow: 0 var(--title-shadow, 3px) 0 color-mix(in srgb, var(--wood) 50%, var(--foam));
 }
-.theme-urlaub .sf-note { font-size: var(--note-size, 32px); }
-.theme-urlaub .sf-board { display: flex; flex-direction: column; align-items: center; gap: var(--board-gap, 12px); min-width: var(--board-width, 520px); padding: var(--board-padding, 16px 40px); }
-.theme-urlaub .sf-big { font-size: var(--big-size, 80px); font-variant-numeric: tabular-nums; }
-.theme-urlaub .sf-next { font-size: var(--next-size, 40px); }
-.theme-urlaub .sf-progress { position: relative; width: var(--progress-width, 520px); }
-.theme-urlaub .sf-progress-welle { height: var(--progress-height, 24px); border-radius: var(--pill, 999px); background: color-mix(in srgb, var(--seaDeep) 30%, transparent); overflow: hidden; }
-.theme-urlaub .sf-progress-welle span {
+.theme-urlaub .ul-note { font-size: var(--note-size, 32px); }
+.theme-urlaub .ul-board { display: flex; flex-direction: column; align-items: center; gap: var(--board-gap, 12px); min-width: var(--board-width, 520px); padding: var(--board-padding, 16px 40px); }
+.theme-urlaub .ul-big { font-size: var(--big-size, 80px); font-variant-numeric: tabular-nums; }
+.theme-urlaub .ul-next { font-size: var(--next-size, 40px); }
+.theme-urlaub .ul-progress { position: relative; width: var(--progress-width, 520px); }
+.theme-urlaub .ul-progress-welle { height: var(--progress-height, 24px); border-radius: var(--pill, 999px); background: color-mix(in srgb, var(--seaDeep) 30%, transparent); overflow: hidden; }
+.theme-urlaub .ul-progress-welle span {
   position: absolute;
   inset: 0 auto 0 0;
   width: calc(var(--part) * 100%);
@@ -171,8 +171,8 @@
   border-radius: inherit;
   transition: width var(--tick, 1s) linear;
 }
-.theme-urlaub .sf-progress-seil { height: var(--rope-thickness, 8px); margin: var(--buoy-room, 12px) 0; border-radius: var(--pill, 999px); background: var(--rope-pattern); }
-.theme-urlaub .sf-progress-seil span {
+.theme-urlaub .ul-progress-seil { height: var(--rope-thickness, 8px); margin: var(--buoy-room, 12px) 0; border-radius: var(--pill, 999px); background: var(--rope-pattern); }
+.theme-urlaub .ul-progress-seil span {
   position: absolute;
   top: 50%;
   left: calc(var(--part) * 100%);
@@ -184,7 +184,7 @@
   border: var(--buoy-border, 3px) solid var(--woodDark);
   transition: left var(--tick, 1s) linear;
 }
-.theme-urlaub .sf-saying {
+.theme-urlaub .ul-saying {
   max-width: var(--signWidth);
   padding: var(--saying-padding, 10px 28px);
   border-radius: var(--radius);
@@ -194,11 +194,11 @@
   box-shadow: var(--shadow);
   animation: urlaub-unroll var(--fadeDuration) ease-out both;
 }
-.theme-urlaub .sf-plane { position: absolute; top: var(--plane-top, 8%); left: 0; display: flex; align-items: center; white-space: nowrap; animation: urlaub-plane var(--tickerSpeed) linear infinite; }
-.theme-urlaub .sf-plane .sf-shape { width: var(--plane-size, 7vw); }
-.theme-urlaub .sf-plane .part-main { fill: var(--foam); stroke: var(--woodDark); stroke-width: var(--plane-line, 2); }
-.theme-urlaub .sf-plane .part-detail { fill: var(--seaDeep); }
-.theme-urlaub .sf-banner {
+.theme-urlaub .ul-plane { position: absolute; top: var(--plane-top, 8%); left: 0; display: flex; align-items: center; white-space: nowrap; animation: urlaub-plane var(--tickerSpeed) linear infinite; }
+.theme-urlaub .ul-plane .ul-shape { width: var(--plane-size, 7vw); }
+.theme-urlaub .ul-plane .part-main { fill: var(--foam); stroke: var(--woodDark); stroke-width: var(--plane-line, 2); }
+.theme-urlaub .ul-plane .part-detail { fill: var(--seaDeep); }
+.theme-urlaub .ul-banner {
   margin-right: var(--banner-rope, 2vw);
   padding: var(--banner-padding, 0.3em 1em);
   background: var(--foam);
@@ -207,19 +207,19 @@
   font-size: var(--banner-size, 2.2vw);
   font-weight: 700;
 }
-.theme-urlaub .sf-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--ticker-padding, 10px 0); overflow: hidden; white-space: nowrap; font-size: var(--ticker-size, 2vw); border-radius: 0; }
-.theme-urlaub .sf-ticker span { display: inline-block; padding-left: 100%; animation: urlaub-marquee var(--tickerSpeed) linear infinite; }
-.theme-urlaub .power-sonnenaufgang .sf-beach { animation: urlaub-sunrise var(--powerOnDuration) ease-out both; }
-.theme-urlaub .power-sonnenaufgang .sf-sun { animation: urlaub-sun-up var(--powerOnDuration) ease-out both; }
-.theme-urlaub .power-sonnenaufgang .sf-stage, .theme-urlaub .power-blenden .sf-stage { animation: urlaub-fade var(--powerOnDuration) ease-out both; }
-.theme-urlaub .power-blenden .sf-beach { animation: urlaub-fade var(--powerOnDuration) ease-out both; }
+.theme-urlaub .ul-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--ticker-padding, 10px 0); overflow: hidden; white-space: nowrap; font-size: var(--ticker-size, 2vw); border-radius: 0; }
+.theme-urlaub .ul-ticker span { display: inline-block; padding-left: 100%; animation: urlaub-marquee var(--tickerSpeed) linear infinite; }
+.theme-urlaub .power-sonnenaufgang .ul-beach { animation: urlaub-sunrise var(--powerOnDuration) ease-out both; }
+.theme-urlaub .power-sonnenaufgang .ul-sun { animation: urlaub-sun-up var(--powerOnDuration) ease-out both; }
+.theme-urlaub .power-sonnenaufgang .ul-stage, .theme-urlaub .power-blenden .ul-stage { animation: urlaub-fade var(--powerOnDuration) ease-out both; }
+.theme-urlaub .power-blenden .ul-beach { animation: urlaub-fade var(--powerOnDuration) ease-out both; }
 
 /* --- Alerts ------------------------------------------------------------------------------------------------- */
-.theme-urlaub .sf-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
-.theme-urlaub .sf-alerts.align-left { justify-content: flex-start; }
-.theme-urlaub .sf-alerts.align-right { justify-content: flex-end; }
-.theme-urlaub .sf-alert { position: relative; display: flex; align-items: center; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
-.theme-urlaub .sf-alert.leaving { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
+.theme-urlaub .ul-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
+.theme-urlaub .ul-alerts.align-left { justify-content: flex-start; }
+.theme-urlaub .ul-alerts.align-right { justify-content: flex-end; }
+.theme-urlaub .ul-alert { position: relative; display: flex; align-items: center; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
+.theme-urlaub .ul-alert.leaving { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
 .theme-urlaub .in-welle { --in: urlaub-wave-in; --in-ease: cubic-bezier(0.2, 0.9, 0.3, 1.2); }
 .theme-urlaub .in-plopp { --in: urlaub-pop-in; --in-ease: cubic-bezier(0.3, 1.6, 0.5, 1); }
 .theme-urlaub .in-gleiten { --in: urlaub-slide-in; }
@@ -230,8 +230,8 @@
 .theme-urlaub .out-gleiten { --out: urlaub-slide-out; }
 .theme-urlaub .out-blenden { --out: urlaub-fade-out; }
 .theme-urlaub .out-keins { --out: urlaub-fade-out; --out-ease: steps(1, start); }
-.theme-urlaub .sf-alert-body { position: relative; flex: 1; display: flex; align-items: center; gap: var(--alert-gap, 22px); padding: var(--alert-padding, 22px 30px); box-shadow: var(--shadow); }
-.theme-urlaub .sf-stamp {
+.theme-urlaub .ul-alert-body { position: relative; flex: 1; display: flex; align-items: center; gap: var(--alert-gap, 22px); padding: var(--alert-padding, 22px 30px); box-shadow: var(--shadow); }
+.theme-urlaub .ul-stamp {
   flex: none;
   width: var(--stamp, 104px);
   aspect-ratio: 1;
@@ -241,21 +241,21 @@
   border-radius: var(--stamp-radius, 8px);
   rotate: 4deg;
 }
-.theme-urlaub .sf-stamp .part-main { fill: var(--accent2); }
-.theme-urlaub .sf-stamp .part-detail { fill: var(--accent); }
-.theme-urlaub .sf-stamp .part-line { stroke: var(--woodDark); }
-.theme-urlaub .sf-alert-text { display: grid; gap: var(--text-gap, 4px); min-width: 0; }
-.theme-urlaub .sf-tag { font-family: var(--titleFont), cursive; font-size: 1.35em; color: var(--accent); }
-.theme-urlaub .sf-alert-line { font-size: 1.3em; overflow-wrap: anywhere; }
-.theme-urlaub .sf-quote { opacity: 0.85; overflow-wrap: anywhere; }
-.theme-urlaub .sf-alert-postkarte .sf-alert-body {
+.theme-urlaub .ul-stamp .part-main { fill: var(--accent2); }
+.theme-urlaub .ul-stamp .part-detail { fill: var(--accent); }
+.theme-urlaub .ul-stamp .part-line { stroke: var(--woodDark); }
+.theme-urlaub .ul-alert-text { display: grid; gap: var(--text-gap, 4px); min-width: 0; }
+.theme-urlaub .ul-tag { font-family: var(--titleFont), cursive; font-size: 1.35em; color: var(--accent); }
+.theme-urlaub .ul-alert-line { font-size: 1.3em; overflow-wrap: anywhere; }
+.theme-urlaub .ul-quote { opacity: 0.85; overflow-wrap: anywhere; }
+.theme-urlaub .ul-alert-postkarte .ul-alert-body {
   background: var(--foam);
   color: var(--textOnWood);
   border: var(--airmail, 10px) solid transparent;
   border-image: repeating-linear-gradient(45deg, var(--accent) 0 var(--stripe, 14px), var(--foam) var(--stripe, 14px) calc(2 * var(--stripe, 14px)), var(--sea) calc(2 * var(--stripe, 14px)) calc(3 * var(--stripe, 14px)), var(--foam) calc(3 * var(--stripe, 14px)) calc(4 * var(--stripe, 14px))) 10;
   rotate: -1.5deg;
 }
-.theme-urlaub .sf-postmark {
+.theme-urlaub .ul-postmark {
   position: absolute;
   right: var(--postmark-right, 18px);
   bottom: var(--postmark-bottom, 12px);
@@ -267,14 +267,14 @@
   font-weight: 700;
   rotate: -12deg;
 }
-.theme-urlaub .sf-alert-surfbrett .sf-alert-body {
+.theme-urlaub .ul-alert-surfbrett .ul-alert-body {
   background: linear-gradient(90deg, var(--accent2), var(--accent));
   border-radius: var(--board-round, 999px);
   padding: var(--surf-padding, 26px 70px);
   color: var(--textColor);
 }
-.theme-urlaub .sf-alert-surfbrett .sf-tag { color: var(--textColor); }
-.theme-urlaub .sf-alert-surfbrett .sf-alert-body::before {
+.theme-urlaub .ul-alert-surfbrett .ul-tag { color: var(--textColor); }
+.theme-urlaub .ul-alert-surfbrett .ul-alert-body::before {
   content: "";
   position: absolute;
   left: -4%;
@@ -286,7 +286,7 @@
   box-shadow: inset 0 var(--foam-line, 6px) 0 var(--foam);
   z-index: -1;
 }
-.theme-urlaub .sf-bottle {
+.theme-urlaub .ul-bottle {
   flex: none;
   position: relative;
   width: var(--bottle-width, 80px);
@@ -298,11 +298,11 @@
   rotate: -16deg;
   animation: urlaub-bob var(--bob, 4s) ease-in-out infinite alternate;
 }
-.theme-urlaub .sf-bottle::before { content: ""; position: absolute; left: 30%; right: 30%; top: calc(-1 * var(--cork, 22px)); height: var(--cork, 22px); border-radius: var(--cork-round, 6px); background: var(--woodDark); }
-.theme-urlaub .sf-alert-flaschenpost .sf-alert-body { background: var(--sand); color: var(--textOnWood); border-radius: var(--radius); transform-origin: left center; animation: urlaub-unroll var(--fadeDuration) ease-out calc(var(--fadeDuration) / 2) both; }
-.theme-urlaub .sf-rope { position: absolute; left: var(--rope-inset, 26px); right: var(--rope-inset, 26px); bottom: calc(-1 * var(--rope-drop, 16px)); height: var(--rope-thickness, 8px); border-radius: var(--pill, 999px); background: var(--rope-pattern); transform-origin: left; animation: urlaub-timer var(--alertDuration) linear forwards; }
-.theme-urlaub .sf-splash { position: absolute; left: 50%; bottom: 0; }
-.theme-urlaub .sf-splash i {
+.theme-urlaub .ul-bottle::before { content: ""; position: absolute; left: 30%; right: 30%; top: calc(-1 * var(--cork, 22px)); height: var(--cork, 22px); border-radius: var(--cork-round, 6px); background: var(--woodDark); }
+.theme-urlaub .ul-alert-flaschenpost .ul-alert-body { background: var(--sand); color: var(--textOnWood); border-radius: var(--radius); transform-origin: left center; animation: urlaub-unroll var(--fadeDuration) ease-out calc(var(--fadeDuration) / 2) both; }
+.theme-urlaub .ul-rope { position: absolute; left: var(--rope-inset, 26px); right: var(--rope-inset, 26px); bottom: calc(-1 * var(--rope-drop, 16px)); height: var(--rope-thickness, 8px); border-radius: var(--pill, 999px); background: var(--rope-pattern); transform-origin: left; animation: urlaub-timer var(--alertDuration) linear forwards; }
+.theme-urlaub .ul-splash { position: absolute; left: 50%; bottom: 0; }
+.theme-urlaub .ul-splash i {
   position: absolute;
   width: var(--drop, 14px);
   aspect-ratio: 1;
@@ -311,45 +311,45 @@
   border: var(--drop-border, 2px) solid var(--sea);
   animation: urlaub-burst var(--splash-time, 900ms) ease-out both;
 }
-.theme-urlaub .sf-petals { position: absolute; inset: 0; pointer-events: none; }
-.theme-urlaub .sf-petal { position: absolute; top: calc(-1 * var(--petal-size, 44px)); left: calc(var(--x) * 100%); width: var(--petal-size, 44px); animation: urlaub-fall var(--alertDuration) linear both; animation-delay: calc(var(--delay) * var(--alertDuration) / -3); }
-.theme-urlaub .sf-petal .part-main { fill: var(--accent); }
-.theme-urlaub .sf-petal .part-detail { fill: var(--accent2); }
-.theme-urlaub .sf-petal .part-line { stroke: var(--accent2); }
+.theme-urlaub .ul-petals { position: absolute; inset: 0; pointer-events: none; }
+.theme-urlaub .ul-petal { position: absolute; top: calc(-1 * var(--petal-size, 44px)); left: calc(var(--x) * 100%); width: var(--petal-size, 44px); animation: urlaub-fall var(--alertDuration) linear both; animation-delay: calc(var(--delay) * var(--alertDuration) / -3); }
+.theme-urlaub .ul-petal .part-main { fill: var(--accent); }
+.theme-urlaub .ul-petal .part-detail { fill: var(--accent2); }
+.theme-urlaub .ul-petal .part-line { stroke: var(--accent2); }
 
 /* --- Chat ----------------------------------------------------------------------------------------------------- */
-.theme-urlaub .sf-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chat-padding, 14px); overflow: hidden; font-size: var(--chatFontSize); }
-.theme-urlaub .sf-chat-top { flex-direction: column-reverse; }
-.theme-urlaub .sf-row { flex: none; position: relative; padding: var(--row-padding, 10px 16px); overflow-wrap: anywhere; animation: urlaub-rise-in var(--fadeDuration) ease-out both; }
-.theme-urlaub .sf-row.fades { animation: urlaub-rise-in var(--fadeDuration) ease-out both, urlaub-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
-.theme-urlaub .sf-row.action { font-style: italic; }
-.theme-urlaub .sf-msg { display: block; }
-.theme-urlaub .sway .sf-msg { animation: urlaub-rock var(--rock, 5s) ease-in-out infinite alternate; }
-.theme-urlaub .sf-chat-blase .sf-row {
+.theme-urlaub .ul-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chat-padding, 14px); overflow: hidden; font-size: var(--chatFontSize); }
+.theme-urlaub .ul-chat-top { flex-direction: column-reverse; }
+.theme-urlaub .ul-row { flex: none; position: relative; padding: var(--row-padding, 10px 16px); overflow-wrap: anywhere; animation: urlaub-rise-in var(--fadeDuration) ease-out both; }
+.theme-urlaub .ul-row.fades { animation: urlaub-rise-in var(--fadeDuration) ease-out both, urlaub-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
+.theme-urlaub .ul-row.action { font-style: italic; }
+.theme-urlaub .ul-msg { display: block; }
+.theme-urlaub .sway .ul-msg { animation: urlaub-rock var(--rock, 5s) ease-in-out infinite alternate; }
+.theme-urlaub .ul-chat-blase .ul-row {
   background: color-mix(in srgb, var(--sea) calc(var(--chatOpacity) * 100%), transparent);
   border: var(--bubble-border, 2px) solid color-mix(in srgb, var(--foam) 70%, transparent);
   border-radius: var(--bubble-round, 26px);
   box-shadow: inset var(--shine-x, 6px) var(--shine-y, 6px) var(--shine-blur, 10px) color-mix(in srgb, var(--foam) 35%, transparent);
 }
-.theme-urlaub .sf-chat-planke .sf-row {
+.theme-urlaub .ul-chat-planke .ul-row {
   background: color-mix(in srgb, var(--wood) calc(var(--chatOpacity) * 100%), transparent);
   border-left: var(--plank-edge, 8px) solid var(--woodDark);
   border-radius: var(--radius);
   color: var(--textOnWood);
 }
-.theme-urlaub .sf-chat-muschel .sf-row {
+.theme-urlaub .ul-chat-muschel .ul-row {
   background: color-mix(in srgb, var(--sand) calc(var(--chatOpacity) * 100%), transparent);
   border-radius: var(--shell-round, 40px 40px 40px 6px);
   color: var(--textOnWood);
 }
-.theme-urlaub .sf-user { margin-right: var(--name-gap, 8px); color: var(--accent); }
-.theme-urlaub .sf-chat-blase .sf-user { color: var(--accent2); }
-.theme-urlaub .sf-badge { display: inline-block; margin-right: var(--badge-gap, 6px); padding: var(--badge-padding, 0 8px); border-radius: var(--pill, 999px); background: var(--accent); color: var(--textColor); font-size: 0.7em; font-weight: 700; }
-.theme-urlaub .sf-emote { height: var(--emoteSize); vertical-align: middle; }
+.theme-urlaub .ul-user { margin-right: var(--name-gap, 8px); color: var(--accent); }
+.theme-urlaub .ul-chat-blase .ul-user { color: var(--accent2); }
+.theme-urlaub .ul-badge { display: inline-block; margin-right: var(--badge-gap, 6px); padding: var(--badge-padding, 0 8px); border-radius: var(--pill, 999px); background: var(--accent); color: var(--textColor); font-size: 0.7em; font-weight: 700; }
+.theme-urlaub .ul-emote { height: var(--emoteSize); vertical-align: middle; }
 
 /* --- Camera frame ------------------------------------------------------------------------------------------- */
-.theme-urlaub .sf-cam { position: fixed; inset: 0; animation: urlaub-fade var(--fadeDuration) ease-out both; }
-.theme-urlaub .sf-cam-frame {
+.theme-urlaub .ul-cam { position: fixed; inset: 0; animation: urlaub-fade var(--fadeDuration) ease-out both; }
+.theme-urlaub .ul-cam-frame {
   position: absolute;
   inset: 0;
   padding: var(--camFrameWidth);
@@ -358,27 +358,27 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
-.theme-urlaub .sf-cam-bambus .sf-cam-frame {
+.theme-urlaub .ul-cam-bambus .ul-cam-frame {
   --bamboo: color-mix(in srgb, var(--palmLeaf) 60%, var(--sand));
   background: repeating-linear-gradient(90deg, var(--bamboo) 0 var(--segment, 70px), color-mix(in srgb, var(--bamboo) 60%, var(--woodDark)) var(--segment, 70px) calc(var(--segment, 70px) + var(--node, 6px)));
 }
-.theme-urlaub .sf-cam-holz .sf-cam-frame { background: repeating-linear-gradient(90deg, var(--wood) 0 var(--grain, 18px), var(--woodDark) var(--grain, 18px) calc(var(--grain, 18px) + var(--grain-line, 3px))); }
-.theme-urlaub .sf-cam-seil .sf-cam-frame { background: var(--rope-pattern); }
-.theme-urlaub .sf-cam-leaf { position: absolute; width: var(--camLeafSize); }
-.theme-urlaub .sf-cam-leaf .part-main { fill: var(--palmLeaf); }
-.theme-urlaub .sf-cam-leaf .part-line { stroke: color-mix(in srgb, var(--palmLeaf) 55%, var(--woodDark)); stroke-width: var(--leaf-line, 3); }
+.theme-urlaub .ul-cam-holz .ul-cam-frame { background: repeating-linear-gradient(90deg, var(--wood) 0 var(--grain, 18px), var(--woodDark) var(--grain, 18px) calc(var(--grain, 18px) + var(--grain-line, 3px))); }
+.theme-urlaub .ul-cam-seil .ul-cam-frame { background: var(--rope-pattern); }
+.theme-urlaub .ul-cam-leaf { position: absolute; width: var(--camLeafSize); }
+.theme-urlaub .ul-cam-leaf .part-main { fill: var(--palmLeaf); }
+.theme-urlaub .ul-cam-leaf .part-line { stroke: color-mix(in srgb, var(--palmLeaf) 55%, var(--woodDark)); stroke-width: var(--leaf-line, 3); }
 /* Leaves grow diagonally into the picture from the corner (shape: stem bottom left, tip top right), all inside the source */
-.theme-urlaub .sf-cam-leaf.top-left { left: 0; top: 0; scale: 1 -1; }
-.theme-urlaub .sf-cam-leaf.top-right { right: 0; top: 0; scale: -1 -1; }
-.theme-urlaub .sf-cam-leaf.bottom-right { right: 0; bottom: 0; scale: -1 1; }
-.theme-urlaub .sf-cam-leaf.bottom-left { left: 0; bottom: 0; }
-.theme-urlaub .sway .sf-cam-leaf .sf-shape { transform-origin: 3% 88%; animation: urlaub-leaf var(--leaf-time, 4s) ease-in-out infinite alternate; }
-.theme-urlaub .sf-cam-flower { position: absolute; right: var(--flower-inset, 8px); bottom: var(--flower-inset, 8px); width: var(--flower, 80px); }
-.theme-urlaub .sf-cam-flower .part-main { fill: var(--accent); }
-.theme-urlaub .sf-cam-flower .part-detail { fill: var(--accent2); }
-.theme-urlaub .sf-cam-flower .part-line { stroke: var(--accent2); }
-.theme-urlaub .sf-cam-label { position: absolute; left: var(--label-left, 28px); bottom: var(--label-bottom, 14px); padding: var(--label-padding, 4px 18px); font-family: var(--titleFont), cursive; font-size: 1.2em; rotate: -2deg; }
-.theme-urlaub .sf-cam-live {
+.theme-urlaub .ul-cam-leaf.top-left { left: 0; top: 0; scale: 1 -1; }
+.theme-urlaub .ul-cam-leaf.top-right { right: 0; top: 0; scale: -1 -1; }
+.theme-urlaub .ul-cam-leaf.bottom-right { right: 0; bottom: 0; scale: -1 1; }
+.theme-urlaub .ul-cam-leaf.bottom-left { left: 0; bottom: 0; }
+.theme-urlaub .sway .ul-cam-leaf .ul-shape { transform-origin: 3% 88%; animation: urlaub-leaf var(--leaf-time, 4s) ease-in-out infinite alternate; }
+.theme-urlaub .ul-cam-flower { position: absolute; right: var(--flower-inset, 8px); bottom: var(--flower-inset, 8px); width: var(--flower, 80px); }
+.theme-urlaub .ul-cam-flower .part-main { fill: var(--accent); }
+.theme-urlaub .ul-cam-flower .part-detail { fill: var(--accent2); }
+.theme-urlaub .ul-cam-flower .part-line { stroke: var(--accent2); }
+.theme-urlaub .ul-cam-label { position: absolute; left: var(--label-left, 28px); bottom: var(--label-bottom, 14px); padding: var(--label-padding, 4px 18px); font-family: var(--titleFont), cursive; font-size: 1.2em; rotate: -2deg; }
+.theme-urlaub .ul-cam-live {
   position: absolute;
   right: var(--live-right, 22px);
   top: var(--live-top, 18px);
@@ -393,22 +393,22 @@
   font-weight: 700;
   letter-spacing: 0.08em;
 }
-.theme-urlaub .sf-cam-live .sf-shape { width: var(--star, 28px); animation: urlaub-spin var(--star-time, 6s) linear infinite; }
-.theme-urlaub .sf-cam-live .part-main { fill: var(--accent2); }
-.theme-urlaub .sf-cam-live .part-detail { fill: var(--accent); }
+.theme-urlaub .ul-cam-live .ul-shape { width: var(--star, 28px); animation: urlaub-spin var(--star-time, 6s) linear infinite; }
+.theme-urlaub .ul-cam-live .part-main { fill: var(--accent2); }
+.theme-urlaub .ul-cam-live .part-detail { fill: var(--accent); }
 
 /* --- Music ---------------------------------------------------------------------------------------------------- */
-.theme-urlaub .sf-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 34px 14px 14px); }
-.theme-urlaub .sf-player { position: relative; width: 100%; display: flex; align-items: center; gap: var(--player-gap, 20px); padding: var(--player-padding, 16px 22px); animation: urlaub-rise-in var(--fadeDuration) ease-out both; }
-.theme-urlaub .sf-player.leaving { animation: urlaub-fade-out var(--fadeDuration) ease-in forwards; }
-.theme-urlaub .sf-music-radio .sf-player {
+.theme-urlaub .ul-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 34px 14px 14px); }
+.theme-urlaub .ul-player { position: relative; width: 100%; display: flex; align-items: center; gap: var(--player-gap, 20px); padding: var(--player-padding, 16px 22px); animation: urlaub-rise-in var(--fadeDuration) ease-out both; }
+.theme-urlaub .ul-player.leaving { animation: urlaub-fade-out var(--fadeDuration) ease-in forwards; }
+.theme-urlaub .ul-music-radio .ul-player {
   background: repeating-linear-gradient(180deg, var(--wood) 0 var(--plank, 30px), var(--woodDark) var(--plank, 30px) calc(var(--plank, 30px) + var(--plank-gap, 3px)));
   border: var(--wood-border, 5px) solid var(--woodDark);
   border-radius: var(--radius);
   color: var(--textOnWood);
   box-shadow: var(--shadow);
 }
-.theme-urlaub .sf-music-radio .sf-player::before {
+.theme-urlaub .ul-music-radio .ul-player::before {
   content: "";
   position: absolute;
   left: 30%;
@@ -419,28 +419,28 @@
   border-bottom: none;
   border-radius: var(--handle-round, 16px 16px 0 0);
 }
-.theme-urlaub .sf-music-muschel .sf-player { background: linear-gradient(135deg, var(--sand), color-mix(in srgb, var(--accent) 25%, var(--sand))); border-radius: var(--shell-player, 999px 40px 40px 999px); color: var(--textOnWood); box-shadow: var(--shadow); }
-.theme-urlaub .sf-music-schlicht .sf-player { background: color-mix(in srgb, var(--seaDeep) 88%, transparent); border-radius: var(--radius); color: var(--textColor); box-shadow: var(--shadow); }
-.theme-urlaub .sf-cover { flex: none; width: var(--coverSize); height: var(--coverSize); object-fit: cover; border: var(--cover-border, 5px) solid var(--foam); box-shadow: var(--shadow); }
+.theme-urlaub .ul-music-muschel .ul-player { background: linear-gradient(135deg, var(--sand), color-mix(in srgb, var(--accent) 25%, var(--sand))); border-radius: var(--shell-player, 999px 40px 40px 999px); color: var(--textOnWood); box-shadow: var(--shadow); }
+.theme-urlaub .ul-music-schlicht .ul-player { background: color-mix(in srgb, var(--seaDeep) 88%, transparent); border-radius: var(--radius); color: var(--textColor); box-shadow: var(--shadow); }
+.theme-urlaub .ul-cover { flex: none; width: var(--coverSize); height: var(--coverSize); object-fit: cover; border: var(--cover-border, 5px) solid var(--foam); box-shadow: var(--shadow); }
 .theme-urlaub .cover-rund { border-radius: 50%; }
 .theme-urlaub .cover-eckig { border-radius: var(--radius); }
-.theme-urlaub .sf-cover-empty { padding: var(--empty-padding, 16px); background: var(--sea); }
-.theme-urlaub .sf-cover-empty .part-main { fill: var(--sun); }
-.theme-urlaub .sf-cover-empty .part-detail { fill: var(--foam); }
-.theme-urlaub .sf-cover-empty .part-line { stroke: var(--sun); }
-.theme-urlaub .sf-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
-.theme-urlaub .sf-head { font-size: 0.72em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
-.theme-urlaub .sf-song { font-weight: bold; font-size: var(--musicTitleSize); }
-.theme-urlaub .sf-artist, .theme-urlaub .sf-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: 0.85; }
-.theme-urlaub .sf-wave-progress { position: relative; height: var(--wave-progress, 8px); border-radius: var(--pill, 999px); background: color-mix(in srgb, currentColor 20%, transparent); overflow: hidden; }
-.theme-urlaub .sf-wave-progress span { display: block; height: 100%; width: calc(var(--part) * 100%); background: linear-gradient(90deg, var(--sea), var(--accent2)); transition: width var(--tick, 250ms) linear; }
-.theme-urlaub .sf-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eq-gap, 4px); height: var(--eq-height, 40px); }
-.theme-urlaub .sf-eq i { width: var(--eq-bar, 7px); height: 100%; border-radius: var(--pill, 999px); background: linear-gradient(var(--foam), var(--sea)); transform-origin: bottom; animation: urlaub-eq var(--eq-time, 900ms) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--eq-time, 900ms) / -5); }
-.theme-urlaub .paused .sf-eq i { animation-play-state: paused; }
+.theme-urlaub .ul-cover-empty { padding: var(--empty-padding, 16px); background: var(--sea); }
+.theme-urlaub .ul-cover-empty .part-main { fill: var(--sun); }
+.theme-urlaub .ul-cover-empty .part-detail { fill: var(--foam); }
+.theme-urlaub .ul-cover-empty .part-line { stroke: var(--sun); }
+.theme-urlaub .ul-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
+.theme-urlaub .ul-head { font-size: 0.72em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.theme-urlaub .ul-song { font-weight: bold; font-size: var(--musicTitleSize); }
+.theme-urlaub .ul-artist, .theme-urlaub .ul-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: 0.85; }
+.theme-urlaub .ul-wave-progress { position: relative; height: var(--wave-progress, 8px); border-radius: var(--pill, 999px); background: color-mix(in srgb, currentColor 20%, transparent); overflow: hidden; }
+.theme-urlaub .ul-wave-progress span { display: block; height: 100%; width: calc(var(--part) * 100%); background: linear-gradient(90deg, var(--sea), var(--accent2)); transition: width var(--tick, 250ms) linear; }
+.theme-urlaub .ul-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eq-gap, 4px); height: var(--eq-height, 40px); }
+.theme-urlaub .ul-eq i { width: var(--eq-bar, 7px); height: 100%; border-radius: var(--pill, 999px); background: linear-gradient(var(--foam), var(--sea)); transform-origin: bottom; animation: urlaub-eq var(--eq-time, 900ms) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--eq-time, 900ms) / -5); }
+.theme-urlaub .paused .ul-eq i { animation-play-state: paused; }
 
 /* --- Effects -------------------------------------------------------------------------------------------------- */
-.theme-urlaub .sf-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-urlaub .sf-fx-item {
+.theme-urlaub .ul-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-urlaub .ul-fx-item {
   position: absolute;
   display: grid;
   gap: var(--fx-gap, 12px);
@@ -448,9 +448,9 @@
   transform: translate(-50%, -50%);
   animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both, var(--out) var(--fadeDuration) var(--out-ease, ease-in) calc(var(--life) - var(--fadeDuration)) forwards;
 }
-.theme-urlaub .sf-fx-item img, .theme-urlaub .sf-fx-item video, .theme-urlaub .sf-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); }
-.theme-urlaub .sf-fx-text { font-size: var(--fxTextSize); font-weight: 700; text-align: center; overflow-wrap: anywhere; text-shadow: 0 var(--text-shadow, 3px) 0 var(--seaDeep); }
-.theme-urlaub .sf-fx-text.bubble {
+.theme-urlaub .ul-fx-item img, .theme-urlaub .ul-fx-item video, .theme-urlaub .ul-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); }
+.theme-urlaub .ul-fx-text { font-size: var(--fxTextSize); font-weight: 700; text-align: center; overflow-wrap: anywhere; text-shadow: 0 var(--text-shadow, 3px) 0 var(--seaDeep); }
+.theme-urlaub .ul-fx-text.bubble {
   position: relative;
   padding: var(--fx-padding, 12px 24px);
   border-radius: var(--bubble-round, 26px);
@@ -494,12 +494,12 @@
 @keyframes urlaub-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
 
 /* --- Commands page (public): beach fixed in the background, wooden signs scroll in front as a normal page ----------- */
-.theme-urlaub.theme-root:has(.sf-info) { min-height: 100vh; background: var(--seaDeep); }
-.theme-urlaub .sf-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
-.theme-urlaub .sf-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-urlaub .sf-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; gap: var(--info-gap, 28px); }
-.theme-urlaub .sf-info-sign { padding: var(--info-inner, 28px 32px); text-align: center; display: grid; gap: var(--info-line-gap, 8px); }
-.theme-urlaub .sf-info-board { padding: var(--info-inner, 28px 32px); display: grid; gap: var(--info-entry-gap, 16px); }
-.theme-urlaub .sf-info-entry { display: grid; gap: var(--info-detail-gap, 2px); padding-left: var(--info-indent, 14px); border-left: var(--info-rope, 4px) solid var(--woodDark); }
-.theme-urlaub .sf-info-command { color: var(--accent); font-size: 1.2em; }
-.theme-urlaub .sf-info-detail { opacity: 0.8; font-size: 0.9em; }
+.theme-urlaub.theme-root:has(.ul-info) { min-height: 100vh; background: var(--seaDeep); }
+.theme-urlaub .ul-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-urlaub .ul-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-urlaub .ul-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; gap: var(--info-gap, 28px); }
+.theme-urlaub .ul-info-sign { padding: var(--info-inner, 28px 32px); text-align: center; display: grid; gap: var(--info-line-gap, 8px); }
+.theme-urlaub .ul-info-board { padding: var(--info-inner, 28px 32px); display: grid; gap: var(--info-entry-gap, 16px); }
+.theme-urlaub .ul-info-entry { display: grid; gap: var(--info-detail-gap, 2px); padding-left: var(--info-indent, 14px); border-left: var(--info-rope, 4px) solid var(--woodDark); }
+.theme-urlaub .ul-info-command { color: var(--accent); font-size: 1.2em; }
+.theme-urlaub .ul-info-detail { opacity: 0.8; font-size: 0.9em; }

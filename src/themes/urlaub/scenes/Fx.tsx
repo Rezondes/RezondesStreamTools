@@ -9,16 +9,16 @@ import { useUrlaub } from "../useUrlaub.ts";
 
 export default function Fx() {
   const shown = useFxScene(useUrlaub());
-  return <div className="sf-fx">{shown.map(item => <Item key={item.id} item={item} />)}</div>;
+  return <div className="ul-fx">{shown.map(item => <Item key={item.id} item={item} />)}</div>;
 }
 
 function Item({ item }: { item: ShownFx }) {
   const values = useUrlaub();
   const { phase, text, style } = useFxItem(item);
   return (
-    <div className={`sf-fx-item in-${values.fxIn} out-${values.fxOut}`} style={style}>
+    <div className={`ul-fx-item in-${values.fxIn} out-${values.fxOut}`} style={style}>
       <FxMedia item={item} phase={phase} />
-      {text && <div className={`sf-fx-text${values.fxBubble ? " bubble" : ""}`}>{text}</div>}
+      {text && <div className={`ul-fx-text${values.fxBubble ? " bubble" : ""}`}>{text}</div>}
     </div>
   );
 }

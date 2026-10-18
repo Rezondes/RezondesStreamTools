@@ -29,31 +29,31 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
   const saying = rotating(sayings, values.linesEvery * SECOND_MS, now - start);
 
   return (
-    <div className={`sf-screen power-${values.powerOn}`}>
+    <div className={`ul-screen power-${values.powerOn}`}>
       <Beach time={time} />
-      <div className="sf-stage stage-box" ref={stage}>
-        <span className="sf-clock">{new Date(now).toLocaleTimeString(values.locale)}</span>
-        <div className={`sf-sign sf-wood sf-sign-${values.signStyle}`}>
-          <p className="sf-eyebrow">{eyebrow}</p>
-          <h1 className="sf-title">{title}</h1>
-          {note && <p className="sf-note">{note}</p>}
+      <div className="ul-stage stage-box" ref={stage}>
+        <span className="ul-clock">{new Date(now).toLocaleTimeString(values.locale)}</span>
+        <div className={`ul-sign ul-wood ul-sign-${values.signStyle}`}>
+          <p className="ul-eyebrow">{eyebrow}</p>
+          <h1 className="ul-title">{title}</h1>
+          {note && <p className="ul-note">{note}</p>}
         </div>
         {kind === "starting" && (
-          <div className="sf-board sf-wood">
-            <b className="sf-big">{left > 0 ? values.countdownPrefix + shortClock(left) : values.countdownDone}</b>
+          <div className="ul-board ul-wood">
+            <b className="ul-big">{left > 0 ? values.countdownPrefix + shortClock(left) : values.countdownDone}</b>
             {values.progressStyle !== "aus" && (
-              <div className={`sf-progress sf-progress-${values.progressStyle}`} style={{ "--part": progress } as CSSProperties}><span /></div>
+              <div className={`ul-progress ul-progress-${values.progressStyle}`} style={{ "--part": progress } as CSSProperties}><span /></div>
             )}
           </div>
         )}
-        {kind === "brb" && <div className="sf-board sf-wood"><b className="sf-big">{values.afkPrefix + shortClock(away)}</b></div>}
-        {kind === "ending" && next && <div className="sf-board sf-wood"><b className="sf-next">{`${values.endingNextLabel}: ${next}`}</b></div>}
-        {saying && <p key={saying} className="sf-saying">{saying}</p>}
+        {kind === "brb" && <div className="ul-board ul-wood"><b className="ul-big">{values.afkPrefix + shortClock(away)}</b></div>}
+        {kind === "ending" && next && <div className="ul-board ul-wood"><b className="ul-next">{`${values.endingNextLabel}: ${next}`}</b></div>}
+        {saying && <p key={saying} className="ul-saying">{saying}</p>}
       </div>
       {ticker && values.tickerStyle === "flugzeug" && (
-        <div className="sf-plane"><span className="sf-banner">{ticker}</span><ShapeIcon shape={PLANE} /></div>
+        <div className="ul-plane"><span className="ul-banner">{ticker}</span><ShapeIcon shape={PLANE} /></div>
       )}
-      {ticker && values.tickerStyle === "leiste" && <div className="sf-ticker sf-wood"><span>{ticker}</span></div>}
+      {ticker && values.tickerStyle === "leiste" && <div className="ul-ticker ul-wood"><span>{ticker}</span></div>}
     </div>
   );
 }

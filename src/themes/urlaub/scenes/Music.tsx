@@ -16,8 +16,8 @@ export default function Music() {
   const values = useUrlaub();
   const { shown, visible, at } = useNowPlaying(values.musicHide);
   return (
-    <div className={`sf-music sf-music-${values.musicStyle}`}>
-      <div key={shown?.id ?? "idle"} className={`sf-player${visible ? "" : " leaving"}${shown?.playing ? "" : " paused"}`}>
+    <div className={`ul-music ul-music-${values.musicStyle}`}>
+      <div key={shown?.id ?? "idle"} className={`ul-player${visible ? "" : " leaving"}${shown?.playing ? "" : " paused"}`}>
         {shown ? <Playing track={shown} at={at} /> : <Idle />}
       </div>
     </div>
@@ -31,14 +31,14 @@ function Playing({ track, at }: { track: Track; at: number }) {
   return (
     <>
       {cover.src
-        ? <img className={`sf-cover cover-${values.coverShape}`} src={cover.src} alt="" onError={cover.onError} />
-        : <div className={`sf-cover sf-cover-empty cover-${values.coverShape}`}><ShapeIcon shape={ICONS.sonne} /></div>}
-      <div className="sf-track">
-        <span className="sf-head">{track.playing ? values.musicHeadPlaying : values.musicHeadPaused}</span>
-        <Marquee text={track.title} speed={values.musicMarqueeSpeed} enabled={values.musicMarquee} className="sf-song" />
-        <span className="sf-artist">{track.artist}</span>
-        {values.musicAlbum && <span className="sf-album">{track.album}</span>}
-        {values.musicProgress && track.durationMs > 0 && <div className="sf-wave-progress" style={{ "--part": part } as CSSProperties}><span /></div>}
+        ? <img className={`ul-cover cover-${values.coverShape}`} src={cover.src} alt="" onError={cover.onError} />
+        : <div className={`ul-cover ul-cover-empty cover-${values.coverShape}`}><ShapeIcon shape={ICONS.sonne} /></div>}
+      <div className="ul-track">
+        <span className="ul-head">{track.playing ? values.musicHeadPlaying : values.musicHeadPaused}</span>
+        <Marquee text={track.title} speed={values.musicMarqueeSpeed} enabled={values.musicMarquee} className="ul-song" />
+        <span className="ul-artist">{track.artist}</span>
+        {values.musicAlbum && <span className="ul-album">{track.album}</span>}
+        {values.musicProgress && track.durationMs > 0 && <div className="ul-wave-progress" style={{ "--part": part } as CSSProperties}><span /></div>}
       </div>
       {values.equalizer && <Equalizer />}
     </>
@@ -49,10 +49,10 @@ function Idle() {
   const values = useUrlaub();
   return (
     <>
-      <div className={`sf-cover sf-cover-empty cover-${values.coverShape}`}><ShapeIcon shape={ICONS.welle} /></div>
-      <div className="sf-track">
-        <b className="sf-song">{values.musicIdleTitle}</b>
-        <span className="sf-artist">{values.musicIdleArtist}</span>
+      <div className={`ul-cover ul-cover-empty cover-${values.coverShape}`}><ShapeIcon shape={ICONS.welle} /></div>
+      <div className="ul-track">
+        <b className="ul-song">{values.musicIdleTitle}</b>
+        <span className="ul-artist">{values.musicIdleArtist}</span>
       </div>
     </>
   );
@@ -61,7 +61,7 @@ function Idle() {
 function Equalizer() {
   const values = useUrlaub();
   return (
-    <div className="sf-eq" aria-hidden="true">
+    <div className="ul-eq" aria-hidden="true">
       {Array.from({ length: values.equalizerBars }, (_, index) => <i key={index} style={{ "--i": index } as CSSProperties} />)}
     </div>
   );

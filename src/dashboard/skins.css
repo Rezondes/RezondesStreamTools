@@ -188,7 +188,7 @@
 :root[data-skin="urlaub"] .skin-scenery { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 :root[data-skin="urlaub"] .dashboard { position: relative; z-index: 1; }
 .skin-sun { position: absolute; top: 2vh; right: 22vw; width: 110px; height: 110px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 60px 20px rgba(255, 210, 63, 0.55); }
-/* svg.: stronger than the theme's shape rule (.theme-urlaub .sf-shape, full width) */
+/* svg.: stronger than the theme's shape rule (.theme-urlaub .ul-shape, full width) */
 .skin-scenery svg.skin-palm { position: absolute; bottom: -2vh; width: clamp(160px, 18vw, 340px); }
 .skin-scenery .skin-palm-left { left: -7vw; }
 .skin-scenery .skin-palm-right { right: -7vw; scale: -1 1; }

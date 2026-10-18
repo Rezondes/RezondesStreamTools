@@ -4,7 +4,7 @@ import type { Shape } from "./beach.ts";
 
 export default function ShapeIcon({ shape, className = "" }: { shape: Shape; className?: string }) {
   return (
-    <svg className={`sf-shape ${className}`} viewBox={shape.viewBox} aria-hidden="true">
+    <svg className={`ul-shape ${className}`} viewBox={shape.viewBox} aria-hidden="true">
       {shape.parts.map((part, index) => <path key={index} className={`part-${part.kind}`} d={part.d} />)}
     </svg>
   );

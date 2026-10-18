@@ -32,7 +32,7 @@ export default function Minimes() {
   const actors = useMinimes({ catalog, reaction, widthPx });
   const enabled = useMemo(() => readMinimeOptions(values, THING_SET).rules.variants?.map(variant => variant.id) ?? [], [values]);
   return (
-    <div className={`sf-minimes enter-${values.fruitEnter} exit-${values.fruitExit}`} aria-hidden="true">
+    <div className={`ul-minimes enter-${values.fruitEnter} exit-${values.fruitExit}`} aria-hidden="true">
       {actors.map(actor => <Character key={actor.login} actor={actor} thing={shownVariant(actor, enabled, values.fruitDefault, DEMO)} />)}
     </div>
   );
@@ -44,23 +44,23 @@ function Character({ actor, thing }: { actor: MinimeActor; thing: string }) {
   const style = { ...actorStyle(actor), ...hopStyle(actor, values.hopMs) } as CSSProperties;
   const run = actorRun(actor);
   return (
-    <div className={`sf-minime thing-${thing} action-${actor.action}`} style={style}>
-      {values.fruitNames && <span className={`sf-minime-name name-${values.fruitNameStyle}`}>{actor.user}</span>}
+    <div className={`ul-minime thing-${thing} action-${actor.action}`} style={style}>
+      {values.fruitNames && <span className={`ul-minime-name name-${values.fruitNameStyle}`}>{actor.user}</span>}
       <div key={run} className="minime-hop">
-        <div className="sf-minime-body">
-          <div className="sf-minime-flip"><BeachThing id={thing} faces={values.fruitFaces} /></div>
-          {actor.action === "sleep" && <span className="sf-minime-zz">{values.sleepText}</span>}
+        <div className="ul-minime-body">
+          <div className="ul-minime-flip"><BeachThing id={thing} faces={values.fruitFaces} /></div>
+          {actor.action === "sleep" && <span className="ul-minime-zz">{values.sleepText}</span>}
           {actor.action === "splash" && <Drops count={values.splashDrops} />}
         </div>
       </div>
-      <div key={`shadow-${run}`} className="sf-minime-shadow minime-hop-shadow" />
+      <div key={`shadow-${run}`} className="ul-minime-shadow minime-hop-shadow" />
     </div>
   );
 }
 
 function Drops({ count }: { count: number }) {
   return (
-    <div className="sf-juice">
+    <div className="ul-juice">
       {Array.from({ length: count }, (_, index) => <i key={index} style={{ "--i": index, "--n": count } as CSSProperties} />)}
     </div>
   );
