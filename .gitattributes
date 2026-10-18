@@ -2,3 +2,4 @@
 * text=auto
 # Shell scripts always with LF, also in a Windows checkout, so they run on a Linux server
 *.sh text eol=lf
+graphify-out/graph.json merge=graphify
