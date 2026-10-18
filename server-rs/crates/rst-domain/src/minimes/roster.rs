@@ -1,4 +1,4 @@
-//! The list of joined chatters and what an event does to it (template: `applyMinime` in `src/core/minimes.ts`).
+//! The list of joined chatters and what an event does to it (only here; the frontend no longer has a copy).
 //! Pure: time comes in as `now` (ms), randomness for assigning variants as `random` (0 to below 1). Colors and
 //! variants stay remembered when a minime leaves, limited to [`MAX_STORED`] entries each.
 

@@ -1,4 +1,4 @@
-//! Minime commands in chat (template: `parseCommand`, `parseColor`, `normalizeName` in `src/core/minimes.ts`):
+//! Minime commands in chat (`normalize_name` is the same as `normalizeName` in `src/core/minimes.ts`):
 //! join with an optional color or variant (and faction), change the look or the faction, leave, and kick another
 //! minime with an allowed role.
 
