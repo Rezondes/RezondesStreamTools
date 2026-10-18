@@ -75,7 +75,7 @@ Rules for this project: a TypeScript code base with React overlays and dashboard
 
 ## Rule checker
 
-`npm run verify` runs everything; the git pre-commit hook (`.githooks/pre-commit`) and the Claude Code hooks (`.claude/settings.json`: ESLint after every edit, `verify` before the agent answers) run it automatically.
+`npm run verify` runs everything; the git pre-commit hook (`.githooks/pre-commit`, also `npm run contract` like CI) and the Claude Code hooks (`.claude/settings.json`: ESLint after every edit, `verify` before the agent answers) run it automatically.
 
 | Check | Command | Rules |
 |---|---|---|

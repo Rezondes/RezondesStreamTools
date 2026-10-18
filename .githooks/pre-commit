@@ -1,7 +1,12 @@
 #!/bin/sh
-# Vor jedem Commit: Typen, Regeln (ESLint + scripts/rules.check.ts), Checks mit Coverage und Build.
+# Vor jedem Commit: Typen, Regeln (ESLint + scripts/rules.check.ts), Checks mit Coverage, Build und Rust, danach die
+# Contract-Tests gegen den Rust-Server, genau wie der verify-Job in CI.
 # Aktiv durch "git config core.hooksPath .githooks" (macht npm install automatisch).
 npm run verify || {
   echo "Commit abgebrochen: npm run verify schlägt fehl (siehe CODING-RULES.md)."
+  exit 1
+}
+npm run contract || {
+  echo "Commit abgebrochen: npm run contract schlägt fehl."
   exit 1
 }

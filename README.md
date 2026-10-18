@@ -375,6 +375,6 @@ ohne Docker muss `ffmpeg` im PATH liegen (oder `FFMPEG=/pfad/zu/ffmpeg`).
 ## Prüfungen
 
 `npm run verify` prüft alles: Typen, ESLint, Regel-Skript, alle Checks mit Coverage-Grenzen, den Build und den
-Rust-Server (`cargo fmt`, `clippy` ohne Warnungen, Tests). Läuft automatisch vor jedem Commit (`.githooks/pre-commit`,
-aktiviert durch `npm install`). `npm run contract` startet den Server gegen nachgebaute Twitch- und Spotify-Dienste und
+Rust-Server (`cargo fmt`, `clippy` ohne Warnungen, Tests). Vor jedem Commit laufen `verify` und danach `contract`
+automatisch wie im CI-Job (`.githooks/pre-commit`, aktiviert durch `npm install`). `npm run contract` startet den Server gegen nachgebaute Twitch- und Spotify-Dienste und
 prüft alle Adressen (`contract/`). Die Regeln selbst stehen in [CODING-RULES.md](CODING-RULES.md).
