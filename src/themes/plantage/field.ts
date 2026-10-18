@@ -1,6 +1,7 @@
 // Shapes of the mango plantation and the symbols of the Plantage theme as SVG paths (text), plus path building blocks
 // for circles, stars and rolling hills. Only shapes, no colors: the scenes color the parts via CSS classes (settings).
 // Check: field.check.ts.
+import { hash } from "../../core/hash.ts";
 
 // Part of a shape: main/detail = area in main or detail color, line = line only
 type ShapePart = { kind: "main" | "detail" | "line"; d: string };
@@ -30,6 +31,30 @@ export function hillPath(width: number, amplitude: number, wavelength: number, t
     return `${round(x)} ${round(top + amplitude * Math.sin((x / wavelength) * 2 * Math.PI))}`;
   });
   return `M0 ${bottom} L${points.join(" L")} L${width} ${bottom} Z`;
+}
+
+// A round blob of a cluster (leaf bunch of a tree crown, puff of a cloud)
+export type Blob = { x: number; y: number; radius: number };
+
+// Cluster of count blobs inside the ellipse (cx, cy, rx, ry); seed makes every crown or cloud look different, the same
+// seed always gives the same cluster. Radii between a third and a half of rx.
+export function blobs(seed: number, count: number, cx: number, cy: number, rx: number, ry: number): Blob[] {
+  return Array.from({ length: count }, (_, index) => {
+    const angle = (index / count) * 2 * Math.PI + hash(seed * 31 + index) * 0.8;
+    const reach = 0.3 + hash(seed * 17 + index) * 0.7;
+    const radius = rx * (0.32 + hash(seed * 7 + index) * 0.18);
+    return { x: round(cx + Math.cos(angle) * (rx - radius) * reach), y: round(cy + Math.sin(angle) * (ry - radius * 0.6) * reach), radius: round(radius) };
+  });
+}
+
+// Furrows of a field in perspective: count lines from near the vanishing point at the horizon (top) spreading to the
+// bottom edge, as one path
+export function furrows(width: number, top: number, bottom: number, count: number, vanishX: number) {
+  return Array.from({ length: count + 1 }, (_, index) => {
+    const end = (index / count) * width * 1.6 - width * 0.3;
+    const start = vanishX + (end - vanishX) * 0.12;
+    return `M${round(start)} ${top} L${round(end)} ${bottom}`;
+  }).join(" ");
 }
 
 // A mango (100 x 100): body and a leaf at the stem

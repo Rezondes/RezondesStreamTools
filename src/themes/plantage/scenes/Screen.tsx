@@ -38,13 +38,13 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
       {values.picker && <Picker kind={kind} />}
       <div className="pl-stage stage-box" ref={stage}>
         <span className="pl-clock">{new Date(now).toLocaleTimeString(values.locale)}</span>
-        <div className={`pl-sign pl-wood pl-sign-${values.signStyle}`}>
+        <div className={`pl-sign pl-card pl-sign-${values.signStyle}`}>
           <p className="pl-eyebrow">{eyebrow}</p>
           <h1 className="pl-title">{title}</h1>
           {note && <p className="pl-note">{note}</p>}
         </div>
         {kind === "starting" && (
-          <div className="pl-board pl-wood">
+          <div className="pl-board pl-card">
             <b className="pl-big">{left > 0 ? values.countdownPrefix + shortClock(left) : values.countdownDone}</b>
             {values.progressStyle === "korb" && <Basket part={progress} />}
             {values.progressStyle === "ast" && (
@@ -52,8 +52,8 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
             )}
           </div>
         )}
-        {kind === "brb" && <div className="pl-board pl-wood"><b className="pl-big">{values.afkPrefix + shortClock(away)}</b></div>}
-        {kind === "ending" && next && <div className="pl-board pl-wood"><b className="pl-next">{`${values.endingNextLabel}: ${next}`}</b></div>}
+        {kind === "brb" && <div className="pl-board pl-card"><b className="pl-big">{values.afkPrefix + shortClock(away)}</b></div>}
+        {kind === "ending" && next && <div className="pl-board pl-card"><b className="pl-next">{`${values.endingNextLabel}: ${next}`}</b></div>}
         {saying && <p key={saying} className="pl-saying">{saying}</p>}
       </div>
       {ticker && values.tickerStyle === "flugzeug" && (
