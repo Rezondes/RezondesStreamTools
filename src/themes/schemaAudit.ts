@@ -24,7 +24,7 @@ const ALERT_KEYS = ["Tag", "Label"].flatMap(suffix => {
 const CORE_KEYS = new Set<string>([
   ...MINIME_FIELDS.map(field => field.key), ...INFO_FIELDS.map(field => field.key), ...FX_KEYS, ...BADGE_KEYS, ...ALERT_KEYS, ...Object.values(ALERT_SOUND_KEYS), "minimeVariantCommand",
   "minimeTeamCommand", "infoTeamText", "infoTeams", ...MINIME_HOP_FIELDS.map(field => field.key), ...Object.values(COMBAT_SOUNDS),
-  "minimeCombat", "minimeCombatMinS", "minimeCombatMaxS", "minimeCombatMax", "minimeHitChance", "minimeDownMs", "minimeReviveMs", "minimeMedicSpeed",
+  "minimeCombat", "minimeCombatMinS", "minimeCombatMaxS", "minimeCombatMax", "minimeHitChance", "minimeDownMs", "minimeReviveMs", "minimeMedicSpeed", "minimeMedicGap", "minimeUpMs",
   "minimeCombatSounds",
 ]);
 const CORE_PREFIXES = [minimeNamesKey(""), minimeTeamNamesKey(""), minimeTeamLabelKey(""), minimeTeamColorKey(""), minimeAimKey(""), minimeFireKey("")];

@@ -25,6 +25,9 @@ const roles = (actors: readonly MinimeActor[]) => Object.fromEntries(actors.filt
 assert.equal(readCombat({}), null);
 assert.equal(readCombat({ minimeCombat: false }), null);
 assert.deepEqual([options().minMs, options().maxMs, options().maxFights, options().aimMs("mg"), options().fireMs("mg")], [20_000, 60_000, 2, 800, 600]);
+assert.deepEqual([options().medicGapPx, options().upMs], [40, 600]);
+const own = readCombat({ minimeCombat: true, minimeMedicGap: 70, minimeUpMs: 900 });
+assert.deepEqual([own?.medicGapPx, own?.upMs], [70, 900]);
 
 // No medic: no fight, the same array
 {
@@ -54,6 +57,18 @@ assert.deepEqual([options().minMs, options().maxMs, options().maxFights, options
   assert.equal(find(step.actors, "a").startedAt + find(step.actors, "a").durationMs, 10_000);
   step = advanceWithCombat(step.actors, stage, options(), 10_000, zero);
   assert.deepEqual([find(step.actors, "a").action, find(step.actors, "a").combat, find(step.actors, "m").combat], ["up", undefined, undefined]);
+  assert.equal(find(step.actors, "a").durationMs, 600);
+}
+
+// Gap of the medic and duration of standing up come from the settings
+{
+  const own = options({ medicGapPx: 70, upMs: 900 });
+  let state = startFight([actor("a", "mg", 100), actor("b", "mg", 500), actor("m", "medic", 900)], own, cast, 0, zero);
+  for (const now of [800, 1400]) state = advanceWithCombat(state, stage, own, now, zero).actors;
+  assert.equal(find(state, "m").toX, 170);
+  // The medic arrives (revive 1000 ms), then the target stands up
+  for (const now of [20_000, 21_000]) state = advanceWithCombat(state, stage, own, now, zero).actors;
+  assert.deepEqual([find(state, "a").action, find(state, "a").durationMs], ["up", 900]);
 }
 
 // The same with the medic first in the list: reviving and lying end together, both are free

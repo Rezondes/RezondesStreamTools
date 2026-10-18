@@ -7,11 +7,6 @@ import { advance, at, nextAction, nextEnd, positionAt, shownTeam, shownVariant, 
 import { MEDIC, minimeAimKey, minimeFireKey } from "./minimeFields.ts";
 import type { SettingValues } from "./theme.ts";
 
-// fixed: the medic stops this far beside the target, so it does not stand on it
-const BESIDE_PX = 40;
-// fixed: duration of standing up after lying
-const UP_MS = 600;
-
 // Actions of the core in fights; a catalog of a theme must not use them
 export const COMBAT_ACTIONS = ["aim", "fire", "hit", "down", "approach", "revive", "up"] as const;
 
@@ -27,6 +22,8 @@ export type CombatOptions = {
   downMs: number;
   reviveMs: number;
   medicSpeedPxPerS: number;
+  medicGapPx: number; // the medic stops this far beside the target, so it does not stand on it
+  upMs: number; // standing up after lying
   sounds: boolean;
   aimMs: (role: string) => number;
   fireMs: (role: string) => number;
@@ -53,6 +50,8 @@ export function readCombat(values: SettingValues, explosive: readonly string[] =
     downMs: number(values, "minimeDownMs", 12_000),
     reviveMs: number(values, "minimeReviveMs", 2500),
     medicSpeedPxPerS: number(values, "minimeMedicSpeed", 140),
+    medicGapPx: number(values, "minimeMedicGap", 40),
+    upMs: number(values, "minimeUpMs", 600),
     sounds: values.minimeCombatSounds === true,
     aimMs: role => number(values, minimeAimKey(role), 800),
     fireMs: role => number(values, minimeFireKey(role), 600),
@@ -167,7 +166,7 @@ export function advanceWithCombat(actors: readonly MinimeActor[], stage: MinimeS
     sounds.push("hit");
     if (!ownMedic?.combat) return;
     const from = positionAt(ownMedic, now);
-    const to = x + (from <= x ? -BESIDE_PX : BESIDE_PX);
+    const to = x + (from <= x ? -options.medicGapPx : options.medicGapPx);
     const durationMs = (Math.abs(to - from) / options.medicSpeedPxPerS) * 1000;
     set({ ...at(ownMedic, "approach", now, durationMs, from), toX: to, facing: facingTo(from, x), combat: { ...ownMedic.combat, hit: true } });
   };
@@ -190,7 +189,7 @@ export function advanceWithCombat(actors: readonly MinimeActor[], stage: MinimeS
     } else if (combat.role === "medic" && actor.action === "revive") {
       set(next(actor));
     } else if (combat.role === "target" && actor.action === "down") {
-      set(withoutCombat(at(actor, "up", now, UP_MS, actor.toX)));
+      set(withoutCombat(at(actor, "up", now, options.upMs, actor.toX)));
       // A medic still on its way finishes its movement without the fight
       const medic = get(combat.medic);
       if (medic?.combat?.target === actor.login) set(withoutCombat(medic));

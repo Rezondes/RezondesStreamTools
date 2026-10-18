@@ -148,6 +148,17 @@ pub fn minime_combat_fields(set: &MinimeVariantSet) -> Vec<SettingField> {
         ),
         number("minimeReviveMs", "Wiederbeleben: Dauer", MINIME_COMBAT, 2500.0, 200.0, 20_000.0, ms, None),
         number("minimeMedicSpeed", "Medic: Tempo (px pro Sekunde)", MINIME_COMBAT, 140.0, 5.0, 600.0, None, None),
+        number(
+            "minimeMedicGap",
+            "Medic: Abstand zum Getroffenen",
+            MINIME_COMBAT,
+            40.0,
+            0.0,
+            300.0,
+            Some(Unit::Px),
+            None,
+        ),
+        number("minimeUpMs", "Aufstehen: Dauer", MINIME_COMBAT, 600.0, 50.0, 10_000.0, ms, None),
         flag("minimeCombatSounds", "Gefechtstöne", MINIME_COMBAT, false),
     ];
     fields.extend(COMBAT_SOUNDS.iter().map(|(key, label)| sound(key, label, MINIME_COMBAT)));

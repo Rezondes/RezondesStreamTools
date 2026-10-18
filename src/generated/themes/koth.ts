@@ -300,6 +300,8 @@ export type KothValues = {
   readonly minimeDownMs: number;
   readonly minimeReviveMs: number;
   readonly minimeMedicSpeed: number;
+  readonly minimeMedicGap: number;
+  readonly minimeUpMs: number;
   readonly minimeCombatSounds: boolean;
   readonly minimeSoundShot: SoundValue;
   readonly minimeSoundExplosion: SoundValue;

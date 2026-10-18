@@ -81,6 +81,8 @@ export function minimeCombatFields(set: MinimeVariantSet): SettingField[] {
     number("minimeDownMs", "Liegezeit bis zum Selbst-Aufstehen", MINIME_COMBAT, 12_000, 1000, 120_000, "ms"),
     number("minimeReviveMs", "Wiederbeleben: Dauer", MINIME_COMBAT, 2500, 200, 20_000, "ms"),
     number("minimeMedicSpeed", "Medic: Tempo (px pro Sekunde)", MINIME_COMBAT, 140, 5, 600),
+    number("minimeMedicGap", "Medic: Abstand zum Getroffenen", MINIME_COMBAT, 40, 0, 300, "px"),
+    number("minimeUpMs", "Aufstehen: Dauer", MINIME_COMBAT, 600, 50, 10_000, "ms"),
     flag("minimeCombatSounds", "Gefechtstöne", MINIME_COMBAT, false),
     sound(COMBAT_SOUNDS.shot, "Ton: Schuss", MINIME_COMBAT),
     sound(COMBAT_SOUNDS.explosion, "Ton: Explosion", MINIME_COMBAT),
