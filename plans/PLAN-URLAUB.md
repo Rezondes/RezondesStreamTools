@@ -1,4 +1,8 @@
-# Plan: Theme "Südfrucht"
+# Plan: Theme "Urlaub" (früher "Südfrucht")
+
+> Packages 1 und 2 sind erledigt und haben das Theme unter dem Namen "Südfrucht" (id `suedfrucht`) gebaut; Pfade und
+> Namen in diesen beiden Packages beschreiben den damaligen Stand. Packages 3 und 4 benennen das Theme in "Urlaub"
+> (id `urlaub`) um und ersetzen die Frucht-Minimes durch Strandsachen. Übersicht aller Pläne: [PLAN.md](../PLAN.md).
 
 Ein drittes eingebautes Theme im süd-tropischen Küsten- und Meeres-Look: Meer, Wellen, Sand, Palmen, Sonne,
 Hibiskus, Holzschilder. Jede Szene hat einen eigenen Stil (Starting, BRB, Ending, Alerts, Chat, Kamera-Rahmen,
@@ -6,15 +10,17 @@ Musik, Effekte), dazu Stinger und Twitch-Banner. Die Minimes sind Cartoon-Früch
 Chatter wählen eine Frucht, die Früchte hüpfen über den Strand.
 
 Zwei Packages und damit zwei Commits (entschieden). Beide liegen deutlich über der Richtgrösse von etwa 400 Zeilen
-pro Commit aus [CODING-RULES.md](CODING-RULES.md); das ist eine bewusste Ausnahme auf Wunsch, die in beiden
+pro Commit aus [CODING-RULES.md](../CODING-RULES.md); das ist eine bewusste Ausnahme auf Wunsch, die in beiden
 Commit-Beschreibungen steht. Jedes Package endet mit grünem `npm run verify`.
 
 ## Überblick
 
 | # | Package | Ziel in einem Satz | Abhängig von |
 |---|---------|--------------------|--------------|
-| 1 | Minime-Typen im Kern | Ein Theme kann statt Farben feste Minime-Typen anbieten, die Chatter per Befehl wählen und die der Server speichert. | - |
-| 2 | Theme Südfrucht | Das Theme `suedfrucht` bringt alle Szenen, Stinger, Banner, Töne und hüpfende Frucht-Minimes im Tropen-Look mit, alles einstellbar. | 1 |
+| 1 | Minime-Typen im Kern (erledigt) | Ein Theme kann statt Farben feste Minime-Typen anbieten, die Chatter per Befehl wählen und die der Server speichert. | - |
+| 2 | Theme Südfrucht (erledigt) | Das Theme `suedfrucht` bringt alle Szenen, Stinger, Banner, Töne und hüpfende Frucht-Minimes im Tropen-Look mit, alles einstellbar. | 1 |
+| 3 | Umbenennen zu Urlaub | Das Theme heisst `urlaub`, gespeicherte Werte und das aktive Theme der Streamer gehen ohne Verlust mit. | 2 |
+| 4 | Urlaub-Minimes | Die Minimes sind Strandsachen (Rettungsring, Badeente, ...) statt Früchte; der Rest des Themes bleibt. | 3 |
 
 ## Annahmen
 
@@ -56,7 +62,7 @@ Testbefehl: `npm test` (einzeln: `node <pfad>.check.ts`), Abschluss jedes Packag
 
 ---
 
-## Package 1: Minime-Typen im Kern
+## Package 1: Minime-Typen im Kern (erledigt)
 
 **Ziel:** Ein Theme kann statt Farben feste Minime-Typen anbieten, die Chatter per Befehl wählen und die der Server speichert.
 
@@ -196,7 +202,7 @@ Testbefehl: `npm test`
 
 ---
 
-## Package 2: Theme Südfrucht
+## Package 2: Theme Südfrucht (erledigt)
 
 **Ziel:** Das Theme `suedfrucht` bringt alle Szenen, Stinger, Banner, Töne und hüpfende Frucht-Minimes im Tropen-Look mit, alles einstellbar.
 
@@ -428,3 +434,110 @@ Testbefehl: `npm test`, Abschluss `npm run verify`
 - Frucht-Minimes in anderen Themes, Farben für Früchte per Chat.
 - Eigene Szenen für weitere Funktionen (z.B. Umfragen, Ziele).
 - Tageszeit nach echter Uhrzeit (nur fest je Szene).
+
+---
+
+## Annahmen für Packages 3 und 4
+
+- **Theme-ID** (entschieden 2026-10-18): neue ID `urlaub`, Anzeigename "Urlaub". Der Server übernimmt gespeicherte
+  `suedfrucht`-Werte und ein aktives `suedfrucht` beim Lesen automatisch nach `urlaub`.
+- **Nicht mehr auf Südfrüchte fokussiert** (Wunsch): Die Minimes werden Strandsachen; Szenen, Stinger, Banner und Töne
+  bleiben, wie sie sind.
+- **16 Strand-Typen** (entschieden 2026-10-18): Rettungsring, Badeente, Wasserball, Surfbrett, Sonnenschirm,
+  Flamingo-Schwimmring, Liegestuhl, Sandeimer, Eis am Stiel, Muschel, Seestern, Krebs, Schnorchelmaske, Sonnenbrille,
+  Cocktail, Strandtasche. Gleiche Gesichter und das gleiche Hüpfen wie bisher. Gespeicherte Frucht-Minimes bekommen beim
+  ersten Aufräumen einen erlaubten Typ (vorhandene Regel "ausgeschaltete Typen werden ersetzt").
+- **Schema in Rust und TS:** `server-rs/crates/rst-domain/src/themes/<id>.rs` und `src/themes/<id>/settings.ts`, gleich
+  gehalten über die Fixtures (`scripts/dumpSchema.ts`).
+
+## Package 3: Umbenennen Südfrucht zu Urlaub
+
+**Ziel:** Das Theme heisst `urlaub` ("Urlaub"), gespeicherte Werte und das aktive Theme der Streamer gehen ohne Verlust mit.
+
+**Abhängigkeiten:** Package 2
+
+**Betroffene Dateien:**
+- `src/themes/suedfrucht/` nach `src/themes/urlaub/` (umbenennen, IDs, CSS-Präfix, Hook `useUrlaub`)
+- `src/themes/registry.ts`, `src/themes/scenes.tsx`, `src/dashboard/skin.ts`, `src/dashboard/Scenery.tsx`, Checks
+- `server-rs/crates/rst-domain/src/themes/suedfrucht.rs` nach `urlaub.rs`, `themes/registry.rs`, `settings/file.rs` (`current_id`)
+- `src/generated/themes/urlaub.ts` (neu erzeugt), Fixture, `README.md`, `THEMES.md`
+
+### Kontext
+
+Die Theme-ID steht in jedem gespeicherten Einstellungs-Datensatz (`{ theme, values: { <id>: {...} } }`,
+`parse_settings_file` in `rst-domain/src/settings/file.rs`). Die Übernahme alter IDs gibt es schon
+(`current_id`, heute `starter -> standard`); auch `rst import` läuft darüber. Dieses Package trägt nur den Eintrag
+`suedfrucht -> urlaub` ein, kein neues Feature.
+
+### Acceptance Criteria
+
+- [ ] AC1: `GET /api/themes` liefert `urlaub` statt `suedfrucht`; Dashboard und Overlays zeigen "Urlaub".
+- [ ] AC2: Ein gespeicherter Datensatz mit `theme: "suedfrucht"` und Werten unter `suedfrucht` wird als `urlaub` mit
+  denselben Werten gelesen; beim nächsten Speichern steht nur noch `urlaub` drin.
+- [ ] AC3: Der Import alter Node-Profile (`rst import`) übernimmt `suedfrucht` ebenso.
+- [ ] AC4: Kein Vorkommen von `suedfrucht` mehr in Code und Doku ausser in der Übernahme-Regel, ihrem Test und
+  den Plänen (`plans/`, `RUST-PLAN.md`, `PLAN.md` beschreiben die Geschichte).
+
+### Tests (TDD)
+
+1. `rst-domain settings::file::tests::suedfrucht_is_read_as_urlaub` (AC2, AC3): Gegeben ein Datensatz mit
+   `suedfrucht`, erwartet Theme `urlaub` mit denselben Werten.
+2. Bestehende Theme-Checks (`registry.check.ts`, `settings.check.ts`, Fixture-Vergleich) laufen unter dem neuen Namen (AC1).
+3. `scripts/rules.check.ts`: Suche nach `suedfrucht` ausserhalb der Übernahme (AC4).
+
+### Umsetzungsschritte
+
+1. Test für die Übernahme schreiben (rot), in `current_id` den Eintrag `"suedfrucht" => "urlaub"` ergänzen.
+2. Ordner, Dateien, IDs, CSS-Klassen und Hook umbenennen (`git mv`), Registry und Skin anpassen.
+3. Rust-Schema umbenennen, `npm run gen:types`, Fixture neu schreiben.
+4. README und THEMES.md anpassen, `npm run verify`, `npm run contract`.
+
+### Out of Scope
+
+- Inhaltliche Änderungen der Minimes (Package 4).
+
+---
+
+## Package 4: Urlaub-Minimes
+
+**Ziel:** Die Urlaub-Minimes sind Strandsachen statt Früchte; der Rest des Themes bleibt.
+
+**Abhängigkeiten:** Package 3, [RUST-PLAN.md](../RUST-PLAN.md) Package 49 (alte Standardwerte ersetzen)
+
+**Betroffene Dateien:**
+- `src/themes/urlaub/fruits.ts` wird `beachThings.ts` (Formen und Typen), `Fruit.tsx` wird `BeachThing.tsx`
+- `src/themes/urlaub/settings.ts`, `scenes/Minimes.tsx`, `minimes.css`, Checks,
+  `server-rs/crates/rst-domain/src/settings/file.rs` (Eintrag in `OLD_DEFAULTS`)
+- `server-rs/crates/rst-domain/src/themes/urlaub.rs` (Typen, Chat-Namen, Gruppen), Fixture, `src/generated/`
+- `README.md` (Minimes-Abschnitt)
+
+Die Schlüssel der Aussehens-Felder (`fruitSize`, `fruitEye`, ...) bleiben, nur die Beschriftungen ändern sich; sonst
+verlören Streamer ihre Einstellungen. Neu sind nur die Typ-Schlüssel (`minimeNames_<typ>`, Farben je Typ).
+
+### Kontext
+
+Heute wählt ein Chatter eine von 16 Früchten (`!join mango`, `!frucht papaya`). Die Typ-Mechanik (Typen mit
+Chat-Namen, an/aus je Typ, Farben je Typ) bleibt; nur der Inhalt ändert sich.
+
+### Acceptance Criteria
+
+- [ ] AC1: Es gibt die 16 Strand-Typen aus den Annahmen als eigene SVG-Formen mit Gesicht, je Typ Chat-Namen
+  (deutsch und englisch vorbelegt) und Farben einstellbar.
+- [ ] AC2: Der Wechselbefehl heisst standardmässig `!typ` (einstellbar); `!join rettungsring` klinkt als Rettungsring ein.
+  Wer noch den alten Standard `!frucht` gespeichert hat, bekommt `!typ` (Eintrag `urlaub`, `minimeVariantCommand`,
+  `!frucht` zu `!typ` in `OLD_DEFAULTS`, RUST-PLAN 49), auch wenn die Werte noch unter `suedfrucht` liegen; ein selbst
+  gewählter Befehl bleibt.
+- [ ] AC3: Ein gespeichertes Minime mit einer Frucht wird beim Aufräumen ein erlaubter Strand-Typ.
+- [ ] AC4: Alles ausser den Minimes (Szenen, Stinger, Banner, Töne) sieht aus wie vorher.
+
+### Tests (TDD)
+
+1. `beachThings.check.ts`: jeder Typ hat Form, Farben und mindestens einen Chat-Namen (AC1).
+2. `rst-domain`-Test: `!join rettungsring` ergibt den Typ Rettungsring, Fruchtnamen werden nicht mehr erkannt;
+   gespeichertes `!frucht` wird als `!typ` gelesen, auch unter der alten ID `suedfrucht` (AC2).
+3. `rst-domain`-Test: Aufräumen ersetzt `mango` durch einen erlaubten Typ (AC3).
+4. Manuell: Vorschau der Szene `minimes` mit `?demo` (AC1, AC4).
+
+### Out of Scope
+
+- Hüpf-Logik (unverändert; sie wandert mit [PLAN-MINIMES.md](PLAN-MINIMES.md) Package 8 in den Kern).

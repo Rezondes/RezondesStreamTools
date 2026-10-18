@@ -5,7 +5,7 @@ ihren Namen über dem Kopf trägt und zufällige Idle-Animationen zeigt. Im Matr
 Neon-Geist im Kapuzenpulli, ohne Beine, getragen von einer Matrix-Glyphen-Düse.
 
 Die Packages sind nach technischen Abhängigkeiten geordnet. Jedes Package endet mit grünem `npm run verify` und ist
-einzeln committbar. Regeln: [CODING-RULES.md](CODING-RULES.md), Theme-Aufbau: [THEMES.md](THEMES.md).
+einzeln committbar. Regeln: [CODING-RULES.md](../CODING-RULES.md), Theme-Aufbau: [THEMES.md](../THEMES.md).
 
 ## Überblick
 
@@ -18,6 +18,11 @@ einzeln committbar. Regeln: [CODING-RULES.md](CODING-RULES.md), Theme-Aufbau: [T
 | 5 | Matrix-Geist: Grundform | Im Matrix-Theme schweben Neon-Geister mit Namen und Glyphen-Düse, wandern und erscheinen und verschwinden animiert. | 4 |
 | 6 | Matrix-Geist: Idle-Animationen | Die Geister zeigen zufällig Backflip, Glitch, Umschauen, Blinzeln, Drehen und Schlafen und reagieren mit einem Düsen-Boost auf Chat. | 5 |
 | 7 | Doku | THEMES.md und README erklären Befehle, Einstellungen und wie ein anderes Theme eigene Minimes bekommt. | 6 |
+| 8 | Hüpfen im Kern | Die Hüpf-Bewegung der Minimes liegt im Kern, jedes Theme kann sie nutzen. | RUST-PLAN 48 |
+| 9 | TS-Spiegel entfernen | Die Minime-Regeln (Befehle erkennen, Liste führen) gibt es nur noch in Rust. | - |
+| 10 | Fraktionen | Ein Theme kann Fraktionen einbinden; Overlays, Info-Seite, Befehlsseite und Demo zeigen die Fraktion jedes Minimes. | 9, RUST-PLAN 47 |
+| 11 | Gefechte | Ein Theme kann Gefechte einschalten: zufällige Schusswechsel mit Rollen, Getroffene liegen, bis ein Medic sie wiederbelebt. | RUST-PLAN 48 |
+| 12 | Feste Plätze | Ein Theme kann Minimes auf gleichmässig verteilte Plätze stellen statt an zufällige Stellen. | 11, RUST-PLAN 48 |
 
 Parallel möglich: 1 und 2 sofort; 3 und 4 nach 1 und 2.
 
@@ -558,3 +563,226 @@ Testbefehl: `npm run verify`
 ### Out of Scope
 
 - Minimes für das Starter-Theme (eigenes späteres Package, sobald ein zweites Theme Minimes braucht).
+
+---
+
+## Annahmen für Packages 8 bis 12
+
+- **Kern statt Theme:** Hüpfen, Fraktionen, Gefechte und feste Plätze sind Kern-Funktionen der Minimes (`src/core/`).
+  Ein Theme bindet sie ein (opt-in über ihre Felder, wie `MINIME_FIELDS`) und liefert nur Aussehen, eigene Animationen
+  und Standardwerte. Kein Theme verweist auf ein anderes.
+- **Rust-Anteile** stehen in [RUST-PLAN.md](../RUST-PLAN.md) Phase 8 (Packages 47 bis 49). Die Felder entstehen dort in
+  Rust und TS zugleich; hier steht nur die Logik im Frontend.
+- **Rollen** (entschieden 2026-10-18): Rollen sind Minime-Typen (`variant`), kein neuer Code. Ein Theme mit Gefechten muss eine Rolle
+  `medic` anbieten; ist sie ausgeschaltet, gibt es keine Gefechte. Ohne Angabe wählt der Server schon heute einen
+  zufälligen erlaubten Typ (`resolve_variant`).
+- **Gefechte** (entschieden 2026-10-18): zufällig als Animation, nie per Chatbefehl; nur wenn ein freier Medic da ist, mit Fraktionen einer
+  aus der Fraktion des Ziels; Medics schiessen nicht und sind nie Ziel; ein Getroffener liegt, bis ein Medic ihn
+  wiederbelebt, oder steht nach einer einstellbaren Liegezeit von selbst auf. Mit Fraktionen nur gegen andere
+  Fraktionen. Eigener Ablauf mit echter Bewegung des Medics.
+- **Je Overlay** (entschieden 2026-10-18): Gefechte würfelt jedes Overlay selbst; zwei Browser-Quellen zeigen verschiedene Gefechte, ein
+  Neuladen beendet laufende Gefechte. Der Server weiss nichts davon.
+- **Fraktionen** (entschieden 2026-10-18): zweites Typ-Set im Server ([RUST-PLAN.md](../RUST-PLAN.md) Package 47), nur in Themes mit Typen.
+- **Regeln nur in Rust** (entschieden 2026-10-18): der TS-Spiegel der Minime-Regeln wird vorher entfernt (Package 9).
+- **Alles einstellbar** (Gedächtnis): Gefechtsrate, Liegezeit, Wiederbelebungsdauer, Trefferchance, Medic-Tempo,
+  Schussdauer je Rolle, Plätze.
+
+## Package 8: Hüpfen im Kern
+
+**Ziel:** Die Hüpf-Bewegung der Minimes liegt im Kern, jedes Theme kann sie nutzen.
+
+**Abhängigkeiten:** [RUST-PLAN.md](../RUST-PLAN.md) Package 48 (Hüpf-Felder im Kern)
+
+**Betroffene Dateien:** `hops.ts` und `hops.check.ts` aus dem Theme, das heute hüpft (`src/themes/suedfrucht/`, nach
+der Umbenennung `src/themes/urlaub/`), nach `src/core/minimeHops.ts`; Hüpf-CSS als `src/core/minimes/hop.css` (wie
+`src/core/screens/stage.css`) mit allgemeinen Klassen (`.minime-hop` am Körper, `.minime-hop-shadow` am Schatten,
+aktiv bei `.action-walk` und `.action-approach`) statt `.theme-suedfrucht .sf-minime-body`; `hopStyle(actor, hopMs)` für
+`--hops` und `--hop-ms`; `THEMES.md`.
+
+### Kontext
+
+Ein Theme darf nicht aus einem anderen importieren (Regel 16). Die Hüpf-Bewegung liegt heute in einem Theme; weitere
+Themes sollen dieselbe nutzen, also gehört sie in den Kern. Die Felder dazu (`hopHeight`, `hopMs`, `hopSquash`)
+verschiebt RUST-PLAN 48. Gehüpft wird bei jeder Bewegung, also
+auch beim `approach` der Gefechte (Package 11).
+
+### Acceptance Criteria
+
+- [ ] AC1: `hopPlan` und das Hüpf-CSS liegen im Kern, das Theme, das heute hüpft, nutzt sie unverändert.
+- [ ] AC2: Die Anleitung in THEMES.md beschreibt, wie ein Theme Minimes hüpfen lässt.
+
+### Tests (TDD)
+
+1. Der bestehende `hops.check.ts` wandert mit (AC1).
+2. Manuell: Vorschau der Szene `minimes` mit `?demo`, Hüpfen sieht aus wie vorher (AC1).
+
+---
+
+## Package 9: TS-Spiegel der Minime-Regeln entfernen
+
+**Ziel:** Die Minime-Regeln (Befehle erkennen, Liste führen) gibt es nur noch in Rust.
+
+**Abhängigkeiten:** keine
+
+**Betroffene Dateien:** `src/core/minimes.ts` (`parseCommand`, `applyMinime`, `parseColor`, Zustand und Ereignisse
+entfernen; `normalizeName` und die Typen `MinimeRules`, `MinimeVariantRule` bleiben), `src/core/minimes.check.ts`.
+
+### Kontext
+
+`parseCommand` und `applyMinime` waren die Vorlage für Rust (RUST-PLAN 36) und werden seit dem Ende des Node-Servers
+nur noch von `minimes.check.ts` benutzt. Die Rust-Tests decken dasselbe ab. Ohne Entfernen müsste jede neue Regel
+(Fraktionen) doppelt gebaut und getestet werden.
+
+### Acceptance Criteria
+
+- [ ] AC1: Kein Code ausserhalb von Checks nutzt die entfernten Funktionen (Compiler und `rules.check.ts`).
+- [ ] AC2: Für jeden entfernten TS-Testfall gibt es einen Rust-Test; fehlt einer, wird er vorher in `rst-domain`
+  ergänzt.
+- [ ] AC3: `normalizeName` bleibt (Formular, Info-Seite) mit eigenem Check.
+
+### Tests (TDD)
+
+1. Abgleich der Testfälle von `minimes.check.ts` mit `rst-domain minimes::*::tests`, fehlende in Rust ergänzen (AC2).
+2. `npm run verify` grün nach dem Entfernen (AC1, AC3).
+
+---
+
+## Package 10: Fraktionen der Minimes
+
+**Ziel:** Ein Theme kann Fraktionen einbinden; Overlays, Info-Seite, Befehlsseite und Demo zeigen die Fraktion jedes
+Minimes.
+
+**Abhängigkeiten:** Package 9, [RUST-PLAN.md](../RUST-PLAN.md) Package 47 (Fraktionen im Server, Felder)
+
+**Betroffene Dateien:**
+- `src/core/minimeFields.ts` (`readMinimeOptions(values, variants, teams)`), Info-Seiten der Themes mit Typen
+  (`src/themes/*/scenes/Info.tsx`)
+- `src/core/commands.ts` (Fraktions-Befehl in der Liste), `src/core/demo.ts` (Demo-Minimes mit Fraktion)
+- `src/core/minimeBehavior.ts` (`shownTeam` wie `shownVariant`, `teamCounts`), `THEMES.md`, `README.md` (Befehle)
+
+### Kontext
+
+Der Server speichert die Fraktion als `team` (RUST-PLAN 47), dort entstehen auch die Felder. Der Kern liefert `team`
+an das Theme weiter, zählt die Mitglieder je Fraktion (`teamCounts`, z.B. für einen Hügel-Halter) und zeigt den
+Befehl auf Info- und Befehlsseite; das Aussehen macht das Theme.
+
+### Acceptance Criteria
+
+- [ ] AC1: `useMinimes` gibt `team` je Minime weiter; ohne `team` (Demo) eine erlaubte Fraktion nach Login, immer
+  dieselbe (`shownTeam`).
+- [ ] AC2: `teamCounts` zählt sichtbare Minimes je erlaubter Fraktion, ausgeschaltete Fraktionen fehlen.
+- [ ] AC3: Info- und Befehlsseite zeigen den Fraktions-Befehl mit den Namen.
+- [ ] AC4: THEMES.md beschreibt, wie ein Theme Fraktionen einbindet; README nennt `!team` und die Fraktionsnamen.
+
+### Tests (TDD)
+
+1. `minimeBehavior.check.ts`: `shownTeam` mit und ohne `team`, `teamCounts` (AC1, AC2)
+2. `commands.check.ts`, `minimeFields.check.ts`: Fraktions-Befehl in Liste und Regeln (AC3)
+
+---
+
+## Package 11: Gefechte der Minimes
+
+**Ziel:** Ein Theme kann Gefechte einschalten: zufällige Schusswechsel mit Rollen, Getroffene liegen, bis ein Medic sie
+wiederbelebt.
+
+**Abhängigkeiten:** [RUST-PLAN.md](../RUST-PLAN.md) Package 48 (Felder). Fraktionen (Package 10) sind keine
+Voraussetzung: ohne `team` darf jeder auf jeden schiessen, jeder Medic hilft.
+
+**Betroffene Dateien:** `src/core/minimeCombat.ts` (neu, rein) und Check, `src/core/minimeBehavior.ts` (`advance`,
+`react`, `syncRoster`, `nextEnd`, `positionAt`), `src/core/hooks/useMinimes.ts`, `src/core/demo.ts`, `THEMES.md`.
+
+### Kontext
+
+Der heutige Planer wählt Aktionen je Minime einzeln: `advance()` ruft am Ende jeder Aktion `nextAction()`, `react()`
+unterbricht alles ausser erscheinen und verschwinden, `positionAt()` bewegt nur bei `walk`, der Hook hat einen einzigen
+Timer bis zum nächsten Aktionsende (Regel 21). Gefechte betreffen drei Minimes zugleich und müssen in alle diese
+Stellen eingreifen.
+
+### Design
+
+- **Zustand am Minime:** `combat: { role: "shooter" | "target" | "medic"; with: login; step } | null`. Solange `combat`
+  gesetzt ist, wählt `advance()` den nächsten Schritt aus `minimeCombat.ts` statt `nextAction()`.
+- **Ablauf:** `aim` und `fire` (Schütze; Dauer je Rolle aus den Feldern, RUST-PLAN 48; der Grenadier trifft genau ein
+  Ziel, die Explosion ist nur Optik), `hit` und `down` (Ziel), `approach` (Medic bewegt sich zum Ziel; `positionAt()`
+  bewegt bei `walk` und `approach`), `revive` (Medic), `up` (Ziel), danach `combat = null` für alle.
+- **Start:** `nextFightAt` im Zustand des Hooks; `nextEnd()` nimmt das Minimum aus Aktionsenden und `nextFightAt`. Ein
+  Gefecht beginnt nur mit Schütze, Ziel und einem freien Medic (mit Fraktionen aus der Fraktion des Ziels), die alle
+  bereit sind (nicht erscheinend, verschwindend oder schon im Gefecht); sonst wird `nextFightAt` neu gewürfelt. Es
+  laufen höchstens so viele Gefechte gleichzeitig wie eingestellt (Standard 2, entschieden 2026-10-18). Die
+  Trefferchance entscheidet, ob das Ziel getroffen wird; ein Fehlschuss endet nach `fire`.
+- **Unterbrechungen:** `react()` lässt Minimes im Gefecht in Ruhe. Verschwindet der Schütze, läuft das Gefecht weiter.
+  Verschwindet das Ziel oder steht es nach der Liegezeit selbst auf, bricht der Medic ab. Verschwindet der Medic, steht
+  das Ziel nach der Liegezeit selbst auf. Ein Rollenwechsel (`!rolle`) gilt erst nach dem laufenden Gefecht.
+- **Ohne Laufen:** Auch bei `minimeWalkWeight = 0` bewegt sich der Medic (`approach`). Danach bleibt er am neuen Ort,
+  mit festen Plätzen (Package 12) geht er auf seinen Platz zurück.
+- **Ausrichtung:** Schütze und Medic schauen zum Ziel (`facing`); der Medic hält neben dem Ziel an, nicht darauf.
+  Läuft ein Beteiligter gerade, endet sein `walk` beim Start an der aktuellen Stelle (`positionAt`).
+- **Rolle im Gefecht:** Das Minime behält die Rolle vom Gefechtsstart (`combat.variant`), auch wenn `syncRoster` schon
+  den neuen Typ liefert; angezeigt wird bis zum Ende die alte Waffe.
+- **Reservierte Namen:** `aim`, `fire`, `hit`, `down`, `approach`, `revive`, `up` sind Kern-Aktionen; ein Theme-Katalog
+  darf sie nicht nutzen (Check in `minimeCombat.check.ts` gegen die Kataloge aller Themes).
+- **Demo:** Mit Gefechten ist das erste Demo-Minime ein Medic, damit `?demo` Gefechte zeigt.
+- **Töne** (entschieden 2026-10-18: einstellbar, Standard aus): Beim Beginn von `fire` (Schuss, beim Grenadier
+  Explosion), `hit` und `revive` spielt der Kern den Ton aus den Feldern mit `playSound` (`src/core/sound.ts`); den
+  eingebauten Ton je Ereignis liefert das Theme. `?sound=0` schaltet wie überall ab.
+
+### Acceptance Criteria
+
+- [ ] AC1: Ohne freien Medic (mit Fraktionen: der Fraktion des Ziels) beginnt kein Gefecht; ein Medic ist nie Schütze
+  oder Ziel und hilft immer nur einem; nie mehr Gefechte gleichzeitig als eingestellt.
+- [ ] AC2: Ein Getroffener liegt, bis der Medic ihn erreicht und wiederbelebt hat, höchstens bis die Liegezeit um ist.
+- [ ] AC3: Chat-Reaktionen und Rollenwechsel unterbrechen kein Gefecht; ein verschwindendes oder aufgestandenes Ziel
+  beendet das Gefecht für den Medic.
+- [ ] AC4: Mit Fraktionen schiesst niemand auf die eigene Fraktion; mit nur einer Fraktion gibt es kein Gefecht.
+- [ ] AC5: Der nächste Gefechtsstart kommt über denselben Timer wie die Aktionsenden, ohne Frame-Schleife.
+- [ ] AC6: `?demo` mit Gefechten enthält einen Medic.
+- [ ] AC7: Ausgeschaltet, ohne Medic-Rolle oder in Themes ohne Gefechte ändert sich nichts.
+- [ ] AC8: Mit Gefechtstönen an spielt jedes Ereignis (Schuss, Explosion, Treffer, Wiederbeleben) genau einmal seinen
+  Ton; aus (Standard) oder mit `?sound=0` keiner.
+
+### Tests (TDD)
+
+1. `minimeCombat.check.ts` mit festem `now` und `random`: Start nur mit passendem freiem Medic, Ablauf bis `up`,
+   Fehlschuss, Fraktionsfilter, Liegezeit vor Ankunft, Höchstzahl gleichzeitiger Gefechte (AC1, AC2, AC4).
+2. `minimeBehavior.check.ts`: `react` im Gefecht, Rollenwechsel, Ziel verschwindet, Medic verschwindet, `positionAt`
+   bei `approach`, `nextEnd` mit `nextFightAt` (AC2, AC3, AC5).
+3. `demo.ts`-Check mit Medic (AC6); bestehende Checks unverändert grün (AC7).
+4. `minimeCombat.check.ts`: Ton-Ereignisse je Schritt als Rückgabe des reinen Planers, an/aus (AC8).
+
+### Out of Scope
+
+- Aussehen der Gefechte (Theme-Pläne).
+
+---
+
+## Package 12: Feste Plätze der Minimes
+
+**Ziel:** Ein Theme kann Minimes auf gleichmässig verteilte Plätze stellen statt an zufällige Stellen.
+
+**Abhängigkeiten:** [RUST-PLAN.md](../RUST-PLAN.md) Package 48 (Feld `minimePlacement`), Package 11 (Rückweg des Medics)
+
+**Betroffene Dateien:** `src/core/minimeBehavior.ts` (`syncRoster`, Platz am Minime), `THEMES.md`.
+
+### Kontext
+
+`syncRoster()` setzt neue Minimes heute an eine zufällige Stelle. Mit `minimePlacement = slots` gibt es `minimeMax`
+Plätze gleichmässig zwischen den Rändern; jedes neue Minime bekommt den freien Platz, der am weitesten von den belegten
+entfernt ist, und merkt ihn sich (`slot`). Mit Fraktionen hat jede Fraktion einen eigenen Bereich (in der Reihenfolge
+der Fraktionen von links nach rechts), jeder Bereich mit eigenen `minimeMax` Plätzen, damit keine Fraktion überläuft.
+Bei sehr vielen Minimes überlappen die Figuren; das ist hingenommen. Ändern sich `minimeMax` oder die Breite, werden die
+Plätze neu berechnet; ein Minime mit einem Platz ausserhalb bekommt den nächsten freien.
+
+### Acceptance Criteria
+
+- [ ] AC1: Mit `slots` stehen nie zwei Minimes auf demselben Platz, alle Plätze liegen im Bild; ein frei gewordener
+  Platz wird wieder vergeben.
+- [ ] AC2: Mit Fraktionen liegen die Plätze einer Fraktion in ihrem Bereich; ein Fraktionswechsel gibt einen neuen
+  Platz im neuen Bereich.
+- [ ] AC3: Ein Medic kehrt nach dem Wiederbeleben auf seinen Platz zurück.
+- [ ] AC4: Mit `random` (Standard) ändert sich nichts.
+
+### Tests (TDD)
+
+1. `minimeBehavior.check.ts`: `syncRoster` mit `slots` für 1, viele und `minimeMax` Minimes, mit und ohne Fraktionen,
+   Fraktionswechsel, Rückweg des Medics (AC1 bis AC4).

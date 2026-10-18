@@ -6,6 +6,23 @@
 > diesem Plan beschreiben den damaligen Stand. Dieser Plan bleibt für den TypeScript- und React-Teil (Overlays,
 > Dashboard, Themes).
 
+## Weitere Pläne
+
+Dieser Plan beschreibt den allgemeinen TypeScript- und React-Teil. Eigene Pläne gibt es für den Server, für jedes
+Kern-Feature und für jedes Theme. Regeln für die Pläne:
+
+- Features liegen immer modular im Kern (`src/core/`), auch wenn sie anfangs nur ein Theme nutzt; ihr Plan ist ein
+  Kern-Plan. Ein Theme-Plan verweist nur auf Kern-Pläne und RUST-PLAN.md, nie auf einen anderen Theme-Plan.
+- Braucht ein Feature einen Rust-Anteil, steht dieser als eigenes Package in [RUST-PLAN.md](RUST-PLAN.md).
+
+| Plan | Inhalt |
+|------|--------|
+| [RUST-PLAN.md](RUST-PLAN.md) | Rust-Server (`server-rs/`) |
+| [plans/PLAN-MINIMES.md](plans/PLAN-MINIMES.md) | Kern-Feature Minimes: Regeln, Szene, Server, Verhalten (erledigt); TS-Spiegel entfernen, Hüpfen, Fraktionen, Gefechte, feste Plätze (geplant) |
+| [plans/PLAN-URLAUB.md](plans/PLAN-URLAUB.md) | Theme Urlaub (früher Südfrucht) |
+| [plans/PLAN-MANGOPLANTAGE.md](plans/PLAN-MANGOPLANTAGE.md) | Theme Südfrucht-Plantage |
+| [plans/PLAN-KOTH.md](plans/PLAN-KOTH.md) | Theme King of the Hill |
+
 Die Packages sind nach technischen Abhängigkeiten geordnet. Package 1 ist erledigt.
 Jedes Package endet mit grünem `npm run verify` und ist einzeln committbar. Regeln: [CODING-RULES.md](CODING-RULES.md).
 

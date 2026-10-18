@@ -119,9 +119,17 @@ Abhängigkeiten: `rst-server` -> `rst-app` + `rst-infra`; `rst-infra` -> `rst-ap
 | 45 | Umstieg | Das Docker-Image enthält nur den Rust-Server, `server/` (Node) ist entfernt. | 4, alle davor |
 | | **Phase 7: Prüfung** | | |
 | 46 | Abnahme | Vertragstests, Wiederherstellung, Löschung über alte Backups und SSE-Last sind geprüft. | 45 |
+| | **Phase 8: Features für Themes** | | |
+| 47 | Fraktionen der Minimes | Ein Theme kann Fraktionen anbieten; Chatter wählen eine per Befehl, der Server speichert sie. | - |
+| 48 | Neue Minime-Felder im Schema | Die Felder für Gefechte und feste Plätze der Minimes stehen im Rust- und TS-Schema und werden geprüft gespeichert. | 47 |
+| 49 | Alte Standardwerte ersetzen | Ändert ein Theme einen Standardwert, bekommen Streamer mit dem alten Standard beim Lesen den neuen. | - |
 
 Parallel möglich: 3 neben 1 und 2; nach 5 die Packages 6, 7, 11, 14, 15, 16, 17 untereinander; 9 und 10 nach 8;
-18 neben Phase 1; 33 bis 36 nach 32 untereinander; 37 bis 42 nach ihren Abhängigkeiten untereinander.
+18 neben Phase 1; 33 bis 36 nach 32 untereinander; 37 bis 42 nach ihren Abhängigkeiten untereinander; 47 vor 48, 49 unabhängig.
+
+Phase 8 sammelt Server-Features, die ein Theme braucht. Braucht ein Theme ein neues Feature mit Rust-Anteil, steht
+der Rust-Teil hier als eigenes Package; Kern- und Theme-Pläne verweisen darauf. Neue Felder entstehen hier in
+Rust und TS zugleich, damit jedes Package für sich grün ist.
 
 ## Annahmen
 
@@ -1694,6 +1702,158 @@ Testbefehl: `npm run verify`, `npm run contract:rust`, `docker build .`
 1. Die drei Übungen als Skripte (AC1 bis AC3), Audit (AC4)
 
 Testbefehl: `node contract/drills/<name>.ts`
+
+---
+
+## Package 47: Fraktionen der Minimes
+
+**Ziel:** Ein Theme kann Fraktionen anbieten; Chatter wählen eine per Befehl, der Server speichert sie.
+
+**Abhängigkeiten:** keine
+
+**Betroffene Dateien:**
+- `server-rs/crates/rst-domain/src/themes/schema.rs` (`minime_teams: Option<MinimeVariantSet>`, gleiches Format wie
+  `minime_variants`), `themes/minime_fields.rs` (Felder je Fraktion: Chat-Namen, Anzeigename, Farbe; Befehl)
+- `server-rs/crates/rst-domain/src/minimes/{rules.rs,command.rs,roster.rs,mod.rs}`
+- `server-rs/crates/rst-app/src/channel/minimes.rs`, `server-rs/crates/rst-domain/src/commands/mod.rs`
+  (`CommandItem::Team`, auch in der Hilfe-Antwort)
+- TS-Gegenstück der Felder: `src/core/theme.ts` (`minimeTeams`), `src/core/minimeFields.ts` (`minimeTeamFields` mit
+  den Info-Texten zum Fraktions-Befehl), `src/core/commands.ts` (Eintrag `team`), `src/core/infoFields.ts`
+  (Eintrag `team` auf der Info-Seite), `src/themes/schemaAudit.ts` (neue Kern-Schlüssel und Präfixe)
+- `scripts/dumpSchema.ts` (neues Fixture `minime-features.json` mit allen Opt-in-Feldern), `src/generated/`
+
+### Kontext
+
+Fraktionen sind ein zweites Typ-Set (entschieden 2026-10-18): gleiches Format wie die Typen (`MinimeVariantSet` mit Befehl, Anzeigename
+und Chat-Namen je Eintrag), gleiche Prüfung der Namen (`normalize_name`, ein Name gehört dem ersten Eintrag), gleiches
+Merken nach `!leave` wie bei Typen (`StoredVariant`). Neu sind das Feld `team` in `MinimeEntry`, das Lesen beider
+Sets aus einem `!join`-Argument, die Zuteilung zur kleinsten Fraktion und je Fraktion einstellbarer Name und Farbe.
+Fraktionen gibt es nur in Themes mit Typen (entschieden 2026-10-18). Der Wechsel-Befehl ist der Befehl des Sets (Standard `!team`);
+Abklingzeit und "Befehl klinkt auch ein" (`minimeColorJoins`) gelten wie beim Typ.
+
+Details aus dem Code:
+- `team` an `MinimeEntry` und `Minime` mit `#[serde(default, skip_serializing_if = "Option::is_none")]` und
+  `#[ts(optional)]`: alte Daten bleiben lesbar, das SSE-Ereignis `minimes` bleibt für Themes ohne Fraktionen gleich,
+  bestehende TS-Literale (`demo.ts`) kompilieren weiter. `MinimeState` bekommt `teams` mit `#[serde(default)]`.
+- Steht ein Name in beiden Sets, gilt er als Typ (Typen zuerst, wie "ein Name gehört dem ersten Eintrag").
+- Die Info-Texte zum Fraktions-Befehl sind Teil der Fraktions-Felder (opt-in), damit Themes ohne Fraktionen keine toten
+  Felder bekommen (`auditTheme`).
+
+Felder in Rust und TS entstehen im selben Package: Die Fixtures vergleichen sonst erst, wenn ein Theme die Felder nutzt.
+Das neue Fixture `minime-features.json` hält die Opt-in-Felder (Fraktionen, Gefechte, Plätze) schon vorher gleich.
+
+### Acceptance Criteria
+
+- [ ] AC1: Beim `!join` wird das Argument an jeder Wortgrenze in zwei Teile geteilt (auch "alles" und "nichts"); der
+  erste Schnitt, bei dem jeder nicht leere Teil genau in ein Set passt, gewinnt. So gehen `!join blau medic`,
+  `!join medic blau`, `!join blau`, `!join medic` und Mehrwortnamen (`!join eis am stiel blau`). Passt nichts, ist es
+  ein `!join` ohne Angabe. `!team rot` wechselt die Fraktion.
+- [ ] AC2: Ohne Angabe kommt der Chatter in die Fraktion mit den wenigsten Mitgliedern (bei Gleichstand die erste);
+  eine gemerkte Fraktion hat Vorrang, wenn sie noch an ist.
+- [ ] AC3: Eine Fraktion mit leerer Namensliste ist aus; Mitglieder einer ausgeschalteten Fraktion werden beim
+  Aufräumen neu zugeteilt (wie ausgeschaltete Typen).
+- [ ] AC4: Die Fraktion wird gespeichert, kommt nach einem Neustart wieder und geht mit `minimes` an die Overlays;
+  gespeicherte Minimes und alte Backups ohne `team` werden weiter gelesen (`#[serde(default)]`).
+- [ ] AC5: Die öffentliche Befehlsliste (`public_commands`), die Hilfe-Antwort und die Info-Seite nennen den
+  Fraktions-Befehl mit seinen Namen.
+- [ ] AC6: Themes ohne Fraktionen und Farb-Themes verhalten sich wie bisher (kein `team`, `!team` unbekannt); ein Schema
+  mit Fraktionen ohne Typen wird beim Start abgelehnt.
+- [ ] AC7: TS- und Rust-Felder sind gleich (`minime-features.json`).
+
+### Tests (TDD)
+
+1. `rst-domain minimes::command::tests` für die Befehlsformen inklusive Mehrwortname (AC1, AC6)
+2. `rst-domain minimes::roster::tests::join_picks_smallest_team`, `remembered_team_wins`, `disabled_team_is_reassigned`
+   (AC2, AC3)
+3. `rst-app channel::minimes::tests` Speichern und Laden mit Fraktion, Laden alter Daten ohne `team` (AC4)
+4. `rst-app commands::tests::team_command_is_listed` (AC5)
+5. `rst-domain themes::schema::tests::teams_need_variants` (AC6), Fixture-Vergleich (AC7)
+6. Vertragsfall, sobald ein eingebautes Theme Fraktionen einbindet
+
+Testbefehl: `npm run verify`, `npm run contract`
+
+---
+
+## Package 48: Neue Minime-Felder im Schema
+
+**Ziel:** Die Felder für Hüpfen, Gefechte und feste Plätze der Minimes stehen im Kern-Schema (Rust und TS), und ein
+Theme kann die Standards der Kern-Felder setzen.
+
+**Abhängigkeiten:** Package 47 (Fixture `minime-features.json`)
+
+**Betroffene Dateien:**
+- `server-rs/crates/rst-domain/src/themes/minime_fields.rs` (Hüpf- und Gefechts-Felder opt-in, Feld
+  `minimePlacement`, `minime_base_fields(defaults)`), `themes/suedfrucht.rs` bzw. `urlaub.rs` (Hüpf-Felder aus dem Kern)
+- TS-Gegenstück: `src/core/minimeFields.ts` (`minimeBaseFields(defaults)`, `MINIME_HOP_FIELDS`, Gruppen-Namen als
+  Konstanten wie `MINIME_MOTION`), Theme-Settings des Themes, das heute hüpft; `src/themes/schemaAudit.ts` (neue
+  Kern-Schlüssel und Präfixe, sonst meldet `auditTheme` sie als unbenutzt); Fixtures, `src/generated/`
+
+### Kontext
+
+Gefechte und Plätze sind reine Logik im Overlay ([plans/PLAN-MINIMES.md](plans/PLAN-MINIMES.md) Packages 11 und 12);
+der Server speichert weder Treffer noch Plätze. Er braucht nur die Felder im Schema, damit die Werte geprüft gespeichert
+und im Formular angezeigt werden. `minimePlacement` kommt in alle Themes mit Minimes; ohne das TS-Gegenstück im selben
+Commit wären die Fixtures von Matrix und Urlaub rot.
+
+Die Kern-Felder haben heute feste Standards (`MINIME_BASE_FIELDS`, `minime_base_fields()`); ein Theme kann z.B.
+"Häufigkeit: wandern" nicht auf 0 setzen. Neu: Die Kern-Felder entstehen über eine Funktion, der das Theme eigene
+Standards mitgibt (nur Standards, Grenzen bleiben). Die Hüpf-Felder (`hopHeight`, `hopMs`, `hopSquash`) liegen heute im
+Theme, das hüpft; sie wandern mit gleichen Schlüsseln in den Kern, gespeicherte Werte bleiben.
+
+### Acceptance Criteria
+
+- [ ] AC1: Ein Theme, das Gefechte einbindet, hat die Felder: an/aus, Abstand min/max, Trefferchance, Liegezeit bis zum
+  Selbst-Aufstehen, Wiederbelebungsdauer, Medic-Tempo, gleichzeitige Gefechte (Standard 2, entschieden 2026-10-18), und je Rolle (aus
+  den Typen) die Dauer von Zielen und Schuss;
+  dazu Gefechtstöne an/aus (Standard aus) und je Ereignis (Schuss, Explosion, Treffer, Wiederbeleben) ein Ton-Feld
+  wie bei den Alerts (`SoundValue`: eigene Datei oder eingebauter Ton des Themes, Lautstärke).
+- [ ] AC2: Jedes Theme mit Minimes hat `minimePlacement` (`random` oder `slots`, Standard vom Theme, sonst `random`).
+- [ ] AC3: Werte ausserhalb der Grenzen werden abgelehnt; Themes ohne Gefechte haben die Gefechts-Felder nicht.
+- [ ] AC4: TS- und Rust-Felder sind gleich (Theme-Fixtures und `minime-features.json`).
+- [ ] AC5: Ein Theme kann den Standard jedes Kern-Felds setzen; ohne Angabe gilt der Kern-Standard.
+- [ ] AC6: Die Hüpf-Felder kommen aus dem Kern mit denselben Schlüsseln; ein gespeichertes `hopHeight` wird weiter
+  gelesen.
+
+### Tests (TDD)
+
+1. `rst-domain themes::minime_fields::tests::combat_fields_are_opt_in` (AC1, AC3)
+2. `rst-domain themes::minime_fields::tests::placement_defaults_to_random` (AC2)
+3. Fixture-Vergleich (AC4, AC6)
+4. `rst-domain themes::minime_fields::tests::theme_sets_core_default` (AC5)
+5. `rst-domain settings::file::tests::stored_hop_values_stay` (AC6)
+
+Testbefehl: `npm run verify`
+
+---
+
+## Package 49: Alte Standardwerte ersetzen
+
+**Ziel:** Ändert ein Theme einen Standardwert, bekommen Streamer mit dem alten Standard beim Lesen den neuen; selbst
+gewählte Werte bleiben.
+
+**Abhängigkeiten:** keine
+
+**Betroffene Dateien:** `server-rs/crates/rst-domain/src/settings/file.rs` (Tabelle `OLD_DEFAULTS`: Theme, Schlüssel,
+alter Wert, neuer Wert; die Tabelle startet leer, der erste Eintrag kommt mit dem Theme-Plan, der ihn braucht)
+
+### Kontext
+
+Das Formular speichert alle Werte, auch unveränderte Standards. Ändert ein Theme einen Standard (Theme-Plan
+[plans/PLAN-URLAUB.md](plans/PLAN-URLAUB.md) Package 4: `!frucht` zu `!typ`), bliebe bei allen Streamern der alte Wert
+stehen. Die Übernahme läuft beim Lesen wie `current_id`, also auch für `rst import` und Backups.
+
+### Acceptance Criteria
+
+- [ ] AC1: Ein gespeicherter alter Standard wird als neuer gelesen, beim nächsten Speichern steht der neue drin.
+- [ ] AC2: Ein selbst gewählter Wert bleibt.
+- [ ] AC3: Die Regel greift nach `current_id`, also auch für Werte unter einer alten Theme-ID.
+
+### Tests (TDD)
+
+1. `rst-domain settings::file::tests::old_default_is_replaced`, `own_value_stays`, `old_default_under_old_id` mit einer
+   Test-Tabelle (`starter -> standard` als alte ID) (AC1 bis AC3)
+
+Testbefehl: `npm run verify`
 
 ---
 
