@@ -1,7 +1,7 @@
 # RST - Rezondes Stream Tools
 
 Werkzeuge für Streamer: Browserquellen für OBS, ein Dashboard und eine Befehlsseite für Zuschauer, im Look des
-gewählten Themes (Standard, Matrix, Urlaub).
+gewählten Themes (Standard, Matrix, Urlaub, Südfrucht-Plantage, King of the Hill).
 Oberfläche mit React + Vite + TypeScript, dazu ein Server in Rust (`server-rs/`, Docker) für mehrere Streamer:
 Twitch-Anmeldung, alle Events, verschlüsselte Profile und Backups.
 
@@ -12,9 +12,16 @@ npm install
 npm run dev                  # http://localhost:5173
 ```
 
-Das Dashboard unter `/` zeigt ohne Sitzung nur `[ MIT TWITCH ANMELDEN ]`, danach die Bereiche Übersicht, Theme, Trigger,
-Medien, Verbindungen und Admin; jeder Bereich erscheint nur, wenn seine Funktion für den Streamer freigegeben ist, Admin nur
-für Admins. Die Übersicht listet alle OBS-URLs mit Grösse, `[ KOPIEREN ]` und `[ TEST ]` (Szene mit Fake-Events, `?demo`).
+Das Dashboard unter `/` zeigt ohne Sitzung nur "Mit Twitch anmelden", danach die Bereiche Übersicht, Theme, Rendern,
+Medien, Trigger, Verbindungen und Admin; jeder Bereich erscheint nur, wenn seine Funktion für den Streamer freigegeben ist,
+Admin nur für Admins. Das Dashboard sieht aus wie das aktive Theme (eigener Skin je Theme, siehe [DESIGN.md](DESIGN.md)).
+
+- **Übersicht:** alle OBS-URLs mit Grösse, "Kopieren" und "Test" (Szene mit Fake-Events, `?demo`). Eine URL lässt sich
+  direkt auf das OBS-Fenster ziehen; "In OBS importieren" lädt alle Szenen als Szenensammlung herunter oder legt sie
+  über den OBS-WebSocket an. Dazu Test-Alerts, Test-Knöpfe der Trigger und der Hilfe-Befehl.
+- **Verbindungen:** Status von Twitch (EventSub) und Spotify, verbinden und trennen, darunter das Ereignis-Protokoll:
+  live, was die Overlays gerade bekommen.
+
 Alle Texte des Dashboards stehen in `src/dashboard/texts.de.ts`, auch die Texte zu den Fehlercodes des Servers.
 
 `npm run build` erzeugt in `dist/` eine HTML-Datei pro Szene (`starting.html`, `alerts.html`, ...), die der Server
@@ -33,7 +40,7 @@ kommen vom Server.
 | `#/cam` | wie Kamera | |
 | `#/music` | 900x240 | |
 | `#/fx` | 1920x1080 | `?zone=main`, `?sound=0`, `?volume=0.5` |
-| `#/minimes` | 1920x360 | `?demo=<n>` (so viele Demo-Minimes, Standard 5) |
+| `#/minimes` | 1920x360 | `?demo=<n>` (so viele Demo-Minimes, Standard 5; in Themes mit Gefechten ist das erste der Medic) |
 | `#/info` | Seite | öffentliche Befehlsseite für Zuschauer, mit Server unter `/s/<login>/` |
 
 Alles andere (Texte, Farben, Schrift, Dauer, Grösse, Position, Animationen, Töne, Darstellung der Musik, Ausblendzeit
@@ -67,7 +74,7 @@ Spotify-Tokens, Einstellungen, Trigger, Medien, Minimes), eine eigene Laufzeit u
    ```bash
    docker compose up -d --build
    ```
-5. `http://localhost:8089` öffnen, `[ MIT TWITCH ANMELDEN ]` klicken, bei Twitch zustimmen.
+5. `http://localhost:8089` öffnen, "Mit Twitch anmelden" klicken, bei Twitch zustimmen.
    Die Daten liegen im Docker-Volume `tokens`, die Schlüssel im Volume `keys`; beide überleben Neustarts. Der Server prüft
    die Tokens stündlich und erneuert sie selbst; lehnt Twitch den Login ab, endet die Laufzeit des Streamers und er meldet
    sich neu an.
@@ -127,7 +134,7 @@ offene Overlays verbinden sich nach dem Neustart selbst wieder.
 
 ### Backups
 
-Admins verwalten Backups im Dashboard unter `[ ADMIN ]`:
+Admins verwalten Backups im Dashboard im Bereich Admin:
 
 - **Erstellen:** ein Backup ist ein ZIP mit allen Tabellen der Datenbank (Chiffrat bleibt Chiffrat), allen verschlüsselten
   Dateien und einem Manifest mit Prüfsummen. Es enthält keine Sitzungen und nie Schlüssel. Es entsteht im Hintergrund,
@@ -148,7 +155,7 @@ des Schlüsselspeichers und denselben `RST_MASTER_KEY`. Zertifikate liegen im Vo
 ### Zugang und Funktionsstufen
 
 - `ADMINS` (Komma-Liste in `server.env`) dürfen sich immer anmelden und haben jede Funktion, die nicht `off` ist.
-- Den Rest regeln Admins im Dashboard unter `[ ADMIN ]` (gespeichert verschlüsselt auf dem Server); ohne Einstellung
+- Den Rest regeln Admins im Dashboard im Bereich Admin (gespeichert verschlüsselt auf dem Server); ohne Einstellung
   stehen nur die Admins in der Allowlist.
   - `registration`: `allowlist` (nur Logins aus `allowlist` und Admins, für den Beta-Start) oder `open` (jeder Twitch-Login).
   - `beta`: Logins, die zusätzlich Funktionen mit Stufe `beta` bekommen.
@@ -171,8 +178,8 @@ des Schlüsselspeichers und denselben `RST_MASTER_KEY`. Zertifikate liegen im Vo
 | `/s/<login>/commands` | öffentlich | Chat-Befehle für die Befehlsseite |
 | `/s/<login>/events` | mit `?key=` (Overlay) oder Sitzung (`?log`, Dashboard) | Server-Sent Events (`alert`, `music`, `fx`, `settings`, `minimes`, `minimeChat`, `chat`, `remove`), 403 ohne gültigen Schlüssel, 404 ohne laufende Laufzeit |
 | `/s/<login>/media/<datei>` | öffentlich | Medien des Streamers (ohne Script-Ausführung) |
-| `/auth/login`, `/auth/callback`, `POST /auth/logout` | alle | Anmeldung mit Twitch, Abmelden |
-| `/api/me`, `POST /api/overlay-key`, `/api/test`, `/api/triggers`, `/api/trigger`, `/api/triggers/config`, `/api/media`, `/api/settings`, `/api/themes`, `/api/commands`, `/api/render/*`, `/spotify/*`, `POST /api/twitch/disconnect` | angemeldet | Dashboard; Login aus dem Sitzungs-Cookie, Funktionsstufe geprüft |
+| `/auth/login`, `/auth/callback`, `POST /auth/logout`, `/spotify/callback` | alle | Anmeldung mit Twitch, Abmelden, Rückkehr von Spotify |
+| `/api/me`, `POST /api/overlay-key`, `/api/test`, `/api/triggers`, `/api/trigger`, `/api/triggers/config`, `/api/media`, `/api/settings`, `/api/themes`, `/api/commands`, `/api/render/*`, `/api/spotify`, `/spotify/login`, `POST /spotify/logout`, `POST /api/twitch/disconnect` | angemeldet | Dashboard; Login aus dem Sitzungs-Cookie, Funktionsstufe geprüft |
 | `/api/admin/access`, `/api/admin/streamers`, `/api/admin/streamer?login=`, `/api/admin/audit` | Admins | Zugang, Profile, Löschen, Audit-Log |
 | `/api/admin/backups`, `/api/admin/backup?id=`, `/api/admin/backups/upload`, `/api/admin/backup/restore?id=`, `/api/admin/backup-settings` | Admins | Backups und Zeitplan |
 
@@ -181,17 +188,18 @@ des Schlüsselspeichers und denselben `RST_MASTER_KEY`. Zertifikate liegen im Vo
 1. Auf https://developer.spotify.com/dashboard eine App anlegen, API "Web API".
    Redirect URI: lokal `http://127.0.0.1:8089/spotify/callback` (Spotify erlaubt kein `localhost`), öffentlich `PUBLIC_URL/spotify/callback`.
 2. `SPOTIFY_CLIENT_ID` und `SPOTIFY_CLIENT_SECRET` in `server.env` eintragen, `docker compose up -d --build`.
-3. Jeder Streamer klickt im Dashboard unter Verbindungen `[ MIT SPOTIFY VERBINDEN ]` (Funktion `music`).
+3. Jeder Streamer klickt im Dashboard unter Verbindungen "Mit Spotify verbinden" (Funktion `music`).
    Solange die Spotify-App im Entwicklungsmodus ist, muss jedes Spotify-Konto dort als Nutzer eingetragen sein.
 
-Das Overlay zeigt Titel, Interpret, Album, Fortschritt und das Cover in Phosphorgrün.
-Ohne Cover (oder mit der Darstellung `vinyl`) dreht sich eine ASCII-Schallplatte, mit `record` füllt das Cover die ganze Platte und dreht sich mit. Bei Pause oder Stopp klappt es ein (abschaltbar in den Einstellungen).
+Das Overlay zeigt Titel, Interpret, Album, Fortschritt und Cover im Look des Themes (z.B. Matrix: Terminal mit
+ASCII-Schallplatte, Urlaub: Strandradio, Plantage: Transistorradio, KOTH: Feldfunkgerät); lange Titel laufen durch.
+Bei Pause oder Stopp blendet es aus (abschaltbar in den Einstellungen).
 Der Server fragt Spotify alle 3 Sekunden ab, aber nur solange ein Overlay des Streamers offen ist.
 
 ### Chat-Overlay
 
 Der Server liest den Chat jedes Streamers anonym mit und schickt Nachrichten, gelöschte Nachrichten und Bans als Events.
-Nachrichten glitchen rein und nach der eingestellten Zeit wieder raus. Zeigt Twitch-Emotes sowie die globalen und
+Nachrichten erscheinen im Look des Themes und verschwinden nach der eingestellten Zeit wieder. Zeigt Twitch-Emotes sowie die globalen und
 Kanal-Emotes von 7TV, BetterTTV und FrankerFaceZ (im Browser geladen, alle 10 Minuten aufgefrischt).
 Gelöschte Nachrichten und gebannte Nutzer verschwinden sofort.
 
@@ -203,34 +211,34 @@ verschlüsselt im Profil. Regeln, Grenzen und Standardwerte der Felder kommen vo
 fehlerfreie Eingaben, sonst kommt eine Liste `{ key, code }` zurück. Die Typen für die Oberfläche erzeugt
 `npm run gen:types` nach `src/generated/`.
 
-Im eingebauten Theme `matrix` ist jeder sichtbare und hörbare Wert eine Einstellung (Farben, Schrift, Logo, Regen,
-Texte und Terminal-Zeilen der Szenen, Alert-Texte je Art mit `{user}`, `{amount}`, `{detail}`, `{text}`, Töne je Alert-Art,
-Chat, Kamera, Musik, Effekte, Stinger, Banner); die Standardwerte ergeben den bisherigen Look. Terminal-Zeilen können
-Vertipper enthalten: `{del 4}` löscht 4 Zeichen, `{pause 900}` wartet 900 ms, `{smash 18}` haut auf die Tastatur.
-Der Theme-Code selbst enthält keine festen Farben, Texte oder Masse; das prüft `scripts/rules.check.ts`.
+In jedem eingebauten Theme ist jeder sichtbare und hörbare Wert eine Einstellung (Farben, Schriften, Texte der Szenen,
+Alert-Texte je Art mit `{user}`, `{amount}`, `{detail}`, `{text}`, Töne je Alert-Art, Chat, Kamera, Musik, Effekte,
+Stinger, Banner, Minimes). Der Theme-Code selbst enthält keine festen Farben, Texte oder Masse; das prüft
+`scripts/rules.check.ts`. Im Theme `matrix` können Terminal-Zeilen Vertipper enthalten: `{del 4}` löscht 4 Zeichen,
+`{pause 900}` wartet 900 ms, `{smash 18}` haut auf die Tastatur.
 
-Im Dashboard (Bereich `[ THEME ]`) entsteht das Formular automatisch aus dem Schema, gruppiert und mit
+Im Dashboard (Bereich Theme) entsteht das Formular automatisch aus dem Schema, gruppiert und mit
 Zurücksetzen je Feld oder für alles. Die Vorschau zeigt die gewählte Szene als `iframe` mit den noch nicht
 gespeicherten Werten (`/s/<login>/<szene>?demo&preview`, Werte per `BroadcastChannel` nur von derselben Herkunft, auch in einem eigenen Tab).
-Die Theme-Auswahl zeigt ein Theme nur zum Ansehen und Bearbeiten; die Overlays stellt erst `[ ALS AKTIVES THEME SETZEN ]`
-um (so lassen sich andere Themes auch während des Streams anschauen). Fehler beim Speichern erscheinen am jeweiligen Feld.
+Die Theme-Auswahl zeigt ein Theme nur zum Ansehen und Bearbeiten; die Overlays und den Skin des Dashboards stellt erst
+"Als aktives Theme setzen" um (so lassen sich andere Themes auch während des Streams anschauen). Fehler beim Speichern erscheinen am jeweiligen Feld.
 
-Eingebaut sind `standard` (das Standard-Theme: klarer, moderner Look mit Verlauf, abgerundeten Karten und eigener
-Schrift; alle Szenen, Stinger und Banner eigenständig), `matrix` (Terminal-Look) und `urlaub`
-(Urlaub: tropischer Strand mit Meer, Wellen, Palmen und Holzschildern; Tageszeit je Szene, Alerts als Postkarte,
-Surfbrett oder Flaschenpost, Chat als Luftblasen, Planken oder Muscheln, Rahmen aus Bambus, Holz oder Seil,
-Strandradio, Wellen-Stinger, Strand-Banner und hüpfende Strand-Minimes) und `plantage` (Südfrucht-Plantage: Mangofeld
-mit Baumreihen, Erde, Kisten und dem Streamer als Mangopflücker; Alerts als Kistenetikett, Erntezettel oder Korb, Chat
-als Zettel, Bretter oder Blätter, Rahmen als Kiste, Holz oder Seil, Transistorradio, Mango-Stinger, Feld-Banner und
-Mango-Soldaten als Minimes, die hüpfen und sich beschiessen) und `koth` (King of the Hill: Militär-Look nach dem
-KOTH-Modus aus Arma; Hügel mit Funkmast und Flagge, Sandsäcke und Tarnnetze, Einsatzbesprechung mit Lagekarte,
-Alerts als Funkspruch, Akte oder Schild, Chat als Funkprotokoll mit Zeitstempel, Helmkamera- oder Zielfernrohr-Rahmen,
-Feldfunkgerät, Rauchgranaten-Stinger mit Flaggenwechsel und Soldaten-Minimes in drei Fraktionen). Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
+Eingebaut sind (Details je Theme in `src/themes/<id>/docs/DESIGN-<ID>.md`):
+
+| Theme | Look | Minimes |
+|---|---|---|
+| `standard` | klar und modern, Verlauf aus zwei Akzenten, abgerundete Karten | keine |
+| `matrix` | Terminal: Phosphorgrün auf Schwarz, Matrix-Regen, Glitches | Neon-Geister, Farbe per `!color` |
+| `urlaub` | tropischer Strand mit Meer, Palmen und Holzschildern, Tageszeit je Szene | 16 Strandsachen, Typ per `!typ` |
+| `plantage` | Mangoplantage mit Baumreihen, Kisten und dem Streamer als Mangopflücker | Mango-Soldaten in fünf Rollen, mit Gefechten |
+| `koth` | Militär nach dem KOTH-Modus aus Arma: Hügel mit Funkmast, Lagekarte, Funkgeräte | Soldaten in Rollen und drei Fraktionen, mit Gefechten |
+
+Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
 
 ## Minimes (Szene `minimes`)
 
-Chatter klinken sich per Chatbefehl als kleine Figur ein, die unten im Bild schwebt, hin und her wandert, ihren Namen
-über dem Kopf trägt und zufällige Animationen zeigt. Im Theme `matrix` ist das ein Neon-Geist im Kapuzenpulli, ohne
+Chatter klinken sich per Chatbefehl als kleine Figur ein, die unten im Bild steht oder schwebt, hin und her wandert
+(oder auf einem festen Platz bleibt), ihren Namen trägt und zufällige Animationen zeigt. Im Theme `matrix` ist das ein Neon-Geist im Kapuzenpulli, ohne
 Beine, getragen von einer Düse aus fallenden Glyphen (Backflip, Glitch, Umschauen, Drehen, Schlafen, Blinzeln;
 Hüpfer mit Düsen-Boost, wenn der Chatter schreibt). Im Theme `urlaub` sind es Strandsachen mit Gesicht (Rettungsring,
 Badeente, Wasserball, ...), die über den Strand hüpfen (Freudensprünge, Pirouette, Wackeln, Sonnenbrille, Umschauen,
@@ -276,10 +284,13 @@ Farben: `#ff00aa`, `ff00aa`, `#f0a`, `255 0 170`, `255,0,170` oder `rgb(255, 0, 
 eingestellten Mindesthelligkeit aufgehellt; ohne eigene Farbe gilt die Twitch-Namensfarbe (abschaltbar), sonst die
 Standardfarbe des Themes. Ungültige Eingaben werden ignoriert, der Server kann nicht im Chat antworten.
 
-Alles Verhalten ist im Theme einstellbar (Gruppen "Minimes: Befehle", "Minimes: Regeln", "Minimes: Bewegung",
-im Matrix-Theme dazu "Minimes: Aussehen" und "Minimes: Animationen"): Befehlswörter, wer einklinken und rauswerfen darf,
-Höchstzahl und was bei voller Liste passiert, Verschwinden nach Minuten ohne Nachricht, Abklingzeit für Farbwechsel,
-Reaktion auf Chat, Leeren bei Streamende (`stream.offline`) und bei Ban oder Timeout, Tempo, Laufweite und Häufigkeiten.
+Alles Verhalten ist im Theme einstellbar: "Minimes: Befehle", "Minimes: Regeln" und "Minimes: Bewegung" hat jedes Theme
+mit Minimes (Befehlswörter, wer einklinken und rauswerfen darf, Höchstzahl und was bei voller Liste passiert,
+Verschwinden nach Minuten ohne Nachricht, Abklingzeit für Farb- oder Typwechsel, Reaktion auf Chat, Leeren bei
+Streamende (`stream.offline`) und bei Ban oder Timeout, Tempo, Laufweite, Häufigkeiten, freie oder feste Plätze).
+Dazu je Theme "Minimes: Aussehen" und "Minimes: Animationen" sowie, wo das Theme sie hat, "Minimes: Typen",
+"Minimes: Hüpfen", "Minimes: Fraktionen" und "Minimes: Gefechte" (Abstand und Anzahl der Gefechte, Trefferchance,
+Liegezeit, Wiederbeleben, Tempo und Abstand des Medics, Aufstehen, Zielen und Schuss je Rolle, Töne).
 Die Liste und die gemerkten Farben, Typen und Fraktionen speichert der Server verschlüsselt im Profil (höchstens alle 2 s).
 
 ## Chat-Trigger
@@ -287,9 +298,9 @@ Die Liste und die gemerkten Farben, Typen und Fraktionen speichert der Server ve
 Der Server liest den Chat jedes angemeldeten Streamers mit (Funktionen `triggers` und `fx`). Passt eine Nachricht auf eine Regel,
 spielt sein `fx.html` die Aktionen ab. Regeln und Medien liegen verschlüsselt im Profil.
 
-Regeln bearbeitet man im Browser: `http://localhost:8089/#/triggers` (angemeldet, Bereich `[ TRIGGER ]` im Dashboard).
+Regeln bearbeitet man im Browser: `http://localhost:8089/#/triggers` (angemeldet, Bereich Trigger im Dashboard).
 Dort Regeln anlegen, kopieren, löschen, Aktionen sortieren und Medien hochladen (max. 50 MB pro Datei, Bild/Video/Audio).
-Der Bereich `[ MEDIEN ]` listet alle Dateien mit Grösse, Vorschau und den Triggern, die sie nutzen; Löschen fragt nach
+Der Bereich Medien listet alle Dateien mit Grösse, Vorschau und den Triggern, die sie nutzen; Löschen fragt nach
 (`DELETE /api/media?name=`). Alle Medien eines Streamers zusammen dürfen höchstens `MEDIA_LIMIT_MB` belegen (Standard 200),
 darüber lehnt der Server Uploads mit `quota-exceeded` ab. Schreibende Anfragen (POST, DELETE) nimmt der Server nur von
 der eigenen Herkunft an.
@@ -320,20 +331,20 @@ Speichern prüft alle Regeln; bei Fehlern werden sie angezeigt und nichts änder
 | `do[].position` | `center`, `random` oder `{ "x": 50, "y": 20 }` in Prozent |
 | `do[].size`, `duration`, `volume` | Breite in px, Sekunden, 0 bis 1 |
 | `do[].delay` | Sekunden, die das Medium schon sichtbar ist, aber angehalten (erstes Bild); Ton startet erst danach |
-| `do[].after` | Sekunden, die das Medium nach `duration` angehalten auf dem letzten Bild stehen bleibt, dann glitcht es raus |
+| `do[].after` | Sekunden, die das Medium nach `duration` angehalten auf dem letzten Bild stehen bleibt, dann blendet es aus (Animation aus dem Theme) |
 | `do[].together` | `true`: erscheint gleichzeitig mit der vorherigen Aktion. Sonst laufen die Aktionen in `do` nacheinander (nächste nach `delay` + `duration` + `after`) |
 
 Auf der Übersicht gibt es für jede Regel einen Test-Knopf.
 
-## Stinger und Twitch-Banner (Bereich `[ RENDERN ]`)
+## Stinger und Twitch-Banner (Bereich Rendern)
 
 Der Bereich erscheint mit der Funktion `stinger` oder `banners`. Er zeigt Stinger (1920x1080), Profilbanner (1200x480)
-und Offline-Banner (1920x1080) mit Vorschau und Zeitleiste, gezeichnet mit den gespeicherten Einstellungen des
-Streamers (Theme `matrix`, Gruppen Stinger und Banner; Animation in `src/themes/matrix/stinger.ts` und `banners.ts`).
-`[ RENDERN ]` schickt jeden Frame als PNG an den Server; die Frames liegen nur bis zum Ende des Renders unverschlüsselt in
+und Offline-Banner (1920x1080) des aktiven Themes mit Vorschau und Zeitleiste, gezeichnet mit den gespeicherten
+Einstellungen des Streamers (Gruppen Stinger und Banner; Animation in `src/themes/<id>/stinger.ts` und `banners.ts`).
+"Rendern" schickt jeden Frame als PNG an den Server; die Frames liegen nur bis zum Ende des Renders unverschlüsselt in
 einem temporären Ordner, ffmpeg baut daraus (höchstens 5 Minuten), das Ergebnis speichert der Server verschlüsselt:
 
-- `stinger.webm`: VP9 mit Transparenz. In OBS: Szenenübergänge, `+`, Stinger, Videodatei wählen, Übergangspunkt wie im Dashboard angegeben (Standard 750 ms).
+- `stinger.webm`: VP9 mit Transparenz. In OBS: Szenenübergänge, `+`, Stinger, Videodatei wählen, Übergangspunkt wie im Dashboard angegeben (je Theme eingestellt, z.B. Matrix 750 ms).
 - `profile.gif` bzw. `offline.gif` als Endlosschleife und ein Standbild `.png`. Über 10 MB nimmt Twitch kein GIF an; das Dashboard weist darauf hin.
 
 Pro Streamer läuft höchstens ein Render, mit höchstens 1200 Frames zu je 8 MB. ffmpeg steckt im Docker-Image;
@@ -341,8 +352,8 @@ ohne Docker muss `ffmpeg` im PATH liegen (oder `FFMPEG=/pfad/zu/ffmpeg`).
 
 ## OBS-Tipps
 
-- Alerts: "Audio über OBS steuern" aktivieren, dann haben die Pieptöne einen eigenen Mixer-Kanal.
-- "Quelle aktualisieren, wenn Szene aktiv wird" aktivieren bei starting/brb/ending, damit Countdown und Einschalt-Animation neu starten.
+- Alerts: "Audio über OBS steuern" aktivieren, dann haben die Töne einen eigenen Mixer-Kanal.
+- "Browser aktualisieren, wenn Szene aktiv wird" aktivieren bei starting/brb/ending, damit Countdown und Einschalt-Animation neu starten.
 
 ## Prüfungen
 
