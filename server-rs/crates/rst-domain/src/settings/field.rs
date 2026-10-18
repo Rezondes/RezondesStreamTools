@@ -141,6 +141,26 @@ impl SettingField {
             FieldKind::Sound { default } => SettingValue::Sound(default.clone()),
         }
     }
+
+    /// Replaces the default with `value` when it has the type of the field; a value of another type is ignored
+    pub fn set_default(&mut self, value: &SettingValue) {
+        match (&mut self.kind, value) {
+            (
+                FieldKind::Color { default }
+                | FieldKind::Text { default, .. }
+                | FieldKind::Textarea { default, .. }
+                | FieldKind::Select { default, .. }
+                | FieldKind::Font { default, .. }
+                | FieldKind::Media { default, .. },
+                SettingValue::Text(text),
+            ) => default.clone_from(text),
+            (FieldKind::Lines { default, .. }, SettingValue::Lines(lines)) => default.clone_from(lines),
+            (FieldKind::Number { default, .. }, SettingValue::Number(number)) => *default = *number,
+            (FieldKind::Boolean { default }, SettingValue::Flag(flag)) => *default = *flag,
+            (FieldKind::Sound { default }, SettingValue::Sound(sound)) => default.clone_from(sound),
+            _ => {}
+        }
+    }
 }
 
 fn field(key: &str, label: &str, group: &str, kind: FieldKind) -> SettingField {

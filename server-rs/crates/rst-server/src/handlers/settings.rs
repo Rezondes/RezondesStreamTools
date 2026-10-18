@@ -4,8 +4,10 @@
 use axum::response::Response;
 use rst_app::events::ServerMessage;
 use rst_app::settings::SaveError;
+use rst_domain::identity::values::Login;
 use rst_domain::settings::file::minime_rules_of;
 use rst_domain::themes::registry::themes;
+use rst_domain::themes::schema::ThemeSchema;
 use serde_json::{Value, json};
 
 use crate::clock::now_ms;
@@ -54,8 +56,13 @@ pub async fn save(call: Call<'_>) -> Response {
     }
 }
 
-/// The schemas of all themes, as the forms build their fields from them
-pub fn schemas() -> Response {
-    let list: Vec<_> = themes().iter().map(|theme| &theme.schema).collect();
+/// The schemas of all themes, as the forms build their fields from them; with the defaults of the logged-in streamer
+/// (their channel name instead of the sample), so "reset" in the form goes back to their own values
+pub fn schemas(call: &Call<'_>) -> Response {
+    let login = call.visitor.login.as_deref().and_then(|login| Login::parse(login).ok());
+    let list: Vec<ThemeSchema> = themes()
+        .iter()
+        .map(|theme| login.as_ref().map_or_else(|| theme.schema.clone(), |login| theme.schema_for(login)))
+        .collect();
     json(&list, 200)
 }

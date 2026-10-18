@@ -18,6 +18,22 @@ pub struct Theme {
     pub personalize: fn(&Login) -> SettingValues,
 }
 
+impl Theme {
+    /// The schema with the defaults of one streamer: what `personalize` fills on first login is their default too, so
+    /// resetting a field in the dashboard goes back to their own channel name and not to the sample of the theme
+    #[must_use]
+    pub fn schema_for(&self, login: &Login) -> ThemeSchema {
+        let mut schema = self.schema.clone();
+        let personal = (self.personalize)(login);
+        for field in &mut schema.fields {
+            if let Some(value) = personal.get(&field.key) {
+                field.set_default(value);
+            }
+        }
+        schema
+    }
+}
+
 pub const DEFAULT_THEME: &str = "standard";
 
 static THEMES: LazyLock<Vec<Theme>> = LazyLock::new(|| vec![standard(), matrix(), urlaub(), plantage(), koth()]);
@@ -60,6 +76,23 @@ mod tests {
         let neo = Login::parse("neo").expect("valid login");
         for theme in themes() {
             assert!((theme.personalize)(&neo).contains_key("channelName"), "{}", theme.schema.id);
+        }
+    }
+
+    #[test]
+    fn the_schema_of_a_streamer_has_their_first_login_values_as_defaults() {
+        let neo = Login::parse("neo").expect("valid login");
+        for theme in themes() {
+            let personal = (theme.personalize)(&neo);
+            let schema = theme.schema_for(&neo);
+            for field in &schema.fields {
+                let expected = personal.get(&field.key).cloned().unwrap_or_else(|| {
+                    let sample =
+                        theme.schema.fields.iter().find(|sample| sample.key == field.key).expect("same fields");
+                    sample.default_value()
+                });
+                assert_eq!(field.default_value(), expected, "{} {}", theme.schema.id, field.key);
+            }
         }
     }
 }

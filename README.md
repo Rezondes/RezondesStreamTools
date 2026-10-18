@@ -223,6 +223,11 @@ verschlüsselt im Profil. Regeln, Grenzen und Standardwerte der Felder kommen vo
 fehlerfreie Eingaben, sonst kommt eine Liste `{ key, code }` zurück. Die Typen für die Oberfläche erzeugt
 `npm run gen:types` nach `src/generated/`.
 
+Beim ersten Login legt der Server die Einstellungen einmalig für den Streamer an: jedes Theme trägt seine persönlichen
+Werte ein (`personalize`, etwa der Kanalname aus dem Twitch-Login). Diese Werte sind auch seine Standardwerte:
+`GET /api/themes` liefert sie als `default`, so setzt "Standard" im Dashboard auf den eigenen Kanalnamen zurück und nicht
+auf den Mustertext des Themes. Danach ändert der Streamer alles frei; spätere Logins überschreiben nichts.
+
 In jedem eingebauten Theme ist jeder sichtbare und hörbare Wert eine Einstellung (Farben, Schriften, Texte der Szenen,
 Alert-Texte je Art mit `{user}`, `{amount}`, `{detail}`, `{text}`, Töne je Alert-Art, Chat, Kamera, Musik, Effekte,
 Stinger, Banner, Minimes). Der Theme-Code selbst enthält keine festen Farben, Texte oder Masse; das prüft

@@ -61,7 +61,7 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::RenderFile => render::file(call).await,
         Route::Settings => settings::settings(call).await,
         Route::SaveSettings => settings::save(call).await,
-        Route::Themes => settings::schemas(),
+        Route::Themes => settings::schemas(&call),
         Route::AdminAccess => admin::access(call).await,
         Route::SaveAdminAccess => admin::save_access(call).await,
         Route::AdminStreamers => admin::streamers(call).await,
