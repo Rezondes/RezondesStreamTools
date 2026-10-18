@@ -218,6 +218,7 @@ export type SuedfruchtValues = {
   readonly minimeIdleMaxMs: number;
   readonly minimeEnterMs: number;
   readonly minimeExitMs: number;
+  readonly minimePlacement: string;
   readonly fruitSize: number;
   readonly fruitGround: number;
   readonly fruitShadow: number;

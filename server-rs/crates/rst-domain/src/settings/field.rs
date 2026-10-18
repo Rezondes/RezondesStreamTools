@@ -230,6 +230,43 @@ pub fn number(
     field(key, label, group, FieldKind::Number { default: value, min, max, step, unit })
 }
 
+impl SettingField {
+    /// The same field with another default (a theme sets the defaults of shared fields); a value of the wrong type
+    /// leaves the field unchanged, the limits always stay
+    #[must_use]
+    pub fn with_default(mut self, value: &SettingValue) -> Self {
+        match (&mut self.kind, value) {
+            (
+                FieldKind::Color { default }
+                | FieldKind::Text { default, .. }
+                | FieldKind::Textarea { default, .. }
+                | FieldKind::Select { default, .. }
+                | FieldKind::Font { default, .. }
+                | FieldKind::Media { default, .. },
+                SettingValue::Text(text),
+            ) => text.clone_into(default),
+            (FieldKind::Number { default, .. }, SettingValue::Number(number)) => *default = *number,
+            (FieldKind::Boolean { default }, SettingValue::Flag(flag)) => *default = *flag,
+            (FieldKind::Lines { default, .. }, SettingValue::Lines(lines)) => lines.clone_into(default),
+            (FieldKind::Sound { default }, SettingValue::Sound(sound)) => *default = sound.clone(),
+            _ => {}
+        }
+        self
+    }
+}
+
+/// Fields with the defaults of a theme by key (template: `withDefaults` in `src/core/fields.ts`)
+#[must_use]
+pub fn with_defaults(fields: Vec<SettingField>, defaults: &[(&str, SettingValue)]) -> Vec<SettingField> {
+    fields
+        .into_iter()
+        .map(|field| match defaults.iter().find(|(key, _)| *key == field.key) {
+            Some((_, value)) => field.with_default(value),
+            None => field,
+        })
+        .collect()
+}
+
 /// Field that only affects one scene: the dashboard shows it only there
 #[must_use]
 pub fn in_scene(scene: SceneName, field: SettingField) -> SettingField {

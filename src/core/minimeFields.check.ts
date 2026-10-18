@@ -1,7 +1,10 @@
 // Check for minimeFields.ts: defaults and validation of the minime settings, which schema has minimes.
 // Runs with npm test (alone: node src/core/minimeFields.check.ts).
 import assert from "node:assert/strict";
-import { hasMinimes, MINIME_BASE_FIELDS, MINIME_FIELDS, MINIME_TEAMS, minimeTeamFields, minimeVariantFields, readMinimeOptions } from "./minimeFields.ts";
+import {
+  COMBAT_SOUNDS, hasMinimes, MEDIC, MINIME_BASE_FIELDS, MINIME_COMBAT, MINIME_FIELDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_TEAMS, minimeAimKey, minimeCombatFields,
+  minimeFireKey, minimeTeamFields, minimeVariantFields, readMinimeOptions,
+} from "./minimeFields.ts";
 import type { MinimeVariantSet } from "./theme.ts";
 import { validateSettings } from "./settings.ts";
 
@@ -26,9 +29,10 @@ assert.deepEqual(readMinimeOptions({}), {
   },
   motion: {
     speedPxPerS: 60, marginPx: 60, walkMinPx: 100, walkMaxPx: 600, walkWeight: 40, idleWeight: 40,
-    idleMinMs: 2000, idleMaxMs: 6000, enterMs: 1200, exitMs: 900,
+    idleMinMs: 2000, idleMaxMs: 6000, enterMs: 1200, exitMs: 900, placement: "random",
   },
 });
+assert.equal(readMinimeOptions({ minimePlacement: "slots" }).motion.placement, "slots");
 // The defaults pass their own schema
 const probe = { id: "probe", name: "Probe", fields: MINIME_FIELDS };
 const defaults = Object.fromEntries(MINIME_FIELDS.map(field => [field.key, field.default]));
@@ -58,7 +62,7 @@ assert.equal(hasMinimes({ id: "none", name: "None", fields: [] }), false);
 assert.deepEqual(MINIME_FIELDS.map(field => field.key).sort(), [
   "minimeChatKeepsAlive", "minimeClearOffline", "minimeColorCommand", "minimeColorCooldown", "minimeColorJoins", "minimeEnterMs",
   "minimeExitMs", "minimeIdleMaxMs", "minimeIdleMinMs", "minimeIdleMinutes", "minimeIdleWeight", "minimeJoinCommand", "minimeJoinRole",
-  "minimeKickRole", "minimeLeaveCommand", "minimeMargin", "minimeMax", "minimeMinBrightness", "minimeReactToChat", "minimeRemoveOnBan",
+  "minimeKickRole", "minimeLeaveCommand", "minimeMargin", "minimeMax", "minimeMinBrightness", "minimePlacement", "minimeReactToChat", "minimeRemoveOnBan",
   "minimeSpeed", "minimeUseTwitchColor", "minimeWalkMax", "minimeWalkMin", "minimeWalkWeight", "minimeWhenFull",
 ]);
 
@@ -96,6 +100,17 @@ assert.deepEqual(MINIME_FIELDS.map(field => field.key).sort(), [
   assert.deepEqual(readMinimeOptions({ minimeTeamNames_blau: "" }, roles, teams).rules.teams, [{ id: "rot", names: ["red"] }]);
   const colorsOnly = readMinimeOptions({}, undefined, teams).rules;
   assert.deepEqual([colorsOnly.teams, colorsOnly.commands.team], [undefined, undefined]);
+}
+
+// Fights: opt-in fields per theme, aim and fire durations per role except the medic; hopping as opt-in fields
+{
+  const roles: MinimeVariantSet = { command: "!rolle", label: "Rolle", variants: [{ id: MEDIC, label: "Medic", names: [] }, { id: "mg", label: "MG", names: [] }] };
+  const keys = minimeCombatFields(roles).map(field => field.key);
+  assert.ok(keys.includes(minimeAimKey("mg")) && keys.includes(minimeFireKey("mg")));
+  assert.ok(!keys.includes(minimeAimKey(MEDIC)) && !keys.includes(minimeFireKey(MEDIC)));
+  assert.ok(keys.includes("minimeCombatMax") && keys.includes(COMBAT_SOUNDS.revive));
+  assert.ok(!MINIME_FIELDS.some(field => field.group === MINIME_COMBAT || field.group === MINIME_HOP));
+  assert.deepEqual(MINIME_HOP_FIELDS.map(field => field.key), ["hopHeight", "hopMs", "hopSquash"]);
 }
 
 console.log("minimeFields ok");

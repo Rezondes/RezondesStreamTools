@@ -2,7 +2,7 @@
 //! (template: `src/core/minimeFields.ts`). Color themes take [`minime_fields`], variant themes the base fields and
 //! [`minime_variant_fields`] of their variants. Reading the values into rules follows with the minimes context.
 
-use crate::settings::field::{SettingField, Unit, choice, color, flag, number, text};
+use crate::settings::field::{SettingField, Unit, choice, color, flag, number, sound, text};
 use crate::themes::info_fields::INFO_GROUP;
 use crate::themes::schema::MinimeVariantSet;
 
@@ -11,10 +11,23 @@ pub const MINIME_RULES: &str = "Minimes: Regeln";
 pub const MINIME_MOTION: &str = "Minimes: Bewegung";
 pub const MINIME_VARIANTS: &str = "Minimes: Typen";
 pub const MINIME_TEAMS: &str = "Minimes: Fraktionen";
+pub const MINIME_HOP: &str = "Minimes: Hüpfen";
+pub const MINIME_COMBAT: &str = "Minimes: Gefechte";
 
 /// Minimum role: whoever has it or one above may (order = rank)
 pub const ROLES: [&str; 5] = ["everyone", "subscriber", "vip", "moderator", "broadcaster"];
 const WHEN_FULL: [&str; 2] = ["replace", "reject"];
+/// Where new minimes appear: anywhere or on evenly spread places
+const PLACEMENTS: [&str; 2] = ["random", "slots"];
+/// The role that revives in fights; it never shoots, so it has no aim and fire durations
+pub const MEDIC: &str = "medic";
+/// Sounds of a fight: key and label
+const COMBAT_SOUNDS: [(&str, &str); 4] = [
+    ("minimeSoundShot", "Ton: Schuss"),
+    ("minimeSoundExplosion", "Ton: Explosion"),
+    ("minimeSoundHit", "Ton: Treffer"),
+    ("minimeSoundRevive", "Ton: Wiederbeleben"),
+];
 
 /// For all themes with minimes: commands to join and leave, roles, rules of the list, movement
 #[must_use]
@@ -80,7 +93,71 @@ pub fn minime_base_fields() -> Vec<SettingField> {
         number("minimeIdleMaxMs", "Schweben höchstens", MINIME_MOTION, 6000.0, 200.0, 60_000.0, ms, None),
         number("minimeEnterMs", "Dauer: erscheinen", MINIME_MOTION, 1200.0, 0.0, 10_000.0, ms, None),
         number("minimeExitMs", "Dauer: verschwinden", MINIME_MOTION, 900.0, 0.0, 10_000.0, ms, None),
+        choice(
+            "minimePlacement",
+            "Plätze: frei verteilt (random) oder feste Plätze (slots)",
+            MINIME_MOTION,
+            "random",
+            &PLACEMENTS,
+        ),
     ]
+}
+
+/// Hopping while moving (opt-in): height, duration of one hop, squash on landing
+#[must_use]
+pub fn minime_hop_fields() -> Vec<SettingField> {
+    vec![
+        number("hopHeight", "Sprunghöhe", MINIME_HOP, 26.0, 0.0, 200.0, Some(Unit::Px), None),
+        number("hopMs", "Dauer eines Sprungs", MINIME_HOP, 420.0, 150.0, 3000.0, Some(Unit::Ms), None),
+        number("hopSquash", "Stauchen beim Aufkommen", MINIME_HOP, 0.2, 0.0, 0.6, None, Some(0.05)),
+    ]
+}
+
+/// Key of the aim duration of a role in fights
+#[must_use]
+pub fn minime_aim_key(id: &str) -> String {
+    format!("minimeAimMs_{id}")
+}
+
+/// Key of the fire duration of a role in fights
+#[must_use]
+pub fn minime_fire_key(id: &str) -> String {
+    format!("minimeFireMs_{id}")
+}
+
+/// Fights of the minimes (opt-in, the variants are the roles): switch, pace, hit chance, lying time, reviving,
+/// sounds and per role except the medic the durations of aiming and firing
+#[must_use]
+pub fn minime_combat_fields(set: &MinimeVariantSet) -> Vec<SettingField> {
+    let (ms, s) = (Some(Unit::Ms), Some(Unit::S));
+    let mut fields = vec![
+        flag("minimeCombat", "Gefechte an", MINIME_COMBAT, true),
+        number("minimeCombatMinS", "Abstand zwischen Gefechten: mindestens", MINIME_COMBAT, 20.0, 5.0, 600.0, s, None),
+        number("minimeCombatMaxS", "Abstand zwischen Gefechten: höchstens", MINIME_COMBAT, 60.0, 5.0, 600.0, s, None),
+        number("minimeCombatMax", "Gleichzeitige Gefechte", MINIME_COMBAT, 2.0, 1.0, 10.0, None, None),
+        number("minimeHitChance", "Trefferchance", MINIME_COMBAT, 70.0, 0.0, 100.0, Some(Unit::Percent), None),
+        number(
+            "minimeDownMs",
+            "Liegezeit bis zum Selbst-Aufstehen",
+            MINIME_COMBAT,
+            12_000.0,
+            1000.0,
+            120_000.0,
+            ms,
+            None,
+        ),
+        number("minimeReviveMs", "Wiederbeleben: Dauer", MINIME_COMBAT, 2500.0, 200.0, 20_000.0, ms, None),
+        number("minimeMedicSpeed", "Medic: Tempo (px pro Sekunde)", MINIME_COMBAT, 140.0, 5.0, 600.0, None, None),
+        flag("minimeCombatSounds", "Gefechtstöne", MINIME_COMBAT, false),
+    ];
+    fields.extend(COMBAT_SOUNDS.iter().map(|(key, label)| sound(key, label, MINIME_COMBAT)));
+    for role in set.variants.iter().filter(|role| role.id != MEDIC) {
+        let aim = format!("{}: Zielen", role.label);
+        let fire = format!("{}: Schuss", role.label);
+        fields.push(number(&minime_aim_key(&role.id), &aim, MINIME_COMBAT, 800.0, 100.0, 10_000.0, ms, None));
+        fields.push(number(&minime_fire_key(&role.id), &fire, MINIME_COMBAT, 600.0, 100.0, 10_000.0, ms, None));
+    }
+    fields
 }
 
 /// Only for color themes: command to change color, minimum brightness, Twitch name color
@@ -192,7 +269,7 @@ mod tests {
     #[test]
     fn color_themes_get_base_and_color_fields() {
         let keys: Vec<String> = minime_fields().into_iter().map(|field| field.key).collect();
-        assert_eq!(keys.len(), 26);
+        assert_eq!(keys.len(), 27);
         assert_eq!(keys.first().map(String::as_str), Some("minimeJoinCommand"));
         assert!(keys.contains(&"minimeColorCommand".to_owned()));
         assert!(has_minimes(&minime_fields()));
@@ -249,5 +326,48 @@ mod tests {
             serde_json::from_str(include_str!("../../tests/fixtures/minime-features.json")).expect("fixture is JSON");
         let teams: MinimeVariantSet = serde_json::from_value(fixture["teams"]["set"].clone()).expect("sample set");
         crate::themes::fixture::assert_same_fields(&minime_team_fields(&teams), &fixture["teams"]["fields"]);
+        crate::themes::fixture::assert_same_fields(&minime_hop_fields(), &fixture["hop"]["fields"]);
+        let roles: MinimeVariantSet = serde_json::from_value(fixture["combat"]["set"].clone()).expect("sample roles");
+        crate::themes::fixture::assert_same_fields(&minime_combat_fields(&roles), &fixture["combat"]["fields"]);
+    }
+
+    #[test]
+    fn combat_fields_are_opt_in_without_medic_durations() {
+        let role = |id: &str| MinimeVariantInfo { id: id.to_owned(), label: id.to_owned(), names: vec![], color: None };
+        let set = MinimeVariantSet {
+            command: "!rolle".to_owned(),
+            label: "Rolle".to_owned(),
+            variants: vec![role(MEDIC), role("mg")],
+        };
+        let keys: Vec<String> = minime_combat_fields(&set).into_iter().map(|field| field.key).collect();
+        assert!(keys.contains(&minime_aim_key("mg")) && keys.contains(&minime_fire_key("mg")));
+        assert!(!keys.contains(&minime_aim_key(MEDIC)) && !keys.contains(&minime_fire_key(MEDIC)));
+        assert!(keys.contains(&"minimeCombatMax".to_owned()) && keys.contains(&"minimeSoundRevive".to_owned()));
+        // Not part of the shared fields: only themes that include them have fights
+        assert!(!minime_fields().iter().any(|field| field.group == MINIME_COMBAT || field.group == MINIME_HOP));
+    }
+
+    #[test]
+    fn placement_defaults_to_random_and_a_theme_sets_core_defaults() {
+        let placement = |fields: &[SettingField]| {
+            fields.iter().find(|field| field.key == "minimePlacement").map(SettingField::default_value)
+        };
+        assert_eq!(placement(&minime_fields()), Some(SettingValue::Text("random".to_owned())));
+        let own = crate::settings::field::with_defaults(
+            minime_base_fields(),
+            &[
+                ("minimePlacement", SettingValue::Text("slots".to_owned())),
+                ("minimeWalkWeight", SettingValue::Number(0.0)),
+            ],
+        );
+        assert_eq!(placement(&own), Some(SettingValue::Text("slots".to_owned())));
+        let walk = own.iter().find(|field| field.key == "minimeWalkWeight").map(SettingField::default_value);
+        assert_eq!(walk, Some(SettingValue::Number(0.0)));
+        // A value of the wrong type changes nothing
+        let wrong = crate::settings::field::with_defaults(
+            minime_base_fields(),
+            &[("minimeWalkWeight", SettingValue::Flag(true))],
+        );
+        assert_eq!(wrong, minime_base_fields());
     }
 }

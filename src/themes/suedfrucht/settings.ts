@@ -2,7 +2,7 @@
 // wooden signs) for all scenes, stinger and banners, plus fruit minimes that hop. The only place of the theme with
 // fixed colors, texts and numbers. SuedfruchtValues is the type of the resolved values (useSuedfrucht).
 import { choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
-import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
+import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
@@ -27,7 +27,6 @@ const FX = "Effekte";
 const STINGER = "Stinger";
 const BANNER = "Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
-const MINIME_HOP = "Minimes: Hüpfen";
 const MINIME_MOVES = "Minimes: Animationen";
 const FRUIT_COLORS = "Früchte: Farben";
 
@@ -240,9 +239,7 @@ const FIELDS = [
   number("fruitBlinkEvery", "Blinzeln alle (0 = nie)", MINIME_LOOK, 4000, 0, 30000, "ms"),
   choice("fruitEnter", "Erscheinen", MINIME_LOOK, "fallen", ["fallen", "blenden"]),
   choice("fruitExit", "Verschwinden", MINIME_LOOK, "wegspringen", ["wegspringen", "versinken"]),
-  number("hopHeight", "Sprunghöhe", MINIME_HOP, 26, 0, 200, "px"),
-  number("hopMs", "Dauer eines Sprungs", MINIME_HOP, 420, 150, 3000, "ms"),
-  number("hopSquash", "Stauchen beim Aufkommen", MINIME_HOP, 0.2, 0, 0.6, undefined, 0.05),
+  ...MINIME_HOP_FIELDS,
   number("bounceWeight", "Freudensprünge: Häufigkeit", MINIME_MOVES, 10, 0, 100),
   number("bounceMs", "Freudensprünge: Dauer", MINIME_MOVES, 1500, 300, 10000, "ms"),
   number("bounceHeight", "Freudensprünge: Höhe", MINIME_MOVES, 34, 0, 200, "px"),

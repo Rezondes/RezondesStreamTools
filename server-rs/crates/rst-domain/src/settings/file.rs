@@ -202,6 +202,13 @@ mod tests {
     }
 
     #[test]
+    fn stored_hop_values_stay_after_the_fields_moved_to_the_core() {
+        let file =
+            parse_settings_file(&json!({ "theme": "suedfrucht", "values": { "suedfrucht": { "hopHeight": 50 } } }));
+        assert_eq!(public_settings(&file).values.get("hopHeight"), Some(&SettingValue::Number(50.0)));
+    }
+
+    #[test]
     fn update_checks_and_keeps_other_themes() {
         let file = parse_settings_file(
             &json!({ "theme": "matrix", "values": { "matrix": { "accent": "#ff0000" }, "standard": { "title": "x" } } }),

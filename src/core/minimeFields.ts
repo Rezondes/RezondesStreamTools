@@ -5,7 +5,7 @@
 // The theme creates the look and its own animations itself. readMinimeOptions reads the values for the server (rules)
 // and the hook (movement).
 // Check: minimeFields.check.ts.
-import { choice, color, flag, number, text, type ValuesOf } from "./fields.ts";
+import { choice, color, flag, number, sound, text, type ValuesOf } from "./fields.ts";
 import { INFO_GROUP } from "./infoFields.ts";
 import { normalizeName, type MinimeRules, type MinimeVariantRule } from "./minimes.ts";
 import { resolveSettings } from "./settings.ts";
@@ -16,10 +16,18 @@ export const MINIME_RULES = "Minimes: Regeln";
 export const MINIME_MOTION = "Minimes: Bewegung";
 export const MINIME_VARIANTS = "Minimes: Typen";
 export const MINIME_TEAMS = "Minimes: Fraktionen";
+export const MINIME_HOP = "Minimes: Hüpfen";
+export const MINIME_COMBAT = "Minimes: Gefechte";
 
 // Minimum role: whoever has it or one above may (order = rank)
 const ROLES = ["everyone", "subscriber", "vip", "moderator", "broadcaster"] as const;
 const WHEN_FULL = ["replace", "reject"] as const;
+// Where new minimes appear: anywhere or on evenly spread places
+const PLACEMENTS = ["random", "slots"] as const;
+// The role that revives in fights; it never shoots, so it has no aim and fire durations
+export const MEDIC = "medic";
+// Sounds of a fight
+export const COMBAT_SOUNDS = { shot: "minimeSoundShot", explosion: "minimeSoundExplosion", hit: "minimeSoundHit", revive: "minimeSoundRevive" } as const;
 const COMMAND = /^!\S{1,24}$/;
 
 // For all themes with minimes: commands to join and leave, roles, rules of the list, movement
@@ -47,7 +55,43 @@ export const MINIME_BASE_FIELDS = [
   number("minimeIdleMaxMs", "Schweben höchstens", MINIME_MOTION, 6000, 200, 60_000, "ms"),
   number("minimeEnterMs", "Dauer: erscheinen", MINIME_MOTION, 1200, 0, 10_000, "ms"),
   number("minimeExitMs", "Dauer: verschwinden", MINIME_MOTION, 900, 0, 10_000, "ms"),
+  choice("minimePlacement", "Plätze: frei verteilt (random) oder feste Plätze (slots)", MINIME_MOTION, "random", PLACEMENTS),
 ] as const satisfies readonly SettingField[];
+
+// Hopping while moving (opt-in): height, duration of one hop, squash on landing
+export const MINIME_HOP_FIELDS = [
+  number("hopHeight", "Sprunghöhe", MINIME_HOP, 26, 0, 200, "px"),
+  number("hopMs", "Dauer eines Sprungs", MINIME_HOP, 420, 150, 3000, "ms"),
+  number("hopSquash", "Stauchen beim Aufkommen", MINIME_HOP, 0.2, 0, 0.6, undefined, 0.05),
+] as const satisfies readonly SettingField[];
+
+// Keys of the aim and fire durations of a role in fights
+export const minimeAimKey = (id: string) => `minimeAimMs_${id}`;
+export const minimeFireKey = (id: string) => `minimeFireMs_${id}`;
+
+// Fights of the minimes (opt-in, the variants are the roles): switch, pace, hit chance, lying time, reviving, sounds and per
+// role except the medic the durations of aiming and firing
+export function minimeCombatFields(set: MinimeVariantSet): SettingField[] {
+  return [
+    flag("minimeCombat", "Gefechte an", MINIME_COMBAT, true),
+    number("minimeCombatMinS", "Abstand zwischen Gefechten: mindestens", MINIME_COMBAT, 20, 5, 600, "s"),
+    number("minimeCombatMaxS", "Abstand zwischen Gefechten: höchstens", MINIME_COMBAT, 60, 5, 600, "s"),
+    number("minimeCombatMax", "Gleichzeitige Gefechte", MINIME_COMBAT, 2, 1, 10),
+    number("minimeHitChance", "Trefferchance", MINIME_COMBAT, 70, 0, 100, "%"),
+    number("minimeDownMs", "Liegezeit bis zum Selbst-Aufstehen", MINIME_COMBAT, 12_000, 1000, 120_000, "ms"),
+    number("minimeReviveMs", "Wiederbeleben: Dauer", MINIME_COMBAT, 2500, 200, 20_000, "ms"),
+    number("minimeMedicSpeed", "Medic: Tempo (px pro Sekunde)", MINIME_COMBAT, 140, 5, 600),
+    flag("minimeCombatSounds", "Gefechtstöne", MINIME_COMBAT, false),
+    sound(COMBAT_SOUNDS.shot, "Ton: Schuss", MINIME_COMBAT),
+    sound(COMBAT_SOUNDS.explosion, "Ton: Explosion", MINIME_COMBAT),
+    sound(COMBAT_SOUNDS.hit, "Ton: Treffer", MINIME_COMBAT),
+    sound(COMBAT_SOUNDS.revive, "Ton: Wiederbeleben", MINIME_COMBAT),
+    ...set.variants.filter(role => role.id !== MEDIC).flatMap(role => [
+      number(minimeAimKey(role.id), `${role.label}: Zielen`, MINIME_COMBAT, 800, 100, 10_000, "ms"),
+      number(minimeFireKey(role.id), `${role.label}: Schuss`, MINIME_COMBAT, 600, 100, 10_000, "ms"),
+    ]),
+  ];
+}
 
 // Only for color themes: command to change color, minimum brightness, Twitch name color
 const MINIME_COLOR_FIELDS = [
@@ -105,6 +149,7 @@ export type MinimeMotion = {
   idleMaxMs: number;
   enterMs: number;
   exitMs: number;
+  placement: "random" | "slots";
 };
 type MinimeOptions = { rules: MinimeRules; motion: MinimeMotion };
 
@@ -166,7 +211,7 @@ export function readMinimeOptions(stored: unknown, set?: MinimeVariantSet, teams
     motion: {
       speedPxPerS: values.minimeSpeed, marginPx: values.minimeMargin, walkMinPx, walkMaxPx,
       walkWeight: values.minimeWalkWeight, idleWeight: values.minimeIdleWeight, idleMinMs, idleMaxMs,
-      enterMs: values.minimeEnterMs, exitMs: values.minimeExitMs,
+      enterMs: values.minimeEnterMs, exitMs: values.minimeExitMs, placement: values.minimePlacement === "slots" ? "slots" : "random",
     },
   };
 }

@@ -38,6 +38,10 @@ export const font = <K extends string>(key: K, label: string, group: string, val
 export const number = <K extends string>(key: K, label: string, group: string, value: number, min: number, max: number, unit?: Unit, step?: number) =>
   ({ key, type: "number" as const, label, group, default: value, min, max, ...(unit ? { unit } : {}), ...(step ? { step } : {}) });
 
+// Shared fields with the defaults of a theme by key (only defaults, the limits stay), e.g. a theme without walking
+export const withDefaults = <F extends SettingField>(fields: readonly F[], defaults: Readonly<Record<string, F["default"]>>): F[] =>
+  fields.map(field => (field.key in defaults ? { ...field, default: defaults[field.key] } : field));
+
 // Field that only affects one scene: the dashboard shows it only there (e.g. title or terminal lines of BRB)
 export const inScene = <F extends SettingField>(scene: SceneName, field: F): F & { scene: SceneName } => ({ ...field, scene });
 

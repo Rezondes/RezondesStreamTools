@@ -1,6 +1,6 @@
 // Check for fields.ts: building blocks for theme schemas give valid fields. Runs with npm test.
 import assert from "node:assert/strict";
-import { asciiArt, choice, color, flag, font, inScene, lines, number, sound, text, textarea } from "./fields.ts";
+import { asciiArt, choice, color, flag, font, inScene, lines, number, sound, text, textarea, withDefaults } from "./fields.ts";
 import { validateSettings } from "./settings.ts";
 import type { ThemeSchema } from "./theme.ts";
 
@@ -32,5 +32,12 @@ assert.deepEqual(validateSettings(schema, defaults).errors, []);
 
 // Field for one scene only: everything else stays the same
 assert.deepEqual(inScene("brb", text("brbTitle", "Title", "A", "BREAK")), { ...text("brbTitle", "Title", "A", "BREAK"), scene: "brb" });
+
+// Defaults of a theme for shared fields: only the default changes, unknown keys do nothing
+{
+  const shared = [number("walk", "Walk", "A", 40, 0, 100), flag("on", "On", "A", true)];
+  const own = withDefaults(shared, { walk: 0, missing: 1 });
+  assert.deepEqual(own, [{ ...shared[0], default: 0 }, shared[1]]);
+}
 
 console.log("fields ok");

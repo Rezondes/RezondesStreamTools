@@ -7,7 +7,7 @@
 // dumpSchema.check.ts fails when a fixture no longer matches the TypeScript schema.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { minimeTeamFields } from "../src/core/minimeFields.ts";
+import { MINIME_HOP_FIELDS, minimeCombatFields, minimeTeamFields } from "../src/core/minimeFields.ts";
 import type { MinimeVariantSet, ThemeSchema } from "../src/core/theme.ts";
 import { THEMES } from "../src/themes/registry.ts";
 
@@ -29,8 +29,18 @@ const SAMPLE_TEAMS: MinimeVariantSet = {
   label: "Fraktion",
   variants: [{ id: "blau", label: "Blau", names: ["blau", "blue"], color: "#3366ff" }, { id: "rot", label: "Rot", names: ["rot"] }],
 };
+// Sample roles: the medic gets no aim and fire durations
+const SAMPLE_ROLES: MinimeVariantSet = {
+  command: "!rolle",
+  label: "Rolle",
+  variants: [{ id: "medic", label: "Medic", names: ["medic"] }, { id: "sniper", label: "Scharfschütze", names: ["sniper"] }],
+};
 export const FEATURES_FILE = "minime-features.json";
-export const featuresText = () => `${JSON.stringify({ teams: { set: SAMPLE_TEAMS, fields: minimeTeamFields(SAMPLE_TEAMS) } }, null, 2)}\n`;
+export const featuresText = () => `${JSON.stringify({
+  teams: { set: SAMPLE_TEAMS, fields: minimeTeamFields(SAMPLE_TEAMS) },
+  hop: { fields: MINIME_HOP_FIELDS },
+  combat: { set: SAMPLE_ROLES, fields: minimeCombatFields(SAMPLE_ROLES) },
+}, null, 2)}\n`;
 
 function main() {
   mkdirSync(FIXTURES, { recursive: true });

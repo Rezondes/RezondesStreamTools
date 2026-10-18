@@ -196,6 +196,7 @@ export type MatrixValues = {
   readonly minimeIdleMaxMs: number;
   readonly minimeEnterMs: number;
   readonly minimeExitMs: number;
+  readonly minimePlacement: string;
   readonly minimeColorCommand: string;
   readonly minimeMinBrightness: number;
   readonly minimeUseTwitchColor: boolean;

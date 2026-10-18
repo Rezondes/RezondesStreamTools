@@ -14,7 +14,8 @@ use crate::settings::field::{
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{
-    MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minime_base_fields, minime_variant_fields,
+    MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minime_base_fields, minime_hop_fields,
+    minime_variant_fields,
 };
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
@@ -43,7 +44,6 @@ const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
 const BANNER: &str = "Banner";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
-const MINIME_HOP: &str = "Minimes: Hüpfen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 const FRUIT_COLORS: &str = "Früchte: Farben";
 
@@ -422,9 +422,9 @@ fn fields() -> Vec<SettingField> {
             number("fruitBlinkEvery", "Blinzeln alle (0 = nie)", MINIME_LOOK, 4000.0, 0.0, 30_000.0, MS, None),
             choice("fruitEnter", "Erscheinen", MINIME_LOOK, "fallen", &["fallen", "blenden"]),
             choice("fruitExit", "Verschwinden", MINIME_LOOK, "wegspringen", &["wegspringen", "versinken"]),
-            number("hopHeight", "Sprunghöhe", MINIME_HOP, 26.0, 0.0, 200.0, PX, None),
-            number("hopMs", "Dauer eines Sprungs", MINIME_HOP, 420.0, 150.0, 3000.0, MS, None),
-            number("hopSquash", "Stauchen beim Aufkommen", MINIME_HOP, 0.2, 0.0, 0.6, None, Some(0.05)),
+        ],
+        minime_hop_fields(),
+        vec![
             number("bounceWeight", "Freudensprünge: Häufigkeit", MINIME_MOVES, 10.0, 0.0, 100.0, None, None),
             number("bounceMs", "Freudensprünge: Dauer", MINIME_MOVES, 1500.0, 300.0, 10_000.0, MS, None),
             number("bounceHeight", "Freudensprünge: Höhe", MINIME_MOVES, 34.0, 0.0, 200.0, PX, None),

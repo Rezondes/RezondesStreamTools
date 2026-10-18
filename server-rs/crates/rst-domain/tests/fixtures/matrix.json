@@ -1799,6 +1799,17 @@
       "unit": "ms"
     },
     {
+      "key": "minimePlacement",
+      "type": "select",
+      "label": "Plätze: frei verteilt (random) oder feste Plätze (slots)",
+      "group": "Minimes: Bewegung",
+      "default": "random",
+      "options": [
+        "random",
+        "slots"
+      ]
+    },
+    {
       "key": "minimeColorCommand",
       "type": "text",
       "label": "Befehl: Farbe ändern",
