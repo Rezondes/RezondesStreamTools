@@ -253,7 +253,7 @@
 :root[data-skin="plantage"] .btn.primary { background: linear-gradient(180deg, #3f9a44, #2e7d32 55%, #256628); box-shadow: 0 8px 16px -6px rgba(29, 94, 39, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.35); }
 :root[data-skin="plantage"] .dashboard-nav { border-bottom: none; }
 /* Loose lines on the page (the login hint) get a frosted pill, so they stay readable in front of the sky */
-:root[data-skin="plantage"] .dashboard > p { align-self: flex-start; margin: 0; padding: 4px 4px 4px 16px; border-radius: 999px; background: var(--surface); backdrop-filter: blur(18px); box-shadow: 0 10px 30px -10px rgba(58, 36, 16, 0.55); }
+:root[data-skin="plantage"] .dashboard > p:not(.login, .error) { align-self: flex-start; margin: 0; padding: 4px 4px 4px 16px; border-radius: 999px; background: var(--surface); backdrop-filter: blur(18px); box-shadow: 0 10px 30px -10px rgba(58, 36, 16, 0.55); }
 :root[data-skin="plantage"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); backdrop-filter: blur(18px); border: var(--border-w) solid var(--border); box-shadow: 0 10px 30px -10px rgba(58, 36, 16, 0.55); }
 
 /* --- KOTH: King of the Hill. Dark olive page, steel-olive cards, signal orange as signature, radio green for
@@ -348,5 +348,5 @@
 .skin-scenery .skin-tower .part-line { stroke: var(--steel); stroke-width: 4; }
 .skin-scenery .skin-tower .part-main { fill: var(--steel); }
 
-@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-sun, .skin-figures { display: none; } }
+@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-scenery .pl-field, .skin-sun, .skin-figures { display: none; } }
 @media (max-width: 1099px) { .skin-figures { display: none; } }

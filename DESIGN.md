@@ -73,6 +73,10 @@ scrollt als Ganzes, die Seite weiterhin nicht.
 Neue Seiten folgen dem: jeder Bereich liegt in einem `.panel`, lange Listen bekommen eine eigene scrollende Box, nie
 wächst die Seite selbst.
 
+**Login** (ohne Sitzung oder ohne Freischaltung): Titel, Meldung und eine `.panel`-Karte mit dem Twitch-Knopf stehen als
+eine schmale Spalte in der Fenstermitte, der Titel größer als Markenzeichen. Die Karte ist das `.panel` des Skins,
+also in jedem Skin dessen Fläche und Trennsprache; eigene Farben hat der Login nicht.
+
 ## Sprache
 
 Texte in der Oberfläche auf Deutsch. Knöpfe in normaler Schreibweise und als Verb ("Speichern", "Als aktives Theme

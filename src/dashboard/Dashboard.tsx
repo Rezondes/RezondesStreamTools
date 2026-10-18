@@ -78,9 +78,9 @@ export default function Dashboard() {
 function Content({ account, hash, act }: { account: Account; hash: string; act: Act }) {
   if (account === undefined) return <p className="muted">{TEXTS.loading}</p>;
   if (account === "offline") return <p className="muted">{TEXTS.offline}</p>;
-  if (account === "anonymous") return <p>{TEXTS.anonymous} <a className="btn primary" href="/auth/login">{TEXTS.login}</a></p>;
+  if (account === "anonymous") return <p className="panel login">{TEXTS.anonymous} <a className="btn primary" href="/auth/login">{TEXTS.login}</a></p>;
   if (account === "not-allowed") {
-    return <p>{TEXTS.errors["not-allowed"]} <button className="btn" onClick={() => act("/auth/logout")}>{TEXTS.logout}</button></p>;
+    return <p className="panel login">{TEXTS.errors["not-allowed"]} <button className="btn" onClick={() => act("/auth/logout")}>{TEXTS.logout}</button></p>;
   }
 
   const visible = visibleSections(account);

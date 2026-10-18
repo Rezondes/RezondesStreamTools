@@ -19,6 +19,14 @@
 .dashboard h1 { font: var(--title-weight) var(--title-size) / 1.15 var(--font-title); text-transform: var(--title-case); color: var(--title-color); letter-spacing: var(--title-tracking, normal); }
 .dashboard h2 { font: var(--heading-weight) 18px var(--font-title); color: var(--heading); text-transform: var(--label-case); }
 
+/* Login: title as the brand, message and a card with the Twitch button form one column in the middle of the window.
+   :root[data-skin] so the skins' own title placement (align-self: flex-start) does not pull the title back left. */
+.dashboard:has(> .login) { justify-content: center; align-items: center; gap: 20px; }
+:root[data-skin] .dashboard:has(> .login) > h1 { align-self: center; font-size: calc(var(--title-size) * 1.6); }
+.dashboard:has(> .login) > .error { width: min(100%, var(--login-width, 440px)); }
+.dashboard .login { width: min(100%, var(--login-width, 440px)); justify-items: center; gap: 18px; padding: 32px 28px; text-align: center; font-size: 1.1em; }
+.dashboard .login .btn { padding: 12px 26px; font-size: 1.05em; }
+
 .dashboard-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: var(--border-w) solid var(--line); }
 .dashboard-user { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 
