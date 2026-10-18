@@ -1,5 +1,5 @@
 # Docker image on ghcr.io: on every push to main (or by hand) first all checks (npm run verify with the Rust workspace)
-# and the contract tests against the Rust server, then build and publish as ghcr.io/<owner>/<repo>:latest and
+# and the contract tests against the Rust server in one job, then build and publish as ghcr.io/<owner>/<repo>:latest and
 # :sha-<commit>.
 # The package is private at first; switch it to public once under Package settings.
 name: Docker-Image
@@ -34,36 +34,19 @@ jobs:
         with:
           toolchain: "1.98"
           components: rustfmt, clippy
+      # Also saved after a failed run, otherwise the next run compiles the whole workspace again
       - uses: Swatinem/rust-cache@v2
         with:
           workspaces: server-rs
+          cache-on-failure: true
       - run: npm ci --ignore-scripts
       - run: npm run verify
-
-  # The contract tests start the Rust server against the fake providers; they need the built pages (dist)
-  contract:
-    needs: verify
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: "1.98"
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: server-rs
-      - run: npm ci --ignore-scripts
-      - run: npx vite build
+      # The contract tests start the Rust server against the fake providers; in the same job they reuse the built
+      # pages (dist) and the compiled workspace from verify instead of building both again
       - run: npm run contract
 
   image:
-    needs: [verify, contract]
+    needs: verify
     # Only main is published, also when started by hand on another branch
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
