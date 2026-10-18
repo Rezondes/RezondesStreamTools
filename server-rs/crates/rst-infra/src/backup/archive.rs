@@ -350,8 +350,8 @@ mod tests {
         let lookup = LookupKey::from_bytes(*master.derive("lookup"));
         let streamers = Streamers::new(SqliteStreamers::new(pool.clone()), vault.clone(), lookup);
         let id = StreamerId::from_bytes([0xab; 16]);
-        let neo = Login::parse("neo").expect("login");
-        let user = TwitchUserId::parse("12345").expect("user");
+        let neo = Login::parse("neo_in_the_matrix").expect("login");
+        let user = TwitchUserId::parse("9876543210123").expect("user");
         streamers.register(&user, &neo, id.clone(), 1).await.expect("register");
         let access = "access-secret".to_owned();
         let tokens = TwitchTokens { access, refresh: "refresh-secret".to_owned(), user_id: user, login: neo };
@@ -377,7 +377,8 @@ mod tests {
         assert_eq!(String::from_utf8_lossy(&entries["db/streamers.jsonl"]).lines().count(), 1);
         assert!(!entries["db/records.jsonl"].is_empty());
         for (name, data) in &entries {
-            for secret in [&b"neo"[..], b"12345", b"access-secret", b"refresh-secret"] {
+            // Long samples: a short one like "neo" turns up by chance in the random base64 of the ciphertext
+            for secret in [&b"neo_in_the_matrix"[..], b"9876543210123", b"access-secret", b"refresh-secret"] {
                 assert!(!contains(data, secret), "{} in {name}", String::from_utf8_lossy(secret));
             }
         }
