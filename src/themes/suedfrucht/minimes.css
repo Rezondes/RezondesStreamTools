@@ -65,9 +65,8 @@
 .theme-suedfrucht .fruit-snore { display: none; fill: var(--fruitMouth); }
 .theme-suedfrucht .fruit-glasses { display: none; fill: var(--sunglasses); }
 
-/* Hopping while walking: as many hops as hopPlan gives, squashing on landing, shadow along */
-.theme-suedfrucht .action-walk .sf-minime-body { animation: suedfrucht-minime-hop var(--hop-ms) ease-in-out var(--hops); }
-.theme-suedfrucht .action-walk .sf-minime-shadow { animation: suedfrucht-minime-shadow var(--hop-ms) ease-in-out var(--hops); }
+/* Hopping while walking comes from the core (minimeHops.css); breathing pauses meanwhile */
+.theme-suedfrucht .action-walk .sf-minime-body { animation: none; }
 
 /* Own animations */
 .theme-suedfrucht .action-bounce .sf-minime-body { animation: suedfrucht-minime-bounce calc(var(--action-ms) / 3) ease-in-out 3; }
@@ -103,13 +102,6 @@
 
 @keyframes suedfrucht-minime-breathe { from { scale: 1 1; } to { scale: 1.03 0.97; } }
 @keyframes suedfrucht-minime-blink { 0%, 95%, 100% { scale: 1 1; } 97.5% { scale: 1 0.1; } }
-@keyframes suedfrucht-minime-hop {
-  0% { translate: 0 0; scale: calc(1 + var(--hopSquash)) calc(1 - var(--hopSquash)); }
-  20% { scale: 1 1; }
-  50% { translate: 0 calc(-1 * var(--hopHeight)); scale: calc(1 - var(--hopSquash) / 2) calc(1 + var(--hopSquash) / 2); }
-  80% { scale: 1 1; }
-  100% { translate: 0 0; scale: calc(1 + var(--hopSquash)) calc(1 - var(--hopSquash)); }
-}
 @keyframes suedfrucht-minime-shadow { 0%, 100% { scale: 1 1; opacity: 1; } 50% { scale: 0.6 0.6; opacity: 0.5; } }
 @keyframes suedfrucht-minime-bounce { 0%, 100% { translate: 0 0; } 50% { translate: 0 calc(-1 * var(--bounceHeight)); } }
 @keyframes suedfrucht-minime-spin { 0%, 100% { scale: 1 1; } 25%, 75% { scale: 0.05 1; } 50% { scale: -1 1; } }

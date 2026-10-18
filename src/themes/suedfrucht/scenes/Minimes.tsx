@@ -6,11 +6,12 @@ import { useMemo, useState, type CSSProperties } from "react";
 import { useMinimes } from "../../../core/hooks/useMinimes.ts";
 import { actorRun, actorStyle, shownVariant, type MinimeAction, type MinimeActor } from "../../../core/minimeBehavior.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
+import { hopStyle } from "../../../core/minimeHops.ts";
 import { params } from "../../../core/params.ts";
 import Fruit from "../Fruit.tsx";
 import { FRUIT_SET } from "../fruits.ts";
-import { hopPlan } from "../hops.ts";
 import { useSuedfrucht } from "../useSuedfrucht.ts";
+import "../../../core/minimeHops.css";
 import "../minimes.css";
 
 const DEMO = params.has("demo");
@@ -39,19 +40,20 @@ export default function Minimes() {
 
 function Character({ actor, fruit }: { actor: MinimeActor; fruit: string }) {
   const values = useSuedfrucht();
-  const hops = hopPlan(actor.durationMs, values.hopMs);
-  // Position, movement, duration and facing from the core (actorStyle), plus the hops of the fruit
-  const style = { ...actorStyle(actor), "--hops": hops.count, "--hop-ms": `${hops.periodMs}ms` } as CSSProperties;
+  // Position, movement, duration and facing from the core (actorStyle), plus the hops of the core (hopStyle)
+  const style = { ...actorStyle(actor), ...hopStyle(actor, values.hopMs) } as CSSProperties;
   const run = actorRun(actor);
   return (
     <div className={`sf-minime fruit-${fruit} action-${actor.action}`} style={style}>
       {values.fruitNames && <span className={`sf-minime-name name-${values.fruitNameStyle}`}>{actor.user}</span>}
-      <div key={run} className="sf-minime-body">
-        <div className="sf-minime-flip"><Fruit id={fruit} faces={values.fruitFaces} /></div>
-        {actor.action === "sleep" && <span className="sf-minime-zz">{values.sleepText}</span>}
-        {actor.action === "splash" && <Drops count={values.splashDrops} />}
+      <div key={run} className="minime-hop">
+        <div className="sf-minime-body">
+          <div className="sf-minime-flip"><Fruit id={fruit} faces={values.fruitFaces} /></div>
+          {actor.action === "sleep" && <span className="sf-minime-zz">{values.sleepText}</span>}
+          {actor.action === "splash" && <Drops count={values.splashDrops} />}
+        </div>
       </div>
-      <div key={`shadow-${run}`} className="sf-minime-shadow" />
+      <div key={`shadow-${run}`} className="sf-minime-shadow minime-hop-shadow" />
     </div>
   );
 }

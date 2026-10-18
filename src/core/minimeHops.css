@@ -1,0 +1,14 @@
+/* Hopping of the minimes while they move (minimeHops.ts): the theme puts .minime-hop around the body of a figure and
+   .minime-hop-shadow on its shadow and sets --hops and --hop-ms with hopStyle. Height and squash come from the hop fields
+   (--hopHeight, --hopSquash). A theme whose body has its own idle animation switches it off during walk and approach. */
+.action-walk .minime-hop, .action-approach .minime-hop { transform-origin: 50% 100%; animation: minime-hop var(--hop-ms) ease-in-out var(--hops); }
+.action-walk .minime-hop-shadow, .action-approach .minime-hop-shadow { animation: minime-hop-shadow var(--hop-ms) ease-in-out var(--hops); }
+
+@keyframes minime-hop {
+  0% { translate: 0 0; scale: calc(1 + var(--hopSquash)) calc(1 - var(--hopSquash)); }
+  20% { scale: 1 1; }
+  50% { translate: 0 calc(-1 * var(--hopHeight)); scale: calc(1 - var(--hopSquash) / 2) calc(1 + var(--hopSquash) / 2); }
+  80% { scale: 1 1; }
+  100% { translate: 0 0; scale: calc(1 + var(--hopSquash)) calc(1 - var(--hopSquash)); }
+}
+@keyframes minime-hop-shadow { 0%, 100% { scale: 1 1; opacity: 1; } 50% { scale: 0.6 0.6; opacity: 0.5; } }

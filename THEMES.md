@@ -94,6 +94,16 @@ Der Server vergibt dann Typen statt Farben; jedes Minime trägt `variant` (die i
 einen zufälligen erlaubten Typ, eine leere Namensliste schaltet einen Typ aus. In `?demo` kommen Minimes ohne Typ
 (`variant: null`); die Szene wählt dann selbst einen, z.B. nach `hash(seedOf(login))` aus `src/core/hash.ts`.
 
+**Eigene Standardwerte für Kern-Felder**: `withDefaults(MINIME_BASE_FIELDS, { minimeWalkWeight: 0 })` aus
+`src/core/fields.ts` ändert nur die Standards (z.B. Figuren, die nicht laufen), die Grenzen bleiben. Rust spiegelt das
+mit `with_defaults`.
+
+**Hüpfen** (Kern, `src/core/minimeHops.ts`): Das Schema bindet `...MINIME_HOP_FIELDS` ein (Gruppe `MINIME_HOP`:
+Sprunghöhe, Dauer eines Sprungs, Stauchen). Die Szene importiert `src/core/minimeHops.css`, legt um den Körper der Figur
+ein Element mit der Klasse `minime-hop`, gibt dem Schatten `minime-hop-shadow` und setzt `hopStyle(actor, values.hopMs)`
+als Stil. Gehüpft wird bei `walk` und beim `approach` der Gefechte. Hat der Körper eine eigene Grundanimation (z.B.
+Atmen), schaltet das Theme sie während `walk` ab.
+
 ## Befehlsseite (Szene info)
 
 Die öffentliche Seite für Zuschauer unter `/s/<login>/` (Szene `info`, keine OBS-Quelle) listet die Chat-Befehle: den
