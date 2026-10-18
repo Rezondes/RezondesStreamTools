@@ -6,10 +6,10 @@
     "semantic_hash": "7e4c7ca14c2bb2aed3fbce87629c6a44"
   },
   ".claude/settings.json": {
-    "mtime": 1792060181.226871,
-    "seen": 1792328835.0281262,
-    "ast_hash": "841d7482858c2ec18fb5a9af8bd18d7c",
-    "semantic_hash": "841d7482858c2ec18fb5a9af8bd18d7c"
+    "mtime": 1792329191.7209206,
+    "seen": 1792329317.3030448,
+    "ast_hash": "86626bd21d2d94fb5be949ff1c04b40a",
+    "semantic_hash": ""
   },
   ".githooks/pre-commit": {
     "mtime": 1792060170.3967004,
@@ -174,10 +174,10 @@
     "semantic_hash": "c69609e70d50d2571d7079bea109c754"
   },
   "scripts/rules.check.ts": {
-    "mtime": 1792324163.621323,
-    "seen": 1792328835.0281262,
-    "ast_hash": "dbbd87b3251bc5a7039d2fff3ad6ebc2",
-    "semantic_hash": "dbbd87b3251bc5a7039d2fff3ad6ebc2"
+    "mtime": 1792329170.1383088,
+    "seen": 1792329317.3030448,
+    "ast_hash": "a9a8ff581231d4d7fa7b5bb3b880c7c0",
+    "semantic_hash": ""
   },
   "scripts/rust.check.ts": {
     "mtime": 1792273567.7046175,
@@ -3094,5 +3094,35 @@
     "seen": 1792328835.0281262,
     "ast_hash": "81f936d74f29ce7258aa05217d55f5de",
     "semantic_hash": "81f936d74f29ce7258aa05217d55f5de"
+  },
+  ".githooks/post-checkout": {
+    "mtime": 1792329096.375445,
+    "seen": 1792329317.3030448,
+    "ast_hash": "d329ded52134c98a0aa1c474c0a1c163",
+    "semantic_hash": ""
+  },
+  ".githooks/post-commit": {
+    "mtime": 1792329096.3744428,
+    "seen": 1792329317.3030448,
+    "ast_hash": "c1bf333f647a66dceb390156724a1ed4",
+    "semantic_hash": ""
+  },
+  ".githooks/post-merge": {
+    "mtime": 1792329096.375445,
+    "seen": 1792329317.3030448,
+    "ast_hash": "2f9810b48ebc33db8749bf29f366c912",
+    "semantic_hash": ""
+  },
+  ".githooks/post-rewrite": {
+    "mtime": 1792329096.375445,
+    "seen": 1792329317.3030448,
+    "ast_hash": "ddd63e5c8d6229e7d3ff36d0fb233e5c",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1792329095.4278288,
+    "seen": 1792329317.304052,
+    "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "semantic_hash": ""
   }
 }
