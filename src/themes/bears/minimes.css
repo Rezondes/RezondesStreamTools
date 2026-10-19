@@ -27,8 +27,18 @@
   font-weight: 800;
   white-space: nowrap;
 }
-.theme-bears .bb-minime-body { position: relative; flex: 1; min-height: 0; transform-origin: 50% 100%; }
-.theme-bears .bb-minime-flip { height: 100%; scale: calc(-1 * var(--facing)) 1; }
+.theme-bears .bb-minime-lift { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; }
+.theme-bears .bb-minime-body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  transform-origin: 50% 100%;
+}
+/* --pose-h: height of the pose relative to standing, so a bear on all fours keeps its size */
+.theme-bears .bb-minime-flip { height: calc(100% * var(--pose-h, 1)); scale: calc(-1 * var(--facing)) 1; }
 .theme-bears .bb-minime-shadow {
   width: var(--shadow-width, 70%);
   height: var(--shadow-height, 10px);
@@ -62,6 +72,20 @@
   font-weight: 800;
   animation: bears-minime-zz var(--zz-time, 2s) ease-out infinite;
 }
+
+/* Towers (core actions, minimeStack.ts): the others gather waddling, the base braces on all fours, every upper level
+   climbs to the backs below it (--stack-lift), the tower sways together and waddles as a whole, then steps off from the
+   top with a hop to the side. Name signs in a tower move aside (--name-shift), upper levels cast no shadow. */
+.theme-bears .action-gather .bb-minime-body,
+.theme-bears .action-stackWalk .bb-minime-body { animation: bears-minime-waddle var(--waddleMs) ease-in-out infinite; }
+.theme-bears .action-brace .bb-minime-body { animation: bears-minime-brace var(--brace-ms, 900ms) ease-in-out infinite; }
+.theme-bears .action-climb .bb-minime-lift { animation: bears-minime-climb var(--action-ms) ease-in-out both; }
+.theme-bears .action-stacked .bb-minime-lift,
+.theme-bears .action-stackWalk .bb-minime-lift { translate: 0 calc(-1 * var(--stack-lift)); }
+.theme-bears .action-stacked .bb-minime-body { animation: bears-minime-sway var(--towerSwayMs) ease-in-out infinite; }
+.theme-bears .action-dismount .bb-minime-lift { animation: bears-minime-dismount var(--action-ms) ease-in both; }
+.theme-bears .in-tower .bb-minime-name { translate: calc(var(--stackNameOffset) * var(--name-shift, 0)) 0; }
+.theme-bears .tower-upper:is(.action-climb, .action-stacked, .action-stackWalk) .bb-minime-shadow { opacity: 0; }
 
 /* Appearing and disappearing (settings): waddle in from the side or pop */
 .theme-bears .enter-watscheln .action-enter .bb-minime-body { animation: bears-minime-waddle-in var(--action-ms) ease-out both; }
@@ -101,6 +125,21 @@
   50% { rotate: calc(var(--waddleAngle) * -1deg); }
   75% { opacity: 1; rotate: calc(var(--waddleAngle) * 1deg); }
   to { translate: calc(var(--waddle-in, 140px) * var(--facing)) 0; opacity: 0; rotate: 0deg; }
+}
+@keyframes bears-minime-brace { 0%, 100% { scale: 1 1; } 50% { scale: 1.02 0.96; } }
+@keyframes bears-minime-climb {
+  from { translate: 0 0; }
+  60% { translate: 0 calc(-1 * var(--stack-lift) - var(--climb-overshoot, 12px)); }
+  to { translate: 0 calc(-1 * var(--stack-lift)); }
+}
+@keyframes bears-minime-sway {
+  0%, 100% { rotate: calc(var(--stackSway) * -1deg); }
+  50% { rotate: calc(var(--stackSway) * 1deg); }
+}
+@keyframes bears-minime-dismount {
+  from { translate: 0 calc(-1 * var(--stack-lift, 0px)); }
+  45% { translate: calc(var(--dismount-side, 50px) * var(--facing)) calc(-1 * var(--stack-lift, 0px) - var(--dismount-hop, 30px)); }
+  to { translate: 0 0; }
 }
 @keyframes bears-minime-pop-in { from { scale: 0; } to { scale: 1; } }
 @keyframes bears-minime-pop-out { 0% { scale: 1; } 30% { scale: 1.15; } 100% { scale: 0; opacity: 0; } }

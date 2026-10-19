@@ -281,7 +281,9 @@ einem erlaubten Typ.
 
 In `bears` wählen Chatter einen kleinen Bären: `!join panda` oder `!baer eisbär` (Eisbär, Grizzly oder Panda; Namen im
 Chat je Bär einstellbar, leer = Bär aus; ohne Angabe ein zufälliger erlaubter Bär). Die Bären watscheln und zeigen
-eigene Animationen: Selfie, Snack, Winken, Tanzen, Umschauen, Schlafen; schreibt der Chatter, winkt sein Bär.
+eigene Animationen: Selfie, Snack, Winken, Tanzen, Umschauen, Schlafen; schreibt der Chatter, winkt sein Bär. Ist von
+jedem Bären einer frei, stapeln sie sich ab und zu zum Bärenturm (Eisbär unten, Panda in der Mitte, Grizzly oben,
+Gruppe "Minimes: Türme"), watscheln als Turm und steigen wieder ab; kein Chatbefehl.
 
 In `plantage` sind die Minimes Mango-Soldaten mit Helm und der Waffe ihrer Rolle: `!join medic` oder `!rolle sniper`
 wählt Sturmsoldat, Medic, MG-Schütze, Scharfschütze oder Grenadier (Namen im Chat je Rolle einstellbar, leer = Rolle

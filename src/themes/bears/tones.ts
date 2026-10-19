@@ -16,3 +16,9 @@ export function playChime(sound: SoundValue) {
 }
 
 export const playLeave = (sound: SoundValue) => playSound(sound, volume => beep(262, 180, 0, volume, "triangle"));
+
+// A minime climbs one level of a tower: two rising marimba tones (the core calls it with the volume of the sound field)
+export const climbTone = (volume: number) => {
+  beep(392, 120, 0, volume, "triangle");
+  beep(587, 140, 90, volume, "triangle");
+};

@@ -2593,6 +2593,208 @@
       "unit": "ms"
     },
     {
+      "key": "minimeStack",
+      "type": "boolean",
+      "label": "Türme an",
+      "group": "Minimes: Türme",
+      "default": true
+    },
+    {
+      "key": "minimeStackMinS",
+      "type": "number",
+      "label": "Abstand zwischen Türmen: mindestens",
+      "group": "Minimes: Türme",
+      "default": 30,
+      "min": 5,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "minimeStackMaxS",
+      "type": "number",
+      "label": "Abstand zwischen Türmen: höchstens",
+      "group": "Minimes: Türme",
+      "default": 90,
+      "min": 5,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "minimeStackMax",
+      "type": "number",
+      "label": "Gleichzeitige Türme",
+      "group": "Minimes: Türme",
+      "default": 1,
+      "min": 1,
+      "max": 5
+    },
+    {
+      "key": "minimeStackLevel1",
+      "type": "select",
+      "label": "Stufe 1 (unten)",
+      "group": "Minimes: Türme",
+      "default": "eisbaer",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda"
+      ]
+    },
+    {
+      "key": "minimeStackLevel2",
+      "type": "select",
+      "label": "Stufe 2",
+      "group": "Minimes: Türme",
+      "default": "panda",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda"
+      ]
+    },
+    {
+      "key": "minimeStackLevel3",
+      "type": "select",
+      "label": "Stufe 3 (oben)",
+      "group": "Minimes: Türme",
+      "default": "grizzly",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda",
+        "keiner"
+      ]
+    },
+    {
+      "key": "minimeStackSpeed",
+      "type": "number",
+      "label": "Zusammenlaufen: Tempo (px pro Sekunde)",
+      "group": "Minimes: Türme",
+      "default": 90,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeClimbMs",
+      "type": "number",
+      "label": "Klettern: Dauer je Stufe",
+      "group": "Minimes: Türme",
+      "default": 900,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackedMs",
+      "type": "number",
+      "label": "Stehen als Turm: Dauer",
+      "group": "Minimes: Türme",
+      "default": 4000,
+      "min": 500,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackWalk",
+      "type": "boolean",
+      "label": "Turm läuft",
+      "group": "Minimes: Türme",
+      "default": true
+    },
+    {
+      "key": "minimeStackWalkMs",
+      "type": "number",
+      "label": "Laufen als Turm: Dauer",
+      "group": "Minimes: Türme",
+      "default": 5000,
+      "min": 500,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackWalkPx",
+      "type": "number",
+      "label": "Laufen als Turm: Strecke",
+      "group": "Minimes: Türme",
+      "default": 300,
+      "min": 0,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDismountMs",
+      "type": "number",
+      "label": "Absteigen: Dauer je Stufe",
+      "group": "Minimes: Türme",
+      "default": 700,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackSound",
+      "type": "boolean",
+      "label": "Ton beim Aufsteigen",
+      "group": "Minimes: Türme",
+      "default": false
+    },
+    {
+      "key": "minimeSoundClimb",
+      "type": "sound",
+      "label": "Ton: Aufsteigen",
+      "group": "Minimes: Türme",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "stackStepIce",
+      "type": "number",
+      "label": "Turm: Stufenhöhe Eisbär (Prozent der Grösse)",
+      "group": "Minimes: Aussehen",
+      "default": 29,
+      "min": 5,
+      "max": 100
+    },
+    {
+      "key": "stackStepPanda",
+      "type": "number",
+      "label": "Turm: Stufenhöhe Panda (Prozent der Grösse)",
+      "group": "Minimes: Aussehen",
+      "default": 23,
+      "min": 5,
+      "max": 100
+    },
+    {
+      "key": "stackStepGrizzly",
+      "type": "number",
+      "label": "Turm: Stufenhöhe Grizzly (Prozent der Grösse)",
+      "group": "Minimes: Aussehen",
+      "default": 25,
+      "min": 5,
+      "max": 100
+    },
+    {
+      "key": "stackSway",
+      "type": "number",
+      "label": "Turm: Wanken (Grad)",
+      "group": "Minimes: Aussehen",
+      "default": 2,
+      "min": 0,
+      "max": 10
+    },
+    {
+      "key": "stackNameOffset",
+      "type": "number",
+      "label": "Turm: Namen seitlich versetzt",
+      "group": "Minimes: Aussehen",
+      "default": 40,
+      "min": 0,
+      "max": 300,
+      "unit": "px"
+    },
+    {
       "key": "infoTitle",
       "type": "text",
       "label": "Titel",
@@ -2926,6 +3128,9 @@
       "minimes"
     ],
     "Minimes: Typen": [
+      "minimes"
+    ],
+    "Minimes: Türme": [
       "minimes"
     ],
     "Minimes: Aussehen": [

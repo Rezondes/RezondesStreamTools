@@ -1,7 +1,7 @@
 // Check for settings.ts (schema of the Bärenbande theme): valid defaults, no dead key, required keys per group, the bear
 // choice per scene, every group mapped to a scene, personalize. Runs with npm test.
 import assert from "node:assert/strict";
-import { hasMinimes, minimeNamesKey } from "../../core/minimeFields.ts";
+import { hasMinimes, minimeNamesKey, STACK_LEVEL_KEYS } from "../../core/minimeFields.ts";
 import { auditTheme } from "../schemaAudit.ts";
 import { BEAR_CHOICES, BEAR_IDS } from "./bears.ts";
 import { bearsSettings } from "./settings.ts";
@@ -54,6 +54,11 @@ for (const id of BEAR_IDS) assert.ok(fields.some(field => field.key === minimeNa
 assert.deepEqual(bearsSettings.minimeVariants?.variants.map(variant => variant.id), [...BEAR_IDS]);
 for (const key of ["minimeBearSize", "minimeDefault", "waddleAngle", "minimeEnter"]) assert.equal(fields.find(field => field.key === key)?.group, "Minimes: Aussehen", key);
 for (const [group, scenes] of Object.entries(bearsSettings.groupScenes ?? {})) if (group.startsWith("Minimes")) assert.deepEqual(scenes, ["minimes"], group);
+
+// Towers: on, Eisbär at the bottom, Panda in the middle, Grizzly on top; a step height per bear
+const defaultOf = (key: string) => fields.find(field => field.key === key)?.default;
+assert.deepEqual(["minimeStack", ...STACK_LEVEL_KEYS].map(defaultOf), [true, "eisbaer", "panda", "grizzly"]);
+for (const key of ["stackStepIce", "stackStepPanda", "stackStepGrizzly", "stackSway", "stackNameOffset"]) assert.equal(fields.find(field => field.key === key)?.group, "Minimes: Aussehen", key);
 
 // First login: channel name from the login with a capital first letter
 assert.deepEqual(bearsSettings.personalize?.("neo_42"), { channelName: "Neo_42" });

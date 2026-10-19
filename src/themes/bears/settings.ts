@@ -6,7 +6,7 @@ import { choice, color, flag, font, inScene, lines, number, text } from "../../c
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
-import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
+import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { BEAR_CHOICES, BEAR_IDS } from "./bears.ts";
 import { ICON_NAMES } from "./icons.ts";
@@ -286,6 +286,14 @@ const FIELDS = [
   number("sleepMs", "Schlafen: Dauer", MINIME_MOVES, 7000, 1000, 60000, "ms"),
   text("sleepText", "Schlafen: aufsteigendes Zeichen", MINIME_MOVES, "z", 4),
   number("waveReactMs", "Reaktion auf Chat (Winken): Dauer", MINIME_MOVES, 1200, 200, 5000, "ms"),
+  // Towers of the minimes (core): on, Eisbär at the bottom, Panda in the middle, Grizzly on top; height of one level per
+  // bear in percent of the minime size (the back of the bear below)
+  ...minimeStackFields(BEAR_SET, { minimeStack: true, minimeStackLevel1: "eisbaer", minimeStackLevel2: "panda", minimeStackLevel3: "grizzly" }),
+  number("stackStepIce", "Turm: Stufenhöhe Eisbär (Prozent der Grösse)", MINIME_LOOK, 29, 5, 100),
+  number("stackStepPanda", "Turm: Stufenhöhe Panda (Prozent der Grösse)", MINIME_LOOK, 23, 5, 100),
+  number("stackStepGrizzly", "Turm: Stufenhöhe Grizzly (Prozent der Grösse)", MINIME_LOOK, 25, 5, 100),
+  number("stackSway", "Turm: Wanken (Grad)", MINIME_LOOK, 2, 0, 10),
+  number("stackNameOffset", "Turm: Namen seitlich versetzt", MINIME_LOOK, 40, 0, 300, "px"),
 
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
@@ -312,6 +320,7 @@ const GROUP_SCENES = {
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],
   [MINIME_VARIANTS]: ["minimes"],
+  [MINIME_STACK]: ["minimes"],
   [MINIME_LOOK]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
   [INFO_GROUP]: ["info"],

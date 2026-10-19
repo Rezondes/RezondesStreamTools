@@ -2,6 +2,9 @@
 // the panda has its patches, the size order of the bears, the tower and the open mouth of the loud bear.
 // Runs with npm test.
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { STACK_ACTIONS } from "../../core/minimeStack.ts";
 import { BEAR_CHOICES, BEAR_IDS, BEARS, CLOSED_MOUTH, dot, isBearChoice, OPEN_MOUTH, partsFor, POSE_MODELS, POSES, TOWER_LEVELS } from "./bears.ts";
 
 // Every bear has every pose of the full-screen scenes
@@ -52,5 +55,9 @@ assert.ok(partsFor("grizzly", "cheer").includes(OPEN_MOUTH[0]));
 // Circle path and choices
 assert.equal(dot(10, 20, 5), "M5 20 A5 5 0 1 0 15 20 A5 5 0 1 0 5 20 Z");
 assert.ok(isBearChoice("turm") && isBearChoice("panda") && !isBearChoice("koala"));
+
+// Every tower action of the core has a look in minimes.css
+const minimesCss = readFileSync(join(import.meta.dirname, "minimes.css"), "utf8");
+for (const action of STACK_ACTIONS) assert.ok(minimesCss.includes(`.action-${action} `), `minimes.css: action-${action} missing`);
 
 console.log("bears ok");
