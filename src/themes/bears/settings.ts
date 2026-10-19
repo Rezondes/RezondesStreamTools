@@ -293,7 +293,9 @@ const FIELDS = [
   number("stackStepPanda", "Turm: Stufenhöhe Panda (Prozent der Grösse)", MINIME_LOOK, 23, 5, 100),
   number("stackStepGrizzly", "Turm: Stufenhöhe Grizzly (Prozent der Grösse)", MINIME_LOOK, 25, 5, 100),
   number("stackSway", "Turm: Wanken (Grad)", MINIME_LOOK, 2, 0, 10),
+  number("stackSwayMs", "Turm: Wanken (Dauer)", MINIME_LOOK, 2400, 500, 10000, "ms"),
   number("stackNameOffset", "Turm: Namen seitlich versetzt", MINIME_LOOK, 40, 0, 300, "px"),
+  number("minimeOutlineWidth", "Kontur: Stärke", MINIME_LOOK, 4.5, 0, 20, undefined, 0.5),
 
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,

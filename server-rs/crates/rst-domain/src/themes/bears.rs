@@ -131,7 +131,9 @@ fn minime_fields() -> Vec<SettingField> {
             None,
         ),
         number("stackSway", "Turm: Wanken (Grad)", MINIME_LOOK, 2.0, 0.0, 10.0, None, None),
+        number("stackSwayMs", "Turm: Wanken (Dauer)", MINIME_LOOK, 2400.0, 500.0, 10_000.0, MS, None),
         number("stackNameOffset", "Turm: Namen seitlich versetzt", MINIME_LOOK, 40.0, 0.0, 300.0, PX, None),
+        number("minimeOutlineWidth", "Kontur: Stärke", MINIME_LOOK, 4.5, 0.0, 20.0, None, Some(0.5)),
     ]);
     fields
 }

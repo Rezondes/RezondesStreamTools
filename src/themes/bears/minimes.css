@@ -2,7 +2,8 @@
    Per minime the core sets --x, --move, --action-ms and --facing; the running action is the class action-<name>. The bear
    of the character model looks left, so the flip mirrors it when the minime faces right. Keyframes are bears-minime-*. */
 
-.theme-bears .bb-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+/* The minimes have their own outline width; every outline of the character model below reads --outlineWidth */
+.theme-bears .bb-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; --outlineWidth: var(--minimeOutlineWidth); }
 .theme-bears .bb-minime {
   position: absolute;
   left: 0;
@@ -82,7 +83,7 @@
 .theme-bears .action-climb .bb-minime-lift { animation: bears-minime-climb var(--action-ms) ease-in-out both; }
 .theme-bears .action-stacked .bb-minime-lift,
 .theme-bears .action-stackWalk .bb-minime-lift { translate: 0 calc(-1 * var(--stack-lift)); }
-.theme-bears .action-stacked .bb-minime-body { animation: bears-minime-sway var(--towerSwayMs) ease-in-out infinite; }
+.theme-bears .action-stacked .bb-minime-body { animation: bears-minime-sway var(--stackSwayMs) ease-in-out infinite; }
 .theme-bears .action-dismount .bb-minime-lift { animation: bears-minime-dismount var(--action-ms) ease-in both; }
 .theme-bears .in-tower .bb-minime-name { translate: calc(var(--stackNameOffset) * var(--name-shift, 0)) 0; }
 .theme-bears .tower-upper:is(.action-climb, .action-stacked, .action-stackWalk) .bb-minime-shadow { opacity: 0; }

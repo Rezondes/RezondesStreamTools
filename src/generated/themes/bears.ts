@@ -301,7 +301,9 @@ export type BearsValues = {
   readonly stackStepPanda: number;
   readonly stackStepGrizzly: number;
   readonly stackSway: number;
+  readonly stackSwayMs: number;
   readonly stackNameOffset: number;
+  readonly minimeOutlineWidth: number;
   readonly infoTitle: string;
   readonly infoIntro: string;
   readonly infoEmpty: string;
