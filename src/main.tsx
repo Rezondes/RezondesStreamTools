@@ -1,6 +1,6 @@
 // Entry of the page: overlay scene (file name alerts.html under /s/<login>/ or hash #/alerts) or otherwise the
 // dashboard (src/dashboard, sections in the hash like #/theme). A scene comes from the theme the streamer chose,
-// with its settings as CSS variables and context; missing scenes are inherited from the standard theme.
+// with its settings as CSS variables and context; a scene the theme does not bring stays empty.
 import { Suspense } from "react";
 import { createRoot } from "react-dom/client";
 import "./style.css";
@@ -37,15 +37,14 @@ function ThemedScene({ scene }: { scene: SceneName }) {
   const settings = useSettings(DEFAULTS, !PUBLIC_PAGES.includes(scene));
   if (!settings) return null;
   const chosen = findTheme(settings.theme) ?? defaultSchema;
-  const Scene = resolveScene(THEME_SCENES, chosen.id, scene, DEFAULT_THEME);
+  // A scene the theme does not bring stays empty (transparent in OBS), nothing comes from another theme
+  const Scene = resolveScene(THEME_SCENES, chosen.id, scene);
   if (!Scene) return null;
-  // If the scene is inherited from the standard theme, its settings apply (equal keys are taken over).
-  // Values are always resolved, so values from the dashboard preview also end up complete and valid in the scene.
-  const schema = THEME_SCENES[chosen.id]?.[scene] === Scene ? chosen : defaultSchema;
-  const values = resolveSettings(schema, settings.values);
+  // Values are always resolved, so values from the dashboard preview also end up complete and valid in the scene
+  const values = resolveSettings(chosen, settings.values);
   return (
     <ThemeValues.Provider value={values}>
-      <div className={`theme-root theme-${schema.id}`} style={cssVariables(schema, values)}>
+      <div className={`theme-root theme-${chosen.id}`} style={cssVariables(chosen, values)}>
         <Suspense fallback={null}>
           <Scene />
         </Suspense>

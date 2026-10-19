@@ -1,7 +1,12 @@
 // Renderable clips per theme (stinger and banners) for the render section, from the theme modules in registry.ts.
-// An unknown theme gets those of the standard theme. Check: renderers.check.ts.
+// A theme has exactly the clips it brings (any of stinger, profile, offline), an unknown theme none.
+// Check: renderers.check.ts.
+import type { ClipName } from "../core/renderClip.ts";
 import type { SettingValues } from "../core/theme.ts";
-import { DEFAULT_THEME, findModule } from "./registry.ts";
+import { findModule } from "./registry.ts";
+
+// Every clip a theme can bring, in this order
+export const CLIP_NAMES: readonly ClipName[] = ["stinger", "profile", "offline"];
 
 // values: resolved against the theme's schema
-export const clipsFor = (theme: string, values: SettingValues, login: string) => (findModule(theme) ?? findModule(DEFAULT_THEME)!).clips(values, login);
+export const clipsFor = (theme: string, values: SettingValues, login: string) => findModule(theme)?.clips(values, login) ?? [];

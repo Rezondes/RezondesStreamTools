@@ -1,6 +1,6 @@
 // Views of the themes (contract ThemeView from src/core/theme.ts): the scenes per theme, the React side of
-// registry.ts. A page only loads the scene of the theme the streamer chose; missing scenes of a theme
-// come from the standard theme (src/core/themeRuntime.ts).
+// registry.ts. A page only loads the scene of the theme the streamer chose; a scene the theme does not bring
+// stays empty, nothing comes from another theme (src/core/themeRuntime.ts).
 import type { ThemeView } from "../core/theme.ts";
 import { kothView } from "./koth/index.tsx";
 import { matrixView } from "./matrix/index.tsx";

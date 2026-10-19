@@ -8,7 +8,9 @@ import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
 import { SCENES, type SceneName, type SettingValues, type ThemeSchema } from "../core/theme.ts";
+import { sceneNames } from "../core/themeRuntime.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
+import { THEME_SCENES } from "../themes/scenes.tsx";
 import { getJson, loadMedia, postJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
 import ScenePreview from "./ScenePreview.tsx";
@@ -67,7 +69,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
         {TEXTS.theme.previewScene}
         <select value={view} onChange={event => chooseView(event.target.value as FormView)}>
           <option value="general">{TEXTS.theme.general}</option>
-          {SCENES.map(name => <option key={name} value={name}>{TEXTS.scenes[name]}</option>)}
+          {SCENES.map(name => <option key={name} value={name}>{sceneNames(THEME_SCENES, schema.id).includes(name) ? TEXTS.scenes[name] : `${TEXTS.scenes[name]} (${TEXTS.notInTheme})`}</option>)}
         </select>
       </label>
 
@@ -91,7 +93,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
           <SettingsGroups schema={schema} view={view} search={search} draft={{ values: draft, set: setDraft }} errors={errors} media={media} />
           {groupsWithoutScene(schema).length > 0 && <p className="muted">{TEXTS.theme.elsewhere(groupsWithoutScene(schema).join(", "))}</p>}
         </div>
-        <ScenePreview login={me.login} overlayKey={me.overlayKey} scene={scene} settings={{ theme: schema.id, values: resolveSettings(schema, draft) }} />
+        <ScenePreview login={me.login} overlayKey={me.overlayKey} scene={scene} available={sceneNames(THEME_SCENES, schema.id).includes(scene)} settings={{ theme: schema.id, values: resolveSettings(schema, draft) }} />
       </div>
     </section>
   );

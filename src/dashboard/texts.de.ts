@@ -11,6 +11,8 @@ export const TEXTS = {
   title: "RST",
   loading: "Lade ...",
   retry: "Erneut laden",
+  // A scene or clip the active theme does not bring (nothing is taken from another theme)
+  notInTheme: "In diesem Theme nicht verfügbar",
   ascii: {
     open: "ASCII-Logo erzeugen",
     name: "Name",

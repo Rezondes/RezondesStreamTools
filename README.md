@@ -240,7 +240,8 @@ gespeicherten Werten (`/s/<login>/<szene>?demo&preview`, Werte per `BroadcastCha
 Die Theme-Auswahl zeigt ein Theme nur zum Ansehen und Bearbeiten; die Overlays und den Skin des Dashboards stellt erst
 "Als aktives Theme setzen" um (so lassen sich andere Themes auch während des Streams anschauen). Fehler beim Speichern erscheinen am jeweiligen Feld.
 
-Eingebaut sind (Details je Theme in `src/themes/<id>/docs/DESIGN-<ID>.md`):
+Eingebaut sind (Details je Theme in `src/themes/<id>/docs/DESIGN-<ID>.md`). Ein Theme hat nur die Szenen, die es selbst
+mitbringt; fehlende Szenen bleiben leer und das Dashboard markiert sie als nicht verfügbar:
 
 | Theme | Look | Minimes |
 |---|---|---|

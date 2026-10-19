@@ -1,9 +1,9 @@
-// Check for renderers.ts and matrix/render.ts and standard/render.ts: every theme provides stinger, profile and
-// offline banners, the groups exist in the schema, only the stinger has a transition point. Runs with npm test.
+// Check for renderers.ts: every theme provides an ordered subset of stinger, profile and offline banner (the built-in
+// ones all three), the groups exist in the schema, only the stinger has a transition point. Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../core/settings.ts";
 import { THEMES } from "./registry.ts";
-import { clipsFor } from "./renderers.ts";
+import { CLIP_NAMES, clipsFor } from "./renderers.ts";
 
 // Mock canvas that accepts everything; counts the draw calls
 function canvas() {
@@ -17,9 +17,15 @@ function canvas() {
   return { context: context as unknown as CanvasRenderingContext2D, count: () => calls };
 }
 
+// Built-in themes that bring all three clips today; every other theme brings an ordered subset
+const COMPLETE = ["standard", "matrix", "urlaub", "plantage", "koth"];
+
 for (const schema of THEMES) {
   const clips = clipsFor(schema.id, resolveSettings(schema, {}), "rezondes");
-  assert.deepEqual(clips.map(clip => clip.name), ["stinger", "profile", "offline"], schema.id);
+  const names = clips.map(clip => clip.name);
+  assert.deepEqual(names, CLIP_NAMES.filter(name => names.includes(name)), `${schema.id}: order or duplicates`);
+  assert.equal(new Set(names).size, names.length, `${schema.id}: duplicate clip`);
+  if (COMPLETE.includes(schema.id)) assert.deepEqual(names, CLIP_NAMES, schema.id);
   const groups = new Set(schema.fields.map(field => field.group));
   for (const clip of clips) {
     assert.ok(groups.has(clip.group), `${schema.id}/${clip.name}: group ${clip.group} missing in the schema`);
@@ -32,7 +38,7 @@ for (const schema of THEMES) {
   }
 }
 
-// Unknown theme: clips of the standard theme
-assert.equal(clipsFor("does-not-exist", resolveSettings(THEMES[0], {}), "rezondes").length, 3);
+// Unknown theme: no clips (nothing is inherited)
+assert.equal(clipsFor("does-not-exist", resolveSettings(THEMES[0], {}), "rezondes").length, 0);
 
 console.log("renderers ok");

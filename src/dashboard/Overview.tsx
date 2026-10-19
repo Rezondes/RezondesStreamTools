@@ -4,6 +4,8 @@
 import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
 import { OBS_SCENES, SCENE_SIZES } from "../core/theme.ts";
+import { sceneNames } from "../core/themeRuntime.ts";
+import { THEME_SCENES } from "../themes/scenes.tsx";
 import type { AlertKind } from "../core/types.ts";
 import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
@@ -22,6 +24,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
   const base = `${location.origin}${streamerPath.base(me.login)}`;
   const layout = obsLayout(base, me.login, me.overlayKey, TEXTS.scenes, TEXTS.obs.overlayScene);
   const sources = new Map(layout.flatMap(scene => scene.sources).map(source => [source.scene, source]));
+  const available = sceneNames(THEME_SCENES, me.theme);
   return (
     <section className="panel">
       <p className="muted">{TEXTS.overview.obsHint}</p>
@@ -35,6 +38,10 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
         <tbody>
           {OBS_SCENES.map(scene => {
             const url = sources.get(scene)!.url;
+            // The source stays in the OBS import (empty until a theme with the scene is active), here only the hint
+            if (!available.includes(scene)) {
+              return <tr key={scene}><td>{TEXTS.scenes[scene]}</td><td colSpan={3} className="muted">{TEXTS.notInTheme}</td></tr>;
+            }
             return (
               <tr key={scene}>
                 <td>{TEXTS.scenes[scene]}</td>

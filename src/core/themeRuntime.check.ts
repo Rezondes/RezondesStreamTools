@@ -1,20 +1,20 @@
 // Check for themeRuntime.ts: which scene a theme provides and which values arrive as CSS variables. Runs with npm test.
 import assert from "node:assert/strict";
-import { cssVariables, resolveScene } from "./themeRuntime.ts";
+import { cssVariables, resolveScene, sceneNames } from "./themeRuntime.ts";
 import type { ThemeSchema } from "./theme.ts";
 
-// Scene from the theme, missing ones from the standard theme, unknown scene or unknown theme without standard: null
-const scenes = { matrix: { alerts: "matrix-alerts", chat: "matrix-chat" }, standard: { alerts: "standard-alerts" } };
-assert.equal(resolveScene(scenes, "standard", "alerts", "matrix"), "standard-alerts");
-assert.equal(resolveScene(scenes, "standard", "chat", "matrix"), "matrix-chat");
-assert.equal(resolveScene(scenes, "does-not-exist", "alerts", "matrix"), "matrix-alerts");
-assert.equal(resolveScene(scenes, "standard", "index", "matrix"), null);
-assert.equal(resolveScene(scenes, "standard", "music", "matrix"), null);
-// Theme-specific scenes (minimes) are never inherited from the standard theme
-const withMinimes = { ...scenes, matrix: { ...scenes.matrix, minimes: "matrix-minimes" } };
-assert.equal(resolveScene(withMinimes, "matrix", "minimes", "matrix"), "matrix-minimes");
-assert.equal(resolveScene(withMinimes, "standard", "minimes", "matrix"), null);
-assert.equal(resolveScene(withMinimes, "does-not-exist", "minimes", "matrix"), null);
+// No fallback to another theme: only the scenes the theme brings itself, everything else null
+const scenes = { matrix: { alerts: "matrix-alerts", chat: "matrix-chat", minimes: "matrix-minimes" }, standard: { alerts: "standard-alerts" } };
+assert.equal(resolveScene(scenes, "standard", "alerts"), "standard-alerts");
+assert.equal(resolveScene(scenes, "standard", "chat"), null);
+assert.equal(resolveScene(scenes, "standard", "minimes"), null);
+assert.equal(resolveScene(scenes, "matrix", "minimes"), "matrix-minimes");
+assert.equal(resolveScene(scenes, "does-not-exist", "alerts"), null);
+assert.equal(resolveScene(scenes, "standard", "index"), null);
+
+// Scene names of a theme in the order of SCENES, none for an unknown theme
+assert.deepEqual(sceneNames({ probe: { chat: "c", alerts: "a", minimes: "m" } }, "probe"), ["alerts", "chat", "minimes"]);
+assert.deepEqual(sceneNames(scenes, "does-not-exist"), []);
 
 // CSS variables: colors, numbers with unit according to the schema, switches as 1/0, fonts in quotes; texts not
 const schema: ThemeSchema = {

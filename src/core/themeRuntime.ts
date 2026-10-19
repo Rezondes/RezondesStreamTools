@@ -1,23 +1,21 @@
-// Applies a theme at runtime: which scene component applies (the standard theme provides missing ones) and which
-// settings end up as CSS variables on the root element of the scene. Pure functions, tested in themeRuntime.check.ts.
+// Applies a theme at runtime: which scene component applies (only the theme's own, nothing is inherited from another
+// theme) and which settings end up as CSS variables on the root element of the scene. Pure functions, tested in
+// themeRuntime.check.ts.
 import { SCENES, type SceneName, type SettingValues, type ThemeSchema } from "./theme.ts";
 
 const isScene = (name: string): name is SceneName => (SCENES as readonly string[]).includes(name);
 
-// Theme-specific features: only a theme that brings these scenes itself has them, they are never inherited
-const OWN_SCENES: readonly SceneName[] = ["minimes"];
+type SceneTable<Component> = Record<string, Partial<Record<SceneName, Component>>>;
 
-// Scene of the theme, otherwise the one of the standard theme (except OWN_SCENES); null for unknown scenes or if none has it
-export function resolveScene<Component>(
-  scenes: Record<string, Partial<Record<SceneName, Component>>>,
-  themeId: string,
-  scene: string,
-  fallbackTheme: string,
-): Component | null {
+// Scene of the theme; null for unknown scenes, unknown themes and scenes the theme does not bring (an empty page)
+export function resolveScene<Component>(scenes: SceneTable<Component>, themeId: string, scene: string): Component | null {
   if (!isScene(scene)) return null;
-  const own = scenes[themeId]?.[scene];
-  if (OWN_SCENES.includes(scene)) return own ?? null;
-  return own ?? scenes[fallbackTheme]?.[scene] ?? null;
+  return scenes[themeId]?.[scene] ?? null;
+}
+
+// Scenes a theme brings, in the order of SCENES (the dashboard marks the others as not available)
+export function sceneNames<Component>(scenes: SceneTable<Component>, themeId: string): SceneName[] {
+  return SCENES.filter(scene => scenes[themeId]?.[scene] !== undefined);
 }
 
 // Colors, numbers (with unit according to the schema), switches (1/0, for computing in calc) and fonts as --<key>.

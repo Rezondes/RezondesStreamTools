@@ -1,7 +1,7 @@
 //! Shared check of a theme schema (template: `src/themes/schemaAudit.ts` and `registry.check.ts`): unique keys,
 //! label and group on every field, valid defaults, scene mapping only for existing groups, personalize values that
-//! pass the schema, and the core keys every theme needs (effects and commands page). Dead keys are found by the
-//! TypeScript audit as long as the scenes live there.
+//! pass the schema, and the core keys of the effects and the commands page for a theme that brings these scenes. Dead
+//! keys are found by the TypeScript audit as long as the scenes live there.
 
 use std::collections::BTreeSet;
 
@@ -11,6 +11,7 @@ use crate::identity::values::Login;
 use crate::settings::validate::validate_settings;
 use crate::themes::info_fields::info_fields;
 use crate::themes::registry::Theme;
+use crate::themes::schema::SceneName;
 
 /// Keys the core reads for every theme with effects (`FX_KEYS` in `src/core/fx/fx.ts`)
 const FX_KEYS: [&str; 4] = ["fxMax", "fxDuration", "fxSize", "fxMargin"];
@@ -54,7 +55,11 @@ pub fn audit(theme: &Theme) -> Vec<String> {
             problems.push(format!("invalid personalization {}: {:?}", error.key, error.code));
         }
     }
-    let required = FX_KEYS.iter().map(|key| (*key).to_owned()).chain(info_fields().into_iter().map(|field| field.key));
+    // Core keys only for the scenes the theme brings (a theme without effects or commands page needs none of their keys)
+    let has_scene = |scene: SceneName| schema.group_scenes.values().any(|scenes| scenes.contains(&scene));
+    let fx = has_scene(SceneName::Fx).then(|| FX_KEYS.iter().map(|key| (*key).to_owned()).collect::<Vec<_>>());
+    let info = has_scene(SceneName::Info).then(|| info_fields().into_iter().map(|field| field.key).collect::<Vec<_>>());
+    let required = fx.into_iter().flatten().chain(info.into_iter().flatten());
     problems.extend(required.filter(|key| !keys.contains(key.as_str())).map(|key| format!("missing core key {key}")));
     problems
 }
@@ -89,7 +94,10 @@ mod tests {
                 text("title", "", "A", "x", Some(10)),
                 text("title", "Title", "A", "y", Some(10)),
             ],
-            group_scenes: BTreeMap::from([("Nothing".to_owned(), vec![])]),
+            group_scenes: BTreeMap::from([
+                ("Nothing".to_owned(), vec![]),
+                ("A".to_owned(), vec![SceneName::Fx, SceneName::Info]),
+            ]),
             minime_variants: None,
             minime_teams: None,
         };
@@ -105,5 +113,21 @@ mod tests {
         ] {
             assert!(problems.iter().any(|problem| problem == expected), "{expected} not in {problems:?}");
         }
+    }
+
+    #[test]
+    fn core_keys_only_for_brought_scenes() {
+        fn none(_: &Login) -> SettingValues {
+            BTreeMap::new()
+        }
+        let schema = ThemeSchema {
+            id: "probe".to_owned(),
+            name: "Probe".to_owned(),
+            fields: vec![color("accent", "Color", "A", "#ffffff")],
+            group_scenes: BTreeMap::from([("A".to_owned(), vec![SceneName::Starting])]),
+            minime_variants: None,
+            minime_teams: None,
+        };
+        assert_eq!(audit(&Theme { schema, personalize: none }), Vec::<String>::new());
     }
 }

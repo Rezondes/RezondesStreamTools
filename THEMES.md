@@ -3,7 +3,8 @@
 Ein Theme bestimmt, wie die Overlays aussehen. Es besteht aus einem Einstellungs-Schema (was der Streamer im Dashboard
 einstellen kann) und React-Szenen (wie es aussieht). Das eingebaute Theme `standard` in `src/themes/standard/` ist das
 Standard-Theme (neue Streamer starten damit) und die Vorlage: ein eigenständiges Theme mit allen Szenen, Stinger und
-Bannern. Jede Szene, die ein Theme nicht selbst mitbringt, kommt vom Standard-Theme.
+Bannern. Ein Theme hat genau die Szenen und Clips, die es selbst mitbringt; nichts kommt von einem anderen Theme
+(siehe "Fehlende Szenen").
 
 Themes sind Code im Repo, kein Upload. Ein neues Theme ist ein eigener Ordner und zwei Einträge in Listen.
 
@@ -61,8 +62,8 @@ src/themes/<id>/
 
 ## Theme-eigene Funktionen (Beispiel Minimes)
 
-Manche Funktionen hat nur ein Theme, das sie selbst mitbringt; ihre Szene wird **nicht** vom Standard-Theme geerbt
-(`OWN_SCENES` in `src/core/themeRuntime.ts`). Ein Theme ohne die Funktion zeigt dort eine leere Seite, der Server
+Manche Funktionen hat nur ein Theme, das sie selbst mitbringt (wie jede Szene, siehe "Fehlende Szenen"). Ein Theme
+ohne die Funktion zeigt dort eine leere Seite, der Server
 verarbeitet ihre Chatbefehle dann nicht. Die Logik liegt im Kern, das Theme liefert Aussehen und eigene Animationen.
 
 Minimes (Chatter als Figuren, Szene `minimes`) in einem eigenen Theme:
@@ -162,11 +163,17 @@ Eine bewusste Ausnahme bekommt einen Kommentar `fixed: <Grund>` auf derselben Ze
 Schema, und jeder Schlüssel wird im Theme-Code benutzt (`values.key`, `{ key }`, `"key"` oder `var(--key)`).
 `src/themes/registry.check.ts` prüft alle registrierten Themes: eindeutige ids, jedes Feld mit Label und Gruppe.
 
-## Vererbung
+## Fehlende Szenen
 
-Fehlt einem Theme eine Szene, zeigt `/s/<login>/<szene>.html` die Szene des Standard-Themes `standard` mit dessen
-Einstellungen. Gleich benannte Schlüssel (z.B. `accent`) übernimmt sie vom gewählten Theme, alle anderen haben die
-Standardwerte von `standard`. Ausnahme: Szenen theme-eigener Funktionen (z.B. `minimes`) werden nie geerbt.
+Ein Theme hat nur die Szenen, die `index.tsx` in seiner `ThemeView` einträgt, und nur die Clips, die `clips` in
+`render.ts` liefert (eine Teilmenge von `stinger`, `profile`, `offline`, auch keiner). Nichts wird von einem anderen
+Theme geerbt, auch nicht als Platzhalter (`resolveScene` und `sceneNames` in `src/core/themeRuntime.ts`, `clipsFor` in
+`src/themes/renderers.ts`). So kann ein Theme Szenen weglassen oder Schritt für Schritt bauen:
+
+- Die Overlay-Seite einer fehlenden Szene ist leer und transparent (in OBS unsichtbar).
+- Das Dashboard markiert fehlende Szenen in der Übersicht und in der Vorschau, fehlende Clips beim Rendern mit "In diesem
+  Theme nicht verfügbar".
+- Der OBS-Import legt trotzdem alle Quellen an; nach einem Theme-Wechsel stimmt die Einrichtung ohne neuen Import.
 
 ## Checkliste
 

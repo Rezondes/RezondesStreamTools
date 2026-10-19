@@ -8,7 +8,9 @@ import { SCENE_SIZES, type SceneName } from "../core/theme.ts";
 import type { PublicSettings } from "../core/types.ts";
 import { TEXTS } from "./texts.de.ts";
 
-export default function ScenePreview({ login, overlayKey, scene, settings }: { login: string; overlayKey: string; scene: SceneName; settings: PublicSettings }) {
+type Props = { login: string; overlayKey: string; scene: SceneName; settings: PublicSettings; available: boolean };
+
+export default function ScenePreview({ login, overlayKey, scene, settings, available }: Props) {
   const [room, setRoom] = useState({ width: 0, height: 0 });
   const box = useRef<HTMLDivElement>(null);
   const size = SCENE_SIZES[scene];
@@ -45,14 +47,16 @@ export default function ScenePreview({ login, overlayKey, scene, settings }: { l
         <span className="muted">{TEXTS.theme.openTabHint}</span>
       </p>
       <div ref={box} className="preview-box" style={{ aspectRatio: `${size.width} / ${size.height}`, maxWidth: size.width }}>
-        <iframe
+        {/* Scene the theme does not bring: only the hint (the overlay page would stay empty); the box stays for the observer */}
+        {!available && <p className="muted">{TEXTS.notInTheme}</p>}
+        {available && <iframe
           key={scene}
           title={TEXTS.theme.preview}
           src={src}
           width={size.width}
           height={size.height}
           style={{ left: (room.width - size.width * scale) / 2, transform: `scale(${scale})` }}
-        />
+        />}
       </div>
     </div>
   );

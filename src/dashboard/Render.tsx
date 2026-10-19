@@ -8,7 +8,7 @@ import type { ClipName, RenderClip } from "../core/renderClip.ts";
 import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
 import type { SettingValues } from "../core/theme.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
-import { clipsFor } from "../themes/renderers.ts";
+import { CLIP_NAMES, clipsFor } from "../themes/renderers.ts";
 import { getJson, postJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
 import SettingInput from "./SettingInput.tsx";
@@ -30,7 +30,9 @@ export default function Render({ me }: { me: Me }) {
   if (!settings.ready) return <p className="muted">{TEXTS.loading}</p>;
   const schema = findTheme(settings.theme) ?? findTheme(DEFAULT_THEME)!;
   const clips = clipsFor(schema.id, resolveSettings(schema, settings.draft), me.login).filter(clip => me.features[clip.feature]);
-  const clip = clips.find(candidate => candidate.name === clipName) ?? clips[0];
+  const clip = clips.find(candidate => candidate.name === clipName) ?? clips.at(0);
+  // Clips the theme does not bring (and the feature would allow): named with a hint instead of a button
+  const missing = CLIP_NAMES.filter(name => !clips.some(candidate => candidate.name === name) && me.features[name === "stinger" ? "stinger" : "banners"]);
   const canSave = me.features.themes === true;
   return (
     <section className="panel render">
@@ -41,11 +43,14 @@ export default function Render({ me }: { me: Me }) {
             {RENDER_TEXT.clips[candidate.name]}
           </button>
         ))}
+        {missing.length > 0 && <span className="muted">{missing.map(name => RENDER_TEXT.clips[name]).join(", ")}: {TEXTS.notInTheme}</span>}
       </p>
-      <div className="settings-layout">
-        <ClipSettings clip={clip} settings={settings} canSave={canSave} />
-        <ClipPreview key={`${schema.id}-${clip.name}`} clip={clip} />
-      </div>
+      {clip && (
+        <div className="settings-layout">
+          <ClipSettings clip={clip} settings={settings} canSave={canSave} />
+          <ClipPreview key={`${schema.id}-${clip.name}`} clip={clip} />
+        </div>
+      )}
       <RenderedFiles />
     </section>
   );

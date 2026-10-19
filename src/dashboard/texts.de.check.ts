@@ -9,6 +9,7 @@ import { TEXTS } from "./texts.de.ts";
 
 for (const code of ERROR_CODES) assert.ok(TEXTS.errors[code], `no text for ${code}`);
 for (const scene of SCENES) assert.ok(TEXTS.scenes[scene], `no name for the scene ${scene}`);
+assert.ok(TEXTS.notInTheme.length > 0);
 
 // Texts with placeholders insert the values
 assert.equal(TEXTS.triggers.confirmDelete("lizard"), 'Trigger "lizard" löschen?');
