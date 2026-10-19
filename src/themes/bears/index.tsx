@@ -17,6 +17,7 @@ export const bearsView: ThemeView = {
     cam: lazy(() => import("./scenes/Cam.tsx")),
     music: lazy(() => import("./scenes/Music.tsx")),
     fx: lazy(() => import("./scenes/Fx.tsx")),
+    minimes: lazy(() => import("./scenes/Minimes.tsx")),
     info: lazy(() => import("./scenes/Info.tsx")),
   },
 };

@@ -6,9 +6,11 @@ import { choice, color, flag, font, inScene, lines, number, text } from "../../c
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
+import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { BEAR_CHOICES, BEAR_IDS } from "./bears.ts";
 import { ICON_NAMES } from "./icons.ts";
+import { BEAR_SET } from "./minimeBears.ts";
 
 export const FONTS = ["Nunito", "Fredoka", "Baloo 2", "Inter", "DM Sans"] as const;
 const TITLE_FONTS = ["Sniglet", "Fredoka", "Baloo 2", "Nunito"] as const;
@@ -28,6 +30,8 @@ const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
 const BANNER = "Banner";
+const MINIME_LOOK = "Minimes: Aussehen";
+const MINIME_MOVES = "Minimes: Animationen";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "Bärenbande", 40),
@@ -257,6 +261,32 @@ const FIELDS = [
   number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
   number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
 
+  ...MINIME_BASE_FIELDS,
+  number("minimeBearSize", "Grösse (Höhe)", MINIME_LOOK, 120, 40, 400, "px"),
+  number("minimeGround", "Abstand zum unteren Rand", MINIME_LOOK, 16, 0, 300, "px"),
+  number("minimeShadow", "Schatten (Stärke)", MINIME_LOOK, 0.3, 0, 1, undefined, 0.05),
+  choice("minimeDefault", "Bär ohne Wahl (alle aus)", MINIME_LOOK, "grizzly", BEAR_IDS),
+  flag("minimeNames", "Namen zeigen", MINIME_LOOK, true),
+  number("minimeNameSize", "Name: Schriftgrösse", MINIME_LOOK, 15, 8, 48, "px"),
+  number("waddleAngle", "Watscheln: Kippen (Grad)", MINIME_LOOK, 6, 0, 20),
+  number("waddleMs", "Watscheln: Dauer eines Schritts", MINIME_LOOK, 600, 200, 3000, "ms"),
+  choice("minimeEnter", "Erscheinen", MINIME_LOOK, "watscheln", ["watscheln", "plopp"]),
+  choice("minimeExit", "Verschwinden", MINIME_LOOK, "watscheln", ["watscheln", "plopp"]),
+  number("selfieWeight", "Selfie: Häufigkeit", MINIME_MOVES, 8, 0, 100),
+  number("selfieMs", "Selfie: Dauer", MINIME_MOVES, 2400, 300, 10000, "ms"),
+  number("snackWeight", "Snack: Häufigkeit", MINIME_MOVES, 8, 0, 100),
+  number("snackMs", "Snack: Dauer", MINIME_MOVES, 3000, 300, 10000, "ms"),
+  number("waveWeight", "Winken: Häufigkeit", MINIME_MOVES, 10, 0, 100),
+  number("waveMs", "Winken: Dauer", MINIME_MOVES, 1600, 300, 10000, "ms"),
+  number("danceWeight", "Tanzen: Häufigkeit", MINIME_MOVES, 6, 0, 100),
+  number("danceMs", "Tanzen: Dauer", MINIME_MOVES, 2600, 300, 10000, "ms"),
+  number("lookWeight", "Umschauen: Häufigkeit", MINIME_MOVES, 10, 0, 100),
+  number("lookMs", "Umschauen: Dauer", MINIME_MOVES, 2200, 300, 10000, "ms"),
+  number("sleepWeight", "Schlafen: Häufigkeit", MINIME_MOVES, 4, 0, 100),
+  number("sleepMs", "Schlafen: Dauer", MINIME_MOVES, 7000, 1000, 60000, "ms"),
+  text("sleepText", "Schlafen: aufsteigendes Zeichen", MINIME_MOVES, "z", 4),
+  number("waveReactMs", "Reaktion auf Chat (Winken): Dauer", MINIME_MOVES, 1200, 200, 5000, "ms"),
+
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   choice("bearInfo", "Befehlsseite: Bär", INFO_GROUP, "grizzly", BEAR_CHOICES),
@@ -268,7 +298,7 @@ export type { BearsValues } from "../../generated/themes/bears.ts";
 
 const SCREEN_SCENES = ["starting", "brb", "ending"] as const;
 const GROUP_SCENES = {
-  [BEARS]: [...SCREEN_SCENES, "alerts", "chat", "cam", "music", "fx", "info"],
+  [BEARS]: [...SCREEN_SCENES, "alerts", "chat", "cam", "music", "fx", "minimes", "info"],
   [WORLD]: [...SCREEN_SCENES, "info"],
   [SCREENS]: SCREEN_SCENES,
   [ALERTS]: ["alerts"],
@@ -278,6 +308,12 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [STINGER]: [],
   [BANNER]: [],
+  [MINIME_COMMANDS]: ["minimes"],
+  [MINIME_RULES]: ["minimes"],
+  [MINIME_MOTION]: ["minimes"],
+  [MINIME_VARIANTS]: ["minimes"],
+  [MINIME_LOOK]: ["minimes"],
+  [MINIME_MOVES]: ["minimes"],
   [INFO_GROUP]: ["info"],
 } as const;
 
@@ -288,7 +324,8 @@ const personalize = (login: string) => ({ channelName: capital(login) });
 export const bearsSettings: ThemeSchema = {
   id: "bears",
   name: "Bärenbande",
-  fields: FIELDS,
+  fields: [...FIELDS, ...minimeVariantFields(BEAR_SET)],
   groupScenes: GROUP_SCENES,
   personalize,
+  minimeVariants: BEAR_SET,
 };

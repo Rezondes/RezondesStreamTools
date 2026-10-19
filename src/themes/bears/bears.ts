@@ -166,6 +166,7 @@ const PROPS = {
     { kind: "line", d: oval(38, 214, 27, 9) },
     { kind: "food", d: oval(38, 211, 12, 4) },
   ],
+  snack: [{ kind: "food", d: oval(74, 204, 18, 13) }, { kind: "line", d: oval(74, 204, 18, 13) }, { kind: "line", d: "M64 200 L68 198 M78 208 L82 206" }],
   sign: [{ kind: "line", d: "M70 170 L72 222" }, { kind: "paper", d: SIGN_PAPER }, { kind: "line", d: SIGN_PAPER }],
   phoneHigh: [{ kind: "prop", d: PHONE_HIGH }, { kind: "line", d: PHONE_HIGH }, { kind: "screen", d: "M178 32 L194 29 L198 54 L182 57 Z" }],
   headphones: [
@@ -191,6 +192,7 @@ export const POSE_MODELS = {
   sign: { body: STANDING, arms: holding, prop: PROPS.sign },
   phone: { body: STANDING, arms: holding, prop: PROPS.phone },
   cheer: { body: STANDING, arms: holding, prop: PROPS.none },
+  snack: { body: STANDING, arms: holding, prop: PROPS.snack },
   thumbs: { body: STANDING, arms: [ARMS.nearThumb, ARMS.farHolding], prop: PROPS.none },
   headphones: { body: STANDING, arms: [ARMS.nearHanging], prop: PROPS.headphones },
   sleep: { body: SLEEPING, arms: [ARMS.nearHanging], prop: PROPS.none },

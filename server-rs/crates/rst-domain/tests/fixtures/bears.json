@@ -2135,6 +2135,464 @@
       "max": 30
     },
     {
+      "key": "minimeJoinCommand",
+      "type": "text",
+      "label": "Befehl: einklinken (optional mit Farbe oder Typ)",
+      "group": "Minimes: Befehle",
+      "default": "!join",
+      "maxLength": 25
+    },
+    {
+      "key": "minimeLeaveCommand",
+      "type": "text",
+      "label": "Befehl: verlassen (Mods: mit @name rauswerfen)",
+      "group": "Minimes: Befehle",
+      "default": "!leave",
+      "maxLength": 25
+    },
+    {
+      "key": "minimeJoinRole",
+      "type": "select",
+      "label": "Einklinken ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "everyone",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeKickRole",
+      "type": "select",
+      "label": "Fremde rauswerfen ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "moderator",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeColorJoins",
+      "type": "boolean",
+      "label": "Befehl für Farbe oder Typ klinkt auch ein",
+      "group": "Minimes: Befehle",
+      "default": true
+    },
+    {
+      "key": "minimeMax",
+      "type": "number",
+      "label": "Höchstzahl gleichzeitig",
+      "group": "Minimes: Regeln",
+      "default": 30,
+      "min": 1,
+      "max": 100
+    },
+    {
+      "key": "minimeWhenFull",
+      "type": "select",
+      "label": "Wenn voll: Inaktivsten ersetzen (replace) oder Neue abweisen (reject)",
+      "group": "Minimes: Regeln",
+      "default": "replace",
+      "options": [
+        "replace",
+        "reject"
+      ]
+    },
+    {
+      "key": "minimeIdleMinutes",
+      "type": "number",
+      "label": "Verschwindet nach Minuten ohne Nachricht (0 = nie)",
+      "group": "Minimes: Regeln",
+      "default": 20,
+      "min": 0,
+      "max": 240
+    },
+    {
+      "key": "minimeColorCooldown",
+      "type": "number",
+      "label": "Abklingzeit Farb- oder Typwechsel",
+      "group": "Minimes: Regeln",
+      "default": 10,
+      "min": 0,
+      "max": 300,
+      "unit": "s"
+    },
+    {
+      "key": "minimeChatKeepsAlive",
+      "type": "boolean",
+      "label": "Chatnachrichten halten das Minime im Bild",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeReactToChat",
+      "type": "boolean",
+      "label": "Minime reagiert auf Chatnachrichten",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeClearOffline",
+      "type": "boolean",
+      "label": "Alle entfernen, wenn der Stream endet",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeRemoveOnBan",
+      "type": "boolean",
+      "label": "Bei Ban oder Timeout entfernen",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeSpeed",
+      "type": "number",
+      "label": "Laufgeschwindigkeit (px pro Sekunde)",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeMargin",
+      "type": "number",
+      "label": "Abstand zum Rand",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 0,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMin",
+      "type": "number",
+      "label": "Kürzeste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 100,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMax",
+      "type": "number",
+      "label": "Längste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 600,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkWeight",
+      "type": "number",
+      "label": "Häufigkeit: wandern",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleWeight",
+      "type": "number",
+      "label": "Häufigkeit: auf der Stelle schweben",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleMinMs",
+      "type": "number",
+      "label": "Schweben mindestens",
+      "group": "Minimes: Bewegung",
+      "default": 2000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeIdleMaxMs",
+      "type": "number",
+      "label": "Schweben höchstens",
+      "group": "Minimes: Bewegung",
+      "default": 6000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeEnterMs",
+      "type": "number",
+      "label": "Dauer: erscheinen",
+      "group": "Minimes: Bewegung",
+      "default": 1200,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeExitMs",
+      "type": "number",
+      "label": "Dauer: verschwinden",
+      "group": "Minimes: Bewegung",
+      "default": 900,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimePlacement",
+      "type": "select",
+      "label": "Plätze: frei verteilt (random) oder feste Plätze (slots)",
+      "group": "Minimes: Bewegung",
+      "default": "random",
+      "options": [
+        "random",
+        "slots"
+      ]
+    },
+    {
+      "key": "minimeBearSize",
+      "type": "number",
+      "label": "Grösse (Höhe)",
+      "group": "Minimes: Aussehen",
+      "default": 120,
+      "min": 40,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "minimeGround",
+      "type": "number",
+      "label": "Abstand zum unteren Rand",
+      "group": "Minimes: Aussehen",
+      "default": 16,
+      "min": 0,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "minimeShadow",
+      "type": "number",
+      "label": "Schatten (Stärke)",
+      "group": "Minimes: Aussehen",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "minimeDefault",
+      "type": "select",
+      "label": "Bär ohne Wahl (alle aus)",
+      "group": "Minimes: Aussehen",
+      "default": "grizzly",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda"
+      ]
+    },
+    {
+      "key": "minimeNames",
+      "type": "boolean",
+      "label": "Namen zeigen",
+      "group": "Minimes: Aussehen",
+      "default": true
+    },
+    {
+      "key": "minimeNameSize",
+      "type": "number",
+      "label": "Name: Schriftgrösse",
+      "group": "Minimes: Aussehen",
+      "default": 15,
+      "min": 8,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "waddleAngle",
+      "type": "number",
+      "label": "Watscheln: Kippen (Grad)",
+      "group": "Minimes: Aussehen",
+      "default": 6,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "key": "waddleMs",
+      "type": "number",
+      "label": "Watscheln: Dauer eines Schritts",
+      "group": "Minimes: Aussehen",
+      "default": 600,
+      "min": 200,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeEnter",
+      "type": "select",
+      "label": "Erscheinen",
+      "group": "Minimes: Aussehen",
+      "default": "watscheln",
+      "options": [
+        "watscheln",
+        "plopp"
+      ]
+    },
+    {
+      "key": "minimeExit",
+      "type": "select",
+      "label": "Verschwinden",
+      "group": "Minimes: Aussehen",
+      "default": "watscheln",
+      "options": [
+        "watscheln",
+        "plopp"
+      ]
+    },
+    {
+      "key": "selfieWeight",
+      "type": "number",
+      "label": "Selfie: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 8,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "selfieMs",
+      "type": "number",
+      "label": "Selfie: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 2400,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "snackWeight",
+      "type": "number",
+      "label": "Snack: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 8,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "snackMs",
+      "type": "number",
+      "label": "Snack: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 3000,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "waveWeight",
+      "type": "number",
+      "label": "Winken: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 10,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "waveMs",
+      "type": "number",
+      "label": "Winken: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1600,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "danceWeight",
+      "type": "number",
+      "label": "Tanzen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 6,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "danceMs",
+      "type": "number",
+      "label": "Tanzen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 2600,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "lookWeight",
+      "type": "number",
+      "label": "Umschauen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 10,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "lookMs",
+      "type": "number",
+      "label": "Umschauen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 2200,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "sleepWeight",
+      "type": "number",
+      "label": "Schlafen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 4,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "sleepMs",
+      "type": "number",
+      "label": "Schlafen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 7000,
+      "min": 1000,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "sleepText",
+      "type": "text",
+      "label": "Schlafen: aufsteigendes Zeichen",
+      "group": "Minimes: Animationen",
+      "default": "z",
+      "maxLength": 4
+    },
+    {
+      "key": "waveReactMs",
+      "type": "number",
+      "label": "Reaktion auf Chat (Winken): Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1200,
+      "min": 200,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
       "key": "infoTitle",
       "type": "text",
       "label": "Titel",
@@ -2383,6 +2841,38 @@
         "abend",
         "nacht"
       ]
+    },
+    {
+      "key": "minimeVariantCommand",
+      "type": "text",
+      "label": "Befehl: Bär wählen",
+      "group": "Minimes: Typen",
+      "default": "!baer",
+      "maxLength": 25
+    },
+    {
+      "key": "minimeNames_eisbaer",
+      "type": "text",
+      "label": "Eisbär: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "eisbaer, eis, polar, ice",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_grizzly",
+      "type": "text",
+      "label": "Grizzly: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "grizzly, braunbaer, brown",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_panda",
+      "type": "text",
+      "label": "Panda: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "panda",
+      "maxLength": 200
     }
   ],
   "groupScenes": {
@@ -2395,6 +2885,7 @@
       "cam",
       "music",
       "fx",
+      "minimes",
       "info"
     ],
     "Welt": [
@@ -2425,8 +2916,58 @@
     ],
     "Stinger": [],
     "Banner": [],
+    "Minimes: Befehle": [
+      "minimes"
+    ],
+    "Minimes: Regeln": [
+      "minimes"
+    ],
+    "Minimes: Bewegung": [
+      "minimes"
+    ],
+    "Minimes: Typen": [
+      "minimes"
+    ],
+    "Minimes: Aussehen": [
+      "minimes"
+    ],
+    "Minimes: Animationen": [
+      "minimes"
+    ],
     "Befehlsseite": [
       "info"
+    ]
+  },
+  "minimeVariants": {
+    "command": "!baer",
+    "label": "Bär",
+    "variants": [
+      {
+        "id": "eisbaer",
+        "label": "Eisbär",
+        "names": [
+          "eisbaer",
+          "eis",
+          "polar",
+          "ice"
+        ]
+      },
+      {
+        "id": "grizzly",
+        "label": "Grizzly",
+        "names": [
+          "grizzly",
+          "braunbaer",
+          "brown"
+        ]
+      },
+      {
+        "id": "panda",
+        "label": "Panda",
+        "names": [
+          "panda"
+        ]
+      }
     ]
   },
   "personalize": {

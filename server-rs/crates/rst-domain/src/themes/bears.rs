@@ -13,8 +13,11 @@ use crate::settings::field::{
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
+use crate::themes::minime_fields::{
+    MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minime_base_fields, minime_variant_fields,
+};
 use crate::themes::registry::Theme;
-use crate::themes::schema::{SceneName, ThemeSchema};
+use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -32,6 +35,59 @@ const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
 const BANNER: &str = "Banner";
+const MINIME_LOOK: &str = "Minimes: Aussehen";
+const MINIME_MOVES: &str = "Minimes: Animationen";
+const BEAR_IDS: [&str; 3] = ["eisbaer", "grizzly", "panda"];
+
+/// The three bears as minime variants (template: `src/themes/bears/minimeBears.ts`)
+fn variants() -> MinimeVariantSet {
+    let variant = |id: &str, label: &str, names: &[&str]| MinimeVariantInfo {
+        id: id.to_owned(),
+        label: label.to_owned(),
+        names: names.iter().map(|name| (*name).to_owned()).collect(),
+        color: None,
+    };
+    MinimeVariantSet {
+        command: "!baer".to_owned(),
+        label: "Bär".to_owned(),
+        variants: vec![
+            variant("eisbaer", "Eisbär", &["eisbaer", "eis", "polar", "ice"]),
+            variant("grizzly", "Grizzly", &["grizzly", "braunbaer", "brown"]),
+            variant("panda", "Panda", &["panda"]),
+        ],
+    }
+}
+
+fn minime_fields() -> Vec<SettingField> {
+    let mut fields = minime_base_fields();
+    fields.extend(vec![
+        number("minimeBearSize", "Grösse (Höhe)", MINIME_LOOK, 120.0, 40.0, 400.0, PX, None),
+        number("minimeGround", "Abstand zum unteren Rand", MINIME_LOOK, 16.0, 0.0, 300.0, PX, None),
+        number("minimeShadow", "Schatten (Stärke)", MINIME_LOOK, 0.3, 0.0, 1.0, None, Some(0.05)),
+        choice("minimeDefault", "Bär ohne Wahl (alle aus)", MINIME_LOOK, "grizzly", &BEAR_IDS),
+        flag("minimeNames", "Namen zeigen", MINIME_LOOK, true),
+        number("minimeNameSize", "Name: Schriftgrösse", MINIME_LOOK, 15.0, 8.0, 48.0, PX, None),
+        number("waddleAngle", "Watscheln: Kippen (Grad)", MINIME_LOOK, 6.0, 0.0, 20.0, None, None),
+        number("waddleMs", "Watscheln: Dauer eines Schritts", MINIME_LOOK, 600.0, 200.0, 3000.0, MS, None),
+        choice("minimeEnter", "Erscheinen", MINIME_LOOK, "watscheln", &["watscheln", "plopp"]),
+        choice("minimeExit", "Verschwinden", MINIME_LOOK, "watscheln", &["watscheln", "plopp"]),
+        number("selfieWeight", "Selfie: Häufigkeit", MINIME_MOVES, 8.0, 0.0, 100.0, None, None),
+        number("selfieMs", "Selfie: Dauer", MINIME_MOVES, 2400.0, 300.0, 10_000.0, MS, None),
+        number("snackWeight", "Snack: Häufigkeit", MINIME_MOVES, 8.0, 0.0, 100.0, None, None),
+        number("snackMs", "Snack: Dauer", MINIME_MOVES, 3000.0, 300.0, 10_000.0, MS, None),
+        number("waveWeight", "Winken: Häufigkeit", MINIME_MOVES, 10.0, 0.0, 100.0, None, None),
+        number("waveMs", "Winken: Dauer", MINIME_MOVES, 1600.0, 300.0, 10_000.0, MS, None),
+        number("danceWeight", "Tanzen: Häufigkeit", MINIME_MOVES, 6.0, 0.0, 100.0, None, None),
+        number("danceMs", "Tanzen: Dauer", MINIME_MOVES, 2600.0, 300.0, 10_000.0, MS, None),
+        number("lookWeight", "Umschauen: Häufigkeit", MINIME_MOVES, 10.0, 0.0, 100.0, None, None),
+        number("lookMs", "Umschauen: Dauer", MINIME_MOVES, 2200.0, 300.0, 10_000.0, MS, None),
+        number("sleepWeight", "Schlafen: Häufigkeit", MINIME_MOVES, 4.0, 0.0, 100.0, None, None),
+        number("sleepMs", "Schlafen: Dauer", MINIME_MOVES, 7000.0, 1000.0, 60_000.0, MS, None),
+        text("sleepText", "Schlafen: aufsteigendes Zeichen", MINIME_MOVES, "z", Some(4)),
+        number("waveReactMs", "Reaktion auf Chat (Winken): Dauer", MINIME_MOVES, 1200.0, 200.0, 5000.0, MS, None),
+    ]);
+    fields
+}
 
 fn fields() -> Vec<SettingField> {
     let mut fields = Vec::new();
@@ -379,18 +435,20 @@ fn fields() -> Vec<SettingField> {
         number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12.0, 1.0, 30.0, None, None),
         number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10.0, 1.0, 30.0, None, None),
     ]);
+    fields.extend(minime_fields());
     fields.extend(info_fields());
     fields.extend(vec![
         choice("bearInfo", "Befehlsseite: Bär", INFO_GROUP, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
         choice("timeInfo", "Befehlsseite: Tageszeit", INFO_GROUP, "mittag", &["morgen", "mittag", "abend", "nacht"]),
     ]);
+    fields.extend(minime_variant_fields(&variants()));
     fields
 }
 
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
-    use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Music, Starting};
+    use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Minimes, Music, Starting};
     [
-        (BEARS, vec![Starting, Brb, Ending, Alerts, Chat, Cam, Music, Fx, Info]),
+        (BEARS, vec![Starting, Brb, Ending, Alerts, Chat, Cam, Music, Fx, Minimes, Info]),
         (WORLD, vec![Starting, Brb, Ending, Info]),
         (SCREENS, vec![Starting, Brb, Ending]),
         (ALERTS, vec![Alerts]),
@@ -400,6 +458,12 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (FX, vec![Fx]),
         (STINGER, vec![]),
         (BANNER, vec![]),
+        (MINIME_COMMANDS, vec![Minimes]),
+        (MINIME_RULES, vec![Minimes]),
+        (MINIME_MOTION, vec![Minimes]),
+        (MINIME_VARIANTS, vec![Minimes]),
+        (MINIME_LOOK, vec![Minimes]),
+        (MINIME_MOVES, vec![Minimes]),
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()
@@ -425,7 +489,7 @@ pub fn bears() -> Theme {
         name: "Bärenbande".to_owned(),
         fields: fields(),
         group_scenes: group_scenes(),
-        minime_variants: None,
+        minime_variants: Some(variants()),
         minime_teams: None,
     };
     Theme { schema, personalize }

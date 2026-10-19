@@ -1,0 +1,108 @@
+/* Minimes of the Bärenbande theme (scenes/Minimes.tsx), encapsulated under .theme-bears, loaded only with the scene.
+   Per minime the core sets --x, --move, --action-ms and --facing; the running action is the class action-<name>. The bear
+   of the character model looks left, so the flip mirrors it when the minime faces right. Keyframes are bears-minime-*. */
+
+.theme-bears .bb-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-bears .bb-minime {
+  position: absolute;
+  left: 0;
+  bottom: var(--minimeGround);
+  height: var(--minimeBearSize);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  transform: translateX(calc(var(--x) - 50%));
+  transition: transform var(--move) linear;
+}
+.theme-bears .bb-minime-name {
+  margin-bottom: var(--name-gap, 4px);
+  padding: var(--name-padding, 1px 10px);
+  background: var(--paper);
+  border: calc(var(--outlineWidth) * var(--name-line, 0.6px)) solid var(--outline);
+  border-radius: var(--name-round, 8px);
+  box-shadow: inset 0 calc(-1 * var(--name-band, 3px)) 0 var(--paperShade);
+  color: var(--textDark);
+  font-size: var(--minimeNameSize);
+  font-weight: 800;
+  white-space: nowrap;
+}
+.theme-bears .bb-minime-body { position: relative; flex: 1; min-height: 0; transform-origin: 50% 100%; }
+.theme-bears .bb-minime-flip { height: 100%; scale: calc(-1 * var(--facing)) 1; }
+.theme-bears .bb-minime-shadow {
+  width: var(--shadow-width, 70%);
+  height: var(--shadow-height, 10px);
+  margin-top: calc(-1 * var(--shadow-overlap, 6px));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--outline) calc(var(--minimeShadow) * 100%), transparent);
+}
+
+/* Walking is a waddle: tipping from side to side with a small bob per step */
+.theme-bears .action-walk .bb-minime-body { animation: bears-minime-waddle var(--waddleMs) ease-in-out infinite; }
+
+/* Own animations (the pose comes from minimeBears.ts) */
+.theme-bears .action-selfie .bb-minime-flash {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at var(--flash-at, 70% 15%), var(--paper), transparent 45%);
+  animation: bears-minime-flash var(--action-ms) ease-out both;
+}
+.theme-bears .action-snack .bb-minime-body { animation: bears-minime-chew var(--chew-ms, 500ms) ease-in-out infinite; }
+.theme-bears .action-wave .bb-minime-body { animation: bears-minime-bob var(--wave-bob-ms, 800ms) ease-in-out infinite; }
+.theme-bears .action-dance .bb-minime-body { animation: bears-minime-dance calc(var(--action-ms) / 4) ease-in-out 4; }
+.theme-bears .action-look .bb-minime-flip { animation: bears-minime-look var(--action-ms) step-end both; }
+.theme-bears .action-sleep .bb-minime-body { animation: bears-minime-doze var(--action-ms) ease-in-out both; }
+.theme-bears .bb-minime-zz {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: var(--textDark);
+  font-family: var(--titleFont), var(--font), sans-serif;
+  font-weight: 800;
+  animation: bears-minime-zz var(--zz-time, 2s) ease-out infinite;
+}
+
+/* Appearing and disappearing (settings): waddle in from the side or pop */
+.theme-bears .enter-watscheln .action-enter .bb-minime-body { animation: bears-minime-waddle-in var(--action-ms) ease-out both; }
+.theme-bears .enter-plopp .action-enter .bb-minime-body { animation: bears-minime-pop-in var(--action-ms) cubic-bezier(0.3, 1.6, 0.6, 1) both; }
+.theme-bears .action-enter .bb-minime-name { animation: bears-minime-fade-in var(--action-ms) ease-out both; }
+.theme-bears .exit-watscheln .action-exit .bb-minime-body { animation: bears-minime-waddle-out var(--action-ms) ease-in forwards; }
+.theme-bears .exit-plopp .action-exit .bb-minime-body { animation: bears-minime-pop-out var(--action-ms) ease-in forwards; }
+.theme-bears .action-exit .bb-minime-name, .theme-bears .action-exit .bb-minime-shadow { animation: bears-minime-fade-out var(--action-ms) ease-in forwards; }
+
+@keyframes bears-minime-waddle {
+  0%, 100% { rotate: calc(var(--waddleAngle) * -1deg); translate: 0 0; }
+  25%, 75% { translate: 0 calc(-1 * var(--waddle-bob, 4px)); }
+  50% { rotate: calc(var(--waddleAngle) * 1deg); translate: 0 0; }
+}
+@keyframes bears-minime-flash { 0%, 30% { opacity: 0; } 38% { opacity: 1; } 60%, 100% { opacity: 0; } }
+@keyframes bears-minime-chew { 0%, 100% { scale: 1 1; } 50% { scale: 1.02 0.97; } }
+@keyframes bears-minime-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 calc(-1 * var(--wave-bob, 4px)); } }
+@keyframes bears-minime-dance {
+  0%, 100% { rotate: 0deg; translate: 0 0; }
+  25% { rotate: calc(var(--dance-angle, 10) * -1deg); translate: 0 calc(-1 * var(--dance-hop, 12px)); }
+  50% { rotate: 0deg; translate: 0 0; }
+  75% { rotate: calc(var(--dance-angle, 10) * 1deg); translate: 0 calc(-1 * var(--dance-hop, 12px)); }
+}
+@keyframes bears-minime-look { 0%, 60% { scale: calc(-1 * var(--facing)) 1; } 30% { scale: var(--facing) 1; } }
+@keyframes bears-minime-doze { 0%, 100% { scale: 1 1; } 15%, 85% { scale: 1.04 0.94; } }
+@keyframes bears-minime-zz { from { opacity: 0; translate: 0 0; } 30% { opacity: 1; } to { opacity: 0; translate: var(--zz-x, 12px) calc(-1 * var(--zz-y, 36px)); } }
+@keyframes bears-minime-waddle-in {
+  from { translate: calc(var(--waddle-in, 140px) * var(--facing) * -1) 0; opacity: 0; rotate: calc(var(--waddleAngle) * -1deg); }
+  25% { opacity: 1; rotate: calc(var(--waddleAngle) * 1deg); }
+  50% { rotate: calc(var(--waddleAngle) * -1deg); }
+  75% { rotate: calc(var(--waddleAngle) * 1deg); }
+  to { translate: 0 0; opacity: 1; rotate: 0deg; }
+}
+@keyframes bears-minime-waddle-out {
+  from { translate: 0 0; opacity: 1; rotate: 0deg; }
+  25% { rotate: calc(var(--waddleAngle) * 1deg); }
+  50% { rotate: calc(var(--waddleAngle) * -1deg); }
+  75% { opacity: 1; rotate: calc(var(--waddleAngle) * 1deg); }
+  to { translate: calc(var(--waddle-in, 140px) * var(--facing)) 0; opacity: 0; rotate: 0deg; }
+}
+@keyframes bears-minime-pop-in { from { scale: 0; } to { scale: 1; } }
+@keyframes bears-minime-pop-out { 0% { scale: 1; } 30% { scale: 1.15; } 100% { scale: 0; opacity: 0; } }
+@keyframes bears-minime-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes bears-minime-fade-out { from { opacity: 1; } to { opacity: 0; } }

@@ -250,7 +250,7 @@ mitbringt; fehlende Szenen bleiben leer und das Dashboard markiert sie als nicht
 | `urlaub` | tropischer Strand mit Meer, Palmen und Holzschildern, Tageszeit je Szene | 16 Strandsachen, Typ per `!typ` |
 | `plantage` | Mangoplantage mit Baumreihen, Kisten und dem Streamer als Mangopflücker | Mango-Soldaten in fünf Rollen, mit Gefechten |
 | `koth` | Militär nach dem KOTH-Modus aus Arma: Hügel mit Funkmast, Lagekarte, Funkgeräte | Soldaten in Rollen und drei Fraktionen, mit Gefechten |
-| `bears` | drei Bärenbrüder (Eisbär, Grizzly, Panda) als Cartoon vor einer Aquarell-Welt; je Szene ein Bär oder der Bärenturm | keine |
+| `bears` | drei Bärenbrüder (Eisbär, Grizzly, Panda) als Cartoon vor einer Aquarell-Welt; je Szene ein Bär oder der Bärenturm | Eisbär, Grizzly, Panda per `!baer` |
 
 Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
 
@@ -278,6 +278,10 @@ Seestern, Krebs, Schnorchelmaske, Sonnenbrille, Cocktail, Strandtasche); die Nam
 Leerzeichen zählen nicht ("Eis am Stiel" = "eisamstiel"). Farben je Typ stehen in "Typen: Farben". Wer noch den
 alten Befehl `!frucht` als Standard gespeichert hat, bekommt `!typ`; gespeicherte Früchte werden beim Aufräumen zu
 einem erlaubten Typ.
+
+In `bears` wählen Chatter einen kleinen Bären: `!join panda` oder `!baer eisbär` (Eisbär, Grizzly oder Panda; Namen im
+Chat je Bär einstellbar, leer = Bär aus; ohne Angabe ein zufälliger erlaubter Bär). Die Bären watscheln und zeigen
+eigene Animationen: Selfie, Snack, Winken, Tanzen, Umschauen, Schlafen; schreibt der Chatter, winkt sein Bär.
 
 In `plantage` sind die Minimes Mango-Soldaten mit Helm und der Waffe ihrer Rolle: `!join medic` oder `!rolle sniper`
 wählt Sturmsoldat, Medic, MG-Schütze, Scharfschütze oder Grenadier (Namen im Chat je Rolle einstellbar, leer = Rolle
