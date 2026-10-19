@@ -114,6 +114,20 @@ des Schemas, `explosive` die Rollen, deren Schuss eine Explosion ist, `sounds` d
 `shownRole(actor, enabled, fallback, demoMedic)` (in `?demo` ist das erste Demo-Minime der Medic). Diese Aktionsnamen
 darf der eigene Katalog nicht nutzen (`COMBAT_ACTIONS`, geprüft).
 
+**Türme** (nur mit Typen, `src/core/minimeStack.ts`): Das Schema bindet `...minimeStackFields(set, defaults)` ein (Gruppe
+`MINIME_STACK`: an/aus, Abstand, gleichzeitige Türme, Typ je Stufe 1 bis 3 von unten, Stufe 3 auch "keiner", Tempo,
+Dauer je Schritt, Turm läuft, Ton beim Aufsteigen); mit `defaults` setzt das Theme seine Standards (z.B. Türme an und
+die Typen der Stufen), ohne sie sind Türme aus. Die Szene übergibt `useMinimes({ ..., stack: { variants, sound } })`
+(`variants` = Set des Schemas, `sound` = eingebauter Ton beim Aufsteigen, beides stabil). Kein Chatbefehl: Der Kern
+startet ab und zu einen Turm, wenn je Stufe ein freies Minime genau dieses Typs da ist (nicht im Gefecht, nicht
+erscheinend oder verschwindend), und setzt die Aktionen `gather` (bewegt wie `walk`, mit Hüpfen), `brace` (die Basis
+wartet), `climb` (Stufe für Stufe von unten), `stacked`, `stackWalk` (alle Stufen auf derselben Position) und
+`dismount` (von oben nach unten); das Theme zeigt sie über `action-<name>`. Am Minime steht `stack.level` (1 = unten),
+das Theme rechnet daraus die Höhe der Stufe (eigene Einstellung des Aussehens). Geht ein Minime oder wechselt es den
+Typ, steigen alle darüber sofort ab; bleibt nur die Basis, ist der Turm vorbei. Chat-Reaktionen und Gefechte lassen
+Türme in Ruhe, mit festen Plätzen gehen alle danach auf ihren Platz zurück. In `?demo` bekommen die ersten
+Demo-Minimes die Typen der Stufen. Diese Aktionsnamen darf der eigene Katalog nicht nutzen (`STACK_ACTIONS`, geprüft).
+
 **Feste Plätze**: Mit `minimePlacement = slots` (Kern-Feld in jedem Theme mit Minimes, Standard `random`) verteilt der
 Kern `minimeMax` Plätze gleichmässig zwischen den Rändern, mit Fraktionen je Fraktion einen eigenen Bereich (Reihenfolge
 der Fraktionen von links nach rechts). Neue Minimes bekommen den freien Platz mit dem grössten Abstand zu den belegten

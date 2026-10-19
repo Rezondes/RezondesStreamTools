@@ -13,8 +13,28 @@ export type MinimeAction = { name: string; durationMs: number; weight: number };
 // (weapon) from the start of the fight and whether the target was hit
 export type Combat = { role: "shooter" | "target" | "medic"; shooter: string; target: string; medic: string; variant: string | null; hit: boolean };
 
-// A minime with its running action. Position in px: fromX at the start, toX at the end (walk and approach move).
-// facing: 1 = looks right, -1 = left. leaving: is disappearing (exit) and drops out afterwards. combat: in a fight.
+// A tower (minimeStack.ts): its members from the bottom (logins) with the type of each level, when it started, where every
+// member stood then, where it stands and where it walks to, and the timing of its steps
+export type Tower = {
+  members: readonly string[];
+  types: readonly string[];
+  startedAt: number;
+  fromX: readonly number[];
+  baseX: number;
+  walkX: number;
+  speedPxPerS: number;
+  gatherEnd: number;
+  climbMs: number;
+  stackedMs: number;
+  walkMs: number;
+  dismountMs: number;
+};
+// Part of a minime in a tower: level 1 = bottom (the base)
+export type StackPart = { level: number; tower: Tower };
+
+// A minime with its running action. Position in px: fromX at the start, toX at the end (walk, approach, gather and
+// stackWalk move). facing: 1 = looks right, -1 = left. leaving: is disappearing (exit) and drops out afterwards.
+// combat: in a fight. stack: in a tower.
 export type MinimeActor = Minime & {
   action: string;
   startedAt: number;
@@ -24,6 +44,7 @@ export type MinimeActor = Minime & {
   facing: 1 | -1;
   leaving: boolean;
   combat?: Combat;
+  stack?: StackPart;
   slot?: number;
 };
 
@@ -32,7 +53,7 @@ export type MinimeActor = Minime & {
 export type MinimeSlots = { count: number; teams: readonly string[]; teamOf: (minime: Minime) => string | null };
 
 // Actions that move the figure from fromX to toX
-const MOVING = new Set(["walk", "approach"]);
+const MOVING = new Set(["walk", "approach", "gather", "stackWalk"]);
 
 // Everything the choice needs: movement from the settings, catalog of the theme, width of the scene in px, fixed places
 export type MinimeStage = { motion: MinimeMotion; catalog: readonly MinimeAction[]; widthPx: number; slots?: MinimeSlots };
@@ -153,7 +174,7 @@ export function resettle(actors: readonly MinimeActor[], stage: MinimeStage, now
   let changed = false;
   const settled: MinimeActor[] = [];
   for (const actor of actors) {
-    if (actor.slot === undefined || actor.leaving || actor.combat || actor.action === "walk") {
+    if (actor.slot === undefined || actor.leaving || actor.combat || actor.stack || actor.action === "walk") {
       settled.push(actor);
       continue;
     }
@@ -182,9 +203,9 @@ export function nextEnd(actors: readonly MinimeActor[]): number | null {
   return actors.length ? Math.min(...actors.map(actor => actor.startedAt + actor.durationMs)) : null;
 }
 
-// Reaction to chat: interrupts everything except appearing, disappearing and fights, at the current place
+// Reaction to chat: interrupts everything except appearing, disappearing, fights and towers, at the current place
 export function react(actor: MinimeActor, reaction: MinimeAction, now: number): MinimeActor {
-  if (actor.leaving || actor.combat || actor.action === "enter" || actor.action === "exit") return actor;
+  if (actor.leaving || actor.combat || actor.stack || actor.action === "enter" || actor.action === "exit") return actor;
   return at(actor, reaction.name, now, reaction.durationMs, positionAt(actor, now));
 }
 

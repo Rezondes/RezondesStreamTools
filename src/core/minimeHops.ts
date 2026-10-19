@@ -1,4 +1,4 @@
-// Hopping of the minimes while they move (walk, and approach in fights): how many hops fit into a movement and how long
+// Hopping of the minimes while they move (walk, approach in fights, gather in towers): how many hops fit into a movement and how long
 // one takes, so the figure lands exactly at the target. The theme puts .minime-hop around the body and .minime-hop-shadow
 // on the shadow (minimeHops.css) and sets the CSS variables from hopStyle; heights come from MINIME_HOP_FIELDS.
 // Pure, check: minimeHops.check.ts.

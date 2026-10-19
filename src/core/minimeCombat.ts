@@ -88,7 +88,7 @@ export function nextWake(actors: readonly MinimeActor[], fightAt: number | null)
   return fightAt === null ? end : Math.min(end, fightAt);
 }
 
-const ready = (actor: MinimeActor) => !actor.leaving && !actor.combat && actor.action !== "enter" && actor.action !== "exit";
+const ready = (actor: MinimeActor) => !actor.leaving && !actor.combat && !actor.stack && actor.action !== "enter" && actor.action !== "exit";
 const facingTo = (from: number, to: number): 1 | -1 => (to >= from ? 1 : -1);
 
 // The minime without its part in a fight

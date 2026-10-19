@@ -1,8 +1,8 @@
 /* Hopping of the minimes while they move (minimeHops.ts): the theme puts .minime-hop around the body of a figure and
    .minime-hop-shadow on its shadow and sets --hops and --hop-ms with hopStyle. Height and squash come from the hop fields
-   (--hopHeight, --hopSquash). A theme whose body has its own idle animation switches it off during walk and approach. */
-.action-walk .minime-hop, .action-approach .minime-hop { transform-origin: 50% 100%; animation: minime-hop var(--hop-ms) ease-in-out var(--hops); }
-.action-walk .minime-hop-shadow, .action-approach .minime-hop-shadow { animation: minime-hop-shadow var(--hop-ms) ease-in-out var(--hops); }
+   (--hopHeight, --hopSquash). A theme whose body has its own idle animation switches it off during walk, approach and gather. */
+.action-walk .minime-hop, .action-approach .minime-hop, .action-gather .minime-hop { transform-origin: 50% 100%; animation: minime-hop var(--hop-ms) ease-in-out var(--hops); }
+.action-walk .minime-hop-shadow, .action-approach .minime-hop-shadow, .action-gather .minime-hop-shadow { animation: minime-hop-shadow var(--hop-ms) ease-in-out var(--hops); }
 
 @keyframes minime-hop {
   0% { translate: 0 0; scale: calc(1 + var(--hopSquash)) calc(1 - var(--hopSquash)); }
