@@ -23,6 +23,7 @@ einzeln committbar. Regeln: [CODING-RULES.md](../CODING-RULES.md), Theme-Aufbau:
 | 10 | Fraktionen | Ein Theme kann Fraktionen einbinden; Overlays, Info-Seite, Befehlsseite und Demo zeigen die Fraktion jedes Minimes. | 9, RUST-PLAN 47 |
 | 11 | Gefechte | Ein Theme kann Gefechte einschalten: zufällige Schusswechsel mit Rollen, Getroffene liegen, bis ein Medic sie wiederbelebt. | RUST-PLAN 48 |
 | 12 | Feste Plätze | Ein Theme kann Minimes auf gleichmässig verteilte Plätze stellen statt an zufällige Stellen. | 11, RUST-PLAN 48 |
+| 13 | Türme | Ein Theme mit Minime-Typen kann Türme einschalten: je ein freies Minime pro Stufe stapelt sich zufällig, läuft als Turm und steigt ab. | RUST-PLAN 50 |
 
 Parallel möglich: 1 und 2 sofort; 3 und 4 nach 1 und 2.
 
@@ -786,3 +787,87 @@ Plätze neu berechnet; ein Minime mit einem Platz ausserhalb bekommt den nächst
 
 1. `minimeBehavior.check.ts`: `syncRoster` mit `slots` für 1, viele und `minimeMax` Minimes, mit und ohne Fraktionen,
    Fraktionswechsel, Rückweg des Medics (AC1 bis AC4).
+
+---
+
+## Package 13: Türme der Minimes
+
+**Ziel:** Ein Theme mit Minime-Typen kann Türme einschalten: Sind von jedem Typ einer Turm-Reihenfolge freie Minimes
+da, stapeln sich zufällig je eines davon übereinander, laufen eine Weile als Turm und steigen wieder ab.
+
+**Abhängigkeiten:** [RUST-PLAN.md](../RUST-PLAN.md) Package 50 (Felder)
+
+**Betroffene Dateien:** `src/core/minimeStack.ts` (neu, rein) und `src/core/minimeStack.check.ts` (neu),
+`src/core/minimeBehavior.ts` (`MinimeActor.stack`, `positionAt`, `react`, `syncRoster`), `src/core/hooks/useMinimes.ts`,
+`src/core/demo.ts`, `THEMES.md`.
+
+### Kontext
+
+Gefechte (Package 11) zeigen, wie mehrere Minimes zugleich geplant werden: ein reiner Planer (`minimeCombat.ts`) mit
+eigenem Zeitpunkt (`nextFightAt`), eingehängt in `advance`, `nextEnd` und den einen Timer des Hooks; `react()` lässt
+Beteiligte in Ruhe. Ein Turm braucht dasselbe Muster, aber ohne Rollen und Schaden: Minimes verschiedener Typen
+bewegen sich zu einem gemeinsamen Ort, stehen übereinander und bewegen sich gemeinsam.
+
+### Design
+
+- **Reihenfolge:** Die Felder nennen je Stufe von unten nach oben einen Typ (`minimeStackLevel1` ... `minimeStackLevel3`,
+  Auswahl aus den Typen des Themes, Standards vom Theme, RUST-PLAN 50). Eine Stufe "keiner" beendet den Turm darunter,
+  mindestens zwei Stufen. Ein Turm beginnt nur, wenn für jede Stufe ein freies Minime genau dieses Typs da ist (nicht
+  erscheinend, verschwindend, im Gefecht oder schon im Turm); sonst wird der nächste Zeitpunkt neu gewürfelt.
+- **Zufall statt Befehl:** Kein Chatbefehl. Zeitpunkt wie bei Gefechten: Abstand min/max aus den Feldern, `nextStackAt`
+  im Zustand des Hooks, `nextEnd()` nimmt das Minimum. Höchstens so viele Türme gleichzeitig wie eingestellt.
+- **Zustand am Minime:** `stack: { base: login; level: number; step } | null`. Solange `stack` gesetzt ist, wählt
+  `advance()` den nächsten Schritt aus `minimeStack.ts` statt `nextAction()`.
+- **Ablauf:**
+  1. `gather`: die oberen Stufen bewegen sich zum untersten Minime (bewegt wie `walk`, mit Hüpfen, wenn das Theme hüpft;
+     Tempo aus den Feldern). Das unterste wartet mit `brace`.
+  2. `climb`: von unten nach oben steigt je Stufe eins auf (Dauer je Stufe aus den Feldern).
+  3. `stacked`: der Turm steht (Dauer aus den Feldern); mit "Turm läuft" an folgt `stackWalk`: das unterste Minime
+     läuft, die oberen tragen dieselbe Position (`positionAt` liest bei Stufen über 1 die Position der Basis).
+  4. `dismount`: von oben nach unten steigt je Stufe eins ab und landet neben der Basis; danach `stack = null` für alle.
+- **Unterbrechungen:** `react()` lässt Minimes im Turm in Ruhe. Verschwindet ein Minime oder wechselt es den Typ,
+  steigen alle darüber sofort ab (`dismount`), die darunter stehen weiter, bis nur noch eine Stufe übrig ist; dann
+  endet der Turm.
+- **Mit Gefechten und festen Plätzen:** Minimes im Turm sind für Gefechte nicht frei und umgekehrt. Mit `slots` laufen
+  alle nach dem Abbau auf ihren Platz zurück (wie der Medic).
+- **Anzeige:** Das Theme zeigt die Schritte über `action-<name>` und die Stufe als CSS-Variable `--stack-level`; die
+  Höhe einer Stufe ist eine Einstellung des Themes (Aussehen), nicht des Kerns.
+- **Reservierte Namen:** `gather`, `brace`, `climb`, `stacked`, `stackWalk`, `dismount` (`STACK_ACTIONS`); ein
+  Theme-Katalog darf sie nicht nutzen (Check gegen die Kataloge aller Themes, wie bei `COMBAT_ACTIONS`).
+- **Demo:** Mit Türmen bekommen die ersten Demo-Minimes die Typen der Stufen, damit `?demo` Türme zeigt.
+
+### Acceptance Criteria
+
+- [ ] AC1: Ein Turm beginnt nur, wenn je Stufe ein freies Minime genau des eingestellten Typs da ist; nie mehr Türme
+  gleichzeitig als eingestellt; ein Minime steht in höchstens einem Turm.
+- [ ] AC2: Ablauf `gather`, `climb` (unten nach oben), `stacked`, optional `stackWalk`, `dismount` (oben nach unten);
+  danach sind alle Beteiligten frei.
+- [ ] AC3: Während `stackWalk` haben alle Stufen dieselbe x-Position wie die Basis.
+- [ ] AC4: Chat-Reaktionen unterbrechen keinen Turm; ein verschwindendes Minime lässt die Stufen darüber absteigen.
+- [ ] AC5: Der nächste Turm kommt über denselben Timer wie die Aktionsenden, ohne Frame-Schleife.
+- [ ] AC6: Ausgeschaltet, mit weniger als zwei Stufen oder in Themes ohne Türme ändert sich nichts.
+- [ ] AC7: Gefechte und Türme nehmen nie dasselbe Minime; mit `slots` kehren alle auf ihren Platz zurück.
+
+### Tests (TDD)
+
+Reihenfolge: Test schreiben, rot, minimal implementieren, grün, refactoren.
+
+1. `src/core/minimeStack.check.ts > "starts only with one free minime per level"` (AC1)
+   - Gegeben: Stufen `["a", "b", "c"]`, Minimes vom Typ a, a, b (kein c); danach zusätzlich ein c im Gefecht; danach ein
+     freies c
+   - Erwartet: kein Turm, kein Turm, ein Turm mit genau je einem a, b, c; Höchstzahl 1 verhindert einen zweiten
+2. `src/core/minimeStack.check.ts > "runs through all steps"` (AC2, AC3) mit festem `now` und `random`: Schritte in der
+   Reihenfolge, Stufen beim Klettern von unten nach oben, beim Absteigen von oben nach unten; `positionAt` der Stufe 3
+   gleich der Basis während `stackWalk`.
+3. `src/core/minimeStack.check.ts > "leaving minime breaks the tower above it"` (AC4): Stufe 2 verschwindet, Stufe 3
+   steigt ab, die Basis allein beendet den Turm.
+4. `src/core/minimeBehavior.check.ts > "react leaves stacked minimes alone"`, `"nextEnd includes nextStackAt"` (AC4, AC5).
+5. `src/core/minimeStack.check.ts > "no tower when off or below two levels"` (AC6) und `"combat and stack never share"`
+   (AC7), Rückweg mit `slots` (AC7).
+6. `src/core/minimeStack.check.ts > "reserved action names"`: kein Katalog eines Themes nutzt `STACK_ACTIONS`.
+
+Testbefehl: `npm test`
+
+### Out of Scope
+
+- Aussehen der Türme (Theme-Pläne). Türme ohne Typen (Farb-Themes).

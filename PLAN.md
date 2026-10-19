@@ -18,10 +18,12 @@ Kern-Feature und für jedes Theme. Regeln für die Pläne:
 | Plan | Inhalt |
 |------|--------|
 | [RUST-PLAN.md](RUST-PLAN.md) | Rust-Server (`server-rs/`) |
-| [plans/PLAN-MINIMES.md](plans/PLAN-MINIMES.md) | Kern-Feature Minimes: Regeln, Szene, Server, Verhalten (erledigt); TS-Spiegel entfernen, Hüpfen, Fraktionen, Gefechte, feste Plätze (geplant) |
+| [plans/PLAN-MINIMES.md](plans/PLAN-MINIMES.md) | Kern-Feature Minimes: Regeln, Szene, Server, Verhalten (erledigt); TS-Spiegel entfernen, Hüpfen, Fraktionen, Gefechte, feste Plätze, Türme (geplant) |
+| [plans/PLAN-SCENES.md](plans/PLAN-SCENES.md) | Kern: Szenen und Clips ohne Vererbung vom Standard-Theme |
 | [src/themes/urlaub/docs/PLAN-URLAUB.md](src/themes/urlaub/docs/PLAN-URLAUB.md) | Theme Urlaub (früher Südfrucht) |
 | [src/themes/plantage/docs/PLAN-PLANTAGE.md](src/themes/plantage/docs/PLAN-PLANTAGE.md) | Theme Südfrucht-Plantage |
 | [src/themes/koth/docs/PLAN-KOTH.md](src/themes/koth/docs/PLAN-KOTH.md) | Theme King of the Hill |
+| [src/themes/bears/docs/PLAN-BEARS.md](src/themes/bears/docs/PLAN-BEARS.md) | Theme Bärenbande |
 
 Pläne eines Themes liegen im Ordner `docs` des Themes (`src/themes/<id>/docs/PLAN-<ID>.md`, daneben `DESIGN-<ID>.md`),
 Kern-Pläne in `plans/`.

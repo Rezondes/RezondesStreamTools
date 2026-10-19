@@ -123,9 +123,10 @@ Abhängigkeiten: `rst-server` -> `rst-app` + `rst-infra`; `rst-infra` -> `rst-ap
 | 47 | Fraktionen der Minimes | Ein Theme kann Fraktionen anbieten; Chatter wählen eine per Befehl, der Server speichert sie. | - |
 | 48 | Neue Minime-Felder im Schema | Die Felder für Gefechte und feste Plätze der Minimes stehen im Rust- und TS-Schema und werden geprüft gespeichert. | 47 |
 | 49 | Alte Standardwerte ersetzen | Ändert ein Theme einen Standardwert, bekommen Streamer mit dem alten Standard beim Lesen den neuen. | - |
+| 50 | Turm-Felder der Minimes | Ein Theme mit Minime-Typen kann die Felder für Türme einbinden, Rust und TS gleich, geprüft gespeichert. | 48 |
 
 Parallel möglich: 3 neben 1 und 2; nach 5 die Packages 6, 7, 11, 14, 15, 16, 17 untereinander; 9 und 10 nach 8;
-18 neben Phase 1; 33 bis 36 nach 32 untereinander; 37 bis 42 nach ihren Abhängigkeiten untereinander; 47 vor 48, 49 unabhängig.
+18 neben Phase 1; 33 bis 36 nach 32 untereinander; 37 bis 42 nach ihren Abhängigkeiten untereinander; 47 vor 48, 49 unabhängig, 50 nach 48.
 
 Phase 8 sammelt Server-Features, die ein Theme braucht. Braucht ein Theme ein neues Feature mit Rust-Anteil, steht
 der Rust-Teil hier als eigenes Package; Kern- und Theme-Pläne verweisen darauf. Neue Felder entstehen hier in
@@ -1852,6 +1853,46 @@ stehen. Die Übernahme läuft beim Lesen wie `current_id`, also auch für `rst i
 
 1. `rst-domain settings::file::tests::old_default_is_replaced`, `own_value_stays`, `old_default_under_old_id` mit einer
    Test-Tabelle (`starter -> standard` als alte ID) (AC1 bis AC3)
+
+Testbefehl: `npm run verify`
+
+---
+
+## Package 50: Turm-Felder der Minimes
+
+**Ziel:** Ein Theme mit Minime-Typen kann die Felder für Türme einbinden; sie stehen im Rust- und TS-Schema gleich und
+werden geprüft gespeichert.
+
+**Abhängigkeiten:** Package 48 (Kern-Felder mit Theme-Standards)
+
+**Betroffene Dateien:**
+- `server-rs/crates/rst-domain/src/themes/minime_fields.rs` (neu `minime_stack_fields(variants, defaults)`, opt-in)
+- TS-Gegenstück: `src/core/minimeFields.ts` (`minimeStackFields(set, defaults)`, Gruppe `MINIME_STACK = "Minimes: Türme"`),
+  `src/themes/schemaAudit.ts` (Kern-Schlüssel), Fixture `minime-features.json`, `src/generated/`
+
+### Kontext
+
+Türme sind reine Logik im Overlay ([plans/PLAN-MINIMES.md](plans/PLAN-MINIMES.md) Package 13); der Server speichert
+keinen Turm. Er braucht nur die Felder, damit Werte geprüft gespeichert und im Formular gezeigt werden. Wie die
+Gefechts-Felder sind sie opt-in: nur ein Theme, das sie einbindet, hat sie.
+
+### Acceptance Criteria
+
+- [ ] AC1: Ein Theme, das Türme einbindet, hat die Felder: an/aus, Abstand min/max zwischen zwei Türmen,
+  gleichzeitige Türme, je Stufe 1 bis 3 der Typ (Auswahl aus den Typen des Themes plus "keiner" für Stufe 3),
+  Tempo beim Zusammenlaufen, Dauer je Stufe beim Klettern und Absteigen, Dauer des Stehens, "Turm läuft" an/aus,
+  Dauer und Strecke des Laufens als Turm, und einen Ton beim Aufsteigen (an/aus, `SoundValue` wie bei den Alerts).
+- [ ] AC2: Das Theme setzt die Standards (z. B. die Typen der Stufen); ohne Angabe gelten Kern-Standards (Türme aus).
+- [ ] AC3: Werte ausserhalb der Grenzen und Typen, die das Theme nicht hat, werden abgelehnt; Themes ohne Türme haben
+  die Felder nicht.
+- [ ] AC4: TS- und Rust-Felder sind gleich (Theme-Fixtures und `minime-features.json`).
+
+### Tests (TDD)
+
+1. `rst-domain themes::minime_fields::tests::stack_fields_are_opt_in` (AC1, AC3)
+2. `rst-domain themes::minime_fields::tests::stack_levels_offer_only_theme_variants` (AC3)
+3. `rst-domain themes::minime_fields::tests::theme_sets_stack_defaults` (AC2)
+4. Fixture-Vergleich (AC4)
 
 Testbefehl: `npm run verify`
 
