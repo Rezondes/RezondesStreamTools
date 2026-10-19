@@ -2,7 +2,7 @@
 // the panda has its patches, the size order of the bears, the tower and the open mouth of the loud bear.
 // Runs with npm test.
 import assert from "node:assert/strict";
-import { BEAR_CHOICES, BEAR_IDS, BEARS, CLOSED_MOUTH, dot, isBearChoice, OPEN_MOUTH, partsFor, POSES, TOWER_LEVELS } from "./bears.ts";
+import { BEAR_CHOICES, BEAR_IDS, BEARS, CLOSED_MOUTH, dot, isBearChoice, OPEN_MOUTH, partsFor, POSE_MODELS, POSES, TOWER_LEVELS } from "./bears.ts";
 
 // Every bear has every pose of the full-screen scenes
 assert.deepEqual(BEAR_IDS, ["eisbaer", "grizzly", "panda"]);
@@ -19,6 +19,19 @@ for (const [name, pose] of Object.entries(POSES)) {
   assert.equal(pose.parts.filter(part => part.kind === "eye").length, 2, `${name}: two eyes`);
   for (const path of paths) assert.match(path, /^M-?\d/, `${name}: path ${path.slice(0, 20)}`);
 }
+
+// One character model: no pose has more than one near and one far arm (no third arm), a raised arm replaces the hanging
+// one, and every arm of a pose is drawn (its lines are among the parts of the pose)
+for (const [name, model] of Object.entries(POSE_MODELS)) {
+  const sides = model.arms.map(arm => arm.side);
+  assert.equal(new Set(sides).size, sides.length, `${name}: two arms on one side`);
+  assert.ok(model.arms.length <= 2, `${name}: more than two arms`);
+  for (const arm of model.arms) for (const part of arm.parts) assert.ok(POSES[name as keyof typeof POSES].parts.includes(part), `${name}: ${arm.name}`);
+}
+assert.deepEqual(POSE_MODELS.wave.arms.map(arm => arm.name), ["nearRaised"]);
+assert.deepEqual(POSE_MODELS.selfie.arms.map(arm => arm.name), ["nearRaised"]);
+// The raised front leg of the tower top replaces one leg on the ground
+assert.notEqual(POSE_MODELS.fourWave.body.silhouette, POSE_MODELS.four.body.silhouette);
 
 // Size order: Eisbär tallest, then Grizzly, then Panda; the panda is the widest and the only one with patches
 assert.ok(BEARS.eisbaer.scaleY > BEARS.grizzly.scaleY && BEARS.grizzly.scaleY > BEARS.panda.scaleY);
