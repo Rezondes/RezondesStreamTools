@@ -33,6 +33,7 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/themes/urlaub/tones.ts": "Web Audio output",
   "src/themes/plantage/tones.ts": "Web Audio output",
   "src/themes/koth/tones.ts": "Web Audio output",
+  "src/themes/bears/tones.ts": "Web Audio output",
   "src/dashboard/api.ts": "network client of the dashboard",
 };
 

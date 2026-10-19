@@ -3,19 +3,29 @@
 // per scene. The only place of the theme with fixed colors, texts and numbers. BearsValues is the type of the resolved
 // values (useBears).
 import { choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
+import { alertSoundFields } from "../../core/alerts/alerts.ts";
+import { badgeFields } from "../../core/chat/chat.ts";
+import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
-import { BEAR_CHOICES } from "./bears.ts";
+import { BEAR_CHOICES, BEAR_IDS } from "./bears.ts";
+import { ICON_NAMES } from "./icons.ts";
 
 export const FONTS = ["Nunito", "Fredoka", "Baloo 2", "Inter", "DM Sans"] as const;
 const TITLE_FONTS = ["Sniglet", "Fredoka", "Baloo 2", "Nunito"] as const;
 const TIMES = ["morgen", "mittag", "abend", "nacht"] as const;
 const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"] as const;
 const SIDES = ["links", "rechts"] as const;
+const MOTIONS = ["watscheln", "plopp", "gleiten", "blenden", "keins"] as const;
 
 const GENERAL = "Allgemein";
 const BEARS = "Bären";
 const WORLD = "Welt";
 const SCREENS = "Starting, BRB, Ending";
+const ALERTS = "Alerts";
+const CHAT = "Chat";
+const CAM = "Kamera-Rahmen";
+const MUSIC = "Musik";
+const FX = "Effekte";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "Bärenbande", 40),
@@ -130,6 +140,106 @@ const FIELDS = [
   number("tickerSpeed", "Ticker: Zeit pro Durchlauf", SCREENS, 30, 5, 300, "s"),
   choice("powerOn", "Einschalten", SCREENS, "aquarell", ["aquarell", "blenden", "keins"]),
   number("powerOnDuration", "Einschalten (Dauer)", SCREENS, 1600, 0, 10000, "ms"),
+
+  choice("bearAlerts", "Bär", ALERTS, "grizzly", BEAR_CHOICES),
+  number("alertBearSize", "Bär: Grösse (Höhe)", ALERTS, 300, 80, 800, "px"),
+  text("followTag", "Follow: Kopfzeile", ALERTS, "Neuer Follower"),
+  text("followLine", "Follow: Zeile", ALERTS, "{user} gehört jetzt zur Bande!"),
+  choice("followIcon", "Follow: Symbol", ALERTS, "pfote", ICON_NAMES),
+  text("subTag", "Sub: Kopfzeile", ALERTS, "Neues Abo"),
+  text("subLine", "Sub: Zeile", ALERTS, "{user} zieht mit in die Höhle!"),
+  choice("subIcon", "Sub: Symbol", ALERTS, "herz", ICON_NAMES),
+  text("resubTag", "Resub: Kopfzeile", ALERTS, "Abo x{amount}"),
+  text("resubLine", "Resub: Zeile", ALERTS, "{user} ist seit {amount} Monaten dabei!"),
+  choice("resubIcon", "Resub: Symbol", ALERTS, "honig", ICON_NAMES),
+  text("giftTag", "Gift: Kopfzeile", ALERTS, "Abos verschenkt"),
+  text("giftLine", "Gift: Zeile", ALERTS, "{user} verschenkt {amount} Abos!"),
+  choice("giftIcon", "Gift: Symbol", ALERTS, "stern", ICON_NAMES),
+  text("raidTag", "Raid: Kopfzeile", ALERTS, "Raid"),
+  text("raidLine", "Raid: Zeile", ALERTS, "{user} kommt mit {amount} Gästen zu Besuch!"),
+  choice("raidIcon", "Raid: Symbol", ALERTS, "blatt", ICON_NAMES),
+  text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} Bits"),
+  text("cheerLine", "Bits: Zeile", ALERTS, "{user} spendiert {amount} Bits für Snacks!"),
+  choice("cheerIcon", "Bits: Symbol", ALERTS, "fisch", ICON_NAMES),
+  text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "Kanalpunkte"),
+  text("redeemLine", "Kanalpunkte: Zeile", ALERTS, "{user} löst {detail} ein."),
+  choice("redeemIcon", "Kanalpunkte: Symbol", ALERTS, "handy", ICON_NAMES),
+  text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "Hype Train"),
+  text("hypeBeginLine", "Hype Train: Start", ALERTS, "Der Hype Train rollt los!"),
+  text("hypeEndLine", "Hype Train: Ende", ALERTS, "Hype Train Level {amount} geschafft!"),
+  choice("hypeIcon", "Hype Train: Symbol", ALERTS, "muetze", ICON_NAMES),
+  flag("alertQuote", "Nachricht zeigen", ALERTS, true),
+  text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\""),
+  number("alertDuration", "Dauer", ALERTS, 7000, 2000, 60000, "ms"),
+  number("alertScale", "Grösse", ALERTS, 1, 0.3, 2, undefined, 0.05),
+  number("alertTop", "Abstand oben", ALERTS, 80, 0, 1000, "px"),
+  choice("alertAlign", "Position", ALERTS, "center", ["left", "center", "right"]),
+  number("alertWidth", "Breite", ALERTS, 760, 300, 1800, "px"),
+  choice("alertIn", "Einblenden", ALERTS, "plopp", MOTIONS),
+  choice("alertOut", "Ausblenden", ALERTS, "blenden", MOTIONS),
+  flag("alertTimer", "Restzeit als Balken", ALERTS, true),
+  flag("confetti", "Konfetti aus Pfoten und Blättern", ALERTS, true),
+  number("confettiCount", "Anzahl Konfetti", ALERTS, 14, 0, 40),
+  flag("alertSound", "Töne", ALERTS, true),
+  ...alertSoundFields(ALERTS),
+
+  choice("bearChat", "Bär", CHAT, "panda", BEAR_IDS),
+  choice("chatStyle", "Stil", CHAT, "handy", ["handy", "zettel", "blasen"]),
+  ...badgeFields(CHAT),
+  flag("chatBadges", "Badges zeigen", CHAT, true),
+  number("chatFontSize", "Schriftgrösse", CHAT, 20, 8, 60, "px"),
+  number("emoteSize", "Emote-Grösse", CHAT, 28, 8, 120, "px"),
+  number("chatFade", "Ausblenden nach (0 = nie)", CHAT, 30, 0, 3600, "s"),
+  number("chatMax", "Max. Nachrichten", CHAT, 8, 1, 100),
+  choice("chatAlign", "Neue Nachrichten", CHAT, "bottom", ["bottom", "top"]),
+  number("chatGap", "Abstand", CHAT, 10, 0, 40, "px"),
+  number("chatBearSize", "Bär: Grösse (Höhe)", CHAT, 240, 60, 800, "px"),
+  number("chatPhoneWidth", "Handy: Breite", CHAT, 440, 200, 1200, "px"),
+
+  choice("bearCam", "Bär", CAM, "grizzly", BEAR_CHOICES),
+  choice("camStyle", "Rahmen", CAM, "papier", ["papier", "holz", "polaroid"]),
+  choice("camBearSpot", "Bär: Platz", CAM, "rechts", ["links", "rechts", "oben"]),
+  number("camBearSize", "Bär: Grösse (Höhe)", CAM, 260, 60, 800, "px"),
+  number("camFrameWidth", "Rahmenbreite", CAM, 18, 2, 60, "px"),
+  number("camRadius", "Eckenradius", CAM, 22, 0, 80, "px"),
+  text("camLabel", "Namensschild ({channel})", CAM, "{channel}"),
+  flag("camLive", "Live-Anzeige", CAM, true),
+  text("camLiveText", "Live-Text", CAM, "LIVE"),
+
+  choice("bearMusic", "Bär", MUSIC, "panda", BEAR_CHOICES),
+  choice("musicStyle", "Stil", MUSIC, "kopfhoerer", ["kopfhoerer", "kofferradio", "schlicht"]),
+  text("musicHeadPlaying", "Kopfzeile bei Wiedergabe", MUSIC, "Läuft gerade"),
+  text("musicHeadPaused", "Kopfzeile bei Pause", MUSIC, "Pause"),
+  text("musicIdleTitle", "Titel ohne Wiedergabe", MUSIC, "Keine Musik"),
+  text("musicIdleArtist", "Interpret ohne Wiedergabe", MUSIC, "Nur Vogelgezwitscher"),
+  flag("musicAlbum", "Album zeigen", MUSIC, false),
+  flag("musicProgress", "Fortschritt zeigen", MUSIC, true),
+  flag("equalizer", "Equalizer", MUSIC, true),
+  number("equalizerBars", "Equalizer: Balken", MUSIC, 7, 1, 16),
+  choice("coverShape", "Cover-Form", MUSIC, "eckig", ["rund", "eckig"]),
+  number("coverSize", "Cover-Grösse", MUSIC, 120, 40, 400, "px"),
+  number("musicTitleSize", "Titelgrösse", MUSIC, 26, 10, 80, "px"),
+  flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+  flag("musicMarquee", "Lange Titel laufen durch", MUSIC, true),
+  number("musicMarqueeSpeed", "Lange Titel: Lauftempo (px pro Sekunde)", MUSIC, 40, 5, 400),
+  number("musicBearSize", "Bär: Grösse (Höhe)", MUSIC, 220, 60, 800, "px"),
+  number("bopStrength", "Bär: Wippen im Takt (Grad)", MUSIC, 4, 0, 20),
+
+  choice("bearFx", "Bär", FX, "grizzly", BEAR_IDS),
+  choice("fxStyle", "Text", FX, "schild", ["schild", "blase"]),
+  number("fxBearSize", "Bär: Grösse (Höhe)", FX, 240, 60, 800, "px"),
+  number("fxDuration", "Standarddauer", FX, 4, 0.5, 120, "s", 0.5),
+  number("fxSize", "Standardgrösse", FX, 360, 20, 1920, "px"),
+  number("fxTextSize", "Textgrösse", FX, 40, 8, 300, "px"),
+  number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20, 0, 50, "%"),
+  number("fxMax", "Max. gleichzeitig", FX, 8, 1, 30),
+  choice("fxIn", "Einblenden", FX, "plopp", MOTIONS),
+  choice("fxOut", "Ausblenden", FX, "blenden", MOTIONS),
+
+  // Commands page (public, /s/<login>/): shared texts from the core, plus the look
+  ...INFO_FIELDS,
+  choice("bearInfo", "Befehlsseite: Bär", INFO_GROUP, "grizzly", BEAR_CHOICES),
+  choice("timeInfo", "Befehlsseite: Tageszeit", INFO_GROUP, "mittag", TIMES),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -137,9 +247,15 @@ export type { BearsValues } from "../../generated/themes/bears.ts";
 
 const SCREEN_SCENES = ["starting", "brb", "ending"] as const;
 const GROUP_SCENES = {
-  [BEARS]: SCREEN_SCENES,
-  [WORLD]: SCREEN_SCENES,
+  [BEARS]: [...SCREEN_SCENES, "alerts", "chat", "cam", "music", "fx", "info"],
+  [WORLD]: [...SCREEN_SCENES, "info"],
   [SCREENS]: SCREEN_SCENES,
+  [ALERTS]: ["alerts"],
+  [CHAT]: ["chat"],
+  [CAM]: ["cam"],
+  [MUSIC]: ["music"],
+  [FX]: ["fx"],
+  [INFO_GROUP]: ["info"],
 } as const;
 
 const capital = (login: string) => login[0].toUpperCase() + login.slice(1);

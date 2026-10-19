@@ -11,20 +11,29 @@ use crate::identity::values::Login;
 use crate::settings::field::{
     SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, lines, number, text,
 };
+use crate::themes::core_fields::{alert_sound_fields, badge_fields};
+use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
 const S: Option<Unit> = Some(Unit::S);
+const PERCENT: Option<Unit> = Some(Unit::Percent);
 
 const GENERAL: &str = "Allgemein";
 const BEARS: &str = "Bären";
 const WORLD: &str = "Welt";
 const SCREENS: &str = "Starting, BRB, Ending";
+const ALERTS: &str = "Alerts";
+const CHAT: &str = "Chat";
+const CAM: &str = "Kamera-Rahmen";
+const MUSIC: &str = "Musik";
+const FX: &str = "Effekte";
 
 fn fields() -> Vec<SettingField> {
-    vec![
+    let mut fields = Vec::new();
+    fields.extend(vec![
         text("channelName", "Kanal-Name", GENERAL, "Bärenbande", Some(40)),
         font("font", "Schrift", GENERAL, "Nunito", &["Nunito", "Fredoka", "Baloo 2", "Inter", "DM Sans"]),
         font("titleFont", "Titelschrift", GENERAL, "Sniglet", &["Sniglet", "Fredoka", "Baloo 2", "Nunito"]),
@@ -202,15 +211,173 @@ fn fields() -> Vec<SettingField> {
         number("tickerSpeed", "Ticker: Zeit pro Durchlauf", SCREENS, 30.0, 5.0, 300.0, S, None),
         choice("powerOn", "Einschalten", SCREENS, "aquarell", &["aquarell", "blenden", "keins"]),
         number("powerOnDuration", "Einschalten (Dauer)", SCREENS, 1600.0, 0.0, 10000.0, MS, None),
-    ]
+        choice("bearAlerts", "Bär", ALERTS, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
+        number("alertBearSize", "Bär: Grösse (Höhe)", ALERTS, 300.0, 80.0, 800.0, PX, None),
+        text("followTag", "Follow: Kopfzeile", ALERTS, "Neuer Follower", None),
+        text("followLine", "Follow: Zeile", ALERTS, "{user} gehört jetzt zur Bande!", None),
+        choice(
+            "followIcon",
+            "Follow: Symbol",
+            ALERTS,
+            "pfote",
+            &["pfote", "herz", "stern", "fisch", "honig", "handy", "muetze", "blatt"],
+        ),
+        text("subTag", "Sub: Kopfzeile", ALERTS, "Neues Abo", None),
+        text("subLine", "Sub: Zeile", ALERTS, "{user} zieht mit in die Höhle!", None),
+        choice(
+            "subIcon",
+            "Sub: Symbol",
+            ALERTS,
+            "herz",
+            &["pfote", "herz", "stern", "fisch", "honig", "handy", "muetze", "blatt"],
+        ),
+        text("resubTag", "Resub: Kopfzeile", ALERTS, "Abo x{amount}", None),
+        text("resubLine", "Resub: Zeile", ALERTS, "{user} ist seit {amount} Monaten dabei!", None),
+        choice(
+            "resubIcon",
+            "Resub: Symbol",
+            ALERTS,
+            "honig",
+            &["pfote", "herz", "stern", "fisch", "honig", "handy", "muetze", "blatt"],
+        ),
+        text("giftTag", "Gift: Kopfzeile", ALERTS, "Abos verschenkt", None),
+        text("giftLine", "Gift: Zeile", ALERTS, "{user} verschenkt {amount} Abos!", None),
+        choice(
+            "giftIcon",
+            "Gift: Symbol",
+            ALERTS,
+            "stern",
+            &["pfote", "herz", "stern", "fisch", "honig", "handy", "muetze", "blatt"],
+        ),
+        text("raidTag", "Raid: Kopfzeile", ALERTS, "Raid", None),
+        text("raidLine", "Raid: Zeile", ALERTS, "{user} kommt mit {amount} Gästen zu Besuch!", None),
+        choice(
+            "raidIcon",
+            "Raid: Symbol",
+            ALERTS,
+            "blatt",
+            &["pfote", "herz", "stern", "fisch", "honig", "handy", "muetze", "blatt"],
+        ),
+        text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} Bits", None),
+        text("cheerLine", "Bits: Zeile", ALERTS, "{user} spendiert {amount} Bits für Snacks!", None),
+        choice(
+            "cheerIcon",
+            "Bits: Symbol",
+            ALERTS,
+            "fisch",
+            &["pfote", "herz", "stern", "fisch", "honig", "handy", "muetze", "blatt"],
+        ),
+        text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "Kanalpunkte", None),
+        text("redeemLine", "Kanalpunkte: Zeile", ALERTS, "{user} löst {detail} ein.", None),
+        choice(
+            "redeemIcon",
+            "Kanalpunkte: Symbol",
+            ALERTS,
+            "handy",
+            &["pfote", "herz", "stern", "fisch", "honig", "handy", "muetze", "blatt"],
+        ),
+        text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "Hype Train", None),
+        text("hypeBeginLine", "Hype Train: Start", ALERTS, "Der Hype Train rollt los!", None),
+        text("hypeEndLine", "Hype Train: Ende", ALERTS, "Hype Train Level {amount} geschafft!", None),
+        choice(
+            "hypeIcon",
+            "Hype Train: Symbol",
+            ALERTS,
+            "muetze",
+            &["pfote", "herz", "stern", "fisch", "honig", "handy", "muetze", "blatt"],
+        ),
+        flag("alertQuote", "Nachricht zeigen", ALERTS, true),
+        text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\"", None),
+        number("alertDuration", "Dauer", ALERTS, 7000.0, 2000.0, 60000.0, MS, None),
+        number("alertScale", "Grösse", ALERTS, 1.0, 0.3, 2.0, None, Some(0.05)),
+        number("alertTop", "Abstand oben", ALERTS, 80.0, 0.0, 1000.0, PX, None),
+        choice("alertAlign", "Position", ALERTS, "center", &["left", "center", "right"]),
+        number("alertWidth", "Breite", ALERTS, 760.0, 300.0, 1800.0, PX, None),
+        choice("alertIn", "Einblenden", ALERTS, "plopp", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
+        choice("alertOut", "Ausblenden", ALERTS, "blenden", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
+        flag("alertTimer", "Restzeit als Balken", ALERTS, true),
+        flag("confetti", "Konfetti aus Pfoten und Blättern", ALERTS, true),
+        number("confettiCount", "Anzahl Konfetti", ALERTS, 14.0, 0.0, 40.0, None, None),
+        flag("alertSound", "Töne", ALERTS, true),
+    ]);
+    fields.extend(alert_sound_fields(ALERTS));
+    fields.extend(vec![
+        choice("bearChat", "Bär", CHAT, "panda", &["eisbaer", "grizzly", "panda"]),
+        choice("chatStyle", "Stil", CHAT, "handy", &["handy", "zettel", "blasen"]),
+    ]);
+    fields.extend(badge_fields(CHAT));
+    fields.extend(vec![
+        flag("chatBadges", "Badges zeigen", CHAT, true),
+        number("chatFontSize", "Schriftgrösse", CHAT, 20.0, 8.0, 60.0, PX, None),
+        number("emoteSize", "Emote-Grösse", CHAT, 28.0, 8.0, 120.0, PX, None),
+        number("chatFade", "Ausblenden nach (0 = nie)", CHAT, 30.0, 0.0, 3600.0, S, None),
+        number("chatMax", "Max. Nachrichten", CHAT, 8.0, 1.0, 100.0, None, None),
+        choice("chatAlign", "Neue Nachrichten", CHAT, "bottom", &["bottom", "top"]),
+        number("chatGap", "Abstand", CHAT, 10.0, 0.0, 40.0, PX, None),
+        number("chatBearSize", "Bär: Grösse (Höhe)", CHAT, 240.0, 60.0, 800.0, PX, None),
+        number("chatPhoneWidth", "Handy: Breite", CHAT, 440.0, 200.0, 1200.0, PX, None),
+        choice("bearCam", "Bär", CAM, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
+        choice("camStyle", "Rahmen", CAM, "papier", &["papier", "holz", "polaroid"]),
+        choice("camBearSpot", "Bär: Platz", CAM, "rechts", &["links", "rechts", "oben"]),
+        number("camBearSize", "Bär: Grösse (Höhe)", CAM, 260.0, 60.0, 800.0, PX, None),
+        number("camFrameWidth", "Rahmenbreite", CAM, 18.0, 2.0, 60.0, PX, None),
+        number("camRadius", "Eckenradius", CAM, 22.0, 0.0, 80.0, PX, None),
+        text("camLabel", "Namensschild ({channel})", CAM, "{channel}", None),
+        flag("camLive", "Live-Anzeige", CAM, true),
+        text("camLiveText", "Live-Text", CAM, "LIVE", None),
+        choice("bearMusic", "Bär", MUSIC, "panda", &["eisbaer", "grizzly", "panda", "turm"]),
+        choice("musicStyle", "Stil", MUSIC, "kopfhoerer", &["kopfhoerer", "kofferradio", "schlicht"]),
+        text("musicHeadPlaying", "Kopfzeile bei Wiedergabe", MUSIC, "Läuft gerade", None),
+        text("musicHeadPaused", "Kopfzeile bei Pause", MUSIC, "Pause", None),
+        text("musicIdleTitle", "Titel ohne Wiedergabe", MUSIC, "Keine Musik", None),
+        text("musicIdleArtist", "Interpret ohne Wiedergabe", MUSIC, "Nur Vogelgezwitscher", None),
+        flag("musicAlbum", "Album zeigen", MUSIC, false),
+        flag("musicProgress", "Fortschritt zeigen", MUSIC, true),
+        flag("equalizer", "Equalizer", MUSIC, true),
+        number("equalizerBars", "Equalizer: Balken", MUSIC, 7.0, 1.0, 16.0, None, None),
+        choice("coverShape", "Cover-Form", MUSIC, "eckig", &["rund", "eckig"]),
+        number("coverSize", "Cover-Grösse", MUSIC, 120.0, 40.0, 400.0, PX, None),
+        number("musicTitleSize", "Titelgrösse", MUSIC, 26.0, 10.0, 80.0, PX, None),
+        flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+        flag("musicMarquee", "Lange Titel laufen durch", MUSIC, true),
+        number("musicMarqueeSpeed", "Lange Titel: Lauftempo (px pro Sekunde)", MUSIC, 40.0, 5.0, 400.0, None, None),
+        number("musicBearSize", "Bär: Grösse (Höhe)", MUSIC, 220.0, 60.0, 800.0, PX, None),
+        number("bopStrength", "Bär: Wippen im Takt (Grad)", MUSIC, 4.0, 0.0, 20.0, None, None),
+        choice("bearFx", "Bär", FX, "grizzly", &["eisbaer", "grizzly", "panda"]),
+        choice("fxStyle", "Text", FX, "schild", &["schild", "blase"]),
+        number("fxBearSize", "Bär: Grösse (Höhe)", FX, 240.0, 60.0, 800.0, PX, None),
+        number("fxDuration", "Standarddauer", FX, 4.0, 0.5, 120.0, S, Some(0.5)),
+        number("fxSize", "Standardgrösse", FX, 360.0, 20.0, 1920.0, PX, None),
+        number("fxTextSize", "Textgrösse", FX, 40.0, 8.0, 300.0, PX, None),
+        number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20.0, 0.0, 50.0, PERCENT, None),
+        number("fxMax", "Max. gleichzeitig", FX, 8.0, 1.0, 30.0, None, None),
+        choice("fxIn", "Einblenden", FX, "plopp", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
+        choice("fxOut", "Ausblenden", FX, "blenden", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
+    ]);
+    fields.extend(info_fields());
+    fields.extend(vec![
+        choice("bearInfo", "Befehlsseite: Bär", INFO_GROUP, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
+        choice("timeInfo", "Befehlsseite: Tageszeit", INFO_GROUP, "mittag", &["morgen", "mittag", "abend", "nacht"]),
+    ]);
+    fields
 }
 
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
-    let screens = vec![SceneName::Starting, SceneName::Brb, SceneName::Ending];
-    [(BEARS, screens.clone()), (WORLD, screens.clone()), (SCREENS, screens)]
-        .into_iter()
-        .map(|(group, scenes)| (group.to_owned(), scenes))
-        .collect()
+    use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Music, Starting};
+    [
+        (BEARS, vec![Starting, Brb, Ending, Alerts, Chat, Cam, Music, Fx, Info]),
+        (WORLD, vec![Starting, Brb, Ending, Info]),
+        (SCREENS, vec![Starting, Brb, Ending]),
+        (ALERTS, vec![Alerts]),
+        (CHAT, vec![Chat]),
+        (CAM, vec![Cam]),
+        (MUSIC, vec![Music]),
+        (FX, vec![Fx]),
+        (INFO_GROUP, vec![Info]),
+    ]
+    .into_iter()
+    .map(|(group, scenes)| (group.to_owned(), scenes))
+    .collect()
 }
 
 /// `neo_42` -> `Neo_42`

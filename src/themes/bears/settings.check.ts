@@ -2,7 +2,7 @@
 // choice per scene, every group mapped to a scene, personalize. Runs with npm test.
 import assert from "node:assert/strict";
 import { auditTheme } from "../schemaAudit.ts";
-import { BEAR_CHOICES } from "./bears.ts";
+import { BEAR_CHOICES, BEAR_IDS } from "./bears.ts";
 import { bearsSettings } from "./settings.ts";
 
 const fields = bearsSettings.fields;
@@ -18,6 +18,12 @@ const REQUIRED: Record<string, string[]> = {
   "Bären": ["iceFur", "iceShade", "grizzlyFur", "grizzlyShade", "pandaFur", "pandaShade", "pandaPatch", "pandaPatchShade", "bearEye", "bearNose", "blinkEvery", "breathe", "towerSway"],
   "Welt": ["timeStarting", "timeBrb", "timeEnding", "skyNightTop", "sun", "moon", "cloudCount", "meadow", "fir", "city", "bridge", "cave", "paperGrain", "sketchLines"],
   "Starting, BRB, Ending": ["bearStarting", "bearBrb", "bearEnding", "bearSize", "bearSide", "startingTitle", "brbSign", "countdown", "progressStyle", "ticker", "powerOn"],
+  "Alerts": ["bearAlerts", "alertBearSize", "followLine", "followIcon", "hypeEndLine", "alertDuration", "alertIn", "alertOut", "alertTimer", "confetti", "soundFollow", "soundLeave"],
+  "Chat": ["bearChat", "chatStyle", "chatFade", "chatMax", "chatAlign", "chatBearSize", "chatPhoneWidth"],
+  "Kamera-Rahmen": ["bearCam", "camStyle", "camBearSpot", "camBearSize", "camLabel", "camLive"],
+  "Musik": ["bearMusic", "musicStyle", "coverShape", "equalizer", "musicHide", "musicBearSize", "bopStrength"],
+  "Effekte": ["bearFx", "fxStyle", "fxBearSize", "fxDuration", "fxSize", "fxIn", "fxOut"],
+  "Befehlsseite": ["bearInfo", "timeInfo"],
 };
 for (const [group, required] of Object.entries(REQUIRED)) {
   for (const key of required) assert.equal(fields.find(field => field.key === key)?.group, group, `${key} fehlt in ${group}`);
@@ -30,6 +36,11 @@ for (const [key, value] of [["bearStarting", "grizzly"], ["bearBrb", "eisbaer"],
   assert.deepEqual(field.options, [...BEAR_CHOICES]);
   assert.equal(field.default, value);
 }
+
+// Chat and effects offer only single bears, every other bear choice also the tower
+const optionsOf = (key: string) => { const field = fields.find(candidate => candidate.key === key); return field?.type === "select" ? field.options : []; };
+for (const key of ["bearChat", "bearFx"]) assert.deepEqual(optionsOf(key), [...BEAR_IDS], key);
+for (const key of ["bearAlerts", "bearCam", "bearMusic", "bearInfo"]) assert.deepEqual(optionsOf(key), [...BEAR_CHOICES], key);
 
 // Every group is mapped to its scenes (Allgemein applies everywhere)
 for (const group of new Set(fields.map(field => field.group))) {

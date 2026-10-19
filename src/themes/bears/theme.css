@@ -41,6 +41,7 @@
 .theme-bears .part-prop { fill: var(--prop); }
 .theme-bears .bb-pose-phone .part-prop,
 .theme-bears .bb-pose-selfie .part-prop { fill: var(--phoneCase); }
+.theme-bears .bb-pose-headphones .part-prop { fill: var(--accent2); }
 .theme-bears .part-screen { fill: var(--phoneScreen); }
 .theme-bears .part-paper { fill: var(--paper); }
 .theme-bears .part-food { fill: var(--food); }
@@ -227,3 +228,156 @@
 .theme-bears .power-blenden.bb-screen { animation: bears-fade var(--powerOnDuration) ease-out both; }
 @keyframes bears-wash { from { clip-path: inset(0 100% 0 0); filter: blur(var(--wash-blur, 12px)); } to { clip-path: inset(0 0 0 0); filter: blur(0); } }
 @keyframes bears-fade { from { opacity: 0; } to { opacity: 1; } }
+
+/* --- Shared motions: waddle in from the side, plop, slide, fade, none ------------------------------------------ */
+.theme-bears .in-watscheln { --in: bears-waddle-in; }
+.theme-bears .in-plopp { --in: bears-plopp; --in-ease: cubic-bezier(0.3, 1.6, 0.5, 1); }
+.theme-bears .in-gleiten { --in: bears-slide-in; }
+.theme-bears .in-blenden { --in: bears-fade; }
+.theme-bears .in-keins { --in: none; }
+.theme-bears .out-watscheln { --out: bears-waddle-out; }
+.theme-bears .out-plopp { --out: bears-plopp-out; }
+.theme-bears .out-gleiten { --out: bears-slide-out; }
+.theme-bears .out-blenden { --out: bears-fade-out; }
+.theme-bears .out-keins { --out: bears-fade-out; --out-ease: steps(1, start); }
+@keyframes bears-waddle-in {
+  0% { translate: calc(-1 * var(--waddle-way, 60vw)) 0; rotate: -4deg; }
+  25% { rotate: 4deg; } 50% { rotate: -4deg; } 75% { rotate: 3deg; }
+  100% { translate: 0 0; rotate: 0deg; }
+}
+@keyframes bears-waddle-out { 0% { translate: 0 0; rotate: 0deg; } 30% { rotate: 4deg; } 60% { rotate: -4deg; } 100% { translate: var(--waddle-way, 60vw) 0; rotate: 3deg; } }
+@keyframes bears-plopp-out { from { scale: 1; opacity: 1; } to { scale: 0.6; opacity: 0; } }
+@keyframes bears-slide-in { from { translate: 0 calc(-1 * var(--slide, 120px)); opacity: 0; } to { translate: 0 0; opacity: 1; } }
+@keyframes bears-slide-out { from { translate: 0 0; opacity: 1; } to { translate: 0 calc(-1 * var(--slide, 120px)); opacity: 0; } }
+@keyframes bears-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes bears-shrink { from { scale: 1 1; } to { scale: 0 1; } }
+@keyframes bears-fall { from { translate: 0 0; rotate: 0deg; } to { translate: 0 calc(100vh + var(--piece-size, 60px) * 2); rotate: calc(var(--spin) * 720deg - 360deg); } }
+
+/* --- Alerts ------------------------------------------------------------------------------------------------------ */
+.theme-bears .bb-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
+.theme-bears .bb-alerts.align-left { justify-content: flex-start; }
+.theme-bears .bb-alerts.align-right { justify-content: flex-end; }
+.theme-bears .bb-alert { position: relative; display: flex; align-items: flex-end; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
+.theme-bears .bb-alert.leaving { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
+.theme-bears .bb-alert-bear { position: relative; flex: none; height: var(--alertBearSize); margin-right: calc(-1 * var(--peek-overlap, 40px)); z-index: 1; }
+.theme-bears .bb-alert-card { position: relative; flex: 1; display: flex; align-items: center; gap: var(--alert-gap, 22px); margin-bottom: var(--card-lift, 20px); overflow: hidden; }
+.theme-bears .bb-alert-icon { flex: none; width: var(--icon-size, 96px); }
+.theme-bears .bb-alert-text { display: grid; gap: var(--text-gap, 6px); min-width: 0; }
+.theme-bears .bb-tag { justify-self: start; background: var(--accent); color: var(--textColor); font-size: 0.8em; }
+.theme-bears .bb-alert-line { font-family: var(--titleFont), var(--font), sans-serif; font-size: var(--line-size, 34px); line-height: 1.15; overflow-wrap: anywhere; }
+.theme-bears .bb-quote { color: var(--textDim); overflow-wrap: anywhere; }
+.theme-bears .bb-timer { position: absolute; left: 0; right: 0; bottom: 0; height: var(--timer-height, 10px); background: var(--paperShade); }
+.theme-bears .bb-timer span { display: block; height: 100%; background: var(--accent); transform-origin: left; animation: bears-shrink var(--alertDuration) linear forwards; }
+/* Icons: the colored shape with the outline, a second tone in the paper shade */
+.theme-bears .bb-icon { display: block; width: 100%; height: auto; overflow: visible; }
+.theme-bears .part-icon { fill: var(--accent); stroke: var(--outline); stroke-width: var(--icon-line, 6); stroke-linejoin: round; }
+.theme-bears .part-icon-detail { fill: var(--paperShade); }
+.theme-bears .bb-icon .part-line { stroke-width: var(--icon-line, 6); }
+.theme-bears .bb-confetti { position: absolute; inset: 0; pointer-events: none; }
+.theme-bears .bb-piece { position: absolute; top: calc(-1 * var(--piece-size, 60px)); left: calc(var(--x) * 100%); width: var(--piece-size, 60px); animation: bears-fall var(--alertDuration) linear both; animation-delay: calc(var(--delay) * var(--alertDuration) / -3); }
+.theme-bears .bb-piece:nth-child(even) .part-icon { fill: var(--treeLeaf, var(--accent2)); }
+
+/* --- Chat -------------------------------------------------------------------------------------------------------- */
+.theme-bears .bb-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--chat-padding, 16px); font-size: var(--chatFontSize); overflow: hidden; }
+.theme-bears .bb-chat-list { display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); min-height: 0; overflow: hidden; }
+.theme-bears .bb-chat-top { flex-direction: column-reverse; justify-content: flex-end; }
+.theme-bears .bb-row { flex: none; animation: bears-plopp var(--fadeDuration) ease-out both; overflow-wrap: anywhere; }
+.theme-bears .bb-row.fades { animation: bears-plopp var(--fadeDuration) ease-out both, bears-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
+.theme-bears .bb-row.action { font-style: italic; }
+.theme-bears .bb-msg { display: inline-block; max-width: 100%; padding: var(--bubble-padding, 8px 14px); background: var(--paper); color: var(--textDark); border: var(--pill-line, 4px) solid var(--outline); border-radius: var(--radius); box-shadow: inset 0 calc(-1 * var(--bubble-band, 5px)) 0 var(--paperShade); }
+.theme-bears .bb-user { margin-right: var(--name-gap, 8px); color: var(--accentText); }
+.theme-bears .bb-badge { display: inline-block; margin-right: var(--badge-gap, 6px); padding: var(--badge-padding, 0 8px); border-radius: var(--pill-radius, 999px); background: var(--accent2); color: var(--textColor); font-size: 0.7em; font-weight: 800; }
+.theme-bears .bb-emote { height: var(--emoteSize); vertical-align: middle; }
+/* The phone fills the column and carries the messages, the bear sits in front of its lower corner and looks at it */
+.theme-bears .bb-chat-style-handy { align-items: center; }
+.theme-bears .bb-chat-bear { position: absolute; right: var(--chat-bear-side, 0px); bottom: 0; z-index: 2; height: var(--chatBearSize); }
+.theme-bears .bb-phone {
+  position: relative;
+  width: min(var(--chatPhoneWidth), 100%);
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--phone-padding, 26px 14px) calc(var(--chatBearSize) * 0.3) calc(var(--chatBearSize) * 0.45) var(--phone-side, 14px);
+  background: var(--phoneScreen);
+  border: var(--phone-rim, 12px) solid var(--phoneCase);
+  outline: var(--card-line, 5px) solid var(--outline);
+  border-radius: var(--phone-radius, 36px);
+}
+.theme-bears .bb-chat-style-zettel .bb-msg { border-radius: var(--note-radius, 4px); rotate: var(--note-tilt, -1deg); }
+.theme-bears .bb-chat-style-zettel .bb-row:nth-child(even) .bb-msg { rotate: var(--note-tilt-even, 1.2deg); }
+.theme-bears .bb-chat-style-zettel .bb-chat-list { border-top: var(--pill-line, 4px) dashed var(--outline); padding-top: var(--string-gap, 12px); }
+.theme-bears .bb-chat-style-blasen .bb-msg { border-radius: var(--radius) var(--radius) var(--radius) var(--tail, 4px); }
+
+/* --- Effects ----------------------------------------------------------------------------------------------------- */
+.theme-bears .bb-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-bears .bb-fx-item {
+  position: absolute;
+  display: grid;
+  gap: var(--fx-gap, 12px);
+  justify-items: center;
+  transform: translate(-50%, -50%);
+  animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both, var(--out) var(--fadeDuration) var(--out-ease, ease-in) calc(var(--life) - var(--fadeDuration)) forwards;
+}
+.theme-bears .bb-fx-item img, .theme-bears .bb-fx-item video, .theme-bears .bb-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); border: var(--card-line, 5px) solid var(--outline); }
+.theme-bears .bb-fx-bear { height: var(--fxBearSize); }
+.theme-bears .bb-fx-bear .part-sign-text { font-size: var(--fx-sign-text, 18px); }
+.theme-bears .bb-fx-talk { display: flex; align-items: flex-end; gap: var(--talk-gap, 8px); }
+.theme-bears .bb-fx-text { font-size: var(--fxTextSize); font-weight: 800; text-align: center; overflow-wrap: anywhere; margin-bottom: calc(var(--fxBearSize) * 0.55); border-radius: var(--radius) var(--radius) var(--tail, 4px) var(--radius); }
+
+/* --- Webcam frame ------------------------------------------------------------------------------------------------ */
+.theme-bears .bb-cam { position: fixed; inset: 0; }
+.theme-bears .bb-cam-frame { position: absolute; inset: 0; border: var(--camFrameWidth) solid var(--paper); border-radius: var(--camRadius); outline: var(--card-line, 5px) solid var(--outline); outline-offset: calc(-1 * var(--card-line, 5px)); box-shadow: inset 0 0 0 var(--card-line, 5px) var(--outline); }
+.theme-bears .bb-cam-holz .bb-cam-frame { border-color: var(--wood); }
+.theme-bears .bb-cam-polaroid .bb-cam-frame { border-color: var(--paper); border-bottom-width: calc(var(--camFrameWidth) * 3.5); border-radius: var(--polaroid-radius, 6px); }
+.theme-bears .bb-cam-bear { position: absolute; bottom: 0; height: var(--camBearSize); }
+.theme-bears .bb-cam-spot-rechts .bb-cam-bear { right: calc(-1 * var(--cam-lean, 20px)); }
+.theme-bears .bb-cam-spot-links .bb-cam-bear { left: calc(-1 * var(--cam-lean, 20px)); }
+/* Over the top edge: only the upper part of the bear shows, the rest hides behind the frame */
+.theme-bears .bb-cam-spot-oben .bb-cam-bear { bottom: auto; top: calc(-1 * var(--camBearSize) * 0.42); right: var(--peek-side, 12%); clip-path: inset(0 0 58% 0); }
+.theme-bears .bb-cam-label { position: absolute; left: 50%; bottom: calc(var(--camFrameWidth) * 0.5); translate: -50% 50%; font-size: var(--cam-label, 22px); }
+.theme-bears .bb-cam-live { position: absolute; top: calc(var(--camFrameWidth) + var(--live-gap, 10px)); left: calc(var(--camFrameWidth) + var(--live-gap, 10px)); display: flex; align-items: center; gap: var(--live-dot-gap, 6px); background: var(--accent); color: var(--textColor); font-size: var(--live-size, 18px); }
+.theme-bears .bb-cam-live .bb-icon { width: var(--live-paw, 22px); animation: bears-plopp var(--live-time, 1.2s) ease-in-out infinite alternate; }
+.theme-bears .bb-cam-live .part-icon { fill: var(--paper); }
+
+/* --- Music ------------------------------------------------------------------------------------------------------- */
+.theme-bears .bb-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 14px); }
+.theme-bears .bb-player { position: relative; width: 100%; display: flex; align-items: flex-end; gap: var(--player-gap, 6px); animation: bears-plopp var(--fadeDuration) ease-out both; }
+.theme-bears .bb-player.leaving { animation: bears-fade-out var(--fadeDuration) ease-in forwards; }
+.theme-bears .bb-music-bear { position: relative; flex: none; height: var(--musicBearSize); margin-right: calc(-1 * var(--music-overlap, 24px)); z-index: 1; }
+.theme-bears .bb-player.playing .bb-music-bear .bb-hero { transform-origin: 50% 100%; animation: bears-bop var(--bop-time, 0.5s) ease-in-out infinite alternate; }
+@keyframes bears-bop { from { rotate: calc(-1deg * var(--bopStrength)); } to { rotate: calc(1deg * var(--bopStrength)); } }
+.theme-bears .bb-music-card { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--card-gap, 18px); }
+.theme-bears .bb-music-kofferradio .bb-music-card { background: var(--wood); color: var(--textColor); box-shadow: inset 0 calc(-1 * var(--band, 10px)) 0 color-mix(in srgb, var(--wood), var(--outline) 30%); }
+.theme-bears .bb-music-kofferradio .bb-artist, .theme-bears .bb-music-kofferradio .bb-album { color: var(--paper); }
+.theme-bears .bb-radio-handle { position: absolute; top: calc(-1 * var(--handle-height, 26px)); left: 50%; translate: -50% 0; width: var(--handle-width, 140px); height: var(--handle-height, 26px); border: var(--card-line, 5px) solid var(--outline); border-bottom: none; border-radius: var(--handle-radius, 18px 18px 0 0); background: transparent; }
+.theme-bears .bb-cover { flex: none; width: var(--coverSize); height: var(--coverSize); object-fit: cover; border: var(--pill-line, 4px) solid var(--outline); background: var(--paperShade); }
+.theme-bears .cover-rund { border-radius: 50%; }
+.theme-bears .cover-eckig { border-radius: calc(var(--radius) * 0.6); }
+.theme-bears .bb-cover-empty { display: grid; place-items: center; padding: var(--cover-pad, 18px); }
+.theme-bears .bb-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
+.theme-bears .bb-head { justify-self: start; background: var(--accent); color: var(--textColor); font-size: 0.7em; }
+.theme-bears .bb-song { font-family: var(--titleFont), var(--font), sans-serif; font-size: var(--musicTitleSize); line-height: 1.2; }
+.theme-bears .bb-artist { color: var(--textDim); font-weight: 700; }
+.theme-bears .bb-album { color: var(--textDim); font-size: 0.85em; }
+.theme-bears .bb-track .bb-progress-bar { width: 100%; height: var(--music-bar, 14px); }
+.theme-bears .bb-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eq-gap, 5px); height: var(--eq-height, 48px); }
+.theme-bears .bb-eq i { width: var(--eq-bar, 10px); height: 100%; background: var(--accent2); border: var(--eq-line, 3px) solid var(--outline); border-radius: var(--eq-radius, 4px); transform-origin: bottom; animation: bears-eq var(--eq-time, 0.9s) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--eq-time, 0.9s) / -5); }
+.theme-bears .paused .bb-eq i { animation-play-state: paused; }
+@keyframes bears-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
+
+/* --- Commands page ----------------------------------------------------------------------------------------------- */
+.theme-bears.theme-root:has(.bb-info) { min-height: 100vh; background: var(--meadow); }
+.theme-bears .bb-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-bears .bb-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-bears .bb-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; gap: var(--info-gap, 28px); }
+.theme-bears .bb-info-head { display: flex; align-items: flex-end; gap: var(--info-head-gap, 4px); }
+.theme-bears .bb-info-bear { position: relative; flex: none; height: var(--info-bear, 220px); margin-right: calc(-1 * var(--info-overlap, 30px)); z-index: 1; }
+.theme-bears .bb-info-sign { flex: 1; min-width: 0; text-align: center; }
+.theme-bears .bb-info-sign .bb-title { font-size: var(--info-title, 56px); }
+.theme-bears .bb-info-board { display: grid; gap: var(--entry-gap, 14px); }
+.theme-bears .bb-info-board .bb-eyebrow { justify-self: start; font-size: var(--info-heading, 22px); }
+.theme-bears .bb-info-entry { display: grid; gap: var(--entry-inner, 4px); padding-top: var(--entry-pad, 10px); border-top: var(--entry-line, 3px) dashed var(--paperShade); }
+.theme-bears .bb-info-entry p { margin: 0; }
+.theme-bears .bb-info-command { color: var(--accentText); font-size: 1.1em; }
+.theme-bears .bb-info-detail { color: var(--textDim); font-size: 0.9em; }

@@ -7,7 +7,7 @@ import { BEAR_CHOICES, BEAR_IDS, BEARS, CLOSED_MOUTH, dot, isBearChoice, OPEN_MO
 // Every bear has every pose of the full-screen scenes
 assert.deepEqual(BEAR_IDS, ["eisbaer", "grizzly", "panda"]);
 assert.deepEqual(BEAR_CHOICES, ["eisbaer", "grizzly", "panda", "turm"]);
-for (const name of ["stand", "wave", "four", "fourWave", "cook", "sign", "phone", "selfie"]) assert.ok(name in POSES, `pose ${name} missing`);
+for (const name of ["stand", "wave", "four", "fourWave", "cook", "sign", "phone", "selfie", "cheer", "thumbs", "headphones"]) assert.ok(name in POSES, `pose ${name} missing`);
 
 // Every pose: a body, at least one outline line and one shade, panda patches; every path starts with M
 for (const [name, pose] of Object.entries(POSES)) {
@@ -34,6 +34,7 @@ assert.ok(partsFor("grizzly", "wave").includes(OPEN_MOUTH[0]));
 assert.ok(!partsFor("grizzly", "wave").includes(CLOSED_MOUTH));
 assert.ok(partsFor("grizzly", "stand").includes(CLOSED_MOUTH));
 assert.ok(partsFor("eisbaer", "wave").includes(CLOSED_MOUTH));
+assert.ok(partsFor("grizzly", "cheer").includes(OPEN_MOUTH[0]));
 
 // Circle path and choices
 assert.equal(dot(10, 20, 5), "M5 20 A5 5 0 1 0 15 20 A5 5 0 1 0 5 20 Z");

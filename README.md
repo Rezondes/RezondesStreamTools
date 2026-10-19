@@ -250,7 +250,7 @@ mitbringt; fehlende Szenen bleiben leer und das Dashboard markiert sie als nicht
 | `urlaub` | tropischer Strand mit Meer, Palmen und Holzschildern, Tageszeit je Szene | 16 Strandsachen, Typ per `!typ` |
 | `plantage` | Mangoplantage mit Baumreihen, Kisten und dem Streamer als Mangopflücker | Mango-Soldaten in fünf Rollen, mit Gefechten |
 | `koth` | Militär nach dem KOTH-Modus aus Arma: Hügel mit Funkmast, Lagekarte, Funkgeräte | Soldaten in Rollen und drei Fraktionen, mit Gefechten |
-| `bears` | drei Bärenbrüder (Eisbär, Grizzly, Panda) als Cartoon vor einer Aquarell-Welt; je Szene ein Bär oder der Bärenturm. Bisher Starting, BRB und Ending, die übrigen Szenen sind noch leer | keine |
+| `bears` | drei Bärenbrüder (Eisbär, Grizzly, Panda) als Cartoon vor einer Aquarell-Welt; je Szene ein Bär oder der Bärenturm. Stinger und Banner kommen noch | keine |
 
 Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
 

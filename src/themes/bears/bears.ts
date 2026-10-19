@@ -190,6 +190,17 @@ const PROPS = {
   ],
 } as const satisfies Record<string, readonly ShapePart[]>;
 
+// Thumb raised on the near paw (thumbs up)
+const THUMB = "M64 206 C60 194 64 186 70 188 C74 190 74 198 72 206";
+// Headphones: band over the head, cups over the ears
+const HEADPHONES: readonly ShapePart[] = [
+  { kind: "line", d: "M62 34 C70 -10 150 -10 158 36" },
+  { kind: "prop", d: oval(66, 34, 13, 17) },
+  { kind: "line", d: oval(66, 34, 13, 17) },
+  { kind: "prop", d: oval(156, 36, 12, 16) },
+  { kind: "line", d: oval(156, 36, 12, 16) },
+];
+
 // Where the sign shows its text (center of the paper in the box of the standing rig)
 export const SIGN_TEXT = { x: 71, y: 146 };
 
@@ -203,10 +214,13 @@ export const POSES = {
   sign: { ...hold, parts: [...hold.parts, ...PROPS.sign, ...HOLD_PAWS] },
   phone: { ...hold, parts: [...hold.parts, ...PROPS.phone, ...HOLD_PAWS] },
   selfie: { ...wave, parts: [...wave.parts, ...PROPS.phoneHigh] },
+  cheer: { ...hold, parts: [...hold.parts, ...HOLD_PAWS] },
+  thumbs: { ...hold, parts: [...hold.parts, ...HOLD_PAWS, { kind: "limb", d: `${THUMB} Z` }, { kind: "line", d: THUMB }] },
+  headphones: { ...stand, parts: [...stand.parts, ...HEADPHONES] },
 } satisfies Record<string, Pose>;
 export type PoseName = keyof typeof POSES;
 // Poses with the open mouth for the loud bear (standing rigs: the open mouth replaces CLOSED_MOUTH)
-export const EXCITED: readonly PoseName[] = ["wave", "selfie"];
+export const EXCITED: readonly PoseName[] = ["wave", "selfie", "cheer"];
 
 // The bears: proportions (scale around the bottom center), black patches, loud (open mouth when excited)
 export const BEARS: Record<BearId, { scaleX: number; scaleY: number; patched: boolean; loud: boolean }> = {
