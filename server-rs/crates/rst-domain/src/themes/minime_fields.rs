@@ -2,7 +2,9 @@
 //! (template: `src/core/minimeFields.ts`). Color themes take [`minime_fields`], variant themes the base fields and
 //! [`minime_variant_fields`] of their variants. Reading the values into rules follows with the minimes context.
 
-use crate::settings::field::{SettingField, Unit, choice, color, flag, number, sound, text};
+use crate::settings::field::{
+    SettingField, SettingValue, Unit, choice, color, flag, number, sound, text, with_defaults,
+};
 use crate::themes::info_fields::INFO_GROUP;
 use crate::themes::schema::MinimeVariantSet;
 
@@ -169,6 +171,51 @@ pub fn minime_combat_fields(set: &MinimeVariantSet) -> Vec<SettingField> {
         fields.push(number(&minime_fire_key(&role.id), &fire, MINIME_COMBAT, 600.0, 100.0, 10_000.0, ms, None));
     }
     fields
+}
+
+/// Group of the tower fields
+pub const MINIME_STACK: &str = "Minimes: Türme";
+/// Level choice that ends the tower below level 3
+pub const STACK_NONE: &str = "keiner";
+
+/// Towers of the minimes (opt-in, only with variants): switch, pace, the type per level from the bottom (level 3 also
+/// "keiner"), speed and durations of the steps, walking as a tower and the climb sound. The theme sets its own defaults
+/// (e.g. its types per level); without them towers are off.
+#[must_use]
+pub fn minime_stack_fields(set: &MinimeVariantSet, defaults: &[(&str, SettingValue)]) -> Vec<SettingField> {
+    let (ms, s, px) = (Some(Unit::Ms), Some(Unit::S), Some(Unit::Px));
+    let ids: Vec<&str> = set.variants.iter().map(|variant| variant.id.as_str()).collect();
+    let first = ids.first().copied().unwrap_or(STACK_NONE);
+    let second = ids.get(1).copied().unwrap_or(first);
+    let with_none: Vec<&str> = ids.iter().copied().chain([STACK_NONE]).collect();
+    let fields = vec![
+        flag("minimeStack", "Türme an", MINIME_STACK, false),
+        number("minimeStackMinS", "Abstand zwischen Türmen: mindestens", MINIME_STACK, 30.0, 5.0, 600.0, s, None),
+        number("minimeStackMaxS", "Abstand zwischen Türmen: höchstens", MINIME_STACK, 90.0, 5.0, 600.0, s, None),
+        number("minimeStackMax", "Gleichzeitige Türme", MINIME_STACK, 1.0, 1.0, 5.0, None, None),
+        choice("minimeStackLevel1", "Stufe 1 (unten)", MINIME_STACK, first, &ids),
+        choice("minimeStackLevel2", "Stufe 2", MINIME_STACK, second, &ids),
+        choice("minimeStackLevel3", "Stufe 3 (oben)", MINIME_STACK, STACK_NONE, &with_none),
+        number(
+            "minimeStackSpeed",
+            "Zusammenlaufen: Tempo (px pro Sekunde)",
+            MINIME_STACK,
+            90.0,
+            5.0,
+            600.0,
+            None,
+            None,
+        ),
+        number("minimeClimbMs", "Klettern: Dauer je Stufe", MINIME_STACK, 900.0, 100.0, 10_000.0, ms, None),
+        number("minimeStackedMs", "Stehen als Turm: Dauer", MINIME_STACK, 4000.0, 500.0, 60_000.0, ms, None),
+        flag("minimeStackWalk", "Turm läuft", MINIME_STACK, true),
+        number("minimeStackWalkMs", "Laufen als Turm: Dauer", MINIME_STACK, 5000.0, 500.0, 60_000.0, ms, None),
+        number("minimeStackWalkPx", "Laufen als Turm: Strecke", MINIME_STACK, 300.0, 0.0, 1920.0, px, None),
+        number("minimeDismountMs", "Absteigen: Dauer je Stufe", MINIME_STACK, 700.0, 100.0, 10_000.0, ms, None),
+        flag("minimeStackSound", "Ton beim Aufsteigen", MINIME_STACK, false),
+        sound("minimeSoundClimb", "Ton: Aufsteigen", MINIME_STACK),
+    ];
+    with_defaults(fields, defaults)
 }
 
 /// Only for color themes: command to change color, minimum brightness, Twitch name color
@@ -340,6 +387,71 @@ mod tests {
         crate::themes::fixture::assert_same_fields(&minime_hop_fields(), &fixture["hop"]["fields"]);
         let roles: MinimeVariantSet = serde_json::from_value(fixture["combat"]["set"].clone()).expect("sample roles");
         crate::themes::fixture::assert_same_fields(&minime_combat_fields(&roles), &fixture["combat"]["fields"]);
+        let stack: MinimeVariantSet = serde_json::from_value(fixture["stack"]["set"].clone()).expect("sample set");
+        let defaults =
+            [("minimeStack", SettingValue::Flag(true)), ("minimeStackLevel3", SettingValue::Text("sniper".to_owned()))];
+        crate::themes::fixture::assert_same_fields(
+            &minime_stack_fields(&stack, &defaults),
+            &fixture["stack"]["fields"],
+        );
+    }
+
+    fn bears() -> MinimeVariantSet {
+        let bear = |id: &str| MinimeVariantInfo { id: id.to_owned(), label: id.to_owned(), names: vec![], color: None };
+        MinimeVariantSet {
+            command: "!baer".to_owned(),
+            label: "Bär".to_owned(),
+            variants: vec![bear("eis"), bear("panda"), bear("grizzly")],
+        }
+    }
+
+    fn default_of(fields: &[SettingField], key: &str) -> Option<SettingValue> {
+        fields.iter().find(|field| field.key == key).map(SettingField::default_value)
+    }
+
+    #[test]
+    fn stack_fields_are_opt_in() {
+        let fields = minime_stack_fields(&bears(), &[]);
+        assert!(fields.iter().all(|field| field.group == MINIME_STACK));
+        assert_eq!(default_of(&fields, "minimeStack"), Some(SettingValue::Flag(false)));
+        assert!(fields.iter().any(|field| field.key == "minimeSoundClimb"));
+        assert!(!minime_fields().iter().any(|field| field.group == MINIME_STACK));
+        assert!(!minime_base_fields().iter().any(|field| field.group == MINIME_STACK));
+    }
+
+    #[test]
+    fn stack_levels_offer_only_theme_variants() {
+        let schema = crate::themes::schema::ThemeSchema {
+            id: "probe".to_owned(),
+            name: "Probe".to_owned(),
+            fields: minime_stack_fields(&bears(), &[]),
+            group_scenes: std::collections::BTreeMap::new(),
+            minime_variants: None,
+            minime_teams: None,
+        };
+        let check =
+            |input: serde_json::Value| crate::settings::validate::validate_settings(&schema, &input).errors.len();
+        assert_eq!(check(serde_json::json!({ "minimeStackLevel1": "panda", "minimeStackLevel3": STACK_NONE })), 0);
+        assert_eq!(check(serde_json::json!({ "minimeStackLevel1": "koala" })), 1);
+        assert_eq!(check(serde_json::json!({ "minimeStackLevel2": STACK_NONE })), 1);
+        assert_eq!(check(serde_json::json!({ "minimeStackMax": 99 })), 1);
+    }
+
+    #[test]
+    fn theme_sets_stack_defaults() {
+        let plain = minime_stack_fields(&bears(), &[]);
+        assert_eq!(default_of(&plain, "minimeStackLevel1"), Some(SettingValue::Text("eis".to_owned())));
+        assert_eq!(default_of(&plain, "minimeStackLevel2"), Some(SettingValue::Text("panda".to_owned())));
+        assert_eq!(default_of(&plain, "minimeStackLevel3"), Some(SettingValue::Text(STACK_NONE.to_owned())));
+        let own = minime_stack_fields(
+            &bears(),
+            &[
+                ("minimeStack", SettingValue::Flag(true)),
+                ("minimeStackLevel3", SettingValue::Text("grizzly".to_owned())),
+            ],
+        );
+        assert_eq!(default_of(&own, "minimeStack"), Some(SettingValue::Flag(true)));
+        assert_eq!(default_of(&own, "minimeStackLevel3"), Some(SettingValue::Text("grizzly".to_owned())));
     }
 
     #[test]

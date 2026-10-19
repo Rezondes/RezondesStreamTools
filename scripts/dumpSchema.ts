@@ -7,7 +7,7 @@
 // dumpSchema.check.ts fails when a fixture no longer matches the TypeScript schema.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
-import { MINIME_HOP_FIELDS, minimeCombatFields, minimeTeamFields } from "../src/core/minimeFields.ts";
+import { MINIME_HOP_FIELDS, minimeCombatFields, minimeStackFields, minimeTeamFields } from "../src/core/minimeFields.ts";
 import type { MinimeVariantSet, ThemeSchema } from "../src/core/theme.ts";
 import { THEMES } from "../src/themes/registry.ts";
 
@@ -35,11 +35,14 @@ const SAMPLE_ROLES: MinimeVariantSet = {
   label: "Rolle",
   variants: [{ id: "medic", label: "Medic", names: ["medic"] }, { id: "sniper", label: "Scharfschütze", names: ["sniper"] }],
 };
+// Sample tower defaults of a theme: towers on, level 3 set
+const SAMPLE_STACK_DEFAULTS = { minimeStack: true, minimeStackLevel3: "sniper" };
 export const FEATURES_FILE = "minime-features.json";
 export const featuresText = () => `${JSON.stringify({
   teams: { set: SAMPLE_TEAMS, fields: minimeTeamFields(SAMPLE_TEAMS) },
   hop: { fields: MINIME_HOP_FIELDS },
   combat: { set: SAMPLE_ROLES, fields: minimeCombatFields(SAMPLE_ROLES) },
+  stack: { set: SAMPLE_ROLES, defaults: SAMPLE_STACK_DEFAULTS, fields: minimeStackFields(SAMPLE_ROLES, SAMPLE_STACK_DEFAULTS) },
 }, null, 2)}\n`;
 
 function main() {

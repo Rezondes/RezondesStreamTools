@@ -7,7 +7,8 @@ import { BADGE_KEYS } from "../core/chat/chat.ts";
 import { FX_KEYS } from "../core/fx/fx.ts";
 import { INFO_FIELDS } from "../core/infoFields.ts";
 import {
-  COMBAT_SOUNDS, MINIME_FIELDS, MINIME_HOP_FIELDS, minimeAimKey, minimeFireKey, minimeNamesKey, minimeTeamColorKey, minimeTeamLabelKey, minimeTeamNamesKey,
+  COMBAT_SOUNDS, MINIME_FIELDS, MINIME_HOP_FIELDS, minimeAimKey, minimeFireKey, minimeNamesKey, minimeStackFields, minimeTeamColorKey, minimeTeamLabelKey,
+  minimeTeamNamesKey,
 } from "../core/minimeFields.ts";
 import { validateSettings } from "../core/settings.ts";
 import type { ThemeSchema } from "../core/theme.ts";
@@ -15,7 +16,7 @@ import type { ThemeSchema } from "../core/theme.ts";
 // The core reads shared fields of a feature (e.g. readMinimeOptions, describeCommands, useFxScene, badgeLabel), they
 // count as used; plus the generated
 // variant, faction, hop and fight fields of the minimes (minimeVariantFields, minimeTeamFields, MINIME_HOP_FIELDS,
-// minimeCombatFields)
+// minimeCombatFields, minimeStackFields)
 // Alert texts following the pattern from alertTextKeys (header <kind>Tag or <kind>Label) and the sounds per kind
 const ALERT_KEYS = ["Tag", "Label"].flatMap(suffix => {
   const keys = alertTextKeys(suffix);
@@ -25,7 +26,7 @@ const CORE_KEYS = new Set<string>([
   ...MINIME_FIELDS.map(field => field.key), ...INFO_FIELDS.map(field => field.key), ...FX_KEYS, ...BADGE_KEYS, ...ALERT_KEYS, ...Object.values(ALERT_SOUND_KEYS), "minimeVariantCommand",
   "minimeTeamCommand", "infoTeamText", "infoTeams", ...MINIME_HOP_FIELDS.map(field => field.key), ...Object.values(COMBAT_SOUNDS),
   "minimeCombat", "minimeCombatMinS", "minimeCombatMaxS", "minimeCombatMax", "minimeHitChance", "minimeDownMs", "minimeReviveMs", "minimeMedicSpeed", "minimeMedicGap", "minimeUpMs",
-  "minimeCombatSounds",
+  "minimeCombatSounds", ...minimeStackFields({ command: "", label: "", variants: [] }).map(field => field.key),
 ]);
 const CORE_PREFIXES = [minimeNamesKey(""), minimeTeamNamesKey(""), minimeTeamLabelKey(""), minimeTeamColorKey(""), minimeAimKey(""), minimeFireKey("")];
 

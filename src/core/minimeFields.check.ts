@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import {
   COMBAT_SOUNDS, hasMinimes, MEDIC, MINIME_BASE_FIELDS, MINIME_COMBAT, MINIME_FIELDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_TEAMS, minimeAimKey, minimeCombatFields,
-  minimeFireKey, minimeTeamFields, minimeVariantFields, readMinimeOptions,
+  minimeFireKey, MINIME_STACK, minimeStackFields, minimeTeamFields, minimeVariantFields, readMinimeOptions, STACK_LEVEL_KEYS, STACK_NONE, STACK_SOUND,
 } from "./minimeFields.ts";
 import type { MinimeVariantSet } from "./theme.ts";
 import { validateSettings } from "./settings.ts";
@@ -111,6 +111,28 @@ assert.deepEqual(MINIME_FIELDS.map(field => field.key).sort(), [
   assert.ok(keys.includes("minimeCombatMax") && keys.includes(COMBAT_SOUNDS.revive));
   assert.ok(!MINIME_FIELDS.some(field => field.group === MINIME_COMBAT || field.group === MINIME_HOP));
   assert.deepEqual(MINIME_HOP_FIELDS.map(field => field.key), ["hopHeight", "hopMs", "hopSquash"]);
+}
+
+// Towers: opt-in fields, off by default, levels offer only the variants (level 3 also "keiner"), the theme sets defaults
+{
+  const bears: MinimeVariantSet = { command: "!baer", label: "Bär", variants: ["eis", "panda", "grizzly"].map(id => ({ id, label: id, names: [] })) };
+  const fields = minimeStackFields(bears);
+  const field = (key: string) => fields.find(candidate => candidate.key === key);
+  assert.equal(field("minimeStack")?.default, false);
+  assert.ok(fields.every(candidate => candidate.group === MINIME_STACK));
+  const [level1, level2, level3] = STACK_LEVEL_KEYS.map(field);
+  assert.ok(level1?.type === "select" && level3?.type === "select");
+  assert.deepEqual(level1.options, ["eis", "panda", "grizzly"]);
+  assert.deepEqual(level3.options, ["eis", "panda", "grizzly", STACK_NONE]);
+  assert.deepEqual([level1.default, level2?.default, level3.default], ["eis", "panda", STACK_NONE]);
+  assert.ok(fields.some(candidate => candidate.key === STACK_SOUND && candidate.type === "sound"));
+  const own = minimeStackFields(bears, { minimeStack: true, minimeStackLevel3: "grizzly" });
+  assert.deepEqual([own[0]?.default, own.find(candidate => candidate.key === "minimeStackLevel3")?.default], [true, "grizzly"]);
+  assert.ok(!MINIME_FIELDS.some(candidate => candidate.group === MINIME_STACK));
+  // A level type the theme does not have is rejected
+  const schema = { id: "t", name: "T", fields: [...MINIME_BASE_FIELDS, ...fields] };
+  assert.ok(validateSettings(schema, { minimeStackLevel1: "koala" }).errors.length > 0);
+  assert.ok(validateSettings(schema, { minimeStackMax: 99 }).errors.length > 0);
 }
 
 console.log("minimeFields ok");

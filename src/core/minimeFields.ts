@@ -5,7 +5,7 @@
 // The theme creates the look and its own animations itself. readMinimeOptions reads the values for the server (rules)
 // and the hook (movement).
 // Check: minimeFields.check.ts.
-import { choice, color, flag, number, sound, text, type ValuesOf } from "./fields.ts";
+import { choice, color, flag, number, sound, text, withDefaults, type ValuesOf } from "./fields.ts";
 import { INFO_GROUP } from "./infoFields.ts";
 import { normalizeName, type MinimeRules, type MinimeVariantRule } from "./minimes.ts";
 import { resolveSettings } from "./settings.ts";
@@ -93,6 +93,38 @@ export function minimeCombatFields(set: MinimeVariantSet): SettingField[] {
       number(minimeFireKey(role.id), `${role.label}: Schuss`, MINIME_COMBAT, 600, 100, 10_000, "ms"),
     ]),
   ];
+}
+
+// Towers of the minimes (opt-in, only with variants): the type per level from the bottom, "keiner" ends the tower below
+// level 3. Read by minimeStack.ts.
+export const MINIME_STACK = "Minimes: Türme";
+export const STACK_NONE = "keiner";
+export const STACK_LEVEL_KEYS = ["minimeStackLevel1", "minimeStackLevel2", "minimeStackLevel3"] as const;
+export const STACK_SOUND = "minimeSoundClimb";
+
+// Switch, pace, levels, speed and durations of the steps, walking as a tower and the climb sound; a theme sets its own
+// defaults (e.g. its types per level), without them towers are off
+export function minimeStackFields(set: MinimeVariantSet, defaults: Readonly<Record<string, string | number | boolean>> = {}): SettingField[] {
+  const ids = set.variants.map(variant => variant.id);
+  const [level1, level2, level3] = STACK_LEVEL_KEYS;
+  return withDefaults([
+    flag("minimeStack", "Türme an", MINIME_STACK, false),
+    number("minimeStackMinS", "Abstand zwischen Türmen: mindestens", MINIME_STACK, 30, 5, 600, "s"),
+    number("minimeStackMaxS", "Abstand zwischen Türmen: höchstens", MINIME_STACK, 90, 5, 600, "s"),
+    number("minimeStackMax", "Gleichzeitige Türme", MINIME_STACK, 1, 1, 5),
+    choice(level1, "Stufe 1 (unten)", MINIME_STACK, ids[0] ?? STACK_NONE, ids),
+    choice(level2, "Stufe 2", MINIME_STACK, ids[1] ?? ids[0] ?? STACK_NONE, ids),
+    choice(level3, "Stufe 3 (oben)", MINIME_STACK, STACK_NONE, [...ids, STACK_NONE]),
+    number("minimeStackSpeed", "Zusammenlaufen: Tempo (px pro Sekunde)", MINIME_STACK, 90, 5, 600),
+    number("minimeClimbMs", "Klettern: Dauer je Stufe", MINIME_STACK, 900, 100, 10_000, "ms"),
+    number("minimeStackedMs", "Stehen als Turm: Dauer", MINIME_STACK, 4000, 500, 60_000, "ms"),
+    flag("minimeStackWalk", "Turm läuft", MINIME_STACK, true),
+    number("minimeStackWalkMs", "Laufen als Turm: Dauer", MINIME_STACK, 5000, 500, 60_000, "ms"),
+    number("minimeStackWalkPx", "Laufen als Turm: Strecke", MINIME_STACK, 300, 0, 1920, "px"),
+    number("minimeDismountMs", "Absteigen: Dauer je Stufe", MINIME_STACK, 700, 100, 10_000, "ms"),
+    flag("minimeStackSound", "Ton beim Aufsteigen", MINIME_STACK, false),
+    sound(STACK_SOUND, "Ton: Aufsteigen", MINIME_STACK),
+  ], defaults);
 }
 
 // Only for color themes: command to change color, minimum brightness, Twitch name color
