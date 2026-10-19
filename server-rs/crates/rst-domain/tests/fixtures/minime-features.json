@@ -478,6 +478,16 @@
         "unit": "ms"
       },
       {
+        "key": "minimeDismountGap",
+        "type": "number",
+        "label": "Absteigen: Abstand zur Seite",
+        "group": "Minimes: Türme",
+        "default": 60,
+        "min": 0,
+        "max": 400,
+        "unit": "px"
+      },
+      {
         "key": "minimeStackSound",
         "type": "boolean",
         "label": "Ton beim Aufsteigen",

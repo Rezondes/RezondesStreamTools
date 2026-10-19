@@ -75,7 +75,7 @@
 
 /* Towers (core actions, minimeStack.ts): the others gather waddling, the base braces on all fours, every upper level
    climbs to the backs below it (--stack-lift), the tower sways together and waddles as a whole, then steps off from the
-   top with a hop to the side. Name signs in a tower move aside (--name-shift), upper levels cast no shadow. */
+   top with a hop to the side (the core moves it there). Name signs in a tower move aside (--name-shift), upper levels cast no shadow. */
 .theme-bears .action-gather .bb-minime-body,
 .theme-bears .action-stackWalk .bb-minime-body { animation: bears-minime-waddle var(--waddleMs) ease-in-out infinite; }
 .theme-bears .action-brace .bb-minime-body { animation: bears-minime-brace var(--brace-ms, 900ms) ease-in-out infinite; }
@@ -138,7 +138,7 @@
 }
 @keyframes bears-minime-dismount {
   from { translate: 0 calc(-1 * var(--stack-lift, 0px)); }
-  45% { translate: calc(var(--dismount-side, 50px) * var(--facing)) calc(-1 * var(--stack-lift, 0px) - var(--dismount-hop, 30px)); }
+  45% { translate: 0 calc(-1 * var(--stack-lift, 0px) - var(--dismount-hop, 30px)); }
   to { translate: 0 0; }
 }
 @keyframes bears-minime-pop-in { from { scale: 0; } to { scale: 1; } }

@@ -92,20 +92,41 @@ assert.equal(readStack({ minimeStack: true, minimeStackLevel1: "a", minimeStackL
   assert.ok(still.stack && !timeline(still.stack.tower, 1).some(step => step.action === "stackWalk"));
 }
 
-// A leaving minime breaks the tower above it: level 2 leaves, level 3 steps off, the base alone is free again
+// A tower stays whole or ends whole: any member that leaves or changes its type ends it for everybody; lifted levels step
+// off to their side, the base and members still gathering are free at once
 {
   const actors = startStack([actor("a", "a", 300), actor("b", "b", 300), actor("c", "c", 300)], options(), typeOf, stage, 0, zero);
-  const left = actors.map(entry => (entry.login === "b" ? { ...entry, action: "exit", leaving: true } : entry));
-  const broken = breakStacks(left, typeOf, stage, 10, zero);
-  assert.deepEqual(levels(broken), {});
-  assert.equal(find(broken, "c").action, "dismount");
-  assert.notEqual(find(broken, "a").action, "brace");
-  assert.equal(breakStacks(broken, typeOf, stage, 10, zero), broken);
-  // Level 3 changes its type (counts as leaving): the two below go on
-  const top = breakStacks(actors.map(entry => (entry.login === "c" ? { ...entry, variant: "a" } : entry)), typeOf, stage, 10, zero);
-  assert.deepEqual(levels(top), { a: 1, b: 2 });
-  assert.equal(breakStacks(top, typeOf, stage, 10, zero), top);
+  const up = actors.map(entry => ({ ...entry, action: "stacked", toX: 300, fromX: 300 }));
+  for (const gone of ["a", "b", "c"]) {
+    const left = up.map(entry => (entry.login === gone ? { ...entry, action: "exit", leaving: true } : entry));
+    const broken = breakStacks(left, typeOf, stage, 10, zero);
+    assert.deepEqual(levels(broken), {}, gone);
+    for (const login of ["b", "c"].filter(login => login !== gone)) assert.equal(find(broken, login).action, "dismount", `${gone}: ${login}`);
+    if (gone !== "a") assert.notEqual(find(broken, "a").action, "dismount");
+    assert.equal(breakStacks(broken, typeOf, stage, 10, zero), broken);
+  }
+  // A type change counts as leaving; members still gathering do not step off
+  const changed = breakStacks(actors.map(entry => (entry.login === "c" ? { ...entry, variant: "a" } : entry)), typeOf, stage, 10, zero);
+  assert.deepEqual(levels(changed), {});
+  assert.notEqual(find(changed, "b").action, "dismount");
   assert.equal(breakStacks(actors, typeOf, stage, 10, zero), actors);
+  // Stepping off moves to the side: level 2 and 3 on different sides of the tower
+  const off = breakStacks(up.map(entry => (entry.login === "a" ? { ...entry, leaving: true } : entry)), typeOf, stage, 10, zero);
+  assert.ok((find(off, "b").toX - 300) * (find(off, "c").toX - 300) < 0);
+}
+
+// Landing beside the base: alternating sides with the gap, clamped to the margins; the base stays
+{
+  const [base, second, third] = startStack([actor("a", "a", 500), actor("b", "b", 500), actor("c", "c", 500)], options({ walkMs: 0, dismountGapPx: 80 }), typeOf, stage, 0, zero);
+  assert.ok(base.stack && second.stack && third.stack);
+  assert.deepEqual(base.stack.tower.landX, [500, 580, 420]);
+  const tower = base.stack.tower;
+  const last = (level: number) => timeline(tower, level).at(-1);
+  assert.deepEqual([last(2)?.action, last(2)?.fromX, last(2)?.toX, last(3)?.toX], ["dismount", 500, 580, 420]);
+  const edge = startStack([actor("a", "a", 70), actor("b", "b", 70)], options({ levels: ["a", "b"], walkMs: 0, dismountGapPx: 300 }), typeOf, stage, 0, zero);
+  assert.deepEqual(edge[0].stack?.tower.landX, [70, 370]);
+  const wall = startStack([actor("a", "a", 930), actor("b", "b", 930)], options({ levels: ["a", "b"], walkMs: 0, dismountGapPx: 300 }), typeOf, stage, 0, zero);
+  assert.deepEqual(wall[0].stack?.tower.landX, [930, 940]);
 }
 
 // Chat reactions leave tower members alone; the timer includes the tower steps; next try between min and max

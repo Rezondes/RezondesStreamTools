@@ -1880,7 +1880,7 @@ Gefechts-Felder sind sie opt-in: nur ein Theme, das sie einbindet, hat sie.
 
 - [ ] AC1: Ein Theme, das Türme einbindet, hat die Felder: an/aus, Abstand min/max zwischen zwei Türmen,
   gleichzeitige Türme, je Stufe 1 bis 3 der Typ (Auswahl aus den Typen des Themes plus "keiner" für Stufe 3),
-  Tempo beim Zusammenlaufen, Dauer je Stufe beim Klettern und Absteigen, Dauer des Stehens, "Turm läuft" an/aus,
+  Tempo beim Zusammenlaufen, Dauer je Stufe beim Klettern und Absteigen, Abstand zur Seite beim Absteigen, Dauer des Stehens, "Turm läuft" an/aus,
   Dauer und Strecke des Laufens als Turm, und einen Ton beim Aufsteigen (an/aus, `SoundValue` wie bei den Alerts).
 - [ ] AC2: Das Theme setzt die Standards (z. B. die Typen der Stufen); ohne Angabe gelten Kern-Standards (Türme aus).
 - [ ] AC3: Werte ausserhalb der Grenzen und Typen, die das Theme nicht hat, werden abgelehnt; Themes ohne Türme haben

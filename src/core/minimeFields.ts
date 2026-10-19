@@ -122,6 +122,7 @@ export function minimeStackFields(set: MinimeVariantSet, defaults: Readonly<Reco
     number("minimeStackWalkMs", "Laufen als Turm: Dauer", MINIME_STACK, 5000, 500, 60_000, "ms"),
     number("minimeStackWalkPx", "Laufen als Turm: Strecke", MINIME_STACK, 300, 0, 1920, "px"),
     number("minimeDismountMs", "Absteigen: Dauer je Stufe", MINIME_STACK, 700, 100, 10_000, "ms"),
+    number("minimeDismountGap", "Absteigen: Abstand zur Seite", MINIME_STACK, 60, 0, 400, "px"),
     flag("minimeStackSound", "Ton beim Aufsteigen", MINIME_STACK, false),
     sound(STACK_SOUND, "Ton: Aufsteigen", MINIME_STACK),
   ], defaults);

@@ -1,6 +1,7 @@
 // Towers of the minimes (PLAN-MINIMES package 13): now and then, when one free minime of every level type is there, they
 // stack up: the upper ones gather at the base (gather, the base braces), climb up level by level from the bottom (climb),
-// stand as a tower (stacked), walk together (stackWalk, optional) and step off from the top (dismount). No chat command.
+// stand as a tower (stacked), walk together (stackWalk, optional) and step off from the top to the side (dismount). A
+// tower stays whole or ends whole: once a member leaves or changes its type, everybody steps off. No chat command.
 // The steps of a tower follow one timeline from its start, so a late timer never mixes them up. Settings come from
 // minimeStackFields. Every overlay rolls its own towers, the server knows nothing about them.
 // Pure (rule 12): time and randomness come in from outside. Used by hooks/useMinimes.ts. Check: minimeStack.check.ts.
@@ -24,6 +25,7 @@ export type StackOptions = {
   walkMs: number; // 0 = the tower does not walk
   walkPx: number;
   dismountMs: number;
+  dismountGapPx: number;
   sound: boolean;
 };
 
@@ -57,6 +59,7 @@ export function readStack(values: SettingValues): StackOptions | null {
     walkMs: values.minimeStackWalk === true ? number(values, "minimeStackWalkMs", 5000) : 0,
     walkPx: number(values, "minimeStackWalkPx", 300),
     dismountMs: number(values, "minimeDismountMs", 700),
+    dismountGapPx: number(values, "minimeDismountGap", 60),
     sound: values.minimeStackSound === true,
   };
 }
@@ -67,6 +70,9 @@ export const nextStackAt = (options: StackOptions, now: number, random: () => nu
 // Demo: the first demo minimes get the types of the levels, so ?demo shows towers (others keep their variant)
 export const withLevelVariants = (minimes: readonly Minime[], levels: readonly string[]): Minime[] =>
   minimes.map((minime, index) => (minime.variant || index >= levels.length ? minime : { ...minime, variant: levels[index] }));
+
+// Steps in which a member stands on the backs below it
+const LIFTED = new Set(["climb", "stacked", "stackWalk", "dismount"]);
 
 const ready = (actor: MinimeActor) => !actor.leaving && !actor.combat && !actor.stack && actor.action !== "enter" && actor.action !== "exit";
 
@@ -99,9 +105,12 @@ export function timeline(tower: Tower, level: number): Segment[] {
     still("climb", climb, climb + climbMs, baseX),
     still("stacked", climb + climbMs, walkStart, baseX),
     ...together,
-    still("dismount", off, off + dismountMs, walkX),
+    { action: "dismount", start: off, end: off + dismountMs, fromX: walkX, toX: tower.landX[level - 1] ?? walkX },
   ].filter(step => step.end > step.start);
 }
+
+// Where a level lands beside the base when it steps off: alternating sides, one gap further out per pair of levels
+const landOffset = (level: number, gapPx: number) => (-1) ** level * gapPx * Math.ceil((level - 1) / 2);
 
 function onStep(actor: MinimeActor, step: Segment): MinimeActor {
   const facing = step.toX === step.fromX ? actor.facing : step.toX > step.fromX ? 1 : -1;
@@ -137,13 +146,17 @@ export function startStack(actors: readonly MinimeActor[], options: StackOptions
   const preferred = random() < 0.5 ? -1 : 1;
   const fits = (direction: number) => { const x = baseX + direction * options.walkPx; return x >= low && x <= high; };
   const direction = fits(preferred) || !fits(-preferred) ? preferred : -preferred;
+  const walkX = options.walkMs > 0 ? Math.min(high, Math.max(low, baseX + direction * options.walkPx)) : baseX;
+  // Level 2 lands on one side of the base, level 3 on the other one, further levels further out
+  const landX = picked.map((_, index) => (index ? Math.min(high, Math.max(low, walkX + landOffset(index + 1, options.dismountGapPx))) : walkX));
   const tower: Tower = {
     members: picked.map(actor => actor.login),
     types: options.levels,
     startedAt: now,
     fromX,
     baseX,
-    walkX: options.walkMs > 0 ? Math.min(high, Math.max(low, baseX + direction * options.walkPx)) : baseX,
+    walkX,
+    landX,
     speedPxPerS: options.speedPxPerS,
     gatherEnd: now + Math.max(MIN_GATHER_MS, (farthest / options.speedPxPerS) * 1000),
     climbMs: options.climbMs,
@@ -175,8 +188,8 @@ export function advanceStacks(actors: readonly MinimeActor[], stage: MinimeStage
   return { actors: changed ? next : actors, climbs };
 }
 
-// Towers whose member left or changed its type: every level above it steps off at once and is free, the levels below
-// go on while at least two stand; a base alone is free again. Without a change actors stay the same array.
+// Towers whose member left or changed its type end whole: the member is free, every other lifted level steps off to its
+// side, the rest (the base, members still gathering) are free at once. Without a change actors stay the same array.
 export function breakStacks(actors: readonly MinimeActor[], typeOf: (actor: MinimeActor) => string | null, stage: MinimeStage, now: number, random: () => number): readonly MinimeActor[] {
   const byLogin = new Map(actors.map(actor => [actor.login, actor]));
   const towers = new Set(actors.flatMap(actor => (actor.stack ? [actor.stack.tower] : [])));
@@ -186,17 +199,17 @@ export function breakStacks(actors: readonly MinimeActor[], typeOf: (actor: Mini
       const member = byLogin.get(login);
       return !!member && !member.leaving && member.stack?.tower === tower && typeOf(member) === tower.types[index];
     };
-    const broken = tower.members.findIndex((login, index) => !holds(login, index));
-    if (broken < 0) continue;
+    if (tower.members.every(holds)) continue;
+    changed = true;
     tower.members.forEach((login, index) => {
       const member = byLogin.get(login);
       if (!member || member.stack?.tower !== tower) return;
       const free = withoutStack(member);
-      if (index === broken || member.leaving) byLogin.set(login, free);
-      else if (index > broken) byLogin.set(login, at(free, "dismount", now, tower.dismountMs, positionAt(member, now)));
-      else if (broken < 2) byLogin.set(login, nextAction(free, stage, now, random));
-      else return;
-      changed = true;
+      if (!holds(login, index)) byLogin.set(login, free);
+      else if (index && LIFTED.has(member.action)) {
+        const x = positionAt(member, now);
+        byLogin.set(login, { ...at(free, "dismount", now, tower.dismountMs, x), toX: x + (tower.landX[index] ?? tower.walkX) - tower.walkX });
+      } else byLogin.set(login, nextAction(free, stage, now, random));
     });
   }
   return changed ? actors.map(actor => byLogin.get(actor.login) ?? actor) : actors;

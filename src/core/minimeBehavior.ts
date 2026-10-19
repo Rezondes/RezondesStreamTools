@@ -14,7 +14,7 @@ export type MinimeAction = { name: string; durationMs: number; weight: number };
 export type Combat = { role: "shooter" | "target" | "medic"; shooter: string; target: string; medic: string; variant: string | null; hit: boolean };
 
 // A tower (minimeStack.ts): its members from the bottom (logins) with the type of each level, when it started, where every
-// member stood then, where it stands and where it walks to, and the timing of its steps
+// member stood then, where it stands and where it walks to, where every level lands when it steps off, and the timing
 export type Tower = {
   members: readonly string[];
   types: readonly string[];
@@ -22,6 +22,7 @@ export type Tower = {
   fromX: readonly number[];
   baseX: number;
   walkX: number;
+  landX: readonly number[];
   speedPxPerS: number;
   gatherEnd: number;
   climbMs: number;
@@ -32,8 +33,8 @@ export type Tower = {
 // Part of a minime in a tower: level 1 = bottom (the base)
 export type StackPart = { level: number; tower: Tower };
 
-// A minime with its running action. Position in px: fromX at the start, toX at the end (walk, approach, gather and
-// stackWalk move). facing: 1 = looks right, -1 = left. leaving: is disappearing (exit) and drops out afterwards.
+// A minime with its running action. Position in px: fromX at the start, toX at the end (walk, approach, gather,
+// stackWalk and dismount move). facing: 1 = looks right, -1 = left. leaving: is disappearing (exit) and drops out afterwards.
 // combat: in a fight. stack: in a tower.
 export type MinimeActor = Minime & {
   action: string;
@@ -53,7 +54,7 @@ export type MinimeActor = Minime & {
 export type MinimeSlots = { count: number; teams: readonly string[]; teamOf: (minime: Minime) => string | null };
 
 // Actions that move the figure from fromX to toX
-const MOVING = new Set(["walk", "approach", "gather", "stackWalk"]);
+const MOVING = new Set(["walk", "approach", "gather", "stackWalk", "dismount"]);
 
 // Everything the choice needs: movement from the settings, catalog of the theme, width of the scene in px, fixed places
 export type MinimeStage = { motion: MinimeMotion; catalog: readonly MinimeAction[]; widthPx: number; slots?: MinimeSlots };

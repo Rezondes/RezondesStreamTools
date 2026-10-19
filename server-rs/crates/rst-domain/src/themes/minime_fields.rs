@@ -212,6 +212,7 @@ pub fn minime_stack_fields(set: &MinimeVariantSet, defaults: &[(&str, SettingVal
         number("minimeStackWalkMs", "Laufen als Turm: Dauer", MINIME_STACK, 5000.0, 500.0, 60_000.0, ms, None),
         number("minimeStackWalkPx", "Laufen als Turm: Strecke", MINIME_STACK, 300.0, 0.0, 1920.0, px, None),
         number("minimeDismountMs", "Absteigen: Dauer je Stufe", MINIME_STACK, 700.0, 100.0, 10_000.0, ms, None),
+        number("minimeDismountGap", "Absteigen: Abstand zur Seite", MINIME_STACK, 60.0, 0.0, 400.0, px, None),
         flag("minimeStackSound", "Ton beim Aufsteigen", MINIME_STACK, false),
         sound("minimeSoundClimb", "Ton: Aufsteigen", MINIME_STACK),
     ];

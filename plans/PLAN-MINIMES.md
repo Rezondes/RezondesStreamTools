@@ -824,10 +824,11 @@ bewegen sich zu einem gemeinsamen Ort, stehen übereinander und bewegen sich gem
   2. `climb`: von unten nach oben steigt je Stufe eins auf (Dauer je Stufe aus den Feldern).
   3. `stacked`: der Turm steht (Dauer aus den Feldern); mit "Turm läuft" an folgt `stackWalk`: das unterste Minime
      läuft, die oberen tragen dieselbe Position (`positionAt` liest bei Stufen über 1 die Position der Basis).
-  4. `dismount`: von oben nach unten steigt je Stufe eins ab und landet neben der Basis; danach `stack = null` für alle.
+  4. `dismount`: von oben nach unten steigt je Stufe eins ab und landet neben der Basis (Stufe 2 und 3 auf
+     verschiedenen Seiten, Abstand aus den Feldern); danach `stack = null` für alle.
 - **Unterbrechungen:** `react()` lässt Minimes im Turm in Ruhe. Verschwindet ein Minime oder wechselt es den Typ,
-  steigen alle darüber sofort ab (`dismount`), die darunter stehen weiter, bis nur noch eine Stufe übrig ist; dann
-  endet der Turm.
+  löst sich der ganze Turm auf (entschieden 2026-10-20: ein Turm bleibt ganz oder löst sich ganz auf): alle oben
+  stehenden steigen sofort ab (`dismount`), die Basis und noch Zusammenlaufende sind sofort frei.
 - **Mit Gefechten und festen Plätzen:** Minimes im Turm sind für Gefechte nicht frei und umgekehrt. Mit `slots` laufen
   alle nach dem Abbau auf ihren Platz zurück (wie der Medic).
 - **Anzeige:** Das Theme zeigt die Schritte über `action-<name>` und die Stufe als CSS-Variable `--stack-level`; die
@@ -843,7 +844,7 @@ bewegen sich zu einem gemeinsamen Ort, stehen übereinander und bewegen sich gem
 - [ ] AC2: Ablauf `gather`, `climb` (unten nach oben), `stacked`, optional `stackWalk`, `dismount` (oben nach unten);
   danach sind alle Beteiligten frei.
 - [ ] AC3: Während `stackWalk` haben alle Stufen dieselbe x-Position wie die Basis.
-- [ ] AC4: Chat-Reaktionen unterbrechen keinen Turm; ein verschwindendes Minime lässt die Stufen darüber absteigen.
+- [ ] AC4: Chat-Reaktionen unterbrechen keinen Turm; ein verschwindendes Minime löst den ganzen Turm auf.
 - [ ] AC5: Der nächste Turm kommt über denselben Timer wie die Aktionsenden, ohne Frame-Schleife.
 - [ ] AC6: Ausgeschaltet, mit weniger als zwei Stufen oder in Themes ohne Türme ändert sich nichts.
 - [ ] AC7: Gefechte und Türme nehmen nie dasselbe Minime; mit `slots` kehren alle auf ihren Platz zurück.
@@ -859,8 +860,8 @@ Reihenfolge: Test schreiben, rot, minimal implementieren, grün, refactoren.
 2. `src/core/minimeStack.check.ts > "runs through all steps"` (AC2, AC3) mit festem `now` und `random`: Schritte in der
    Reihenfolge, Stufen beim Klettern von unten nach oben, beim Absteigen von oben nach unten; `positionAt` der Stufe 3
    gleich der Basis während `stackWalk`.
-3. `src/core/minimeStack.check.ts > "leaving minime breaks the tower above it"` (AC4): Stufe 2 verschwindet, Stufe 3
-   steigt ab, die Basis allein beendet den Turm.
+3. `src/core/minimeStack.check.ts > "a tower ends whole"` (AC4): egal welche Stufe verschwindet, alle anderen steigen
+   ab oder sind frei, kein Turm bleibt.
 4. `src/core/minimeBehavior.check.ts > "react leaves stacked minimes alone"`, `"nextEnd includes nextStackAt"` (AC4, AC5).
 5. `src/core/minimeStack.check.ts > "no tower when off or below two levels"` (AC6) und `"combat and stack never share"`
    (AC7), Rückweg mit `slots` (AC7).
