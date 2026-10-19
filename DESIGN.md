@@ -11,6 +11,7 @@ Entscheidungen je Theme stehen im Ordner `docs` des Themes, neben seinem Plan (`
 | `urlaub` | [DESIGN-URLAUB.md](src/themes/urlaub/docs/DESIGN-URLAUB.md) | Strand: Himmel, Meer, Sand und Holzschilder |
 | `plantage` | [DESIGN-PLANTAGE.md](src/themes/plantage/docs/DESIGN-PLANTAGE.md) | Mangoplantage als Illustration mit Tiefe: Baumreihen, Erde, Kisten und Milchglas-Erntepapier |
 | `koth` | [DESIGN-KOTH.md](src/themes/koth/docs/DESIGN-KOTH.md) | Militär: Hügel mit Funkmast, Oliv, Stahl und Schablonenschrift |
+| `bears` | [DESIGN-BEARS.md](src/themes/bears/docs/DESIGN-BEARS.md) | drei Bärenbrüder als Cartoon mit Kontur vor einer Aquarell-Welt aus Wald, Höhle und Stadt |
 
 Ein neues Theme bekommt seine eigene `DESIGN-<ID>.md` im selben Commit wie das Theme.
 

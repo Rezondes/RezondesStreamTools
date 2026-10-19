@@ -1,0 +1,988 @@
+{
+  "id": "bears",
+  "name": "Bärenbande",
+  "fields": [
+    {
+      "key": "channelName",
+      "type": "text",
+      "label": "Kanal-Name",
+      "group": "Allgemein",
+      "default": "Bärenbande",
+      "maxLength": 40
+    },
+    {
+      "key": "font",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Allgemein",
+      "default": "Nunito",
+      "options": [
+        "Nunito",
+        "Fredoka",
+        "Baloo 2",
+        "Inter",
+        "DM Sans"
+      ]
+    },
+    {
+      "key": "titleFont",
+      "type": "font",
+      "label": "Titelschrift",
+      "group": "Allgemein",
+      "default": "Sniglet",
+      "options": [
+        "Sniglet",
+        "Fredoka",
+        "Baloo 2",
+        "Nunito"
+      ]
+    },
+    {
+      "key": "fontSize",
+      "type": "number",
+      "label": "Schriftgrösse",
+      "group": "Allgemein",
+      "default": 24,
+      "min": 10,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "outline",
+      "type": "color",
+      "label": "Kontur",
+      "group": "Allgemein",
+      "default": "#1c1a19"
+    },
+    {
+      "key": "outlineWidth",
+      "type": "number",
+      "label": "Kontur: Stärke",
+      "group": "Allgemein",
+      "default": 4.5,
+      "min": 0,
+      "max": 20,
+      "step": 0.5
+    },
+    {
+      "key": "textColor",
+      "type": "color",
+      "label": "Text hell",
+      "group": "Allgemein",
+      "default": "#ffffff"
+    },
+    {
+      "key": "textDark",
+      "type": "color",
+      "label": "Text auf Papier",
+      "group": "Allgemein",
+      "default": "#2b2522"
+    },
+    {
+      "key": "textDim",
+      "type": "color",
+      "label": "Text gedämpft",
+      "group": "Allgemein",
+      "default": "#6b5d55"
+    },
+    {
+      "key": "paper",
+      "type": "color",
+      "label": "Papier (Karten, Schilder)",
+      "group": "Allgemein",
+      "default": "#fbf3e0"
+    },
+    {
+      "key": "paperShade",
+      "type": "color",
+      "label": "Papier: Schattenton",
+      "group": "Allgemein",
+      "default": "#e9dcc0"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "label": "Akzent (Ziegelrot)",
+      "group": "Allgemein",
+      "default": "#e2573f"
+    },
+    {
+      "key": "accentText",
+      "type": "color",
+      "label": "Akzent für Text",
+      "group": "Allgemein",
+      "default": "#b83c28"
+    },
+    {
+      "key": "accent2",
+      "type": "color",
+      "label": "Akzent 2 (Himmelblau)",
+      "group": "Allgemein",
+      "default": "#4d9de0"
+    },
+    {
+      "key": "radius",
+      "type": "number",
+      "label": "Eckenradius",
+      "group": "Allgemein",
+      "default": 22,
+      "min": 0,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "fadeDuration",
+      "type": "number",
+      "label": "Ein- und Ausblenden",
+      "group": "Allgemein",
+      "default": 500,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "locale",
+      "type": "select",
+      "label": "Uhrzeit-Format",
+      "group": "Allgemein",
+      "default": "de-DE",
+      "options": [
+        "de-DE",
+        "de-CH",
+        "de-AT",
+        "en-US",
+        "en-GB",
+        "fr-FR",
+        "es-ES",
+        "nl-NL"
+      ]
+    },
+    {
+      "key": "facing",
+      "type": "select",
+      "label": "Blickrichtung der Bären",
+      "group": "Allgemein",
+      "default": "links",
+      "options": [
+        "links",
+        "rechts"
+      ]
+    },
+    {
+      "key": "iceFur",
+      "type": "color",
+      "label": "Eisbär: Fell",
+      "group": "Bären",
+      "default": "#ffffff"
+    },
+    {
+      "key": "iceShade",
+      "type": "color",
+      "label": "Eisbär: Schattenton",
+      "group": "Bären",
+      "default": "#d5dcda"
+    },
+    {
+      "key": "grizzlyFur",
+      "type": "color",
+      "label": "Grizzly: Fell",
+      "group": "Bären",
+      "default": "#96693f"
+    },
+    {
+      "key": "grizzlyShade",
+      "type": "color",
+      "label": "Grizzly: Schattenton",
+      "group": "Bären",
+      "default": "#7d5533"
+    },
+    {
+      "key": "pandaFur",
+      "type": "color",
+      "label": "Panda: weisses Fell",
+      "group": "Bären",
+      "default": "#f3eeeb"
+    },
+    {
+      "key": "pandaShade",
+      "type": "color",
+      "label": "Panda: Schattenton auf Weiss",
+      "group": "Bären",
+      "default": "#d9d2ce"
+    },
+    {
+      "key": "pandaPatch",
+      "type": "color",
+      "label": "Panda: schwarzes Fell",
+      "group": "Bären",
+      "default": "#64615c"
+    },
+    {
+      "key": "pandaPatchShade",
+      "type": "color",
+      "label": "Panda: Schattenton auf Schwarz",
+      "group": "Bären",
+      "default": "#4e4b47"
+    },
+    {
+      "key": "bearEye",
+      "type": "color",
+      "label": "Augen",
+      "group": "Bären",
+      "default": "#111111"
+    },
+    {
+      "key": "bearNose",
+      "type": "color",
+      "label": "Nase",
+      "group": "Bären",
+      "default": "#111111"
+    },
+    {
+      "key": "grizzlyMouth",
+      "type": "color",
+      "label": "Grizzly: Mund innen",
+      "group": "Bären",
+      "default": "#6b3833"
+    },
+    {
+      "key": "grizzlyTongue",
+      "type": "color",
+      "label": "Grizzly: Zunge",
+      "group": "Bären",
+      "default": "#e0868a"
+    },
+    {
+      "key": "bearTeeth",
+      "type": "color",
+      "label": "Zähne",
+      "group": "Bären",
+      "default": "#ffffff"
+    },
+    {
+      "key": "phoneCase",
+      "type": "color",
+      "label": "Handy: Hülle",
+      "group": "Bären",
+      "default": "#f4a493"
+    },
+    {
+      "key": "phoneScreen",
+      "type": "color",
+      "label": "Handy: Bildschirm",
+      "group": "Bären",
+      "default": "#2d2926"
+    },
+    {
+      "key": "prop",
+      "type": "color",
+      "label": "Pfanne und Geräte",
+      "group": "Bären",
+      "default": "#4a4542"
+    },
+    {
+      "key": "food",
+      "type": "color",
+      "label": "Essen in der Pfanne",
+      "group": "Bären",
+      "default": "#f6c945"
+    },
+    {
+      "key": "blinkEvery",
+      "type": "number",
+      "label": "Blinzeln alle (0 = nie)",
+      "group": "Bären",
+      "default": 5000,
+      "min": 0,
+      "max": 30000,
+      "unit": "ms"
+    },
+    {
+      "key": "breathe",
+      "type": "boolean",
+      "label": "Atmen",
+      "group": "Bären",
+      "default": true
+    },
+    {
+      "key": "breatheMs",
+      "type": "number",
+      "label": "Atmen: Dauer eines Atemzugs",
+      "group": "Bären",
+      "default": 3600,
+      "min": 1000,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "towerSway",
+      "type": "number",
+      "label": "Bärenturm: Wanken (Grad)",
+      "group": "Bären",
+      "default": 2,
+      "min": 0,
+      "max": 10
+    },
+    {
+      "key": "towerSwayMs",
+      "type": "number",
+      "label": "Bärenturm: Wanken (Dauer)",
+      "group": "Bären",
+      "default": 2400,
+      "min": 500,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "timeStarting",
+      "type": "select",
+      "label": "Tageszeit Starting",
+      "group": "Welt",
+      "default": "morgen",
+      "options": [
+        "morgen",
+        "mittag",
+        "abend",
+        "nacht"
+      ],
+      "scene": "starting"
+    },
+    {
+      "key": "timeBrb",
+      "type": "select",
+      "label": "Tageszeit BRB",
+      "group": "Welt",
+      "default": "mittag",
+      "options": [
+        "morgen",
+        "mittag",
+        "abend",
+        "nacht"
+      ],
+      "scene": "brb"
+    },
+    {
+      "key": "timeEnding",
+      "type": "select",
+      "label": "Tageszeit Ending",
+      "group": "Welt",
+      "default": "abend",
+      "options": [
+        "morgen",
+        "mittag",
+        "abend",
+        "nacht"
+      ],
+      "scene": "ending"
+    },
+    {
+      "key": "skyMorningTop",
+      "type": "color",
+      "label": "Himmel Morgen oben",
+      "group": "Welt",
+      "default": "#f6b38a"
+    },
+    {
+      "key": "skyMorningBottom",
+      "type": "color",
+      "label": "Himmel Morgen unten",
+      "group": "Welt",
+      "default": "#fde4c6"
+    },
+    {
+      "key": "skyDayTop",
+      "type": "color",
+      "label": "Himmel Mittag oben",
+      "group": "Welt",
+      "default": "#7fc3e8"
+    },
+    {
+      "key": "skyDayBottom",
+      "type": "color",
+      "label": "Himmel Mittag unten",
+      "group": "Welt",
+      "default": "#cfe9f5"
+    },
+    {
+      "key": "skyEveningTop",
+      "type": "color",
+      "label": "Himmel Abend oben",
+      "group": "Welt",
+      "default": "#e8846a"
+    },
+    {
+      "key": "skyEveningBottom",
+      "type": "color",
+      "label": "Himmel Abend unten",
+      "group": "Welt",
+      "default": "#f7c99a"
+    },
+    {
+      "key": "skyNightTop",
+      "type": "color",
+      "label": "Himmel Nacht oben",
+      "group": "Welt",
+      "default": "#1f2d4f"
+    },
+    {
+      "key": "skyNightBottom",
+      "type": "color",
+      "label": "Himmel Nacht unten",
+      "group": "Welt",
+      "default": "#4a5a7c"
+    },
+    {
+      "key": "sun",
+      "type": "color",
+      "label": "Sonne",
+      "group": "Welt",
+      "default": "#fff1b8"
+    },
+    {
+      "key": "moon",
+      "type": "color",
+      "label": "Mond",
+      "group": "Welt",
+      "default": "#f4f0dc"
+    },
+    {
+      "key": "cloud",
+      "type": "color",
+      "label": "Wolken",
+      "group": "Welt",
+      "default": "#ffffff"
+    },
+    {
+      "key": "cloudCount",
+      "type": "number",
+      "label": "Anzahl Wolken",
+      "group": "Welt",
+      "default": 4,
+      "min": 0,
+      "max": 8
+    },
+    {
+      "key": "cloudSpeed",
+      "type": "number",
+      "label": "Wolken: Zeit für eine Durchquerung",
+      "group": "Welt",
+      "default": 140,
+      "min": 10,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "meadow",
+      "type": "color",
+      "label": "Wiese",
+      "group": "Welt",
+      "default": "#b9cf63"
+    },
+    {
+      "key": "meadowDark",
+      "type": "color",
+      "label": "Wiese dunkel",
+      "group": "Welt",
+      "default": "#8fb24a"
+    },
+    {
+      "key": "fir",
+      "type": "color",
+      "label": "Tannen",
+      "group": "Welt",
+      "default": "#5e8f6a"
+    },
+    {
+      "key": "firDark",
+      "type": "color",
+      "label": "Tannen dunkel",
+      "group": "Welt",
+      "default": "#3f6b52"
+    },
+    {
+      "key": "treeLeaf",
+      "type": "color",
+      "label": "Laubbäume",
+      "group": "Welt",
+      "default": "#7fae5a"
+    },
+    {
+      "key": "hills",
+      "type": "color",
+      "label": "Hügel in der Ferne",
+      "group": "Welt",
+      "default": "#a9c7b9"
+    },
+    {
+      "key": "city",
+      "type": "color",
+      "label": "Stadt",
+      "group": "Welt",
+      "default": "#d8dde3"
+    },
+    {
+      "key": "cityWindow",
+      "type": "color",
+      "label": "Stadt: Fenster",
+      "group": "Welt",
+      "default": "#9fb0c0"
+    },
+    {
+      "key": "bridge",
+      "type": "color",
+      "label": "Brücke",
+      "group": "Welt",
+      "default": "#d9573b"
+    },
+    {
+      "key": "water",
+      "type": "color",
+      "label": "Wasser",
+      "group": "Welt",
+      "default": "#9cc9d9"
+    },
+    {
+      "key": "road",
+      "type": "color",
+      "label": "Weg",
+      "group": "Welt",
+      "default": "#a3a5a6"
+    },
+    {
+      "key": "cave",
+      "type": "color",
+      "label": "Höhlenhügel",
+      "group": "Welt",
+      "default": "#8b6352"
+    },
+    {
+      "key": "caveDark",
+      "type": "color",
+      "label": "Höhleneingang",
+      "group": "Welt",
+      "default": "#4a3128"
+    },
+    {
+      "key": "wood",
+      "type": "color",
+      "label": "Holz",
+      "group": "Welt",
+      "default": "#9a6a44"
+    },
+    {
+      "key": "flower",
+      "type": "color",
+      "label": "Blumen",
+      "group": "Welt",
+      "default": "#fff7e8"
+    },
+    {
+      "key": "flowers",
+      "type": "boolean",
+      "label": "Blumen und Gras",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "showCity",
+      "type": "boolean",
+      "label": "Stadt in der Ferne",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "showBridge",
+      "type": "boolean",
+      "label": "Brücke in der Ferne",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "showCave",
+      "type": "boolean",
+      "label": "Höhle",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "paperGrain",
+      "type": "number",
+      "label": "Aquarell: Papierstruktur",
+      "group": "Welt",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "sketchLines",
+      "type": "number",
+      "label": "Aquarell: Skizzenlinien",
+      "group": "Welt",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "bearStarting",
+      "type": "select",
+      "label": "Starting: Bär",
+      "group": "Starting, BRB, Ending",
+      "default": "grizzly",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda",
+        "turm"
+      ],
+      "scene": "starting"
+    },
+    {
+      "key": "bearBrb",
+      "type": "select",
+      "label": "BRB: Bär",
+      "group": "Starting, BRB, Ending",
+      "default": "eisbaer",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda",
+        "turm"
+      ],
+      "scene": "brb"
+    },
+    {
+      "key": "bearEnding",
+      "type": "select",
+      "label": "Ending: Bär",
+      "group": "Starting, BRB, Ending",
+      "default": "panda",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda",
+        "turm"
+      ],
+      "scene": "ending"
+    },
+    {
+      "key": "bearSize",
+      "type": "number",
+      "label": "Bär: Grösse (Höhe)",
+      "group": "Starting, BRB, Ending",
+      "default": 520,
+      "min": 100,
+      "max": 1000,
+      "unit": "px"
+    },
+    {
+      "key": "bearSide",
+      "type": "select",
+      "label": "Bär: Seite",
+      "group": "Starting, BRB, Ending",
+      "default": "links",
+      "options": [
+        "links",
+        "rechts"
+      ]
+    },
+    {
+      "key": "startingEyebrow",
+      "type": "text",
+      "label": "Starting: Überzeile",
+      "group": "Starting, BRB, Ending",
+      "default": "Gleich geht's los",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "startingTitle",
+      "type": "text",
+      "label": "Starting: Titel",
+      "group": "Starting, BRB, Ending",
+      "default": "Stream startet gleich",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "startingNote",
+      "type": "text",
+      "label": "Starting: Untertitel",
+      "group": "Starting, BRB, Ending",
+      "default": "Die Bande sammelt sich noch.",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "brbEyebrow",
+      "type": "text",
+      "label": "BRB: Überzeile",
+      "group": "Starting, BRB, Ending",
+      "default": "Kurze Pause",
+      "maxLength": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "brbTitle",
+      "type": "text",
+      "label": "BRB: Titel",
+      "group": "Starting, BRB, Ending",
+      "default": "Bin gleich zurück",
+      "maxLength": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "brbNote",
+      "type": "text",
+      "label": "BRB: Untertitel",
+      "group": "Starting, BRB, Ending",
+      "default": "Hier wird gerade gekocht.",
+      "maxLength": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "brbSign",
+      "type": "text",
+      "label": "BRB: Schild des Grizzly",
+      "group": "Starting, BRB, Ending",
+      "default": "Gleich zurück!",
+      "maxLength": 24,
+      "scene": "brb"
+    },
+    {
+      "key": "endingEyebrow",
+      "type": "text",
+      "label": "Ending: Überzeile",
+      "group": "Starting, BRB, Ending",
+      "default": "Danke fürs Zuschauen",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "endingTitle",
+      "type": "text",
+      "label": "Ending: Titel",
+      "group": "Starting, BRB, Ending",
+      "default": "Stream beendet",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "endingNote",
+      "type": "text",
+      "label": "Ending: Untertitel",
+      "group": "Starting, BRB, Ending",
+      "default": "Bis zum nächsten Mal!",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "signWidth",
+      "type": "number",
+      "label": "Schild: Breite",
+      "group": "Starting, BRB, Ending",
+      "default": 1000,
+      "min": 400,
+      "max": 1800,
+      "unit": "px"
+    },
+    {
+      "key": "titleSize",
+      "type": "number",
+      "label": "Titelgrösse",
+      "group": "Starting, BRB, Ending",
+      "default": 104,
+      "min": 30,
+      "max": 240,
+      "unit": "px"
+    },
+    {
+      "key": "countdown",
+      "type": "number",
+      "label": "Countdown-Standard",
+      "group": "Starting, BRB, Ending",
+      "default": 300,
+      "min": 0,
+      "max": 86400,
+      "unit": "s",
+      "scene": "starting"
+    },
+    {
+      "key": "countdownPrefix",
+      "type": "text",
+      "label": "Countdown-Präfix",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "countdownDone",
+      "type": "text",
+      "label": "Text nach dem Countdown",
+      "group": "Starting, BRB, Ending",
+      "default": "Gleich live!",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "progressStyle",
+      "type": "select",
+      "label": "Fortschritt",
+      "group": "Starting, BRB, Ending",
+      "default": "weg",
+      "options": [
+        "weg",
+        "balken",
+        "aus"
+      ],
+      "scene": "starting"
+    },
+    {
+      "key": "afkPrefix",
+      "type": "text",
+      "label": "BRB-Zähler-Präfix",
+      "group": "Starting, BRB, Ending",
+      "default": "Pause seit ",
+      "maxLength": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "endingNextLabel",
+      "type": "text",
+      "label": "Nächster Stream (Beschriftung)",
+      "group": "Starting, BRB, Ending",
+      "default": "Nächster Stream",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "endingNext",
+      "type": "text",
+      "label": "Nächster Stream (leer = ausblenden)",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "startingLines",
+      "type": "lines",
+      "label": "Sprüche Starting",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "Snacks werden verteilt ...",
+        "Das Handy wird aufgeladen ...",
+        "Die Höhle wird aufgeräumt ...",
+        "Die Begrüssung wird geübt ..."
+      ],
+      "maxLines": 100,
+      "scene": "starting"
+    },
+    {
+      "key": "brbLines",
+      "type": "lines",
+      "label": "Sprüche BRB",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "Es wird etwas Feines gekocht ...",
+        "Kurz die Höhle fegen ...",
+        "Nachrichten werden gecheckt ..."
+      ],
+      "maxLines": 100,
+      "scene": "brb"
+    },
+    {
+      "key": "endingLines",
+      "type": "lines",
+      "label": "Sprüche Ending",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "Die Bande winkt zum Abschied ...",
+        "Zeit für ein Nickerchen in der Höhle ...",
+        "Bis bald!"
+      ],
+      "maxLines": 100,
+      "scene": "ending"
+    },
+    {
+      "key": "linesEvery",
+      "type": "number",
+      "label": "Sprüche wechseln alle",
+      "group": "Starting, BRB, Ending",
+      "default": 6,
+      "min": 2,
+      "max": 120,
+      "unit": "s"
+    },
+    {
+      "key": "ticker",
+      "type": "text",
+      "label": "Ticker-Text (leer = aus)",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 300
+    },
+    {
+      "key": "tickerSpeed",
+      "type": "number",
+      "label": "Ticker: Zeit pro Durchlauf",
+      "group": "Starting, BRB, Ending",
+      "default": 30,
+      "min": 5,
+      "max": 300,
+      "unit": "s"
+    },
+    {
+      "key": "powerOn",
+      "type": "select",
+      "label": "Einschalten",
+      "group": "Starting, BRB, Ending",
+      "default": "aquarell",
+      "options": [
+        "aquarell",
+        "blenden",
+        "keins"
+      ]
+    },
+    {
+      "key": "powerOnDuration",
+      "type": "number",
+      "label": "Einschalten (Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": 1600,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    }
+  ],
+  "groupScenes": {
+    "Bären": [
+      "starting",
+      "brb",
+      "ending"
+    ],
+    "Welt": [
+      "starting",
+      "brb",
+      "ending"
+    ],
+    "Starting, BRB, Ending": [
+      "starting",
+      "brb",
+      "ending"
+    ]
+  },
+  "personalize": {
+    "neo": {
+      "channelName": "Neo"
+    },
+    "rezondes": {
+      "channelName": "Rezondes"
+    },
+    "neo_42": {
+      "channelName": "Neo_42"
+    }
+  }
+}

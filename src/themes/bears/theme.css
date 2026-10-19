@@ -1,0 +1,229 @@
+/* Bärenbande theme: three bear brothers as cartoons with one clear outline and one shade tone, in front of a watercolor
+   world without black outlines. Encapsulated under .theme-bears; colors, sizes and times come as CSS variables from the
+   settings, further sizes as var(--name, default). Classes bb-*, keyframes bears-*. */
+
+.theme-bears {
+  font-family: var(--font), system-ui, sans-serif;
+  font-size: var(--fontSize);
+  line-height: 1.3;
+  color: var(--textDark);
+  /* The paper surface shared by cards, signs and pills: outline, flat paper, one shade band inside at the bottom */
+  --sticker: inset 0 calc(-1 * var(--band, 10px)) 0 var(--paperShade);
+  --ground-shadow: color-mix(in srgb, var(--outline) 22%, transparent);
+}
+
+/* --- Bears ------------------------------------------------------------------------------------------------------ */
+.theme-bears .bb-bear { display: block; height: 100%; width: auto; overflow: visible; }
+.theme-bears .bb-eisbaer { --fur: var(--iceFur); --shade: var(--iceShade); --limb: var(--iceFur); }
+.theme-bears .bb-grizzly { --fur: var(--grizzlyFur); --shade: var(--grizzlyShade); --limb: var(--grizzlyFur); }
+.theme-bears .bb-panda { --fur: var(--pandaFur); --shade: var(--pandaShade); --limb: var(--pandaPatch); }
+.theme-bears .part-fur { fill: var(--fur); }
+.theme-bears .part-shade { fill: var(--shade); }
+.theme-bears .part-patch { fill: var(--pandaPatch); }
+.theme-bears .part-patch-shade { fill: var(--pandaPatchShade); }
+.theme-bears .part-back { fill: var(--limb); stroke: var(--outline); stroke-width: var(--outlineWidth); }
+.theme-bears .part-limb { fill: var(--limb); }
+.theme-bears .part-outline,
+.theme-bears .part-line {
+  fill: none;
+  stroke: var(--outline);
+  stroke-width: var(--outlineWidth);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.theme-bears .part-eye { fill: var(--bearEye); transform-box: fill-box; transform-origin: center; }
+.theme-bears .part-nose { fill: var(--bearNose); }
+.theme-bears .part-mouth { fill: var(--grizzlyMouth); }
+.theme-bears .part-tongue { fill: var(--grizzlyTongue); }
+.theme-bears .part-teeth { fill: var(--bearTeeth); }
+.theme-bears .part-pad { fill: var(--shade); }
+.theme-bears .bb-panda .part-pad { fill: var(--pandaPatchShade); }
+.theme-bears .part-prop { fill: var(--prop); }
+.theme-bears .bb-pose-phone .part-prop,
+.theme-bears .bb-pose-selfie .part-prop { fill: var(--phoneCase); }
+.theme-bears .part-screen { fill: var(--phoneScreen); }
+.theme-bears .part-paper { fill: var(--paper); }
+.theme-bears .part-food { fill: var(--food); }
+.theme-bears .part-steam {
+  fill: none;
+  stroke: var(--paper);
+  stroke-width: calc(var(--outlineWidth) * 0.6);
+  stroke-linecap: round;
+  opacity: 0.8;
+  animation: bears-steam var(--steam-time, 2.4s) ease-in-out infinite;
+}
+.theme-bears .part-sign-text {
+  font-family: var(--titleFont), var(--font), sans-serif;
+  font-size: var(--sign-text, 15px);
+  font-weight: 800;
+  fill: var(--textDark);
+}
+
+/* Life: blinking (every blinkEvery, 0 = never), breathing (on/off, duration), the tower sways */
+.theme-bears .bb-blinking .part-eye { animation: bears-blink var(--blinkEvery) step-end infinite; }
+.theme-bears .bb-breathing .bb-body { transform-box: fill-box; transform-origin: 50% 100%; animation: bears-breathe var(--breatheMs) ease-in-out infinite; }
+.theme-bears .bb-tower-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: bears-sway var(--towerSwayMs) ease-in-out infinite; }
+.theme-bears .bb-facing-rechts .bb-hero { scale: -1 1; }
+.theme-bears .bb-facing-rechts .part-sign-text { transform: scaleX(-1); transform-box: fill-box; transform-origin: center; }
+@keyframes bears-blink { 0%, 96% { transform: scaleY(1); } 97%, 99% { transform: scaleY(0.1); } }
+@keyframes bears-breathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.015); } }
+@keyframes bears-sway { 0%, 100% { rotate: calc(-1deg * var(--towerSway)); } 50% { rotate: calc(1deg * var(--towerSway)); } }
+@keyframes bears-steam { 0%, 100% { translate: 0 0; opacity: 0.2; } 50% { translate: 0 calc(-1 * var(--steam-rise, 6px)); opacity: 0.9; } }
+
+/* --- Paper surfaces --------------------------------------------------------------------------------------------- */
+.theme-bears .bb-card {
+  background: var(--paper);
+  color: var(--textDark);
+  border: var(--card-line, 5px) solid var(--outline);
+  border-radius: var(--radius);
+  box-shadow: var(--sticker);
+  padding: var(--card-padding, 24px 36px 30px);
+}
+.theme-bears .bb-pill {
+  display: inline-block;
+  background: var(--paper);
+  color: var(--textDark);
+  border: var(--pill-line, 4px) solid var(--outline);
+  border-radius: var(--pill-radius, 999px);
+  padding: var(--pill-padding, 6px 22px);
+  font-weight: 800;
+}
+
+/* --- World ------------------------------------------------------------------------------------------------------ */
+.theme-bears .bb-screen { position: fixed; inset: 0; overflow: hidden; background: var(--meadow); }
+.theme-bears .bb-world { position: absolute; inset: 0; overflow: hidden; }
+.theme-bears .bb-world-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.theme-bears .time-morgen { --sky-top: var(--skyMorningTop); --sky-bottom: var(--skyMorningBottom); --light: var(--sun); --dusk: 0.06; }
+.theme-bears .time-mittag { --sky-top: var(--skyDayTop); --sky-bottom: var(--skyDayBottom); --light: var(--sun); --dusk: 0; }
+.theme-bears .time-abend { --sky-top: var(--skyEveningTop); --sky-bottom: var(--skyEveningBottom); --light: var(--sun); --dusk: 0.14; }
+.theme-bears .time-nacht { --sky-top: var(--skyNightTop); --sky-bottom: var(--skyNightBottom); --light: var(--moon); --dusk: 0.42; }
+.theme-bears .bb-stop-sky-top { stop-color: var(--sky-top); }
+.theme-bears .bb-stop-sky-bottom { stop-color: var(--sky-bottom); }
+.theme-bears .bb-stop-light { stop-color: var(--light); }
+.theme-bears .bb-sun, .theme-bears .bb-moon { fill: var(--light); }
+.theme-bears .bb-dusk { fill: var(--sky-top); opacity: var(--dusk); pointer-events: none; }
+.theme-bears .bb-grain { opacity: calc(var(--paperGrain) * 0.16); mix-blend-mode: multiply; pointer-events: none; }
+/* Watercolor surfaces: each with sketch lines in a darker tone of itself (never black), far things mixed with the sky */
+.theme-bears .bb-world-svg path { stroke-width: var(--sketch-width, 2.5); stroke-linejoin: round; stroke-linecap: round; }
+.theme-bears .bb-hills { fill: color-mix(in srgb, var(--hills), var(--sky-bottom) 35%); stroke: color-mix(in srgb, var(--hills), var(--outline) calc(var(--sketchLines) * 25%)); }
+.theme-bears .bb-city-blocks { fill: color-mix(in srgb, var(--city), var(--sky-bottom) 30%); stroke: color-mix(in srgb, var(--city), var(--outline) calc(var(--sketchLines) * 30%)); }
+.theme-bears .bb-city-windows { fill: color-mix(in srgb, var(--cityWindow), var(--sky-bottom) 30%); }
+.theme-bears .bb-water { fill: color-mix(in srgb, var(--water), var(--sky-bottom) 30%); }
+.theme-bears .bb-bridge-solid { fill: color-mix(in srgb, var(--bridge), var(--sky-bottom) 25%); }
+.theme-bears .bb-bridge-cables { fill: none; stroke: color-mix(in srgb, var(--bridge), var(--sky-bottom) 25%); stroke-width: var(--cable-width, 4); }
+.theme-bears .bb-meadow { fill: var(--meadow); stroke: color-mix(in srgb, var(--meadow), var(--outline) calc(var(--sketchLines) * 30%)); }
+.theme-bears .bb-meadow-patch { fill: var(--meadowDark); opacity: 0.55; }
+.theme-bears .bb-road { fill: var(--road); stroke: color-mix(in srgb, var(--road), var(--outline) calc(var(--sketchLines) * 40%)); }
+.theme-bears .bb-trunk { fill: var(--wood); stroke: color-mix(in srgb, var(--wood), var(--outline) calc(var(--sketchLines) * 40%)); }
+.theme-bears .bb-crown { fill: var(--treeLeaf); stroke: color-mix(in srgb, var(--treeLeaf), var(--outline) calc(var(--sketchLines) * 40%)); }
+.theme-bears .bb-crown-shade { fill: color-mix(in srgb, var(--treeLeaf), var(--firDark) 45%); }
+.theme-bears .bb-mound { fill: color-mix(in srgb, var(--cave), var(--meadowDark) 30%); stroke: color-mix(in srgb, var(--cave), var(--outline) calc(var(--sketchLines) * 40%)); }
+.theme-bears .bb-cave-mouth { fill: var(--caveDark); }
+.theme-bears .bb-cave-rim { fill: none; stroke: color-mix(in srgb, var(--cave), var(--outline) calc(var(--sketchLines) * 50%)); stroke-width: var(--rim-width, 6); }
+.theme-bears .bb-fir-body { fill: var(--fir); stroke: color-mix(in srgb, var(--fir), var(--outline) calc(var(--sketchLines) * 40%)); }
+.theme-bears .bb-fir-shade { fill: var(--firDark); opacity: 0.6; }
+.theme-bears .bb-tufts { fill: var(--meadowDark); }
+.theme-bears .bb-flowers { fill: var(--flower); }
+.theme-bears .bb-cloud path { fill: var(--cloud); opacity: 0.92; }
+/* Clouds drift from the left edge to the right, each with its own phase */
+.theme-bears .bb-cloud { animation: bears-drift var(--cloudSpeed) linear infinite; animation-delay: calc(var(--cloudSpeed) * var(--i) / var(--n) * -1); }
+@keyframes bears-drift { from { translate: calc(-1 * var(--cloud-room, 400px)) 0; } to { translate: var(--drift-width, 2200px) 0; } }
+
+/* --- Full-screen scenes ----------------------------------------------------------------------------------------- */
+.theme-bears .bb-stage { display: block; }
+.theme-bears .bb-clock { position: absolute; top: var(--clock-top, 40px); right: var(--clock-right, 48px); font-size: var(--clock-size, 30px); }
+.theme-bears .bb-hero-spot {
+  position: absolute;
+  bottom: var(--ground, 70px);
+  left: var(--hero-gap, 110px);
+  height: var(--bearSize);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--name-space, 14px);
+}
+.theme-bears .bb-side-rechts .bb-hero-spot { left: auto; right: var(--hero-gap, 110px); }
+.theme-bears .bb-hero { height: 100%; min-height: 0; flex: 1; }
+.theme-bears .bb-ground-shadow {
+  position: absolute;
+  bottom: calc(-1 * var(--shadow-drop, 12px));
+  width: 80%;
+  height: var(--shadow-height, 36px);
+  border-radius: 50%;
+  background: var(--ground-shadow);
+  filter: blur(var(--shadow-blur, 4px));
+}
+.theme-bears .bb-name { position: absolute; bottom: calc(-1 * var(--name-drop, 54px)); font-size: var(--name-size, 24px); }
+.theme-bears .bb-board {
+  position: absolute;
+  top: var(--board-top, 150px);
+  right: var(--board-gap, 130px);
+  width: var(--signWidth);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--board-space, 28px);
+}
+.theme-bears .bb-side-rechts .bb-board { right: auto; left: var(--board-gap, 130px); }
+.theme-bears .bb-sign { width: 100%; text-align: center; }
+.theme-bears .bb-eyebrow { margin: 0; background: var(--accent); color: var(--textColor); font-size: var(--eyebrow-size, 26px); }
+.theme-bears .bb-title {
+  margin: var(--title-space, 18px 0 8px);
+  font-family: var(--titleFont), var(--font), sans-serif;
+  font-size: var(--titleSize);
+  font-weight: 800;
+  line-height: 1.05;
+  color: var(--paper);
+  -webkit-text-stroke: calc(var(--outlineWidth) * var(--title-line, 1.6px)) var(--outline);
+  paint-order: stroke fill;
+}
+.theme-bears .bb-note { margin: 0; color: var(--textDim); font-size: var(--note-size, 32px); font-weight: 700; }
+.theme-bears .bb-count { display: flex; flex-direction: column; align-items: center; gap: var(--count-space, 12px); min-width: var(--count-width, 420px); }
+.theme-bears .bb-big { font-family: var(--titleFont), var(--font), sans-serif; font-size: var(--big-size, 76px); color: var(--accentText); line-height: 1; }
+.theme-bears .bb-next { font-size: var(--next-size, 40px); }
+/* Progress: a dashed path a little bear walks along, or an outlined bar */
+.theme-bears .bb-progress-path {
+  position: relative;
+  width: var(--path-width, 380px);
+  height: var(--path-height, 56px);
+  background: linear-gradient(90deg, var(--outline) 50%, transparent 0) left bottom / var(--dash, 22px) var(--dash-height, 4px) repeat-x;
+}
+.theme-bears .bb-walker {
+  position: absolute;
+  bottom: var(--walker-lift, 2px);
+  left: calc(var(--part) * (100% - var(--walker-width, 34px)));
+  height: var(--walker-height, 52px);
+  transition: left var(--fadeDuration) linear;
+  animation: bears-waddle var(--waddle-time, 0.8s) ease-in-out infinite;
+}
+.theme-bears .bb-progress-bar { width: var(--path-width, 380px); height: var(--bar-height, 22px); border: var(--pill-line, 4px) solid var(--outline); border-radius: var(--pill-radius, 999px); overflow: hidden; background: var(--paperShade); }
+.theme-bears .bb-progress-bar span { display: block; height: 100%; width: calc(var(--part) * 100%); background: var(--accent); transition: width var(--fadeDuration) linear; }
+.theme-bears .bb-saying { margin: 0; font-size: var(--saying-size, 28px); color: var(--textDim); animation: bears-plopp var(--fadeDuration) ease-out; }
+.theme-bears .bb-saying::before { content: ""; display: inline-block; width: var(--dot, 12px); height: var(--dot, 12px); margin-right: var(--dot-space, 12px); border-radius: 50%; background: var(--accent2); vertical-align: middle; }
+/* Ticker: a paper strip at the bottom with the outline */
+.theme-bears .bb-ticker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background: var(--paper);
+  border-top: var(--pill-line, 4px) solid var(--outline);
+  box-shadow: var(--sticker);
+  padding: var(--ticker-padding, 10px 0 14px);
+  white-space: nowrap;
+  font-weight: 800;
+  font-size: var(--ticker-size, 28px);
+}
+.theme-bears .bb-ticker span { display: inline-block; padding-left: 100%; animation: bears-ticker var(--tickerSpeed) linear infinite; }
+@keyframes bears-ticker { to { translate: -100% 0; } }
+@keyframes bears-waddle { 0%, 100% { rotate: calc(-1deg * var(--waddle, 6)); } 50% { rotate: calc(1deg * var(--waddle, 6)); } }
+@keyframes bears-plopp { 0% { scale: 0.7; opacity: 0; } 70% { scale: 1.05; opacity: 1; } 100% { scale: 1; } }
+
+/* Power on: the world paints itself in from left to right like a wash, the stage pops up after it */
+.theme-bears .power-aquarell .bb-world { animation: bears-wash var(--powerOnDuration) ease-out both; }
+.theme-bears .power-aquarell .bb-stage > * { animation: bears-plopp var(--fadeDuration) ease-out both; animation-delay: calc(var(--powerOnDuration) * 0.6); }
+.theme-bears .power-blenden.bb-screen { animation: bears-fade var(--powerOnDuration) ease-out both; }
+@keyframes bears-wash { from { clip-path: inset(0 100% 0 0); filter: blur(var(--wash-blur, 12px)); } to { clip-path: inset(0 0 0 0); filter: blur(0); } }
+@keyframes bears-fade { from { opacity: 0; } to { opacity: 1; } }

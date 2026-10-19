@@ -1,7 +1,7 @@
 # RST - Rezondes Stream Tools
 
 Werkzeuge für Streamer: Browserquellen für OBS, ein Dashboard und eine Befehlsseite für Zuschauer, im Look des
-gewählten Themes (Standard, Matrix, Urlaub, Südfrucht-Plantage, King of the Hill).
+gewählten Themes (Standard, Matrix, Urlaub, Südfrucht-Plantage, King of the Hill, Bärenbande).
 Oberfläche mit React + Vite + TypeScript, dazu ein Server in Rust (`server-rs/`, Docker) für mehrere Streamer:
 Twitch-Anmeldung, alle Events, verschlüsselte Profile und Backups.
 
@@ -250,6 +250,7 @@ mitbringt; fehlende Szenen bleiben leer und das Dashboard markiert sie als nicht
 | `urlaub` | tropischer Strand mit Meer, Palmen und Holzschildern, Tageszeit je Szene | 16 Strandsachen, Typ per `!typ` |
 | `plantage` | Mangoplantage mit Baumreihen, Kisten und dem Streamer als Mangopflücker | Mango-Soldaten in fünf Rollen, mit Gefechten |
 | `koth` | Militär nach dem KOTH-Modus aus Arma: Hügel mit Funkmast, Lagekarte, Funkgeräte | Soldaten in Rollen und drei Fraktionen, mit Gefechten |
+| `bears` | drei Bärenbrüder (Eisbär, Grizzly, Panda) als Cartoon vor einer Aquarell-Welt; je Szene ein Bär oder der Bärenturm. Bisher Starting, BRB und Ending, die übrigen Szenen sind noch leer | keine |
 
 Wie man ein eigenes Theme baut, steht in [THEMES.md](THEMES.md).
 

@@ -4,6 +4,7 @@ use std::sync::LazyLock;
 
 use crate::identity::values::Login;
 use crate::settings::field::SettingValues;
+use crate::themes::bears::bears;
 use crate::themes::koth::koth;
 use crate::themes::matrix::matrix;
 use crate::themes::plantage::plantage;
@@ -36,7 +37,8 @@ impl Theme {
 
 pub const DEFAULT_THEME: &str = "standard";
 
-static THEMES: LazyLock<Vec<Theme>> = LazyLock::new(|| vec![standard(), matrix(), urlaub(), plantage(), koth()]);
+static THEMES: LazyLock<Vec<Theme>> =
+    LazyLock::new(|| vec![standard(), matrix(), urlaub(), plantage(), koth(), bears()]);
 
 #[must_use]
 pub fn themes() -> &'static [Theme] {

@@ -317,12 +317,75 @@
 }
 :root[data-skin="koth"] .dashboard-nav { border-bottom: 2px solid #4b5320; }
 
+/* --- Bärenbande: cartoon bears in a watercolor world. The world of the scenes as the page, paper cards with the
+       thick outline and one shade band, brick red as signature, sky blue for emphasis, outlined title (scenery from
+       Scenery.tsx) ---------------------------------------------------------------------------------------------- */
+:root[data-skin="bears"] {
+  color-scheme: light;
+  --bg: #fbf3e0;
+  --page: linear-gradient(180deg, #7fc3e8 0%, #cfe9f5 55%, #b9cf63 56%, #8fb24a 100%) fixed;
+  --surface: #fbf3e0;
+  --surface-2: #fff9ec;
+  --field: #ffffff;
+  --fg: #2b2522;
+  --fg-dim: #6b5d55;
+  --line: #e9dcc0;
+  --border: #1c1a19;
+  --heading: #b83c28;
+  --title-color: #fbf3e0;
+  --accent: #b83c28;
+  --accent-hover: #9a3020;
+  --on-accent: #ffffff;
+  --emph: #1f6fb2;
+  --glow: none;
+  --focus: #4d9de0;
+  --error: #8e1b5c;
+  --error-bg: #fbe9f0;
+  --on-error: #ffffff;
+  --btn-bg: #fbf3e0;
+  --btn-fg: #2b2522;
+  --btn-border: #1c1a19;
+  --btn-shadow: inset 0 -4px 0 #e9dcc0;
+  --btn-weight: 800;
+  --hover-bg: #fff1d6;
+  --hover-fg: #2b2522;
+  --press: translateY(3px);
+  --border-w: 3px;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-btn: 14px;
+  --radius-check: 6px;
+  --shadow: inset 0 -8px 0 #e9dcc0;
+  --font: "Nunito", system-ui, sans-serif;
+  --font-title: "Sniglet", "Nunito", system-ui, sans-serif;
+  --title-size: 36px;
+  --title-weight: 800;
+  --heading-weight: 800;
+  --title-case: none;
+  --label-case: none;
+  --btn-case: none;
+  --thumb-w: 20px;
+  --dash-max: min(1440px, calc(100vw - 2 * clamp(60px, 9vw, 200px)));
+  --checker: repeating-conic-gradient(#efe3c7 0 25%, #fbf3e0 0 50%) 0 0 / 24px 24px;
+  --scroll-thumb: #6b5d55;
+  --scroll-track: #fbf3e0;
+}
+/* Title like the titles of the scenes: paper letters with the thick outline */
+:root[data-skin="bears"] .dashboard h1 { -webkit-text-stroke: 7px #1c1a19; paint-order: stroke fill; letter-spacing: 0.02em; }
+:root[data-skin="bears"] .btn.primary { box-shadow: inset 0 -4px 0 #7f2a1c; }
+:root[data-skin="bears"] .btn:active:not(:disabled) { box-shadow: none; }
+:root[data-skin="bears"] .dashboard-nav { border-bottom: none; }
+/* Loose lines on the page (the login hint) and the user get a paper pill with the outline, readable in front of the sky */
+:root[data-skin="bears"] .dashboard > p:not(.login, .error) { align-self: flex-start; margin: 0; padding: 4px 4px 4px 16px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
+:root[data-skin="bears"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
+
 /* Scenery behind the dashboard: each themed skin shows its own, the others stay hidden */
 .skin-scenery { display: none; }
 :root[data-skin="urlaub"] .skin-scenery-urlaub,
 :root[data-skin="plantage"] .skin-scenery-plantage,
-:root[data-skin="koth"] .skin-scenery-koth { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-:root[data-skin="urlaub"] .dashboard, :root[data-skin="plantage"] .dashboard, :root[data-skin="koth"] .dashboard { position: relative; z-index: 1; }
+:root[data-skin="koth"] .skin-scenery-koth,
+:root[data-skin="bears"] .skin-scenery-bears { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+:root[data-skin="urlaub"] .dashboard, :root[data-skin="plantage"] .dashboard, :root[data-skin="koth"] .dashboard, :root[data-skin="bears"] .dashboard { position: relative; z-index: 1; }
 .skin-sun { position: absolute; top: 2vh; right: 22vw; width: 110px; height: 110px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 60px 20px rgba(255, 210, 63, 0.55); }
 /* svg.: stronger than the theme's shape rule (.theme-urlaub .ul-shape, full width) */
 .skin-scenery svg.skin-palm { position: absolute; bottom: -2vh; width: clamp(160px, 18vw, 340px); }
@@ -348,5 +411,8 @@
 .skin-scenery .skin-tower .part-line { stroke: var(--steel); stroke-width: 4; }
 .skin-scenery .skin-tower .part-main { fill: var(--steel); }
 
-@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-scenery .pl-field, .skin-sun, .skin-figures { display: none; } }
-@media (max-width: 1099px) { .skin-figures { display: none; } }
+/* Bärenbande: the watercolor world fills the page, the tower stands at the bottom right */
+.skin-scenery-bears .bb-world { position: absolute; inset: 0; }
+.skin-scenery-bears .skin-bear-tower { position: absolute; right: 2vw; bottom: 3vh; height: clamp(180px, 24vh, 300px); }
+@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-scenery .pl-field, .skin-scenery .bb-world, .skin-sun, .skin-figures { display: none; } }
+@media (max-width: 1099px) { .skin-figures, .skin-bear-tower { display: none; } }
