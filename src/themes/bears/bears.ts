@@ -66,6 +66,13 @@ const STANDING: Body = {
   ],
 };
 
+// The same body asleep: the eyes are closed crescents
+const SLEEPING: Body = {
+  ...STANDING,
+  parts: STANDING.parts.map(part =>
+    part.kind !== "eye" ? part : { kind: "eye", d: part === STANDING.parts[1] ? "M33 74 C36 79 43 79 46 74 C43 77 36 77 33 74 Z" : "M76 80 C79 85 86 85 89 80 C86 83 79 83 76 80 Z" }),
+};
+
 // Arms of the standing body. The far arm is hidden behind the body unless both paws hold something in front.
 const HANGING = "M99 170 C100 200 102 230 104 248 C108 278 124 288 140 286 C156 284 164 270 166 250 L166 176";
 const RAISED = "M114 200 C126 150 148 104 168 66 C176 50 200 52 198 70 C190 108 178 156 170 204";
@@ -186,6 +193,7 @@ export const POSE_MODELS = {
   cheer: { body: STANDING, arms: holding, prop: PROPS.none },
   thumbs: { body: STANDING, arms: [ARMS.nearThumb, ARMS.farHolding], prop: PROPS.none },
   headphones: { body: STANDING, arms: [ARMS.nearHanging], prop: PROPS.headphones },
+  sleep: { body: SLEEPING, arms: [ARMS.nearHanging], prop: PROPS.none },
   four: { body: ON_ALL_FOURS, arms: [], prop: PROPS.none },
   fourWave: { body: ON_THREE_LEGS, arms: [FRONT_LEG_RAISED], prop: PROPS.none },
 } satisfies Record<string, PoseModel>;

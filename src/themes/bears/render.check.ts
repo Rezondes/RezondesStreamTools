@@ -1,9 +1,17 @@
-// Check for render.ts of the Bärenbande theme: no clips yet, for any values and login. Runs with npm test.
+// Check for render.ts of the Bärenbande theme: stinger, profile and offline banner with their groups, sizes, loop and
+// transition point from the settings, the channel name in the texts. Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
-import { findModule } from "../registry.ts";
+import { bearsClips } from "./render.ts";
 import { bearsSettings } from "./settings.ts";
 
-assert.deepEqual(findModule("bears")?.clips(resolveSettings(bearsSettings, {}), "rezondes"), []);
+const clips = bearsClips(resolveSettings(bearsSettings, { stingerDuration: 2, stingerCut: 0.9, bannerLoop: 8 }), "neo");
+assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.height]), [
+  ["stinger", "Stinger", 1920, 1080],
+  ["profile", "Banner", 1200, 480],
+  ["offline", "Banner", 1920, 1080],
+]);
+assert.deepEqual(clips.map(clip => [clip.duration, clip.cut]), [[2, 0.9], [8, null], [8, null]]);
+assert.deepEqual(clips.map(clip => clip.feature), ["stinger", "banners", "banners"]);
 
 console.log("bears render ok");

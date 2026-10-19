@@ -30,6 +30,8 @@ const CHAT: &str = "Chat";
 const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
+const STINGER: &str = "Stinger";
+const BANNER: &str = "Banner";
 
 fn fields() -> Vec<SettingField> {
     let mut fields = Vec::new();
@@ -353,6 +355,29 @@ fn fields() -> Vec<SettingField> {
         number("fxMax", "Max. gleichzeitig", FX, 8.0, 1.0, 30.0, None, None),
         choice("fxIn", "Einblenden", FX, "plopp", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
         choice("fxOut", "Ausblenden", FX, "blenden", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
+        choice("stingerBear", "Bär", STINGER, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
+        number("stingerDuration", "Länge", STINGER, 1.6, 0.5, 5.0, S, Some(0.05)),
+        number("stingerCut", "Übergangspunkt", STINGER, 0.8, 0.1, 5.0, S, Some(0.05)),
+        text("stingerText", "Text ({channel})", STINGER, "{channel}", None),
+        number("stingerWaddle", "Watscheln (Grad)", STINGER, 6.0, 0.0, 20.0, None, None),
+        choice("bannerProfileBear", "Profilbanner: Bär", BANNER, "turm", &["eisbaer", "grizzly", "panda", "turm"]),
+        choice("bannerOfflineBear", "Offline-Banner: Bär", BANNER, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
+        text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
+        text("bannerProfileText", "Profilbanner: Text", BANNER, "Gemütliche Streams mit der Bande", None),
+        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade nicht live", None),
+        text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Bande macht ein Nickerchen in der Höhle.", None),
+        lines(
+            "bannerOfflineLines",
+            "Offline-Banner: Zeilen",
+            BANNER,
+            &["Bald wieder live", "Folgen nicht vergessen"],
+            None,
+        ),
+        flag("fairyLights", "Offline-Banner: Lichterkette", BANNER, true),
+        text("bannerSleepText", "Offline-Banner: Schlafzeichen", BANNER, "z", Some(4)),
+        number("bannerLoop", "Schleifenlänge", BANNER, 6.0, 1.0, 20.0, S, None),
+        number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12.0, 1.0, 30.0, None, None),
+        number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10.0, 1.0, 30.0, None, None),
     ]);
     fields.extend(info_fields());
     fields.extend(vec![
@@ -373,6 +398,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (CAM, vec![Cam]),
         (MUSIC, vec![Music]),
         (FX, vec![Fx]),
+        (STINGER, vec![]),
+        (BANNER, vec![]),
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()

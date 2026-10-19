@@ -26,6 +26,8 @@ const CHAT = "Chat";
 const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
+const STINGER = "Stinger";
+const BANNER = "Banner";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "Bärenbande", 40),
@@ -236,6 +238,25 @@ const FIELDS = [
   choice("fxIn", "Einblenden", FX, "plopp", MOTIONS),
   choice("fxOut", "Ausblenden", FX, "blenden", MOTIONS),
 
+  choice("stingerBear", "Bär", STINGER, "grizzly", BEAR_CHOICES),
+  number("stingerDuration", "Länge", STINGER, 1.6, 0.5, 5, "s", 0.05),
+  number("stingerCut", "Übergangspunkt", STINGER, 0.8, 0.1, 5, "s", 0.05),
+  text("stingerText", "Text ({channel})", STINGER, "{channel}"),
+  number("stingerWaddle", "Watscheln (Grad)", STINGER, 6, 0, 20),
+
+  choice("bannerProfileBear", "Profilbanner: Bär", BANNER, "turm", BEAR_CHOICES),
+  choice("bannerOfflineBear", "Offline-Banner: Bär", BANNER, "grizzly", BEAR_CHOICES),
+  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
+  text("bannerProfileText", "Profilbanner: Text", BANNER, "Gemütliche Streams mit der Bande"),
+  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade nicht live"),
+  text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Bande macht ein Nickerchen in der Höhle."),
+  lines("bannerOfflineLines", "Offline-Banner: Zeilen", BANNER, ["Bald wieder live", "Folgen nicht vergessen"]),
+  flag("fairyLights", "Offline-Banner: Lichterkette", BANNER, true),
+  text("bannerSleepText", "Offline-Banner: Schlafzeichen", BANNER, "z", 4),
+  number("bannerLoop", "Schleifenlänge", BANNER, 6, 1, 20, "s"),
+  number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
+  number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
+
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   choice("bearInfo", "Befehlsseite: Bär", INFO_GROUP, "grizzly", BEAR_CHOICES),
@@ -255,6 +276,8 @@ const GROUP_SCENES = {
   [CAM]: ["cam"],
   [MUSIC]: ["music"],
   [FX]: ["fx"],
+  [STINGER]: [],
+  [BANNER]: [],
   [INFO_GROUP]: ["info"],
 } as const;
 

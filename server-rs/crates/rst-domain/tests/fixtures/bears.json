@@ -1971,6 +1971,170 @@
       ]
     },
     {
+      "key": "stingerBear",
+      "type": "select",
+      "label": "Bär",
+      "group": "Stinger",
+      "default": "grizzly",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda",
+        "turm"
+      ]
+    },
+    {
+      "key": "stingerDuration",
+      "type": "number",
+      "label": "Länge",
+      "group": "Stinger",
+      "default": 1.6,
+      "min": 0.5,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerCut",
+      "type": "number",
+      "label": "Übergangspunkt",
+      "group": "Stinger",
+      "default": 0.8,
+      "min": 0.1,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerText",
+      "type": "text",
+      "label": "Text ({channel})",
+      "group": "Stinger",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "stingerWaddle",
+      "type": "number",
+      "label": "Watscheln (Grad)",
+      "group": "Stinger",
+      "default": 6,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "key": "bannerProfileBear",
+      "type": "select",
+      "label": "Profilbanner: Bär",
+      "group": "Banner",
+      "default": "turm",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda",
+        "turm"
+      ]
+    },
+    {
+      "key": "bannerOfflineBear",
+      "type": "select",
+      "label": "Offline-Banner: Bär",
+      "group": "Banner",
+      "default": "grizzly",
+      "options": [
+        "eisbaer",
+        "grizzly",
+        "panda",
+        "turm"
+      ]
+    },
+    {
+      "key": "bannerTitle",
+      "type": "text",
+      "label": "Titel ({channel})",
+      "group": "Banner",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerProfileText",
+      "type": "text",
+      "label": "Profilbanner: Text",
+      "group": "Banner",
+      "default": "Gemütliche Streams mit der Bande",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineTitle",
+      "type": "text",
+      "label": "Offline-Banner: Titel",
+      "group": "Banner",
+      "default": "Gerade nicht live",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineText",
+      "type": "text",
+      "label": "Offline-Banner: Text",
+      "group": "Banner",
+      "default": "Die Bande macht ein Nickerchen in der Höhle.",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineLines",
+      "type": "lines",
+      "label": "Offline-Banner: Zeilen",
+      "group": "Banner",
+      "default": [
+        "Bald wieder live",
+        "Folgen nicht vergessen"
+      ],
+      "maxLines": 100
+    },
+    {
+      "key": "fairyLights",
+      "type": "boolean",
+      "label": "Offline-Banner: Lichterkette",
+      "group": "Banner",
+      "default": true
+    },
+    {
+      "key": "bannerSleepText",
+      "type": "text",
+      "label": "Offline-Banner: Schlafzeichen",
+      "group": "Banner",
+      "default": "z",
+      "maxLength": 4
+    },
+    {
+      "key": "bannerLoop",
+      "type": "number",
+      "label": "Schleifenlänge",
+      "group": "Banner",
+      "default": 6,
+      "min": 1,
+      "max": 20,
+      "unit": "s"
+    },
+    {
+      "key": "bannerProfileFps",
+      "type": "number",
+      "label": "Profilbanner: Bildrate",
+      "group": "Banner",
+      "default": 12,
+      "min": 1,
+      "max": 30
+    },
+    {
+      "key": "bannerOfflineFps",
+      "type": "number",
+      "label": "Offline-Banner: Bildrate",
+      "group": "Banner",
+      "default": 10,
+      "min": 1,
+      "max": 30
+    },
+    {
       "key": "infoTitle",
       "type": "text",
       "label": "Titel",
@@ -2259,6 +2423,8 @@
     "Effekte": [
       "fx"
     ],
+    "Stinger": [],
+    "Banner": [],
     "Befehlsseite": [
       "info"
     ]

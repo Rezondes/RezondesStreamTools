@@ -18,7 +18,7 @@ function canvas() {
 }
 
 // Built-in themes that bring all three clips today; every other theme brings an ordered subset
-const COMPLETE = ["standard", "matrix", "urlaub", "plantage", "koth"];
+const COMPLETE = ["standard", "matrix", "urlaub", "plantage", "koth", "bears"];
 
 for (const schema of THEMES) {
   const clips = clipsFor(schema.id, resolveSettings(schema, {}), "rezondes");
