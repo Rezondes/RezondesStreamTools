@@ -120,6 +120,10 @@ pub struct SettingField {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub scene: Option<SceneName>,
+    /// Shown in the simple view of the dashboard (the few settings most streamers change); only the form reads it
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub basic: bool,
     #[serde(flatten)]
     pub kind: FieldKind,
 }
@@ -164,7 +168,14 @@ impl SettingField {
 }
 
 fn field(key: &str, label: &str, group: &str, kind: FieldKind) -> SettingField {
-    SettingField { key: key.to_owned(), label: label.to_owned(), group: group.to_owned(), scene: None, kind }
+    SettingField {
+        key: key.to_owned(),
+        label: label.to_owned(),
+        group: group.to_owned(),
+        scene: None,
+        basic: false,
+        kind,
+    }
 }
 
 fn strings(values: &[&str]) -> Vec<String> {
@@ -293,6 +304,12 @@ pub fn in_scene(scene: SceneName, field: SettingField) -> SettingField {
     SettingField { scene: Some(scene), ..field }
 }
 
+/// Field of the simple view in the dashboard (template: `basic` in `src/core/fields.ts`)
+#[must_use]
+pub fn basic(field: SettingField) -> SettingField {
+    SettingField { basic: true, ..field }
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;
@@ -330,6 +347,22 @@ mod tests {
         let scoped = in_scene(SceneName::Brb, title.clone());
         assert_eq!(scoped, SettingField { scene: Some(SceneName::Brb), ..title });
         assert_eq!(serde_json::to_value(&scoped).expect("serialize")["scene"], json!("brb"));
+    }
+
+    #[test]
+    fn basic_only_adds_the_flag() {
+        let title = text("title", "Title", "A", "Hello", None);
+        assert_eq!(basic(title.clone()), SettingField { basic: true, ..title });
+    }
+
+    #[test]
+    fn basic_is_written_only_when_set() {
+        let plain = color("accent", "Color", "A", "#39ff14");
+        assert!(serde_json::to_value(&plain).expect("serialize").get("basic").is_none());
+        assert_eq!(serde_json::to_value(basic(plain.clone())).expect("serialize")["basic"], json!(true));
+        let read: SettingField =
+            serde_json::from_value(serde_json::to_value(&plain).expect("serialize")).expect("deserialize");
+        assert!(!read.basic);
     }
 
     #[test]
