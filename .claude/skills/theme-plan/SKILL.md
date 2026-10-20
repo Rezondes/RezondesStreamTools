@@ -50,8 +50,8 @@ Pfade, Funktionsnamen und Befehle im Plan müssen echt sein. Was nicht zu finden
 Je Bild festhalten: was zu sehen ist, Bildsprache (Kontur ja/nein und Stärke, flach oder schattiert, wie viele
 Schattentöne, Verläufe, Textur, Perspektive, Proportionen), wiederkehrende Formen, Stimmung.
 
-**Farben messen, nicht schätzen.** Pillow ist installiert; Skript im Scratchpad ablegen und mit `python -I` gegen das
-Bild laufen lassen:
+**Farben messen, nicht schätzen.** Pillow liegt in den Benutzer-site-packages (`python -I` und `python -s` blenden es
+aus); Skript im Scratchpad ablegen, nicht im Bildordner, und mit `python <skript> <bild>` laufen lassen:
 
 ```python
 import sys

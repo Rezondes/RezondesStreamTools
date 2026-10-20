@@ -25,6 +25,7 @@ Kern-Feature und für jedes Theme. Regeln für die Pläne:
 | [src/themes/plantage/docs/PLAN-PLANTAGE.md](src/themes/plantage/docs/PLAN-PLANTAGE.md) | Theme Südfrucht-Plantage |
 | [src/themes/koth/docs/PLAN-KOTH.md](src/themes/koth/docs/PLAN-KOTH.md) | Theme King of the Hill |
 | [src/themes/bears/docs/PLAN-BEARS.md](src/themes/bears/docs/PLAN-BEARS.md) | Theme Bärenbande |
+| [src/themes/chaos/docs/PLAN-CHAOS.md](src/themes/chaos/docs/PLAN-CHAOS.md) | Theme Chaos |
 
 Pläne eines Themes liegen im Ordner `docs` des Themes (`src/themes/<id>/docs/PLAN-<ID>.md`, daneben `DESIGN-<ID>.md`),
 Kern-Pläne in `plans/`.

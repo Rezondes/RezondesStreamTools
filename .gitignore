@@ -27,3 +27,6 @@ graphify-out/.rebuild.lock
 .claude/settings.local.json
 *.log
 server-rs/target
+
+# Reference pictures of themes (third-party art, only for local comparison, never committed)
+.claude/refs/

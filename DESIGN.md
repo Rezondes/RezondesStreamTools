@@ -12,6 +12,7 @@ Entscheidungen je Theme stehen im Ordner `docs` des Themes, neben seinem Plan (`
 | `plantage` | [DESIGN-PLANTAGE.md](src/themes/plantage/docs/DESIGN-PLANTAGE.md) | Mangoplantage als Illustration mit Tiefe: Baumreihen, Erde, Kisten und Milchglas-Erntepapier |
 | `koth` | [DESIGN-KOTH.md](src/themes/koth/docs/DESIGN-KOTH.md) | Militär: Hügel mit Funkmast, Oliv, Stahl und Schablonenschrift |
 | `bears` | [DESIGN-BEARS.md](src/themes/bears/docs/DESIGN-BEARS.md) | drei Bärenbrüder als Cartoon mit Kontur vor einer Aquarell-Welt aus Wald, Höhle und Stadt |
+| `chaos` | [DESIGN-CHAOS.md](src/themes/chaos/docs/DESIGN-CHAOS.md) | Neon-Graffiti in der Nacht: Magenta und Cyan kritzeln, sprühen und leuchten auf fast Schwarz (geplant) |
 
 Ein neues Theme bekommt seine eigene `DESIGN-<ID>.md` im selben Commit wie das Theme.
 
