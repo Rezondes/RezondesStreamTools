@@ -1,9 +1,12 @@
-// Backdrop of the Bärenbande theme as one SVG in watercolor: sky per time of day with sun or moon, drifting clouds, far
+// Backdrop of the Bärenbande theme in watercolor: sky per time of day with sun or moon, drifting clouds, far
 // hills, the far shore with the city on it, the bay and the suspension bridge from the meadow to the far shore in aerial
 // perspective (mixed with the sky), the cave hill and the forest edge on the left, broad-leaved trees, the meadow with a
 // path, tufts and flowers; every thing stands on the ground line of its plane (world.ts SCENE). No black outline in the world: thin sketch
 // lines in a darker tone of each surface, soft edges from a displacement filter and a paper grain over everything
 // (strengths from the settings). Shapes from world.ts, colors from the settings (theme.css).
+// Stacked SVGs on one viewBox: the sky with the drifting clouds, the filtered land and the paper grain. Land and grain
+// get their own compositor layers (theme.css), so the moving clouds repaint only the cheap sky and never rerun the
+// full-screen filters.
 import { useId, type CSSProperties } from "react";
 import { useBears } from "./useBears.ts";
 import { SCENE, SHAPES, WORLD } from "./world.ts";
@@ -17,9 +20,10 @@ const MAX_CLOUDS = 8;
 export default function World({ time }: { time: TimeOfDay }) {
   const values = useBears();
   const id = useId().replace(/[^a-zA-Z0-9-]/g, "");
+  const viewBox = `0 0 ${WORLD.width} ${WORLD.height}`;
   return (
     <div className={`bb-world time-${time}`} aria-hidden="true">
-      <svg className="bb-world-svg" viewBox={`0 0 ${WORLD.width} ${WORLD.height}`} preserveAspectRatio="xMidYMid slice">
+      <svg className="bb-world-svg" viewBox={viewBox} preserveAspectRatio="xMidYMid slice">
         <defs>
           <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
             <stop className="bb-stop-sky-top" offset="0" />
@@ -29,22 +33,30 @@ export default function World({ time }: { time: TimeOfDay }) {
             <stop className="bb-stop-light" offset="0" stopOpacity="0.6" />
             <stop className="bb-stop-light" offset="1" stopOpacity="0" />
           </radialGradient>
+        </defs>
+        <Sky id={id} time={time} clouds={Math.min(values.cloudCount, MAX_CLOUDS)} />
+      </svg>
+      <svg className="bb-world-svg bb-world-still" viewBox={viewBox} preserveAspectRatio="xMidYMid slice">
+        <defs>
           <filter id={`${id}-wash`} x="-2%" y="-2%" width="104%" height="104%">
             <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="7" result="noise" />
             <feDisplacementMap in="SourceGraphic" in2="noise" scale={values.paperGrain * 14} xChannelSelector="R" yChannelSelector="G" />
           </filter>
+        </defs>
+        <g filter={`url(#${id}-wash)`}>
+          <Far city={values.showCity} bridge={values.showBridge} />
+          <Land cave={values.showCave} flowers={values.flowers} />
+        </g>
+      </svg>
+      <div className="bb-dusk" />
+      <svg className="bb-world-svg bb-world-still bb-grain" viewBox={viewBox} preserveAspectRatio="xMidYMid slice">
+        <defs>
           <filter id={`${id}-grain`}>
             <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="3" />
             <feColorMatrix type="saturate" values="0" />
           </filter>
         </defs>
-        <Sky id={id} time={time} clouds={Math.min(values.cloudCount, MAX_CLOUDS)} />
-        <g filter={`url(#${id}-wash)`}>
-          <Far city={values.showCity} bridge={values.showBridge} />
-          <Land cave={values.showCave} flowers={values.flowers} />
-        </g>
-        <rect className="bb-dusk" width={WORLD.width} height={WORLD.height} />
-        <rect className="bb-grain" width={WORLD.width} height={WORLD.height} filter={`url(#${id}-grain)`} />
+        <rect width={WORLD.width} height={WORLD.height} filter={`url(#${id}-grain)`} />
       </svg>
     </div>
   );

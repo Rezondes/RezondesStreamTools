@@ -94,8 +94,10 @@
 
 /* --- World ------------------------------------------------------------------------------------------------------ */
 .theme-bears .bb-screen { position: fixed; inset: 0; overflow: hidden; background: var(--meadow); }
-.theme-bears .bb-world { position: absolute; inset: 0; overflow: hidden; }
+.theme-bears .bb-world { position: absolute; inset: 0; overflow: hidden; isolation: isolate; }
 .theme-bears .bb-world-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+/* The filtered land and the grain on their own layers: drawn once, the drifting clouds below never repaint them */
+.theme-bears .bb-world-still { will-change: transform; }
 .theme-bears .time-morgen { --sky-top: var(--skyMorningTop); --sky-bottom: var(--skyMorningBottom); --light: var(--sun); --dusk: 0.06; }
 .theme-bears .time-mittag { --sky-top: var(--skyDayTop); --sky-bottom: var(--skyDayBottom); --light: var(--sun); --dusk: 0; }
 .theme-bears .time-abend { --sky-top: var(--skyEveningTop); --sky-bottom: var(--skyEveningBottom); --light: var(--sun); --dusk: 0.14; }
@@ -104,7 +106,7 @@
 .theme-bears .bb-stop-sky-bottom { stop-color: var(--sky-bottom); }
 .theme-bears .bb-stop-light { stop-color: var(--light); }
 .theme-bears .bb-sun, .theme-bears .bb-moon { fill: var(--light); }
-.theme-bears .bb-dusk { fill: var(--sky-top); opacity: var(--dusk); pointer-events: none; }
+.theme-bears .bb-dusk { position: absolute; inset: 0; background: var(--sky-top); opacity: var(--dusk); pointer-events: none; }
 .theme-bears .bb-grain { opacity: calc(var(--paperGrain) * 0.16); mix-blend-mode: multiply; pointer-events: none; }
 /* Watercolor surfaces: each with sketch lines in a darker tone of itself (never black), far things mixed with the sky */
 .theme-bears .bb-world-svg path { stroke-width: var(--sketch-width, 2.5); stroke-linejoin: round; stroke-linecap: round; }
