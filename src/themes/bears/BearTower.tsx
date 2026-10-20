@@ -1,7 +1,8 @@
 // The tower of all three bears (bears.ts TOWER_LEVELS): Eisbär at the bottom, Panda in the middle, Grizzly on top with
 // the raised arm, each on all fours on the back of the one below. One SVG; the whole tower sways gently (CSS).
 import { BearFigure } from "./Bear.tsx";
-import { POSES, TOWER_LEVELS, TOWER_STEP } from "./bears.ts";
+import { TOWER_LEVELS, TOWER_STEP } from "./bears.ts";
+import { POSES } from "./rig.ts";
 
 const BOX = POSES.four;
 const LEVELS = TOWER_LEVELS.length - 1;

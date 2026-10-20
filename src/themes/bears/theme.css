@@ -23,6 +23,8 @@
 .theme-bears .part-patch-shade { fill: var(--pandaPatchShade); }
 .theme-bears .part-back { fill: var(--limb); stroke: var(--outline); stroke-width: var(--outlineWidth); }
 .theme-bears .part-limb { fill: var(--limb); }
+/* Every bone group of the rig turns around its own pivot (set as transform origin in Bear.tsx) */
+.theme-bears .bb-bone { transform-box: view-box; }
 .theme-bears .part-outline,
 .theme-bears .part-line {
   fill: none;

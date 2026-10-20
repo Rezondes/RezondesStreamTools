@@ -2,7 +2,8 @@
 // fixed in the background, in front of it paper cards with the commands, the chosen bear (or the tower) waves in the
 // header. List, texts and intro come from the info context of the core (useInfoPage), here only the look.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
-import type { BearId, PoseName } from "../bears.ts";
+import type { BearId } from "../bears.ts";
+import type { PoseName } from "../rig.ts";
 import Hero from "../Hero.tsx";
 import { bearsNames, useBears } from "../useBears.ts";
 import World, { type TimeOfDay } from "../World.tsx";

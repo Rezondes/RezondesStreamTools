@@ -2,7 +2,7 @@
 // the panda, colors mix as expected, the world draws sky and land. A mock canvas records everything. Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
-import { POSES } from "./bears.ts";
+import { POSES } from "./rig.ts";
 import { drawBear, drawHero, drawWorld, mix, TOWER_SIZE } from "./paint.ts";
 import { paletteOf, worldOf } from "./render.ts";
 import { bearsSettings, type BearsValues } from "./settings.ts";
@@ -28,26 +28,31 @@ const fills = (calls: unknown[][]) => calls.filter(call => call[0] === "fill").m
 assert.equal(mix("#000000", "#ffffff", 0.5), "#808080");
 assert.equal(mix("#102030", "#102030", 0.3), "#102030");
 
-// A bear fills its body, the panda also its patches, the others not
+// A bear fills its body, the panda also its patches, the others not; every part of the rig is drawn in its order
+const bodyOf = (pose: keyof typeof POSES) => POSES[pose].layers.find(layer => layer.body)?.body ?? { silhouette: "", patches: [""] };
 for (const bear of ["eisbaer", "grizzly", "panda"] as const) {
   const frame = recorder();
   drawBear(frame.context, bear, "stand", 100, 300, 300, palette);
-  assert.ok(fills(frame.calls).includes(POSES.stand.body), bear);
-  assert.equal(fills(frame.calls).includes(POSES.stand.patches[0]), bear === "panda", bear);
+  assert.ok(fills(frame.calls).includes(bodyOf("stand").silhouette), bear);
+  assert.equal(fills(frame.calls).includes(bodyOf("stand").patches[0]), bear === "panda", bear);
+  const drawn = frame.calls.filter(call => call[0] === "fill" || call[0] === "stroke").map(call => call[1]);
+  const parts = POSES.stand.layers.flatMap(layer => layer.parts.filter(part => part.kind !== "patch" || bear === "panda").map(part => part.d));
+  const order = parts.map(path => drawn.indexOf(path));
+  assert.ok(order.every(index => index >= 0), `${bear}: a part is missing`);
+  assert.deepEqual(order, [...order].sort((first, second) => first - second), `${bear}: parts out of order`);
 }
 
 // The tower draws two bodies on all fours and the top one on three legs; an unknown choice draws the Grizzly
 const tower = recorder();
 drawHero(tower.context, "turm", { eisbaer: "stand", grizzly: "stand", panda: "stand" }, 500, 900, 600, palette);
-assert.equal(fills(tower.calls).filter(path => path === POSES.four.body).length, 2);
-assert.equal(fills(tower.calls).filter(path => path === POSES.fourWave.body).length, 1);
+assert.equal(fills(tower.calls).filter(path => path === bodyOf("four").silhouette).length, 3);
 assert.ok(TOWER_SIZE.height > POSES.four.height);
 // Bottom level first and lowest: every bear stands higher than the one before (each bear translates twice)
 const feet = tower.calls.filter(call => call[0] === "translate").map(call => call[2] as number).filter((_, index) => index % 2 === 0);
 assert.ok(feet[0] === 900 && feet[0] > feet[1] && feet[1] > feet[2], `feet ${feet.join(", ")}`);
 const unknown = recorder();
 drawHero(unknown.context, "koala", { eisbaer: "stand", grizzly: "wave", panda: "stand" }, 0, 0, 100, palette);
-assert.ok(fills(unknown.calls).includes(POSES.wave.body));
+assert.ok(fills(unknown.calls).includes(bodyOf("wave").silhouette));
 
 // The world: sky over the whole picture, then land
 const world = recorder();

@@ -10,7 +10,8 @@ import { actorStyle, shownVariant, type MinimeAction, type MinimeActor } from ".
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import { params } from "../../../core/params.ts";
 import Bear from "../Bear.tsx";
-import { BEAR_IDS, POSES, type BearId } from "../bears.ts";
+import { BEAR_IDS, type BearId } from "../bears.ts";
+import { POSES } from "../rig.ts";
 import { BEAR_SET, MINIME_REACTION, minimePose, towerLift } from "../minimeBears.ts";
 import { climbTone } from "../tones.ts";
 import { useBears } from "../useBears.ts";

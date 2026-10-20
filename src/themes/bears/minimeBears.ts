@@ -2,7 +2,7 @@
 // the core variant fields), plus the pose of the character model each minime action shows (scenes/Minimes.tsx).
 // Check: minimeBears.check.ts.
 import type { MinimeVariantSet } from "../../core/theme.ts";
-import type { PoseName } from "./bears.ts";
+import type { PoseName } from "./rig.ts";
 
 export const BEAR_SET: MinimeVariantSet = {
   command: "!baer",
@@ -19,7 +19,7 @@ export const MINIME_MOVES = ["selfie", "snack", "wave", "dance", "look", "sleep"
 export const MINIME_REACTION = "wave";
 
 // Pose per action; walking, idling, entering and leaving (and anything unknown) stand, the motion comes from minimes.css.
-// In a tower (core actions) the base braces on all fours, a climbing bear reaches up with a front leg, the stacked bears
+// In a tower (core actions) the base braces on all fours, a climbing bear stands up and reaches for the back above, the stacked bears
 // stand on all fours and the top one raises a front leg; gathering and stepping off stand.
 const MOVE_POSES: Record<string, PoseName> = {
   selfie: "selfie",
@@ -29,7 +29,7 @@ const MOVE_POSES: Record<string, PoseName> = {
   look: "stand",
   sleep: "sleep",
   brace: "four",
-  climb: "fourWave",
+  climb: "climb",
   stacked: "four",
   stackWalk: "four",
 };

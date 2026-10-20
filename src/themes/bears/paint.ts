@@ -1,10 +1,11 @@
-// Drawing of the Bärenbande character model on a canvas for stinger and banners: a bear in a pose (the same poses as
-// Bear.tsx: body with outline, one shade tone and panda patches clipped to the body, open lines, face and props), the
+// Drawing of the Bärenbande character model on a canvas for stinger and banners: a bear in a pose (the same layers of the
+// rig as Bear.tsx: limbs, body with outline, one shade tone and panda patches clipped to the body, face and props), the
 // tower and the watercolor world (without filters: flat surfaces, far things mixed with the sky). Colors come in a
 // palette from the settings, mixed with mix() instead of CSS color-mix. Paths become Path2D in the browser; without
 // Path2D (checks in Node) the path text goes to the canvas as is, a recording mock only counts the calls.
 // Check: paint.check.ts.
-import { BEARS, isBearChoice, partsFor, POSES, TOWER, TOWER_LEVELS, TOWER_STEP, type BearId, type PartKind, type PoseName } from "./bears.ts";
+import { BEARS, isBearChoice, TOWER, TOWER_LEVELS, TOWER_STEP, type BearId, type BodyShape, type PartKind } from "./bears.ts";
+import { poseOf, POSES, type PoseName } from "./rig.ts";
 import { blocksPath, CITY, CITY_BASE, FIR_BASE, FIRS, firPath, firShadePath, FLOWERS, flowerPath, SHAPES, TREES, TUFTS, tuftPath, windowsPath, WORLD } from "./world.ts";
 
 export type BearColors = { fur: string; shade: string; limb: string };
@@ -57,7 +58,7 @@ function fillOf(kind: PartKind, bear: BearId, pose: PoseName, palette: Palette):
   const colors = palette.bears[bear];
   const phone = pose === "phone" || pose === "selfie";
   const fills: Partial<Record<PartKind, string>> = {
-    back: colors.limb, limb: colors.limb, eye: palette.eye, nose: palette.nose, mouth: palette.mouth, tongue: palette.tongue,
+    back: colors.limb, limb: colors.limb, patch: palette.patch, eye: palette.eye, nose: palette.nose, mouth: palette.mouth, tongue: palette.tongue,
     teeth: palette.teeth, pad: bear === "panda" ? palette.patchShade : colors.shade, screen: palette.phoneScreen, paper: palette.paper,
     food: palette.food, prop: pose === "headphones" ? palette.headphones : phone ? palette.phoneCase : palette.prop,
   };
@@ -72,9 +73,29 @@ function strokeLine(context: CanvasRenderingContext2D, path: string, palette: Pa
   context.stroke(shapeOf(path));
 }
 
-// One bear standing with its feet on (x, baseY), height in px; facing -1 mirrors it
-export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: PoseName, x: number, baseY: number, height: number, palette: Palette, facing = 1) {
-  const shape = POSES[pose];
+// The body blob: fur, the shade and the panda patches clipped to it, the outline
+function drawBody(context: CanvasRenderingContext2D, body: BodyShape, colors: BearColors, patched: boolean, palette: Palette) {
+  context.fillStyle = colors.fur;
+  context.fill(shapeOf(body.silhouette));
+  context.save();
+  context.clip(shapeOf(body.silhouette));
+  context.fillStyle = colors.shade;
+  for (const path of body.shade) context.fill(shapeOf(path));
+  if (patched) {
+    context.fillStyle = palette.patch;
+    for (const path of body.patches) context.fill(shapeOf(path));
+    context.clip(shapeOf(body.patches.join(" ")));
+    context.fillStyle = palette.patchShade;
+    for (const path of body.shade) context.fill(shapeOf(path));
+  }
+  context.restore();
+  strokeLine(context, body.silhouette, palette);
+}
+
+// One bear standing with its feet on (x, baseY), height in px; facing -1 mirrors it, turn turns it around its upright
+// axis (radians, positive toward the camera). Draws the layers of the rig in order.
+export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: PoseName, x: number, baseY: number, height: number, palette: Palette, facing = 1, turn = 0) {
+  const shape = poseOf(bear, pose, turn);
   const { scaleX, scaleY, patched } = BEARS[bear];
   const size = height / shape.height;
   const colors = palette.bears[bear];
@@ -82,32 +103,20 @@ export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: 
   context.translate(x, baseY);
   context.scale(facing * size * scaleX, size * scaleY);
   context.translate(-shape.width / 2, -shape.height);
-  for (const part of shape.back) {
-    context.fillStyle = colors.limb;
-    context.fill(shapeOf(part.d));
-    strokeLine(context, part.d, palette);
-  }
-  context.fillStyle = colors.fur;
-  context.fill(shapeOf(shape.body));
-  context.save();
-  context.clip(shapeOf(shape.body));
-  context.fillStyle = colors.shade;
-  for (const path of shape.shade) context.fill(shapeOf(path));
-  if (patched) {
-    context.fillStyle = palette.patch;
-    for (const path of shape.patches) context.fill(shapeOf(path));
-    context.clip(shapeOf(shape.patches.join(" ")));
-    context.fillStyle = palette.patchShade;
-    for (const path of shape.shade) context.fill(shapeOf(path));
-  }
-  context.restore();
-  strokeLine(context, shape.body, palette);
-  for (const part of partsFor(bear, pose)) {
-    const fill = fillOf(part.kind, bear, pose, palette);
-    if (fill) {
-      context.fillStyle = fill;
-      context.fill(shapeOf(part.d));
-    } else strokeLine(context, part.d, palette);
+  for (const layer of shape.layers) {
+    if (layer.body) {
+      drawBody(context, layer.body, colors, patched, palette);
+      continue;
+    }
+    for (const part of layer.parts) {
+      if (part.kind === "patch" && !patched) continue;
+      const fill = fillOf(part.kind, bear, pose, palette);
+      if (fill) {
+        context.fillStyle = fill;
+        context.fill(shapeOf(part.d));
+      }
+      if (!fill || part.kind === "back") strokeLine(context, part.d, palette);
+    }
   }
   context.restore();
 }

@@ -3,7 +3,8 @@
 // bear (or the tower); the offline banner (1920 x 1080) the evening in front of the cave with a string of fairy lights, the
 // chosen bear asleep with rising z and a paper card with title, text and lines. Clouds, lights and z run in one seamless
 // loop (frame 0 = frame at the loop end). Pure functions of time. Check: banners.check.ts.
-import type { BearId, PoseName } from "./bears.ts";
+import type { BearId } from "./bears.ts";
+import type { PoseName } from "./rig.ts";
 import { drawHero, drawWorld, type Palette, type WorldColors } from "./paint.ts";
 import { WORLD } from "./world.ts";
 

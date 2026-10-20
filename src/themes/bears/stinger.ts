@@ -3,7 +3,8 @@
 // outline, then the bear steps back and waddles out to the right. Before and after transparent. Drawn from the character
 // model (paint.ts). Pure function of time, so it can be rendered frame by frame. Check: stinger.check.ts.
 import { clamp01, easeIn, easeInOut } from "../../core/easing.ts";
-import type { BearId, PoseName } from "./bears.ts";
+import type { BearId } from "./bears.ts";
+import type { PoseName } from "./rig.ts";
 import { drawHero, type Palette } from "./paint.ts";
 
 export const WIDTH = 1920;

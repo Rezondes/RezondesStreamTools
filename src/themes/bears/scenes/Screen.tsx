@@ -10,7 +10,8 @@ import { rotating, shortClock, type ScreenKind } from "../../../core/screens/scr
 import { useScreen } from "../../../core/screens/useScreen.ts";
 import { useStage } from "../../../core/screens/useStage.ts";
 import Bear from "../Bear.tsx";
-import type { BearId, PoseName } from "../bears.ts";
+import type { BearId } from "../bears.ts";
+import type { PoseName } from "../rig.ts";
 import Hero from "../Hero.tsx";
 import { useBears } from "../useBears.ts";
 import World, { type TimeOfDay } from "../World.tsx";

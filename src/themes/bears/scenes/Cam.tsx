@@ -2,7 +2,8 @@
 // bear (or the tower) leans at a lower corner or peeks over the top edge; paper name tag and live pill. Create the source
 // as large as the camera.
 import { fillTemplate } from "../../../core/template.ts";
-import type { BearId, PoseName } from "../bears.ts";
+import type { BearId } from "../bears.ts";
+import type { PoseName } from "../rig.ts";
 import Hero from "../Hero.tsx";
 import IconShape from "../IconShape.tsx";
 import { bearsNames, useBears } from "../useBears.ts";

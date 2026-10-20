@@ -52,9 +52,18 @@ weisser Streifen über den Bauch. Augen und Nase aller Bären `#111111`.
 Grizzly, der einen Arm hochreisst. In den Szenen steht die Reihenfolge in den Formen, bei den Minimes ist sie eine
 Einstellung des Kerns.
 
-**Formen:** Jeder Bär ist ein Satz SVG-Pfade je Pose in `bears.ts` (nur Formen), aufgeteilt in Teile mit den Klassen
-`part-fur`, `part-shade`, `part-patch` (Panda-Schwarz), `part-patch-shade`, `part-line`, `part-face`, `part-prop`. Arme
-und Kopf sind eigene Gruppen, damit CSS sie bewegen kann (winken, nicken, blinzeln).
+**Formen und Rig:** Jeder Bär ist ein 2D-Skelett (`rig.ts`): ein Körper-Blob je Haltung ohne Gliedmassen in der
+Silhouette (`bears.ts`), Kopf mit Ohren, Gesicht und Panda-Augenflecken als eigener Knochen, Arme und Beine als je ein
+Schlauch mit runder Pfote, gebaut aus zwei Knochen (Schulter oder Hüfte, Ellbogen oder Knie, Pfote oder Fuss) durch
+einen Zwei-Knochen-Löser, dessen Gelenk nur leicht ausknickt (kein Arm als Schlaufe). Eine Pose ist die Haltung
+(aufrecht oder auf allen vieren) mit den Zielpunkten der Pfoten und Füsse; Requisiten hängen an der Pfote oder am Kopf.
+Das Headset folgt der Dreiviertelansicht: die nahe Muschel sitzt seitlich über dem nahen Ohr, Bügel und ferne Muschel
+liegen hinter dem Kopf. Das Rig ist 2,5D: flache Teile im 3D-Raum, jeder Ansatzpunkt (Schulter, Hüfte, Gesicht, Ohren,
+Muscheln) hat eine Tiefe; eine Drehung um die Hochachse (`turn`, zur Kamera höchstens 0.5, weg höchstens 0.4) schiebt
+die Teile nach ihrer Tiefe und ordnet die Ebenen nach der gedrehten Tiefe. Hält der Bär etwas mit beiden Pfoten, greift
+die ferne Pfote von hinten (hinter der Requisite); mit einer Pfote hängt der andere Arm. Gezeichnet wird in fester Tiefe: ferne Glieder, Schwanz und Ohren hinter dem Körper, nahe
+Glieder, Gesicht, gehaltene Requisiten und Pfoten davor. SVG (`Bear.tsx`, eine Gruppe `bone-<name>` je Knochen mit
+Drehpunkt) und Canvas (`paint.ts`) zeichnen dieselben Ebenen.
 
 ## Overlays
 

@@ -2,7 +2,8 @@
 // An unknown value (old settings) shows the Grizzly.
 import Bear from "./Bear.tsx";
 import BearTower from "./BearTower.tsx";
-import { isBearChoice, TOWER, type BearId, type PoseName } from "./bears.ts";
+import { isBearChoice, TOWER, type BearId } from "./bears.ts";
+import type { PoseName } from "./rig.ts";
 
 type Props = { choice: string; poses: Record<BearId, PoseName>; sign?: string; className?: string };
 
