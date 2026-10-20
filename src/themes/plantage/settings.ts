@@ -1,7 +1,7 @@
 // Settings schema of the Plantage theme: mango plantation with rows of mango trees, soil, crates and the streamer as the
 // mango picker for all scenes, stinger and banners, plus mango soldiers as minimes that hop and fight. The only place of
 // the theme with fixed colors, texts and numbers. PlantageValues is the type of the resolved values (usePlantage).
-import { choice, color, flag, font, inScene, lines, number, text, withDefaults } from "../../core/fields.ts";
+import { markBasic, choice, color, flag, font, inScene, lines, number, text, withDefaults } from "../../core/fields.ts";
 import {
   MINIME_BASE_FIELDS, MINIME_COMBAT, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeAimKey,
   minimeCombatFields, minimeFireKey, minimeVariantFields,
@@ -302,10 +302,18 @@ const capital = (login: string) => login[0].toUpperCase() + login.slice(1);
 // On first login: channel name from the Twitch login (first letter upper case)
 const personalize = (login: string) => ({ channelName: capital(login) });
 
+// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
+const BASIC = [
+  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "picker", "mangosOnTrees", "birds", "timeStarting",
+  "startingEyebrow", "startingTitle", "ticker", "timeBrb", "brbTitle", "brbNote", "timeEnding", "endingTitle", "endingNext", "alertStyle",
+  "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatStyle", "chatBadges",
+  "camStyle", "camLabel", "camLive", "musicStyle", "musicHide", "fxIn", "fxOut", "mangoDefault", "mangoNames",
+];
+
 export const plantageSettings: ThemeSchema = {
   id: "plantage",
   name: "Südfrucht-Plantage",
-  fields: [...FIELDS, ...minimeVariantFields(ROLE_SET), ...COMBAT_FIELDS],
+  fields: markBasic([...FIELDS, ...minimeVariantFields(ROLE_SET), ...COMBAT_FIELDS], BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: ROLE_SET,

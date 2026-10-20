@@ -11,7 +11,8 @@ import {
   minimeTeamNamesKey,
 } from "../core/minimeFields.ts";
 import { validateSettings } from "../core/settings.ts";
-import type { ThemeSchema } from "../core/theme.ts";
+import { SCENES, type ThemeSchema } from "../core/theme.ts";
+import { groupsForView } from "../dashboard/settingsForm.ts";
 
 // The core reads shared fields of a feature (e.g. readMinimeOptions, describeCommands, useFxScene, badgeLabel), they
 // count as used; plus the generated
@@ -30,6 +31,22 @@ const CORE_KEYS = new Set<string>([
 ]);
 const CORE_PREFIXES = [minimeNamesKey(""), minimeTeamNamesKey(""), minimeTeamLabelKey(""), minimeTeamColorKey(""), minimeAimKey(""), minimeFireKey("")];
 
+// Simple view of the dashboard: every area with fields other than numbers shows a few basic ones (general 3 to 12, a
+// scene 1 to 10; an area of numbers only shows the hint to the advanced view), and no number is basic except these,
+// which almost every streamer sets
+const BASIC_NUMBERS = new Set(["minimeMax"]);
+export function auditBasic(schema: ThemeSchema): string[] {
+  const numbers = schema.fields.filter(field => field.basic && field.type === "number" && !BASIC_NUMBERS.has(field.key)).map(field => `${field.key}: basic number`);
+  const areas = (["general", ...SCENES] as const).flatMap(view => {
+    const fields = groupsForView(schema, view).flatMap(group => group.fields);
+    const count = fields.filter(field => field.basic).length;
+    const [min, max] = view === "general" ? [3, 12] : [1, 10];
+    const needed = fields.some(field => field.type !== "number") ? min : 0;
+    return count < needed || count > max ? [`${view}: ${count} basic fields`] : [];
+  });
+  return [...numbers, ...areas];
+}
+
 // folder: folder of the theme; settings.ts and checks do not count as use
 export function auditTheme(schema: ThemeSchema, folder: string) {
   const defaults = Object.fromEntries(schema.fields.map(field => [field.key, field.default]));
@@ -37,5 +54,5 @@ export function auditTheme(schema: ThemeSchema, folder: string) {
     .filter(file => /\.(ts|tsx|css)$/.test(file) && !/settings\.ts$|\.check\.ts$/.test(file));
   const source = files.map(file => readFileSync(join(folder, file), "utf8")).join("\n");
   const used = (key: string) => CORE_KEYS.has(key) || CORE_PREFIXES.some(prefix => key.startsWith(prefix)) || new RegExp(`\\.${key}\\b|[{,]\\s*${key}\\s*[,}]|"${key}"|var\\(--${key}\\)`).test(source);
-  return { errors: validateSettings(schema, defaults).errors, unused: schema.fields.map(field => field.key).filter(key => !used(key)) };
+  return { errors: validateSettings(schema, defaults).errors, unused: schema.fields.map(field => field.key).filter(key => !used(key)), basic: auditBasic(schema) };
 }

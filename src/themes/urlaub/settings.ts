@@ -1,7 +1,7 @@
 // Settings schema of the Urlaub theme: southern tropical coast and sea look (sea, waves, sand, palms,
 // wooden signs) for all scenes, stinger and banners, plus beach thing minimes that hop. The only place of the theme with
 // fixed colors, texts and numbers. UrlaubValues is the type of the resolved values (useUrlaub).
-import { choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
+import { markBasic, choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
@@ -308,10 +308,18 @@ const GROUP_SCENES = {
 // On first login: channel name from the Twitch login (first letter upper case)
 const personalize = (login: string) => ({ channelName: capital(login) });
 
+// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
+const BASIC = [
+  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "clouds", "boat", "gulls", "timeStarting",
+  "startingEyebrow", "startingTitle", "ticker", "timeBrb", "brbTitle", "brbNote", "timeEnding", "endingTitle", "endingNext", "alertStyle",
+  "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatStyle", "chatBadges",
+  "camStyle", "camLabel", "camLive", "musicStyle", "musicHide", "fxIn", "fxOut", "fruitDefault", "fruitNames",
+];
+
 export const urlaubSettings: ThemeSchema = {
   id: "urlaub",
   name: "Urlaub",
-  fields: [...FIELDS, ...minimeVariantFields(THING_SET), ...THING_COLOR_FIELDS],
+  fields: markBasic([...FIELDS, ...minimeVariantFields(THING_SET), ...THING_COLOR_FIELDS], BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: THING_SET,

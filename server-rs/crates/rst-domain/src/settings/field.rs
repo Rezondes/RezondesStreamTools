@@ -304,6 +304,13 @@ pub fn in_scene(scene: SceneName, field: SettingField) -> SettingField {
     SettingField { scene: Some(scene), ..field }
 }
 
+/// The fields of a theme with its simple view listed in one place (template: `markBasic` in `src/core/fields.ts`; a
+/// key without a field shows up in the fixture comparison)
+#[must_use]
+pub fn mark_basic(fields: Vec<SettingField>, keys: &[&str]) -> Vec<SettingField> {
+    fields.into_iter().map(|field| if keys.contains(&field.key.as_str()) { basic(field) } else { field }).collect()
+}
+
 /// Field of the simple view in the dashboard (template: `basic` in `src/core/fields.ts`)
 #[must_use]
 pub fn basic(field: SettingField) -> SettingField {
@@ -353,6 +360,12 @@ mod tests {
     fn basic_only_adds_the_flag() {
         let title = text("title", "Title", "A", "Hello", None);
         assert_eq!(basic(title.clone()), SettingField { basic: true, ..title });
+    }
+
+    #[test]
+    fn mark_basic_marks_only_the_listed_keys() {
+        let fields = mark_basic(vec![color("a", "A", "G", "#000000"), flag("b", "B", "G", true)], &["b"]);
+        assert_eq!(fields.iter().map(|field| field.basic).collect::<Vec<_>>(), vec![false, true]);
     }
 
     #[test]

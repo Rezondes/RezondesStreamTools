@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { minimeVariantFields } from "../core/minimeFields.ts";
 import type { ThemeSchema } from "../core/theme.ts";
-import { auditTheme } from "./schemaAudit.ts";
+import { auditBasic, auditTheme } from "./schemaAudit.ts";
 
 const schema: ThemeSchema = {
   id: "probe",
@@ -34,5 +34,21 @@ try {
 } finally {
   await rm(folder, { recursive: true, force: true });
 }
+
+// Simple view: too few basic fields in general, too many in a scene, a basic number outside the exceptions
+const many = Array.from({ length: 11 }, (_, index) => ({ key: `t${index}`, type: "text" as const, label: "T", group: "S", default: "", basic: true }));
+const simple: ThemeSchema = {
+  id: "probe",
+  name: "Probe",
+  fields: [
+    { key: "accent", type: "color", label: "Color", group: "A", default: "#000000", basic: true },
+    { key: "size", type: "number", label: "Size", group: "A", default: 10, min: 0, max: 100, basic: true },
+    { key: "minimeMax", type: "number", label: "Max", group: "A", default: 10, min: 0, max: 100, basic: true },
+    ...many,
+  ],
+  groupScenes: { S: ["chat"] },
+};
+assert.deepEqual(auditBasic(simple), ["size: basic number", "chat: 11 basic fields"]);
+assert.deepEqual(auditBasic({ ...simple, fields: simple.fields.slice(0, 2) }), ["size: basic number", "general: 2 basic fields"]);
 
 console.log("schemaAudit ok");

@@ -2,7 +2,7 @@
 // the defaults give the original look. The only place of the theme with fixed colors, texts and numbers.
 // MatrixValues is the type of the resolved values that the scenes read via useMatrix (values.ts).
 import { asciiText } from "../../core/asciiText.ts";
-import { asciiArt, choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
+import { markBasic, asciiArt, choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
 import { GLYPHS } from "../../core/glyphs.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
@@ -321,4 +321,12 @@ const GROUP_SCENES = {
 // On first login: channel name and ASCII logo from the Twitch login instead of the samples
 const personalize = (login: string) => ({ channelName: login.toUpperCase(), logo: asciiText(login) });
 
-export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: FIELDS, groupScenes: GROUP_SCENES, personalize };
+// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
+const BASIC = [
+  "accent", "background", "font", "channelName", "logo", "rainScreens", "rainAlerts", "startingTitle", "countdownDone", "startingLines",
+  "ticker", "brbTitle", "brbNote", "brbLines", "endingTitle", "endingThanks", "endingNext", "endingLines", "followLine", "subLine",
+  "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatPrompt", "camLabel", "camRec", "musicHeadPlaying",
+  "musicIdleTitle", "musicHide", "fxIn", "fxOut", "minimeNames", "minimeDefaultColor",
+];
+
+export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };

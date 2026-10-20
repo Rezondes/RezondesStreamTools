@@ -16,6 +16,7 @@ const defaultOf = (key: string) => fields.find(field => field.key === key)?.defa
 const audit = auditTheme(kothSettings, import.meta.dirname);
 assert.deepEqual(audit.errors, []);
 assert.deepEqual(audit.unused, [], `unused keys: ${audit.unused.join(", ")}`);
+assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 
 // Required keys per group
 const REQUIRED: Record<string, string[]> = {

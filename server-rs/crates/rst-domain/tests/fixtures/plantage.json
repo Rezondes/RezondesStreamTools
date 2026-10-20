@@ -8,7 +8,8 @@
       "label": "Kanal-Name",
       "group": "Allgemein",
       "default": "Plantage",
-      "maxLength": 40
+      "maxLength": 40,
+      "basic": true
     },
     {
       "key": "font",
@@ -22,7 +23,8 @@
         "Nunito",
         "Inter",
         "DM Sans"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "titleFont",
@@ -35,7 +37,8 @@
         "Baloo 2",
         "Pacifico",
         "Nunito"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "fontSize",
@@ -52,7 +55,8 @@
       "type": "color",
       "label": "Textfarbe",
       "group": "Allgemein",
-      "default": "#ffffff"
+      "default": "#ffffff",
+      "basic": true
     },
     {
       "key": "textOnWood",
@@ -136,14 +140,16 @@
       "type": "color",
       "label": "Akzent (Mango-Orange)",
       "group": "Allgemein",
-      "default": "#ff8c1a"
+      "default": "#ff8c1a",
+      "basic": true
     },
     {
       "key": "accent2",
       "type": "color",
       "label": "Akzent 2 (Blattgrün)",
       "group": "Allgemein",
-      "default": "#4caf50"
+      "default": "#4caf50",
+      "basic": true
     },
     {
       "key": "shadowStrength",
@@ -204,7 +210,8 @@
         "abend",
         "nacht"
       ],
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "timeBrb",
@@ -218,7 +225,8 @@
         "abend",
         "nacht"
       ],
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "timeEnding",
@@ -232,7 +240,8 @@
         "abend",
         "nacht"
       ],
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "skyMorningTop",
@@ -413,7 +422,8 @@
       "type": "boolean",
       "label": "Mangos an den Bäumen",
       "group": "Plantage",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "crates",
@@ -427,7 +437,8 @@
       "type": "boolean",
       "label": "Vögel",
       "group": "Plantage",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "birdEvery",
@@ -453,7 +464,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Gleich geht's los",
       "maxLength": 200,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "startingTitle",
@@ -462,7 +474,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Stream startet gleich",
       "maxLength": 200,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "startingNote",
@@ -489,7 +502,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Bin gleich zurück",
       "maxLength": 200,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "brbNote",
@@ -498,7 +512,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Kurz eine Reihe abernten.",
       "maxLength": 200,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "endingEyebrow",
@@ -516,7 +531,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Stream beendet",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "endingNote",
@@ -563,7 +579,8 @@
       "type": "boolean",
       "label": "Mangopflücker zeigen",
       "group": "Starting, BRB, Ending",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "pickerSide",
@@ -674,7 +691,8 @@
       "group": "Starting, BRB, Ending",
       "default": "",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "startingLines",
@@ -732,7 +750,8 @@
       "label": "Ticker-Text (leer = aus)",
       "group": "Starting, BRB, Ending",
       "default": "",
-      "maxLength": 300
+      "maxLength": 300,
+      "basic": true
     },
     {
       "key": "tickerStyle",
@@ -787,7 +806,8 @@
         "kiste",
         "zettel",
         "korb"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "followTag",
@@ -803,7 +823,8 @@
       "label": "Follow: Zeile",
       "group": "Alerts",
       "default": "{user} hilft bei der Ernte!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "followIcon",
@@ -836,7 +857,8 @@
       "label": "Sub: Zeile",
       "group": "Alerts",
       "default": "{user} kommt in die Kiste!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "subIcon",
@@ -869,7 +891,8 @@
       "label": "Resub: Zeile",
       "group": "Alerts",
       "default": "{user} pflückt seit {amount} Monaten mit!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "resubIcon",
@@ -902,7 +925,8 @@
       "label": "Gift: Zeile",
       "group": "Alerts",
       "default": "{user} verschenkt {amount} Abos!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "giftIcon",
@@ -935,7 +959,8 @@
       "label": "Raid: Zeile",
       "group": "Alerts",
       "default": "{user} kommt mit {amount} Erntehelfern!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "raidIcon",
@@ -968,7 +993,8 @@
       "label": "Bits: Zeile",
       "group": "Alerts",
       "default": "{user} wirft {amount} Bits in den Korb!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "cheerIcon",
@@ -1001,7 +1027,8 @@
       "label": "Kanalpunkte: Zeile",
       "group": "Alerts",
       "default": "{user} löst {detail} ein.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "redeemIcon",
@@ -1034,7 +1061,8 @@
       "label": "Hype Train: Start",
       "group": "Alerts",
       "default": "Der Hype Train fährt zur Ernte!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "hypeEndLine",
@@ -1293,7 +1321,8 @@
         "zettel",
         "brett",
         "blatt"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "badgeHost",
@@ -1332,7 +1361,8 @@
       "type": "boolean",
       "label": "Badges zeigen",
       "group": "Chat",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "chatFontSize",
@@ -1421,7 +1451,8 @@
         "kiste",
         "holz",
         "seil"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "camFrameWidth",
@@ -1482,14 +1513,16 @@
       "label": "Namensschild ({channel})",
       "group": "Kamera-Rahmen",
       "default": "{channel}",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "camLive",
       "type": "boolean",
       "label": "Live-Anzeige",
       "group": "Kamera-Rahmen",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "camLiveText",
@@ -1509,7 +1542,8 @@
         "radio",
         "kiste",
         "schlicht"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "musicHeadPlaying",
@@ -1609,7 +1643,8 @@
       "type": "boolean",
       "label": "Bei Pause ausblenden",
       "group": "Musik",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "musicMarquee",
@@ -1689,7 +1724,8 @@
         "gleiten",
         "blenden",
         "keins"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "fxOut",
@@ -1703,7 +1739,8 @@
         "gleiten",
         "blenden",
         "keins"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "fxBubble",
@@ -2171,14 +2208,16 @@
         "mg",
         "sniper",
         "grenadier"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "mangoNames",
       "type": "boolean",
       "label": "Namen zeigen",
       "group": "Minimes: Aussehen",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "mangoNameStyle",

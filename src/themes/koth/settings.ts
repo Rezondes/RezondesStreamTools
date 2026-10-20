@@ -2,7 +2,7 @@
 // a hill with radio mast and flag in the middle, three factions fight for it; all scenes, stinger and banners, plus
 // soldiers as minimes in roles and factions that stand on fixed places and fight. The only place of the theme with fixed
 // colors, texts and numbers. KothValues is the type of the resolved values (useKoth).
-import { choice, color, flag, font, inScene, lines, number, text, withDefaults } from "../../core/fields.ts";
+import { markBasic, choice, color, flag, font, inScene, lines, number, text, withDefaults } from "../../core/fields.ts";
 import {
   MINIME_BASE_FIELDS, MINIME_COMBAT, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_TEAMS, MINIME_VARIANTS, minimeAimKey, minimeCombatFields,
   minimeFireKey, minimeTeamFields, minimeVariantFields,
@@ -306,10 +306,18 @@ const capital = (login: string) => login[0].toUpperCase() + login.slice(1);
 // On first login: channel name from the Twitch login (first letter upper case)
 const personalize = (login: string) => ({ channelName: capital(login) });
 
+// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
+const BASIC = [
+  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "tower", "mountains", "smoke", "timeStarting",
+  "startingEyebrow", "startingTitle", "ticker", "timeBrb", "brbTitle", "brbNote", "timeEnding", "endingTitle", "endingNext", "alertStyle",
+  "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatStyle", "chatBadges",
+  "camStyle", "camLabel", "camLive", "musicStyle", "musicHide", "fxIn", "fxOut", "soldierDefault", "soldierNames",
+];
+
 export const kothSettings: ThemeSchema = {
   id: "koth",
   name: "King of the Hill",
-  fields: [...FIELDS, ...minimeVariantFields(ROLE_SET), ...minimeTeamFields(TEAM_SET), ...COMBAT_FIELDS],
+  fields: markBasic([...FIELDS, ...minimeVariantFields(ROLE_SET), ...minimeTeamFields(TEAM_SET), ...COMBAT_FIELDS], BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: ROLE_SET,

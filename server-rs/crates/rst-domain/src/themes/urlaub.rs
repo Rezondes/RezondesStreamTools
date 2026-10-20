@@ -9,7 +9,8 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, lines, number, text,
+    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, lines, mark_basic, number,
+    text,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
@@ -522,12 +523,56 @@ fn personalize(login: &Login) -> SettingValues {
     BTreeMap::from([("channelName".to_owned(), SettingValue::Text(capital(login.as_str())))])
 }
 
+/// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
+/// (template: `BASIC` in `src/themes/urlaub/settings.ts`)
+const BASIC: &[&str] = &[
+    "channelName",
+    "font",
+    "titleFont",
+    "textColor",
+    "accent",
+    "accent2",
+    "clouds",
+    "boat",
+    "gulls",
+    "timeStarting",
+    "startingEyebrow",
+    "startingTitle",
+    "ticker",
+    "timeBrb",
+    "brbTitle",
+    "brbNote",
+    "timeEnding",
+    "endingTitle",
+    "endingNext",
+    "alertStyle",
+    "followLine",
+    "subLine",
+    "resubLine",
+    "giftLine",
+    "raidLine",
+    "cheerLine",
+    "redeemLine",
+    "hypeBeginLine",
+    "chatStyle",
+    "chatBadges",
+    "camStyle",
+    "camLabel",
+    "camLive",
+    "musicStyle",
+    "musicHide",
+    "fxIn",
+    "fxOut",
+    "fruitDefault",
+    "fruitNames",
+];
+
 #[must_use]
 pub fn urlaub() -> Theme {
     let schema = ThemeSchema {
         id: "urlaub".to_owned(),
         name: "Urlaub".to_owned(),
-        fields: fields(),
+        fields: mark_basic(fields(), BASIC),
         group_scenes: group_scenes(),
         minime_variants: Some(variants()),
         minime_teams: None,

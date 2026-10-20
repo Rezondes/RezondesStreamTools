@@ -8,7 +8,8 @@
       "label": "Kanal-Name",
       "group": "Allgemein",
       "default": "Bärenbande",
-      "maxLength": 40
+      "maxLength": 40,
+      "basic": true
     },
     {
       "key": "font",
@@ -22,7 +23,8 @@
         "Baloo 2",
         "Inter",
         "DM Sans"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "titleFont",
@@ -35,7 +37,8 @@
         "Fredoka",
         "Baloo 2",
         "Nunito"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "fontSize",
@@ -69,7 +72,8 @@
       "type": "color",
       "label": "Text hell",
       "group": "Allgemein",
-      "default": "#ffffff"
+      "default": "#ffffff",
+      "basic": true
     },
     {
       "key": "textDark",
@@ -90,7 +94,8 @@
       "type": "color",
       "label": "Papier (Karten, Schilder)",
       "group": "Allgemein",
-      "default": "#fbf3e0"
+      "default": "#fbf3e0",
+      "basic": true
     },
     {
       "key": "paperShade",
@@ -104,7 +109,8 @@
       "type": "color",
       "label": "Akzent (Ziegelrot)",
       "group": "Allgemein",
-      "default": "#e2573f"
+      "default": "#e2573f",
+      "basic": true
     },
     {
       "key": "accentText",
@@ -118,7 +124,8 @@
       "type": "color",
       "label": "Akzent 2 (Himmelblau)",
       "group": "Allgemein",
-      "default": "#4d9de0"
+      "default": "#4d9de0",
+      "basic": true
     },
     {
       "key": "radius",
@@ -345,7 +352,8 @@
         "abend",
         "nacht"
       ],
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "timeBrb",
@@ -359,7 +367,8 @@
         "abend",
         "nacht"
       ],
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "timeEnding",
@@ -373,7 +382,8 @@
         "abend",
         "nacht"
       ],
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "skyMorningTop",
@@ -581,28 +591,32 @@
       "type": "boolean",
       "label": "Blumen und Gras",
       "group": "Welt",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "showCity",
       "type": "boolean",
       "label": "Stadt in der Ferne",
       "group": "Welt",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "showBridge",
       "type": "boolean",
       "label": "Brücke in der Ferne",
       "group": "Welt",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "showCave",
       "type": "boolean",
       "label": "Höhle",
       "group": "Welt",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "paperGrain",
@@ -636,7 +650,8 @@
         "panda",
         "turm"
       ],
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "bearBrb",
@@ -650,7 +665,8 @@
         "panda",
         "turm"
       ],
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "bearEnding",
@@ -664,7 +680,8 @@
         "panda",
         "turm"
       ],
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "bearSize",
@@ -694,7 +711,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Gleich geht's los",
       "maxLength": 200,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "startingTitle",
@@ -703,7 +721,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Stream startet gleich",
       "maxLength": 200,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "startingNote",
@@ -730,7 +749,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Bin gleich zurück",
       "maxLength": 200,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "brbNote",
@@ -739,7 +759,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Hier wird gerade gekocht.",
       "maxLength": 200,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "brbSign",
@@ -766,7 +787,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Stream beendet",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "endingNote",
@@ -864,7 +886,8 @@
       "group": "Starting, BRB, Ending",
       "default": "",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "startingLines",
@@ -922,7 +945,8 @@
       "label": "Ticker-Text (leer = aus)",
       "group": "Starting, BRB, Ending",
       "default": "",
-      "maxLength": 300
+      "maxLength": 300,
+      "basic": true
     },
     {
       "key": "tickerSpeed",
@@ -967,7 +991,8 @@
         "grizzly",
         "panda",
         "turm"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "alertBearSize",
@@ -993,7 +1018,8 @@
       "label": "Follow: Zeile",
       "group": "Alerts",
       "default": "{user} gehört jetzt zur Bande!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "followIcon",
@@ -1026,7 +1052,8 @@
       "label": "Sub: Zeile",
       "group": "Alerts",
       "default": "{user} zieht mit in die Höhle!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "subIcon",
@@ -1059,7 +1086,8 @@
       "label": "Resub: Zeile",
       "group": "Alerts",
       "default": "{user} ist seit {amount} Monaten dabei!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "resubIcon",
@@ -1092,7 +1120,8 @@
       "label": "Gift: Zeile",
       "group": "Alerts",
       "default": "{user} verschenkt {amount} Abos!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "giftIcon",
@@ -1125,7 +1154,8 @@
       "label": "Raid: Zeile",
       "group": "Alerts",
       "default": "{user} kommt mit {amount} Gästen zu Besuch!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "raidIcon",
@@ -1158,7 +1188,8 @@
       "label": "Bits: Zeile",
       "group": "Alerts",
       "default": "{user} spendiert {amount} Bits für Snacks!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "cheerIcon",
@@ -1191,7 +1222,8 @@
       "label": "Kanalpunkte: Zeile",
       "group": "Alerts",
       "default": "{user} löst {detail} ein.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "redeemIcon",
@@ -1224,7 +1256,8 @@
       "label": "Hype Train: Start",
       "group": "Alerts",
       "default": "Der Hype Train rollt los!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "hypeEndLine",
@@ -1476,7 +1509,8 @@
         "eisbaer",
         "grizzly",
         "panda"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "chatStyle",
@@ -1488,7 +1522,8 @@
         "handy",
         "zettel",
         "blasen"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "badgeHost",
@@ -1527,7 +1562,8 @@
       "type": "boolean",
       "label": "Badges zeigen",
       "group": "Chat",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "chatFontSize",
@@ -1620,7 +1656,8 @@
         "grizzly",
         "panda",
         "turm"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "camStyle",
@@ -1632,7 +1669,8 @@
         "papier",
         "holz",
         "polaroid"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "camBearSpot",
@@ -1682,14 +1720,16 @@
       "label": "Namensschild ({channel})",
       "group": "Kamera-Rahmen",
       "default": "{channel}",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "camLive",
       "type": "boolean",
       "label": "Live-Anzeige",
       "group": "Kamera-Rahmen",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "camLiveText",
@@ -1710,7 +1750,8 @@
         "grizzly",
         "panda",
         "turm"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "musicStyle",
@@ -1722,7 +1763,8 @@
         "kopfhoerer",
         "kofferradio",
         "schlicht"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "musicHeadPlaying",
@@ -1822,7 +1864,8 @@
       "type": "boolean",
       "label": "Bei Pause ausblenden",
       "group": "Musik",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "musicMarquee",
@@ -1869,7 +1912,8 @@
         "eisbaer",
         "grizzly",
         "panda"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "fxStyle",
@@ -1880,7 +1924,8 @@
       "options": [
         "schild",
         "blase"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "fxBearSize",
@@ -2455,14 +2500,16 @@
         "eisbaer",
         "grizzly",
         "panda"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "minimeNames",
       "type": "boolean",
       "label": "Namen zeigen",
       "group": "Minimes: Aussehen",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "minimeNameSize",
@@ -3100,7 +3147,8 @@
         "grizzly",
         "panda",
         "turm"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "timeInfo",
@@ -3113,7 +3161,8 @@
         "mittag",
         "abend",
         "nacht"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "minimeVariantCommand",

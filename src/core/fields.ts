@@ -48,6 +48,13 @@ export const inScene = <F extends SettingField>(scene: SceneName, field: F): F &
 // Field of the simple view in the dashboard: the few settings most streamers change (texts, main colors, switches)
 export const basic = <F extends SettingField>(field: F): F & { basic: true } => ({ ...field, basic: true });
 
+// The fields of a theme with its simple view listed in one place; a key without a field is a mistake in the list
+export function markBasic(fields: readonly SettingField[], keys: readonly string[]): SettingField[] {
+  const missing = keys.filter(key => !fields.some(field => field.key === key));
+  if (missing.length > 0) throw new Error(`basic keys without a field: ${missing.join(", ")}`);
+  return fields.map(field => (keys.includes(field.key) ? basic(field) : field));
+}
+
 // Type of the resolved values for a field list: { [key]: number, switch, lines, sound or text }
 type ValueOf<F> = F extends { type: "number" } ? number
   : F extends { type: "boolean" } ? boolean

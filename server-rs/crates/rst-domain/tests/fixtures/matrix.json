@@ -7,7 +7,8 @@
       "type": "color",
       "label": "Hauptfarbe",
       "group": "Allgemein",
-      "default": "#39ff14"
+      "default": "#39ff14",
+      "basic": true
     },
     {
       "key": "dim",
@@ -28,7 +29,8 @@
       "type": "color",
       "label": "Hintergrund",
       "group": "Allgemein",
-      "default": "#000000"
+      "default": "#000000",
+      "basic": true
     },
     {
       "key": "glow",
@@ -63,7 +65,8 @@
         "Fira Mono",
         "IBM Plex Mono",
         "Courier New"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "fontSize",
@@ -81,7 +84,8 @@
       "label": "Kanal-Name",
       "group": "Allgemein",
       "default": "STREAM",
-      "maxLength": 40
+      "maxLength": 40,
+      "basic": true
     },
     {
       "key": "logo",
@@ -90,7 +94,8 @@
       "group": "Allgemein",
       "default": " ____    _____   ____    _____      _      __  __\n/ ___|  |_   _| |  _ \\  | ____|    / \\    |  \\/  |\n\\___ \\    | |   | |_) | |  _|     / _ \\   | |\\/| |\n ___) |   | |   |  _ <  | |___   / ___ \\  | |  | |\n|____/    |_|   |_| \\_\\ |_____| /_/   \\_\\ |_|  |_|",
       "maxLength": 4000,
-      "ascii": true
+      "ascii": true,
+      "basic": true
     },
     {
       "key": "glowStrength",
@@ -208,14 +213,16 @@
       "type": "boolean",
       "label": "Regen in Starting/BRB/Ending",
       "group": "Matrix-Regen",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "rainAlerts",
       "type": "boolean",
       "label": "Regen in Alerts",
       "group": "Matrix-Regen",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "rainSizeScreens",
@@ -293,7 +300,8 @@
       "group": "Starting, BRB, Ending",
       "default": "STREAM STARTET GLEICH",
       "maxLength": 200,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "brbTitle",
@@ -302,7 +310,8 @@
       "group": "Starting, BRB, Ending",
       "default": "BIN GLEICH ZURÜCK",
       "maxLength": 200,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "endingTitle",
@@ -311,7 +320,8 @@
       "group": "Starting, BRB, Ending",
       "default": "STREAM BEENDET",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "sceneHeader",
@@ -363,7 +373,8 @@
       "group": "Starting, BRB, Ending",
       "default": "INITIALISIERE ...",
       "maxLength": 200,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "progressBar",
@@ -417,7 +428,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Chat bleibt offen, schreibt ruhig weiter.",
       "maxLength": 200,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "endingThanks",
@@ -426,7 +438,8 @@
       "group": "Starting, BRB, Ending",
       "default": "DANKE FÜRS ZUSCHAUEN",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "endingNextLabel",
@@ -444,7 +457,8 @@
       "group": "Starting, BRB, Ending",
       "default": "",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "terminal",
@@ -487,7 +501,8 @@
         "git pull origin main ... already up to date"
       ],
       "maxLines": 100,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "brbLines",
@@ -511,7 +526,8 @@
         "awaiting operator input"
       ],
       "maxLines": 100,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "endingLines",
@@ -532,7 +548,8 @@
         "see you in the matrix"
       ],
       "maxLines": 100,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "typingSpeed",
@@ -589,7 +606,8 @@
       "label": "Ticker-Text (leer = aus)",
       "group": "Starting, BRB, Ending",
       "default": "",
-      "maxLength": 500
+      "maxLength": 500,
+      "basic": true
     },
     {
       "key": "tickerSeparator",
@@ -681,7 +699,8 @@
       "label": "Follow: Zeile",
       "group": "Alerts",
       "default": "ist jetzt in der Matrix.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "subTag",
@@ -697,7 +716,8 @@
       "label": "Sub: Zeile",
       "group": "Alerts",
       "default": "hat die rote Pille genommen.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "resubTag",
@@ -713,7 +733,8 @@
       "label": "Resub: Zeile",
       "group": "Alerts",
       "default": "ist seit {amount} Monaten dabei.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "giftTag",
@@ -729,7 +750,8 @@
       "label": "Gift: Zeile (mehrere)",
       "group": "Alerts",
       "default": "verschenkt {amount} Subs an den Chat.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "giftOneLine",
@@ -761,7 +783,8 @@
       "label": "Raid: Zeile",
       "group": "Alerts",
       "default": "raidet mit {amount} Zuschauern!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "cheerTag",
@@ -777,7 +800,8 @@
       "label": "Bits: Zeile",
       "group": "Alerts",
       "default": "cheert {amount} Bits.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "redeemTag",
@@ -793,7 +817,8 @@
       "label": "Kanalpunkte: Zeile",
       "group": "Alerts",
       "default": "löst \"{detail}\" ein.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "hypeTag",
@@ -817,7 +842,8 @@
       "label": "Hype Train: Start",
       "group": "Alerts",
       "default": "ist abgefahren! Alle einsteigen.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "hypeEndLine",
@@ -1028,7 +1054,8 @@
       "label": "Prompt hinter dem Namen",
       "group": "Chat",
       "default": "@twitch:~$",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "badgeHost",
@@ -1152,14 +1179,16 @@
       "label": "Label ({channel})",
       "group": "Kamera-Rahmen",
       "default": "CAM_01 // {channel}",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "camRec",
       "type": "boolean",
       "label": "REC-Anzeige",
       "group": "Kamera-Rahmen",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "camRecDot",
@@ -1223,7 +1252,8 @@
       "label": "Kopfzeile bei Wiedergabe",
       "group": "Musik",
       "default": "> NOW PLAYING // SPOTIFY",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "musicHeadPaused",
@@ -1239,7 +1269,8 @@
       "label": "Titel ohne Wiedergabe",
       "group": "Musik",
       "default": "KEINE WIEDERGABE",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "musicIdleArtist",
@@ -1254,7 +1285,8 @@
       "type": "boolean",
       "label": "Bei Pause ausblenden",
       "group": "Musik",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "equalizer",
@@ -1421,7 +1453,8 @@
         "glitch",
         "fade",
         "none"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "fxOut",
@@ -1433,7 +1466,8 @@
         "glitch",
         "fade",
         "none"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "stingerDuration",
@@ -1842,7 +1876,8 @@
       "type": "color",
       "label": "Farbe ohne eigene Wahl",
       "group": "Minimes: Aussehen",
-      "default": "#39ff14"
+      "default": "#39ff14",
+      "basic": true
     },
     {
       "key": "minimeFace",
@@ -1963,7 +1998,8 @@
       "type": "boolean",
       "label": "Namen anzeigen",
       "group": "Minimes: Aussehen",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "minimeNameSize",

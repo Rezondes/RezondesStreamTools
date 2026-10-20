@@ -6,6 +6,7 @@ import { standardSettings } from "./settings.ts";
 const audit = auditTheme(standardSettings, import.meta.dirname);
 assert.deepEqual(audit.errors, []);
 assert.deepEqual(audit.unused, [], `unused keys: ${audit.unused.join(", ")}`);
+assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 assert.equal(standardSettings.id, "standard");
 
 console.log("standard settings ok");

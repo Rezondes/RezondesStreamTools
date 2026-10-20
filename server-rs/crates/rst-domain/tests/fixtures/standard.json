@@ -7,21 +7,24 @@
       "type": "color",
       "label": "Akzentfarbe",
       "group": "Allgemein",
-      "default": "#7c5cff"
+      "default": "#7c5cff",
+      "basic": true
     },
     {
       "key": "accent2",
       "type": "color",
       "label": "Zweite Akzentfarbe (Verlauf)",
       "group": "Allgemein",
-      "default": "#22d3ee"
+      "default": "#22d3ee",
+      "basic": true
     },
     {
       "key": "textColor",
       "type": "color",
       "label": "Textfarbe",
       "group": "Allgemein",
-      "default": "#ffffff"
+      "default": "#ffffff",
+      "basic": true
     },
     {
       "key": "mutedColor",
@@ -42,7 +45,8 @@
       "type": "color",
       "label": "Hintergrund (Vollbild-Szenen)",
       "group": "Allgemein",
-      "default": "#0b0b12"
+      "default": "#0b0b12",
+      "basic": true
     },
     {
       "key": "cardOpacity",
@@ -75,7 +79,8 @@
         "Manrope",
         "DM Sans",
         "Space Grotesk"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "fontSize",
@@ -103,7 +108,8 @@
       "label": "Kanal-Name",
       "group": "Allgemein",
       "default": "STREAM",
-      "maxLength": 40
+      "maxLength": 40,
+      "basic": true
     },
     {
       "key": "locale",
@@ -129,7 +135,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Gleich geht's los",
       "maxLength": 200,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "startingTitle",
@@ -138,7 +145,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Stream startet gleich",
       "maxLength": 200,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "brbEyebrow",
@@ -147,7 +155,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Kurze Pause",
       "maxLength": 200,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "brbTitle",
@@ -156,7 +165,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Bin gleich zurück",
       "maxLength": 200,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "brbNote",
@@ -165,7 +175,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Der Chat bleibt offen.",
       "maxLength": 200,
-      "scene": "brb"
+      "scene": "brb",
+      "basic": true
     },
     {
       "key": "endingEyebrow",
@@ -174,7 +185,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Danke fürs Zuschauen",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "endingTitle",
@@ -183,7 +195,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Stream beendet",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "endingNextLabel",
@@ -201,7 +214,8 @@
       "group": "Starting, BRB, Ending",
       "default": "",
       "maxLength": 200,
-      "scene": "ending"
+      "scene": "ending",
+      "basic": true
     },
     {
       "key": "countdown",
@@ -221,7 +235,8 @@
       "group": "Starting, BRB, Ending",
       "default": "Gleich live",
       "maxLength": 200,
-      "scene": "starting"
+      "scene": "starting",
+      "basic": true
     },
     {
       "key": "progressBar",
@@ -244,7 +259,8 @@
       "label": "Hinweis unten (leer = aus)",
       "group": "Starting, BRB, Ending",
       "default": "",
-      "maxLength": 300
+      "maxLength": 300,
+      "basic": true
     },
     {
       "key": "blobs",
@@ -277,7 +293,8 @@
       "label": "Follow: Zeile",
       "group": "Alerts",
       "default": "{user} folgt jetzt!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "subLabel",
@@ -293,7 +310,8 @@
       "label": "Sub: Zeile",
       "group": "Alerts",
       "default": "{user} hat abonniert!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "resubLabel",
@@ -309,7 +327,8 @@
       "label": "Resub: Zeile",
       "group": "Alerts",
       "default": "{user} ist seit {amount} Monaten dabei!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "giftLabel",
@@ -325,7 +344,8 @@
       "label": "Gift: Zeile",
       "group": "Alerts",
       "default": "{user} verschenkt {amount} Subs!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "raidLabel",
@@ -341,7 +361,8 @@
       "label": "Raid: Zeile",
       "group": "Alerts",
       "default": "{user} raidet mit {amount} Leuten!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "cheerLabel",
@@ -357,7 +378,8 @@
       "label": "Bits: Zeile",
       "group": "Alerts",
       "default": "{user} cheert {amount} Bits!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "redeemLabel",
@@ -373,7 +395,8 @@
       "label": "Kanalpunkte: Zeile",
       "group": "Alerts",
       "default": "{user} löst {detail} ein.",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "hypeLabel",
@@ -389,7 +412,8 @@
       "label": "Hype Train: Start",
       "group": "Alerts",
       "default": "Der Hype Train ist abgefahren!",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "hypeEndLine",
@@ -497,7 +521,8 @@
       "type": "boolean",
       "label": "Badges zeigen",
       "group": "Chat",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "camName",
@@ -505,14 +530,16 @@
       "label": "Namensschild ({channel})",
       "group": "Kamera-Rahmen",
       "default": "{channel}",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "camLive",
       "type": "boolean",
       "label": "Live-Anzeige",
       "group": "Kamera-Rahmen",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "camLiveText",
@@ -538,7 +565,8 @@
       "label": "Überzeile",
       "group": "Musik",
       "default": "Läuft gerade",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "musicIdle",
@@ -546,14 +574,16 @@
       "label": "Text ohne Wiedergabe",
       "group": "Musik",
       "default": "Keine Musik",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "musicHide",
       "type": "boolean",
       "label": "Bei Pause ausblenden",
       "group": "Musik",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "musicCover",

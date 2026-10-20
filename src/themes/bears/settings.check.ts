@@ -12,6 +12,7 @@ const fields = bearsSettings.fields;
 const audit = auditTheme(bearsSettings, import.meta.dirname);
 assert.deepEqual(audit.errors, []);
 assert.deepEqual(audit.unused, [], `unused keys: ${audit.unused.join(", ")}`);
+assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 
 // Required keys per group
 const REQUIRED: Record<string, string[]> = {

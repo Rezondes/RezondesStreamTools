@@ -8,7 +8,8 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, number, sound, text,
+    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, mark_basic, number, sound,
+    text,
 };
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
@@ -167,6 +168,41 @@ fn personalize(login: &Login) -> SettingValues {
     BTreeMap::from([("channelName".to_owned(), SettingValue::Text(login.as_str().to_uppercase()))])
 }
 
+/// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
+/// (template: `BASIC` in `src/themes/standard/settings.ts`)
+const BASIC: &[&str] = &[
+    "accent",
+    "accent2",
+    "textColor",
+    "background",
+    "font",
+    "channelName",
+    "startingEyebrow",
+    "startingTitle",
+    "countdownDone",
+    "ticker",
+    "brbEyebrow",
+    "brbTitle",
+    "brbNote",
+    "endingEyebrow",
+    "endingTitle",
+    "endingNext",
+    "followLine",
+    "subLine",
+    "resubLine",
+    "giftLine",
+    "raidLine",
+    "cheerLine",
+    "redeemLine",
+    "hypeBeginLine",
+    "chatBadges",
+    "camName",
+    "camLive",
+    "musicLabel",
+    "musicIdle",
+    "musicHide",
+];
+
 #[must_use]
 pub fn standard() -> Theme {
     let mut fields = [general(), screens(), alerts(), chat_cam_music(), fx_stinger_banner(), info_fields()].concat();
@@ -174,7 +210,7 @@ pub fn standard() -> Theme {
     let schema = ThemeSchema {
         id: "standard".to_owned(),
         name: "Standard".to_owned(),
-        fields,
+        fields: mark_basic(fields, BASIC),
         group_scenes: group_scenes(),
         minime_variants: None,
         minime_teams: None,

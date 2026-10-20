@@ -8,8 +8,8 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, Unit, ascii_art, choice, color, flag, font, in_scene, lines, number,
-    text,
+    SettingField, SettingValue, SettingValues, Unit, ascii_art, choice, color, flag, font, in_scene, lines, mark_basic,
+    number, text,
 };
 use crate::themes::ascii_text::ascii_text;
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
@@ -281,12 +281,53 @@ fn personalize(login: &Login) -> SettingValues {
     ])
 }
 
+/// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
+/// (template: `BASIC` in `src/themes/matrix/settings.ts`)
+const BASIC: &[&str] = &[
+    "accent",
+    "background",
+    "font",
+    "channelName",
+    "logo",
+    "rainScreens",
+    "rainAlerts",
+    "startingTitle",
+    "countdownDone",
+    "startingLines",
+    "ticker",
+    "brbTitle",
+    "brbNote",
+    "brbLines",
+    "endingTitle",
+    "endingThanks",
+    "endingNext",
+    "endingLines",
+    "followLine",
+    "subLine",
+    "resubLine",
+    "giftLine",
+    "raidLine",
+    "cheerLine",
+    "redeemLine",
+    "hypeBeginLine",
+    "chatPrompt",
+    "camLabel",
+    "camRec",
+    "musicHeadPlaying",
+    "musicIdleTitle",
+    "musicHide",
+    "fxIn",
+    "fxOut",
+    "minimeNames",
+    "minimeDefaultColor",
+];
+
 #[must_use]
 pub fn matrix() -> Theme {
     let schema = ThemeSchema {
         id: "matrix".to_owned(),
         name: "Matrix".to_owned(),
-        fields: fields(),
+        fields: mark_basic(fields(), BASIC),
         group_scenes: group_scenes(),
         minime_variants: None,
         minime_teams: None,

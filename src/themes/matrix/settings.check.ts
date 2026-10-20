@@ -10,6 +10,7 @@ const fields = matrixSettings.fields;
 const audit = auditTheme(matrixSettings, import.meta.dirname);
 assert.deepEqual(audit.errors, []);
 assert.deepEqual(audit.unused, [], `unused keys: ${audit.unused.join(", ")}`);
+assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 
 // Required keys per group (package 5, AC1); the volume is part of the sound fields
 const REQUIRED: Record<string, string[]> = {

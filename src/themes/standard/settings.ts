@@ -2,7 +2,7 @@
 // transitions, independent of the matrix theme (own scenes, fonts, stinger and banners). Template for own themes
 // (THEMES.md). The only place of the theme with fixed colors, texts and numbers. StandardValues is the type of the
 // resolved values that the scenes read via useStandard.
-import { choice, color, flag, font, inScene, number, sound, text } from "../../core/fields.ts";
+import { markBasic, choice, color, flag, font, inScene, number, sound, text } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
@@ -136,4 +136,11 @@ const GROUP_SCENES = {
 // On first login: channel name from the Twitch login instead of the sample
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 
-export const standardSettings: ThemeSchema = { id: "standard", name: "Standard", fields: FIELDS, groupScenes: GROUP_SCENES, personalize };
+// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
+const BASIC = [
+  "accent", "accent2", "textColor", "background", "font", "channelName", "startingEyebrow", "startingTitle", "countdownDone", "ticker",
+  "brbEyebrow", "brbTitle", "brbNote", "endingEyebrow", "endingTitle", "endingNext", "followLine", "subLine", "resubLine", "giftLine",
+  "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatBadges", "camName", "camLive", "musicLabel", "musicIdle", "musicHide",
+];
+
+export const standardSettings: ThemeSchema = { id: "standard", name: "Standard", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };

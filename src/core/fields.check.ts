@@ -1,6 +1,6 @@
 // Check for fields.ts: building blocks for theme schemas give valid fields. Runs with npm test.
 import assert from "node:assert/strict";
-import { asciiArt, basic, choice, color, flag, font, inScene, lines, number, sound, text, textarea, withDefaults } from "./fields.ts";
+import { asciiArt, basic, markBasic, choice, color, flag, font, inScene, lines, number, sound, text, textarea, withDefaults } from "./fields.ts";
 import { validateSettings } from "./settings.ts";
 import type { ThemeSchema } from "./theme.ts";
 
@@ -43,5 +43,8 @@ assert.deepEqual(inScene("brb", text("brbTitle", "Title", "A", "BREAK")), { ...t
 // basic only marks the field for the simple view; fields without it have no flag
 assert.deepEqual(basic(color("a", "A", "G", "#000000")), { ...color("a", "A", "G", "#000000"), basic: true });
 assert.equal("basic" in color("a", "A", "G", "#000000"), false);
+const listed = markBasic([color("a", "A", "G", "#000000"), flag("b", "B", "G", true)], ["b"]);
+assert.deepEqual(listed.map(field => field.basic === true), [false, true]);
+assert.throws(() => markBasic([flag("b", "B", "G", true)], ["nothing"]), /nothing/);
 
 console.log("fields ok");

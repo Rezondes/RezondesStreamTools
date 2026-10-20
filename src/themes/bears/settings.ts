@@ -2,7 +2,7 @@
 // front of a watercolor world of forest, cave and a far city. One bear per scene (or the tower of all three), chosen
 // per scene. The only place of the theme with fixed colors, texts and numbers. BearsValues is the type of the resolved
 // values (useBears).
-import { choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
+import { markBasic, choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
@@ -336,10 +336,19 @@ const capital = (login: string) => login[0].toUpperCase() + login.slice(1);
 // On first login: channel name from the Twitch login (first letter upper case)
 const personalize = (login: string) => ({ channelName: capital(login) });
 
+// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
+const BASIC = [
+  "channelName", "font", "titleFont", "accent", "accent2", "textColor", "paper", "showCity", "showBridge", "showCave",
+  "flowers", "timeStarting", "bearStarting", "startingEyebrow", "startingTitle", "ticker", "timeBrb", "bearBrb", "brbTitle", "brbNote",
+  "timeEnding", "bearEnding", "endingTitle", "endingNext", "bearAlerts", "followLine", "subLine", "resubLine", "giftLine", "raidLine",
+  "cheerLine", "redeemLine", "hypeBeginLine", "bearChat", "chatStyle", "chatBadges", "bearCam", "camStyle", "camLabel", "camLive",
+  "bearMusic", "musicStyle", "musicHide", "bearFx", "fxStyle", "minimeDefault", "minimeNames", "bearInfo", "timeInfo",
+];
+
 export const bearsSettings: ThemeSchema = {
   id: "bears",
   name: "Bärenbande",
-  fields: [...FIELDS, ...minimeVariantFields(BEAR_SET)],
+  fields: markBasic([...FIELDS, ...minimeVariantFields(BEAR_SET)], BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: BEAR_SET,
