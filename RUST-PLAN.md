@@ -124,6 +124,7 @@ Abhängigkeiten: `rst-server` -> `rst-app` + `rst-infra`; `rst-infra` -> `rst-ap
 | 48 | Neue Minime-Felder im Schema | Die Felder für Gefechte und feste Plätze der Minimes stehen im Rust- und TS-Schema und werden geprüft gespeichert. | 47 |
 | 49 | Alte Standardwerte ersetzen | Ändert ein Theme einen Standardwert, bekommen Streamer mit dem alten Standard beim Lesen den neuen. | - |
 | 50 | Turm-Felder der Minimes | Ein Theme mit Minime-Typen kann die Felder für Türme einbinden, Rust und TS gleich, geprüft gespeichert. | 48 |
+| 51 | Merkmal "einfach" am Feld | Ein Feld kann im Rust-Schema als einfach markiert sein, der Server liefert das Merkmal mit. | - |
 
 Parallel möglich: 3 neben 1 und 2; nach 5 die Packages 6, 7, 11, 14, 15, 16, 17 untereinander; 9 und 10 nach 8;
 18 neben Phase 1; 33 bis 36 nach 32 untereinander; 37 bis 42 nach ihren Abhängigkeiten untereinander; 47 vor 48, 49 unabhängig, 50 nach 48.
@@ -1893,6 +1894,39 @@ Gefechts-Felder sind sie opt-in: nur ein Theme, das sie einbindet, hat sie.
 2. `rst-domain themes::minime_fields::tests::stack_levels_offer_only_theme_variants` (AC3)
 3. `rst-domain themes::minime_fields::tests::theme_sets_stack_defaults` (AC2)
 4. Fixture-Vergleich (AC4)
+
+Testbefehl: `npm run verify`
+
+---
+
+## Package 51: Merkmal "einfach" am Feld
+
+**Ziel:** Ein Feld kann im Rust-Schema als einfach markiert sein, und `GET /api/themes` liefert das Merkmal mit.
+
+**Abhängigkeiten:** keine
+
+**Betroffene Dateien:**
+- `server-rs/crates/rst-domain/src/settings/field.rs` (ändern: `SettingField.basic`, Helfer `basic(field)`)
+- `src/generated/SettingField.ts` (neu erzeugt mit `npm run gen:types`)
+
+### Kontext
+
+Die Theme-Seite im Dashboard bekommt die Modi Einfach und Erweitert
+([plans/PLAN-SETTINGS.md](plans/PLAN-SETTINGS.md)). Welche Felder einfach sind, entscheidet das Schema je Feld. Der
+Server ist die Quelle des Schemas, also braucht das Rust-Feld das Merkmal. Es ändert weder Prüfung noch Standards.
+
+### Acceptance Criteria
+
+- [ ] AC1: `SettingField` hat `basic: bool`; JSON ohne `basic` liest sich als `false`, `false` wird nicht geschrieben,
+  `true` als `"basic": true`.
+- [ ] AC2: `basic(field)` setzt nur das Merkmal (wie `in_scene` nur die Szene setzt).
+- [ ] AC3: Der erzeugte TS-Typ hat `basic?: boolean`; bestehende Fixtures ohne `basic` bleiben gleich.
+
+### Tests (TDD)
+
+1. `rst-domain settings::field::tests::basic_only_adds_the_flag` (AC2)
+2. `rst-domain settings::field::tests::basic_is_written_only_when_set` (AC1)
+3. Fixture-Vergleich aller Themes unverändert grün (AC3)
 
 Testbefehl: `npm run verify`
 

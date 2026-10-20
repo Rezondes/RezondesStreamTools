@@ -20,6 +20,7 @@ Kern-Feature und für jedes Theme. Regeln für die Pläne:
 | [RUST-PLAN.md](RUST-PLAN.md) | Rust-Server (`server-rs/`) |
 | [plans/PLAN-MINIMES.md](plans/PLAN-MINIMES.md) | Kern-Feature Minimes: Regeln, Szene, Server, Verhalten (erledigt); TS-Spiegel entfernen, Hüpfen, Fraktionen, Gefechte, feste Plätze, Türme (geplant) |
 | [plans/PLAN-SCENES.md](plans/PLAN-SCENES.md) | Kern: Szenen und Clips ohne Vererbung vom Standard-Theme |
+| [plans/PLAN-SETTINGS.md](plans/PLAN-SETTINGS.md) | Kern: Theme-Seite im Dashboard mit Einfach und Erweitert, Bereichs-Navigation, Merkmal "einfach" am Feld |
 | [src/themes/urlaub/docs/PLAN-URLAUB.md](src/themes/urlaub/docs/PLAN-URLAUB.md) | Theme Urlaub (früher Südfrucht) |
 | [src/themes/plantage/docs/PLAN-PLANTAGE.md](src/themes/plantage/docs/PLAN-PLANTAGE.md) | Theme Südfrucht-Plantage |
 | [src/themes/koth/docs/PLAN-KOTH.md](src/themes/koth/docs/PLAN-KOTH.md) | Theme King of the Hill |
