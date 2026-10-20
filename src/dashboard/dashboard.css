@@ -156,6 +156,19 @@
   .dashboard-content.split .preview-box { max-height: 60dvh; }
 }
 
+/* Phones: fields at 16px, below that iOS zooms the whole page when one gets the focus */
+@media (max-width: 639px) {
+  .dashboard input:not([type=checkbox]):not([type=range]):not([type=color]), .dashboard select, .dashboard textarea { font-size: 16px; }
+}
+
+/* Touch screens: every target at least 44px high (the mouse keeps the denser sizes) */
+@media (pointer: coarse) {
+  .settings-nav-item { min-height: 44px; }
+  .dashboard label:has(> input[type=checkbox]) { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; }
+  .dashboard input[type=checkbox] { width: 28px; height: 28px; }
+  .dashboard input[type=checkbox]::before { width: 14px; height: 14px; }
+}
+
 @media (max-width: 719px) {
   .dashboard thead { display: none; }
   .dashboard tr, .dashboard td { display: block; border: none; padding: 4px 0; }

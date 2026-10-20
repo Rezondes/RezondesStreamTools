@@ -209,11 +209,11 @@
 @keyframes standard-drift { from { translate: 0 0; } to { translate: 12vmax 8vmax; } }
 
 /* --- Commands page (public): column with cards on the background, scrolls as a normal page ---------------------- */
-.theme-standard.theme-root:has(.standard-info) { min-height: 100vh; background: var(--background); }
-.theme-standard .standard-info { min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-standard.theme-root:has(.standard-info) { min-height: 100dvh; background: var(--background); }
+.theme-standard .standard-info { min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-standard .standard-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--info-gap, 24px); }
 .theme-standard .standard-info-title {
-  font-size: 2.4em;
+  font-size: min(2.4em, 9vw);
   font-weight: 800;
   background: var(--gradient);
   -webkit-background-clip: text;

@@ -379,14 +379,15 @@
 @keyframes bears-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
 
 /* --- Commands page ----------------------------------------------------------------------------------------------- */
-.theme-bears.theme-root:has(.bb-info) { min-height: 100vh; background: var(--meadow); }
-.theme-bears .bb-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-bears.theme-root:has(.bb-info) { min-height: 100dvh; background: var(--meadow); }
+.theme-bears .bb-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-bears .bb-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-bears .bb-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; gap: var(--info-gap, 28px); }
+.theme-bears .bb-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--info-gap, 28px); }
 .theme-bears .bb-info-head { display: flex; align-items: flex-end; gap: var(--info-head-gap, 4px); }
-.theme-bears .bb-info-bear { position: relative; flex: none; height: var(--info-bear, 220px); margin-right: calc(-1 * var(--info-overlap, 30px)); z-index: 1; }
+.theme-bears .bb-info-bear { position: relative; flex: none; height: min(var(--info-bear, 220px), 40vw); margin-right: calc(-1 * var(--info-overlap, 30px)); z-index: 1; }
 .theme-bears .bb-info-sign { flex: 1; min-width: 0; text-align: center; }
-.theme-bears .bb-info-sign .bb-title { font-size: var(--info-title, 56px); }
+/* Phones: title and bear shrink with the width, so the page stays as wide as the screen */
+.theme-bears .bb-info-sign .bb-title { font-size: min(var(--info-title, 56px), 9vw); }
 .theme-bears .bb-info-board { display: grid; gap: var(--entry-gap, 14px); }
 .theme-bears .bb-info-board .bb-eyebrow { justify-self: start; font-size: var(--info-heading, 22px); }
 .theme-bears .bb-info-entry { display: grid; gap: var(--entry-inner, 4px); padding-top: var(--entry-pad, 10px); border-top: var(--entry-line, 3px) dashed var(--paperShade); }

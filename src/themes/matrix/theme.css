@@ -422,8 +422,8 @@
 
 
 /* --- Commands page (public): terminal column over the rain, scrolls as a normal page --------------------------- */
-.theme-matrix.theme-root:has(.matrix-info) { min-height: 100vh; background: var(--background); }
-.theme-matrix .matrix-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-matrix.theme-root:has(.matrix-info) { min-height: 100dvh; background: var(--background); }
+.theme-matrix .matrix-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-matrix .matrix-info-rain { position: fixed; inset: 0; pointer-events: none; }
 .theme-matrix .matrix-info-column {
   position: relative;

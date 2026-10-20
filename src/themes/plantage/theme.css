@@ -583,11 +583,13 @@
 @keyframes plantage-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
 
 /* --- Commands page (public): field fixed in the background, paper cards scroll in front as a normal page -------------- */
-.theme-plantage.theme-root:has(.pl-info) { min-height: 100vh; background: var(--soilDark); }
-.theme-plantage .pl-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-plantage.theme-root:has(.pl-info) { min-height: 100dvh; background: var(--soilDark); }
+.theme-plantage .pl-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-plantage .pl-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-plantage .pl-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; gap: var(--info-gap, 28px); }
+.theme-plantage .pl-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--info-gap, 28px); }
 .theme-plantage .pl-info-sign { padding: var(--info-inner, 28px 32px); text-align: center; display: grid; gap: var(--info-line-gap, 8px); }
+/* Phones: the title shrinks with the width, so the page stays as wide as the screen */
+.theme-plantage .pl-info-sign .pl-title { font-size: min(var(--titleSize), 11vw); }
 .theme-plantage .pl-info-board { padding: var(--info-inner, 28px 32px); display: grid; gap: var(--info-entry-gap, 16px); }
 .theme-plantage .pl-info-entry { display: grid; gap: var(--info-detail-gap, 2px); padding-left: var(--info-indent, 14px); border-left: var(--info-rope, 4px) solid color-mix(in srgb, var(--accent2) 70%, var(--leaf)); border-radius: var(--info-rope, 4px); }
 .theme-plantage .pl-info-board .pl-eyebrow { justify-self: start; margin: 0; }

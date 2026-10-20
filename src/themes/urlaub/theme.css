@@ -494,11 +494,13 @@
 @keyframes urlaub-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
 
 /* --- Commands page (public): beach fixed in the background, wooden signs scroll in front as a normal page ----------- */
-.theme-urlaub.theme-root:has(.ul-info) { min-height: 100vh; background: var(--seaDeep); }
-.theme-urlaub .ul-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-urlaub.theme-root:has(.ul-info) { min-height: 100dvh; background: var(--seaDeep); }
+.theme-urlaub .ul-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-urlaub .ul-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-urlaub .ul-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; gap: var(--info-gap, 28px); }
+.theme-urlaub .ul-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--info-gap, 28px); }
 .theme-urlaub .ul-info-sign { padding: var(--info-inner, 28px 32px); text-align: center; display: grid; gap: var(--info-line-gap, 8px); }
+/* Phones: the title shrinks with the width, so the page stays as wide as the screen */
+.theme-urlaub .ul-info-sign .ul-title { font-size: min(var(--titleSize), 11vw); }
 .theme-urlaub .ul-info-board { padding: var(--info-inner, 28px 32px); display: grid; gap: var(--info-entry-gap, 16px); }
 .theme-urlaub .ul-info-entry { display: grid; gap: var(--info-detail-gap, 2px); padding-left: var(--info-indent, 14px); border-left: var(--info-rope, 4px) solid var(--woodDark); }
 .theme-urlaub .ul-info-command { color: var(--accent); font-size: 1.2em; }

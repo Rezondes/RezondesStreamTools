@@ -237,13 +237,13 @@
 @keyframes koth-eq { from { scale: 1 0.15; } to { scale: 1 1; } }
 
 /* --- Commands page (public): hill fixed in the background, briefing sheets scroll in front as a normal page ----------- */
-.theme-koth.theme-root:has(.kh-info) { min-height: 100vh; background: var(--oliveDark); }
-.theme-koth .kh-info { position: relative; min-height: 100vh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-koth.theme-root:has(.kh-info) { min-height: 100dvh; background: var(--oliveDark); }
+.theme-koth .kh-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-koth .kh-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-koth .kh-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; gap: var(--info-gap, 26px); }
+.theme-koth .kh-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--info-gap, 26px); }
 .theme-koth .kh-sheet { background: var(--paper); color: var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); }
 .theme-koth .kh-info-sign { padding: var(--info-inner, 28px 32px); text-align: center; display: grid; gap: var(--info-line-gap, 8px); border-top: var(--stripe-band, 12px) solid transparent; border-image: var(--stripes) 12; }
-.theme-koth .kh-info-sign .kh-title { font-size: var(--info-title, 56px); }
+.theme-koth .kh-info-sign .kh-title { font-size: min(var(--info-title, 56px), 9vw); }
 .theme-koth .kh-info-board { padding: var(--info-inner, 28px 32px); display: grid; gap: var(--info-entry-gap, 16px); }
 .theme-koth .kh-info-entry { display: grid; gap: var(--info-detail-gap, 2px); padding-left: var(--info-indent, 14px); border-left: var(--info-bar, 4px) solid var(--olive); }
 .theme-koth .kh-info-command { color: var(--accent); font-family: "Share Tech Mono", monospace; font-size: 1.2em; }
