@@ -19,9 +19,15 @@ aller Pläne: [PLAN.md](../../../../PLAN.md).
 | 3 | Stinger und Banner | Stinger, Profil- und Offline-Banner zeigen den gewählten Bären oder Turm und rendern deterministisch. | 1 |
 | 4 | Bären-Minimes | Chatter wählen per Befehl einen Eisbären, Grizzly oder Panda, der watschelt und eigene Animationen zeigt. | 1 |
 | 5 | Bärentürme der Minimes | Ist von jedem Bären einer da, stapeln sie sich zufällig zum Turm, watscheln als Turm und steigen ab. | 4, PLAN-MINIMES 13 |
+| 6 | Rig-Modell der Bären | Jeder Bär ist ein Skelett aus Knochen mit einzeln gezeichneten Teilen; jede Pose sind Gelenkwinkel, sodass nirgends ein Arm doppelt oder ein Teil falsch sitzt. | 5 |
+| 7 | Türme aus dem Modell | Jeder Turm (Szenen, Clips, Minimes) stellt die Füsse eines Bären genau auf den Rücken des Bären darunter. | 6 |
+| 8 | Szenen-Korrekturen | Alerts, Musik und Kamera zeigen den Bären aus dem Modell richtig und vollständig; die Bären-Einstellungen gehören zu "Allgemein". | 6 |
+| 9 | Welt-Modell | Jedes Ding der Kulisse steht auf seinem Boden: Tannen auf der Wiese, die Stadt am Ufer, die Brücke von Ufer zu Ufer. | 1 |
+| 10 | Stinger mit Vorhang | Der Bär zieht einen Vorhang über das Bild, der am Übergangspunkt alles verdeckt, und zieht ihn danach wieder auf. | 6 |
 
 Parallel möglich: 2, 3 und 4 nach 1 untereinander (verschiedene Dateien bis auf `settings.ts`, `bears.rs` und die
-Fixture; wer später kommt, fügt seine Gruppen an). 5 nach 4 und dem Kern-Package.
+Fixture; wer später kommt, fügt seine Gruppen an). 5 nach 4 und dem Kern-Package. 6 bis 10 (Rückmeldung vom
+2026-10-20, der Stil bleibt wie er ist): erst 6, danach 7, 8 und 10; 9 hängt nicht an 6 und kann jederzeit kommen.
 
 ## Annahmen
 
@@ -444,3 +450,292 @@ Testbefehl: `npm test`, Abschluss `npm run verify`
 ### Out of Scope
 
 - Türme in anderen Themes, Türme per Chatbefehl.
+
+---
+
+## Package 6: Rig-Modell der Bären
+
+**Ziel:** Jeder Bär ist ein Skelett aus Knochen mit einzeln gezeichneten Teilen; jede Pose sind Gelenkwinkel, sodass
+nirgends ein Arm doppelt oder ein Teil falsch sitzt.
+
+**Abhängigkeiten:** Package 5
+
+**Betroffene Dateien:** neu `src/themes/bears/rig.ts` (Skelett, Teile, Posen, Anker) und `rig.check.ts`; ändern
+`bears.ts` (wird zur Datenquelle der Teilformen, `POSE_MODELS` und `PROPS` gehen in `rig.ts` auf), `Bear.tsx`,
+`BearTower.tsx`, `paint.ts`, `paint.check.ts`, `bears.check.ts`, `minimeBears.ts`, `theme.css` (Gruppen je Knochen),
+`docs/DESIGN-BEARS.md`.
+
+### Kontext
+
+Heute ist jede Pose ein Satz fertiger Pfade. Die Silhouette des stehenden Körpers enthält den hängenden Arm schon als
+Ausbuchtung; ein gehobener Arm kommt als zweites Teil dazu. Darum hat der winkende Grizzly einen dritten Arm, und die
+Daumen-Pose der Alerts zeigt eine Hand, die zu keinem Arm gehört. Requisiten (Kopfhörer, Handy) liegen mit festen
+Koordinaten auf dem Bild statt an einem Körperteil. Turm, Minimes, Stinger und Banner rechnen mit festen Versätzen.
+
+### Gestaltung
+
+- **Skelett (2D):** Wurzel an der Hüfte; Rumpf, Kopf (mit Ohren und Gesicht), je Seite Oberarm, Unterarm und Pfote, je
+  Seite Bein mit Fuss, Schwanz. Jeder Knochen hat Länge, Drehpunkt und Ruhewinkel. Zwei Haltungen: aufrecht und auf
+  allen vieren (Rumpf waagrecht, die Arme werden zu Vorderbeinen). Ein 3D-Modell ist nicht nötig: der Stil ist flach
+  mit einer Kontur und einem Schattenton, eine Drehung um die Hochachse zeigt sich nur als Spiegeln.
+- **Teile:** Jedes Teil ist eine eigene geschlossene Form in den Koordinaten seines Knochens, mit Fell, Schattenton,
+  Panda-Schwarz (je Teil beschnitten) und eigener Kontur. Der Rumpf hat keine Arme mehr in seiner Silhouette.
+  Reihenfolge nach Tiefe: ferne Seite hinter dem Rumpf, nahe Seite davor.
+- **Pose:** Gelenkwinkel je Knochen, Gesichtsausdruck (offen, zu, Mund offen beim lauten Bären) und Requisiten an
+  Ankerpunkten der Knochen (Pfote, Kopf). Fehlende Winkel sind Ruhewinkel. Alle heutigen Posen (stand, wave, selfie,
+  cook, sign, phone, cheer, snack, thumbs, headphones, sleep, four, fourWave) werden als Winkel nachgebaut, dazu `climb`
+  und ein Gehzyklus (zwei Schrittstellungen) für Watscheln, Stinger und Minimes.
+- **Requisiten am Knochen:** Handy, Pfanne, Schild und Snack an der Pfote; der Kopfhörer am Kopf als richtiges Headset
+  (Bügel über den Kopf, zwei Muscheln auf Höhe der Ohren, die Ohren darunter verdeckt).
+- **Ein Renderer:** `rigParts(bear, pose)` liefert die fertigen Teile mit Transformation (rein). `Bear.tsx` zeichnet sie
+  als SVG-Gruppen je Knochen (CSS kann Winkel über Variablen animieren, z.B. Winken als Drehung des Oberarms),
+  `paint.ts` dieselbe Liste auf dem Canvas. So sehen Szenen, Clips und Minimes gleich aus.
+- **Anker:** je Pose die Bodenpunkte der Füsse, die Oberkante des Rückens (für Türme), die Pfoten, der Scheitel und der
+  Umriss (für Platz und Zuschnitt in Szenen).
+- **Stil bleibt:** Farben, Konturstärke, Schattenton, Panda-Flecken und Proportionen der drei Bären bleiben wie heute
+  (Vergleich mit Bildschirmfotos der Szenen vor dem Umbau).
+
+### Einstellungen
+
+Keine neuen; Formen und Knochen sind fest (`fixed: Formen des Modells`).
+
+### Acceptance Criteria
+
+- [ ] AC1: Jede Pose hat genau zwei Vorderglieder (Arme oder Vorderbeine) und zwei Hinterbeine; kein Teil kommt doppelt
+  vor, die Rumpf-Silhouette enthält keinen Arm.
+- [ ] AC2: Jede Requisite hängt an einem Knochen-Anker und bewegt sich mit ihm (z.B. das Handy folgt der Pfote).
+- [ ] AC3: SVG (`Bear.tsx`) und Canvas (`paint.ts`) zeichnen dieselben Teile in derselben Reihenfolge.
+- [ ] AC4: Die Anker jeder Pose liegen im Umriss der Pose; die Füsse stehen auf der Bodenlinie.
+- [ ] AC5: Alle Szenen, Clips und Minimes nutzen nur noch das Modell (kein fester Pfad einer ganzen Pose mehr).
+- [ ] AC6: Stil wie vorher (manuell: Starting, Alerts, Musik, Kamera, Minimes, Banner im Vergleich).
+
+### Tests (TDD)
+
+1. `rig.check.ts > "every pose has two front and two hind limbs, no arm in the torso"` (AC1)
+2. `rig.check.ts > "props follow their bone"`: Winkel der Pfote ändern, die Requisite verschiebt sich gleich (AC2)
+3. `paint.check.ts > "canvas draws the parts of rigParts in order"` (AC3)
+4. `rig.check.ts > "anchors inside the outline, feet on the ground"` (AC4)
+5. `bears.check.ts`: keine Pfade ganzer Posen mehr ausserhalb von `rig.ts` (AC5)
+6. Manuell (AC6): Vorschau aller Szenen mit `?demo&preview`, Viewport 1600x900
+
+Testbefehl: `npm test`, Abschluss `npm run verify`
+
+### Out of Scope
+
+- Neue Bären oder ein anderer Stil. Skelett-Animation per Physik.
+
+---
+
+## Package 7: Türme aus dem Modell
+
+**Ziel:** Jeder Turm (Szenen, Clips, Minimes) stellt die Füsse eines Bären genau auf den Rücken des Bären darunter.
+
+**Abhängigkeiten:** Package 6
+
+**Betroffene Dateien:** `rig.ts` (`towerLayout`), `BearTower.tsx`, `paint.ts`, `scenes/Minimes.tsx`, `minimeBears.ts`,
+`minimes.css`, `settings.ts`, `settings.check.ts`, `bears.rs`, Fixture, `src/generated/themes/bears.ts`.
+
+### Kontext
+
+Heute verschiebt `TOWER_STEP` jede Stufe um einen festen Wert, und die Minimes heben jede Stufe um eingestellte
+Prozente. Weil Panda und Grizzly kleiner sind und anders skaliert werden, steht der Panda teils vor statt auf dem
+Eisbären.
+
+### Gestaltung
+
+- `towerLayout(levels)` stellt Stufe für Stufe die Fussanker des oberen Bären (in seiner Grösse) auf den Rückenanker
+  des unteren, mittig über dem Rücken; gezeichnet wird von unten nach oben.
+- Dieselbe Funktion für den grossen Turm (Szenen, Stinger, Banner) und den Minime-Turm (Hub je Stufe in px aus dem
+  Modell mal Minime-Grösse). Die Einstellungen `stackStepIce`, `stackStepPanda` und `stackStepGrizzly` entfallen; dafür
+  `stackFit` (Feinkorrektur in px, Standard 0), damit es einstellbar bleibt.
+- Klettern im Minime-Turm: der Kletternde steigt im Gehzyklus auf den Rücken (Hub über die Dauer), nicht als Sprung.
+
+### Einstellungen
+
+| Gruppe | Schlüssel |
+|---|---|
+| Minimes: Aussehen | entfallen `stackStepIce`, `stackStepPanda`, `stackStepGrizzly`; neu `stackFit` |
+
+### Acceptance Criteria
+
+- [ ] AC1: In jedem Turm berühren die Füsse jeder Stufe den Rücken der Stufe darunter (Abstand höchstens 1 Einheit) und
+  stehen innerhalb seiner Breite.
+- [ ] AC2: Grosser Turm und Minime-Turm nutzen `towerLayout`.
+- [ ] AC3: Schema in Rust und TS gleich (Fixture); alte Werte der entfallenen Schlüssel stören nicht.
+
+### Tests (TDD)
+
+1. `rig.check.ts > "tower levels stand on the back below"` (AC1) für alle Reihenfolgen der drei Bären
+2. `minimeBears.check.ts > "minime lift from the model"` (AC2)
+3. `settings.check.ts` und Rust-Fixture (AC3)
+4. Manuell: Starting mit Turm, `minimes.html?demo=6&preview`
+
+Testbefehl: `npm test`, Abschluss `npm run verify`
+
+### Out of Scope
+
+- Andere Turm-Reihenfolgen als die eingestellten.
+
+---
+
+## Package 8: Szenen-Korrekturen
+
+**Ziel:** Alerts, Musik und Kamera zeigen den Bären aus dem Modell richtig und vollständig; die Bären-Einstellungen
+gehören zu "Allgemein".
+
+**Abhängigkeiten:** Package 6
+
+**Betroffene Dateien:** `scenes/Alerts.tsx`, `scenes/Music.tsx`, `scenes/Cam.tsx`, `theme.css`, `settings.ts`,
+`settings.check.ts`, `bears.rs`, Fixture, `src/generated/themes/bears.ts`, `docs/DESIGN-BEARS.md`.
+
+### Kontext
+
+Die Alerts zeigen eine einzelne Hand ohne Arm (Daumen-Pose), der Musik-Bär trägt statt eines Headsets nur zwei Punkte,
+im Kamera-Rahmen ragen Bär und Namensschild aus der Quelle (negativer Versatz, Schild halb unter dem Rand). Die Gruppe
+"Bären" (Fellfarben, Augen, Blinzeln, Atmen, Turm) erscheint in jeder Szene als eigener Reiter.
+
+### Gestaltung
+
+- **Alerts:** Daumen hoch und Jubeln als Posen des Modells (Pfote am Arm, Daumen an der Pfote).
+- **Musik:** Headset aus Package 6 (Bügel, Muscheln über den Ohren), Kopfnicken als Drehung des Kopfknochens.
+- **Kamera:** Platz aus dem Umriss der Pose: der Bär lehnt innen am Rahmen und bleibt ganz in der Quelle, das
+  Namensschild sitzt innerhalb des unteren Rahmens; beim Spähen über den Rand wird nur der Teil unter der Kante verdeckt.
+- **Einstellungen:** Die Felder der Gruppe "Bären" wandern nach "Allgemein" (Schlüssel bleiben, gespeicherte Werte
+  gelten weiter); die Gruppe "Bären" entfällt in TS, Rust und `groupScenes`.
+
+### Acceptance Criteria
+
+- [ ] AC1: Keine Pose der Alerts zeigt eine Pfote ohne Arm (folgt aus Package 6, hier sichtbar geprüft).
+- [ ] AC2: Der Musik-Bär trägt ein Headset mit Bügel und zwei Muscheln über den Ohren.
+- [ ] AC3: Im Kamera-Rahmen sind Bär und Namensschild in jeder Ecke und jedem Stil ganz sichtbar (Quelle 1280x720 und
+  1920x1080).
+- [ ] AC4: Es gibt keine Gruppe "Bären" mehr; ihre Felder stehen in "Allgemein".
+
+### Tests (TDD)
+
+1. `settings.check.ts > "bear fields are general"` (AC4), Rust-Fixture
+2. `rig.check.ts > "headset sits on the head"`: die Muscheln überdecken die Ohranker (AC2)
+3. Manuell (AC1, AC3): `alerts.html?demo&preview`, `music.html?demo&preview`, `cam.html?preview` in beiden Grössen
+
+Testbefehl: `npm test`, Abschluss `npm run verify`
+
+### Out of Scope
+
+- Neue Kamera-Stile.
+
+---
+
+## Package 9: Welt-Modell
+
+**Ziel:** Jedes Ding der Kulisse steht auf seinem Boden: Tannen auf der Wiese, die Stadt am Ufer, die Brücke von Ufer zu
+Ufer.
+
+**Abhängigkeiten:** Package 1
+
+**Betroffene Dateien:** `world.ts`, `world.check.ts`, `World.tsx`, `paint.ts` (Welt im Canvas), `theme.css`,
+`docs/DESIGN-BEARS.md`.
+
+### Kontext
+
+Die Tannen stehen auf einer festen Linie (`FIR_BASE`), die nicht zur Wiese passt, und schweben dadurch. Die Brücke
+beginnt am rechten Bildrand und endet links im Nichts. Die Stadt steht unter der Wasserkante.
+
+### Gestaltung
+
+- **Ebenen mit Boden:** fern (Himmel, Hügel), Ufer gegenüber (Stadt auf einer Uferlinie über dem Wasser), Wasser (eine
+  Bucht zwischen den Ufern), nahes Ufer mit Waldrand und Höhlenhügel, Wiese vorn. Jede Ebene hat eine Bodenlinie als
+  Funktion `ground(x)`; jedes Ding (Tanne, Laubbaum, Stadtblock, Brückenpfeiler) wird mit dem Fuss auf seine Linie
+  gestellt statt auf eine feste Höhe.
+- **Brücke:** spannt von einem Widerlager am nahen Ufer zu einem am fernen Ufer; die Pylone stehen im Wasser auf
+  Sockeln, die Fahrbahn endet an beiden Enden auf Land.
+- **Stadt:** steht auf dem fernen Ufer, ihre Unterkante liegt über der Wasserlinie; Spiegelung im Wasser als blasser
+  Streifen (Aquarell wie bisher, ohne schwarze Kontur).
+- Stil wie bisher: Aquarell, Skizzenlinien im dunkleren Ton derselben Farbe, Luftperspektive.
+
+### Einstellungen
+
+Keine neuen (die Farben bestehen schon).
+
+### Acceptance Criteria
+
+- [ ] AC1: Jede Tanne und jeder Baum steht mit dem Fuss auf der Bodenlinie seiner Ebene (Abstand höchstens 2 px).
+- [ ] AC2: Beide Enden der Brücke liegen auf Land; kein Stück der Fahrbahn endet über Wasser oder im Leeren.
+- [ ] AC3: Jeder Stadtblock steht auf dem fernen Ufer über der Wasserlinie.
+- [ ] AC4: SVG-Kulisse und Canvas-Kulisse (Banner) nutzen dieselbe Anordnung.
+
+### Tests (TDD)
+
+1. `world.check.ts > "things stand on their ground"` (AC1)
+2. `world.check.ts > "bridge ends on land"` (AC2)
+3. `world.check.ts > "city above the water"` (AC3)
+4. `paint.check.ts > "world layout shared"` (AC4)
+5. Manuell: Starting, BRB und Ending zu jeder Tageszeit
+
+Testbefehl: `npm test`, Abschluss `npm run verify`
+
+### Out of Scope
+
+- Bewegte Teile der Welt ausser den Wolken.
+
+---
+
+## Package 10: Stinger mit Vorhang
+
+**Ziel:** Der Bär zieht einen Vorhang über das Bild, der am Übergangspunkt alles verdeckt, und zieht ihn danach wieder
+auf.
+
+**Abhängigkeiten:** Package 6 (Gehzyklus, Pfote als Anker)
+
+**Betroffene Dateien:** `stinger.ts`, `stinger.check.ts`, `paint.ts` (Vorhang), `render.ts`, `settings.ts`,
+`settings.check.ts`, `bears.rs`, Fixture, `src/generated/themes/bears.ts`, `docs/DESIGN-BEARS.md`.
+
+### Kontext
+
+Heute läuft der Bär starr herein, wird gross, wieder klein und läuft hinaus. Das wirkt leblos.
+
+### Gestaltung
+
+- **Ablauf:** Der gewählte Bär (beim Turm zieht der Grizzly oben, der Turm watschelt mit) kommt im Gehzyklus von der
+  Seite und zieht mit der Pfote die Kante eines Vorhangs hinter sich her über das Bild. Am Übergangspunkt ist das Bild
+  ganz bedeckt, der Text steht auf dem Vorhang. Danach zieht der Bär den Vorhang zur anderen Seite wieder auf (oder der
+  Vorhang hebt sich, einstellbar), die neue Szene erscheint.
+- **Vorhang im Stil:** flache Stofffarbe mit Falten im einen Schattenton, Kontur an der Kante, Saum unten, wahlweise
+  Pfotenabdrücke als Muster; die Falten schwingen beim Ziehen leicht nach.
+- **Lebendig:** Gehzyklus mit Beinen und Armen aus dem Modell, der Kopf dreht sich kurz zur Kamera, ein Blinzeln am
+  Übergangspunkt.
+- Rein in der Zeit, Bild für Bild renderbar wie bisher.
+
+### Einstellungen (Gruppe "Stinger")
+
+| Schlüssel | Bedeutung |
+|---|---|
+| `stingerCurtain`, `stingerCurtainShade` | Stofffarbe und Faltenton |
+| `stingerCurtainPattern` | Pfotenabdrücke an/aus |
+| `stingerFrom` | Seite, von der der Bär kommt (`links`, `rechts`) |
+| `stingerOpen` | Öffnen: zur anderen Seite ziehen (`ziehen`) oder hochziehen (`heben`) |
+| `stingerFolds` | Zahl der Falten |
+| bisher `stingerWaddle` | Watscheln beim Gehen |
+
+Die bisherigen Werte für das Grosswerden des Bären entfallen.
+
+### Acceptance Criteria
+
+- [ ] AC1: Am Übergangspunkt (`stingerCut`) ist jedes Pixel des Bildes vom Vorhang bedeckt.
+- [ ] AC2: Vor dem Start und nach dem Ende ist das Bild leer (transparent).
+- [ ] AC3: Die Vorhangkante folgt der Pfote des Bären (gleiche Position in jedem Bild).
+- [ ] AC4: Gleiche Zeit ergibt dasselbe Bild (deterministisch).
+- [ ] AC5: Schema in Rust und TS gleich (Fixture).
+
+### Tests (TDD)
+
+1. `stinger.check.ts > "curtain covers the frame at the cut"` (AC1)
+2. `stinger.check.ts > "empty before and after"` (AC2)
+3. `stinger.check.ts > "curtain edge follows the paw"` (AC3)
+4. `stinger.check.ts > "same time, same frame"` (AC4)
+5. Rust-Fixture (AC5); manuell: Clip im Browser rendern und ansehen
+
+Testbefehl: `npm test`, Abschluss `npm run verify`
+
+### Out of Scope
+
+- Ton zum Stinger.
