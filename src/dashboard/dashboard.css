@@ -110,7 +110,9 @@
 .preview-box { position: relative; width: 100%; max-height: 60dvh; overflow: hidden; border: var(--border-w) solid var(--line); border-radius: var(--radius-sm); background: var(--checker); }
 .preview-box iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: transparent; }
 @media (min-width: 1100px) {
-  .settings-layout { grid-template-columns: minmax(var(--nav-min, 150px), var(--nav-max, 210px)) minmax(0, 1fr) minmax(0, 1fr); }
+  .settings-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  /* Theme page: the areas as a third column in front (render keeps settings and preview side by side) */
+  .theme-settings .settings-layout { grid-template-columns: minmax(var(--nav-min, 150px), var(--nav-max, 210px)) minmax(0, 1fr) minmax(0, 1fr); }
   .dashboard-content.split .settings-nav { min-height: 0; overflow-y: auto; }
 }
 
