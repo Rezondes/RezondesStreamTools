@@ -61,7 +61,27 @@
 .settings-groups { display: grid; gap: 8px; min-width: 0; }
 .settings-group { border: var(--border-w) solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); padding: 8px 12px; }
 .settings-group summary { cursor: pointer; padding: 4px 0; color: var(--fg); font-weight: var(--heading-weight); }
-.settings-group[open] summary { margin-bottom: 8px; border-bottom: var(--border-w) solid var(--line); }
+.settings-group[open] > summary { margin-bottom: 8px; border-bottom: var(--border-w) solid var(--line); }
+/* Theme chooser and the switch einfach/erweitert in one row */
+.settings-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 8px 16px; }
+.settings-mode { display: inline-flex; border: var(--border-w) solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+.settings-mode button { min-height: 44px; padding: 6px 18px; border: 0; background: var(--field); color: var(--fg-dim); font: inherit; cursor: pointer; }
+.settings-mode button[aria-pressed=true] { background: var(--accent); color: var(--on-accent); }
+.settings-mode button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.dashboard button.link { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; text-decoration: underline; cursor: pointer; }
+/* Areas: a column next to the fields, a row that scrolls sideways on narrow screens */
+.settings-nav { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.settings-nav-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; padding: 6px 10px; border: 0; border-radius: var(--radius-sm); background: none; color: var(--fg-dim); font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
+.settings-nav-item:hover { background: var(--surface-2); color: var(--fg); }
+.settings-nav-item[aria-current=true] { background: var(--surface-2); color: var(--fg); box-shadow: inset 3px 0 0 var(--accent); }
+.settings-nav-item:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.settings-nav-dot { color: var(--accent); }
+/* Kinds inside a large group; colors as a grid of small fields */
+.settings-kind { border-top: var(--border-w) solid var(--line); }
+.settings-kind > summary { cursor: pointer; padding: 8px 0; color: var(--fg-dim); }
+.settings-colors { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--color-cell, 180px), 1fr)); gap: 0 12px; }
+.settings-colors .setting-row input[type=text] { min-width: 0; }
+.settings-empty { display: grid; gap: 8px; justify-items: start; }
 
 .setting { display: grid; gap: 4px; padding: 6px 0; font-size: 14px; color: var(--fg-dim); }
 .setting > .btn { justify-self: start; }
@@ -90,14 +110,18 @@
 .preview-box { position: relative; width: 100%; max-height: 60dvh; overflow: hidden; border: var(--border-w) solid var(--line); border-radius: var(--radius-sm); background: var(--checker); }
 .preview-box iframe { position: absolute; left: 0; top: 0; border: 0; transform-origin: 0 0; background: transparent; }
 @media (min-width: 1100px) {
-  .settings-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .settings-layout { grid-template-columns: minmax(var(--nav-min, 150px), var(--nav-max, 210px)) minmax(0, 1fr) minmax(0, 1fr); }
+  .dashboard-content.split .settings-nav { min-height: 0; overflow-y: auto; }
 }
 
-/* Narrow: preview on top with limited height, the settings scroll below */
+/* Narrow: preview on top with limited height, the areas in one row, the settings scroll below */
 @media (max-width: 1099px) {
   .dashboard-content.split .settings-layout { display: flex; flex-direction: column; }
   .dashboard-content.split .scene-preview { order: -1; flex: none; max-height: 42%; }
   .dashboard-content.split .settings-groups { flex: 1 1 auto; }
+  .settings-nav { flex-direction: row; overflow-x: auto; flex: none; }
+  .settings-nav-item { flex: none; }
+  .settings-nav-item[aria-current=true] { box-shadow: inset 0 -3px 0 var(--accent); }
 }
 
 /* Little space (phone, low window): navigation in one line and scrollable sideways, theme and render scroll as

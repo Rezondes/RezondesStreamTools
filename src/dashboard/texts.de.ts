@@ -5,6 +5,7 @@ import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
 import type { ErrorCode } from "../core/errorCodes.ts";
 import type { SceneName } from "../core/theme.ts";
 import type { Section } from "./navigation.ts";
+import type { FieldKind } from "./settingsForm.ts";
 
 export const TEXTS = {
   // Kurzname oben links; lang: Rezondes Stream Tools (Seitentitel in index.html)
@@ -123,11 +124,14 @@ export const TEXTS = {
     range: (min: number, max: number) => `${min} bis ${max}`,
     resetField: "Standard",
     preview: "Vorschau",
-    previewScene: "Einstellungen für (Szene auch für die Vorschau)",
-    general: "Allgemein (alle Szenen, Stinger und Banner)",
     openTab: "Vorschau in neuem Tab",
     openTabHint: "Zeigt ungespeicherte Änderungen sofort, solange dieser Tab offen ist.",
-    elsewhere: (groups: string) => `${groups}: im Bereich RENDERN.`,
+    // Modes, areas and kinds of the settings
+    mode: "Ansicht", simple: "Einfach", advanced: "Erweitert", showAdvanced: "Erweitert zeigen",
+    areas: "Bereiche", general: "Allgemein", missing: "nicht im Theme", areaChanged: "ungespeicherte Änderungen",
+    renderArea: "Stinger und Banner", onlyAdvanced: "In diesem Bereich gibt es nur erweiterte Einstellungen.",
+    emptyArea: "In diesem Bereich gibt es keine Einstellungen.", hiddenChanges: (count: number) => `davon ${count} nicht sichtbar`, showHidden: "zeigen",
+    kinds: { texts: "Texte", colors: "Farben", choices: "Schrift und Auswahl", switches: "Schalter", numbers: "Größen und Zeiten", media: "Medien und Sounds" } satisfies Record<FieldKind, string>,
     colorPicker: "Farbe wählen:",
     builtInSound: "(eingebauter Ton)",
     noMedia: "(keine Datei)",

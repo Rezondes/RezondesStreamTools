@@ -31,7 +31,7 @@ assert.ok(TEXTS.adminArea.backupConfirmRestore("1.1.2026").includes("1.1.2026"))
 assert.ok(TEXTS.adminArea.backupRestored(2, 1).includes("1 gelöschte"));
 assert.ok(!TEXTS.adminArea.backupRestored(2, 0).includes("gelöschte"));
 assert.equal(TEXTS.obs.collection("neo"), "Overlays neo");
-assert.ok(TEXTS.theme.elsewhere("Stinger").startsWith("Stinger"));
+assert.equal(TEXTS.theme.hiddenChanges(2), "davon 2 nicht sichtbar");
 assert.ok(TEXTS.obs.done(7).includes("7"));
 assert.ok(TEXTS.obs.failed("kaputt").endsWith("kaputt"));
 
