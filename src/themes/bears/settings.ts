@@ -248,6 +248,12 @@ const FIELDS = [
   number("stingerCut", "Übergangspunkt", STINGER, 0.8, 0.1, 5, "s", 0.05),
   text("stingerText", "Text ({channel})", STINGER, "{channel}"),
   number("stingerWaddle", "Watscheln (Grad)", STINGER, 6, 0, 20),
+  color("stingerCurtain", "Vorhang: Stoff", STINGER, "#c8553d"),
+  color("stingerCurtainShade", "Vorhang: Falten", STINGER, "#a8432f"),
+  flag("stingerCurtainPattern", "Vorhang: Pfotenabdrücke", STINGER, true),
+  number("stingerFolds", "Vorhang: Falten (Anzahl)", STINGER, 7, 1, 20),
+  choice("stingerFrom", "Bär kommt von", STINGER, "links", ["links", "rechts"]),
+  choice("stingerOpen", "Öffnen: zurückziehen oder hochziehen", STINGER, "ziehen", ["ziehen", "heben"]),
 
   choice("bannerProfileBear", "Profilbanner: Bär", BANNER, "turm", BEAR_CHOICES),
   choice("bannerOfflineBear", "Offline-Banner: Bär", BANNER, "grizzly", BEAR_CHOICES),

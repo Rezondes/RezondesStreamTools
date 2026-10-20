@@ -138,6 +138,22 @@ export function drawTower(context: CanvasRenderingContext2D, x: number, baseY: n
   }
 }
 
+// Where the near paw of a bear (or of the top bear of the tower, its raised front leg) is on screen in x, for a figure
+// drawn with drawBear or drawTower at x with height and facing
+export function pawX(choice: string, pose: PoseName, x: number, height: number, facing = 1, turn = 0): number {
+  if (choice === TOWER) {
+    const size = height / TOWER_SIZE.height;
+    const top = TOWER_PLACED[TOWER_PLACED.length - 1];
+    const shape = poseOf(top.bear, top.pose, 0, top.drops);
+    const middle = (TOWER_LEFT + TOWER_RIGHT) / 2;
+    const levelX = x + (top.x + shape.width / 2 - middle) * size * facing;
+    return levelX + facing * size * BEARS[top.bear].scaleX * (shape.anchors.nearPaw[0] - shape.width / 2);
+  }
+  const bear: BearId = isBearChoice(choice) && choice !== TOWER ? choice : "grizzly";
+  const shape = poseOf(bear, pose, turn);
+  return x + facing * (height / shape.height) * BEARS[bear].scaleX * (shape.anchors.nearPaw[0] - shape.width / 2);
+}
+
 // The bear of a choice (one bear in its pose or the tower)
 export function drawHero(context: CanvasRenderingContext2D, choice: string, poses: Record<BearId, PoseName>, x: number, baseY: number, height: number, palette: Palette, facing = 1) {
   const picked = isBearChoice(choice) ? choice : "grizzly";

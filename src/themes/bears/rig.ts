@@ -84,6 +84,11 @@ const SPECS = {
   // Walking: two steps, legs and arms swing opposite
   walkA: { stance: "stand", targets: { nearLeg: [48, 302], farLeg: [146, 299], nearArm: [154, 254], farArm: [150, 256] } },
   walkB: { stance: "stand", targets: { nearLeg: [68, 302], farLeg: [126, 299], nearArm: [126, 256], farArm: [178, 252] } },
+  // Pulling something behind it while walking (the curtain of the stinger): the near arm reaches back, the legs step
+  pullA: { stance: "stand", targets: { nearLeg: [48, 302], farLeg: [146, 299], nearArm: [214, 194], farArm: [150, 256] } },
+  pullB: { stance: "stand", targets: { nearLeg: [68, 302], farLeg: [126, 299], nearArm: [214, 202], farArm: [178, 252] } },
+  // Peeking in and blinking (eyes closed for a moment)
+  blink: { stance: "stand", sleepy: true },
   four: { stance: "four" },
   // On all fours with the near front leg raised high (top of the tower) or reaching up for the back above (climbing)
   fourWave: { stance: "four", targets: { nearFront: [108, 16] }, excited: true },

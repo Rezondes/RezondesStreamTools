@@ -4,7 +4,6 @@ import type { RenderClip } from "../../core/renderClip.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import { drawBearsOfflineBanner, drawBearsProfileBanner, type BearsBannerOptions } from "./banners.ts";
-import { isBearChoice, TOWER } from "./bears.ts";
 import type { Palette, WorldColors } from "./paint.ts";
 import type { BearsValues } from "./settings.ts";
 import { drawBearsStinger, FPS, HEIGHT, WIDTH, type BearsStingerOptions } from "./stinger.ts";
@@ -39,10 +38,10 @@ export function bearsClips(values: SettingValues, login: string): RenderClip[] {
   const field = values as unknown as BearsValues;
   const names = { channel: field.channelName, login };
   const palette = paletteOf(field);
-  const covering = isBearChoice(field.stingerBear) && field.stingerBear !== TOWER ? field.stingerBear : "grizzly";
   const stinger: BearsStingerOptions = {
     duration: field.stingerDuration, cut: field.stingerCut, bear: field.stingerBear, text: fillTemplate(field.stingerText, names),
-    font: field.titleFont, waddle: field.stingerWaddle, cover: palette.bears[covering].fur, palette,
+    font: field.titleFont, waddle: field.stingerWaddle, palette, from: field.stingerFrom, open: field.stingerOpen,
+    curtain: { color: field.stingerCurtain, shade: field.stingerCurtainShade, pattern: field.stingerCurtainPattern, folds: field.stingerFolds },
   };
   const banner: BearsBannerOptions = {
     loop: field.bannerLoop, font: field.font, titleFont: field.titleFont, palette,

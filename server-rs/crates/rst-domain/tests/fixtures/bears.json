@@ -2023,6 +2023,58 @@
       "max": 20
     },
     {
+      "key": "stingerCurtain",
+      "type": "color",
+      "label": "Vorhang: Stoff",
+      "group": "Stinger",
+      "default": "#c8553d"
+    },
+    {
+      "key": "stingerCurtainShade",
+      "type": "color",
+      "label": "Vorhang: Falten",
+      "group": "Stinger",
+      "default": "#a8432f"
+    },
+    {
+      "key": "stingerCurtainPattern",
+      "type": "boolean",
+      "label": "Vorhang: Pfotenabdrücke",
+      "group": "Stinger",
+      "default": true
+    },
+    {
+      "key": "stingerFolds",
+      "type": "number",
+      "label": "Vorhang: Falten (Anzahl)",
+      "group": "Stinger",
+      "default": 7,
+      "min": 1,
+      "max": 20
+    },
+    {
+      "key": "stingerFrom",
+      "type": "select",
+      "label": "Bär kommt von",
+      "group": "Stinger",
+      "default": "links",
+      "options": [
+        "links",
+        "rechts"
+      ]
+    },
+    {
+      "key": "stingerOpen",
+      "type": "select",
+      "label": "Öffnen: zurückziehen oder hochziehen",
+      "group": "Stinger",
+      "default": "ziehen",
+      "options": [
+        "ziehen",
+        "heben"
+      ]
+    },
+    {
       "key": "bannerProfileBear",
       "type": "select",
       "label": "Profilbanner: Bär",

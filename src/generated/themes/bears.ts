@@ -220,6 +220,12 @@ export type BearsValues = {
   readonly stingerCut: number;
   readonly stingerText: string;
   readonly stingerWaddle: number;
+  readonly stingerCurtain: string;
+  readonly stingerCurtainShade: string;
+  readonly stingerCurtainPattern: boolean;
+  readonly stingerFolds: number;
+  readonly stingerFrom: string;
+  readonly stingerOpen: string;
   readonly bannerProfileBear: string;
   readonly bannerOfflineBear: string;
   readonly bannerTitle: string;
