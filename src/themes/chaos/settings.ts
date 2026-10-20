@@ -21,6 +21,8 @@ const CHAT = "Chat";
 const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
+const STINGER = "Stinger";
+const BANNER = "Banner";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "CHAOS", 40),
@@ -154,6 +156,18 @@ const FIELDS = [
   number("fxTextSize", "Textgrösse", FX, 72, 8, 300, "px"),
   number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20, 0, 50, "%"),
   number("fxMax", "Max. gleichzeitig", FX, 8, 1, 30),
+
+  number("stingerDuration", "Länge", STINGER, 1.4, 0.5, 5, "s", 0.05),
+  number("stingerCut", "Übergangspunkt", STINGER, 0.7, 0.1, 5, "s", 0.05),
+  text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}"),
+
+  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
+  text("bannerProfileText", "Profilbanner: Text", BANNER, "Kritzeleien, Neon und gute Laune"),
+  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Offline"),
+  text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Farbe trocknet noch. Folge dem Kanal!"),
+  number("bannerLoop", "Schleifenlänge", BANNER, 4, 1, 20, "s"),
+  number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
+  number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
@@ -169,6 +183,8 @@ const GROUP_SCENES = {
   [CAM]: ["cam"],
   [MUSIC]: ["music"],
   [FX]: ["fx"],
+  [STINGER]: [],
+  [BANNER]: [],
   [INFO_GROUP]: ["info"],
 } as const;
 

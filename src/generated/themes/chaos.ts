@@ -139,6 +139,16 @@ export type ChaosValues = {
   readonly fxTextSize: number;
   readonly fxMargin: number;
   readonly fxMax: number;
+  readonly stingerDuration: number;
+  readonly stingerCut: number;
+  readonly stingerText: string;
+  readonly bannerTitle: string;
+  readonly bannerProfileText: string;
+  readonly bannerOfflineTitle: string;
+  readonly bannerOfflineText: string;
+  readonly bannerLoop: number;
+  readonly bannerProfileFps: number;
+  readonly bannerOfflineFps: number;
   readonly infoTitle: string;
   readonly infoIntro: string;
   readonly infoEmpty: string;

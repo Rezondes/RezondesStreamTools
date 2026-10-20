@@ -29,6 +29,8 @@ const CHAT: &str = "Chat";
 const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
+const STINGER: &str = "Stinger";
+const BANNER: &str = "Banner";
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -217,6 +219,21 @@ fn chat_cam_music_fx() -> Vec<SettingField> {
     ]
 }
 
+fn stinger_banner() -> Vec<SettingField> {
+    vec![
+        number("stingerDuration", "Länge", STINGER, 1.4, 0.5, 5.0, S, Some(0.05)),
+        number("stingerCut", "Übergangspunkt", STINGER, 0.7, 0.1, 5.0, S, Some(0.05)),
+        text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}", None),
+        text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
+        text("bannerProfileText", "Profilbanner: Text", BANNER, "Kritzeleien, Neon und gute Laune", None),
+        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Offline", None),
+        text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Farbe trocknet noch. Folge dem Kanal!", None),
+        number("bannerLoop", "Schleifenlänge", BANNER, 4.0, 1.0, 20.0, S, None),
+        number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12.0, 1.0, 30.0, None, None),
+        number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10.0, 1.0, 30.0, None, None),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Music, Starting};
     [
@@ -226,6 +243,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (CAM, vec![Cam]),
         (MUSIC, vec![Music]),
         (FX, vec![Fx]),
+        (STINGER, vec![]),
+        (BANNER, vec![]),
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()
@@ -289,6 +308,7 @@ pub fn chaos() -> Theme {
         chat_style(),
         badge_fields(CHAT),
         chat_cam_music_fx(),
+        stinger_banner(),
         info_fields(),
     ]
     .concat();
