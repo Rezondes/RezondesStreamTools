@@ -8,7 +8,7 @@
 // head). poseOf gives the layers in drawing order for one bear and turn; Bear.tsx (SVG) and paint.ts (canvas) both draw
 // exactly these layers. Pure data, check: rig.check.ts.
 import {
-  BEARS, FOUR_BODY, FOUR_BOX, FOUR_HEAD, OPEN_MOUTH, PROPS, SIGN_TEXT, STAND_BOX, STANDING_BODY, STANDING_HEAD, shift, oval,
+  BEARS, FOUR_BACK_LINE, FOUR_BODY, FOUR_BOX, FOUR_HEAD, OPEN_MOUTH, PROPS, SIGN_TEXT, STAND_BOX, STANDING_BODY, STANDING_HEAD, shift, oval,
   type BearId, type BodyShape, type HeadShape, type Point, type PropName, type ShapePart,
 } from "./bears.ts";
 
@@ -24,9 +24,9 @@ const STAND_LIMBS = {
   nearArm: { root: [132, 172, 30], bones: [52, 50], width: 25 },
 } as const satisfies Record<string, Limb>;
 const FOUR_LIMBS = {
-  farBack: { root: [196, 128, -20], bones: [28, 26], width: 16 },
-  farFront: { root: [56, 124, -20], bones: [40, 38], width: 15 },
-  nearBack: { root: [212, 128, 20], bones: [28, 26], width: 17 },
+  farBack: { root: [196, 128, -20], bones: [38, 36], width: 16 },
+  farFront: { root: [56, 124, -20], bones: [42, 40], width: 15 },
+  nearBack: { root: [212, 128, 20], bones: [38, 36], width: 17 },
   nearFront: { root: [72, 124, 20], bones: [40, 38], width: 16 },
 } as const satisfies Record<string, Limb>;
 type StandLimb = keyof typeof STAND_LIMBS;
@@ -39,6 +39,8 @@ const FOUR_REST: Record<FourLimb, Point> = { farBack: [196, 174], farFront: [54,
 type HeadDepth = { face: Point3; ears: readonly Point3[]; behind: Point3; worn: Point3 };
 const STAND_DEPTH: HeadDepth = { face: [44, 96, 60], ears: [[76, 12, -40], [146, 14, 20]], behind: [112, 0, -20], worn: [146, 24, 30] };
 const FOUR_DEPTH: HeadDepth = { face: [40, 100, 50], ears: [[50, 60, -30], [88, 58, 20]], behind: [70, 40, -20], worn: [88, 58, 25] };
+// The middle of the back on all fours, where the feet of a bear above stand (on the top line of FOUR_BODY)
+const BACK_TOP: Point = [140, 59];
 // Depths in front of the body: the far paw gripping a prop from behind, the held prop, the near paw and the thumb
 const DEPTH = { grip: 65, prop: 70, paw: 80, thumb: 81 } as const;
 
@@ -84,8 +86,12 @@ const SPECS = {
   walkB: { stance: "stand", targets: { nearLeg: [68, 302], farLeg: [126, 299], nearArm: [126, 256], farArm: [178, 252] } },
   four: { stance: "four" },
   // On all fours with the near front leg raised high (top of the tower) or reaching up for the back above (climbing)
-  fourWave: { stance: "four", targets: { nearFront: [76, 20] }, excited: true },
+  fourWave: { stance: "four", targets: { nearFront: [108, 16] }, excited: true },
   climb: { stance: "four", targets: { nearFront: [92, 24] } },
+  // On the back of another bear: all fours with the legs tucked together, so the feet fit on the back below; on top of
+  // the tower with the near front leg raised
+  perch: { stance: "four", targets: { farBack: [180, 174], nearBack: [194, 173], farFront: [74, 175], nearFront: [88, 174] } },
+  perchWave: { stance: "four", targets: { farBack: [180, 174], nearBack: [194, 173], farFront: [74, 175], nearFront: [108, 16] }, excited: true },
 } as const satisfies Record<string, PoseSpec>;
 export type PoseName = keyof typeof SPECS;
 export const POSE_NAMES = Object.keys(SPECS) as PoseName[];
@@ -94,7 +100,7 @@ export const POSE_NAMES = Object.keys(SPECS) as PoseName[];
 export type RigLayer = { bone: string; pivot: Point; depth: number; parts: readonly ShapePart[]; body?: BodyShape };
 // Anchors of a pose: the ground points of the feet on the ground, the paws, the top of the head and of the back, where the
 // sign text sits
-export type Anchors = { feet: readonly Point[]; nearPaw: Point; farPaw: Point; top: Point; back: Point; signText: Point };
+export type Anchors = { feet: readonly Point[]; footKeys: readonly string[]; nearPaw: Point; farPaw: Point; top: Point; back: Point; signText: Point };
 export type Pose = { name: PoseName; stance: Stance; turn: number; width: number; height: number; layers: readonly RigLayer[]; anchors: Anchors };
 
 const round = (value: number) => Math.round(value * 10) / 10;
@@ -196,9 +202,10 @@ function buildPose(name: PoseName, spec: PoseSpec, loud: boolean, turn: number):
   // A raised near paw shows its pad
   const raised = near.end[1] < limbs[nearKey].root[1] - near.width;
   const pad: ShapePart[] = raised ? [{ kind: "pad", d: oval(round(near.end[0]), round(near.end[1] - near.width * 0.45), 5, 4) }] : [];
-  // Legs (four: every limb is a leg) get toe strokes when they stand
-  const lifted = (key: string) => key.endsWith("Arm") || (four && targets[key] !== undefined);
-  const limbParts = (key: string) => (lifted(key) ? built[key].parts : [...built[key].parts, toes(built[key].end, built[key].width)]);
+  // Legs (four: every limb is a leg) whose round end touches the ground stand on it and get toe strokes
+  const ground = four ? box.height : box.height - 2;
+  const onGround = (key: string) => !key.endsWith("Arm") && built[key].end[1] + built[key].width >= ground - 1.5;
+  const limbParts = (key: string) => (onGround(key) ? [...built[key].parts, toes(built[key].end, built[key].width)] : built[key].parts);
   // Behind the body in any turn: the tail, the ears and what a worn prop has behind the head
   const back: RigLayer[] = [
     layer("tail", body.back, [box.width / 2, box.height], -100),
@@ -217,7 +224,7 @@ function buildPose(name: PoseName, spec: PoseSpec, loud: boolean, turn: number):
     layer("thumb", spec.thumb ? thumb(nearPaw, near.width) : [], nearPaw, DEPTH.thumb),
   ].sort((first, second) => first.depth - second.depth);
   const layers = [...back, ...sorted].filter(entry => entry.body || entry.parts.length);
-  const standing = Object.entries(built).filter(([key]) => (four ? !targets[key] : key.endsWith("Leg")));
+  const standing = Object.entries(built).filter(([key]) => onGround(key));
   const feet = standing.map(([, limb]) => [round(limb.end[0]), round(limb.end[1] + limb.width)] as Point);
   return {
     name,
@@ -226,25 +233,91 @@ function buildPose(name: PoseName, spec: PoseSpec, loud: boolean, turn: number):
     width: box.width,
     height: box.height,
     layers,
-    anchors: { feet, nearPaw, farPaw: built[farKey].end, top: four ? [78, 56] : [104, 6], back: four ? [150, 60] : [104, 6], signText: add(SIGN_TEXT, offset) },
+    anchors: { feet, footKeys: standing.map(([key]) => key), nearPaw, farPaw: built[farKey].end, top: four ? [78, 56] : [104, 6], back: four ? BACK_TOP : [104, 6], signText: add(SIGN_TEXT, offset) },
   };
+}
+
+// The spec with legs reaching further down by their drops (units of the box)
+function withDrops(spec: PoseSpec, reach: readonly (readonly [string, number])[]): PoseSpec {
+  if (!reach.length) return spec;
+  const rest: Record<string, Point> = spec.stance === "four" ? FOUR_REST : STAND_REST;
+  const targets: Record<string, Point> = { ...spec.targets };
+  for (const [leg, drop] of reach) {
+    const [x, y] = targets[leg] ?? rest[leg];
+    targets[leg] = [x, y + drop];
+  }
+  return { ...spec, targets };
 }
 
 export const POSES = Object.fromEntries(POSE_NAMES.map(name => [name, buildPose(name, SPECS[name], false, 0)])) as Record<PoseName, Pose>;
 
+// A tower level as drawn: the bear in its pose, its box placed at (x, y) in the units of the box of the bottom level
+// (y up is negative), how far each leg reaches down to the back below (units of its own box) and where its feet stand
+export type TowerLevel = { bear: BearId; pose: PoseName };
+export type Drops = Readonly<Record<string, number>>;
+export type PlacedLevel = TowerLevel & { x: number; y: number; drops: Drops; feet: readonly Point[] };
+
+// Height of the back line at x (bears.ts FOUR_BACK_LINE, straight between its points, flat past its ends)
+export function backAt(x: number): number {
+  const line = FOUR_BACK_LINE;
+  if (x <= line[0][0]) return line[0][1];
+  const after = line.findIndex(([px]) => px >= x);
+  if (after < 0) return line[line.length - 1][1];
+  const [[x0, y0], [x1, y1]] = [line[after - 1], line[after]];
+  return y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
+}
+
+// The point of a pose in the box of a bear with its proportions (the box scales around its bottom center)
+function scaled(bear: BearId, pose: Pose, [x, y]: Point): Point {
+  const { scaleX, scaleY } = BEARS[bear];
+  return [pose.width / 2 + (x - pose.width / 2) * scaleX, pose.height - (pose.height - y) * scaleY];
+}
+
+// Stacks levels from the bottom: every level stands with the middle of its feet over the back anchor of the level below,
+// as low as it can without a foot sinking into that back; every other leg reaches down until its foot stands on the back
+// line where it is (the back falls toward the rump). Proportions of both bears included; drawn bottom first.
+export function towerLayout(levels: readonly TowerLevel[]): PlacedLevel[] {
+  const placed: PlacedLevel[] = [];
+  for (const level of levels) {
+    const pose = POSES[level.pose];
+    const feet = pose.anchors.feet.map(foot => scaled(level.bear, pose, foot));
+    const below = placed.at(-1);
+    if (!below) {
+      placed.push({ ...level, x: 0, y: 0, drops: {}, feet });
+      continue;
+    }
+    const lower = POSES[below.pose];
+    const { scaleX, scaleY } = BEARS[below.bear];
+    const [backX] = scaled(below.bear, lower, lower.anchors.back);
+    const middle = feet.reduce((sum, [x]) => sum + x, 0) / feet.length;
+    const x = below.x + backX - middle;
+    // The back below under each foot, in the units of the bottom box
+    const surface = feet.map(([fx]) => {
+      const local = (fx + x - below.x - lower.width / 2) / scaleX + lower.width / 2;
+      return below.y + lower.height - (lower.height - backAt(local)) * scaleY;
+    });
+    const y = Math.min(...feet.map(([, fy], index) => surface[index] - fy));
+    const ownScale = BEARS[level.bear].scaleY;
+    const drops = Object.fromEntries(pose.anchors.footKeys.map((key, index) => [key, (surface[index] - feet[index][1] - y) / ownScale]));
+    placed.push({ ...level, x, y, drops, feet: feet.map(([fx], index) => [fx + x, surface[index]]) });
+  }
+  return placed;
+}
+
 // fixed: how far a bear may turn from the three-quarter view (radians): toward the camera and away from it
 export const TURN_LIMITS = { toward: 0.5, away: -0.4 } as const;
 const cache = new Map<string, Pose>();
-// The pose as one bear shows it in a turn (radians, clamped to TURN_LIMITS): the loud bear opens its mouth in excited
-// poses
-export function poseOf(bear: BearId, pose: PoseName, turn = 0): Pose {
+// The pose as one bear shows it in a turn (radians, clamped to TURN_LIMITS), with legs reaching down by drops (units of
+// the box, e.g. onto the back below in a tower): the loud bear opens its mouth in excited poses
+export function poseOf(bear: BearId, pose: PoseName, turn = 0, drops: Drops = {}): Pose {
   const loud = BEARS[bear].loud;
   const angle = Math.round(Math.min(TURN_LIMITS.toward, Math.max(TURN_LIMITS.away, turn)) * 100) / 100;
-  if (!loud && angle === 0) return POSES[pose];
-  const key = `${loud}:${pose}:${angle}`;
+  const reach = Object.entries(drops).filter(([, drop]) => Math.abs(drop) > 0.05).map(([leg, drop]) => [leg, Math.round(drop * 10) / 10] as const);
+  if (!loud && angle === 0 && !reach.length) return POSES[pose];
+  const key = `${loud}:${pose}:${angle}:${reach.join(";")}`;
   let shape = cache.get(key);
   if (!shape) {
-    shape = buildPose(pose, SPECS[pose], loud, angle);
+    shape = buildPose(pose, withDrops(SPECS[pose], reach), loud, angle);
     cache.set(key, shape);
   }
   return shape;

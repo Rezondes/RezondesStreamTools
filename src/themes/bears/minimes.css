@@ -17,6 +17,9 @@
   transition: transform var(--move) linear;
 }
 .theme-bears .bb-minime-name {
+  position: absolute;
+  /* Right above the bear in its pose (a bear on all fours is lower than a standing one) */
+  bottom: calc(100% * var(--pose-h, 1));
   margin-bottom: var(--name-gap, 4px);
   padding: var(--name-padding, 1px 10px);
   background: var(--paper);
@@ -28,7 +31,8 @@
   font-weight: 800;
   white-space: nowrap;
 }
-.theme-bears .bb-minime-lift { flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; }
+/* The lift wrapper is as high as the bear (minimeBearSize); the name sign floats above it */
+.theme-bears .bb-minime-lift { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; }
 .theme-bears .bb-minime-body {
   position: relative;
   flex: 1;
@@ -130,16 +134,16 @@
 @keyframes bears-minime-brace { 0%, 100% { scale: 1 1; } 50% { scale: 1.02 0.96; } }
 @keyframes bears-minime-climb {
   from { translate: 0 0; }
-  60% { translate: 0 calc(-1 * var(--stack-lift) - var(--climb-overshoot, 12px)); }
-  to { translate: 0 calc(-1 * var(--stack-lift)); }
+  60% { translate: var(--stack-shift, 0px) calc(-1 * var(--stack-lift) - var(--climb-overshoot, 12px)); }
+  to { translate: var(--stack-shift, 0px) calc(-1 * var(--stack-lift)); }
 }
 @keyframes bears-minime-sway {
   0%, 100% { rotate: calc(var(--stackSway) * -1deg); }
   50% { rotate: calc(var(--stackSway) * 1deg); }
 }
 @keyframes bears-minime-dismount {
-  from { translate: 0 calc(-1 * var(--stack-lift, 0px)); }
-  45% { translate: 0 calc(-1 * var(--stack-lift, 0px) - var(--dismount-hop, 30px)); }
+  from { translate: var(--stack-shift, 0px) calc(-1 * var(--stack-lift, 0px)); }
+  45% { translate: var(--stack-shift, 0px) calc(-1 * var(--stack-lift, 0px) - var(--dismount-hop, 30px)); }
   to { translate: 0 0; }
 }
 @keyframes bears-minime-pop-in { from { scale: 0; } to { scale: 1; } }

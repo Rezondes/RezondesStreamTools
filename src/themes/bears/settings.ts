@@ -286,12 +286,10 @@ const FIELDS = [
   number("sleepMs", "Schlafen: Dauer", MINIME_MOVES, 7000, 1000, 60000, "ms"),
   text("sleepText", "Schlafen: aufsteigendes Zeichen", MINIME_MOVES, "z", 4),
   number("waveReactMs", "Reaktion auf Chat (Winken): Dauer", MINIME_MOVES, 1200, 200, 5000, "ms"),
-  // Towers of the minimes (core): on, Eisbär at the bottom, Panda in the middle, Grizzly on top; height of one level per
-  // bear in percent of the minime size (the back of the bear below)
+  // Towers of the minimes (core): on, Eisbär at the bottom, Panda in the middle, Grizzly on top; every level stands on the
+  // back below (from the model), stackFit corrects each level by hand
   ...minimeStackFields(BEAR_SET, { minimeStack: true, minimeStackLevel1: "eisbaer", minimeStackLevel2: "panda", minimeStackLevel3: "grizzly" }),
-  number("stackStepIce", "Turm: Stufenhöhe Eisbär (Prozent der Grösse)", MINIME_LOOK, 29, 5, 100),
-  number("stackStepPanda", "Turm: Stufenhöhe Panda (Prozent der Grösse)", MINIME_LOOK, 23, 5, 100),
-  number("stackStepGrizzly", "Turm: Stufenhöhe Grizzly (Prozent der Grösse)", MINIME_LOOK, 25, 5, 100),
+  number("stackFit", "Turm: Feinkorrektur je Stufe", MINIME_LOOK, 0, -60, 60, "px"),
   number("stackSway", "Turm: Wanken (Grad)", MINIME_LOOK, 2, 0, 10),
   number("stackSwayMs", "Turm: Wanken (Dauer)", MINIME_LOOK, 2400, 500, 10000, "ms"),
   number("stackNameOffset", "Turm: Namen seitlich versetzt", MINIME_LOOK, 40, 0, 300, "px"),

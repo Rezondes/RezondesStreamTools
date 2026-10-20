@@ -17,7 +17,7 @@ assert.deepEqual(BEAR_IDS.filter(id => BEARS[id].patched), ["panda"]);
 
 // Tower: Eisbär at the bottom, Panda in the middle, Grizzly on top with the raised front leg
 assert.deepEqual(TOWER_LEVELS.map(level => level.bear), ["eisbaer", "panda", "grizzly"]);
-assert.equal(TOWER_LEVELS[2].pose, "fourWave");
+assert.deepEqual(TOWER_LEVELS.map(level => level.pose), ["four", "perch", "perchWave"]);
 
 // Moving paths: points move, arc radii and flags stay; circles
 assert.equal(shift("M1 2 L3 4 C5 6 7 8 9 10 Z", 10, 20), "M11 22 L13 24 C15 26 17 28 19 30 Z");

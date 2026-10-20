@@ -101,6 +101,9 @@ export const FOUR_BODY: BodyShape = {
   ],
   back: [{ kind: "back", d: dot(234, 100, 9) }],
 };
+// The top line of the back on all fours (points along the top of FOUR_BODY from the neck to the rump), where the feet
+// of a bear above stand
+export const FOUR_BACK_LINE: readonly Point[] = [[40, 64], [60, 57], [78, 56], [100, 57], [120, 58], [150, 60], [180, 63], [200, 68], [216, 76], [228, 84]];
 export const FOUR_HEAD: HeadShape = {
   neck: [80, 110],
   ears: [{ kind: "back", d: dot(50, 60, 11) }, { kind: "back", d: dot(88, 58, 10) }],
@@ -160,13 +163,12 @@ export const BEARS: Record<BearId, { scaleX: number; scaleY: number; patched: bo
   panda: { scaleX: 1.06, scaleY: 0.8, patched: true, loud: false },
 };
 
-// Tower from bottom to top, each bear on all fours; every level stands on the back of the one below, shifted by
-// TOWER_STEP in the box of the four-legged body
+// Tower from bottom to top, each bear on all fours (the upper ones with tucked legs); every level stands on the back of
+// the one below (rig.ts towerLayout)
 export const TOWER_LEVELS = [
   { bear: "eisbaer", pose: "four" },
-  { bear: "panda", pose: "four" },
-  { bear: "grizzly", pose: "fourWave" },
+  { bear: "panda", pose: "perch" },
+  { bear: "grizzly", pose: "perchWave" },
 ] as const;
-export const TOWER_STEP = { x: 14, y: -96 };
 
 export const isBearChoice = (value: string): value is BearChoice => (BEAR_CHOICES as readonly string[]).includes(value);

@@ -2,7 +2,8 @@
 // the core variant fields), plus the pose of the character model each minime action shows (scenes/Minimes.tsx).
 // Check: minimeBears.check.ts.
 import type { MinimeVariantSet } from "../../core/theme.ts";
-import type { PoseName } from "./rig.ts";
+import { BEAR_IDS, type BearId } from "./bears.ts";
+import { POSES, towerLayout, type Drops, type PoseName } from "./rig.ts";
 
 export const BEAR_SET: MinimeVariantSet = {
   command: "!baer",
@@ -33,11 +34,21 @@ const MOVE_POSES: Record<string, PoseName> = {
   stacked: "four",
   stackWalk: "four",
 };
-const TOP_POSES: Record<string, PoseName> = { stacked: "fourWave", stackWalk: "fourWave" };
+// On the back of another minime the legs are tucked (perch), the top one raises a front leg
+const UPPER_POSES: Record<string, PoseName> = { stacked: "perch", stackWalk: "perch" };
+const TOP_POSES: Record<string, PoseName> = { stacked: "perchWave", stackWalk: "perchWave" };
 
-export const minimePose = (action: string, top = false): PoseName => (top ? TOP_POSES[action] : undefined) ?? MOVE_POSES[action] ?? "stand";
+export const minimePose = (action: string, top = false, upper = top): PoseName =>
+  (top ? TOP_POSES[action] : undefined) ?? (upper ? UPPER_POSES[action] : undefined) ?? MOVE_POSES[action] ?? "stand";
 
-// Height of a level in px above the ground: the steps of the bears below (percent of the minime size per bear)
-export function towerLift(types: readonly string[], level: number, stepPercent: Readonly<Record<string, number>>, sizePx: number): number {
-  return types.slice(0, Math.max(0, level - 1)).reduce((sum, type) => sum + ((stepPercent[type] ?? 0) / 100) * sizePx, 0);
+// Where a level of a minime tower stands in px: lifted onto the back below and shifted to its middle (rig.ts
+// towerLayout, upper levels with tucked legs, the top one with the raised front leg), sizePx = the minime size (height of a standing bear), fitPx = the
+// fine correction per level from the settings; drops: how far each leg reaches down onto the back below
+export function towerLift(types: readonly string[], level: number, sizePx: number, fitPx = 0): { lift: number; shift: number; drops: Drops } {
+  const bears = types.filter((type): type is BearId => (BEAR_IDS as readonly string[]).includes(type));
+  const placed = towerLayout(bears.map((bear, index) => ({ bear, pose: index === 0 ? "four" : index === bears.length - 1 ? "perchWave" : "perch" })));
+  const spot = placed[level - 1];
+  if (!spot) return { lift: 0, shift: 0, drops: {} };
+  const unit = sizePx / POSES.stand.height;
+  return { lift: -spot.y * unit + (level - 1) * fitPx, shift: spot.x * unit, drops: spot.drops };
 }

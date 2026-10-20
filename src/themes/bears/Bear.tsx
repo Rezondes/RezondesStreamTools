@@ -6,10 +6,11 @@
 // and the body breathes (CSS). BearFigure is the bare SVG group (for the tower), Bear the figure in its own SVG.
 import { useId } from "react";
 import { BEARS, type BearId } from "./bears.ts";
-import { poseOf, POSES, type PoseName, type RigLayer } from "./rig.ts";
+import { poseOf, POSES, type Drops, type PoseName, type RigLayer } from "./rig.ts";
 
-// turn: radians around the upright axis (0 = three-quarter view, positive toward the camera)
-type FigureProps = { bear: BearId; pose: PoseName; sign?: string; turn?: number };
+// turn: radians around the upright axis (0 = three-quarter view, positive toward the camera); drops: how far legs reach
+// down (e.g. onto the back below in a tower)
+type FigureProps = { bear: BearId; pose: PoseName; sign?: string; turn?: number; drops?: Drops };
 
 // Ids from useId contain characters a url(#...) reference does not like
 const safeId = (id: string) => id.replace(/[^a-zA-Z0-9-]/g, "");
@@ -34,9 +35,9 @@ function BodyBlob({ layer, id, patched }: { layer: RigLayer; id: string; patched
   );
 }
 
-export function BearFigure({ bear, pose, sign, turn = 0 }: FigureProps) {
+export function BearFigure({ bear, pose, sign, turn = 0, drops }: FigureProps) {
   const id = safeId(useId());
-  const shape = poseOf(bear, pose, turn);
+  const shape = poseOf(bear, pose, turn, drops);
   const { scaleX, scaleY, patched } = BEARS[bear];
   const { width, height } = shape;
   const scale = `translate(${width / 2} ${height}) scale(${scaleX} ${scaleY}) translate(${-width / 2} ${-height})`;
@@ -56,11 +57,11 @@ export function BearFigure({ bear, pose, sign, turn = 0 }: FigureProps) {
   );
 }
 
-export default function Bear({ bear, pose, sign, turn, className = "" }: FigureProps & { className?: string }) {
+export default function Bear({ bear, pose, sign, turn, drops, className = "" }: FigureProps & { className?: string }) {
   const { width, height } = POSES[pose];
   return (
     <svg className={`bb-bear ${className}`} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
-      <BearFigure bear={bear} pose={pose} sign={sign} turn={turn} />
+      <BearFigure bear={bear} pose={pose} sign={sign} turn={turn} drops={drops} />
     </svg>
   );
 }

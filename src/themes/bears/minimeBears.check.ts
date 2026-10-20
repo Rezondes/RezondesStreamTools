@@ -20,13 +20,14 @@ assert.equal(minimePose("walk"), "stand");
 assert.equal(minimePose("sleep"), "sleep");
 assert.equal(minimePose("dance"), "cheer");
 // Towers: the base braces on all fours, the climber reaches up, the top one of the stacked tower raises a front leg
-assert.deepEqual([minimePose("brace"), minimePose("climb"), minimePose("stacked"), minimePose("stacked", true), minimePose("stackWalk", true)], ["four", "climb", "four", "fourWave", "fourWave"]);
+assert.deepEqual([minimePose("brace"), minimePose("climb"), minimePose("stacked"), minimePose("stacked", false, true), minimePose("stacked", true), minimePose("stackWalk", true)], ["four", "climb", "four", "perch", "perchWave", "perchWave"]);
 assert.deepEqual([minimePose("gather"), minimePose("dismount"), minimePose("wave", true)], ["stand", "stand", "wave"]);
 for (const action of STACK_ACTIONS) assert.ok(minimePose(action, true) in POSES, action);
-// Lift of a level: the steps of the bears below in percent of the size
-const steps = { eisbaer: 30, panda: 20, grizzly: 25 };
-assert.deepEqual([1, 2, 3].map(level => towerLift(["eisbaer", "panda", "grizzly"], level, steps, 100)), [0, 30, 50]);
-assert.equal(towerLift(["eisbaer", "koala"], 3, steps, 100), 30);
+// Lift of a level from the model: the bottom stays, every level above stands higher, the fine correction adds per level
+const lifts = [1, 2, 3].map(level => towerLift(["eisbaer", "panda", "grizzly"], level, 332).lift);
+assert.ok(lifts[0] === 0 && lifts[1] > 60 && lifts[2] > lifts[1], `lifts ${lifts.join(", ")}`);
+assert.equal(towerLift(["eisbaer", "panda"], 2, 332, 5).lift, towerLift(["eisbaer", "panda"], 2, 332).lift + 5);
+assert.deepEqual(towerLift(["eisbaer", "koala"], 2, 332), { lift: 0, shift: 0, drops: {} });
 for (const move of MINIME_MOVES) assert.ok(!(COMBAT_ACTIONS as readonly string[]).includes(move), `${move} is an action of the fights`);
 
 console.log("bears minime variants ok");

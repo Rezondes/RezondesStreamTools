@@ -87,8 +87,8 @@ fn minime_fields() -> Vec<SettingField> {
         text("sleepText", "Schlafen: aufsteigendes Zeichen", MINIME_MOVES, "z", Some(4)),
         number("waveReactMs", "Reaktion auf Chat (Winken): Dauer", MINIME_MOVES, 1200.0, 200.0, 5000.0, MS, None),
     ]);
-    // Towers: on, Eisbär at the bottom, Panda in the middle, Grizzly on top; height of one level per bear in percent of
-    // the minime size
+    // Towers: on, Eisbär at the bottom, Panda in the middle, Grizzly on top; every level stands on the back below (from
+    // the model), stackFit corrects each level by hand
     let level = |id: &str| SettingValue::Text(id.to_owned());
     fields.extend(minime_stack_fields(
         &variants(),
@@ -100,36 +100,7 @@ fn minime_fields() -> Vec<SettingField> {
         ],
     ));
     fields.extend(vec![
-        number(
-            "stackStepIce",
-            "Turm: Stufenhöhe Eisbär (Prozent der Grösse)",
-            MINIME_LOOK,
-            29.0,
-            5.0,
-            100.0,
-            None,
-            None,
-        ),
-        number(
-            "stackStepPanda",
-            "Turm: Stufenhöhe Panda (Prozent der Grösse)",
-            MINIME_LOOK,
-            23.0,
-            5.0,
-            100.0,
-            None,
-            None,
-        ),
-        number(
-            "stackStepGrizzly",
-            "Turm: Stufenhöhe Grizzly (Prozent der Grösse)",
-            MINIME_LOOK,
-            25.0,
-            5.0,
-            100.0,
-            None,
-            None,
-        ),
+        number("stackFit", "Turm: Feinkorrektur je Stufe", MINIME_LOOK, 0.0, -60.0, 60.0, PX, None),
         number("stackSway", "Turm: Wanken (Grad)", MINIME_LOOK, 2.0, 0.0, 10.0, None, None),
         number("stackSwayMs", "Turm: Wanken (Dauer)", MINIME_LOOK, 2400.0, 500.0, 10_000.0, MS, None),
         number("stackNameOffset", "Turm: Namen seitlich versetzt", MINIME_LOOK, 40.0, 0.0, 300.0, PX, None),

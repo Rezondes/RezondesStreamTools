@@ -2,8 +2,8 @@
 // follow their bone, the solver reaches its target, anchors lie in the box, feet stand on the ground, the headset covers
 // the ears and the loud bear opens its mouth only when excited. Runs with npm test.
 import assert from "node:assert/strict";
-import { CLOSED_MOUTH, EAR_CENTERS, OPEN_MOUTH } from "./bears.ts";
-import { POSE_NAMES, POSES, poseOf, solve, tube, TURN_LIMITS, type PoseName } from "./rig.ts";
+import { BEARS, CLOSED_MOUTH, EAR_CENTERS, OPEN_MOUTH } from "./bears.ts";
+import { backAt, POSE_NAMES, POSES, poseOf, solve, towerLayout, tube, TURN_LIMITS, type PoseName } from "./rig.ts";
 
 // Every pose: front limbs (arms or front legs) and hind limbs exactly once each as one tube, each bone once
 for (const name of POSE_NAMES) {
@@ -50,7 +50,7 @@ for (const name of POSE_NAMES) {
   const ground = POSES[name].stance === "stand" ? height - 2 : height;
   for (const [, y] of anchors.feet) assert.ok(Math.abs(y - ground) <= 1.5, `${name}: foot at ${y}`);
 }
-assert.deepEqual([POSES.stand.anchors.feet.length, POSES.four.anchors.feet.length, POSES.fourWave.anchors.feet.length], [2, 4, 3]);
+assert.deepEqual([POSES.stand.anchors.feet.length, POSES.four.anchors.feet.length, POSES.fourWave.anchors.feet.length, POSES.perchWave.anchors.feet.length], [2, 4, 3, 3]);
 // Raised paws are high, held paws in front of the chest
 assert.ok(POSES.wave.anchors.nearPaw[1] < 100 && POSES.fourWave.anchors.nearPaw[1] < 60);
 assert.ok(POSES.phone.anchors.nearPaw[0] < 100);
@@ -96,5 +96,28 @@ const turned = poseOf("eisbaer", "stand", 0.6).layers.map(layer => layer.bone);
 assert.ok(turned.indexOf("farArm") < turned.indexOf("body"));
 assert.equal(poseOf("eisbaer", "stand", 5).turn, TURN_LIMITS.toward);
 assert.equal(poseOf("eisbaer", "stand", 0), POSES.stand);
+
+// Towers: in every order of the three bears every foot of every upper level, as drawn with its legs reaching down, stands
+// on the back line of the level below (within one unit) and inside the length of that back (a foot may reach half its
+// width past its ends)
+const FOOT = 16;
+const ORDERS = [["eisbaer", "panda", "grizzly"], ["grizzly", "eisbaer", "panda"], ["panda", "grizzly", "eisbaer"], ["panda", "eisbaer", "grizzly"]] as const;
+const box = POSES.four;
+for (const order of ORDERS) {
+  const placed = towerLayout(order.map((bear, index) => ({ bear, pose: index === 0 ? "four" : index === order.length - 1 ? "perchWave" : "perch" })));
+  for (let index = 1; index < placed.length; index++) {
+    const [lower, upper] = [placed[index - 1], placed[index]];
+    const drawn = poseOf(upper.bear, upper.pose, 0, upper.drops);
+    const [own, under] = [BEARS[upper.bear], BEARS[lower.bear]];
+    for (const [fx, fy] of drawn.anchors.feet) {
+      const x = upper.x + box.width / 2 + (fx - box.width / 2) * own.scaleX;
+      const y = upper.y + box.height - (box.height - fy) * own.scaleY;
+      const local = (x - lower.x - box.width / 2) / under.scaleX + box.width / 2;
+      const back = lower.y + box.height - (box.height - backAt(local)) * under.scaleY;
+      assert.ok(Math.abs(y - back) <= 1, `${order.join("/")}: level ${index} foot at ${x.toFixed(1)} ${(y - back).toFixed(1)} off the back`);
+      assert.ok(local >= 60 - FOOT && local <= 216 + FOOT, `${order.join("/")}: foot ${local.toFixed(1)} beside the back`);
+    }
+  }
+}
 
 console.log("bears rig ok");

@@ -297,9 +297,7 @@ export type BearsValues = {
   readonly minimeDismountGap: number;
   readonly minimeStackSound: boolean;
   readonly minimeSoundClimb: SoundValue;
-  readonly stackStepIce: number;
-  readonly stackStepPanda: number;
-  readonly stackStepGrizzly: number;
+  readonly stackFit: number;
   readonly stackSway: number;
   readonly stackSwayMs: number;
   readonly stackNameOffset: number;

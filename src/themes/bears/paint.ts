@@ -4,8 +4,8 @@
 // palette from the settings, mixed with mix() instead of CSS color-mix. Paths become Path2D in the browser; without
 // Path2D (checks in Node) the path text goes to the canvas as is, a recording mock only counts the calls.
 // Check: paint.check.ts.
-import { BEARS, isBearChoice, TOWER, TOWER_LEVELS, TOWER_STEP, type BearId, type BodyShape, type PartKind } from "./bears.ts";
-import { poseOf, POSES, type PoseName } from "./rig.ts";
+import { BEARS, isBearChoice, TOWER, TOWER_LEVELS, type BearId, type BodyShape, type PartKind } from "./bears.ts";
+import { poseOf, POSES, towerLayout, type Drops, type PoseName } from "./rig.ts";
 import { blocksPath, CITY, CITY_BASE, FIR_BASE, FIRS, firPath, firShadePath, FLOWERS, flowerPath, SHAPES, TREES, TUFTS, tuftPath, windowsPath, WORLD } from "./world.ts";
 
 export type BearColors = { fur: string; shade: string; limb: string };
@@ -93,9 +93,9 @@ function drawBody(context: CanvasRenderingContext2D, body: BodyShape, colors: Be
 }
 
 // One bear standing with its feet on (x, baseY), height in px; facing -1 mirrors it, turn turns it around its upright
-// axis (radians, positive toward the camera). Draws the layers of the rig in order.
-export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: PoseName, x: number, baseY: number, height: number, palette: Palette, facing = 1, turn = 0) {
-  const shape = poseOf(bear, pose, turn);
+// axis (radians, positive toward the camera), drops let legs reach further down. Draws the layers of the rig in order.
+export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: PoseName, x: number, baseY: number, height: number, palette: Palette, facing = 1, turn = 0, drops: Drops = {}) {
+  const shape = poseOf(bear, pose, turn, drops);
   const { scaleX, scaleY, patched } = BEARS[bear];
   const size = height / shape.height;
   const colors = palette.bears[bear];
@@ -121,18 +121,21 @@ export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: 
   context.restore();
 }
 
-// Size of the tower in the units of the four-legged body
-export const TOWER_SIZE = { width: POSES.four.width + TOWER_STEP.x * (TOWER_LEVELS.length - 1), height: POSES.four.height - TOWER_STEP.y * (TOWER_LEVELS.length - 1) };
+// The tower: every level stands on the back of the one below (rig.ts towerLayout), its size in the units of the box of
+// the bottom level
+const TOWER_PLACED = towerLayout(TOWER_LEVELS);
+const TOWER_LEFT = Math.min(...TOWER_PLACED.map(level => level.x));
+const TOWER_RIGHT = Math.max(...TOWER_PLACED.map(level => level.x)) + POSES.four.width;
+export const TOWER_SIZE = { width: TOWER_RIGHT - TOWER_LEFT, height: POSES.four.height - Math.min(...TOWER_PLACED.map(level => level.y)) };
 
-// The tower of all three bears standing on (x, baseY), height in px
+// The tower of all three bears standing on (x, baseY), height in px, bottom level first
 export function drawTower(context: CanvasRenderingContext2D, x: number, baseY: number, height: number, palette: Palette, facing = 1) {
   const size = height / TOWER_SIZE.height;
-  // Level 0 stands on the ground, every level above stands TOWER_STEP higher (y up is negative)
-  TOWER_LEVELS.forEach((level, index) => {
-    const offsetX = (TOWER_STEP.x * index + POSES.four.width / 2 - TOWER_SIZE.width / 2) * size * facing;
-    const offsetY = TOWER_STEP.y * index * size;
-    drawBear(context, level.bear, level.pose, x + offsetX, baseY + offsetY, POSES.four.height * size, palette, facing);
-  });
+  const middle = (TOWER_LEFT + TOWER_RIGHT) / 2;
+  for (const level of TOWER_PLACED) {
+    const offsetX = (level.x + POSES.four.width / 2 - middle) * size * facing;
+    drawBear(context, level.bear, level.pose, x + offsetX, baseY + level.y * size, POSES.four.height * size, palette, facing, 0, level.drops);
+  }
 }
 
 // The bear of a choice (one bear in its pose or the tower)

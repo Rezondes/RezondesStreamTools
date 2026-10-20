@@ -50,7 +50,10 @@ weisser Streifen über den Bauch. Augen und Nase aller Bären `#111111`.
 
 **Bärenturm:** unten der Eisbär auf allen vieren, in der Mitte der Panda auf allen vieren (oft mit Handy), oben der
 Grizzly, der einen Arm hochreisst. In den Szenen steht die Reihenfolge in den Formen, bei den Minimes ist sie eine
-Einstellung des Kerns.
+Einstellung des Kerns. Gestapelt wird aus dem Modell (`towerLayout`): die oberen Bären stehen mit eng gestellten Beinen
+(`perch`), die Mitte ihrer Füsse über dem Rückenanker des Bären darunter; jedes Bein streckt sich bis auf die
+Rückenlinie an seiner Stelle (der Rücken fällt zum Hinterteil ab). Dieselbe Rechnung gilt für den grossen Turm, Clips
+und Minimes; `stackFit` korrigiert die Minimes je Stufe von Hand.
 
 **Formen und Rig:** Jeder Bär ist ein 2D-Skelett (`rig.ts`): ein Körper-Blob je Haltung ohne Gliedmassen in der
 Silhouette (`bears.ts`), Kopf mit Ohren, Gesicht und Panda-Augenflecken als eigener Knochen, Arme und Beine als je ein

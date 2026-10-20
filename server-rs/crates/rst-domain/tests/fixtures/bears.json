@@ -2759,31 +2759,14 @@
       }
     },
     {
-      "key": "stackStepIce",
+      "key": "stackFit",
       "type": "number",
-      "label": "Turm: Stufenhöhe Eisbär (Prozent der Grösse)",
+      "label": "Turm: Feinkorrektur je Stufe",
       "group": "Minimes: Aussehen",
-      "default": 29,
-      "min": 5,
-      "max": 100
-    },
-    {
-      "key": "stackStepPanda",
-      "type": "number",
-      "label": "Turm: Stufenhöhe Panda (Prozent der Grösse)",
-      "group": "Minimes: Aussehen",
-      "default": 23,
-      "min": 5,
-      "max": 100
-    },
-    {
-      "key": "stackStepGrizzly",
-      "type": "number",
-      "label": "Turm: Stufenhöhe Grizzly (Prozent der Grösse)",
-      "group": "Minimes: Aussehen",
-      "default": 25,
-      "min": 5,
-      "max": 100
+      "default": 0,
+      "min": -60,
+      "max": 60,
+      "unit": "px"
     },
     {
       "key": "stackSway",

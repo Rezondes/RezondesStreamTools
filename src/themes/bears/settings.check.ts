@@ -58,7 +58,7 @@ for (const [group, scenes] of Object.entries(bearsSettings.groupScenes ?? {})) i
 // Towers: on, Eisbär at the bottom, Panda in the middle, Grizzly on top; a step height per bear
 const defaultOf = (key: string) => fields.find(field => field.key === key)?.default;
 assert.deepEqual(["minimeStack", ...STACK_LEVEL_KEYS].map(defaultOf), [true, "eisbaer", "panda", "grizzly"]);
-for (const key of ["stackStepIce", "stackStepPanda", "stackStepGrizzly", "stackSway", "stackSwayMs", "stackNameOffset", "minimeOutlineWidth"]) assert.equal(fields.find(field => field.key === key)?.group, "Minimes: Aussehen", key);
+for (const key of ["stackFit", "stackSway", "stackSwayMs", "stackNameOffset", "minimeOutlineWidth"]) assert.equal(fields.find(field => field.key === key)?.group, "Minimes: Aussehen", key);
 
 // First login: channel name from the login with a capital first letter
 assert.deepEqual(bearsSettings.personalize?.("neo_42"), { channelName: "Neo_42" });
