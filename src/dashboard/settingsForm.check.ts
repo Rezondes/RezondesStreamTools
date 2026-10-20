@@ -1,8 +1,10 @@
 // Check for settingsForm.ts: groups in schema order, reset, changes and errors per field. Runs with npm test.
 import assert from "node:assert/strict";
-import type { ThemeSchema } from "../core/theme.ts";
+import type { SettingField, ThemeSchema } from "../core/theme.ts";
 import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
-import { changedKeys, errorsByKey, groupFields, groupsForView, groupsWithoutScene, isDefault, pickSchema, resetAll, resetField } from "./settingsForm.ts";
+import {
+  changedKeys, errorsByKey, fieldsByKind, groupFields, groupsForMode, groupsForView, groupsWithoutScene, hiddenKeys, isDefault, pickSchema, resetAll, resetField, viewOfField,
+} from "./settingsForm.ts";
 
 const schema: ThemeSchema = {
   id: "probe",
@@ -62,6 +64,50 @@ assert.deepEqual(changedKeys(values, values), []);
 
 // Errors from the server response per field
 assert.deepEqual(errorsByKey([{ key: "size", code: "out_of_range" }, { key: "accent", code: "invalid_color" }]), { size: "out_of_range", accent: "invalid_color" });
+
+// Simple view: only the basic fields of the groups of a view, empty groups drop out; advanced = groupsForView
+const modes: ThemeSchema = {
+  id: "probe",
+  name: "Probe",
+  fields: [
+    { key: "a", type: "text", label: "A", group: "G", default: "", basic: true },
+    { key: "b", type: "number", label: "B", group: "G", default: 1, min: 0, max: 9 },
+    { key: "c", type: "color", label: "C", group: "H", default: "#000000" },
+    { key: "d", type: "text", label: "D", group: "S", default: "", basic: true, scene: "brb" },
+    { key: "e", type: "boolean", label: "E", group: "R", default: true },
+  ],
+  groupScenes: { S: ["brb"], R: [] },
+};
+const shape = (groups: { group: string; fields: { key: string }[] }[]) => groups.map(({ group, fields }) => [group, fields.map(field => field.key)]);
+assert.deepEqual(shape(groupsForMode(modes, "general", "einfach")), [["G", ["a"]]]);
+assert.deepEqual(groupsForMode(modes, "general", "erweitert"), groupsForView(modes, "general"));
+
+// Kinds in a fixed order, empty kinds drop out, schema order inside a kind
+const mixed: SettingField[] = [
+  { key: "n", type: "number", label: "N", group: "G", default: 1, min: 0, max: 9 },
+  { key: "c1", type: "color", label: "C1", group: "G", default: "#000000" },
+  { key: "t", type: "text", label: "T", group: "G", default: "" },
+  { key: "f", type: "boolean", label: "F", group: "G", default: true },
+  { key: "s", type: "sound", label: "S", group: "G", default: { file: "", volume: 1 } },
+  { key: "c2", type: "color", label: "C2", group: "G", default: "#ffffff" },
+];
+assert.deepEqual(fieldsByKind(mixed).map(({ kind, fields }) => [kind, fields.map(field => field.key)]), [
+  ["texts", ["t"]],
+  ["colors", ["c1", "c2"]],
+  ["switches", ["f"]],
+  ["numbers", ["n"]],
+  ["media", ["s"]],
+]);
+
+// Keys not visible in a view and mode: not basic in the simple view, or in another view
+assert.deepEqual(hiddenKeys(modes, "general", "einfach", ["a", "b"]), ["b"]);
+assert.deepEqual(hiddenKeys(modes, "general", "erweitert", ["a", "b"]), []);
+assert.deepEqual(hiddenKeys(modes, "general", "erweitert", ["a", "d"]), ["d"]);
+
+// The view a field stands in: general, its scene, or render for groups that apply in no scene
+assert.equal(viewOfField(modes, "b"), "general");
+assert.equal(viewOfField(modes, "d"), "brb");
+assert.equal(viewOfField(modes, "e"), "render");
 
 console.log("settingsForm ok");
 

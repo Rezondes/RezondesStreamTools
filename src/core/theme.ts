@@ -35,6 +35,7 @@ type FieldBase = {
   label: string;
   group: string; // section in the form
   scene?: SceneName; // for the preview in the dashboard
+  basic?: boolean; // shown in the simple view of the dashboard
 };
 
 export type SettingField =

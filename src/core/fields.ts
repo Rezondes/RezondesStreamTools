@@ -45,6 +45,9 @@ export const withDefaults = <F extends SettingField>(fields: readonly F[], defau
 // Field that only affects one scene: the dashboard shows it only there (e.g. title or terminal lines of BRB)
 export const inScene = <F extends SettingField>(scene: SceneName, field: F): F & { scene: SceneName } => ({ ...field, scene });
 
+// Field of the simple view in the dashboard: the few settings most streamers change (texts, main colors, switches)
+export const basic = <F extends SettingField>(field: F): F & { basic: true } => ({ ...field, basic: true });
+
 // Type of the resolved values for a field list: { [key]: number, switch, lines, sound or text }
 type ValueOf<F> = F extends { type: "number" } ? number
   : F extends { type: "boolean" } ? boolean

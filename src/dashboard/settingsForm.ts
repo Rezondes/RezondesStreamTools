@@ -36,6 +36,42 @@ export const groupsForView = (schema: ThemeSchema, view: FormView) =>
 export const groupsWithoutScene = (schema: ThemeSchema) =>
   Object.entries(schema.groupScenes ?? {}).filter(([, scenes]) => scenes.length === 0).map(([group]) => group);
 
+// Mode of the form: the basic fields only, or all of them
+export type FormMode = "einfach" | "erweitert";
+
+export const groupsForMode = (schema: ThemeSchema, view: FormView, mode: FormMode) =>
+  mode === "erweitert"
+    ? groupsForView(schema, view)
+    : groupsForView(schema, view)
+      .map(({ group, fields }) => ({ group, fields: fields.filter(field => field.basic) }))
+      .filter(({ fields }) => fields.length > 0);
+
+// Kinds that split a large group, in this order
+export type FieldKind = "texts" | "colors" | "choices" | "switches" | "numbers" | "media";
+const KIND_OF: Record<SettingField["type"], FieldKind> = {
+  text: "texts", textarea: "texts", lines: "texts", color: "colors", font: "choices", select: "choices",
+  boolean: "switches", number: "numbers", media: "media", sound: "media",
+};
+const KINDS: readonly FieldKind[] = ["texts", "colors", "choices", "switches", "numbers", "media"];
+
+export const fieldsByKind = (fields: readonly SettingField[]) =>
+  KINDS.map(kind => ({ kind, fields: fields.filter(field => KIND_OF[field.type] === kind) })).filter(({ fields }) => fields.length > 0);
+
+// The view a field stands in: its own scene, general, the first scene of its group, or render (groups of no scene)
+export function viewOfField(schema: ThemeSchema, key: string): FormView | "render" {
+  const field = schema.fields.find(candidate => candidate.key === key);
+  if (field?.scene) return field.scene;
+  const scenes = field && schema.groupScenes?.[field.group];
+  if (scenes === undefined) return "general";
+  return scenes[0] ?? "render";
+}
+
+// Of the given keys (changed or wrong fields) the ones not visible in this view and mode
+export function hiddenKeys(schema: ThemeSchema, view: FormView, mode: FormMode, keys: readonly string[]): string[] {
+  const visible = new Set(groupsForMode(schema, view, mode).flatMap(({ fields }) => fields.map(field => field.key)));
+  return keys.filter(key => !visible.has(key));
+}
+
 export const resetAll = (schema: ThemeSchema): SettingValues => Object.fromEntries(schema.fields.map(field => [field.key, field.default]));
 
 export function resetField(schema: ThemeSchema, values: SettingValues, key: string): SettingValues {
