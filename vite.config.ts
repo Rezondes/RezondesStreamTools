@@ -1,10 +1,13 @@
+import { mkdirSync, writeFileSync } from "node:fs";
+import { dirname, relative } from "node:path";
 import { defineConfig, type Plugin, type Rollup } from "vite";
 import react from "@vitejs/plugin-react";
+import { BUNDLE_MAP_FILE, type BundleChunk } from "./scripts/bundle.ts";
 
 // base "/": scripts are absolute under /assets/, so they are also found under /s/<login>/<scene>.html
 export default defineConfig({
   base: "/",
-  plugins: [react(), sceneFiles()],
+  plugins: [react(), sceneFiles(), bundleMap()],
   server: {
     port: 5173,
     strictPort: true,
@@ -28,6 +31,26 @@ function sceneFiles(): Plugin {
     generateBundle(_, bundle) {
       const html = bundle["index.html"] as Rollup.OutputAsset;
       for (const scene of SCENES) this.emitFile({ type: "asset", fileName: `${scene}.html`, source: html.source });
+    },
+  };
+}
+
+// Writes which packages each chunk holds (outside dist/, read by scripts/bundle.ts in npm run verify)
+function bundleMap(): Plugin {
+  const packageOf = (id: string) => id.replaceAll("\\", "/").match(/node_modules\/((?:@[^/]+\/)?[^/]+)\//)?.[1] ?? null;
+  return {
+    name: "bundle-map",
+    apply: "build",
+    generateBundle(_, bundle) {
+      const chunks: BundleChunk[] = Object.values(bundle).filter(output => output.type === "chunk").map(output => ({
+        file: output.fileName,
+        entry: output.isEntry,
+        facade: output.facadeModuleId ? relative(process.cwd(), output.facadeModuleId).replaceAll("\\", "/") : null,
+        imports: output.imports,
+        packages: [...new Set(output.moduleIds.map(packageOf).filter(name => name !== null))].sort(),
+      }));
+      mkdirSync(dirname(BUNDLE_MAP_FILE), { recursive: true });
+      writeFileSync(BUNDLE_MAP_FILE, JSON.stringify(chunks, null, 1));
     },
   };
 }

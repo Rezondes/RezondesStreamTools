@@ -56,7 +56,8 @@ src/themes/<id>/
      `render.ts` (siehe `src/themes/standard/render.ts`). Der erste Eintrag ist das Standard-Theme, bleibt `standard`.
    - `ThemeView` (Szenen): `index.tsx` exportiert `<id>View = { id: <id>Settings.id, scenes: { ... } }`, eingetragen
      in `src/themes/scenes.tsx` in `THEME_VIEWS`.
-   `registry.check.ts` prüft, dass jeder Ordner unter `src/themes/` in beiden Listen steht.
+   `registry.check.ts` prüft, dass jeder Ordner unter `src/themes/` in beiden Listen steht; ein Ordner, der nur
+   `docs/` enthält, ist ein geplantes Theme ohne Code und zählt noch nicht.
 7. **Prüfen**: `npm run verify`. Danach im Dashboard unter `[ THEME ]` das Theme wählen und in der Vorschau alle
    Szenen ansehen.
 
@@ -160,6 +161,23 @@ Hilfe-Befehl, die Minimes-Befehle des gewählten Themes und die öffentlichen Tr
    `details`), die das Theme in seinem Stil zeigt.
 3. Die Seite scrollt als normale Seite und hat keine Live-Verbindung: das Wurzelelement malt den Hintergrund selbst
    (z.B. `.theme-<id>.theme-root:has(.<id>-info) { min-height: 100vh; background: ... }`).
+
+## Grafik- und Animationsmodule (optional)
+
+Für Themes, die mehr brauchen als SVG und CSS, gibt es Module mit Kern-Bausteinen ([plans/PLAN-GRAFIK.md](plans/PLAN-GRAFIK.md)).
+Bestehende Themes nutzen sie nicht; ein Theme, das sie nutzt, steht in `MODULE_THEMES` in `scripts/bundle.ts`, sonst
+schlägt `npm run verify` fehl.
+
+| Modul | wann | Kern-Baustein |
+|---|---|---|
+| GSAP | Abläufe mit vielen Schritten, Text Buchstabe für Buchstabe, Linien zeichnen, Bewegung auf Kurven | `useTimeline`, benannte Kurven (`src/core/motion`) |
+| Three.js mit react-three-fiber, drei, postprocessing | echte 3D-Welten, Bloom, viele Instanzen | `Stage3D`, `mergedEdges`, `beamTransform`, `chance` (`src/core/three`) |
+| Vanilla-Three.js in Clips | Stinger und Banner in 3D | `glClip` (`src/core/three`) |
+| PixiJS | sehr viele 2D-Partikel oder Sprites über WebGL | `PixiStage`, `stepParticles` (`src/core/pixi`) |
+| Rough.js | Skizzen-Look, handgezeichnete Formen | `roughPath` (`src/core/rough`) |
+
+Farben, Zeiten und Mengen reicht das Theme aus seinen Einstellungen an die Bausteine durch; Geometrie liegt in reinen
+`.ts`-Modulen mit Checks. 3D braucht in OBS die Hardware-Beschleunigung der Browserquelle.
 
 ## Regeln, die automatisch geprüft werden
 

@@ -379,6 +379,27 @@ ohne Docker muss `ffmpeg` im PATH liegen (oder `FFMPEG=/pfad/zu/ffmpeg`).
 
 - Alerts: "Audio über OBS steuern" aktivieren, dann haben die Töne einen eigenen Mixer-Kanal.
 - "Browser aktualisieren, wenn Szene aktiv wird" aktivieren bei starting/brb/ending, damit Countdown und Einschalt-Animation neu starten.
+- Themes mit 3D (z. B. Dachdecker) brauchen in OBS die Hardware-Beschleunigung der Browserquelle (Einstellungen,
+  Erweitert, "Hardwarebeschleunigung der Browserquelle aktivieren"). Auf schwächeren PCs im Theme die Leistungsstufe
+  senken.
+
+## Drittanbieter und Lizenzen
+
+Optionale Grafik- und Animationsmodule ([plans/PLAN-GRAFIK.md](plans/PLAN-GRAFIK.md)), nur in Themes geladen, die sie
+nutzen:
+
+| Modul | Lizenz |
+|---|---|
+| three, @react-three/fiber, @react-three/drei, @react-three/postprocessing | MIT |
+| postprocessing | Zlib |
+| pixi.js | MIT |
+| roughjs | MIT |
+| gsap, @gsap/react | GSAP Standard "no charge" License (<https://gsap.com/standard-license>) |
+
+Die GSAP-Lizenz (gelesen 2026-10-21) erlaubt die Nutzung in Websites und Web-Apps, auch kommerziell und mit allen
+Plugins. Verboten ist nur der Einsatz in Werkzeugen, mit denen Nutzer ohne Code eigene Animationen bauen und die mit dem
+Animations-Baukasten von Webflow konkurrieren. RezondesStream liefert fertige Theme-Animationen, deren Werte Streamer
+einstellen; einen Animations-Baukasten gibt es nicht.
 
 ## Prüfungen
 
