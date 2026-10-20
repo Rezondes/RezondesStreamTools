@@ -50,6 +50,8 @@
 .render-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .render-bar input { flex: 1; min-width: 160px; }
 .render-files { list-style: none; display: grid; gap: 8px; }
+/* Hint, save and discard stay visible at the bottom of the settings column while its fields scroll */
+.render-save { position: sticky; bottom: 0; z-index: 1; display: grid; gap: 8px; padding: 10px 0 4px; border-top: var(--border-w) solid var(--line); background: var(--surface); }
 
 /* Media: small preview per file */
 .media-preview img, .media-preview video { display: block; max-width: 160px; max-height: 90px; }
@@ -102,7 +104,23 @@
   width: 100%;
 }
 .dashboard textarea { resize: vertical; white-space: pre; }
-.dashboard input[type=color] { width: 44px; height: 36px; padding: 0; border: var(--border-w) solid var(--border); border-radius: var(--radius-sm); background: var(--field); }
+/* Dropdowns like the text fields of the skin: own arrow in the text color instead of the system one */
+.dashboard select {
+  appearance: none;
+  padding-right: 36px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--fg) 50%), linear-gradient(135deg, var(--fg) 50%, transparent 50%);
+  background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%;
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.dashboard select:disabled, .dashboard input:disabled, .dashboard textarea:disabled { color: var(--fg-dim); cursor: default; }
+.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):hover:not(:disabled), .dashboard select:hover:not(:disabled), .dashboard textarea:hover:not(:disabled) { border-color: var(--accent); }
+/* Color swatch: the color fills the whole field, without the gray system frame */
+.dashboard input[type=color] { flex: none; width: 44px; height: 44px; padding: 0; border: var(--border-w) solid var(--border); border-radius: var(--radius-sm); background: var(--field); cursor: pointer; overflow: hidden; }
+.dashboard input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
+.dashboard input[type=color]::-webkit-color-swatch { border: 0; }
+.dashboard input[type=color]::-moz-color-swatch { border: 0; }
 .dashboard input:focus-visible, .dashboard select:focus-visible, .dashboard textarea:focus-visible, .dashboard summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .setting-row input[type=text] { width: auto; flex: 1; min-width: 120px; }
 

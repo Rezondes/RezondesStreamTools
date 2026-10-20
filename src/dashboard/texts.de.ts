@@ -304,7 +304,7 @@ export const TEXTS = {
     saved: "Gespeichert.",
     unsaved: "Ungespeicherte Änderungen:",
     readOnly: "Ändern kann nur, wem die Funktion Themes freigegeben ist. Gerendert wird mit den gespeicherten Werten.",
-    colorsHint: "Farben und Schrift kommen aus ALLGEMEIN im Bereich THEME (Auswahl \"Einstellungen für\").",
+    colorsHint: "Farben und Schrift kommen aus ALLGEMEIN im Bereich THEME.",
   },
   connections: {
     twitch: "Twitch",

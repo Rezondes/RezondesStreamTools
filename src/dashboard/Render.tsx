@@ -79,15 +79,18 @@ function ClipSettings({ clip, settings, canSave }: { clip: RenderClip; settings:
           />
         ))}
       </fieldset>
-      <p className="muted">{RENDER_TEXT.colorsHint}</p>
-      {canSave && (
-        <div className="actions">
-          <button className="btn primary" disabled={changed === 0} onClick={settings.save}>{RENDER_TEXT.save}</button>
-          <button className="btn" disabled={changed === 0} onClick={settings.discard}>{RENDER_TEXT.discard}</button>
-          <span className="muted" role="status">{changed > 0 ? `${RENDER_TEXT.unsaved} ${changed}` : settings.notice === "saved" ? RENDER_TEXT.saved : ""}</span>
-        </div>
-      )}
-      {settings.notice && settings.notice !== "saved" && <p className="error" role="alert">{TEXTS.errors[settings.notice]}</p>}
+      {/* Stays at the bottom of the column while the fields scroll */}
+      <div className="render-save">
+        <p className="muted">{RENDER_TEXT.colorsHint}</p>
+        {canSave && (
+          <div className="actions">
+            <button className="btn primary" disabled={changed === 0} onClick={settings.save}>{RENDER_TEXT.save}</button>
+            <button className="btn" disabled={changed === 0} onClick={settings.discard}>{RENDER_TEXT.discard}</button>
+            <span className="muted" role="status">{changed > 0 ? `${RENDER_TEXT.unsaved} ${changed}` : settings.notice === "saved" ? RENDER_TEXT.saved : ""}</span>
+          </div>
+        )}
+        {settings.notice && settings.notice !== "saved" && <p className="error" role="alert">{TEXTS.errors[settings.notice]}</p>}
+      </div>
     </div>
   );
 }
