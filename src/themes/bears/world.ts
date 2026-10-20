@@ -135,7 +135,6 @@ export const SHAPES = {
   hills: "M0 640 C220 560 420 600 640 572 C880 540 1080 600 1320 560 C1560 522 1760 578 1920 548 L1920 760 L0 760 Z",
   meadowPatches:
     "M120 900 C260 860 420 880 520 920 C420 960 220 960 120 900 Z M1300 980 C1460 940 1660 950 1780 990 C1640 1030 1420 1030 1300 980 Z M700 820 C820 800 940 810 1000 830 C900 850 780 850 700 820 Z",
-  path: "M880 1080 C940 960 1080 900 1240 842 C1340 806 1440 784 1540 764 L1572 766 C1474 792 1384 822 1296 862 C1160 922 1056 984 1036 1080 Z",
   trunk: "M-8 0 C-10 -60 -6 -120 -4 -170 L6 -170 C8 -120 12 -60 10 0 Z",
   crown: "M-90 -170 C-110 -230 -60 -300 0 -296 C60 -310 120 -250 96 -186 C120 -140 70 -100 20 -120 C-20 -96 -100 -110 -90 -170 Z",
   crownShade: "M20 -296 C70 -296 120 -250 96 -186 C120 -140 70 -100 20 -120 C60 -150 70 -230 20 -296 Z",
@@ -193,6 +192,11 @@ export function bridgeShapes() {
   };
 }
 
+// The path: from the front edge up to the left abutment of the bridge, narrowing into the distance to the width of the
+// abutment and ending on the meadow right in front of it
+export const ROAD_END = { left: BRIDGE.left - BRIDGE.abutment, right: BRIDGE.left, y: round(groundAt(MEADOW, BRIDGE.left) + 4) };
+const road = `M880 ${WORLD.height} C960 940 1070 800 ${ROAD_END.left} ${ROAD_END.y} L${ROAD_END.right} ${ROAD_END.y} C1120 820 1060 940 1036 ${WORLD.height} Z`;
+
 // The meadow line from x to x (either way) as line segments, to close a shape along the ground
 function alongGround(line: GroundLine, from: number, to: number, step = 20): string {
   const points: string[] = [];
@@ -221,6 +225,7 @@ export const SCENE = {
   cityWindows: windowsPath(CITY, blockBase),
   bridgeSolid: bridge.solid,
   bridgeCables: bridge.cables,
+  road,
   firs: FIRS.map(([x, height, width]) => {
     const base = groundAt(MEADOW, x);
     return { body: firPath(x, base, height, width), shade: firShadePath(x, base, height, width) };

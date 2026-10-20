@@ -218,7 +218,7 @@ function drawLand(context: CanvasRenderingContext2D, colors: WorldColors) {
   surface(context, SCENE.meadow, colors.meadow, colors);
   context.fillStyle = mix(colors.meadow, colors.meadowDark, 0.55);
   context.fill(shapeOf(SHAPES.meadowPatches));
-  surface(context, SHAPES.path, colors.road, colors);
+  surface(context, SCENE.road, colors.road, colors);
   for (const { x, base, scale } of SCENE.trees) {
     context.save();
     context.translate(x, base);

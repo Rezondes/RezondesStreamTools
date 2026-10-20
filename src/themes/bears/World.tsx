@@ -151,7 +151,7 @@ function Land({ cave, flowers }: { cave: boolean; flowers: boolean }) {
     <>
       <path className="bb-meadow" d={SCENE.meadow} />
       <path className="bb-meadow-patch" d={SHAPES.meadowPatches} />
-      <path className="bb-road" d={SHAPES.path} />
+      <path className="bb-road" d={SCENE.road} />
       {SCENE.trees.map(({ x, base, scale }) => (
         <g key={x} className="bb-tree" transform={`translate(${x} ${base}) scale(${scale})`}>
           <path className="bb-trunk" d={SHAPES.trunk} />
