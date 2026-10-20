@@ -4,10 +4,10 @@
 // path, tufts and flowers; every thing stands on the ground line of its plane (world.ts SCENE). No black outline in the world: thin sketch
 // lines in a darker tone of each surface, soft edges from a displacement filter and a paper grain over everything
 // (strengths from the settings). Shapes from world.ts, colors from the settings (theme.css).
-// Stacked SVGs on one viewBox: the sky with the drifting clouds, the filtered land and the paper grain. Land and grain
-// get their own compositor layers (theme.css), so the moving clouds repaint only the cheap sky and never rerun the
-// full-screen filters.
-import { useId, type CSSProperties } from "react";
+// Layers on one viewBox: the live sky with the drifting clouds, then the filtered land and the paper grain as pictures.
+// Land and grain are baked once per look (Baked): without hardware acceleration the browser would otherwise rerun the
+// full-screen turbulence filters while compositing every frame of the clouds.
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useBears } from "./useBears.ts";
 import { SCENE, SHAPES, WORLD } from "./world.ts";
 
@@ -16,14 +16,17 @@ export type TimeOfDay = "morgen" | "mittag" | "abend" | "nacht";
 // Where sun or moon stand per time of day
 const LIGHT: Record<TimeOfDay, readonly [number, number]> = { morgen: [360, 300], mittag: [980, 150], abend: [1500, 420], nacht: [1320, 180] };
 const MAX_CLOUDS = 8;
+const VIEW_BOX = `0 0 ${WORLD.width} ${WORLD.height}`;
+// The paint the theme sets on the shapes of the world in theme.css, written into the baked picture
+const PAINT = ["fill", "stroke", "stroke-width", "stroke-linejoin", "stroke-linecap", "opacity"];
 
 export default function World({ time }: { time: TimeOfDay }) {
   const values = useBears();
   const id = useId().replace(/[^a-zA-Z0-9-]/g, "");
-  const viewBox = `0 0 ${WORLD.width} ${WORLD.height}`;
+  const look = `${time} ${JSON.stringify(values)}`;
   return (
     <div className={`bb-world time-${time}`} aria-hidden="true">
-      <svg className="bb-world-svg" viewBox={viewBox} preserveAspectRatio="xMidYMid slice">
+      <svg className="bb-world-svg" viewBox={VIEW_BOX} preserveAspectRatio="xMidYMid slice">
         <defs>
           <linearGradient id={`${id}-sky`} x1="0" y1="0" x2="0" y2="1">
             <stop className="bb-stop-sky-top" offset="0" />
@@ -36,7 +39,7 @@ export default function World({ time }: { time: TimeOfDay }) {
         </defs>
         <Sky id={id} time={time} clouds={Math.min(values.cloudCount, MAX_CLOUDS)} />
       </svg>
-      <svg className="bb-world-svg bb-world-still" viewBox={viewBox} preserveAspectRatio="xMidYMid slice">
+      <Baked look={look}>
         <defs>
           <filter id={`${id}-wash`} x="-2%" y="-2%" width="104%" height="104%">
             <feTurbulence type="fractalNoise" baseFrequency="0.018" numOctaves="2" seed="7" result="noise" />
@@ -47,9 +50,9 @@ export default function World({ time }: { time: TimeOfDay }) {
           <Far city={values.showCity} bridge={values.showBridge} />
           <Land cave={values.showCave} flowers={values.flowers} />
         </g>
-      </svg>
+      </Baked>
       <div className="bb-dusk" />
-      <svg className="bb-world-svg bb-world-still bb-grain" viewBox={viewBox} preserveAspectRatio="xMidYMid slice">
+      <Baked look={look} className="bb-grain">
         <defs>
           <filter id={`${id}-grain`}>
             <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="3" />
@@ -57,9 +60,44 @@ export default function World({ time }: { time: TimeOfDay }) {
           </filter>
         </defs>
         <rect width={WORLD.width} height={WORLD.height} filter={`url(#${id}-grain)`} />
-      </svg>
+      </Baked>
     </div>
   );
+}
+
+// A still layer of the world: drawn as a hidden SVG with the theme's CSS, then shown as a picture of it with the computed
+// paint written in, made again whenever the look changes
+function Baked({ look, className = "", children }: { look: string; className?: string; children: ReactNode }) {
+  const source = useRef<SVGSVGElement>(null);
+  const [url, setUrl] = useState("");
+  useEffect(() => {
+    if (!source.current) return;
+    const next = pictureOf(source.current);
+    setUrl(next);
+    return () => URL.revokeObjectURL(next);
+  }, [look]);
+  return (
+    <>
+      <svg ref={source} className="bb-world-svg bb-bake-source" viewBox={VIEW_BOX} preserveAspectRatio="xMidYMid slice">{children}</svg>
+      {url && <img className={`bb-world-svg bb-baked ${className}`} src={url} alt="" />}
+    </>
+  );
+}
+
+// An object URL of the SVG as a standalone picture (sharp at the device pixel ratio)
+function pictureOf(svg: SVGSVGElement): string {
+  const copy = svg.cloneNode(true) as SVGSVGElement;
+  const live = svg.querySelectorAll("*");
+  copy.querySelectorAll("*").forEach((element, index) => {
+    const style = getComputedStyle(live[index]);
+    element.removeAttribute("class");
+    element.setAttribute("style", PAINT.map(name => `${name}:${style.getPropertyValue(name)}`).join(";"));
+  });
+  const scale = Math.max(1, window.devicePixelRatio);
+  copy.removeAttribute("class");
+  copy.setAttribute("width", String(WORLD.width * scale));
+  copy.setAttribute("height", String(WORLD.height * scale));
+  return URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)], { type: "image/svg+xml" }));
 }
 
 // Sky gradient, sun or moon with its glow, drifting clouds
