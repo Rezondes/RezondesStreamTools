@@ -1,0 +1,469 @@
+{
+  "id": "chaos",
+  "name": "Chaos",
+  "fields": [
+    {
+      "key": "channelName",
+      "type": "text",
+      "label": "Kanal-Name",
+      "group": "Allgemein",
+      "default": "CHAOS",
+      "maxLength": 40,
+      "basic": true
+    },
+    {
+      "key": "font",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Allgemein",
+      "default": "Space Grotesk",
+      "options": [
+        "Space Grotesk",
+        "Inter",
+        "Manrope",
+        "DM Sans"
+      ],
+      "basic": true
+    },
+    {
+      "key": "titleFont",
+      "type": "font",
+      "label": "Titelschrift",
+      "group": "Allgemein",
+      "default": "Permanent Marker",
+      "options": [
+        "Permanent Marker",
+        "Black Ops One",
+        "Sniglet",
+        "Pacifico"
+      ],
+      "basic": true
+    },
+    {
+      "key": "fontSize",
+      "type": "number",
+      "label": "Schriftgrösse",
+      "group": "Allgemein",
+      "default": 30,
+      "min": 12,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "titleSize",
+      "type": "number",
+      "label": "Titelgrösse",
+      "group": "Allgemein",
+      "default": 150,
+      "min": 40,
+      "max": 260,
+      "unit": "px"
+    },
+    {
+      "key": "ground",
+      "type": "color",
+      "label": "Grund (Wand aussen)",
+      "group": "Allgemein",
+      "default": "#120910"
+    },
+    {
+      "key": "wall",
+      "type": "color",
+      "label": "Wand (Mitte)",
+      "group": "Allgemein",
+      "default": "#22182f"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "label": "Signatur Magenta",
+      "group": "Allgemein",
+      "default": "#d123a0",
+      "basic": true
+    },
+    {
+      "key": "accentText",
+      "type": "color",
+      "label": "Magenta für Text",
+      "group": "Allgemein",
+      "default": "#ff5ccb"
+    },
+    {
+      "key": "accent2",
+      "type": "color",
+      "label": "Zweiter Akzent Cyan",
+      "group": "Allgemein",
+      "default": "#09d0fe",
+      "basic": true
+    },
+    {
+      "key": "onAccent2",
+      "type": "color",
+      "label": "Schrift auf Cyan und Klebeband",
+      "group": "Allgemein",
+      "default": "#120910"
+    },
+    {
+      "key": "violet",
+      "type": "color",
+      "label": "Violett (Flecken, Schatten)",
+      "group": "Allgemein",
+      "default": "#502a5f"
+    },
+    {
+      "key": "violetLight",
+      "type": "color",
+      "label": "Violett hell",
+      "group": "Allgemein",
+      "default": "#986ea9"
+    },
+    {
+      "key": "lilac",
+      "type": "color",
+      "label": "Flieder (Klebeband)",
+      "group": "Allgemein",
+      "default": "#d39dd4"
+    },
+    {
+      "key": "textColor",
+      "type": "color",
+      "label": "Textfarbe",
+      "group": "Allgemein",
+      "default": "#ffffff",
+      "basic": true
+    },
+    {
+      "key": "mutedColor",
+      "type": "color",
+      "label": "Gedämpfte Textfarbe",
+      "group": "Allgemein",
+      "default": "#b8a6c4"
+    },
+    {
+      "key": "grain",
+      "type": "number",
+      "label": "Körnung (0 = aus)",
+      "group": "Allgemein",
+      "default": 0.55,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "jitter",
+      "type": "number",
+      "label": "Zittern der Linien (0 = glatt)",
+      "group": "Allgemein",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "glow",
+      "type": "number",
+      "label": "Leuchten (0 = aus)",
+      "group": "Allgemein",
+      "default": 0.6,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "flicker",
+      "type": "number",
+      "label": "Neon-Flackern (0 = aus)",
+      "group": "Allgemein",
+      "default": 0.2,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "glitch",
+      "type": "number",
+      "label": "Glitch-Stärke (0 = aus)",
+      "group": "Allgemein",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "glitchEvery",
+      "type": "number",
+      "label": "Glitch alle",
+      "group": "Allgemein",
+      "default": 9,
+      "min": 2,
+      "max": 120,
+      "unit": "s"
+    },
+    {
+      "key": "scribbleCount",
+      "type": "number",
+      "label": "Anzahl",
+      "group": "Kritzeleien",
+      "default": 340,
+      "min": 0,
+      "max": 600
+    },
+    {
+      "key": "scribbleWidth",
+      "type": "number",
+      "label": "Strichstärke (Faktor)",
+      "group": "Kritzeleien",
+      "default": 1,
+      "min": 0.3,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "scribbleColor1",
+      "type": "color",
+      "label": "Farbe 1",
+      "group": "Kritzeleien",
+      "default": "#d123a0",
+      "basic": true
+    },
+    {
+      "key": "scribbleColor2",
+      "type": "color",
+      "label": "Farbe 2",
+      "group": "Kritzeleien",
+      "default": "#09d0fe"
+    },
+    {
+      "key": "scribbleColor3",
+      "type": "color",
+      "label": "Farbe 3",
+      "group": "Kritzeleien",
+      "default": "#986ea9"
+    },
+    {
+      "key": "scribbleColor4",
+      "type": "color",
+      "label": "Farbe 4",
+      "group": "Kritzeleien",
+      "default": "#d39dd4"
+    },
+    {
+      "key": "scribbleWhite",
+      "type": "boolean",
+      "label": "Ab und zu weiss",
+      "group": "Kritzeleien",
+      "default": true
+    },
+    {
+      "key": "drawMs",
+      "type": "number",
+      "label": "Zeichnen: Dauer je Zeichen",
+      "group": "Kritzeleien",
+      "default": 700,
+      "min": 0,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "drawGapMs",
+      "type": "number",
+      "label": "Zeichnen: Abstand zwischen Zeichen",
+      "group": "Kritzeleien",
+      "default": 8,
+      "min": 0,
+      "max": 200,
+      "unit": "ms"
+    },
+    {
+      "key": "drips",
+      "type": "boolean",
+      "label": "Laufnasen",
+      "group": "Kritzeleien",
+      "default": true
+    },
+    {
+      "key": "gestureStarting",
+      "type": "select",
+      "label": "Starting: Pinselstriche",
+      "group": "Starting, BRB, Ending",
+      "default": "zweix",
+      "options": [
+        "zweix",
+        "x",
+        "strich",
+        "keine"
+      ],
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "gestureColorStarting",
+      "type": "select",
+      "label": "Starting: Farbe bei einem X oder Strich",
+      "group": "Starting, BRB, Ending",
+      "default": "cyan",
+      "options": [
+        "cyan",
+        "magenta"
+      ],
+      "scene": "starting"
+    },
+    {
+      "key": "haze",
+      "type": "number",
+      "label": "Dunkler Dunst hinter dem Text",
+      "group": "Starting, BRB, Ending",
+      "default": 0.78,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "startingEyebrow",
+      "type": "text",
+      "label": "Starting: Überzeile",
+      "group": "Starting, BRB, Ending",
+      "default": "Stream startet",
+      "maxLength": 200,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "startingTitle",
+      "type": "text",
+      "label": "Starting: Titel",
+      "group": "Starting, BRB, Ending",
+      "default": "Gleich geht's los",
+      "maxLength": 200,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "startingLines",
+      "type": "lines",
+      "label": "Starting: Sprüche",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "... vielleicht.",
+        "Snacks holen, Chaos vorbereiten.",
+        "Kabel sortieren? Niemals.",
+        "Ordnung ist was für Anfänger."
+      ],
+      "maxLines": 100,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "linesEvery",
+      "type": "number",
+      "label": "Sprüche wechseln alle",
+      "group": "Starting, BRB, Ending",
+      "default": 8,
+      "min": 0,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "countdown",
+      "type": "number",
+      "label": "Countdown-Standard",
+      "group": "Starting, BRB, Ending",
+      "default": 300,
+      "min": 0,
+      "max": 86400,
+      "unit": "s",
+      "scene": "starting"
+    },
+    {
+      "key": "countdownPrefix",
+      "type": "text",
+      "label": "Text vor dem Countdown",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "countdownDone",
+      "type": "text",
+      "label": "Text nach dem Countdown",
+      "group": "Starting, BRB, Ending",
+      "default": "Gleich live",
+      "maxLength": 200,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "progressStyle",
+      "type": "select",
+      "label": "Fortschritt",
+      "group": "Starting, BRB, Ending",
+      "default": "zickzack",
+      "options": [
+        "zickzack",
+        "balken",
+        "aus"
+      ],
+      "scene": "starting"
+    },
+    {
+      "key": "ticker",
+      "type": "text",
+      "label": "Klebeband unten (leer = aus)",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 300,
+      "basic": true
+    },
+    {
+      "key": "tickerSpeed",
+      "type": "number",
+      "label": "Klebeband: Dauer eines Durchlaufs",
+      "group": "Starting, BRB, Ending",
+      "default": 25,
+      "min": 5,
+      "max": 200,
+      "unit": "s"
+    },
+    {
+      "key": "powerOn",
+      "type": "select",
+      "label": "Einschalten",
+      "group": "Starting, BRB, Ending",
+      "default": "spray",
+      "options": [
+        "spray",
+        "blende",
+        "keins"
+      ]
+    },
+    {
+      "key": "powerOnDuration",
+      "type": "number",
+      "label": "Einschalten: Dauer",
+      "group": "Starting, BRB, Ending",
+      "default": 2500,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    }
+  ],
+  "groupScenes": {
+    "Starting, BRB, Ending": [
+      "starting",
+      "brb",
+      "ending"
+    ]
+  },
+  "personalize": {
+    "neo": {
+      "channelName": "NEO"
+    },
+    "rezondes": {
+      "channelName": "REZONDES"
+    },
+    "neo_42": {
+      "channelName": "NEO_42"
+    }
+  }
+}

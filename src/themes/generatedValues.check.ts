@@ -2,9 +2,11 @@
 // TypeScript schemas (RUST-PLAN.md package 8). The proof is the type check itself: both directions must be
 // assignable, so both have the same keys with the same types. Runs with npm test (and tsc in npm run verify).
 import assert from "node:assert/strict";
+import type { ChaosValues as GeneratedChaos } from "../generated/themes/chaos.ts";
 import type { MatrixValues as GeneratedMatrix } from "../generated/themes/matrix.ts";
 import type { StandardValues as GeneratedStandard } from "../generated/themes/standard.ts";
 import type { UrlaubValues as GeneratedUrlaub } from "../generated/themes/urlaub.ts";
+import type { ChaosValues } from "./chaos/settings.ts";
 import type { MatrixValues } from "./matrix/settings.ts";
 import type { StandardValues } from "./standard/settings.ts";
 import type { UrlaubValues } from "./urlaub/settings.ts";
@@ -12,6 +14,8 @@ import type { UrlaubValues } from "./urlaub/settings.ts";
 const standardFromRust = (values: GeneratedStandard): StandardValues => values;
 const standardToRust = (values: StandardValues): GeneratedStandard => values;
 const matrixFromRust = (values: GeneratedMatrix): MatrixValues => values;
+const chaosFromRust = (values: GeneratedChaos): ChaosValues => values;
+const chaosToRust = (values: ChaosValues): GeneratedChaos => values;
 const matrixToRust = (values: MatrixValues): GeneratedMatrix => values;
 // Urlaub: only this direction, the TypeScript type leaves out the fruit and fruit color fields that the schema adds
 // after FIELDS, the generated type has every field
@@ -22,5 +26,7 @@ assert.equal(typeof standardToRust, "function");
 assert.equal(typeof matrixFromRust, "function");
 assert.equal(typeof matrixToRust, "function");
 assert.equal(typeof urlaubFromRust, "function");
+assert.equal(typeof chaosFromRust, "function");
+assert.equal(typeof chaosToRust, "function");
 
 console.log("generatedValues ok");

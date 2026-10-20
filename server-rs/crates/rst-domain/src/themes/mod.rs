@@ -3,6 +3,7 @@
 pub mod ascii_text;
 pub mod audit;
 pub mod bears;
+pub mod chaos;
 pub mod core_fields;
 #[cfg(test)]
 mod fixture;

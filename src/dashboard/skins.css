@@ -379,6 +379,57 @@
 :root[data-skin="bears"] .dashboard > p:not(.login, .error) { align-self: flex-start; margin: 0; padding: 4px 4px 4px 16px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
 :root[data-skin="bears"] .dashboard-user { padding: 4px 4px 4px 14px; border-radius: 999px; background: var(--surface); border: var(--border-w) solid var(--border); }
 
+/* Chaos: neon graffiti at night. Almost black wall with a violet sheen, violet cards with a rough marker edge, magenta
+   as the signature, cyan for emphasis and focus (contrasts in src/themes/chaos/docs/DESIGN-CHAOS.md) */
+:root[data-skin="chaos"] {
+  color-scheme: dark;
+  --bg: #120910;
+  --page: radial-gradient(ellipse at 50% 45%, #22182f 0%, #170e1a 55%, #120910 100%) fixed;
+  --surface: #2b2041;
+  --surface-2: #3a2c55;
+  --field: #3a2c55;
+  --fg: #ffffff;
+  --fg-dim: #b8a6c4;
+  --line: #3a2c55;
+  --border: #986ea9;
+  --heading: #ff5ccb;
+  --title-color: #ff5ccb;
+  --accent: #d123a0;
+  --accent-hover: #e33db3;
+  --on-accent: #ffffff;
+  --emph: #09d0fe;
+  --glow: 0 0 18px rgba(209, 35, 160, 0.55);
+  --focus: #09d0fe;
+  --error: #ff6b4a;
+  --error-bg: #3a1a22;
+  --on-error: #120910;
+  --btn-bg: #3a2c55;
+  --btn-fg: #ffffff;
+  --btn-border: #986ea9;
+  --btn-shadow: none;
+  --btn-weight: 700;
+  --hover-bg: #4a3868;
+  --hover-fg: #ffffff;
+  --press: translateY(1px);
+  --border-w: 2px;
+  --radius: 6px 14px 8px 12px;
+  --radius-sm: 4px 9px 5px 8px;
+  --radius-btn: 5px 10px 6px 9px;
+  --radius-check: 3px;
+  --shadow: none;
+  --font: "Space Grotesk", system-ui, sans-serif;
+  --font-title: "Permanent Marker", "Space Grotesk", system-ui, sans-serif;
+  --title-size: 38px;
+  --title-weight: 400;
+  --heading-weight: 700;
+  --title-case: none;
+  --label-case: none;
+  --btn-case: none;
+  --thumb-w: 12px;
+}
+:root[data-skin="chaos"] .dashboard h1 { text-shadow: 0 0 22px #d123a0, 0 0 6px #ff5ccb; }
+:root[data-skin="chaos"] .panel { box-shadow: inset 0 0 0 1px rgba(152, 110, 169, 0.35); }
+
 /* Scenery behind the dashboard: each themed skin shows its own, the others stay hidden */
 .skin-scenery { display: none; }
 :root[data-skin="urlaub"] .skin-scenery-urlaub,
