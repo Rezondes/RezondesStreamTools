@@ -48,6 +48,8 @@ body.overlay.preview-tab { background: var(--checker, repeating-conic-gradient(#
 /* Errors outlined with a prefix, so they do not look like a primary button or the active tab */
 .error { border: var(--border-w) solid var(--error); border-left-width: 6px; border-radius: var(--radius-sm); background: var(--error-bg); color: var(--error); padding: 6px 10px; }
 .error::before { content: "Fehler: "; font-weight: bold; }
+/* A status line that has no error (yet) stays empty and invisible, not a lone "Fehler:" */
+.error:empty { display: none; }
 /* Invisible, but reachable by keyboard (file selection in the upload button) */
 .upload-report { flex-basis: 100%; list-style: none; display: grid; gap: 4px; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
