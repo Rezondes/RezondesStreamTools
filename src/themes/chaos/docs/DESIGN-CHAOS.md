@@ -113,9 +113,10 @@ leuchtet nie, so bleibt es Hintergrund.
   Beine) in der Farbe des Chatters (`!color`), Name in Marker darüber. Sie hüpfen (Hüpfen des Kerns). Animationen:
   Zappeln, Grinsen mit Zacken, Kritzel-Stern über dem Kopf, Umfallen und Aufstehen, Schlafen (aufsteigende Krakel).
   Reaktion auf Chat: ein kurzer Spray-Klecks in der eigenen Farbe.
-- **Stinger:** Energie-Schwaden schlagen von links und rechts herein, treffen sich in der Mitte und decken am
-  Übergangspunkt das ganze Bild; darauf der Text als Sprühschrift mit Glow; danach reissen die Schwaden nach oben und
-  unten weg.
+- **Stinger:** ein klarer Wisch von links nach rechts. Die Kritzelwand kommt von links herein, ihre schräge, ausgefranste
+  Kante trägt einen dicken Magenta-Pinselstrich; am Übergangspunkt deckt sie das ganze Bild und der Text wird gross als
+  Sprühschrift mit Glow und Laufnasen aufgesprüht; danach wischt die Wand mit einem Cyan-Pinselstrich an der Kante nach
+  rechts hinaus und nimmt den Text mit. Das Chaos steckt in der Wand, nicht in der Bewegung (geändert 2026-10-21).
 - **Banner:** Profilbanner als Wand mit Kritzeleien, grossem Cyan-Pinselstrich und dem Kanalnamen als Sprühschrift.
   Offline-Banner gleiche Wand, Magenta-X, Text "offline" als Sprühschrift, ein Monster schläft in der Ecke.
 

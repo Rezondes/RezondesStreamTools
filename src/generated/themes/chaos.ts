@@ -142,6 +142,7 @@ export type ChaosValues = {
   readonly stingerDuration: number;
   readonly stingerCut: number;
   readonly stingerText: string;
+  readonly stingerTextSize: number;
   readonly bannerTitle: string;
   readonly bannerProfileText: string;
   readonly bannerOfflineTitle: string;

@@ -229,6 +229,7 @@ fn stinger_banner() -> Vec<SettingField> {
         number("stingerDuration", "Länge", STINGER, 1.4, 0.5, 5.0, S, Some(0.05)),
         number("stingerCut", "Übergangspunkt", STINGER, 0.7, 0.1, 5.0, S, Some(0.05)),
         text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}", None),
+        number("stingerTextSize", "Textgrösse", STINGER, 260.0, 40.0, 600.0, PX, None),
         text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
         text("bannerProfileText", "Profilbanner: Text", BANNER, "Kritzeleien, Neon und gute Laune", None),
         text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Offline", None),

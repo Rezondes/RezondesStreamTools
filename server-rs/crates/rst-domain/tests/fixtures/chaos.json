@@ -1292,6 +1292,16 @@
       "maxLength": 200
     },
     {
+      "key": "stingerTextSize",
+      "type": "number",
+      "label": "Textgrösse",
+      "group": "Stinger",
+      "default": 260,
+      "min": 40,
+      "max": 600,
+      "unit": "px"
+    },
+    {
       "key": "bannerTitle",
       "type": "text",
       "label": "Titel ({channel})",

@@ -19,7 +19,7 @@ export function chaosClips(values: SettingValues, login: string): RenderClip[] {
   };
   const shared = { titleFont: chaos.titleFont, colors, glow: chaos.glow, drips: chaos.drips, scribbleCount: chaos.scribbleCount, scribbleWidth: chaos.scribbleWidth };
   const stinger: ChaosStingerOptions = {
-    ...shared, duration: chaos.stingerDuration, cut: chaos.stingerCut, text: fillTemplate(chaos.stingerText, names), swathDensity: chaos.swathDensity,
+    ...shared, duration: chaos.stingerDuration, cut: chaos.stingerCut, text: fillTemplate(chaos.stingerText, names), textSize: chaos.stingerTextSize,
   };
   const banner: ChaosBannerOptions = {
     ...shared, loop: chaos.bannerLoop, font: chaos.font, title: fillTemplate(chaos.bannerTitle, names), profileText: chaos.bannerProfileText,

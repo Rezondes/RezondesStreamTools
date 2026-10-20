@@ -1,13 +1,13 @@
-// Stinger of the Chaos theme: the scribble wall with its two brush X closes in from the left and the right with a ragged
-// edge, energy swathes riding on both edges, and covers the whole picture at the transition point (cut); the text flares
-// up there as sprayed graffiti, then the wall tears open to the top and the bottom. Transparent outside the wall. Pure
-// function of time (the layers are built once per options), so it can be rendered frame by frame. Check: stinger.check.ts.
+// Stinger of the Chaos theme: one clear wipe from left to right. The scribble wall comes in from the left behind a thick
+// magenta brush stroke along its ragged, slanted edge, covers the whole picture at the transition point (cut), where the
+// text is sprayed on big with glow and drips; then the wall wipes out to the right behind a cyan brush stroke and takes
+// the text with it. Transparent outside the wall. Pure function of time (the layers are built once per options), so it
+// can be rendered frame by frame. Check: stinger.check.ts.
 import { clamp01, easeInOut } from "../../core/easing.ts";
 import { chance } from "./chance.ts";
-import { browserPath, paintBrush, paintScribbles, paintSpray, paintSwath, paintWall, type ChaosColors, type MakePath } from "./paint.ts";
+import { browserPath, paintBrush, paintScribbles, paintSpray, paintWall, type ChaosColors, type MakePath } from "./paint.ts";
 import { layoutScribbles } from "./scribbles.ts";
-import { brushStroke, gestureLayout } from "./strokes.ts";
-import { swathes, type Swathes } from "./swathes.ts";
+import { brushStroke, type BrushStroke } from "./strokes.ts";
 import { blotches, dust } from "./wall.ts";
 
 export const WIDTH = 1920;
@@ -18,106 +18,87 @@ export type ChaosStingerOptions = {
   duration: number; // seconds
   cut: number; // seconds, enter in OBS as transition point
   text: string;
+  textSize: number; // px
   titleFont: string;
   colors: ChaosColors;
   glow: number;
   drips: boolean;
   scribbleCount: number;
   scribbleWidth: number;
-  swathDensity: number;
 };
-
-// How far the wall has closed (reach: share of the width from each side, 0.5 = closed) and opened again (open: share of
-// the half height each half has moved away, 1 = gone)
-export function stingerCover(time: number, cut: number, duration: number) {
-  const hold = Math.min(0.15, (duration - cut) * 0.3);
-  const reach = 0.5 * easeInOut(clamp01(time / Math.max(0.01, cut * 0.9)));
-  const open = easeInOut(clamp01((time - cut - hold) / Math.max(0.01, duration - cut - hold)));
-  return { reach, open };
-}
 
 const SEED = 1307;
-const EDGE_STEP = 54;
-const EDGE_JAG = 46;
+// Width of the brush stroke on the edge, how far the edge leans over the height, ragged steps along the edge
+const BRUSH = 190;
+const LEAN = 160;
+const EDGE_STEP = 45;
+const EDGE_JAG = 26;
+// The edges start and end this far outside the picture, so the stroke and its splatter come in and leave completely
+const PAD = 340;
+// Shares of the time to the cut: the wall is in at ENTER_END, the text sprays in from TEXT_FROM; the exit waits HOLD of
+// the time after the cut and is out at EXIT_END of the duration
+const ENTER_END = 0.85;
+const TEXT_FROM = 0.65;
+const HOLD = 0.3;
+const EXIT_END = 0.95;
 
-// The ragged edge of one side: x offsets along the height
-const edgeOf = (seed: number) => {
-  const random = chance(seed);
-  return Array.from({ length: Math.ceil(HEIGHT / EDGE_STEP) + 1 }, () => (random() - 0.5) * 2 * EDGE_JAG);
-};
-
-// Swathes ride on both edges of the closing wall and fade while it closes
-function ride(context: CanvasRenderingContext2D, reach: number, [left, right]: readonly [Swathes, Swathes], options: ChaosStingerOptions, makePath: MakePath) {
-  context.globalAlpha = Math.max(0, 1 - reach * 1.4);
-  for (const [swath, shift] of [[left, reach * WIDTH - WIDTH * 0.3], [right, WIDTH * 0.3 - reach * WIDTH]] as const) {
-    context.save();
-    context.translate(shift, 0);
-    paintSwath(context, swath, options.colors, options.glow, makePath);
-    context.restore();
-  }
-  context.globalAlpha = 1;
+// Where the two edges are: enter and exit run from 0 (edge left outside) to 1 (edge right outside); the wall lies
+// between the exit edge on the left and the enter edge on the right
+export function stingerEdges(time: number, cut: number, duration: number) {
+  const enter = easeInOut(clamp01(time / Math.max(0.01, cut * ENTER_END)));
+  const exitFrom = cut + (duration - cut) * HOLD;
+  const exit = easeInOut(clamp01((time - exitFrom) / Math.max(0.01, duration * EXIT_END - exitFrom)));
+  return { enter, exit };
 }
 
+// How far the text is sprayed on: 0 before, 1 from the cut on
+export const stingerText = (time: number, cut: number) => clamp01((time - cut * TEXT_FROM) / Math.max(0.01, cut * (1 - TEXT_FROM)));
+
+const edgeX = (share: number) => -PAD + share * (WIDTH + PAD * 2);
+
 export function makeChaosStinger(options: ChaosStingerOptions, makePath: MakePath = browserPath) {
-  const marks = layoutScribbles(SEED, options.scribbleCount, { x: 0.3, y: 0.32, width: 0.4, height: 0.36 }, true);
-  const random = chance(SEED + 1);
-  const strokes = gestureLayout("zweix", SEED + 1).map(part => ({ ...part, brush: brushStroke(part.from, part.to, part.width, random) }));
+  const marks = layoutScribbles(SEED, options.scribbleCount, { x: 0.22, y: 0.3, width: 0.56, height: 0.4 }, true);
   const stains = blotches(SEED + 2, 6);
   const dots = dust(SEED + 3, 1800);
-  const left = swathes("left", SEED + 4, options.swathDensity);
-  const right = swathes("right", SEED + 5, options.swathDensity);
-  const [leftEdge, rightEdge] = [edgeOf(SEED + 6), edgeOf(SEED + 7)];
-  const ink = { cyan: options.colors.accent2, magenta: options.colors.accent, main: options.colors.accent2 };
+  const random = chance(SEED + 1);
+  const jags = Array.from({ length: Math.ceil(HEIGHT / EDGE_STEP) + 1 }, () => (random() - 0.5) * 2 * EDGE_JAG);
+  // One stroke per edge along the slanted edge through x = 0, moved with the edge
+  const stroke = (): BrushStroke => brushStroke([-LEAN * 0.1, -120], [LEAN * 1.1, HEIGHT + 120], BRUSH, random);
+  const [enterStroke, exitStroke] = [stroke(), stroke()];
+  // The edge at height y for an edge position x: slanted and ragged
+  const boundary = (x: number) => jags.map((jag, step) => [x + LEAN * ((step * EDGE_STEP) / HEIGHT) + jag, step * EDGE_STEP] as const);
 
-  const wall = (context: CanvasRenderingContext2D) => {
+  const wall = (context: CanvasRenderingContext2D, text: number) => {
     paintWall(context, WIDTH, HEIGHT, options.colors, stains, dots, 1);
     paintScribbles(context, marks, options.colors, options.scribbleWidth, options.glow, 1, makePath);
-    for (const stroke of strokes) paintBrush(context, stroke.brush, ink[stroke.color], options.colors.textColor, options.glow, options.drips, makePath);
+    if (text <= 0) return;
+    // Sprayed on: fades in and settles from a little bigger
+    const size = options.textSize * (1 + 0.12 * (1 - text));
+    context.globalAlpha = text;
+    paintSpray(context, { text: options.text, x: WIDTH / 2, y: HEIGHT / 2 + size * 0.35, size, font: options.titleFont, color: options.colors.accentText, glowColor: options.colors.accent, glow: options.glow, seed: SEED + 8, drips: options.drips }, makePath);
+    context.globalAlpha = 1;
   };
-  // The closing wall: both sides up to their ragged edge
-  const closing = (context: CanvasRenderingContext2D, reach: number) => {
-    context.beginPath();
-    const leftX = reach * WIDTH;
-    context.moveTo(0, 0);
-    leftEdge.forEach((jag, step) => context.lineTo(leftX + (reach > 0 ? jag : 0), step * EDGE_STEP));
-    context.lineTo(0, HEIGHT);
-    context.closePath();
-    // The same turning direction as the left side, so the overlap in the middle stays inside the clip
-    const rightX = WIDTH - reach * WIDTH;
-    context.moveTo(WIDTH, HEIGHT);
-    [...rightEdge].reverse().forEach((jag, step) => context.lineTo(rightX + (reach > 0 ? jag : 0), (rightEdge.length - 1 - step) * EDGE_STEP));
-    context.lineTo(WIDTH, 0);
-    context.closePath();
+  const brush = (context: CanvasRenderingContext2D, stroke: BrushStroke, x: number, ink: string) => {
+    context.save();
+    context.translate(x, 0);
+    paintBrush(context, stroke, ink, options.colors.textColor, options.glow, false, makePath);
+    context.restore();
   };
 
   return function draw(context: CanvasRenderingContext2D, time: number) {
     context.clearRect(0, 0, WIDTH, HEIGHT);
-    const { reach, open } = stingerCover(time, options.cut, options.duration);
-    if (reach <= 0 || open >= 1) return;
-    if (open <= 0) {
-      context.save();
-      closing(context, reach + EDGE_JAG / WIDTH);
-      context.clip();
-      wall(context);
-      context.restore();
-      ride(context, reach, [left, right], options, makePath);
-    } else {
-      // Torn open: the top half moves up, the bottom half down
-      for (const [top, shift] of [[0, -open], [HEIGHT / 2, open]] as const) {
-        context.save();
-        context.translate(0, (shift * HEIGHT) / 2);
-        context.beginPath();
-        context.rect(0, top, WIDTH, HEIGHT / 2);
-        context.clip();
-        wall(context);
-        context.restore();
-      }
-    }
-    // Text in the middle, only while everything is covered
-    const shown = 1 - clamp01(Math.abs(time - options.cut) / (Math.min(options.cut, options.duration - options.cut) * 0.6));
-    if (shown <= 0) return;
-    context.globalAlpha = shown;
-    paintSpray(context, { text: options.text, x: WIDTH / 2, y: HEIGHT / 2 + 50, size: 170, font: options.titleFont, color: options.colors.accentText, glowColor: options.colors.accent, glow: options.glow, seed: SEED + 8, drips: options.drips }, makePath);
-    context.globalAlpha = 1;
+    const { enter, exit } = stingerEdges(time, options.cut, options.duration);
+    if (enter <= 0 || exit >= 1) return;
+    const [left, right] = [edgeX(exit), edgeX(enter)];
+    context.save();
+    context.beginPath();
+    boundary(left).forEach(([x, y], step) => (step ? context.lineTo(x, y) : context.moveTo(x, y)));
+    [...boundary(right)].reverse().forEach(([x, y]) => context.lineTo(x, y));
+    context.closePath();
+    context.clip();
+    wall(context, stingerText(time, options.cut));
+    context.restore();
+    if (enter < 1) brush(context, enterStroke, right, options.colors.accent);
+    if (exit > 0) brush(context, exitStroke, left, options.colors.accent2);
   };
 }

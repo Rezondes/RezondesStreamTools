@@ -163,6 +163,7 @@ const FIELDS = [
   number("stingerDuration", "Länge", STINGER, 1.4, 0.5, 5, "s", 0.05),
   number("stingerCut", "Übergangspunkt", STINGER, 0.7, 0.1, 5, "s", 0.05),
   text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}"),
+  number("stingerTextSize", "Textgrösse", STINGER, 260, 40, 600, "px"),
 
   text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
   text("bannerProfileText", "Profilbanner: Text", BANNER, "Kritzeleien, Neon und gute Laune"),
