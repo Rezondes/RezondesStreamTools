@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>B Alert Three</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<style>
+  :root { --blueprint: #192a56; --line: #ffffff; --signal: #e67e22; --copper: #d4a373; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; font-family: "Roboto Mono", monospace; color: var(--line); }
+  /* preview only: checker stands for the transparent overlay over a game */
+  body { background: repeating-conic-gradient(#3a3d44 0 25%, #33363c 0 50%) 0 0 / 40px 40px; }
+  canvas { position: absolute; inset: 0; }
+  .plate { position: absolute; left: 50%; top: 620px; width: 720px; margin-left: -360px; padding: 22px 30px 26px; text-align: center; box-sizing: border-box;
+           background-color: rgba(25,42,86,.94);
+           background-image: linear-gradient(rgba(255,255,255,.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.1) 1px, transparent 1px),
+                             linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+           background-size: 50px 50px, 50px 50px, 10px 10px, 10px 10px;
+           border: 1.5px solid rgba(255,255,255,.9); box-shadow: 0 0 0 6px rgba(25,42,86,.45), 0 24px 60px rgba(0,0,0,.5); }
+  .plate::before, .plate::after { content: ""; position: absolute; width: 18px; height: 18px; border: 3px solid var(--signal); }
+  .plate::before { left: -8px; top: -8px; border-right: 0; border-bottom: 0; }
+  .plate::after { right: -8px; bottom: -8px; border-left: 0; border-top: 0; }
+  .tag { font-size: 20px; font-weight: 700; letter-spacing: 8px; color: var(--copper); height: 28px; }
+  .name { font-size: 84px; font-weight: 700; letter-spacing: 6px; color: var(--signal); line-height: 1.1; text-shadow: 0 0 10px rgba(230,126,34,.8), 0 0 34px rgba(230,126,34,.4); }
+  .line { font-size: 26px; font-weight: 500; letter-spacing: 1px; margin-top: 4px; }
+  svg.dim { position: absolute; left: 50%; top: 570px; width: 760px; height: 40px; margin-left: -380px; overflow: visible; }
+  svg.dim path { stroke: #fff; stroke-width: 1.5; fill: none; }
+  svg.dim text { fill: var(--copper); font: 700 16px "Roboto Mono", monospace; letter-spacing: 3px; }
+  .plate, svg.dim { visibility: hidden; }
+</style>
+</head>
+<body>
+<svg class="dim" id="dim" viewBox="0 0 760 40">
+  <path id="dimLine" d="M10 22 H750"/><path id="dimL" d="M10 6 V38 M2 30 L18 14"/><path id="dimR" d="M750 6 V38 M742 30 L758 14"/>
+  <text id="dimText" x="380" y="14" text-anchor="middle">+1 DACHDECKER</text>
+</svg>
+<div class="plate" id="plate">
+  <div class="tag" id="tag">NEUER FOLLOWER</div>
+  <div class="name" id="name">KACHELKALLE</div>
+  <div class="line" id="line">KachelKalle deckt jetzt das Dach mit!</div>
+</div>
+<script type="module">
+import * as THREE from "three";
+gsap.registerPlugin(ScrambleTextPlugin, DrawSVGPlugin, CustomEase);
+gsap.ticker.lagSmoothing(0);
+CustomEase.create("nail", "M0,0 C0.14,0 0.24,1.12 0.42,1.12 0.56,1.12 0.6,0.96 0.72,0.96 0.82,0.96 0.86,1 1,1");
+const rand = gsap.utils.random;
+const at = new URLSearchParams(location.search).get("t");
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(1); renderer.setSize(1920, 1080); renderer.setClearColor(0x000000, 0);
+document.body.insertBefore(renderer.domElement, document.body.firstChild);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(32, 1920 / 1080, .1, 100);
+camera.position.set(0, -.4, 13); camera.lookAt(0, -.5, 0);
+scene.add(new THREE.AmbientLight(0xbfd0ff, .9));
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(-4, 6, 8); scene.add(key);
+const glint = new THREE.PointLight(0xfff0d8, 0, 9, 1.4); glint.position.set(-6, 2, 2.2); scene.add(glint);
+
+const rig = new THREE.Group(); rig.rotation.set(.08, -.32, 0); rig.scale.setScalar(.74); scene.add(rig);
+
+// small roof frame drawn as orange and white beams, like the plan
+const orange = { line: new THREE.LineBasicMaterial({ color: 0xff8a2a }), fill: new THREE.MeshBasicMaterial({ color: 0xe67e22, transparent: true, opacity: .3, depthWrite: false }) };
+const white = { line: new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .75 }), fill: new THREE.MeshBasicMaterial({ color: 0x5b7fc4, transparent: true, opacity: .15, depthWrite: false }) };
+function beam(a, b, size, kind) {
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), len = A.distanceTo(B);
+  const pivot = new THREE.Group(); pivot.position.copy(A); pivot.lookAt(B);
+  const geo = new THREE.BoxGeometry(size, size * 2, len); geo.translate(0, 0, len / 2);
+  pivot.add(new THREE.Mesh(geo, kind.fill), new THREE.LineSegments(new THREE.EdgesGeometry(geo), kind.line));
+  pivot.scale.z = .0001; rig.add(pivot); return pivot;
+}
+const L = [-3.6, -.45, -.25], R = [3.6, -.45, -.25], P = [0, 3.15, -.25];
+const frame = [
+  beam(L, P, .12, orange), beam(R, P, .12, orange), beam(L, R, .12, orange),
+  beam(P, [0, 3.15, -3.5], .1, white), beam(L, [-3.6, -.45, -3.5], .1, white), beam(R, [3.6, -.45, -3.5], .1, white),
+  beam([-1.8, 1.35, -.25], [-1.8, 1.35, -3.5], .07, white), beam([1.8, 1.35, -.25], [1.8, 1.35, -3.5], .07, white),
+];
+
+// ten diamond shingles on the gable face (4, 3, 2, 1 from the eaves up)
+const d = 1.3, tileGeo = new THREE.BoxGeometry(.92, .92, .07);
+const slate = new THREE.MeshPhongMaterial({ color: 0x34495e, shininess: 50, specular: 0x5a6f88 });
+const copper = new THREE.MeshPhongMaterial({ color: 0xb8733f, shininess: 110, specular: 0xffd3a0, emissive: 0x2a1004 });
+const edgeMat = new THREE.LineBasicMaterial({ color: 0xdfe8ff, transparent: true, opacity: .7 });
+const layout = [[-1.5, -.5, .5, 1.5], [-1, 0, 1], [-.5, .5], [0]];
+const copperAt = new Set(["0-0", "0-3", "1-1", "3-0"]);
+const tiles = [];
+layout.forEach((row, level) => row.forEach((x, k) => {
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(tileGeo, copperAt.has(`${level}-${k}`) ? copper : slate), new THREE.LineSegments(new THREE.EdgesGeometry(tileGeo), edgeMat));
+  g.userData.home = new THREE.Vector3(x * d, level * d / 2 + .25, 0);
+  g.visible = false; rig.add(g); tiles.push(g);
+}));
+
+function build() {
+  const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.2 });
+  tl.set(frame.map(b => b.scale), { z: .0001 });
+  tl.set(["#plate", "#dim"], { visibility: "hidden" });
+  tl.to(frame.map(b => b.scale), { z: 1, duration: .45, ease: "power2.inOut", stagger: .06 }, .05);
+  // shingles fly in from in front of the camera, spinning, and land like a hammered nail
+  tiles.forEach((tile, i) => {
+    const home = tile.userData.home;
+    tl.set(tile, { visible: true }, .35 + i * .09);
+    tl.fromTo(tile.position, { x: home.x + rand(-7, 7), y: home.y + rand(-4, 5), z: rand(6, 10) }, { x: home.x, y: home.y, z: home.z, duration: .7, ease: "power3.out" }, .35 + i * .09);
+    tl.fromTo(tile.rotation, { x: rand(-6, 6), y: rand(-6, 6), z: rand(-6, 6) }, { x: 0, y: 0, z: Math.PI / 4, duration: .7, ease: "power3.out" }, "<");
+    tl.fromTo(tile.scale, { x: 1.12, y: 1.12, z: .4 }, { x: 1, y: 1, z: 1, duration: .35, ease: "nail" }, ">-0.05");
+    tl.fromTo(rig.position, { y: -.05 }, { y: 0, duration: .2, ease: "power2.out" }, "<");
+  });
+  // a warm light sweeps across the shingles: copper flares, slate gets a sheen
+  tl.fromTo(glint.position, { x: -6 }, { x: 6, duration: 1.1, ease: "power2.inOut" }, ">-0.1");
+  tl.fromTo(glint, { intensity: 0 }, { intensity: 60, duration: .3, yoyo: true, repeat: 1, repeatDelay: .5 }, "<");
+  // plan text: dimension line draws, plate opens, texts decode
+  tl.set("#dim", { visibility: "visible" }, "<0.2");
+  tl.fromTo(["#dimL", "#dimR"], { drawSVG: "0%" }, { drawSVG: "100%", duration: .3, stagger: .1 }, "<");
+  tl.fromTo("#dimLine", { drawSVG: "50% 50%" }, { drawSVG: "0% 100%", duration: .6, ease: "power2.out" }, "<0.1");
+  tl.fromTo("#dimText", { opacity: 0 }, { opacity: 1, duration: .3 }, "<0.3");
+  tl.set("#plate", { visibility: "visible" }, "<");
+  tl.fromTo("#plate", { clipPath: "inset(0 50% 0 50%)" }, { clipPath: "inset(-14px -14px -14px -14px)", duration: .55, ease: "power3.inOut" }, "<");
+  tl.from("#tag", { duration: .8, scrambleText: { text: "NEUER FOLLOWER", chars: "01ABDEHLNRSTUW/", speed: .6 } }, "<0.2");
+  tl.from("#name", { duration: 1, scrambleText: { text: "KACHELKALLE", chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", revealDelay: .2, speed: .5 } }, "<0.1");
+  tl.fromTo("#line", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: .4 }, "<0.6");
+  // hold, then the shingles blow away and the frame folds back
+  tl.to("#plate", { clipPath: "inset(0 50% 0 50%)", duration: .4, ease: "power3.in" }, "+=2.6");
+  tl.to(["#dimLine", "#dimL", "#dimR"], { drawSVG: "50% 50%", duration: .3 }, "<");
+  tl.to("#dimText", { opacity: 0, duration: .2 }, "<");
+  tl.to(tiles.slice().reverse().map(t => t.position), { y: () => rand(6, 9), x: () => rand(-6, 6), z: () => rand(-2, 4), duration: .7, ease: "power2.in", stagger: .04 }, "<0.1");
+  tl.to(tiles.map(t => t.rotation), { x: () => rand(-8, 8), y: () => rand(-8, 8), duration: .7, ease: "power2.in", stagger: .04 }, "<");
+  tl.to(frame.map(b => b.scale).reverse(), { z: .0001, duration: .3, stagger: .04, ease: "power2.in" }, "<0.3");
+  return tl;
+}
+document.fonts.ready.then(() => { const tl = build(); if (at) tl.pause(Number(at)); });
+
+gsap.ticker.add((time) => {
+  const t = at ? Number(at) : time;
+  rig.rotation.y = -.32 + Math.sin(t * .6) * .06;
+  rig.rotation.x = .08 + Math.sin(t * .4) * .02;
+  renderer.render(scene, camera);
+});
+</script>
+</body>
+</html>

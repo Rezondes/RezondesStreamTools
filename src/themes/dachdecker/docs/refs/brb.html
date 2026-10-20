@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>B BRB Three</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+<style>
+  :root { --blueprint: #192a56; --line: #ffffff; --signal: #e67e22; --copper: #d4a373; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--blueprint); font-family: "Roboto Mono", monospace; color: var(--line); }
+  canvas { position: absolute; inset: 0; }
+  .vignette { position: absolute; inset: 0; pointer-events: none;
+              background: linear-gradient(to top, rgba(14,24,52,.92) 0%, rgba(14,24,52,.6) 24%, transparent 42%), radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(6,12,30,.7) 100%); }
+  .head { position: absolute; left: 80px; top: 64px; font-size: 20px; letter-spacing: 6px; color: var(--copper); }
+  .head b { color: var(--line); }
+  .title { position: absolute; left: 0; right: 0; top: 780px; text-align: center; font-size: 72px; font-weight: 700; letter-spacing: 10px; text-shadow: 0 0 14px rgba(255,255,255,.35); }
+  .sub { position: absolute; left: 0; right: 0; top: 872px; text-align: center; font-size: 30px; font-weight: 500; letter-spacing: 12px; color: var(--copper); }
+  .count { position: absolute; left: 0; right: 0; top: 930px; text-align: center; font-size: 64px; font-weight: 700; color: var(--signal); letter-spacing: 8px; text-shadow: 0 0 10px rgba(230,126,34,.8), 0 0 34px rgba(230,126,34,.4); }
+  .block { position: absolute; right: 60px; bottom: 30px; width: 380px; border: 1.5px solid rgba(255,255,255,.85); font-size: 18px; font-weight: 500; }
+  .block div { display: flex; border-top: 1.5px solid rgba(255,255,255,.85); }
+  .block div:first-child { border-top: 0; }
+  .block span { padding: 9px 14px; flex: 1; }
+  .block span + span { border-left: 1.5px solid rgba(255,255,255,.85); }
+  .block .copper { color: var(--copper); }
+  .title, .sub, .count, .head, .block { opacity: 0; }
+</style>
+</head>
+<body>
+<div class="vignette"></div>
+<div class="head" id="head"><b>BAUPLAN 02</b> &nbsp;//&nbsp; PAUSE BEI REGEN &nbsp;//&nbsp; KANAL REZONDES</div>
+<div class="title" id="title">BIN GLEICH ZURÜCK</div>
+<div class="sub" id="sub">DAS DACH HÄLT DICHT</div>
+<div class="count" id="count">SEIT 03:12</div>
+<div class="block" id="block">
+  <div><span>PROJEKT: STREAM</span></div>
+  <div><span>WETTER: REGEN</span><span>BLATT 2/3</span></div>
+  <div><span>STATUS</span><span class="copper">DICHT</span></div>
+</div>
+<script type="module">
+import * as THREE from "three";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+gsap.registerPlugin(ScrambleTextPlugin);
+gsap.ticker.lagSmoothing(0);
+const rand = gsap.utils.random;
+const debug = new URLSearchParams(location.search);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(1); renderer.setSize(1920, 1080);
+document.body.insertBefore(renderer.domElement, document.body.firstChild);
+const scene = new THREE.Scene();
+const sky = new THREE.Color(0x14224a);
+scene.background = sky.clone();
+scene.fog = new THREE.Fog(0x14224a, 16, 40);
+const camera = new THREE.PerspectiveCamera(38, 1920 / 1080, .1, 120);
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(1920, 1080), .5, .45, .35);
+if (!debug.has("nobloom")) composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+scene.add(new THREE.HemisphereLight(0x9fb8ff, 0x0b1430, 1.1));
+const moon = new THREE.DirectionalLight(0xcfe0ff, 1.4); moon.position.set(-6, 10, 6); scene.add(moon);
+const flashLight = new THREE.DirectionalLight(0xe8f4ff, 0); flashLight.position.set(8, 14, -10); scene.add(flashLight);
+
+const grid = (size, div, opacity) => { const g = new THREE.GridHelper(size, div, 0xffffff, 0xffffff); g.material.transparent = true; g.material.opacity = opacity; g.material.depthWrite = false; scene.add(g); };
+grid(80, 40, .13); grid(80, 400, .035);
+
+const mat = {
+  orange: { line: new THREE.LineBasicMaterial({ color: 0xff8a2a }), fill: new THREE.MeshBasicMaterial({ color: 0xe67e22, transparent: true, opacity: .22, depthWrite: false }) },
+  white: { line: new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .62 }), fill: new THREE.MeshBasicMaterial({ color: 0x5b7fc4, transparent: true, opacity: .1, depthWrite: false }) },
+  faint: { line: new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .4 }), fill: new THREE.MeshBasicMaterial({ color: 0x5b7fc4, transparent: true, opacity: .05, depthWrite: false }) },
+};
+function beam(a, b, size, kind) {
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), len = A.distanceTo(B);
+  const pivot = new THREE.Group(); pivot.position.copy(A); pivot.lookAt(B);
+  const geo = new THREE.BoxGeometry(size, size * 2.2, len); geo.translate(0, 0, len / 2);
+  pivot.add(new THREE.Mesh(geo, kind.fill), new THREE.LineSegments(new THREE.EdgesGeometry(geo), kind.line));
+  scene.add(pivot); return pivot;
+}
+const mix = (a, b, k) => a.map((v, i) => v + (b[i] - v) * k);
+
+// the frame from the starting scene, now finished
+const half = 4.2, rise = 3.25, zFront = .5, zBack = -6.5;
+[0, -1.5, -3, -4.5, -6].forEach((z, index) => {
+  const kind = index === 0 ? mat.orange : mat.white;
+  const L = [-half, 0, z], R = [half, 0, z], P = [0, rise, z], M = [0, 0, z];
+  const over = k => mix(P, k, 1.12);
+  beam(over(L), P, .1, kind); beam(over(R), P, .1, kind); beam(L, R, .1, kind);
+  beam(mix(L, P, .58), mix(R, P, .58), .08, kind); beam(M, P, .08, kind);
+  beam(M, mix(L, P, .5), .07, kind); beam(M, mix(R, P, .5), .07, kind);
+});
+[-half, half].forEach(x => beam([x, -.6, .7], [x, -.6, -6.7], .3, mat.faint));
+
+// both roof faces fully covered with slate, a copper strip every few rows, copper ridge cap
+const rows = 11, cols = 14;
+const tileGeo = new THREE.BoxGeometry(.5, .035, .46);
+const slateMat = new THREE.MeshPhongMaterial({ color: 0x2c3e50, shininess: 40, specular: 0x334455, transparent: true, opacity: .92 });
+const copperMat = new THREE.MeshPhongMaterial({ color: 0xa8683a, shininess: 90, specular: 0xffc890 });
+const slates = new THREE.InstancedMesh(tileGeo, slateMat, rows * cols * 2);
+const coppers = new THREE.InstancedMesh(tileGeo, copperMat, rows * cols * 2);
+let ns = 0, nc = 0;
+const tileEdgeBase = Array.from(new THREE.EdgesGeometry(tileGeo).attributes.position.array), edgeMatrices = [];
+const m = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), pos = new THREE.Vector3(), one = new THREE.Vector3(1, 1, 1);
+[-1, 1].forEach(sideSign => {
+  const slope = Math.atan2(rise, half);
+  for (let r = 0; r < rows; r++) {
+    const k = (r + .5) / rows;                                   // 0 at the eaves, 1 at the ridge
+    const x = sideSign * (half * 1.12 - k * half * 1.12), y = -rise * .12 + k * rise * 1.12 + .2;
+    for (let c = 0; c < cols; c++) {
+      const z = zFront - .26 - c * .5 + (r % 2 ? .25 : 0);
+      if (z < zBack + .1) continue;
+      pos.set(x, y, z); e.set(.04 * (r % 2 ? 1 : -1), 0, sideSign * -slope - .05 * sideSign); q.setFromEuler(e);
+      m.compose(pos, q, one);
+      if (Math.sin(r * 12.9898 + c * 78.233 + sideSign * 3.1) * 43758.5453 % 1 > .82) coppers.setMatrixAt(nc++, m); else slates.setMatrixAt(ns++, m);
+      edgeMatrices.push(m.clone());
+    }
+  }
+});
+// blueprint edges around every tile, merged into one line set
+const edgePos = new Float32Array(edgeMatrices.length * tileEdgeBase.length), vtx = new THREE.Vector3();
+edgeMatrices.forEach((mm, t) => { for (let i = 0; i < tileEdgeBase.length; i += 3) { vtx.set(tileEdgeBase[i], tileEdgeBase[i + 1], tileEdgeBase[i + 2]).applyMatrix4(mm); edgePos.set([vtx.x, vtx.y, vtx.z], t * tileEdgeBase.length + i); } });
+const edgeGeo = new THREE.BufferGeometry(); edgeGeo.setAttribute("position", new THREE.BufferAttribute(edgePos, 3));
+const tileEdges = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: 0xbcd0ee, transparent: true, opacity: .55 }));
+if (!debug.has("notiles")) scene.add(tileEdges);
+slates.count = ns; coppers.count = nc; if (!debug.has("notiles")) scene.add(slates, coppers);
+const ridge = new THREE.Mesh(new THREE.CylinderGeometry(.16, .16, zFront - zBack + .3, 16), copperMat);
+ridge.rotation.x = Math.PI / 2; ridge.position.set(0, rise + .28, (zFront + zBack) / 2); if (!debug.has("notiles")) scene.add(ridge);
+const roofY = (x) => -rise * .12 + (1 - Math.abs(x) / (half * 1.12)) * rise * 1.12 + .26;
+
+// rain: short glowing streaks, roof faces bounce them into splashes
+const DROPS = 2600, SPLASH = 2400;
+const box = { x: 13, zMin: -16, zMax: 7, top: 14 };
+const dropPos = new Float32Array(DROPS * 6), dropVel = new Float32Array(DROPS);
+const dropGeo = new THREE.BufferGeometry(); dropGeo.setAttribute("position", new THREE.BufferAttribute(dropPos, 3));
+const rain = new THREE.LineSegments(dropGeo, new THREE.LineBasicMaterial({ color: 0x7fe3ff, transparent: true, opacity: .75, fog: true }));
+rain.frustumCulled = false; if (!debug.has("norain")) scene.add(rain);
+const splashPos = new Float32Array(SPLASH * 3), splashVel = new Float32Array(SPLASH * 3), splashLife = new Float32Array(SPLASH);
+const splashGeo = new THREE.BufferGeometry(); splashGeo.setAttribute("position", new THREE.BufferAttribute(splashPos, 3));
+const splashes = new THREE.Points(splashGeo, new THREE.PointsMaterial({ color: 0xc8f5ff, size: .06, transparent: true, opacity: .95 }));
+splashes.frustumCulled = false; if (!debug.has("nosplash")) scene.add(splashes);
+let splashNext = 0;
+const weather = { wind: .6 };
+function resetDrop(i, anywhere) {
+  const x = rand(-box.x, box.x), z = rand(box.zMin, box.zMax), y = anywhere ? rand(0, box.top) : box.top + rand(0, 4);
+  dropPos.set([x, y, z, x, y + .38, z], i * 6); dropVel[i] = rand(.32, .45);
+}
+for (let i = 0; i < DROPS; i++) resetDrop(i, true);
+for (let i = 0; i < SPLASH; i++) splashPos[i * 3 + 1] = -99;
+function splash(x, y, z, nx, ny, count) {
+  for (let k = 0; k < count; k++) {
+    const i = splashNext++ % SPLASH;
+    splashPos.set([x, y, z], i * 3);
+    const up = rand(.04, .1);
+    splashVel.set([nx * up * 1.4 + rand(-.03, .03) + weather.wind * .01, ny * up + rand(0, .05), rand(-.04, .04)], i * 3);
+    splashLife[i] = 1;
+  }
+}
+function stepRain(dt) {
+  for (let i = 0; i < DROPS; i++) {
+    const o = i * 6, v = dropVel[i] * dt, dx = weather.wind * .02 * dt;
+    dropPos[o] += dx; dropPos[o + 3] += dx; dropPos[o + 1] -= v; dropPos[o + 4] -= v;
+    const x = dropPos[o], y = dropPos[o + 1], z = dropPos[o + 2];
+    const overRoof = Math.abs(x) < half * 1.12 && z < zFront && z > zBack;
+    if (overRoof && y <= roofY(x)) {
+      const s = Math.sign(x) || 1, n = Math.hypot(rise, half);
+      if (Math.random() < .6) splash(x, roofY(x), z, s * rise / n, half / n, 3);
+      resetDrop(i, false);
+    } else if (y <= 0) {
+      if (Math.random() < .15) splash(x, .01, z, 0, 1, 2);
+      resetDrop(i, false);
+    }
+  }
+  for (let i = 0; i < SPLASH; i++) {
+    if (splashLife[i] <= 0) continue;
+    const o = i * 3;
+    splashVel[o + 1] -= .006 * dt;
+    splashPos[o] += splashVel[o] * dt; splashPos[o + 1] += splashVel[o + 1] * dt; splashPos[o + 2] += splashVel[o + 2] * dt;
+    splashLife[i] -= .03 * dt;
+    if (splashLife[i] <= 0 || splashPos[o + 1] < 0) { splashLife[i] = 0; splashPos[o + 1] = -99; }
+  }
+  dropGeo.attributes.position.needsUpdate = true; splashGeo.attributes.position.needsUpdate = true;
+}
+
+// lightning far behind the house
+function bolt() {
+  const pts = []; let x = rand(-18, 18), y = 24; const z = rand(-34, -26);
+  while (y > 2) { pts.push(new THREE.Vector3(x, y, z)); x += rand(-1.6, 1.6); y -= rand(1.2, 2.6); }
+  const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, fog: false }));
+  scene.add(line);
+  gsap.timeline({ onComplete: () => { scene.remove(line); line.geometry.dispose(); } })
+    .to(line.material, { opacity: .15, duration: .05, yoyo: true, repeat: 3 }).to(line.material, { opacity: 0, duration: .3 });
+  gsap.timeline()
+    .to(flashLight, { intensity: 2.2, duration: .04 }).to(flashLight, { intensity: .4, duration: .08 })
+    .to(flashLight, { intensity: 1.6, duration: .04 }).to(flashLight, { intensity: 0, duration: 1, ease: "power2.out" });
+  gsap.fromTo(bloom, { strength: .75 }, { strength: .5, duration: 1.2, ease: "power2.out" });
+  gsap.fromTo(scene.background, { r: .06, g: .09, b: .2 }, { r: sky.r, g: sky.g, b: sky.b, duration: 1.1, ease: "power2.out" });
+  gsap.delayedCall(rand(6, 10), bolt);
+}
+if (!debug.has("nobolt")) gsap.delayedCall(2.5, bolt);
+(function gust() { gsap.to(weather, { wind: rand(-1, 2.5), duration: rand(2.5, 4.5), ease: "sine.inOut", onComplete: gust }); })();
+
+// texts
+const tl = gsap.timeline();
+tl.to(["#head", "#block"], { opacity: 1, duration: .6, stagger: .2 }, .2);
+tl.to("#title", { opacity: 1, duration: .1 }, .6);
+tl.from("#title", { duration: 1.3, scrambleText: { text: "BIN GLEICH ZURÜCK", chars: "01ABCDEFGHIJKLMNOPQRSTUVWXYZ/", revealDelay: .3, speed: .5 } }, .6);
+tl.fromTo("#sub", { opacity: 0, letterSpacing: "30px" }, { opacity: 1, letterSpacing: "12px", duration: 1.2, ease: "power3.out" }, 1.4);
+tl.to("#count", { opacity: 1, duration: .4 }, 2);
+gsap.to("#title", { opacity: .72, duration: .05, repeat: 3, yoyo: true, repeatDelay: .08, delay: 5, onComplete() { this.delay(rand(3, 6)).restart(true); } });
+
+// camera: slow orbit, slightly lower than the starting scene, so the roof reads against the rain
+const center = new THREE.Vector3(0, -1.3, -3);
+gsap.ticker.add((time, deltaMs) => {
+  stepRain(Math.min(3, deltaMs / 16.67));
+  const angle = .5 + time * .05, radius = 18.5;
+  camera.position.set(center.x + Math.sin(angle) * radius, 6, center.z + Math.cos(angle) * radius);
+  camera.lookAt(center);
+  composer.render();
+});
+</script>
+</body>
+</html>

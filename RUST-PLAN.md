@@ -125,6 +125,7 @@ Abhängigkeiten: `rst-server` -> `rst-app` + `rst-infra`; `rst-infra` -> `rst-ap
 | 49 | Alte Standardwerte ersetzen | Ändert ein Theme einen Standardwert, bekommen Streamer mit dem alten Standard beim Lesen den neuen. | - |
 | 50 | Turm-Felder der Minimes | Ein Theme mit Minime-Typen kann die Felder für Türme einbinden, Rust und TS gleich, geprüft gespeichert. | 48 |
 | 51 | Merkmal "einfach" am Feld | Ein Feld kann im Rust-Schema als einfach markiert sein, der Server liefert das Merkmal mit. | - |
+| 52 | Stream-Statistik | Der Server zählt je Stream Alerts und Chat und schickt den Stand als SSE-Nachricht `stats`. | - |
 
 Parallel möglich: 3 neben 1 und 2; nach 5 die Packages 6, 7, 11, 14, 15, 16, 17 untereinander; 9 und 10 nach 8;
 18 neben Phase 1; 33 bis 36 nach 32 untereinander; 37 bis 42 nach ihren Abhängigkeiten untereinander; 47 vor 48, 49 unabhängig, 50 nach 48.
@@ -1929,6 +1930,66 @@ Server ist die Quelle des Schemas, also braucht das Rust-Feld das Merkmal. Es ä
 3. Fixture-Vergleich aller Themes unverändert grün (AC3)
 
 Testbefehl: `npm run verify`
+
+---
+
+## Package 52: Stream-Statistik
+
+**Ziel:** Der Server zählt je Stream Alerts und Chat und schickt den Stand als SSE-Nachricht `stats`.
+
+**Abhängigkeiten:** keine
+
+**Betroffene Dateien:**
+- `server-rs/crates/rst-domain/src/stats/mod.rs` (neu: `StreamTally` mit `record_alert`, `record_chat`, `reset`,
+  `snapshot`, serialisierbar), `server-rs/crates/rst-domain/src/lib.rs` (Modul eintragen)
+- `server-rs/crates/rst-app/src/profile/mod.rs` (ändern: Eintrag `stats` mit `stats` und `save_stats`)
+- `server-rs/crates/rst-app/src/channel/stats.rs` (neu: `StatsRunner` nach dem Muster von `channel/minimes.rs`: lädt beim
+  Start, zählt, sendet gedrosselt, speichert höchstens alle `SAVE_DELAY`), `server-rs/crates/rst-app/src/channel/mod.rs`
+- `server-rs/crates/rst-app/src/channel/runtime.rs` (ändern: `StatsRunner` in der Laufzeit, Aufrufe in `read_events` und
+  `read`)
+- `server-rs/crates/rst-app/src/events.rs` (ändern: `ServerMessage::Stats { stats: StreamStats }`)
+- `server-rs/crates/rst-server/src/handlers/events.rs` (ändern: `stats` in der ersten Nachrichtenfolge)
+- `server-rs/crates/rst-server/src/app.rs` und ein Handler (neu: `POST /api/stats/reset`, nur mit Sitzung des
+  Streamers)
+- `src/generated/StreamStats.ts` (neu, erzeugt mit `npm run gen:types`), Vertragstest in `contract/`
+
+### Kontext
+
+Kern-Plan: [plans/PLAN-STATS.md](plans/PLAN-STATS.md). EventSub liefert heute Alerts und `stream.offline`
+(`subscriptions` in `twitch/eventsub.rs`); `read_events` in `runtime.rs` leitet Alerts an die Overlays
+(`ServerMessage::Alert`) und räumt bei `Offline` die Minimes. Chatzeilen kommen über `read` aus IRC. Der SSE-Stream
+schickt beim Verbinden Musik und Minimes sofort (`handlers/events.rs`). `MinimeRunner` (`channel/minimes.rs`) zeigt das
+Muster für Laden, gedrosseltes Senden und Speichern im verschlüsselten Profil.
+
+### Acceptance Criteria
+
+- [ ] AC1: `record_alert` zählt je Art: `follow` +1 `follows`; `sub` und `resub` +1 `subs`; `gift` + `amount`
+  `giftedSubs`; `raid` +1 `raids` und + `amount` `raiders`; `cheer` + `amount` `bits`; `redeem` +1 `redeems`;
+  `hype` mit `detail = "end"` setzt `hypeLevel` auf das Maximum aus bisherigem Wert und `amount`.
+- [ ] AC2: `record_chat(login)` zählt `chatMessages` und `chatters` (verschiedene Logins, Gross- und Kleinschreibung
+  gleich); der Snapshot enthält nie Logins.
+- [ ] AC3: Nur `reset` setzt die Zählung auf 0 und `startedAt` auf jetzt; Streamstart, Streamende und ein Neustart
+  lassen sie stehen; vor dem ersten Zurücksetzen setzt das erste Ereignis `startedAt`.
+- [ ] AC4: Nach jeder Änderung geht `ServerMessage::Stats` an die Overlays, höchstens alle 2 Sekunden
+  (`fixed: Schutz des SSE-Streams bei vollem Chat`); die letzte Änderung innerhalb der Sperre wird danach gesendet.
+- [ ] AC5: Ein neues Overlay bekommt beim Verbinden sofort den aktuellen Stand.
+- [ ] AC6: `POST /api/stats/reset` setzt die Zählung des eigenen Streamers zurück (401 ohne Sitzung), speichert und
+  sendet den Stand.
+- [ ] AC7: Gezählt wird nur, wenn die Laufzeit die Ereignisse empfängt (Funktion Alerts für EventSub, Chat für IRC); es
+  gibt keine eigene Abfrage bei Twitch.
+- [ ] AC8: Nach einem Ereignis ist der Stand spätestens nach `SAVE_DELAY` im verschlüsselten Profil gespeichert; eine neu
+  gestartete Laufzeit lädt ihn und zählt weiter (auch die Zahl verschiedener Chatter).
+
+### Tests (TDD)
+
+1. `rst-domain stats::tests::alerts_count_by_kind` (AC1)
+2. `rst-domain stats::tests::chatters_are_unique_and_never_exposed` (AC2)
+3. `rst-domain stats::tests::only_reset_clears` (AC3)
+4. `rst-app profile::tests::stats_round_trip` (AC8)
+5. `rst-app channel::stats::tests::throttled_send_and_save_then_reload_continues` (AC4, AC8, mit fester Uhr)
+6. Vertragstest `contract/`: SSE beim Verbinden enthält `stats`; Reset ohne Sitzung 401, mit Sitzung 0 (AC5, AC6)
+
+Testbefehl: `npm run verify`, `npm run contract`
 
 ---
 

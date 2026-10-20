@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>B Starting Three</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrambleTextPlugin.min.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+<style>
+  :root { --blueprint: #192a56; --line: #ffffff; --signal: #e67e22; --copper: #d4a373; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--blueprint); font-family: "Roboto Mono", monospace; color: var(--line); }
+  canvas { position: absolute; inset: 0; }
+  .vignette { position: absolute; inset: 0; background: linear-gradient(to top, rgba(14,24,52,.92) 0%, rgba(14,24,52,.6) 24%, transparent 42%), radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(6,12,30,.7) 100%); pointer-events: none; }
+  .head { position: absolute; left: 80px; top: 64px; font-size: 20px; letter-spacing: 6px; color: var(--copper); }
+  .head b { color: var(--line); }
+  .title { position: absolute; left: 0; right: 0; top: 790px; text-align: center; font-size: 72px; font-weight: 700; letter-spacing: 10px; text-shadow: 0 0 14px rgba(255,255,255,.35); }
+  .count { position: absolute; left: 0; right: 0; top: 885px; text-align: center; font-size: 104px; font-weight: 700; color: var(--signal); letter-spacing: 8px; text-shadow: 0 0 10px rgba(230,126,34,.8), 0 0 34px rgba(230,126,34,.4); }
+  .block { position: absolute; right: 60px; bottom: 30px; width: 380px; border: 1.5px solid rgba(255,255,255,.85); font-size: 18px; font-weight: 500; }
+  .block div { display: flex; border-top: 1.5px solid rgba(255,255,255,.85); }
+  .block div:first-child { border-top: 0; }
+  .block span { padding: 9px 14px; flex: 1; }
+  .block span + span { border-left: 1.5px solid rgba(255,255,255,.85); }
+  .block .copper { color: var(--copper); }
+  .title, .count, .head, .block { opacity: 0; }
+</style>
+</head>
+<body>
+<div class="vignette"></div>
+<div class="head" id="head"><b>BAUPLAN 01</b> &nbsp;//&nbsp; DACHSTUHL 3D &nbsp;//&nbsp; KANAL REZONDES</div>
+<div class="title" id="title">STREAM STARTET GLEICH</div>
+<div class="count" id="count">04:59</div>
+<div class="block" id="block">
+  <div><span>PROJEKT: STREAM</span></div>
+  <div><span>M 1:50</span><span>BLATT 1/1</span></div>
+  <div><span>GEZ. REZONDES</span><span class="copper">2026-10-21</span></div>
+</div>
+<script type="module">
+import * as THREE from "three";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+gsap.registerPlugin(ScrambleTextPlugin);
+gsap.ticker.lagSmoothing(0);
+const at = new URLSearchParams(location.search).get("t");
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(1); renderer.setSize(1920, 1080);
+document.body.insertBefore(renderer.domElement, document.body.firstChild);
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x192a56);
+scene.fog = new THREE.Fog(0x192a56, 16, 38);
+const camera = new THREE.PerspectiveCamera(38, 1920 / 1080, .1, 100);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(1920, 1080), .42, .45, .4));
+composer.addPass(new OutputPass());
+
+// blueprint ground: major and fine grid in perspective
+const grid = (size, div, opacity) => { const g = new THREE.GridHelper(size, div, 0xffffff, 0xffffff); g.material.transparent = true; g.material.opacity = opacity; g.material.depthWrite = false; scene.add(g); return g; };
+grid(80, 40, .13); grid(80, 400, .035);
+
+const mat = {
+  orange: { line: new THREE.LineBasicMaterial({ color: 0xff8a2a }), fill: new THREE.MeshBasicMaterial({ color: 0xe67e22, transparent: true, opacity: .22, depthWrite: false }) },
+  white: { line: new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .62 }), fill: new THREE.MeshBasicMaterial({ color: 0x5b7fc4, transparent: true, opacity: .1, depthWrite: false }) },
+  faint: { line: new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: .45 }), fill: new THREE.MeshBasicMaterial({ color: 0x5b7fc4, transparent: true, opacity: .05, depthWrite: false }) },
+};
+// a beam grows from a to b: pivot at a, looking at b, scaled along its length
+function beam(a, b, size, kind) {
+  const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), len = A.distanceTo(B);
+  const pivot = new THREE.Group(); pivot.position.copy(A); pivot.lookAt(B);
+  const geo = new THREE.BoxGeometry(size, size * 2.2, len); geo.translate(0, 0, len / 2);
+  pivot.add(new THREE.Mesh(geo, kind.fill), new THREE.LineSegments(new THREE.EdgesGeometry(geo), kind.line));
+  pivot.scale.z = .0001; scene.add(pivot); return pivot;
+}
+const mix = (a, b, k) => a.map((v, i) => v + (b[i] - v) * k);
+
+// roof frame: five trusses, purlins, battens (metres)
+const half = 4.2, rise = 3.25, depths = [0, -1.5, -3, -4.5, -6];
+const trusses = depths.map((z, index) => {
+  const kind = index === 0 ? mat.orange : mat.white;
+  const L = [-half, 0, z], R = [half, 0, z], P = [0, rise, z], M = [0, 0, z];
+  const over = k => mix(P, k, 1.12);
+  return [
+    beam(over(L), P, .1, kind), beam(over(R), P, .1, kind),
+    beam(L, R, .1, kind),
+    beam(mix(L, P, .58), mix(R, P, .58), .08, kind),
+    beam(M, P, .08, kind),
+    beam(M, mix(L, P, .5), .07, kind), beam(M, mix(R, P, .5), .07, kind),
+  ];
+});
+const along = (p) => [[p[0], p[1], .5], [p[0], p[1], -6.5]];
+const purlins = [[0, rise], [-half, 0], [half, 0], [-half / 2, rise / 2], [half / 2, rise / 2]]
+  .map(([x, y]) => beam(...along([x, y + .12, 0]), .11, mat.white));
+const battens = [];
+for (let k = .1; k < .98; k += .085) {
+  const x = -half + half * k, y = rise * k + .2;
+  battens.push(beam([x, y, .5], [x, y, -6.5], .04, mat.faint));
+}
+const walls = [-half, half].map(x => beam([x, -.6, .7], [x, -.6, -6.7], .3, mat.faint));
+
+// slate and copper tiles start covering the right roof face from the eaves
+const tiles = [];
+const tileGeo = new THREE.BoxGeometry(.5, .03, .5);
+const slate = new THREE.MeshBasicMaterial({ color: 0x2c3e50 }), copper = new THREE.MeshBasicMaterial({ color: 0x9a5f30 });
+const tileEdge = new THREE.LineBasicMaterial({ color: 0x9fb8d8, transparent: true, opacity: .6 });
+const slope = Math.atan2(rise, -half);
+for (let row = 0; row < 4; row++) {
+  for (let col = 0; col < 13; col++) {
+    const k = .06 + row * .1, x = half - half * k, y = rise * k + .3, z = .3 - col * .52 - (row % 2) * .26;
+    if (z < -6.4) continue;
+    const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.z = slope + Math.PI;
+    const isCopper = (row * 13 + col) % 7 === 0;
+    g.add(new THREE.Mesh(tileGeo, isCopper ? copper : slate), new THREE.LineSegments(new THREE.EdgesGeometry(tileGeo), tileEdge));
+    g.scale.set(.0001, .0001, .0001); scene.add(g); tiles.push(g);
+  }
+}
+
+// choreography
+const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+const grow = (list, dur, stagger, pos) => tl.to(list.map(b => b.scale), { z: 1, duration: dur, stagger }, pos);
+grow(walls, .8, .1, .2);
+grow(trusses[0], .7, .16, .5);
+trusses.slice(1).forEach((t, i) => grow(t, .5, .04, 1.4 + i * .35));
+grow(purlins, .9, .12, 2.6);
+grow(battens, .5, .05, 3.4);
+tl.to(tiles.map(t => t.scale), { x: 1, y: 1, z: 1, duration: .35, ease: "back.out(2.5)", stagger: { each: .025, from: "start" } }, 4.6);
+tl.to(["#head", "#block"], { opacity: 1, duration: .6, stagger: .2 }, .3);
+tl.to("#title", { opacity: 1, duration: .1 }, 1.2);
+tl.from("#title", { duration: 1.4, scrambleText: { text: "STREAM STARTET GLEICH", chars: "01ABCDEFGHIJKLMNOPQRSTUVWXYZ/", revealDelay: .3, speed: .5 } }, 1.2);
+tl.to("#count", { opacity: 1, duration: .1 }, 2.2);
+tl.from("#count", { duration: 1, scrambleText: { text: "04:59", chars: "0123456789", speed: .6 } }, 2.2);
+// light flicker of the title like a lamp over the drawing board
+gsap.to("#title", { opacity: .72, duration: .05, repeat: 3, yoyo: true, repeatDelay: .08, delay: 6, repeatRefresh: true, onComplete() { this.delay(gsap.utils.random(3, 6)).restart(true); } });
+if (at) tl.pause(Number(at));
+
+// camera: dolly out from close above, then a slow orbit around the frame
+const cam = { radius: 7.5, height: 8.5, angle: .35 };
+gsap.to(cam, { radius: 17, height: 6.4, duration: 5, ease: "power3.out" });
+const center = new THREE.Vector3(0, -1.1, -3);
+gsap.ticker.add((time) => {
+  const t = at ? Number(at) : time;
+  if (at) { cam.radius = 7.5 + (17 - 7.5) * Math.min(1, t / 5); cam.height = 8.5 - (8.5 - 6.4) * Math.min(1, t / 5); }
+  const angle = cam.angle + t * .07;
+  camera.position.set(center.x + Math.sin(angle) * cam.radius, cam.height, center.z + Math.cos(angle) * cam.radius);
+  camera.lookAt(center);
+  composer.render();
+});
+</script>
+</body>
+</html>

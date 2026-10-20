@@ -39,8 +39,10 @@ assert.equal(findTheme("urlaub")!.minimeVariants?.variants.length, 16);
 assert.deepEqual(findTheme("urlaub")!.personalize!("neo_42"), { channelName: "Neo_42" });
 
 // Every theme folder fulfills the contract twice: as ThemeModule in registry.ts (folder name = id) and with its
-// view <id>View in scenes.tsx; modules provide their schema and their clips
-const folders = readdirSync(import.meta.dirname, { withFileTypes: true }).filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
+// view <id>View in scenes.tsx; modules provide their schema and their clips. A folder that holds only docs/ is a planned
+// theme without code yet and is not registered.
+const planned = (name: string) => readdirSync(join(import.meta.dirname, name)).every(entry => entry === "docs");
+const folders = readdirSync(import.meta.dirname, { withFileTypes: true }).filter(entry => entry.isDirectory() && !planned(entry.name)).map(entry => entry.name).sort();
 assert.deepEqual(THEME_MODULES.map(module => module.schema.id).sort(), folders);
 const views = readFileSync(join(import.meta.dirname, "scenes.tsx"), "utf8");
 for (const id of folders) {
