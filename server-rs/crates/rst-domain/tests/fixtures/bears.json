@@ -172,126 +172,126 @@
       "key": "iceFur",
       "type": "color",
       "label": "Eisbär: Fell",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#ffffff"
     },
     {
       "key": "iceShade",
       "type": "color",
       "label": "Eisbär: Schattenton",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#d5dcda"
     },
     {
       "key": "grizzlyFur",
       "type": "color",
       "label": "Grizzly: Fell",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#96693f"
     },
     {
       "key": "grizzlyShade",
       "type": "color",
       "label": "Grizzly: Schattenton",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#7d5533"
     },
     {
       "key": "pandaFur",
       "type": "color",
       "label": "Panda: weisses Fell",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#f3eeeb"
     },
     {
       "key": "pandaShade",
       "type": "color",
       "label": "Panda: Schattenton auf Weiss",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#d9d2ce"
     },
     {
       "key": "pandaPatch",
       "type": "color",
       "label": "Panda: schwarzes Fell",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#64615c"
     },
     {
       "key": "pandaPatchShade",
       "type": "color",
       "label": "Panda: Schattenton auf Schwarz",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#4e4b47"
     },
     {
       "key": "bearEye",
       "type": "color",
       "label": "Augen",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#111111"
     },
     {
       "key": "bearNose",
       "type": "color",
       "label": "Nase",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#111111"
     },
     {
       "key": "grizzlyMouth",
       "type": "color",
       "label": "Grizzly: Mund innen",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#6b3833"
     },
     {
       "key": "grizzlyTongue",
       "type": "color",
       "label": "Grizzly: Zunge",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#e0868a"
     },
     {
       "key": "bearTeeth",
       "type": "color",
       "label": "Zähne",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#ffffff"
     },
     {
       "key": "phoneCase",
       "type": "color",
       "label": "Handy: Hülle",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#f4a493"
     },
     {
       "key": "phoneScreen",
       "type": "color",
       "label": "Handy: Bildschirm",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#2d2926"
     },
     {
       "key": "prop",
       "type": "color",
       "label": "Pfanne und Geräte",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#4a4542"
     },
     {
       "key": "food",
       "type": "color",
       "label": "Essen in der Pfanne",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": "#f6c945"
     },
     {
       "key": "blinkEvery",
       "type": "number",
       "label": "Blinzeln alle (0 = nie)",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": 5000,
       "min": 0,
       "max": 30000,
@@ -301,14 +301,14 @@
       "key": "breathe",
       "type": "boolean",
       "label": "Atmen",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": true
     },
     {
       "key": "breatheMs",
       "type": "number",
       "label": "Atmen: Dauer eines Atemzugs",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": 3600,
       "min": 1000,
       "max": 10000,
@@ -318,7 +318,7 @@
       "key": "towerSway",
       "type": "number",
       "label": "Bärenturm: Wanken (Grad)",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": 2,
       "min": 0,
       "max": 10
@@ -327,7 +327,7 @@
       "key": "towerSwayMs",
       "type": "number",
       "label": "Bärenturm: Wanken (Dauer)",
-      "group": "Bären",
+      "group": "Allgemein",
       "default": 2400,
       "min": 500,
       "max": 10000,
@@ -3091,18 +3091,6 @@
     }
   ],
   "groupScenes": {
-    "Bären": [
-      "starting",
-      "brb",
-      "ending",
-      "alerts",
-      "chat",
-      "cam",
-      "music",
-      "fx",
-      "minimes",
-      "info"
-    ],
     "Welt": [
       "starting",
       "brb",

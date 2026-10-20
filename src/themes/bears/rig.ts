@@ -212,11 +212,14 @@ function buildPose(name: PoseName, spec: PoseSpec, loud: boolean, turn: number):
     layer("ears", head.ears.flatMap((ear, index) => moved([ear], moveOf(view, depth.ears[index]))), head.neck, -99),
     layer("worn", worn ? moved(worn.behind ?? [], moveOf(view, depth.behind)) : [], head.neck, -98),
   ];
+  // A near limb raised above its root comes forward in front of the face (a raised arm or front leg covers the eye behind it)
+  const faceDepth = depthOf(view, depth.face);
+  const limbDepth = (key: string) => (built[key].depth > 0 && built[key].end[1] < limbs[key].root[1] - built[key].width ? faceDepth + 1 : built[key].depth);
   // Everything else in the order of its turned depth; the body has depth 0
   const sorted: RigLayer[] = [
-    ...Object.keys(limbs).map(key => layer(key, key === nearKey ? [...limbParts(key), ...pad] : limbParts(key), project(view, limbs[key].root), built[key].depth)),
+    ...Object.keys(limbs).map(key => layer(key, key === nearKey ? [...limbParts(key), ...pad] : limbParts(key), project(view, limbs[key].root), limbDepth(key))),
     { ...layer("body", [], [box.width / 2, box.height], 0), body },
-    layer("head", moved(faceParts(head, spec, loud), moveOf(view, depth.face)), head.neck, depthOf(view, depth.face)),
+    layer("head", moved(faceParts(head, spec, loud), moveOf(view, depth.face)), head.neck, faceDepth),
     layer("headset", worn ? moved(worn.parts, moveOf(view, depth.worn)) : [], head.neck, depthOf(view, depth.worn)),
     layer("prop", held, nearPaw, DEPTH.prop),
     layer(`${farKey}Paw`, spec.grip ? paw(built[farKey].end, built[farKey].width) : [], built[farKey].end, DEPTH.grip),

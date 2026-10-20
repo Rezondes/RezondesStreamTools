@@ -26,7 +26,8 @@ const S: Option<Unit> = Some(Unit::S);
 const PERCENT: Option<Unit> = Some(Unit::Percent);
 
 const GENERAL: &str = "Allgemein";
-const BEARS: &str = "Bären";
+/// The bears themselves (fur, face, blinking, tower) apply everywhere, so their fields are general
+const BEARS: &str = GENERAL;
 const WORLD: &str = "Welt";
 const SCREENS: &str = "Starting, BRB, Ending";
 const ALERTS: &str = "Alerts";
@@ -468,7 +469,6 @@ fn fields() -> Vec<SettingField> {
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Minimes, Music, Starting};
     [
-        (BEARS, vec![Starting, Brb, Ending, Alerts, Chat, Cam, Music, Fx, Minimes, Info]),
         (WORLD, vec![Starting, Brb, Ending, Info]),
         (SCREENS, vec![Starting, Brb, Ending]),
         (ALERTS, vec![Alerts]),

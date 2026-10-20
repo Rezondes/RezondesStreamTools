@@ -120,4 +120,12 @@ for (const order of ORDERS) {
   }
 }
 
+// A raised near limb is drawn in front of the face (the eye behind it does not shine through)
+for (const name of ["fourWave", "perchWave", "wave", "selfie"] as const) {
+  const bones = order(name);
+  const limb = POSES[name].stance === "four" ? "nearFront" : "nearArm";
+  assert.ok(bones.indexOf(limb) > bones.indexOf("head"), `${name}: raised limb behind the face`);
+}
+assert.ok(order("four").indexOf("nearFront") < order("four").indexOf("head"));
+
 console.log("bears rig ok");

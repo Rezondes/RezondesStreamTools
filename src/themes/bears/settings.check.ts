@@ -15,8 +15,11 @@ assert.deepEqual(audit.unused, [], `unused keys: ${audit.unused.join(", ")}`);
 
 // Required keys per group
 const REQUIRED: Record<string, string[]> = {
-  "Allgemein": ["channelName", "font", "titleFont", "outline", "outlineWidth", "paper", "paperShade", "accent", "accentText", "accent2", "radius", "facing"],
-  "Bären": ["iceFur", "iceShade", "grizzlyFur", "grizzlyShade", "pandaFur", "pandaShade", "pandaPatch", "pandaPatchShade", "bearEye", "bearNose", "blinkEvery", "breathe", "towerSway"],
+  // The bear fields are general (no own group "Bären" in every scene)
+  "Allgemein": [
+    "channelName", "font", "titleFont", "outline", "outlineWidth", "paper", "paperShade", "accent", "accentText", "accent2", "radius", "facing",
+    "iceFur", "iceShade", "grizzlyFur", "grizzlyShade", "pandaFur", "pandaShade", "pandaPatch", "pandaPatchShade", "bearEye", "bearNose", "blinkEvery", "breathe", "towerSway",
+  ],
   "Welt": ["timeStarting", "timeBrb", "timeEnding", "skyNightTop", "sun", "moon", "cloudCount", "meadow", "fir", "city", "bridge", "cave", "paperGrain", "sketchLines"],
   "Starting, BRB, Ending": ["bearStarting", "bearBrb", "bearEnding", "bearSize", "bearSide", "startingTitle", "brbSign", "countdown", "progressStyle", "ticker", "powerOn"],
   "Alerts": ["bearAlerts", "alertBearSize", "followLine", "followIcon", "hypeEndLine", "alertDuration", "alertIn", "alertOut", "alertTimer", "confetti", "soundFollow", "soundLeave"],
@@ -59,6 +62,8 @@ for (const [group, scenes] of Object.entries(bearsSettings.groupScenes ?? {})) i
 const defaultOf = (key: string) => fields.find(field => field.key === key)?.default;
 assert.deepEqual(["minimeStack", ...STACK_LEVEL_KEYS].map(defaultOf), [true, "eisbaer", "panda", "grizzly"]);
 for (const key of ["stackFit", "stackSway", "stackSwayMs", "stackNameOffset", "minimeOutlineWidth"]) assert.equal(fields.find(field => field.key === key)?.group, "Minimes: Aussehen", key);
+
+assert.ok(!fields.some(field => field.group === "Bären") && !("Bären" in (bearsSettings.groupScenes ?? {})));
 
 // First login: channel name from the login with a capital first letter
 assert.deepEqual(bearsSettings.personalize?.("neo_42"), { channelName: "Neo_42" });

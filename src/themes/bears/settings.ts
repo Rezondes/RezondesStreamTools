@@ -20,7 +20,8 @@ const SIDES = ["links", "rechts"] as const;
 const MOTIONS = ["watscheln", "plopp", "gleiten", "blenden", "keins"] as const;
 
 const GENERAL = "Allgemein";
-const BEARS = "Bären";
+// The bears themselves (fur, face, blinking, tower) apply everywhere, so their fields are general
+const BEARS = GENERAL;
 const WORLD = "Welt";
 const SCREENS = "Starting, BRB, Ending";
 const ALERTS = "Alerts";
@@ -306,7 +307,6 @@ export type { BearsValues } from "../../generated/themes/bears.ts";
 
 const SCREEN_SCENES = ["starting", "brb", "ending"] as const;
 const GROUP_SCENES = {
-  [BEARS]: [...SCREEN_SCENES, "alerts", "chat", "cam", "music", "fx", "minimes", "info"],
   [WORLD]: [...SCREEN_SCENES, "info"],
   [SCREENS]: SCREEN_SCENES,
   [ALERTS]: ["alerts"],
