@@ -1352,6 +1352,500 @@
       "max": 30
     },
     {
+      "key": "minimeJoinCommand",
+      "type": "text",
+      "label": "Befehl: einklinken (optional mit Farbe oder Typ)",
+      "group": "Minimes: Befehle",
+      "default": "!join",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeLeaveCommand",
+      "type": "text",
+      "label": "Befehl: verlassen (Mods: mit @name rauswerfen)",
+      "group": "Minimes: Befehle",
+      "default": "!leave",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeJoinRole",
+      "type": "select",
+      "label": "Einklinken ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "everyone",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeKickRole",
+      "type": "select",
+      "label": "Fremde rauswerfen ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "moderator",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeColorJoins",
+      "type": "boolean",
+      "label": "Befehl für Farbe oder Typ klinkt auch ein",
+      "group": "Minimes: Befehle",
+      "default": true
+    },
+    {
+      "key": "minimeMax",
+      "type": "number",
+      "label": "Höchstzahl gleichzeitig",
+      "group": "Minimes: Regeln",
+      "default": 30,
+      "min": 1,
+      "max": 100,
+      "basic": true
+    },
+    {
+      "key": "minimeWhenFull",
+      "type": "select",
+      "label": "Wenn voll: Inaktivsten ersetzen (replace) oder Neue abweisen (reject)",
+      "group": "Minimes: Regeln",
+      "default": "replace",
+      "options": [
+        "replace",
+        "reject"
+      ]
+    },
+    {
+      "key": "minimeIdleMinutes",
+      "type": "number",
+      "label": "Verschwindet nach Minuten ohne Nachricht (0 = nie)",
+      "group": "Minimes: Regeln",
+      "default": 20,
+      "min": 0,
+      "max": 240
+    },
+    {
+      "key": "minimeColorCooldown",
+      "type": "number",
+      "label": "Abklingzeit Farb- oder Typwechsel",
+      "group": "Minimes: Regeln",
+      "default": 10,
+      "min": 0,
+      "max": 300,
+      "unit": "s"
+    },
+    {
+      "key": "minimeChatKeepsAlive",
+      "type": "boolean",
+      "label": "Chatnachrichten halten das Minime im Bild",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeReactToChat",
+      "type": "boolean",
+      "label": "Minime reagiert auf Chatnachrichten",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeClearOffline",
+      "type": "boolean",
+      "label": "Alle entfernen, wenn der Stream endet",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeRemoveOnBan",
+      "type": "boolean",
+      "label": "Bei Ban oder Timeout entfernen",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeSpeed",
+      "type": "number",
+      "label": "Laufgeschwindigkeit (px pro Sekunde)",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeMargin",
+      "type": "number",
+      "label": "Abstand zum Rand",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 0,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMin",
+      "type": "number",
+      "label": "Kürzeste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 100,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMax",
+      "type": "number",
+      "label": "Längste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 600,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkWeight",
+      "type": "number",
+      "label": "Häufigkeit: wandern",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleWeight",
+      "type": "number",
+      "label": "Häufigkeit: auf der Stelle schweben",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleMinMs",
+      "type": "number",
+      "label": "Schweben mindestens",
+      "group": "Minimes: Bewegung",
+      "default": 2000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeIdleMaxMs",
+      "type": "number",
+      "label": "Schweben höchstens",
+      "group": "Minimes: Bewegung",
+      "default": 6000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeEnterMs",
+      "type": "number",
+      "label": "Dauer: erscheinen",
+      "group": "Minimes: Bewegung",
+      "default": 1200,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeExitMs",
+      "type": "number",
+      "label": "Dauer: verschwinden",
+      "group": "Minimes: Bewegung",
+      "default": 900,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimePlacement",
+      "type": "select",
+      "label": "Plätze: frei verteilt (random) oder feste Plätze (slots)",
+      "group": "Minimes: Bewegung",
+      "default": "random",
+      "options": [
+        "random",
+        "slots"
+      ]
+    },
+    {
+      "key": "minimeColorCommand",
+      "type": "text",
+      "label": "Befehl: Farbe ändern",
+      "group": "Minimes: Befehle",
+      "default": "!color",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeMinBrightness",
+      "type": "number",
+      "label": "Mindesthelligkeit der Farbe (0 bis 255)",
+      "group": "Minimes: Regeln",
+      "default": 80,
+      "min": 0,
+      "max": 255
+    },
+    {
+      "key": "minimeUseTwitchColor",
+      "type": "boolean",
+      "label": "Ohne eigene Farbe die Twitch-Namensfarbe nehmen",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "hopHeight",
+      "type": "number",
+      "label": "Sprunghöhe",
+      "group": "Minimes: Hüpfen",
+      "default": 26,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "hopMs",
+      "type": "number",
+      "label": "Dauer eines Sprungs",
+      "group": "Minimes: Hüpfen",
+      "default": 420,
+      "min": 150,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "hopSquash",
+      "type": "number",
+      "label": "Stauchen beim Aufkommen",
+      "group": "Minimes: Hüpfen",
+      "default": 0.2,
+      "min": 0,
+      "max": 0.6,
+      "step": 0.05
+    },
+    {
+      "key": "minimeDefaultColor",
+      "type": "color",
+      "label": "Farbe ohne eigene Wahl",
+      "group": "Minimes: Aussehen",
+      "default": "#d123a0",
+      "basic": true
+    },
+    {
+      "key": "minimeSize",
+      "type": "number",
+      "label": "Breite der Figur",
+      "group": "Minimes: Aussehen",
+      "default": 90,
+      "min": 30,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "minimeGround",
+      "type": "number",
+      "label": "Abstand zum unteren Rand",
+      "group": "Minimes: Aussehen",
+      "default": 30,
+      "min": 0,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "minimeStroke",
+      "type": "number",
+      "label": "Strichstärke",
+      "group": "Minimes: Aussehen",
+      "default": 3,
+      "min": 0.5,
+      "max": 10,
+      "step": 0.5
+    },
+    {
+      "key": "minimeGlow",
+      "type": "number",
+      "label": "Leuchten (Stärke)",
+      "group": "Minimes: Aussehen",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "minimeShadow",
+      "type": "number",
+      "label": "Schatten (Stärke)",
+      "group": "Minimes: Aussehen",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "minimeNames",
+      "type": "boolean",
+      "label": "Namen anzeigen",
+      "group": "Minimes: Aussehen",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "minimeNameSize",
+      "type": "number",
+      "label": "Name: Schriftgrösse",
+      "group": "Minimes: Aussehen",
+      "default": 20,
+      "min": 8,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "minimeNameGap",
+      "type": "number",
+      "label": "Name: Abstand zum Kopf",
+      "group": "Minimes: Aussehen",
+      "default": 2,
+      "min": 0,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWiggleWeight",
+      "type": "number",
+      "label": "Zappeln: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 10,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeWiggleMs",
+      "type": "number",
+      "label": "Zappeln: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1200,
+      "min": 200,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeGrinWeight",
+      "type": "number",
+      "label": "Grinsen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 8,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeGrinMs",
+      "type": "number",
+      "label": "Grinsen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1800,
+      "min": 200,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStarWeight",
+      "type": "number",
+      "label": "Kritzel-Stern: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 6,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeStarMs",
+      "type": "number",
+      "label": "Kritzel-Stern: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 2000,
+      "min": 200,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeTumbleWeight",
+      "type": "number",
+      "label": "Umfallen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 5,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeTumbleMs",
+      "type": "number",
+      "label": "Umfallen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 2400,
+      "min": 500,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeSleepWeight",
+      "type": "number",
+      "label": "Schlafen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 4,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeSleepMs",
+      "type": "number",
+      "label": "Schlafen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 7000,
+      "min": 1000,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeSleepScrawls",
+      "type": "number",
+      "label": "Schlafen: aufsteigende Krakel",
+      "group": "Minimes: Animationen",
+      "default": 3,
+      "min": 1,
+      "max": 8
+    },
+    {
+      "key": "minimeSplatMs",
+      "type": "number",
+      "label": "Reaktion auf Chat (Spray-Klecks): Dauer",
+      "group": "Minimes: Animationen",
+      "default": 900,
+      "min": 200,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeSplatSize",
+      "type": "number",
+      "label": "Spray-Klecks: Grösse (Faktor)",
+      "group": "Minimes: Animationen",
+      "default": 1.4,
+      "min": 0.5,
+      "max": 4,
+      "step": 0.1
+    },
+    {
       "key": "infoTitle",
       "type": "text",
       "label": "Titel",
@@ -1611,6 +2105,24 @@
     ],
     "Stinger": [],
     "Banner": [],
+    "Minimes: Aussehen": [
+      "minimes"
+    ],
+    "Minimes: Animationen": [
+      "minimes"
+    ],
+    "Minimes: Befehle": [
+      "minimes"
+    ],
+    "Minimes: Regeln": [
+      "minimes"
+    ],
+    "Minimes: Bewegung": [
+      "minimes"
+    ],
+    "Minimes: Hüpfen": [
+      "minimes"
+    ],
     "Befehlsseite": [
       "info"
     ]

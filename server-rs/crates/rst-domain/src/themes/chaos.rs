@@ -13,6 +13,9 @@ use crate::settings::field::{
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
+use crate::themes::minime_fields::{
+    MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, minime_fields, minime_hop_fields,
+};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
 
@@ -31,6 +34,8 @@ const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
 const BANNER: &str = "Banner";
+const MINIME_LOOK: &str = "Minimes: Aussehen";
+const MINIME_MOVES: &str = "Minimes: Animationen";
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -234,8 +239,44 @@ fn stinger_banner() -> Vec<SettingField> {
     ]
 }
 
+fn minimes() -> Vec<SettingField> {
+    vec![
+        color("minimeDefaultColor", "Farbe ohne eigene Wahl", MINIME_LOOK, "#d123a0"),
+        number("minimeSize", "Breite der Figur", MINIME_LOOK, 90.0, 30.0, 300.0, PX, None),
+        number("minimeGround", "Abstand zum unteren Rand", MINIME_LOOK, 30.0, 0.0, 300.0, PX, None),
+        number("minimeStroke", "Strichstärke", MINIME_LOOK, 3.0, 0.5, 10.0, None, Some(0.5)),
+        number("minimeGlow", "Leuchten (Stärke)", MINIME_LOOK, 1.0, 0.0, 3.0, None, Some(0.1)),
+        number("minimeShadow", "Schatten (Stärke)", MINIME_LOOK, 0.5, 0.0, 1.0, None, STEP),
+        flag("minimeNames", "Namen anzeigen", MINIME_LOOK, true),
+        number("minimeNameSize", "Name: Schriftgrösse", MINIME_LOOK, 20.0, 8.0, 48.0, PX, None),
+        number("minimeNameGap", "Name: Abstand zum Kopf", MINIME_LOOK, 2.0, 0.0, 60.0, PX, None),
+        number("minimeWiggleWeight", "Zappeln: Häufigkeit", MINIME_MOVES, 10.0, 0.0, 100.0, None, None),
+        number("minimeWiggleMs", "Zappeln: Dauer", MINIME_MOVES, 1200.0, 200.0, 10_000.0, MS, None),
+        number("minimeGrinWeight", "Grinsen: Häufigkeit", MINIME_MOVES, 8.0, 0.0, 100.0, None, None),
+        number("minimeGrinMs", "Grinsen: Dauer", MINIME_MOVES, 1800.0, 200.0, 10_000.0, MS, None),
+        number("minimeStarWeight", "Kritzel-Stern: Häufigkeit", MINIME_MOVES, 6.0, 0.0, 100.0, None, None),
+        number("minimeStarMs", "Kritzel-Stern: Dauer", MINIME_MOVES, 2000.0, 200.0, 10_000.0, MS, None),
+        number("minimeTumbleWeight", "Umfallen: Häufigkeit", MINIME_MOVES, 5.0, 0.0, 100.0, None, None),
+        number("minimeTumbleMs", "Umfallen: Dauer", MINIME_MOVES, 2400.0, 500.0, 10_000.0, MS, None),
+        number("minimeSleepWeight", "Schlafen: Häufigkeit", MINIME_MOVES, 4.0, 0.0, 100.0, None, None),
+        number("minimeSleepMs", "Schlafen: Dauer", MINIME_MOVES, 7000.0, 1000.0, 60_000.0, MS, None),
+        number("minimeSleepScrawls", "Schlafen: aufsteigende Krakel", MINIME_MOVES, 3.0, 1.0, 8.0, None, None),
+        number(
+            "minimeSplatMs",
+            "Reaktion auf Chat (Spray-Klecks): Dauer",
+            MINIME_MOVES,
+            900.0,
+            200.0,
+            5000.0,
+            MS,
+            None,
+        ),
+        number("minimeSplatSize", "Spray-Klecks: Grösse (Faktor)", MINIME_MOVES, 1.4, 0.5, 4.0, None, Some(0.1)),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
-    use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Music, Starting};
+    use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Minimes, Music, Starting};
     [
         (SCREENS, vec![Starting, Brb, Ending]),
         (ALERTS, vec![Alerts]),
@@ -245,6 +286,12 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (FX, vec![Fx]),
         (STINGER, vec![]),
         (BANNER, vec![]),
+        (MINIME_LOOK, vec![Minimes]),
+        (MINIME_MOVES, vec![Minimes]),
+        (MINIME_COMMANDS, vec![Minimes]),
+        (MINIME_RULES, vec![Minimes]),
+        (MINIME_MOTION, vec![Minimes]),
+        (MINIME_HOP, vec![Minimes]),
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()
@@ -295,6 +342,8 @@ const BASIC: &[&str] = &[
     "musicStyle",
     "musicLabel",
     "musicIdle",
+    "minimeDefaultColor",
+    "minimeNames",
 ];
 
 #[must_use]
@@ -309,6 +358,9 @@ pub fn chaos() -> Theme {
         badge_fields(CHAT),
         chat_cam_music_fx(),
         stinger_banner(),
+        minime_fields(),
+        minime_hop_fields(),
+        minimes(),
         info_fields(),
     ]
     .concat();

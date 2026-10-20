@@ -1,0 +1,144 @@
+/* Minimes of the Chaos theme (scenes/Minimes.tsx), encapsulated under .theme-chaos, loaded only with the scene. Settings
+   come as CSS variables (--minimeSize, --minimeStroke, ...); per monster the core sets --x, --move, --action-ms and
+   --facing, the scene --minime (color of the chatter) and the hops (minimeHops.css). The running action is the class
+   action-<name> on the monster. Keyframes are chaos-minime-*. */
+
+.theme-chaos .ch-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+
+.theme-chaos .ch-minime {
+  position: absolute;
+  left: 0;
+  bottom: var(--minimeGround);
+  width: var(--minimeSize);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(calc(var(--x) - 50%));
+  transition: transform var(--move) linear;
+}
+
+.theme-chaos .ch-minime-name {
+  margin-bottom: var(--minimeNameGap);
+  font-family: var(--titleFont), var(--font), sans-serif;
+  font-size: var(--minimeNameSize);
+  color: var(--minime);
+  white-space: nowrap;
+  text-shadow: 0 0 calc(var(--minimeGlow) * var(--name-glow, 6px)) var(--minime), 0 var(--name-drop, 2px) 0 var(--ground);
+}
+
+.theme-chaos .ch-minime-figure { position: relative; width: 100%; }
+.theme-chaos .ch-minime-flip { scale: var(--facing) 1; }
+.theme-chaos .ch-minime-action { transform-origin: 50% 100%; }
+
+/* The monster: shaky lines in the color of the chatter with glow; the stroke keeps its width at every size */
+.theme-chaos .ch-monster {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 calc(var(--minimeGlow) * var(--monster-glow, 5px)) var(--minime));
+}
+.theme-chaos .ch-monster path {
+  fill: none;
+  stroke: var(--minime);
+  stroke-width: calc(var(--minimeStroke) * var(--stroke-unit, 1px));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.theme-chaos .ch-monster .ch-monster-body { fill: color-mix(in srgb, var(--minime) var(--body-tint, 14%), var(--ground)); }
+.theme-chaos .ch-monster .ch-monster-pupil { stroke: var(--textColor); stroke-width: calc(var(--minimeStroke) * var(--pupil, 2.4px)); }
+.theme-chaos .ch-monster-arm { transform-box: fill-box; }
+.theme-chaos .ch-monster-arm:first-of-type { transform-origin: 100% 100%; }
+.theme-chaos .ch-monster-arm:last-of-type { transform-origin: 0 100%; }
+
+.theme-chaos .ch-minime-shadow {
+  width: var(--shadow-width, 60%);
+  height: var(--shadow-height, 8px);
+  margin-top: calc(-1 * var(--shadow-overlap, 4px));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--minime) calc(var(--minimeShadow) * 60%), transparent);
+  filter: blur(var(--shadow-blur, 3px));
+}
+
+/* Standing still: a slow sway, so the monster never looks frozen */
+.theme-chaos .action-idle .ch-minime-action { animation: chaos-minime-sway var(--sway-ms, 1600ms) ease-in-out infinite alternate; }
+
+/* Own animations */
+.theme-chaos .action-wiggle .ch-minime-action { animation: chaos-minime-wiggle calc(var(--action-ms) / 6) ease-in-out 6; }
+.theme-chaos .action-wiggle .ch-monster-arm { animation: chaos-minime-flap calc(var(--action-ms) / 8) ease-in-out 8; }
+.theme-chaos .action-grin .ch-minime-action { animation: chaos-minime-grin var(--action-ms) ease-in-out both; }
+.theme-chaos .action-tumble .ch-minime-action { animation: chaos-minime-tumble var(--action-ms) ease-in-out both; }
+.theme-chaos .action-sleep .ch-minime-action { animation: chaos-minime-doze var(--action-ms) ease-in-out both; }
+.theme-chaos .action-splat .ch-minime-action { animation: chaos-minime-squash var(--action-ms) ease-out both; }
+
+/* Marks around the head: scribble star, rising scrawls, the splat on the wall behind */
+.theme-chaos .ch-minime-star, .theme-chaos .ch-minime-scrawl, .theme-chaos .ch-minime-splat { position: absolute; overflow: visible; }
+.theme-chaos .ch-minime-star path, .theme-chaos .ch-minime-scrawl path {
+  fill: none;
+  stroke: var(--minime);
+  stroke-width: calc(var(--minimeStroke) * var(--stroke-unit, 1px));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.theme-chaos .ch-minime-star {
+  left: 50%;
+  bottom: 100%;
+  width: var(--star-size, 45%);
+  margin-left: calc(var(--star-size, 45%) / -2);
+  filter: drop-shadow(0 0 calc(var(--minimeGlow) * var(--monster-glow, 5px)) var(--minime));
+  animation: chaos-minime-star var(--action-ms) ease-out both;
+}
+.theme-chaos .ch-minime-scrawl {
+  right: 0;
+  bottom: 60%;
+  width: var(--scrawl-size, 35%);
+  opacity: 0;
+  animation: chaos-minime-rise calc(var(--action-ms) / 3) ease-out calc(var(--index) * var(--action-ms) / 4) 2;
+}
+.theme-chaos .ch-minime-splat {
+  left: 50%;
+  top: 50%;
+  width: calc(100% * var(--minimeSplatSize));
+  translate: -50% -50%;
+  animation: chaos-minime-splat var(--action-ms) ease-out both;
+}
+.theme-chaos .ch-minime-splat path { fill: var(--minime); stroke: none; }
+
+/* Appearing and disappearing: sprayed onto the wall and fading away */
+.theme-chaos .action-enter .ch-minime-action { animation: chaos-minime-spray-in var(--action-ms) cubic-bezier(0.3, 1.5, 0.6, 1) both; }
+.theme-chaos .action-enter .ch-minime-name, .theme-chaos .action-enter .ch-minime-shadow { animation: chaos-minime-fade-in var(--action-ms) ease-out both; }
+.theme-chaos .action-exit .ch-minime-action { animation: chaos-minime-spray-out var(--action-ms) ease-in forwards; }
+.theme-chaos .action-exit .ch-minime-name, .theme-chaos .action-exit .ch-minime-shadow { animation: chaos-minime-fade-out var(--action-ms) ease-in forwards; }
+
+@keyframes chaos-minime-sway { from { rotate: calc(-1 * var(--sway, 2deg)); } to { rotate: var(--sway, 2deg); } }
+@keyframes chaos-minime-wiggle {
+  0%, 100% { rotate: 0deg; translate: 0 0; }
+  25% { rotate: calc(-1 * var(--wiggle, 9deg)); translate: calc(-1 * var(--wiggle-shift, 3px)) 0; }
+  75% { rotate: var(--wiggle, 9deg); translate: var(--wiggle-shift, 3px) 0; }
+}
+@keyframes chaos-minime-flap { 0%, 100% { rotate: 0deg; } 50% { rotate: var(--flap, -35deg); } }
+@keyframes chaos-minime-grin { 0%, 100% { scale: 1 1; } 15%, 85% { scale: var(--grin-scale, 1.06) var(--grin-scale, 1.06); } }
+@keyframes chaos-minime-tumble {
+  0% { rotate: 0deg; translate: 0 0; }
+  18% { rotate: calc(var(--facing) * var(--tumble, 100deg)); translate: calc(var(--facing) * var(--tumble-shift, 18px)) 0; }
+  24%, 66% { rotate: calc(var(--facing) * (var(--tumble, 100deg) - 10deg)); translate: calc(var(--facing) * var(--tumble-shift, 18px)) 0; }
+  84% { rotate: calc(var(--facing) * -8deg); translate: 0 calc(-1 * var(--tumble-hop, 10px)); }
+  100% { rotate: 0deg; translate: 0 0; }
+}
+@keyframes chaos-minime-doze { 0%, 100% { scale: 1 1; } 10%, 90% { scale: 1.05 0.9; } 50% { scale: 1.02 0.94; } }
+@keyframes chaos-minime-squash { 0% { scale: 1 1; } 20% { scale: 1.12 0.86; } 45% { scale: 0.96 1.06; } 100% { scale: 1 1; } }
+@keyframes chaos-minime-star {
+  0% { scale: 0; rotate: -90deg; opacity: 0; }
+  20% { scale: 1.25; rotate: 10deg; opacity: 1; }
+  30% { scale: 1; rotate: 0deg; }
+  80% { opacity: 1; translate: 0 calc(-1 * var(--star-rise, 10px)); }
+  100% { opacity: 0; translate: 0 calc(-1 * var(--star-rise, 10px)); }
+}
+@keyframes chaos-minime-rise { 0% { opacity: 0; translate: 0 0; scale: 0.6; } 30% { opacity: 1; } 100% { opacity: 0; translate: var(--rise-x, 14px) calc(-1 * var(--rise-y, 50px)); scale: 1; } }
+@keyframes chaos-minime-splat { 0% { scale: 0; opacity: 0.95; } 15% { scale: 1; opacity: 0.95; } 60% { opacity: 0.8; } 100% { scale: 1.05; opacity: 0; } }
+@keyframes chaos-minime-spray-in { 0% { scale: 0.2; opacity: 0; filter: blur(var(--spray-blur, 6px)); } 60% { opacity: 1; filter: blur(0); } 100% { scale: 1; opacity: 1; } }
+@keyframes chaos-minime-spray-out { 0% { scale: 1; opacity: 1; } 100% { scale: 0.6 0.2; opacity: 0; filter: blur(var(--spray-blur, 6px)); } }
+@keyframes chaos-minime-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes chaos-minime-fade-out { from { opacity: 1; } to { opacity: 0; } }

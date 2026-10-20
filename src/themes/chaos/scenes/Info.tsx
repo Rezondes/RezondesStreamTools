@@ -1,8 +1,8 @@
 // Commands page of the Chaos theme (public under /s/<login>/): the wall full of scribbles stands behind, in front of it the
 // sprayed title, the intro and per section a note with the commands on tape, explanation and details. List, texts and
-// intro come from the info context of the core (useInfoPage). The theme has no minimes yet, so the demo only shows help
-// and triggers.
+// intro come from the info context of the core (useInfoPage); the demo shows the minime commands from the own values.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
+import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import Backdrop from "../Backdrop.tsx";
 import Note, { inkOf } from "../Note.tsx";
 import SprayTitle from "../SprayTitle.tsx";
@@ -10,7 +10,7 @@ import { chaosNames, useChaos } from "../useChaos.ts";
 
 export default function Info() {
   const values = useChaos();
-  const page = useInfoPage(values, chaosNames(values), null);
+  const page = useInfoPage(values, chaosNames(values), readMinimeOptions(values).rules);
   if (!page) return null;
   return (
     <div className="ch-info">

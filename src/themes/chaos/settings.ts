@@ -6,6 +6,7 @@ import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, inScene, lines, markBasic, number, text } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
+import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 const FONTS = ["Space Grotesk", "Inter", "Manrope", "DM Sans"] as const;
@@ -23,6 +24,8 @@ const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
 const BANNER = "Banner";
+const MINIME_LOOK = "Minimes: Aussehen";
+const MINIME_MOVES = "Minimes: Animationen";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "CHAOS", 40),
@@ -168,6 +171,31 @@ const FIELDS = [
   number("bannerLoop", "Schleifenlänge", BANNER, 4, 1, 20, "s"),
   number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
   number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
+  // Minimes: commands, rules, movement and hopping are the same for all themes with minimes; the look is the monster
+  ...MINIME_FIELDS,
+  ...MINIME_HOP_FIELDS,
+  color("minimeDefaultColor", "Farbe ohne eigene Wahl", MINIME_LOOK, "#d123a0"),
+  number("minimeSize", "Breite der Figur", MINIME_LOOK, 90, 30, 300, "px"),
+  number("minimeGround", "Abstand zum unteren Rand", MINIME_LOOK, 30, 0, 300, "px"),
+  number("minimeStroke", "Strichstärke", MINIME_LOOK, 3, 0.5, 10, undefined, 0.5),
+  number("minimeGlow", "Leuchten (Stärke)", MINIME_LOOK, 1, 0, 3, undefined, 0.1),
+  number("minimeShadow", "Schatten (Stärke)", MINIME_LOOK, 0.5, 0, 1, undefined, 0.05),
+  flag("minimeNames", "Namen anzeigen", MINIME_LOOK, true),
+  number("minimeNameSize", "Name: Schriftgrösse", MINIME_LOOK, 20, 8, 48, "px"),
+  number("minimeNameGap", "Name: Abstand zum Kopf", MINIME_LOOK, 2, 0, 60, "px"),
+  number("minimeWiggleWeight", "Zappeln: Häufigkeit", MINIME_MOVES, 10, 0, 100),
+  number("minimeWiggleMs", "Zappeln: Dauer", MINIME_MOVES, 1200, 200, 10000, "ms"),
+  number("minimeGrinWeight", "Grinsen: Häufigkeit", MINIME_MOVES, 8, 0, 100),
+  number("minimeGrinMs", "Grinsen: Dauer", MINIME_MOVES, 1800, 200, 10000, "ms"),
+  number("minimeStarWeight", "Kritzel-Stern: Häufigkeit", MINIME_MOVES, 6, 0, 100),
+  number("minimeStarMs", "Kritzel-Stern: Dauer", MINIME_MOVES, 2000, 200, 10000, "ms"),
+  number("minimeTumbleWeight", "Umfallen: Häufigkeit", MINIME_MOVES, 5, 0, 100),
+  number("minimeTumbleMs", "Umfallen: Dauer", MINIME_MOVES, 2400, 500, 10000, "ms"),
+  number("minimeSleepWeight", "Schlafen: Häufigkeit", MINIME_MOVES, 4, 0, 100),
+  number("minimeSleepMs", "Schlafen: Dauer", MINIME_MOVES, 7000, 1000, 60000, "ms"),
+  number("minimeSleepScrawls", "Schlafen: aufsteigende Krakel", MINIME_MOVES, 3, 1, 8),
+  number("minimeSplatMs", "Reaktion auf Chat (Spray-Klecks): Dauer", MINIME_MOVES, 900, 200, 5000, "ms"),
+  number("minimeSplatSize", "Spray-Klecks: Grösse (Faktor)", MINIME_MOVES, 1.4, 0.5, 4, undefined, 0.1),
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
@@ -185,6 +213,12 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [STINGER]: [],
   [BANNER]: [],
+  [MINIME_LOOK]: ["minimes"],
+  [MINIME_MOVES]: ["minimes"],
+  [MINIME_COMMANDS]: ["minimes"],
+  [MINIME_RULES]: ["minimes"],
+  [MINIME_MOTION]: ["minimes"],
+  [MINIME_HOP]: ["minimes"],
   [INFO_GROUP]: ["info"],
 } as const;
 
@@ -197,6 +231,7 @@ const BASIC = [
   "startingEyebrow", "startingTitle", "startingLines", "countdownDone", "ticker", "brbEyebrow", "brbTitle", "brbLines", "endingEyebrow",
   "endingTitle", "endingNext", "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine",
   "hypeBeginLine", "alertSide", "chatStyle", "chatBadges", "camStyle", "camLabel", "camLive", "musicStyle", "musicLabel", "musicIdle",
+  "minimeDefaultColor", "minimeNames",
 ];
 
 export const chaosSettings: ThemeSchema = { id: "chaos", name: "Chaos", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };
