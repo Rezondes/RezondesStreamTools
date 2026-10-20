@@ -5,7 +5,7 @@
 // The theme creates the look and its own animations itself. readMinimeOptions reads the values for the server (rules)
 // and the hook (movement).
 // Check: minimeFields.check.ts.
-import { choice, color, flag, number, sound, text, withDefaults, type ValuesOf } from "./fields.ts";
+import { basic, choice, color, flag, number, sound, text, withDefaults, type ValuesOf } from "./fields.ts";
 import { INFO_GROUP } from "./infoFields.ts";
 import { normalizeName, type MinimeRules, type MinimeVariantRule } from "./minimes.ts";
 import { resolveSettings } from "./settings.ts";
@@ -32,12 +32,12 @@ const COMMAND = /^!\S{1,24}$/;
 
 // For all themes with minimes: commands to join and leave, roles, rules of the list, movement
 export const MINIME_BASE_FIELDS = [
-  text("minimeJoinCommand", "Befehl: einklinken (optional mit Farbe oder Typ)", MINIME_COMMANDS, "!join", 25),
-  text("minimeLeaveCommand", "Befehl: verlassen (Mods: mit @name rauswerfen)", MINIME_COMMANDS, "!leave", 25),
+  basic(text("minimeJoinCommand", "Befehl: einklinken (optional mit Farbe oder Typ)", MINIME_COMMANDS, "!join", 25)),
+  basic(text("minimeLeaveCommand", "Befehl: verlassen (Mods: mit @name rauswerfen)", MINIME_COMMANDS, "!leave", 25)),
   choice("minimeJoinRole", "Einklinken ab Rolle", MINIME_COMMANDS, "everyone", ROLES),
   choice("minimeKickRole", "Fremde rauswerfen ab Rolle", MINIME_COMMANDS, "moderator", ROLES),
   flag("minimeColorJoins", "Befehl für Farbe oder Typ klinkt auch ein", MINIME_COMMANDS, true),
-  number("minimeMax", "Höchstzahl gleichzeitig", MINIME_RULES, 30, 1, 100),
+  basic(number("minimeMax", "Höchstzahl gleichzeitig", MINIME_RULES, 30, 1, 100)),
   choice("minimeWhenFull", "Wenn voll: Inaktivsten ersetzen (replace) oder Neue abweisen (reject)", MINIME_RULES, "replace", WHEN_FULL),
   number("minimeIdleMinutes", "Verschwindet nach Minuten ohne Nachricht (0 = nie)", MINIME_RULES, 20, 0, 240),
   number("minimeColorCooldown", "Abklingzeit Farb- oder Typwechsel", MINIME_RULES, 10, 0, 300, "s"),
@@ -73,7 +73,7 @@ export const minimeFireKey = (id: string) => `minimeFireMs_${id}`;
 // role except the medic the durations of aiming and firing
 export function minimeCombatFields(set: MinimeVariantSet): SettingField[] {
   return [
-    flag("minimeCombat", "Gefechte an", MINIME_COMBAT, true),
+    basic(flag("minimeCombat", "Gefechte an", MINIME_COMBAT, true)),
     number("minimeCombatMinS", "Abstand zwischen Gefechten: mindestens", MINIME_COMBAT, 20, 5, 600, "s"),
     number("minimeCombatMaxS", "Abstand zwischen Gefechten: höchstens", MINIME_COMBAT, 60, 5, 600, "s"),
     number("minimeCombatMax", "Gleichzeitige Gefechte", MINIME_COMBAT, 2, 1, 10),
@@ -108,7 +108,7 @@ export function minimeStackFields(set: MinimeVariantSet, defaults: Readonly<Reco
   const ids = set.variants.map(variant => variant.id);
   const [level1, level2, level3] = STACK_LEVEL_KEYS;
   return withDefaults([
-    flag("minimeStack", "Türme an", MINIME_STACK, false),
+    basic(flag("minimeStack", "Türme an", MINIME_STACK, false)),
     number("minimeStackMinS", "Abstand zwischen Türmen: mindestens", MINIME_STACK, 30, 5, 600, "s"),
     number("minimeStackMaxS", "Abstand zwischen Türmen: höchstens", MINIME_STACK, 90, 5, 600, "s"),
     number("minimeStackMax", "Gleichzeitige Türme", MINIME_STACK, 1, 1, 5),
@@ -130,7 +130,7 @@ export function minimeStackFields(set: MinimeVariantSet, defaults: Readonly<Reco
 
 // Only for color themes: command to change color, minimum brightness, Twitch name color
 const MINIME_COLOR_FIELDS = [
-  text("minimeColorCommand", "Befehl: Farbe ändern", MINIME_COMMANDS, "!color", 25),
+  basic(text("minimeColorCommand", "Befehl: Farbe ändern", MINIME_COMMANDS, "!color", 25)),
   number("minimeMinBrightness", "Mindesthelligkeit der Farbe (0 bis 255)", MINIME_RULES, 80, 0, 255),
   flag("minimeUseTwitchColor", "Ohne eigene Farbe die Twitch-Namensfarbe nehmen", MINIME_RULES, true),
 ] as const satisfies readonly SettingField[];
@@ -147,7 +147,7 @@ export const minimeNamesKey = (id: string) => `minimeNames_${id}`;
 // an empty list switches the variant off
 export function minimeVariantFields(set: MinimeVariantSet): SettingField[] {
   return [
-    text("minimeVariantCommand", `Befehl: ${set.label} wählen`, MINIME_VARIANTS, set.command, 25),
+    basic(text("minimeVariantCommand", `Befehl: ${set.label} wählen`, MINIME_VARIANTS, set.command, 25)),
     ...set.variants.map(variant => text(minimeNamesKey(variant.id), `${variant.label}: Namen im Chat (leer = aus)`, MINIME_VARIANTS, variant.names.join(", "), 200)),
   ];
 }
@@ -161,7 +161,7 @@ export const minimeTeamColorKey = (id: string) => `minimeTeamColor_${id}`;
 // (empty = off), the shown name and the color
 export function minimeTeamFields(set: MinimeVariantSet): SettingField[] {
   return [
-    text("minimeTeamCommand", `Befehl: ${set.label} wählen`, MINIME_TEAMS, set.command, 25),
+    basic(text("minimeTeamCommand", `Befehl: ${set.label} wählen`, MINIME_TEAMS, set.command, 25)),
     text("infoTeamText", `${set.label} wählen: Erklärung ({command})`, INFO_GROUP, `${set.label} wählen: {command} <Name>`),
     text("infoTeams", "Liste der Fraktionen ({names})", INFO_GROUP, "Zur Wahl: {names}"),
     ...set.variants.flatMap(team => [

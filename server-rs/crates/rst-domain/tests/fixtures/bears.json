@@ -2192,7 +2192,8 @@
       "label": "Befehl: einklinken (optional mit Farbe oder Typ)",
       "group": "Minimes: Befehle",
       "default": "!join",
-      "maxLength": 25
+      "maxLength": 25,
+      "basic": true
     },
     {
       "key": "minimeLeaveCommand",
@@ -2200,7 +2201,8 @@
       "label": "Befehl: verlassen (Mods: mit @name rauswerfen)",
       "group": "Minimes: Befehle",
       "default": "!leave",
-      "maxLength": 25
+      "maxLength": 25,
+      "basic": true
     },
     {
       "key": "minimeJoinRole",
@@ -2244,7 +2246,8 @@
       "group": "Minimes: Regeln",
       "default": 30,
       "min": 1,
-      "max": 100
+      "max": 100,
+      "basic": true
     },
     {
       "key": "minimeWhenFull",
@@ -2649,7 +2652,8 @@
       "type": "boolean",
       "label": "Türme an",
       "group": "Minimes: Türme",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "minimeStackMinS",
@@ -2865,7 +2869,8 @@
       "label": "Titel",
       "group": "Befehlsseite",
       "default": "Chat-Befehle",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "infoIntro",
@@ -2873,7 +2878,8 @@
       "label": "Einleitung ({channel})",
       "group": "Befehlsseite",
       "default": "Das kannst du im Chat von {channel} tippen.",
-      "maxLength": 500
+      "maxLength": 500,
+      "basic": true
     },
     {
       "key": "infoEmpty",
@@ -3115,7 +3121,8 @@
       "label": "Befehl: Bär wählen",
       "group": "Minimes: Typen",
       "default": "!baer",
-      "maxLength": 25
+      "maxLength": 25,
+      "basic": true
     },
     {
       "key": "minimeNames_eisbaer",

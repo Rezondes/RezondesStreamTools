@@ -3,15 +3,15 @@
 // texts. Every theme decides the look itself. Placeholders: {channel} in the intro, otherwise as given at the field.
 // Pure; check: infoFields.check.ts.
 import type { CommandItem, CommandList } from "./commands.ts";
-import { text, textarea, type ValuesOf } from "./fields.ts";
+import { basic, text, textarea, type ValuesOf } from "./fields.ts";
 import type { SettingField, SettingValues } from "./theme.ts";
 import { fillTemplate } from "./template.ts";
 
 export const INFO_GROUP = "Befehlsseite";
 
 export const INFO_FIELDS = [
-  text("infoTitle", "Titel", INFO_GROUP, "Chat-Befehle"),
-  textarea("infoIntro", "Einleitung ({channel})", INFO_GROUP, "Das kannst du im Chat von {channel} tippen.", 500),
+  basic(text("infoTitle", "Titel", INFO_GROUP, "Chat-Befehle")),
+  basic(textarea("infoIntro", "Einleitung ({channel})", INFO_GROUP, "Das kannst du im Chat von {channel} tippen.", 500)),
   text("infoEmpty", "Text, wenn es keine Befehle gibt", INFO_GROUP, "Gerade gibt es hier keine Befehle."),
   text("infoHelpHeading", "Überschrift: Hilfe", INFO_GROUP, "Hilfe"),
   text("infoMinimesHeading", "Überschrift: Minimes", INFO_GROUP, "Minimes"),

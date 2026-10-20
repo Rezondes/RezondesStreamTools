@@ -1,7 +1,7 @@
 //! Shared text fields of the public commands page that every theme with a commands page adds to its schema
 //! (template: `INFO_FIELDS` in `src/core/infoFields.ts`). Labels and defaults are the German UI texts.
 
-use crate::settings::field::{SettingField, text, textarea};
+use crate::settings::field::{SettingField, basic, text, textarea};
 
 pub const INFO_GROUP: &str = "Befehlsseite";
 
@@ -10,14 +10,14 @@ pub const INFO_GROUP: &str = "Befehlsseite";
 pub fn info_fields() -> Vec<SettingField> {
     let group = INFO_GROUP;
     vec![
-        text("infoTitle", "Titel", group, "Chat-Befehle", None),
-        textarea(
+        basic(text("infoTitle", "Titel", group, "Chat-Befehle", None)),
+        basic(textarea(
             "infoIntro",
             "Einleitung ({channel})",
             group,
             "Das kannst du im Chat von {channel} tippen.",
             Some(500),
-        ),
+        )),
         text("infoEmpty", "Text, wenn es keine Befehle gibt", group, "Gerade gibt es hier keine Befehle.", None),
         text("infoHelpHeading", "Überschrift: Hilfe", group, "Hilfe", None),
         text("infoMinimesHeading", "Überschrift: Minimes", group, "Minimes", None),

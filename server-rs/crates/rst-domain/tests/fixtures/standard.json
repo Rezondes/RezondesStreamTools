@@ -743,7 +743,8 @@
       "label": "Titel",
       "group": "Befehlsseite",
       "default": "Chat-Befehle",
-      "maxLength": 200
+      "maxLength": 200,
+      "basic": true
     },
     {
       "key": "infoIntro",
@@ -751,7 +752,8 @@
       "label": "Einleitung ({channel})",
       "group": "Befehlsseite",
       "default": "Das kannst du im Chat von {channel} tippen.",
-      "maxLength": 500
+      "maxLength": 500,
+      "basic": true
     },
     {
       "key": "infoEmpty",

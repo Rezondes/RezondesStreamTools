@@ -3,7 +3,7 @@
 //! [`minime_variant_fields`] of their variants. Reading the values into rules follows with the minimes context.
 
 use crate::settings::field::{
-    SettingField, SettingValue, Unit, choice, color, flag, number, sound, text, with_defaults,
+    SettingField, SettingValue, Unit, basic, choice, color, flag, number, sound, text, with_defaults,
 };
 use crate::themes::info_fields::INFO_GROUP;
 use crate::themes::schema::MinimeVariantSet;
@@ -36,24 +36,24 @@ const COMBAT_SOUNDS: [(&str, &str); 4] = [
 pub fn minime_base_fields() -> Vec<SettingField> {
     let ms = Some(Unit::Ms);
     vec![
-        text(
+        basic(text(
             "minimeJoinCommand",
             "Befehl: einklinken (optional mit Farbe oder Typ)",
             MINIME_COMMANDS,
             "!join",
             Some(25),
-        ),
-        text(
+        )),
+        basic(text(
             "minimeLeaveCommand",
             "Befehl: verlassen (Mods: mit @name rauswerfen)",
             MINIME_COMMANDS,
             "!leave",
             Some(25),
-        ),
+        )),
         choice("minimeJoinRole", "Einklinken ab Rolle", MINIME_COMMANDS, "everyone", &ROLES),
         choice("minimeKickRole", "Fremde rauswerfen ab Rolle", MINIME_COMMANDS, "moderator", &ROLES),
         flag("minimeColorJoins", "Befehl für Farbe oder Typ klinkt auch ein", MINIME_COMMANDS, true),
-        number("minimeMax", "Höchstzahl gleichzeitig", MINIME_RULES, 30.0, 1.0, 100.0, None, None),
+        basic(number("minimeMax", "Höchstzahl gleichzeitig", MINIME_RULES, 30.0, 1.0, 100.0, None, None)),
         choice(
             "minimeWhenFull",
             "Wenn voll: Inaktivsten ersetzen (replace) oder Neue abweisen (reject)",
@@ -133,7 +133,7 @@ pub fn minime_fire_key(id: &str) -> String {
 pub fn minime_combat_fields(set: &MinimeVariantSet) -> Vec<SettingField> {
     let (ms, s) = (Some(Unit::Ms), Some(Unit::S));
     let mut fields = vec![
-        flag("minimeCombat", "Gefechte an", MINIME_COMBAT, true),
+        basic(flag("minimeCombat", "Gefechte an", MINIME_COMBAT, true)),
         number("minimeCombatMinS", "Abstand zwischen Gefechten: mindestens", MINIME_COMBAT, 20.0, 5.0, 600.0, s, None),
         number("minimeCombatMaxS", "Abstand zwischen Gefechten: höchstens", MINIME_COMBAT, 60.0, 5.0, 600.0, s, None),
         number("minimeCombatMax", "Gleichzeitige Gefechte", MINIME_COMBAT, 2.0, 1.0, 10.0, None, None),
@@ -189,7 +189,7 @@ pub fn minime_stack_fields(set: &MinimeVariantSet, defaults: &[(&str, SettingVal
     let second = ids.get(1).copied().unwrap_or(first);
     let with_none: Vec<&str> = ids.iter().copied().chain([STACK_NONE]).collect();
     let fields = vec![
-        flag("minimeStack", "Türme an", MINIME_STACK, false),
+        basic(flag("minimeStack", "Türme an", MINIME_STACK, false)),
         number("minimeStackMinS", "Abstand zwischen Türmen: mindestens", MINIME_STACK, 30.0, 5.0, 600.0, s, None),
         number("minimeStackMaxS", "Abstand zwischen Türmen: höchstens", MINIME_STACK, 90.0, 5.0, 600.0, s, None),
         number("minimeStackMax", "Gleichzeitige Türme", MINIME_STACK, 1.0, 1.0, 5.0, None, None),
@@ -222,7 +222,7 @@ pub fn minime_stack_fields(set: &MinimeVariantSet, defaults: &[(&str, SettingVal
 /// Only for color themes: command to change color, minimum brightness, Twitch name color
 fn minime_color_fields() -> Vec<SettingField> {
     vec![
-        text("minimeColorCommand", "Befehl: Farbe ändern", MINIME_COMMANDS, "!color", Some(25)),
+        basic(text("minimeColorCommand", "Befehl: Farbe ändern", MINIME_COMMANDS, "!color", Some(25))),
         number(
             "minimeMinBrightness",
             "Mindesthelligkeit der Farbe (0 bis 255)",
@@ -255,8 +255,13 @@ pub fn minime_names_key(id: &str) -> String {
 /// comma-separated; an empty list switches the variant off
 #[must_use]
 pub fn minime_variant_fields(set: &MinimeVariantSet) -> Vec<SettingField> {
-    let command =
-        text("minimeVariantCommand", &format!("Befehl: {} wählen", set.label), MINIME_VARIANTS, &set.command, Some(25));
+    let command = basic(text(
+        "minimeVariantCommand",
+        &format!("Befehl: {} wählen", set.label),
+        MINIME_VARIANTS,
+        &set.command,
+        Some(25),
+    ));
     let names = set.variants.iter().map(|variant| {
         let label = format!("{}: Namen im Chat (leer = aus)", variant.label);
         text(&minime_names_key(&variant.id), &label, MINIME_VARIANTS, &variant.names.join(", "), Some(200))
@@ -287,7 +292,13 @@ pub fn minime_team_color_key(id: &str) -> String {
 #[must_use]
 pub fn minime_team_fields(set: &MinimeVariantSet) -> Vec<SettingField> {
     let mut fields = vec![
-        text("minimeTeamCommand", &format!("Befehl: {} wählen", set.label), MINIME_TEAMS, &set.command, Some(25)),
+        basic(text(
+            "minimeTeamCommand",
+            &format!("Befehl: {} wählen", set.label),
+            MINIME_TEAMS,
+            &set.command,
+            Some(25),
+        )),
         text(
             "infoTeamText",
             &format!("{} wählen: Erklärung ({{command}})", set.label),

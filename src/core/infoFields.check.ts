@@ -45,4 +45,7 @@ const team = describeCommands(commandList("rezondes", null, readMinimeOptions({}
 assert.deepEqual(team.map(entry => entry.command), ["!join", "!rolle", "!team", "!leave"]);
 assert.deepEqual(team[2], { command: "!team", text: "Fraktion wählen: !team <Name>", details: ["Für: alle", "Zur Wahl: blau, rot"] });
 
+// Simple view: title and introduction of the commands page
+assert.deepEqual(INFO_FIELDS.filter(field => "basic" in field).map(field => field.key), ["infoTitle", "infoIntro"]);
+
 console.log("infoFields ok");

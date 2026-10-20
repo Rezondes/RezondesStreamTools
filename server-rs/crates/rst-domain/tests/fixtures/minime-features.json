@@ -29,7 +29,8 @@
         "label": "Befehl: Fraktion wählen",
         "group": "Minimes: Fraktionen",
         "default": "!team",
-        "maxLength": 25
+        "maxLength": 25,
+        "basic": true
       },
       {
         "key": "infoTeamText",
@@ -156,7 +157,8 @@
         "type": "boolean",
         "label": "Gefechte an",
         "group": "Minimes: Gefechte",
-        "default": true
+        "default": true,
+        "basic": true
       },
       {
         "key": "minimeCombatMinS",
@@ -346,7 +348,8 @@
         "type": "boolean",
         "label": "Türme an",
         "group": "Minimes: Türme",
-        "default": true
+        "default": true,
+        "basic": true
       },
       {
         "key": "minimeStackMinS",

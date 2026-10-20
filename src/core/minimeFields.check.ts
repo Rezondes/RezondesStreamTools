@@ -135,4 +135,14 @@ assert.deepEqual(MINIME_FIELDS.map(field => field.key).sort(), [
   assert.ok(validateSettings(schema, { minimeStackMax: 99 }).errors.length > 0);
 }
 
+// Simple view: the commands, the limit and the switches of the features
+const basicKeys = (fields: readonly { key: string; basic?: boolean }[]) => fields.filter(field => field.basic).map(field => field.key);
+const probeSet: MinimeVariantSet = { command: "!typ", label: "Typ", variants: [{ id: "a", label: "A", names: [] }] };
+assert.deepEqual(basicKeys(MINIME_FIELDS), ["minimeJoinCommand", "minimeLeaveCommand", "minimeMax", "minimeColorCommand"]);
+assert.deepEqual(basicKeys(minimeVariantFields(probeSet)), ["minimeVariantCommand"]);
+assert.deepEqual(basicKeys(minimeTeamFields(probeSet)), ["minimeTeamCommand"]);
+assert.deepEqual(basicKeys(minimeCombatFields(probeSet)), ["minimeCombat"]);
+assert.deepEqual(basicKeys(minimeStackFields(probeSet)), ["minimeStack"]);
+assert.deepEqual(basicKeys(MINIME_HOP_FIELDS), []);
+
 console.log("minimeFields ok");
