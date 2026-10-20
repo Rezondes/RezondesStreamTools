@@ -52,9 +52,22 @@ const FIELDS = [
   inScene("starting", choice("gestureStarting", "Starting: Pinselstriche", SCREENS, "zweix", GESTURES)),
   inScene("starting", choice("gestureColorStarting", "Starting: Farbe bei einem X oder Strich", SCREENS, "cyan", GESTURE_COLORS)),
   number("haze", "Dunkler Dunst hinter dem Text", SCREENS, 0.78, 0, 1, undefined, 0.05),
+  inScene("brb", choice("gestureBrb", "BRB: Pinselstriche", SCREENS, "zweix", GESTURES)),
+  inScene("brb", choice("gestureColorBrb", "BRB: Farbe bei einem X oder Strich", SCREENS, "magenta", GESTURE_COLORS)),
+  inScene("ending", choice("gestureEnding", "Ending: Pinselstriche", SCREENS, "zweix", GESTURES)),
+  inScene("ending", choice("gestureColorEnding", "Ending: Farbe bei einem X oder Strich", SCREENS, "cyan", GESTURE_COLORS)),
   inScene("starting", text("startingEyebrow", "Starting: Überzeile", SCREENS, "Stream startet")),
   inScene("starting", text("startingTitle", "Starting: Titel", SCREENS, "Gleich geht's los")),
   inScene("starting", lines("startingLines", "Starting: Sprüche", SCREENS, ["... vielleicht.", "Snacks holen, Chaos vorbereiten.", "Kabel sortieren? Niemals.", "Ordnung ist was für Anfänger."])),
+  inScene("brb", text("brbEyebrow", "BRB: Überzeile", SCREENS, "Kurze Pause")),
+  inScene("brb", text("brbTitle", "BRB: Titel", SCREENS, "Bin gleich zurück")),
+  inScene("brb", lines("brbLines", "BRB: Sprüche", SCREENS, ["Nicht weggehen.", "Das Chaos bleibt, wo es ist.", "Chat, pass auf die Kritzeleien auf."])),
+  inScene("brb", text("afkPrefix", "BRB: Text vor der Pausenzeit", SCREENS, "")),
+  inScene("ending", text("endingEyebrow", "Ending: Überzeile", SCREENS, "Danke fürs Zuschauen")),
+  inScene("ending", text("endingTitle", "Ending: Titel", SCREENS, "Chaos beendet")),
+  inScene("ending", lines("endingLines", "Ending: Sprüche", SCREENS, ["Aufräumen? Morgen vielleicht.", "Bis zum nächsten Chaos!", "Danke, dass ihr da wart."])),
+  inScene("ending", text("endingNextLabel", "Ending: Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream")),
+  inScene("ending", text("endingNext", "Ending: Nächster Stream (leer = ausblenden)", SCREENS, "")),
   number("linesEvery", "Sprüche wechseln alle", SCREENS, 8, 0, 600, "s"),
   inScene("starting", number("countdown", "Countdown-Standard", SCREENS, 300, 0, 86400, "s")),
   inScene("starting", text("countdownPrefix", "Text vor dem Countdown", SCREENS, "")),
@@ -79,7 +92,8 @@ const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 // Simple view of the dashboard: the texts, main colors and switches most streamers change
 const BASIC = [
   "channelName", "font", "titleFont", "accent", "accent2", "textColor", "scribbleColor1", "gestureStarting",
-  "startingEyebrow", "startingTitle", "startingLines", "countdownDone", "ticker",
+  "startingEyebrow", "startingTitle", "startingLines", "countdownDone", "ticker", "brbEyebrow", "brbTitle", "brbLines", "endingEyebrow",
+  "endingTitle", "endingNext",
 ];
 
 export const chaosSettings: ThemeSchema = { id: "chaos", name: "Chaos", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };

@@ -319,6 +319,58 @@
       "step": 0.05
     },
     {
+      "key": "gestureBrb",
+      "type": "select",
+      "label": "BRB: Pinselstriche",
+      "group": "Starting, BRB, Ending",
+      "default": "zweix",
+      "options": [
+        "zweix",
+        "x",
+        "strich",
+        "keine"
+      ],
+      "scene": "brb"
+    },
+    {
+      "key": "gestureColorBrb",
+      "type": "select",
+      "label": "BRB: Farbe bei einem X oder Strich",
+      "group": "Starting, BRB, Ending",
+      "default": "magenta",
+      "options": [
+        "cyan",
+        "magenta"
+      ],
+      "scene": "brb"
+    },
+    {
+      "key": "gestureEnding",
+      "type": "select",
+      "label": "Ending: Pinselstriche",
+      "group": "Starting, BRB, Ending",
+      "default": "zweix",
+      "options": [
+        "zweix",
+        "x",
+        "strich",
+        "keine"
+      ],
+      "scene": "ending"
+    },
+    {
+      "key": "gestureColorEnding",
+      "type": "select",
+      "label": "Ending: Farbe bei einem X oder Strich",
+      "group": "Starting, BRB, Ending",
+      "default": "cyan",
+      "options": [
+        "cyan",
+        "magenta"
+      ],
+      "scene": "ending"
+    },
+    {
       "key": "startingEyebrow",
       "type": "text",
       "label": "Starting: Überzeile",
@@ -351,6 +403,101 @@
       ],
       "maxLines": 100,
       "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "brbEyebrow",
+      "type": "text",
+      "label": "BRB: Überzeile",
+      "group": "Starting, BRB, Ending",
+      "default": "Kurze Pause",
+      "maxLength": 200,
+      "scene": "brb",
+      "basic": true
+    },
+    {
+      "key": "brbTitle",
+      "type": "text",
+      "label": "BRB: Titel",
+      "group": "Starting, BRB, Ending",
+      "default": "Bin gleich zurück",
+      "maxLength": 200,
+      "scene": "brb",
+      "basic": true
+    },
+    {
+      "key": "brbLines",
+      "type": "lines",
+      "label": "BRB: Sprüche",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "Nicht weggehen.",
+        "Das Chaos bleibt, wo es ist.",
+        "Chat, pass auf die Kritzeleien auf."
+      ],
+      "maxLines": 100,
+      "scene": "brb",
+      "basic": true
+    },
+    {
+      "key": "afkPrefix",
+      "type": "text",
+      "label": "BRB: Text vor der Pausenzeit",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "endingEyebrow",
+      "type": "text",
+      "label": "Ending: Überzeile",
+      "group": "Starting, BRB, Ending",
+      "default": "Danke fürs Zuschauen",
+      "maxLength": 200,
+      "scene": "ending",
+      "basic": true
+    },
+    {
+      "key": "endingTitle",
+      "type": "text",
+      "label": "Ending: Titel",
+      "group": "Starting, BRB, Ending",
+      "default": "Chaos beendet",
+      "maxLength": 200,
+      "scene": "ending",
+      "basic": true
+    },
+    {
+      "key": "endingLines",
+      "type": "lines",
+      "label": "Ending: Sprüche",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "Aufräumen? Morgen vielleicht.",
+        "Bis zum nächsten Chaos!",
+        "Danke, dass ihr da wart."
+      ],
+      "maxLines": 100,
+      "scene": "ending"
+    },
+    {
+      "key": "endingNextLabel",
+      "type": "text",
+      "label": "Ending: Nächster Stream (Beschriftung)",
+      "group": "Starting, BRB, Ending",
+      "default": "Nächster Stream",
+      "maxLength": 200,
+      "scene": "ending"
+    },
+    {
+      "key": "endingNext",
+      "type": "text",
+      "label": "Ending: Nächster Stream (leer = ausblenden)",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 200,
+      "scene": "ending",
       "basic": true
     },
     {

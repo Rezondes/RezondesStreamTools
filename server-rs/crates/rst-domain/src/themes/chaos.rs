@@ -72,6 +72,8 @@ fn scribbles() -> Vec<SettingField> {
 
 fn screens() -> Vec<SettingField> {
     let starting = |field| in_scene(SceneName::Starting, field);
+    let brb = |field| in_scene(SceneName::Brb, field);
+    let ending = |field| in_scene(SceneName::Ending, field);
     vec![
         starting(choice("gestureStarting", "Starting: Pinselstriche", SCREENS, "zweix", &GESTURES)),
         starting(choice(
@@ -82,6 +84,10 @@ fn screens() -> Vec<SettingField> {
             &GESTURE_COLORS,
         )),
         number("haze", "Dunkler Dunst hinter dem Text", SCREENS, 0.78, 0.0, 1.0, None, STEP),
+        brb(choice("gestureBrb", "BRB: Pinselstriche", SCREENS, "zweix", &GESTURES)),
+        brb(choice("gestureColorBrb", "BRB: Farbe bei einem X oder Strich", SCREENS, "magenta", &GESTURE_COLORS)),
+        ending(choice("gestureEnding", "Ending: Pinselstriche", SCREENS, "zweix", &GESTURES)),
+        ending(choice("gestureColorEnding", "Ending: Farbe bei einem X oder Strich", SCREENS, "cyan", &GESTURE_COLORS)),
         starting(text("startingEyebrow", "Starting: Überzeile", SCREENS, "Stream startet", None)),
         starting(text("startingTitle", "Starting: Titel", SCREENS, "Gleich geht's los", None)),
         starting(lines(
@@ -96,6 +102,27 @@ fn screens() -> Vec<SettingField> {
             ],
             None,
         )),
+        brb(text("brbEyebrow", "BRB: Überzeile", SCREENS, "Kurze Pause", None)),
+        brb(text("brbTitle", "BRB: Titel", SCREENS, "Bin gleich zurück", None)),
+        brb(lines(
+            "brbLines",
+            "BRB: Sprüche",
+            SCREENS,
+            &["Nicht weggehen.", "Das Chaos bleibt, wo es ist.", "Chat, pass auf die Kritzeleien auf."],
+            None,
+        )),
+        brb(text("afkPrefix", "BRB: Text vor der Pausenzeit", SCREENS, "", None)),
+        ending(text("endingEyebrow", "Ending: Überzeile", SCREENS, "Danke fürs Zuschauen", None)),
+        ending(text("endingTitle", "Ending: Titel", SCREENS, "Chaos beendet", None)),
+        ending(lines(
+            "endingLines",
+            "Ending: Sprüche",
+            SCREENS,
+            &["Aufräumen? Morgen vielleicht.", "Bis zum nächsten Chaos!", "Danke, dass ihr da wart."],
+            None,
+        )),
+        ending(text("endingNextLabel", "Ending: Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream", None)),
+        ending(text("endingNext", "Ending: Nächster Stream (leer = ausblenden)", SCREENS, "", None)),
         number("linesEvery", "Sprüche wechseln alle", SCREENS, 8.0, 0.0, 600.0, S, None),
         starting(number("countdown", "Countdown-Standard", SCREENS, 300.0, 0.0, 86400.0, S, None)),
         starting(text("countdownPrefix", "Text vor dem Countdown", SCREENS, "", None)),
@@ -133,6 +160,12 @@ const BASIC: &[&str] = &[
     "startingLines",
     "countdownDone",
     "ticker",
+    "brbEyebrow",
+    "brbTitle",
+    "brbLines",
+    "endingEyebrow",
+    "endingTitle",
+    "endingNext",
 ];
 
 #[must_use]

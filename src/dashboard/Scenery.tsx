@@ -1,6 +1,6 @@
 // Scenery behind the dashboard in the themed skins, with the shapes and default colors of each theme: Urlaub with sun,
 // palms and beach things, Plantage with the illustrated mango field of its scenes and mango soldiers, KOTH with the hill,
-// radio mast and soldiers of the three factions, Bärenbande with the watercolor world and the bear tower. Always in the DOM, skins.css shows only the one of the active skin. Pure
+// radio mast and soldiers of the three factions, Bärenbande with the watercolor world and the bear tower, Chaos with its wall of scribbles and the two brush X. Always in the DOM, skins.css shows only the one of the active skin. Pure
 // decoration, hidden from screen readers.
 import type { CSSProperties } from "react";
 import { minimeTeamColorKey } from "../core/minimeFields.ts";
@@ -9,6 +9,8 @@ import { resolveSettings } from "../core/settings.ts";
 import type { ThemeSchema } from "../core/theme.ts";
 import { cssVariables } from "../core/themeRuntime.ts";
 import BearTower from "../themes/bears/BearTower.tsx";
+import ChaosBackdrop from "../themes/chaos/Backdrop.tsx";
+import { chaosSettings } from "../themes/chaos/settings.ts";
 import { bearsSettings } from "../themes/bears/settings.ts";
 import World from "../themes/bears/World.tsx";
 import { HILL, TOWER } from "../themes/koth/hill.ts";
@@ -27,6 +29,7 @@ import "../themes/plantage/minimes.css";
 import "../themes/plantage/theme.css";
 import "../themes/koth/minimes.css";
 import "../themes/bears/theme.css";
+import "../themes/chaos/theme.css";
 
 const colors = (schema: ThemeSchema) => cssVariables(schema, resolveSettings(schema, {}));
 const URLAUB = colors(urlaubSettings);
@@ -36,6 +39,8 @@ const KOTH_VALUES = resolveSettings(kothSettings, {});
 const KOTH = colors(kothSettings);
 const BEARS_VALUES = resolveSettings(bearsSettings, {});
 const BEARS = cssVariables(bearsSettings, BEARS_VALUES);
+const CHAOS_VALUES = resolveSettings(chaosSettings, {});
+const CHAOS = cssVariables(chaosSettings, CHAOS_VALUES);
 const THINGS = ["rettungsring", "badeente", "wasserball", "eis", "seestern"];
 const ROLES = ["sturm", "medic", "mg", "sniper", "grenadier"];
 // One soldier per faction with its own role, in the faction's default color
@@ -76,6 +81,11 @@ export default function Scenery() {
           <World time="mittag" />
         </ThemeValues.Provider>
         <BearTower className="skin-bear-tower" />
+      </div>
+      <div className="skin-scenery skin-scenery-chaos theme-chaos" style={CHAOS} aria-hidden="true">
+        <ThemeValues.Provider value={CHAOS_VALUES}>
+          <ChaosBackdrop seed="dashboard" gesture="zweix" mainColor="cyan" />
+        </ThemeValues.Provider>
       </div>
     </>
   );

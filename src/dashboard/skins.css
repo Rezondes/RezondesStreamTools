@@ -435,8 +435,9 @@
 :root[data-skin="urlaub"] .skin-scenery-urlaub,
 :root[data-skin="plantage"] .skin-scenery-plantage,
 :root[data-skin="koth"] .skin-scenery-koth,
-:root[data-skin="bears"] .skin-scenery-bears { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
-:root[data-skin="urlaub"] .dashboard, :root[data-skin="plantage"] .dashboard, :root[data-skin="koth"] .dashboard, :root[data-skin="bears"] .dashboard { position: relative; z-index: 1; }
+:root[data-skin="bears"] .skin-scenery-bears,
+:root[data-skin="chaos"] .skin-scenery-chaos { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+:root[data-skin="urlaub"] .dashboard, :root[data-skin="plantage"] .dashboard, :root[data-skin="koth"] .dashboard, :root[data-skin="bears"] .dashboard, :root[data-skin="chaos"] .dashboard { position: relative; z-index: 1; }
 .skin-sun { position: absolute; top: 2vh; right: 22vw; width: 110px; height: 110px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 60px 20px rgba(255, 210, 63, 0.55); }
 /* svg.: stronger than the theme's shape rule (.theme-urlaub .ul-shape, full width) */
 .skin-scenery svg.skin-palm { position: absolute; bottom: -2vh; width: clamp(160px, 18vw, 340px); }
@@ -465,5 +466,7 @@
 /* Bärenbande: the watercolor world fills the page, the tower stands at the bottom right */
 .skin-scenery-bears .bb-world { position: absolute; inset: 0; }
 .skin-scenery-bears .skin-bear-tower { position: absolute; right: 2vw; bottom: 3vh; height: clamp(180px, 24vh, 300px); }
-@media (max-width: 719px) { .skin-scenery .skin-palm, .skin-scenery .pl-field, .skin-scenery .bb-world, .skin-sun, .skin-figures { display: none; } }
-@media (max-width: 1099px) { .skin-figures, .skin-bear-tower { display: none; } }
+/* Chaos: the wall behind the dashboard; the brush X give way to the content on narrow screens */
+.skin-scenery-chaos .ch-backdrop { position: absolute; inset: 0; }
+@media (max-width: 719px) { .skin-scenery-chaos { display: none !important; } .skin-scenery .skin-palm, .skin-scenery .pl-field, .skin-scenery .bb-world, .skin-sun, .skin-figures { display: none; } }
+@media (max-width: 1099px) { .skin-figures, .skin-bear-tower, .skin-scenery-chaos .ch-gestures { display: none; } }
