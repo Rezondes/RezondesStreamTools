@@ -1,23 +1,17 @@
 // Backdrop of the Bärenbande theme as one SVG in watercolor: sky per time of day with sun or moon, drifting clouds, far
-// hills, city and suspension bridge in aerial perspective (mixed with the sky), the forest edge with a cave in a hill on
-// the left, broad-leaved trees, the meadow with a path, tufts and flowers. No black outline in the world: thin sketch
+// hills, the far shore with the city on it, the bay and the suspension bridge from the meadow to the far shore in aerial
+// perspective (mixed with the sky), the cave hill and the forest edge on the left, broad-leaved trees, the meadow with a
+// path, tufts and flowers; every thing stands on the ground line of its plane (world.ts SCENE). No black outline in the world: thin sketch
 // lines in a darker tone of each surface, soft edges from a displacement filter and a paper grain over everything
 // (strengths from the settings). Shapes from world.ts, colors from the settings (theme.css).
 import { useId, type CSSProperties } from "react";
 import { useBears } from "./useBears.ts";
-import {
-  blocksPath, CITY, CITY_BASE, FIR_BASE, FIRS, firPath, firShadePath, FLOWERS, flowerPath, SHAPES, TREES, TUFTS, tuftPath, windowsPath, WORLD,
-} from "./world.ts";
+import { SCENE, SHAPES, WORLD } from "./world.ts";
 
 export type TimeOfDay = "morgen" | "mittag" | "abend" | "nacht";
 
 // Where sun or moon stand per time of day
 const LIGHT: Record<TimeOfDay, readonly [number, number]> = { morgen: [360, 300], mittag: [980, 150], abend: [1500, 420], nacht: [1320, 180] };
-// fixed: shapes built once (pure functions of the layout in world.ts)
-const FIR_SHAPES = FIRS.map(([x, height, width]) => ({ body: firPath(x, FIR_BASE, height, width), shade: firShadePath(x, FIR_BASE, height, width) }));
-const CITY_SHAPE = { blocks: blocksPath(CITY, CITY_BASE), windows: windowsPath(CITY, CITY_BASE) };
-const TUFT_SHAPE = TUFTS.map(([x, y, size]) => tuftPath(x, y, size)).join(" ");
-const FLOWER_SHAPE = FLOWERS.map(([x, y, size]) => flowerPath(x, y, size)).join(" ");
 const MAX_CLOUDS = 8;
 
 export default function World({ time }: { time: TimeOfDay }) {
@@ -77,23 +71,24 @@ function Sky({ id, time, clouds }: { id: string; time: TimeOfDay; clouds: number
   );
 }
 
-// Far hills, city, water and bridge (mixed with the sky in theme.css)
+// Far hills, the city on the far shore (the shore over the feet of its blocks), the water of the bay and the bridge
+// (mixed with the sky in theme.css)
 function Far({ city, bridge }: { city: boolean; bridge: boolean }) {
   return (
     <>
       <path className="bb-hills" d={SHAPES.hills} />
       {city && (
         <g className="bb-city">
-          <path className="bb-city-blocks" d={CITY_SHAPE.blocks} />
-          <path className="bb-city-windows" d={CITY_SHAPE.windows} />
+          <path className="bb-city-blocks" d={SCENE.cityBlocks} />
+          <path className="bb-city-windows" d={SCENE.cityWindows} />
         </g>
       )}
-      <path className="bb-water" d={SHAPES.water} />
+      <path className="bb-far-shore" d={SCENE.farShore} />
+      <path className="bb-water" d={SCENE.water} />
       {bridge && (
         <g className="bb-bridge">
-          <path className="bb-bridge-cables" d={SHAPES.bridgeCables} />
-          <path className="bb-bridge-solid" d={SHAPES.bridgeTowers} />
-          <path className="bb-bridge-solid" d={SHAPES.bridgeDeck} />
+          <path className="bb-bridge-cables" d={SCENE.bridgeCables} />
+          <path className="bb-bridge-solid" d={SCENE.bridgeSolid} />
         </g>
       )}
     </>
@@ -104,10 +99,10 @@ function Far({ city, bridge }: { city: boolean; bridge: boolean }) {
 function Land({ cave, flowers }: { cave: boolean; flowers: boolean }) {
   return (
     <>
-      <path className="bb-meadow" d={SHAPES.meadow} />
+      <path className="bb-meadow" d={SCENE.meadow} />
       <path className="bb-meadow-patch" d={SHAPES.meadowPatches} />
       <path className="bb-road" d={SHAPES.path} />
-      {TREES.map(([x, base, scale]) => (
+      {SCENE.trees.map(({ x, base, scale }) => (
         <g key={x} className="bb-tree" transform={`translate(${x} ${base}) scale(${scale})`}>
           <path className="bb-trunk" d={SHAPES.trunk} />
           <path className="bb-crown" d={SHAPES.crown} />
@@ -116,19 +111,19 @@ function Land({ cave, flowers }: { cave: boolean; flowers: boolean }) {
       ))}
       {cave && (
         <g className="bb-cave">
-          <path className="bb-mound" d={SHAPES.mound} />
-          <path className="bb-cave-mouth" d={SHAPES.cave} />
-          <path className="bb-cave-rim" d={SHAPES.caveRim} />
+          <path className="bb-mound" d={SCENE.mound} />
+          <path className="bb-cave-mouth" d={SCENE.cave} />
+          <path className="bb-cave-rim" d={SCENE.caveRim} />
         </g>
       )}
-      {FIR_SHAPES.map(fir => (
+      {SCENE.firs.map(fir => (
         <g key={fir.body} className="bb-fir">
           <path className="bb-fir-body" d={fir.body} />
           <path className="bb-fir-shade" d={fir.shade} />
         </g>
       ))}
-      {flowers && <path className="bb-tufts" d={TUFT_SHAPE} />}
-      {flowers && <path className="bb-flowers" d={FLOWER_SHAPE} />}
+      {flowers && <path className="bb-tufts" d={SCENE.tufts} />}
+      {flowers && <path className="bb-flowers" d={SCENE.flowers} />}
     </>
   );
 }

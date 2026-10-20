@@ -111,6 +111,7 @@
 .theme-bears .bb-hills { fill: color-mix(in srgb, var(--hills), var(--sky-bottom) 35%); stroke: color-mix(in srgb, var(--hills), var(--outline) calc(var(--sketchLines) * 25%)); }
 .theme-bears .bb-city-blocks { fill: color-mix(in srgb, var(--city), var(--sky-bottom) 30%); stroke: color-mix(in srgb, var(--city), var(--outline) calc(var(--sketchLines) * 30%)); }
 .theme-bears .bb-city-windows { fill: color-mix(in srgb, var(--cityWindow), var(--sky-bottom) 30%); }
+.theme-bears .bb-far-shore { fill: color-mix(in srgb, var(--meadow), var(--sky-bottom) 35%); stroke: color-mix(in srgb, var(--meadow), var(--outline) calc(var(--sketchLines) * 25%)); }
 .theme-bears .bb-water { fill: color-mix(in srgb, var(--water), var(--sky-bottom) 30%); }
 .theme-bears .bb-bridge-solid { fill: color-mix(in srgb, var(--bridge), var(--sky-bottom) 25%); }
 .theme-bears .bb-bridge-cables { fill: none; stroke: color-mix(in srgb, var(--bridge), var(--sky-bottom) 25%); stroke-width: var(--cable-width, 4); }

@@ -6,7 +6,7 @@
 // Check: paint.check.ts.
 import { BEARS, isBearChoice, TOWER, TOWER_LEVELS, type BearId, type BodyShape, type PartKind } from "./bears.ts";
 import { poseOf, POSES, towerLayout, type Drops, type PoseName } from "./rig.ts";
-import { blocksPath, CITY, CITY_BASE, FIR_BASE, FIRS, firPath, firShadePath, FLOWERS, flowerPath, SHAPES, TREES, TUFTS, tuftPath, windowsPath, WORLD } from "./world.ts";
+import { SCENE, SHAPES, WORLD } from "./world.ts";
 
 export type BearColors = { fur: string; shade: string; limb: string };
 export type Palette = {
@@ -155,10 +155,6 @@ function surface(context: CanvasRenderingContext2D, path: string, fill: string, 
   }
 }
 
-// fixed: shapes of the world built once
-const FIR_SHAPES = FIRS.map(([x, height, width]) => [firPath(x, FIR_BASE, height, width), firShadePath(x, FIR_BASE, height, width)] as const);
-const CITY_SHAPES = [blocksPath(CITY, CITY_BASE), windowsPath(CITY, CITY_BASE)] as const;
-const GROUND = [TUFTS.map(([x, y, size]) => tuftPath(x, y, size)).join(" "), FLOWERS.map(([x, y, size]) => flowerPath(x, y, size)).join(" ")] as const;
 const CLOUDS = 4;
 
 // Sky with sun or moon and clouds; drift 0..1 moves the clouds once across (1 = back at the start)
@@ -188,26 +184,26 @@ function drawSky(context: CanvasRenderingContext2D, colors: WorldColors, drift: 
 function drawFar(context: CanvasRenderingContext2D, colors: WorldColors) {
   const far = (color: string, part: number) => mix(color, colors.skyBottom, part);
   surface(context, SHAPES.hills, far(colors.hills, 0.35), colors);
-  surface(context, CITY_SHAPES[0], far(colors.city, 0.3), colors);
+  surface(context, SCENE.cityBlocks, far(colors.city, 0.3), colors);
   context.fillStyle = far(colors.cityWindow, 0.3);
-  context.fill(shapeOf(CITY_SHAPES[1]));
+  context.fill(shapeOf(SCENE.cityWindows));
+  surface(context, SCENE.farShore, far(colors.meadow, 0.35), colors);
   context.fillStyle = far(colors.water, 0.3);
-  context.fill(shapeOf(SHAPES.water));
-  context.fillStyle = far(colors.bridge, 0.25);
-  context.fill(shapeOf(SHAPES.bridgeTowers));
-  context.fill(shapeOf(SHAPES.bridgeDeck));
+  context.fill(shapeOf(SCENE.water));
   context.strokeStyle = far(colors.bridge, 0.25);
   context.lineWidth = 4;
-  context.stroke(shapeOf(SHAPES.bridgeCables));
+  context.stroke(shapeOf(SCENE.bridgeCables));
+  context.fillStyle = far(colors.bridge, 0.25);
+  context.fill(shapeOf(SCENE.bridgeSolid));
 }
 
 // Meadow, path, trees, cave hill, firs, tufts and flowers
 function drawLand(context: CanvasRenderingContext2D, colors: WorldColors) {
-  surface(context, SHAPES.meadow, colors.meadow, colors);
+  surface(context, SCENE.meadow, colors.meadow, colors);
   context.fillStyle = mix(colors.meadow, colors.meadowDark, 0.55);
   context.fill(shapeOf(SHAPES.meadowPatches));
   surface(context, SHAPES.path, colors.road, colors);
-  for (const [x, base, scale] of TREES) {
+  for (const { x, base, scale } of SCENE.trees) {
     context.save();
     context.translate(x, base);
     context.scale(scale, scale);
@@ -215,18 +211,18 @@ function drawLand(context: CanvasRenderingContext2D, colors: WorldColors) {
     surface(context, SHAPES.crown, colors.treeLeaf, colors);
     context.restore();
   }
-  surface(context, SHAPES.mound, mix(colors.cave, colors.meadowDark, 0.3), colors);
+  surface(context, SCENE.mound, mix(colors.cave, colors.meadowDark, 0.3), colors);
   context.fillStyle = colors.caveDark;
-  context.fill(shapeOf(SHAPES.cave));
-  for (const [body, shade] of FIR_SHAPES) {
+  context.fill(shapeOf(SCENE.cave));
+  for (const { body, shade } of SCENE.firs) {
     surface(context, body, colors.fir, colors);
     context.fillStyle = mix(colors.fir, colors.firDark, 0.6);
     context.fill(shapeOf(shade));
   }
   context.fillStyle = colors.meadowDark;
-  context.fill(shapeOf(GROUND[0]));
+  context.fill(shapeOf(SCENE.tufts));
   context.fillStyle = colors.flower;
-  context.fill(shapeOf(GROUND[1]));
+  context.fill(shapeOf(SCENE.flowers));
 }
 
 // The whole world in its 1920 x 1080 space

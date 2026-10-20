@@ -33,6 +33,11 @@ Gilt für alle Szenen, Stinger, Banner, Minimes und den Dashboard-Skin.
   (`color-mix`, Anteil einstellbar), nie schwarz. Dadurch bleiben die Figuren immer die klarste Ebene.
 - **Luftperspektive.** Was weiter weg ist, mischt sich mit der Himmelsfarbe (ferne Stadt und Hügel blasser).
 - **Keine harten Schatten in der Welt**, nur ein weicher Bodenschatten unter Figuren.
+- **Alles steht auf seinem Boden.** Die Welt besteht aus Ebenen mit je einer Bodenlinie (`world.ts`): ferne Hügel, das
+  ferne Ufer mit der Stadt darauf, das Wasser einer Bucht davor, die Wiese vorn. Tannen, Bäume, Höhlenhügel und Höhle
+  stehen auf der Wiesenlinie, die Stadtblöcke auf dem Ufer über dem Wasser, die Hängebrücke führt im flachen Bogen von
+  der Wiese über das Wasser zum fernen Ufer, ihre Pylone stehen auf Sockeln im Wasser. SVG und Canvas nutzen dieselbe
+  gebaute Anordnung (`SCENE`).
 
 ## Die drei Bären
 
