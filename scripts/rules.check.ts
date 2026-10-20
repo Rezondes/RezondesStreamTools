@@ -47,7 +47,7 @@ const failures: string[] = [];
 
 // Rule 11: no em dash (U+2014) in any text file
 for (const file of files.filter(file => TEXT.test(file))) {
-  readFileSync(file, "utf8").split("\n").forEach((line, index) => {
+  readFileSync(file, "utf8").split(/\r?\n/).forEach((line, index) => {
     if (line.includes(EM_DASH)) failures.push(`${file}:${index + 1}: em dash (rule 11)`);
   });
 }
@@ -89,7 +89,7 @@ for (const listed of Object.keys(WITHOUT_CHECK)) {
 // Rule 16: overlay scenes and themes only present, connections run through the core hooks
 const PRESENTING = /^src\/themes\/.*\.tsx?$/;
 for (const file of files.filter(file => PRESENTING.test(file))) {
-  readFileSync(file, "utf8").split("\n").forEach((line, index) => {
+  readFileSync(file, "utf8").split(/\r?\n/).forEach((line, index) => {
     if (/\bfetch\(|new EventSource\(|new WebSocket\(/.test(line)) failures.push(`${file}:${index + 1}: network access in a scene (rule 16)`);
   });
 }
@@ -136,7 +136,8 @@ const THEME_CODE = /^src\/themes\/[^/]+\/(?!settings\.ts$).*(?<!\.check)\.(ts|ts
 
 function designLiterals(file: string, source: string): string[] {
   const found: string[] = [];
-  const lines = source.split("\n");
+  // CRLF checkouts (core.autocrlf) must not keep a \r that stops the comment patterns from matching
+  const lines = source.split(/\r?\n/);
   const scene = /\/scenes\/[^/]+\.tsx$/.test(file);
   lines.forEach((line, index) => {
     if (line.includes("fixed:") || lines[index - 1]?.includes("fixed:")) return;
@@ -190,7 +191,7 @@ for (const file of files.filter(file => /^src\/.*\.tsx?$/.test(file) && !file.st
 
 // The overlays never connect to Twitch chat themselves: the server reads it and sends the lines as events
 for (const file of files.filter(file => /^src\/.*\.tsx?$/.test(file) && !file.endsWith(".check.ts"))) {
-  readFileSync(file, "utf8").split("\n").forEach((line, index) => {
+  readFileSync(file, "utf8").split(/\r?\n/).forEach((line, index) => {
     // The dashboard may talk to OBS over a WebSocket, the overlays to nothing but the server
     const socket = /^src\/(core|themes)\//.test(file) && /new WebSocket\(/.test(line);
     if (socket || /irc-ws\.chat\.twitch\.tv/.test(line)) failures.push(`${file}:${index + 1}: chat connection in the browser`);
