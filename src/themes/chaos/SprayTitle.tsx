@@ -13,6 +13,8 @@ type Props = { text: string; seed: string; className?: string };
 const SPECKLE_DENSITY = 1 / 250;
 const DRIPS = 9;
 const DRIP_START = 0.72;
+// Drip lengths are made for a title this high (pixels); smaller titles get shorter drips, so they stay off the text below
+const DRIP_HEIGHT = 160;
 
 export default function SprayTitle({ text, seed, className = "" }: Props) {
   const values = useChaos();
@@ -43,7 +45,7 @@ export default function SprayTitle({ text, seed, className = "" }: Props) {
       <svg className="ch-title-spray" width={box.width} height={box.height} aria-hidden="true">
         {dots.map((dot, index) => <circle key={index} className={dot.hot ? "ch-speckle-hot" : "ch-speckle"} cx={dot.x} cy={dot.y} r={dot.radius} opacity={dot.opacity} />)}
         {values.drips && box.width > 0 && drips.map(drip => (
-          <path key={drip.at} className="ch-title-drip" d={dripPath(drip.at * box.width, box.height * DRIP_START, drip.length, drip.thickness)} />
+          <path key={drip.at} className="ch-title-drip" d={dripPath(drip.at * box.width, box.height * DRIP_START, drip.length * Math.min(1, box.height / DRIP_HEIGHT) ** 2, drip.thickness * Math.min(1, box.height / DRIP_HEIGHT))} />
         ))}
       </svg>
       <h1 ref={title} className="ch-title" data-text={text} style={{ filter: `url(#${id}-spray)` }}>{text}</h1>

@@ -2,7 +2,10 @@
 // (src/themes/chaos/docs/DESIGN-CHAOS.md). The only place of the theme with fixed colors, texts and numbers; the Rust
 // schema (server-rs/crates/rst-domain/src/themes/chaos.rs) stays equal to it. ChaosValues is the type of the resolved
 // values that the scenes read via useChaos.
+import { alertSoundFields } from "../../core/alerts/alerts.ts";
+import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, inScene, lines, markBasic, number, text } from "../../core/fields.ts";
+import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 const FONTS = ["Space Grotesk", "Inter", "Manrope", "DM Sans"] as const;
@@ -13,6 +16,11 @@ const GESTURE_COLORS = ["cyan", "magenta"] as const;
 const GENERAL = "Allgemein";
 const SCRIBBLES = "Kritzeleien";
 const SCREENS = "Starting, BRB, Ending";
+const ALERTS = "Alerts";
+const CHAT = "Chat";
+const CAM = "Kamera-Rahmen";
+const MUSIC = "Musik";
+const FX = "Effekte";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "CHAOS", 40),
@@ -29,6 +37,8 @@ const FIELDS = [
   color("violet", "Violett (Flecken, Schatten)", GENERAL, "#502a5f"),
   color("violetLight", "Violett hell", GENERAL, "#986ea9"),
   color("lilac", "Flieder (Klebeband)", GENERAL, "#d39dd4"),
+  color("surface", "Fläche (Zettel)", GENERAL, "#2b2041"),
+  color("surfaceLight", "Fläche hell", GENERAL, "#3a2c55"),
   color("textColor", "Textfarbe", GENERAL, "#ffffff"),
   color("mutedColor", "Gedämpfte Textfarbe", GENERAL, "#b8a6c4"),
   number("grain", "Körnung (0 = aus)", GENERAL, 0.55, 0, 1, undefined, 0.05),
@@ -37,6 +47,7 @@ const FIELDS = [
   number("flicker", "Neon-Flackern (0 = aus)", GENERAL, 0.2, 0, 1, undefined, 0.05),
   number("glitch", "Glitch-Stärke (0 = aus)", GENERAL, 0.3, 0, 1, undefined, 0.05),
   number("glitchEvery", "Glitch alle", GENERAL, 9, 2, 120, "s"),
+  number("fadeDuration", "Ein- und Ausblenden", GENERAL, 450, 0, 3000, "ms"),
 
   number("scribbleCount", "Anzahl", SCRIBBLES, 340, 0, 600),
   number("scribbleWidth", "Strichstärke (Faktor)", SCRIBBLES, 1, 0.3, 3, undefined, 0.1),
@@ -77,6 +88,75 @@ const FIELDS = [
   number("tickerSpeed", "Klebeband: Dauer eines Durchlaufs", SCREENS, 25, 5, 200, "s"),
   choice("powerOn", "Einschalten", SCREENS, "spray", ["spray", "blende", "keins"]),
   number("powerOnDuration", "Einschalten: Dauer", SCREENS, 2500, 0, 10000, "ms"),
+
+  // Placeholders: {user}, {amount}, {detail}, {text}
+  text("followTag", "Follow: Kopfzeile", ALERTS, "Neuer Follower"),
+  text("followLine", "Follow: Zeile", ALERTS, "{user} stiftet jetzt mit Chaos!"),
+  text("subTag", "Sub: Kopfzeile", ALERTS, "Neues Abo"),
+  text("subLine", "Sub: Zeile", ALERTS, "{user} sprüht ab jetzt mit!"),
+  text("resubTag", "Resub: Kopfzeile", ALERTS, "Abo x{amount}"),
+  text("resubLine", "Resub: Zeile", ALERTS, "{user} ist seit {amount} Monaten im Chaos!"),
+  text("giftTag", "Gift: Kopfzeile", ALERTS, "Abos verschenkt"),
+  text("giftLine", "Gift: Zeile", ALERTS, "{user} verschenkt {amount} Abos!"),
+  text("raidTag", "Raid: Kopfzeile", ALERTS, "Raid"),
+  text("raidLine", "Raid: Zeile", ALERTS, "{user} bringt {amount} Leute ins Chaos!"),
+  text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} Bits"),
+  text("cheerLine", "Bits: Zeile", ALERTS, "{user} wirft {amount} Bits an die Wand!"),
+  text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "Kanalpunkte"),
+  text("redeemLine", "Kanalpunkte: Zeile", ALERTS, "{user} löst {detail} ein."),
+  text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "Hype Train"),
+  text("hypeBeginLine", "Hype Train: Start", ALERTS, "Der Hype Train rast los!"),
+  text("hypeEndLine", "Hype Train: Ende", ALERTS, "Hype Train Level {amount} geschafft!"),
+  flag("alertQuote", "Nachricht zeigen", ALERTS, true),
+  text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\""),
+  number("alertDuration", "Dauer", ALERTS, 7000, 2000, 60000, "ms"),
+  number("alertTop", "Abstand oben", ALERTS, 120, 0, 1000, "px"),
+  number("alertWidth", "Breite", ALERTS, 820, 300, 1800, "px"),
+  choice("alertSide", "Schwaden von", ALERTS, "wechselnd", ["links", "rechts", "wechselnd"]),
+  number("swathDensity", "Schwaden: Striche", ALERTS, 90, 0, 300),
+  flag("alertTimer", "Restzeit als Markerstrich", ALERTS, true),
+  flag("confetti", "Konfetti aus Kritzeleien", ALERTS, true),
+  number("confettiCount", "Anzahl Konfetti", ALERTS, 18, 0, 60),
+  flag("alertSound", "Töne", ALERTS, true),
+  ...alertSoundFields(ALERTS),
+
+  choice("chatStyle", "Stil", CHAT, "zettel", ["zettel", "blasen", "schlicht"]),
+  ...badgeFields(CHAT),
+  flag("chatBadges", "Badges zeigen", CHAT, true),
+  number("chatFontSize", "Schriftgrösse", CHAT, 22, 8, 60, "px"),
+  number("emoteSize", "Emote-Grösse", CHAT, 28, 8, 120, "px"),
+  number("chatFade", "Ausblenden nach (0 = nie)", CHAT, 30, 0, 3600, "s"),
+  number("chatMax", "Max. Nachrichten", CHAT, 8, 1, 100),
+  choice("chatAlign", "Neue Nachrichten", CHAT, "bottom", ["bottom", "top"]),
+  number("chatGap", "Abstand", CHAT, 12, 0, 40, "px"),
+
+  choice("camStyle", "Rahmen", CAM, "marker", ["marker", "neon", "schlicht"]),
+  number("camFrameWidth", "Rahmenbreite", CAM, 12, 2, 60, "px"),
+  flag("camScribbles", "Kritzeleien an den Ecken", CAM, true),
+  text("camLabel", "Namensschild ({channel})", CAM, "{channel}"),
+  flag("camLive", "Live-Anzeige", CAM, true),
+  text("camLiveText", "Live-Text", CAM, "LIVE"),
+
+  choice("musicStyle", "Stil", MUSIC, "zettel", ["zettel", "kassette", "schlicht"]),
+  text("musicLabel", "Überzeile", MUSIC, "Läuft gerade"),
+  text("musicIdle", "Text ohne Wiedergabe", MUSIC, "Stille im Chaos"),
+  flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+  flag("musicCover", "Cover zeigen", MUSIC, true),
+  flag("musicProgress", "Fortschritt zeigen", MUSIC, true),
+  flag("equalizer", "Equalizer", MUSIC, true),
+  number("equalizerBars", "Equalizer: Striche", MUSIC, 9, 1, 24),
+  flag("musicMarquee", "Lange Titel laufen durch", MUSIC, true),
+  number("musicMarqueeSpeed", "Lange Titel: Lauftempo (px pro Sekunde)", MUSIC, 40, 5, 400),
+  number("coverSize", "Cover-Grösse", MUSIC, 130, 40, 400, "px"),
+
+  number("fxDuration", "Standarddauer", FX, 4, 0.5, 120, "s", 0.5),
+  number("fxSize", "Standardgrösse", FX, 360, 20, 1920, "px"),
+  number("fxTextSize", "Textgrösse", FX, 72, 8, 300, "px"),
+  number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20, 0, 50, "%"),
+  number("fxMax", "Max. gleichzeitig", FX, 8, 1, 30),
+  // Commands page (public, /s/<login>/): shared texts from the core, plus the look
+  ...INFO_FIELDS,
+  number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -84,6 +164,12 @@ export type { ChaosValues } from "../../generated/themes/chaos.ts";
 
 const GROUP_SCENES = {
   [SCREENS]: ["starting", "brb", "ending"],
+  [ALERTS]: ["alerts"],
+  [CHAT]: ["chat"],
+  [CAM]: ["cam"],
+  [MUSIC]: ["music"],
+  [FX]: ["fx"],
+  [INFO_GROUP]: ["info"],
 } as const;
 
 // On first login: channel name from the Twitch login instead of the sample
@@ -93,7 +179,8 @@ const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 const BASIC = [
   "channelName", "font", "titleFont", "accent", "accent2", "textColor", "scribbleColor1", "gestureStarting",
   "startingEyebrow", "startingTitle", "startingLines", "countdownDone", "ticker", "brbEyebrow", "brbTitle", "brbLines", "endingEyebrow",
-  "endingTitle", "endingNext",
+  "endingTitle", "endingNext", "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine",
+  "hypeBeginLine", "alertSide", "chatStyle", "chatBadges", "camStyle", "camLabel", "camLive", "musicStyle", "musicLabel", "musicIdle",
 ];
 
 export const chaosSettings: ThemeSchema = { id: "chaos", name: "Chaos", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };

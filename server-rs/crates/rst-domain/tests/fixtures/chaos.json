@@ -125,6 +125,20 @@
       "default": "#d39dd4"
     },
     {
+      "key": "surface",
+      "type": "color",
+      "label": "Fläche (Zettel)",
+      "group": "Allgemein",
+      "default": "#2b2041"
+    },
+    {
+      "key": "surfaceLight",
+      "type": "color",
+      "label": "Fläche hell",
+      "group": "Allgemein",
+      "default": "#3a2c55"
+    },
+    {
       "key": "textColor",
       "type": "color",
       "label": "Textfarbe",
@@ -198,6 +212,16 @@
       "min": 2,
       "max": 120,
       "unit": "s"
+    },
+    {
+      "key": "fadeDuration",
+      "type": "number",
+      "label": "Ein- und Ausblenden",
+      "group": "Allgemein",
+      "default": 450,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms"
     },
     {
       "key": "scribbleCount",
@@ -593,6 +617,885 @@
       "min": 0,
       "max": 10000,
       "unit": "ms"
+    },
+    {
+      "key": "followTag",
+      "type": "text",
+      "label": "Follow: Kopfzeile",
+      "group": "Alerts",
+      "default": "Neuer Follower",
+      "maxLength": 200
+    },
+    {
+      "key": "followLine",
+      "type": "text",
+      "label": "Follow: Zeile",
+      "group": "Alerts",
+      "default": "{user} stiftet jetzt mit Chaos!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "subTag",
+      "type": "text",
+      "label": "Sub: Kopfzeile",
+      "group": "Alerts",
+      "default": "Neues Abo",
+      "maxLength": 200
+    },
+    {
+      "key": "subLine",
+      "type": "text",
+      "label": "Sub: Zeile",
+      "group": "Alerts",
+      "default": "{user} sprüht ab jetzt mit!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "resubTag",
+      "type": "text",
+      "label": "Resub: Kopfzeile",
+      "group": "Alerts",
+      "default": "Abo x{amount}",
+      "maxLength": 200
+    },
+    {
+      "key": "resubLine",
+      "type": "text",
+      "label": "Resub: Zeile",
+      "group": "Alerts",
+      "default": "{user} ist seit {amount} Monaten im Chaos!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "giftTag",
+      "type": "text",
+      "label": "Gift: Kopfzeile",
+      "group": "Alerts",
+      "default": "Abos verschenkt",
+      "maxLength": 200
+    },
+    {
+      "key": "giftLine",
+      "type": "text",
+      "label": "Gift: Zeile",
+      "group": "Alerts",
+      "default": "{user} verschenkt {amount} Abos!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "raidTag",
+      "type": "text",
+      "label": "Raid: Kopfzeile",
+      "group": "Alerts",
+      "default": "Raid",
+      "maxLength": 200
+    },
+    {
+      "key": "raidLine",
+      "type": "text",
+      "label": "Raid: Zeile",
+      "group": "Alerts",
+      "default": "{user} bringt {amount} Leute ins Chaos!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "cheerTag",
+      "type": "text",
+      "label": "Bits: Kopfzeile",
+      "group": "Alerts",
+      "default": "{amount} Bits",
+      "maxLength": 200
+    },
+    {
+      "key": "cheerLine",
+      "type": "text",
+      "label": "Bits: Zeile",
+      "group": "Alerts",
+      "default": "{user} wirft {amount} Bits an die Wand!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "redeemTag",
+      "type": "text",
+      "label": "Kanalpunkte: Kopfzeile",
+      "group": "Alerts",
+      "default": "Kanalpunkte",
+      "maxLength": 200
+    },
+    {
+      "key": "redeemLine",
+      "type": "text",
+      "label": "Kanalpunkte: Zeile",
+      "group": "Alerts",
+      "default": "{user} löst {detail} ein.",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "hypeTag",
+      "type": "text",
+      "label": "Hype Train: Kopfzeile",
+      "group": "Alerts",
+      "default": "Hype Train",
+      "maxLength": 200
+    },
+    {
+      "key": "hypeBeginLine",
+      "type": "text",
+      "label": "Hype Train: Start",
+      "group": "Alerts",
+      "default": "Der Hype Train rast los!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "hypeEndLine",
+      "type": "text",
+      "label": "Hype Train: Ende",
+      "group": "Alerts",
+      "default": "Hype Train Level {amount} geschafft!",
+      "maxLength": 200
+    },
+    {
+      "key": "alertQuote",
+      "type": "boolean",
+      "label": "Nachricht zeigen",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "quoteFormat",
+      "type": "text",
+      "label": "Nachricht ({text})",
+      "group": "Alerts",
+      "default": "\"{text}\"",
+      "maxLength": 200
+    },
+    {
+      "key": "alertDuration",
+      "type": "number",
+      "label": "Dauer",
+      "group": "Alerts",
+      "default": 7000,
+      "min": 2000,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "alertTop",
+      "type": "number",
+      "label": "Abstand oben",
+      "group": "Alerts",
+      "default": 120,
+      "min": 0,
+      "max": 1000,
+      "unit": "px"
+    },
+    {
+      "key": "alertWidth",
+      "type": "number",
+      "label": "Breite",
+      "group": "Alerts",
+      "default": 820,
+      "min": 300,
+      "max": 1800,
+      "unit": "px"
+    },
+    {
+      "key": "alertSide",
+      "type": "select",
+      "label": "Schwaden von",
+      "group": "Alerts",
+      "default": "wechselnd",
+      "options": [
+        "links",
+        "rechts",
+        "wechselnd"
+      ],
+      "basic": true
+    },
+    {
+      "key": "swathDensity",
+      "type": "number",
+      "label": "Schwaden: Striche",
+      "group": "Alerts",
+      "default": 90,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "key": "alertTimer",
+      "type": "boolean",
+      "label": "Restzeit als Markerstrich",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "confetti",
+      "type": "boolean",
+      "label": "Konfetti aus Kritzeleien",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "confettiCount",
+      "type": "number",
+      "label": "Anzahl Konfetti",
+      "group": "Alerts",
+      "default": 18,
+      "min": 0,
+      "max": 60
+    },
+    {
+      "key": "alertSound",
+      "type": "boolean",
+      "label": "Töne",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "soundFollow",
+      "type": "sound",
+      "label": "Ton Follow (leer = eingebaut)",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundSub",
+      "type": "sound",
+      "label": "Ton Sub",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundResub",
+      "type": "sound",
+      "label": "Ton Resub",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundGift",
+      "type": "sound",
+      "label": "Ton Gift",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundRaid",
+      "type": "sound",
+      "label": "Ton Raid",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundCheer",
+      "type": "sound",
+      "label": "Ton Bits",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundRedeem",
+      "type": "sound",
+      "label": "Ton Kanalpunkte",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundHype",
+      "type": "sound",
+      "label": "Ton Hype Train",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundLeave",
+      "type": "sound",
+      "label": "Ton beim Ausblenden",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "chatStyle",
+      "type": "select",
+      "label": "Stil",
+      "group": "Chat",
+      "default": "zettel",
+      "options": [
+        "zettel",
+        "blasen",
+        "schlicht"
+      ],
+      "basic": true
+    },
+    {
+      "key": "badgeHost",
+      "type": "text",
+      "label": "Badge Streamer",
+      "group": "Chat",
+      "default": "HOST",
+      "maxLength": 20
+    },
+    {
+      "key": "badgeMod",
+      "type": "text",
+      "label": "Badge Moderator",
+      "group": "Chat",
+      "default": "MOD",
+      "maxLength": 20
+    },
+    {
+      "key": "badgeVip",
+      "type": "text",
+      "label": "Badge VIP",
+      "group": "Chat",
+      "default": "VIP",
+      "maxLength": 20
+    },
+    {
+      "key": "badgeSub",
+      "type": "text",
+      "label": "Badge Abonnent",
+      "group": "Chat",
+      "default": "SUB",
+      "maxLength": 20
+    },
+    {
+      "key": "chatBadges",
+      "type": "boolean",
+      "label": "Badges zeigen",
+      "group": "Chat",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "chatFontSize",
+      "type": "number",
+      "label": "Schriftgrösse",
+      "group": "Chat",
+      "default": 22,
+      "min": 8,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "emoteSize",
+      "type": "number",
+      "label": "Emote-Grösse",
+      "group": "Chat",
+      "default": 28,
+      "min": 8,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "chatFade",
+      "type": "number",
+      "label": "Ausblenden nach (0 = nie)",
+      "group": "Chat",
+      "default": 30,
+      "min": 0,
+      "max": 3600,
+      "unit": "s"
+    },
+    {
+      "key": "chatMax",
+      "type": "number",
+      "label": "Max. Nachrichten",
+      "group": "Chat",
+      "default": 8,
+      "min": 1,
+      "max": 100
+    },
+    {
+      "key": "chatAlign",
+      "type": "select",
+      "label": "Neue Nachrichten",
+      "group": "Chat",
+      "default": "bottom",
+      "options": [
+        "bottom",
+        "top"
+      ]
+    },
+    {
+      "key": "chatGap",
+      "type": "number",
+      "label": "Abstand",
+      "group": "Chat",
+      "default": 12,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camStyle",
+      "type": "select",
+      "label": "Rahmen",
+      "group": "Kamera-Rahmen",
+      "default": "marker",
+      "options": [
+        "marker",
+        "neon",
+        "schlicht"
+      ],
+      "basic": true
+    },
+    {
+      "key": "camFrameWidth",
+      "type": "number",
+      "label": "Rahmenbreite",
+      "group": "Kamera-Rahmen",
+      "default": 12,
+      "min": 2,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "camScribbles",
+      "type": "boolean",
+      "label": "Kritzeleien an den Ecken",
+      "group": "Kamera-Rahmen",
+      "default": true
+    },
+    {
+      "key": "camLabel",
+      "type": "text",
+      "label": "Namensschild ({channel})",
+      "group": "Kamera-Rahmen",
+      "default": "{channel}",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "camLive",
+      "type": "boolean",
+      "label": "Live-Anzeige",
+      "group": "Kamera-Rahmen",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "camLiveText",
+      "type": "text",
+      "label": "Live-Text",
+      "group": "Kamera-Rahmen",
+      "default": "LIVE",
+      "maxLength": 200
+    },
+    {
+      "key": "musicStyle",
+      "type": "select",
+      "label": "Stil",
+      "group": "Musik",
+      "default": "zettel",
+      "options": [
+        "zettel",
+        "kassette",
+        "schlicht"
+      ],
+      "basic": true
+    },
+    {
+      "key": "musicLabel",
+      "type": "text",
+      "label": "Überzeile",
+      "group": "Musik",
+      "default": "Läuft gerade",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "musicIdle",
+      "type": "text",
+      "label": "Text ohne Wiedergabe",
+      "group": "Musik",
+      "default": "Stille im Chaos",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "musicHide",
+      "type": "boolean",
+      "label": "Bei Pause ausblenden",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "musicCover",
+      "type": "boolean",
+      "label": "Cover zeigen",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "musicProgress",
+      "type": "boolean",
+      "label": "Fortschritt zeigen",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "equalizer",
+      "type": "boolean",
+      "label": "Equalizer",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "equalizerBars",
+      "type": "number",
+      "label": "Equalizer: Striche",
+      "group": "Musik",
+      "default": 9,
+      "min": 1,
+      "max": 24
+    },
+    {
+      "key": "musicMarquee",
+      "type": "boolean",
+      "label": "Lange Titel laufen durch",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "musicMarqueeSpeed",
+      "type": "number",
+      "label": "Lange Titel: Lauftempo (px pro Sekunde)",
+      "group": "Musik",
+      "default": 40,
+      "min": 5,
+      "max": 400
+    },
+    {
+      "key": "coverSize",
+      "type": "number",
+      "label": "Cover-Grösse",
+      "group": "Musik",
+      "default": 130,
+      "min": 40,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "fxDuration",
+      "type": "number",
+      "label": "Standarddauer",
+      "group": "Effekte",
+      "default": 4,
+      "min": 0.5,
+      "max": 120,
+      "unit": "s",
+      "step": 0.5
+    },
+    {
+      "key": "fxSize",
+      "type": "number",
+      "label": "Standardgrösse",
+      "group": "Effekte",
+      "default": 360,
+      "min": 20,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "fxTextSize",
+      "type": "number",
+      "label": "Textgrösse",
+      "group": "Effekte",
+      "default": 72,
+      "min": 8,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "fxMargin",
+      "type": "number",
+      "label": "Zufallsposition: Abstand zum Rand",
+      "group": "Effekte",
+      "default": 20,
+      "min": 0,
+      "max": 50,
+      "unit": "%"
+    },
+    {
+      "key": "fxMax",
+      "type": "number",
+      "label": "Max. gleichzeitig",
+      "group": "Effekte",
+      "default": 8,
+      "min": 1,
+      "max": 30
+    },
+    {
+      "key": "infoTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "Befehlsseite",
+      "default": "Chat-Befehle",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "infoIntro",
+      "type": "textarea",
+      "label": "Einleitung ({channel})",
+      "group": "Befehlsseite",
+      "default": "Das kannst du im Chat von {channel} tippen.",
+      "maxLength": 500,
+      "basic": true
+    },
+    {
+      "key": "infoEmpty",
+      "type": "text",
+      "label": "Text, wenn es keine Befehle gibt",
+      "group": "Befehlsseite",
+      "default": "Gerade gibt es hier keine Befehle.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoHelpHeading",
+      "type": "text",
+      "label": "Überschrift: Hilfe",
+      "group": "Befehlsseite",
+      "default": "Hilfe",
+      "maxLength": 200
+    },
+    {
+      "key": "infoMinimesHeading",
+      "type": "text",
+      "label": "Überschrift: Minimes",
+      "group": "Befehlsseite",
+      "default": "Minimes",
+      "maxLength": 200
+    },
+    {
+      "key": "infoTriggersHeading",
+      "type": "text",
+      "label": "Überschrift: Trigger",
+      "group": "Befehlsseite",
+      "default": "Effekte",
+      "maxLength": 200
+    },
+    {
+      "key": "infoHelpText",
+      "type": "text",
+      "label": "Hilfe-Befehl: Erklärung",
+      "group": "Befehlsseite",
+      "default": "Zeigt die Befehle im Chat.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoJoinText",
+      "type": "text",
+      "label": "Minimes einklinken: Erklärung",
+      "group": "Befehlsseite",
+      "default": "Mit deiner Figur in die Szene einsteigen.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoJoinColor",
+      "type": "text",
+      "label": "Einklinken mit Farbe ({command})",
+      "group": "Befehlsseite",
+      "default": "Mit Farbe: {command} #ff00aa oder {command} 255 0 170",
+      "maxLength": 200
+    },
+    {
+      "key": "infoJoinVariant",
+      "type": "text",
+      "label": "Einklinken mit Typ ({command}, {example})",
+      "group": "Befehlsseite",
+      "default": "Mit Typ: {command} {example}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoLookColor",
+      "type": "text",
+      "label": "Farbe ändern: Erklärung ({command})",
+      "group": "Befehlsseite",
+      "default": "Farbe deiner Figur ändern, z.B. {command} #00ffaa",
+      "maxLength": 200
+    },
+    {
+      "key": "infoLookVariant",
+      "type": "text",
+      "label": "Typ wählen: Erklärung ({command})",
+      "group": "Befehlsseite",
+      "default": "Typ deiner Figur wählen: {command} <Name>",
+      "maxLength": 200
+    },
+    {
+      "key": "infoVariants",
+      "type": "text",
+      "label": "Liste der Typen ({names})",
+      "group": "Befehlsseite",
+      "default": "Zur Wahl: {names}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoLeaveText",
+      "type": "text",
+      "label": "Verlassen: Erklärung",
+      "group": "Befehlsseite",
+      "default": "Deine Figur verlässt die Szene.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoKick",
+      "type": "text",
+      "label": "Rauswerfen ({roles}, {command})",
+      "group": "Befehlsseite",
+      "default": "{roles}: {command} @name wirft eine Figur raus.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenCommand",
+      "type": "text",
+      "label": "Trigger als Befehl ({match})",
+      "group": "Befehlsseite",
+      "default": "Tippe {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenWord",
+      "type": "text",
+      "label": "Trigger als Wort ({match})",
+      "group": "Befehlsseite",
+      "default": "Schreib das Wort {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenExact",
+      "type": "text",
+      "label": "Trigger als ganze Nachricht ({match})",
+      "group": "Befehlsseite",
+      "default": "Schreib genau {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenContains",
+      "type": "text",
+      "label": "Trigger als Textteil ({match})",
+      "group": "Befehlsseite",
+      "default": "Schreib etwas mit {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenRegex",
+      "type": "text",
+      "label": "Trigger mit Muster",
+      "group": "Befehlsseite",
+      "default": "Eine besondere Nachricht",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWho",
+      "type": "text",
+      "label": "Wer darf ({roles})",
+      "group": "Befehlsseite",
+      "default": "Für: {roles}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleEveryone",
+      "type": "text",
+      "label": "Rolle: alle",
+      "group": "Befehlsseite",
+      "default": "alle",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleSubscriber",
+      "type": "text",
+      "label": "Rolle: Subs",
+      "group": "Befehlsseite",
+      "default": "Subs",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleVip",
+      "type": "text",
+      "label": "Rolle: VIPs",
+      "group": "Befehlsseite",
+      "default": "VIPs",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleModerator",
+      "type": "text",
+      "label": "Rolle: Mods",
+      "group": "Befehlsseite",
+      "default": "Mods",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleBroadcaster",
+      "type": "text",
+      "label": "Rolle: Streamer",
+      "group": "Befehlsseite",
+      "default": "Streamer",
+      "maxLength": 200
+    },
+    {
+      "key": "infoCooldown",
+      "type": "text",
+      "label": "Abklingzeit für alle ({seconds})",
+      "group": "Befehlsseite",
+      "default": "Pause danach: {seconds} s",
+      "maxLength": 200
+    },
+    {
+      "key": "infoUserCooldown",
+      "type": "text",
+      "label": "Abklingzeit pro Person ({seconds})",
+      "group": "Befehlsseite",
+      "default": "Pro Person: {seconds} s",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWidth",
+      "type": "number",
+      "label": "Befehlsseite: Breite der Spalte",
+      "group": "Befehlsseite",
+      "default": 900,
+      "min": 400,
+      "max": 1600,
+      "unit": "px"
     }
   ],
   "groupScenes": {
@@ -600,6 +1503,24 @@
       "starting",
       "brb",
       "ending"
+    ],
+    "Alerts": [
+      "alerts"
+    ],
+    "Chat": [
+      "chat"
+    ],
+    "Kamera-Rahmen": [
+      "cam"
+    ],
+    "Musik": [
+      "music"
+    ],
+    "Effekte": [
+      "fx"
+    ],
+    "Befehlsseite": [
+      "info"
     ]
   },
   "personalize": {

@@ -175,3 +175,246 @@
 @media (prefers-reduced-motion: reduce) {
   .theme-chaos .ch-neon, .theme-chaos .ch-title::before, .theme-chaos .ch-title::after, .theme-chaos .ch-ticker span { animation: none; }
 }
+
+/* --- Notes: violet surface, rough marker edge in the note's ink, a little crooked, tape on top ------------------- */
+.theme-chaos .ch-note {
+  position: relative;
+  padding: var(--note-padding, 22px 28px);
+  color: var(--textColor);
+  rotate: var(--note-tilt, -0.8deg);
+  isolation: isolate;
+}
+.theme-chaos .ch-note::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: color-mix(in srgb, var(--surface), transparent 6%);
+  border: var(--note-edge, 4px) solid var(--ink, var(--accent));
+  border-radius: var(--note-radius, 4px 14px 6px 11px);
+  box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--ink, var(--accent));
+  filter: var(--rough);
+}
+.theme-chaos .ch-tape {
+  position: absolute;
+  top: var(--tape-top, -16px);
+  left: 50%;
+  width: var(--tape-width, 120px);
+  height: var(--tape-height, 30px);
+  translate: -50% 0;
+  rotate: var(--tape-angle, 3deg);
+  background: repeating-linear-gradient(90deg, transparent 0 var(--tape-rib, 11px), color-mix(in srgb, var(--lilac), white 18%) var(--tape-rib, 11px) var(--tape-rib-end, 13px)), color-mix(in srgb, var(--lilac), transparent 15%);
+}
+.theme-chaos .ch-chip {
+  display: inline-block;
+  padding: var(--chip-padding, 4px 14px);
+  background: var(--lilac);
+  color: var(--onAccent2);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  rotate: var(--chip-tilt, -2deg);
+}
+.theme-chaos .ch-muted { color: var(--mutedColor); margin: 0; }
+.theme-chaos .ch-row.ch-ink-magenta, .theme-chaos .ch-note.ch-ink-magenta { --ink: var(--accent); }
+.theme-chaos .ch-row.ch-ink-cyan, .theme-chaos .ch-note.ch-ink-cyan { --ink: var(--accent2); }
+
+/* --- Alerts: swathes from one side, the note on top, confetti, the marker line of the remaining time ------------- */
+.theme-chaos .ch-alerts { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-chaos .ch-swathes { position: absolute; inset: 0; width: 100%; height: 100%; animation: chaos-strike var(--fadeDuration) ease-out both; }
+.theme-chaos .ch-swathes-right { animation-name: chaos-strike-right; }
+.theme-chaos .ch-alerts.leaving .ch-swathes { animation: chaos-fade var(--fadeDuration) ease-in reverse both; }
+.theme-chaos .ch-swath-hot { fill: color-mix(in srgb, var(--lilac), white 70%); }
+.theme-chaos .ch-swath-magenta { fill: var(--accent); }
+.theme-chaos .ch-swath-cyan { fill: var(--accent2); }
+.theme-chaos .ch-swath-violet { fill: var(--violetLight); }
+.theme-chaos .ch-swath-lilac { fill: var(--lilac); }
+.theme-chaos .ch-streak { fill: none; stroke-linecap: round; }
+.theme-chaos .ch-streak-hot { stroke: color-mix(in srgb, var(--lilac), white 70%); }
+.theme-chaos .ch-streak-magenta { stroke: var(--accent); }
+.theme-chaos .ch-streak-cyan { stroke: var(--accent2); }
+.theme-chaos .ch-streak-violet { stroke: var(--violetLight); }
+.theme-chaos .ch-streak-lilac { stroke: var(--lilac); }
+.theme-chaos .ch-alert {
+  position: absolute;
+  top: var(--alertTop);
+  left: 50%;
+  width: var(--alertWidth);
+  translate: -50% 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--alert-gap, 10px);
+  text-align: center;
+  animation: chaos-slap var(--fadeDuration) cubic-bezier(0.2, 1.6, 0.4, 1) both;
+}
+.theme-chaos .ch-alert.leaving { animation: chaos-glitch-out var(--fadeDuration) steps(4, end) both; }
+.theme-chaos .ch-alert-name .ch-title { font-size: calc(var(--titleSize) * 0.55); }
+.theme-chaos .ch-alert-line { font-size: 1.05em; }
+.theme-chaos .ch-quote { color: var(--mutedColor); }
+.theme-chaos .ch-timer { align-self: stretch; height: var(--timer-height, 6px); }
+.theme-chaos .ch-timer span {
+  display: block;
+  height: 100%;
+  background: var(--accent2);
+  box-shadow: 0 0 calc(var(--glow) * var(--drip-glow, 10px)) var(--accent2);
+  border-radius: var(--timer-radius, 3px);
+  transform-origin: left;
+  animation: chaos-shrink var(--alertDuration) linear both;
+}
+.theme-chaos .ch-confetti { position: absolute; inset: 0; }
+.theme-chaos .ch-piece {
+  position: absolute;
+  top: var(--confetti-start, -60px);
+  left: calc(var(--x) * 100%);
+  width: calc(var(--confetti-size, 26px) + var(--size) * var(--confetti-size, 26px));
+  height: auto;
+  overflow: visible;
+  animation: chaos-fall calc(var(--alertDuration) * 0.7) ease-in both;
+  animation-delay: calc(var(--delay) * var(--confetti-spread, 1.2s));
+}
+
+/* --- Chat ------------------------------------------------------------------------------------------------------- */
+.theme-chaos .ch-chat {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--chatGap);
+  padding: var(--chat-padding, 28px);
+  font-size: var(--chatFontSize);
+  overflow: hidden;
+}
+.theme-chaos .ch-chat-top { justify-content: flex-start; }
+.theme-chaos .ch-row { animation: chaos-slap var(--fadeDuration) cubic-bezier(0.2, 1.6, 0.4, 1) both; }
+.theme-chaos .ch-row.fades { animation: chaos-slap var(--fadeDuration) cubic-bezier(0.2, 1.6, 0.4, 1) both, chaos-fade var(--fadeDuration) ease-in var(--chatFade) reverse forwards; }
+.theme-chaos .ch-chat-zettel .ch-row:nth-child(even) { --note-tilt: 0.9deg; }
+.theme-chaos .ch-chat-blasen .ch-row {
+  align-self: flex-start;
+  padding: var(--bubble-padding, 10px 18px);
+  background: color-mix(in srgb, var(--surfaceLight), transparent 10%);
+  border: var(--note-edge, 3px) solid var(--ink);
+  border-radius: var(--bubble-radius, 18px 22px 20px 4px);
+  box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--ink);
+}
+.theme-chaos .ch-chat-schlicht .ch-row { text-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--ground), 0 var(--shadow-drop, 2px) 0 var(--ground); }
+.theme-chaos .ch-user { font-family: var(--titleFont), var(--font), sans-serif; font-weight: 400; color: var(--ink, var(--accent2)); margin-right: 0.4em; }
+.theme-chaos .ch-row.action .ch-message { font-style: italic; color: var(--accentText); }
+.theme-chaos .ch-badge {
+  display: inline-block;
+  margin-right: 0.35em;
+  padding: var(--badge-padding, 0 8px);
+  background: var(--lilac);
+  color: var(--onAccent2);
+  font-size: 0.7em;
+  font-weight: 700;
+  rotate: var(--chip-tilt, -2deg);
+}
+.theme-chaos .ch-emote { height: var(--emoteSize); vertical-align: middle; }
+
+/* --- Cam frame: four rough marker strokes with overhang, corner scribbles, name tape, live pill ----------------- */
+.theme-chaos .ch-cam { position: fixed; inset: var(--cam-inset, 34px); }
+.theme-chaos .ch-cam-edge {
+  position: absolute;
+  --edge: var(--accent);
+  background: var(--edge);
+  box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--edge);
+  filter: var(--rough);
+  border-radius: var(--edge-radius, 6px);
+}
+.theme-chaos .ch-cam-top { top: 0; left: calc(-1 * var(--overhang, 22px)); right: var(--overhang, 22px); height: var(--camFrameWidth); --edge: var(--accent2); rotate: var(--edge-tilt, -0.6deg); }
+.theme-chaos .ch-cam-bottom { bottom: 0; left: var(--overhang, 22px); right: calc(-1 * var(--overhang, 22px)); height: var(--camFrameWidth); rotate: var(--edge-tilt-bottom, 0.5deg); }
+.theme-chaos .ch-cam-left { left: 0; top: var(--overhang, 22px); bottom: calc(-1 * var(--overhang, 22px)); width: var(--camFrameWidth); }
+.theme-chaos .ch-cam-right { right: 0; top: calc(-1 * var(--overhang, 22px)); bottom: var(--overhang, 22px); width: var(--camFrameWidth); --edge: var(--accent2); }
+.theme-chaos .ch-cam-schlicht .ch-cam-edge { filter: none; box-shadow: none; }
+.theme-chaos .ch-cam-neon .ch-cam-edge { filter: none; box-shadow: 0 0 calc(var(--glow) * var(--glow-wide, 44px)) var(--edge), 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--textColor); }
+.theme-chaos .ch-cam-corner { position: absolute; width: var(--corner-size, 70px); height: var(--corner-size, 70px); overflow: visible; }
+.theme-chaos .ch-top-left { top: calc(var(--corner-size, 70px) / -3); left: calc(var(--corner-size, 70px) / -3); }
+.theme-chaos .ch-top-right { top: calc(var(--corner-size, 70px) / -3); right: calc(var(--corner-size, 70px) / -3); }
+.theme-chaos .ch-bottom-right { bottom: calc(var(--corner-size, 70px) / -3); right: calc(var(--corner-size, 70px) / -3); }
+.theme-chaos .ch-bottom-left { bottom: calc(var(--corner-size, 70px) / -3); left: calc(var(--corner-size, 70px) / -3); }
+.theme-chaos .ch-cam-name {
+  position: absolute;
+  left: var(--name-left, 30px);
+  bottom: var(--name-bottom, 26px);
+  padding: var(--chip-padding, 4px 18px);
+  background: var(--lilac);
+  color: var(--onAccent2);
+  font-family: var(--titleFont), var(--font), sans-serif;
+  font-size: 1.1em;
+  rotate: var(--chip-tilt, -2deg);
+}
+.theme-chaos .ch-cam-live {
+  position: absolute;
+  right: var(--live-right, 30px);
+  top: var(--live-top, 26px);
+  padding: var(--chip-padding, 4px 18px);
+  background: var(--accent);
+  color: var(--textColor);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--accent);
+  animation: chaos-flicker var(--flicker-cycle, 7s) steps(1, end) infinite;
+}
+
+/* --- Music ----------------------------------------------------------------------------------------------------- */
+.theme-chaos .ch-music { position: fixed; left: var(--music-left, 30px); bottom: var(--music-bottom, 30px); }
+.theme-chaos .ch-player { display: flex; align-items: center; gap: var(--player-gap, 22px); min-width: var(--player-width, 560px); animation: chaos-slap var(--fadeDuration) cubic-bezier(0.2, 1.6, 0.4, 1) both; }
+.theme-chaos .ch-player.leaving { animation: chaos-fade var(--fadeDuration) ease-in reverse both; }
+.theme-chaos .ch-cover { width: var(--coverSize); height: var(--coverSize); object-fit: cover; border: var(--note-edge, 4px) solid var(--accent); box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--accent); }
+.theme-chaos .ch-track { display: flex; flex-direction: column; align-items: flex-start; gap: var(--track-gap, 6px); min-width: 0; max-width: var(--track-width, 460px); }
+.theme-chaos .ch-track-title { font-family: var(--titleFont), var(--font), sans-serif; font-size: 1.3em; color: var(--accentText); }
+.theme-chaos .ch-time { display: flex; align-items: center; gap: var(--time-gap, 10px); font-size: 0.75em; color: var(--mutedColor); }
+.theme-chaos .ch-time .ch-progress-zigzag { width: var(--music-progress, 260px); height: var(--music-progress-height, 18px); }
+.theme-chaos .ch-equalizer { display: flex; align-items: flex-end; gap: var(--eq-gap, 5px); height: var(--eq-height, 26px); }
+.theme-chaos .ch-equalizer i {
+  width: var(--eq-width, 5px);
+  height: 100%;
+  background: var(--accent2);
+  box-shadow: 0 0 calc(var(--glow) * var(--drip-glow, 10px)) var(--accent2);
+  transform-origin: bottom;
+  animation: chaos-eq var(--eq-speed, 0.7s) ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * var(--eq-lag, -0.13s));
+}
+.theme-chaos .ch-reels { display: flex; gap: var(--reel-gap, 16px); }
+.theme-chaos .ch-reels i { width: var(--reel-size, 40px); height: var(--reel-size, 40px); border-radius: 50%; border: var(--note-edge, 4px) dashed var(--accent2); animation: chaos-spin var(--reel-speed, 3s) linear infinite; }
+
+/* --- Effects --------------------------------------------------------------------------------------------------- */
+.theme-chaos .ch-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-chaos .ch-fx-item { position: absolute; translate: -50% -50%; display: grid; place-items: center; }
+.theme-chaos .ch-fx-text .ch-title { font-size: var(--fxTextSize); white-space: nowrap; }
+
+/* --- Commands page: the wall stands behind, notes scroll in front of it ---------------------------------------- */
+.theme-chaos.theme-root:has(.ch-info) { min-height: 100vh; background: var(--ground); }
+.theme-chaos .ch-info-wall { position: fixed; inset: 0; z-index: 0; }
+.theme-chaos .ch-info-column {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--info-gap, 34px);
+  width: min(var(--infoWidth), calc(100vw - 2 * var(--info-margin, 24px)));
+  margin: 0 auto;
+  padding: var(--info-padding, 60px 0 80px);
+}
+.theme-chaos .ch-info-title .ch-title { font-size: calc(var(--titleSize) * 0.6); }
+.theme-chaos .ch-info-entry { display: flex; flex-direction: column; align-items: flex-start; gap: var(--entry-gap, 6px); margin-top: var(--entry-space, 16px); }
+.theme-chaos .ch-info-text { margin: 0; }
+
+@keyframes chaos-strike { from { clip-path: inset(0 100% 0 0); opacity: 0; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@keyframes chaos-strike-right { from { clip-path: inset(0 0 0 100%); opacity: 0; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@keyframes chaos-slap { 0% { opacity: 0; scale: 1.25; } 60% { opacity: 1; scale: 0.97; } 100% { scale: 1; } }
+@keyframes chaos-glitch-out {
+  0% { opacity: 1; }
+  30% { translate: calc(-50% + var(--glitch-reach, 14px)) 0; clip-path: inset(20% 0 40% 0); }
+  60% { translate: calc(-50% - var(--glitch-reach, 14px)) 0; clip-path: inset(50% 0 10% 0); }
+  100% { opacity: 0; }
+}
+@keyframes chaos-shrink { from { scale: 1 1; } to { scale: 0 1; } }
+@keyframes chaos-fall { from { translate: 0 0; rotate: 0deg; opacity: 1; } to { translate: 0 110vh; rotate: calc(var(--spin) * 720deg - 360deg); opacity: 0.6; } }
+@keyframes chaos-eq { from { scale: 1 0.25; } to { scale: 1 1; } }
+@keyframes chaos-spin { to { rotate: 1turn; } }
+@media (prefers-reduced-motion: reduce) {
+  .theme-chaos .ch-equalizer i, .theme-chaos .ch-reels i, .theme-chaos .ch-cam-live, .theme-chaos .ch-piece { animation: none; }
+}

@@ -12,5 +12,11 @@ export const chaosView: ThemeView = {
   id: chaosSettings.id,
   scenes: {
     ...screenScenes(Screen),
+    alerts: lazy(() => import("./scenes/Alerts.tsx")),
+    chat: lazy(() => import("./scenes/Chat.tsx")),
+    cam: lazy(() => import("./scenes/Cam.tsx")),
+    music: lazy(() => import("./scenes/Music.tsx")),
+    fx: lazy(() => import("./scenes/Fx.tsx")),
+    info: lazy(() => import("./scenes/Info.tsx")),
   },
 };

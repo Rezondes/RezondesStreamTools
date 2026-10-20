@@ -11,6 +11,8 @@ use crate::settings::field::{
     SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, lines, mark_basic, number,
     text,
 };
+use crate::themes::core_fields::{alert_sound_fields, badge_fields};
+use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
 
@@ -22,10 +24,16 @@ const GESTURE_COLORS: [&str; 2] = ["cyan", "magenta"];
 const GENERAL: &str = "Allgemein";
 const SCRIBBLES: &str = "Kritzeleien";
 const SCREENS: &str = "Starting, BRB, Ending";
+const ALERTS: &str = "Alerts";
+const CHAT: &str = "Chat";
+const CAM: &str = "Kamera-Rahmen";
+const MUSIC: &str = "Musik";
+const FX: &str = "Effekte";
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
 const S: Option<Unit> = Some(Unit::S);
+const PERCENT: Option<Unit> = Some(Unit::Percent);
 const STEP: Option<f64> = Some(0.05);
 
 fn general() -> Vec<SettingField> {
@@ -44,6 +52,8 @@ fn general() -> Vec<SettingField> {
         color("violet", "Violett (Flecken, Schatten)", GENERAL, "#502a5f"),
         color("violetLight", "Violett hell", GENERAL, "#986ea9"),
         color("lilac", "Flieder (Klebeband)", GENERAL, "#d39dd4"),
+        color("surface", "Fläche (Zettel)", GENERAL, "#2b2041"),
+        color("surfaceLight", "Fläche hell", GENERAL, "#3a2c55"),
         color("textColor", "Textfarbe", GENERAL, "#ffffff"),
         color("mutedColor", "Gedämpfte Textfarbe", GENERAL, "#b8a6c4"),
         number("grain", "Körnung (0 = aus)", GENERAL, 0.55, 0.0, 1.0, None, STEP),
@@ -52,6 +62,7 @@ fn general() -> Vec<SettingField> {
         number("flicker", "Neon-Flackern (0 = aus)", GENERAL, 0.2, 0.0, 1.0, None, STEP),
         number("glitch", "Glitch-Stärke (0 = aus)", GENERAL, 0.3, 0.0, 1.0, None, STEP),
         number("glitchEvery", "Glitch alle", GENERAL, 9.0, 2.0, 120.0, S, None),
+        number("fadeDuration", "Ein- und Ausblenden", GENERAL, 450.0, 0.0, 3000.0, MS, None),
     ]
 }
 
@@ -135,9 +146,91 @@ fn screens() -> Vec<SettingField> {
     ]
 }
 
+fn alerts() -> Vec<SettingField> {
+    vec![
+        text("followTag", "Follow: Kopfzeile", ALERTS, "Neuer Follower", None),
+        text("followLine", "Follow: Zeile", ALERTS, "{user} stiftet jetzt mit Chaos!", None),
+        text("subTag", "Sub: Kopfzeile", ALERTS, "Neues Abo", None),
+        text("subLine", "Sub: Zeile", ALERTS, "{user} sprüht ab jetzt mit!", None),
+        text("resubTag", "Resub: Kopfzeile", ALERTS, "Abo x{amount}", None),
+        text("resubLine", "Resub: Zeile", ALERTS, "{user} ist seit {amount} Monaten im Chaos!", None),
+        text("giftTag", "Gift: Kopfzeile", ALERTS, "Abos verschenkt", None),
+        text("giftLine", "Gift: Zeile", ALERTS, "{user} verschenkt {amount} Abos!", None),
+        text("raidTag", "Raid: Kopfzeile", ALERTS, "Raid", None),
+        text("raidLine", "Raid: Zeile", ALERTS, "{user} bringt {amount} Leute ins Chaos!", None),
+        text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} Bits", None),
+        text("cheerLine", "Bits: Zeile", ALERTS, "{user} wirft {amount} Bits an die Wand!", None),
+        text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "Kanalpunkte", None),
+        text("redeemLine", "Kanalpunkte: Zeile", ALERTS, "{user} löst {detail} ein.", None),
+        text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "Hype Train", None),
+        text("hypeBeginLine", "Hype Train: Start", ALERTS, "Der Hype Train rast los!", None),
+        text("hypeEndLine", "Hype Train: Ende", ALERTS, "Hype Train Level {amount} geschafft!", None),
+        flag("alertQuote", "Nachricht zeigen", ALERTS, true),
+        text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\"", None),
+        number("alertDuration", "Dauer", ALERTS, 7000.0, 2000.0, 60000.0, MS, None),
+        number("alertTop", "Abstand oben", ALERTS, 120.0, 0.0, 1000.0, PX, None),
+        number("alertWidth", "Breite", ALERTS, 820.0, 300.0, 1800.0, PX, None),
+        choice("alertSide", "Schwaden von", ALERTS, "wechselnd", &["links", "rechts", "wechselnd"]),
+        number("swathDensity", "Schwaden: Striche", ALERTS, 90.0, 0.0, 300.0, None, None),
+        flag("alertTimer", "Restzeit als Markerstrich", ALERTS, true),
+        flag("confetti", "Konfetti aus Kritzeleien", ALERTS, true),
+        number("confettiCount", "Anzahl Konfetti", ALERTS, 18.0, 0.0, 60.0, None, None),
+        flag("alertSound", "Töne", ALERTS, true),
+    ]
+}
+
+fn chat_style() -> Vec<SettingField> {
+    vec![choice("chatStyle", "Stil", CHAT, "zettel", &["zettel", "blasen", "schlicht"])]
+}
+
+fn chat_cam_music_fx() -> Vec<SettingField> {
+    vec![
+        flag("chatBadges", "Badges zeigen", CHAT, true),
+        number("chatFontSize", "Schriftgrösse", CHAT, 22.0, 8.0, 60.0, PX, None),
+        number("emoteSize", "Emote-Grösse", CHAT, 28.0, 8.0, 120.0, PX, None),
+        number("chatFade", "Ausblenden nach (0 = nie)", CHAT, 30.0, 0.0, 3600.0, S, None),
+        number("chatMax", "Max. Nachrichten", CHAT, 8.0, 1.0, 100.0, None, None),
+        choice("chatAlign", "Neue Nachrichten", CHAT, "bottom", &["bottom", "top"]),
+        number("chatGap", "Abstand", CHAT, 12.0, 0.0, 40.0, PX, None),
+        choice("camStyle", "Rahmen", CAM, "marker", &["marker", "neon", "schlicht"]),
+        number("camFrameWidth", "Rahmenbreite", CAM, 12.0, 2.0, 60.0, PX, None),
+        flag("camScribbles", "Kritzeleien an den Ecken", CAM, true),
+        text("camLabel", "Namensschild ({channel})", CAM, "{channel}", None),
+        flag("camLive", "Live-Anzeige", CAM, true),
+        text("camLiveText", "Live-Text", CAM, "LIVE", None),
+        choice("musicStyle", "Stil", MUSIC, "zettel", &["zettel", "kassette", "schlicht"]),
+        text("musicLabel", "Überzeile", MUSIC, "Läuft gerade", None),
+        text("musicIdle", "Text ohne Wiedergabe", MUSIC, "Stille im Chaos", None),
+        flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+        flag("musicCover", "Cover zeigen", MUSIC, true),
+        flag("musicProgress", "Fortschritt zeigen", MUSIC, true),
+        flag("equalizer", "Equalizer", MUSIC, true),
+        number("equalizerBars", "Equalizer: Striche", MUSIC, 9.0, 1.0, 24.0, None, None),
+        flag("musicMarquee", "Lange Titel laufen durch", MUSIC, true),
+        number("musicMarqueeSpeed", "Lange Titel: Lauftempo (px pro Sekunde)", MUSIC, 40.0, 5.0, 400.0, None, None),
+        number("coverSize", "Cover-Grösse", MUSIC, 130.0, 40.0, 400.0, PX, None),
+        number("fxDuration", "Standarddauer", FX, 4.0, 0.5, 120.0, S, Some(0.5)),
+        number("fxSize", "Standardgrösse", FX, 360.0, 20.0, 1920.0, PX, None),
+        number("fxTextSize", "Textgrösse", FX, 72.0, 8.0, 300.0, PX, None),
+        number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20.0, 0.0, 50.0, PERCENT, None),
+        number("fxMax", "Max. gleichzeitig", FX, 8.0, 1.0, 30.0, None, None),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
-    use SceneName::{Brb, Ending, Starting};
-    BTreeMap::from([(SCREENS.to_owned(), vec![Starting, Brb, Ending])])
+    use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Music, Starting};
+    [
+        (SCREENS, vec![Starting, Brb, Ending]),
+        (ALERTS, vec![Alerts]),
+        (CHAT, vec![Chat]),
+        (CAM, vec![Cam]),
+        (MUSIC, vec![Music]),
+        (FX, vec![Fx]),
+        (INFO_GROUP, vec![Info]),
+    ]
+    .into_iter()
+    .map(|(group, scenes)| (group.to_owned(), scenes))
+    .collect()
 }
 
 /// On first login: channel name from the Twitch login instead of the sample
@@ -166,11 +259,40 @@ const BASIC: &[&str] = &[
     "endingEyebrow",
     "endingTitle",
     "endingNext",
+    "followLine",
+    "subLine",
+    "resubLine",
+    "giftLine",
+    "raidLine",
+    "cheerLine",
+    "redeemLine",
+    "hypeBeginLine",
+    "alertSide",
+    "chatStyle",
+    "chatBadges",
+    "camStyle",
+    "camLabel",
+    "camLive",
+    "musicStyle",
+    "musicLabel",
+    "musicIdle",
 ];
 
 #[must_use]
 pub fn chaos() -> Theme {
-    let fields = [general(), scribbles(), screens()].concat();
+    let mut fields = [
+        general(),
+        scribbles(),
+        screens(),
+        alerts(),
+        alert_sound_fields(ALERTS),
+        chat_style(),
+        badge_fields(CHAT),
+        chat_cam_music_fx(),
+        info_fields(),
+    ]
+    .concat();
+    fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900.0, 400.0, 1600.0, PX, None));
     let schema = ThemeSchema {
         id: "chaos".to_owned(),
         name: "Chaos".to_owned(),
