@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --ignore-scripts
 COPY index.html vite.config.ts tsconfig.json ./
+# vite.config.ts imports the bundle map helper
+COPY scripts/bundle.ts ./scripts/
 COPY src ./src
 RUN npx vite build
 
