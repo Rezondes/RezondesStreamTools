@@ -14,6 +14,7 @@ use crate::settings::field::{
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
+use crate::themes::stinger_fields::stinger_fields;
 
 const FONTS: [&str; 4] = ["Inter", "Manrope", "DM Sans", "Space Grotesk"];
 const LOCALES: [&str; 8] = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"];
@@ -207,7 +208,7 @@ pub fn standard() -> Theme {
     let schema = ThemeSchema {
         id: "standard".to_owned(),
         name: "Standard".to_owned(),
-        fields: mark_basic(fields, BASIC),
+        fields: mark_basic([fields, stinger_fields(STINGER, 60.0, 0.0)].concat(), BASIC),
         group_scenes: group_scenes(),
         minime_variants: None,
         minime_teams: None,

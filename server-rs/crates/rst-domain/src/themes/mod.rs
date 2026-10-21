@@ -16,4 +16,5 @@ pub mod plantage;
 pub mod registry;
 pub mod schema;
 pub mod standard;
+pub mod stinger_fields;
 pub mod urlaub;

@@ -262,4 +262,8 @@ export type MatrixValues = {
   readonly infoCooldown: string;
   readonly infoUserCooldown: string;
   readonly infoRain: boolean;
+  readonly stingerFps: number;
+  readonly stingerHold: number;
+  readonly stingerEase: string;
+  readonly stingerSize: string;
 };

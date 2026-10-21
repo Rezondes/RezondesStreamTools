@@ -206,8 +206,6 @@ export type DachdeckerValues = {
   readonly stingerStamp: string;
   readonly stingerDuration: number;
   readonly stingerCut: number;
-  readonly stingerFps: number;
-  readonly stingerHold: number;
   readonly stingerGrid: number;
   readonly stingerRollSize: number;
   readonly profileTitle: string;
@@ -330,4 +328,8 @@ export type DachdeckerValues = {
   readonly minimeNames_spengler: string;
   readonly minimeNames_azubi: string;
   readonly minimeNames_polier: string;
+  readonly stingerFps: number;
+  readonly stingerHold: number;
+  readonly stingerEase: string;
+  readonly stingerSize: string;
 };

@@ -1805,25 +1805,6 @@
       "step": 0.05
     },
     {
-      "key": "stingerFps",
-      "type": "number",
-      "label": "Bildrate (Bilder pro Sekunde)",
-      "group": "Stinger",
-      "default": 30,
-      "min": 10,
-      "max": 60
-    },
-    {
-      "key": "stingerHold",
-      "type": "number",
-      "label": "Pause am Übergangspunkt (Anteil je Hälfte)",
-      "group": "Stinger",
-      "default": 20,
-      "min": 0,
-      "max": 80,
-      "unit": "%"
-    },
-    {
       "key": "stingerGrid",
       "type": "number",
       "label": "Bauplan: Rastergrösse",
@@ -2913,6 +2894,50 @@
       "group": "Minimes: Typen",
       "default": "polier, chef",
       "maxLength": 200
+    },
+    {
+      "key": "stingerFps",
+      "type": "number",
+      "label": "Bildrate (Bilder pro Sekunde)",
+      "group": "Stinger",
+      "default": 30,
+      "min": 10,
+      "max": 60
+    },
+    {
+      "key": "stingerHold",
+      "type": "number",
+      "label": "Pause am Übergangspunkt (Anteil je Hälfte)",
+      "group": "Stinger",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "%"
+    },
+    {
+      "key": "stingerEase",
+      "type": "select",
+      "label": "Bewegungskurve",
+      "group": "Stinger",
+      "default": "linear",
+      "options": [
+        "linear",
+        "nagel",
+        "federnd",
+        "weich",
+        "stempel"
+      ]
+    },
+    {
+      "key": "stingerSize",
+      "type": "select",
+      "label": "Ausgabegrösse",
+      "group": "Stinger",
+      "default": "1080p",
+      "options": [
+        "1080p",
+        "720p"
+      ]
     }
   ],
   "groupScenes": {

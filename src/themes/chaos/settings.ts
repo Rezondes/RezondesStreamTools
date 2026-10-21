@@ -7,6 +7,7 @@ import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, inScene, lines, markBasic, number, text } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
+import { stingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 const FONTS = ["Space Grotesk", "Inter", "Manrope", "DM Sans"] as const;
@@ -232,4 +233,4 @@ const BASIC = [
   "minimeDefaultColor", "minimeNames",
 ];
 
-export const chaosSettings: ThemeSchema = { id: "chaos", name: "Chaos", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };
+export const chaosSettings: ThemeSchema = { id: "chaos", name: "Chaos", fields: markBasic([...FIELDS, ...stingerFields(STINGER)], BASIC), groupScenes: GROUP_SCENES, personalize };

@@ -1,11 +1,12 @@
 // Renderable clips of the Urlaub theme: stinger (group Stinger) and profile and offline banners (group Banner),
 // drawn with the resolved settings. Check: render.check.ts.
 import type { RenderClip } from "../../core/renderClip.ts";
+import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import { drawUrlaubOfflineBanner, drawUrlaubProfileBanner, type UrlaubBannerOptions } from "./banners.ts";
 import type { UrlaubValues } from "./settings.ts";
-import { drawUrlaubStinger, FPS, HEIGHT, WIDTH, type UrlaubStingerOptions } from "./stinger.ts";
+import { drawUrlaubStinger, HEIGHT, WIDTH, type UrlaubStingerOptions } from "./stinger.ts";
 
 // Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
 const BANNER_LOOP = 6;
@@ -29,8 +30,9 @@ export function urlaubClips(values: SettingValues, login: string): RenderClip[] 
     offlineTitle: fruit.bannerOfflineTitle, offlineText: fruit.bannerOfflineText, offlineLines: fruit.bannerOfflineLines,
   };
   const font = `400 24px "${fruit.titleFont}"`;
+  const options = readStingerOptions(values);
   return [
-    { name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawUrlaubStinger(context, time, stinger) },
+    withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawUrlaubStinger(context, time, stinger) }, options),
     { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawUrlaubProfileBanner(context, time, banner) },
     { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawUrlaubOfflineBanner(context, time, banner) },
   ];

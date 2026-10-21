@@ -6,7 +6,6 @@ import { clamp01, easeInOut } from "../../core/easing.ts";
 
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
-export const FPS = 60;
 
 export type KothStingerOptions = {
   duration: number; // seconds

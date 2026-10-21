@@ -38,6 +38,21 @@ for (const schema of THEMES) {
   }
 }
 
+// Stinger options in every theme (plans/PLAN-GRAFIK.md, package 7): the four fields in the group Stinger; frame rate
+// and size of the stinger clip follow the values
+const STINGER_KEYS = ["stingerFps", "stingerHold", "stingerEase", "stingerSize"];
+for (const schema of THEMES) {
+  for (const key of STINGER_KEYS) {
+    assert.equal(schema.fields.find(field => field.key === key)?.group, "Stinger", `${schema.id}: ${key}`);
+  }
+  const stinger = clipsFor(schema.id, resolveSettings(schema, { stingerFps: 24, stingerSize: "720p", stingerHold: 20 }), "rezondes").find(clip => clip.name === "stinger");
+  if (!stinger) continue;
+  assert.deepEqual([stinger.fps, stinger.width, stinger.height], [24, 1280, 720], `${schema.id}: stinger options`);
+  const mock = canvas();
+  stinger.draw(mock.context, stinger.cut ?? 0);
+  assert.ok(mock.count() > 0, `${schema.id}: draws at 720p`);
+}
+
 // Unknown theme: no clips (nothing is inherited)
 assert.equal(clipsFor("does-not-exist", resolveSettings(THEMES[0], {}), "rezondes").length, 0);
 

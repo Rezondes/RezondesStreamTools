@@ -3,6 +3,7 @@
 // settings. The 3D module loads only in prepare (clips3d.ts), so three.js stays out of the entry chunk. Check:
 // render.check.ts.
 import type { RenderClip } from "../../core/renderClip.ts";
+import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import { type BannerOptions, drawOffline, drawProfile } from "./banners.ts";
@@ -61,14 +62,15 @@ export function dachdeckerClips(settings: SettingValues, login: string): RenderC
   const profile = banner(PROFILE_SIZE);
   const offline = banner(OFFLINE_SIZE);
   const font = `700 24px "${values.font}"`;
+  // The roll draws the hold itself (roll.ts), so the core only takes frame rate, curve and size
   return [
-    {
+    withStingerOptions({
       name: "stinger", feature: "stinger", group: "Stinger", font, ...STINGER_SIZE, fps: stinger.fps, duration: stinger.duration, cut: stinger.cut, prepare,
       draw: clipDraw(loaded => loaded.stingerDraw(stinger, sheet), (context, time) => {
         context.fillStyle = values.blueprint;
         context.fillRect(0, 0, STINGER_SIZE.width * coverage(time, stinger), STINGER_SIZE.height);
       }),
-    },
+    }, { ...readStingerOptions(settings), ownHold: true }),
     {
       name: "profile", feature: "banners", group: "Banner", font, ...PROFILE_SIZE, duration: STILL, cut: null,
       draw: (context, time) => drawProfile(context, time, profile, {

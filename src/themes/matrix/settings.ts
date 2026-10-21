@@ -8,6 +8,7 @@ import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_MOTION, MINIME_RULES } from "../
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
+import { stingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 // Sample logo; on first login personalize creates the logo from the Twitch login
@@ -326,4 +327,4 @@ const BASIC = [
   "musicIdleTitle", "musicHide", "fxIn", "fxOut", "minimeNames", "minimeDefaultColor",
 ];
 
-export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };
+export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: markBasic([...FIELDS, ...stingerFields(STINGER)], BASIC), groupScenes: GROUP_SCENES, personalize };

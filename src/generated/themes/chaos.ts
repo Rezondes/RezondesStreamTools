@@ -228,4 +228,8 @@ export type ChaosValues = {
   readonly infoCooldown: string;
   readonly infoUserCooldown: string;
   readonly infoWidth: number;
+  readonly stingerFps: number;
+  readonly stingerHold: number;
+  readonly stingerEase: string;
+  readonly stingerSize: string;
 };

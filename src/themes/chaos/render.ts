@@ -1,12 +1,13 @@
 // Renderable clips of the Chaos theme: stinger (group Stinger) and profile and offline banners (group Banner), drawn with
 // the resolved settings; the layers of each clip are built once per render. Check: render.check.ts.
 import type { RenderClip } from "../../core/renderClip.ts";
+import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import { makeChaosOfflineBanner, makeChaosProfileBanner, type ChaosBannerOptions } from "./banners.ts";
 import type { ChaosColors } from "./paint.ts";
 import type { ChaosValues } from "./settings.ts";
-import { FPS, HEIGHT, makeChaosStinger, WIDTH, type ChaosStingerOptions } from "./stinger.ts";
+import { HEIGHT, makeChaosStinger, WIDTH, type ChaosStingerOptions } from "./stinger.ts";
 
 // Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
 const BANNER_LOOP = 4;
@@ -30,8 +31,9 @@ export function chaosClips(values: SettingValues, login: string): RenderClip[] {
     offlineTitle: chaos.bannerOfflineTitle, offlineText: chaos.bannerOfflineText,
   };
   const font = `24px "${chaos.titleFont}"`;
+  const options = readStingerOptions(values);
   return [
-    { name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: makeChaosStinger(stinger) },
+    withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: makeChaosStinger(stinger) }, options),
     { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: makeChaosProfileBanner(banner) },
     { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: makeChaosOfflineBanner(banner) },
   ];

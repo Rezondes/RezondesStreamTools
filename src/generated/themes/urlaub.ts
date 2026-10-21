@@ -335,4 +335,8 @@ export type UrlaubValues = {
   readonly thingCocktailDetail: string;
   readonly thingStrandtascheMain: string;
   readonly thingStrandtascheDetail: string;
+  readonly stingerFps: number;
+  readonly stingerHold: number;
+  readonly stingerEase: string;
+  readonly stingerSize: string;
 };

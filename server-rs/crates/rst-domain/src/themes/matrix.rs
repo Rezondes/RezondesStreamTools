@@ -17,6 +17,7 @@ use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, minime_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
+use crate::themes::stinger_fields::stinger_fields;
 
 /// Character set of rain, decoding and stinger (`GLYPHS` in `src/core/glyphs.ts`)
 const GLYPHS: &str = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789{}<>=;#ABCDEF";
@@ -324,7 +325,7 @@ pub fn matrix() -> Theme {
     let schema = ThemeSchema {
         id: "matrix".to_owned(),
         name: "Matrix".to_owned(),
-        fields: mark_basic(fields(), BASIC),
+        fields: mark_basic([fields(), stinger_fields(STINGER, 60.0, 0.0)].concat(), BASIC),
         group_scenes: group_scenes(),
         minime_variants: None,
         minime_teams: None,

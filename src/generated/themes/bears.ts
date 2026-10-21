@@ -339,4 +339,8 @@ export type BearsValues = {
   readonly minimeNames_eisbaer: string;
   readonly minimeNames_grizzly: string;
   readonly minimeNames_panda: string;
+  readonly stingerFps: number;
+  readonly stingerHold: number;
+  readonly stingerEase: string;
+  readonly stingerSize: string;
 };

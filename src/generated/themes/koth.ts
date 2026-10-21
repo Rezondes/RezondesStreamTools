@@ -312,4 +312,8 @@ export type KothValues = {
   readonly minimeFireMs_sniper: number;
   readonly minimeAimMs_grenadier: number;
   readonly minimeFireMs_grenadier: number;
+  readonly stingerFps: number;
+  readonly stingerHold: number;
+  readonly stingerEase: string;
+  readonly stingerSize: string;
 };

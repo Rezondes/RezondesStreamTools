@@ -9,6 +9,7 @@ import {
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
+import { stingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./field.ts";
 import { ROLE_IDS, ROLE_SET } from "./mangos.ts";
@@ -310,7 +311,7 @@ const BASIC = [
 export const plantageSettings: ThemeSchema = {
   id: "plantage",
   name: "Südfrucht-Plantage",
-  fields: markBasic([...FIELDS, ...minimeVariantFields(ROLE_SET), ...COMBAT_FIELDS], BASIC),
+  fields: markBasic([...FIELDS, ...minimeVariantFields(ROLE_SET), ...COMBAT_FIELDS, ...stingerFields(STINGER)], BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: ROLE_SET,

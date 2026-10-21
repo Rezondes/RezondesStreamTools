@@ -6,6 +6,7 @@ import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MIN
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
+import { stingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./beach.ts";
 import { BEACH_THINGS, THING_IDS, THING_SET } from "./beachThings.ts";
@@ -316,7 +317,7 @@ const BASIC = [
 export const urlaubSettings: ThemeSchema = {
   id: "urlaub",
   name: "Urlaub",
-  fields: markBasic([...FIELDS, ...minimeVariantFields(THING_SET), ...THING_COLOR_FIELDS], BASIC),
+  fields: markBasic([...FIELDS, ...minimeVariantFields(THING_SET), ...THING_COLOR_FIELDS, ...stingerFields(STINGER)], BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: THING_SET,

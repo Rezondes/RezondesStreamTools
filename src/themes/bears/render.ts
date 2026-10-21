@@ -1,12 +1,13 @@
 // Renderable clips of the Bärenbande theme: stinger (group Stinger) and profile and offline banners (group Banner), drawn
 // from the character model with the resolved settings. Check: render.check.ts.
 import type { RenderClip } from "../../core/renderClip.ts";
+import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import { drawBearsOfflineBanner, drawBearsProfileBanner, type BearsBannerOptions } from "./banners.ts";
 import type { Palette, WorldColors } from "./paint.ts";
 import type { BearsValues } from "./settings.ts";
-import { drawBearsStinger, FPS, HEIGHT, WIDTH, type BearsStingerOptions } from "./stinger.ts";
+import { drawBearsStinger, HEIGHT, WIDTH, type BearsStingerOptions } from "./stinger.ts";
 
 // Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
 const BANNER_LOOP = 6;
@@ -57,8 +58,9 @@ export function bearsClips(values: SettingValues, login: string): RenderClip[] {
     textDark: field.textDark, textDim: field.textDim, paperShade: field.paperShade, sleepText: field.bannerSleepText,
   };
   const font = `800 24px "${field.titleFont}"`;
+  const options = readStingerOptions(values);
   return [
-    { name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawBearsStinger(context, time, stinger) },
+    withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawBearsStinger(context, time, stinger) }, options),
     { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawBearsProfileBanner(context, time, banner) },
     { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawBearsOfflineBanner(context, time, banner) },
   ];

@@ -18,6 +18,7 @@ use crate::themes::minime_fields::{
 };
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
+use crate::themes::stinger_fields::stinger_fields;
 
 const FONTS: [&str; 4] = ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"];
 const QUALITIES: [&str; 3] = ["hoch", "mittel", "niedrig"];
@@ -346,8 +347,6 @@ fn stinger_banner() -> Vec<SettingField> {
         text("stingerStamp", "Bauplan: Stempel (leer = aus)", STINGER, "GEPRÜFT", None),
         number("stingerDuration", "Länge", STINGER, 2.4, 0.5, 6.0, S, Some(0.05)),
         number("stingerCut", "Übergangspunkt", STINGER, 1.2, 0.1, 6.0, S, Some(0.05)),
-        number("stingerFps", "Bildrate (Bilder pro Sekunde)", STINGER, 30.0, 10.0, 60.0, None, None),
-        number("stingerHold", "Pause am Übergangspunkt (Anteil je Hälfte)", STINGER, 20.0, 0.0, 80.0, PERCENT, None),
         number("stingerGrid", "Bauplan: Rastergrösse", STINGER, 40.0, 10.0, 200.0, PX, None),
         number("stingerRollSize", "Rolle: Durchmesser", STINGER, 180.0, 40.0, 600.0, PX, None),
         text("profileTitle", "Profilbanner: Titel ({channel})", BANNER, "{channel}", None),
@@ -543,7 +542,7 @@ pub fn dachdecker() -> Theme {
     let schema = ThemeSchema {
         id: "dachdecker".to_owned(),
         name: "Dachdecker".to_owned(),
-        fields: mark_basic(fields, BASIC),
+        fields: mark_basic([fields, stinger_fields(STINGER, 30.0, 20.0)].concat(), BASIC),
         group_scenes: group_scenes(),
         minime_variants: Some(variants()),
         minime_teams: None,

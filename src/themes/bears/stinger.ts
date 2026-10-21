@@ -12,7 +12,6 @@ import { POSES, type PoseName } from "./rig.ts";
 
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
-export const FPS = 60;
 
 export type CurtainLook = { color: string; shade: string; pattern: boolean; folds: number };
 export type BearsStingerOptions = {

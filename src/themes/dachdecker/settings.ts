@@ -7,6 +7,7 @@ import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, lines, markBasic, number, text } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
+import { stingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { QUALITIES } from "../../core/three/quality.ts";
 import { FIGURE_SET, FIGURE_TYPES } from "./figures.ts";
@@ -235,8 +236,6 @@ const FIELDS = [
   text("stingerStamp", "Bauplan: Stempel (leer = aus)", STINGER, "GEPRÜFT"),
   number("stingerDuration", "Länge", STINGER, 2.4, 0.5, 6, "s", 0.05),
   number("stingerCut", "Übergangspunkt", STINGER, 1.2, 0.1, 6, "s", 0.05),
-  number("stingerFps", "Bildrate (Bilder pro Sekunde)", STINGER, 30, 10, 60),
-  number("stingerHold", "Pause am Übergangspunkt (Anteil je Hälfte)", STINGER, 20, 0, 80, "%"),
   number("stingerGrid", "Bauplan: Rastergrösse", STINGER, 40, 10, 200, "px"),
   number("stingerRollSize", "Rolle: Durchmesser", STINGER, 180, 40, 600, "px"),
 
@@ -336,7 +335,7 @@ const BASIC = [
 export const dachdeckerSettings: ThemeSchema = {
   id: "dachdecker",
   name: "Dachdecker",
-  fields: markBasic([...FIELDS, ...minimeVariantFields(FIGURE_SET)], BASIC),
+  fields: markBasic([...FIELDS, ...minimeVariantFields(FIGURE_SET), ...stingerFields(STINGER, { stingerFps: 30, stingerHold: 20 })], BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: FIGURE_SET,

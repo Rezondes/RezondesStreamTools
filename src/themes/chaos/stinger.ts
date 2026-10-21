@@ -12,7 +12,6 @@ import { blotches, dust } from "./wall.ts";
 
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
-export const FPS = 60;
 
 export type ChaosStingerOptions = {
   duration: number; // seconds

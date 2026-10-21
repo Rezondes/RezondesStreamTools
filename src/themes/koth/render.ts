@@ -2,11 +2,12 @@
 // the resolved settings. The stinger flag changes from the color of the first faction to the second. Check: render.check.ts.
 import { minimeTeamColorKey } from "../../core/minimeFields.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
+import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import { drawKothOfflineBanner, drawKothProfileBanner, type KothBannerOptions } from "./banners.ts";
 import { TEAM_SET, type KothValues } from "./settings.ts";
-import { drawKothStinger, FPS, HEIGHT, WIDTH, type KothStingerOptions } from "./stinger.ts";
+import { drawKothStinger, HEIGHT, WIDTH, type KothStingerOptions } from "./stinger.ts";
 
 // Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
 const BANNER_LOOP = 6;
@@ -31,8 +32,9 @@ export function kothClips(values: SettingValues, login: string): RenderClip[] {
     offlineTitle: koth.bannerOfflineTitle, offlineText: koth.bannerOfflineText, offlineLines: koth.bannerOfflineLines,
   };
   const font = `400 24px "${koth.titleFont}"`;
+  const options = readStingerOptions(values);
   return [
-    { name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawKothStinger(context, time, stinger) },
+    withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawKothStinger(context, time, stinger) }, options),
     { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawKothProfileBanner(context, time, banner) },
     { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawKothOfflineBanner(context, time, banner) },
   ];

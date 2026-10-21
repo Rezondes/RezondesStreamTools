@@ -18,6 +18,7 @@ use crate::themes::minime_fields::{
 };
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
+use crate::themes::stinger_fields::stinger_fields;
 
 const FONTS: [&str; 4] = ["Space Grotesk", "Inter", "Manrope", "DM Sans"];
 const TITLE_FONTS: [&str; 4] = ["Permanent Marker", "Black Ops One", "Sniglet", "Pacifico"];
@@ -366,7 +367,7 @@ pub fn chaos() -> Theme {
     let schema = ThemeSchema {
         id: "chaos".to_owned(),
         name: "Chaos".to_owned(),
-        fields: mark_basic(fields, BASIC),
+        fields: mark_basic([fields, stinger_fields(STINGER, 60.0, 0.0)].concat(), BASIC),
         group_scenes: group_scenes(),
         minime_variants: None,
         minime_teams: None,
