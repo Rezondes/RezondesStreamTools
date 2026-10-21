@@ -1,9 +1,11 @@
 // Stinger of the Plantage theme: a ripe mango falls from the top into the picture, grows until it fills everything in
-// mango colors at the transition point (cut), briefly shows the text with leaves flying around, and drops out at the
+// mango colors at the transition point (cut), briefly shows the text while leaves whirl out of it (burstAt of the core),
+// and drops out at the
 // bottom again. Drawn like the illustrated backdrop: the mango glows from the upper left into its blush, has a gloss and
 // a soft shadow, the leaves shade from light to dark with a vein. Before and after transparent. Pure function of time,
 // so it can be rendered frame by frame. Check: stinger.check.ts.
 import { clamp01, easeIn, easeInOut } from "../../core/easing.ts";
+import { burstAt } from "../../core/motion/burst.ts";
 
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
@@ -12,6 +14,8 @@ export type PlantageStingerOptions = {
   duration: number; // seconds
   cut: number; // seconds, enter in OBS as transition point
   leaves: boolean;
+  leafCount: number;
+  seed: number;
   text: string;
   font: string;
   mango: string;
@@ -23,10 +27,12 @@ export type PlantageStingerOptions = {
   textColor: string;
 };
 
-// fixed: radius of the mango at the start, radius that covers the whole picture, number of flying leaves
+// fixed: radius of the mango at the start, radius that covers the whole picture
 const START_RADIUS = 90;
 const COVER_RADIUS = 1200;
-const LEAVES = 6;
+// fixed: the leaves burst out of the middle a little before the transition point and whirl outward (px and s)
+const WHIRL = { lead: 0.25, origin: { x: WIDTH / 2, y: HEIGHT / 2 }, direction: 0, spread: Math.PI * 2, speed: [500, 1300] as const, gravity: 260, drag: 1.6, life: 1.4 };
+const LEAF_LENGTH = { min: 40, by: 50 };
 const TURN = Math.PI * 2;
 
 // A leaf as an ellipse turned by angle, shaded from light (top) to dark, with a vein along its length
@@ -77,13 +83,14 @@ function mango(context: CanvasRenderingContext2D, x: number, y: number, radius: 
   leaf(context, x + radius * 0.25, y - radius * 1.02, radius * 0.32, -0.5, options);
 }
 
-// Leaves fly outward from the middle around the transition point
-function leaves(context: CanvasRenderingContext2D, shown: number, options: PlantageStingerOptions) {
-  for (let index = 0; index < LEAVES; index++) {
-    const angle = (index / LEAVES) * TURN;
-    const reach = 260 + 420 * (1 - shown);
-    leaf(context, WIDTH / 2 + Math.cos(angle) * reach * 1.6, HEIGHT / 2 + Math.sin(angle) * reach, 70, angle, options);
-  }
+// Leaves whirl outward from the middle around the transition point, every one placed from seed and time
+function leaves(context: CanvasRenderingContext2D, time: number, options: PlantageStingerOptions) {
+  burstAt(options.seed, options.leafCount, time - (options.cut - WHIRL.lead), WHIRL).forEach((spot, index) => {
+    if (spot.opacity <= 0) return;
+    context.globalAlpha = spot.opacity;
+    leaf(context, spot.x, spot.y, LEAF_LENGTH.min + ((index * 7) % 10) / 10 * LEAF_LENGTH.by, spot.angle, options);
+  });
+  context.globalAlpha = 1;
 }
 
 export function drawPlantageStinger(context: CanvasRenderingContext2D, time: number, options: PlantageStingerOptions) {
@@ -97,12 +104,12 @@ export function drawPlantageStinger(context: CanvasRenderingContext2D, time: num
   const y = -START_RADIUS + (HEIGHT / 2 + START_RADIUS) * enter + leave * (HEIGHT / 2 + COVER_RADIUS);
   mango(context, WIDTH / 2, y, radius, options);
 
-  // Text and leaves around the transition point
+  // Leaves and text around the transition point
+  if (options.leaves) leaves(context, time, options);
   const shown = 1 - clamp01(Math.abs(time - cut) / (Math.min(cut, duration - cut) * 0.6));
   if (shown <= 0) return;
   context.save();
   context.globalAlpha = shown;
-  if (options.leaves) leaves(context, shown, options);
   context.fillStyle = options.textColor;
   context.shadowColor = options.shadow;
   context.shadowBlur = 30;

@@ -326,6 +326,7 @@ fn stinger_banner() -> Vec<SettingField> {
         number("stingerCut", "Übergangspunkt", STINGER, 0.7, 0.1, 5.0, S, Some(0.05)),
         text("stingerText", "Text ({channel})", STINGER, "{channel}", None),
         flag("stingerLeaves", "Blätter fliegen mit", STINGER, true),
+        number("stingerLeafCount", "Anzahl Blätter im Stinger", STINGER, 24.0, 0.0, 120.0, None, None),
         text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
         text("bannerProfileText", "Profilbanner: Text", BANNER, "Mangos, Ernte und gute Streams", None),
         text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade auf der Plantage", None),

@@ -250,6 +250,8 @@ const FIELDS = [
   number("stingerCut", "Übergangspunkt", STINGER, 0.7, 0.1, 5, "s", 0.05),
   text("stingerText", "Text ({channel})", STINGER, "{channel}"),
   flag("stingerLeaves", "Blätter fliegen mit", STINGER, true),
+  // fixed: at most 120 leaves in the stinger
+  number("stingerLeafCount", "Anzahl Blätter im Stinger", STINGER, 24, 0, 120),
 
   text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
   text("bannerProfileText", "Profilbanner: Text", BANNER, "Mangos, Ernte und gute Streams"),

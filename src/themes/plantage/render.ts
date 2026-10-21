@@ -5,6 +5,7 @@ import { readStingerOptions, withStingerOptions } from "../../core/stingerOption
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import { drawPlantageOfflineBanner, drawPlantageProfileBanner, type PlantageBannerOptions } from "./banners.ts";
+import type { PaintOptions } from "./paint.ts";
 import type { PlantageValues } from "./settings.ts";
 import { drawPlantageStinger, HEIGHT, WIDTH, type PlantageStingerOptions } from "./stinger.ts";
 
@@ -12,22 +13,33 @@ import { drawPlantageStinger, HEIGHT, WIDTH, type PlantageStingerOptions } from 
 const BANNER_LOOP = 6;
 const BANNER_FPS = 1;
 
+// The world of the scenes for a banner: day or evening sky, the world settings, the channel name on the crate
+function paintOf(field: PlantageValues, sky: [string, string], label: string): PaintOptions {
+  return {
+    colors: {
+      skyTop: sky[0], skyBottom: sky[1], sky: sky[1], sun: field.sun, hill: field.hillColor, hillFar: field.hillFarColor, soil: field.soil, soilDark: field.soilDark,
+      grass: field.accent2, cloud: field.paper, wood: field.wood, woodDark: field.woodDark, trunk: field.trunk, trunkDark: field.woodDark,
+      leafDark: field.leafDark, leaf: field.leaf, leafLight: field.accent2, mango: field.mango, mangoBlush: field.mangoBlush, gloss: field.paper, shadow: field.textOnWood,
+    },
+    seed: field.worldSeed, treeRowsFar: field.treeRowsFar, treeRowsMid: field.treeRowsMid, farBlur: field.farBlur, hazeFar: field.hazeFar / 100,
+    sway: field.swayAmount, loop: BANNER_LOOP, label: field.crates && field.crateName ? label : "", labelFont: field.titleFont,
+  };
+}
+
 // values: resolved against the Plantage schema; login for {login} in the texts
 export function plantageClips(values: SettingValues, login: string): RenderClip[] {
   const field = values as unknown as PlantageValues;
   const names = { channel: field.channelName, login };
   const stinger: PlantageStingerOptions = {
-    duration: field.stingerDuration, cut: field.stingerCut, leaves: field.stingerLeaves,
+    duration: field.stingerDuration, cut: field.stingerCut, leaves: field.stingerLeaves, leafCount: field.stingerLeafCount, seed: field.worldSeed,
     text: fillTemplate(field.stingerText, names), font: field.titleFont,
     mango: field.mango, blush: field.mangoBlush, leaf: field.leaf, leafDark: field.leafDark, paper: field.paper, shadow: field.soilDark,
     textColor: field.textColor,
   };
+  const label = field.channelName.toUpperCase();
   const banner: PlantageBannerOptions = {
-    loop: BANNER_LOOP, font: field.font, titleFont: field.titleFont,
-    skyTop: field.skyDayTop, skyBottom: field.skyDayBottom, eveningTop: field.skyEveningTop, eveningBottom: field.skyEveningBottom,
-    sun: field.sun, hill: field.hillColor, hillFar: field.hillFarColor, soil: field.soil, soilDark: field.soilDark, leaf: field.leaf, leafDark: field.leafDark,
-    trunk: field.trunk, mango: field.mango, blush: field.mangoBlush, paper: field.paper,
-    wood: field.wood, woodDark: field.woodDark, textColor: field.textColor, textOnWood: field.textOnWood,
+    loop: BANNER_LOOP, font: field.font, titleFont: field.titleFont, textColor: field.textColor, textOnWood: field.textOnWood, paper: field.paper, shadow: field.soilDark,
+    day: paintOf(field, [field.skyDayTop, field.skyDayBottom], label), evening: paintOf(field, [field.skyEveningTop, field.skyEveningBottom], label),
     title: fillTemplate(field.bannerTitle, names), profileText: field.bannerProfileText,
     offlineTitle: field.bannerOfflineTitle, offlineText: field.bannerOfflineText, offlineLines: field.bannerOfflineLines,
   };

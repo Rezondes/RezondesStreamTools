@@ -19,7 +19,7 @@ function recorder() {
 }
 
 const options: PlantageStingerOptions = {
-  duration: 1.4, cut: 0.7, leaves: true, text: "Plantage", font: "Fredoka",
+  duration: 1.4, cut: 0.7, leaves: true, leafCount: 24, seed: 42, text: "Plantage", font: "Fredoka",
   mango: "#ffb02e", blush: "#ff5e3a", leaf: "#2f8f3a", leafDark: "#1d5e27", paper: "#fff6df", shadow: "#5e3b22", textColor: "#ffffff",
 };
 
@@ -28,7 +28,7 @@ const atCut = recorder();
 drawPlantageStinger(atCut.context, options.cut, options);
 assert.ok(atCut.rects().some(([x, y, width, height]) => x <= 0 && x + width >= WIDTH && y <= 0 && height >= HEIGHT));
 assert.ok(atCut.calls.some(call => call[0] === "fillText" && call[1] === "Plantage"));
-assert.ok(atCut.calls.filter(call => call[0] === "ellipse").length > 6);
+assert.ok(atCut.calls.filter(call => call[0] === "ellipse").length > 24, "the leaves whirl at the transition point");
 
 // Without leaves fewer shapes at the transition point
 const bare = recorder();

@@ -1973,6 +1973,15 @@
       "default": true
     },
     {
+      "key": "stingerLeafCount",
+      "type": "number",
+      "label": "Anzahl Blätter im Stinger",
+      "group": "Stinger",
+      "default": 24,
+      "min": 0,
+      "max": 120
+    },
+    {
       "key": "bannerTitle",
       "type": "text",
       "label": "Titel ({channel})",
