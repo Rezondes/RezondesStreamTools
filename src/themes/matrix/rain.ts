@@ -58,3 +58,18 @@ export function glyphAt(seed: number, column: RainColumn, row: number, behind: n
   const rate = behind < TIP ? change.tip : change.trail;
   return Math.floor(mix(seed, column.key, row, Math.floor(seconds * rate + behind * 0.3)) * count);
 }
+
+// A speed of the rain that changes over time: the base factor, and now and then a pull (every s of base, then length s
+// at boost), like the BRB trying to reconnect
+export type Tempo = { base: number; pulls?: { every: number; length: number; boost: number } };
+
+// The rain time at seconds: the integral of the speed factor, so the heads never jump when the speed changes
+export function rainTime(seconds: number, tempo: Tempo): number {
+  const plain = seconds * tempo.base;
+  const pulls = tempo.pulls;
+  if (!pulls || pulls.length <= 0) return plain;
+  const period = pulls.every + pulls.length;
+  const done = Math.floor(seconds / period);
+  const pulled = done * pulls.length + Math.min(pulls.length, Math.max(0, seconds - done * period - pulls.every));
+  return plain + pulled * (pulls.boost - tempo.base);
+}

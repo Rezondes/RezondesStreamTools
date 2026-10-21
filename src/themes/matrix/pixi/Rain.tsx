@@ -1,7 +1,8 @@
 // The code rain of the Matrix theme in PixiJS (PLAN-MATRIX.md package 1, refs/starting.html): up to three depth layers
 // of tinted glyph sprites from the atlas (far small, dim and blurred; near big, bright and fast), the heads almost white
 // with a glow on an additive layer, the trails fading; positions and glyphs from rain.ts. tempo turns the clock into
-// the rain time (BRB slows the rain), jitter > 0 shakes rows sideways during a glitch. The low performance level drops
+// the rain time (BRB slows the rain), jitter > 0 shakes rows sideways during a glitch, after drain (rain time) no
+// column starts a new run, so the rain falls out of the picture (Ending). The low performance level drops
 // the blur and thins the columns.
 import { type Application, BlurFilter, Container, Sprite, type Texture } from "pixi.js";
 import { useRef } from "react";
@@ -15,7 +16,7 @@ import type { MatrixValues } from "../settings.ts";
 import { useMatrix } from "../useMatrix.ts";
 import { glyphAtlas } from "./GlyphAtlas.ts";
 
-export type RainControl = { tempo: (seconds: number) => number; jitter: number };
+export type RainControl = { tempo: (seconds: number) => number; jitter: number; drain: number | null };
 
 type Props = { opacity: number; control?: { current: RainControl } };
 
@@ -77,8 +78,10 @@ function build(app: Application, values: MatrixValues, control: { current: RainC
     const jitter = control?.current.jitter ?? 0;
     for (const column of columns) {
       const at = headAt(column, column.size, STAGE.height, rainSeconds);
-      column.head.visible = at !== null;
-      if (!at) {
+      const drain = control?.current.drain ?? null;
+      const drained = at !== null && drain !== null && at.run > (headAt(column, column.size, STAGE.height, drain)?.run ?? -1);
+      column.head.visible = at !== null && !drained;
+      if (!at || drained) {
         for (const cell of column.cells) cell.visible = false;
         continue;
       }

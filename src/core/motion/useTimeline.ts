@@ -9,6 +9,7 @@ import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
 import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 import { SplitText } from "gsap/SplitText";
+import { TextPlugin } from "gsap/TextPlugin";
 import { type RefObject, useRef } from "react";
 import { EASE_NAMES, EASES } from "./ease.ts";
 import { seekFromQuery } from "./seek.ts";
@@ -17,7 +18,7 @@ let registered = false;
 
 export function registerMotion(): void {
   if (registered) return;
-  gsap.registerPlugin(useGSAP, CustomEase, DrawSVGPlugin, MotionPathPlugin, ScrambleTextPlugin, SplitText);
+  gsap.registerPlugin(useGSAP, CustomEase, DrawSVGPlugin, MotionPathPlugin, ScrambleTextPlugin, SplitText, TextPlugin);
   for (const name of EASE_NAMES) CustomEase.create(name, EASES[name]);
   registered = true;
 }

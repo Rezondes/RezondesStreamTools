@@ -158,6 +158,11 @@
 .theme-matrix .title { font-size: var(--title-size, 84px); font-weight: normal; letter-spacing: var(--title-spacing, 4px); margin-bottom: var(--title-gap, 20px); min-height: var(--title-min-height, 105px); }
 .theme-matrix .title .cursor { font-size: 0.7em; margin-left: var(--cursor-gap, 8px); }
 .theme-matrix .status { display: grid; gap: var(--status-gap, 12px); font-size: var(--status-size, 26px); }
+/* BRB: the reconnect attempt typed under the note; Ending: the numbers of the stream, and what stays after the CRT is off */
+.theme-matrix .retry { min-height: 1.2em; color: var(--highlight); }
+.theme-matrix .logout { display: grid; gap: var(--logout-gap, 4px); width: var(--logout-width, 640px); font-size: var(--logout-size, 22px); }
+.theme-matrix .logout-row { display: flex; justify-content: space-between; border-bottom: var(--border, 1px) dashed var(--line); }
+.theme-matrix .after-off { position: absolute; inset: 0; display: grid; place-items: center; font-size: var(--after-off-size, 48px); letter-spacing: var(--title-spacing, 4px); opacity: 0; pointer-events: none; }
 .theme-matrix .status .big { font-size: var(--status-big-size, 56px); }
 
 /* Terminal: height for the visible lines plus the line being written right now */

@@ -1,7 +1,7 @@
 // Check for rain.ts: columns follow from the seed, the head grows with the time and starts again at the top, before
 // its start a column is empty; glyphs change more often at the tip than in the trail. Runs with npm test.
 import assert from "node:assert/strict";
-import { glyphAt, headAt, rainColumns } from "./rain.ts";
+import { glyphAt, headAt, rainColumns, rainTime } from "./rain.ts";
 
 const options = { seed: 7, width: 1920, density: 1 };
 
@@ -32,5 +32,15 @@ const changes = (behind: number) => {
 };
 assert.ok(changes(0) > changes(10));
 assert.equal(glyphAt(7, column, 5, 2, 0.4, 60, { tip: 14, trail: 3 }), glyphAt(7, column, 5, 2, 0.4, 60, { tip: 14, trail: 3 }));
+
+// Tempo ohne Sprung: the rain time grows steadily through every change of speed and is faster while pulling
+const tempo = { base: 0.35, pulls: { every: 6, length: 0.8, boost: 1 } };
+for (let step = 0; step < 2000; step++) {
+  const time = step / 100;
+  const next = rainTime(time + 0.001, tempo) - rainTime(time, tempo);
+  assert.ok(next > 0 && next <= 0.001 * 1 + 1e-9, `t = ${time}`);
+}
+assert.ok(rainTime(6.8, tempo) - rainTime(6, tempo) > rainTime(5.8, tempo) - rainTime(5, tempo));
+assert.equal(rainTime(4, { base: 2 }), 8);
 
 console.log("matrix rain ok");

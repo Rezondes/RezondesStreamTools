@@ -58,9 +58,15 @@ export type MatrixValues = {
   readonly barEmpty: string;
   readonly afkPrefix: string;
   readonly brbNote: string;
+  readonly brbRainSpeed: number;
+  readonly brbRetryEvery: number;
+  readonly brbRetryText: string;
   readonly endingThanks: string;
   readonly endingNextLabel: string;
   readonly endingNext: string;
+  readonly logoutLines: readonly string[];
+  readonly countUpMs: number;
+  readonly crtOffAt: number;
   readonly terminal: boolean;
   readonly prompt: string;
   readonly startingLines: readonly string[];
