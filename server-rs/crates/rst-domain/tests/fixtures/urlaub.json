@@ -192,34 +192,6 @@
       "default": "#ffe2b0"
     },
     {
-      "key": "skyDayTop",
-      "type": "color",
-      "label": "Himmel Mittag oben",
-      "group": "Kulisse",
-      "default": "#2fa8ec"
-    },
-    {
-      "key": "skyDayBottom",
-      "type": "color",
-      "label": "Himmel Mittag unten",
-      "group": "Kulisse",
-      "default": "#b8ecff"
-    },
-    {
-      "key": "skyEveningTop",
-      "type": "color",
-      "label": "Himmel Abend oben",
-      "group": "Kulisse",
-      "default": "#ff5f6d"
-    },
-    {
-      "key": "skyEveningBottom",
-      "type": "color",
-      "label": "Himmel Abend unten",
-      "group": "Kulisse",
-      "default": "#ffc371"
-    },
-    {
       "key": "sun",
       "type": "color",
       "label": "Sonne",
@@ -1840,6 +1812,33 @@
       "label": "Palme im Bild",
       "group": "Stinger",
       "default": true
+    },
+    {
+      "key": "stingerSpray",
+      "type": "number",
+      "label": "Gischt: Tropfen",
+      "group": "Stinger",
+      "default": 50,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "bannerSunHeight",
+      "type": "number",
+      "label": "Profilbanner: Sonnenhöhe (Grad)",
+      "group": "Banner",
+      "default": 30,
+      "min": 0,
+      "max": 90
+    },
+    {
+      "key": "bannerSunset",
+      "type": "number",
+      "label": "Offline-Banner: Sonnenhöhe (Grad)",
+      "group": "Banner",
+      "default": 3,
+      "min": -4,
+      "max": 20
     },
     {
       "key": "bannerTitle",

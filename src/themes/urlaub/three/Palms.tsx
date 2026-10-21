@@ -1,15 +1,16 @@
 // The palms of the realistic Urlaub beach (palm.ts): a curved, ringed trunk with a bark texture and a crown of pinnate
 // fronds with an alpha texture that hang outward and sway with the clock, coconuts under the crown. Colors from the palm
-// settings.
+// settings. buildPalms is plain three.js, so the banners (bannerWorld.ts) build the same palms.
 import { useFrame } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
-import { CatmullRomCurve3, DoubleSide, type Group, Mesh, MeshStandardMaterial, PlaneGeometry, SphereGeometry, TubeGeometry, Vector3 } from "three";
+import { useMemo } from "react";
+import { CatmullRomCurve3, DoubleSide, Group, Mesh, MeshStandardMaterial, PlaneGeometry, SphereGeometry, TubeGeometry, Vector3 } from "three";
 import { mixHex } from "../../../core/color.ts";
 import { FROND, frondPoint, frondSway, palmLayout, trunkPoints } from "../palm.ts";
 import type { BeachClock } from "./Sky.tsx";
 import { canvasTexture, sequence } from "./textures.ts";
 
-type Props = { clock: BeachClock; left: number; right: number; sway: number; leaf: string; trunk: string; seed: number };
+type Look = { left: number; right: number; sway: number; leaf: string; trunk: string; seed: number };
+type Props = Look & { clock: BeachClock };
 
 // fixed: fronds per crown, their tilt, the trunk tube, the frond strip segments, the coconuts and their color
 const FRONDS = 11;
@@ -67,48 +68,49 @@ function frondGeometry() {
   return geometry;
 }
 
-export default function Palms({ clock, left, right, sway, leaf, trunk, seed }: Props) {
-  const crowns = useRef<(Group | null)[]>([]);
-  const built = useMemo(() => {
-    const random = sequence(seed + 4);
-    const { frond, bark } = textures(leaf, trunk, seed);
-    const frondMaterial = new MeshStandardMaterial({ map: frond, alphaTest: 0.45, side: DoubleSide, roughness: 0.8 });
-    const barkMaterial = new MeshStandardMaterial({ map: bark, roughness: 1 });
-    const shape = frondGeometry();
-    return palmLayout(left, right).map(palm => {
-      const curve = new CatmullRomCurve3(trunkPoints(palm).map(point => new Vector3(...point)));
-      const fronds = Array.from({ length: FRONDS }, (_, index) => {
-        const mesh = new Mesh(shape, frondMaterial);
-        mesh.rotation.order = "YXZ";
-        mesh.rotation.y = (index / FRONDS) * Math.PI * 2 + palm.turn;
-        mesh.rotation.x = TILT.from + random() * TILT.by;
-        mesh.castShadow = true;
-        mesh.userData = { tilt: mesh.rotation.x, phase: random() * 6 };
-        return mesh;
-      });
-      return { trunk: new TubeGeometry(curve, TUBE.segments, TUBE.radius, TUBE.sides), crown: curve.getPoint(1), fronds, barkMaterial };
-    });
-  }, [left, right, leaf, trunk, seed]);
-  useFrame(() => {
-    crowns.current.forEach((crown, palm) => crown?.children.forEach(child => {
-      if (typeof child.userData.tilt === "number") child.rotation.x = child.userData.tilt + frondSway(clock.time, child.userData.phase as number, palm, sway);
-    }));
+// The palms as one group; sway(seconds) bends every frond for the time
+export function buildPalms({ left, right, sway, leaf, trunk, seed }: Look): { group: Group; sway: (seconds: number) => void } {
+  const random = sequence(seed + 4);
+  const { frond, bark } = textures(leaf, trunk, seed);
+  const frondMaterial = new MeshStandardMaterial({ map: frond, alphaTest: 0.45, side: DoubleSide, roughness: 0.8 });
+  const barkMaterial = new MeshStandardMaterial({ map: bark, roughness: 1 });
+  const nutMaterial = new MeshStandardMaterial({ color: NUT.color, roughness: 0.7 });
+  const nutShape = new SphereGeometry(NUT.radius, 12, 10);
+  const shape = frondGeometry();
+  const group = new Group();
+  const crowns = palmLayout(left, right).map(palm => {
+    const curve = new CatmullRomCurve3(trunkPoints(palm).map(point => new Vector3(...point)));
+    const stem = new Mesh(new TubeGeometry(curve, TUBE.segments, TUBE.radius, TUBE.sides), barkMaterial);
+    stem.castShadow = true;
+    const crown = new Group();
+    crown.position.copy(curve.getPoint(1));
+    for (let index = 0; index < FRONDS; index++) {
+      const mesh = new Mesh(shape, frondMaterial);
+      mesh.rotation.order = "YXZ";
+      mesh.rotation.y = (index / FRONDS) * Math.PI * 2 + palm.turn;
+      mesh.rotation.x = TILT.from + random() * TILT.by;
+      mesh.castShadow = true;
+      mesh.userData = { tilt: mesh.rotation.x, phase: random() * 6 };
+      crown.add(mesh);
+    }
+    for (const [x, depth] of NUTS) {
+      const nut = new Mesh(nutShape, nutMaterial);
+      nut.position.set(x, -0.35, depth);
+      crown.add(nut);
+    }
+    group.add(stem, crown);
+    return crown;
   });
-  return (
-    <>
-      {built.map((palm, index) => (
-        <group key={index}>
-          <mesh geometry={palm.trunk} material={palm.barkMaterial} castShadow />
-          <group ref={group => { crowns.current[index] = group; }} position={palm.crown}>
-            {palm.fronds.map((frond, which) => <primitive key={which} object={frond} />)}
-            {NUTS.map(([x, depth], which) => (
-              <mesh key={`nut-${which}`} geometry={new SphereGeometry(NUT.radius, 12, 10)} position={[x, -0.35, depth]}>
-                <meshStandardMaterial color={NUT.color} roughness={0.7} />
-              </mesh>
-            ))}
-          </group>
-        </group>
-      ))}
-    </>
-  );
+  return {
+    group,
+    sway: seconds => crowns.forEach((crown, palm) => crown.children.forEach(child => {
+      if (typeof child.userData.tilt === "number") child.rotation.x = child.userData.tilt + frondSway(seconds, child.userData.phase as number, palm, sway);
+    })),
+  };
+}
+
+export default function Palms({ clock, left, right, sway, leaf, trunk, seed }: Props) {
+  const palms = useMemo(() => buildPalms({ left, right, sway, leaf, trunk, seed }), [left, right, sway, leaf, trunk, seed]);
+  useFrame(() => palms.sway(clock.time));
+  return <primitive object={palms.group} />;
 }

@@ -1,7 +1,8 @@
 // The sand of the realistic Urlaub beach: a field rising out of the sea toward the camera (shore.ts), grain and ripples
-// in a canvas texture in the sand color, darker where it is wet; rocks along the water line, seeded.
+// in a canvas texture in the sand color, darker where it is wet; rocks along the water line, seeded. buildBeach is plain
+// three.js, so the banners (bannerWorld.ts) build the same sand.
 import { useMemo } from "react";
-import { BufferAttribute, Color, DodecahedronGeometry, MeshStandardMaterial, PlaneGeometry } from "three";
+import { BufferAttribute, Color, DodecahedronGeometry, Group, Mesh, MeshStandardMaterial, PlaneGeometry } from "three";
 import { SHORE, shoreHeight, wetness } from "../shore.ts";
 import { canvasTexture, sequence } from "./textures.ts";
 
@@ -18,8 +19,9 @@ const LIGHT_GRAIN = "rgba(255, 245, 220, 0.35)"; // fixed: light sand grain
 const DARK_GRAIN = "rgba(120, 90, 50, 0.25)"; // fixed: dark sand grain
 const RIPPLE_LINE = "rgba(150, 115, 70, 0.12)"; // fixed: wind ripples
 
-export default function Beach({ sand, rocks, seed }: Props) {
-  const ground = useMemo(() => {
+export function buildBeach({ sand, rocks, seed }: Props): Group {
+  const beach = new Group();
+  {
     const random = sequence(seed);
     const map = canvasTexture(TEXTURE.size, TEXTURE.size, (context, width, height) => {
       context.fillStyle = sand;
@@ -51,23 +53,24 @@ export default function Beach({ sand, rocks, seed }: Props) {
     }
     geometry.setAttribute("color", new BufferAttribute(colors, 3));
     geometry.computeVertexNormals();
-    return { geometry, material: new MeshStandardMaterial({ map, vertexColors: true, roughness: 0.95 }) };
-  }, [sand, seed]);
-  const stones = useMemo(() => {
-    const random = sequence(seed + 1);
-    return Array.from({ length: rocks }, () => {
-      const [x, depth, size] = [(random() - 0.5) * ROCK.spread, SHORE + random() * 3 - 2, 0.4 + random() * 0.9];
-      return { position: [x, shoreHeight(x, depth) - 0.1, depth] as [number, number, number], geometry: new DodecahedronGeometry(size, 1) };
-    });
-  }, [rocks, seed]);
-  return (
-    <>
-      <mesh geometry={ground.geometry} material={ground.material} receiveShadow />
-      {stones.map((stone, index) => (
-        <mesh key={index} geometry={stone.geometry} position={stone.position} scale={[1, ROCK.flat, 1]} castShadow>
-          <meshStandardMaterial color={ROCK.color} roughness={0.9} />
-        </mesh>
-      ))}
-    </>
-  );
+    const ground = new Mesh(geometry, new MeshStandardMaterial({ map, vertexColors: true, roughness: 0.95 }));
+    ground.receiveShadow = true;
+    beach.add(ground);
+  }
+  const random = sequence(seed + 1);
+  const stone = new MeshStandardMaterial({ color: ROCK.color, roughness: 0.9 });
+  for (let index = 0; index < rocks; index++) {
+    const [x, depth, size] = [(random() - 0.5) * ROCK.spread, SHORE + random() * 3 - 2, 0.4 + random() * 0.9];
+    const rock = new Mesh(new DodecahedronGeometry(size, 1), stone);
+    rock.position.set(x, shoreHeight(x, depth) - 0.1, depth);
+    rock.scale.set(1, ROCK.flat, 1);
+    rock.castShadow = true;
+    beach.add(rock);
+  }
+  return beach;
+}
+
+export default function Beach({ sand, rocks, seed }: Props) {
+  const beach = useMemo(() => buildBeach({ sand, rocks, seed }), [sand, rocks, seed]);
+  return <primitive object={beach} />;
 }

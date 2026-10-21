@@ -39,6 +39,8 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/core/three/softTexture.ts": "draws on a browser canvas, no logic to check",
   "src/themes/dachdecker/clips3d.ts": "lazy wrapper around glClip; the scenes are checked in stinger.check.ts and banners.check.ts",
   "src/themes/koth/clips3d.ts": "lazy wrapper around glClip; the scenes are checked in stinger.check.ts and bannerWorld.check.ts",
+  "src/themes/urlaub/clips3d.ts": "lazy wrapper around glClip; the texts are checked in banners.check.ts, the clips in render.check.ts",
+  "src/themes/urlaub/bannerWorld.ts": "puts the 3D builders of the scenes (three/*.tsx, browser canvas textures) into one still, no own logic",
   "src/dashboard/api.ts": "network client of the dashboard",
 };
 

@@ -1,8 +1,8 @@
 // Check for stinger.ts of the Urlaub theme: at the transition point the wave covers the whole picture, at the start and end
-// nothing is visible, the same time gives the same draw commands. A mock canvas records everything.
+// nothing is drawn, the same time gives the same draw commands. A mock canvas records everything.
 // Runs with npm test.
 import assert from "node:assert/strict";
-import { drawUrlaubStinger, HEIGHT, WIDTH, type UrlaubStingerOptions } from "./stinger.ts";
+import { drawUrlaubStinger, surfaceAt, WIDTH, type UrlaubStingerOptions } from "./stinger.ts";
 
 function recorder() {
   const calls: unknown[][] = [];
@@ -11,27 +11,27 @@ function recorder() {
     get: (object, key: string) => object[key] ?? ((...args: unknown[]) => { calls.push([key, ...args]); }),
     set: (_, key: string, value) => { calls.push([`set ${key}`, value]); return true; },
   });
-  const rects = () => calls.filter(call => call[0] === "fillRect").map(call => call.slice(1) as number[]);
-  return { context: context as unknown as CanvasRenderingContext2D, calls, rects };
+  return { context: context as unknown as CanvasRenderingContext2D, calls };
 }
 
 const options: UrlaubStingerOptions = {
-  duration: 1.4, cut: 0.7, waves: 3, foam: true, palm: true, text: "Strand", font: "Pacifico",
+  duration: 1.4, cut: 0.7, waves: 3, foam: true, palm: true, spray: 40, text: "Strand", font: "Pacifico",
   sea: "#1fb5c9", seaDeep: "#0b6f8e", foamColor: "#f4fffd", textColor: "#ffffff", palmColor: "#3b2412",
 };
 
-// At the transition point: one area over the whole picture, plus the text
+// gedeckt am Übergang: at the transition point the water stands above the picture in every column, plus the text
+for (let x = 0; x <= WIDTH; x += 10) assert.ok(surfaceAt(x, options.cut, options) <= 0, `x = ${x}`);
 const atCut = recorder();
 drawUrlaubStinger(atCut.context, options.cut, options);
-assert.ok(atCut.rects().some(([x, y, width, height]) => x <= 0 && x + width >= WIDTH && y <= 0 && height >= HEIGHT));
 assert.ok(atCut.calls.some(call => call[0] === "fillText" && call[1] === "Strand"));
+// Coming in, the water stands at the left and not yet at the right
+assert.ok(surfaceAt(100, 0.35, options) < surfaceAt(1800, 0.35, options));
 
-// No area and no text at the start and at the end
+// Nothing drawn at the start and at the end but the clearing
 for (const time of [0, options.duration]) {
   const empty = recorder();
   drawUrlaubStinger(empty.context, time, options);
-  assert.deepEqual(empty.rects().filter(([, , width]) => width > 0), [], `t = ${time}`);
-  assert.ok(!empty.calls.some(call => call[0] === "fillText"), `t = ${time}`);
+  assert.deepEqual(empty.calls.map(call => call[0]), ["clearRect"], `t = ${time}`);
 }
 
 // Same time, same draw commands (no randomness)

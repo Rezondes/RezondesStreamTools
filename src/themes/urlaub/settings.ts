@@ -54,10 +54,6 @@ const FIELDS = [
   choice("locale", "Uhrzeit-Format", GENERAL, "de-DE", LOCALES),
 
   color("skyMorningBottom", "Himmel Morgen unten", BEACH, "#ffe2b0"),
-  color("skyDayTop", "Himmel Mittag oben", BEACH, "#2fa8ec"),
-  color("skyDayBottom", "Himmel Mittag unten", BEACH, "#b8ecff"),
-  color("skyEveningTop", "Himmel Abend oben", BEACH, "#ff5f6d"),
-  color("skyEveningBottom", "Himmel Abend unten", BEACH, "#ffc371"),
   color("sun", "Sonne", BEACH, "#ffd23f"),
   number("palmsLeft", "Palmen links", BEACH, 2, 0, 3),
   number("palmsRight", "Palmen rechts", BEACH, 1, 0, 3),
@@ -222,7 +218,10 @@ const FIELDS = [
   number("stingerWaves", "Wellenschichten", STINGER, 3, 1, 5),
   flag("stingerFoam", "Schaumkrone", STINGER, true),
   flag("stingerPalm", "Palme im Bild", STINGER, true),
+  number("stingerSpray", "Gischt: Tropfen", STINGER, 50, 0, 200),
 
+  number("bannerSunHeight", "Profilbanner: Sonnenhöhe (Grad)", BANNER, 30, 0, 90),
+  number("bannerSunset", "Offline-Banner: Sonnenhöhe (Grad)", BANNER, 3, -4, 20),
   text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
   text("bannerProfileText", "Profilbanner: Text", BANNER, "Sonne, Strand und gute Streams"),
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade am Strand"),

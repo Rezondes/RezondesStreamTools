@@ -29,9 +29,14 @@ export function waterHeight(x: number, swell: Swell): number {
   const along = (x - STRETCH.from) / (STRETCH.to - STRETCH.from);
   if (along <= 0 || along >= 1) return 0;
   const edge = Math.sin(along * Math.PI);
-  const ahead = (x - swell.crest) * swell.direction;
-  const width = ahead > 0 ? FRONT : BACK;
-  return edge * (swell.height * Math.exp(-((ahead / width) ** 2)) + STRETCH.rest);
+  return edge * (swell.height * crestShape((x - swell.crest) * swell.direction) + STRETCH.rest);
+}
+
+// The shape of a crest (1 on top, toward 0 away from it) at ahead px in its running direction: a steep front, a long
+// back; scale widens both (the stinger uses the same wave over the whole picture)
+export function crestShape(ahead: number, scale = 1): number {
+  const width = (ahead > 0 ? FRONT : BACK) * scale;
+  return Math.exp(-((ahead / width) ** 2));
 }
 
 // The share of the ride of the card: it reaches its place (1) when the incoming crest reaches the middle of the stretch

@@ -26,10 +26,6 @@ export type UrlaubValues = {
   readonly fadeDuration: number;
   readonly locale: string;
   readonly skyMorningBottom: string;
-  readonly skyDayTop: string;
-  readonly skyDayBottom: string;
-  readonly skyEveningTop: string;
-  readonly skyEveningBottom: string;
   readonly sun: string;
   readonly palmsLeft: number;
   readonly palmsRight: number;
@@ -198,6 +194,9 @@ export type UrlaubValues = {
   readonly stingerWaves: number;
   readonly stingerFoam: boolean;
   readonly stingerPalm: boolean;
+  readonly stingerSpray: number;
+  readonly bannerSunHeight: number;
+  readonly bannerSunset: number;
   readonly bannerTitle: string;
   readonly bannerProfileText: string;
   readonly bannerOfflineTitle: string;

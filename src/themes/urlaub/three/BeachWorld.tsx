@@ -21,8 +21,8 @@ import Torches from "./Torches.tsx";
 import Umbrella from "./Umbrella.tsx";
 
 // fixed: the field of view and how far the camera sees (the sky dome is huge)
-const FOV = 42;
-const FAR = 20000;
+export const FOV = 42;
+export const FAR = 20000;
 const SECOND_MS = 1000; // fixed: seconds in ms
 const LOW = "niedrig"; // fixed: the low performance level of quality.ts
 
