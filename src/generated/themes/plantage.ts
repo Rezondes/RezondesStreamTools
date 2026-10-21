@@ -27,9 +27,6 @@ export type PlantageValues = {
   readonly radius: number;
   readonly fadeDuration: number;
   readonly locale: string;
-  readonly timeStarting: string;
-  readonly timeBrb: string;
-  readonly timeEnding: string;
   readonly skyMorningTop: string;
   readonly skyMorningBottom: string;
   readonly skyDayTop: string;
@@ -76,6 +73,10 @@ export type PlantageValues = {
   readonly worldLeafCount: number;
   readonly motesOn: boolean;
   readonly moteCount: number;
+  readonly sunsetOn: boolean;
+  readonly sunsetMs: number;
+  readonly firefliesOn: boolean;
+  readonly fireflyCount: number;
   readonly startingEyebrow: string;
   readonly startingTitle: string;
   readonly startingNote: string;
@@ -85,7 +86,6 @@ export type PlantageValues = {
   readonly endingEyebrow: string;
   readonly endingTitle: string;
   readonly endingNote: string;
-  readonly signStyle: string;
   readonly signWidth: number;
   readonly titleSize: number;
   readonly picker: boolean;
@@ -101,6 +101,8 @@ export type PlantageValues = {
   readonly cardDropMs: number;
   readonly basketMangos: number;
   readonly pickerReach: boolean;
+  readonly brbPickEvery: number;
+  readonly brbMangoBounce: boolean;
   readonly afkPrefix: string;
   readonly endingNextLabel: string;
   readonly endingNext: string;
@@ -111,8 +113,6 @@ export type PlantageValues = {
   readonly ticker: string;
   readonly tickerStyle: string;
   readonly tickerSpeed: number;
-  readonly powerOn: string;
-  readonly powerOnDuration: number;
   readonly alertStyle: string;
   readonly followTag: string;
   readonly followLine: string;

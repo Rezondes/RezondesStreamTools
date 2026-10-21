@@ -1,7 +1,7 @@
 // Check for drift.ts of the Plantage theme: leaves and motes follow from seed, index and time alone and repeat after
 // their period. Runs with npm test.
 import assert from "node:assert/strict";
-import { leafAt, leafPeriod, moteAt, MOTE_PERIOD } from "./drift.ts";
+import { fireflyAt, leafAt, leafPeriod, moteAt, MOTE_PERIOD } from "./drift.ts";
 
 const close = (first: Record<string, number>, second: Record<string, number>) =>
   Object.keys(first).every(key => Math.abs(first[key] - second[key]) < 1e-6);
@@ -18,5 +18,14 @@ for (let index = 0; index < 20; index++) {
 }
 assert.notDeepEqual(leafAt(42, 0, 1), leafAt(7, 0, 1));
 assert.ok(leafAt(42, 0, -5).y >= -40, "negative times stay inside the fall");
+
+// Glühwürmchen: from seed and time, repeating, they blink (dark half of the time)
+for (let index = 0; index < 20; index++) {
+  assert.deepEqual(fireflyAt(42, index, 4), fireflyAt(42, index, 4));
+  assert.ok(close(fireflyAt(42, index, 4), fireflyAt(42, index, 4 + MOTE_PERIOD)), `firefly ${index} repeats`);
+  const fly = fireflyAt(42, index, 4);
+  assert.ok(fly.alpha >= 0 && fly.alpha <= 1 && fly.y > 400);
+}
+assert.ok(Array.from({ length: 60 }, (_, step) => fireflyAt(42, 0, step / 10).alpha).some(alpha => alpha === 0), "fireflies go dark");
 
 console.log("plantage drift ok");

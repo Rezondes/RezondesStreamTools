@@ -199,51 +199,6 @@
       ]
     },
     {
-      "key": "timeStarting",
-      "type": "select",
-      "label": "Tageszeit Starting",
-      "group": "Plantage",
-      "default": "morgen",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ],
-      "scene": "starting",
-      "basic": true
-    },
-    {
-      "key": "timeBrb",
-      "type": "select",
-      "label": "Tageszeit BRB",
-      "group": "Plantage",
-      "default": "mittag",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ],
-      "scene": "brb",
-      "basic": true
-    },
-    {
-      "key": "timeEnding",
-      "type": "select",
-      "label": "Tageszeit Ending",
-      "group": "Plantage",
-      "default": "abend",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ],
-      "scene": "ending",
-      "basic": true
-    },
-    {
       "key": "skyMorningTop",
       "type": "color",
       "label": "Himmel Morgen oben",
@@ -497,7 +452,8 @@
       "type": "boolean",
       "label": "Sonnenaufgang",
       "group": "Welt",
-      "default": true
+      "default": true,
+      "basic": true
     },
     {
       "key": "sunriseMs",
@@ -625,6 +581,44 @@
       "max": 500
     },
     {
+      "key": "sunsetOn",
+      "type": "boolean",
+      "label": "Sonnenuntergang (Ending)",
+      "group": "Welt",
+      "default": true,
+      "scene": "ending",
+      "basic": true
+    },
+    {
+      "key": "sunsetMs",
+      "type": "number",
+      "label": "Sonnenuntergang (Dauer)",
+      "group": "Welt",
+      "default": 4000,
+      "min": 0,
+      "max": 20000,
+      "unit": "ms",
+      "scene": "ending"
+    },
+    {
+      "key": "firefliesOn",
+      "type": "boolean",
+      "label": "Glühwürmchen (Ending)",
+      "group": "Welt",
+      "default": true,
+      "scene": "ending"
+    },
+    {
+      "key": "fireflyCount",
+      "type": "number",
+      "label": "Anzahl Glühwürmchen",
+      "group": "Welt",
+      "default": 40,
+      "min": 0,
+      "max": 300,
+      "scene": "ending"
+    },
+    {
       "key": "startingEyebrow",
       "type": "text",
       "label": "Starting: Überzeile",
@@ -709,17 +703,6 @@
       "default": "Bis zur nächsten Ernte!",
       "maxLength": 200,
       "scene": "ending"
-    },
-    {
-      "key": "signStyle",
-      "type": "select",
-      "label": "Schild",
-      "group": "Starting, BRB, Ending",
-      "default": "haengend",
-      "options": [
-        "haengend",
-        "pfahl"
-      ]
     },
     {
       "key": "signWidth",
@@ -863,6 +846,27 @@
       "scene": "starting"
     },
     {
+      "key": "brbPickEvery",
+      "type": "number",
+      "label": "BRB: Pflücker pflückt alle",
+      "group": "Starting, BRB, Ending",
+      "default": 2.4,
+      "min": 0.8,
+      "max": 20,
+      "unit": "s",
+      "step": 0.1,
+      "scene": "brb"
+    },
+    {
+      "key": "brbMangoBounce",
+      "type": "boolean",
+      "label": "BRB: Mango springt im Korb",
+      "group": "Starting, BRB, Ending",
+      "default": true,
+      "scene": "brb",
+      "basic": true
+    },
+    {
       "key": "afkPrefix",
       "type": "text",
       "label": "BRB-Zähler-Präfix",
@@ -969,28 +973,6 @@
       "min": 5,
       "max": 300,
       "unit": "s"
-    },
-    {
-      "key": "powerOn",
-      "type": "select",
-      "label": "Einschalten",
-      "group": "Starting, BRB, Ending",
-      "default": "sonnenaufgang",
-      "options": [
-        "sonnenaufgang",
-        "blenden",
-        "keins"
-      ]
-    },
-    {
-      "key": "powerOnDuration",
-      "type": "number",
-      "label": "Einschalten (Dauer)",
-      "group": "Starting, BRB, Ending",
-      "default": 1800,
-      "min": 0,
-      "max": 10000,
-      "unit": "ms"
     },
     {
       "key": "alertStyle",
@@ -3138,7 +3120,9 @@
       "info"
     ],
     "Welt": [
-      "starting"
+      "starting",
+      "brb",
+      "ending"
     ],
     "Starting, BRB, Ending": [
       "starting",

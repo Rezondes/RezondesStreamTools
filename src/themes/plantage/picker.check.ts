@@ -1,7 +1,7 @@
 // Check for picker.ts of the Plantage theme: the reach begins at rest and ends in the grasp without a jump, the arm angle
 // is a pure function of the time, the picker has body, arm with pole and basket. Runs with npm test.
 import assert from "node:assert/strict";
-import { ARM, armAt, picker, reach, settle } from "./picker.ts";
+import { ARM, armAt, pickAt, picker, poleTip, reach, settle, waveAt } from "./picker.ts";
 
 // Greifen: rest at the start, grasp at the end, small steps in between
 assert.equal(reach(0), ARM.rest);
@@ -24,5 +24,23 @@ assert.ok(parts.body.some(shape => shape.color === COLORS.shirt));
 assert.ok(parts.arm.some(shape => shape.color === COLORS.pole));
 assert.ok(parts.basket.length > 2);
 assert.ok(parts.shoulder.y < 0 && parts.basketAt.y < 0);
+
+// Pflücken als Schleife: the loop begins and ends in the same pose, the mango falls into the basket and rests there
+const EVERY = 2.4;
+assert.equal(pickAt(0, EVERY, parts, true).arm, ARM.rest);
+assert.ok(Math.abs(pickAt(EVERY - 1e-9, EVERY, parts, true).arm - ARM.rest) < 1e-6, "ends where it began");
+assert.deepEqual(pickAt(1.1 + EVERY, EVERY, parts, true), pickAt(1.1, EVERY, parts, true));
+assert.equal(pickAt(0.5, EVERY, parts, true).mango, null, "no mango before the top of the swing");
+const landed = pickAt(EVERY * 0.999, EVERY, parts, true).mango;
+assert.ok(landed && Math.abs(landed.x - parts.basketAt.x) < 1e-9, "the mango lands in the basket");
+const falling = pickAt(EVERY * 0.6, EVERY, parts, true).mango;
+const tip = poleTip(parts, ARM.grasp);
+assert.ok(falling && falling.y > tip.y - 1, "falls from the pole downwards");
+assert.deepEqual(pickAt(EVERY * 0.9, EVERY, parts, false).mango, { x: parts.basketAt.x, y: parts.basketAt.y - 26 }, "no hops without bounce");
+assert.ok(pickAt(EVERY * 0.9, EVERY, parts, true).mango!.y < parts.basketAt.y - 26, "hops with bounce");
+assert.equal(pickAt(1, 0, parts, true).arm, ARM.rest);
+
+// Winken: a raised arm that swings
+assert.ok(waveAt(0) < ARM.grasp && waveAt(0.4) !== waveAt(0));
 
 console.log("plantage picker ok");

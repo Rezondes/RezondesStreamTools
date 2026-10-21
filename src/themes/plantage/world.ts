@@ -111,5 +111,23 @@ export function sunriseAt(seconds: number, durationMs: number, on: boolean): num
   return part < 0.5 ? 2 * part * part : 1 - 2 * (1 - part) * (1 - part);
 }
 
+// The light of a screen at a time: sky = blend from the first sky to the second (0 to 1), sun = height of the sun (0 at
+// the horizon, 1 high), bright = brightness of the world (1 = full day). Starting: dawn to morning with the sunrise; BRB:
+// noon; Ending: from evening into dusk while the sun sinks and the world gets darker
+export type LightKind = "starting" | "brb" | "ending";
+export type LightOptions = { sunriseMs: number; sunriseOn: boolean; sunsetMs: number; sunsetOn: boolean };
+// fixed: brightness before the sunrise and at the end of the sunset; the sun stands higher at noon
+const DARK = { dawn: 0.55, dusk: 0.65 };
+const NOON_SUN = 1.25;
+export function daylight(kind: LightKind, seconds: number, options: LightOptions): { sky: number; sun: number; bright: number } {
+  if (kind === "brb") return { sky: 1, sun: NOON_SUN, bright: 1 };
+  if (kind === "ending") {
+    const sunset = options.sunsetOn ? 1 - sunriseAt(seconds, options.sunsetMs, true) : 1;
+    return { sky: 1 - sunset, sun: sunset, bright: DARK.dusk + (1 - DARK.dusk) * sunset };
+  }
+  const sunrise = sunriseAt(seconds, options.sunriseMs, options.sunriseOn);
+  return { sky: sunrise, sun: sunrise, bright: DARK.dawn + (1 - DARK.dawn) * sunrise };
+}
+
 // The camera swings from -1 to 1 and back in twice the given seconds, softly at the turns
 export const cameraAt = (seconds: number, swingSeconds: number, on: boolean) => (on && swingSeconds > 0 ? -Math.cos((Math.PI * seconds) / swingSeconds) : 0);

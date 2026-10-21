@@ -2,7 +2,7 @@
 // clearer; the same seed gives the same world; hill lines are closed polygons; sunrise and camera from the time.
 // Runs with npm test.
 import assert from "node:assert/strict";
-import { cameraAt, cloudSpots, cloudX, crate, furrows, grassTufts, hillLine, HILLS, sunriseAt, worldLayers } from "./world.ts";
+import { cameraAt, cloudSpots, daylight, cloudX, crate, furrows, grassTufts, hillLine, HILLS, sunriseAt, worldLayers } from "./world.ts";
 
 const OPTIONS = { seed: 42, treeRowsFar: 11, treeRowsMid: 8, farBlur: 1.5, hazeFar: 0.55 };
 
@@ -45,5 +45,16 @@ assert.equal(cameraAt(0, 14, true), -1);
 assert.ok(Math.abs(cameraAt(14, 14, true) - 1) < 1e-9);
 assert.ok(Math.abs(cameraAt(28, 14, true) + 1) < 1e-9);
 assert.equal(cameraAt(5, 14, false), 0);
+
+// Light per screen: dawn brightens, noon is full day, the sunset sinks the sun and darkens
+const LIGHT = { sunriseMs: 3200, sunriseOn: true, sunsetMs: 4000, sunsetOn: true };
+assert.deepEqual(daylight("starting", 0, LIGHT), { sky: 0, sun: 0, bright: 0.55 });
+assert.deepEqual(daylight("starting", 10, LIGHT), { sky: 1, sun: 1, bright: 1 });
+assert.equal(daylight("brb", 3, LIGHT).bright, 1);
+assert.ok(daylight("brb", 3, LIGHT).sun > daylight("starting", 10, LIGHT).sun, "noon sun stands higher");
+assert.deepEqual(daylight("ending", 0, LIGHT), { sky: 0, sun: 1, bright: 1 });
+const dusk = daylight("ending", 10, LIGHT);
+assert.ok(dusk.sky === 1 && dusk.sun === 0 && dusk.bright < 1, "the sunset ends dark with the sun down");
+assert.deepEqual(daylight("ending", 10, { ...LIGHT, sunsetOn: false }), { sky: 0, sun: 1, bright: 1 });
 
 console.log("plantage world ok");

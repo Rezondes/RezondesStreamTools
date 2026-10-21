@@ -85,9 +85,6 @@ fn general() -> Vec<SettingField> {
 
 fn field() -> Vec<SettingField> {
     vec![
-        in_scene(SceneName::Starting, choice("timeStarting", "Tageszeit Starting", FIELD, "morgen", &TIMES)),
-        in_scene(SceneName::Brb, choice("timeBrb", "Tageszeit BRB", FIELD, "mittag", &TIMES)),
-        in_scene(SceneName::Ending, choice("timeEnding", "Tageszeit Ending", FIELD, "abend", &TIMES)),
         color("skyMorningTop", "Himmel Morgen oben", FIELD, "#ff9a76"),
         color("skyMorningBottom", "Himmel Morgen unten", FIELD, "#ffe2b0"),
         color("skyDayTop", "Himmel Mittag oben", FIELD, "#3aa0e0"),
@@ -120,6 +117,7 @@ fn field() -> Vec<SettingField> {
 
 /// The `PixiJS` world of the screens (PLAN-PLANTAGE.md package 2)
 fn world() -> Vec<SettingField> {
+    let ending = |field: SettingField| in_scene(SceneName::Ending, field);
     vec![
         quality_field(WORLD),
         number("worldSeed", "Startwert der Welt", WORLD, 42.0, 1.0, 9999.0, None, None),
@@ -140,6 +138,10 @@ fn world() -> Vec<SettingField> {
         number("worldLeafCount", "Anzahl fallende Blätter", WORLD, 18.0, 0.0, 200.0, None, None),
         flag("motesOn", "Lichtstaub", WORLD, true),
         number("moteCount", "Anzahl Lichtstaub", WORLD, 70.0, 0.0, 500.0, None, None),
+        ending(flag("sunsetOn", "Sonnenuntergang (Ending)", WORLD, true)),
+        ending(number("sunsetMs", "Sonnenuntergang (Dauer)", WORLD, 4000.0, 0.0, 20000.0, MS, None)),
+        ending(flag("firefliesOn", "Glühwürmchen (Ending)", WORLD, true)),
+        ending(number("fireflyCount", "Anzahl Glühwürmchen", WORLD, 40.0, 0.0, 300.0, None, None)),
     ]
 }
 
@@ -157,7 +159,6 @@ fn screens() -> Vec<SettingField> {
         ending(text("endingEyebrow", "Ending: Überzeile", SCREENS, "Danke fürs Zuschauen", None)),
         ending(text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet", None)),
         ending(text("endingNote", "Ending: Untertitel", SCREENS, "Bis zur nächsten Ernte!", None)),
-        choice("signStyle", "Schild", SCREENS, "haengend", &["haengend", "pfahl"]),
         number("signWidth", "Schild: Breite", SCREENS, 1100.0, 400.0, 1800.0, PX, None),
         number("titleSize", "Titelgrösse", SCREENS, 110.0, 30.0, 240.0, PX, None),
         flag("picker", "Mangopflücker zeigen", SCREENS, true),
@@ -182,6 +183,8 @@ fn screens() -> Vec<SettingField> {
         )),
         starting(number("basketMangos", "Starting: Mangos im Korb", SCREENS, 5.0, 1.0, 12.0, None, None)),
         starting(flag("pickerReach", "Starting: Pflücker greift in den Baum", SCREENS, true)),
+        brb(number("brbPickEvery", "BRB: Pflücker pflückt alle", SCREENS, 2.4, 0.8, 20.0, S, Some(0.1))),
+        brb(flag("brbMangoBounce", "BRB: Mango springt im Korb", SCREENS, true)),
         brb(text("afkPrefix", "BRB-Zähler-Präfix", SCREENS, "Pause seit ", None)),
         ending(text("endingNextLabel", "Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream", None)),
         ending(text("endingNext", "Nächster Stream (leer = ausblenden)", SCREENS, "", None)),
@@ -215,8 +218,6 @@ fn screens() -> Vec<SettingField> {
         text("ticker", "Ticker-Text (leer = aus)", SCREENS, "", Some(300)),
         choice("tickerStyle", "Ticker", SCREENS, "flugzeug", &["flugzeug", "leiste"]),
         number("tickerSpeed", "Ticker: Zeit pro Durchlauf", SCREENS, 30.0, 5.0, 300.0, S, None),
-        choice("powerOn", "Einschalten", SCREENS, "sonnenaufgang", &["sonnenaufgang", "blenden", "keins"]),
-        number("powerOnDuration", "Einschalten (Dauer)", SCREENS, 1800.0, 0.0, 10000.0, MS, None),
     ]
 }
 
@@ -415,7 +416,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     let screens = vec![SceneName::Starting, SceneName::Brb, SceneName::Ending];
     [
         (FIELD, vec![SceneName::Starting, SceneName::Brb, SceneName::Ending, SceneName::Info]),
-        (WORLD, vec![SceneName::Starting]),
+        (WORLD, screens.clone()),
         (SCREENS, screens),
         (ALERTS, vec![SceneName::Alerts]),
         (CHAT, vec![SceneName::Chat]),
@@ -478,14 +479,14 @@ const BASIC: &[&str] = &[
     "picker",
     "mangosOnTrees",
     "birds",
-    "timeStarting",
+    "sunriseOn",
     "startingEyebrow",
     "startingTitle",
     "ticker",
-    "timeBrb",
+    "brbMangoBounce",
     "brbTitle",
     "brbNote",
-    "timeEnding",
+    "sunsetOn",
     "endingTitle",
     "endingNext",
     "alertStyle",

@@ -1,7 +1,8 @@
 // The mango picker of the Plantage world as flat shapes (no outlines, light from the top left): straw hat with band,
 // shirt with a shade side, head, legs, a woven basket and the arm with the bamboo pole on its own joint at the shoulder.
 // reach gives the arm angle when the picker reaches up into the tree: from rest to the grasp, springing in without a
-// jump. Drawn by pixi/Picker.tsx. Check: picker.check.ts.
+// jump (Starting); pickAt loops picking a mango that falls with a bounce into the basket (BRB); waveAt waves the pole
+// with the full basket (Ending). Drawn by pixi/Picker.tsx. Check: picker.check.ts.
 import { mixHex } from "../../core/color.ts";
 import type { Shape } from "./tree.ts";
 
@@ -64,3 +65,34 @@ export function armAt(seconds: number, start: number, duration: number, on: bool
   const part = duration > 0 ? (seconds - start) / duration : 1;
   return reach(part) - Math.sin(seconds * WIGGLE.speed) * WIGGLE.size * settle(part);
 }
+
+// fixed: the pole is this long above the shoulder; the picked mango comes off at the top of the swing and lands in the
+// basket at the share land of the loop, then hops a few times lower and lower
+const POLE = 330;
+const PICK = { off: 0.45, land: 0.8, hops: 3, hop: 34, fall: 26 };
+const WAVE = { lift: -0.9, size: 0.3, speed: 4 };
+
+// Where the top of the pole is (picker coordinates) for an arm angle
+export function poleTip(parts: Pick<PickerParts, "shoulder">, angle: number): { x: number; y: number } {
+  return { x: parts.shoulder.x + Math.sin(angle) * POLE, y: parts.shoulder.y - Math.cos(angle) * POLE };
+}
+
+// One loop of picking every `every` s: the arm goes up and back to rest; the mango hangs at the pole tip until the top of
+// the swing, falls into the basket and hops (bounce); null while there is no mango in the air or the basket
+export function pickAt(seconds: number, every: number, parts: Pick<PickerParts, "shoulder" | "basketAt">, bounce: boolean): { arm: number; mango: { x: number; y: number } | null } {
+  const part = every > 0 ? (((seconds % every) + every) % every) / every : 0;
+  const arm = ARM.rest + (ARM.grasp - ARM.rest) * Math.sin(Math.PI * part);
+  if (part < PICK.off) return { arm, mango: null };
+  const from = poleTip(parts, ARM.rest + (ARM.grasp - ARM.rest) * Math.sin(Math.PI * PICK.off));
+  const to = { x: parts.basketAt.x, y: parts.basketAt.y - PICK.fall };
+  if (part < PICK.land) {
+    const fall = (part - PICK.off) / (PICK.land - PICK.off);
+    return { arm, mango: { x: from.x + (to.x - from.x) * fall, y: from.y + (to.y - from.y) * fall * fall } };
+  }
+  const after = (part - PICK.land) / (1 - PICK.land);
+  const hop = bounce ? Math.abs(Math.sin(after * Math.PI * PICK.hops)) * PICK.hop * (1 - after) : 0;
+  return { arm, mango: { x: to.x, y: to.y - hop } };
+}
+
+// Waving with the pole: the arm lifts and swings, a loop around a raised arm
+export const waveAt = (seconds: number) => WAVE.lift + Math.sin(seconds * WAVE.speed) * WAVE.size;

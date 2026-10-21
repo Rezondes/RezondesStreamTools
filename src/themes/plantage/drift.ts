@@ -1,10 +1,11 @@
 // Things drifting through the Plantage world, every position a pure function of seed, index and time (no running state):
-// falling leaves that sway down and come back in at the top, and light motes that float and glitter. Periodic, so a
-// still at any time shows the same as the live scene. Drawn by pixi/Drift.tsx. Check: drift.check.ts.
+// falling leaves that sway down and come back in at the top, light motes that float and glitter, and fireflies that
+// wander over the field and blink at dusk (Ending). Periodic, so a still at any time shows the same as the live scene. Drawn by pixi/Drift.tsx. Check: drift.check.ts.
 import { hash } from "../../core/hash.ts";
 
 export type Leaf = { x: number; y: number; rotation: number; color: 0 | 1 };
 export type Mote = { x: number; y: number; size: number; alpha: number };
+export type Firefly = Mote;
 
 // fixed: the leaves of the prototype (refs/starting.html) in stage px and px/s
 const STAGE_WIDTH = 1920;
@@ -41,5 +42,21 @@ export function moteAt(seed: number, index: number, seconds: number): Mote {
     y: MOTE_BAND.top + random(seed, index, 6) * MOTE_BAND.height + Math.sin(seconds * MOTE_FREQUENCY.y + phase * 2) * 20,
     size: MOTE_SIZE.min + random(seed, index, 8) * MOTE_SIZE.by,
     alpha: 0.3 + 0.3 * Math.sin(seconds * MOTE_FREQUENCY.glitter + phase),
+  };
+}
+
+// fixed: fireflies wander over the field and the near trees; frequencies again multiples of 0.1 per s
+const FIREFLY_BAND = { top: 520, height: 480, wander: 70 };
+const FIREFLY_FREQUENCY = { x: 0.2, y: 0.3, blink: 1.7 };
+const FIREFLY_SIZE = { min: 2, by: 2.5 };
+
+export function fireflyAt(seed: number, index: number, seconds: number): Firefly {
+  const phase = random(seed, index, 11) * 6;
+  const blink = Math.sin(seconds * FIREFLY_FREQUENCY.blink + phase);
+  return {
+    x: random(seed, index, 9) * STAGE_WIDTH + Math.sin(seconds * FIREFLY_FREQUENCY.x + phase) * FIREFLY_BAND.wander,
+    y: FIREFLY_BAND.top + random(seed, index, 10) * FIREFLY_BAND.height + Math.sin(seconds * FIREFLY_FREQUENCY.y + phase * 3) * FIREFLY_BAND.wander / 2,
+    size: FIREFLY_SIZE.min + random(seed, index, 12) * FIREFLY_SIZE.by,
+    alpha: blink > 0 ? blink * blink : 0,
   };
 }

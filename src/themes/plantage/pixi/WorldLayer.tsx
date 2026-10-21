@@ -1,22 +1,22 @@
 // The world of the Plantage screens drawn into a PixiJS container (world.ts, tree.ts): sky from dawn to morning, sun with
 // glow and turning rays, clouds, two hills, three tree rows, the field with furrows, front trees, crates and grass; every
-// layer moves with the camera by its share, far layers are blurred and hazy, trees and grass sway, the world brightens
-// with the sunrise. Every frame is placed from the clock alone, so stills (?t=) match the live scene.
+// layer moves with the camera by its share, far layers are blurred and hazy, trees and grass sway; the light follows the
+// screen (daylight in world.ts): sunrise for Starting, noon for BRB, sunset for Ending. Every frame is placed from the clock alone, so stills (?t=) match the live scene.
 import { type Application, BlurFilter, ColorMatrixFilter, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { useEffect } from "react";
 import { mixHex } from "../../../core/color.ts";
 import { quality } from "../../../core/three/quality.ts";
 import type { PlantageValues } from "../settings.ts";
 import { type Shape, swayAt, type SWAY, tree, type TreeColors } from "../tree.ts";
-import { cameraAt, cloudSpots, cloudX, crate, CRATES, FIELD, furrows, grassTufts, hillLine, HILLS, sunriseAt, worldLayers, type WorldLayer as Layer } from "../world.ts";
+import { cameraAt, cloudSpots, cloudX, crate, CRATES, daylight, FIELD, furrows, grassTufts, hillLine, HILLS, type LightKind, worldLayers, type WorldLayer as Layer } from "../world.ts";
 
-type Props = { app: Application; world: Container; clock: () => number; values: PlantageValues };
+type Props = { app: Application; world: Container; clock: () => number; values: PlantageValues; kind: LightKind };
 type Swaying = { node: Container; phase: number; kind: keyof typeof SWAY };
 
 // fixed: the look of the prototype (refs/starting.html) in stage px
 const SKY_HEIGHT = 700;
 const SUN = { x: 520, low: 700, rise: 330, size: 70, glow: 620, rays: 14, rayWidth: 0.06, rayLength: 900, rayAlpha: 0.09, turn: 0.03 };
-const DIM = { dark: 0.55, desaturate: -0.5 };
+const DESATURATE = -0.5;
 const GRASS_TUFTS = 16;
 const CLOUD_PUFFS: readonly [number, number, number][] = [[0, 0, 60], [55, -18, 50], [105, 2, 54], [40, 18, 52], [85, 22, 44]];
 
@@ -45,14 +45,24 @@ function gradient(stops: readonly [number, string][], radial = false): Texture {
   return Texture.from(canvas);
 }
 
-export const treeColors = (values: PlantageValues): TreeColors => ({
-  sky: values.skyMorningBottom, trunk: values.trunk, trunkDark: values.woodDark, leafDark: values.leafDark, leaf: values.leaf,
+// The two skies of a screen (the light blends from the first to the second) and the color far things fade into
+export function skiesOf(values: PlantageValues, kind: LightKind) {
+  return {
+    starting: { from: [values.skyDawnTop, values.skyDawnBottom], to: [values.skyMorningTop, values.skyMorningBottom], haze: values.skyMorningBottom },
+    brb: { from: [values.skyDayTop, values.skyDayBottom], to: [values.skyDayTop, values.skyDayBottom], haze: values.skyDayBottom },
+    ending: { from: [values.skyEveningTop, values.skyEveningBottom], to: [values.skyDawnTop, values.skyDawnBottom], haze: values.skyEveningBottom },
+  }[kind];
+}
+
+export const treeColors = (values: PlantageValues, sky: string): TreeColors => ({
+  sky, trunk: values.trunk, trunkDark: values.woodDark, leafDark: values.leafDark, leaf: values.leaf,
   leafLight: values.accent2, mango: values.mango, mangoBlush: values.mangoBlush, gloss: values.paper, shadow: values.textOnWood,
 });
 
-function skyParts(values: PlantageValues) {
-  const dawn = new Sprite(gradient([[0, values.skyDawnTop], [0.55, mixHex(values.skyDawnTop, values.skyDawnBottom, 0.6)], [1, values.skyDawnBottom]]));
-  const day = new Sprite(gradient([[0, values.skyMorningTop], [1, values.skyMorningBottom]]));
+function skyParts(values: PlantageValues, kind: LightKind) {
+  const skies = skiesOf(values, kind);
+  const dawn = new Sprite(gradient([[0, skies.from[0]], [0.55, mixHex(skies.from[0], skies.from[1], 0.6)], [1, skies.from[1]]]));
+  const day = new Sprite(gradient([[0, skies.to[0]], [1, skies.to[1]]]));
   for (const sprite of [dawn, day]) { sprite.width = 1920; sprite.height = SKY_HEIGHT; }
   const glow = new Sprite(gradient([[0, values.sun], [1, `${values.sun}00`]], true));
   glow.anchor.set(0.5);
@@ -101,9 +111,9 @@ function front(box: Container, values: PlantageValues, sway: Swaying[]) {
 }
 
 // The contents of one depth layer
-function fill(layer: Layer, values: PlantageValues, sway: Swaying[]): Container {
+function fill(layer: Layer, values: PlantageValues, sky: string, sway: Swaying[]): Container {
   const box = new Container();
-  const haze = (color: string) => mixHex(color, values.skyMorningBottom, layer.haze);
+  const haze = (color: string) => mixHex(color, sky, layer.haze);
   if (layer.id === "clouds" && values.clouds) clouds(box, values, haze);
   if (layer.id === "hillsFar" && values.hills) box.addChild(new Graphics().poly(hillLine(HILLS.far)).fill(haze(values.hillColor)));
   if (layer.id === "hillsNear" && values.hills) box.addChild(new Graphics().poly(hillLine(HILLS.near)).fill(haze(values.hillFarColor)));
@@ -114,7 +124,7 @@ function fill(layer: Layer, values: PlantageValues, sway: Swaying[]): Container 
     box.addChild(field);
   }
   for (const spot of layer.trees) {
-    const node = drawShapes(new Graphics(), tree(spot.scale, layer.haze, treeColors(values), values.mangosOnTrees));
+    const node = drawShapes(new Graphics(), tree(spot.scale, layer.haze, treeColors(values, sky), values.mangosOnTrees));
     node.position.set(spot.x, spot.ground);
     box.addChild(node);
     sway.push({ node, phase: spot.sway, kind: "tree" });
@@ -129,17 +139,18 @@ export const NEAR_MOVE = 0.85;
 const LAYER_STEP = 10;
 export const NEAR_Z = 6 * LAYER_STEP + LAYER_STEP / 2;
 
-export default function WorldLayer({ app, world, clock, values }: Props) {
+export default function WorldLayer({ app, world, clock, values, kind }: Props) {
   useEffect(() => {
     const effects = quality(values.quality).bloom;
-    const { dawn, day, glow, sun, rays } = skyParts(values);
+    const { dawn, day, glow, sun, rays } = skyParts(values, kind);
+    const hazeSky = skiesOf(values, kind).haze;
     const sky = new Container();
     sky.addChild(dawn, day, rays, glow, sun);
     sky.zIndex = -LAYER_STEP;
     const sway: Swaying[] = [];
     const options = { seed: values.worldSeed, treeRowsFar: values.treeRowsFar, treeRowsMid: values.treeRowsMid, farBlur: values.farBlur, hazeFar: values.hazeFar / 100 };
     const layers = worldLayers(options).map((layer, index) => {
-      const box = fill(layer, values, sway);
+      const box = fill(layer, values, hazeSky, sway);
       if (effects && layer.blur > 0) box.filters = [new BlurFilter({ strength: layer.blur, quality: 3 })];
       box.zIndex = index * LAYER_STEP;
       return { layer, box };
@@ -154,20 +165,20 @@ export default function WorldLayer({ app, world, clock, values }: Props) {
 
     const place = () => {
       const seconds = clock();
-      const sunrise = sunriseAt(seconds, values.sunriseMs, values.sunriseOn);
+      const light = daylight(kind, seconds, values);
+      const height = Math.min(1, light.sun);
       const camera = cameraAt(seconds, values.parallaxSeconds, values.parallaxOn) * values.parallaxAmount;
-      day.alpha = sunrise;
-      for (const node of [sun, glow, rays]) node.position.set(SUN.x, SUN.low - sunrise * SUN.rise);
+      day.alpha = light.sky;
+      for (const node of [sun, glow, rays]) node.position.set(SUN.x, SUN.low - light.sun * SUN.rise);
       rays.rotation = seconds * SUN.turn;
-      rays.alpha = sunrise;
-      glow.alpha = 0.4 + sunrise * 0.6;
+      rays.alpha = height;
+      glow.alpha = 0.4 + height * 0.6;
       for (const { layer, box } of layers) box.x = -camera * layer.move;
       cloudBox?.children.forEach((cloud, index) => { cloud.x = cloudX(spots[index].x, index, seconds); });
       for (const entry of sway) entry.node.skew.x = swayAt(seconds, entry.phase, values.swayAmount, entry.kind);
-      const bright = DIM.dark + (1 - DIM.dark) * sunrise;
       dim.reset();
-      dim.brightness(bright, false);
-      dim.saturate((1 - bright) * DIM.desaturate, true);
+      dim.brightness(light.bright, false);
+      dim.saturate((1 - light.bright) * DESATURATE, true);
     };
     place();
     app.ticker.add(place);
@@ -179,6 +190,6 @@ export default function WorldLayer({ app, world, clock, values }: Props) {
         part.destroy({ children: true, texture: true });
       }
     };
-  }, [app, world, clock, values]);
+  }, [app, world, clock, values, kind]);
   return null;
 }

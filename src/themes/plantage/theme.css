@@ -100,64 +100,8 @@
 .theme-plantage .time-nacht .pl-night { opacity: var(--night-veil, 0.4); }
 .theme-plantage .time-abend .pl-night { fill: var(--mangoBlush); opacity: var(--evening-veil, 0.08); }
 
-/* The mango picker (Picker.tsx) stands in the front row of the field */
-.theme-plantage .pl-picker { position: absolute; bottom: var(--picker-bottom, 4%); width: calc(var(--picker-width, 13vw) * var(--pickerSize)); display: grid; justify-items: center; gap: var(--picker-gap, 6px); }
-.theme-plantage .pl-picker-links { left: var(--picker-edge, 20%); }
-.theme-plantage .pl-picker-rechts { right: var(--picker-edge, 20%); scale: -1 1; }
-.theme-plantage .pl-picker-rechts .pl-picker-name { scale: -1 1; }
-/* Drawn like the field: no outlines, light and shade tones (light from the upper left), a soft shadow on the soil */
-.theme-plantage .pl-picker-figure { width: 100%; height: auto; overflow: visible; }
-/* The picker stands in the field, so the night veil of the backdrop darkens the figure too */
-.theme-plantage .time-nacht ~ .pl-picker .pl-picker-figure { filter: brightness(var(--night-dim, 0.7)) saturate(var(--night-saturate, 0.8)); }
-.theme-plantage .pl-picker-shadow { fill: var(--soilDark); opacity: 0.4; }
-.theme-plantage .pl-picker-hat { fill: var(--pickerHat); }
-.theme-plantage .pl-picker-hat-shade { fill: color-mix(in srgb, var(--pickerHat) 70%, var(--trunk)); }
-.theme-plantage .pl-picker-hat-weave { fill: none; stroke: color-mix(in srgb, var(--pickerHat) 75%, var(--trunk)); stroke-width: var(--weave-line, 1.5); opacity: 0.6; }
-.theme-plantage .pl-picker-band { fill: var(--accent); }
-.theme-plantage .pl-picker-skin { fill: var(--pickerSkin); }
-.theme-plantage .pl-picker-skin-shade { fill: color-mix(in srgb, var(--pickerSkin) 78%, var(--mangoBlush)); }
-.theme-plantage .pl-picker-cheek { fill: var(--mangoBlush); opacity: 0.35; }
-.theme-plantage .pl-picker-eye { fill: var(--textOnWood); }
-.theme-plantage .pl-picker-line { fill: none; stroke: color-mix(in srgb, var(--textOnWood) 80%, var(--pickerSkin)); stroke-width: var(--face-line, 2.5); stroke-linecap: round; }
-.theme-plantage .pl-picker-shirt { fill: var(--pickerShirt); }
-.theme-plantage .pl-picker-shirt-shade { fill: color-mix(in srgb, var(--pickerShirt) 84%, var(--soilDark)); }
-.theme-plantage .pl-picker-belt { fill: var(--woodDark); }
-.theme-plantage .pl-picker-pants { fill: color-mix(in srgb, var(--woodDark) 75%, var(--pickerShirt)); }
-.theme-plantage .pl-picker-pants-shade { fill: color-mix(in srgb, var(--woodDark) 60%, var(--soilDark)); }
-.theme-plantage .pl-picker-boots { fill: var(--soilDark); }
-.theme-plantage .pl-picker-pole { fill: none; stroke: color-mix(in srgb, var(--pickerHat) 60%, var(--trunk)); stroke-width: var(--pole, 7); stroke-linecap: round; }
-.theme-plantage .pl-picker-pole-nodes { fill: none; stroke: var(--trunk); stroke-width: var(--pole-node, 3); stroke-linecap: round; }
-.theme-plantage .pl-picker-handle { fill: none; stroke: var(--trunk); stroke-width: var(--handle-line, 5); stroke-linecap: round; }
-.theme-plantage .pl-picker-basket { fill: var(--wood); }
-.theme-plantage .pl-picker-basket-shade { fill: color-mix(in srgb, var(--wood) 70%, var(--woodDark)); }
-.theme-plantage .pl-picker-weave { fill: none; stroke: var(--woodDark); stroke-width: var(--weave-line, 2); opacity: 0.55; }
-/* The raised arm with the pole turns at the shoulder */
-.theme-plantage .pl-picker-arm { transform-box: view-box; transform-origin: 61.5% 47%; }
-.theme-plantage .pl-picker-starting .pl-picker-arm { animation: plantage-reach var(--reach-time, 3s) ease-in-out infinite alternate; }
-.theme-plantage .pl-picker-brb .pl-picker-arm { animation: plantage-pick var(--pick-time, 1.6s) ease-in-out infinite; }
-.theme-plantage .pl-picker-falling { animation: plantage-drop var(--pick-time, 1.6s) ease-in infinite; }
-.theme-plantage .pl-picker-ending .pl-picker-arm { animation: plantage-wave var(--wave-time, 0.8s) ease-in-out infinite alternate; }
-.theme-plantage .pl-picker-name {
-  padding: var(--name-padding, 4px 16px);
-  border-radius: var(--pill, 999px);
-  background: color-mix(in srgb, var(--paper) 82%, transparent);
-  backdrop-filter: blur(var(--card-blur, 18px));
-  box-shadow: var(--pill-shadow);
-  color: var(--textOnWood);
-  font-weight: 700;
-  font-size: var(--picker-name, 1.2vw);
-  white-space: nowrap;
-}
-
 /* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
-.theme-plantage .pl-stage {
-  /* Position, size and scaling: stage-box from src/core/screens/stage.css */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--stage-gap, 26px);
-  padding-top: var(--sign-top, 150px);
-}
+
 /* Card: frosted harvest paper over the field, soft lifted shadow, a light line on top; text in dark wood brown */
 .theme-plantage .pl-card {
   background: linear-gradient(180deg, color-mix(in srgb, var(--paper) 94%, transparent), color-mix(in srgb, var(--paper) 82%, transparent));
@@ -169,45 +113,7 @@
     inset 0 var(--card-shine, 2px) 0 color-mix(in srgb, var(--paper) 90%, transparent);
   color: var(--textOnWood);
 }
-.theme-plantage .pl-clock {
-  position: absolute;
-  top: var(--clock-top, 32px);
-  right: var(--clock-right, 44px);
-  padding: var(--clock-padding, 8px 22px);
-  border-radius: var(--pill, 999px);
-  background: color-mix(in srgb, var(--paper) 78%, transparent);
-  backdrop-filter: blur(var(--card-blur, 18px));
-  box-shadow: var(--pill-shadow);
-  color: var(--textOnWood);
-  font-size: var(--clock-size, 28px);
-  font-weight: 600;
-  font-variant-numeric: tabular-nums;
-}
-.theme-plantage .pl-sign { position: relative; display: grid; justify-items: center; gap: var(--sign-gap, 14px); width: var(--signWidth); padding: var(--sign-padding, 44px 64px 50px); text-align: center; }
-.theme-plantage .pl-sign-haengend { transform-origin: 50% calc(-1 * var(--rope, 150px)); animation: plantage-swing var(--swing, 7s) ease-in-out infinite alternate; }
-.theme-plantage .pl-sign-haengend::before, .theme-plantage .pl-sign-haengend::after {
-  content: "";
-  position: absolute;
-  bottom: calc(100% - var(--rope-overlap, 10px));
-  width: var(--rope-width, 4px);
-  height: var(--rope, 150px);
-  border-radius: var(--pill, 999px);
-  background: linear-gradient(90deg, var(--woodDark), var(--wood), var(--woodDark));
-  z-index: -1;
-}
-.theme-plantage .pl-sign-haengend::before { left: 18%; }
-.theme-plantage .pl-sign-haengend::after { right: 18%; }
-.theme-plantage .pl-sign-pfahl::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  width: var(--post, 42px);
-  height: var(--post-height, 600px);
-  translate: -50% 0;
-  background: var(--trunk);
-  z-index: -1;
-}
+
 /* Overline as a crate label: a leaf-green pill with a small mango dot */
 .theme-plantage .pl-eyebrow {
   display: inline-flex;
@@ -232,30 +138,12 @@
   letter-spacing: -0.015em;
   color: var(--textOnWood);
 }
-.theme-plantage .pl-note { font-size: var(--note-size, 30px); color: color-mix(in srgb, var(--textOnWood) 72%, var(--paper)); }
-/* Countdown card: big calm digits, below the progress */
-.theme-plantage .pl-board { display: flex; flex-direction: column; align-items: center; gap: var(--board-gap, 16px); min-width: var(--board-width, 520px); padding: var(--board-padding, 22px 48px 26px); }
-.theme-plantage .pl-big { font-size: var(--big-size, 84px); font-weight: 700; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.theme-plantage .pl-next { font-size: var(--next-size, 40px); font-weight: 600; }
-.theme-plantage .pl-progress-korb { display: flex; gap: var(--basket-gap, 12px); padding: var(--basket-padding, 10px 20px); border-radius: var(--pill, 999px); background: color-mix(in srgb, var(--soil) 14%, transparent); box-shadow: inset 0 var(--track-inset, 2px) var(--track-soft, 6px) color-mix(in srgb, var(--soilDark) 25%, transparent); }
-.theme-plantage .pl-progress-korb span { width: var(--basket-mango, 46px); opacity: 0.22; filter: grayscale(1); transition: opacity var(--fadeDuration), filter var(--fadeDuration); }
-.theme-plantage .pl-progress-korb .full { opacity: 1; filter: drop-shadow(0 var(--fruit-lift, 4px) var(--fruit-soft, 6px) color-mix(in srgb, var(--mangoBlush) 45%, transparent)); animation: plantage-plop var(--fadeDuration) ease-out both; }
-.theme-plantage .pl-progress-korb .part-main, .theme-plantage .pl-progress-ast .part-main { fill: var(--mango); }
-.theme-plantage .pl-progress-korb .part-detail, .theme-plantage .pl-progress-ast .part-detail { fill: var(--leaf); }
+
+.theme-plantage .pl-progress-ast .part-main { fill: var(--mango); }
+.theme-plantage .pl-progress-ast .part-detail { fill: var(--leaf); }
 .theme-plantage .pl-progress-ast { position: relative; width: var(--progress-width, 520px); height: var(--branch, 8px); margin: var(--branch-room, 22px) 0 var(--branch-drop, 34px); border-radius: var(--pill, 999px); background: linear-gradient(90deg, var(--trunk) calc(var(--part) * 100%), color-mix(in srgb, var(--trunk) 25%, transparent) 0); }
 .theme-plantage .pl-progress-ast span { position: absolute; top: 50%; left: calc(var(--part) * 100%); width: var(--branch-mango, 44px); translate: -50% 0; transition: left var(--tick, 1s) linear; }
-.theme-plantage .pl-saying {
-  max-width: var(--signWidth);
-  padding: var(--saying-padding, 12px 30px);
-  border-radius: var(--pill, 999px);
-  background: color-mix(in srgb, var(--paper) 76%, transparent);
-  backdrop-filter: blur(var(--card-blur, 18px));
-  box-shadow: var(--pill-shadow);
-  color: var(--textOnWood);
-  font-size: var(--saying-size, 28px);
-  font-style: italic;
-  animation: plantage-rise-in var(--fadeDuration) ease-out both;
-}
+
 .theme-plantage .pl-plane { position: absolute; top: var(--plane-top, 8%); left: 0; display: flex; align-items: center; white-space: nowrap; animation: plantage-plane var(--tickerSpeed) linear infinite; }
 .theme-plantage .pl-plane .pl-shape { width: var(--plane-size, 7vw); }
 .theme-plantage .pl-plane .pl-shape { filter: drop-shadow(0 var(--icon-lift, 10px) var(--icon-soft, 10px) color-mix(in srgb, var(--soilDark) 30%, transparent)); }
@@ -277,11 +165,6 @@
 .theme-plantage .pl-banner::after { content: ""; position: absolute; left: 100%; top: 50%; width: var(--banner-rope, 2vw); height: var(--banner-line, 2px); background: var(--woodDark); }
 .theme-plantage .pl-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--ticker-padding, 12px 0); overflow: hidden; white-space: nowrap; font-size: var(--ticker-size, 2vw); border-width: var(--ticker-edge, 2px) 0 0; border-radius: 0; }
 .theme-plantage .pl-ticker span { display: inline-block; padding-left: 100%; animation: plantage-marquee var(--tickerSpeed) linear infinite; }
-.theme-plantage .power-sonnenaufgang .pl-field, .theme-plantage .power-sonnenaufgang .pl-picker { animation: plantage-sunrise var(--powerOnDuration) ease-out both; }
-.theme-plantage .power-sonnenaufgang .pl-sun-disc, .theme-plantage .power-sonnenaufgang .pl-sun-glow { animation: plantage-sun-up var(--powerOnDuration) ease-out both; }
-.theme-plantage .power-sonnenaufgang .pl-stage, .theme-plantage .power-blenden .pl-stage,
-.theme-plantage .power-sonnenaufgang .pl-ticker, .theme-plantage .power-blenden .pl-ticker { animation: plantage-fade var(--powerOnDuration) ease-out both; }
-.theme-plantage .power-blenden .pl-field, .theme-plantage .power-blenden .pl-picker { animation: plantage-fade var(--powerOnDuration) ease-out both; }
 
 /* --- Starting as the PixiJS world (scenes/Starting.tsx): frosted cards over the world, GSAP moves them ------------- */
 .theme-plantage .pl-starting { background: var(--skyMorningBottom); }
@@ -321,6 +204,10 @@
 .theme-plantage .pl-st-count { left: 50%; top: var(--count-top, 640px); width: var(--count-width, 520px); margin-left: calc(var(--count-width, 520px) / -2); padding: var(--count-padding, 18px 30px 22px); }
 .theme-plantage .pl-st-count b { display: block; font-size: var(--count-size, 96px); font-weight: 800; line-height: 1; letter-spacing: var(--count-spacing, 2px); }
 .theme-plantage .pl-st-count .pl-progress-ast { margin-inline: auto; width: 100%; }
+/* BRB and Ending: one line of text (break time, next stream), the card grows with it */
+.theme-plantage .pl-brb .pl-st-count, .theme-plantage .pl-ending .pl-st-count { width: auto; min-width: var(--count-width, 520px); margin-left: 0; translate: -50% 0; padding-inline: var(--count-side, 44px); white-space: nowrap; }
+.theme-plantage .pl-brb .pl-st-count b, .theme-plantage .pl-ending .pl-st-count b { font-size: var(--next-size, 64px); }
+.theme-plantage .pl-st-count.empty, .theme-plantage .pl-st-note.empty { visibility: hidden; }
 .theme-plantage .pl-st-line { left: 50%; top: var(--line-top, 900px); translate: -50% 0; padding: var(--line-padding, 12px 34px); border-radius: var(--pill, 999px); font-size: var(--line-size, 30px); font-style: italic; font-weight: 500; white-space: nowrap; }
 .theme-plantage .pl-st-line.empty { visibility: hidden; }
 .theme-plantage .pl-st-clock { right: var(--clock-right, 50px); top: var(--clock-top, 40px); padding: var(--clock-padding, 10px 26px); border-radius: var(--pill, 999px); font-size: var(--clock-size, 30px); font-weight: 700; }
@@ -618,17 +505,9 @@
 @keyframes plantage-turn { to { rotate: 1turn; } }
 @keyframes plantage-sway { from { rotate: calc(var(--treeSway) * -1deg); } to { rotate: calc(var(--treeSway) * 1deg); } }
 @keyframes plantage-fly { 0% { translate: var(--bird-from, -200px) var(--bird-y, 180px); } 45% { translate: var(--bird-to, 2120px) var(--bird-y-end, 110px); } 100% { translate: var(--bird-to, 2120px) var(--bird-y-end, 110px); } }
-@keyframes plantage-reach { from { rotate: 0deg; } to { rotate: -14deg; } }
-@keyframes plantage-pick { 0%, 100% { rotate: 0deg; } 40% { rotate: -22deg; } 55% { rotate: 6deg; } }
-@keyframes plantage-drop { 0%, 45% { translate: 0 0; opacity: 1; } 90% { translate: var(--drop-x, -150px) var(--drop-y, 270px); opacity: 1; } 100% { translate: var(--drop-x, -150px) var(--drop-y, 270px); opacity: 0; } }
-@keyframes plantage-wave { from { rotate: 0deg; } to { rotate: -30deg; } }
-@keyframes plantage-swing { from { rotate: -1.2deg; } to { rotate: 1.2deg; } }
-@keyframes plantage-unroll { from { opacity: 0; scale: 0.2 1; } to { opacity: 1; scale: 1 1; } }
 @keyframes plantage-plop { from { scale: 0.6; } to { scale: 1; } }
 @keyframes plantage-plane { from { translate: -100% 0; } to { translate: 110vw 0; } }
 @keyframes plantage-marquee { to { translate: -100% 0; } }
-@keyframes plantage-sunrise { from { filter: brightness(0.25) saturate(0.4); } to { filter: none; } }
-@keyframes plantage-sun-up { from { translate: 0 var(--sun-rise, 380px); } to { translate: 0 0; } }
 @keyframes plantage-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes plantage-fade-out { from { opacity: 1; } to { opacity: 0; } }
 @keyframes plantage-fall-in { 0% { opacity: 0; translate: 0 -120%; rotate: 5deg; } 70% { opacity: 1; translate: 0 4%; rotate: -1deg; } 100% { translate: 0 0; rotate: 0deg; } }

@@ -59,9 +59,6 @@ const FIELDS = [
   number("fadeDuration", "Ein- und Ausblenden", GENERAL, 500, 0, 3000, "ms"),
   choice("locale", "Uhrzeit-Format", GENERAL, "de-DE", LOCALES),
 
-  inScene("starting", choice("timeStarting", "Tageszeit Starting", FIELD, "morgen", TIMES)),
-  inScene("brb", choice("timeBrb", "Tageszeit BRB", FIELD, "mittag", TIMES)),
-  inScene("ending", choice("timeEnding", "Tageszeit Ending", FIELD, "abend", TIMES)),
   color("skyMorningTop", "Himmel Morgen oben", FIELD, "#ff9a76"),
   color("skyMorningBottom", "Himmel Morgen unten", FIELD, "#ffe2b0"),
   color("skyDayTop", "Himmel Mittag oben", FIELD, "#3aa0e0"),
@@ -112,6 +109,11 @@ const FIELDS = [
   flag("motesOn", "Lichtstaub", WORLD, true),
   // fixed: at most 500 motes
   number("moteCount", "Anzahl Lichtstaub", WORLD, 70, 0, 500),
+  inScene("ending", flag("sunsetOn", "Sonnenuntergang (Ending)", WORLD, true)),
+  inScene("ending", number("sunsetMs", "Sonnenuntergang (Dauer)", WORLD, 4000, 0, 20000, "ms")),
+  inScene("ending", flag("firefliesOn", "Glühwürmchen (Ending)", WORLD, true)),
+  // fixed: at most 300 fireflies
+  inScene("ending", number("fireflyCount", "Anzahl Glühwürmchen", WORLD, 40, 0, 300)),
 
   inScene("starting", text("startingEyebrow", "Starting: Überzeile", SCREENS, "Gleich geht's los")),
   inScene("starting", text("startingTitle", "Starting: Titel", SCREENS, "Stream startet gleich")),
@@ -122,7 +124,6 @@ const FIELDS = [
   inScene("ending", text("endingEyebrow", "Ending: Überzeile", SCREENS, "Danke fürs Zuschauen")),
   inScene("ending", text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet")),
   inScene("ending", text("endingNote", "Ending: Untertitel", SCREENS, "Bis zur nächsten Ernte!")),
-  choice("signStyle", "Schild", SCREENS, "haengend", ["haengend", "pfahl"]),
   number("signWidth", "Schild: Breite", SCREENS, 1100, 400, 1800, "px"),
   number("titleSize", "Titelgrösse", SCREENS, 110, 30, 240, "px"),
   flag("picker", "Mangopflücker zeigen", SCREENS, true),
@@ -138,6 +139,8 @@ const FIELDS = [
   inScene("starting", number("cardDropMs", "Starting: Karten fallen herein (Dauer)", SCREENS, 1100, 0, 5000, "ms")),
   inScene("starting", number("basketMangos", "Starting: Mangos im Korb", SCREENS, 5, 1, 12)),
   inScene("starting", flag("pickerReach", "Starting: Pflücker greift in den Baum", SCREENS, true)),
+  inScene("brb", number("brbPickEvery", "BRB: Pflücker pflückt alle", SCREENS, 2.4, 0.8, 20, "s", 0.1)),
+  inScene("brb", flag("brbMangoBounce", "BRB: Mango springt im Korb", SCREENS, true)),
   inScene("brb", text("afkPrefix", "BRB-Zähler-Präfix", SCREENS, "Pause seit ")),
   inScene("ending", text("endingNextLabel", "Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream")),
   inScene("ending", text("endingNext", "Nächster Stream (leer = ausblenden)", SCREENS, "")),
@@ -148,8 +151,6 @@ const FIELDS = [
   text("ticker", "Ticker-Text (leer = aus)", SCREENS, "", 300),
   choice("tickerStyle", "Ticker", SCREENS, "flugzeug", ["flugzeug", "leiste"]),
   number("tickerSpeed", "Ticker: Zeit pro Durchlauf", SCREENS, 30, 5, 300, "s"),
-  choice("powerOn", "Einschalten", SCREENS, "sonnenaufgang", ["sonnenaufgang", "blenden", "keins"]),
-  number("powerOnDuration", "Einschalten (Dauer)", SCREENS, 1800, 0, 10000, "ms"),
 
   choice("alertStyle", "Stil", ALERTS, "kiste", ["kiste", "zettel", "korb"]),
   text("followTag", "Follow: Kopfzeile", ALERTS, "Neuer Follower"),
@@ -305,7 +306,7 @@ const COMBAT_FIELDS = withDefaults(minimeCombatFields(ROLE_SET), {
 const SCREEN_SCENES = ["starting", "brb", "ending"] as const;
 const GROUP_SCENES = {
   [FIELD]: [...SCREEN_SCENES, "info"],
-  [WORLD]: ["starting"],
+  [WORLD]: SCREEN_SCENES,
   [SCREENS]: SCREEN_SCENES,
   [ALERTS]: ["alerts"],
   [CHAT]: ["chat"],
@@ -331,8 +332,8 @@ const personalize = (login: string) => ({ channelName: capital(login) });
 
 // Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
 const BASIC = [
-  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "picker", "mangosOnTrees", "birds", "timeStarting",
-  "startingEyebrow", "startingTitle", "ticker", "timeBrb", "brbTitle", "brbNote", "timeEnding", "endingTitle", "endingNext", "alertStyle",
+  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "picker", "mangosOnTrees", "birds", "sunriseOn",
+  "startingEyebrow", "startingTitle", "ticker", "brbMangoBounce", "brbTitle", "brbNote", "sunsetOn", "endingTitle", "endingNext", "alertStyle",
   "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatStyle", "chatBadges",
   "camStyle", "camLabel", "camLive", "musicStyle", "musicHide", "fxIn", "fxOut", "mangoDefault", "mangoNames",
 ];
