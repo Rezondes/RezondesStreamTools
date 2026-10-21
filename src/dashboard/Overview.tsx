@@ -63,6 +63,12 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
           {TEST_ALERTS.map(kind => <button key={kind} className="btn" onClick={() => act(`/api/test?kind=${kind}`)}>{TEXTS.overview.alertNames[kind]}</button>)}
         </p>
       )}
+      {me.features.alerts && (
+        <p className="actions">
+          <span className="muted">{TEXTS.overview.statsHint}</span>
+          <button className="btn" onClick={() => { if (confirm(TEXTS.overview.statsResetConfirm)) act("/api/stats/reset"); }}>{TEXTS.overview.statsReset}</button>
+        </p>
+      )}
       {me.features.triggers && me.features.fx && <TriggerButtons act={act} />}
       <ObsImport login={me.login} layout={layout} />
       <ChatHelp login={me.login} />

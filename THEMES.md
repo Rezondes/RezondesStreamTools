@@ -43,6 +43,7 @@ src/themes/<id>/
    | Effekte | `core/fx`: `useFxScene`, `useFxItem` (Phase, Text, Lage), `<FxMedia>` |
    | Befehlsseite | `core/info`: `useInfoPage` |
    | Minimes | `useMinimes` (siehe unten) |
+   | Statistik | `useStreamStats` (Stand vom Server, `?demo`: Demo-Werte); `core/stats`: `parseStatLines` (Einstellung `schlüssel\|Text` je Zeile), `describeStats` (Zahlen und Dauer formatiert) |
 
    Platzhalter `{channel}` und `{login}` liefert `channelNames`, Texte füllt `fillTemplate` (beides
    `src/core/template.ts`), eigene Töne spielt `playSound` aus `src/core/sound.ts`. Ein Theme importiert nur aus seinem

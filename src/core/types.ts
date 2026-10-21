@@ -11,6 +11,7 @@ export type { Minime } from "../generated/Minime.ts";
 export type { PublicSettings } from "../generated/PublicSettings.ts";
 export type { ServerMessage } from "../generated/ServerMessage.ts";
 export type { SpotifyDetails } from "../generated/SpotifyDetails.ts";
+export type { StreamStats } from "../generated/StreamStats.ts";
 export type { Track } from "../generated/Track.ts";
 
 // Answer of /s/<login>/status. spotify: null = not set up or feature off, otherwise whether it is connected.

@@ -1,10 +1,10 @@
-// Fake events for ?demo: chat, alerts, music and minimes, plus a sample commands list, so every overlay can be tested without a stream.
+// Fake events for ?demo: chat, alerts, music, minimes and stats, plus a sample commands list, so every overlay can be tested without a stream.
 // ?demo=<n>: that many minimes (default 5, at most 100).
 import { commandList, type CommandList } from "./commands.ts";
 import type { MinimeRules } from "./minimes.ts";
 import { splitEmotes } from "./chat/parts.ts";
 import { numberParam } from "./params.ts";
-import type { Alert, Minime, Track } from "./types.ts";
+import type { Alert, Minime, StreamStats, Track } from "./types.ts";
 import type { Handlers } from "./connection.ts";
 
 const NAMES = ["neo_42", "Trinity", "MorpheusTV", "agent_smith", "Oracle", "Tank", "Dozer", "Switch"];
@@ -51,6 +51,12 @@ function demoMinimes(): Minime[] {
   });
 }
 
+// Demo stats: a count that started 3 hours and 42 minutes ago
+export const demoStats = (): StreamStats => ({
+  follows: 1284, subs: 37, giftedSubs: 25, raids: 2, raiders: 142, bits: 4200, redeems: 63, hypeLevel: 3,
+  chatMessages: 2817, chatters: 211, startedAt: Date.now() - (3 * 60 + 42) * 60_000,
+});
+
 // Starts the fake events; the return value stops them
 export function demo(handlers: Handlers) {
   const chat = setInterval(() => {
@@ -78,6 +84,7 @@ export function demo(handlers: Handlers) {
   const minimes = demoMinimes();
   handlers.minimes?.(minimes);
   const minimeChat = setInterval(() => handlers.minimeChat?.(pick(minimes).login), 3000);
+  handlers.stats?.(demoStats());
   return () => { clearInterval(chat); clearInterval(alerts); clearInterval(music); clearInterval(minimeChat); clearTimeout(first); };
 }
 

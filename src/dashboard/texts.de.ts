@@ -66,6 +66,8 @@ export const TEXTS = {
     test: "Test",
     alertNames: { follow: "Follow", sub: "Sub", resub: "Resub", gift: "Geschenk-Abos", cheer: "Bits", raid: "Raid", redeem: "Kanalpunkte", hype: "Hype Train" },
     testAlerts: "Test-Alert, erscheint auch live im Stream, wenn die Alerts-Quelle in OBS aktiv ist:",
+    statsHint: "Stream-Statistik (Follows, Abos, Bits, Chat ...) zählt weiter, bis du sie zurücksetzt, auch über Streamende und Neustart hinweg:",
+    statsReset: "Statistik zurücksetzen", statsResetConfirm: "Statistik auf 0 setzen? Offene Overlays zeigen danach sofort 0.",
     fireTriggers: "Trigger auslösen:",
     noTriggers: "keine geladen",
     keyHint: "Die URLs enthalten deinen geheimen Overlay-Schlüssel (key=...). Nicht zeigen oder teilen: wer ihn hat, kann die Verbindungen deiner Overlays belegen.",

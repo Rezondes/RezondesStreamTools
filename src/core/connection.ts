@@ -10,7 +10,7 @@ import { params } from "./params.ts";
 import * as streamerPath from "./streamerPath.ts";
 import { demo } from "./demo.ts";
 import type { CommandList } from "./commands.ts";
-import type { Alert, ChatMessage, ChatRemoval, FxEvent, Minime, PublicSettings, ServerMessage, ServerStatus, Track } from "./types.ts";
+import type { Alert, ChatMessage, ChatRemoval, FxEvent, Minime, PublicSettings, ServerMessage, ServerStatus, StreamStats, Track } from "./types.ts";
 
 export type Handlers = {
   chat?: (message: ChatMessage) => void;
@@ -21,6 +21,7 @@ export type Handlers = {
   settings?: (settings: PublicSettings) => void;
   minimes?: (minimes: Minime[]) => void;
   minimeChat?: (login: string) => void;
+  stats?: (stats: StreamStats) => void;
 };
 
 // Login of the streamer whose overlay this is; null without /s/<login>/ and without a valid ?s=
@@ -43,12 +44,13 @@ async function serverStatus(): Promise<ServerStatus | null> {
 }
 
 // All hooks of a page share one connection: the first subscriber starts the sources, the last one stops them.
-// The server sends the current track and the minimes only on connect; whoever subscribes later (the scene loads after
-// the settings) gets them from lastTrack and lastMinimes. undefined = no message yet.
+// The server sends the current track, the minimes and the stats only on connect and on changes; whoever subscribes later
+// (the scene loads after the settings) gets them from lastTrack, lastMinimes and lastStats. undefined = no message yet.
 const subscribers = new Set<Handlers>();
 let stopSources: (() => void) | null = null;
 let lastTrack: Track | null | undefined;
 let lastMinimes: Minime[] | undefined;
+let lastStats: StreamStats | undefined;
 const fanout: Handlers = {
   chat: message => subscribers.forEach(handlers => handlers.chat?.(message)),
   alert: alert => subscribers.forEach(handlers => handlers.alert?.(alert)),
@@ -64,6 +66,10 @@ const fanout: Handlers = {
     subscribers.forEach(handlers => handlers.minimes?.(minimes));
   },
   minimeChat: login => subscribers.forEach(handlers => handlers.minimeChat?.(login)),
+  stats: stats => {
+    lastStats = stats;
+    subscribers.forEach(handlers => handlers.stats?.(stats));
+  },
 };
 
 // Reports events to handlers; the return value unsubscribes again
@@ -72,6 +78,7 @@ export function connect(handlers: Handlers): () => void {
   stopSources ??= startSources(fanout);
   if (lastTrack !== undefined) handlers.music?.(lastTrack);
   if (lastMinimes !== undefined) handlers.minimes?.(lastMinimes);
+  if (lastStats !== undefined) handlers.stats?.(lastStats);
   return () => {
     subscribers.delete(handlers);
     if (subscribers.size > 0) return;
@@ -79,6 +86,7 @@ export function connect(handlers: Handlers): () => void {
     stopSources = null;
     lastTrack = undefined;
     lastMinimes = undefined;
+    lastStats = undefined;
   };
 }
 
@@ -111,9 +119,9 @@ function startSources(handlers: Handlers): () => void {
   let stopped = false;
   const isDemo = params.has("demo");
   const stops = [isDemo ? demo(handlers) : () => {}];
-  // With ?demo music and minimes only show the demo: the server sends its state on connect (often no track,
+  // With ?demo music, minimes and stats only show the demo: the server sends its state on connect (often no track,
   // no minimes) and would otherwise overwrite the demo
-  const live: Handlers = isDemo ? { ...handlers, music: undefined, minimes: undefined, minimeChat: undefined } : handlers;
+  const live: Handlers = isDemo ? { ...handlers, music: undefined, minimes: undefined, minimeChat: undefined, stats: undefined } : handlers;
   serverStatus()
     .then(server => {
       if (!stopped && server) stops.push(events(server, live));
@@ -151,6 +159,7 @@ function events(server: ServerStatus, handlers: Handlers) {
       else if (message.type === "minimeChat") handlers.minimeChat?.(message.login);
       else if (message.type === "chat") handlers.chat?.({ ...message.message, parts: splitWords(message.message.parts, emotes.current()) });
       else if (message.type === "remove") handlers.remove?.(message.removal);
+      else if (message.type === "stats") handlers.stats?.(message.stats);
     };
     // After an answer like 404 (runtime not started right now) EventSource gives up: reconnect ourselves after a pause
     source.onerror = () => {
