@@ -146,12 +146,14 @@ export type PlantageValues = {
   readonly alertTop: number;
   readonly alertAlign: string;
   readonly alertWidth: number;
-  readonly alertIn: string;
-  readonly alertOut: string;
   readonly alertTimer: boolean;
   readonly leafConfetti: boolean;
   readonly leafCount: number;
   readonly juice: boolean;
+  readonly alertMangoOn: boolean;
+  readonly alertSquash: number;
+  readonly alertSplashDrops: number;
+  readonly alertGap: number;
   readonly alertSound: boolean;
   readonly soundFollow: SoundValue;
   readonly soundSub: SoundValue;

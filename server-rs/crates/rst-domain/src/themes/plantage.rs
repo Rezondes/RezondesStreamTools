@@ -256,12 +256,14 @@ fn alerts() -> Vec<SettingField> {
         number("alertTop", "Abstand oben", ALERTS, 80.0, 0.0, 1000.0, PX, None),
         choice("alertAlign", "Position", ALERTS, "center", &["left", "center", "right"]),
         number("alertWidth", "Breite", ALERTS, 760.0, 300.0, 1800.0, PX, None),
-        choice("alertIn", "Einblenden", ALERTS, "fallen", &MOTIONS),
-        choice("alertOut", "Ausblenden", ALERTS, "fallen", &MOTIONS),
         flag("alertTimer", "Restzeit als Ast", ALERTS, true),
         flag("leafConfetti", "Blätter-Konfetti", ALERTS, true),
         number("leafCount", "Anzahl Blätter", ALERTS, 14.0, 0.0, 40.0, None, None),
         flag("juice", "Saftspritzer", ALERTS, true),
+        flag("alertMangoOn", "Mango fällt aufs Medaillon", ALERTS, true),
+        number("alertSquash", "Mango staucht sich beim Aufprall", ALERTS, 28.0, 0.0, 60.0, PERCENT, None),
+        number("alertSplashDrops", "Anzahl Safttropfen", ALERTS, 40.0, 0.0, 200.0, None, None),
+        number("alertGap", "Abstand Medaillon zum Text", ALERTS, 48.0, 24.0, 200.0, PX, None),
         flag("alertSound", "Töne", ALERTS, true),
     ];
     fields.extend(alert_sound_fields(ALERTS));

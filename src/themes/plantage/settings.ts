@@ -185,12 +185,16 @@ const FIELDS = [
   number("alertTop", "Abstand oben", ALERTS, 80, 0, 1000, "px"),
   choice("alertAlign", "Position", ALERTS, "center", ["left", "center", "right"]),
   number("alertWidth", "Breite", ALERTS, 760, 300, 1800, "px"),
-  choice("alertIn", "Einblenden", ALERTS, "fallen", MOTIONS),
-  choice("alertOut", "Ausblenden", ALERTS, "fallen", MOTIONS),
   flag("alertTimer", "Restzeit als Ast", ALERTS, true),
   flag("leafConfetti", "Blätter-Konfetti", ALERTS, true),
   number("leafCount", "Anzahl Blätter", ALERTS, 14, 0, 40),
   flag("juice", "Saftspritzer", ALERTS, true),
+  flag("alertMangoOn", "Mango fällt aufs Medaillon", ALERTS, true),
+  number("alertSquash", "Mango staucht sich beim Aufprall", ALERTS, 28, 0, 60, "%"),
+  // fixed: at most 200 juice drops
+  number("alertSplashDrops", "Anzahl Safttropfen", ALERTS, 40, 0, 200),
+  // fixed: at least 24 px between medallion and text, for legibility
+  number("alertGap", "Abstand Medaillon zum Text", ALERTS, 48, 24, 200, "px"),
   flag("alertSound", "Töne", ALERTS, true),
   ...alertSoundFields(ALERTS),
 

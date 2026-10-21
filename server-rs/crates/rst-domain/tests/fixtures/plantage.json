@@ -1335,34 +1335,6 @@
       "unit": "px"
     },
     {
-      "key": "alertIn",
-      "type": "select",
-      "label": "Einblenden",
-      "group": "Alerts",
-      "default": "fallen",
-      "options": [
-        "fallen",
-        "plopp",
-        "gleiten",
-        "blenden",
-        "keins"
-      ]
-    },
-    {
-      "key": "alertOut",
-      "type": "select",
-      "label": "Ausblenden",
-      "group": "Alerts",
-      "default": "fallen",
-      "options": [
-        "fallen",
-        "plopp",
-        "gleiten",
-        "blenden",
-        "keins"
-      ]
-    },
-    {
       "key": "alertTimer",
       "type": "boolean",
       "label": "Restzeit als Ast",
@@ -1391,6 +1363,42 @@
       "label": "Saftspritzer",
       "group": "Alerts",
       "default": true
+    },
+    {
+      "key": "alertMangoOn",
+      "type": "boolean",
+      "label": "Mango fällt aufs Medaillon",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "alertSquash",
+      "type": "number",
+      "label": "Mango staucht sich beim Aufprall",
+      "group": "Alerts",
+      "default": 28,
+      "min": 0,
+      "max": 60,
+      "unit": "%"
+    },
+    {
+      "key": "alertSplashDrops",
+      "type": "number",
+      "label": "Anzahl Safttropfen",
+      "group": "Alerts",
+      "default": 40,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "alertGap",
+      "type": "number",
+      "label": "Abstand Medaillon zum Text",
+      "group": "Alerts",
+      "default": 48,
+      "min": 24,
+      "max": 200,
+      "unit": "px"
     },
     {
       "key": "alertSound",
