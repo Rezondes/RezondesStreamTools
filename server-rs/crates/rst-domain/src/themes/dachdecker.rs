@@ -33,6 +33,8 @@ const CHAT: &str = "Chat";
 const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
+const STINGER: &str = "Stinger";
+const BANNER: &str = "Banner";
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -313,6 +315,23 @@ fn cam_music_fx() -> Vec<SettingField> {
     ]
 }
 
+fn stinger_banner() -> Vec<SettingField> {
+    vec![
+        text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}", None),
+        number("stingerDuration", "Länge", STINGER, 2.4, 0.5, 6.0, S, Some(0.05)),
+        number("stingerCut", "Übergangspunkt", STINGER, 1.2, 0.1, 6.0, S, Some(0.05)),
+        number("stingerRows", "Ziegelreihen", STINGER, 9.0, 3.0, 24.0, None, None),
+        flag("stingerShine", "Glanz über den Ziegeln", STINGER, true),
+        number("stingerCopperShare", "Anteil Kupferziegel", STINGER, 15.0, 0.0, 50.0, PERCENT, None),
+        text("profileTitle", "Profilbanner: Titel ({channel})", BANNER, "{channel}", None),
+        text("profileSubtitle", "Profilbanner: Unterzeile", BANNER, "BAUPLAN // RICHTFEST", None),
+        text("offlineText", "Offline-Banner: Text", BANNER, "OFFLINE // DACH DICHT", None),
+        number("bannerDuration", "Schleifenlänge", BANNER, 4.0, 1.0, 20.0, S, None),
+        flag("bannerRain", "Offline-Banner: Regen", BANNER, true),
+        number("bannerRainCount", "Offline-Banner: Tropfen", BANNER, 1200.0, 0.0, 4000.0, None, None),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Music, Starting};
     [
@@ -325,6 +344,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (CAM, vec![Cam]),
         (MUSIC, vec![Music]),
         (FX, vec![Fx]),
+        (STINGER, vec![]),
+        (BANNER, vec![]),
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()
@@ -394,6 +415,7 @@ pub fn dachdecker() -> Theme {
         chat(),
         badge_fields(CHAT),
         cam_music_fx(),
+        stinger_banner(),
         info_fields(),
     ]
     .concat();

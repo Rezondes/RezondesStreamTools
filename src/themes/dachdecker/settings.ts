@@ -22,6 +22,8 @@ const CHAT = "Chat";
 const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
+const STINGER = "Stinger";
+const BANNER = "Banner";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "DACHDECKER", 40),
@@ -219,6 +221,20 @@ const FIELDS = [
   flag("fxText", "Text zeigen", FX, true),
   number("fxTextSize", "Textgrösse", FX, 96, 8, 300, "px"),
 
+  text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}"),
+  number("stingerDuration", "Länge", STINGER, 2.4, 0.5, 6, "s", 0.05),
+  number("stingerCut", "Übergangspunkt", STINGER, 1.2, 0.1, 6, "s", 0.05),
+  number("stingerRows", "Ziegelreihen", STINGER, 9, 3, 24),
+  flag("stingerShine", "Glanz über den Ziegeln", STINGER, true),
+  number("stingerCopperShare", "Anteil Kupferziegel", STINGER, 15, 0, 50, "%"),
+
+  text("profileTitle", "Profilbanner: Titel ({channel})", BANNER, "{channel}"),
+  text("profileSubtitle", "Profilbanner: Unterzeile", BANNER, "BAUPLAN // RICHTFEST"),
+  text("offlineText", "Offline-Banner: Text", BANNER, "OFFLINE // DACH DICHT"),
+  number("bannerDuration", "Schleifenlänge", BANNER, 4, 1, 20, "s"),
+  flag("bannerRain", "Offline-Banner: Regen", BANNER, true),
+  number("bannerRainCount", "Offline-Banner: Tropfen", BANNER, 1200, 0, 4000),
+
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
@@ -237,6 +253,8 @@ const GROUP_SCENES = {
   [CAM]: ["cam"],
   [MUSIC]: ["music"],
   [FX]: ["fx"],
+  [STINGER]: [],
+  [BANNER]: [],
   [INFO_GROUP]: ["info"],
 } as const;
 

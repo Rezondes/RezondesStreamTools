@@ -13,4 +13,6 @@ export type RenderClip = {
   group: string;
   font: string; // CSS font to preload, e.g. '24px "Inter"'
   draw: (context: CanvasRenderingContext2D, time: number) => void;
+  // Loads what draw needs before the first frame (e.g. the 3D modules of a theme, so they stay out of the entry chunk)
+  prepare?: () => Promise<void>;
 };

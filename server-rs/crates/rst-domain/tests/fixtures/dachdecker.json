@@ -1710,6 +1710,112 @@
       "unit": "px"
     },
     {
+      "key": "stingerText",
+      "type": "text",
+      "label": "Text in der Mitte ({channel})",
+      "group": "Stinger",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "stingerDuration",
+      "type": "number",
+      "label": "Länge",
+      "group": "Stinger",
+      "default": 2.4,
+      "min": 0.5,
+      "max": 6,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerCut",
+      "type": "number",
+      "label": "Übergangspunkt",
+      "group": "Stinger",
+      "default": 1.2,
+      "min": 0.1,
+      "max": 6,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerRows",
+      "type": "number",
+      "label": "Ziegelreihen",
+      "group": "Stinger",
+      "default": 9,
+      "min": 3,
+      "max": 24
+    },
+    {
+      "key": "stingerShine",
+      "type": "boolean",
+      "label": "Glanz über den Ziegeln",
+      "group": "Stinger",
+      "default": true
+    },
+    {
+      "key": "stingerCopperShare",
+      "type": "number",
+      "label": "Anteil Kupferziegel",
+      "group": "Stinger",
+      "default": 15,
+      "min": 0,
+      "max": 50,
+      "unit": "%"
+    },
+    {
+      "key": "profileTitle",
+      "type": "text",
+      "label": "Profilbanner: Titel ({channel})",
+      "group": "Banner",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "profileSubtitle",
+      "type": "text",
+      "label": "Profilbanner: Unterzeile",
+      "group": "Banner",
+      "default": "BAUPLAN // RICHTFEST",
+      "maxLength": 200
+    },
+    {
+      "key": "offlineText",
+      "type": "text",
+      "label": "Offline-Banner: Text",
+      "group": "Banner",
+      "default": "OFFLINE // DACH DICHT",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerDuration",
+      "type": "number",
+      "label": "Schleifenlänge",
+      "group": "Banner",
+      "default": 4,
+      "min": 1,
+      "max": 20,
+      "unit": "s"
+    },
+    {
+      "key": "bannerRain",
+      "type": "boolean",
+      "label": "Offline-Banner: Regen",
+      "group": "Banner",
+      "default": true
+    },
+    {
+      "key": "bannerRainCount",
+      "type": "number",
+      "label": "Offline-Banner: Tropfen",
+      "group": "Banner",
+      "default": 1200,
+      "min": 0,
+      "max": 4000
+    },
+    {
       "key": "infoTitle",
       "type": "text",
       "label": "Titel",
@@ -1976,6 +2082,8 @@
     "Effekte": [
       "fx"
     ],
+    "Stinger": [],
+    "Banner": [],
     "Befehlsseite": [
       "info"
     ]

@@ -204,7 +204,7 @@ function usePreview(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement 
     return () => cancelAnimationFrame(frame);
   }, [playing, clip.duration, clip.cut]);
   useEffect(() => {
-    document.fonts.load(clip.font)
+    Promise.all([document.fonts.load(clip.font), clip.prepare?.()])
       .then(() => { const context = canvas.current?.getContext("2d"); if (context) clip.draw(context, Math.min(time, clip.duration)); })
       .catch((error: unknown) => console.error("Font loading failed:", error));
   }, [time, clip, canvas]);
@@ -223,7 +223,7 @@ function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElemen
     return isErrorCode(text) ? text : "server-error";
   };
   const run = async () => {
-    await document.fonts.load(clip.font);
+    await Promise.all([document.fonts.load(clip.font), clip.prepare?.()]);
     const start = await fetch(`/api/render/start?clip=${clip.name}`, { method: "POST" });
     if (!start.ok) return setStatus(TEXTS.errors[await codeOf(start)]);
     const context = canvas.current!.getContext("2d")!;
