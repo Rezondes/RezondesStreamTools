@@ -1,6 +1,6 @@
 // Scenery behind the dashboard in the themed skins, with the shapes and default colors of each theme: Urlaub with sun,
 // palms and beach things, Plantage with the illustrated mango field of its scenes and mango soldiers, KOTH with the hill,
-// radio mast and soldiers of the three factions, Bärenbande with the watercolor world and the bear tower, Chaos with its wall of scribbles and the two brush X. Always in the DOM, skins.css shows only the one of the active skin. Pure
+// radio mast and soldiers of the three factions, Bärenbande with the watercolor world and the bear tower, Chaos with its wall of scribbles and the two brush X, Dachdecker with the roof frame as plan lines, a dimension chain and the title block. Always in the DOM, skins.css shows only the one of the active skin. Pure
 // decoration, hidden from screen readers.
 import type { CSSProperties } from "react";
 import { minimeTeamColorKey } from "../core/minimeFields.ts";
@@ -11,6 +11,12 @@ import { cssVariables } from "../core/themeRuntime.ts";
 import BearTower from "../themes/bears/BearTower.tsx";
 import ChaosBackdrop from "../themes/chaos/Backdrop.tsx";
 import { chaosSettings } from "../themes/chaos/settings.ts";
+import Progress from "../themes/dachdecker/plan/Progress.tsx";
+import TitleBlock from "../themes/dachdecker/plan/TitleBlock.tsx";
+import { dachdeckerSettings, type DachdeckerValues } from "../themes/dachdecker/settings.ts";
+import Sketch from "../themes/dachdecker/Sketch.tsx";
+import { frameDims } from "../themes/dachdecker/frame.ts";
+import { fillTemplate } from "../core/template.ts";
 import { bearsSettings } from "../themes/bears/settings.ts";
 import World from "../themes/bears/World.tsx";
 import { HILL, TOWER } from "../themes/koth/hill.ts";
@@ -30,6 +36,7 @@ import "../themes/plantage/theme.css";
 import "../themes/koth/minimes.css";
 import "../themes/bears/theme.css";
 import "../themes/chaos/theme.css";
+import "../themes/dachdecker/theme.css";
 
 const colors = (schema: ThemeSchema) => cssVariables(schema, resolveSettings(schema, {}));
 const URLAUB = colors(urlaubSettings);
@@ -41,6 +48,11 @@ const BEARS_VALUES = resolveSettings(bearsSettings, {});
 const BEARS = cssVariables(bearsSettings, BEARS_VALUES);
 const CHAOS_VALUES = resolveSettings(chaosSettings, {});
 const CHAOS = cssVariables(chaosSettings, CHAOS_VALUES);
+const DACHDECKER_VALUES = resolveSettings(dachdeckerSettings, {}) as unknown as DachdeckerValues;
+const DACHDECKER = cssVariables(dachdeckerSettings, resolveSettings(dachdeckerSettings, {}));
+const DACHDECKER_BLOCK = DACHDECKER_VALUES.startingBlockLines.map(line => fillTemplate(line, { channel: DACHDECKER_VALUES.channelName, date: new Date().toLocaleDateString("sv-SE") }));
+// Share of the dimension chain drawn in terracotta
+const CHAIN_SHARE = 0.62;
 const THINGS = ["rettungsring", "badeente", "wasserball", "eis", "seestern"];
 const ROLES = ["sturm", "medic", "mg", "sniper", "grenadier"];
 // One soldier per faction with its own role, in the faction's default color
@@ -86,6 +98,11 @@ export default function Scenery() {
         <ThemeValues.Provider value={CHAOS_VALUES}>
           <ChaosBackdrop seed="dashboard" gesture="zweix" mainColor="cyan" />
         </ThemeValues.Provider>
+      </div>
+      <div className="skin-scenery skin-scenery-dachdecker theme-dachdecker" style={DACHDECKER} aria-hidden="true">
+        <Sketch dims={frameDims(DACHDECKER_VALUES)} className="skin-roof" />
+        <div className="skin-chain"><Progress share={CHAIN_SHARE} /></div>
+        <div className="skin-block"><TitleBlock lines={DACHDECKER_BLOCK} opacity={1} /></div>
       </div>
     </>
   );

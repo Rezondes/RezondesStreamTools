@@ -35,6 +35,8 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/themes/koth/tones.ts": "Web Audio output",
   "src/themes/bears/tones.ts": "Web Audio output",
   "src/themes/chaos/tones.ts": "Web Audio output",
+  "src/themes/dachdecker/tones.ts": "Web Audio output",
+  "src/themes/dachdecker/three/softTexture.ts": "draws on a browser canvas, no logic to check",
   "src/dashboard/api.ts": "network client of the dashboard",
 };
 

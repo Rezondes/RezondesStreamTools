@@ -1,7 +1,7 @@
 // Check for frame.ts of the Dachdecker theme: beams per truss, purlins, battens and wall plates, inside the roof and
 // in the order of the build. Runs with npm test.
 import assert from "node:assert/strict";
-import { BUILD_ORDER, roofFrame } from "./frame.ts";
+import { BUILD_ORDER, roofFrame, sketchLines } from "./frame.ts";
 
 const beams = roofFrame({ span: 8.4, rise: 3.25, trusses: 5, gap: 1.5, overhang: 0.12 });
 const count = (kind: string) => beams.filter(beam => beam.kind === kind).length;
@@ -31,5 +31,11 @@ assert.ok(beams.filter(beam => beam.kind === "truss").every(beam => beam.order >
 const wide = roofFrame({ span: 8.4, rise: 3.25, trusses: 3, gap: 2, overhang: 0 });
 assert.equal(wide.filter(beam => beam.kind === "front" || beam.kind === "truss").length, 21);
 assert.equal(Math.min(...wide.filter(beam => beam.kind === "truss").map(beam => beam.from[2])), -4);
+
+// The flat sketch: one line per beam; deeper trusses lie to the right and higher up (smaller y)
+const sketch = sketchLines(beams);
+assert.equal(sketch.length, beams.length);
+const peakOf = (kind: string) => sketch.filter(line => line.kind === kind).map(line => line.to).sort((first, second) => first[1] - second[1])[0];
+assert.ok(peakOf("truss")[0] > peakOf("front")[0] && peakOf("truss")[1] < peakOf("front")[1]);
 
 console.log("dachdecker frame ok");

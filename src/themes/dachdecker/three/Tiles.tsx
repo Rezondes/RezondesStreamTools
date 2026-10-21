@@ -4,16 +4,18 @@
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
-  BoxGeometry, BufferAttribute, BufferGeometry, Color, Euler, type InstancedMesh, LineBasicMaterial, Matrix4, MeshBasicMaterial, MeshPhongMaterial,
+  BoxGeometry, BufferAttribute, BufferGeometry, Color, CylinderGeometry, Euler, type InstancedMesh, LineBasicMaterial, Matrix4, MeshBasicMaterial, MeshPhongMaterial,
   Quaternion, Vector3,
 } from "three";
 import { mergedEdges } from "../../../core/three/edges.ts";
 import { type BuildClock, type BuildStep, landing, stepEnd } from "../schedule.ts";
-import { TILE, type Tile } from "../tiles.ts";
+import { type Ridge, TILE, type Tile } from "../tiles.ts";
 
 // lit: shining in the light (BRB, Ending), otherwise flat colors like a drawing (Starting)
 type Colors = { slate: string; copper: string; brick: string; edge: string; lit: boolean };
-type Props = Colors & { tiles: readonly Tile[]; clock: BuildClock; step: BuildStep };
+// ridge: copper pipe along the ridge (a fully covered roof), null without
+type Props = Colors & { tiles: readonly Tile[]; clock: BuildClock; step: BuildStep; ridge?: Ridge | null };
+const RIDGE = { radius: 0.16, sides: 16 };
 
 // Shine of slate and copper, slate a little clear, edges at 55 %
 const SLATE_SHINE = 40;
@@ -45,8 +47,10 @@ function useLooks({ slate, copper, brick, edge, lit }: Colors) {
   return looks;
 }
 
-export default function Tiles({ tiles, clock, step, ...colors }: Props) {
+export default function Tiles({ tiles, clock, step, ridge = null, ...colors }: Props) {
   const looks = useLooks(colors);
+  const pipe = useMemo(() => (ridge ? new CylinderGeometry(RIDGE.radius, RIDGE.radius, ridge.length, RIDGE.sides) : null), [ridge]);
+  useEffect(() => () => pipe?.dispose(), [pipe]);
   const box = useMemo(() => new BoxGeometry(TILE.width, TILE.height, TILE.depth), []);
   const lines = useMemo(() => new BufferGeometry(), []);
   useEffect(() => () => { box.dispose(); lines.dispose(); }, [box, lines]);
@@ -86,6 +90,7 @@ export default function Tiles({ tiles, clock, step, ...colors }: Props) {
       <instancedMesh key={`slate ${counts.slate}`} ref={meshes.slate} args={[box, looks.slate, counts.slate]} frustumCulled={false} />
       <instancedMesh key={`copper ${counts.copper}`} ref={meshes.copper} args={[box, looks.copper, counts.copper]} frustumCulled={false} />
       <lineSegments geometry={lines} material={looks.edge} frustumCulled={false} />
+      {ridge && pipe && <mesh geometry={pipe} material={looks.copper} position={ridge.center} rotation={[Math.PI / 2, 0, 0]} />}
     </>
   );
 }

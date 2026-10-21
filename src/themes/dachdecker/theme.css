@@ -59,9 +59,9 @@
 }
 .theme-dachdecker .dd-subtitle {
   margin: var(--dd-subtitle-gap, 6px) 0 0;
-  font-size: var(--dd-head-size, 20px);
+  font-size: var(--dd-subtitle-size, 30px);
   font-weight: 500;
-  letter-spacing: var(--dd-head-track, 6px);
+  letter-spacing: calc(var(--dd-subtitle-track, 12px) + var(--spread, 0) * var(--dd-subtitle-spread, 18px));
   color: var(--copper);
 }
 .theme-dachdecker .dd-big {
@@ -129,6 +129,88 @@
   top: 50%;
   white-space: nowrap;
   animation: dachdecker-ticker var(--tickerSpeed) linear infinite;
+}
+
+/* --- BRB: title a little higher, the break time smaller --------------------------------------------------------- */
+.theme-dachdecker .dd-brb .dd-center { top: var(--dd-brb-title-top, 780px); }
+.theme-dachdecker .dd-brb .dd-big { margin-top: var(--dd-brb-big-gap, 18px); font-size: calc(var(--countSize) * 0.62); }
+
+/* --- Ending: the title is the signature in terracotta, the subtitle white ---------------------------------------- */
+.theme-dachdecker .dd-ending .dd-center { top: var(--dd-ending-title-top, 800px); }
+.theme-dachdecker .dd-ending .dd-title {
+  font-size: calc(var(--titleSize) * 1.33);
+  letter-spacing: var(--dd-ending-track, 14px);
+  color: var(--accent);
+  text-shadow:
+    0 0 calc(var(--dd-big-glow, 12px) * var(--glow)) color-mix(in srgb, var(--accent) 85%, transparent),
+    0 0 calc(var(--dd-big-glow-wide, 40px) * var(--glow)) color-mix(in srgb, var(--brick) 45%, transparent);
+}
+.theme-dachdecker .dd-ending .dd-subtitle { color: var(--line); }
+.theme-dachdecker .dd-ending .dd-big { margin-top: var(--dd-big-gap, 10px); font-size: var(--dd-next-size, 26px); letter-spacing: var(--dd-head-track, 6px); }
+
+/* --- Plan sheet: blueprint with millimetre grid, white edge, terracotta corner marks ------------------------------ */
+.theme-dachdecker .dd-sheet {
+  position: absolute;
+  box-sizing: border-box;
+  border: var(--plan-line);
+  background-color: color-mix(in srgb, var(--blueprint) 90%, transparent);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--line) 10%, transparent) var(--dd-grid-line, 1px), transparent var(--dd-grid-line, 1px)),
+    linear-gradient(90deg, color-mix(in srgb, var(--line) 10%, transparent) var(--dd-grid-line, 1px), transparent var(--dd-grid-line, 1px)),
+    linear-gradient(color-mix(in srgb, var(--line) 4%, transparent) var(--dd-grid-line, 1px), transparent var(--dd-grid-line, 1px)),
+    linear-gradient(90deg, color-mix(in srgb, var(--line) 4%, transparent) var(--dd-grid-line, 1px), transparent var(--dd-grid-line, 1px));
+  background-size: var(--dd-grid, 50px) var(--dd-grid, 50px), var(--dd-grid, 50px) var(--dd-grid, 50px), var(--dd-grid-fine, 10px) var(--dd-grid-fine, 10px), var(--dd-grid-fine, 10px) var(--dd-grid-fine, 10px);
+}
+.theme-dachdecker .dd-sheet::before,
+.theme-dachdecker .dd-sheet::after {
+  content: "";
+  position: absolute;
+  width: var(--dd-corner, 18px);
+  height: var(--dd-corner, 18px);
+  border: var(--dd-corner-line, 3px) solid var(--accent);
+}
+.theme-dachdecker .dd-sheet::before { left: var(--dd-corner-out, -8px); top: var(--dd-corner-out, -8px); border-right: 0; border-bottom: 0; }
+.theme-dachdecker .dd-sheet::after { right: var(--dd-corner-out, -8px); bottom: var(--dd-corner-out, -8px); border-left: 0; border-top: 0; }
+
+/* --- Acceptance protocol and stamp ------------------------------------------------------------------------------- */
+.theme-dachdecker .dd-protocol {
+  left: var(--dd-margin, 80px);
+  top: var(--dd-protocol-top, 180px);
+  width: var(--dd-protocol-width, 470px);
+  padding: var(--dd-protocol-pad, 22px) var(--dd-protocol-pad-x, 26px) var(--dd-protocol-pad-x, 26px);
+  transform: translateX(calc(var(--slide, 0) * var(--dd-protocol-slide, -40px) + var(--shake, 0) * var(--dd-protocol-shake, 6px)));
+}
+.theme-dachdecker .dd-protocol h2 {
+  margin: 0 0 var(--dd-protocol-gap, 14px);
+  font-size: var(--dd-head-size, 20px);
+  font-weight: 700;
+  letter-spacing: var(--dd-head-track, 6px);
+  color: var(--copper);
+}
+.theme-dachdecker .dd-protocol-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: var(--dd-row-pad, 10px) 0;
+  font-size: calc(var(--fontSize) * 0.85);
+  border-top: var(--dd-grid-line, 1px) dashed color-mix(in srgb, var(--line) 35%, transparent);
+}
+.theme-dachdecker .dd-protocol-row b { color: var(--accent); font-weight: 700; font-variant-numeric: tabular-nums; }
+.theme-dachdecker .dd-stamp {
+  position: absolute;
+  left: var(--dd-stamp-left, 250px);
+  top: var(--dd-stamp-top, 560px);
+  margin: 0;
+  padding: var(--dd-stamp-pad, 10px) var(--dd-stamp-pad-x, 22px);
+  border: var(--dd-stamp-line, 5px) solid var(--accent);
+  border-radius: var(--dd-stamp-round, 6px);
+  font-size: var(--dd-stamp-size, 40px);
+  font-weight: 700;
+  letter-spacing: var(--dd-head-track, 6px);
+  color: var(--accent);
+  transform: rotate(var(--stamp-turn, -12deg)) scale(var(--stamp-scale, 1));
+  text-shadow: 0 0 calc(var(--dd-big-glow, 10px) * var(--glow)) color-mix(in srgb, var(--accent) 60%, transparent);
+  box-shadow: 0 0 calc(var(--dd-stamp-glow, 18px) * var(--glow)) color-mix(in srgb, var(--accent) 35%, transparent), inset 0 0 calc(var(--dd-stamp-glow-in, 12px) * var(--glow)) color-mix(in srgb, var(--accent) 25%, transparent);
 }
 
 @keyframes dachdecker-fade { from { opacity: 0; } }

@@ -5,7 +5,6 @@
 // 3D parts read it every frame, the texts follow it until they are revealed. Still image: ?t=<seconds>.
 // Parameters per source: ?min=5, ?at=20:00, ?ticker=...
 import { memo, useMemo, useState } from "react";
-import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { rotating, shortClock } from "../../../core/screens/screens.ts";
 import { useScreen } from "../../../core/screens/useScreen.ts";
 import { useStage } from "../../../core/screens/useStage.ts";
@@ -14,7 +13,8 @@ import { fillTemplate } from "../../../core/template.ts";
 import Headline from "../plan/Headline.tsx";
 import Progress from "../plan/Progress.tsx";
 import TitleBlock from "../plan/TitleBlock.tsx";
-import { type BuildClock, buildSchedule, CLOCK_SECONDS, reached, type Schedule, textsEnd } from "../schedule.ts";
+import { useRevealTime } from "../plan/useRevealTime.ts";
+import { type BuildClock, buildSchedule, cameraPose, reached, type Schedule } from "../schedule.ts";
 import type { DachdeckerValues } from "../settings.ts";
 import Blueprint from "../three/Blueprint.tsx";
 import OrbitCamera from "../three/OrbitCamera.tsx";
@@ -33,15 +33,18 @@ const World = memo(function World({ values, clock, schedule }: Parts) {
   const dims = useMemo(() => frameDims(values), [values]);
   const tiles = useMemo(() => (values.startingTiles ? tilesOf(values, values.startingTileRows, ONE_FACE) : []), [values]);
   const look = stageLook(values);
+  const orbit = orbitOf(values);
   return (
-    <Stage3D background={values.blueprint} fog={look.fog} bloom={look.bloom} level={values.quality} fov={look.fov}>
-      <Blueprint grid={values.grid} opacity={values.gridOpacity} line={values.line} sky={values.muted} ground={values.blueprint} />
+    <Stage3D background={look.sky} fog={look.fog} bloom={look.bloom} level={values.quality} fov={look.fov}>
+      <Blueprint grid={values.grid} opacity={values.gridOpacity} mood="plan" palette={values} />
       <RoofFrame
         dims={dims} clock={clock} schedule={schedule}
         accent={values.accent} line={values.line} fill={values.muted} lineOpacity={values.lineOpacity} fillOpacity={values.fillOpacity}
       />
-      {tiles.length > 0 && <Tiles tiles={tiles} clock={clock} step={schedule.tiles} slate={values.slate} copper={values.copper} brick={values.brick} edge={values.muted} lit={false} />}
-      <OrbitCamera clock={clock} schedule={schedule} orbit={orbitOf(values)} />
+      {tiles.length > 0 && (
+        <Tiles tiles={tiles} clock={clock} step={schedule.tiles} slate={values.slate} copper={values.copper} brick={values.brick} edge={values.muted} lit={false} />
+      )}
+      <OrbitCamera clock={clock} pose={time => cameraPose(schedule, orbit, time)} />
     </Stage3D>
   );
 });
@@ -50,19 +53,7 @@ const World = memo(function World({ values, clock, schedule }: Parts) {
 function Plan({ values, clock, schedule }: Parts) {
   const stage = useStage();
   const { now, start, left, progress, ticker } = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: "" });
-  const [time, setTime] = useState(0);
-  useTimeline(timeline => {
-    const end = textsEnd(schedule);
-    let last = -1;
-    clock.time = 0;
-    timeline.to(clock, {
-      time: CLOCK_SECONDS, duration: CLOCK_SECONDS, ease: "none",
-      onUpdate: () => {
-        const shown = Math.min(clock.time, end);
-        if (shown !== last) setTime((last = shown));
-      },
-    });
-  }, [schedule, clock]);
+  const time = useRevealTime(clock, schedule);
   const names = dachdeckerNames(values, now);
   const saying = rotating(values.startingLines, values.linesEvery * SECOND_MS, now - start);
   return (
@@ -89,7 +80,7 @@ export default function Starting() {
   const [clock] = useState<BuildClock>(() => ({ time: 0 }));
   const schedule = useMemo(() => buildSchedule({ buildSpeed: values.buildSpeed, scrambleMs: values.scrambleMs }), [values.buildSpeed, values.scrambleMs]);
   return (
-    <div className="dd-screen">
+    <div className="dd-screen dd-starting">
       <World values={values} clock={clock} schedule={schedule} />
       <div className="dd-vignette" />
       <Plan values={values} clock={clock} schedule={schedule} />

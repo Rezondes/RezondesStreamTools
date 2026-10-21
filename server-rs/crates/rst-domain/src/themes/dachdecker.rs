@@ -20,6 +20,8 @@ const PROGRESS: [&str; 2] = ["masskette", "aus"];
 const GENERAL: &str = "Allgemein";
 const FRAME: &str = "Dachstuhl";
 const STARTING: &str = "Starting";
+const BRB: &str = "BRB";
+const ENDING: &str = "Ending";
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -39,8 +41,12 @@ fn general() -> Vec<SettingField> {
         color("brick", "Ziegelrot (Flächen und Leuchten)", GENERAL, "#d35400"),
         color("copper", "Kupfer", GENERAL, "#d4a373"),
         color("slate", "Schiefer", GENERAL, "#2c3e50"),
+        color("slateDark", "Schiefer dunkel", GENERAL, "#1a252f"),
+        color("card", "Karte (Protokoll, Schilder)", GENERAL, "#22356a"),
         color("line", "Plan-Linien und Text", GENERAL, "#ffffff"),
         color("muted", "Gedämpfter Text und Füllung", GENERAL, "#b4c2e0"),
+        color("rain", "Regen (Cyan)", GENERAL, "#7fe3ff"),
+        color("dusk", "Abendglühen", GENERAL, "#8a3d16"),
         choice("quality", "Leistungsstufe 3D", GENERAL, "mittel", &QUALITIES),
         flag("bloom", "Leuchten (Bloom)", GENERAL, true),
         number("bloomStrength", "Leuchten: Stärke", GENERAL, 0.42, 0.0, 2.0, None, Some(0.02)),
@@ -49,6 +55,7 @@ fn general() -> Vec<SettingField> {
         number("scrambleMs", "Entschlüsseln: Dauer", GENERAL, 1400.0, 100.0, 5000.0, MS, None),
         flag("flicker", "Titel flackert wie eine Lampe", GENERAL, true),
         number("flickerEvery", "Flackern alle", GENERAL, 5.0, 1.0, 60.0, S, None),
+        number("linesEvery", "Wechselnde Zeilen: alle", GENERAL, 8.0, 2.0, 120.0, S, None),
     ]
 }
 
@@ -97,7 +104,6 @@ fn starting() -> Vec<SettingField> {
             ],
             None,
         ),
-        number("linesEvery", "Zeilen wechseln alle", STARTING, 8.0, 2.0, 120.0, S, None),
         number("countdown", "Countdown-Standard", STARTING, 300.0, 0.0, 86400.0, S, None),
         text("countdownPrefix", "Text vor dem Countdown", STARTING, "", None),
         text("countdownDone", "Text nach dem Countdown", STARTING, "GLEICH GEHT'S LOS", None),
@@ -117,8 +123,103 @@ fn starting() -> Vec<SettingField> {
     ]
 }
 
+fn brb() -> Vec<SettingField> {
+    vec![
+        text("brbHead", "Kopfzeile (// trennt Abschnitte)", BRB, "BAUPLAN 02 // PAUSE BEI REGEN // {channel}", None),
+        text("brbTitle", "Titel", BRB, "BIN GLEICH ZURÜCK", None),
+        text("brbSubtitle", "Unterzeile (leer = aus)", BRB, "DAS DACH HÄLT DICHT", None),
+        text("brbTimerPrefix", "Text vor der Pausenzeit", BRB, "SEIT ", None),
+        lines(
+            "brbLines",
+            "Wechselnde Zeilen",
+            BRB,
+            &["Der Regen prüft die Ziegel", "Kurz unters Vordach", "Gleich wird weiter gedeckt"],
+            None,
+        ),
+        flag("brbBlock", "Schriftfeld unten rechts", BRB, true),
+        lines(
+            "brbBlockLines",
+            "Schriftfeld: Zeilen (| trennt Spalten)",
+            BRB,
+            &["PROJEKT: STREAM", "WETTER: REGEN | BLATT 2/3", "STATUS | DICHT"],
+            Some(6),
+        ),
+        number("brbTileRows", "Ziegelreihen", BRB, 11.0, 1.0, 11.0, None, None),
+        flag("rainOn", "Regen", BRB, true),
+        // fixed: at most 6000 drops, more would cost the PC too much per frame
+        number("rainCount", "Regen: Tropfen", BRB, 2600.0, 0.0, 6000.0, None, None),
+        number("rainSpeed", "Regen: Tempo (Faktor)", BRB, 1.0, 0.2, 3.0, None, Some(0.05)),
+        number("rainLength", "Regen: Länge der Striche in Metern", BRB, 0.38, 0.05, 1.5, None, Some(0.01)),
+        number("rainOpacity", "Regen: Deckkraft", BRB, 0.75, 0.0, 1.0, None, Some(0.05)),
+        flag("splashOn", "Spritzer auf dem Dach", BRB, true),
+        number("splashAmount", "Spritzer je Aufprall", BRB, 3.0, 1.0, 8.0, None, None),
+        flag("splashGround", "Spritzer am Boden", BRB, true),
+        number("windMax", "Wind: stärkste Böe", BRB, 2.5, 0.0, 6.0, None, Some(0.1)),
+        number("windEvery", "Wind: neue Böe alle", BRB, 3.5, 1.0, 30.0, S, Some(0.5)),
+        flag("lightningOn", "Blitze", BRB, true),
+        number("lightningEvery", "Blitze: alle", BRB, 8.0, 2.0, 120.0, S, None),
+        // fixed: at most 1, a brighter flash floods the whole picture
+        number("lightningStrength", "Blitze: Helligkeit", BRB, 0.6, 0.0, 1.0, None, Some(0.05)),
+        flag("rainSound", "Regenrauschen", BRB, false),
+        number("rainVolume", "Regenrauschen: Lautstärke", BRB, 40.0, 0.0, 100.0, PERCENT, None),
+    ]
+}
+
+fn ending() -> Vec<SettingField> {
+    vec![
+        text("endingHead", "Kopfzeile (// trennt Abschnitte)", ENDING, "BAUPLAN 03 // RICHTFEST // {channel}", None),
+        text("endingTitle", "Titel", ENDING, "FEIERABEND!", None),
+        text("endingSubtitle", "Unterzeile (leer = aus)", ENDING, "DANKE FÜRS MITDECKEN", None),
+        text("endingNext", "Nächster Stream (leer = aus)", ENDING, "", None),
+        flag("endingBlock", "Schriftfeld unten rechts", ENDING, true),
+        lines(
+            "endingBlockLines",
+            "Schriftfeld: Zeilen (| trennt Spalten)",
+            ENDING,
+            &["PROJEKT: STREAM", "RICHTFEST | BLATT 3/3", "STATUS | ABGENOMMEN"],
+            Some(6),
+        ),
+        number("wallHeight", "Wandhöhe in Metern", ENDING, 2.7, 1.5, 5.0, None, Some(0.1)),
+        flag("windowsOn", "Fenster gehen an", ENDING, true),
+        number("windowStep", "Fenster: Abstand", ENDING, 350.0, 0.0, 3000.0, MS, None),
+        flag("smokeOn", "Rauch aus dem Schornstein", ENDING, true),
+        number("smokeAmount", "Rauch: Wolken", ENDING, 14.0, 1.0, 40.0, None, None),
+        flag("wreathOn", "Richtkranz", ENDING, true),
+        color("wreathGreen", "Richtkranz: Grün", ENDING, "#3f7a4a"),
+        lines(
+            "ribbonColors",
+            "Richtkranz: Farben der Bänder (eine je Zeile)",
+            ENDING,
+            &["#e67e22", "#d4a373", "#ffffff", "#d35400", "#7fa8ff", "#e67e22"],
+            Some(12),
+        ),
+        number("ribbonWind", "Bänder: Wind (Faktor)", ENDING, 1.0, 0.0, 3.0, None, Some(0.05)),
+        flag("fireworksOn", "Feuerwerk", ENDING, true),
+        number("fireworksEvery", "Feuerwerk: alle", ENDING, 2.5, 0.5, 30.0, S, Some(0.5)),
+        number("fireworksSparks", "Feuerwerk: Funken je Rakete", ENDING, 110.0, 10.0, 400.0, None, None),
+        flag("endingIntro", "Kamera startet am Richtkranz", ENDING, true),
+        number("endingShift", "Haus nach rechts versetzt", ENDING, 230.0, 0.0, 600.0, PX, None),
+        flag("protocolOn", "Abnahmeprotokoll", ENDING, true),
+        text("protocolTitle", "Abnahmeprotokoll: Titel", ENDING, "ABNAHMEPROTOKOLL", None),
+        // Keys: follows, subs, giftedSubs, raids, raiders, bits, redeems, hypeLevel, chatMessages, chatters, duration
+        lines(
+            "protocolLines",
+            "Abnahmeprotokoll: Zeilen (Schlüssel|Text)",
+            ENDING,
+            &["follows|Neue Dachdecker", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Gelegte Ziegel"],
+            Some(12),
+        ),
+        number("countUpMs", "Hochzählen: Dauer", ENDING, 1000.0, 0.0, 5000.0, MS, None),
+        flag("stampOn", "Stempel", ENDING, true),
+        text("stampText", "Stempel: Text", ENDING, "ABGENOMMEN", Some(40)),
+        number("stampAt", "Stempel schlägt auf nach", ENDING, 6.0, 1.0, 60.0, S, Some(0.5)),
+        flag("stampSound", "Stempel: Ton", ENDING, true),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
-    [(FRAME, vec![SceneName::Starting]), (STARTING, vec![SceneName::Starting])]
+    use SceneName::{Brb, Ending, Starting};
+    [(FRAME, vec![Starting, Brb, Ending]), (STARTING, vec![Starting]), (BRB, vec![Brb]), (ENDING, vec![Ending])]
         .into_iter()
         .map(|(group, scenes)| (group.to_owned(), scenes))
         .collect()
@@ -145,11 +246,23 @@ const BASIC: &[&str] = &[
     "startingTiles",
     "startingBlockLines",
     "ticker",
+    "brbTitle",
+    "brbSubtitle",
+    "brbLines",
+    "rainOn",
+    "lightningOn",
+    "rainSound",
+    "endingTitle",
+    "endingSubtitle",
+    "endingNext",
+    "protocolLines",
+    "stampText",
+    "fireworksOn",
 ];
 
 #[must_use]
 pub fn dachdecker() -> Theme {
-    let fields = [general(), frame(), starting()].concat();
+    let fields = [general(), frame(), starting(), brb(), ending()].concat();
     let schema = ThemeSchema {
         id: "dachdecker".to_owned(),
         name: "Dachdecker".to_owned(),

@@ -19,6 +19,15 @@ const TWIST = 0.05;
 // Gables: tiles stay within the purlin ends
 const GABLE = 0.5;
 
+// Copper pipe along the ridge of a fully covered roof: from gable to gable a little longer, just above the top tiles
+export type Ridge = { length: number; center: Point3 };
+const RIDGE_ABOVE = 0.28;
+const RIDGE_EXTRA = 0.3;
+export const ridgeOf = (dims: FrameDims): Ridge => {
+  const back = -frameDepth(dims) - GABLE;
+  return { length: GABLE - back + RIDGE_EXTRA, center: [0, dims.rise + RIDGE_ABOVE, (GABLE + back) / 2] };
+};
+
 // rows: rows from the eaves (at most FACE_ROWS); sides: 1 = only the right face, 2 = both
 export function tileLayout(dims: FrameDims, rows: number, seed: number, copperShare: number, sides: 1 | 2): Tile[] {
   const random = chance(seed);

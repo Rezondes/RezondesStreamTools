@@ -101,6 +101,20 @@
       "default": "#2c3e50"
     },
     {
+      "key": "slateDark",
+      "type": "color",
+      "label": "Schiefer dunkel",
+      "group": "Allgemein",
+      "default": "#1a252f"
+    },
+    {
+      "key": "card",
+      "type": "color",
+      "label": "Karte (Protokoll, Schilder)",
+      "group": "Allgemein",
+      "default": "#22356a"
+    },
+    {
       "key": "line",
       "type": "color",
       "label": "Plan-Linien und Text",
@@ -113,6 +127,20 @@
       "label": "Gedämpfter Text und Füllung",
       "group": "Allgemein",
       "default": "#b4c2e0"
+    },
+    {
+      "key": "rain",
+      "type": "color",
+      "label": "Regen (Cyan)",
+      "group": "Allgemein",
+      "default": "#7fe3ff"
+    },
+    {
+      "key": "dusk",
+      "type": "color",
+      "label": "Abendglühen",
+      "group": "Allgemein",
+      "default": "#8a3d16"
     },
     {
       "key": "quality",
@@ -187,6 +215,16 @@
       "default": 5,
       "min": 1,
       "max": 60,
+      "unit": "s"
+    },
+    {
+      "key": "linesEvery",
+      "type": "number",
+      "label": "Wechselnde Zeilen: alle",
+      "group": "Allgemein",
+      "default": 8,
+      "min": 2,
+      "max": 120,
       "unit": "s"
     },
     {
@@ -389,16 +427,6 @@
       "basic": true
     },
     {
-      "key": "linesEvery",
-      "type": "number",
-      "label": "Zeilen wechseln alle",
-      "group": "Starting",
-      "default": 8,
-      "min": 2,
-      "max": 120,
-      "unit": "s"
-    },
-    {
       "key": "countdown",
       "type": "number",
       "label": "Countdown-Standard",
@@ -491,14 +519,489 @@
       "min": 5,
       "max": 300,
       "unit": "s"
+    },
+    {
+      "key": "brbHead",
+      "type": "text",
+      "label": "Kopfzeile (// trennt Abschnitte)",
+      "group": "BRB",
+      "default": "BAUPLAN 02 // PAUSE BEI REGEN // {channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "brbTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "BRB",
+      "default": "BIN GLEICH ZURÜCK",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "brbSubtitle",
+      "type": "text",
+      "label": "Unterzeile (leer = aus)",
+      "group": "BRB",
+      "default": "DAS DACH HÄLT DICHT",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "brbTimerPrefix",
+      "type": "text",
+      "label": "Text vor der Pausenzeit",
+      "group": "BRB",
+      "default": "SEIT ",
+      "maxLength": 200
+    },
+    {
+      "key": "brbLines",
+      "type": "lines",
+      "label": "Wechselnde Zeilen",
+      "group": "BRB",
+      "default": [
+        "Der Regen prüft die Ziegel",
+        "Kurz unters Vordach",
+        "Gleich wird weiter gedeckt"
+      ],
+      "maxLines": 100,
+      "basic": true
+    },
+    {
+      "key": "brbBlock",
+      "type": "boolean",
+      "label": "Schriftfeld unten rechts",
+      "group": "BRB",
+      "default": true
+    },
+    {
+      "key": "brbBlockLines",
+      "type": "lines",
+      "label": "Schriftfeld: Zeilen (| trennt Spalten)",
+      "group": "BRB",
+      "default": [
+        "PROJEKT: STREAM",
+        "WETTER: REGEN | BLATT 2/3",
+        "STATUS | DICHT"
+      ],
+      "maxLines": 6
+    },
+    {
+      "key": "brbTileRows",
+      "type": "number",
+      "label": "Ziegelreihen",
+      "group": "BRB",
+      "default": 11,
+      "min": 1,
+      "max": 11
+    },
+    {
+      "key": "rainOn",
+      "type": "boolean",
+      "label": "Regen",
+      "group": "BRB",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "rainCount",
+      "type": "number",
+      "label": "Regen: Tropfen",
+      "group": "BRB",
+      "default": 2600,
+      "min": 0,
+      "max": 6000
+    },
+    {
+      "key": "rainSpeed",
+      "type": "number",
+      "label": "Regen: Tempo (Faktor)",
+      "group": "BRB",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "step": 0.05
+    },
+    {
+      "key": "rainLength",
+      "type": "number",
+      "label": "Regen: Länge der Striche in Metern",
+      "group": "BRB",
+      "default": 0.38,
+      "min": 0.05,
+      "max": 1.5,
+      "step": 0.01
+    },
+    {
+      "key": "rainOpacity",
+      "type": "number",
+      "label": "Regen: Deckkraft",
+      "group": "BRB",
+      "default": 0.75,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "splashOn",
+      "type": "boolean",
+      "label": "Spritzer auf dem Dach",
+      "group": "BRB",
+      "default": true
+    },
+    {
+      "key": "splashAmount",
+      "type": "number",
+      "label": "Spritzer je Aufprall",
+      "group": "BRB",
+      "default": 3,
+      "min": 1,
+      "max": 8
+    },
+    {
+      "key": "splashGround",
+      "type": "boolean",
+      "label": "Spritzer am Boden",
+      "group": "BRB",
+      "default": true
+    },
+    {
+      "key": "windMax",
+      "type": "number",
+      "label": "Wind: stärkste Böe",
+      "group": "BRB",
+      "default": 2.5,
+      "min": 0,
+      "max": 6,
+      "step": 0.1
+    },
+    {
+      "key": "windEvery",
+      "type": "number",
+      "label": "Wind: neue Böe alle",
+      "group": "BRB",
+      "default": 3.5,
+      "min": 1,
+      "max": 30,
+      "unit": "s",
+      "step": 0.5
+    },
+    {
+      "key": "lightningOn",
+      "type": "boolean",
+      "label": "Blitze",
+      "group": "BRB",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "lightningEvery",
+      "type": "number",
+      "label": "Blitze: alle",
+      "group": "BRB",
+      "default": 8,
+      "min": 2,
+      "max": 120,
+      "unit": "s"
+    },
+    {
+      "key": "lightningStrength",
+      "type": "number",
+      "label": "Blitze: Helligkeit",
+      "group": "BRB",
+      "default": 0.6,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "rainSound",
+      "type": "boolean",
+      "label": "Regenrauschen",
+      "group": "BRB",
+      "default": false,
+      "basic": true
+    },
+    {
+      "key": "rainVolume",
+      "type": "number",
+      "label": "Regenrauschen: Lautstärke",
+      "group": "BRB",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "endingHead",
+      "type": "text",
+      "label": "Kopfzeile (// trennt Abschnitte)",
+      "group": "Ending",
+      "default": "BAUPLAN 03 // RICHTFEST // {channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "endingTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "Ending",
+      "default": "FEIERABEND!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "endingSubtitle",
+      "type": "text",
+      "label": "Unterzeile (leer = aus)",
+      "group": "Ending",
+      "default": "DANKE FÜRS MITDECKEN",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "endingNext",
+      "type": "text",
+      "label": "Nächster Stream (leer = aus)",
+      "group": "Ending",
+      "default": "",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "endingBlock",
+      "type": "boolean",
+      "label": "Schriftfeld unten rechts",
+      "group": "Ending",
+      "default": true
+    },
+    {
+      "key": "endingBlockLines",
+      "type": "lines",
+      "label": "Schriftfeld: Zeilen (| trennt Spalten)",
+      "group": "Ending",
+      "default": [
+        "PROJEKT: STREAM",
+        "RICHTFEST | BLATT 3/3",
+        "STATUS | ABGENOMMEN"
+      ],
+      "maxLines": 6
+    },
+    {
+      "key": "wallHeight",
+      "type": "number",
+      "label": "Wandhöhe in Metern",
+      "group": "Ending",
+      "default": 2.7,
+      "min": 1.5,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "key": "windowsOn",
+      "type": "boolean",
+      "label": "Fenster gehen an",
+      "group": "Ending",
+      "default": true
+    },
+    {
+      "key": "windowStep",
+      "type": "number",
+      "label": "Fenster: Abstand",
+      "group": "Ending",
+      "default": 350,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "smokeOn",
+      "type": "boolean",
+      "label": "Rauch aus dem Schornstein",
+      "group": "Ending",
+      "default": true
+    },
+    {
+      "key": "smokeAmount",
+      "type": "number",
+      "label": "Rauch: Wolken",
+      "group": "Ending",
+      "default": 14,
+      "min": 1,
+      "max": 40
+    },
+    {
+      "key": "wreathOn",
+      "type": "boolean",
+      "label": "Richtkranz",
+      "group": "Ending",
+      "default": true
+    },
+    {
+      "key": "wreathGreen",
+      "type": "color",
+      "label": "Richtkranz: Grün",
+      "group": "Ending",
+      "default": "#3f7a4a"
+    },
+    {
+      "key": "ribbonColors",
+      "type": "lines",
+      "label": "Richtkranz: Farben der Bänder (eine je Zeile)",
+      "group": "Ending",
+      "default": [
+        "#e67e22",
+        "#d4a373",
+        "#ffffff",
+        "#d35400",
+        "#7fa8ff",
+        "#e67e22"
+      ],
+      "maxLines": 12
+    },
+    {
+      "key": "ribbonWind",
+      "type": "number",
+      "label": "Bänder: Wind (Faktor)",
+      "group": "Ending",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "step": 0.05
+    },
+    {
+      "key": "fireworksOn",
+      "type": "boolean",
+      "label": "Feuerwerk",
+      "group": "Ending",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "fireworksEvery",
+      "type": "number",
+      "label": "Feuerwerk: alle",
+      "group": "Ending",
+      "default": 2.5,
+      "min": 0.5,
+      "max": 30,
+      "unit": "s",
+      "step": 0.5
+    },
+    {
+      "key": "fireworksSparks",
+      "type": "number",
+      "label": "Feuerwerk: Funken je Rakete",
+      "group": "Ending",
+      "default": 110,
+      "min": 10,
+      "max": 400
+    },
+    {
+      "key": "endingIntro",
+      "type": "boolean",
+      "label": "Kamera startet am Richtkranz",
+      "group": "Ending",
+      "default": true
+    },
+    {
+      "key": "endingShift",
+      "type": "number",
+      "label": "Haus nach rechts versetzt",
+      "group": "Ending",
+      "default": 230,
+      "min": 0,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "protocolOn",
+      "type": "boolean",
+      "label": "Abnahmeprotokoll",
+      "group": "Ending",
+      "default": true
+    },
+    {
+      "key": "protocolTitle",
+      "type": "text",
+      "label": "Abnahmeprotokoll: Titel",
+      "group": "Ending",
+      "default": "ABNAHMEPROTOKOLL",
+      "maxLength": 200
+    },
+    {
+      "key": "protocolLines",
+      "type": "lines",
+      "label": "Abnahmeprotokoll: Zeilen (Schlüssel|Text)",
+      "group": "Ending",
+      "default": [
+        "follows|Neue Dachdecker",
+        "subs|Abos",
+        "raids|Raids",
+        "bits|Bits",
+        "chatMessages|Gelegte Ziegel"
+      ],
+      "maxLines": 12,
+      "basic": true
+    },
+    {
+      "key": "countUpMs",
+      "type": "number",
+      "label": "Hochzählen: Dauer",
+      "group": "Ending",
+      "default": 1000,
+      "min": 0,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "stampOn",
+      "type": "boolean",
+      "label": "Stempel",
+      "group": "Ending",
+      "default": true
+    },
+    {
+      "key": "stampText",
+      "type": "text",
+      "label": "Stempel: Text",
+      "group": "Ending",
+      "default": "ABGENOMMEN",
+      "maxLength": 40,
+      "basic": true
+    },
+    {
+      "key": "stampAt",
+      "type": "number",
+      "label": "Stempel schlägt auf nach",
+      "group": "Ending",
+      "default": 6,
+      "min": 1,
+      "max": 60,
+      "unit": "s",
+      "step": 0.5
+    },
+    {
+      "key": "stampSound",
+      "type": "boolean",
+      "label": "Stempel: Ton",
+      "group": "Ending",
+      "default": true
     }
   ],
   "groupScenes": {
     "Dachstuhl": [
-      "starting"
+      "starting",
+      "brb",
+      "ending"
     ],
     "Starting": [
       "starting"
+    ],
+    "BRB": [
+      "brb"
+    ],
+    "Ending": [
+      "ending"
     ]
   },
   "personalize": {

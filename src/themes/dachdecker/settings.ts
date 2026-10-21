@@ -12,6 +12,8 @@ const PROGRESS = ["masskette", "aus"] as const;
 const GENERAL = "Allgemein";
 const FRAME = "Dachstuhl";
 const STARTING = "Starting";
+const BRB = "BRB";
+const ENDING = "Ending";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "DACHDECKER", 40),
@@ -25,8 +27,12 @@ const FIELDS = [
   color("brick", "Ziegelrot (Flächen und Leuchten)", GENERAL, "#d35400"),
   color("copper", "Kupfer", GENERAL, "#d4a373"),
   color("slate", "Schiefer", GENERAL, "#2c3e50"),
+  color("slateDark", "Schiefer dunkel", GENERAL, "#1a252f"),
+  color("card", "Karte (Protokoll, Schilder)", GENERAL, "#22356a"),
   color("line", "Plan-Linien und Text", GENERAL, "#ffffff"),
   color("muted", "Gedämpfter Text und Füllung", GENERAL, "#b4c2e0"),
+  color("rain", "Regen (Cyan)", GENERAL, "#7fe3ff"),
+  color("dusk", "Abendglühen", GENERAL, "#8a3d16"),
   choice("quality", "Leistungsstufe 3D", GENERAL, "mittel", QUALITIES),
   flag("bloom", "Leuchten (Bloom)", GENERAL, true),
   number("bloomStrength", "Leuchten: Stärke", GENERAL, 0.42, 0, 2, undefined, 0.02),
@@ -35,6 +41,7 @@ const FIELDS = [
   number("scrambleMs", "Entschlüsseln: Dauer", GENERAL, 1400, 100, 5000, "ms"),
   flag("flicker", "Titel flackert wie eine Lampe", GENERAL, true),
   number("flickerEvery", "Flackern alle", GENERAL, 5, 1, 60, "s"),
+  number("linesEvery", "Wechselnde Zeilen: alle", GENERAL, 8, 2, 120, "s"),
 
   number("span", "Spannweite in Metern", FRAME, 8.4, 4, 14, undefined, 0.1),
   number("rise", "Firsthöhe in Metern", FRAME, 3.25, 1.5, 6, undefined, 0.05),
@@ -59,7 +66,6 @@ const FIELDS = [
   text("startingTitle", "Titel", STARTING, "STREAM STARTET GLEICH"),
   text("startingSubtitle", "Unterzeile (leer = aus)", STARTING, ""),
   lines("startingLines", "Wechselnde Zeilen", STARTING, ["Sparren stehen, gleich wird gedeckt", "Kaffee ist durch, die Leiter steht", "Erst messen, dann sägen", "Der Polier zählt noch die Ziegel"]),
-  number("linesEvery", "Zeilen wechseln alle", STARTING, 8, 2, 120, "s"),
   number("countdown", "Countdown-Standard", STARTING, 300, 0, 86400, "s"),
   text("countdownPrefix", "Text vor dem Countdown", STARTING, ""),
   text("countdownDone", "Text nach dem Countdown", STARTING, "GLEICH GEHT'S LOS"),
@@ -70,14 +76,72 @@ const FIELDS = [
   lines("startingBlockLines", "Schriftfeld: Zeilen (| trennt Spalten)", STARTING, ["PROJEKT: STREAM", "M 1:50 | BLATT 1/3", "GEZ. {channel} | {date}"], 6),
   text("ticker", "Ticker als Masskette unten (leer = aus)", STARTING, "", 300),
   number("tickerSpeed", "Ticker: Dauer eines Durchlaufs", STARTING, 30, 5, 300, "s"),
+
+  text("brbHead", "Kopfzeile (// trennt Abschnitte)", BRB, "BAUPLAN 02 // PAUSE BEI REGEN // {channel}"),
+  text("brbTitle", "Titel", BRB, "BIN GLEICH ZURÜCK"),
+  text("brbSubtitle", "Unterzeile (leer = aus)", BRB, "DAS DACH HÄLT DICHT"),
+  text("brbTimerPrefix", "Text vor der Pausenzeit", BRB, "SEIT "),
+  lines("brbLines", "Wechselnde Zeilen", BRB, ["Der Regen prüft die Ziegel", "Kurz unters Vordach", "Gleich wird weiter gedeckt"]),
+  flag("brbBlock", "Schriftfeld unten rechts", BRB, true),
+  lines("brbBlockLines", "Schriftfeld: Zeilen (| trennt Spalten)", BRB, ["PROJEKT: STREAM", "WETTER: REGEN | BLATT 2/3", "STATUS | DICHT"], 6),
+  number("brbTileRows", "Ziegelreihen", BRB, 11, 1, 11),
+  flag("rainOn", "Regen", BRB, true),
+  // fixed: at most 6000 drops, more would cost the PC too much per frame
+  number("rainCount", "Regen: Tropfen", BRB, 2600, 0, 6000),
+  number("rainSpeed", "Regen: Tempo (Faktor)", BRB, 1, 0.2, 3, undefined, 0.05),
+  number("rainLength", "Regen: Länge der Striche in Metern", BRB, 0.38, 0.05, 1.5, undefined, 0.01),
+  number("rainOpacity", "Regen: Deckkraft", BRB, 0.75, 0, 1, undefined, 0.05),
+  flag("splashOn", "Spritzer auf dem Dach", BRB, true),
+  number("splashAmount", "Spritzer je Aufprall", BRB, 3, 1, 8),
+  flag("splashGround", "Spritzer am Boden", BRB, true),
+  number("windMax", "Wind: stärkste Böe", BRB, 2.5, 0, 6, undefined, 0.1),
+  number("windEvery", "Wind: neue Böe alle", BRB, 3.5, 1, 30, "s", 0.5),
+  flag("lightningOn", "Blitze", BRB, true),
+  number("lightningEvery", "Blitze: alle", BRB, 8, 2, 120, "s"),
+  // fixed: at most 1, a brighter flash floods the whole picture
+  number("lightningStrength", "Blitze: Helligkeit", BRB, 0.6, 0, 1, undefined, 0.05),
+  flag("rainSound", "Regenrauschen", BRB, false),
+  number("rainVolume", "Regenrauschen: Lautstärke", BRB, 40, 0, 100, "%"),
+
+  text("endingHead", "Kopfzeile (// trennt Abschnitte)", ENDING, "BAUPLAN 03 // RICHTFEST // {channel}"),
+  text("endingTitle", "Titel", ENDING, "FEIERABEND!"),
+  text("endingSubtitle", "Unterzeile (leer = aus)", ENDING, "DANKE FÜRS MITDECKEN"),
+  text("endingNext", "Nächster Stream (leer = aus)", ENDING, ""),
+  flag("endingBlock", "Schriftfeld unten rechts", ENDING, true),
+  lines("endingBlockLines", "Schriftfeld: Zeilen (| trennt Spalten)", ENDING, ["PROJEKT: STREAM", "RICHTFEST | BLATT 3/3", "STATUS | ABGENOMMEN"], 6),
+  number("wallHeight", "Wandhöhe in Metern", ENDING, 2.7, 1.5, 5, undefined, 0.1),
+  flag("windowsOn", "Fenster gehen an", ENDING, true),
+  number("windowStep", "Fenster: Abstand", ENDING, 350, 0, 3000, "ms"),
+  flag("smokeOn", "Rauch aus dem Schornstein", ENDING, true),
+  number("smokeAmount", "Rauch: Wolken", ENDING, 14, 1, 40),
+  flag("wreathOn", "Richtkranz", ENDING, true),
+  color("wreathGreen", "Richtkranz: Grün", ENDING, "#3f7a4a"),
+  lines("ribbonColors", "Richtkranz: Farben der Bänder (eine je Zeile)", ENDING, ["#e67e22", "#d4a373", "#ffffff", "#d35400", "#7fa8ff", "#e67e22"], 12),
+  number("ribbonWind", "Bänder: Wind (Faktor)", ENDING, 1, 0, 3, undefined, 0.05),
+  flag("fireworksOn", "Feuerwerk", ENDING, true),
+  number("fireworksEvery", "Feuerwerk: alle", ENDING, 2.5, 0.5, 30, "s", 0.5),
+  number("fireworksSparks", "Feuerwerk: Funken je Rakete", ENDING, 110, 10, 400),
+  flag("endingIntro", "Kamera startet am Richtkranz", ENDING, true),
+  number("endingShift", "Haus nach rechts versetzt", ENDING, 230, 0, 600, "px"),
+  flag("protocolOn", "Abnahmeprotokoll", ENDING, true),
+  text("protocolTitle", "Abnahmeprotokoll: Titel", ENDING, "ABNAHMEPROTOKOLL"),
+  // Keys: follows, subs, giftedSubs, raids, raiders, bits, redeems, hypeLevel, chatMessages, chatters, duration
+  lines("protocolLines", "Abnahmeprotokoll: Zeilen (Schlüssel|Text)", ENDING, ["follows|Neue Dachdecker", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Gelegte Ziegel"], 12),
+  number("countUpMs", "Hochzählen: Dauer", ENDING, 1000, 0, 5000, "ms"),
+  flag("stampOn", "Stempel", ENDING, true),
+  text("stampText", "Stempel: Text", ENDING, "ABGENOMMEN", 40),
+  number("stampAt", "Stempel schlägt auf nach", ENDING, 6, 1, 60, "s", 0.5),
+  flag("stampSound", "Stempel: Ton", ENDING, true),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
 export type { DachdeckerValues } from "../../generated/themes/dachdecker.ts";
 
 const GROUP_SCENES = {
-  [FRAME]: ["starting"],
+  [FRAME]: ["starting", "brb", "ending"],
   [STARTING]: ["starting"],
+  [BRB]: ["brb"],
+  [ENDING]: ["ending"],
 } as const;
 
 // On first login: channel name from the Twitch login instead of the sample
@@ -87,6 +151,8 @@ const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 const BASIC = [
   "channelName", "font", "blueprint", "accent", "copper", "quality", "bloom",
   "startingHead", "startingTitle", "startingLines", "countdownDone", "startingTiles", "startingBlockLines", "ticker",
+  "brbTitle", "brbSubtitle", "brbLines", "rainOn", "lightningOn", "rainSound",
+  "endingTitle", "endingSubtitle", "endingNext", "protocolLines", "stampText", "fireworksOn",
 ];
 
 export const dachdeckerSettings: ThemeSchema = { id: "dachdecker", name: "Dachdecker", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };

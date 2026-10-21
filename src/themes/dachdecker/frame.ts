@@ -4,6 +4,13 @@
 import type { Point3 } from "../../core/three/beam.ts";
 
 export type FrameDims = { span: number; rise: number; trusses: number; gap: number; overhang: number };
+
+// Dimensions from the settings; the overhang is a percentage there
+const PERCENT = 100;
+export type FrameValues = { span: number; rise: number; trusses: number; trussGap: number; overhang: number };
+export const frameDims = (values: FrameValues): FrameDims => ({
+  span: values.span, rise: values.rise, trusses: values.trusses, gap: values.trussGap, overhang: values.overhang / PERCENT,
+});
 export type BeamKind = "plate" | "front" | "truss" | "purlin" | "batten";
 export type Beam = { from: Point3; to: Point3; size: number; kind: BeamKind; order: number };
 
@@ -59,6 +66,15 @@ function truss(dims: FrameDims, depth: number, index: number): Beam[] {
     beam(middle, mix(right, peak, STRUT_AT), STRUT),
   ];
 }
+
+// The frame as a flat drawing for the dashboard (no WebGL there): every beam as a line in an oblique view, the depth
+// going up and to the right; y grows downwards like in SVG
+const OBLIQUE = { right: 0.55, up: 0.3 };
+export type SketchLine = { from: readonly [number, number]; to: readonly [number, number]; kind: BeamKind };
+export const sketchLines = (beams: readonly Beam[]): SketchLine[] => beams.map(beam => {
+  const flat = ([x, y, depth]: Point3) => [x - depth * OBLIQUE.right, -y + depth * OBLIQUE.up] as const;
+  return { from: flat(beam.from), to: flat(beam.to), kind: beam.kind };
+});
 
 export function roofFrame(dims: FrameDims): Beam[] {
   const count = Math.max(1, Math.round(dims.trusses));

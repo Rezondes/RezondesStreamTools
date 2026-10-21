@@ -1,7 +1,7 @@
 // Check for tiles.ts of the Dachdecker theme: fixed randomness, offset rows, nothing past the gables, copper share
 // without stripes. Runs with npm test.
 import assert from "node:assert/strict";
-import { TILE, tileLayout } from "./tiles.ts";
+import { ridgeOf, TILE, tileLayout } from "./tiles.ts";
 
 const dims = { span: 8.4, rise: 3.25, trusses: 5, gap: 1.5, overhang: 0.12 };
 const tiles = tileLayout(dims, 11, 7, 0.15, 2);
@@ -38,5 +38,9 @@ assert.deepEqual([...new Set(starting.map(tile => tile.row))], [0, 1, 2, 3]);
 assert.ok(starting.every(tile => tile.side === 1 && tile.position[0] > 0));
 const heightOf = (row: number) => starting.find(tile => tile.row === row)!.position[1];
 assert.ok(heightOf(0) < heightOf(1) && heightOf(1) < heightOf(3));
+
+// The ridge pipe runs from gable to gable just above the ridge
+const ridge = ridgeOf(dims);
+assert.ok(ridge.length > 7 && ridge.center[1] > 3.25 && Math.abs(ridge.center[2] + 3) < 1e-9);
 
 console.log("dachdecker tiles ok");
