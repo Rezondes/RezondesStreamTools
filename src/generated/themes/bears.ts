@@ -235,9 +235,6 @@ export type BearsValues = {
   readonly bannerOfflineLines: readonly string[];
   readonly fairyLights: boolean;
   readonly bannerSleepText: string;
-  readonly bannerLoop: number;
-  readonly bannerProfileFps: number;
-  readonly bannerOfflineFps: number;
   readonly minimeJoinCommand: string;
   readonly minimeLeaveCommand: string;
   readonly minimeJoinRole: string;

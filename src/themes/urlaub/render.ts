@@ -7,6 +7,10 @@ import { drawUrlaubOfflineBanner, drawUrlaubProfileBanner, type UrlaubBannerOpti
 import type { UrlaubValues } from "./settings.ts";
 import { drawUrlaubStinger, FPS, HEIGHT, WIDTH, type UrlaubStingerOptions } from "./stinger.ts";
 
+// Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
+const BANNER_LOOP = 6;
+const BANNER_FPS = 1;
+
 // values: resolved against the Urlaub schema; login for {login} in the texts
 export function urlaubClips(values: SettingValues, login: string): RenderClip[] {
   const fruit = values as unknown as UrlaubValues;
@@ -17,7 +21,7 @@ export function urlaubClips(values: SettingValues, login: string): RenderClip[] 
     sea: fruit.sea, seaDeep: fruit.seaDeep, foamColor: fruit.foam, textColor: fruit.textColor, palmColor: fruit.woodDark,
   };
   const banner: UrlaubBannerOptions = {
-    loop: fruit.bannerLoop, font: fruit.font, titleFont: fruit.titleFont,
+    loop: BANNER_LOOP, font: fruit.font, titleFont: fruit.titleFont,
     skyTop: fruit.skyDayTop, skyBottom: fruit.skyDayBottom, eveningTop: fruit.skyEveningTop, eveningBottom: fruit.skyEveningBottom,
     sun: fruit.sun, sea: fruit.sea, seaDeep: fruit.seaDeep, foam: fruit.foam, sand: fruit.sand, palmLeaf: fruit.palmLeaf, palmTrunk: fruit.palmTrunk,
     wood: fruit.wood, woodDark: fruit.woodDark, textColor: fruit.textColor, textOnWood: fruit.textOnWood,
@@ -27,7 +31,7 @@ export function urlaubClips(values: SettingValues, login: string): RenderClip[] 
   const font = `400 24px "${fruit.titleFont}"`;
   return [
     { name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawUrlaubStinger(context, time, stinger) },
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: fruit.bannerProfileFps, duration: banner.loop, cut: null, draw: (context, time) => drawUrlaubProfileBanner(context, time, banner) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: fruit.bannerOfflineFps, duration: banner.loop, cut: null, draw: (context, time) => drawUrlaubOfflineBanner(context, time, banner) },
+    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawUrlaubProfileBanner(context, time, banner) },
+    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawUrlaubOfflineBanner(context, time, banner) },
   ];
 }

@@ -27,7 +27,7 @@ const REQUIRED: Record<string, string[]> = {
   "Musik": ["musicStyle", "coverShape", "equalizer", "musicHide", "musicMarquee"],
   "Effekte": ["fxDuration", "fxSize", "fxIn", "fxOut", "fxBubble"],
   "Stinger": ["stingerDuration", "stingerCut", "stingerText", "stingerLeaves"],
-  "Banner": ["bannerTitle", "bannerProfileText", "bannerOfflineTitle", "bannerOfflineLines", "bannerLoop"],
+  "Banner": ["bannerTitle", "bannerProfileText", "bannerOfflineTitle", "bannerOfflineLines"],
   "Minimes: Aussehen": ["mangoSize", "mangoFaces", "helmet", "weapon", "medicCross", "muzzle", "mangoDefault", "mangoNameStyle", "mangoEnter", "mangoExit"],
   "Minimes: Hüpfen": ["hopHeight", "hopMs", "hopSquash"],
   "Minimes: Animationen": ["reloadWeight", "helmetWeight", "lookWeight", "sleepWeight", "cheerMs", "cheerHeight"],

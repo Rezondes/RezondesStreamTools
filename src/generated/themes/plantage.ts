@@ -196,9 +196,6 @@ export type PlantageValues = {
   readonly bannerOfflineTitle: string;
   readonly bannerOfflineText: string;
   readonly bannerOfflineLines: readonly string[];
-  readonly bannerLoop: number;
-  readonly bannerProfileFps: number;
-  readonly bannerOfflineFps: number;
   readonly minimeJoinCommand: string;
   readonly minimeLeaveCommand: string;
   readonly minimeJoinRole: string;

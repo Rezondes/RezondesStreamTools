@@ -110,9 +110,6 @@ const FIELDS = [
   text("bannerProfileText", "Profilbanner: Text", BANNER, "Games, Talk und gute Laune"),
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade offline"),
   text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keinen Stream."),
-  number("bannerLoop", "Schleifenlänge", BANNER, 6, 1, 20, "s"),
-  number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
-  number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 860, 400, 1600, "px"),

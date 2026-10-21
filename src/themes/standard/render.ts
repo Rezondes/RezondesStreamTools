@@ -7,6 +7,10 @@ import { drawStandardOfflineBanner, drawStandardProfileBanner, type StandardBann
 import type { StandardValues } from "./settings.ts";
 import { drawStandardStinger, FPS, HEIGHT, WIDTH, type StandardStingerOptions } from "./stinger.ts";
 
+// Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
+const BANNER_LOOP = 6;
+const BANNER_FPS = 1;
+
 // values: resolved against the standard schema; login for {login} in the texts
 export function standardClips(values: SettingValues, login: string): RenderClip[] {
   const standard = values as unknown as StandardValues;
@@ -16,13 +20,13 @@ export function standardClips(values: SettingValues, login: string): RenderClip[
     ...colors, duration: standard.stingerDuration, cut: standard.stingerCut, panels: standard.stingerPanels, text: fillTemplate(standard.stingerText, names), font: standard.font,
   };
   const banner: StandardBannerOptions = {
-    ...colors, loop: standard.bannerLoop, font: standard.font, background: standard.background, mutedColor: standard.mutedColor,
+    ...colors, loop: BANNER_LOOP, font: standard.font, background: standard.background, mutedColor: standard.mutedColor,
     title: fillTemplate(standard.bannerTitle, names), profileText: standard.bannerProfileText, offlineTitle: standard.bannerOfflineTitle, offlineText: standard.bannerOfflineText,
   };
   const font = `800 24px "${standard.font}"`;
   return [
     { name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawStandardStinger(context, time, stinger) },
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: standard.bannerProfileFps, duration: banner.loop, cut: null, draw: (context, time) => drawStandardProfileBanner(context, time, banner) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: standard.bannerOfflineFps, duration: banner.loop, cut: null, draw: (context, time) => drawStandardOfflineBanner(context, time, banner) },
+    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawStandardProfileBanner(context, time, banner) },
+    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawStandardOfflineBanner(context, time, banner) },
   ];
 }

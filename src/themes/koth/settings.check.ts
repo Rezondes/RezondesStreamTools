@@ -29,7 +29,7 @@ const REQUIRED: Record<string, string[]> = {
   "Musik": ["musicStyle", "coverShape", "equalizer", "musicHide", "musicMarquee"],
   "Effekte": ["fxDuration", "fxSize", "fxIn", "fxOut", "fxBubble"],
   "Stinger": ["stingerDuration", "stingerCut", "stingerText", "stingerFlag", "smokeColor"],
-  "Banner": ["bannerTitle", "bannerProfileText", "bannerOfflineTitle", "bannerOfflineLines", "bannerLoop"],
+  "Banner": ["bannerTitle", "bannerProfileText", "bannerOfflineTitle", "bannerOfflineLines"],
   "Minimes: Aussehen": ["soldierSize", "soldierFaces", "helmet", "weapon", "medicCross", "dustColor", "soldierDefault", "soldierNameStyle", "holderBanner", "holderText", "contestedText"],
   "Minimes: Animationen": ["sightWeight", "reloadWeight", "coverWeight", "proneWeight", "lookWeight", "saluteWeight", "cheerMs"],
   "Minimes: Fraktionen": ["minimeTeamCommand"],

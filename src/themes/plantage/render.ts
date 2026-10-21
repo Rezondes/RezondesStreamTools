@@ -7,6 +7,10 @@ import { drawPlantageOfflineBanner, drawPlantageProfileBanner, type PlantageBann
 import type { PlantageValues } from "./settings.ts";
 import { drawPlantageStinger, FPS, HEIGHT, WIDTH, type PlantageStingerOptions } from "./stinger.ts";
 
+// Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
+const BANNER_LOOP = 6;
+const BANNER_FPS = 1;
+
 // values: resolved against the Plantage schema; login for {login} in the texts
 export function plantageClips(values: SettingValues, login: string): RenderClip[] {
   const field = values as unknown as PlantageValues;
@@ -18,7 +22,7 @@ export function plantageClips(values: SettingValues, login: string): RenderClip[
     textColor: field.textColor,
   };
   const banner: PlantageBannerOptions = {
-    loop: field.bannerLoop, font: field.font, titleFont: field.titleFont,
+    loop: BANNER_LOOP, font: field.font, titleFont: field.titleFont,
     skyTop: field.skyDayTop, skyBottom: field.skyDayBottom, eveningTop: field.skyEveningTop, eveningBottom: field.skyEveningBottom,
     sun: field.sun, hill: field.hillColor, hillFar: field.hillFarColor, soil: field.soil, soilDark: field.soilDark, leaf: field.leaf, leafDark: field.leafDark,
     trunk: field.trunk, mango: field.mango, blush: field.mangoBlush, paper: field.paper,
@@ -29,7 +33,7 @@ export function plantageClips(values: SettingValues, login: string): RenderClip[
   const font = `700 24px "${field.titleFont}"`;
   return [
     { name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawPlantageStinger(context, time, stinger) },
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: field.bannerProfileFps, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageProfileBanner(context, time, banner) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: field.bannerOfflineFps, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageOfflineBanner(context, time, banner) },
+    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageProfileBanner(context, time, banner) },
+    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageOfflineBanner(context, time, banner) },
   ];
 }

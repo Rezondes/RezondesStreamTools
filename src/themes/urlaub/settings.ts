@@ -216,9 +216,6 @@ const FIELDS = [
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade am Strand"),
   text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keinen Stream."),
   lines("bannerOfflineLines", "Offline-Banner: Zeilen", BANNER, ["Bald wieder live", "Sonnencreme nicht vergessen"]),
-  number("bannerLoop", "Schleifenlänge", BANNER, 6, 1, 20, "s"),
-  number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
-  number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
 
   ...MINIME_BASE_FIELDS,
   number("fruitSize", "Grösse", MINIME_LOOK, 84, 30, 300, "px"),

@@ -224,9 +224,6 @@ const FIELDS = [
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Funkstille"),
   text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keinen Einsatz."),
   lines("bannerOfflineLines", "Offline-Banner: Zeilen", BANNER, ["Bald wieder im Einsatz", "Der Hügel wartet"]),
-  number("bannerLoop", "Schleifenlänge", BANNER, 6, 1, 20, "s"),
-  number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
-  number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
 
   ...MINIME_FIELDS,
   number("soldierSize", "Grösse", MINIME_LOOK, 70, 30, 300, "px"),

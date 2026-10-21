@@ -234,9 +234,6 @@ fn stinger_banner() -> Vec<SettingField> {
         text("bannerProfileText", "Profilbanner: Text", BANNER, "Kritzeleien, Neon und gute Laune", None),
         text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Offline", None),
         text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Farbe trocknet noch. Folge dem Kanal!", None),
-        number("bannerLoop", "Schleifenlänge", BANNER, 4.0, 1.0, 20.0, S, None),
-        number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12.0, 1.0, 30.0, None, None),
-        number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10.0, 1.0, 30.0, None, None),
     ]
 }
 

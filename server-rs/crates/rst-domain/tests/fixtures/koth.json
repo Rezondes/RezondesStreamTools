@@ -1705,34 +1705,6 @@
       "maxLines": 100
     },
     {
-      "key": "bannerLoop",
-      "type": "number",
-      "label": "Schleifenlänge",
-      "group": "Banner",
-      "default": 6,
-      "min": 1,
-      "max": 20,
-      "unit": "s"
-    },
-    {
-      "key": "bannerProfileFps",
-      "type": "number",
-      "label": "Profilbanner: Bildrate",
-      "group": "Banner",
-      "default": 12,
-      "min": 1,
-      "max": 30
-    },
-    {
-      "key": "bannerOfflineFps",
-      "type": "number",
-      "label": "Offline-Banner: Bildrate",
-      "group": "Banner",
-      "default": 10,
-      "min": 1,
-      "max": 30
-    },
-    {
       "key": "minimeJoinCommand",
       "type": "text",
       "label": "Befehl: einklinken (optional mit Farbe oder Typ)",

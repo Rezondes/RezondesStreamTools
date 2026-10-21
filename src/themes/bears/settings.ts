@@ -264,9 +264,6 @@ const FIELDS = [
   lines("bannerOfflineLines", "Offline-Banner: Zeilen", BANNER, ["Bald wieder live", "Folgen nicht vergessen"]),
   flag("fairyLights", "Offline-Banner: Lichterkette", BANNER, true),
   text("bannerSleepText", "Offline-Banner: Schlafzeichen", BANNER, "z", 4),
-  number("bannerLoop", "Schleifenlänge", BANNER, 6, 1, 20, "s"),
-  number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
-  number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
 
   ...MINIME_BASE_FIELDS,
   number("minimeBearSize", "Grösse (Höhe)", MINIME_LOOK, 120, 40, 400, "px"),

@@ -23,7 +23,7 @@ const REQUIRED: Record<string, string[]> = {
   "Musik": ["musicArt", "musicHeadPlaying", "musicHeadPaused", "equalizer", "equalizerBars", "musicHide", "vinylSpeed", "coverSize", "musicTitleSize", "musicMarqueeSpeed"],
   "Effekte": ["fxDuration", "fxSize", "fxIn", "fxOut", "fxMargin"],
   "Stinger": ["stingerDuration", "stingerCut", "stingerText", "stingerLogo", "stingerColumn", "stingerFall"],
-  "Banner": ["bannerProfileText", "bannerProfileSub", "bannerOfflineTitle", "bannerOfflineText", "bannerOfflineLines", "bannerLoop", "bannerProfileFps", "bannerOfflineFps", "bannerRainDensity"],
+  "Banner": ["bannerProfileText", "bannerProfileSub", "bannerOfflineTitle", "bannerOfflineText", "bannerOfflineLines", "bannerRainDensity"],
 };
 for (const [group, keys] of Object.entries(REQUIRED)) {
   for (const key of keys) assert.equal(fields.find(field => field.key === key)?.group, group, `${key} fehlt in ${group}`);

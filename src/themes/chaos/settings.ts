@@ -169,9 +169,6 @@ const FIELDS = [
   text("bannerProfileText", "Profilbanner: Text", BANNER, "Kritzeleien, Neon und gute Laune"),
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Offline"),
   text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Farbe trocknet noch. Folge dem Kanal!"),
-  number("bannerLoop", "Schleifenlänge", BANNER, 4, 1, 20, "s"),
-  number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
-  number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
   // Minimes: commands, rules, movement and hopping are the same for all themes with minimes; the look is the monster
   ...MINIME_FIELDS,
   ...MINIME_HOP_FIELDS,

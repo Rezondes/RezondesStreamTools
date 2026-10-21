@@ -222,9 +222,6 @@ const FIELDS = [
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade auf der Plantage"),
   text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keine Ernte."),
   lines("bannerOfflineLines", "Offline-Banner: Zeilen", BANNER, ["Bald wieder live", "Die Mangos reifen noch"]),
-  number("bannerLoop", "Schleifenlänge", BANNER, 6, 1, 20, "s"),
-  number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
-  number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
 
   ...MINIME_BASE_FIELDS,
   number("mangoSize", "Grösse", MINIME_LOOK, 84, 30, 300, "px"),

@@ -5,10 +5,10 @@ import { resolveSettings } from "../../core/settings.ts";
 import { standardClips } from "./render.ts";
 import { standardSettings } from "./settings.ts";
 
-const clips = standardClips(resolveSettings(standardSettings, { stingerDuration: 1.5, stingerCut: 0.7, bannerLoop: 8 }), "rezondes");
+const clips = standardClips(resolveSettings(standardSettings, { stingerDuration: 1.5, stingerCut: 0.7 }), "rezondes");
 assert.deepEqual(clips.map(clip => [clip.name, clip.group]), [["stinger", "Stinger"], ["profile", "Banner"], ["offline", "Banner"]]);
 assert.equal(clips[0].duration, 1.5);
 assert.equal(clips[0].cut, 0.7);
-assert.equal(clips[2].duration, 8);
+assert.equal(clips[2].duration, 6);
 
 console.log("standard render ok");

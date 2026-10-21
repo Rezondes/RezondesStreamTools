@@ -6,6 +6,9 @@ import { bannerOptions, drawOfflineBanner, drawProfileBanner } from "./banners.t
 import type { MatrixValues } from "./settings.ts";
 import { drawStinger, FPS, HEIGHT, stingerOptions, WIDTH } from "./stinger.ts";
 
+// Banners are stills (the dashboard renders their first frame)
+const BANNER_FPS = 1;
+
 // values: resolved against the matrix schema; login for {login} in the banners
 export function matrixClips(values: SettingValues, login: string): RenderClip[] {
   const matrix = values as unknown as MatrixValues;
@@ -14,7 +17,7 @@ export function matrixClips(values: SettingValues, login: string): RenderClip[] 
   const font = `24px "${matrix.font}"`;
   return [
     { name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawStinger(context, time, stinger) },
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: banner.profileFps, duration: banner.loop, cut: null, draw: (context, time) => drawProfileBanner(context, time, banner) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: banner.offlineFps, duration: banner.loop, cut: null, draw: (context, time) => drawOfflineBanner(context, time, banner) },
+    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawProfileBanner(context, time, banner) },
+    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawOfflineBanner(context, time, banner) },
   ];
 }

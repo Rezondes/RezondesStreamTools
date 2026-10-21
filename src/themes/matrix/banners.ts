@@ -9,8 +9,6 @@ import { glyphAt } from "./stinger.ts";
 
 export type BannerOptions = {
   loop: number; // seconds
-  profileFps: number;
-  offlineFps: number;
   density: number; // fraction of columns with rain, 0..1
   scanlines: number; // opacity of the scanlines, 0 = off
   font: string;
@@ -33,13 +31,14 @@ export type BannerOptions = {
   prompt: string;
 };
 
+// Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
+const BANNER_LOOP = 4;
+
 // login: Twitch login for {login} in prompt and header
 export function bannerOptions(values: MatrixValues, login: string): BannerOptions {
   const names = { channel: values.channelName, login };
   return {
-    loop: values.bannerLoop,
-    profileFps: values.bannerProfileFps,
-    offlineFps: values.bannerOfflineFps,
+    loop: BANNER_LOOP,
     density: values.bannerRainDensity / 100,
     scanlines: values.scanlines ? values.scanlineStrength : 0,
     font: values.font,

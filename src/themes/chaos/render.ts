@@ -8,6 +8,10 @@ import type { ChaosColors } from "./paint.ts";
 import type { ChaosValues } from "./settings.ts";
 import { FPS, HEIGHT, makeChaosStinger, WIDTH, type ChaosStingerOptions } from "./stinger.ts";
 
+// Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
+const BANNER_LOOP = 4;
+const BANNER_FPS = 1;
+
 // values: resolved against the Chaos schema; login for {login} in the texts
 export function chaosClips(values: SettingValues, login: string): RenderClip[] {
   const chaos = values as unknown as ChaosValues;
@@ -22,13 +26,13 @@ export function chaosClips(values: SettingValues, login: string): RenderClip[] {
     ...shared, duration: chaos.stingerDuration, cut: chaos.stingerCut, text: fillTemplate(chaos.stingerText, names), textSize: chaos.stingerTextSize,
   };
   const banner: ChaosBannerOptions = {
-    ...shared, loop: chaos.bannerLoop, font: chaos.font, title: fillTemplate(chaos.bannerTitle, names), profileText: chaos.bannerProfileText,
+    ...shared, loop: BANNER_LOOP, font: chaos.font, title: fillTemplate(chaos.bannerTitle, names), profileText: chaos.bannerProfileText,
     offlineTitle: chaos.bannerOfflineTitle, offlineText: chaos.bannerOfflineText,
   };
   const font = `24px "${chaos.titleFont}"`;
   return [
     { name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: FPS, duration: stinger.duration, cut: stinger.cut, draw: makeChaosStinger(stinger) },
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: chaos.bannerProfileFps, duration: banner.loop, cut: null, draw: makeChaosProfileBanner(banner) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: chaos.bannerOfflineFps, duration: banner.loop, cut: null, draw: makeChaosOfflineBanner(banner) },
+    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: makeChaosProfileBanner(banner) },
+    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: makeChaosOfflineBanner(banner) },
   ];
 }

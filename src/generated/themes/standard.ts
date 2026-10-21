@@ -86,9 +86,6 @@ export type StandardValues = {
   readonly bannerProfileText: string;
   readonly bannerOfflineTitle: string;
   readonly bannerOfflineText: string;
-  readonly bannerLoop: number;
-  readonly bannerProfileFps: number;
-  readonly bannerOfflineFps: number;
   readonly infoTitle: string;
   readonly infoIntro: string;
   readonly infoEmpty: string;

@@ -169,9 +169,6 @@ export type MatrixValues = {
   readonly bannerOfflineTitle: string;
   readonly bannerOfflineText: string;
   readonly bannerOfflineLines: readonly string[];
-  readonly bannerLoop: number;
-  readonly bannerProfileFps: number;
-  readonly bannerOfflineFps: number;
   readonly bannerRainDensity: number;
   readonly minimeJoinCommand: string;
   readonly minimeLeaveCommand: string;

@@ -410,9 +410,6 @@ fn fields() -> Vec<SettingField> {
                 &["Bald wieder live", "Sonnencreme nicht vergessen"],
                 None,
             ),
-            number("bannerLoop", "Schleifenlänge", BANNER, 6.0, 1.0, 20.0, S, None),
-            number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12.0, 1.0, 30.0, None, None),
-            number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10.0, 1.0, 30.0, None, None),
         ],
         minime_base_fields(),
         vec![

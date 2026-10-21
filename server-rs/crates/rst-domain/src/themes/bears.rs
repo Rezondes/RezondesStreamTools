@@ -459,9 +459,6 @@ fn fields() -> Vec<SettingField> {
         ),
         flag("fairyLights", "Offline-Banner: Lichterkette", BANNER, true),
         text("bannerSleepText", "Offline-Banner: Schlafzeichen", BANNER, "z", Some(4)),
-        number("bannerLoop", "Schleifenlänge", BANNER, 6.0, 1.0, 20.0, S, None),
-        number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12.0, 1.0, 30.0, None, None),
-        number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10.0, 1.0, 30.0, None, None),
     ]);
     fields.extend(minime_fields());
     fields.extend(info_fields());

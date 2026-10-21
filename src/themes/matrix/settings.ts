@@ -249,9 +249,6 @@ const FIELDS = [
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "STREAM OFFLINE"),
   text("bannerOfflineText", "Offline-Banner: Text", BANNER, "> Folge dem Kanal, dann verpasst du den nächsten Stream nicht."),
   lines("bannerOfflineLines", "Offline-Banner: Terminal", BANNER, ["connection closed by remote host", "saving session ... ok", "awaiting next broadcast"]),
-  number("bannerLoop", "Schleifenlänge", BANNER, 4, 1, 20, "s"),
-  number("bannerProfileFps", "Profilbanner: Bildrate", BANNER, 12, 1, 30),
-  number("bannerOfflineFps", "Offline-Banner: Bildrate", BANNER, 10, 1, 30),
   number("bannerRainDensity", "Regen-Dichte", BANNER, 100, 0, 100, "%"),
   // Minimes: commands, rules and movement are the same for all themes with minimes
   ...MINIME_FIELDS,
