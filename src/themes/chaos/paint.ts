@@ -1,11 +1,15 @@
 // Canvas painting of the Chaos theme for the stinger and the banners: the wall (ground, violet blotches, spray dust), the
-// scribbles, brush strokes with bristles, splatter and drips, energy swathes and sprayed text with glow and drips. The
-// same shapes as the scenes (scribbles.ts, strokes.ts, swathes.ts, wall.ts), glow from shadowBlur. Pure apart from the
-// context; makePath turns path text into a Path2D (injected for the check). Check: paint.check.ts.
+// scribbles (a take of each, some of them Rough shapes with a filled inside), painted brush strokes with bristles and
+// drips (brush.ts), spray mist (burstAt of the core) and sprayed text with glow and drips. The same shapes as the scenes,
+// glow from shadowBlur. Pure apart from the context; makePath turns path text into a Path2D (injected for the check).
+// Check: paint.check.ts.
+import type { BurstParticle } from "../../core/motion/burst.ts";
+import { type Brush, type BrushFrame, brushPoint } from "./brush.ts";
 import { chance } from "./chance.ts";
+import { dripAt } from "./idle.ts";
+import type { ScribbleTake } from "./roughScribbles.ts";
 import type { Scribble } from "./scribbles.ts";
-import { dripPath, speckles, titleDrips, type BrushStroke } from "./strokes.ts";
-import type { Swathes } from "./swathes.ts";
+import { dripPath, speckles, titleDrips } from "./strokes.ts";
 import type { Blotch, Dust } from "./wall.ts";
 
 export type ChaosColors = {
@@ -44,72 +48,91 @@ export function paintWall(context: CanvasRenderingContext2D, width: number, heig
   context.globalAlpha = 1;
 }
 
-// The scribbles: open lines, neon ones with glow
-export function paintScribbles(context: CanvasRenderingContext2D, marks: readonly Scribble[], colors: ChaosColors, widthFactor: number, glow: number, scale: number, makePath: MakePath = browserPath) {
+// fixed: paint body, the width of rough fill strokes against the outline, dot size and strength of the spray mist
+const BODY_ALPHA = 0.6;
+const ROUGH_FILL = 0.6;
+const MIST = { size: 2.4, alpha: 0.6 };
+
+// The scribbles: open lines, neon ones with glow; takeOf picks the take of a mark (its own paths without)
+export function paintScribbles(context: CanvasRenderingContext2D, marks: readonly Scribble[], colors: ChaosColors, widthFactor: number, glow: number, scale: number, makePath: MakePath = browserPath, takeOf?: (index: number) => ScribbleTake) {
   const tone = { color1: colors.scribbles[0], color2: colors.scribbles[1], color3: colors.scribbles[2], color4: colors.scribbles[3], white: colors.textColor };
   context.lineCap = "round";
   context.lineJoin = "round";
-  for (const mark of marks) {
+  marks.forEach((mark, index) => {
+    const take = takeOf?.(index) ?? { rough: false, parts: mark.paths.map(path => ({ d: path, filled: false })) };
+    // Rough takes are drawn in pixels, the others in the unit of the mark
+    const unit = take.rough ? 1 : mark.size;
     context.save();
     context.translate(mark.x * scale, mark.y * scale);
     context.rotate((mark.rotate * Math.PI) / 180);
-    context.scale(mark.size * scale, mark.size * scale);
+    context.scale(unit * scale, unit * scale);
     context.strokeStyle = tone[mark.color];
-    context.lineWidth = (mark.width / mark.size) * widthFactor;
     context.globalAlpha = mark.line === "chalk" ? 0.8 : 1;
     context.shadowColor = tone[mark.color];
     context.shadowBlur = mark.line === "neon" ? GLOW * 0.4 * glow * scale : 0;
-    for (const path of mark.paths) context.stroke(makePath(path));
+    for (const part of take.parts) {
+      context.lineWidth = (mark.width / unit) * widthFactor * (part.filled ? ROUGH_FILL : 1);
+      context.stroke(makePath(part.d));
+    }
     context.restore();
-  }
+  });
   context.globalAlpha = 1;
 }
 
-// One brush stroke in its ink; light bristles in the light color (faint), the others in the ink
-export function paintBrush(context: CanvasRenderingContext2D, brush: BrushStroke, ink: string, light: string, glow: number, drips: boolean, makePath: MakePath = browserPath) {
+function trace(context: CanvasRenderingContext2D, points: readonly number[], closed: boolean) {
+  context.beginPath();
+  for (let index = 0; index < points.length; index += 2) {
+    if (index === 0) context.moveTo(points[0], points[1]);
+    else context.lineTo(points[index], points[index + 1]);
+  }
+  if (closed) context.closePath();
+}
+
+// A painted brush stroke (brushAt of brush.ts): the paint body with glow, the bristles over it, light ones in the light color
+export function paintBrushFrame(context: CanvasRenderingContext2D, frame: BrushFrame, ink: string, light: string, glow: number) {
   context.save();
-  context.fillStyle = ink;
-  context.shadowColor = ink;
-  context.shadowBlur = GLOW * 0.6 * glow;
-  context.globalAlpha = 0.9;
-  context.fill(makePath(brush.body));
-  context.shadowBlur = 0;
   context.lineCap = "round";
-  for (const bristle of [...brush.bristles, ...brush.tail]) {
-    context.globalAlpha = bristle.light ? bristle.opacity * 0.5 : bristle.opacity;
+  context.lineJoin = "round";
+  if (frame.body) {
+    context.fillStyle = ink;
+    context.shadowColor = ink;
+    context.shadowBlur = GLOW * 0.6 * glow;
+    context.globalAlpha = BODY_ALPHA;
+    trace(context, frame.body, true);
+    context.fill();
+    context.shadowBlur = 0;
+  }
+  for (const bristle of frame.bristles) {
+    context.globalAlpha = bristle.alpha;
     context.strokeStyle = bristle.light ? light : ink;
     context.lineWidth = bristle.width;
-    context.stroke(makePath(bristle.d));
+    trace(context, bristle.points, false);
+    context.stroke();
   }
-  for (const drop of brush.drops) {
-    context.globalAlpha = drop.opacity;
-    context.beginPath();
-    context.ellipse(drop.x, drop.y, drop.radiusX, drop.radiusY, 0, 0, Math.PI * 2);
-    context.fill();
-  }
-  context.globalAlpha = 1;
-  if (drips) for (const drip of brush.drips) context.fill(makePath(drip));
   context.restore();
 }
 
-// Energy swathes: tongues and streaks in their tones, with glow
-export function paintSwath(context: CanvasRenderingContext2D, swath: Swathes, colors: ChaosColors, glow: number, makePath: MakePath = browserPath) {
-  const tone = { hot: colors.textColor, magenta: colors.accent, cyan: colors.accent2, violet: colors.violetLight, lilac: colors.lilac };
+// The drips of a brush since seconds after it was painted: each runs down to its length (dripAt of idle.ts)
+export function paintBrushDrips(context: CanvasRenderingContext2D, brush: Brush, ink: string, since: number, makePath: MakePath = browserPath) {
   context.save();
-  context.lineCap = "round";
-  for (const tongue of swath.tongues) {
-    context.globalAlpha = tongue.opacity;
-    context.fillStyle = tone[tongue.tone];
-    context.shadowColor = tone[tongue.tone];
-    context.shadowBlur = GLOW * 0.5 * glow;
-    context.fill(makePath(tongue.d));
+  context.fillStyle = ink;
+  for (const drip of brush.drips) {
+    const { run } = dripAt(drip, since, false);
+    if (run <= 0) continue;
+    const top = brushPoint(brush, drip.at, drip.offset);
+    context.fill(makePath(dripPath(top.x, top.y, run, drip.width)));
   }
-  context.shadowBlur = 0;
-  for (const streak of swath.streaks) {
-    context.globalAlpha = streak.opacity;
-    context.strokeStyle = tone[streak.tone];
-    context.lineWidth = streak.width;
-    context.stroke(makePath(streak.d));
+  context.restore();
+}
+
+// Spray mist: fine dots of a burst, each fading with its particle
+export function paintMist(context: CanvasRenderingContext2D, particles: readonly BurstParticle[], color: string) {
+  context.save();
+  context.fillStyle = color;
+  for (const dot of particles) {
+    if (dot.opacity <= 0) continue;
+    context.globalAlpha = dot.opacity * MIST.alpha;
+    context.fillRect(dot.x, dot.y, MIST.size, MIST.size);
   }
   context.restore();
 }

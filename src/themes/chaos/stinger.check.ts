@@ -1,12 +1,14 @@
 // Check for stinger.ts: the wall wipes in from the left, covers the picture at the transition point and wipes out to the
-// right, the text is sprayed on at the cut, and the same time gives the same drawing. A recording mock canvas stands in
-// for the browser. Runs with npm test.
+// right, the text is sprayed on at the cut, the scribbles boil through their takes, and the same time gives the same
+// drawing. A recording mock canvas stands in for the browser. Runs with npm test.
 import assert from "node:assert/strict";
 import { COLORS, fakePath, recorder } from "./paint.check.ts";
-import { makeChaosStinger, stingerEdges, stingerText, type ChaosStingerOptions } from "./stinger.ts";
+import { scribbleTakes } from "./roughScribbles.ts";
+import { HEIGHT, makeChaosStinger, stingerEdges, stingerText, WIDTH, type ChaosStingerOptions } from "./stinger.ts";
 
 const options: ChaosStingerOptions = {
   duration: 1.4, cut: 0.7, text: "CHAOS", textSize: 260, titleFont: "Permanent Marker", colors: COLORS, glow: 0.6, drips: true, scribbleCount: 80, scribbleWidth: 1,
+  rough: { share: 0.35, fill: true }, boilFps: 8,
 };
 const { cut, duration } = options;
 
@@ -36,6 +38,30 @@ const atCut = recorder();
 draw(atCut.context, cut);
 assert.ok(atCut.calls.some(call => call.name === "clip"));
 assert.ok(atCut.calls.some(call => call.name === "fillText" && call.args[0] === "CHAOS"));
+
+// gedeckt am Übergang: at the cut the clipped wall reaches past both sides of the picture over its whole height
+const outline = atCut.calls.slice(0, atCut.calls.findIndex(call => call.name === "clip")).filter(call => call.name === "moveTo" || call.name === "lineTo").map(call => call.args as [number, number]);
+const middle = outline.length / 2;
+assert.ok(outline.slice(0, middle).every(([x]) => x <= 0), "left edge outside");
+assert.ok(outline.slice(middle).every(([x]) => x >= WIDTH), "right edge outside");
+assert.ok(outline.some(([, y]) => y <= 0) && outline.some(([, y]) => y >= HEIGHT), "whole height");
+
+// The painted edge strokes and their mist show while the wall moves
+const moving = recorder();
+draw(moving.context, cut / 2);
+assert.ok(moving.calls.some(call => call.name === "fill" && call.shadowBlur > 0));
+assert.ok(moving.calls.filter(call => call.name === "fillRect").length > 1800);
+
+// Boiling: with Rough takes the scribbles change between two frames a boil step apart, standing still without boilFps
+const strokesAt = (stinger: ReturnType<typeof makeChaosStinger>, time: number) => {
+  const calls = recorder();
+  stinger(calls.context, time);
+  return calls.calls.filter(call => call.name === "stroke").map(call => call.args[0]);
+};
+const boiling = makeChaosStinger(options, fakePath, scribbleTakes);
+assert.notDeepEqual(strokesAt(boiling, cut), strokesAt(boiling, cut + 1 / 8));
+const still = makeChaosStinger({ ...options, boilFps: 0 }, fakePath, scribbleTakes);
+assert.deepEqual(strokesAt(still, cut), strokesAt(still, cut + 1 / 8));
 
 // Deterministic: the same time twice gives the same calls
 const again = recorder();

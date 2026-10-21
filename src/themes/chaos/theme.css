@@ -219,7 +219,7 @@
 .theme-chaos .ch-row.ch-ink-magenta, .theme-chaos .ch-note.ch-ink-magenta { --ink: var(--accent); }
 .theme-chaos .ch-row.ch-ink-cyan, .theme-chaos .ch-note.ch-ink-cyan { --ink: var(--accent2); }
 
-/* --- Alerts: swathes from one side, the note on top, confetti, the marker line of the remaining time ------------- */
+/* --- Alerts: the note in the middle, spray, confetti, the marker line of the remaining time ------------- */
 .theme-chaos .ch-alerts { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
 
 .theme-chaos .ch-alert {

@@ -1,11 +1,16 @@
 // Twitch banners of the Chaos theme: profile banner (1200x480) and offline banner (1920x1080) on the scribble wall. The
 // profile banner shows the two brush X and the channel name as sprayed graffiti with a line below; the offline banner a
 // magenta X, "offline" as graffiti, a text and a scribble monster asleep in the corner with rising "z". The glow pulses
-// once per loop, so the GIF loops seamlessly. Pure functions of time (layers built once per options). Check: banners.check.ts.
+// once per loop, so the GIF loops seamlessly. The brush strokes are painted with bristles and run-down drips (brush.ts),
+// a share of the scribbles are Rough shapes (takesOf, loaded lazily by render.ts) in their first take. Pure functions of
+// time (layers built once per options). Check: banners.check.ts.
+import { brushAt, brushSchedule } from "./brush.ts";
 import { chance } from "./chance.ts";
-import { browserPath, paintBrush, paintScribbles, paintSpray, paintWall, type ChaosColors, type MakePath } from "./paint.ts";
+import { browserPath, paintBrushDrips, paintBrushFrame, paintScribbles, paintSpray, paintWall, type ChaosColors, type MakePath } from "./paint.ts";
+import type { RoughMix } from "./roughScribbles.ts";
 import { layoutScribbles, scribbleShape } from "./scribbles.ts";
-import { brushStroke, gestureLayout, type GestureKind } from "./strokes.ts";
+import type { TakesOf } from "./stinger.ts";
+import type { GestureKind } from "./strokes.ts";
 import { blotches, dust } from "./wall.ts";
 
 export type ChaosBannerOptions = {
@@ -17,6 +22,7 @@ export type ChaosBannerOptions = {
   drips: boolean;
   scribbleCount: number;
   scribbleWidth: number;
+  rough: Omit<RoughMix, "width">; // share 0 to 1
   title: string;
   profileText: string;
   offlineTitle: string;
@@ -27,11 +33,13 @@ const TURN = Math.PI * 2;
 const STAGE_WIDTH = 1920;
 
 // The wall of a banner: the stage scaled to the banner width, the brush composition and the pulse of the glow
-function bannerWall(options: ChaosBannerOptions, seed: number, width: number, gesture: GestureKind, makePath: MakePath) {
+function bannerWall(options: ChaosBannerOptions, seed: number, width: number, gesture: GestureKind, makePath: MakePath, takesOf?: TakesOf) {
   const scale = width / STAGE_WIDTH;
   const marks = layoutScribbles(seed, Math.round(options.scribbleCount * scale), { x: 0.22, y: 0.25, width: 0.56, height: 0.5 }, true);
-  const random = chance(seed + 1);
-  const strokes = gestureLayout(gesture, seed + 1).map(part => ({ ...part, brush: brushStroke(part.from, part.to, part.width, random) }));
+  const rough = { ...options.rough, width: options.scribbleWidth };
+  const takes = takesOf ? marks.map((mark, index) => takesOf(mark, index, seed, rough)[0]) : null;
+  const takeOf = takes ? (index: number) => takes[index] : undefined;
+  const strokes = brushSchedule(gesture, seed + 1).map(stroke => ({ ...stroke, frame: brushAt(stroke.brush, 1) }));
   const stains = blotches(seed + 2, 6);
   const dots = dust(seed + 3, Math.round(1800 * scale));
   const ink = { cyan: options.colors.accent2, magenta: options.colors.accent, main: options.colors.accent };
@@ -39,8 +47,11 @@ function bannerWall(options: ChaosBannerOptions, seed: number, width: number, ge
     paintWall(context, width, height, options.colors, stains, dots, scale);
     context.save();
     context.scale(scale, scale);
-    paintScribbles(context, marks, options.colors, options.scribbleWidth, glow, 1, makePath);
-    for (const stroke of strokes) paintBrush(context, stroke.brush, ink[stroke.color], options.colors.textColor, glow, options.drips, makePath);
+    paintScribbles(context, marks, options.colors, options.scribbleWidth, glow, 1, makePath, takeOf);
+    for (const stroke of strokes) {
+      paintBrushFrame(context, stroke.frame, ink[stroke.color], options.colors.textColor, glow);
+      if (options.drips) paintBrushDrips(context, stroke.brush, ink[stroke.color], Infinity, makePath);
+    }
     context.restore();
   };
 }
@@ -57,9 +68,9 @@ function write(context: CanvasRenderingContext2D, text: string, x: number, y: nu
 }
 
 // Profile banner 1200x480; at the bottom left Twitch puts the profile picture over it, so the text is right of center
-export function makeChaosProfileBanner(options: ChaosBannerOptions, makePath: MakePath = browserPath) {
+export function makeChaosProfileBanner(options: ChaosBannerOptions, makePath: MakePath = browserPath, takesOf?: TakesOf) {
   const [width, height] = [1200, 480];
-  const wall = bannerWall(options, 2203, width, "zweix", makePath);
+  const wall = bannerWall(options, 2203, width, "zweix", makePath, takesOf);
   return function draw(context: CanvasRenderingContext2D, time: number) {
     const glow = pulse(options, time);
     wall(context, height, glow);
@@ -69,9 +80,9 @@ export function makeChaosProfileBanner(options: ChaosBannerOptions, makePath: Ma
 }
 
 // Offline banner 1920x1080 with the sleeping monster at the bottom right
-export function makeChaosOfflineBanner(options: ChaosBannerOptions, makePath: MakePath = browserPath) {
+export function makeChaosOfflineBanner(options: ChaosBannerOptions, makePath: MakePath = browserPath, takesOf?: TakesOf) {
   const [width, height] = [1920, 1080];
-  const wall = bannerWall(options, 3307, width, "x", makePath);
+  const wall = bannerWall(options, 3307, width, "x", makePath, takesOf);
   const monster = scribbleShape("monster", chance(3310));
   const sleep = scribbleShape("scrawl", chance(3311));
   return function draw(context: CanvasRenderingContext2D, time: number) {

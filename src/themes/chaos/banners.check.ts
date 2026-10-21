@@ -3,14 +3,15 @@
 import assert from "node:assert/strict";
 import { makeChaosOfflineBanner, makeChaosProfileBanner, type ChaosBannerOptions } from "./banners.ts";
 import { COLORS, fakePath, recorder } from "./paint.check.ts";
+import { scribbleTakes } from "./roughScribbles.ts";
 
 const options: ChaosBannerOptions = {
-  loop: 4, font: "Space Grotesk", titleFont: "Permanent Marker", colors: COLORS, glow: 0.6, drips: true, scribbleCount: 120, scribbleWidth: 1,
+  loop: 4, font: "Space Grotesk", titleFont: "Permanent Marker", colors: COLORS, glow: 0.6, drips: true, scribbleCount: 120, scribbleWidth: 1, rough: { share: 0.35, fill: true },
   title: "CHAOS", profileText: "Kritzeleien", offlineTitle: "Offline", offlineText: "Bis bald",
 };
 
 for (const make of [makeChaosProfileBanner, makeChaosOfflineBanner]) {
-  const draw = make(options, fakePath);
+  const draw = make(options, fakePath, scribbleTakes);
   const first = recorder();
   draw(first.context, 0);
   const last = recorder();
