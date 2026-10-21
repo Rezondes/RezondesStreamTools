@@ -71,6 +71,20 @@ export const OVERLAY_CASES: Case[] = [
     },
   },
   {
+    name: "events: the stream starts with the stream stats",
+    async run(context) {
+      await readStream(await request(context, `${base}/events?key=${key(context)}`), "\"type\":\"stats\"");
+    },
+  },
+  {
+    name: "stats: reset needs a session and clears the count",
+    async run(context) {
+      await expectCode(await request(context, "/api/stats/reset", { method: "POST" }), 401, "unauthorized");
+      await expect(await request(context, "/api/stats/reset", { method: "POST", session: STREAMER.login }), 200, { ok: "boolean" });
+      await readStream(await request(context, `${base}/events?key=${key(context)}`), "\"follows\":0");
+    },
+  },
+  {
     name: "events: unknown alert kind is 400",
     async run(context) {
       await expectCode(await request(context, "/api/test?kind=nothing", { method: "POST", session: STREAMER.login }), 400, "unknown-kind");

@@ -7,5 +7,6 @@ pub mod minimes;
 pub mod overlay_key;
 pub mod registry;
 pub mod runtime;
+pub mod stats;
 pub mod token_keeper;
 pub mod triggers;

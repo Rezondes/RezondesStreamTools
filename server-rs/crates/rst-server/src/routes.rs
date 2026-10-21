@@ -63,6 +63,7 @@ routes! {
     Me => "GET" "/api/me", SESSION;
     OverlayKey => "POST" "/api/overlay-key", SESSION;
     TestAlert => "POST" "/api/test", Guard::Session(&[Feature::Alerts]);
+    StatsReset => "POST" "/api/stats/reset", SESSION;
     TriggerConfig => "GET" "/api/triggers/config", TRIGGERS;
     SaveTriggerConfig => "POST" "/api/triggers/config", TRIGGERS;
     TriggerList => "GET" "/api/triggers", TRIGGERS;

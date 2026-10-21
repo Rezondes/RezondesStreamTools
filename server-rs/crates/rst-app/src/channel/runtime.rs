@@ -24,6 +24,7 @@ use crate::channel::chat::{listen, relay};
 use crate::channel::help::HelpResponder;
 use crate::channel::minimes::MinimeRunner;
 use crate::channel::registry::Runtime;
+use crate::channel::stats::StatsRunner;
 use crate::channel::token_keeper::{CHECK_SECONDS, TokenKeeper, Validity};
 use crate::channel::triggers::TriggerRunner;
 use crate::commands::public_commands;
@@ -97,6 +98,8 @@ pub struct StreamerRuntime<T, S, K, P> {
     pub help: Arc<HelpResponder>,
     /// Only with the feature music and a Spotify app
     pub spotify: Option<Arc<SpotifyPlayer<P, S, K>>>,
+    /// Stream stats, counted from the alerts and chat lines this runtime receives
+    pub stats: Arc<StatsRunner<S, K>>,
     cancel: CancellationToken,
 }
 
@@ -108,6 +111,7 @@ struct Shared<T, S, K> {
     chat_on: bool,
     triggers: Option<Arc<TriggerRunner>>,
     minimes: Option<Arc<MinimeRunner<S, K>>>,
+    stats: Arc<StatsRunner<S, K>>,
     help: Arc<HelpResponder>,
     keeper: Arc<TokenKeeper<T, S, K>>,
     twitch: T,
@@ -145,7 +149,10 @@ where
     async fn read_events<C: SocketConnector>(self: Arc<Self>, sockets: Arc<C>, url: String, cancel: CancellationToken) {
         let subscribe = |session_id: String| subscribe_all(&self.keeper, &self.twitch, session_id, self.now);
         alerts::listen(&*sockets, &url, &cancel, subscribe, |message| match message {
-            EventSubMessage::Alert(alert) => self.hubs.emit(&self.id, &ServerMessage::Alert { alert }),
+            EventSubMessage::Alert(alert) => {
+                self.stats.record_alert(&alert);
+                self.hubs.emit(&self.id, &ServerMessage::Alert { alert });
+            }
             EventSubMessage::Offline => self.minimes.iter().for_each(MinimeRunner::offline),
             _ => {}
         })
@@ -169,6 +176,7 @@ where
         if self.help.is_echo(&line) {
             return;
         }
+        self.stats.record_chat(&line.login);
         let now = (self.now)();
         if let Some(triggers) = &self.triggers {
             triggers.handle(&line, u64::try_from(now).unwrap_or_default());
@@ -257,6 +265,7 @@ where
         } else {
             None
         };
+        let stats = StatsRunner::load(id.clone(), Arc::clone(&hubs), profile.clone(), now).await?;
         let help = Arc::new(HelpResponder::new(login.as_str(), &link, profile.help(&id).await?));
         let spotify = match spotify {
             Some(api) => {
@@ -277,6 +286,7 @@ where
             chat_on: on(Feature::Chat),
             triggers: triggers.clone(),
             minimes: minimes.clone(),
+            stats: Arc::clone(&stats),
             help: Arc::clone(&help),
             keeper: Arc::clone(&keeper),
             twitch,
@@ -297,6 +307,10 @@ where
             let (minimes, stop) = (Arc::clone(minimes), cancel.clone());
             supervise(name("Minimes"), cancel.clone(), move || Arc::clone(&minimes).prune_until(stop.clone()));
         }
+        {
+            let (stats, stop) = (Arc::clone(&stats), cancel.clone());
+            supervise(name("Stats"), cancel.clone(), move || Arc::clone(&stats).save_on_stop(stop.clone()));
+        }
         if on(Feature::Alerts) {
             let (shared, sockets, stop) = (Arc::clone(&shared), Arc::clone(&sockets), cancel.clone());
             let events =
@@ -308,7 +322,7 @@ where
             let chat = move || Arc::clone(&shared).read_chat(Arc::clone(&sockets), irc_url.clone(), stop.clone());
             supervise(name("Chat"), cancel.clone(), chat);
         }
-        Ok(Some(Self { id, login, keeper, triggers, minimes, help, spotify, cancel }))
+        Ok(Some(Self { id, login, keeper, triggers, minimes, help, spotify, stats, cancel }))
     }
 }
 

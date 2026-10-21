@@ -6,9 +6,10 @@ import type { ChatRemoval } from "./ChatRemoval.ts";
 import type { FxEvent } from "./FxEvent.ts";
 import type { Minime } from "./Minime.ts";
 import type { PublicSettings } from "./PublicSettings.ts";
+import type { StreamStats } from "./StreamStats.ts";
 import type { Track } from "./Track.ts";
 
 /**
  * A message to the overlays (SSE). `minimes`: the whole current list; `minimeChat`: this chatter wrote.
  */
-export type ServerMessage = { "type": "alert", alert: Alert, } | { "type": "music", track: Track | null, } | { "type": "fx", event: FxEvent, } | { "type": "settings", settings: PublicSettings, } | { "type": "minimes", minimes: Array<Minime>, } | { "type": "minimeChat", login: string, } | { "type": "chat", message: ChatMessage, } | { "type": "remove", removal: ChatRemoval, };
+export type ServerMessage = { "type": "alert", alert: Alert, } | { "type": "music", track: Track | null, } | { "type": "fx", event: FxEvent, } | { "type": "settings", settings: PublicSettings, } | { "type": "minimes", minimes: Array<Minime>, } | { "type": "minimeChat", login: string, } | { "type": "chat", message: ChatMessage, } | { "type": "remove", removal: ChatRemoval, } | { "type": "stats", stats: StreamStats, };

@@ -19,7 +19,7 @@ use serde_json::json;
 
 use crate::app::App;
 use crate::clock::now_ms;
-use crate::errors::{json, text};
+use crate::errors::{json, server_error, text};
 use crate::guard::cookie;
 use crate::handlers::Call;
 
@@ -55,8 +55,10 @@ pub async fn stream(app: &App, id: &StreamerId, uri: &Uri, cookies: Option<&str>
     let runtime = app.runtimes.get(id);
     let minimes = runtime.as_ref().and_then(|runtime| runtime.minimes.as_ref().map(|minimes| minimes.current()));
     let track = runtime.as_ref().and_then(|runtime| runtime.spotify.as_ref().and_then(|spotify| spotify.current()));
+    let stats = runtime.as_ref().map(|runtime| runtime.stats.current());
     let mut first = vec![Event::default().comment("connected"), data(&ServerMessage::Music { track })];
     first.extend(minimes.map(|minimes| data(&ServerMessage::Minimes { minimes })));
+    first.extend(stats.map(|stats| data(&ServerMessage::Stats { stats })));
     let live = stream::unfold(subscription, |mut subscription| async move {
         let message = subscription.next().await?;
         Some((Event::default().data(&*message), subscription))
@@ -79,4 +81,24 @@ pub fn test_alert(call: &Call<'_>) -> Response {
     }
     app.hubs.emit(id, &ServerMessage::Alert { alert: sample_alert(kind) });
     json(&json!({ "ok": true }), 200)
+}
+
+/// Dashboard: clears the stream stats of the own streamer. A running runtime stores and sends them at once; without
+/// one the stored count is cleared directly.
+pub async fn reset_stats(call: Call<'_>) -> Response {
+    let app = call.app;
+    let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
+    if let Some(runtime) = app.runtimes.get(id) {
+        runtime.stats.reset().await;
+        return json(&json!({ "ok": true }), 200);
+    }
+    let mut tally = match app.stores.profile.stats(id).await {
+        Ok(tally) => tally,
+        Err(error) => return server_error(&error.to_string()),
+    };
+    tally.reset(now_ms());
+    match app.stores.profile.save_stats(id, &tally, now_ms()).await {
+        Ok(()) => json(&json!({ "ok": true }), 200),
+        Err(error) => server_error(&error.to_string()),
+    }
 }

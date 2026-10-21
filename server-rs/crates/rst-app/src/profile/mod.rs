@@ -10,6 +10,7 @@ use rst_domain::minimes::parse_minime_file;
 use rst_domain::minimes::roster::MinimeState;
 use rst_domain::settings::file::{SettingsFile, first_settings, parse_settings_file};
 use rst_domain::spotify::SpotifyTokens;
+use rst_domain::stats::StreamTally;
 use rst_domain::triggers::{Trigger, compile};
 use rst_domain::twitch::tokens::TwitchTokens;
 use serde_json::Value;
@@ -24,6 +25,7 @@ const SETTINGS: &str = "settings";
 const TRIGGERS: &str = "triggers";
 const HELP: &str = "help";
 const MINIMES: &str = "minimes";
+const STATS: &str = "stats";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ProfileError {
@@ -186,6 +188,20 @@ impl<S: RecordStore, K: KeyStore> Profile<S, K> {
     pub async fn save_minimes(&self, id: &StreamerId, state: &MinimeState, now: i64) -> Result<(), VaultError> {
         self.vault.put_json(id, MINIMES, "", state, now).await
     }
+
+    /// The stream stats with the chatters; empty before the first save
+    ///
+    /// # Errors
+    /// `Unreadable` after the streamer was shredded.
+    pub async fn stats(&self, id: &StreamerId) -> Result<StreamTally, VaultError> {
+        Ok(self.vault.get_json(id, STATS, "").await?.unwrap_or_default())
+    }
+
+    /// # Errors
+    /// See [`Vault::put`].
+    pub async fn save_stats(&self, id: &StreamerId, tally: &StreamTally, now: i64) -> Result<(), VaultError> {
+        self.vault.put_json(id, STATS, "", tally, now).await
+    }
 }
 
 #[cfg(test)]
@@ -266,6 +282,21 @@ mod tests {
         assert_eq!(profile.minimes(&neo()).await.expect("minimes"), state());
         profile.delete_twitch_tokens(&neo()).await.expect("delete");
         assert_eq!(profile.twitch_tokens(&neo()).await.expect("twitch"), None);
+    }
+
+    #[tokio::test]
+    async fn stats_round_trip() {
+        let profile = profile();
+        profile.vault.keys().create(&neo()).await.expect("key");
+        assert_eq!(profile.stats(&neo()).await.expect("empty"), StreamTally::default());
+        let mut tally = StreamTally::default();
+        tally.record_chat("smith", 3);
+        profile.save_stats(&neo(), &tally, 4).await.expect("save");
+        let mut again = profile.stats(&neo()).await.expect("stats");
+        assert_eq!(again, tally);
+        // The chatters survive the round trip: the same login does not count twice
+        again.record_chat("Smith", 5);
+        assert_eq!(again.snapshot().chatters, 1);
     }
 
     #[tokio::test]

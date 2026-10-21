@@ -12,6 +12,7 @@ use rst_domain::identity::values::StreamerId;
 use rst_domain::minimes::roster::Minime;
 use rst_domain::settings::file::PublicSettings;
 use rst_domain::spotify::Track;
+use rst_domain::stats::StreamStats;
 use rst_domain::triggers::FxEvent;
 use rst_domain::twitch::alerts::Alert;
 use serde::Serialize;
@@ -43,6 +44,8 @@ pub enum ServerMessage {
     Chat { message: ChatMessage },
     #[serde(rename = "remove")]
     Remove { removal: ChatRemoval },
+    #[serde(rename = "stats")]
+    Stats { stats: StreamStats },
 }
 
 #[derive(Debug)]
