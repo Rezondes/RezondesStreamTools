@@ -42,6 +42,7 @@ function clipDraw(build: (loaded: typeof Clips3d) => Draw, standIn: Draw, captio
   let picture: Draw | null = null;
   return (context, time) => {
     if (!parts) {
+      context.clearRect(0, 0, width, height);
       standIn(context, time);
       return;
     }
@@ -59,7 +60,7 @@ export function dachdeckerClips(settings: SettingValues, login: string): RenderC
     blueprint: values.blueprint, line: values.line, accent: values.accent, copper: values.copper, shadow: values.page,
   };
   const banner = (size: { width: number; height: number }): BannerOptions => ({
-    width: size.width, height: size.height, loop: values.bannerDuration, font: values.font, titleSize: values.titleSize, fontSize: values.fontSize,
+    width: size.width, height: size.height, loop: values.bannerDuration, font: values.font, fontSize: values.fontSize, alertWidth: values.alertWidth,
     grid: values.bannerGrid, glow: values.glow, rain: values.bannerRain, drops: values.bannerRainCount, seed: values.seed,
     colors: { blueprint: values.blueprint, page: values.page, accent: values.accent, copper: values.copper, line: values.line, rainColor: values.rain },
   });
@@ -81,13 +82,15 @@ export function dachdeckerClips(settings: SettingValues, login: string): RenderC
     {
       name: "profile", feature: "banners", group: "Banner", font, ...PROFILE_SIZE, duration: profile.loop, cut: null,
       draw: (context, time) => drawProfile(context, time, profile, {
-        title: fillTemplate(values.profileTitle, names), overline: fillTemplate(values.profileOverline, names), subtitle: fillTemplate(values.profileSubtitle, names),
+        dim: fillTemplate(values.profileOverline, names), tag: fillTemplate(values.profileTag, names),
+        title: fillTemplate(values.profileTitle, names), line: fillTemplate(values.profileSubtitle, names),
       }),
     },
     {
       name: "offline", feature: "banners", group: "Banner", font, ...OFFLINE_SIZE, duration: offline.loop, cut: null,
       draw: (context, time) => drawOffline(context, time, offline, {
-        title: fillTemplate(values.offlineText, names), overline: fillTemplate(values.offlineOverline, names), subtitle: fillTemplate(values.offlineSubtitle, names),
+        dim: fillTemplate(values.offlineOverline, names), tag: fillTemplate(values.offlineTag, names),
+        title: fillTemplate(values.offlineText, names), line: fillTemplate(values.offlineSubtitle, names),
       }),
     },
   ];

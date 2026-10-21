@@ -204,9 +204,11 @@ export type DachdeckerValues = {
   readonly stingerRollSize: number;
   readonly profileTitle: string;
   readonly profileOverline: string;
+  readonly profileTag: string;
   readonly profileSubtitle: string;
   readonly offlineText: string;
   readonly offlineOverline: string;
+  readonly offlineTag: string;
   readonly offlineSubtitle: string;
   readonly bannerGrid: number;
   readonly bannerDuration: number;

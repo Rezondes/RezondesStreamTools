@@ -1786,11 +1786,19 @@
       "maxLength": 200
     },
     {
+      "key": "profileTag",
+      "type": "text",
+      "label": "Profilbanner: Überzeile ({channel})",
+      "group": "Banner",
+      "default": "DACHDECKEREI",
+      "maxLength": 200
+    },
+    {
       "key": "profileSubtitle",
       "type": "text",
       "label": "Profilbanner: Unterzeile ({channel})",
       "group": "Banner",
-      "default": "LIVE VOM DACH",
+      "default": "Live vom Dach!",
       "maxLength": 200
     },
     {
@@ -1810,11 +1818,19 @@
       "maxLength": 200
     },
     {
+      "key": "offlineTag",
+      "type": "text",
+      "label": "Offline-Banner: Überzeile ({channel})",
+      "group": "Banner",
+      "default": "FEIERABEND",
+      "maxLength": 200
+    },
+    {
       "key": "offlineSubtitle",
       "type": "text",
       "label": "Offline-Banner: Unterzeile ({channel})",
       "group": "Banner",
-      "default": "DACH DICHT // BIS ZUM NÄCHSTEN STREAM",
+      "default": "Dach dicht, bis zum nächsten Stream!",
       "maxLength": 200
     },
     {
@@ -1822,7 +1838,7 @@
       "type": "number",
       "label": "Bauplan: Rastergrösse",
       "group": "Banner",
-      "default": 40,
+      "default": 50,
       "min": 10,
       "max": 200,
       "unit": "px"

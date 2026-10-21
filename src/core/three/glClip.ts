@@ -32,6 +32,8 @@ export function glClip(frame: ClipFrame, setup: () => GlSetup, makeRenderer: (wi
     current ??= { renderer: makeRenderer(frame.width, frame.height), built: setup() };
     current.built.update(time);
     current.renderer.render(current.built.scene, current.built.camera);
+    // Clear first: transparent parts of the frame must not keep the frame before
+    context.clearRect(0, 0, frame.width, frame.height);
     context.drawImage(current.renderer.canvas, 0, 0, frame.width, frame.height);
     if (time >= last - EPSILON) {
       current.built.dispose?.();

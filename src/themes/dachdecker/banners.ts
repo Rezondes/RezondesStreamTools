@@ -1,24 +1,31 @@
-// Banners of the Dachdecker theme (DESIGN-DACHDECKER.md "Banner") in 2D, drawn like the alert sign: a blueprint card with
-// a fine grid, a white edge, terracotta corner marks, a dimension line with a spaced overline and the title in
-// terracotta with a glow. The profile banner carries the channel name next to a gable drawing, the offline banner the
-// offline text under the roof in the rain. Every moving part is a whole number of laps per loop, so the last frame meets
+// Banners of the Dachdecker theme (DESIGN-DACHDECKER.md "Banner") in 2D, built like the alert sign of the overlays
+// (scenes/Alerts.tsx, overlays.css): a dimension line with its text above a blueprint sheet with millimetre grid, white
+// edge and terracotta corner marks; inside the spaced head line in copper, the name in terracotta with a glow, the line
+// in white and the timer bar. All sizes are those of the alert, scaled from its width to the width of the sign. The
+// offline banner adds rain behind the sign. Every moving part is a whole number of laps per loop, so the last frame meets
 // the first. Check: banners.check.ts.
 import { hash } from "../../core/hash.ts";
 
 export type BannerColors = { blueprint: string; page: string; accent: string; copper: string; line: string; rainColor: string };
-export type BannerText = { title: string; overline: string; subtitle: string };
+// dim: text over the dimension line, tag: head line, title: the name, line: the line under it
+export type BannerText = { dim: string; tag: string; title: string; line: string };
 export type BannerOptions = {
-  width: number; height: number; loop: number; font: string; titleSize: number; fontSize: number; grid: number; glow: number;
+  width: number; height: number; loop: number; font: string; fontSize: number; alertWidth: number; grid: number; glow: number;
   rain: boolean; drops: number; seed: number; colors: BannerColors;
 };
 type Box = { x: number; y: number; w: number; h: number };
 
+// Sizes of the alert sign in px at the alert width (the var() defaults of overlays.css and theme.css)
+const SIGN = {
+  pad: 18, padX: 26, gap: 10, nameGap: 6, head: 20, headTrack: 6, nameScale: 1.9, nameTrack: 4, nameGlow: 10,
+  dimText: 16, dimTrack: 3, dimGap: 2, dimHeight: 24, slash: 7, fine: 10, corner: 18, cornerLine: 3, cornerOut: 8, timer: 3,
+};
+// Share of the banner width the sign takes, the grid strength of sheet and page, the line weights
+const SIGN_WIDTH = { profile: 0.78, offline: 0.5 };
+const GRID = { major: 0.1, fine: 0.04, page: 0.04 };
+const SHEET_OPACITY = 0.9;
 // Rain: falls per loop between 2 and 4, streak length and slant as shares of the height
 const RAIN = { laps: [2, 3, 4], length: 0.035, slant: 0.006, opacity: 0.55 };
-// Grid: every fifth line is stronger; corner marks as shares of the height; spacing of the overline
-const GRID = { major: 5, page: 0.06, card: 0.09 };
-const MARK = { length: 0.045, width: 0.008, gap: 0.012 };
-const SPACING = "0.32em";
 const TAU = Math.PI * 2;
 
 // Fallen share of drop index at time (0 at the top, 1 at the bottom): a whole number of falls per loop, so time 0 and
@@ -28,136 +35,89 @@ export function dropFall(index: number, time: number, loop: number, seed: number
   return (hash(seed * 17 + index) + (laps * time) / loop) % 1;
 }
 
-// Position of the marker running along the dimension line (0 to 1), once per loop there and back
-export const markerAt = (time: number, loop: number) => (1 - Math.cos((time / loop) * TAU)) / 2;
+// Length of the timer bar (0 to 1): it pulls back like the alert timer and runs out again, once per loop
+export const timerAt = (time: number, loop: number) => (1 + Math.cos((time / loop) * TAU)) / 2;
 
-function grid(context: CanvasRenderingContext2D, box: Box, step: number, color: string, faint: number) {
+function grid(context: CanvasRenderingContext2D, box: Box, step: number, color: string, alpha: number) {
   context.save();
   context.strokeStyle = color;
+  context.globalAlpha = alpha;
   context.lineWidth = 1;
-  const strength = (index: number) => { context.globalAlpha = index % GRID.major === 0 ? faint * 2 : faint; };
-  for (let index = 0, at = box.x; at <= box.x + box.w; index++, at += step) {
-    strength(index);
-    context.beginPath();
+  context.beginPath();
+  for (let at = box.x; at <= box.x + box.w; at += step) {
     context.moveTo(at, box.y);
     context.lineTo(at, box.y + box.h);
-    context.stroke();
   }
-  for (let index = 0, at = box.y; at <= box.y + box.h; index++, at += step) {
-    strength(index);
-    context.beginPath();
+  for (let at = box.y; at <= box.y + box.h; at += step) {
     context.moveTo(box.x, at);
     context.lineTo(box.x + box.w, at);
-    context.stroke();
   }
+  context.stroke();
   context.restore();
 }
 
-function background(context: CanvasRenderingContext2D, options: BannerOptions) {
-  const { width, height, colors } = options;
-  const fade = context.createLinearGradient(0, 0, 0, height);
-  fade.addColorStop(0, colors.blueprint);
-  fade.addColorStop(1, colors.page);
-  context.fillStyle = fade;
-  context.fillRect(0, 0, width, height);
-  grid(context, { x: 0, y: 0, w: width, h: height }, options.grid, colors.line, GRID.page);
-}
-
-// The sign: blueprint card with a finer grid, white edge and terracotta corner marks top left and bottom right
-function sign(context: CanvasRenderingContext2D, box: Box, options: BannerOptions) {
-  const { colors, height } = options;
-  context.fillStyle = colors.blueprint;
-  context.fillRect(box.x, box.y, box.w, box.h);
-  grid(context, box, options.grid / 2, colors.line, GRID.card);
-  context.strokeStyle = colors.line;
-  context.lineWidth = Math.max(1, height / 600);
-  context.strokeRect(box.x, box.y, box.w, box.h);
-  const length = height * MARK.length;
-  const gap = height * MARK.gap;
-  context.strokeStyle = colors.accent;
-  context.lineWidth = height * MARK.width;
-  context.beginPath();
-  context.moveTo(box.x - gap, box.y - gap + length);
-  context.lineTo(box.x - gap, box.y - gap);
-  context.lineTo(box.x - gap + length, box.y - gap);
-  context.moveTo(box.x + box.w + gap - length, box.y + box.h + gap);
-  context.lineTo(box.x + box.w + gap, box.y + box.h + gap);
-  context.lineTo(box.x + box.w + gap, box.y + box.h + gap - length);
-  context.stroke();
-}
-
-function text(context: CanvasRenderingContext2D, value: string, at: readonly [number, number], size: number, color: string, options: BannerOptions, spacing = "0em", glow = false) {
-  if (!value) return;
+function text(context: CanvasRenderingContext2D, value: string, at: readonly [number, number], look: { size: number; weight: number; track: number; color: string; glow?: number }, font: string) {
   context.save();
-  context.font = `700 ${size}px "${options.font}"`;
-  context.letterSpacing = spacing;
+  context.font = `${look.weight} ${look.size}px "${font}"`;
+  context.letterSpacing = `${look.track}px`;
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.fillStyle = color;
-  context.shadowColor = glow ? color : "transparent";
-  context.shadowBlur = glow ? (size / 3) * options.glow : 0;
+  context.fillStyle = look.color;
+  context.shadowColor = look.glow ? look.color : "transparent";
+  context.shadowBlur = look.glow ?? 0;
   context.fillText(value, ...at);
   context.restore();
 }
 
-// Dimension line with slanted ticks and the overline above it; a terracotta marker runs along it
-function dimension(context: CanvasRenderingContext2D, from: number, to: number, y: number, label: string, marker: number, options: BannerOptions) {
-  const { colors, fontSize, height } = options;
-  const tick = fontSize * 0.6;
+// Dimension line with end strokes and slashes, the text in copper above it; y is the line
+function dimension(context: CanvasRenderingContext2D, box: Box, y: number, label: string, scale: number, options: BannerOptions) {
+  const half = (SIGN.dimHeight / 2) * scale;
+  const slash = SIGN.slash * scale;
   context.save();
-  context.strokeStyle = colors.line;
-  context.lineWidth = Math.max(1, height / 700);
+  context.strokeStyle = options.colors.line;
+  context.lineWidth = Math.max(1, 1.5 * scale);
   context.beginPath();
-  context.moveTo(from, y);
-  context.lineTo(to, y);
-  for (const end of [from, to]) {
-    context.moveTo(end, y - tick);
-    context.lineTo(end, y + tick);
-    context.moveTo(end - tick / 2, y + tick / 2);
-    context.lineTo(end + tick / 2, y - tick / 2);
+  context.moveTo(box.x, y);
+  context.lineTo(box.x + box.w, y);
+  for (const end of [box.x, box.x + box.w]) {
+    context.moveTo(end, y - half);
+    context.lineTo(end, y + half);
+    context.moveTo(end - slash, y + slash);
+    context.lineTo(end + slash, y - slash);
   }
   context.stroke();
-  context.fillStyle = colors.accent;
-  context.beginPath();
-  context.arc(from + (to - from) * marker, y, tick / 3, 0, TAU);
-  context.fill();
   context.restore();
-  text(context, label, [(from + to) / 2, y - tick * 1.4], fontSize * 0.7, colors.copper, options, SPACING);
+  if (label) text(context, label, [box.x + box.w / 2, y - half - (SIGN.dimGap + SIGN.dimText / 2) * scale], { size: SIGN.dimText * scale, weight: 700, track: SIGN.dimTrack * scale, color: options.colors.copper }, options.font);
 }
 
-// Gable of plan lines: roof triangle in terracotta with a light fill, king post, collar tie and struts in white
-function gable(context: CanvasRenderingContext2D, x: number, base: number, span: number, rise: number, options: BannerOptions) {
-  const { colors, height } = options;
-  const top = base - rise;
+// The sheet: blueprint with millimetre grid, white edge, terracotta corner marks top left and bottom right
+function sheet(context: CanvasRenderingContext2D, box: Box, scale: number, options: BannerOptions) {
+  const { colors } = options;
   context.save();
-  context.lineWidth = Math.max(1, height / 400);
-  context.beginPath();
-  context.moveTo(x - span / 2, base);
-  context.lineTo(x, top);
-  context.lineTo(x + span / 2, base);
-  context.closePath();
-  context.fillStyle = colors.accent;
-  context.globalAlpha = 0.18;
-  context.fill();
-  context.globalAlpha = 1;
-  context.strokeStyle = colors.accent;
-  context.stroke();
-  context.strokeStyle = colors.line;
-  context.globalAlpha = 0.7;
-  context.beginPath();
-  context.moveTo(x, top);
-  context.lineTo(x, base);
-  context.moveTo(x - span / 4, base - rise / 2);
-  context.lineTo(x + span / 4, base - rise / 2);
-  context.moveTo(x - span / 4, base);
-  context.lineTo(x, base - rise / 2);
-  context.lineTo(x + span / 4, base);
-  context.stroke();
+  context.globalAlpha = SHEET_OPACITY;
+  context.fillStyle = colors.blueprint;
+  context.fillRect(box.x, box.y, box.w, box.h);
   context.restore();
+  grid(context, box, SIGN.fine * scale, colors.line, GRID.fine);
+  grid(context, box, options.grid * scale, colors.line, GRID.major);
+  context.strokeStyle = colors.line;
+  context.lineWidth = Math.max(1, scale);
+  context.strokeRect(box.x, box.y, box.w, box.h);
+  const out = SIGN.cornerOut * scale;
+  const corner = SIGN.corner * scale;
+  context.strokeStyle = colors.accent;
+  context.lineWidth = SIGN.cornerLine * scale;
+  context.beginPath();
+  context.moveTo(box.x - out, box.y - out + corner);
+  context.lineTo(box.x - out, box.y - out);
+  context.lineTo(box.x - out + corner, box.y - out);
+  context.moveTo(box.x + box.w + out - corner, box.y + box.h + out);
+  context.lineTo(box.x + box.w + out, box.y + box.h + out);
+  context.lineTo(box.x + box.w + out, box.y + box.h + out - corner);
+  context.stroke();
 }
 
 function rain(context: CanvasRenderingContext2D, time: number, options: BannerOptions) {
-  if (!options.rain) return;
   const { width, height, colors } = options;
   const length = height * RAIN.length;
   context.save();
@@ -175,30 +135,48 @@ function rain(context: CanvasRenderingContext2D, time: number, options: BannerOp
   context.restore();
 }
 
-// Profile banner: the sign over the width minus a margin, gable on the left, name and subtitle on the right
-export function drawProfile(context: CanvasRenderingContext2D, time: number, options: BannerOptions, words: BannerText) {
-  const { width, height, titleSize, fontSize, colors } = options;
-  background(context, options);
-  const margin = height * 0.16;
-  const box = { x: margin, y: margin * 1.3, w: width - margin * 2, h: height - margin * 2.3 };
-  dimension(context, box.x, box.x + box.w, margin * 0.75, words.overline, markerAt(time, options.loop), options);
-  sign(context, box, options);
-  const span = box.h * 1.1;
-  gable(context, box.x + span * 0.75, box.y + box.h * 0.78, span, box.h * 0.5, options);
-  const middle = box.x + span * 1.4 + (box.w - span * 1.4) / 2;
-  text(context, words.title, [middle, box.y + box.h * 0.45], titleSize, colors.accent, options, "0.04em", true);
-  text(context, words.subtitle, [middle, box.y + box.h * 0.72], fontSize, colors.line, options, SPACING);
+// The alert sign scaled to share of the banner width, centred: dimension line, sheet, head line, name, line, timer bar
+function banner(context: CanvasRenderingContext2D, time: number, options: BannerOptions, words: BannerText, share: number, wet: boolean) {
+  const { width, height, colors, fontSize, font } = options;
+  context.clearRect(0, 0, width, height);
+  context.fillStyle = colors.page;
+  context.fillRect(0, 0, width, height);
+  grid(context, { x: 0, y: 0, w: width, h: height }, options.grid, colors.line, GRID.page);
+  if (wet) rain(context, time, options);
+
+  const signWidth = width * share;
+  const scale = signWidth / options.alertWidth;
+  const sizes = { head: SIGN.head * scale, name: fontSize * SIGN.nameScale * scale, line: fontSize * scale, timer: SIGN.timer * scale };
+  const rows = [words.tag ? sizes.head : 0, sizes.name + 2 * SIGN.nameGap * scale, words.line ? sizes.line : 0];
+  const inner = rows.reduce((sum, row) => sum + row, 0) + SIGN.gap * scale + sizes.timer;
+  const dimBlock = (SIGN.dimHeight + SIGN.dimGap + SIGN.dimText) * scale + SIGN.gap * scale;
+  const signHeight = inner + 2 * SIGN.pad * scale;
+  const top = (height - dimBlock - signHeight) / 2 + dimBlock;
+  const box = { x: (width - signWidth) / 2, y: top, w: signWidth, h: signHeight };
+  dimension(context, box, top - SIGN.gap * scale - (SIGN.dimHeight / 2) * scale, words.dim, scale, options);
+  sheet(context, box, scale, options);
+
+  const middle = width / 2;
+  let y = top + SIGN.pad * scale;
+  if (words.tag) {
+    text(context, words.tag, [middle, y + sizes.head / 2], { size: sizes.head, weight: 700, track: SIGN.headTrack * scale, color: colors.copper }, font);
+    y += sizes.head;
+  }
+  y += SIGN.nameGap * scale;
+  text(context, words.title, [middle, y + sizes.name / 2], { size: sizes.name, weight: 700, track: SIGN.nameTrack * scale, color: colors.accent, glow: SIGN.nameGlow * scale * options.glow }, font);
+  y += sizes.name + SIGN.nameGap * scale;
+  if (words.line) {
+    text(context, words.line, [middle, y + sizes.line / 2], { size: sizes.line, weight: 500, track: 0, color: colors.line }, font);
+    y += sizes.line;
+  }
+  y += SIGN.gap * scale;
+  const barWidth = box.w - 2 * SIGN.padX * scale;
+  context.fillStyle = colors.accent;
+  context.fillRect(box.x + SIGN.padX * scale, y, barWidth * timerAt(time, options.loop), sizes.timer);
 }
 
-// Offline banner: gable over the sign in the middle, rain behind the sign, the offline text on it
-export function drawOffline(context: CanvasRenderingContext2D, time: number, options: BannerOptions, words: BannerText) {
-  const { width, height, titleSize, fontSize, colors } = options;
-  background(context, options);
-  gable(context, width / 2, height * 0.5, width * 0.42, height * 0.3, options);
-  rain(context, time, options);
-  const box = { x: width * 0.24, y: height * 0.58, w: width * 0.52, h: height * 0.22 };
-  dimension(context, box.x, box.x + box.w, box.y - fontSize * 1.4, words.overline, markerAt(time, options.loop), options);
-  sign(context, box, options);
-  text(context, words.title, [width / 2, box.y + box.h * 0.4], titleSize * 1.5, colors.accent, options, "0.04em", true);
-  text(context, words.subtitle, [width / 2, box.y + box.h * 0.78], fontSize, colors.line, options, SPACING);
-}
+export const drawProfile = (context: CanvasRenderingContext2D, time: number, options: BannerOptions, words: BannerText) =>
+  banner(context, time, options, words, SIGN_WIDTH.profile, false);
+
+export const drawOffline = (context: CanvasRenderingContext2D, time: number, options: BannerOptions, words: BannerText) =>
+  banner(context, time, options, words, SIGN_WIDTH.offline, options.rain);

@@ -13,21 +13,22 @@ const setup = () => {
   log.push("setup");
   return { scene: new Scene(), camera: new Camera(), update: (time: number) => log.push(`update ${time}`), dispose: () => log.push("scene disposed") };
 };
-const context = { drawImage: () => log.push("draw") } as unknown as CanvasRenderingContext2D;
+const context = { clearRect: () => log.push("clear"), drawImage: () => log.push("draw") } as unknown as CanvasRenderingContext2D;
 
+// Every frame clears the 2D context first, so transparent parts do not keep the frame before
 // 1 second at 4 fps: frames at 0, 0.25, 0.5, 0.75; the order of the times does not matter
 const draw = glClip({ width: 1920, height: 1080, duration: 1, fps: 4 }, setup, fakeRenderer);
 draw(context, 0.5);
 draw(context, 0.25);
 draw(context, 0.5);
-assert.deepEqual(log, ["renderer", "setup", "update 0.5", "render", "draw", "update 0.25", "render", "draw", "update 0.5", "render", "draw"]);
+assert.deepEqual(log, ["renderer", "setup", "update 0.5", "render", "clear", "draw", "update 0.25", "render", "clear", "draw", "update 0.5", "render", "clear", "draw"]);
 
 // The last frame frees scene and renderer; a later draw builds both again
 log.length = 0;
 draw(context, 0.75);
-assert.deepEqual(log, ["update 0.75", "render", "draw", "scene disposed", "renderer disposed"]);
+assert.deepEqual(log, ["update 0.75", "render", "clear", "draw", "scene disposed", "renderer disposed"]);
 log.length = 0;
 draw(context, 0);
-assert.deepEqual(log, ["renderer", "setup", "update 0", "render", "draw"]);
+assert.deepEqual(log, ["renderer", "setup", "update 0", "render", "clear", "draw"]);
 
 console.log("glClip ok");
