@@ -57,11 +57,15 @@ const World = memo(function World({ values, clock, schedule }: Parts) {
       </group>
       <House
         house={home} clock={clock} schedule={schedule} lights={values.windowsOn}
-        line={values.line} lineOpacity={values.lineOpacity} wall={values.card} glow={values.accent} chimney={values.slateDark}
+        line={values.line} lineOpacity={values.lineOpacity} wall={values.houseWall} timber={values.houseTimber} stone={values.slate} pane={values.slateDark}
+        glow={values.accent} chimney={values.slateDark}
       />
       {values.smokeOn && <Smoke base={chimneyTop(home)} count={values.smokeAmount} clock={clock} seed={values.seed} color={values.muted} />}
       {values.wreathOn && (
-        <Wreath at={home.wreath} clock={clock} schedule={schedule} green={values.wreathGreen} pole={values.copper} ribbons={values.ribbonColors} wind={values.ribbonWind} />
+        <Wreath
+          at={home.wreath} height={values.wreathPole} clock={clock} schedule={schedule} green={values.wreathGreen} pole={values.copper}
+          ribbons={values.ribbonColors} wind={values.ribbonWind}
+        />
       )}
       {values.fireworksOn && (
         <Fireworks

@@ -18,6 +18,8 @@ export function useScreen(settings: { countdownSeconds: number; ticker: string; 
     now,
     start,
     ...countdown(start, end, now),
+    // Seconds from the start of the scene to the end of the countdown (0 without countdown)
+    total: Math.max(0, (end - start) / SECOND_MS),
     away: (now - start) / SECOND_MS,
     ticker: params.get("ticker") ?? settings.ticker,
     next: params.get("next") ?? settings.next,

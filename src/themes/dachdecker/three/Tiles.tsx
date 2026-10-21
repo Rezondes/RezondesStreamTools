@@ -4,7 +4,7 @@
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
-  BoxGeometry, BufferAttribute, BufferGeometry, Color, CylinderGeometry, Euler, type InstancedMesh, LineBasicMaterial, Matrix4, MeshBasicMaterial, MeshPhongMaterial,
+  BoxGeometry, BufferAttribute, BufferGeometry, Color, CylinderGeometry, Euler, type InstancedMesh, LineBasicMaterial, Matrix4, type Mesh, MeshBasicMaterial, MeshPhongMaterial,
   Quaternion, Vector3,
 } from "three";
 import { mergedEdges } from "../../../core/three/edges.ts";
@@ -13,8 +13,12 @@ import { type Ridge, TILE, type Tile } from "../tiles.ts";
 
 // lit: shining in the light (BRB, Ending), otherwise flat colors like a drawing (Starting)
 type Colors = { slate: string; copper: string; brick: string; edge: string; lit: boolean };
-// ridge: copper pipe along the ridge (a fully covered roof), null without
-type Props = Colors & { tiles: readonly Tile[]; clock: BuildClock; step: BuildStep; ridge?: Ridge | null };
+// ridge: copper pipe along the ridge, shown once every tile has landed, null without; land: own landing of tile index
+// at time (default: one after the other in the step) with doneAt, the time when the last one is done
+type Props = Colors & {
+  tiles: readonly Tile[]; clock: BuildClock; step: BuildStep; ridge?: Ridge | null;
+  land?: (index: number, time: number) => number; doneAt?: number;
+};
 const RIDGE = { radius: 0.16, sides: 16 };
 
 // Shine of slate and copper, slate a little clear, edges at 55 %
@@ -47,7 +51,7 @@ function useLooks({ slate, copper, brick, edge, lit }: Colors) {
   return looks;
 }
 
-export default function Tiles({ tiles, clock, step, ridge = null, ...colors }: Props) {
+export default function Tiles({ tiles, clock, step, ridge = null, land, doneAt, ...colors }: Props) {
   const looks = useLooks(colors);
   const pipe = useMemo(() => (ridge ? new CylinderGeometry(RIDGE.radius, RIDGE.radius, ridge.length, RIDGE.sides) : null), [ridge]);
   useEffect(() => () => pipe?.dispose(), [pipe]);
@@ -67,21 +71,24 @@ export default function Tiles({ tiles, clock, step, ridge = null, ...colors }: P
   const slateMesh = useRef<InstancedMesh | null>(null);
   const copperMesh = useRef<InstancedMesh | null>(null);
   const meshes = { slate: slateMesh, copper: copperMesh };
+  const pipeMesh = useRef<Mesh | null>(null);
   const settled = useRef(false);
-  useEffect(() => { settled.current = false; }, [poses, step]);
+  useEffect(() => { settled.current = false; }, [poses, step, land, doneAt]);
+  const end = doneAt ?? stepEnd(step, poses.length);
 
   useFrame(() => {
     if (settled.current) return;
     const time = clock.time;
     const placed = poses.map((pose, index) => {
-      const size = Math.max(UNLANDED, landing(step, index, time));
+      const size = Math.max(UNLANDED, land ? land(index, time) : landing(step, index, time));
       const matrix = pose.matrix.clone().multiply(new Matrix4().makeScale(size, size, size));
       meshes[pose.mesh].current?.setMatrixAt(pose.slot, matrix);
       return matrix;
     });
     for (const mesh of [meshes.slate.current, meshes.copper.current]) if (mesh) mesh.instanceMatrix.needsUpdate = true;
     lines.setAttribute("position", new BufferAttribute(mergedEdges(placed, box), 3));
-    settled.current = time >= stepEnd(step, poses.length);
+    settled.current = time >= end;
+    if (pipeMesh.current) pipeMesh.current.visible = settled.current;
   });
 
   return (
@@ -90,7 +97,7 @@ export default function Tiles({ tiles, clock, step, ridge = null, ...colors }: P
       <instancedMesh key={`slate ${counts.slate}`} ref={meshes.slate} args={[box, looks.slate, counts.slate]} frustumCulled={false} />
       <instancedMesh key={`copper ${counts.copper}`} ref={meshes.copper} args={[box, looks.copper, counts.copper]} frustumCulled={false} />
       <lineSegments geometry={lines} material={looks.edge} frustumCulled={false} />
-      {ridge && pipe && <mesh geometry={pipe} material={looks.copper} position={ridge.center} rotation={[Math.PI / 2, 0, 0]} />}
+      {ridge && pipe && <mesh ref={pipeMesh} geometry={pipe} material={looks.copper} position={ridge.center} rotation={[Math.PI / 2, 0, 0]} visible={false} />}
     </>
   );
 }

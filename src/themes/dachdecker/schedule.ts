@@ -84,6 +84,19 @@ export function landing(step: BuildStep, index: number, time: number): number {
   return 1 + (OVERSHOOT + 1) * part ** 3 + OVERSHOOT * part ** 2;
 }
 
+// Covering the roof over the countdown: the first tiles land during the build like landing, the rest one after the
+// other until until (seconds), the last one done exactly then. Without time left after the build they simply follow on.
+export function coverLanding(step: BuildStep, index: number, time: number, first: number, total: number, until: number): number {
+  const built = stepEnd(step, first);
+  const rest = total - first;
+  if (index < first || rest <= 0 || until <= built) return landing(step, index, time);
+  const done = built + ((index - first + 1) / rest) * (until - built);
+  return landing({ ...step, start: done - step.duration }, 0, time);
+}
+
+// Time when the last tile of coverLanding is done
+export const coverEnd = (step: BuildStep, first: number, total: number, until: number) => Math.max(stepEnd(step, total), until > stepEnd(step, first) ? until : 0);
+
 // Time when the last of count beams or tiles of a step is done
 export const stepEnd = (step: BuildStep, count: number, groups = 1) => step.start + (groups - 1) * step.each + (count - 1) * step.stagger + step.duration;
 

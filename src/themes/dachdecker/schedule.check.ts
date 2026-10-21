@@ -1,7 +1,7 @@
 // Check for schedule.ts of the Dachdecker theme: order and times of the build, scaled with the speed, growth of a beam
 // and the camera ride. Runs with npm test.
 import assert from "node:assert/strict";
-import { BRB_VIEW, BUILD_STEPS, buildSchedule, cameraPose, endingPose, growth, landing, shakeAt, stepEnd, textsEnd } from "./schedule.ts";
+import { BRB_VIEW, BUILD_STEPS, buildSchedule, cameraPose, coverEnd, coverLanding, endingPose, growth, landing, shakeAt, stepEnd, textsEnd } from "./schedule.ts";
 
 const near = (actual: number, expected: number) => assert.ok(Math.abs(actual - expected) < 1e-9, `${actual} != ${expected}`);
 
@@ -31,6 +31,18 @@ assert.ok(landing(tiles, 0, tiles.start + tiles.duration * 0.6) > 1);
 near(landing(tiles, 0, tiles.start + tiles.duration), 1);
 near(landing(tiles, 4, 99), 1);
 near(stepEnd(normal.trusses, 7, 4), 1.4 + 3 * 0.35 + 6 * 0.04 + 0.5);
+
+// Covering over the countdown: the first tiles as in the build, the rest spread until the end, the last one lands then
+const until = 300;
+near(coverLanding(tiles, 2, 5, 10, 100, until), landing(tiles, 2, 5));
+near(coverLanding(tiles, 50, stepEnd(tiles, 10) + 1, 10, 100, until), 0);
+near(coverLanding(tiles, 99, until, 10, 100, until), 1);
+assert.ok(coverLanding(tiles, 99, until - tiles.duration - 0.01, 10, 100, until) <= 0);
+assert.ok(coverLanding(tiles, 40, until / 2, 10, 100, until) > 0.99);
+near(coverEnd(tiles, 10, 100, until), until);
+// Without countdown time the tiles simply follow on
+near(coverLanding(tiles, 50, 3, 10, 100, 0), landing(tiles, 50, 3));
+near(coverEnd(tiles, 10, 100, 0), stepEnd(tiles, 100));
 near(textsEnd(normal), 2.2 + 1.4 * 0.7 + 0.2);
 near(textsEnd(fast), (2.2 + 1.4 * 0.7) / 2 + 0.2);
 // The protocol shakes only right after the stamp

@@ -93,11 +93,14 @@ export type DachdeckerValues = {
   readonly endingBlock: boolean;
   readonly endingBlockLines: readonly string[];
   readonly wallHeight: number;
+  readonly houseWall: string;
+  readonly houseTimber: string;
   readonly windowsOn: boolean;
   readonly windowStep: number;
   readonly smokeOn: boolean;
   readonly smokeAmount: number;
   readonly wreathOn: boolean;
+  readonly wreathPole: number;
   readonly wreathGreen: string;
   readonly ribbonColors: readonly string[];
   readonly ribbonWind: number;
