@@ -38,14 +38,41 @@ const STARTING = {
   factions: step(4.2, 0.4),
   progress: step(3.6, 2.4),
   radio: step(4.4, 1.2),
+  // Ending only (PLAN-KOTH.md package 3): the report card, its rows counting up, the stamp
+  report: step(1.2, 0.5),
+  rows: step(1.8, 1, 0.25),
+  stamp: step(6, 0.35),
 };
 export type StepName = keyof typeof STARTING;
 export type Steps = Record<StepName, Step>;
 
+// Steps of the 3D world that build the hill; BRB and Ending show it built
+const BUILD_STEPS: readonly StepName[] = ["ground", "mast", "bags", "smoke", "flag", "dish", "wires", "markers"];
+// fixed: in the Ending the flag goes up again a moment after the scene opens
+const REHOIST = 0.6;
+
+const scaledBy = (speed: number) => (value: Step) => step(value.start / speed, value.duration / speed, value.stagger / speed);
+
 // Every step faster or slower; speed 2 builds in half the time
 export function startingSteps(speed: number): Steps {
-  const scaled = (value: Step) => step(value.start / speed, value.duration / speed, value.stagger / speed);
-  return Object.fromEntries(Object.entries(STARTING).map(([name, value]) => [name, scaled(value)])) as Steps;
+  return Object.fromEntries(Object.entries(STARTING).map(([name, value]) => [name, scaledBy(speed)(value)])) as Steps;
+}
+
+export type EndingTiming = { stampAt: number; countUpMs: number };
+const MS = 1000;
+
+// Steps of a screen: Starting builds the hill; BRB shows it built (the briefing still reveals itself); the Ending shows it
+// built, hoists the flag again and counts the report up until the stamp
+export function screenSteps(kind: "starting" | "brb" | "ending", speed: number, ending: EndingTiming): Steps {
+  const steps = startingSteps(speed);
+  if (kind === "starting") return steps;
+  for (const name of BUILD_STEPS) steps[name] = step(-CLOCK_SECONDS, steps[name].duration, steps[name].stagger);
+  if (kind === "ending") {
+    steps.flag = step(REHOIST / speed, STARTING.flag.duration / speed);
+    steps.rows = step(steps.rows.start, ending.countUpMs / MS, steps.rows.stagger);
+    steps.stamp = step(ending.stampAt, steps.stamp.duration);
+  }
+  return steps;
 }
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));

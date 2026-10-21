@@ -7,14 +7,11 @@ import { kothSettings } from "./settings.ts";
 import "./theme.css";
 
 const Screen = lazy(() => import("./scenes/Screen.tsx"));
-// Starting is the 3D world since the modernization (PLAN-KOTH.md package 2); BRB and Ending follow in package 3
-const Starting = lazy(() => import("./scenes/Starting.tsx"));
 
 export const kothView: ThemeView = {
   id: kothSettings.id,
   scenes: {
     ...screenScenes(Screen),
-    starting: Starting,
     alerts: lazy(() => import("./scenes/Alerts.tsx")),
     chat: lazy(() => import("./scenes/Chat.tsx")),
     cam: lazy(() => import("./scenes/Cam.tsx")),

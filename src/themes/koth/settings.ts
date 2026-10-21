@@ -35,6 +35,8 @@ const BANNER = "Banner";
 const WORLD = "Welt";
 const CAMP = "Lager";
 const CAMERA = "Kamera";
+const NIGHT = "BRB: Nacht";
+const DUSK = "Ending: Abend";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
 
@@ -74,9 +76,6 @@ const FIELDS = [
   number("fadeDuration", "Ein- und Ausblenden", GENERAL, 400, 0, 3000, "ms"),
   choice("locale", "Uhrzeit-Format", GENERAL, "de-DE", LOCALES),
 
-  inScene("starting", choice("timeStarting", "Tageszeit Starting", HILL, "morgen", TIMES)),
-  inScene("brb", choice("timeBrb", "Tageszeit BRB", HILL, "mittag", TIMES)),
-  inScene("ending", choice("timeEnding", "Tageszeit Ending", HILL, "abend", TIMES)),
   color("skyMorningTop", "Himmel Morgen oben", HILL, "#c9a77c"),
   color("skyMorningBottom", "Himmel Morgen unten", HILL, "#f0dcb4"),
   color("skyDayTop", "Himmel Mittag oben", HILL, "#6f9fc8"),
@@ -141,19 +140,38 @@ const FIELDS = [
   number("cameraHeight", "Höhe (m)", CAMERA, 12, 2, 60),
   number("cameraSpeed", "Kreisen: Tempo", CAMERA, 0.045, 0, 0.5, undefined, 0.005),
   number("buildSpeed", "Aufbau: Tempo", CAMERA, 1, 0.25, 4, undefined, 0.05),
+  // BRB at night and Ending with flares and report (PLAN-KOTH.md package 3); moon and searchlight light from the colors
+  // moon and sun of the group Hügel
+  color("brbSkyTop", "Himmel oben", NIGHT, "#0b1020"),
+  color("brbSkyHorizon", "Himmel am Horizont", NIGHT, "#2a3150"),
+  flag("moonOn", "Mond", NIGHT, true),
+  flag("searchlightOn", "Suchscheinwerfer", NIGHT, true),
+  number("searchlightSpeed", "Suchscheinwerfer: Tempo", NIGHT, 1, 0, 4, undefined, 0.1),
+  number("searchlightFrom", "Suchscheinwerfer: Winkel von (Grad)", NIGHT, -50, -90, 90),
+  number("searchlightTo", "Suchscheinwerfer: Winkel bis (Grad)", NIGHT, 40, -90, 90),
+  flag("campfireOn", "Lagerfeuer", NIGHT, true),
+  number("brbCameraHeight", "Kamera: Höhe (m)", NIGHT, 9, 2, 60),
+  color("endingSkyTop", "Himmel oben", DUSK, "#3a2a4a"),
+  color("endingSkyHorizon", "Himmel am Horizont", DUSK, "#e9a46a"),
+  flag("flaresOn", "Leuchtraketen", DUSK, true),
+  number("flaresEvery", "Leuchtraketen: alle", DUSK, 2.2, 0.5, 10, "s", 0.1),
+  // fixed: at most 400 sparks per flare
+  number("flareSparks", "Leuchtraketen: Funken", DUSK, 80, 10, 400),
+  flag("flareSound", "Leuchtraketen: Zischen", DUSK, false),
+  flag("reportOn", "Einsatzbericht", DUSK, true),
+  text("reportTitle", "Einsatzbericht: Titel", DUSK, "EINSATZBERICHT"),
+  lines("reportLines", "Einsatzbericht: Zeilen (Wert|Text)", DUSK, ["follows|Neue Rekruten", "subs|Verstärkung", "raids|Verbündete Trupps", "bits|Munition", "chatMessages|Funksprüche"], 8),
+  number("countUpMs", "Einsatzbericht: Hochzählen", DUSK, 1000, 0, 10000, "ms"),
+  text("stampText", "Stempel (leer = aus)", DUSK, "AUFTRAG ERFÜLLT"),
+  number("stampAt", "Stempel nach", DUSK, 6, 0, 60, "s", 0.5),
 
   inScene("starting", text("startingEyebrow", "Starting: Überzeile", SCREENS, "Einsatzbesprechung")),
   inScene("starting", text("startingTitle", "Starting: Titel", SCREENS, "Stream startet gleich")),
-  inScene("starting", text("startingNote", "Starting: Untertitel", SCREENS, "Alle Einheiten sammeln sich am Hügel.")),
   inScene("brb", text("brbEyebrow", "BRB: Überzeile", SCREENS, "Funkstille")),
   inScene("brb", text("brbTitle", "BRB: Titel", SCREENS, "Bin gleich zurück")),
-  inScene("brb", text("brbNote", "BRB: Untertitel", SCREENS, "Position halten.")),
   inScene("ending", text("endingEyebrow", "Ending: Überzeile", SCREENS, "Einsatzbericht")),
   inScene("ending", text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet")),
-  inScene("ending", text("endingNote", "Ending: Untertitel", SCREENS, "Hügel gehalten. Gute Arbeit.")),
   flag("mapGrid", "Lagekarte mit Raster", SCREENS, true),
-  number("mapMarkers", "Markierungen auf der Karte", SCREENS, 5, 0, 12),
-  number("signWidth", "Karte: Breite", SCREENS, 1100, 400, 1800, "px"),
   number("titleSize", "Titelgrösse", SCREENS, 104, 30, 240, "px"),
   inScene("starting", number("countdown", "Countdown-Standard", SCREENS, 300, 0, 86400, "s")),
   inScene("starting", text("countdownPrefix", "Countdown-Präfix", SCREENS, "T-")),
@@ -167,10 +185,7 @@ const FIELDS = [
   inScene("ending", lines("endingLines", "Sprüche Ending", SCREENS, ["Hügel gesichert ...", "Rückzug zur Basis ...", "Bis zum nächsten Einsatz!"])),
   number("linesEvery", "Sprüche wechseln alle", SCREENS, 6, 2, 120, "s"),
   text("ticker", "Ticker-Text (leer = aus)", SCREENS, "", 300),
-  choice("tickerStyle", "Ticker", SCREENS, "heli", ["heli", "leiste"]),
   number("tickerSpeed", "Ticker: Zeit pro Durchlauf", SCREENS, 30, 5, 300, "s"),
-  choice("powerOn", "Einschalten", SCREENS, "funkspruch", ["funkspruch", "blenden", "keins"]),
-  number("powerOnDuration", "Einschalten (Dauer)", SCREENS, 1600, 0, 10000, "ms"),
   inScene("starting", flag("briefingMapOn", "Starting: Lagekarte", SCREENS, true)),
   inScene("starting", text("briefingLabel", "Starting: Lagekarte Beschriftung", SCREENS, "LAGEKARTE  M 1:25 000")),
   inScene("starting", text("briefingTarget", "Starting: Lagekarte Ziel", SCREENS, "ZIEL: HÜGEL 301")),
@@ -338,9 +353,11 @@ const GROUP_SCENES = {
   [CAM]: ["cam"],
   [MUSIC]: ["music"],
   [FX]: ["fx"],
-  [WORLD]: ["starting"],
-  [CAMP]: ["starting"],
-  [CAMERA]: ["starting"],
+  [WORLD]: SCREEN_SCENES,
+  [CAMP]: SCREEN_SCENES,
+  [CAMERA]: SCREEN_SCENES,
+  [NIGHT]: ["brb"],
+  [DUSK]: ["ending"],
   [STINGER]: [],
   [BANNER]: [],
   [MINIME_COMMANDS]: ["minimes"],
@@ -360,8 +377,8 @@ const personalize = (login: string) => ({ channelName: capital(login) });
 
 // Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
 const BASIC = [
-  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "tower", "mountains", "smoke", "timeStarting",
-  "startingEyebrow", "startingTitle", "ticker", "timeBrb", "brbTitle", "brbNote", "timeEnding", "endingTitle", "endingNext", "alertStyle",
+  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "tower", "mountains", "smoke", "flagFaction",
+  "startingEyebrow", "startingTitle", "ticker", "brbTitle", "searchlightOn", "endingTitle", "flaresOn", "endingNext", "alertStyle",
   "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatStyle", "chatBadges",
   "camStyle", "camLabel", "camLive", "musicStyle", "musicHide", "fxIn", "fxOut", "soldierDefault", "soldierNames",
 ];

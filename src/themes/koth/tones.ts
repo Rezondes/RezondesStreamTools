@@ -24,3 +24,7 @@ export const COMBAT_TONES = {
   hit: (volume: number) => beep(120, 140, 0, volume, "triangle"),
   revive: (volume: number) => { beep(440, 140, 0, volume, "sine"); beep(660, 220, 130, volume, "sine"); },
 };
+
+// fixed: the hiss of a flare rising, a high rough tone, quiet
+const FLARE = { from: 1800, lengthMs: 900, volume: 0.25 };
+export const playFlare = () => beep(FLARE.from, FLARE.lengthMs, 0, FLARE.volume, "sawtooth");

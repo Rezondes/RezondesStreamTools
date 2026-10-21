@@ -1,71 +1,125 @@
-// Full-screen scenes of the KOTH theme (Starting, BRB, Ending): battlefield per time of day with the hill, in front of it
-// the briefing as a tactical map with grid and markers (overline, title, subtitle), below it the countdown to the start of
-// the mission, the radio silence or the next mission, rotating quotes as radio lines and a ticker behind a helicopter or
-// as a steel bar. Built for 1920x1080, scaled to any source size.
-// Stage, countdown, break time, quotes and parameters come from the screens context of the core (src/core/screens).
-// Parameter pro Quelle: ?min=5, ?at=20:00, ?next=..., ?ticker=...
-import type { CSSProperties } from "react";
-import { hash } from "../../../core/hash.ts";
-import { rotating, shortClock, type ScreenKind } from "../../../core/screens/screens.ts";
+// Full-screen scenes of the KOTH theme (PLAN-KOTH.md packages 2 and 3, DESIGN-KOTH.md "Modernisierung"): the hill as a
+// 3D world with radio mast, flag, camp and smoke. Starting: the hill builds itself in the evening while the camera pulls
+// back and circles. BRB: the built hill at night with moon, searchlight and camp fire, the camera circles lower. Ending:
+// dusk, the flag goes up again, flares in the faction colors, the mission report counts the real numbers up to the stamp.
+// On top the briefing: head line, clock, briefing map (Starting, BRB) or report (Ending), stencil title stamped letter by
+// letter, the radio display with countdown, break time or next mission, radio lines, factions, warning stripes as
+// progress. One clock drives everything: the GSAP timeline runs it, the 3D parts read it every frame, the briefing
+// follows it until it is revealed. Still image: ?t=<seconds>. Parameters per source: ?min=5, ?at=20:00, ?next=...,
+// ?ticker=...
+import { type CSSProperties, useMemo, useState } from "react";
+import { useStreamStats } from "../../../core/hooks/useStreamStats.ts";
+import { type ScreenKind, shortClock } from "../../../core/screens/screens.ts";
 import { useScreen } from "../../../core/screens/useScreen.ts";
 import { useStage } from "../../../core/screens/useStage.ts";
-import Hill, { type TimeOfDay } from "../Hill.tsx";
-import { HELI } from "../hill.ts";
-import ShapeIcon from "../ShapeIcon.tsx";
-import { useKoth } from "../useKoth.ts";
+import { countedStats, parseStatLines } from "../../../core/stats/stats.ts";
+import { fillTemplate } from "../../../core/template.ts";
+import BriefingMap from "../briefing/BriefingMap.tsx";
+import RadioDisplay from "../briefing/RadioDisplay.tsx";
+import RadioLines from "../briefing/RadioLines.tsx";
+import Report from "../briefing/Report.tsx";
+import { type KothClock, screenSteps, type Steps, stepShare } from "../build.ts";
+import { worldLook } from "../looks.ts";
+import { TEAM_SET, type KothValues } from "../settings.ts";
+import World from "../three/World.tsx";
+import { useClockValue, useRunClock } from "../useClock.ts";
+import { kothNames, teamColor, teamLabel, useKoth } from "../useKoth.ts";
 
-// fixed: seconds in ms for the rhythm of the quotes
-const SECOND_MS = 1000;
-// fixed: bars of the radio signal progress
-const SIGNAL_BARS = 5;
-// fixed: seeds of the marker positions, so the map always looks the same
-const markerStyle = (index: number) => ({ "--x": hash(index * 3 + 11), "--y": hash(index * 3 + 12) }) as CSSProperties;
+type Screen = ReturnType<typeof useScreen>;
+type Parts = { kind: ScreenKind; values: KothValues; clock: KothClock; steps: Steps; screen: Screen };
+
+// fixed: the stamp of a title letter (scale at the start, curve power4.in)
+const STAMP = { scale: 1.8, power: 4 };
+const CHANNEL = "{channel}";
+
+const texts = (values: KothValues, kind: ScreenKind) => ({
+  starting: { eyebrow: values.startingEyebrow, title: values.startingTitle, lines: values.startingLines },
+  brb: { eyebrow: values.brbEyebrow, title: values.brbTitle, lines: values.brbLines },
+  ending: { eyebrow: values.endingEyebrow, title: values.endingTitle, lines: values.endingLines },
+}[kind]);
+
+// Head line: the call of the alerts with the channel name in the signal color, then the overline of the screen
+function Head({ values, eyebrow, opacity }: { values: KothValues; eyebrow: string; opacity: number }) {
+  const [before, ...after] = values.alertCallsign.split(CHANNEL);
+  const names = kothNames(values);
+  return (
+    <p className="kh-head" style={{ opacity }}>
+      {fillTemplate(before, names)}
+      {after.length > 0 && <b>{values.channelName}</b>}
+      {fillTemplate(after.join(CHANNEL), names)} // {eyebrow}
+    </p>
+  );
+}
+
+function Title({ text, time, steps }: { text: string; time: number; steps: Steps }) {
+  return (
+    <h1 className="kh-stencil">
+      {Array.from(text).map((letter, index) => {
+        const stamped = stepShare(steps.title, time, index) ** STAMP.power;
+        return <span key={index} style={{ opacity: stamped, transform: `scale(${STAMP.scale - (STAMP.scale - 1) * stamped})` }}>{letter}</span>;
+      })}
+    </h1>
+  );
+}
+
+// The report of the Ending with the real numbers of the stream (only this screen listens to the stats)
+function EndingReport({ values, time, steps, now }: { values: KothValues; time: number; steps: Steps; now: number }) {
+  const stats = useStreamStats();
+  const lines = useMemo(() => parseStatLines(values.reportLines.join("\n")), [values.reportLines]);
+  const rows = countedStats(stats, lines, values.locale, now, lines.map((_, index) => stepShare(steps.rows, time, index)));
+  return <Report time={time} steps={steps} title={values.reportTitle} rows={rows} stamp={values.stampText} />;
+}
+
+// What the radio display shows: the countdown, the break time or the next mission (nothing without one)
+function displayText(kind: ScreenKind, values: KothValues, screen: Screen) {
+  if (kind === "brb") return values.afkPrefix + shortClock(screen.away);
+  if (kind === "ending") return screen.next ? `${values.endingNextLabel}: ${screen.next}` : "";
+  return screen.left > 0 ? values.countdownPrefix + shortClock(screen.left) : values.countdownDone;
+}
+
+function Briefing({ kind, values, clock, steps, screen }: Parts) {
+  const stage = useStage();
+  const revealed = Math.max(steps.progress.start + steps.progress.duration, kind === "ending" ? steps.stamp.start + steps.stamp.duration : 0);
+  const time = useClockValue(clock, now => Math.min(now, revealed));
+  const { eyebrow, title, lines } = texts(values, kind);
+  const display = displayText(kind, values, screen);
+  return (
+    <>
+      <div className="kh-briefing stage-box" ref={stage}>
+        <Head values={values} eyebrow={eyebrow} opacity={stepShare(steps.head, time, 0)} />
+        <span className="kh-clock" style={{ opacity: stepShare(steps.head, time, 1) }}>{new Date(screen.now).toLocaleTimeString(values.locale)}</span>
+        {kind !== "ending" && values.briefingMapOn && <BriefingMap time={time} steps={steps} label={values.briefingLabel} target={values.briefingTarget} grid={values.mapGrid} />}
+        {kind === "ending" && values.reportOn && <EndingReport values={values} time={time} steps={steps} now={screen.now} />}
+        <Title text={title} time={time} steps={steps} />
+        {display && <RadioDisplay time={time} steps={steps} count={display} />}
+        {values.radioLinesOn && <RadioLines clock={clock} step={steps.radio} lines={lines} every={values.linesEvery} staticMs={values.radioStaticMs} />}
+        <div className="kh-factions" style={{ opacity: stepShare(steps.factions, time) }}>
+          {TEAM_SET.variants.map(team => <span key={team.id} style={{ background: teamColor(values, team.id) }}>{teamLabel(values, team.id)}</span>)}
+        </div>
+      </div>
+      {screen.ticker && <div className="kh-ticker"><span>{screen.ticker}</span></div>}
+      {kind === "starting" && values.progressStyle !== "aus" && (
+        <div className="kh-warning-stripes"><i style={{ "--part": screen.progress * stepShare(steps.progress, time) } as CSSProperties} /></div>
+      )}
+    </>
+  );
+}
 
 export default function Screen({ kind }: { kind: ScreenKind }) {
   const values = useKoth();
-  const stage = useStage();
-  const { now, start, left, progress, away, ticker, next } = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
-  const [eyebrow, title, note] = {
-    starting: [values.startingEyebrow, values.startingTitle, values.startingNote],
-    brb: [values.brbEyebrow, values.brbTitle, values.brbNote],
-    ending: [values.endingEyebrow, values.endingTitle, values.endingNote],
-  }[kind];
-  const time = { starting: values.timeStarting, brb: values.timeBrb, ending: values.timeEnding }[kind] as TimeOfDay;
-  const sayings = { starting: values.startingLines, brb: values.brbLines, ending: values.endingLines }[kind];
-  const saying = rotating(sayings, values.linesEvery * SECOND_MS, now - start);
-
+  const [clock] = useState<KothClock>(() => ({ time: 0 }));
+  const steps = useMemo(
+    () => screenSteps(kind, values.buildSpeed, { stampAt: values.stampAt, countUpMs: values.countUpMs }),
+    [kind, values.buildSpeed, values.stampAt, values.countUpMs],
+  );
+  const look = useMemo(() => worldLook(values, kind), [values, kind]);
+  useRunClock(clock);
+  const screen = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
   return (
-    <div className={`kh-screen power-${values.powerOn}`}>
-      <Hill time={time} />
-      <div className="kh-stage stage-box" ref={stage}>
-        <span className="kh-clock">{new Date(now).toLocaleTimeString(values.locale)}</span>
-        <div className={`kh-map${values.mapGrid ? " grid" : ""}`}>
-          {Array.from({ length: values.mapMarkers }, (_, index) => (
-            <i key={index} className={`kh-marker marker-${index % SIGNAL_BARS}`} style={markerStyle(index)} />
-          ))}
-          <p className="kh-eyebrow">{eyebrow}</p>
-          <h1 className="kh-title">{title}</h1>
-          {note && <p className="kh-note">{note}</p>}
-        </div>
-        {kind === "starting" && (
-          <div className="kh-board">
-            <b className="kh-big">{left > 0 ? values.countdownPrefix + shortClock(left) : values.countdownDone}</b>
-            {values.progressStyle === "balken" && <div className="kh-progress-bar" style={{ "--part": progress } as CSSProperties}><span /></div>}
-            {values.progressStyle === "funk" && (
-              <div className="kh-progress-signal">
-                {Array.from({ length: SIGNAL_BARS }, (_, index) => <i key={index} className={index < Math.round(progress * SIGNAL_BARS) ? "on" : ""} style={{ "--i": index } as CSSProperties} />)}
-              </div>
-            )}
-          </div>
-        )}
-        {kind === "brb" && <div className="kh-board"><b className="kh-big">{values.afkPrefix + shortClock(away)}</b></div>}
-        {kind === "ending" && next && <div className="kh-board"><b className="kh-next">{`${values.endingNextLabel}: ${next}`}</b></div>}
-        {saying && <p key={saying} className="kh-saying">{saying}</p>}
-      </div>
-      {ticker && values.tickerStyle === "heli" && (
-        <div className="kh-heli"><span className="kh-banner">{ticker}</span><ShapeIcon shape={HELI} /></div>
-      )}
-      {ticker && values.tickerStyle === "leiste" && <div className="kh-ticker"><span>{ticker}</span></div>}
+    <div className={`kh-screen kh-screen-3d kh-${kind}`}>
+      <World kind={kind} values={values} clock={clock} steps={steps} look={look} />
+      <div className="kh-shade" />
+      <Briefing kind={kind} values={values} clock={clock} steps={steps} screen={screen} />
     </div>
   );
 }

@@ -30,3 +30,18 @@ export function describeStats(stats: StreamStats, lines: readonly StatLine[], lo
     value: line.key === "duration" ? duration(stats.startedAt === null ? 0 : now - stats.startedAt) : number.format(stats[line.key]),
   }));
 }
+
+export type StatRow = { label: string; value: string };
+// fixed: shown without stats (no server, not counted yet)
+export const NO_STAT = "--";
+
+// Rows for a report: the real numbers, each counting up from 0 by its share (0..1, missing ones are done); the duration
+// does not count. Without stats dashes instead of numbers.
+export function countedStats(stats: StreamStats | null, lines: readonly StatLine[], locale: string, now: number, shares: readonly number[] = []): StatRow[] {
+  return lines.map((line, index) => {
+    if (!stats) return { label: line.label, value: NO_STAT };
+    const share = Math.min(1, Math.max(0, shares[index] ?? 1));
+    const counted = line.key === "duration" ? stats : { ...stats, [line.key]: Math.round(stats[line.key] * share) };
+    return { label: line.label, value: describeStats(counted, [line], locale, now)[0].value };
+  });
+}

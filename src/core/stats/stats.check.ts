@@ -1,6 +1,6 @@
 // Check for stats.ts: reading the lines setting and formatting numbers and the duration. Runs with npm test.
 import assert from "node:assert/strict";
-import { describeStats, parseStatLines } from "./stats.ts";
+import { countedStats, describeStats, NO_STAT, parseStatLines } from "./stats.ts";
 import type { StreamStats } from "../types.ts";
 
 // Reading lines: order kept, unknown keys and empty lines skipped, without | the key is the text
@@ -19,5 +19,13 @@ assert.deepEqual(describeStats(stats, lines, "de-DE", now), [
 ]);
 // Without a start the duration is 0
 assert.equal(describeStats({ ...stats, startedAt: null }, lines, "de-DE", now)[1].value, "0:00 h");
+
+// Counted rows: real numbers, counting up by share (the duration does not count), dashes without stats
+const counting = parseStatLines("follows|Rekruten\nduration|Dauer\nchatMessages|Funk");
+assert.deepEqual(countedStats(stats, counting, "de-DE", now), [
+  { label: "Rekruten", value: "1.284" }, { label: "Dauer", value: "3:42 h" }, { label: "Funk", value: "9" },
+]);
+assert.deepEqual(countedStats(stats, counting, "de-DE", now, [0.5, 0, 0]).map(row => row.value), ["642", "3:42 h", "0"]);
+assert.deepEqual(countedStats(null, counting, "de-DE", now).map(row => row.value), [NO_STAT, NO_STAT, NO_STAT]);
 
 console.log("stats ok");

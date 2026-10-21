@@ -21,8 +21,13 @@ assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 // Required keys per group
 const REQUIRED: Record<string, string[]> = {
   "Allgemein": ["channelName", "font", "titleFont", "olive", "sand", "steel", "paper", "ink", "accent", "accent2", "radius", "fadeDuration"],
-  "Hügel": ["timeStarting", "timeBrb", "timeEnding", "skyNightTop", "sun", "moon", "mountains", "hillColor", "tower", "flagColor", "sandbags", "nets", "smoke", "dust", "hillName"],
-  "Starting, BRB, Ending": ["startingTitle", "brbTitle", "endingTitle", "mapGrid", "mapMarkers", "countdown", "progressStyle", "startingLines", "ticker", "tickerStyle", "powerOn"],
+  "Hügel": ["skyNightTop", "sun", "moon", "mountains", "hillColor", "tower", "flagColor", "sandbags", "nets", "smoke", "dust", "hillName"],
+  "Starting, BRB, Ending": ["startingTitle", "brbTitle", "endingTitle", "mapGrid", "countdown", "progressStyle", "startingLines", "ticker", "briefingMapOn", "radioLinesOn"],
+  "Welt": ["quality", "worldSeed", "skyTop", "skyHorizon", "fogNear", "fogFar", "sunColor", "bloomStrength", "shadows", "hillHeight", "sandColor"],
+  "Lager": ["mastHeight", "mastWires", "flagFaction", "flagSize", "bunkerOn", "tents", "trees", "rocks", "jeepOn", "helicopterOn", "smokeColumns", "dustAmount"],
+  "Kamera": ["cameraIntro", "cameraRadius", "cameraHeight", "cameraSpeed", "buildSpeed"],
+  "BRB: Nacht": ["brbSkyTop", "brbSkyHorizon", "moonOn", "searchlightOn", "searchlightFrom", "searchlightTo", "campfireOn", "brbCameraHeight"],
+  "Ending: Abend": ["endingSkyTop", "endingSkyHorizon", "flaresOn", "flaresEvery", "flareSparks", "flareSound", "reportOn", "reportLines", "countUpMs", "stampText", "stampAt"],
   "Alerts": ["alertStyle", "alertCallsign", "followLine", "followIcon", "hypeEndLine", "alertDuration", "alertIn", "alertOut", "alertTimer", "alertStatic", "soundFollow", "soundLeave"],
   "Chat": ["chatStyle", "chatTime", "chatFade", "chatMax", "chatAlign"],
   "Kamera-Rahmen": ["camStyle", "camMarks", "camCross", "camBattery", "camLabel", "camLive"],

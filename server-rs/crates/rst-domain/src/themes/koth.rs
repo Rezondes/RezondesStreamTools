@@ -41,6 +41,8 @@ const BANNER: &str = "Banner";
 const WORLD: &str = "Welt";
 const CAMP: &str = "Lager";
 const CAMERA: &str = "Kamera";
+const NIGHT: &str = "BRB: Nacht";
+const DUSK: &str = "Ending: Abend";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 
@@ -96,9 +98,6 @@ fn general() -> Vec<SettingField> {
 
 fn hill() -> Vec<SettingField> {
     vec![
-        in_scene(SceneName::Starting, choice("timeStarting", "Tageszeit Starting", HILL, "morgen", &TIMES)),
-        in_scene(SceneName::Brb, choice("timeBrb", "Tageszeit BRB", HILL, "mittag", &TIMES)),
-        in_scene(SceneName::Ending, choice("timeEnding", "Tageszeit Ending", HILL, "abend", &TIMES)),
         color("skyMorningTop", "Himmel Morgen oben", HILL, "#c9a77c"),
         color("skyMorningBottom", "Himmel Morgen unten", HILL, "#f0dcb4"),
         color("skyDayTop", "Himmel Mittag oben", HILL, "#6f9fc8"),
@@ -164,6 +163,39 @@ fn world() -> Vec<SettingField> {
         number("cameraHeight", "Höhe (m)", CAMERA, 12.0, 2.0, 60.0, None, None),
         number("cameraSpeed", "Kreisen: Tempo", CAMERA, 0.045, 0.0, 0.5, None, Some(0.005)),
         number("buildSpeed", "Aufbau: Tempo", CAMERA, 1.0, 0.25, 4.0, None, Some(0.05)),
+        color("brbSkyTop", "Himmel oben", NIGHT, "#0b1020"),
+        color("brbSkyHorizon", "Himmel am Horizont", NIGHT, "#2a3150"),
+        flag("moonOn", "Mond", NIGHT, true),
+        flag("searchlightOn", "Suchscheinwerfer", NIGHT, true),
+        number("searchlightSpeed", "Suchscheinwerfer: Tempo", NIGHT, 1.0, 0.0, 4.0, None, Some(0.1)),
+        number("searchlightFrom", "Suchscheinwerfer: Winkel von (Grad)", NIGHT, -50.0, -90.0, 90.0, None, None),
+        number("searchlightTo", "Suchscheinwerfer: Winkel bis (Grad)", NIGHT, 40.0, -90.0, 90.0, None, None),
+        flag("campfireOn", "Lagerfeuer", NIGHT, true),
+        number("brbCameraHeight", "Kamera: Höhe (m)", NIGHT, 9.0, 2.0, 60.0, None, None),
+        color("endingSkyTop", "Himmel oben", DUSK, "#3a2a4a"),
+        color("endingSkyHorizon", "Himmel am Horizont", DUSK, "#e9a46a"),
+        flag("flaresOn", "Leuchtraketen", DUSK, true),
+        number("flaresEvery", "Leuchtraketen: alle", DUSK, 2.2, 0.5, 10.0, S, Some(0.1)),
+        number("flareSparks", "Leuchtraketen: Funken", DUSK, 80.0, 10.0, 400.0, None, None),
+        flag("flareSound", "Leuchtraketen: Zischen", DUSK, false),
+        flag("reportOn", "Einsatzbericht", DUSK, true),
+        text("reportTitle", "Einsatzbericht: Titel", DUSK, "EINSATZBERICHT", None),
+        lines(
+            "reportLines",
+            "Einsatzbericht: Zeilen (Wert|Text)",
+            DUSK,
+            &[
+                "follows|Neue Rekruten",
+                "subs|Verstärkung",
+                "raids|Verbündete Trupps",
+                "bits|Munition",
+                "chatMessages|Funksprüche",
+            ],
+            Some(8),
+        ),
+        number("countUpMs", "Einsatzbericht: Hochzählen", DUSK, 1000.0, 0.0, 10000.0, MS, None),
+        text("stampText", "Stempel (leer = aus)", DUSK, "AUFTRAG ERFÜLLT", None),
+        number("stampAt", "Stempel nach", DUSK, 6.0, 0.0, 60.0, S, Some(0.5)),
     ]
 }
 
@@ -174,16 +206,11 @@ fn screens() -> Vec<SettingField> {
     vec![
         starting(text("startingEyebrow", "Starting: Überzeile", SCREENS, "Einsatzbesprechung", None)),
         starting(text("startingTitle", "Starting: Titel", SCREENS, "Stream startet gleich", None)),
-        starting(text("startingNote", "Starting: Untertitel", SCREENS, "Alle Einheiten sammeln sich am Hügel.", None)),
         brb(text("brbEyebrow", "BRB: Überzeile", SCREENS, "Funkstille", None)),
         brb(text("brbTitle", "BRB: Titel", SCREENS, "Bin gleich zurück", None)),
-        brb(text("brbNote", "BRB: Untertitel", SCREENS, "Position halten.", None)),
         ending(text("endingEyebrow", "Ending: Überzeile", SCREENS, "Einsatzbericht", None)),
         ending(text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet", None)),
-        ending(text("endingNote", "Ending: Untertitel", SCREENS, "Hügel gehalten. Gute Arbeit.", None)),
         flag("mapGrid", "Lagekarte mit Raster", SCREENS, true),
-        number("mapMarkers", "Markierungen auf der Karte", SCREENS, 5.0, 0.0, 12.0, None, None),
-        number("signWidth", "Karte: Breite", SCREENS, 1100.0, 400.0, 1800.0, PX, None),
         number("titleSize", "Titelgrösse", SCREENS, 104.0, 30.0, 240.0, PX, None),
         starting(number("countdown", "Countdown-Standard", SCREENS, 300.0, 0.0, 86400.0, S, None)),
         starting(text("countdownPrefix", "Countdown-Präfix", SCREENS, "T-", None)),
@@ -220,10 +247,7 @@ fn screens() -> Vec<SettingField> {
         )),
         number("linesEvery", "Sprüche wechseln alle", SCREENS, 6.0, 2.0, 120.0, S, None),
         text("ticker", "Ticker-Text (leer = aus)", SCREENS, "", Some(300)),
-        choice("tickerStyle", "Ticker", SCREENS, "heli", &["heli", "leiste"]),
         number("tickerSpeed", "Ticker: Zeit pro Durchlauf", SCREENS, 30.0, 5.0, 300.0, S, None),
-        choice("powerOn", "Einschalten", SCREENS, "funkspruch", &["funkspruch", "blenden", "keins"]),
-        number("powerOnDuration", "Einschalten (Dauer)", SCREENS, 1600.0, 0.0, 10000.0, MS, None),
         starting(flag("briefingMapOn", "Starting: Lagekarte", SCREENS, true)),
         starting(text("briefingLabel", "Starting: Lagekarte Beschriftung", SCREENS, "LAGEKARTE  M 1:25 000", None)),
         starting(text("briefingTarget", "Starting: Lagekarte Ziel", SCREENS, "ZIEL: HÜGEL 301", None)),
@@ -440,15 +464,17 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     let screens = vec![SceneName::Starting, SceneName::Brb, SceneName::Ending];
     [
         (HILL, vec![SceneName::Starting, SceneName::Brb, SceneName::Ending, SceneName::Info]),
-        (SCREENS, screens),
+        (SCREENS, screens.clone()),
         (ALERTS, vec![SceneName::Alerts]),
         (CHAT, vec![SceneName::Chat]),
         (CAM, vec![SceneName::Cam]),
         (MUSIC, vec![SceneName::Music]),
         (FX, vec![SceneName::Fx]),
-        (WORLD, vec![SceneName::Starting]),
-        (CAMP, vec![SceneName::Starting]),
-        (CAMERA, vec![SceneName::Starting]),
+        (WORLD, screens.clone()),
+        (CAMP, screens.clone()),
+        (CAMERA, screens),
+        (NIGHT, vec![SceneName::Brb]),
+        (DUSK, vec![SceneName::Ending]),
         (STINGER, vec![]),
         (BANNER, vec![]),
         (MINIME_COMMANDS, vec![SceneName::Minimes]),
@@ -525,14 +551,13 @@ const BASIC: &[&str] = &[
     "tower",
     "mountains",
     "smoke",
-    "timeStarting",
+    "flagFaction",
     "startingEyebrow",
     "startingTitle",
     "ticker",
-    "timeBrb",
     "brbTitle",
-    "brbNote",
-    "timeEnding",
+    "searchlightOn",
+    "flaresOn",
     "endingTitle",
     "endingNext",
     "alertStyle",

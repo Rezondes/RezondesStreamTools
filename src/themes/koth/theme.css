@@ -52,64 +52,11 @@
 .theme-koth .kh-dust { position: absolute; left: calc(var(--x) * 100%); top: calc(40% + var(--y) * 50%); width: var(--grain, 4px); aspect-ratio: 1; border-radius: 50%; background: var(--sand); opacity: 0.6; animation: koth-drift var(--dust-time, 9s) linear infinite; animation-delay: calc(var(--i) * var(--dust-time, 9s) / -7); }
 
 /* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
-.theme-koth .kh-stage {
-  /* Position, size and scaling: stage-box from src/core/screens/stage.css */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--stage-gap, 22px);
-  padding-top: var(--map-top, 90px);
-}
 .theme-koth .kh-clock { position: absolute; top: var(--clock-top, 28px); right: var(--clock-right, 40px); padding: var(--clock-padding, 6px 16px); background: var(--steel-plate); border: var(--plate-border, 2px) solid var(--oliveDark); border-radius: var(--radius); color: var(--accent2); font-family: "Share Tech Mono", monospace; font-size: var(--clock-size, 28px); font-variant-numeric: tabular-nums; }
-/* Tactical map: paper with a grid, markers in the accent colors, taped in the corners */
-.theme-koth .kh-map {
-  position: relative;
-  width: var(--signWidth);
-  padding: var(--map-padding, 40px 60px 48px);
-  text-align: center;
-  background: var(--paper);
-  color: var(--ink);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  rotate: -0.6deg;
-}
-.theme-koth .kh-map.grid {
-  background:
-    linear-gradient(color-mix(in srgb, var(--olive) 22%, transparent) var(--grid-line, 1px), transparent var(--grid-line, 1px)) 0 0 / var(--grid, 60px) var(--grid, 60px),
-    linear-gradient(90deg, color-mix(in srgb, var(--olive) 22%, transparent) var(--grid-line, 1px), transparent var(--grid-line, 1px)) 0 0 / var(--grid, 60px) var(--grid, 60px),
-    var(--paper);
-}
-.theme-koth .kh-map::before, .theme-koth .kh-map::after { content: ""; position: absolute; top: calc(-1 * var(--tape-drop, 12px)); width: var(--tape, 110px); height: var(--tape-height, 28px); background: color-mix(in srgb, var(--sand) 80%, transparent); rotate: -4deg; }
-.theme-koth .kh-map::before { left: var(--tape-inset, 30px); }
-.theme-koth .kh-map::after { right: var(--tape-inset, 30px); rotate: 5deg; }
-.theme-koth .kh-marker { position: absolute; left: calc(6% + var(--x) * 88%); top: calc(8% + var(--y) * 80%); width: var(--marker, 22px); aspect-ratio: 1; border: var(--marker-line, 3px) solid currentColor; opacity: 0.55; }
-.theme-koth .marker-0 { color: var(--accent); border-radius: 50%; }
-.theme-koth .marker-1 { color: var(--olive); rotate: 45deg; }
-.theme-koth .marker-2 { color: var(--accent); }
-.theme-koth .marker-3 { color: var(--oliveDark); border-radius: 50%; border-style: dashed; }
-.theme-koth .marker-4 { color: var(--accent); rotate: 45deg; border-style: dotted; }
 .theme-koth .kh-eyebrow { position: relative; font-size: var(--eyebrow-size, 30px); font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
 .theme-koth .kh-title { position: relative; margin: var(--title-margin, 6px 0); font-size: var(--titleSize); line-height: 1.05; color: var(--ink); }
-.theme-koth .kh-note { position: relative; font-size: var(--note-size, 30px); }
-.theme-koth .kh-board { display: flex; flex-direction: column; align-items: center; gap: var(--board-gap, 10px); min-width: var(--board-width, 520px); padding: var(--board-padding, 14px 40px); background: var(--steel-plate); border: var(--plate-border, 3px) solid var(--oliveDark); border-radius: var(--radius); box-shadow: var(--shadow); }
-.theme-koth .kh-big { font-family: "Share Tech Mono", monospace; font-size: var(--big-size, 80px); color: var(--accent2); font-variant-numeric: tabular-nums; text-shadow: 0 0 var(--glow, 12px) color-mix(in srgb, var(--accent2) 60%, transparent); }
-.theme-koth .kh-next { font-size: var(--next-size, 40px); }
-.theme-koth .kh-progress-bar { position: relative; width: var(--progress-width, 520px); height: var(--progress-height, 18px); border: var(--bar-border, 2px) solid var(--oliveDark); background: color-mix(in srgb, var(--oliveDark) 60%, transparent); }
-.theme-koth .kh-progress-bar span { position: absolute; inset: 0 auto 0 0; width: calc(var(--part) * 100%); background: var(--stripes); transition: width var(--tick, 1s) linear; }
-.theme-koth .kh-progress-signal { display: flex; align-items: flex-end; gap: var(--signal-gap, 8px); height: var(--signal-height, 40px); }
-.theme-koth .kh-progress-signal i { width: var(--signal-bar, 14px); height: calc((var(--i) + 1) * 20%); background: color-mix(in srgb, var(--accent2) 20%, transparent); }
-.theme-koth .kh-progress-signal .on { background: var(--accent2); box-shadow: 0 0 var(--glow, 12px) var(--accent2); }
-.theme-koth .kh-saying { max-width: var(--signWidth); padding: var(--saying-padding, 8px 24px); border-left: var(--saying-bar, 6px) solid var(--accent2); background: color-mix(in srgb, var(--steel) 92%, transparent); color: var(--accent2); font-family: "Share Tech Mono", monospace; font-size: var(--saying-size, 30px); box-shadow: var(--shadow); animation: koth-type var(--fadeDuration) steps(12, end) both; }
-.theme-koth .kh-heli { position: absolute; top: var(--heli-top, 7%); left: 0; display: flex; align-items: center; white-space: nowrap; animation: koth-heli var(--tickerSpeed) linear infinite; }
-.theme-koth .kh-heli .kh-shape { width: var(--heli-size, 8vw); }
-.theme-koth .kh-heli .part-main { fill: var(--olive); stroke: var(--oliveDark); stroke-width: var(--heli-line, 2); }
-.theme-koth .kh-heli .part-detail { fill: color-mix(in srgb, var(--skyDayTop) 70%, white); }
-.theme-koth .kh-heli .part-line { stroke: var(--oliveDark); stroke-width: var(--rotor, 3); }
-.theme-koth .kh-banner { margin-right: var(--banner-rope, 2vw); padding: var(--banner-padding, 0.3em 1em); background: var(--paper); border: var(--banner-border, 3px) solid var(--oliveDark); color: var(--ink); font-size: var(--banner-size, 2vw); font-weight: 700; text-transform: uppercase; }
 .theme-koth .kh-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--ticker-padding, 10px 0); overflow: hidden; white-space: nowrap; background: var(--steel-plate); border-top: var(--ticker-border, 4px) solid var(--accent); color: var(--accent2); font-family: "Share Tech Mono", monospace; font-size: var(--ticker-size, 2vw); }
 .theme-koth .kh-ticker span { display: inline-block; padding-left: 100%; animation: koth-marquee var(--tickerSpeed) linear infinite; }
-.theme-koth .power-funkspruch .kh-field, .theme-koth .power-funkspruch .kh-stage { animation: koth-static var(--powerOnDuration) steps(10, end) both; }
-.theme-koth .power-blenden .kh-field, .theme-koth .power-blenden .kh-stage { animation: koth-fade var(--powerOnDuration) ease-out both; }
 
 /* --- Alerts ------------------------------------------------------------------------------------------------- */
 .theme-koth .kh-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
@@ -222,7 +169,6 @@
 @keyframes koth-wave { from { skew: 0deg -4deg; scale: 1 1; } to { skew: 0deg 4deg; scale: 0.94 1; } }
 @keyframes koth-drift { from { translate: 0 0; } to { translate: var(--drift-x, 30vw) calc(-1 * var(--drift-y, 6vh)); } }
 @keyframes koth-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
-@keyframes koth-heli { from { translate: -100% 0; } to { translate: 110vw 0; } }
 @keyframes koth-marquee { to { translate: -100% 0; } }
 @keyframes koth-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes koth-fade-out { from { opacity: 1; } to { opacity: 0; } }
@@ -287,3 +233,11 @@
 .theme-koth .kh-warning-stripes { --dark: color-mix(in srgb, var(--oliveDark) 40%, black); position: absolute; left: 0; right: 0; bottom: 0; height: var(--stripes-height, 1.7vh); background: var(--dark); }
 .theme-koth .kh-warning-stripes i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--part, 0) * 100%); background: repeating-linear-gradient(-45deg, var(--accent) 0 var(--stripe-3d, 18px), var(--dark) var(--stripe-3d, 18px) var(--stripes-step, 36px)); }
 .theme-koth .kh-starting .kh-ticker { bottom: var(--stripes-height, 1.7vh); }
+.theme-koth .kh-radio-count.long { font-size: var(--count-size-long, 40px); letter-spacing: var(--count-spacing-long, 2px); }
+
+/* --- Ending in 3D (PLAN-KOTH.md package 3): the mission report on paper with rows that count up and the stamp ------ */
+.theme-koth .kh-report { position: absolute; left: var(--edge); top: var(--report-top, 120px); width: var(--report-width, 480px); box-sizing: border-box; padding: var(--report-padding, 26px 30px 34px); background: var(--paper); color: var(--ink); font-family: var(--mono); box-shadow: 0 var(--map-shadow-y, 18px) var(--map-shadow-blur, 40px) color-mix(in srgb, black 45%, transparent); }
+.theme-koth .kh-report-title { margin: 0 0 var(--report-gap, 14px); font-family: var(--titleFont), sans-serif; font-weight: 400; font-size: var(--report-title-size, 30px); letter-spacing: var(--report-spacing, 3px); }
+.theme-koth .kh-report-row { display: flex; justify-content: space-between; gap: var(--report-gap, 14px); margin: 0; padding: var(--report-row-padding, 7px 0); border-bottom: var(--grid-line, 1px) dashed color-mix(in srgb, var(--ink) 35%, transparent); font-size: var(--report-size, 19px); text-transform: uppercase; }
+.theme-koth .kh-report-row b { font-weight: 400; font-variant-numeric: tabular-nums; }
+.theme-koth .kh-report-stamp { position: absolute; right: var(--stamp-right, 12px); bottom: var(--stamp-bottom, -52px); padding: var(--stamp-padding, 6px 14px); border: var(--stamp-border, 4px) solid var(--towerBlink); color: var(--towerBlink); font-family: var(--titleFont), sans-serif; font-weight: 400; font-size: var(--stamp-size, 30px); letter-spacing: var(--report-spacing, 3px); }

@@ -170,51 +170,6 @@
       ]
     },
     {
-      "key": "timeStarting",
-      "type": "select",
-      "label": "Tageszeit Starting",
-      "group": "Hügel",
-      "default": "morgen",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ],
-      "scene": "starting",
-      "basic": true
-    },
-    {
-      "key": "timeBrb",
-      "type": "select",
-      "label": "Tageszeit BRB",
-      "group": "Hügel",
-      "default": "mittag",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ],
-      "scene": "brb",
-      "basic": true
-    },
-    {
-      "key": "timeEnding",
-      "type": "select",
-      "label": "Tageszeit Ending",
-      "group": "Hügel",
-      "default": "abend",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ],
-      "scene": "ending",
-      "basic": true
-    },
-    {
       "key": "skyMorningTop",
       "type": "color",
       "label": "Himmel Morgen oben",
@@ -529,7 +484,8 @@
         "blufor",
         "opfor",
         "indfor"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "flagSize",
@@ -695,6 +651,186 @@
       "step": 0.05
     },
     {
+      "key": "brbSkyTop",
+      "type": "color",
+      "label": "Himmel oben",
+      "group": "BRB: Nacht",
+      "default": "#0b1020"
+    },
+    {
+      "key": "brbSkyHorizon",
+      "type": "color",
+      "label": "Himmel am Horizont",
+      "group": "BRB: Nacht",
+      "default": "#2a3150"
+    },
+    {
+      "key": "moonOn",
+      "type": "boolean",
+      "label": "Mond",
+      "group": "BRB: Nacht",
+      "default": true
+    },
+    {
+      "key": "searchlightOn",
+      "type": "boolean",
+      "label": "Suchscheinwerfer",
+      "group": "BRB: Nacht",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "searchlightSpeed",
+      "type": "number",
+      "label": "Suchscheinwerfer: Tempo",
+      "group": "BRB: Nacht",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.1
+    },
+    {
+      "key": "searchlightFrom",
+      "type": "number",
+      "label": "Suchscheinwerfer: Winkel von (Grad)",
+      "group": "BRB: Nacht",
+      "default": -50,
+      "min": -90,
+      "max": 90
+    },
+    {
+      "key": "searchlightTo",
+      "type": "number",
+      "label": "Suchscheinwerfer: Winkel bis (Grad)",
+      "group": "BRB: Nacht",
+      "default": 40,
+      "min": -90,
+      "max": 90
+    },
+    {
+      "key": "campfireOn",
+      "type": "boolean",
+      "label": "Lagerfeuer",
+      "group": "BRB: Nacht",
+      "default": true
+    },
+    {
+      "key": "brbCameraHeight",
+      "type": "number",
+      "label": "Kamera: Höhe (m)",
+      "group": "BRB: Nacht",
+      "default": 9,
+      "min": 2,
+      "max": 60
+    },
+    {
+      "key": "endingSkyTop",
+      "type": "color",
+      "label": "Himmel oben",
+      "group": "Ending: Abend",
+      "default": "#3a2a4a"
+    },
+    {
+      "key": "endingSkyHorizon",
+      "type": "color",
+      "label": "Himmel am Horizont",
+      "group": "Ending: Abend",
+      "default": "#e9a46a"
+    },
+    {
+      "key": "flaresOn",
+      "type": "boolean",
+      "label": "Leuchtraketen",
+      "group": "Ending: Abend",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "flaresEvery",
+      "type": "number",
+      "label": "Leuchtraketen: alle",
+      "group": "Ending: Abend",
+      "default": 2.2,
+      "min": 0.5,
+      "max": 10,
+      "unit": "s",
+      "step": 0.1
+    },
+    {
+      "key": "flareSparks",
+      "type": "number",
+      "label": "Leuchtraketen: Funken",
+      "group": "Ending: Abend",
+      "default": 80,
+      "min": 10,
+      "max": 400
+    },
+    {
+      "key": "flareSound",
+      "type": "boolean",
+      "label": "Leuchtraketen: Zischen",
+      "group": "Ending: Abend",
+      "default": false
+    },
+    {
+      "key": "reportOn",
+      "type": "boolean",
+      "label": "Einsatzbericht",
+      "group": "Ending: Abend",
+      "default": true
+    },
+    {
+      "key": "reportTitle",
+      "type": "text",
+      "label": "Einsatzbericht: Titel",
+      "group": "Ending: Abend",
+      "default": "EINSATZBERICHT",
+      "maxLength": 200
+    },
+    {
+      "key": "reportLines",
+      "type": "lines",
+      "label": "Einsatzbericht: Zeilen (Wert|Text)",
+      "group": "Ending: Abend",
+      "default": [
+        "follows|Neue Rekruten",
+        "subs|Verstärkung",
+        "raids|Verbündete Trupps",
+        "bits|Munition",
+        "chatMessages|Funksprüche"
+      ],
+      "maxLines": 8
+    },
+    {
+      "key": "countUpMs",
+      "type": "number",
+      "label": "Einsatzbericht: Hochzählen",
+      "group": "Ending: Abend",
+      "default": 1000,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "stampText",
+      "type": "text",
+      "label": "Stempel (leer = aus)",
+      "group": "Ending: Abend",
+      "default": "AUFTRAG ERFÜLLT",
+      "maxLength": 200
+    },
+    {
+      "key": "stampAt",
+      "type": "number",
+      "label": "Stempel nach",
+      "group": "Ending: Abend",
+      "default": 6,
+      "min": 0,
+      "max": 60,
+      "unit": "s",
+      "step": 0.5
+    },
+    {
       "key": "startingEyebrow",
       "type": "text",
       "label": "Starting: Überzeile",
@@ -715,15 +851,6 @@
       "basic": true
     },
     {
-      "key": "startingNote",
-      "type": "text",
-      "label": "Starting: Untertitel",
-      "group": "Starting, BRB, Ending",
-      "default": "Alle Einheiten sammeln sich am Hügel.",
-      "maxLength": 200,
-      "scene": "starting"
-    },
-    {
       "key": "brbEyebrow",
       "type": "text",
       "label": "BRB: Überzeile",
@@ -738,16 +865,6 @@
       "label": "BRB: Titel",
       "group": "Starting, BRB, Ending",
       "default": "Bin gleich zurück",
-      "maxLength": 200,
-      "scene": "brb",
-      "basic": true
-    },
-    {
-      "key": "brbNote",
-      "type": "text",
-      "label": "BRB: Untertitel",
-      "group": "Starting, BRB, Ending",
-      "default": "Position halten.",
       "maxLength": 200,
       "scene": "brb",
       "basic": true
@@ -772,39 +889,11 @@
       "basic": true
     },
     {
-      "key": "endingNote",
-      "type": "text",
-      "label": "Ending: Untertitel",
-      "group": "Starting, BRB, Ending",
-      "default": "Hügel gehalten. Gute Arbeit.",
-      "maxLength": 200,
-      "scene": "ending"
-    },
-    {
       "key": "mapGrid",
       "type": "boolean",
       "label": "Lagekarte mit Raster",
       "group": "Starting, BRB, Ending",
       "default": true
-    },
-    {
-      "key": "mapMarkers",
-      "type": "number",
-      "label": "Markierungen auf der Karte",
-      "group": "Starting, BRB, Ending",
-      "default": 5,
-      "min": 0,
-      "max": 12
-    },
-    {
-      "key": "signWidth",
-      "type": "number",
-      "label": "Karte: Breite",
-      "group": "Starting, BRB, Ending",
-      "default": 1100,
-      "min": 400,
-      "max": 1800,
-      "unit": "px"
     },
     {
       "key": "titleSize",
@@ -946,17 +1035,6 @@
       "basic": true
     },
     {
-      "key": "tickerStyle",
-      "type": "select",
-      "label": "Ticker",
-      "group": "Starting, BRB, Ending",
-      "default": "heli",
-      "options": [
-        "heli",
-        "leiste"
-      ]
-    },
-    {
       "key": "tickerSpeed",
       "type": "number",
       "label": "Ticker: Zeit pro Durchlauf",
@@ -965,28 +1043,6 @@
       "min": 5,
       "max": 300,
       "unit": "s"
-    },
-    {
-      "key": "powerOn",
-      "type": "select",
-      "label": "Einschalten",
-      "group": "Starting, BRB, Ending",
-      "default": "funkspruch",
-      "options": [
-        "funkspruch",
-        "blenden",
-        "keins"
-      ]
-    },
-    {
-      "key": "powerOnDuration",
-      "type": "number",
-      "label": "Einschalten (Dauer)",
-      "group": "Starting, BRB, Ending",
-      "default": 1600,
-      "min": 0,
-      "max": 10000,
-      "unit": "ms"
     },
     {
       "key": "briefingMapOn",
@@ -3276,13 +3332,25 @@
       "fx"
     ],
     "Welt": [
-      "starting"
+      "starting",
+      "brb",
+      "ending"
     ],
     "Lager": [
-      "starting"
+      "starting",
+      "brb",
+      "ending"
     ],
     "Kamera": [
-      "starting"
+      "starting",
+      "brb",
+      "ending"
+    ],
+    "BRB: Nacht": [
+      "brb"
+    ],
+    "Ending: Abend": [
+      "ending"
     ],
     "Stinger": [],
     "Banner": [],

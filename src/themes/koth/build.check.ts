@@ -1,7 +1,7 @@
 // Check for build.ts: steps scale with the build speed, the share of a step runs from 0 to 1 with its stagger, the
 // curves keep their ends and the camera rides from the flag back to its circle. Runs with npm test.
 import assert from "node:assert/strict";
-import { cameraPose, inOutCubic, inOutQuad, nail, outBounce, outCubic, startingSteps, stepShare } from "./build.ts";
+import { cameraPose, inOutCubic, inOutQuad, nail, outBounce, outCubic, screenSteps, startingSteps, stepShare } from "./build.ts";
 
 const near = (actual: number, expected: number, label: string) => assert.ok(Math.abs(actual - expected) < 1e-6, `${label}: ${actual} vs ${expected}`);
 
@@ -11,6 +11,20 @@ const fast = startingSteps(2);
 near(fast.flag.start, normal.flag.start / 2, "start scales");
 near(fast.bags.stagger, normal.bags.stagger / 2, "stagger scales");
 near(normal.mast.start, 1, "mast from the prototype");
+
+// Screens: Starting builds, BRB and Ending show the hill built; the Ending hoists the flag again and counts up to the stamp
+const timing = { stampAt: 6, countUpMs: 2000 };
+assert.deepEqual(screenSteps("starting", 1, timing), normal);
+const brb = screenSteps("brb", 1, timing);
+near(stepShare(brb.mast, 0), 1, "BRB: mast stands");
+near(stepShare(brb.flag, 0), 1, "BRB: flag is up");
+near(stepShare(brb.title, 0), 0, "BRB: the briefing still reveals itself");
+const ending = screenSteps("ending", 2, timing);
+near(stepShare(ending.ground, 0), 1, "Ending: hill stands");
+near(stepShare(ending.flag, 0), 0, "Ending: flag goes up again");
+near(ending.flag.start, 0.3, "Ending: re-hoist scales with the speed");
+near(ending.rows.duration, 2, "Ending: rows count up for countUpMs");
+near(ending.stamp.start, 6, "Ending: stamp at stampAt");
 
 // Share of a step: 0 before, 1 after, the middle in between; staggered items start later
 near(stepShare(normal.mast, 0), 0, "before");

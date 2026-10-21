@@ -5,11 +5,13 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { memo, useEffect, useMemo, useRef } from "react";
 import { BufferGeometry, CanvasTexture, Color, Float32BufferAttribute, type Mesh, SRGBColorSpace } from "three";
+import type { ScreenKind } from "../../../core/screens/screens.ts";
 import { chance } from "../../../core/three/chance.ts";
 import { particleCount } from "../../../core/three/quality.ts";
 import Stage3D from "../../../core/three/Stage3D.tsx";
 import type { KothClock, Steps } from "../build.ts";
 import { campLayout } from "../camp.ts";
+import type { WorldLook } from "../looks.ts";
 import type { KothValues } from "../settings.ts";
 import { TEAM_SET } from "../settings.ts";
 import { hillHeight, mountainRing } from "../terrain.ts";
@@ -19,16 +21,17 @@ import Flag from "./Flag.tsx";
 import Helicopter from "./Helicopter.tsx";
 import HillCamera from "./HillCamera.tsx";
 import Mast from "./Mast.tsx";
+import ScreenParts from "./ScreenParts.tsx";
 import Smoke from "./Smoke.tsx";
 import Terrain from "./Terrain.tsx";
 
-type Props = { values: KothValues; clock: KothClock; steps: Steps };
+// look: sky, light and camera of the screen (looks.ts); kind: the screen, for the parts only it has (ScreenParts)
+type Props = { kind: ScreenKind; values: KothValues; clock: KothClock; steps: Steps; look: WorldLook };
 
-// fixed: look of the prototype (refs/starting.html): field of view, far plane, sun, light strengths, bloom shape
+// fixed: look of the prototype (refs/starting.html): field of view, far plane, shadow of the main light, bloom shape
 const FOV = 34;
 const FAR = 400;
-const SUN = { position: [-30, 22, 18] as const, strength: 2.6, disc: [-150, 9, -190] as const, discSize: 9, map: { hoch: 2048, other: 1024 }, reach: 26, far: 120 };
-const HEMISPHERE = 1.1;
+const SHADOW = { map: { hoch: 2048, other: 1024 }, reach: 26, far: 120 };
 const BLOOM = { radius: 0.5, threshold: 0.82 };
 // Sky gradient: share of the horizon color at the stops from the top; fog and light mixes
 const SKY_STOPS = [[0, 0], [0.45, 0.6], [0.72, 0.85], [1, 1]] as const;
@@ -78,21 +81,23 @@ function Dust({ clock, count, seed, color }: { clock: KothClock; count: number; 
   return <points geometry={geometry}><pointsMaterial color={color} size={DUST.size} transparent opacity={DUST.opacity} /></points>;
 }
 
-function Lights({ values }: { values: KothValues }) {
+function Lights({ look, ground, quality }: { look: WorldLook; ground: string; quality: string }) {
   const disc = useRef<Mesh>(null);
-  useEffect(() => disc.current?.lookAt(0, 0, 0), []);
-  const map = values.quality === "hoch" ? SUN.map.hoch : SUN.map.other;
+  useEffect(() => disc.current?.lookAt(0, 0, 0), [look.disc]);
+  const map = quality === "hoch" ? SHADOW.map.hoch : SHADOW.map.other;
   return (
     <>
-      <hemisphereLight args={[mix(values.skyHorizon, values.sunColor, 0.5), darker(values.hillDark, 0.6), HEMISPHERE]} />
+      <hemisphereLight args={[mix(look.sky.horizon, look.light.color, 0.5), darker(ground, 0.6), look.ambient]} />
       <directionalLight
-        position={SUN.position} color={values.sunColor} intensity={SUN.strength} castShadow
-        shadow-mapSize={[map, map]} shadow-camera-left={-SUN.reach} shadow-camera-right={SUN.reach} shadow-camera-top={SUN.reach} shadow-camera-bottom={-SUN.reach} shadow-camera-far={SUN.far}
+        position={look.light.position} color={look.light.color} intensity={look.light.strength} castShadow
+        shadow-mapSize={[map, map]} shadow-camera-left={-SHADOW.reach} shadow-camera-right={SHADOW.reach} shadow-camera-top={SHADOW.reach} shadow-camera-bottom={-SHADOW.reach} shadow-camera-far={SHADOW.far}
       />
-      <mesh ref={disc} position={SUN.disc}>
-        <circleGeometry args={[SUN.discSize, 40]} />
-        <meshBasicMaterial color={mix(values.sunColor, WHITE, 0.25)} fog={false} />
-      </mesh>
+      {look.disc && (
+        <mesh ref={disc} position={look.disc.position}>
+          <circleGeometry args={[look.disc.size, 40]} />
+          <meshBasicMaterial color={mix(look.disc.color, WHITE, 0.25)} fog={false} />
+        </mesh>
+      )}
     </>
   );
 }
@@ -117,7 +122,7 @@ const campColors = (values: KothValues): CampColors => ({
   steel: values.steel, dark: darker(values.oliveDark, 0.6),
 });
 
-export default memo(function World({ values, clock, steps }: Props) {
+export default memo(function World({ kind, values, clock, steps, look }: Props) {
   const ground = useMemo(() => (x: number, depth: number) => hillHeight(x, depth, values.hillHeight), [values.hillHeight]);
   const items = useMemo(() => campLayout({
     seed: values.worldSeed, hillHeight: values.hillHeight, sandbags: values.sandbags, bunker: values.bunkerOn, tents: values.tents, crateStacks: values.crateStacks,
@@ -126,15 +131,14 @@ export default memo(function World({ values, clock, steps }: Props) {
   const colors = useMemo(() => campColors(values), [values]);
   const groundColors = useMemo(() => ({ sand: values.sandColor, hill: values.hillColor, shade: values.hillDark }), [values.sandColor, values.hillColor, values.hillDark]);
   const markers = TEAM_SET.variants.filter(team => team.id !== values.flagFaction).map(team => teamColor(values, team.id));
-  const camera = useMemo(() => ({ intro: values.cameraIntro, radius: values.cameraRadius, height: values.cameraHeight, speed: values.cameraSpeed, top: values.hillHeight }), [values]);
   const pole = items.find(item => item.kind === "pole")!;
   return (
     <Stage3D
-      background={values.skyHorizon} fog={{ color: mix(values.skyTop, values.skyHorizon, FOG_MIX), near: values.fogNear, far: values.fogFar }}
+      background={look.sky.horizon} fog={{ color: mix(look.sky.top, look.sky.horizon, FOG_MIX), near: values.fogNear, far: values.fogFar }}
       bloom={{ strength: values.bloomStrength, ...BLOOM }} level={values.quality} fov={FOV} far={FAR} shadows={values.shadows}
     >
-      <Sky top={values.skyTop} horizon={values.skyHorizon} />
-      <Lights values={values} />
+      <Sky top={look.sky.top} horizon={look.sky.horizon} />
+      <Lights look={look} ground={values.hillDark} quality={values.quality} />
       {values.mountains && <Mountains seed={values.worldSeed} color={values.mountainColor} />}
       <Terrain clock={clock} step={steps.ground} height={values.hillHeight} seed={values.worldSeed} colors={groundColors}>
         <Camp items={items} clock={clock} steps={steps} colors={colors} markers={markers} />
@@ -145,13 +149,14 @@ export default memo(function World({ values, clock, steps }: Props) {
           />
         )}
         <Flag clock={clock} step={steps.flag} base={pole.y} size={values.flagSize} wind={values.flagWind} color={teamColor(values, values.flagFaction)} symbol={values.textColor} steel={values.steel} />
+        <ScreenParts kind={kind} values={values} clock={clock} steps={steps} items={items} wood={colors.wood} />
       </Terrain>
       {values.smoke && (
         <Smoke clock={clock} step={steps.smoke} columns={values.smokeColumns} amount={particleCount(values.smokeAmount, values.quality)} color={values.smokeColor} seed={values.worldSeed} ground={ground} />
       )}
-      {values.dust && values.dustAmount > 0 && <Dust clock={clock} count={particleCount(values.dustAmount, values.quality)} seed={values.worldSeed + 1} color={mix(values.sunColor, WHITE, 0.3)} />}
+      {values.dust && values.dustAmount > 0 && <Dust clock={clock} count={particleCount(values.dustAmount, values.quality)} seed={values.worldSeed + 1} color={mix(look.light.color, WHITE, 0.3)} />}
       {values.helicopterOn && <Helicopter clock={clock} color={values.oliveDark} />}
-      <HillCamera clock={clock} options={camera} />
+      <HillCamera clock={clock} options={look.camera} />
     </Stage3D>
   );
 });
