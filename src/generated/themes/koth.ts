@@ -279,6 +279,7 @@ export type KothValues = {
   readonly medicCross: string;
   readonly muzzle: string;
   readonly dustColor: string;
+  readonly soldierLight: string;
   readonly soldierDefault: string;
   readonly soldierNames: boolean;
   readonly soldierNameStyle: string;

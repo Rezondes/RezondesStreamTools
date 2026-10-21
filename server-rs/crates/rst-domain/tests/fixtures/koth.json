@@ -2523,6 +2523,13 @@
       "default": "#b8a888"
     },
     {
+      "key": "soldierLight",
+      "type": "color",
+      "label": "Licht auf den Soldaten",
+      "group": "Minimes: Aussehen",
+      "default": "#fff4e0"
+    },
+    {
       "key": "soldierDefault",
       "type": "select",
       "label": "Rolle ohne Wahl (alle aus)",

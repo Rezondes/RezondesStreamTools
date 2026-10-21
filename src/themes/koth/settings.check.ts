@@ -6,7 +6,7 @@ import { hasMinimes, MEDIC, minimeAimKey, minimeFireKey, minimeNamesKey, minimeT
 import { normalizeName } from "../../core/minimes.ts";
 import { auditTheme } from "../schemaAudit.ts";
 import { kothSettings, TEAM_SET } from "./settings.ts";
-import { ROLE_IDS, ROLES } from "./soldiers.ts";
+import { ROLE_IDS, ROLES } from "./soldiers3d.ts";
 
 const fields = kothSettings.fields;
 const keys = new Set(fields.map(field => field.key));

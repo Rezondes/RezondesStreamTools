@@ -1,9 +1,10 @@
 /* Minimes of the KOTH theme (scenes/Minimes.tsx), encapsulated under .theme-koth, loaded only with the scene. Per minime
    the scene sets --x, --move, --action-ms, --facing and --team (faction color); the running action is the class
-   action-<name>, the role is role-<id>. The soldiers do not hop: walking back to their place and the medic's approach are
-   a crawl. Keyframes are called koth-minime-*. */
+   action-<name>. The anchor box is invisible, the 3D soldier (three/Soldier3D.tsx) follows it; poses, muzzle flash and
+   dust are 3D. Appearing and leaving move the anchor. Keyframes are called koth-minime-*. */
 
 .theme-koth .kh-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.theme-koth .kh-minime-canvas { position: absolute !important; inset: 0; }
 .theme-koth .kh-minime {
   position: absolute;
   left: 0;
@@ -18,48 +19,12 @@
 .theme-koth .kh-minime-name { margin-bottom: var(--name-gap, 4px); padding: var(--name-padding, 1px 8px); font-size: var(--soldierNameSize); font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.06em; }
 .theme-koth .name-band { background: var(--team); color: var(--textColor); }
 .theme-koth .name-schild { background: var(--paper); border: var(--name-border, 2px) solid var(--team); color: var(--ink); }
-.theme-koth .kh-minime-body { position: relative; width: 100%; transform-origin: 50% 100%; animation: koth-minime-breathe var(--breathe, 3s) ease-in-out infinite alternate; }
-.theme-koth .kh-minime-flip { position: relative; transform: scaleX(var(--facing)); }
+.theme-koth .kh-minime-body { position: relative; width: 100%; }
+.theme-koth .kh-minime-anchor { width: 100%; height: calc(var(--soldierSize) * 1.4); }
 .theme-koth .kh-minime-shadow { width: 70%; height: var(--shadow-height, 8px); margin-top: calc(-1 * var(--shadow-overlap, 4px)); border-radius: 50%; background: color-mix(in srgb, black calc(var(--soldierShadow) * 100%), transparent); }
 
-/* Soldier (Soldier.tsx) */
-.theme-koth .kh-soldier { display: block; width: 100%; height: auto; overflow: visible; }
-.theme-koth .soldier-legs { fill: color-mix(in srgb, var(--team) 55%, black); }
-.theme-koth .soldier-torso { fill: var(--team); stroke: color-mix(in srgb, var(--team) 50%, black); stroke-width: var(--uniform-line, 1.5); }
-.theme-koth .soldier-belt { fill: var(--oliveDark); }
-.theme-koth .soldier-skin { fill: var(--skin); }
-.theme-koth .soldier-eye { fill: var(--soldierEye); transform-box: fill-box; transform-origin: center; animation: koth-minime-blink var(--soldierBlinkEvery) linear infinite; }
-.theme-koth .soldier-cross { fill: none; stroke: var(--soldierEye); stroke-width: var(--cross-line, 1.8); stroke-linecap: round; }
-.theme-koth .soldier-helmet { fill: var(--helmet); stroke: color-mix(in srgb, var(--helmet) 50%, black); stroke-width: var(--uniform-line, 1.5); transform-box: view-box; transform-origin: 44% 28%; }
-.theme-koth .soldier-upper, .theme-koth .soldier-weapon { transform-box: view-box; transform-origin: 44% 72%; }
-.theme-koth .weapon-weapon { fill: var(--weapon); }
-.theme-koth .weapon-mark { fill: var(--weaponMark); }
-.theme-koth .role-medic .weapon-weapon { fill: var(--paper); }
-.theme-koth .role-medic .weapon-mark { fill: var(--medicCross); }
-
-/* Own animations on the spot */
-.theme-koth .action-sight .soldier-weapon { animation: koth-minime-sight var(--action-ms) ease-in-out both; }
-.theme-koth .action-reload .soldier-weapon { animation: koth-minime-reload var(--action-ms) ease-in-out both; }
-.theme-koth .action-cover .kh-minime-body { animation: koth-minime-cover var(--action-ms) ease-in-out both; }
-.theme-koth .action-prone .kh-minime-body, .theme-koth .action-walk .kh-minime-body, .theme-koth .action-approach .kh-minime-body { animation: koth-minime-prone var(--action-ms) ease-in-out both; }
-/* Walking back to the place and the medic's approach: crawling low over the ground */
-.theme-koth .action-walk .kh-minime-flip, .theme-koth .action-approach .kh-minime-flip { animation: koth-minime-crawl var(--crawl, 500ms) ease-in-out infinite; }
-.theme-koth .action-look .kh-minime-flip { animation: koth-minime-look var(--action-ms) ease-in-out both; }
-.theme-koth .action-salute .soldier-weapon { animation: koth-minime-salute var(--action-ms) ease-in-out both; }
-.theme-koth .action-cheer .kh-minime-body { animation: koth-minime-cheer var(--action-ms) ease-out both; }
-
-/* Fights of the core: aim, fire (muzzle flash, explosive: a blast), down (falls in a dust cloud), revive (a cross rises) */
-.theme-koth .action-aim .soldier-weapon { animation: koth-minime-sight var(--action-ms) ease-out both; }
-.theme-koth .action-fire .soldier-weapon { animation: koth-minime-recoil var(--recoil, 120ms) ease-out infinite; }
-.theme-koth .kh-muzzle { position: absolute; left: 96%; top: 48%; width: var(--flash, 18px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, var(--paper) 15%, var(--muzzle) 45%, transparent 70%); translate: -50% -50%; animation: koth-minime-flash var(--recoil, 120ms) steps(2, jump-none) infinite; }
-.theme-koth .explosive .kh-muzzle { width: var(--blast, 44px); animation: koth-minime-blast var(--action-ms) ease-out both; }
-.theme-koth .action-down .kh-minime-body { animation: koth-minime-fall var(--fall, 300ms) ease-in both; }
-.theme-koth .action-up .kh-minime-body { animation: koth-minime-rise var(--action-ms) ease-out both; }
-.theme-koth .action-revive .kh-minime-body { animation: koth-minime-kneel var(--action-ms) ease-in-out both; }
+/* Cross over a medic while it revives */
 .theme-koth .kh-revive { position: absolute; left: 50%; top: 0; width: var(--revive, 22px); aspect-ratio: 1; background: linear-gradient(var(--medicCross) 0 0) center / 34% 100% no-repeat, linear-gradient(var(--medicCross) 0 0) center / 100% 34% no-repeat; translate: -50% 0; animation: koth-minime-up var(--action-ms) ease-out both; }
-.theme-koth .kh-dust-cloud { position: absolute; left: 50%; bottom: 10%; }
-.theme-koth .kh-dust-cloud i { position: absolute; width: var(--puff, 22px); aspect-ratio: 1; border-radius: 50%; background: var(--dustColor); translate: -50% 0; animation: koth-minime-dust var(--dust-time, 900ms) ease-out both; }
-.theme-koth .kh-dust-cloud.blast::before { content: ""; position: absolute; width: var(--blast, 44px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, var(--paper) 10%, var(--muzzle) 40%, var(--accent) 60%, transparent 72%); translate: -50% -60%; animation: koth-minime-blast var(--dust-time, 900ms) ease-out both; }
 
 /* Who holds the hill */
 .theme-koth .kh-holder { position: absolute; left: 50%; top: var(--holder-top, 10px); display: flex; align-items: center; gap: var(--holder-gap, 10px); padding: var(--holder-padding, 4px 16px); translate: -50% 0; background: color-mix(in srgb, var(--oliveDark) 88%, transparent); border: var(--holder-border, 2px) solid var(--team, var(--sand)); color: var(--textColor); font-family: var(--titleFont), sans-serif; font-size: var(--holder-size, 22px); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -72,27 +37,7 @@
 .theme-koth .exit-abzug .action-exit .kh-minime-body { animation: koth-minime-leave var(--action-ms) ease-in forwards; }
 .theme-koth .exit-blenden .action-exit .kh-minime-body, .theme-koth .action-exit .kh-minime-name, .theme-koth .action-exit .kh-minime-shadow { animation: koth-minime-fade-out var(--action-ms) ease-in forwards; }
 
-@keyframes koth-minime-breathe { from { scale: 1 1; } to { scale: 1.01 0.99; } }
-@keyframes koth-minime-blink { 0%, 95%, 100% { scale: 1 1; } 97.5% { scale: 1 0.1; } }
-@keyframes koth-minime-sight { 0%, 100% { rotate: 0deg; } 15%, 85% { rotate: -4deg; translate: calc(-1 * var(--sight-pull, 2px)) 0; } }
-@keyframes koth-minime-reload { 0%, 100% { rotate: 0deg; } 20%, 70% { rotate: 40deg; } 45% { rotate: 30deg; } }
-@keyframes koth-minime-cover { 0%, 100% { scale: 1 1; } 15%, 85% { scale: 1.08 0.7; } }
-@keyframes koth-minime-prone { 0%, 100% { rotate: 0deg; translate: 0 0; } 12%, 88% { rotate: -90deg; translate: 0 var(--lie, 30%); } }
-@keyframes koth-minime-crawl { 0%, 100% { translate: 0 0; } 50% { translate: 0 calc(-1 * var(--crawl-lift, 2px)); } }
-@keyframes koth-minime-look { 0%, 100% { scale: 1 1; } 30%, 60% { scale: -1 1; } }
-@keyframes koth-minime-salute { 0%, 100% { rotate: 0deg; } 20%, 80% { rotate: -70deg; } }
-@keyframes koth-minime-cheer { 0%, 100% { translate: 0 0; } 35% { translate: 0 calc(-1 * var(--cheer-height, 24px)); } }
-@keyframes koth-minime-recoil { 0%, 100% { translate: 0 0; } 50% { translate: calc(-1 * var(--kick, 3px)) 0; } }
-@keyframes koth-minime-flash { 0% { opacity: 1; scale: 1; } 100% { opacity: 0.3; scale: 0.6; } }
-@keyframes koth-minime-blast { from { opacity: 1; scale: 0.3; } to { opacity: 0; scale: 1.6; } }
-@keyframes koth-minime-fall { from { rotate: 0deg; translate: 0 0; } to { rotate: -90deg; translate: 0 var(--lie, 30%); } }
-@keyframes koth-minime-rise { from { rotate: -90deg; translate: 0 var(--lie, 30%); } to { rotate: 0deg; translate: 0 0; } }
-@keyframes koth-minime-kneel { 0%, 100% { scale: 1 1; } 20%, 80% { scale: 1.06 0.86; } }
 @keyframes koth-minime-up { from { opacity: 0; translate: -50% 0; } 20% { opacity: 1; } to { opacity: 0; translate: -50% calc(-1 * var(--rise-height, 46px)); } }
-@keyframes koth-minime-dust {
-  from { opacity: 0.9; transform: rotate(calc(var(--i) / var(--n) * 180deg - 90deg)) translateY(0) scale(0.5); }
-  to { opacity: 0; transform: rotate(calc(var(--i) / var(--n) * 180deg - 90deg)) translateY(calc(-1 * var(--dust-reach, 34px))) scale(1.6); }
-}
 @keyframes koth-minime-chute { from { translate: 0 calc(-1 * var(--drop-height, 320px)); rotate: -8deg; } 80% { translate: 0 0; rotate: 4deg; } to { translate: 0 0; rotate: 0deg; } }
 @keyframes koth-minime-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes koth-minime-fade-out { from { opacity: 1; } to { opacity: 0; } }

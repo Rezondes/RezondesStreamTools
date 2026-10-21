@@ -4,16 +4,17 @@
 // helmet. Towers of the core stand as a scaffold on each other's shoulders. Who is in and what everyone does comes from
 // useMinimes; the core moves an anchor per figure with CSS (walking, hops, towers), the 3D figure follows it.
 // Parameters: ?demo, ?demo=<n>
-import { createRef, type CSSProperties, type RefObject, useMemo, useRef, useState } from "react";
+import { type CSSProperties, type RefObject, useMemo, useRef, useState } from "react";
+import { useAnchors } from "../../../core/hooks/useAnchors.ts";
 import { useMinimes, type MinimeStackScene } from "../../../core/hooks/useMinimes.ts";
 import { actorRun, actorStyle, shownVariant, type MinimeAction, type MinimeActor } from "../../../core/minimeBehavior.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import { hopStyle } from "../../../core/minimeHops.ts";
 import { params } from "../../../core/params.ts";
 import type { DachdeckerValues } from "../../../generated/themes/dachdecker.ts";
-import { FIGURE_SET, FIGURE_TYPES, type FigureType } from "../figures.ts";
-import Figure, { type FigureRun } from "../three/Figure.tsx";
-import MinimeStage from "../three/MinimeStage.tsx";
+import FigureStage from "../../../core/three/FigureStage.tsx";
+import PartFigure, { type FigureRun } from "../../../core/three/PartFigure.tsx";
+import { figure, FIGURE_SET, FIGURE_TYPES, type FigureType, pose } from "../figures.ts";
 import { useDachdecker } from "../useDachdecker.ts";
 import "../../../core/minimeHops.css";
 import "../minimes.css";
@@ -25,24 +26,13 @@ const WALKING = new Set(["walk", "approach", "gather", "stackWalk", "dismount"])
 const HELMETS = {
   dachdecker: "helmetDachdecker", zimmerer: "helmetZimmerer", spengler: "helmetSpengler", azubi: "helmetAzubi", polier: "helmetPolier",
 } as const satisfies Record<FigureType, keyof DachdeckerValues>;
+const PARTS = Object.fromEntries(FIGURE_TYPES.map(type => [type, figure(type)])) as Record<FigureType, ReturnType<typeof figure>>;
 const isType = (id: string): id is FigureType => (FIGURE_TYPES as readonly string[]).includes(id);
 
 function runOf(actor: MinimeActor, type: FigureType, stumble: boolean): FigureRun {
   const carry = type === "azubi" && stumble ? "carryStumble" : "carry";
   const animation = WALKING.has(actor.action) ? "walk" : actor.action === "carry" ? carry : actor.action;
   return { animation, startedAt: actor.startedAt, durationMs: actor.durationMs, facing: actor.facing };
-}
-
-// One anchor element per login, the same across renders, so the 3D figure keeps following it
-function useAnchors() {
-  const anchors = useRef(new Map<string, RefObject<HTMLDivElement | null>>());
-  return (login: string) => {
-    const known = anchors.current.get(login);
-    if (known) return known;
-    const anchor = createRef<HTMLDivElement>();
-    anchors.current.set(login, anchor);
-    return anchor;
-  };
 }
 
 export default function Minimes() {
@@ -67,11 +57,12 @@ export default function Minimes() {
     <div ref={stage} className={`dd-minimes${values.minimeRidge ? " dd-on-ridge" : ""}`} aria-hidden="true">
       {values.minimeRidge && <div className="dd-minime-ridge" />}
       {shown.map(({ actor }) => <Anchor key={actor.login} actor={actor} anchor={anchorOf(actor.login)} />)}
-      <MinimeStage level={values.quality} light={values.line}>
+      <FigureStage className="dd-minime-canvas" level={values.quality} light={values.line}>
         {shown.map(({ actor, type }) => (
-          <Figure
+          <PartFigure
             key={actor.login}
-            type={type}
+            parts={PARTS[type]}
+            pose={pose}
             looks={{
               skin: values.minimeSkin, shirt: values.minimeShirt, pants: values.minimePants, boots: values.minimeBoots, metal: values.slateDark,
               helmet: values[HELMETS[type]], tool: values.copper, tile: values.accent, paper: values.line,
@@ -81,7 +72,7 @@ export default function Minimes() {
             stage={stage}
           />
         ))}
-      </MinimeStage>
+      </FigureStage>
     </div>
   );
 }

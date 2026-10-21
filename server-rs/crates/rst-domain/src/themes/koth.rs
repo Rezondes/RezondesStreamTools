@@ -1,7 +1,7 @@
 //! Settings schema of the King of the Hill theme: military look after the KOTH mode of Arma 3, Arma Reforger and
 //! Wardogs, a hill with radio mast and flag in the middle, three factions fight for it; plus soldiers as minimes in roles
 //! and factions that stand on fixed places and fight (template: `src/themes/koth/settings.ts`, roles from
-//! `src/themes/koth/soldiers.ts`). Labels, groups and defaults are the German UI texts and stay equal to the TypeScript
+//! `src/themes/koth/soldiers3d.ts`). Labels, groups and defaults are the German UI texts and stay equal to the TypeScript
 //! schema (fixture test).
 
 #![allow(clippy::too_many_lines, reason = "schema data: one line per field")]
@@ -416,6 +416,7 @@ fn minimes() -> Vec<SettingField> {
         color("medicCross", "Medic: Kreuz", MINIME_LOOK, "#e53935"),
         color("muzzle", "Mündungsfeuer", MINIME_LOOK, "#ffd23f"),
         color("dustColor", "Staubwolke bei Treffern", MINIME_LOOK, "#b8a888"),
+        color("soldierLight", "Licht auf den Soldaten", MINIME_LOOK, "#fff4e0"),
         choice("soldierDefault", "Rolle ohne Wahl (alle aus)", MINIME_LOOK, "sturm", &ROLES.map(|role| role.0)),
         flag("soldierNames", "Namen zeigen", MINIME_LOOK, true),
         choice("soldierNameStyle", "Namen auf", MINIME_LOOK, "band", &["band", "schild"]),

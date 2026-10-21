@@ -513,12 +513,11 @@
 .skin-scenery .skin-palm .part-main { fill: var(--palmTrunk); }
 .skin-scenery .skin-palm .part-detail { fill: var(--palmLeaf); }
 .skin-scenery .skin-palm .part-line { stroke: var(--woodDark); stroke-width: 3; }
-/* Figures of the theme (beach things, mango soldiers, soldiers) sit at the top of the title row */
+/* Figures of the theme (beach things, mango soldiers) sit at the top of the title row */
 .skin-figures { position: absolute; top: 14px; left: 58%; translate: -50% 0; display: flex; gap: clamp(12px, 2vw, 32px); }
 .skin-figure { display: block; width: clamp(34px, 3vw, 48px); }
 .skin-figure:nth-child(even) { translate: 0 -10px; rotate: 8deg; }
 .skin-figure:nth-child(odd) { rotate: -6deg; }
-.skin-scenery-koth .skin-figure { rotate: 0deg; translate: 0 0; }
 
 
 /* KOTH: the hill with radio mast and flag rises at the bottom edge */

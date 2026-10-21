@@ -14,7 +14,7 @@ import { badgeFields } from "../../core/chat/chat.ts";
 import { stingerFields } from "../../core/stingerOptions.ts";
 import type { MinimeVariantSet, SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./hill.ts";
-import { ROLE_IDS, ROLE_SET } from "./soldiers.ts";
+import { ROLE_IDS, ROLE_SET } from "./soldiers3d.ts";
 
 export const FONTS = ["Inter", "Share Tech Mono", "IBM Plex Mono", "DM Sans"] as const;
 const TITLE_FONTS = ["Black Ops One", "Stardos Stencil", "Share Tech Mono", "Inter"] as const;
@@ -316,6 +316,7 @@ const FIELDS = [
   color("medicCross", "Medic: Kreuz", MINIME_LOOK, "#e53935"),
   color("muzzle", "Mündungsfeuer", MINIME_LOOK, "#ffd23f"),
   color("dustColor", "Staubwolke bei Treffern", MINIME_LOOK, "#b8a888"),
+  color("soldierLight", "Licht auf den Soldaten", MINIME_LOOK, "#fff4e0"),
   choice("soldierDefault", "Rolle ohne Wahl (alle aus)", MINIME_LOOK, "sturm", ROLE_IDS),
   flag("soldierNames", "Namen zeigen", MINIME_LOOK, true),
   choice("soldierNameStyle", "Namen auf", MINIME_LOOK, "band", ["band", "schild"]),

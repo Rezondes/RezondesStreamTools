@@ -4,6 +4,7 @@
 // the next action follows seamlessly. Check: figures.check.ts.
 import type { MinimeVariantSet } from "../../core/theme.ts";
 import type { Point3 } from "../../core/three/beam.ts";
+import { type FigurePart as Part, type PoseShape, poser, swing } from "../../core/three/figure.ts";
 
 export const FIGURE_TYPES = ["dachdecker", "zimmerer", "spengler", "azubi", "polier"] as const;
 export type FigureType = (typeof FIGURE_TYPES)[number];
@@ -20,14 +21,10 @@ export const FIGURE_SET: MinimeVariantSet = {
     { id: "polier", label: "Polier", names: ["polier", "chef"] },
   ],
 };
-export type Joint = "torso" | "head" | "armL" | "armR" | "legL" | "legR" | "tool";
-// Shapes and what size means for them: box [width, height, depth], sphere and dome [radius], capsule [radius, length],
-// cylinder [top radius, height, bottom radius], gutter = open half cylinder [radius, length]
-export type FigureShape = "box" | "sphere" | "dome" | "capsule" | "cylinder" | "gutter";
 // tone: solid colors of the settings (skin, shirt, pants, boots and belt, metal, helmet and stripe in the color of the
-// type, tool wood or copper, tile terracotta, paper); turn: own rotation of the part; lifts: rises when the figure tips its hat
+// type, tool wood or copper, tile terracotta, paper); lifting parts rise when the figure tips its hat
 export type FigureTone = "skin" | "shirt" | "pants" | "boots" | "metal" | "helmet" | "tool" | "tile" | "paper";
-export type FigurePart = { joint: Joint; shape: FigureShape; size: Point3; pivot: Point3; offset: Point3; tone: FigureTone; turn?: Point3; lifts?: boolean };
+type FigurePart = Part<FigureTone>;
 
 const HIP_L: Point3 = [-0.065, 0.36, 0];
 const HIP_R: Point3 = [0.065, 0.36, 0];
@@ -93,14 +90,8 @@ export function figure(type: FigureType): FigurePart[] {
   return [...BODY, ...TOOLS[type].map(part => ({ ...part, joint: "tool" as const, pivot: HAND }))];
 }
 
-export type Pose = Record<Joint, number> & { lift: number; bob: number };
-const REST: Pose = { torso: 0, head: 0, armL: 0, armR: 0, legL: 0, legR: 0, tool: 0, lift: 0, bob: 0 };
-
-// Every animation fades in and out with the envelope, so it starts and ends at rest; wave = how often a swing repeats
-const envelope = (part: number) => Math.sin(Math.PI * Math.min(1, Math.max(0, part)));
-const swing = (part: number, times: number) => Math.sin(part * Math.PI * 2 * times);
-
-const POSES: Record<string, (part: number) => Partial<Pose>> = {
+// Every animation fades in and out with the envelope of the core, so it starts and ends at rest
+const POSES: Record<string, PoseShape> = {
   walk: part => ({ legL: 0.5 * swing(part, 4), legR: -0.5 * swing(part, 4), armL: -0.35 * swing(part, 4), armR: 0.35 * swing(part, 4), bob: 0.02 * Math.abs(swing(part, 4)) }),
   hammer: part => ({ armR: -1.4 + 0.6 * swing(part, 5), tool: 0.4 * swing(part, 5), torso: 0.1 }),
   measure: part => ({ armL: -1.2, armR: -1.2, tool: 1.2 * (0.5 + 0.5 * swing(part, 1)), head: 0.2 }),
@@ -115,12 +106,6 @@ const POSES: Record<string, (part: number) => Partial<Pose>> = {
 };
 
 // Joint angles of animation at part (0 to 1 of its run); unknown animations stand still
-export function pose(animation: string, part: number): Pose {
-  const shape = POSES[animation];
-  if (!shape) return REST;
-  const weight = envelope(part);
-  const angles = shape(part);
-  return Object.fromEntries(Object.entries(REST).map(([joint, rest]) => [joint, rest + (angles[joint as keyof Pose] ?? 0) * weight])) as Pose;
-}
+export const pose = poser(POSES);
 
 export const ANIMATIONS = Object.keys(POSES);
