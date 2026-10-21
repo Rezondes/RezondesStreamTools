@@ -367,10 +367,10 @@ Der Bereich erscheint mit der Funktion `stinger` oder `banners`. Er zeigt Stinge
 und Offline-Banner (1920x1080) des aktiven Themes mit Vorschau und Zeitleiste, gezeichnet mit den gespeicherten
 Einstellungen des Streamers (Gruppen Stinger und Banner; Animation in `src/themes/<id>/stinger.ts` und `banners.ts`).
 "Rendern" schickt jeden Frame als PNG an den Server; die Frames liegen nur bis zum Ende des Renders unverschlüsselt in
-einem temporären Ordner, ffmpeg baut daraus (höchstens 5 Minuten), das Ergebnis speichert der Server verschlüsselt:
+einem temporären Ordner, ffmpeg baut daraus den Stinger (höchstens 5 Minuten), das Ergebnis speichert der Server verschlüsselt:
 
 - `stinger.webm`: VP9 mit Transparenz. In OBS: Szenenübergänge, `+`, Stinger, Videodatei wählen, Übergangspunkt wie im Dashboard angegeben (je Theme eingestellt, z.B. Matrix 750 ms).
-- `profile.gif` bzw. `offline.gif` als Endlosschleife und ein Standbild `.png`. Über 10 MB nimmt Twitch kein GIF an; das Dashboard weist darauf hin.
+- `profile.png` bzw. `offline.png` als Standbild (der erste Frame, ohne ffmpeg); Twitch nimmt keine animierten Banner an.
 
 Pro Streamer läuft höchstens ein Render, mit höchstens 1200 Frames zu je 8 MB. ffmpeg steckt im Docker-Image;
 ohne Docker muss `ffmpeg` im PATH liegen (oder `FFMPEG=/pfad/zu/ffmpeg`).

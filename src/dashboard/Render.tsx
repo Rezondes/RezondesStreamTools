@@ -1,7 +1,7 @@
-// Render section in the dashboard: stinger (WebM with alpha) and profile and offline banners (GIF with still image) of the
-// active theme (chosen in the THEME section). Next to the preview are the settings of the clip's group (stinger or banners); the
+// Render section in the dashboard: stinger (WebM with alpha) and profile and offline banners (a still PNG, Twitch takes no
+// animated banners) of the active theme (chosen in the THEME section). Next to the preview are the settings of the clip's group (stinger or banners); the
 // preview shows unsaved values immediately, saving does not change the overlay theme. Rendering: the browser draws
-// every frame and sends it as PNG to the server, which builds the result with ffmpeg.
+// every frame and sends it as PNG to the server, which builds the stinger with ffmpeg; a banner is its first frame.
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import type { ClipName, RenderClip } from "../core/renderClip.ts";
@@ -20,6 +20,8 @@ const SECOND_MS = 1000;
 const MEGABYTE = 1024 * 1024;
 // For the stinger a one-second pause after every pass, so the cut is easy to see
 const STINGER_PAUSE = 1;
+// Banners are one picture (the first frame), the stinger a video
+const isStill = (clip: RenderClip) => clip.cut === null;
 
 type SettingsFile = { theme: string; values: Record<string, Record<string, unknown>> };
 type RenderedFile = { name: string; size: number };
@@ -101,6 +103,7 @@ function ClipPreview({ clip }: { clip: RenderClip }) {
   const preview = usePreview(clip, canvas);
   const job = useRenderJob(clip, canvas, preview.setPlaying);
   const cut = clip.cut;
+  const still = isStill(clip);
   return (
     <div className="scene-preview">
       <div className="render-view" style={{ aspectRatio: `${clip.width} / ${clip.height}` }}>
@@ -109,10 +112,15 @@ function ClipPreview({ clip }: { clip: RenderClip }) {
         <canvas ref={canvas} width={clip.width} height={clip.height} />
       </div>
       <div className="render-bar">
-        <button className="btn" onClick={() => preview.setPlaying(value => !value)}>{preview.playing ? RENDER_TEXT.pause : RENDER_TEXT.play}</button>
-        <input type="range" min={0} max={clip.duration} step={1 / clip.fps} value={Math.min(preview.time, clip.duration)} aria-label={RENDER_TEXT.time}
-          onChange={event => { preview.setPlaying(false); preview.setTime(Number(event.target.value)); }} />
-        <span>{Math.min(preview.time, clip.duration).toFixed(2)} {RENDER_TEXT.seconds}</span>
+        {/* A banner is one picture: no timeline */}
+        {!still && (
+          <>
+            <button className="btn" onClick={() => preview.setPlaying(value => !value)}>{preview.playing ? RENDER_TEXT.pause : RENDER_TEXT.play}</button>
+            <input type="range" min={0} max={clip.duration} step={1 / clip.fps} value={Math.min(preview.time, clip.duration)} aria-label={RENDER_TEXT.time}
+              onChange={event => { preview.setPlaying(false); preview.setTime(Number(event.target.value)); }} />
+            <span>{Math.min(preview.time, clip.duration).toFixed(2)} {RENDER_TEXT.seconds}</span>
+          </>
+        )}
         <button className="btn primary" disabled={job.busy} onClick={job.render}>{RENDER_TEXT.render}</button>
         {job.canCancel && <button className="btn" onClick={job.cancel}>{RENDER_TEXT.cancel}</button>}
         <span className="muted" role="status">{job.status}</span>
@@ -188,12 +196,12 @@ function useThemeDraft() {
   return { ready, theme, draft, errors, notice, changed: changedKeys(saved(theme, file), draft), set: setDraft, save, discard };
 }
 
-// Preview: endless loop over the clip and drawing of the current point in time
+// Preview: endless loop over the clip and drawing of the current point in time; a banner stands at its first frame
 function usePreview(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement | null>) {
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(true);
   useEffect(() => {
-    if (!playing) return;
+    if (!playing || isStill(clip)) return;
     let frame = 0;
     const start = performance.now();
     const loop = (now: number) => {
@@ -202,7 +210,7 @@ function usePreview(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement 
     };
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
-  }, [playing, clip.duration, clip.cut]);
+  }, [playing, clip]);
   useEffect(() => {
     Promise.all([document.fonts.load(clip.font), clip.prepare?.()])
       .then(() => { const context = canvas.current?.getContext("2d"); if (context) clip.draw(context, Math.min(time, clip.duration)); })
@@ -227,7 +235,7 @@ function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElemen
     const start = await fetch(`/api/render/start?clip=${clip.name}`, { method: "POST" });
     if (!start.ok) return setStatus(TEXTS.errors[await codeOf(start)]);
     const context = canvas.current!.getContext("2d")!;
-    const total = Math.round(clip.duration * clip.fps);
+    const total = isStill(clip) ? 1 : Math.round(clip.duration * clip.fps);
     for (let index = 0; index < total; index++) {
       if (cancelled.current) {
         await fetch("/api/render/cancel", { method: "POST" });
@@ -243,8 +251,7 @@ function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElemen
     setStatus(RENDER_TEXT.encoding);
     const done = await fetch(`/api/render/done?fps=${clip.fps}`, { method: "POST" });
     if (!done.ok) return setStatus(TEXTS.errors[await codeOf(done)]);
-    const result = (await done.json()) as { tooLarge: boolean };
-    setStatus(result.tooLarge ? RENDER_TEXT.tooLarge : RENDER_TEXT.done);
+    setStatus(RENDER_TEXT.done);
   };
   const render = () => {
     setPlaying(false);

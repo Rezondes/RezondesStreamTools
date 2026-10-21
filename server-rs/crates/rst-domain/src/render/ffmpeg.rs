@@ -3,19 +3,13 @@
 
 use crate::render::clips::Format;
 
-/// Frames `<frames>/0000.png`, `0001.png`, ... with `fps` to `target`
+/// Frames `<frames>/0000.png`, `0001.png`, ... with `fps` to the `WebM` `target`; a PNG clip needs no ffmpeg (None)
 #[must_use]
-pub fn ffmpeg_args(format: Format, fps: u32, frames: &str, target: &str) -> Vec<String> {
+pub fn ffmpeg_args(format: Format, fps: u32, frames: &str, target: &str) -> Option<Vec<String>> {
     let mut args =
         vec!["-y".to_owned(), "-framerate".to_owned(), fps.to_string(), "-i".to_owned(), format!("{frames}/%04d.png")];
     let rest: &[&str] = match format {
-        // Own palette from all frames, store only changed image areas, endless loop
-        Format::Gif => &[
-            "-filter_complex",
-            "[0:v]split[a][b];[a]palettegen=max_colors=64:stats_mode=full[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle",
-            "-loop",
-            "0",
-        ],
+        Format::Png => return None,
         // VP9 with alpha channel so OBS plays the stinger transparently
         Format::Webm => &[
             "-c:v",
@@ -34,7 +28,7 @@ pub fn ffmpeg_args(format: Format, fps: u32, frames: &str, target: &str) -> Vec<
     };
     args.extend(rest.iter().map(|arg| (*arg).to_owned()));
     args.push(target.to_owned());
-    args
+    Some(args)
 }
 
 #[cfg(test)]
@@ -42,16 +36,14 @@ mod tests {
     use super::*;
 
     #[test]
-    fn gif_with_own_palette_and_endless_loop() {
-        let gif = ffmpeg_args(Format::Gif, 12, "frames", "profile.gif");
-        assert_eq!(gif[..5], ["-y", "-framerate", "12", "-i", "frames/%04d.png"]);
-        assert!(gif.iter().any(|arg| arg.contains("palettegen") && arg.contains("paletteuse")));
-        assert_eq!(gif[gif.len() - 3..], ["-loop", "0", "profile.gif"]);
+    fn png_needs_no_ffmpeg() {
+        assert_eq!(ffmpeg_args(Format::Png, 1, "frames", "profile.png"), None);
     }
 
     #[test]
     fn webm_with_alpha() {
-        let webm = ffmpeg_args(Format::Webm, 60, "frames", "stinger.webm");
+        let webm = ffmpeg_args(Format::Webm, 60, "frames", "stinger.webm").expect("webm args");
+        assert_eq!(webm[..5], ["-y", "-framerate", "60", "-i", "frames/%04d.png"]);
         assert!(webm.iter().any(|arg| arg == "libvpx-vp9"));
         let pix = webm.iter().position(|arg| arg == "-pix_fmt").expect("pix_fmt");
         assert_eq!(webm[pix + 1], "yuva420p");

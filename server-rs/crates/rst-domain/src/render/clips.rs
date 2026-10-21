@@ -1,11 +1,12 @@
 //! Clips a streamer can render (template: `CLIPS` and `outputNames` in `server/render.ts`): the stinger as `WebM` with
-//! alpha, the banners as GIF with a still image.
+//! alpha, the banners as a still PNG (Twitch takes no animated banners).
 
 use crate::access::Feature;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Format {
-    Gif,
+    /// One frame, stored as it is, without ffmpeg
+    Png,
     Webm,
 }
 
@@ -37,7 +38,7 @@ impl Clip {
     pub const fn format(self) -> Format {
         match self {
             Self::Stinger => Format::Webm,
-            Self::Profile | Self::Offline => Format::Gif,
+            Self::Profile | Self::Offline => Format::Png,
         }
     }
 
@@ -50,13 +51,13 @@ impl Clip {
         }
     }
 
-    /// Files the clip produces: the video and for GIFs a still image from the first frame
+    /// File the clip produces: the stinger video or the banner image
     #[must_use]
     pub const fn output_names(self) -> &'static [&'static str] {
         match self {
             Self::Stinger => &["stinger.webm"],
-            Self::Profile => &["profile.gif", "profile.png"],
-            Self::Offline => &["offline.gif", "offline.png"],
+            Self::Profile => &["profile.png"],
+            Self::Offline => &["offline.png"],
         }
     }
 }
@@ -71,7 +72,8 @@ mod tests {
         assert_eq!(Clip::Stinger.feature(), Feature::Stinger);
         assert_eq!(Clip::Profile.feature(), Feature::Banners);
         assert_eq!(Clip::Stinger.output_names(), ["stinger.webm"]);
-        assert_eq!(Clip::Offline.output_names(), ["offline.gif", "offline.png"]);
+        assert_eq!(Clip::Offline.output_names(), ["offline.png"]);
+        assert_eq!(Clip::Profile.format(), Format::Png);
         assert_eq!(Clip::parse("profile"), Some(Clip::Profile));
         assert_eq!(Clip::parse("tokens"), None);
     }

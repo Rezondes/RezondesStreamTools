@@ -12,8 +12,8 @@ use crate::identity::values::string_value;
 const MEDIA_EXTENSIONS: [&str; 11] = ["gif", "png", "jpg", "jpeg", "webp", "svg", "mp4", "webm", "mp3", "wav", "ogg"];
 /// At most this many characters before the extension
 const MEDIA_STEM_MAX: usize = 100;
-/// Files a render produces: the stinger video, the banner GIFs and their still images
-pub const OUTPUT_NAMES: [&str; 5] = ["stinger.webm", "profile.gif", "profile.png", "offline.gif", "offline.png"];
+/// Files a render produces: the stinger video and the banner images
+pub const OUTPUT_NAMES: [&str; 3] = ["stinger.webm", "profile.png", "offline.png"];
 
 const fn is_word(byte: u8) -> bool {
     byte.is_ascii_alphanumeric() || byte == b'_'

@@ -12,8 +12,6 @@ pub const MAX_FRAMES: i64 = 1200;
 pub const MAX_FRAME_BYTES: u64 = 8 * 1024 * 1024;
 /// An abandoned render is released afterwards
 pub const TIMEOUT_MS: i64 = 10 * 60_000;
-/// Twitch does not accept larger banner GIFs
-pub const GIF_WARN_BYTES: u64 = 10 * 1024 * 1024;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RenderError {

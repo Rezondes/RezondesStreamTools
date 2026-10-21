@@ -1,5 +1,5 @@
 //! Rendering of stinger and banners (template: `server/renderRoutes.ts`): the dashboard sends the frames as PNG, ffmpeg
-//! builds `WebM` (stinger) or GIF with a still image (banners). Frames lie unencrypted in a temporary folder only until
+//! builds the `WebM` of the stinger, a banner is its single frame as PNG. Frames lie unencrypted in a temporary folder only until
 //! ffmpeg is done and are deleted in any case; the results are stored encrypted. Every step checks the feature of the
 //! clip again, so switching it off stops a running render.
 
@@ -13,9 +13,9 @@ use rst_app::crypto::cipher::random_bytes;
 use rst_app::media::Shelf;
 use rst_domain::access::Feature;
 use rst_domain::identity::values::StreamerId;
-use rst_domain::render::clips::{Clip, Format};
+use rst_domain::render::clips::Clip;
 use rst_domain::render::ffmpeg::ffmpeg_args;
-use rst_domain::render::jobs::{GIF_WARN_BYTES, MAX_FRAME_BYTES, RenderError};
+use rst_domain::render::jobs::{MAX_FRAME_BYTES, RenderError};
 use serde_json::json;
 
 use crate::app::App;
@@ -121,32 +121,26 @@ pub async fn done(call: Call<'_>) -> Response {
 /// ffmpeg builds the clip in the temporary folder; the results are stored encrypted
 async fn encode(app: &App, id: &StreamerId, clip: Clip, fps: u32) -> Response {
     let dir = folder(app, id);
-    let names = clip.output_names();
-    let target = dir.join(names[0]);
-    let args = ffmpeg_args(clip.format(), fps, &dir.to_string_lossy(), &target.to_string_lossy());
-    if let Err(error) = app.ffmpeg.run(&args).await {
-        return text(500, error.code());
-    }
-    let mut outputs = vec![(names[0], target)];
-    // Still image from the first frame for places where Twitch shows no animated GIF
-    if let Some(still) = names.get(1) {
-        outputs.push((still, dir.join("0000.png")));
-    }
-    let mut video_bytes = 0;
-    for (name, path) in outputs {
-        let data = match tokio::fs::read(&path).await {
-            Ok(data) => data,
-            Err(error) => return server_error(&error.to_string()),
-        };
-        let Ok(random) = random_bytes::<16>() else { return server_error("no random bytes for a file name") };
-        match app.stores.media.store(id, Shelf::Render, name, &data, random, now_ms()).await {
-            Ok(stored) if name == names[0] => video_bytes = stored.size,
-            Ok(_) => {}
-            Err(error) => return server_error(&error.to_string()),
+    let name = clip.output_names()[0];
+    let mut target = dir.join(name);
+    // A banner is its first frame as it is; only the stinger goes through ffmpeg
+    match ffmpeg_args(clip.format(), fps, &dir.to_string_lossy(), &target.to_string_lossy()) {
+        Some(args) => {
+            if let Err(error) = app.ffmpeg.run(&args).await {
+                return text(500, error.code());
+            }
         }
+        None => target = dir.join("0000.png"),
     }
-    let too_large = clip.format() == Format::Gif && video_bytes > GIF_WARN_BYTES;
-    json(&json!({ "files": names, "bytes": video_bytes, "tooLarge": too_large }), 200)
+    let data = match tokio::fs::read(&target).await {
+        Ok(data) => data,
+        Err(error) => return server_error(&error.to_string()),
+    };
+    let Ok(random) = random_bytes::<16>() else { return server_error("no random bytes for a file name") };
+    match app.stores.media.store(id, Shelf::Render, name, &data, random, now_ms()).await {
+        Ok(stored) => json(&json!({ "files": [name], "bytes": stored.size }), 200),
+        Err(error) => server_error(&error.to_string()),
+    }
 }
 
 /// Cancel before encoding: releases the job and deletes the frames so far
