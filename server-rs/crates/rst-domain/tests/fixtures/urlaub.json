@@ -1136,34 +1136,6 @@
       "unit": "px"
     },
     {
-      "key": "alertIn",
-      "type": "select",
-      "label": "Einblenden",
-      "group": "Alerts",
-      "default": "welle",
-      "options": [
-        "welle",
-        "plopp",
-        "gleiten",
-        "blenden",
-        "keins"
-      ]
-    },
-    {
-      "key": "alertOut",
-      "type": "select",
-      "label": "Ausblenden",
-      "group": "Alerts",
-      "default": "welle",
-      "options": [
-        "welle",
-        "plopp",
-        "gleiten",
-        "blenden",
-        "keins"
-      ]
-    },
-    {
       "key": "alertTimer",
       "type": "boolean",
       "label": "Restzeit als Seil",
@@ -1192,6 +1164,69 @@
       "label": "Wasserspritzer",
       "group": "Alerts",
       "default": true
+    },
+    {
+      "key": "alertGreeting",
+      "type": "text",
+      "label": "Postkarte: Gruss auf der Vorderseite",
+      "group": "Alerts",
+      "default": "Grüße aus dem Chat",
+      "maxLength": 40
+    },
+    {
+      "key": "alertSwellIn",
+      "type": "number",
+      "label": "Welle herein (Dauer)",
+      "group": "Alerts",
+      "default": 1300,
+      "min": 300,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "alertSwellOut",
+      "type": "number",
+      "label": "Welle hinaus (Dauer)",
+      "group": "Alerts",
+      "default": 1300,
+      "min": 300,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "alertSwellHeight",
+      "type": "number",
+      "label": "Welle: Höhe",
+      "group": "Alerts",
+      "default": 300,
+      "min": 50,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "alertSpray",
+      "type": "number",
+      "label": "Gischt: Tropfen",
+      "group": "Alerts",
+      "default": 60,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "alertStamp",
+      "type": "text",
+      "label": "Poststempel ({date} = Datum)",
+      "group": "Alerts",
+      "default": "STRAND {date}",
+      "maxLength": 30
+    },
+    {
+      "key": "alertAddress",
+      "type": "text",
+      "label": "Postkarte: Adresse ({channel} = Kanal, Zeilen mit / trennen)",
+      "group": "Alerts",
+      "default": "An: {channel} / Strandkorb 7 / Am Meer",
+      "maxLength": 80
     },
     {
       "key": "alertSound",

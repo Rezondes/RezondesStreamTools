@@ -20,7 +20,7 @@ const REQUIRED: Record<string, string[]> = {
   "Allgemein": ["channelName", "font", "titleFont", "wood", "sea", "sand", "palmLeaf", "accent", "accent2", "radius", "fadeDuration"],
   "Kulisse": ["sun", "palmsLeft", "palmsRight", "palmSway", "boat", "gulls", "worldSeed", "exposure", "brbSunHeight", "torches"],
   "Starting, BRB, Ending": ["startingTitle", "brbTitle", "endingTitle", "signSwing", "countdown", "progressStyle", "startingLines", "brbLines", "endingLines", "ticker", "tickerStyle", "powerOn"],
-  "Alerts": ["alertStyle", "followLine", "followIcon", "hypeEndLine", "alertDuration", "alertIn", "alertOut", "alertTimer", "petals", "splash", "soundFollow", "soundLeave"],
+  "Alerts": ["alertStyle", "followLine", "followIcon", "hypeEndLine", "alertDuration", "alertSwellIn", "alertSwellOut", "alertTimer", "petals", "splash", "soundFollow", "soundLeave"],
   "Chat": ["chatStyle", "chatFade", "chatMax", "chatAlign", "chatSway"],
   "Kamera-Rahmen": ["camStyle", "camLeaves", "camFlower", "camLabel", "camLive"],
   "Musik": ["musicStyle", "coverShape", "equalizer", "musicHide", "musicMarquee", "musicMarqueeSpeed"],
