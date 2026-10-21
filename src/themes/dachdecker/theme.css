@@ -1,0 +1,144 @@
+/* Dachdecker theme: a roof frame of glowing plan lines on blueprint, drawn, covered and celebrated in terracotta, copper
+   and slate. Encapsulated under .theme-dachdecker; colors, sizes and times come as CSS variables from the settings,
+   further sizes as var(--name, default). Classes dd-*, keyframes dachdecker-*. Design: docs/DESIGN-DACHDECKER.md. */
+
+.theme-dachdecker {
+  font-family: var(--font), ui-monospace, monospace;
+  font-size: var(--fontSize);
+  line-height: 1.2;
+  color: var(--line);
+  --plan-line: var(--dd-plan-line, 1.5px) solid color-mix(in srgb, var(--line) 85%, transparent);
+}
+
+/* --- Screens: 3D world, vignette, plan layer ---------------------------------------------------------------------- */
+.theme-dachdecker .dd-screen { position: fixed; inset: 0; overflow: hidden; background: var(--blueprint); }
+.theme-dachdecker .dd-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to top, color-mix(in srgb, var(--page) 92%, transparent) 0%, color-mix(in srgb, var(--page) 60%, transparent) 24%, transparent 42%),
+    radial-gradient(ellipse at 50% 40%, transparent 45%, color-mix(in srgb, var(--page), black 50%) 100%);
+  opacity: 0.9;
+}
+.theme-dachdecker .dd-stage { pointer-events: none; }
+
+.theme-dachdecker .dd-head {
+  position: absolute;
+  left: var(--dd-margin, 80px);
+  top: var(--dd-head-top, 64px);
+  margin: 0;
+  font-size: var(--dd-head-size, 20px);
+  font-weight: 500;
+  letter-spacing: var(--dd-head-track, 6px);
+  color: var(--copper);
+  white-space: nowrap;
+}
+.theme-dachdecker .dd-head b { color: var(--line); font-weight: 700; }
+.theme-dachdecker .dd-head-part::before { content: "//"; margin: 0 var(--dd-head-gap, 34px); }
+
+.theme-dachdecker .dd-saying {
+  position: absolute;
+  left: var(--dd-margin, 80px);
+  top: var(--dd-saying-top, 112px);
+  margin: 0;
+  font-size: calc(var(--fontSize) * 0.75);
+  font-weight: 500;
+  color: var(--muted);
+  animation: dachdecker-fade var(--dd-fade, 600ms) ease-out both;
+}
+
+.theme-dachdecker .dd-center { position: absolute; left: 0; right: 0; top: var(--dd-title-top, 790px); text-align: center; }
+.theme-dachdecker .dd-title {
+  margin: 0;
+  font-size: var(--titleSize);
+  font-weight: 700;
+  letter-spacing: var(--dd-title-track, 10px);
+  line-height: 1.15;
+  text-shadow: 0 0 calc(var(--dd-title-glow, 14px) * var(--glow)) color-mix(in srgb, var(--line) 35%, transparent);
+}
+.theme-dachdecker .dd-subtitle {
+  margin: var(--dd-subtitle-gap, 6px) 0 0;
+  font-size: var(--dd-head-size, 20px);
+  font-weight: 500;
+  letter-spacing: var(--dd-head-track, 6px);
+  color: var(--copper);
+}
+.theme-dachdecker .dd-big {
+  display: block;
+  margin-top: var(--dd-big-gap, 4px);
+  font-size: var(--countSize);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: var(--dd-big-track, 8px);
+  color: var(--accent);
+  text-shadow:
+    0 0 calc(var(--dd-big-glow, 10px) * var(--glow)) color-mix(in srgb, var(--accent) 80%, transparent),
+    0 0 calc(var(--dd-big-glow-wide, 34px) * var(--glow)) color-mix(in srgb, var(--brick) 45%, transparent);
+}
+.theme-dachdecker .dd-flicker { animation: dachdecker-flicker var(--flickerEvery) linear infinite; }
+
+/* --- Dimension chain as progress ---------------------------------------------------------------------------------- */
+.theme-dachdecker .dd-progress-box {
+  position: absolute;
+  left: 50%;
+  bottom: var(--dd-progress-bottom, 18px);
+  width: var(--dd-progress-width, 640px);
+  transform: translateX(-50%);
+}
+.theme-dachdecker .dd-progress { display: block; width: 100%; overflow: visible; }
+.theme-dachdecker .dd-dim { stroke: var(--line); stroke-width: 1.5; opacity: 0.7; }
+.theme-dachdecker .dd-tick { opacity: 0.4; }
+.theme-dachdecker .dd-dim-done {
+  stroke: var(--accent);
+  stroke-width: 3;
+  filter: drop-shadow(0 0 calc(var(--dd-big-glow, 10px) * var(--glow)) var(--accent));
+}
+
+/* --- Title block bottom right ------------------------------------------------------------------------------------- */
+.theme-dachdecker .dd-block {
+  position: absolute;
+  right: var(--dd-block-right, 60px);
+  bottom: var(--dd-block-bottom, 30px);
+  width: var(--dd-block-width, 380px);
+  border: var(--plan-line);
+  font-size: var(--dd-block-size, 18px);
+  font-weight: 500;
+}
+.theme-dachdecker .dd-block-row { display: flex; border-top: var(--plan-line); }
+.theme-dachdecker .dd-block-row:first-child { border-top: 0; }
+.theme-dachdecker .dd-block-row span { flex: 1; padding: var(--dd-cell-y, 9px) var(--dd-cell-x, 14px); }
+.theme-dachdecker .dd-block-row span + span { border-left: var(--plan-line); }
+.theme-dachdecker .dd-copper { color: var(--copper); }
+
+/* --- Ticker as a dimension line along the bottom edge ------------------------------------------------------------- */
+.theme-dachdecker .dd-ticker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--dd-ticker-height, 40px);
+  overflow: hidden;
+  border-top: var(--plan-line);
+  font-size: var(--dd-head-size, 20px);
+  letter-spacing: var(--dd-head-track, 6px);
+  color: var(--copper);
+}
+.theme-dachdecker .dd-ticker span {
+  position: absolute;
+  top: 50%;
+  white-space: nowrap;
+  animation: dachdecker-ticker var(--tickerSpeed) linear infinite;
+}
+
+@keyframes dachdecker-fade { from { opacity: 0; } }
+/* A lamp over the drawing board: three short dips at the end of every round */
+@keyframes dachdecker-flicker {
+  0%, 90%, 100% { opacity: 1; }
+  91%, 93%, 95% { opacity: 0.72; }
+  92%, 94% { opacity: 1; }
+}
+@keyframes dachdecker-ticker {
+  from { transform: translate(100vw, -50%); }
+  to { transform: translate(-100%, -50%); }
+}

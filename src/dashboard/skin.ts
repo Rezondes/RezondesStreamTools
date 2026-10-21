@@ -1,11 +1,11 @@
 // Skin of the dashboard: it looks like the active theme (standard modern and plain, matrix terminal, urlaub
 // beach, plantage mango field, koth military, bears cartoon bears in a watercolor world, chaos neon
-// graffiti at night). The skin is data-skin on <html>, its colors and shapes are in
+// graffiti at night, dachdecker blueprint with plan lines). The skin is data-skin on <html>, its colors and shapes are in
 // skins.css. The last skin is remembered in the browser so the wrong one does not flash briefly on load. skinOf is
 // pure, check: skin.check.ts.
 import { DEFAULT_THEME } from "../themes/registry.ts";
 
-const SKINS = ["standard", "matrix", "urlaub", "plantage", "koth", "bears", "chaos"] as const;
+const SKINS = ["standard", "matrix", "urlaub", "plantage", "koth", "bears", "chaos", "dachdecker"] as const;
 export type Skin = (typeof SKINS)[number];
 
 const STORAGE_KEY = "rezondes-skin";

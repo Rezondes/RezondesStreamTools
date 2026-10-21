@@ -1,0 +1,515 @@
+{
+  "id": "dachdecker",
+  "name": "Dachdecker",
+  "fields": [
+    {
+      "key": "channelName",
+      "type": "text",
+      "label": "Kanal-Name",
+      "group": "Allgemein",
+      "default": "DACHDECKER",
+      "maxLength": 40,
+      "basic": true
+    },
+    {
+      "key": "font",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Allgemein",
+      "default": "Roboto Mono",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "basic": true
+    },
+    {
+      "key": "fontSize",
+      "type": "number",
+      "label": "Schriftgrösse",
+      "group": "Allgemein",
+      "default": 26,
+      "min": 12,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "titleSize",
+      "type": "number",
+      "label": "Titelgrösse",
+      "group": "Allgemein",
+      "default": 72,
+      "min": 32,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "countSize",
+      "type": "number",
+      "label": "Countdown-Grösse",
+      "group": "Allgemein",
+      "default": 104,
+      "min": 32,
+      "max": 220,
+      "unit": "px"
+    },
+    {
+      "key": "blueprint",
+      "type": "color",
+      "label": "Blaupause (Hintergrund)",
+      "group": "Allgemein",
+      "default": "#192a56",
+      "basic": true
+    },
+    {
+      "key": "page",
+      "type": "color",
+      "label": "Blaupause dunkel (Verlauf unten)",
+      "group": "Allgemein",
+      "default": "#121e40"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "label": "Signatur Terrakotta",
+      "group": "Allgemein",
+      "default": "#e67e22",
+      "basic": true
+    },
+    {
+      "key": "brick",
+      "type": "color",
+      "label": "Ziegelrot (Flächen und Leuchten)",
+      "group": "Allgemein",
+      "default": "#d35400"
+    },
+    {
+      "key": "copper",
+      "type": "color",
+      "label": "Kupfer",
+      "group": "Allgemein",
+      "default": "#d4a373",
+      "basic": true
+    },
+    {
+      "key": "slate",
+      "type": "color",
+      "label": "Schiefer",
+      "group": "Allgemein",
+      "default": "#2c3e50"
+    },
+    {
+      "key": "line",
+      "type": "color",
+      "label": "Plan-Linien und Text",
+      "group": "Allgemein",
+      "default": "#ffffff"
+    },
+    {
+      "key": "muted",
+      "type": "color",
+      "label": "Gedämpfter Text und Füllung",
+      "group": "Allgemein",
+      "default": "#b4c2e0"
+    },
+    {
+      "key": "quality",
+      "type": "select",
+      "label": "Leistungsstufe 3D",
+      "group": "Allgemein",
+      "default": "mittel",
+      "options": [
+        "hoch",
+        "mittel",
+        "niedrig"
+      ],
+      "basic": true
+    },
+    {
+      "key": "bloom",
+      "type": "boolean",
+      "label": "Leuchten (Bloom)",
+      "group": "Allgemein",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "bloomStrength",
+      "type": "number",
+      "label": "Leuchten: Stärke",
+      "group": "Allgemein",
+      "default": 0.42,
+      "min": 0,
+      "max": 2,
+      "step": 0.02
+    },
+    {
+      "key": "glow",
+      "type": "number",
+      "label": "Text-Leuchten (0 = aus)",
+      "group": "Allgemein",
+      "default": 0.8,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "scramble",
+      "type": "boolean",
+      "label": "Texte entschlüsseln sich",
+      "group": "Allgemein",
+      "default": true
+    },
+    {
+      "key": "scrambleMs",
+      "type": "number",
+      "label": "Entschlüsseln: Dauer",
+      "group": "Allgemein",
+      "default": 1400,
+      "min": 100,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "flicker",
+      "type": "boolean",
+      "label": "Titel flackert wie eine Lampe",
+      "group": "Allgemein",
+      "default": true
+    },
+    {
+      "key": "flickerEvery",
+      "type": "number",
+      "label": "Flackern alle",
+      "group": "Allgemein",
+      "default": 5,
+      "min": 1,
+      "max": 60,
+      "unit": "s"
+    },
+    {
+      "key": "span",
+      "type": "number",
+      "label": "Spannweite in Metern",
+      "group": "Dachstuhl",
+      "default": 8.4,
+      "min": 4,
+      "max": 14,
+      "step": 0.1
+    },
+    {
+      "key": "rise",
+      "type": "number",
+      "label": "Firsthöhe in Metern",
+      "group": "Dachstuhl",
+      "default": 3.25,
+      "min": 1.5,
+      "max": 6,
+      "step": 0.05
+    },
+    {
+      "key": "trusses",
+      "type": "number",
+      "label": "Binder",
+      "group": "Dachstuhl",
+      "default": 5,
+      "min": 2,
+      "max": 9
+    },
+    {
+      "key": "trussGap",
+      "type": "number",
+      "label": "Binderabstand in Metern",
+      "group": "Dachstuhl",
+      "default": 1.5,
+      "min": 0.8,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "overhang",
+      "type": "number",
+      "label": "Sparren-Überstand",
+      "group": "Dachstuhl",
+      "default": 12,
+      "min": 0,
+      "max": 30,
+      "unit": "%"
+    },
+    {
+      "key": "lineOpacity",
+      "type": "number",
+      "label": "Plan-Linien: Deckkraft",
+      "group": "Dachstuhl",
+      "default": 0.62,
+      "min": 0,
+      "max": 1,
+      "step": 0.02
+    },
+    {
+      "key": "fillOpacity",
+      "type": "number",
+      "label": "Balken: Füllung",
+      "group": "Dachstuhl",
+      "default": 0.1,
+      "min": 0,
+      "max": 0.5,
+      "step": 0.02
+    },
+    {
+      "key": "grid",
+      "type": "boolean",
+      "label": "Raster am Boden",
+      "group": "Dachstuhl",
+      "default": true
+    },
+    {
+      "key": "gridOpacity",
+      "type": "number",
+      "label": "Raster: Deckkraft",
+      "group": "Dachstuhl",
+      "default": 0.13,
+      "min": 0,
+      "max": 0.5,
+      "step": 0.01
+    },
+    {
+      "key": "fog",
+      "type": "boolean",
+      "label": "Nebel in der Ferne",
+      "group": "Dachstuhl",
+      "default": true
+    },
+    {
+      "key": "tileCopperShare",
+      "type": "number",
+      "label": "Anteil Kupferziegel",
+      "group": "Dachstuhl",
+      "default": 15,
+      "min": 0,
+      "max": 50,
+      "unit": "%"
+    },
+    {
+      "key": "seed",
+      "type": "number",
+      "label": "Zufall: Startwert",
+      "group": "Dachstuhl",
+      "default": 7,
+      "min": 1,
+      "max": 9999
+    },
+    {
+      "key": "cameraRadius",
+      "type": "number",
+      "label": "Kamera: Abstand",
+      "group": "Dachstuhl",
+      "default": 17,
+      "min": 8,
+      "max": 40,
+      "step": 0.5
+    },
+    {
+      "key": "cameraHeight",
+      "type": "number",
+      "label": "Kamera: Höhe",
+      "group": "Dachstuhl",
+      "default": 6.4,
+      "min": 1,
+      "max": 20,
+      "step": 0.1
+    },
+    {
+      "key": "cameraSpeed",
+      "type": "number",
+      "label": "Kamera: Tempo beim Kreisen",
+      "group": "Dachstuhl",
+      "default": 0.07,
+      "min": 0,
+      "max": 0.5,
+      "step": 0.01
+    },
+    {
+      "key": "cameraIntro",
+      "type": "boolean",
+      "label": "Kamera fährt am Anfang heraus",
+      "group": "Dachstuhl",
+      "default": true
+    },
+    {
+      "key": "buildSpeed",
+      "type": "number",
+      "label": "Aufbau: Tempo (Faktor)",
+      "group": "Dachstuhl",
+      "default": 1,
+      "min": 0.25,
+      "max": 4,
+      "step": 0.05
+    },
+    {
+      "key": "startingHead",
+      "type": "text",
+      "label": "Kopfzeile (// trennt Abschnitte)",
+      "group": "Starting",
+      "default": "BAUPLAN 01 // DACHSTUHL 3D // {channel}",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "startingTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "Starting",
+      "default": "STREAM STARTET GLEICH",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "startingSubtitle",
+      "type": "text",
+      "label": "Unterzeile (leer = aus)",
+      "group": "Starting",
+      "default": "",
+      "maxLength": 200
+    },
+    {
+      "key": "startingLines",
+      "type": "lines",
+      "label": "Wechselnde Zeilen",
+      "group": "Starting",
+      "default": [
+        "Sparren stehen, gleich wird gedeckt",
+        "Kaffee ist durch, die Leiter steht",
+        "Erst messen, dann sägen",
+        "Der Polier zählt noch die Ziegel"
+      ],
+      "maxLines": 100,
+      "basic": true
+    },
+    {
+      "key": "linesEvery",
+      "type": "number",
+      "label": "Zeilen wechseln alle",
+      "group": "Starting",
+      "default": 8,
+      "min": 2,
+      "max": 120,
+      "unit": "s"
+    },
+    {
+      "key": "countdown",
+      "type": "number",
+      "label": "Countdown-Standard",
+      "group": "Starting",
+      "default": 300,
+      "min": 0,
+      "max": 86400,
+      "unit": "s"
+    },
+    {
+      "key": "countdownPrefix",
+      "type": "text",
+      "label": "Text vor dem Countdown",
+      "group": "Starting",
+      "default": "",
+      "maxLength": 200
+    },
+    {
+      "key": "countdownDone",
+      "type": "text",
+      "label": "Text nach dem Countdown",
+      "group": "Starting",
+      "default": "GLEICH GEHT'S LOS",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "startingTiles",
+      "type": "boolean",
+      "label": "Erste Ziegelreihen",
+      "group": "Starting",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "startingTileRows",
+      "type": "number",
+      "label": "Ziegelreihen",
+      "group": "Starting",
+      "default": 4,
+      "min": 1,
+      "max": 11
+    },
+    {
+      "key": "startingProgress",
+      "type": "select",
+      "label": "Fortschritt",
+      "group": "Starting",
+      "default": "masskette",
+      "options": [
+        "masskette",
+        "aus"
+      ]
+    },
+    {
+      "key": "startingBlock",
+      "type": "boolean",
+      "label": "Schriftfeld unten rechts",
+      "group": "Starting",
+      "default": true
+    },
+    {
+      "key": "startingBlockLines",
+      "type": "lines",
+      "label": "Schriftfeld: Zeilen (| trennt Spalten)",
+      "group": "Starting",
+      "default": [
+        "PROJEKT: STREAM",
+        "M 1:50 | BLATT 1/3",
+        "GEZ. {channel} | {date}"
+      ],
+      "maxLines": 6,
+      "basic": true
+    },
+    {
+      "key": "ticker",
+      "type": "text",
+      "label": "Ticker als Masskette unten (leer = aus)",
+      "group": "Starting",
+      "default": "",
+      "maxLength": 300,
+      "basic": true
+    },
+    {
+      "key": "tickerSpeed",
+      "type": "number",
+      "label": "Ticker: Dauer eines Durchlaufs",
+      "group": "Starting",
+      "default": 30,
+      "min": 5,
+      "max": 300,
+      "unit": "s"
+    }
+  ],
+  "groupScenes": {
+    "Dachstuhl": [
+      "starting"
+    ],
+    "Starting": [
+      "starting"
+    ]
+  },
+  "personalize": {
+    "neo": {
+      "channelName": "NEO"
+    },
+    "rezondes": {
+      "channelName": "REZONDES"
+    },
+    "neo_42": {
+      "channelName": "NEO_42"
+    }
+  }
+}

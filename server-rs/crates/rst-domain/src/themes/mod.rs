@@ -5,6 +5,7 @@ pub mod audit;
 pub mod bears;
 pub mod chaos;
 pub mod core_fields;
+pub mod dachdecker;
 #[cfg(test)]
 mod fixture;
 pub mod info_fields;

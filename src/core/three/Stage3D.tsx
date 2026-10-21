@@ -30,6 +30,8 @@ export default function Stage3D({ background, fog = null, bloom = null, level, f
       <Canvas
         // offsetSize: measure the unscaled 1920x1080 box, the stage scales the canvas with CSS like the 2D scenes
         resize={{ offsetSize: true }}
+        // flat: no tone mapping, so the colors of the settings appear as chosen (ACES would wash them out)
+        flat
         dpr={settings.pixelRatio}
         frameloop={paused ? "never" : "always"}
         gl={{ antialias: settings.antialias, alpha: background === null }}

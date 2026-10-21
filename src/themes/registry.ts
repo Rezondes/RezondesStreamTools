@@ -6,6 +6,8 @@ import { bearsClips } from "./bears/render.ts";
 import { bearsSettings } from "./bears/settings.ts";
 import { chaosClips } from "./chaos/render.ts";
 import { chaosSettings } from "./chaos/settings.ts";
+import { dachdeckerClips } from "./dachdecker/render.ts";
+import { dachdeckerSettings } from "./dachdecker/settings.ts";
 import { kothClips } from "./koth/render.ts";
 import { kothSettings } from "./koth/settings.ts";
 import { matrixClips } from "./matrix/render.ts";
@@ -25,6 +27,7 @@ export const THEME_MODULES: readonly ThemeModule[] = [
   { schema: kothSettings, clips: kothClips },
   { schema: bearsSettings, clips: bearsClips },
   { schema: chaosSettings, clips: chaosClips },
+  { schema: dachdeckerSettings, clips: dachdeckerClips },
 ];
 
 export const THEMES: readonly ThemeSchema[] = THEME_MODULES.map(module => module.schema);
