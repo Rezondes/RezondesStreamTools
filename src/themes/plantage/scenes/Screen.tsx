@@ -20,6 +20,7 @@ import { ICONS, PLANE } from "../field.ts";
 import Drift from "../pixi/Drift.tsx";
 import Picker from "../pixi/Picker.tsx";
 import WorldLayer from "../pixi/WorldLayer.tsx";
+import { skyOf } from "../world.ts";
 import type { PlantageValues } from "../settings.ts";
 import ShapeIcon from "../ShapeIcon.tsx";
 import { usePlantage } from "../usePlantage.ts";
@@ -40,7 +41,6 @@ const textsOf = (values: PlantageValues, kind: ScreenKind) => ({
   brb: { eyebrow: values.brbEyebrow, title: values.brbTitle, note: values.brbNote, sayings: values.brbLines },
   ending: { eyebrow: values.endingEyebrow, title: values.endingTitle, note: values.endingNote, sayings: values.endingLines },
 }[kind]);
-const skyOf = (values: PlantageValues, kind: ScreenKind) => ({ starting: values.skyMorningBottom, brb: values.skyDayBottom, ending: values.skyEveningBottom }[kind]);
 
 // The frosted cards and the timeline that lets them fall in
 function Cards({ kind, values, screen, stage }: { kind: ScreenKind; values: PlantageValues; screen: Screen; stage: RefObject<HTMLDivElement | null> }) {

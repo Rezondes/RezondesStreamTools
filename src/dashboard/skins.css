@@ -505,14 +505,7 @@
 .skin-scenery-dachdecker .skin-chain { position: absolute; left: 1.5vw; top: 50%; width: 60vh; transform: translate(-50%, -50%) rotate(-90deg) translateY(50%); opacity: 0.6; }
 .skin-scenery-dachdecker .skin-block .dd-block { top: 24px; right: 24px; bottom: auto; width: 300px; font-size: 13px; opacity: 0.7; }
 :root[data-skin="urlaub"] .dashboard, :root[data-skin="plantage"] .dashboard, :root[data-skin="koth"] .dashboard, :root[data-skin="bears"] .dashboard, :root[data-skin="chaos"] .dashboard { position: relative; z-index: 1; }
-.skin-sun { position: absolute; top: 2vh; right: 22vw; width: 110px; height: 110px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 60px 20px rgba(255, 210, 63, 0.55); }
 /* svg.: stronger than the theme's shape rule (.theme-urlaub .ul-shape, full width) */
-.skin-scenery svg.skin-palm { position: absolute; bottom: -2vh; width: clamp(160px, 18vw, 340px); }
-.skin-scenery .skin-palm-left { left: -7vw; }
-.skin-scenery .skin-palm-right { right: -7vw; scale: -1 1; }
-.skin-scenery .skin-palm .part-main { fill: var(--palmTrunk); }
-.skin-scenery .skin-palm .part-detail { fill: var(--palmLeaf); }
-.skin-scenery .skin-palm .part-line { stroke: var(--woodDark); stroke-width: 3; }
 /* Figures of the theme (beach things, mango soldiers) sit at the top of the title row */
 .skin-figures { position: absolute; top: 14px; left: 58%; translate: -50% 0; display: flex; gap: clamp(12px, 2vw, 32px); }
 .skin-figure { display: block; width: clamp(34px, 3vw, 48px); }
@@ -521,13 +514,6 @@
 
 
 /* KOTH: the hill with radio mast and flag rises at the bottom edge */
-.skin-scenery svg.skin-hill { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; opacity: 0.55; }
-.skin-scenery .skin-hill .part-main { fill: var(--hillColor); }
-.skin-scenery .skin-hill .part-detail { fill: var(--hillDark); }
-.skin-scenery .skin-hill .part-line { stroke: var(--oliveDark); stroke-width: 8; }
-.skin-scenery svg.skin-tower { position: absolute; left: 50%; bottom: 23.4vw; /* hilltop: 450 of 600 in a 1920 wide hill */ width: clamp(50px, 5vw, 90px); translate: -50% 0; opacity: 0.7; }
-.skin-scenery .skin-tower .part-line { stroke: var(--steel); stroke-width: 4; }
-.skin-scenery .skin-tower .part-main { fill: var(--steel); }
 
 /* Bärenbande: the watercolor world fills the page, the tower stands at the bottom right */
 .skin-scenery-bears .bb-world { position: absolute; inset: 0; }

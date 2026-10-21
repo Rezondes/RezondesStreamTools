@@ -5,7 +5,7 @@
 import type { CSSProperties } from "react";
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
-import Hill, { type TimeOfDay } from "../Hill.tsx";
+import WorldBackdrop, { kindOfTime } from "../three/WorldBackdrop.tsx";
 import { kothSettings } from "../settings.ts";
 import { kothNames, useKoth } from "../useKoth.ts";
 
@@ -15,7 +15,7 @@ export default function Info() {
   if (!page) return null;
   return (
     <div className="kh-info">
-      <div className="kh-info-backdrop"><Hill time={values.timeInfo as TimeOfDay} /></div>
+      <div className="kh-info-backdrop"><WorldBackdrop values={values} kind={kindOfTime(values.timeInfo)} /></div>
       <main className="kh-info-column">
         <header className="kh-sheet kh-info-sign">
           <h1 className="kh-title">{page.title}</h1>

@@ -41,12 +41,9 @@ export type KothValues = {
   readonly towerBlink: string;
   readonly flagColor: string;
   readonly sandbags: boolean;
-  readonly nets: boolean;
   readonly smoke: boolean;
   readonly smokeSpeed: number;
   readonly dust: boolean;
-  readonly dustCount: number;
-  readonly hillName: boolean;
   readonly quality: string;
   readonly worldSeed: number;
   readonly skyTop: string;

@@ -44,14 +44,10 @@ export type PlantageValues = {
   readonly hills: boolean;
   readonly hillColor: string;
   readonly hillFarColor: string;
-  readonly treeRows: number;
-  readonly treesPerRow: number;
-  readonly treeSize: number;
   readonly treeSway: number;
   readonly treeSwaySpeed: number;
   readonly mangosOnTrees: boolean;
   readonly crates: boolean;
-  readonly birds: boolean;
   readonly birdEvery: number;
   readonly crateName: boolean;
   readonly quality: string;

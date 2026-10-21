@@ -15,7 +15,7 @@ import { sectionFromHash, visibleSections } from "./navigation.ts";
 import Overview from "./Overview.tsx";
 import Render from "./Render.tsx";
 import Scenery from "./Scenery.tsx";
-import { applySkin } from "./skin.ts";
+import { applySkin, rememberedSkin, skinOf } from "./skin.ts";
 import { TEXTS } from "./texts.de.ts";
 import ThemeSettings from "./ThemeSettings.tsx";
 import Triggers from "./Triggers.tsx";
@@ -65,7 +65,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <Scenery />
+      <Scenery skin={skinOf(theme ?? rememberedSkin())} />
       <main className="dashboard">
         <h1>{TEXTS.title}</h1>
         {error && <p className="error" role="alert">{TEXTS.errors[error]}</p>}

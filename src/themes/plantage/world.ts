@@ -115,6 +115,12 @@ export function sunriseAt(seconds: number, durationMs: number, on: boolean): num
 // the horizon, 1 high), bright = brightness of the world (1 = full day). Starting: dawn to morning with the sunrise; BRB:
 // noon; Ending: from evening into dusk while the sun sinks and the world gets darker
 export type LightKind = "starting" | "brb" | "ending";
+// The color behind the world of a scene (the sky at its foot)
+export const skyOf = (values: { skyMorningBottom: string; skyDayBottom: string; skyEveningBottom: string }, kind: LightKind) =>
+  ({ starting: values.skyMorningBottom, brb: values.skyDayBottom, ending: values.skyEveningBottom })[kind];
+// The scene that shows a time of day (commands page, dashboard): morning the Starting, noon the BRB, evening and night the
+// Ending
+export const kindOfTime = (time: string): LightKind => ({ morgen: "starting", mittag: "brb" } as Record<string, LightKind>)[time] ?? "ending";
 export type LightOptions = { sunriseMs: number; sunriseOn: boolean; sunsetMs: number; sunsetOn: boolean };
 // fixed: brightness before the sunrise and at the end of the sunset; the sun stands higher at noon
 const DARK = { dawn: 0.55, dusk: 0.65 };

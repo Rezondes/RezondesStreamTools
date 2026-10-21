@@ -3,7 +3,7 @@
 // intro come from the info context of the core (useInfoPage); the demo shows the minime commands from the own values.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
-import Backdrop from "../Backdrop.tsx";
+import PaintedWall from "../PaintedWall.tsx";
 import Note, { inkOf } from "../Note.tsx";
 import SprayTitle from "../SprayTitle.tsx";
 import { chaosNames, useChaos } from "../useChaos.ts";
@@ -14,7 +14,7 @@ export default function Info() {
   if (!page) return null;
   return (
     <div className="ch-info">
-      <div className="ch-info-wall"><Backdrop seed="info" gesture="keine" mainColor="cyan" /></div>
+      <div className="ch-info-wall"><PaintedWall seed="info" gesture="keine" mainColor="cyan" boilFps={values.boilFps} /></div>
       <main className="ch-info-column">
         <SprayTitle text={page.title} seed="info" className="ch-info-title" />
         <p className="ch-muted">{page.intro}</p>

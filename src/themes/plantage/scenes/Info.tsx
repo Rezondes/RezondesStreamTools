@@ -3,7 +3,8 @@
 // List, texts and intro come from the info context of the core (useInfoPage), here only the plantation look.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
-import Field, { type TimeOfDay } from "../Field.tsx";
+import WorldBackdrop from "../pixi/WorldBackdrop.tsx";
+import { kindOfTime } from "../world.ts";
 import { plantageSettings } from "../settings.ts";
 import { plantageNames, usePlantage } from "../usePlantage.ts";
 
@@ -13,7 +14,7 @@ export default function Info() {
   if (!page) return null;
   return (
     <div className="pl-info">
-      <div className="pl-info-backdrop"><Field time={values.timeInfo as TimeOfDay} /></div>
+      <div className="pl-info-backdrop"><WorldBackdrop values={values} kind={kindOfTime(values.timeInfo)} /></div>
       <main className="pl-info-column">
         <header className="pl-card pl-info-sign">
           <h1 className="pl-title">{page.title}</h1>

@@ -298,13 +298,6 @@
       "default": true
     },
     {
-      "key": "nets",
-      "type": "boolean",
-      "label": "Tarnnetze",
-      "group": "Hügel",
-      "default": true
-    },
-    {
       "key": "smoke",
       "type": "boolean",
       "label": "Rauch am Horizont",
@@ -326,22 +319,6 @@
       "key": "dust",
       "type": "boolean",
       "label": "Staub in der Luft",
-      "group": "Hügel",
-      "default": true
-    },
-    {
-      "key": "dustCount",
-      "type": "number",
-      "label": "Anzahl Staubkörner",
-      "group": "Hügel",
-      "default": 14,
-      "min": 0,
-      "max": 40
-    },
-    {
-      "key": "hillName",
-      "type": "boolean",
-      "label": "Kanal-Name am Hügel",
       "group": "Hügel",
       "default": true
     },

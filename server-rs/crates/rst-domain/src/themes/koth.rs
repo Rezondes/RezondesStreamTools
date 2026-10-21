@@ -116,12 +116,9 @@ fn hill() -> Vec<SettingField> {
         color("towerBlink", "Funkmast: Blinklicht", HILL, "#ff3b30"),
         color("flagColor", "Flagge auf dem Hügel", HILL, "#c2b280"),
         flag("sandbags", "Sandsäcke", HILL, true),
-        flag("nets", "Tarnnetze", HILL, true),
         flag("smoke", "Rauch am Horizont", HILL, true),
         number("smokeSpeed", "Rauch: Dauer eines Aufsteigens", HILL, 12.0, 2.0, 60.0, S, None),
         flag("dust", "Staub in der Luft", HILL, true),
-        number("dustCount", "Anzahl Staubkörner", HILL, 14.0, 0.0, 40.0, None, None),
-        flag("hillName", "Kanal-Name am Hügel", HILL, true),
     ]
 }
 

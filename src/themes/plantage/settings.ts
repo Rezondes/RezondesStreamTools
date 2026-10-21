@@ -76,14 +76,10 @@ const FIELDS = [
   flag("hills", "Hügel im Hintergrund", FIELD, true),
   color("hillColor", "Hügel", FIELD, "#8fbf5a"),
   color("hillFarColor", "Hügel fern", FIELD, "#bcd88a"),
-  number("treeRows", "Baumreihen", FIELD, 2, 1, 3),
-  number("treesPerRow", "Bäume je Reihe", FIELD, 6, 2, 10),
-  number("treeSize", "Baumgrösse (Faktor)", FIELD, 1, 0.4, 2, undefined, 0.05),
   number("treeSway", "Bäume wiegen (Grad)", FIELD, 2, 0, 15),
   number("treeSwaySpeed", "Bäume wiegen (Dauer)", FIELD, 6, 1, 30, "s"),
   flag("mangosOnTrees", "Mangos an den Bäumen", FIELD, true),
   flag("crates", "Kisten am Feldrand", FIELD, true),
-  flag("birds", "Vögel", FIELD, true),
   number("birdEvery", "Vögel: alle", FIELD, 18, 4, 120, "s"),
   flag("crateName", "Kanal-Name auf der Kiste", FIELD, true),
 
@@ -338,7 +334,7 @@ const personalize = (login: string) => ({ channelName: capital(login) });
 
 // Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
 const BASIC = [
-  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "picker", "mangosOnTrees", "birds", "sunriseOn",
+  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "picker", "mangosOnTrees", "sunriseOn",
   "startingEyebrow", "startingTitle", "ticker", "brbMangoBounce", "brbTitle", "brbNote", "sunsetOn", "endingTitle", "endingNext", "alertStyle",
   "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatStyle", "chatBadges",
   "camStyle", "camLabel", "camLive", "musicStyle", "musicHide", "fxIn", "fxOut", "mangoDefault", "mangoNames",

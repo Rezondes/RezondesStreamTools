@@ -94,12 +94,9 @@ const FIELDS = [
   color("towerBlink", "Funkmast: Blinklicht", HILL, "#ff3b30"),
   color("flagColor", "Flagge auf dem Hügel", HILL, "#c2b280"),
   flag("sandbags", "Sandsäcke", HILL, true),
-  flag("nets", "Tarnnetze", HILL, true),
   flag("smoke", "Rauch am Horizont", HILL, true),
   number("smokeSpeed", "Rauch: Dauer eines Aufsteigens", HILL, 12, 2, 60, "s"),
   flag("dust", "Staub in der Luft", HILL, true),
-  number("dustCount", "Anzahl Staubkörner", HILL, 14, 0, 40),
-  flag("hillName", "Kanal-Name am Hügel", HILL, true),
 
   // 3D world (PLAN-KOTH.md package 2); colors of hill, mountains and beacon and the switches of tower, sandbags, smoke and
   // dust come from the group Hügel

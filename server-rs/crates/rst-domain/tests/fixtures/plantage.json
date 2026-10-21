@@ -326,34 +326,6 @@
       "default": "#bcd88a"
     },
     {
-      "key": "treeRows",
-      "type": "number",
-      "label": "Baumreihen",
-      "group": "Plantage",
-      "default": 2,
-      "min": 1,
-      "max": 3
-    },
-    {
-      "key": "treesPerRow",
-      "type": "number",
-      "label": "Bäume je Reihe",
-      "group": "Plantage",
-      "default": 6,
-      "min": 2,
-      "max": 10
-    },
-    {
-      "key": "treeSize",
-      "type": "number",
-      "label": "Baumgrösse (Faktor)",
-      "group": "Plantage",
-      "default": 1,
-      "min": 0.4,
-      "max": 2,
-      "step": 0.05
-    },
-    {
       "key": "treeSway",
       "type": "number",
       "label": "Bäume wiegen (Grad)",
@@ -386,14 +358,6 @@
       "label": "Kisten am Feldrand",
       "group": "Plantage",
       "default": true
-    },
-    {
-      "key": "birds",
-      "type": "boolean",
-      "label": "Vögel",
-      "group": "Plantage",
-      "default": true,
-      "basic": true
     },
     {
       "key": "birdEvery",
