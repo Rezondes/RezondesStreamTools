@@ -13,6 +13,7 @@ use crate::settings::field::{
     text, with_defaults,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
+use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{
     MEDIC, MINIME_COMBAT, MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minime_aim_key,
@@ -25,10 +26,12 @@ use crate::themes::stinger_fields::stinger_fields;
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
 const S: Option<Unit> = Some(Unit::S);
+const PERCENT: Option<Unit> = Some(Unit::Percent);
 
 const GENERAL: &str = "Allgemein";
 const FIELD: &str = "Plantage";
 const SCREENS: &str = "Starting, BRB, Ending";
+const WORLD: &str = "Welt";
 const ALERTS: &str = "Alerts";
 const CHAT: &str = "Chat";
 const CAM: &str = "Kamera-Rahmen";
@@ -115,6 +118,31 @@ fn field() -> Vec<SettingField> {
     ]
 }
 
+/// The `PixiJS` world of the screens (PLAN-PLANTAGE.md package 2)
+fn world() -> Vec<SettingField> {
+    vec![
+        quality_field(WORLD),
+        number("worldSeed", "Startwert der Welt", WORLD, 42.0, 1.0, 9999.0, None, None),
+        color("skyDawnTop", "Himmel Dämmerung oben", WORLD, "#3b3a6b"),
+        color("skyDawnBottom", "Himmel Dämmerung unten", WORLD, "#f2a477"),
+        flag("sunriseOn", "Sonnenaufgang", WORLD, true),
+        number("sunriseMs", "Sonnenaufgang (Dauer)", WORLD, 3200.0, 0.0, 20000.0, MS, None),
+        flag("raysOn", "Sonnenstrahlen", WORLD, true),
+        flag("parallaxOn", "Kamera schwenkt", WORLD, true),
+        number("parallaxAmount", "Kamera: Weite", WORLD, 120.0, 0.0, 600.0, PX, None),
+        number("parallaxSeconds", "Kamera: Dauer eines Schwenks", WORLD, 14.0, 2.0, 120.0, S, None),
+        number("treeRowsFar", "Bäume in der fernen Reihe", WORLD, 11.0, 2.0, 30.0, None, None),
+        number("treeRowsMid", "Bäume in der mittleren Reihe", WORLD, 8.0, 2.0, 20.0, None, None),
+        number("farBlur", "Unschärfe in der Ferne", WORLD, 1.5, 0.0, 6.0, PX, Some(0.1)),
+        number("hazeFar", "Dunst in der Ferne", WORLD, 55.0, 0.0, 100.0, PERCENT, None),
+        number("swayAmount", "Wiegen (Faktor)", WORLD, 1.0, 0.0, 4.0, None, Some(0.1)),
+        flag("leavesOn", "Fallende Blätter", WORLD, true),
+        number("worldLeafCount", "Anzahl fallende Blätter", WORLD, 18.0, 0.0, 200.0, None, None),
+        flag("motesOn", "Lichtstaub", WORLD, true),
+        number("moteCount", "Anzahl Lichtstaub", WORLD, 70.0, 0.0, 500.0, None, None),
+    ]
+}
+
 fn screens() -> Vec<SettingField> {
     let starting = |field: SettingField| in_scene(SceneName::Starting, field);
     let brb = |field: SettingField| in_scene(SceneName::Brb, field);
@@ -142,6 +170,18 @@ fn screens() -> Vec<SettingField> {
         starting(text("countdownPrefix", "Countdown-Präfix", SCREENS, "", None)),
         starting(text("countdownDone", "Text nach dem Countdown", SCREENS, "Gleich live!", None)),
         starting(choice("progressStyle", "Fortschritt", SCREENS, "korb", &["korb", "ast", "aus"])),
+        starting(number(
+            "cardDropMs",
+            "Starting: Karten fallen herein (Dauer)",
+            SCREENS,
+            1100.0,
+            0.0,
+            5000.0,
+            MS,
+            None,
+        )),
+        starting(number("basketMangos", "Starting: Mangos im Korb", SCREENS, 5.0, 1.0, 12.0, None, None)),
+        starting(flag("pickerReach", "Starting: Pflücker greift in den Baum", SCREENS, true)),
         brb(text("afkPrefix", "BRB-Zähler-Präfix", SCREENS, "Pause seit ", None)),
         ending(text("endingNextLabel", "Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream", None)),
         ending(text("endingNext", "Nächster Stream (leer = ausblenden)", SCREENS, "", None)),
@@ -359,6 +399,7 @@ fn fields() -> Vec<SettingField> {
     [
         general(),
         field(),
+        world(),
         screens(),
         alerts(),
         chat_cam_music_fx(),
@@ -374,6 +415,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     let screens = vec![SceneName::Starting, SceneName::Brb, SceneName::Ending];
     [
         (FIELD, vec![SceneName::Starting, SceneName::Brb, SceneName::Ending, SceneName::Info]),
+        (WORLD, vec![SceneName::Starting]),
         (SCREENS, screens),
         (ALERTS, vec![SceneName::Alerts]),
         (CHAT, vec![SceneName::Chat]),

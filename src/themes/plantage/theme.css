@@ -283,6 +283,72 @@
 .theme-plantage .power-sonnenaufgang .pl-ticker, .theme-plantage .power-blenden .pl-ticker { animation: plantage-fade var(--powerOnDuration) ease-out both; }
 .theme-plantage .power-blenden .pl-field, .theme-plantage .power-blenden .pl-picker { animation: plantage-fade var(--powerOnDuration) ease-out both; }
 
+/* --- Starting as the PixiJS world (scenes/Starting.tsx): frosted cards over the world, GSAP moves them ------------- */
+.theme-plantage .pl-starting { background: var(--skyMorningBottom); }
+.theme-plantage .pl-st-stage { color: var(--textOnWood); }
+/* Milk glass: blur of the world behind, thin light rim, light edge on top, soft lift */
+.theme-plantage .pl-frost {
+  position: absolute;
+  box-sizing: border-box;
+  background: color-mix(in srgb, var(--paper) 62%, transparent);
+  backdrop-filter: blur(var(--frost-blur, 14px)) saturate(1.2);
+  border: var(--frost-rim, 1.5px) solid color-mix(in srgb, white 75%, transparent);
+  border-radius: calc(var(--radius) * 1.9);
+  box-shadow:
+    inset 0 var(--frost-edge, 2px) 0 color-mix(in srgb, white 90%, transparent),
+    0 var(--frost-lift, 24px) var(--frost-soft, 48px) color-mix(in srgb, var(--textOnWood) calc(var(--shadowStrength) * 80%), transparent),
+    0 var(--frost-near, 6px) var(--frost-near-soft, 14px) color-mix(in srgb, var(--textOnWood) calc(var(--shadowStrength) * 50%), transparent);
+  text-align: center;
+}
+.theme-plantage .pl-st-card { left: 50%; top: var(--card-top, 150px); width: var(--signWidth); margin-left: calc(var(--signWidth) / -2); padding: var(--card-padding, 34px 40px 30px); }
+.theme-plantage .pl-st-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pill-gap, 12px);
+  padding: var(--pill-padding, 8px 22px 8px 16px);
+  border-radius: var(--pill, 999px);
+  background: var(--leaf);
+  color: var(--textColor);
+  font-weight: 800;
+  font-size: var(--pill-size, 22px);
+  letter-spacing: var(--pill-spacing, 4px);
+  text-transform: uppercase;
+  box-shadow: 0 var(--pill-lift, 6px) var(--pill-soft, 14px) color-mix(in srgb, var(--leafDark) 35%, transparent), inset 0 var(--pill-edge, 2px) 0 color-mix(in srgb, white 25%, transparent);
+}
+.theme-plantage .pl-st-pill i { width: var(--pill-dot, 16px); height: var(--pill-dot, 16px); border-radius: 50% 50% 50% 0; rotate: -45deg; background: radial-gradient(circle at 35% 30%, var(--paper), var(--mango) 45%, var(--mangoBlush)); }
+.theme-plantage .pl-st-title { margin: var(--title-gap, 18px 0 6px); font-family: var(--titleFont), sans-serif; font-size: var(--titleSize); font-weight: 700; line-height: 1.02; text-shadow: 0 var(--title-lift, 3px) 0 color-mix(in srgb, white 60%, transparent); }
+.theme-plantage .pl-st-note { margin: 0; font-size: var(--note-size, 34px); font-weight: 500; color: color-mix(in srgb, var(--textOnWood) 75%, var(--wood)); }
+.theme-plantage .pl-st-count { left: 50%; top: var(--count-top, 640px); width: var(--count-width, 520px); margin-left: calc(var(--count-width, 520px) / -2); padding: var(--count-padding, 18px 30px 22px); }
+.theme-plantage .pl-st-count b { display: block; font-size: var(--count-size, 96px); font-weight: 800; line-height: 1; letter-spacing: var(--count-spacing, 2px); }
+.theme-plantage .pl-st-count .pl-progress-ast { margin-inline: auto; width: 100%; }
+.theme-plantage .pl-st-line { left: 50%; top: var(--line-top, 900px); translate: -50% 0; padding: var(--line-padding, 12px 34px); border-radius: var(--pill, 999px); font-size: var(--line-size, 30px); font-style: italic; font-weight: 500; white-space: nowrap; }
+.theme-plantage .pl-st-line.empty { visibility: hidden; }
+.theme-plantage .pl-st-clock { right: var(--clock-right, 50px); top: var(--clock-top, 40px); padding: var(--clock-padding, 10px 26px); border-radius: var(--pill, 999px); font-size: var(--clock-size, 30px); font-weight: 700; }
+/* Woven basket: mangos drop in with a bounce when their part of the waiting time is over */
+.theme-plantage .pl-basket {
+  position: relative;
+  margin: var(--basket-gap, 12px) auto 0;
+  width: var(--basket-width, 380px);
+  height: var(--basket-height, 52px);
+  border-radius: var(--basket-round, 10px 10px 26px 26px);
+  background: repeating-linear-gradient(90deg, var(--wood) 0 var(--basket-stave, 14px), var(--woodDark) var(--basket-stave, 14px) var(--basket-weave, 16px)), linear-gradient(var(--wood), var(--woodDark));
+  background-blend-mode: multiply;
+  box-shadow: inset 0 calc(-1 * var(--basket-rim, 8px)) 0 color-mix(in srgb, black 18%, transparent), inset 0 var(--basket-shine, 3px) 0 color-mix(in srgb, white 30%, transparent), 0 var(--basket-lift, 8px) var(--basket-soft, 14px) color-mix(in srgb, var(--textOnWood) 25%, transparent);
+}
+.theme-plantage .pl-basket i {
+  position: absolute;
+  bottom: var(--basket-mango-bottom, 30px);
+  left: calc(var(--basket-edge, 24px) + var(--slot) * (var(--basket-width, 380px) - 2 * var(--basket-edge, 24px) - var(--basket-mango, 40px)) / max(1, var(--mangos) - 1));
+  width: var(--basket-mango, 40px);
+  height: calc(var(--basket-mango, 40px) * 0.85);
+  border-radius: 50% 50% 46% 46%;
+  background: radial-gradient(circle at 34% 30%, var(--paper) 0 8%, var(--mango) 28%, var(--mangoBlush) 100%);
+  box-shadow: 0 var(--mango-lift, 4px) var(--mango-soft, 6px) color-mix(in srgb, var(--textOnWood) 30%, transparent);
+  visibility: hidden;
+}
+.theme-plantage .pl-basket i.full { visibility: visible; animation: plantage-plop var(--plop, 550ms) cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+@keyframes plantage-plop { from { translate: 0 calc(-1 * var(--plop-height, 260px)); opacity: 0; } to { translate: 0 0; opacity: 1; } }
+
 /* --- Alerts ------------------------------------------------------------------------------------------------- */
 .theme-plantage .pl-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
 .theme-plantage .pl-alerts.align-left { justify-content: flex-start; }

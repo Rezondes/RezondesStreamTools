@@ -1,10 +1,11 @@
-// Full-screen scenes of the Plantage theme (Starting, BRB, Ending): mango field per time of day, wooden sign with overline,
+// Full-screen scenes of the Plantage theme: Starting as the PixiJS world (Starting.tsx, own chunk); BRB and Ending until
+// PLAN-PLANTAGE.md package 3 as before: mango field per time of day, wooden sign with overline,
 // title and subtitle, below it countdown (with a filling basket or a branch), break time or next stream, rotating quotes
 // on a harvest slip, the streamer as the mango picker and a ticker behind a crop duster or as a wooden bar.
 // Built for 1920x1080, scaled to any source size.
 // Stage, countdown, break time, quotes and parameters come from the screens context of the core (src/core/screens).
 // Parameter pro Quelle: ?min=5, ?at=20:00, ?next=..., ?ticker=...
-import type { CSSProperties } from "react";
+import { type CSSProperties, lazy } from "react";
 import { rotating, shortClock, type ScreenKind } from "../../../core/screens/screens.ts";
 import { useScreen } from "../../../core/screens/useScreen.ts";
 import { useStage } from "../../../core/screens/useStage.ts";
@@ -19,7 +20,13 @@ const SECOND_MS = 1000;
 // fixed: mangos in the progress basket
 const BASKET_MANGOS = 6;
 
+const Starting = lazy(() => import("./Starting.tsx"));
+
 export default function Screen({ kind }: { kind: ScreenKind }) {
+  return kind === "starting" ? <Starting /> : <FieldScreen kind={kind} />;
+}
+
+function FieldScreen({ kind }: { kind: ScreenKind }) {
   const values = usePlantage();
   const stage = useStage();
   const { now, start, left, progress, away, ticker, next } = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });

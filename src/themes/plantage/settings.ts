@@ -6,6 +6,7 @@ import {
   MINIME_BASE_FIELDS, MINIME_COMBAT, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeAimKey,
   minimeCombatFields, minimeFireKey, minimeVariantFields,
 } from "../../core/minimeFields.ts";
+import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
@@ -23,6 +24,7 @@ const MOTIONS = ["fallen", "plopp", "gleiten", "blenden", "keins"] as const;
 const GENERAL = "Allgemein";
 const FIELD = "Plantage";
 const SCREENS = "Starting, BRB, Ending";
+const WORLD = "Welt";
 const ALERTS = "Alerts";
 const CHAT = "Chat";
 const CAM = "Kamera-Rahmen";
@@ -88,6 +90,29 @@ const FIELDS = [
   number("birdEvery", "Vögel: alle", FIELD, 18, 4, 120, "s"),
   flag("crateName", "Kanal-Name auf der Kiste", FIELD, true),
 
+  // The PixiJS world of the screens (PLAN-PLANTAGE.md package 2)
+  qualityField(WORLD),
+  number("worldSeed", "Startwert der Welt", WORLD, 42, 1, 9999),
+  color("skyDawnTop", "Himmel Dämmerung oben", WORLD, "#3b3a6b"),
+  color("skyDawnBottom", "Himmel Dämmerung unten", WORLD, "#f2a477"),
+  flag("sunriseOn", "Sonnenaufgang", WORLD, true),
+  number("sunriseMs", "Sonnenaufgang (Dauer)", WORLD, 3200, 0, 20000, "ms"),
+  flag("raysOn", "Sonnenstrahlen", WORLD, true),
+  flag("parallaxOn", "Kamera schwenkt", WORLD, true),
+  number("parallaxAmount", "Kamera: Weite", WORLD, 120, 0, 600, "px"),
+  number("parallaxSeconds", "Kamera: Dauer eines Schwenks", WORLD, 14, 2, 120, "s"),
+  number("treeRowsFar", "Bäume in der fernen Reihe", WORLD, 11, 2, 30),
+  number("treeRowsMid", "Bäume in der mittleren Reihe", WORLD, 8, 2, 20),
+  number("farBlur", "Unschärfe in der Ferne", WORLD, 1.5, 0, 6, "px", 0.1),
+  number("hazeFar", "Dunst in der Ferne", WORLD, 55, 0, 100, "%"),
+  number("swayAmount", "Wiegen (Faktor)", WORLD, 1, 0, 4, undefined, 0.1),
+  flag("leavesOn", "Fallende Blätter", WORLD, true),
+  // fixed: at most 200 leaves, more costs too much on weak PCs
+  number("worldLeafCount", "Anzahl fallende Blätter", WORLD, 18, 0, 200),
+  flag("motesOn", "Lichtstaub", WORLD, true),
+  // fixed: at most 500 motes
+  number("moteCount", "Anzahl Lichtstaub", WORLD, 70, 0, 500),
+
   inScene("starting", text("startingEyebrow", "Starting: Überzeile", SCREENS, "Gleich geht's los")),
   inScene("starting", text("startingTitle", "Starting: Titel", SCREENS, "Stream startet gleich")),
   inScene("starting", text("startingNote", "Starting: Untertitel", SCREENS, "Die Mangos sind fast reif!")),
@@ -110,6 +135,9 @@ const FIELDS = [
   inScene("starting", text("countdownPrefix", "Countdown-Präfix", SCREENS, "")),
   inScene("starting", text("countdownDone", "Text nach dem Countdown", SCREENS, "Gleich live!")),
   inScene("starting", choice("progressStyle", "Fortschritt", SCREENS, "korb", ["korb", "ast", "aus"])),
+  inScene("starting", number("cardDropMs", "Starting: Karten fallen herein (Dauer)", SCREENS, 1100, 0, 5000, "ms")),
+  inScene("starting", number("basketMangos", "Starting: Mangos im Korb", SCREENS, 5, 1, 12)),
+  inScene("starting", flag("pickerReach", "Starting: Pflücker greift in den Baum", SCREENS, true)),
   inScene("brb", text("afkPrefix", "BRB-Zähler-Präfix", SCREENS, "Pause seit ")),
   inScene("ending", text("endingNextLabel", "Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream")),
   inScene("ending", text("endingNext", "Nächster Stream (leer = ausblenden)", SCREENS, "")),
@@ -277,6 +305,7 @@ const COMBAT_FIELDS = withDefaults(minimeCombatFields(ROLE_SET), {
 const SCREEN_SCENES = ["starting", "brb", "ending"] as const;
 const GROUP_SCENES = {
   [FIELD]: [...SCREEN_SCENES, "info"],
+  [WORLD]: ["starting"],
   [SCREENS]: SCREEN_SCENES,
   [ALERTS]: ["alerts"],
   [CHAT]: ["chat"],

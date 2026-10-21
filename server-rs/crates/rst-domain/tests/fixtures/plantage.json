@@ -458,6 +458,173 @@
       "default": true
     },
     {
+      "key": "quality",
+      "type": "select",
+      "label": "Leistungsstufe 3D",
+      "group": "Welt",
+      "default": "mittel",
+      "options": [
+        "hoch",
+        "mittel",
+        "niedrig"
+      ]
+    },
+    {
+      "key": "worldSeed",
+      "type": "number",
+      "label": "Startwert der Welt",
+      "group": "Welt",
+      "default": 42,
+      "min": 1,
+      "max": 9999
+    },
+    {
+      "key": "skyDawnTop",
+      "type": "color",
+      "label": "Himmel Dämmerung oben",
+      "group": "Welt",
+      "default": "#3b3a6b"
+    },
+    {
+      "key": "skyDawnBottom",
+      "type": "color",
+      "label": "Himmel Dämmerung unten",
+      "group": "Welt",
+      "default": "#f2a477"
+    },
+    {
+      "key": "sunriseOn",
+      "type": "boolean",
+      "label": "Sonnenaufgang",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "sunriseMs",
+      "type": "number",
+      "label": "Sonnenaufgang (Dauer)",
+      "group": "Welt",
+      "default": 3200,
+      "min": 0,
+      "max": 20000,
+      "unit": "ms"
+    },
+    {
+      "key": "raysOn",
+      "type": "boolean",
+      "label": "Sonnenstrahlen",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "parallaxOn",
+      "type": "boolean",
+      "label": "Kamera schwenkt",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "parallaxAmount",
+      "type": "number",
+      "label": "Kamera: Weite",
+      "group": "Welt",
+      "default": 120,
+      "min": 0,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "parallaxSeconds",
+      "type": "number",
+      "label": "Kamera: Dauer eines Schwenks",
+      "group": "Welt",
+      "default": 14,
+      "min": 2,
+      "max": 120,
+      "unit": "s"
+    },
+    {
+      "key": "treeRowsFar",
+      "type": "number",
+      "label": "Bäume in der fernen Reihe",
+      "group": "Welt",
+      "default": 11,
+      "min": 2,
+      "max": 30
+    },
+    {
+      "key": "treeRowsMid",
+      "type": "number",
+      "label": "Bäume in der mittleren Reihe",
+      "group": "Welt",
+      "default": 8,
+      "min": 2,
+      "max": 20
+    },
+    {
+      "key": "farBlur",
+      "type": "number",
+      "label": "Unschärfe in der Ferne",
+      "group": "Welt",
+      "default": 1.5,
+      "min": 0,
+      "max": 6,
+      "unit": "px",
+      "step": 0.1
+    },
+    {
+      "key": "hazeFar",
+      "type": "number",
+      "label": "Dunst in der Ferne",
+      "group": "Welt",
+      "default": 55,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "swayAmount",
+      "type": "number",
+      "label": "Wiegen (Faktor)",
+      "group": "Welt",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.1
+    },
+    {
+      "key": "leavesOn",
+      "type": "boolean",
+      "label": "Fallende Blätter",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "worldLeafCount",
+      "type": "number",
+      "label": "Anzahl fallende Blätter",
+      "group": "Welt",
+      "default": 18,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "motesOn",
+      "type": "boolean",
+      "label": "Lichtstaub",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "moteCount",
+      "type": "number",
+      "label": "Anzahl Lichtstaub",
+      "group": "Welt",
+      "default": 70,
+      "min": 0,
+      "max": 500
+    },
+    {
       "key": "startingEyebrow",
       "type": "text",
       "label": "Starting: Überzeile",
@@ -664,6 +831,35 @@
         "ast",
         "aus"
       ],
+      "scene": "starting"
+    },
+    {
+      "key": "cardDropMs",
+      "type": "number",
+      "label": "Starting: Karten fallen herein (Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": 1100,
+      "min": 0,
+      "max": 5000,
+      "unit": "ms",
+      "scene": "starting"
+    },
+    {
+      "key": "basketMangos",
+      "type": "number",
+      "label": "Starting: Mangos im Korb",
+      "group": "Starting, BRB, Ending",
+      "default": 5,
+      "min": 1,
+      "max": 12,
+      "scene": "starting"
+    },
+    {
+      "key": "pickerReach",
+      "type": "boolean",
+      "label": "Starting: Pflücker greift in den Baum",
+      "group": "Starting, BRB, Ending",
+      "default": true,
       "scene": "starting"
     },
     {
@@ -2940,6 +3136,9 @@
       "brb",
       "ending",
       "info"
+    ],
+    "Welt": [
+      "starting"
     ],
     "Starting, BRB, Ending": [
       "starting",
