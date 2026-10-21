@@ -141,11 +141,13 @@ const FIELDS = [
   number("alertDuration", "Dauer", ALERTS, 7000, 2000, 60000, "ms"),
   number("alertTop", "Abstand oben", ALERTS, 120, 0, 1000, "px"),
   number("alertWidth", "Breite", ALERTS, 820, 300, 1800, "px"),
-  choice("alertSide", "Schwaden von", ALERTS, "wechselnd", ["links", "rechts", "wechselnd"]),
-  number("swathDensity", "Schwaden: Striche", ALERTS, 90, 0, 300),
   flag("alertTimer", "Restzeit als Markerstrich", ALERTS, true),
   flag("confetti", "Konfetti aus Kritzeleien", ALERTS, true),
-  number("confettiCount", "Anzahl Konfetti", ALERTS, 18, 0, 60),
+  number("confettiCount", "Anzahl Konfetti", ALERTS, 34, 0, 60),
+  flag("alertSprayOn", "Sprühstoss um den Zettel", ALERTS, true),
+  // fixed: at most 1000 spray dots
+  number("alertSprayDots", "Sprühstoss: Punkte", ALERTS, 220, 0, 1000),
+  number("alertSlapScale", "Zettel klatscht an die Wand (Grösse am Anfang)", ALERTS, 1.35, 1, 2, undefined, 0.05),
   flag("alertSound", "Töne", ALERTS, true),
   ...alertSoundFields(ALERTS),
 
@@ -253,7 +255,7 @@ const BASIC = [
   "channelName", "font", "titleFont", "accent", "accent2", "textColor", "scribbleColor1", "gestureStarting",
   "startingEyebrow", "startingTitle", "startingLines", "countdownDone", "ticker", "brbEyebrow", "brbTitle", "brbLines", "endingEyebrow",
   "endingTitle", "endingNext", "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine",
-  "hypeBeginLine", "alertSide", "chatStyle", "chatBadges", "camStyle", "camLabel", "camLive", "musicStyle", "musicLabel", "musicIdle",
+  "hypeBeginLine", "alertSprayOn", "chatStyle", "chatBadges", "camStyle", "camLabel", "camLive", "musicStyle", "musicLabel", "musicIdle",
   "minimeDefaultColor", "minimeNames",
 ];
 

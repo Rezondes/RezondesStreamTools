@@ -10,4 +10,8 @@ assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 assert.equal(chaosSettings.id, "chaos");
 assert.deepEqual(chaosSettings.personalize?.("neo"), { channelName: "NEO" });
 
+// ohne Schwaden: the alerts have no swathes any more, their keys are gone
+const keys = chaosSettings.fields.map(field => field.key);
+assert.ok(!keys.includes("alertSide") && !keys.includes("swathDensity"));
+
 console.log("chaos settings ok");

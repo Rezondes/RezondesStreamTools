@@ -190,7 +190,7 @@
   inset: 0;
   z-index: -1;
   background: color-mix(in srgb, var(--surface), transparent 6%);
-  border: var(--note-edge, 4px) solid var(--ink, var(--accent));
+  border: var(--note-edge, 4px) solid transparent;
   border-radius: var(--note-radius, 4px 14px 6px 11px);
   box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--ink, var(--accent));
   filter: var(--rough);
@@ -221,20 +221,7 @@
 
 /* --- Alerts: swathes from one side, the note on top, confetti, the marker line of the remaining time ------------- */
 .theme-chaos .ch-alerts { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-chaos .ch-swathes { position: absolute; inset: 0; width: 100%; height: 100%; animation: chaos-strike var(--fadeDuration) ease-out both; }
-.theme-chaos .ch-swathes-right { animation-name: chaos-strike-right; }
-.theme-chaos .ch-alerts.leaving .ch-swathes { animation: chaos-fade var(--fadeDuration) ease-in reverse both; }
-.theme-chaos .ch-swath-hot { fill: color-mix(in srgb, var(--lilac), white 70%); }
-.theme-chaos .ch-swath-magenta { fill: var(--accent); }
-.theme-chaos .ch-swath-cyan { fill: var(--accent2); }
-.theme-chaos .ch-swath-violet { fill: var(--violetLight); }
-.theme-chaos .ch-swath-lilac { fill: var(--lilac); }
-.theme-chaos .ch-streak { fill: none; stroke-linecap: round; }
-.theme-chaos .ch-streak-hot { stroke: color-mix(in srgb, var(--lilac), white 70%); }
-.theme-chaos .ch-streak-magenta { stroke: var(--accent); }
-.theme-chaos .ch-streak-cyan { stroke: var(--accent2); }
-.theme-chaos .ch-streak-violet { stroke: var(--violetLight); }
-.theme-chaos .ch-streak-lilac { stroke: var(--lilac); }
+
 .theme-chaos .ch-alert {
   position: absolute;
   top: var(--alertTop);
@@ -252,27 +239,9 @@
 .theme-chaos .ch-alert-name .ch-title { font-size: calc(var(--titleSize) * 0.55); }
 .theme-chaos .ch-alert-line { font-size: 1.05em; }
 .theme-chaos .ch-quote { color: var(--mutedColor); }
-.theme-chaos .ch-timer { align-self: stretch; height: var(--timer-height, 6px); }
-.theme-chaos .ch-timer span {
-  display: block;
-  height: 100%;
-  background: var(--accent2);
-  box-shadow: 0 0 calc(var(--glow) * var(--drip-glow, 10px)) var(--accent2);
-  border-radius: var(--timer-radius, 3px);
-  transform-origin: left;
-  animation: chaos-shrink var(--alertDuration) linear both;
-}
-.theme-chaos .ch-confetti { position: absolute; inset: 0; }
-.theme-chaos .ch-piece {
-  position: absolute;
-  top: var(--confetti-start, -60px);
-  left: calc(var(--x) * 100%);
-  width: calc(var(--confetti-size, 26px) + var(--size) * var(--confetti-size, 26px));
-  height: auto;
-  overflow: visible;
-  animation: chaos-fall calc(var(--alertDuration) * 0.7) ease-in both;
-  animation-delay: calc(var(--delay) * var(--confetti-spread, 1.2s));
-}
+.theme-chaos .ch-timer { align-self: stretch; width: 100%; height: var(--timer-height, 22px); overflow: visible; }
+.theme-chaos .ch-timer path { fill: none; stroke: var(--accent2); stroke-linecap: round; filter: drop-shadow(0 0 calc(var(--glow) * var(--drip-glow, 6px)) var(--accent2)); stroke-dasharray: 1; animation: chaos-retract var(--alertDuration) linear both; }
+.theme-chaos .ch-confetti { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
 /* --- Chat ------------------------------------------------------------------------------------------------------- */
 .theme-chaos .ch-chat {
@@ -402,17 +371,13 @@
 .theme-chaos .ch-info-entry { display: flex; flex-direction: column; align-items: flex-start; gap: var(--entry-gap, 6px); margin-top: var(--entry-space, 16px); }
 .theme-chaos .ch-info-text { margin: 0; }
 
-@keyframes chaos-strike { from { clip-path: inset(0 100% 0 0); opacity: 0; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
-@keyframes chaos-strike-right { from { clip-path: inset(0 0 0 100%); opacity: 0; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
-@keyframes chaos-slap { 0% { opacity: 0; scale: 1.25; } 60% { opacity: 1; scale: 0.97; } 100% { scale: 1; } }
+@keyframes chaos-slap { 0% { opacity: 0; scale: var(--slap, 1.25); } 60% { opacity: 1; scale: 0.97; } 100% { scale: 1; } }
 @keyframes chaos-glitch-out {
   0% { opacity: 1; }
   30% { translate: calc(-50% + var(--glitch-reach, 14px)) 0; clip-path: inset(20% 0 40% 0); }
   60% { translate: calc(-50% - var(--glitch-reach, 14px)) 0; clip-path: inset(50% 0 10% 0); }
   100% { opacity: 0; }
 }
-@keyframes chaos-shrink { from { scale: 1 1; } to { scale: 0 1; } }
-@keyframes chaos-fall { from { translate: 0 0; rotate: 0deg; opacity: 1; } to { translate: 0 110vh; rotate: calc(var(--spin) * 720deg - 360deg); opacity: 0.6; } }
 @keyframes chaos-eq { from { scale: 1 0.25; } to { scale: 1 1; } }
 @keyframes chaos-spin { to { rotate: 1turn; } }
 @media (prefers-reduced-motion: reduce) {
@@ -430,3 +395,10 @@
   from { -webkit-mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0; }
   to { -webkit-mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 0 0; mask-position: 0 0; }
 }
+
+/* --- Notes and the alert (PLAN-CHAOS.md package 8): the rough marker edge draws itself, the alert slaps on with the set
+   size, its name is sprayed on like the screen titles, the timer stroke pulls back ---------------------------------- */
+.theme-chaos .ch-note-edge { position: absolute; inset: calc(-1 * var(--note-edge-out, 6px)); width: calc(100% + 2 * var(--note-edge-out, 6px)); height: calc(100% + 2 * var(--note-edge-out, 6px)); overflow: visible; pointer-events: none; }
+.theme-chaos .ch-note-edge path { fill: none; stroke: var(--ink, var(--accent)); stroke-width: var(--note-edge, 4px); stroke-linecap: round; filter: drop-shadow(0 0 calc(var(--glow) * var(--glow-near, 6px)) var(--ink, var(--accent))); stroke-dasharray: 1; animation: chaos-draw var(--note-draw, 500ms) ease-in-out var(--note-draw-at, 100ms) both; }
+.theme-chaos .ch-alert .ch-title { animation: chaos-spray-title var(--alert-spray, 800ms) ease-in-out var(--alert-spray-at, 600ms) backwards; }
+@keyframes chaos-retract { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 1; } }

@@ -46,13 +46,6 @@ function streak(random: Chance, side: SwathSide): Streak {
   return { d: linePath(points), tone: toneBy(random, start / STAGE.width), width: weighted(random, [[between(random, 1.5, 3), 6], [between(random, 3, 7), 3], [between(random, 7, 14), 1]]), opacity: between(random, 0.4, 1) };
 }
 
-// Which side a swath of an alert comes from: the chosen side, or alternating by the alert's number
-export const swathSide = (choice: string, key: number): SwathSide => {
-  if (choice === "links") return "left";
-  if (choice === "rechts") return "right";
-  return key % 2 ? "right" : "left";
-};
-
 // The swath of one side: flame tongues and count streaks
 export function swathes(side: SwathSide, seed: number, count: number): Swathes {
   const random = chance(seed);

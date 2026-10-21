@@ -1,34 +1,53 @@
-// Alerts of the Chaos theme: energy swathes strike in from one side (left, right or alternating), on them a note with a
-// rough marker edge: header on tape, the name as sprayed graffiti, the line and the quote, the remaining time as a
-// marker line that pulls back; confetti of small scribbles tumbles down. Built-in zap sounds unless own files are chosen.
-// Texts, quote rule and sounds come from the alerts context of the core (src/core/alerts), here the keys and the look.
-// Parameters: ?sound=0, ?volume=0.5
+// Alerts of the Chaos theme (PLAN-CHAOS.md package 8, refs/alert.html): only the note in the middle. It slaps onto the
+// wall (too big, then flat), spray mist bursts around it (pixi/SprayBurst.tsx), its rough marker edge draws itself, the
+// tape sits, the kind chip pops, the name is sprayed on, line and quote follow, confetti of Rough scribbles is thrown out
+// of it; the remaining time is a rough marker stroke that pulls back; it leaves with a glitch. Built-in zap sounds unless
+// own files are chosen. Texts, quote rule and sounds come from the alerts context of the core (src/core/alerts).
+// Parameters: ?sound=0, ?volume=0.5, ?t=<s> (still of the throw)
+import { type CSSProperties, useMemo, useState } from "react";
 import { ALERT_SOUND_KEYS, alertQuote, alertTextKeys, describeAlert } from "../../../core/alerts/alerts.ts";
 import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
+import { roughPath } from "../../../core/rough/roughSvg.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import type { Alert } from "../../../core/types.ts";
 import Confetti from "../Confetti.tsx";
-import EnergySwathes from "../EnergySwathes.tsx";
 import Note from "../Note.tsx";
+import SprayBurst from "../pixi/SprayBurst.tsx";
 import SprayTitle from "../SprayTitle.tsx";
-import { swathSide } from "../swathes.ts";
 import { playFade, playZap } from "../tones.ts";
 import { useChaos } from "../useChaos.ts";
 
 const KEYS = alertTextKeys("Tag");
+type Queued = NonNullable<ReturnType<typeof useAlerts>["current"]>;
+// fixed: the note is about this high (px), the confetti is thrown from its middle
+const NOTE_HEIGHT = 300;
+// fixed: the timer stroke as a rough line in a 720 x 30 frame
+const TIMER = { width: 720, height: 30, line: 8, roughness: 1.6, seed: 9 };
 
 export default function Alerts() {
   const values = useChaos();
   const { current, leaving } = useAlerts(values.alertDuration);
   if (!current) return <div className="ch-alerts" />;
-  const side = swathSide(values.alertSide, current.key);
   return (
-    <div className={`ch-alerts ch-from-${side}${leaving ? " leaving" : ""}`}>
-      <EnergySwathes key={`swath-${current.key}`} side={side} seed={current.key} />
-      <Card key={current.key} alert={current} leaving={leaving} />
-      {values.confetti && <Confetti key={`confetti-${current.key}`} count={values.confettiCount} seed={current.key} />}
+    <div className={`ch-alerts${leaving ? " leaving" : ""}`}>
+      <Thrown key={current.key} alert={current} leaving={leaving} />
     </div>
+  );
+}
+
+// One alert: spray burst, the note and the confetti, all timed from the moment it came
+function Thrown({ alert, leaving }: { alert: Queued; leaving: boolean }) {
+  const values = useChaos();
+  const [start] = useState(() => performance.now());
+  const origin = useMemo(() => ({ x: innerWidth * 0.5, y: values.alertTop + NOTE_HEIGHT * 0.5 }), [values.alertTop]);
+  const note = useMemo(() => ({ top: values.alertTop, width: values.alertWidth, height: NOTE_HEIGHT }), [values.alertTop, values.alertWidth]);
+  return (
+    <>
+      {values.alertSprayOn && <SprayBurst values={values} start={start} seed={alert.key} note={note} />}
+      <Card alert={alert} leaving={leaving} />
+      {values.confetti && <Confetti count={values.confettiCount} seed={alert.key} origin={origin} start={start} />}
+    </>
   );
 }
 
@@ -40,13 +59,18 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   useAlertSounds(values.alertSound ? () => playZap(sound) : null, values.alertSound ? () => playFade(closing) : null, leaving);
   const said = values.alertQuote ? alertQuote(alert) : null;
   const quote = said ? fillTemplate(values.quoteFormat, { text: said }) : "";
+  const timer = useMemo(() => roughPath({ kind: "line", from: [0, TIMER.height * 0.5], to: [TIMER.width, TIMER.height * 0.4] }, { roughness: TIMER.roughness, bowing: 1, strokeWidth: TIMER.line, fill: "none" }, TIMER.seed), []);
   return (
-    <Note tape className={`ch-alert${leaving ? " leaving" : ""}`}>
+    <Note tape className={`ch-alert${leaving ? " leaving" : ""}`} style={{ "--slap": values.alertSlapScale } as CSSProperties}>
       <span className="ch-chip">{tag}</span>
       <SprayTitle text={alert.user} seed={`alert-${alert.kind}`} className="ch-alert-name" />
       <b className="ch-alert-line">{line}</b>
       {quote && <i className="ch-quote">{quote}</i>}
-      {values.alertTimer && <div className="ch-timer" aria-hidden="true"><span /></div>}
+      {values.alertTimer && (
+        <svg className="ch-timer" viewBox={`0 0 ${TIMER.width} ${TIMER.height}`} aria-hidden="true">
+          {timer.map(part => <path key={part.d} d={part.d} pathLength={1} />)}
+        </svg>
+      )}
     </Note>
   );
 }

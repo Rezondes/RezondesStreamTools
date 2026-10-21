@@ -977,28 +977,6 @@
       "unit": "px"
     },
     {
-      "key": "alertSide",
-      "type": "select",
-      "label": "Schwaden von",
-      "group": "Alerts",
-      "default": "wechselnd",
-      "options": [
-        "links",
-        "rechts",
-        "wechselnd"
-      ],
-      "basic": true
-    },
-    {
-      "key": "swathDensity",
-      "type": "number",
-      "label": "Schwaden: Striche",
-      "group": "Alerts",
-      "default": 90,
-      "min": 0,
-      "max": 300
-    },
-    {
       "key": "alertTimer",
       "type": "boolean",
       "label": "Restzeit als Markerstrich",
@@ -1017,9 +995,36 @@
       "type": "number",
       "label": "Anzahl Konfetti",
       "group": "Alerts",
-      "default": 18,
+      "default": 34,
       "min": 0,
       "max": 60
+    },
+    {
+      "key": "alertSprayOn",
+      "type": "boolean",
+      "label": "Sprühstoss um den Zettel",
+      "group": "Alerts",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "alertSprayDots",
+      "type": "number",
+      "label": "Sprühstoss: Punkte",
+      "group": "Alerts",
+      "default": 220,
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "key": "alertSlapScale",
+      "type": "number",
+      "label": "Zettel klatscht an die Wand (Grösse am Anfang)",
+      "group": "Alerts",
+      "default": 1.35,
+      "min": 1,
+      "max": 2,
+      "step": 0.05
     },
     {
       "key": "alertSound",

@@ -108,11 +108,12 @@ export type ChaosValues = {
   readonly alertDuration: number;
   readonly alertTop: number;
   readonly alertWidth: number;
-  readonly alertSide: string;
-  readonly swathDensity: number;
   readonly alertTimer: boolean;
   readonly confetti: boolean;
   readonly confettiCount: number;
+  readonly alertSprayOn: boolean;
+  readonly alertSprayDots: number;
+  readonly alertSlapScale: number;
   readonly alertSound: boolean;
   readonly soundFollow: SoundValue;
   readonly soundSub: SoundValue;

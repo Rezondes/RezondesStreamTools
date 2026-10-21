@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { STAGE } from "../../core/screens/screens.ts";
 import { pointsOf } from "./paths.ts";
-import { swathes, swathSide } from "./swathes.ts";
+import { swathes } from "./swathes.ts";
 
 // From the left: every tongue starts at the left edge and reaches at most 62 % into the stage
 const left = swathes("left", 5, 40);
@@ -22,10 +22,5 @@ assert.ok(right.tongues.every(tongue => Math.max(...pointsOf(tongue.d).map(([x])
 const tones = new Set([...left.tongues, ...left.streaks].map(piece => piece.tone));
 assert.ok(tones.has("magenta") && tones.has("cyan"));
 assert.equal(swathes("left", 5, 0).streaks.length, 0);
-
-// The side of an alert: as chosen, or alternating by the alert's number
-assert.equal(swathSide("links", 3), "left");
-assert.equal(swathSide("rechts", 2), "right");
-assert.deepEqual([0, 1, 2].map(key => swathSide("wechselnd", key)), ["left", "right", "left"]);
 
 console.log("chaos swathes ok");
