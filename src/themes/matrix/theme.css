@@ -53,6 +53,13 @@
 .theme-matrix .out-glitch { --out: matrix-glitch-out; --out-ease: steps(1, end); }
 .theme-matrix .out-fade { --out: matrix-fade-out; --out-ease: ease-in; }
 .theme-matrix .out-none { --out: matrix-fade-out; --out-ease: steps(1, start); }
+/* The box switches on after the rain curtain (GSAP), without the CSS jolt */
+.theme-matrix .in-curtain { --in: none; --in-ease: linear; }
+.theme-matrix .in-curtain .alert-body { animation: none; }
+/* The box dissolves into glyphs (pixi/Curtain.tsx), the alert itself stays for them */
+.theme-matrix .out-dissolve { --out: none; --out-ease: linear; }
+.theme-matrix .alert-curtain { position: absolute; left: 0; top: 0; pointer-events: none; z-index: 2; }
+.theme-matrix .alert-body .rain { position: absolute; inset: 0; overflow: hidden; }
 
 /* Glitch: stripes of the element flash offset, color and brightness twitch. The strength scales all
    offsets. Uses the property "translate", so an existing transform is kept. */
@@ -226,9 +233,11 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  height: var(--alert-timer-height, 4px);
+  height: var(--alert-timer-height, 6px);
   background: var(--accent);
   box-shadow: 0 0 var(--alert-timer-glow, 10px) var(--accent);
+  /* Segments like a terminal bar */
+  mask: repeating-linear-gradient(90deg, black 0 var(--timer-segment, 18px), transparent var(--timer-segment, 18px) calc(var(--timer-segment, 18px) + var(--timer-gap, 4px)));
   animation: matrix-timer var(--alertDuration) linear forwards;
 }
 @keyframes matrix-timer { from { width: 100%; } to { width: 0; } }

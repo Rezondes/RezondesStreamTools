@@ -18,7 +18,8 @@ import { glyphAtlas } from "./GlyphAtlas.ts";
 
 export type RainControl = { tempo: (seconds: number) => number; jitter: number; drain: number | null };
 
-type Props = { opacity: number; control?: { current: RainControl } };
+// area: own size in px (inside the alert box) instead of the stage
+type Props = { opacity: number; control?: { current: RainControl }; area?: { width: number; height: number } };
 
 const SECOND_MS = 1000; // fixed: seconds in ms
 const SEEK = seekFromQuery(location.search);
@@ -30,7 +31,7 @@ const LOOK = { glyph: 1.05, head: 1.6, headAlpha: 0.55, fade: 1.6, shake: 40, sh
 type Column = RainColumn & { size: number; layer: number; cells: Sprite[]; head: Sprite };
 
 // The sprites of every column: trail cells on a plane per layer (blurred far away), heads on one additive glowing plane
-function columnsOf(app: Application, values: MatrixValues, atlas: Texture[]): Column[] {
+function columnsOf(app: Application, values: MatrixValues, atlas: Texture[], width: number): Column[] {
   const low = values.quality === LOW;
   const sizes = [values.rainSizeFar, values.rainSizeMid, values.rainSizeNear];
   const density = (values.rainDensity / 100) * quality(values.quality).particles;
@@ -45,7 +46,7 @@ function columnsOf(app: Application, values: MatrixValues, atlas: Texture[]): Co
     const blur = [values.rainBlurFar, values.rainBlurFar * LOOK.midBlur, 0][layer];
     if (!low && blur > 0) plane.filters = [new BlurFilter({ strength: blur, quality: 2 })];
     app.stage.addChild(plane);
-    for (const column of rainColumns(layer, size, { seed: values.rainSeed, width: STAGE.width, density })) {
+    for (const column of rainColumns(layer, size, { seed: values.rainSeed, width, density })) {
       const cells = Array.from({ length: column.trail }, () => {
         const sprite = new Sprite(atlas[0]);
         sprite.anchor.set(0.5);
@@ -65,9 +66,9 @@ function columnsOf(app: Application, values: MatrixValues, atlas: Texture[]): Co
   return columns;
 }
 
-function build(app: Application, values: MatrixValues, control: { current: RainControl } | undefined) {
+function build(app: Application, values: MatrixValues, control: { current: RainControl } | undefined, area: { width: number; height: number }) {
   const atlas: Texture[] = glyphAtlas(values.glyphs, values.font);
-  const columns = columnsOf(app, values, atlas);
+  const columns = columnsOf(app, values, atlas, area.width);
   const tints = [hexNumber(values.dim), hexNumber(mixHex(values.dim, values.accent, 0.5)), hexNumber(values.accent)];
   const flash = hexNumber(values.flash);
   const started = performance.now();
@@ -77,9 +78,9 @@ function build(app: Application, values: MatrixValues, control: { current: RainC
     const rainSeconds = (control?.current.tempo ?? (time => time * values.rainSpeed))(seconds);
     const jitter = control?.current.jitter ?? 0;
     for (const column of columns) {
-      const at = headAt(column, column.size, STAGE.height, rainSeconds);
+      const at = headAt(column, column.size, area.height, rainSeconds);
       const drain = control?.current.drain ?? null;
-      const drained = at !== null && drain !== null && at.run > (headAt(column, column.size, STAGE.height, drain)?.run ?? -1);
+      const drained = at !== null && drain !== null && at.run > (headAt(column, column.size, area.height, drain)?.run ?? -1);
       column.head.visible = at !== null && !drained;
       if (!at || drained) {
         for (const cell of column.cells) cell.visible = false;
@@ -89,7 +90,7 @@ function build(app: Application, values: MatrixValues, control: { current: RainC
       column.cells.forEach((cell, behind) => {
         const row = at.row - behind;
         const y = row * column.size + column.size / 2;
-        cell.visible = y > -column.size && y < STAGE.height + column.size;
+        cell.visible = y > -column.size && y < area.height + column.size;
         if (!cell.visible) return;
         cell.texture = atlas[glyphAt(values.rainSeed + at.run, column, row, behind, seconds, atlas.length, change)];
         const shake = jitter > 0 && mix(row, column.key) < LOOK.shaken ? (mix(row, Math.floor(seconds * 30)) - 0.5) * LOOK.shake * jitter : 0;
@@ -107,7 +108,7 @@ function build(app: Application, values: MatrixValues, control: { current: RainC
   return () => app.ticker.remove(paint);
 }
 
-export default function Rain({ opacity, control }: Props) {
+export default function Rain({ opacity, control, area }: Props) {
   const values = useMatrix();
   const latest = useRef(values);
   latest.current = values;
@@ -116,7 +117,7 @@ export default function Rain({ opacity, control }: Props) {
     values.rainDensity, values.rainSpeed, values.rainBlurFar, values.headGlow, values.glyphChange, values.glyphChangeTip, values.dim, values.accent, values.flash].join("|");
   return (
     <div className="rain" style={{ opacity }} aria-hidden="true">
-      <PixiStage key={key} background={null} onReady={app => build(app, latest.current, control)} />
+      <PixiStage key={key} background={null} size={area} onReady={app => build(app, latest.current, control, area ?? STAGE)} />
     </div>
   );
 }

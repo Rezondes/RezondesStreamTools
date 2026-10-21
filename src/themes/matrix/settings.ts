@@ -200,6 +200,13 @@ const FIELDS = [
   choice("alertIn", "Einblenden", ALERTS, "glitch", ANIMATIONS),
   choice("alertOut", "Ausblenden", ALERTS, "glitch", ANIMATIONS),
   flag("alertTimer", "Restzeit-Balken", ALERTS, true),
+  flag("alertCurtainOn", "Regenvorhang beim Einschalten", ALERTS, true),
+  number("alertCurtainSize", "Regenvorhang: Zeichengrösse", ALERTS, 22, 8, 60, "px"),
+  number("alertCurtainSpeed", "Regenvorhang: Tempo", ALERTS, 1, 0.2, 4, undefined, 0.1),
+  number("alertCrtOnMs", "Box einschalten (Dauer)", ALERTS, 430, 100, 3000, "ms"),
+  flag("alertDissolveOn", "Zerfällt in Zeichen", ALERTS, true),
+  number("alertDissolveMs", "Zerfall (Dauer)", ALERTS, 1000, 200, 1000, "ms"),
+  flag("alertGlitchOn", "Glitch in der Mitte", ALERTS, true),
   flag("alertSound", "Töne", ALERTS, true),
   ...alertSoundFields(ALERTS),
 

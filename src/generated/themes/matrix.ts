@@ -119,6 +119,13 @@ export type MatrixValues = {
   readonly alertIn: string;
   readonly alertOut: string;
   readonly alertTimer: boolean;
+  readonly alertCurtainOn: boolean;
+  readonly alertCurtainSize: number;
+  readonly alertCurtainSpeed: number;
+  readonly alertCrtOnMs: number;
+  readonly alertDissolveOn: boolean;
+  readonly alertDissolveMs: number;
+  readonly alertGlitchOn: boolean;
   readonly alertSound: boolean;
   readonly soundFollow: SoundValue;
   readonly soundSub: SoundValue;

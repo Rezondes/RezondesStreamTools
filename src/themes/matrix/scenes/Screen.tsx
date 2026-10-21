@@ -13,6 +13,7 @@ import { type SceneClock, useClockValue } from "../../../core/motion/useClockVal
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { countedStats, parseStatLines } from "../../../core/stats/stats.ts";
 import Rain, { type RainControl } from "../pixi/Rain.tsx";
+import { GLITCH, glitchKeys, POWER, powerOn } from "../crtMotion.ts";
 import { rainTime, type Tempo } from "../rain.ts";
 import type { MatrixValues } from "../settings.ts";
 import { clock } from "../../../core/overlayTiming.ts";
@@ -28,20 +29,13 @@ import { placeholders, useMatrix } from "../useMatrix.ts";
 // fixed: percentage display and repetitions of the ticker text (the animation runs over half the width)
 const SHOW = { percent: 100, tickerRepeat: 6 };
 const SECOND_MS = 1000; // fixed: seconds in ms
-// When the CRT switches on (s), the share of its time for the line and for opening, the line height, how bright the
-// tube starts and how strong the flash is
-const POWER = { at: 0.3, line: 0.47, open: 0.53, thin: 0.004, bright: 4, flash: 0.9 }; // fixed: the tube of the prototype
-// The glitch: length (s), the slices it jumps in (shift px, inset of the clip) and the bright edge
-// fixed: the glitch of the prototype
-const GLITCH = { length: 0.2, slices: [{ x: -12, clip: "inset(10% 0 60% 0)" }, { x: 9, clip: "inset(45% 0 20% 0)" }], bright: 1.6 };
+const POWER_AT = 0.3; // fixed: when the CRT switches on (s)
 // fixed: a reconnect attempt: how long the rain pulls (s), how long the line types (s) and stays (s)
 const RETRY = { pull: 0.8, type: 0.5, stay: 1.6 };
 // The Ending: when the numbers start counting after the power on (s) and how far apart (s), how long the rain falls out
 // before the CRT switches off (s), the switch off (line, dot, s)
 const LOGOUT = { after: 0.6, stagger: 0.25, fall: 1.6, line: 0.25, dot: 0.2 }; // fixed: timing of the logout
 const DAY = 86400; // fixed: how long the scene clock runs (s)
-
-const glitchKeys = () => [...GLITCH.slices.map(slice => ({ x: slice.x, clipPath: slice.clip, filter: `brightness(${GLITCH.bright})` })), { x: 0, clipPath: "inset(0% 0% 0% 0%)", filter: "brightness(1)" }];
 
 // The speed of the rain over the time of a scene
 function tempoOf(kind: ScreenKind, values: MatrixValues): Tempo {
@@ -61,12 +55,7 @@ function useCrtMotion(scope: RefObject<HTMLDivElement | null>, kind: ScreenKind,
     control.current.drain = null;
     timeline.to(sceneClock, { time: DAY, duration: DAY, ease: "none" }, 0);
     const on = values.crtOnMs / SECOND_MS;
-    if (values.powerOn === "crt") {
-      timeline.fromTo(crt, { scaleX: 0, scaleY: POWER.thin, filter: `brightness(${POWER.bright})` }, { scaleX: 1, duration: on * POWER.line, ease: "power3.out" }, POWER.at)
-        .to(crt, { scaleY: 1, duration: on * POWER.open, ease: "expo.out" }, POWER.at + on * POWER.line)
-        .fromTo(flash, { opacity: POWER.flash }, { opacity: 0, duration: on, ease: "power2.out" }, POWER.at + on * POWER.line)
-        .to(crt, { filter: "brightness(1)", duration: on }, POWER.at + on);
-    }
+    if (values.powerOn === "crt") powerOn(timeline, crt, POWER_AT, on, flash);
     const retry = root.querySelector(".retry");
     if (kind === "brb" && retry) {
       const attempt = gsap.timeline({ repeat: -1, repeatDelay: values.brbRetryEvery });
@@ -90,7 +79,7 @@ function useCrtMotion(scope: RefObject<HTMLDivElement | null>, kind: ScreenKind,
     glitch.to(crt, { keyframes: glitchKeys(), duration: GLITCH.length, ease: "steps(3)" })
       .set(control.current, { jitter: 1 }, 0)
       .set(control.current, { jitter: 0 }, GLITCH.length);
-    timeline.add(glitch, POWER.at + on + values.glitchEvery);
+    timeline.add(glitch, POWER_AT + on + values.glitchEvery);
   }, [kind, values.powerOn, values.crtOnMs, values.glitchOn, values.glitchEvery, values.brbRetryEvery, values.brbRetryText, values.crtOffAt, values.rainSpeed, values.brbRainSpeed], scope);
 }
 
@@ -106,7 +95,7 @@ function useRainControl(kind: ScreenKind, values: MatrixValues) {
 function Logout({ values, sceneClock, now }: { values: MatrixValues; sceneClock: SceneClock; now: number }) {
   const stats = useStreamStats();
   const lines = useMemo(() => parseStatLines(values.logoutLines.join("\n")), [values.logoutLines]);
-  const start = POWER.at + values.crtOnMs / SECOND_MS + LOGOUT.after;
+  const start = POWER_AT + values.crtOnMs / SECOND_MS + LOGOUT.after;
   const count = Math.max(values.countUpMs / SECOND_MS, Number.EPSILON);
   const shares = useClockValue(sceneClock, time => lines.map((_, index) => Math.min(1, Math.max(0, (time - start - index * LOGOUT.stagger) / count))).join(","));
   const rows = countedStats(stats, lines, values.locale, now, shares.split(",").map(Number));
