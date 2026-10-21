@@ -6,8 +6,10 @@ import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, lines, markBasic, number, text } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
+import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { QUALITIES } from "../../core/three/quality.ts";
+import { FIGURE_SET, FIGURE_TYPES } from "./figures.ts";
 
 const FONTS = ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"] as const;
 const PROGRESS = ["masskette", "aus"] as const;
@@ -24,6 +26,8 @@ const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
 const BANNER = "Banner";
+const MINIME_LOOK = "Minimes: Aussehen";
+const MINIME_MOVES = "Minimes: Animationen";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "DACHDECKER", 40),
@@ -235,6 +239,39 @@ const FIELDS = [
   flag("bannerRain", "Offline-Banner: Regen", BANNER, true),
   number("bannerRainCount", "Offline-Banner: Tropfen", BANNER, 1200, 0, 4000),
 
+  // Minimes (core fields plus the look and the own animations of the figures, figures.ts)
+  ...MINIME_BASE_FIELDS,
+  ...MINIME_HOP_FIELDS,
+  number("minimeSize", "Grösse (Höhe)", MINIME_LOOK, 110, 40, 400, "px"),
+  number("minimeGround", "Abstand zum unteren Rand", MINIME_LOOK, 10, 0, 300, "px"),
+  choice("minimeDefault", "Typ ohne Wahl (alle aus)", MINIME_LOOK, "dachdecker", FIGURE_TYPES),
+  number("minimeFill", "Füllung: Deckkraft", MINIME_LOOK, 0.18, 0, 1, undefined, 0.02),
+  flag("minimeRidge", "Firststreifen am unteren Rand", MINIME_LOOK, true),
+  number("minimeRidgeHeight", "Firststreifen: Höhe", MINIME_LOOK, 34, 4, 200, "px"),
+  flag("minimeLabels", "Namensschilder", MINIME_LOOK, true),
+  number("minimeLabelSize", "Namensschild: Schriftgrösse", MINIME_LOOK, 16, 8, 48, "px"),
+  color("helmetDachdecker", "Helm: Dachdecker", MINIME_LOOK, "#e67e22"),
+  color("helmetZimmerer", "Helm: Zimmerer", MINIME_LOOK, "#d4a373"),
+  color("helmetSpengler", "Helm: Spengler", MINIME_LOOK, "#ffffff"),
+  color("helmetAzubi", "Helm: Azubi", MINIME_LOOK, "#7fe3ff"),
+  color("helmetPolier", "Helm: Polier", MINIME_LOOK, "#d35400"),
+  number("minimeHammerWeight", "Hämmern: Häufigkeit", MINIME_MOVES, 6, 0, 100),
+  number("minimeHammerMs", "Hämmern: Dauer", MINIME_MOVES, 2400, 300, 10000, "ms"),
+  number("minimeMeasureWeight", "Messen: Häufigkeit", MINIME_MOVES, 4, 0, 100),
+  number("minimeMeasureMs", "Messen: Dauer", MINIME_MOVES, 3000, 300, 10000, "ms"),
+  number("minimeCarryWeight", "Tragen: Häufigkeit", MINIME_MOVES, 4, 0, 100),
+  number("minimeCarryMs", "Tragen: Dauer", MINIME_MOVES, 3500, 300, 10000, "ms"),
+  flag("minimeStumble", "Tragen: Azubi stolpert", MINIME_MOVES, true),
+  number("minimePlanWeight", "Plan zeigen: Häufigkeit", MINIME_MOVES, 3, 0, 100),
+  number("minimePlanMs", "Plan zeigen: Dauer", MINIME_MOVES, 3000, 300, 10000, "ms"),
+  number("minimeWaveWeight", "Winken: Häufigkeit", MINIME_MOVES, 3, 0, 100),
+  number("minimeWaveMs", "Winken: Dauer", MINIME_MOVES, 1800, 300, 10000, "ms"),
+  number("minimeSnackWeight", "Brotzeit: Häufigkeit", MINIME_MOVES, 2, 0, 100),
+  number("minimeSnackMs", "Brotzeit: Dauer", MINIME_MOVES, 6000, 300, 60000, "ms"),
+  number("minimeTipMs", "Reaktion auf Chat (Helm lupfen): Dauer", MINIME_MOVES, 900, 200, 5000, "ms"),
+  // Towers as a scaffold: Azubi at the bottom, Zimmerer in the middle, Polier on top
+  ...minimeStackFields(FIGURE_SET, { minimeStack: true, minimeStackLevel1: "azubi", minimeStackLevel2: "zimmerer", minimeStackLevel3: "polier" }),
+
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
@@ -255,6 +292,14 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [STINGER]: [],
   [BANNER]: [],
+  [MINIME_COMMANDS]: ["minimes"],
+  [MINIME_RULES]: ["minimes"],
+  [MINIME_MOTION]: ["minimes"],
+  [MINIME_HOP]: ["minimes"],
+  [MINIME_VARIANTS]: ["minimes"],
+  [MINIME_STACK]: ["minimes"],
+  [MINIME_LOOK]: ["minimes"],
+  [MINIME_MOVES]: ["minimes"],
   [INFO_GROUP]: ["info"],
 } as const;
 
@@ -269,6 +314,14 @@ const BASIC = [
   "endingTitle", "endingSubtitle", "endingNext", "protocolLines", "stampText", "fireworksOn",
   "followLine", "subLine", "raidLine", "cheerLine", "alertDim", "chatStyle", "chatBadges", "camStyle", "camLabel", "camLive",
   "musicStyle", "musicLabel", "musicIdle", "fxText",
+  "minimeDefault", "minimeLabels",
 ];
 
-export const dachdeckerSettings: ThemeSchema = { id: "dachdecker", name: "Dachdecker", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };
+export const dachdeckerSettings: ThemeSchema = {
+  id: "dachdecker",
+  name: "Dachdecker",
+  fields: markBasic([...FIELDS, ...minimeVariantFields(FIGURE_SET)], BASIC),
+  groupScenes: GROUP_SCENES,
+  personalize,
+  minimeVariants: FIGURE_SET,
+};

@@ -12,8 +12,12 @@ use crate::settings::field::{
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
+use crate::themes::minime_fields::{
+    MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minime_base_fields,
+    minime_hop_fields, minime_stack_fields, minime_variant_fields,
+};
 use crate::themes::registry::Theme;
-use crate::themes::schema::{SceneName, ThemeSchema};
+use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
 
 const FONTS: [&str; 4] = ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"];
 const QUALITIES: [&str; 3] = ["hoch", "mittel", "niedrig"];
@@ -35,6 +39,9 @@ const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
 const BANNER: &str = "Banner";
+const MINIME_LOOK: &str = "Minimes: Aussehen";
+const MINIME_MOVES: &str = "Minimes: Animationen";
+const FIGURE_TYPES: [&str; 5] = ["dachdecker", "zimmerer", "spengler", "azubi", "polier"];
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -332,8 +339,75 @@ fn stinger_banner() -> Vec<SettingField> {
     ]
 }
 
+/// The five figure types as minime variants (template: `FIGURE_SET` in `src/themes/dachdecker/figures.ts`)
+fn variants() -> MinimeVariantSet {
+    let variant = |id: &str, label: &str, names: &[&str]| MinimeVariantInfo {
+        id: id.to_owned(),
+        label: label.to_owned(),
+        names: names.iter().map(|name| (*name).to_owned()).collect(),
+        color: None,
+    };
+    MinimeVariantSet {
+        command: "!typ".to_owned(),
+        label: "Typ".to_owned(),
+        variants: vec![
+            variant("dachdecker", "Dachdecker", &["dachdecker", "decker"]),
+            variant("zimmerer", "Zimmerer", &["zimmerer", "zimmermann"]),
+            variant("spengler", "Spengler", &["spengler", "klempner"]),
+            variant("azubi", "Azubi", &["azubi", "lehrling"]),
+            variant("polier", "Polier", &["polier", "chef"]),
+        ],
+    }
+}
+
+fn minimes() -> Vec<SettingField> {
+    let mut fields = minime_base_fields();
+    fields.extend(minime_hop_fields());
+    fields.extend(vec![
+        number("minimeSize", "Grösse (Höhe)", MINIME_LOOK, 110.0, 40.0, 400.0, PX, None),
+        number("minimeGround", "Abstand zum unteren Rand", MINIME_LOOK, 10.0, 0.0, 300.0, PX, None),
+        choice("minimeDefault", "Typ ohne Wahl (alle aus)", MINIME_LOOK, "dachdecker", &FIGURE_TYPES),
+        number("minimeFill", "Füllung: Deckkraft", MINIME_LOOK, 0.18, 0.0, 1.0, None, Some(0.02)),
+        flag("minimeRidge", "Firststreifen am unteren Rand", MINIME_LOOK, true),
+        number("minimeRidgeHeight", "Firststreifen: Höhe", MINIME_LOOK, 34.0, 4.0, 200.0, PX, None),
+        flag("minimeLabels", "Namensschilder", MINIME_LOOK, true),
+        number("minimeLabelSize", "Namensschild: Schriftgrösse", MINIME_LOOK, 16.0, 8.0, 48.0, PX, None),
+        color("helmetDachdecker", "Helm: Dachdecker", MINIME_LOOK, "#e67e22"),
+        color("helmetZimmerer", "Helm: Zimmerer", MINIME_LOOK, "#d4a373"),
+        color("helmetSpengler", "Helm: Spengler", MINIME_LOOK, "#ffffff"),
+        color("helmetAzubi", "Helm: Azubi", MINIME_LOOK, "#7fe3ff"),
+        color("helmetPolier", "Helm: Polier", MINIME_LOOK, "#d35400"),
+        number("minimeHammerWeight", "Hämmern: Häufigkeit", MINIME_MOVES, 6.0, 0.0, 100.0, None, None),
+        number("minimeHammerMs", "Hämmern: Dauer", MINIME_MOVES, 2400.0, 300.0, 10_000.0, MS, None),
+        number("minimeMeasureWeight", "Messen: Häufigkeit", MINIME_MOVES, 4.0, 0.0, 100.0, None, None),
+        number("minimeMeasureMs", "Messen: Dauer", MINIME_MOVES, 3000.0, 300.0, 10_000.0, MS, None),
+        number("minimeCarryWeight", "Tragen: Häufigkeit", MINIME_MOVES, 4.0, 0.0, 100.0, None, None),
+        number("minimeCarryMs", "Tragen: Dauer", MINIME_MOVES, 3500.0, 300.0, 10_000.0, MS, None),
+        flag("minimeStumble", "Tragen: Azubi stolpert", MINIME_MOVES, true),
+        number("minimePlanWeight", "Plan zeigen: Häufigkeit", MINIME_MOVES, 3.0, 0.0, 100.0, None, None),
+        number("minimePlanMs", "Plan zeigen: Dauer", MINIME_MOVES, 3000.0, 300.0, 10_000.0, MS, None),
+        number("minimeWaveWeight", "Winken: Häufigkeit", MINIME_MOVES, 3.0, 0.0, 100.0, None, None),
+        number("minimeWaveMs", "Winken: Dauer", MINIME_MOVES, 1800.0, 300.0, 10_000.0, MS, None),
+        number("minimeSnackWeight", "Brotzeit: Häufigkeit", MINIME_MOVES, 2.0, 0.0, 100.0, None, None),
+        number("minimeSnackMs", "Brotzeit: Dauer", MINIME_MOVES, 6000.0, 300.0, 60_000.0, MS, None),
+        number("minimeTipMs", "Reaktion auf Chat (Helm lupfen): Dauer", MINIME_MOVES, 900.0, 200.0, 5000.0, MS, None),
+    ]);
+    // Towers as a scaffold: Azubi at the bottom, Zimmerer in the middle, Polier on top
+    let level = |id: &str| SettingValue::Text(id.to_owned());
+    fields.extend(minime_stack_fields(
+        &variants(),
+        &[
+            ("minimeStack", SettingValue::Flag(true)),
+            ("minimeStackLevel1", level("azubi")),
+            ("minimeStackLevel2", level("zimmerer")),
+            ("minimeStackLevel3", level("polier")),
+        ],
+    ));
+    fields
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
-    use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Music, Starting};
+    use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Minimes, Music, Starting};
     [
         (FRAME, vec![Starting, Brb, Ending]),
         (STARTING, vec![Starting]),
@@ -346,6 +420,14 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (FX, vec![Fx]),
         (STINGER, vec![]),
         (BANNER, vec![]),
+        (MINIME_COMMANDS, vec![Minimes]),
+        (MINIME_RULES, vec![Minimes]),
+        (MINIME_MOTION, vec![Minimes]),
+        (MINIME_HOP, vec![Minimes]),
+        (MINIME_VARIANTS, vec![Minimes]),
+        (MINIME_STACK, vec![Minimes]),
+        (MINIME_LOOK, vec![Minimes]),
+        (MINIME_MOVES, vec![Minimes]),
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()
@@ -400,6 +482,8 @@ const BASIC: &[&str] = &[
     "musicLabel",
     "musicIdle",
     "fxText",
+    "minimeDefault",
+    "minimeLabels",
 ];
 
 #[must_use]
@@ -416,16 +500,18 @@ pub fn dachdecker() -> Theme {
         badge_fields(CHAT),
         cam_music_fx(),
         stinger_banner(),
+        minimes(),
         info_fields(),
     ]
     .concat();
     fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900.0, 400.0, 1600.0, PX, None));
+    fields.extend(minime_variant_fields(&variants()));
     let schema = ThemeSchema {
         id: "dachdecker".to_owned(),
         name: "Dachdecker".to_owned(),
         fields: mark_basic(fields, BASIC),
         group_scenes: group_scenes(),
-        minime_variants: None,
+        minime_variants: Some(variants()),
         minime_teams: None,
     };
     Theme { schema, personalize }

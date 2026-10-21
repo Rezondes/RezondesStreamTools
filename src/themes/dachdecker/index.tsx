@@ -1,5 +1,5 @@
 // Scenes of the Dachdecker theme for the theme list (src/themes/scenes.tsx) with its CSS: Starting, BRB and Ending in
-// 3D, the overlays on the 2D plan layer; the minimes follow in package 5 (docs/PLAN-DACHDECKER.md). Every scene is loaded via React.lazy as its own
+// 3D, the overlays on the 2D plan layer, the minimes as 3D figures. Every scene is loaded via React.lazy as its own
 // chunk, so the 3D modules only load where a scene needs them.
 import { lazy } from "react";
 import type { ThemeView } from "../../core/theme.ts";
@@ -19,5 +19,6 @@ export const dachdeckerView: ThemeView = {
     music: lazy(() => import("./scenes/Music.tsx")),
     fx: lazy(() => import("./scenes/Fx.tsx")),
     info: lazy(() => import("./scenes/Info.tsx")),
+    minimes: lazy(() => import("./scenes/Minimes.tsx")),
   },
 };

@@ -1816,6 +1816,684 @@
       "max": 4000
     },
     {
+      "key": "minimeJoinCommand",
+      "type": "text",
+      "label": "Befehl: einklinken (optional mit Farbe oder Typ)",
+      "group": "Minimes: Befehle",
+      "default": "!join",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeLeaveCommand",
+      "type": "text",
+      "label": "Befehl: verlassen (Mods: mit @name rauswerfen)",
+      "group": "Minimes: Befehle",
+      "default": "!leave",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeJoinRole",
+      "type": "select",
+      "label": "Einklinken ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "everyone",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeKickRole",
+      "type": "select",
+      "label": "Fremde rauswerfen ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "moderator",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeColorJoins",
+      "type": "boolean",
+      "label": "Befehl für Farbe oder Typ klinkt auch ein",
+      "group": "Minimes: Befehle",
+      "default": true
+    },
+    {
+      "key": "minimeMax",
+      "type": "number",
+      "label": "Höchstzahl gleichzeitig",
+      "group": "Minimes: Regeln",
+      "default": 30,
+      "min": 1,
+      "max": 100,
+      "basic": true
+    },
+    {
+      "key": "minimeWhenFull",
+      "type": "select",
+      "label": "Wenn voll: Inaktivsten ersetzen (replace) oder Neue abweisen (reject)",
+      "group": "Minimes: Regeln",
+      "default": "replace",
+      "options": [
+        "replace",
+        "reject"
+      ]
+    },
+    {
+      "key": "minimeIdleMinutes",
+      "type": "number",
+      "label": "Verschwindet nach Minuten ohne Nachricht (0 = nie)",
+      "group": "Minimes: Regeln",
+      "default": 20,
+      "min": 0,
+      "max": 240
+    },
+    {
+      "key": "minimeColorCooldown",
+      "type": "number",
+      "label": "Abklingzeit Farb- oder Typwechsel",
+      "group": "Minimes: Regeln",
+      "default": 10,
+      "min": 0,
+      "max": 300,
+      "unit": "s"
+    },
+    {
+      "key": "minimeChatKeepsAlive",
+      "type": "boolean",
+      "label": "Chatnachrichten halten das Minime im Bild",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeReactToChat",
+      "type": "boolean",
+      "label": "Minime reagiert auf Chatnachrichten",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeClearOffline",
+      "type": "boolean",
+      "label": "Alle entfernen, wenn der Stream endet",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeRemoveOnBan",
+      "type": "boolean",
+      "label": "Bei Ban oder Timeout entfernen",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeSpeed",
+      "type": "number",
+      "label": "Laufgeschwindigkeit (px pro Sekunde)",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeMargin",
+      "type": "number",
+      "label": "Abstand zum Rand",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 0,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMin",
+      "type": "number",
+      "label": "Kürzeste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 100,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMax",
+      "type": "number",
+      "label": "Längste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 600,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkWeight",
+      "type": "number",
+      "label": "Häufigkeit: wandern",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleWeight",
+      "type": "number",
+      "label": "Häufigkeit: auf der Stelle schweben",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleMinMs",
+      "type": "number",
+      "label": "Schweben mindestens",
+      "group": "Minimes: Bewegung",
+      "default": 2000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeIdleMaxMs",
+      "type": "number",
+      "label": "Schweben höchstens",
+      "group": "Minimes: Bewegung",
+      "default": 6000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeEnterMs",
+      "type": "number",
+      "label": "Dauer: erscheinen",
+      "group": "Minimes: Bewegung",
+      "default": 1200,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeExitMs",
+      "type": "number",
+      "label": "Dauer: verschwinden",
+      "group": "Minimes: Bewegung",
+      "default": 900,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimePlacement",
+      "type": "select",
+      "label": "Plätze: frei verteilt (random) oder feste Plätze (slots)",
+      "group": "Minimes: Bewegung",
+      "default": "random",
+      "options": [
+        "random",
+        "slots"
+      ]
+    },
+    {
+      "key": "hopHeight",
+      "type": "number",
+      "label": "Sprunghöhe",
+      "group": "Minimes: Hüpfen",
+      "default": 26,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "hopMs",
+      "type": "number",
+      "label": "Dauer eines Sprungs",
+      "group": "Minimes: Hüpfen",
+      "default": 420,
+      "min": 150,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "hopSquash",
+      "type": "number",
+      "label": "Stauchen beim Aufkommen",
+      "group": "Minimes: Hüpfen",
+      "default": 0.2,
+      "min": 0,
+      "max": 0.6,
+      "step": 0.05
+    },
+    {
+      "key": "minimeSize",
+      "type": "number",
+      "label": "Grösse (Höhe)",
+      "group": "Minimes: Aussehen",
+      "default": 110,
+      "min": 40,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "minimeGround",
+      "type": "number",
+      "label": "Abstand zum unteren Rand",
+      "group": "Minimes: Aussehen",
+      "default": 10,
+      "min": 0,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDefault",
+      "type": "select",
+      "label": "Typ ohne Wahl (alle aus)",
+      "group": "Minimes: Aussehen",
+      "default": "dachdecker",
+      "options": [
+        "dachdecker",
+        "zimmerer",
+        "spengler",
+        "azubi",
+        "polier"
+      ],
+      "basic": true
+    },
+    {
+      "key": "minimeFill",
+      "type": "number",
+      "label": "Füllung: Deckkraft",
+      "group": "Minimes: Aussehen",
+      "default": 0.18,
+      "min": 0,
+      "max": 1,
+      "step": 0.02
+    },
+    {
+      "key": "minimeRidge",
+      "type": "boolean",
+      "label": "Firststreifen am unteren Rand",
+      "group": "Minimes: Aussehen",
+      "default": true
+    },
+    {
+      "key": "minimeRidgeHeight",
+      "type": "number",
+      "label": "Firststreifen: Höhe",
+      "group": "Minimes: Aussehen",
+      "default": 34,
+      "min": 4,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "minimeLabels",
+      "type": "boolean",
+      "label": "Namensschilder",
+      "group": "Minimes: Aussehen",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "minimeLabelSize",
+      "type": "number",
+      "label": "Namensschild: Schriftgrösse",
+      "group": "Minimes: Aussehen",
+      "default": 16,
+      "min": 8,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "helmetDachdecker",
+      "type": "color",
+      "label": "Helm: Dachdecker",
+      "group": "Minimes: Aussehen",
+      "default": "#e67e22"
+    },
+    {
+      "key": "helmetZimmerer",
+      "type": "color",
+      "label": "Helm: Zimmerer",
+      "group": "Minimes: Aussehen",
+      "default": "#d4a373"
+    },
+    {
+      "key": "helmetSpengler",
+      "type": "color",
+      "label": "Helm: Spengler",
+      "group": "Minimes: Aussehen",
+      "default": "#ffffff"
+    },
+    {
+      "key": "helmetAzubi",
+      "type": "color",
+      "label": "Helm: Azubi",
+      "group": "Minimes: Aussehen",
+      "default": "#7fe3ff"
+    },
+    {
+      "key": "helmetPolier",
+      "type": "color",
+      "label": "Helm: Polier",
+      "group": "Minimes: Aussehen",
+      "default": "#d35400"
+    },
+    {
+      "key": "minimeHammerWeight",
+      "type": "number",
+      "label": "Hämmern: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 6,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeHammerMs",
+      "type": "number",
+      "label": "Hämmern: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 2400,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeMeasureWeight",
+      "type": "number",
+      "label": "Messen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 4,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeMeasureMs",
+      "type": "number",
+      "label": "Messen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 3000,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeCarryWeight",
+      "type": "number",
+      "label": "Tragen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 4,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeCarryMs",
+      "type": "number",
+      "label": "Tragen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 3500,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStumble",
+      "type": "boolean",
+      "label": "Tragen: Azubi stolpert",
+      "group": "Minimes: Animationen",
+      "default": true
+    },
+    {
+      "key": "minimePlanWeight",
+      "type": "number",
+      "label": "Plan zeigen: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 3,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimePlanMs",
+      "type": "number",
+      "label": "Plan zeigen: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 3000,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeWaveWeight",
+      "type": "number",
+      "label": "Winken: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 3,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeWaveMs",
+      "type": "number",
+      "label": "Winken: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1800,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeSnackWeight",
+      "type": "number",
+      "label": "Brotzeit: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 2,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeSnackMs",
+      "type": "number",
+      "label": "Brotzeit: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 6000,
+      "min": 300,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeTipMs",
+      "type": "number",
+      "label": "Reaktion auf Chat (Helm lupfen): Dauer",
+      "group": "Minimes: Animationen",
+      "default": 900,
+      "min": 200,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStack",
+      "type": "boolean",
+      "label": "Türme an",
+      "group": "Minimes: Türme",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "minimeStackMinS",
+      "type": "number",
+      "label": "Abstand zwischen Türmen: mindestens",
+      "group": "Minimes: Türme",
+      "default": 30,
+      "min": 5,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "minimeStackMaxS",
+      "type": "number",
+      "label": "Abstand zwischen Türmen: höchstens",
+      "group": "Minimes: Türme",
+      "default": 90,
+      "min": 5,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "minimeStackMax",
+      "type": "number",
+      "label": "Gleichzeitige Türme",
+      "group": "Minimes: Türme",
+      "default": 1,
+      "min": 1,
+      "max": 5
+    },
+    {
+      "key": "minimeStackLevel1",
+      "type": "select",
+      "label": "Stufe 1 (unten)",
+      "group": "Minimes: Türme",
+      "default": "azubi",
+      "options": [
+        "dachdecker",
+        "zimmerer",
+        "spengler",
+        "azubi",
+        "polier"
+      ]
+    },
+    {
+      "key": "minimeStackLevel2",
+      "type": "select",
+      "label": "Stufe 2",
+      "group": "Minimes: Türme",
+      "default": "zimmerer",
+      "options": [
+        "dachdecker",
+        "zimmerer",
+        "spengler",
+        "azubi",
+        "polier"
+      ]
+    },
+    {
+      "key": "minimeStackLevel3",
+      "type": "select",
+      "label": "Stufe 3 (oben)",
+      "group": "Minimes: Türme",
+      "default": "polier",
+      "options": [
+        "dachdecker",
+        "zimmerer",
+        "spengler",
+        "azubi",
+        "polier",
+        "keiner"
+      ]
+    },
+    {
+      "key": "minimeStackSpeed",
+      "type": "number",
+      "label": "Zusammenlaufen: Tempo (px pro Sekunde)",
+      "group": "Minimes: Türme",
+      "default": 90,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeClimbMs",
+      "type": "number",
+      "label": "Klettern: Dauer je Stufe",
+      "group": "Minimes: Türme",
+      "default": 900,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackedMs",
+      "type": "number",
+      "label": "Stehen als Turm: Dauer",
+      "group": "Minimes: Türme",
+      "default": 4000,
+      "min": 500,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackWalk",
+      "type": "boolean",
+      "label": "Turm läuft",
+      "group": "Minimes: Türme",
+      "default": true
+    },
+    {
+      "key": "minimeStackWalkMs",
+      "type": "number",
+      "label": "Laufen als Turm: Dauer",
+      "group": "Minimes: Türme",
+      "default": 5000,
+      "min": 500,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackWalkPx",
+      "type": "number",
+      "label": "Laufen als Turm: Strecke",
+      "group": "Minimes: Türme",
+      "default": 300,
+      "min": 0,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDismountMs",
+      "type": "number",
+      "label": "Absteigen: Dauer je Stufe",
+      "group": "Minimes: Türme",
+      "default": 700,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeDismountGap",
+      "type": "number",
+      "label": "Absteigen: Abstand zur Seite",
+      "group": "Minimes: Türme",
+      "default": 60,
+      "min": 0,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "minimeStackSound",
+      "type": "boolean",
+      "label": "Ton beim Aufsteigen",
+      "group": "Minimes: Türme",
+      "default": false
+    },
+    {
+      "key": "minimeSoundClimb",
+      "type": "sound",
+      "label": "Ton: Aufsteigen",
+      "group": "Minimes: Türme",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
       "key": "infoTitle",
       "type": "text",
       "label": "Titel",
@@ -2050,6 +2728,55 @@
       "min": 400,
       "max": 1600,
       "unit": "px"
+    },
+    {
+      "key": "minimeVariantCommand",
+      "type": "text",
+      "label": "Befehl: Typ wählen",
+      "group": "Minimes: Typen",
+      "default": "!typ",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeNames_dachdecker",
+      "type": "text",
+      "label": "Dachdecker: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "dachdecker, decker",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_zimmerer",
+      "type": "text",
+      "label": "Zimmerer: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "zimmerer, zimmermann",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_spengler",
+      "type": "text",
+      "label": "Spengler: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "spengler, klempner",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_azubi",
+      "type": "text",
+      "label": "Azubi: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "azubi, lehrling",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_polier",
+      "type": "text",
+      "label": "Polier: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "polier, chef",
+      "maxLength": 200
     }
   ],
   "groupScenes": {
@@ -2084,8 +2811,78 @@
     ],
     "Stinger": [],
     "Banner": [],
+    "Minimes: Befehle": [
+      "minimes"
+    ],
+    "Minimes: Regeln": [
+      "minimes"
+    ],
+    "Minimes: Bewegung": [
+      "minimes"
+    ],
+    "Minimes: Hüpfen": [
+      "minimes"
+    ],
+    "Minimes: Typen": [
+      "minimes"
+    ],
+    "Minimes: Türme": [
+      "minimes"
+    ],
+    "Minimes: Aussehen": [
+      "minimes"
+    ],
+    "Minimes: Animationen": [
+      "minimes"
+    ],
     "Befehlsseite": [
       "info"
+    ]
+  },
+  "minimeVariants": {
+    "command": "!typ",
+    "label": "Typ",
+    "variants": [
+      {
+        "id": "dachdecker",
+        "label": "Dachdecker",
+        "names": [
+          "dachdecker",
+          "decker"
+        ]
+      },
+      {
+        "id": "zimmerer",
+        "label": "Zimmerer",
+        "names": [
+          "zimmerer",
+          "zimmermann"
+        ]
+      },
+      {
+        "id": "spengler",
+        "label": "Spengler",
+        "names": [
+          "spengler",
+          "klempner"
+        ]
+      },
+      {
+        "id": "azubi",
+        "label": "Azubi",
+        "names": [
+          "azubi",
+          "lehrling"
+        ]
+      },
+      {
+        "id": "polier",
+        "label": "Polier",
+        "names": [
+          "polier",
+          "chef"
+        ]
+      }
     ]
   },
   "personalize": {
