@@ -10,18 +10,29 @@ use crate::identity::values::Login;
 use crate::settings::field::{
     SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, lines, mark_basic, number, text,
 };
+use crate::themes::core_fields::{alert_sound_fields, badge_fields};
+use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
 
 const FONTS: [&str; 4] = ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"];
 const QUALITIES: [&str; 3] = ["hoch", "mittel", "niedrig"];
 const PROGRESS: [&str; 2] = ["masskette", "aus"];
+const CHAT_STYLES: [&str; 3] = ["zettel", "liste", "schlicht"];
+const NAME_COLORS: [&str; 2] = ["kupfer", "chatter"];
+const CAM_STYLES: [&str; 3] = ["plan", "ecken", "aus"];
+const MUSIC_STYLES: [&str; 3] = ["radio", "schild", "schlicht"];
 
 const GENERAL: &str = "Allgemein";
 const FRAME: &str = "Dachstuhl";
 const STARTING: &str = "Starting";
 const BRB: &str = "BRB";
 const ENDING: &str = "Ending";
+const ALERTS: &str = "Alerts";
+const CHAT: &str = "Chat";
+const CAM: &str = "Kamera-Rahmen";
+const MUSIC: &str = "Musik";
+const FX: &str = "Effekte";
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -38,6 +49,7 @@ fn general() -> Vec<SettingField> {
         color("blueprint", "Blaupause (Hintergrund)", GENERAL, "#192a56"),
         color("page", "Blaupause dunkel (Verlauf unten)", GENERAL, "#121e40"),
         color("accent", "Signatur Terrakotta", GENERAL, "#e67e22"),
+        color("onAccent", "Schrift auf Terrakotta", GENERAL, "#121e40"),
         color("brick", "Ziegelrot (Flächen und Leuchten)", GENERAL, "#d35400"),
         color("copper", "Kupfer", GENERAL, "#d4a373"),
         color("slate", "Schiefer", GENERAL, "#2c3e50"),
@@ -217,12 +229,107 @@ fn ending() -> Vec<SettingField> {
     ]
 }
 
+fn alerts() -> Vec<SettingField> {
+    vec![
+        text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOWER", None),
+        text("followLine", "Follow: Zeile", ALERTS, "{user} deckt jetzt das Dach mit!", None),
+        text("followDim", "Follow: Masslinie", ALERTS, "+1 DACHDECKER", None),
+        text("subTag", "Sub: Kopfzeile", ALERTS, "NEUES ABO", None),
+        text("subLine", "Sub: Zeile", ALERTS, "{user} geht bei uns in die Lehre!", None),
+        text("subDim", "Sub: Masslinie", ALERTS, "+1 AZUBI", None),
+        text("resubTag", "Resub: Kopfzeile", ALERTS, "ABO x{amount}", None),
+        text("resubLine", "Resub: Zeile", ALERTS, "{user} deckt seit {amount} Monaten mit!", None),
+        text("resubDim", "Resub: Masslinie", ALERTS, "{amount} MONATE", None),
+        text("giftTag", "Gift: Kopfzeile", ALERTS, "ABOS VERSCHENKT", None),
+        text("giftLine", "Gift: Zeile", ALERTS, "{user} stellt {amount} Azubis ein!", None),
+        text("giftDim", "Gift: Masslinie", ALERTS, "+{amount} AZUBIS", None),
+        text("raidTag", "Raid: Kopfzeile", ALERTS, "RAID", None),
+        text("raidLine", "Raid: Zeile", ALERTS, "{user} rückt mit einer Kolonne von {amount} Leuten an!", None),
+        text("raidDim", "Raid: Masslinie", ALERTS, "+{amount} KOLONNE", None),
+        text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} BITS", None),
+        text("cheerLine", "Bits: Zeile", ALERTS, "{user} legt {amount} Ziegel aufs Dach!", None),
+        text("cheerDim", "Bits: Masslinie", ALERTS, "+{amount} ZIEGEL", None),
+        text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "KANALPUNKTE", None),
+        text("redeemLine", "Kanalpunkte: Zeile", ALERTS, "{user} löst {detail} ein.", None),
+        text("redeemDim", "Kanalpunkte: Masslinie", ALERTS, "EINGELÖST", None),
+        text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "HYPE TRAIN", None),
+        text("hypeBeginLine", "Hype Train: Start", ALERTS, "Richtfest! Der Kran fährt hoch!", None),
+        text("hypeEndLine", "Hype Train: Ende", ALERTS, "Richtfest Level {amount} geschafft!", None),
+        text("hypeDim", "Hype Train: Masslinie", ALERTS, "RICHTFEST", None),
+        flag("alertQuote", "Nachricht zeigen", ALERTS, true),
+        text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\"", None),
+        number("alertDuration", "Dauer", ALERTS, 7000.0, 2000.0, 60000.0, MS, None),
+        number("alertTop", "Abstand oben", ALERTS, 620.0, 0.0, 1000.0, PX, None),
+        number("alertWidth", "Breite", ALERTS, 720.0, 300.0, 1800.0, PX, None),
+        flag("alertDim", "Masslinie mit Text", ALERTS, true),
+        flag("alertCorners", "Eckmarken", ALERTS, true),
+        flag("alertTimer", "Restzeit als Masskette", ALERTS, true),
+        number("alertOpenMs", "Öffnen: Dauer", ALERTS, 550.0, 0.0, 3000.0, MS, None),
+        number("alertCloseMs", "Schliessen: Dauer", ALERTS, 400.0, 0.0, 3000.0, MS, None),
+        flag("alertSound", "Töne", ALERTS, true),
+    ]
+}
+
+fn chat() -> Vec<SettingField> {
+    vec![
+        choice("chatStyle", "Stil", CHAT, "zettel", &CHAT_STYLES),
+        number("chatMax", "Max. Nachrichten", CHAT, 6.0, 1.0, 50.0, None, None),
+        number("chatLifetime", "Ausblenden nach (0 = nie)", CHAT, 30.0, 0.0, 3600.0, S, None),
+        number("chatWidth", "Breite", CHAT, 520.0, 200.0, 1600.0, PX, None),
+        choice("chatNameColor", "Farbe der Namen", CHAT, "kupfer", &NAME_COLORS),
+        flag("chatDim", "Masslinie unter dem Namen", CHAT, true),
+        flag("chatBadges", "Badges zeigen", CHAT, true),
+    ]
+}
+
+fn cam_music_fx() -> Vec<SettingField> {
+    vec![
+        number("chatOpenMs", "Öffnen: Dauer", CHAT, 350.0, 0.0, 3000.0, MS, None),
+        choice("camStyle", "Rahmen", CAM, "plan", &CAM_STYLES),
+        text("camLabel", "Namensschild ({channel})", CAM, "{channel}", None),
+        text("camDims", "Masskette: Text", CAM, "1920 x 1080", None),
+        flag("camDimsOn", "Massketten an den Kanten", CAM, true),
+        flag("camCorners", "Eckmarken", CAM, true),
+        flag("camLive", "Live-Anzeige", CAM, true),
+        text("camLiveText", "Live-Text", CAM, "LIVE", None),
+        choice("musicStyle", "Stil", MUSIC, "radio", &MUSIC_STYLES),
+        text("musicLabel", "Überzeile", MUSIC, "BAUSTELLENRADIO", None),
+        text("musicIdle", "Text ohne Wiedergabe", MUSIC, "FUNKSTILLE", None),
+        flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+        flag("musicCover", "Cover zeigen", MUSIC, true),
+        flag("musicEq", "Equalizer", MUSIC, true),
+        flag("musicProgress", "Fortschritt als Masskette", MUSIC, true),
+        number("musicMarqueeSpeed", "Lange Titel: Lauftempo (px pro Sekunde)", MUSIC, 40.0, 5.0, 400.0, None, None),
+        color("radioBody", "Radio: Gehäuse", MUSIC, "#2c3e50"),
+        color("radioBumper", "Radio: Puffer und Bügel", MUSIC, "#e67e22"),
+        color("radioDisplay", "Radio: Display", MUSIC, "#7fe3ff"),
+        number("radioScale", "Radio: Grösse (Faktor)", MUSIC, 1.0, 0.4, 3.0, None, Some(0.05)),
+        number("fxDuration", "Standarddauer", FX, 4.0, 0.5, 120.0, S, Some(0.5)),
+        number("fxSize", "Standardgrösse", FX, 360.0, 20.0, 1920.0, PX, None),
+        number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20.0, 0.0, 50.0, PERCENT, None),
+        number("fxMax", "Max. gleichzeitig", FX, 8.0, 1.0, 30.0, None, None),
+        flag("fxText", "Text zeigen", FX, true),
+        number("fxTextSize", "Textgrösse", FX, 96.0, 8.0, 300.0, PX, None),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
-    use SceneName::{Brb, Ending, Starting};
-    [(FRAME, vec![Starting, Brb, Ending]), (STARTING, vec![Starting]), (BRB, vec![Brb]), (ENDING, vec![Ending])]
-        .into_iter()
-        .map(|(group, scenes)| (group.to_owned(), scenes))
-        .collect()
+    use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Music, Starting};
+    [
+        (FRAME, vec![Starting, Brb, Ending]),
+        (STARTING, vec![Starting]),
+        (BRB, vec![Brb]),
+        (ENDING, vec![Ending]),
+        (ALERTS, vec![Alerts]),
+        (CHAT, vec![Chat]),
+        (CAM, vec![Cam]),
+        (MUSIC, vec![Music]),
+        (FX, vec![Fx]),
+        (INFO_GROUP, vec![Info]),
+    ]
+    .into_iter()
+    .map(|(group, scenes)| (group.to_owned(), scenes))
+    .collect()
 }
 
 /// On first login: channel name from the Twitch login instead of the sample
@@ -258,11 +365,39 @@ const BASIC: &[&str] = &[
     "protocolLines",
     "stampText",
     "fireworksOn",
+    "followLine",
+    "subLine",
+    "raidLine",
+    "cheerLine",
+    "alertDim",
+    "chatStyle",
+    "chatBadges",
+    "camStyle",
+    "camLabel",
+    "camLive",
+    "musicStyle",
+    "musicLabel",
+    "musicIdle",
+    "fxText",
 ];
 
 #[must_use]
 pub fn dachdecker() -> Theme {
-    let fields = [general(), frame(), starting(), brb(), ending()].concat();
+    let mut fields = [
+        general(),
+        frame(),
+        starting(),
+        brb(),
+        ending(),
+        alerts(),
+        alert_sound_fields(ALERTS),
+        chat(),
+        badge_fields(CHAT),
+        cam_music_fx(),
+        info_fields(),
+    ]
+    .concat();
+    fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900.0, 400.0, 1600.0, PX, None));
     let schema = ThemeSchema {
         id: "dachdecker".to_owned(),
         name: "Dachdecker".to_owned(),

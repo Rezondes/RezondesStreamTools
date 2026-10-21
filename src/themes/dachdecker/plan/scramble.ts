@@ -4,8 +4,9 @@ import { hash } from "../../../core/hash.ts";
 
 export const LETTERS = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ/";
 export const DIGITS = "0123456789";
-// Swirl changes per second
+// Swirl changes per second, and the matching tick in ms for overlays that decode on their own clock
 export const SCRAMBLE_RATE = 20;
+export const SCRAMBLE_TICK_MS = 1000 / SCRAMBLE_RATE;
 
 // share: 0 = all swirling, 1 = the text; characters that are no letter or digit stay
 export function scrambled(text: string, share: number, tick: number, chars = LETTERS): string {

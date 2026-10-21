@@ -1,0 +1,153 @@
+/* Overlays of the Dachdecker theme (alerts, chat, camera, music, effects, commands page): the 2D plan layer on a
+   transparent background. Blueprint signs, dimension lines and the building site radio; colors, sizes and times come as
+   CSS variables from the settings, further sizes as var(--name, default). Design: docs/DESIGN-DACHDECKER.md. */
+
+.theme-dachdecker .dd-sign { position: relative; padding: var(--dd-sign-pad, 18px) var(--dd-sign-pad-x, 26px); }
+.theme-dachdecker .dd-no-corners::before, .theme-dachdecker .dd-no-corners::after { display: none; }
+
+/* --- Dimension line: draws from the middle outwards ----------------------------------------------------------- */
+.theme-dachdecker .dd-dimension { position: relative; text-align: center; }
+.theme-dachdecker .dd-dimension svg { display: block; width: 100%; height: var(--dd-dim-height, 24px); overflow: visible; }
+.theme-dachdecker .dd-dimension line { stroke: var(--line); stroke-width: 1.5; }
+.theme-dachdecker .dd-dimension-end line { vector-effect: non-scaling-stroke; }
+.theme-dachdecker .dd-dimension-half { stroke-dasharray: 1; stroke-dashoffset: 1; animation: dachdecker-draw var(--alertOpenMs, 550ms) ease-out forwards; }
+.theme-dachdecker .dd-dimension-text {
+  display: block;
+  margin-bottom: var(--dd-dim-gap, 2px);
+  font-size: var(--dd-dim-size, 16px);
+  font-weight: 700;
+  letter-spacing: var(--dd-dim-track, 3px);
+  color: var(--copper);
+  animation: dachdecker-fade var(--alertOpenMs, 550ms) ease-out both;
+}
+
+/* --- Alerts ------------------------------------------------------------------------------------------------- */
+.theme-dachdecker .dd-alerts { position: fixed; inset: 0; overflow: hidden; }
+.theme-dachdecker .dd-alert { position: absolute; left: 50%; top: var(--alertTop); width: var(--alertWidth); transform: translateX(-50%); }
+.theme-dachdecker .dd-alert-sign { margin-top: var(--dd-alert-gap, 10px); text-align: center; animation: dachdecker-open var(--alertOpenMs) cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+.theme-dachdecker .dd-alert.leaving .dd-alert-sign { animation: dachdecker-close var(--alertCloseMs) ease-in both; }
+.theme-dachdecker .dd-alert.leaving .dd-dimension { animation: dachdecker-close var(--alertCloseMs) ease-in both; }
+.theme-dachdecker .dd-alert-tag { margin: 0; font-size: var(--dd-head-size, 20px); font-weight: 700; letter-spacing: var(--dd-head-track, 6px); color: var(--copper); }
+.theme-dachdecker .dd-alert-name {
+  display: block;
+  margin: var(--dd-alert-name-gap, 6px) 0;
+  font-size: calc(var(--fontSize) * 1.9);
+  font-weight: 700;
+  letter-spacing: var(--dd-big-track, 4px);
+  color: var(--accent);
+  text-shadow: 0 0 calc(var(--dd-big-glow, 10px) * var(--glow)) color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.theme-dachdecker .dd-alert-line { margin: 0; font-size: var(--fontSize); font-weight: 500; }
+.theme-dachdecker .dd-quote { display: block; margin-top: var(--dd-alert-name-gap, 6px); font-size: calc(var(--fontSize) * 0.8); color: var(--muted); }
+.theme-dachdecker .dd-alert-timer {
+  display: block;
+  height: var(--dd-timer-height, 3px);
+  margin-top: var(--dd-alert-gap, 10px);
+  background: var(--accent);
+  transform-origin: left;
+  animation: dachdecker-retract var(--alertDuration) linear forwards;
+}
+
+/* --- Chat --------------------------------------------------------------------------------------------------- */
+.theme-dachdecker .dd-chat { position: fixed; left: 0; bottom: 0; width: var(--chatWidth); display: flex; flex-direction: column; gap: var(--dd-chat-gap, 10px); padding: var(--dd-chat-pad, 12px); }
+.theme-dachdecker .dd-chat-row { position: relative; padding: var(--dd-chat-row-y, 8px) var(--dd-chat-row-x, 14px); animation: dachdecker-open var(--chatOpenMs) cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+.theme-dachdecker .dd-chat-liste .dd-chat-row { border-bottom: var(--plan-line); }
+.theme-dachdecker .dd-chat-row.fades { animation: dachdecker-open var(--chatOpenMs) cubic-bezier(0.2, 0.9, 0.3, 1) both, dachdecker-fade var(--dd-fade, 600ms) ease-in var(--chatLifetime) reverse forwards; }
+.theme-dachdecker .dd-chat-name { display: block; font-size: calc(var(--fontSize) * 0.75); font-weight: 700; letter-spacing: var(--dd-dim-track, 3px); }
+.theme-dachdecker .dd-chat-dim { display: block; width: var(--dd-chat-dim, 120px); height: 0; margin: var(--dd-chat-dim-gap, 4px) 0; border-top: var(--plan-line); }
+.theme-dachdecker .dd-chat-text { display: block; font-size: calc(var(--fontSize) * 0.8); overflow-wrap: anywhere; }
+.theme-dachdecker .dd-chat-row.action .dd-chat-text { font-style: italic; color: var(--muted); }
+.theme-dachdecker .dd-tone-copper { color: var(--copper); }
+.theme-dachdecker .dd-tone-accent { color: var(--accent); }
+.theme-dachdecker .dd-tone-rain { color: var(--rain); }
+.theme-dachdecker .dd-tone-line { color: var(--line); }
+.theme-dachdecker .dd-badge, .theme-dachdecker .dd-chip {
+  display: inline-block;
+  margin-right: var(--dd-badge-gap, 6px);
+  padding: 0 var(--dd-badge-pad, 6px);
+  background: var(--accent);
+  color: var(--onAccent);
+  font-weight: 700;
+}
+.theme-dachdecker .dd-emote { height: 1.4em; vertical-align: middle; }
+
+/* --- Camera frame ------------------------------------------------------------------------------------------- */
+.theme-dachdecker .dd-cam { position: fixed; inset: 0; }
+.theme-dachdecker .dd-cam-frame { position: absolute; inset: var(--dd-cam-inset, 18px); border: var(--plan-line); }
+.theme-dachdecker .dd-cam-corner { position: absolute; width: var(--dd-cam-corner, 36px); height: var(--dd-cam-corner, 36px); border: var(--dd-corner-line, 3px) solid var(--accent); }
+.theme-dachdecker .dd-cam-corner-start { left: var(--dd-cam-corner-inset, 8px); top: var(--dd-cam-corner-inset, 8px); border-right: 0; border-bottom: 0; }
+.theme-dachdecker .dd-cam-corner-end { right: var(--dd-cam-corner-inset, 8px); bottom: var(--dd-cam-corner-inset, 8px); border-left: 0; border-top: 0; }
+.theme-dachdecker .dd-cam-dim { position: absolute; }
+.theme-dachdecker .dd-cam-dim-top { left: 20%; right: 20%; top: var(--dd-cam-dim-inset, 26px); }
+.theme-dachdecker .dd-cam-dim-side { right: var(--dd-cam-dim-inset, 26px); top: 50%; width: 40vh; transform: translate(50%, -50%) rotate(90deg) translateY(-50%); }
+.theme-dachdecker .dd-cam-name {
+  position: absolute;
+  left: var(--dd-cam-name-inset, 30px);
+  bottom: var(--dd-cam-name-inset, 30px);
+  padding: var(--dd-cell-y, 9px) var(--dd-cell-x, 14px);
+  border: var(--plan-line);
+  background: color-mix(in srgb, var(--blueprint) 85%, transparent);
+  font-weight: 700;
+  letter-spacing: var(--dd-head-track, 6px);
+}
+.theme-dachdecker .dd-cam-live {
+  position: absolute;
+  right: var(--dd-cam-name-inset, 30px);
+  top: var(--dd-cam-name-inset, 30px);
+  padding: 0 var(--dd-badge-pad, 8px);
+  background: var(--accent);
+  color: var(--onAccent);
+  font-weight: 700;
+  letter-spacing: var(--dd-dim-track, 3px);
+}
+
+/* --- Music: building site radio, sign or plain -------------------------------------------------------------- */
+.theme-dachdecker .dd-music { position: fixed; left: var(--dd-music-inset, 12px); bottom: var(--dd-music-inset, 12px); width: calc(var(--dd-radio-width, 560px) * var(--radioScale)); transition: opacity var(--dd-fade, 600ms); }
+.theme-dachdecker .dd-music.leaving { opacity: 0; }
+.theme-dachdecker .dd-radio { position: relative; }
+.theme-dachdecker .dd-radio svg { display: block; width: 100%; }
+.theme-dachdecker .dd-radio-body { fill: var(--radioBody); stroke: var(--line); stroke-width: 0.003; }
+.theme-dachdecker .dd-radio-bumper, .theme-dachdecker .dd-radio-handle { fill: var(--radioBumper); }
+.theme-dachdecker .dd-radio-grille { fill: var(--slateDark); stroke: color-mix(in srgb, var(--line) 35%, transparent); stroke-width: 0.004; stroke-dasharray: 0.01 0.008; }
+.theme-dachdecker .dd-radio-display {
+  position: absolute;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: calc(var(--dd-display-pad, 6px) * var(--radioScale));
+  background: var(--radioDisplay);
+  color: var(--page);
+  font-size: calc(var(--dd-display-size, 13px) * var(--radioScale));
+  border-radius: calc(var(--dd-display-round, 4px) * var(--radioScale));
+  box-shadow: 0 0 calc(var(--dd-display-glow, 14px) * var(--glow)) color-mix(in srgb, var(--radioDisplay) 60%, transparent);
+}
+.theme-dachdecker .dd-track { display: flex; align-items: center; gap: var(--dd-track-gap, 6px); height: 100%; }
+.theme-dachdecker .dd-cover { height: 100%; aspect-ratio: 1; object-fit: cover; }
+.theme-dachdecker .dd-track-text { flex: 1; min-width: 0; }
+.theme-dachdecker .dd-music-label { display: block; font-size: 0.7em; font-weight: 700; letter-spacing: var(--dd-dim-track, 2px); }
+.theme-dachdecker .dd-track-title { font-weight: 700; }
+.theme-dachdecker .dd-music-idle { margin: 0; font-weight: 700; letter-spacing: var(--dd-dim-track, 3px); }
+.theme-dachdecker .dd-music-sign .dd-track, .theme-dachdecker .dd-music-plain .dd-track { height: var(--dd-sign-cover, 72px); }
+.theme-dachdecker .dd-music-sign .dd-music-label { color: var(--copper); }
+.theme-dachdecker .dd-equalizer { display: flex; align-items: flex-end; gap: var(--dd-eq-gap, 2px); height: 60%; }
+.theme-dachdecker .dd-equalizer i { width: var(--dd-eq-width, 3px); height: 100%; background: currentcolor; transform-origin: bottom; animation: dachdecker-eq var(--dd-eq-speed, 900ms) ease-in-out calc(var(--i) * var(--dd-eq-step, -130ms)) infinite alternate; }
+.theme-dachdecker .dd-music-progress { margin-top: var(--dd-alert-gap, 10px); }
+
+/* --- Effects ------------------------------------------------------------------------------------------------ */
+.theme-dachdecker .dd-fx { position: fixed; inset: 0; }
+.theme-dachdecker .dd-fx-item { position: absolute; display: flex; flex-direction: column; align-items: center; }
+.theme-dachdecker .dd-fx-text { font-size: var(--fxTextSize); font-weight: 700; letter-spacing: var(--dd-title-track, 10px); text-shadow: 0 0 calc(var(--dd-title-glow, 14px) * var(--glow)) color-mix(in srgb, var(--line) 35%, transparent); }
+
+/* --- Commands page ------------------------------------------------------------------------------------------ */
+.theme-dachdecker .dd-info { min-height: 100vh; background: var(--page); padding: var(--dd-info-pad, 32px) var(--dd-info-margin, 24px); box-sizing: border-box; }
+.theme-dachdecker .dd-info-column { width: min(var(--infoWidth), 100%); margin: 0 auto; display: flex; flex-direction: column; gap: var(--dd-info-gap, 18px); }
+.theme-dachdecker .dd-info-title { margin: 0; font-size: calc(var(--fontSize) * 1.6); letter-spacing: var(--dd-head-track, 6px); color: var(--accent); }
+.theme-dachdecker .dd-info-intro, .theme-dachdecker .dd-info-detail { margin: 0; color: var(--muted); }
+.theme-dachdecker .dd-info-heading { margin: 0 0 var(--dd-protocol-gap, 12px); font-size: var(--dd-head-size, 20px); letter-spacing: var(--dd-head-track, 6px); color: var(--copper); }
+.theme-dachdecker .dd-info-entry { padding: var(--dd-row-pad, 8px) 0; border-top: var(--dd-grid-line, 1px) dashed color-mix(in srgb, var(--line) 35%, transparent); }
+.theme-dachdecker .dd-info-text { margin: var(--dd-info-text-gap, 4px) 0 0; }
+
+@keyframes dachdecker-draw { to { stroke-dashoffset: 0; } }
+@keyframes dachdecker-open { from { transform: scaleX(0); opacity: 0; } }
+@keyframes dachdecker-close { to { transform: scaleX(0); opacity: 0; } }
+@keyframes dachdecker-retract { to { transform: scaleX(0); } }
+@keyframes dachdecker-eq { from { transform: scaleY(0.2); } }

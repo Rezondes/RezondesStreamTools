@@ -2,7 +2,10 @@
 // in terracotta, copper and slate (src/themes/dachdecker/docs/DESIGN-DACHDECKER.md). The only place of the theme with
 // fixed colors, texts and numbers; the Rust schema (server-rs/crates/rst-domain/src/themes/dachdecker.rs) stays equal to
 // it. DachdeckerValues is the type of the resolved values that the scenes read via useDachdecker.
+import { alertSoundFields } from "../../core/alerts/alerts.ts";
+import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, lines, markBasic, number, text } from "../../core/fields.ts";
+import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { QUALITIES } from "../../core/three/quality.ts";
 
@@ -14,6 +17,11 @@ const FRAME = "Dachstuhl";
 const STARTING = "Starting";
 const BRB = "BRB";
 const ENDING = "Ending";
+const ALERTS = "Alerts";
+const CHAT = "Chat";
+const CAM = "Kamera-Rahmen";
+const MUSIC = "Musik";
+const FX = "Effekte";
 
 const FIELDS = [
   text("channelName", "Kanal-Name", GENERAL, "DACHDECKER", 40),
@@ -24,6 +32,7 @@ const FIELDS = [
   color("blueprint", "Blaupause (Hintergrund)", GENERAL, "#192a56"),
   color("page", "Blaupause dunkel (Verlauf unten)", GENERAL, "#121e40"),
   color("accent", "Signatur Terrakotta", GENERAL, "#e67e22"),
+  color("onAccent", "Schrift auf Terrakotta", GENERAL, "#121e40"),
   color("brick", "Ziegelrot (Flächen und Leuchten)", GENERAL, "#d35400"),
   color("copper", "Kupfer", GENERAL, "#d4a373"),
   color("slate", "Schiefer", GENERAL, "#2c3e50"),
@@ -132,6 +141,87 @@ const FIELDS = [
   text("stampText", "Stempel: Text", ENDING, "ABGENOMMEN", 40),
   number("stampAt", "Stempel schlägt auf nach", ENDING, 6, 1, 60, "s", 0.5),
   flag("stampSound", "Stempel: Ton", ENDING, true),
+
+  // Placeholders: {user}, {amount}, {detail}, {text}
+  text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOWER"),
+  text("followLine", "Follow: Zeile", ALERTS, "{user} deckt jetzt das Dach mit!"),
+  text("followDim", "Follow: Masslinie", ALERTS, "+1 DACHDECKER"),
+  text("subTag", "Sub: Kopfzeile", ALERTS, "NEUES ABO"),
+  text("subLine", "Sub: Zeile", ALERTS, "{user} geht bei uns in die Lehre!"),
+  text("subDim", "Sub: Masslinie", ALERTS, "+1 AZUBI"),
+  text("resubTag", "Resub: Kopfzeile", ALERTS, "ABO x{amount}"),
+  text("resubLine", "Resub: Zeile", ALERTS, "{user} deckt seit {amount} Monaten mit!"),
+  text("resubDim", "Resub: Masslinie", ALERTS, "{amount} MONATE"),
+  text("giftTag", "Gift: Kopfzeile", ALERTS, "ABOS VERSCHENKT"),
+  text("giftLine", "Gift: Zeile", ALERTS, "{user} stellt {amount} Azubis ein!"),
+  text("giftDim", "Gift: Masslinie", ALERTS, "+{amount} AZUBIS"),
+  text("raidTag", "Raid: Kopfzeile", ALERTS, "RAID"),
+  text("raidLine", "Raid: Zeile", ALERTS, "{user} rückt mit einer Kolonne von {amount} Leuten an!"),
+  text("raidDim", "Raid: Masslinie", ALERTS, "+{amount} KOLONNE"),
+  text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} BITS"),
+  text("cheerLine", "Bits: Zeile", ALERTS, "{user} legt {amount} Ziegel aufs Dach!"),
+  text("cheerDim", "Bits: Masslinie", ALERTS, "+{amount} ZIEGEL"),
+  text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "KANALPUNKTE"),
+  text("redeemLine", "Kanalpunkte: Zeile", ALERTS, "{user} löst {detail} ein."),
+  text("redeemDim", "Kanalpunkte: Masslinie", ALERTS, "EINGELÖST"),
+  text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "HYPE TRAIN"),
+  text("hypeBeginLine", "Hype Train: Start", ALERTS, "Richtfest! Der Kran fährt hoch!"),
+  text("hypeEndLine", "Hype Train: Ende", ALERTS, "Richtfest Level {amount} geschafft!"),
+  text("hypeDim", "Hype Train: Masslinie", ALERTS, "RICHTFEST"),
+  flag("alertQuote", "Nachricht zeigen", ALERTS, true),
+  text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\""),
+  number("alertDuration", "Dauer", ALERTS, 7000, 2000, 60000, "ms"),
+  number("alertTop", "Abstand oben", ALERTS, 620, 0, 1000, "px"),
+  number("alertWidth", "Breite", ALERTS, 720, 300, 1800, "px"),
+  flag("alertDim", "Masslinie mit Text", ALERTS, true),
+  flag("alertCorners", "Eckmarken", ALERTS, true),
+  flag("alertTimer", "Restzeit als Masskette", ALERTS, true),
+  number("alertOpenMs", "Öffnen: Dauer", ALERTS, 550, 0, 3000, "ms"),
+  number("alertCloseMs", "Schliessen: Dauer", ALERTS, 400, 0, 3000, "ms"),
+  flag("alertSound", "Töne", ALERTS, true),
+  ...alertSoundFields(ALERTS),
+
+  choice("chatStyle", "Stil", CHAT, "zettel", ["zettel", "liste", "schlicht"]),
+  number("chatMax", "Max. Nachrichten", CHAT, 6, 1, 50),
+  number("chatLifetime", "Ausblenden nach (0 = nie)", CHAT, 30, 0, 3600, "s"),
+  number("chatWidth", "Breite", CHAT, 520, 200, 1600, "px"),
+  choice("chatNameColor", "Farbe der Namen", CHAT, "kupfer", ["kupfer", "chatter"]),
+  flag("chatDim", "Masslinie unter dem Namen", CHAT, true),
+  flag("chatBadges", "Badges zeigen", CHAT, true),
+  ...badgeFields(CHAT),
+  number("chatOpenMs", "Öffnen: Dauer", CHAT, 350, 0, 3000, "ms"),
+
+  choice("camStyle", "Rahmen", CAM, "plan", ["plan", "ecken", "aus"]),
+  text("camLabel", "Namensschild ({channel})", CAM, "{channel}"),
+  text("camDims", "Masskette: Text", CAM, "1920 x 1080"),
+  flag("camDimsOn", "Massketten an den Kanten", CAM, true),
+  flag("camCorners", "Eckmarken", CAM, true),
+  flag("camLive", "Live-Anzeige", CAM, true),
+  text("camLiveText", "Live-Text", CAM, "LIVE"),
+
+  choice("musicStyle", "Stil", MUSIC, "radio", ["radio", "schild", "schlicht"]),
+  text("musicLabel", "Überzeile", MUSIC, "BAUSTELLENRADIO"),
+  text("musicIdle", "Text ohne Wiedergabe", MUSIC, "FUNKSTILLE"),
+  flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+  flag("musicCover", "Cover zeigen", MUSIC, true),
+  flag("musicEq", "Equalizer", MUSIC, true),
+  flag("musicProgress", "Fortschritt als Masskette", MUSIC, true),
+  number("musicMarqueeSpeed", "Lange Titel: Lauftempo (px pro Sekunde)", MUSIC, 40, 5, 400),
+  color("radioBody", "Radio: Gehäuse", MUSIC, "#2c3e50"),
+  color("radioBumper", "Radio: Puffer und Bügel", MUSIC, "#e67e22"),
+  color("radioDisplay", "Radio: Display", MUSIC, "#7fe3ff"),
+  number("radioScale", "Radio: Grösse (Faktor)", MUSIC, 1, 0.4, 3, undefined, 0.05),
+
+  number("fxDuration", "Standarddauer", FX, 4, 0.5, 120, "s", 0.5),
+  number("fxSize", "Standardgrösse", FX, 360, 20, 1920, "px"),
+  number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20, 0, 50, "%"),
+  number("fxMax", "Max. gleichzeitig", FX, 8, 1, 30),
+  flag("fxText", "Text zeigen", FX, true),
+  number("fxTextSize", "Textgrösse", FX, 96, 8, 300, "px"),
+
+  // Commands page (public, /s/<login>/): shared texts from the core, plus the look
+  ...INFO_FIELDS,
+  number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -142,6 +232,12 @@ const GROUP_SCENES = {
   [STARTING]: ["starting"],
   [BRB]: ["brb"],
   [ENDING]: ["ending"],
+  [ALERTS]: ["alerts"],
+  [CHAT]: ["chat"],
+  [CAM]: ["cam"],
+  [MUSIC]: ["music"],
+  [FX]: ["fx"],
+  [INFO_GROUP]: ["info"],
 } as const;
 
 // On first login: channel name from the Twitch login instead of the sample
@@ -153,6 +249,8 @@ const BASIC = [
   "startingHead", "startingTitle", "startingLines", "countdownDone", "startingTiles", "startingBlockLines", "ticker",
   "brbTitle", "brbSubtitle", "brbLines", "rainOn", "lightningOn", "rainSound",
   "endingTitle", "endingSubtitle", "endingNext", "protocolLines", "stampText", "fireworksOn",
+  "followLine", "subLine", "raidLine", "cheerLine", "alertDim", "chatStyle", "chatBadges", "camStyle", "camLabel", "camLive",
+  "musicStyle", "musicLabel", "musicIdle", "fxText",
 ];
 
 export const dachdeckerSettings: ThemeSchema = { id: "dachdecker", name: "Dachdecker", fields: markBasic(FIELDS, BASIC), groupScenes: GROUP_SCENES, personalize };
