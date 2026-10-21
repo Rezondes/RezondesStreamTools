@@ -3,7 +3,8 @@
 // canvas records everything. Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
-import { worldOf } from "./render.ts";
+import { mixHex } from "../../core/color.ts";
+import { DUSK, worldAt, worldOf } from "./render.ts";
 import { bearsSettings, type BearsValues } from "./settings.ts";
 import { paintCloud, paintGrain, paintLand, paintSky, paintWash, wash, type WashLook, type WorldShow } from "./watercolor.ts";
 import { WORLD } from "./world.ts";
@@ -72,6 +73,14 @@ assert.notDeepEqual(night.calls, day.calls);
 const cloud = recorder();
 paintCloud(cloud.context, colors, look, 0, fakePath);
 assert.ok(count(cloud.calls, "fill") > 0);
+
+// Tageszeit: the land takes on the upper sky of its time of day by its dusk, noon leaves it as it is; the sky is that
+// of the time, the light the moon at night
+assert.equal(worldAt(values, "mittag").meadow, mixHex(values.meadow, values.skyDayTop, 0));
+assert.equal(worldAt(values, "abend").meadow, mixHex(values.meadow, values.skyEveningTop, DUSK.abend));
+assert.equal(worldAt(values, "nacht").fir, mixHex(values.fir, values.skyNightTop, DUSK.nacht));
+assert.deepEqual([worldAt(values, "abend").skyTop, worldAt(values, "nacht").light, worldAt(values, "morgen").light], [values.skyEveningTop, values.moon, values.sun]);
+assert.ok(DUSK.nacht > DUSK.abend && DUSK.abend > DUSK.mittag);
 
 // Grain: every pixel moves by the same amount in its three channels, alpha stays; nothing without grain
 const pixels = { data: new Uint8ClampedArray([100, 100, 100, 255, 100, 100, 100, 255]) };

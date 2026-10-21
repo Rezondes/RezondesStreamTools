@@ -2,6 +2,7 @@
 // palms and beach things, Plantage with the illustrated mango field of its scenes and mango soldiers, KOTH with the hill
 // and radio mast, Bärenbande with the watercolor world and the bear tower, Chaos with its wall of scribbles and the two brush X, Dachdecker with the roof frame as plan lines, a dimension chain and the title block. Always in the DOM, skins.css shows only the one of the active skin. Pure
 // decoration, hidden from screen readers.
+import { lazy, Suspense } from "react";
 import { ThemeValues } from "../core/hooks/useSettings.ts";
 import { resolveSettings } from "../core/settings.ts";
 import type { ThemeSchema } from "../core/theme.ts";
@@ -16,7 +17,6 @@ import Sketch from "../themes/dachdecker/Sketch.tsx";
 import { frameDims } from "../themes/dachdecker/frame.ts";
 import { fillTemplate } from "../core/template.ts";
 import { bearsSettings } from "../themes/bears/settings.ts";
-import World from "../themes/bears/World.tsx";
 import { HILL, TOWER } from "../themes/koth/hill.ts";
 import { kothSettings } from "../themes/koth/settings.ts";
 import KothShape from "../themes/koth/ShapeIcon.tsx";
@@ -33,6 +33,9 @@ import "../themes/plantage/theme.css";
 import "../themes/bears/theme.css";
 import "../themes/chaos/theme.css";
 import "../themes/dachdecker/theme.css";
+
+// The painted Bärenbande world loads Rough.js, so it comes in its own chunk
+const BearsWorld = lazy(() => import("../themes/bears/WorldCanvas.tsx"));
 
 const colors = (schema: ThemeSchema) => cssVariables(schema, resolveSettings(schema, {}));
 const URLAUB = colors(urlaubSettings);
@@ -76,7 +79,7 @@ export default function Scenery() {
       </div>
       <div className="skin-scenery skin-scenery-bears theme-bears bb-blinking" style={BEARS} aria-hidden="true">
         <ThemeValues.Provider value={BEARS_VALUES}>
-          <World time="mittag" />
+          <Suspense fallback={null}><BearsWorld time="mittag" /></Suspense>
         </ThemeValues.Provider>
         <BearTower className="skin-bear-tower" />
       </div>

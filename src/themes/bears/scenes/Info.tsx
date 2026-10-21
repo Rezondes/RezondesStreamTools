@@ -6,7 +6,8 @@ import type { BearId } from "../bears.ts";
 import type { PoseName } from "../rig.ts";
 import Hero from "../Hero.tsx";
 import { bearsNames, useBears } from "../useBears.ts";
-import World, { type TimeOfDay } from "../World.tsx";
+import type { TimeOfDay } from "../world.ts";
+import WorldCanvas from "../WorldCanvas.tsx";
 
 const POSES: Record<BearId, PoseName> = { eisbaer: "wave", grizzly: "wave", panda: "wave" };
 
@@ -16,7 +17,7 @@ export default function Info() {
   if (!page) return null;
   return (
     <div className={`bb-info bb-facing-${values.facing} ${values.blinkEvery > 0 ? "bb-blinking" : ""}`}>
-      <div className="bb-info-backdrop"><World time={values.timeInfo as TimeOfDay} /></div>
+      <div className="bb-info-backdrop"><WorldCanvas time={values.timeInfo as TimeOfDay} /></div>
       <main className="bb-info-column">
         <header className="bb-info-head">
           <div className="bb-info-bear"><Hero choice={values.bearInfo} poses={POSES} className="bb-hero" /></div>

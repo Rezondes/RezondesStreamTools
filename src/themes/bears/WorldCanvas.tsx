@@ -47,7 +47,7 @@ export default function WorldCanvas({ time }: { time: TimeOfDay }) {
   }, [colors, look, count]);
 
   return (
-    <div className={`bb-world bb-painted time-${time}`} aria-hidden="true">
+    <div className="bb-world bb-painted" aria-hidden="true">
       <canvas ref={sky} className="bb-world-canvas" width={WORLD.width} height={WORLD.height} />
       <svg className="bb-world-svg" viewBox={VIEW_BOX} preserveAspectRatio="xMidYMid slice">
         {clouds.map((url, index) => (

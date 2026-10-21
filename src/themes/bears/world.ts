@@ -3,7 +3,7 @@
 // of a bay in front of it; a suspension bridge from the meadow over the water to the far shore, its towers on piers in
 // the water; the cave hill and the forest edge on the left, broad-leaved trees and the meadow with a path in front, tufts
 // and flowers, clouds. Every thing stands with its foot on the ground line of its plane (groundAt), so nothing floats
-// and nothing stands in the water. SCENE holds the built paths for the SVG backdrop (World.tsx) and the canvas (paint.ts).
+// and nothing stands in the water. SCENE holds the built paths for the watercolor (watercolor.ts) and the canvas (paint.ts).
 // Check: world.check.ts.
 
 export const WORLD = { width: 1920, height: 1080, horizon: 720 };

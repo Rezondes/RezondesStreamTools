@@ -218,6 +218,7 @@ fn fields() -> Vec<SettingField> {
         number("waveSpeed", "Winken: Tempo (Faktor)", MOTION, 1.0, 0.2, 3.0, None, Some(0.1)),
         number("headSway", "Kopf wiegen (Grad)", MOTION, 4.0, 0.0, 15.0, None, None),
         number("breathAmount", "Atmen: Stärke", MOTION, 1.2, 0.0, 5.0, PERCENT, Some(0.1)),
+        number("flashEvery", "Selfie: Blitz alle (0 = nie)", MOTION, 4.0, 0.0, 30.0, S, Some(0.5)),
         in_scene(
             SceneName::Starting,
             choice("bearStarting", "Starting: Bär", SCREENS, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
@@ -487,7 +488,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     [
         (WORLD, vec![Starting, Brb, Ending, Info]),
         (SCREENS, vec![Starting, Brb, Ending]),
-        (MOTION, vec![Starting]),
+        (MOTION, vec![Starting, Brb, Ending]),
         (ALERTS, vec![Alerts]),
         (CHAT, vec![Chat]),
         (CAM, vec![Cam]),

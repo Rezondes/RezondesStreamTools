@@ -72,15 +72,15 @@ export default function Bear({ bear, pose, sign, turn, drops, className = "" }: 
 const ARM_BONES = ["nearArm", "nearArmPaw", "thumb", "prop"];
 const HEAD_BONES = ["head", "ears", "worn", "headset"];
 
-// Sets frames of boneMotion.ts on a bear drawn by Bear: the rig turns and scales around the feet and bobs, the arm and
-// the head turn around the pivots of the rig, the eyes close; the elements are looked up once
+// Sets frames of boneMotion.ts on a bear drawn by Bear: the rig turns and scales around the feet and bobs, the arm (lifted
+// with what it holds) and the head turn around the pivots of the rig, the eyes close; the elements are looked up once
 export function bearDriver(svg: SVGSVGElement, bear: BearId, pose: PoseName): (frame: BoneFrame) => void {
   const shape = poseOf(bear, pose);
   const pivotOf = (bone: string) => shape.layers.find(layer => layer.bone === bone)?.pivot ?? [0, 0];
   const turner = (bones: readonly string[], pivot: readonly [number, number]) => {
     const groups = bones.flatMap(bone => [...svg.querySelectorAll<SVGGElement>(`.bone-${bone}`)]);
     for (const group of groups) group.style.transformOrigin = `${pivot[0]}px ${pivot[1]}px`;
-    return (degrees: number) => { for (const group of groups) group.style.transform = `rotate(${degrees}deg)`; };
+    return (degrees: number, lift = 0) => { for (const group of groups) group.style.transform = `translateY(${lift}px) rotate(${degrees}deg)`; };
   };
   const [arm, head] = [turner(ARM_BONES, pivotOf("nearArm")), turner(HEAD_BONES, pivotOf("head"))];
   const rig = svg.querySelector<SVGGElement>(".bb-rig");
@@ -89,7 +89,7 @@ export function bearDriver(svg: SVGSVGElement, bear: BearId, pose: PoseName): (f
   if (rig) rig.style.transformOrigin = `${width / 2}px ${height}px`;
   return frame => {
     if (rig) rig.style.transform = `translateY(${frame.body.y}px) rotate(${frame.body.rotate}deg) scale(${frame.body.scaleX}, ${frame.body.scaleY})`;
-    arm(frame.arm);
+    arm(frame.arm, frame.lift);
     head(frame.head);
     for (const eye of eyes) eye.style.transform = frame.eyes === 1 ? "" : `scaleY(${frame.eyes})`;
   };

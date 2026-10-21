@@ -126,6 +126,7 @@ const FIELDS = [
   number("waveSpeed", "Winken: Tempo (Faktor)", MOTION, 1, 0.2, 3, undefined, 0.1),
   number("headSway", "Kopf wiegen (Grad)", MOTION, 4, 0, 15),
   number("breathAmount", "Atmen: Stärke", MOTION, 1.2, 0, 5, "%", 0.1),
+  number("flashEvery", "Selfie: Blitz alle (0 = nie)", MOTION, 4, 0, 30, "s", 0.5),
 
   inScene("starting", choice("bearStarting", "Starting: Bär", SCREENS, "grizzly", BEAR_CHOICES)),
   inScene("brb", choice("bearBrb", "BRB: Bär", SCREENS, "eisbaer", BEAR_CHOICES)),
@@ -324,7 +325,7 @@ const SCREEN_SCENES = ["starting", "brb", "ending"] as const;
 const GROUP_SCENES = {
   [WORLD]: [...SCREEN_SCENES, "info"],
   [SCREENS]: SCREEN_SCENES,
-  [MOTION]: ["starting"],
+  [MOTION]: SCREEN_SCENES,
   [ALERTS]: ["alerts"],
   [CHAT]: ["chat"],
   [CAM]: ["cam"],

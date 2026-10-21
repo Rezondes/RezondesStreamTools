@@ -1,5 +1,6 @@
 // Renderable clips of the Bärenbande theme: stinger (group Stinger) and profile and offline banners (group Banner), drawn
 // from the character model with the resolved settings. Check: render.check.ts.
+import { mixHex } from "../../core/color.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
@@ -39,13 +40,20 @@ export function worldOf(field: BearsValues, skyTop: string, skyBottom: string, l
   };
 }
 
-// The world colors of a time of day: its sky and sun or moon
+// fixed: how far the land takes on the color of the upper sky per time of day (morning haze, evening light, night)
+export const DUSK: Record<TimeOfDay, number> = { morgen: 0.06, mittag: 0, abend: 0.14, nacht: 0.42 };
+// The surfaces of the land that take on the light of the time of day (the sky, the light and the clouds keep theirs)
+const LIT = ["hills", "city", "cityWindow", "water", "bridge", "meadow", "meadowDark", "road", "wood", "treeLeaf", "fir", "firDark", "cave", "caveDark", "flower"] as const;
+
+// The world colors of a time of day: its sky, sun or moon, and the land mixed toward the upper sky by its dusk
 export function worldAt(field: BearsValues, time: TimeOfDay): WorldColors {
   const [top, bottom] = {
     morgen: [field.skyMorningTop, field.skyMorningBottom], mittag: [field.skyDayTop, field.skyDayBottom],
     abend: [field.skyEveningTop, field.skyEveningBottom], nacht: [field.skyNightTop, field.skyNightBottom],
   }[time];
-  return worldOf(field, top, bottom, time === "nacht" ? field.moon : field.sun);
+  const colors = worldOf(field, top, bottom, time === "nacht" ? field.moon : field.sun);
+  for (const surface of LIT) colors[surface] = mixHex(colors[surface], top, DUSK[time]);
+  return colors;
 }
 
 // values: resolved against the Bärenbande schema; login for {login} in the texts

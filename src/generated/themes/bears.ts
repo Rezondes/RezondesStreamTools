@@ -92,6 +92,7 @@ export type BearsValues = {
   readonly waveSpeed: number;
   readonly headSway: number;
   readonly breathAmount: number;
+  readonly flashEvery: number;
   readonly bearStarting: string;
   readonly bearBrb: string;
   readonly bearEnding: string;
