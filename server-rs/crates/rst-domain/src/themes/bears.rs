@@ -31,6 +31,7 @@ const GENERAL: &str = "Allgemein";
 /// The bears themselves (fur, face, blinking, tower) apply everywhere, so their fields are general
 const BEARS: &str = GENERAL;
 const WORLD: &str = "Welt";
+const MOTION: &str = "Bewegung";
 const SCREENS: &str = "Starting, BRB, Ending";
 const ALERTS: &str = "Alerts";
 const CHAT: &str = "Chat";
@@ -163,7 +164,7 @@ fn fields() -> Vec<SettingField> {
         number("towerSwayMs", "Bärenturm: Wanken (Dauer)", BEARS, 2400.0, 500.0, 10000.0, MS, None),
         in_scene(
             SceneName::Starting,
-            choice("timeStarting", "Tageszeit Starting", WORLD, "morgen", &["morgen", "mittag", "abend", "nacht"]),
+            choice("timeStarting", "Tageszeit Starting", WORLD, "mittag", &["morgen", "mittag", "abend", "nacht"]),
         ),
         in_scene(
             SceneName::Brb,
@@ -206,7 +207,17 @@ fn fields() -> Vec<SettingField> {
         flag("showBridge", "Brücke in der Ferne", WORLD, true),
         flag("showCave", "Höhle", WORLD, true),
         number("paperGrain", "Aquarell: Papierstruktur", WORLD, 0.5, 0.0, 1.0, None, Some(0.05)),
-        number("sketchLines", "Aquarell: Skizzenlinien", WORLD, 0.5, 0.0, 1.0, None, Some(0.05)),
+        number("sketchLines", "Aquarell: Skizzenlinien", WORLD, 0.35, 0.0, 1.0, None, Some(0.05)),
+        number("worldSeed", "Aquarell: Startwert", WORLD, 3.0, 0.0, 9999.0, None, None),
+        number("washLayers", "Aquarell: Lasuren je Fläche", WORLD, 4.0, 1.0, 8.0, None, None),
+        number("washAlpha", "Aquarell: Deckkraft je Lasur", WORLD, 0.3, 0.05, 1.0, None, Some(0.05)),
+        number("washRoughness", "Aquarell: unruhiger Rand", WORLD, 2.4, 0.0, 6.0, None, Some(0.1)),
+        flag("waddleIn", "Bär watschelt herein", MOTION, true),
+        number("bearWaddle", "Watscheln: Schaukeln (Grad)", MOTION, 6.0, 0.0, 20.0, None, None),
+        number("landSquash", "Landen: Stauchen", MOTION, 10.0, 0.0, 40.0, PERCENT, None),
+        number("waveSpeed", "Winken: Tempo (Faktor)", MOTION, 1.0, 0.2, 3.0, None, Some(0.1)),
+        number("headSway", "Kopf wiegen (Grad)", MOTION, 4.0, 0.0, 15.0, None, None),
+        number("breathAmount", "Atmen: Stärke", MOTION, 1.2, 0.0, 5.0, PERCENT, Some(0.1)),
         in_scene(
             SceneName::Starting,
             choice("bearStarting", "Starting: Bär", SCREENS, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
@@ -476,6 +487,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     [
         (WORLD, vec![Starting, Brb, Ending, Info]),
         (SCREENS, vec![Starting, Brb, Ending]),
+        (MOTION, vec![Starting]),
         (ALERTS, vec![Alerts]),
         (CHAT, vec![Chat]),
         (CAM, vec![Cam]),

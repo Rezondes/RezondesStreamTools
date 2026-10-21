@@ -345,7 +345,7 @@
       "type": "select",
       "label": "Tageszeit Starting",
       "group": "Welt",
-      "default": "morgen",
+      "default": "mittag",
       "options": [
         "morgen",
         "mittag",
@@ -633,10 +633,104 @@
       "type": "number",
       "label": "Aquarell: Skizzenlinien",
       "group": "Welt",
-      "default": 0.5,
+      "default": 0.35,
       "min": 0,
       "max": 1,
       "step": 0.05
+    },
+    {
+      "key": "worldSeed",
+      "type": "number",
+      "label": "Aquarell: Startwert",
+      "group": "Welt",
+      "default": 3,
+      "min": 0,
+      "max": 9999
+    },
+    {
+      "key": "washLayers",
+      "type": "number",
+      "label": "Aquarell: Lasuren je Fläche",
+      "group": "Welt",
+      "default": 4,
+      "min": 1,
+      "max": 8
+    },
+    {
+      "key": "washAlpha",
+      "type": "number",
+      "label": "Aquarell: Deckkraft je Lasur",
+      "group": "Welt",
+      "default": 0.3,
+      "min": 0.05,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "washRoughness",
+      "type": "number",
+      "label": "Aquarell: unruhiger Rand",
+      "group": "Welt",
+      "default": 2.4,
+      "min": 0,
+      "max": 6,
+      "step": 0.1
+    },
+    {
+      "key": "waddleIn",
+      "type": "boolean",
+      "label": "Bär watschelt herein",
+      "group": "Bewegung",
+      "default": true
+    },
+    {
+      "key": "bearWaddle",
+      "type": "number",
+      "label": "Watscheln: Schaukeln (Grad)",
+      "group": "Bewegung",
+      "default": 6,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "key": "landSquash",
+      "type": "number",
+      "label": "Landen: Stauchen",
+      "group": "Bewegung",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "%"
+    },
+    {
+      "key": "waveSpeed",
+      "type": "number",
+      "label": "Winken: Tempo (Faktor)",
+      "group": "Bewegung",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "headSway",
+      "type": "number",
+      "label": "Kopf wiegen (Grad)",
+      "group": "Bewegung",
+      "default": 4,
+      "min": 0,
+      "max": 15
+    },
+    {
+      "key": "breathAmount",
+      "type": "number",
+      "label": "Atmen: Stärke",
+      "group": "Bewegung",
+      "default": 1.2,
+      "min": 0,
+      "max": 5,
+      "unit": "%",
+      "step": 0.1
     },
     {
       "key": "bearStarting",
@@ -3225,6 +3319,9 @@
       "starting",
       "brb",
       "ending"
+    ],
+    "Bewegung": [
+      "starting"
     ],
     "Alerts": [
       "alerts"

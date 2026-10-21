@@ -82,6 +82,16 @@ export type BearsValues = {
   readonly showCave: boolean;
   readonly paperGrain: number;
   readonly sketchLines: number;
+  readonly worldSeed: number;
+  readonly washLayers: number;
+  readonly washAlpha: number;
+  readonly washRoughness: number;
+  readonly waddleIn: boolean;
+  readonly bearWaddle: number;
+  readonly landSquash: number;
+  readonly waveSpeed: number;
+  readonly headSway: number;
+  readonly breathAmount: number;
   readonly bearStarting: string;
   readonly bearBrb: string;
   readonly bearEnding: string;

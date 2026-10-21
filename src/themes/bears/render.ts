@@ -8,6 +8,7 @@ import { drawBearsOfflineBanner, drawBearsProfileBanner, type BearsBannerOptions
 import type { Palette, WorldColors } from "./paint.ts";
 import type { BearsValues } from "./settings.ts";
 import { drawBearsStinger, HEIGHT, WIDTH, type BearsStingerOptions } from "./stinger.ts";
+import type { TimeOfDay } from "./world.ts";
 
 // Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
 const BANNER_LOOP = 6;
@@ -36,6 +37,15 @@ export function worldOf(field: BearsValues, skyTop: string, skyBottom: string, l
     fir: field.fir, firDark: field.firDark, cave: field.cave, caveDark: field.caveDark, flower: field.flower, outline: field.outline,
     sketch: field.sketchLines,
   };
+}
+
+// The world colors of a time of day: its sky and sun or moon
+export function worldAt(field: BearsValues, time: TimeOfDay): WorldColors {
+  const [top, bottom] = {
+    morgen: [field.skyMorningTop, field.skyMorningBottom], mittag: [field.skyDayTop, field.skyDayBottom],
+    abend: [field.skyEveningTop, field.skyEveningBottom], nacht: [field.skyNightTop, field.skyNightBottom],
+  }[time];
+  return worldOf(field, top, bottom, time === "nacht" ? field.moon : field.sun);
 }
 
 // values: resolved against the Bärenbande schema; login for {login} in the texts

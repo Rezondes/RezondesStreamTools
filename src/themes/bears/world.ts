@@ -7,6 +7,10 @@
 // Check: world.check.ts.
 
 export const WORLD = { width: 1920, height: 1080, horizon: 720 };
+
+export type TimeOfDay = "morgen" | "mittag" | "abend" | "nacht";
+// Where sun or moon stand per time of day
+export const LIGHT: Record<TimeOfDay, readonly [number, number]> = { morgen: [360, 300], mittag: [980, 150], abend: [1500, 420], nacht: [1320, 180] };
 type Point = readonly [number, number];
 
 // A fir with three soft tiers, its foot at (x, base), height and width in px

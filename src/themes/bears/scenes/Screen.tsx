@@ -1,20 +1,27 @@
 // Full-screen scenes of the Bärenbande theme (Starting, BRB, Ending): the watercolor world per time of day, the bear the
 // streamer chose for the scene (or the tower) standing on the meadow, a paper sign with overline, title and subtitle,
 // below it countdown (with a path a little bear walks along, or a bar), break time or next stream, rotating quotes and a
-// paper ticker. Starting: the bear waves. BRB: the Eisbär cooks, the Grizzly holds a sign, the Panda looks at its phone.
-// Ending: the bears wave, the Panda takes a selfie. Built for 1920x1080, scaled to any source size.
+// paper ticker. Starting (PLAN-BEARS.md package 11): the world is painted as watercolor and paints itself in, the bear
+// waddles in, lands and waves with its bones (boneMotion.ts), the cards plop in, all on one GSAP timeline (stills with
+// ?t=). BRB: the Eisbär cooks, the Grizzly holds a sign, the Panda looks at its phone. Ending: the bears wave, the Panda
+// takes a selfie. Built for 1920x1080, scaled to any source size.
 // Stage, countdown, break time, quotes and parameters come from the screens context of the core (src/core/screens).
 // Parameter pro Quelle: ?min=5, ?at=20:00, ?next=..., ?ticker=...
-import type { CSSProperties } from "react";
+import { SplitText } from "gsap/SplitText";
+import { type CSSProperties, type RefObject, useRef } from "react";
+import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { rotating, shortClock, type ScreenKind } from "../../../core/screens/screens.ts";
 import { useScreen } from "../../../core/screens/useScreen.ts";
 import { useStage } from "../../../core/screens/useStage.ts";
-import Bear from "../Bear.tsx";
-import type { BearId } from "../bears.ts";
+import Bear, { bearDriver } from "../Bear.tsx";
+import { isBearChoice, TOWER, type BearId } from "../bears.ts";
+import { startingMotion } from "../boneMotion.ts";
 import type { PoseName } from "../rig.ts";
 import Hero from "../Hero.tsx";
+import type { BearsValues } from "../settings.ts";
 import { useBears } from "../useBears.ts";
 import World, { type TimeOfDay } from "../World.tsx";
+import WorldCanvas from "../WorldCanvas.tsx";
 
 // fixed: seconds in ms for the rhythm of the quotes
 const SECOND_MS = 1000;
@@ -26,9 +33,59 @@ const POSES: Record<ScreenKind, Record<BearId, PoseName>> = {
   ending: { eisbaer: "wave", grizzly: "wave", panda: "selfie" },
 };
 
+// fixed: how long the Starting timeline runs (s); the moves of the bear loop inside it
+const RUN = 24 * 60 * 60;
+const PERCENT = 100; // fixed: settings in percent to shares
+// fixed: when the cards come in (s): sign, clock, title letters, eyebrow, countdown, note
+const CARDS_AT = { sign: 1.4, clock: 1.6, title: 1.7, eyebrow: 1.8, count: 2, note: 2.3 };
+// fixed: the cards plop in squashed and stretched, the clock drops in, the letters fall in, the eyebrow pops, the note rises
+const PLOP = { scaleX: 0.4, scaleY: 1.4, opacity: 0, duration: 0.7, ease: "elastic.out(1, 0.45)", transformOrigin: "50% 100%" };
+const DROP = { y: -110, duration: 0.6, ease: "back.out(2)" }; // fixed: see above
+const LETTERS = { y: -60, scaleY: 1.4, opacity: 0, duration: 0.5, ease: "bounce.out", stagger: 0.03 }; // fixed: see above
+const POP = { scale: 0, rotate: -12, duration: 0.5, ease: "back.out(3)" }; // fixed: see above
+const RISE = { opacity: 0, y: 12, duration: 0.4 }; // fixed: see above
+
+// The Starting build: the world paints in, the bear waddles in, lands and waves, the cards plop in
+function useStartingTimeline(scope: RefObject<HTMLDivElement | null>, values: BearsValues, choice: string, on: boolean) {
+  useTimeline(timeline => {
+    const root = scope.current;
+    if (!on || !root) return;
+    const spot = root.querySelector<HTMLElement>(".bb-hero-spot");
+    const svg = spot?.querySelector<SVGSVGElement>("svg.bb-hero");
+    const bear = isBearChoice(choice) && choice !== TOWER ? choice : null;
+    const drive = svg && bear ? bearDriver(svg, bear, POSES.starting[bear]) : null;
+    const motion = {
+      waddleIn: values.waddleIn, waddleAngle: values.bearWaddle, landSquash: values.landSquash / PERCENT, waveSpeed: values.waveSpeed, headSway: values.headSway,
+      blinkEvery: values.blinkEvery / SECOND_MS, breathe: values.breathe, breathAmount: values.breathAmount / PERCENT, breathSeconds: values.breatheMs / SECOND_MS,
+    };
+    const side = values.bearSide === "rechts" ? 1 : -1;
+    const clock = { seconds: 0 };
+    const place = () => {
+      const frame = startingMotion(clock.seconds, motion, side);
+      if (spot) {
+        spot.style.visibility = frame.visible ? "" : "hidden";
+        spot.style.translate = `${frame.body.x}px 0`;
+      }
+      drive?.(frame);
+    };
+    place();
+    timeline.to(clock, { seconds: RUN, duration: RUN, ease: "none", onUpdate: place }, 0);
+    if (values.powerOn !== "aquarell") return;
+    timeline.fromTo(root.querySelector(".bb-painted"), { "--paint": 0 }, { "--paint": 1, duration: values.powerOnDuration / SECOND_MS, ease: "power1.inOut" }, 0);
+    timeline.from(root.querySelector(".bb-sign"), PLOP, CARDS_AT.sign);
+    timeline.from(root.querySelector(".bb-clock"), DROP, CARDS_AT.clock);
+    const title = root.querySelector(".bb-title");
+    if (title) timeline.from(SplitText.create(title, { type: "words,chars" }).chars, LETTERS, CARDS_AT.title);
+    timeline.from(root.querySelector(".bb-sign .bb-eyebrow"), POP, CARDS_AT.eyebrow);
+    timeline.from(root.querySelectorAll(".bb-count"), PLOP, CARDS_AT.count);
+    timeline.from(root.querySelector(".bb-sign .bb-note"), RISE, CARDS_AT.note);
+  }, [values, choice, on], scope);
+}
+
 export default function Screen({ kind }: { kind: ScreenKind }) {
   const values = useBears();
   const stage = useStage();
+  const scope = useRef<HTMLDivElement>(null);
   const { now, start, left, progress, away, ticker, next } = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
   const [eyebrow, title, note] = {
     starting: [values.startingEyebrow, values.startingTitle, values.startingNote],
@@ -39,10 +96,14 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
   const bear = { starting: values.bearStarting, brb: values.bearBrb, ending: values.bearEnding }[kind];
   const sayings = { starting: values.startingLines, brb: values.brbLines, ending: values.endingLines }[kind];
   const saying = rotating(sayings, values.linesEvery * SECOND_MS, now - start);
+  const painted = kind === "starting";
+  useStartingTimeline(scope, values, bear, painted);
+  // The painted Starting moves the bones itself, the other scenes blink and breathe with CSS
+  const life = painted ? "bb-timed" : `${values.blinkEvery > 0 ? "bb-blinking" : ""} ${values.breathe ? "bb-breathing" : ""}`;
 
   return (
-    <div className={`bb-screen power-${values.powerOn} bb-side-${values.bearSide} bb-facing-${values.facing} ${values.blinkEvery > 0 ? "bb-blinking" : ""} ${values.breathe ? "bb-breathing" : ""}`}>
-      <World time={time} />
+    <div ref={scope} className={`bb-screen power-${values.powerOn} bb-side-${values.bearSide} bb-facing-${values.facing} ${life}`}>
+      {painted ? <WorldCanvas time={time} /> : <World time={time} />}
       <div className="bb-stage stage-box" ref={stage}>
         <span className="bb-clock bb-pill">{new Date(now).toLocaleTimeString(values.locale)}</span>
         <div className="bb-hero-spot">

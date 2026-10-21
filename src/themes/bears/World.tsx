@@ -9,12 +9,9 @@
 // full-screen turbulence filters while compositing every frame of the clouds.
 import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { useBears } from "./useBears.ts";
-import { SCENE, SHAPES, WORLD } from "./world.ts";
+import { LIGHT, SCENE, SHAPES, type TimeOfDay, WORLD } from "./world.ts";
 
-export type TimeOfDay = "morgen" | "mittag" | "abend" | "nacht";
-
-// Where sun or moon stand per time of day
-const LIGHT: Record<TimeOfDay, readonly [number, number]> = { morgen: [360, 300], mittag: [980, 150], abend: [1500, 420], nacht: [1320, 180] };
+export type { TimeOfDay };
 const MAX_CLOUDS = 8;
 const VIEW_BOX = `0 0 ${WORLD.width} ${WORLD.height}`;
 // The paint the theme sets on the shapes of the world in theme.css, written into the baked picture

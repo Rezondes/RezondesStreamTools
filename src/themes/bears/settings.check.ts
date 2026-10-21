@@ -69,4 +69,9 @@ assert.ok(!fields.some(field => field.group === "Bären") && !("Bären" in (bear
 // First login: channel name from the login with a capital first letter
 assert.deepEqual(bearsSettings.personalize?.("neo_42"), { channelName: "Neo_42" });
 
+// Modernization: the watercolor keys in the world group, the bone moves in their own group for the Starting
+for (const key of ["worldSeed", "washLayers", "washAlpha", "washRoughness"]) assert.equal(fields.find(field => field.key === key)?.group, "Welt", key);
+for (const key of ["waddleIn", "bearWaddle", "landSquash", "waveSpeed", "headSway", "breathAmount"]) assert.equal(fields.find(field => field.key === key)?.group, "Bewegung", key);
+assert.deepEqual(bearsSettings.groupScenes?.Bewegung, ["starting"]);
+
 console.log("bears settings ok");

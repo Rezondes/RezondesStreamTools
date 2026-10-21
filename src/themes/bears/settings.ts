@@ -24,6 +24,7 @@ const GENERAL = "Allgemein";
 // The bears themselves (fur, face, blinking, tower) apply everywhere, so their fields are general
 const BEARS = GENERAL;
 const WORLD = "Welt";
+const MOTION = "Bewegung";
 const SCREENS = "Starting, BRB, Ending";
 const ALERTS = "Alerts";
 const CHAT = "Chat";
@@ -78,7 +79,7 @@ const FIELDS = [
   number("towerSway", "Bärenturm: Wanken (Grad)", BEARS, 2, 0, 10),
   number("towerSwayMs", "Bärenturm: Wanken (Dauer)", BEARS, 2400, 500, 10000, "ms"),
 
-  inScene("starting", choice("timeStarting", "Tageszeit Starting", WORLD, "morgen", TIMES)),
+  inScene("starting", choice("timeStarting", "Tageszeit Starting", WORLD, "mittag", TIMES)),
   inScene("brb", choice("timeBrb", "Tageszeit BRB", WORLD, "mittag", TIMES)),
   inScene("ending", choice("timeEnding", "Tageszeit Ending", WORLD, "abend", TIMES)),
   color("skyMorningTop", "Himmel Morgen oben", WORLD, "#f6b38a"),
@@ -114,7 +115,17 @@ const FIELDS = [
   flag("showBridge", "Brücke in der Ferne", WORLD, true),
   flag("showCave", "Höhle", WORLD, true),
   number("paperGrain", "Aquarell: Papierstruktur", WORLD, 0.5, 0, 1, undefined, 0.05),
-  number("sketchLines", "Aquarell: Skizzenlinien", WORLD, 0.5, 0, 1, undefined, 0.05),
+  number("sketchLines", "Aquarell: Skizzenlinien", WORLD, 0.35, 0, 1, undefined, 0.05),
+  number("worldSeed", "Aquarell: Startwert", WORLD, 3, 0, 9999),
+  number("washLayers", "Aquarell: Lasuren je Fläche", WORLD, 4, 1, 8),
+  number("washAlpha", "Aquarell: Deckkraft je Lasur", WORLD, 0.3, 0.05, 1, undefined, 0.05),
+  number("washRoughness", "Aquarell: unruhiger Rand", WORLD, 2.4, 0, 6, undefined, 0.1),
+  flag("waddleIn", "Bär watschelt herein", MOTION, true),
+  number("bearWaddle", "Watscheln: Schaukeln (Grad)", MOTION, 6, 0, 20),
+  number("landSquash", "Landen: Stauchen", MOTION, 10, 0, 40, "%"),
+  number("waveSpeed", "Winken: Tempo (Faktor)", MOTION, 1, 0.2, 3, undefined, 0.1),
+  number("headSway", "Kopf wiegen (Grad)", MOTION, 4, 0, 15),
+  number("breathAmount", "Atmen: Stärke", MOTION, 1.2, 0, 5, "%", 0.1),
 
   inScene("starting", choice("bearStarting", "Starting: Bär", SCREENS, "grizzly", BEAR_CHOICES)),
   inScene("brb", choice("bearBrb", "BRB: Bär", SCREENS, "eisbaer", BEAR_CHOICES)),
@@ -313,6 +324,7 @@ const SCREEN_SCENES = ["starting", "brb", "ending"] as const;
 const GROUP_SCENES = {
   [WORLD]: [...SCREEN_SCENES, "info"],
   [SCREENS]: SCREEN_SCENES,
+  [MOTION]: ["starting"],
   [ALERTS]: ["alerts"],
   [CHAT]: ["chat"],
   [CAM]: ["cam"],
