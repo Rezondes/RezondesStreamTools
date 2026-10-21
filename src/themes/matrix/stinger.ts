@@ -1,7 +1,8 @@
 // Stinger transition for OBS. Pure function of time: the same time (time) always gives the same picture,
 // so it can be rendered exactly frame by frame (see scenes/Stinger.tsx and vite.config.ts).
 // Sequence: matrix columns fall in and cover everything, the logo decodes itself,
-// at the transition point (cut) the power-on line flashes, then the columns fall out at the bottom.
+// at the transition point (cut) the power-on line flashes, then the columns fall out at the bottom. The leading glyphs
+// glow like the heads of the rain (PLAN-MATRIX.md package 4).
 // Length, transition point, texts, colors and font come from the settings via stingerOptions.
 import { hash } from "../../core/hash.ts";
 import { clamp01, easeIn } from "../../core/easing.ts";
@@ -9,6 +10,7 @@ import type { MatrixValues } from "./settings.ts";
 
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
+const HEAD_GLOW = 18; // fixed: glow of the leading glyphs (px)
 
 export type StingerOptions = {
   duration: number; // seconds
@@ -57,6 +59,7 @@ export function drawStinger(context: CanvasRenderingContext2D, time: number, opt
   context.clearRect(0, 0, WIDTH, HEIGHT);
   context.textBaseline = "top";
   context.font = `${column}px "${options.font}", monospace`;
+  context.shadowColor = options.flash;
   const tick = Math.floor(time * 18); // characters flicker 18 times per second
 
   for (let index = 0; index < columns; index++) {
@@ -78,6 +81,7 @@ export function drawStinger(context: CanvasRenderingContext2D, time: number, opt
       if (y + column <= top || y >= bottom) continue;
       if (hash(index * 977 + row * 131) < 0.35) continue; // gaps like in real rain
       const distance = Math.abs(edge - y) / column; // distance to the edge in rows
+      context.shadowBlur = distance < 1.5 ? HEAD_GLOW : 0;
       if (distance < 1.5) { context.fillStyle = options.flash; context.globalAlpha = 1; }
       else if (distance < 5) { context.fillStyle = options.accent; context.globalAlpha = 1; }
       else { context.fillStyle = options.dim; context.globalAlpha = 0.35 + 0.5 * hash(index * 31 + row + tick); }
@@ -85,6 +89,7 @@ export function drawStinger(context: CanvasRenderingContext2D, time: number, opt
     }
     context.globalAlpha = 1;
   }
+  context.shadowBlur = 0;
 
   if (options.showLogo) drawLogo(context, time, options);
   drawFlash(context, time, options);

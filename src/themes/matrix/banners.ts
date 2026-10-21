@@ -1,11 +1,12 @@
 // Twitch banners as GIF: profile banner (1200x480) and offline banner of the video player (1920x1080).
 // Like the stinger a pure function of time; all movements repeat exactly after loop seconds,
 // so the GIF loops endlessly without a jump. Texts, colors, font, loop length and rain density
-// come from the settings via bannerOptions.
+// come from the settings via bannerOptions. The rain is the rain of the scenes (rain.ts, PLAN-MATRIX.md package 4) in
+// its depth layers at one moment, the far layer blurred, the heads glowing; only its glyphs change over the loop.
 import { fillTemplate } from "../../core/template.ts";
 import type { MatrixValues } from "./settings.ts";
 import { hash } from "../../core/hash.ts";
-import { glyphAt } from "./stinger.ts";
+import { glyphAt as rainGlyph, headAt, LAYERS, rainColumns } from "./rain.ts";
 
 export type BannerOptions = {
   loop: number; // seconds
@@ -29,6 +30,12 @@ export type BannerOptions = {
   offlineText: string;
   offlineLines: readonly string[];
   prompt: string;
+  seed: number;
+  layers: number;
+  sizes: readonly [number, number, number]; // far, mid, near (px)
+  blurFar: number; // px
+  headGlow: number; // px
+  change: { tip: number; trail: number }; // glyph changes per second
 };
 
 // Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
@@ -59,35 +66,54 @@ export function bannerOptions(values: MatrixValues, login: string): BannerOption
     offlineText: values.bannerOfflineText,
     offlineLines: values.bannerOfflineLines,
     prompt: fillTemplate(values.prompt, names),
+    seed: values.rainSeed,
+    layers: values.rainLayers,
+    sizes: [values.rainSizeFar, values.rainSizeMid, values.rainSizeNear],
+    blurFar: values.rainBlurFar,
+    headGlow: values.headGlow,
+    change: { tip: values.glyphChangeTip, trail: values.glyphChange },
   };
 }
+
+// fixed: the profile banner is smaller, so is its rain
+const PROFILE_SCALE = 0.6;
 
 // Short time windows within the loop (fractions of loop) in which something glitches
 const within = (time: number, loop: number, windows: [number, number][]) => windows.some(([from, to]) => time > from * loop && time < to * loop);
 
-// Matrix rain that looks exactly the same again after loop seconds:
-// every column runs a whole number of passes in this time
-function rain(context: CanvasRenderingContext2D, time: number, width: number, height: number, size: number, alpha: number, options: BannerOptions) {
-  const columns = Math.ceil(width / size);
-  const rows = Math.ceil(height / size);
-  const tick = Math.floor(time * 8); // 8 character changes per second
-  context.font = `${size}px "${options.font}", monospace`;
-  context.textBaseline = "top";
-  for (let column = 0; column < columns; column++) {
-    if (hash(column * 13 + 5) >= options.density) continue;
-    const length = 8 + ((hash(column * 3 + 1) * 18) | 0);
-    const span = rows + length;
-    const cycles = 1 + ((hash(column * 7 + 2) * 2) | 0);
-    const head = Math.floor((hash(column * 11 + 3) * span + (time / options.loop) * cycles * span) % span);
-    for (let tail = 0; tail < length; tail++) {
-      const row = head - tail;
-      if (row < 0 || row >= rows) continue;
-      context.globalAlpha = alpha * (1 - tail / length);
-      context.fillStyle = tail === 0 ? options.flash : tail < 4 ? options.accent : options.dim;
-      context.fillText(glyphAt(column * 7919 + row * 104729 + tick, options.glyphs), column * size, row * size);
+// fixed: the moment of the rain a banner shows (s, every layer under way), how the trails fade
+const RAIN_STILL = 6;
+const FADE = 1.6;
+
+// The rain of the scenes at one moment over width x height, its glyphs sized by scale; positions stay over the loop,
+// so the GIF stays seamless
+function rain(context: CanvasRenderingContext2D, time: number, width: number, height: number, scale: number, alpha: number, options: BannerOptions) {
+  if (options.density <= 0) return;
+  const glyphs = Array.from(options.glyphs);
+  const tints = [options.dim, options.accent, options.accent];
+  const first = LAYERS.length - Math.max(1, Math.min(LAYERS.length, options.layers));
+  context.textBaseline = "middle";
+  context.textAlign = "center";
+  context.shadowColor = options.accent;
+  for (let layer = first; layer < LAYERS.length; layer++) {
+    const size = Math.max(1, Math.round(options.sizes[layer] * scale));
+    context.font = `${size}px "${options.font}", monospace`;
+    context.filter = layer === 0 && options.blurFar > 0 ? `blur(${options.blurFar}px)` : "none";
+    for (const column of rainColumns(layer, size, { seed: options.seed, width, density: options.density })) {
+      const at = headAt(column, size, height, RAIN_STILL);
+      if (!at) continue;
+      for (let behind = 0; behind < column.trail; behind++) {
+        const row = at.row - behind;
+        const y = row * size + size / 2;
+        if (y < -size || y > height + size) continue;
+        context.globalAlpha = alpha * LAYERS[layer].alpha * (1 - behind / column.trail) ** FADE;
+        context.fillStyle = behind === 0 ? options.flash : tints[layer];
+        context.shadowBlur = behind === 0 ? options.headGlow : 0;
+        context.fillText(glyphs[rainGlyph(options.seed + at.run, column, row, behind, time, glyphs.length, options.change)] ?? "", column.x, y);
+      }
     }
   }
-  context.globalAlpha = 1;
+  Object.assign(context, { globalAlpha: 1, shadowBlur: 0, filter: "none", textAlign: "start" });
 }
 
 function scanlines(context: CanvasRenderingContext2D, width: number, height: number, options: BannerOptions) {
@@ -154,7 +180,7 @@ export function drawProfileBanner(context: CanvasRenderingContext2D, time: numbe
   const width = 1200, height = 480;
   context.fillStyle = options.background;
   context.fillRect(0, 0, width, height);
-  rain(context, time, width, height, 16, 0.55, options);
+  rain(context, time, width, height, PROFILE_SCALE, 0.55, options);
   frame(context, 170, 70, 860, 300, 28, options);
   const placed = logo(context, time, width / 2, 110, 26, options);
   text(context, options, options.profileText + (blink(time) ? options.cursor : ""), placed.left, placed.bottom + 30, 26, options.accent, 8);
@@ -167,7 +193,7 @@ export function drawOfflineBanner(context: CanvasRenderingContext2D, time: numbe
   const width = 1920, height = 1080;
   context.fillStyle = options.background;
   context.fillRect(0, 0, width, height);
-  rain(context, time, width, height, 22, 0.4, options);
+  rain(context, time, width, height, 1, 0.4, options);
 
   const boxX = 260, boxY = 150, boxWidth = 1400, boxHeight = 780;
   frame(context, boxX, boxY, boxWidth, boxHeight, 40, options);
