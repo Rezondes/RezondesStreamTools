@@ -13,6 +13,7 @@ use crate::settings::field::{
 };
 use crate::themes::ascii_text::ascii_text;
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
+use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, minime_fields};
 use crate::themes::registry::Theme;
@@ -66,13 +67,20 @@ fn fields() -> Vec<SettingField> {
         text("glyphs", "Zeichensatz (Regen, Entschlüsseln, Stinger)", RAIN, GLYPHS, Some(400)),
         flag("rainScreens", "Regen in Starting/BRB/Ending", RAIN, true),
         flag("rainAlerts", "Regen in Alerts", RAIN, true),
-        number("rainSizeScreens", "Zeichengrösse (Szenen)", RAIN, 20.0, 6.0, 80.0, PX, None),
-        number("rainSizeAlerts", "Zeichengrösse (Alerts)", RAIN, 14.0, 6.0, 80.0, PX, None),
+        quality_field(RAIN),
+        number("rainSeed", "Startwert (anderes Muster)", RAIN, 1.0, 1.0, 9999.0, None, None),
+        number("rainLayers", "Tiefenebenen", RAIN, 3.0, 1.0, 3.0, None, None),
+        number("rainSizeFar", "Zeichengrösse fern", RAIN, 15.0, 6.0, 80.0, PX, None),
+        number("rainSizeMid", "Zeichengrösse mittel", RAIN, 24.0, 6.0, 80.0, PX, None),
+        number("rainSizeNear", "Zeichengrösse nah", RAIN, 36.0, 6.0, 80.0, PX, None),
+        number("rainBlurFar", "Unschärfe fern", RAIN, 1.5, 0.0, 6.0, None, Some(0.1)),
+        number("headGlow", "Leuchten der Köpfe", RAIN, 10.0, 0.0, 30.0, None, None),
+        number("glyphChange", "Zeichenwechsel in der Spur (je s)", RAIN, 3.0, 0.0, 30.0, None, None),
+        number("glyphChangeTip", "Zeichenwechsel an der Spitze (je s)", RAIN, 14.0, 0.0, 60.0, None, None),
         number("rainDensity", "Dichte", RAIN, 100.0, 0.0, 100.0, Some(Unit::Percent), None),
         number("rainSpeed", "Geschwindigkeit", RAIN, 1.0, 0.1, 5.0, None, Some(0.1)),
-        number("rainOpacityScreens", "Deckkraft (Szenen)", RAIN, 0.35, 0.0, 1.0, None, Some(0.01)),
+        number("rainOpacityScreens", "Deckkraft (Szenen)", RAIN, 0.8, 0.0, 1.0, None, Some(0.01)),
         number("rainOpacityAlerts", "Deckkraft (Alerts)", RAIN, 0.16, 0.0, 1.0, None, Some(0.01)),
-        number("rainFps", "Bildrate", RAIN, 20.0, 1.0, 60.0, None, None),
         in_scene(SceneName::Starting, text("startingTitle", "Titel Starting", SCREENS, "STREAM STARTET GLEICH", None)),
         in_scene(SceneName::Brb, text("brbTitle", "Titel BRB", SCREENS, "BIN GLEICH ZURÜCK", None)),
         in_scene(SceneName::Ending, text("endingTitle", "Titel Ending", SCREENS, "STREAM BEENDET", None)),
@@ -104,7 +112,10 @@ fn fields() -> Vec<SettingField> {
         text("ticker", "Ticker-Text (leer = aus)", SCREENS, "", Some(500)),
         text("tickerSeparator", "Ticker-Trenner", SCREENS, "   //   ", None),
         number("tickerSpeed", "Ticker-Durchlauf", SCREENS, 60.0, 5.0, 600.0, S, None),
-        choice("powerOn", "Einschalt-Animation", SCREENS, "zoom", &["zoom", "fade", "none"]),
+        choice("powerOn", "Einschalt-Animation", SCREENS, "crt", &["crt", "zoom", "fade", "none"]),
+        number("crtOnMs", "CRT einschalten (Dauer)", SCREENS, 600.0, 100.0, 5000.0, MS, None),
+        flag("glitchOn", "Glitch im Bild", SCREENS, true),
+        number("glitchEvery", "Glitch alle", SCREENS, 4.2, 1.0, 60.0, S, Some(0.1)),
         number("powerOnDuration", "Einschalt-Animation (Dauer)", SCREENS, 1600.0, 0.0, 10_000.0, MS, None),
         number("frameWidth", "Rahmen-Breite", SCREENS, 1400.0, 400.0, 1920.0, PX, None),
         number("frameHeight", "Rahmen-Höhe", SCREENS, 820.0, 300.0, 1080.0, PX, None),

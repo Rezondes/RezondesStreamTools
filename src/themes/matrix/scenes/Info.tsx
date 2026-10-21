@@ -3,7 +3,7 @@
 // info context of the core (useInfoPage), here only the matrix look.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
-import MatrixRain from "../MatrixRain.tsx";
+import Rain from "../pixi/Rain.tsx";
 import { placeholders, useMatrix } from "../useMatrix.ts";
 
 export default function Info() {
@@ -12,7 +12,7 @@ export default function Info() {
   if (!page) return null;
   return (
     <div className="matrix-info">
-      {values.infoRain && <div className="matrix-info-rain"><MatrixRain size={values.rainSizeScreens} opacity={values.rainOpacityScreens} /></div>}
+      {values.infoRain && <div className="matrix-info-rain"><Rain opacity={values.rainOpacityScreens} /></div>}
       <main className="matrix-info-column">
         <h1 className="glow">{page.title}</h1>
         <p className="muted">{page.intro}</p>

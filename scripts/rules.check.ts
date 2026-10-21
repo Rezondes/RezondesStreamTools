@@ -37,6 +37,7 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/themes/chaos/tones.ts": "Web Audio output",
   "src/themes/dachdecker/tones.ts": "Web Audio output",
   "src/core/three/softTexture.ts": "draws on a browser canvas, no logic to check",
+  "src/themes/matrix/pixi/GlyphAtlas.ts": "draws the glyphs on a browser canvas, no logic to check",
   "src/themes/dachdecker/clips3d.ts": "lazy wrapper around glClip; the scenes are checked in stinger.check.ts and banners.check.ts",
   "src/themes/koth/clips3d.ts": "lazy wrapper around glClip; the scenes are checked in stinger.check.ts and bannerWorld.check.ts",
   "src/themes/urlaub/clips3d.ts": "lazy wrapper around glClip; the texts are checked in banners.check.ts, the clips in render.check.ts",

@@ -7,6 +7,7 @@ import { GLYPHS } from "../../core/glyphs.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
+import { qualityField } from "../../core/graphicsFields.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { stingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
@@ -59,13 +60,20 @@ const FIELDS = [
   text("glyphs", "Zeichensatz (Regen, Entschlüsseln, Stinger)", RAIN, GLYPHS, 400),
   flag("rainScreens", "Regen in Starting/BRB/Ending", RAIN, true),
   flag("rainAlerts", "Regen in Alerts", RAIN, true),
-  number("rainSizeScreens", "Zeichengrösse (Szenen)", RAIN, 20, 6, 80, "px"),
-  number("rainSizeAlerts", "Zeichengrösse (Alerts)", RAIN, 14, 6, 80, "px"),
+  qualityField(RAIN),
+  number("rainSeed", "Startwert (anderes Muster)", RAIN, 1, 1, 9999),
+  number("rainLayers", "Tiefenebenen", RAIN, 3, 1, 3),
+  number("rainSizeFar", "Zeichengrösse fern", RAIN, 15, 6, 80, "px"),
+  number("rainSizeMid", "Zeichengrösse mittel", RAIN, 24, 6, 80, "px"),
+  number("rainSizeNear", "Zeichengrösse nah", RAIN, 36, 6, 80, "px"),
+  number("rainBlurFar", "Unschärfe fern", RAIN, 1.5, 0, 6, undefined, 0.1),
+  number("headGlow", "Leuchten der Köpfe", RAIN, 10, 0, 30),
+  number("glyphChange", "Zeichenwechsel in der Spur (je s)", RAIN, 3, 0, 30),
+  number("glyphChangeTip", "Zeichenwechsel an der Spitze (je s)", RAIN, 14, 0, 60),
   number("rainDensity", "Dichte", RAIN, 100, 0, 100, "%"),
   number("rainSpeed", "Geschwindigkeit", RAIN, 1, 0.1, 5, undefined, 0.1),
-  number("rainOpacityScreens", "Deckkraft (Szenen)", RAIN, 0.35, 0, 1, undefined, 0.01),
+  number("rainOpacityScreens", "Deckkraft (Szenen)", RAIN, 0.8, 0, 1, undefined, 0.01),
   number("rainOpacityAlerts", "Deckkraft (Alerts)", RAIN, 0.16, 0, 1, undefined, 0.01),
-  number("rainFps", "Bildrate", RAIN, 20, 1, 60),
 
   // Starting, BRB, Ending
   inScene("starting", text("startingTitle", "Titel Starting", SCREENS, "STREAM STARTET GLEICH")),
@@ -145,7 +153,10 @@ const FIELDS = [
   text("ticker", "Ticker-Text (leer = aus)", SCREENS, "", 500),
   text("tickerSeparator", "Ticker-Trenner", SCREENS, "   //   "),
   number("tickerSpeed", "Ticker-Durchlauf", SCREENS, 60, 5, 600, "s"),
-  choice("powerOn", "Einschalt-Animation", SCREENS, "zoom", ["zoom", "fade", "none"]),
+  choice("powerOn", "Einschalt-Animation", SCREENS, "crt", ["crt", "zoom", "fade", "none"]),
+  number("crtOnMs", "CRT einschalten (Dauer)", SCREENS, 600, 100, 5000, "ms"),
+  flag("glitchOn", "Glitch im Bild", SCREENS, true),
+  number("glitchEvery", "Glitch alle", SCREENS, 4.2, 1, 60, "s", 0.1),
   number("powerOnDuration", "Einschalt-Animation (Dauer)", SCREENS, 1600, 0, 10000, "ms"),
   number("frameWidth", "Rahmen-Breite", SCREENS, 1400, 400, 1920, "px"),
   number("frameHeight", "Rahmen-Höhe", SCREENS, 820, 300, 1080, "px"),

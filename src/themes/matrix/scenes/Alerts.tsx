@@ -1,7 +1,7 @@
 // Alert overlay, transparent. Recommended as browser source 1920x1080. Texts per alert kind, position, size, duration,
 // animations and sounds come from the settings. Texts, quote rule and sounds come from the alerts context of the core
 // (src/core/alerts), here only the keys of the texts and the matrix look. Parameters: ?sound=0, ?volume=0.5, ?demo
-import MatrixRain from "../MatrixRain.tsx";
+import Rain from "../pixi/Rain.tsx";
 import { ALERT_SOUND_KEYS, alertQuote, alertTextKeys, describeAlert } from "../../../core/alerts/alerts.ts";
 import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
 import type { Alert } from "../../../core/types.ts";
@@ -37,7 +37,7 @@ function AlertBox({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   return (
     <div className={`alert in-${values.alertIn} out-${values.alertOut}${leaving ? " leaving" : ""}`}>
       <div className="alert-body">
-        {values.rainAlerts && <MatrixRain size={values.rainSizeAlerts} opacity={values.rainOpacityAlerts} />}
+        {values.rainAlerts && <Rain opacity={values.rainOpacityAlerts} />}
         <div className="alert-head">{header}</div>
         <div className="alert-name glow glitch" data-text={name}>{name}</div>
         <div className="alert-line">{sub}</div>
