@@ -1,4 +1,4 @@
-// Vanilla Three.js helper of the Dachdecker clips (the stinger): clips render outside React, so they free their scene
+// Vanilla Three.js helper of the 3D clips (stingers, banners): clips render outside React, so they free their scene
 // themselves. Check: clipParts.check.ts.
 import { type BufferGeometry, LineSegments, type Material, Mesh, type Object3D } from "three";
 

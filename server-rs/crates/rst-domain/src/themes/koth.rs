@@ -382,6 +382,7 @@ fn stinger_banner() -> Vec<SettingField> {
         text("stingerText", "Text ({channel})", STINGER, "{channel}", None),
         flag("stingerFlag", "Flaggenwechsel", STINGER, true),
         color("smokeColor", "Rauch", STINGER, "#9ea3a0"),
+        number("stingerPuffs", "Rauchwolken", STINGER, 40.0, 10.0, 120.0, None, None),
         text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
         text("bannerProfileText", "Profilbanner: Text", BANNER, "Halte den Hügel.", None),
         text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Funkstille", None),

@@ -9,7 +9,7 @@ import {
   MeshBasicMaterial, MeshLambertMaterial, OrthographicCamera, Plane, PlaneGeometry, Scene, SRGBColorSpace, Vector3,
 } from "three";
 import type { GlSetup } from "../../core/three/glClip.ts";
-import { disposeAll } from "./clipParts.ts";
+import { disposeAll } from "../../core/three/clipParts.ts";
 import { rollAt, type RollTiming, STINGER_SIZE } from "./roll.ts";
 
 const WIDTH = STINGER_SIZE.width;

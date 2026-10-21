@@ -2149,6 +2149,15 @@
       "default": "#9ea3a0"
     },
     {
+      "key": "stingerPuffs",
+      "type": "number",
+      "label": "Rauchwolken",
+      "group": "Stinger",
+      "default": 40,
+      "min": 10,
+      "max": 120
+    },
+    {
       "key": "bannerTitle",
       "type": "text",
       "label": "Titel ({channel})",

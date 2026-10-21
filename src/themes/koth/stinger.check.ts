@@ -1,56 +1,47 @@
-// Check for stinger.ts of the KOTH theme: at the transition point the smoke covers the whole picture and the flag changes
-// color there, at the start and end nothing is visible, the same time gives the same draw commands. A mock canvas records
-// everything. Runs with npm test.
+// Check for stinger.ts of the KOTH theme: at the transition point the smoke wall covers the picture and the flag shows
+// the second faction, at the start the grenade rolls and nothing covers, at the end everything is clear, the same time
+// gives the same scene. Runs with npm test (no WebGL needed, only the scene graph).
 import assert from "node:assert/strict";
-import { drawKothStinger, HEIGHT, WIDTH, type KothStingerOptions } from "./stinger.ts";
-
-function recorder() {
-  const calls: unknown[][] = [];
-  const target: Record<string, unknown> = { measureText: () => ({ width: 10 }) };
-  const context = new Proxy(target, {
-    get: (object, key: string) => object[key] ?? ((...args: unknown[]) => { calls.push([key, ...args]); }),
-    set: (_, key: string, value) => { calls.push([`set ${key}`, value]); return true; },
-  });
-  const rects = () => calls.filter(call => call[0] === "fillRect").map(call => call.slice(1) as number[]);
-  const fills = () => calls.filter(call => call[0] === "set fillStyle").map(call => call[1]);
-  return { context: context as unknown as CanvasRenderingContext2D, calls, rects, fills };
-}
+import type { Mesh, MeshBasicMaterial, MeshLambertMaterial } from "three";
+import { type KothStingerOptions, stingerSetup } from "./stinger.ts";
 
 const options: KothStingerOptions = {
-  duration: 1.6, cut: 0.8, flag: true, text: "KOTH", font: "Black Ops One",
-  smoke: "#9ea3a0", flags: ["#2f6fd6", "#d63a2f"], pole: "#3c4146", textColor: "#f2f0e6",
+  duration: 1.6, cut: 0.8, flag: true, smoke: "#9ea3a0", flags: ["#2f6fd6", "#d63a2f"], pole: "#3c4146", grenade: "#4b5320", puffs: 24, seed: 3,
 };
+const setup = stingerSetup(options);
+const part = (name: string) => setup.scene.getObjectByName(name) as Mesh;
+const cover = () => (part("cover").material as MeshBasicMaterial).opacity;
+const cloth = () => part("cloth").material as MeshLambertMaterial;
 
-// At the transition point: one area over the whole picture, the text and the flag in the second color
-const atCut = recorder();
-drawKothStinger(atCut.context, options.cut, options);
-assert.ok(atCut.rects().some(([x, y, width, height]) => x <= 0 && x + width >= WIDTH && y <= 0 && height >= HEIGHT));
-assert.ok(atCut.calls.some(call => call[0] === "fillText" && call[1] === "KOTH"));
-assert.ok(atCut.fills().includes("#d63a2f"));
+// At the cut: covered, flag fully shown in the second faction color
+setup.update(options.cut);
+assert.equal(cover(), 1);
+assert.equal(cloth().opacity, 1);
+assert.equal(`#${cloth().color.getHexString()}`, "#d63a2f");
 
-// Shortly before: smoke puffs, the flag still in the first color
-const before = recorder();
-drawKothStinger(before.context, options.cut * 0.7, options);
-assert.ok(before.calls.some(call => call[0] === "arc"));
-assert.ok(before.fills().includes("#2f6fd6"));
+// At the start: the grenade rolls, nothing covers; shortly before the cut the first color
+setup.update(0.05);
+assert.equal(part("grenade").visible, true);
+assert.equal(cover(), 0);
+setup.update(0.7);
+assert.equal(`#${cloth().color.getHexString()}`, "#2f6fd6");
 
-// Without flag change no flag
-const plain = recorder();
-drawKothStinger(plain.context, options.cut, { ...options, flag: false });
-assert.ok(!plain.fills().includes("#d63a2f"));
+// At the end: clear
+setup.update(options.duration);
+assert.equal(cover(), 0);
+assert.equal(cloth().opacity, 0);
 
-// Nothing at the start and at the end
-for (const time of [0, options.duration]) {
-  const empty = recorder();
-  drawKothStinger(empty.context, time, options);
-  assert.ok(!empty.calls.some(call => call[0] === "arc" || call[0] === "fillRect" || call[0] === "fillText"), `t = ${time}`);
-}
+// Same time, same scene
+setup.update(0.5);
+const first = JSON.stringify(setup.scene.children.map(child => [child.position.toArray(), child.scale.toArray()]));
+setup.update(1.1);
+setup.update(0.5);
+assert.equal(JSON.stringify(setup.scene.children.map(child => [child.position.toArray(), child.scale.toArray()])), first);
 
-// Same time, same draw commands (no randomness)
-const first = recorder();
-const second = recorder();
-drawKothStinger(first.context, 0.37, options);
-drawKothStinger(second.context, 0.37, options);
-assert.deepEqual(first.calls, second.calls);
+// Without the flag change no flag
+const plain = stingerSetup({ ...options, flag: false });
+assert.equal(plain.scene.getObjectByName("cloth")?.parent?.visible, false);
+setup.dispose?.();
+plain.dispose?.();
 
 console.log("koth stinger ok");

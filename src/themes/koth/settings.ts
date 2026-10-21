@@ -295,6 +295,7 @@ const FIELDS = [
   text("stingerText", "Text ({channel})", STINGER, "{channel}"),
   flag("stingerFlag", "Flaggenwechsel", STINGER, true),
   color("smokeColor", "Rauch", STINGER, "#9ea3a0"),
+  number("stingerPuffs", "Rauchwolken", STINGER, 40, 10, 120),
 
   text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
   text("bannerProfileText", "Profilbanner: Text", BANNER, "Halte den Hügel."),

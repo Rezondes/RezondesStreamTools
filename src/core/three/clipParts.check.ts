@@ -1,4 +1,4 @@
-// Check for clipParts.ts of the Dachdecker theme: freeing a scene disposes the geometry and the materials of every mesh
+// Check for clipParts.ts: freeing a scene disposes the geometry and the materials of every mesh
 // and line set in it, also nested ones. Runs with npm test.
 import assert from "node:assert/strict";
 import { BoxGeometry, EdgesGeometry, Group, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial } from "three";
@@ -16,4 +16,4 @@ for (const part of [mesh.geometry, lines.geometry, ...[mesh.material].flat(), li
 disposeAll(scene);
 assert.deepEqual(freed.sort(), ["BoxGeometry", "EdgesGeometry", "LineBasicMaterial", "MeshBasicMaterial", "MeshBasicMaterial"]);
 
-console.log("dachdecker clipParts ok");
+console.log("clipParts ok");
