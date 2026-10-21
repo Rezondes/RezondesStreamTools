@@ -391,6 +391,310 @@
       "default": true
     },
     {
+      "key": "quality",
+      "type": "select",
+      "label": "Leistungsstufe 3D",
+      "group": "Welt",
+      "default": "mittel",
+      "options": [
+        "hoch",
+        "mittel",
+        "niedrig"
+      ]
+    },
+    {
+      "key": "worldSeed",
+      "type": "number",
+      "label": "Startwert der Welt",
+      "group": "Welt",
+      "default": 301,
+      "min": 1,
+      "max": 9999
+    },
+    {
+      "key": "skyTop",
+      "type": "color",
+      "label": "Himmel oben",
+      "group": "Welt",
+      "default": "#5d4a3a"
+    },
+    {
+      "key": "skyHorizon",
+      "type": "color",
+      "label": "Himmel am Horizont",
+      "group": "Welt",
+      "default": "#f3dcb0"
+    },
+    {
+      "key": "fogNear",
+      "type": "number",
+      "label": "Nebel ab (m)",
+      "group": "Welt",
+      "default": 50,
+      "min": 5,
+      "max": 400
+    },
+    {
+      "key": "fogFar",
+      "type": "number",
+      "label": "Nebel dicht ab (m)",
+      "group": "Welt",
+      "default": 210,
+      "min": 10,
+      "max": 600
+    },
+    {
+      "key": "sunColor",
+      "type": "color",
+      "label": "Sonnenlicht",
+      "group": "Welt",
+      "default": "#ffd29a"
+    },
+    {
+      "key": "bloomStrength",
+      "type": "number",
+      "label": "Leuchten (Bloom)",
+      "group": "Welt",
+      "default": 0.55,
+      "min": 0,
+      "max": 2,
+      "step": 0.05
+    },
+    {
+      "key": "shadows",
+      "type": "boolean",
+      "label": "Schatten",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "hillHeight",
+      "type": "number",
+      "label": "Hügelhöhe (m)",
+      "group": "Welt",
+      "default": 7.2,
+      "min": 2,
+      "max": 14,
+      "step": 0.1
+    },
+    {
+      "key": "sandColor",
+      "type": "color",
+      "label": "Sand am Fuss",
+      "group": "Welt",
+      "default": "#b9a06a"
+    },
+    {
+      "key": "mastHeight",
+      "type": "number",
+      "label": "Funkmast: Höhe (m)",
+      "group": "Lager",
+      "default": 9.5,
+      "min": 4,
+      "max": 20,
+      "step": 0.1
+    },
+    {
+      "key": "mastWires",
+      "type": "boolean",
+      "label": "Funkmast: Abspannseile",
+      "group": "Lager",
+      "default": true
+    },
+    {
+      "key": "mastDish",
+      "type": "boolean",
+      "label": "Funkmast: Schüssel und Plattform",
+      "group": "Lager",
+      "default": true
+    },
+    {
+      "key": "beaconEvery",
+      "type": "number",
+      "label": "Funkmast: Blinken alle",
+      "group": "Lager",
+      "default": 1.4,
+      "min": 0.3,
+      "max": 10,
+      "unit": "s",
+      "step": 0.1
+    },
+    {
+      "key": "flagFaction",
+      "type": "select",
+      "label": "Flagge: Fraktion",
+      "group": "Lager",
+      "default": "blufor",
+      "options": [
+        "blufor",
+        "opfor",
+        "indfor"
+      ]
+    },
+    {
+      "key": "flagSize",
+      "type": "number",
+      "label": "Flagge: Länge (m)",
+      "group": "Lager",
+      "default": 2.8,
+      "min": 1,
+      "max": 6,
+      "step": 0.1
+    },
+    {
+      "key": "flagWind",
+      "type": "number",
+      "label": "Flagge: Wind",
+      "group": "Lager",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "bunkerOn",
+      "type": "boolean",
+      "label": "Bunker",
+      "group": "Lager",
+      "default": true
+    },
+    {
+      "key": "tents",
+      "type": "number",
+      "label": "Zelte",
+      "group": "Lager",
+      "default": 2,
+      "min": 0,
+      "max": 6
+    },
+    {
+      "key": "crateStacks",
+      "type": "number",
+      "label": "Kistenstapel",
+      "group": "Lager",
+      "default": 3,
+      "min": 0,
+      "max": 8
+    },
+    {
+      "key": "fenceOn",
+      "type": "boolean",
+      "label": "Stacheldrahtzaun",
+      "group": "Lager",
+      "default": true
+    },
+    {
+      "key": "trees",
+      "type": "number",
+      "label": "Kiefern",
+      "group": "Lager",
+      "default": 46,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "rocks",
+      "type": "number",
+      "label": "Felsen",
+      "group": "Lager",
+      "default": 30,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "jeepOn",
+      "type": "boolean",
+      "label": "Jeep",
+      "group": "Lager",
+      "default": true
+    },
+    {
+      "key": "helicopterOn",
+      "type": "boolean",
+      "label": "Hubschrauber",
+      "group": "Lager",
+      "default": true
+    },
+    {
+      "key": "markerFlagsOn",
+      "type": "boolean",
+      "label": "Fähnchen der anderen Fraktionen",
+      "group": "Lager",
+      "default": true
+    },
+    {
+      "key": "smokeColumns",
+      "type": "number",
+      "label": "Rauchsäulen",
+      "group": "Lager",
+      "default": 3,
+      "min": 0,
+      "max": 6
+    },
+    {
+      "key": "smokeAmount",
+      "type": "number",
+      "label": "Rauch: Wolken je Säule",
+      "group": "Lager",
+      "default": 22,
+      "min": 4,
+      "max": 60
+    },
+    {
+      "key": "dustAmount",
+      "type": "number",
+      "label": "Staub im Licht (Körner)",
+      "group": "Lager",
+      "default": 300,
+      "min": 0,
+      "max": 2000
+    },
+    {
+      "key": "cameraIntro",
+      "type": "boolean",
+      "label": "Kamerafahrt am Anfang",
+      "group": "Kamera",
+      "default": true
+    },
+    {
+      "key": "cameraRadius",
+      "type": "number",
+      "label": "Abstand (m)",
+      "group": "Kamera",
+      "default": 40,
+      "min": 10,
+      "max": 120
+    },
+    {
+      "key": "cameraHeight",
+      "type": "number",
+      "label": "Höhe (m)",
+      "group": "Kamera",
+      "default": 12,
+      "min": 2,
+      "max": 60
+    },
+    {
+      "key": "cameraSpeed",
+      "type": "number",
+      "label": "Kreisen: Tempo",
+      "group": "Kamera",
+      "default": 0.045,
+      "min": 0,
+      "max": 0.5,
+      "step": 0.005
+    },
+    {
+      "key": "buildSpeed",
+      "type": "number",
+      "label": "Aufbau: Tempo",
+      "group": "Kamera",
+      "default": 1,
+      "min": 0.25,
+      "max": 4,
+      "step": 0.05
+    },
+    {
       "key": "startingEyebrow",
       "type": "text",
       "label": "Starting: Überzeile",
@@ -683,6 +987,51 @@
       "min": 0,
       "max": 10000,
       "unit": "ms"
+    },
+    {
+      "key": "briefingMapOn",
+      "type": "boolean",
+      "label": "Starting: Lagekarte",
+      "group": "Starting, BRB, Ending",
+      "default": true,
+      "scene": "starting"
+    },
+    {
+      "key": "briefingLabel",
+      "type": "text",
+      "label": "Starting: Lagekarte Beschriftung",
+      "group": "Starting, BRB, Ending",
+      "default": "LAGEKARTE  M 1:25 000",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "briefingTarget",
+      "type": "text",
+      "label": "Starting: Lagekarte Ziel",
+      "group": "Starting, BRB, Ending",
+      "default": "ZIEL: HÜGEL 301",
+      "maxLength": 200,
+      "scene": "starting"
+    },
+    {
+      "key": "radioLinesOn",
+      "type": "boolean",
+      "label": "Starting: Funkzeilen",
+      "group": "Starting, BRB, Ending",
+      "default": true,
+      "scene": "starting"
+    },
+    {
+      "key": "radioStaticMs",
+      "type": "number",
+      "label": "Starting: Rauschen zwischen Funkzeilen",
+      "group": "Starting, BRB, Ending",
+      "default": 350,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms",
+      "scene": "starting"
     },
     {
       "key": "alertStyle",
@@ -2925,6 +3274,15 @@
     ],
     "Effekte": [
       "fx"
+    ],
+    "Welt": [
+      "starting"
+    ],
+    "Lager": [
+      "starting"
+    ],
+    "Kamera": [
+      "starting"
     ],
     "Stinger": [],
     "Banner": [],

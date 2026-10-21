@@ -1,4 +1,4 @@
-// Soft round dot for smoke and sparks of the Dachdecker theme: a white radial fade on a small canvas, tinted by the
+// Soft round dot for smoke, dust and sparks of 3D scenes: a white radial fade on a small canvas, tinted by the
 // material color. Drawn once per scene and freed with it.
 import { CanvasTexture } from "three";
 

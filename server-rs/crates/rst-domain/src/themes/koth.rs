@@ -14,6 +14,7 @@ use crate::settings::field::{
     text, with_defaults,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
+use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{
     MEDIC, MINIME_COMBAT, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_TEAMS, MINIME_VARIANTS, minime_aim_key,
@@ -37,6 +38,9 @@ const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
 const BANNER: &str = "Banner";
+const WORLD: &str = "Welt";
+const CAMP: &str = "Lager";
+const CAMERA: &str = "Kamera";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 
@@ -122,6 +126,47 @@ fn hill() -> Vec<SettingField> {
     ]
 }
 
+/// 3D world, camp and camera (PLAN-KOTH.md package 2)
+fn world() -> Vec<SettingField> {
+    vec![
+        quality_field(WORLD),
+        number("worldSeed", "Startwert der Welt", WORLD, 301.0, 1.0, 9999.0, None, None),
+        color("skyTop", "Himmel oben", WORLD, "#5d4a3a"),
+        color("skyHorizon", "Himmel am Horizont", WORLD, "#f3dcb0"),
+        number("fogNear", "Nebel ab (m)", WORLD, 50.0, 5.0, 400.0, None, None),
+        number("fogFar", "Nebel dicht ab (m)", WORLD, 210.0, 10.0, 600.0, None, None),
+        color("sunColor", "Sonnenlicht", WORLD, "#ffd29a"),
+        number("bloomStrength", "Leuchten (Bloom)", WORLD, 0.55, 0.0, 2.0, None, Some(0.05)),
+        flag("shadows", "Schatten", WORLD, true),
+        number("hillHeight", "Hügelhöhe (m)", WORLD, 7.2, 2.0, 14.0, None, Some(0.1)),
+        color("sandColor", "Sand am Fuss", WORLD, "#b9a06a"),
+        number("mastHeight", "Funkmast: Höhe (m)", CAMP, 9.5, 4.0, 20.0, None, Some(0.1)),
+        flag("mastWires", "Funkmast: Abspannseile", CAMP, true),
+        flag("mastDish", "Funkmast: Schüssel und Plattform", CAMP, true),
+        number("beaconEvery", "Funkmast: Blinken alle", CAMP, 1.4, 0.3, 10.0, S, Some(0.1)),
+        choice("flagFaction", "Flagge: Fraktion", CAMP, "blufor", &["blufor", "opfor", "indfor"]),
+        number("flagSize", "Flagge: Länge (m)", CAMP, 2.8, 1.0, 6.0, None, Some(0.1)),
+        number("flagWind", "Flagge: Wind", CAMP, 1.0, 0.0, 3.0, None, Some(0.1)),
+        flag("bunkerOn", "Bunker", CAMP, true),
+        number("tents", "Zelte", CAMP, 2.0, 0.0, 6.0, None, None),
+        number("crateStacks", "Kistenstapel", CAMP, 3.0, 0.0, 8.0, None, None),
+        flag("fenceOn", "Stacheldrahtzaun", CAMP, true),
+        number("trees", "Kiefern", CAMP, 46.0, 0.0, 200.0, None, None),
+        number("rocks", "Felsen", CAMP, 30.0, 0.0, 200.0, None, None),
+        flag("jeepOn", "Jeep", CAMP, true),
+        flag("helicopterOn", "Hubschrauber", CAMP, true),
+        flag("markerFlagsOn", "Fähnchen der anderen Fraktionen", CAMP, true),
+        number("smokeColumns", "Rauchsäulen", CAMP, 3.0, 0.0, 6.0, None, None),
+        number("smokeAmount", "Rauch: Wolken je Säule", CAMP, 22.0, 4.0, 60.0, None, None),
+        number("dustAmount", "Staub im Licht (Körner)", CAMP, 300.0, 0.0, 2000.0, None, None),
+        flag("cameraIntro", "Kamerafahrt am Anfang", CAMERA, true),
+        number("cameraRadius", "Abstand (m)", CAMERA, 40.0, 10.0, 120.0, None, None),
+        number("cameraHeight", "Höhe (m)", CAMERA, 12.0, 2.0, 60.0, None, None),
+        number("cameraSpeed", "Kreisen: Tempo", CAMERA, 0.045, 0.0, 0.5, None, Some(0.005)),
+        number("buildSpeed", "Aufbau: Tempo", CAMERA, 1.0, 0.25, 4.0, None, Some(0.05)),
+    ]
+}
+
 fn screens() -> Vec<SettingField> {
     let starting = |field: SettingField| in_scene(SceneName::Starting, field);
     let brb = |field: SettingField| in_scene(SceneName::Brb, field);
@@ -179,6 +224,20 @@ fn screens() -> Vec<SettingField> {
         number("tickerSpeed", "Ticker: Zeit pro Durchlauf", SCREENS, 30.0, 5.0, 300.0, S, None),
         choice("powerOn", "Einschalten", SCREENS, "funkspruch", &["funkspruch", "blenden", "keins"]),
         number("powerOnDuration", "Einschalten (Dauer)", SCREENS, 1600.0, 0.0, 10000.0, MS, None),
+        starting(flag("briefingMapOn", "Starting: Lagekarte", SCREENS, true)),
+        starting(text("briefingLabel", "Starting: Lagekarte Beschriftung", SCREENS, "LAGEKARTE  M 1:25 000", None)),
+        starting(text("briefingTarget", "Starting: Lagekarte Ziel", SCREENS, "ZIEL: HÜGEL 301", None)),
+        starting(flag("radioLinesOn", "Starting: Funkzeilen", SCREENS, true)),
+        starting(number(
+            "radioStaticMs",
+            "Starting: Rauschen zwischen Funkzeilen",
+            SCREENS,
+            350.0,
+            0.0,
+            3000.0,
+            MS,
+            None,
+        )),
     ]
 }
 
@@ -364,6 +423,7 @@ fn fields() -> Vec<SettingField> {
     [
         general(),
         hill(),
+        world(),
         screens(),
         alerts(),
         chat_cam_music_fx(),
@@ -386,6 +446,9 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (CAM, vec![SceneName::Cam]),
         (MUSIC, vec![SceneName::Music]),
         (FX, vec![SceneName::Fx]),
+        (WORLD, vec![SceneName::Starting]),
+        (CAMP, vec![SceneName::Starting]),
+        (CAMERA, vec![SceneName::Starting]),
         (STINGER, vec![]),
         (BANNER, vec![]),
         (MINIME_COMMANDS, vec![SceneName::Minimes]),

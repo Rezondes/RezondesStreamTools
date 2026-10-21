@@ -6,7 +6,7 @@ import { type Sprite, SpriteMaterial } from "three";
 import type { Point3 } from "../../../core/three/beam.ts";
 import { puff } from "../house.ts";
 import type { BuildClock } from "../schedule.ts";
-import { softTexture } from "./softTexture.ts";
+import { softTexture } from "../../../core/three/softTexture.ts";
 
 type Props = { base: Point3; count: number; clock: BuildClock; seed: number; color: string };
 

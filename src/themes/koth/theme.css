@@ -248,3 +248,42 @@
 .theme-koth .kh-info-entry { display: grid; gap: var(--info-detail-gap, 2px); padding-left: var(--info-indent, 14px); border-left: var(--info-bar, 4px) solid var(--olive); }
 .theme-koth .kh-info-command { color: var(--accent); font-family: "Share Tech Mono", monospace; font-size: 1.2em; }
 .theme-koth .kh-info-detail { opacity: 0.8; font-size: 0.9em; }
+
+/* --- Starting in 3D (PLAN-KOTH.md package 2): the briefing on top of the 3D world, laid out on the 1920x1080 stage; every
+   reveal comes from the clock of the scene as inline opacity and transform ------------------------------------------- */
+.theme-koth .kh-starting { background: var(--skyHorizon); }
+.theme-koth .kh-starting .stage-box canvas { display: block; }
+.theme-koth .kh-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, color-mix(in srgb, var(--oliveDark) 88%, black) 0%, color-mix(in srgb, var(--oliveDark) 45%, transparent) 22%, transparent 40%), radial-gradient(ellipse at 50% 45%, transparent 55%, color-mix(in srgb, black 55%, transparent) 100%); }
+.theme-koth .kh-briefing { position: absolute; --edge: var(--briefing-edge, 72px); --mono: "Share Tech Mono", monospace; --plate-dark: color-mix(in srgb, var(--steel) 50%, black); }
+.theme-koth .kh-head { position: absolute; left: var(--edge); top: var(--head-top, 60px); margin: 0; font-family: var(--mono); font-size: var(--head-size, 20px); letter-spacing: var(--head-spacing, 5px); text-transform: uppercase; color: var(--accent2); text-shadow: 0 0 var(--head-glow, 8px) color-mix(in srgb, var(--accent2) 60%, transparent); white-space: pre; }
+.theme-koth .kh-head b { font-weight: 400; color: var(--accent); text-shadow: 0 0 var(--head-glow, 8px) color-mix(in srgb, var(--accent) 70%, transparent); }
+.theme-koth .kh-briefing .kh-clock { top: var(--clock-top-3d, 46px); right: var(--edge); }
+.theme-koth .kh-briefing-map { position: absolute; left: var(--edge); top: var(--map-top, 120px); width: var(--map-width, 420px); height: var(--map-height, 300px); background-color: var(--paper); box-shadow: 0 var(--map-shadow-y, 18px) var(--map-shadow-blur, 40px) color-mix(in srgb, black 45%, transparent); }
+.theme-koth .kh-briefing-map.grid { --line: color-mix(in srgb, var(--ink) 12%, transparent); background-image: linear-gradient(var(--line) var(--grid-line, 1px), transparent var(--grid-line, 1px)), linear-gradient(90deg, var(--line) var(--grid-line, 1px), transparent var(--grid-line, 1px)); background-size: var(--grid-size, 30px) var(--grid-size, 30px); }
+.theme-koth .kh-briefing-map::before, .theme-koth .kh-briefing-map::after { content: ""; position: absolute; top: var(--tape-top, -14px); width: var(--tape-width, 110px); height: var(--tape-height, 30px); background: color-mix(in srgb, var(--sand) 85%, transparent); }
+.theme-koth .kh-briefing-map::before { left: var(--tape-inset, 20px); rotate: -6deg; }
+.theme-koth .kh-briefing-map::after { right: var(--tape-inset, 20px); rotate: 5deg; }
+.theme-koth .kh-briefing-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.theme-koth .kh-contours path { fill: none; stroke: color-mix(in srgb, var(--ink) 75%, var(--olive)); stroke-width: 1.6; opacity: 0.7; }
+.theme-koth .kh-route { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.theme-koth .kh-objective { fill: none; stroke: var(--towerBlink); stroke-width: 3.5; }
+.theme-koth .kh-target { font-family: var(--mono); font-size: var(--target-size, 16px); fill: var(--ink); }
+.theme-koth .kh-map-label { position: absolute; left: var(--label-left, 16px); bottom: var(--label-bottom, 10px); margin: 0; font-family: var(--mono); font-size: var(--label-size, 15px); letter-spacing: var(--label-spacing, 2px); color: var(--ink); white-space: pre; }
+.theme-koth .kh-stencil { position: absolute; left: 0; right: 0; top: var(--stencil-top, 700px); margin: 0; text-align: center; font-family: var(--titleFont), sans-serif; font-weight: 400; font-size: var(--stencil-size, 92px); letter-spacing: var(--stencil-spacing, 6px); text-transform: uppercase; color: var(--textColor); text-shadow: 0 var(--stencil-drop, 4px) 0 color-mix(in srgb, black 35%, transparent), 0 0 var(--stencil-glow, 30px) color-mix(in srgb, black 60%, transparent); }
+.theme-koth .kh-stencil span { display: inline-block; white-space: pre; }
+.theme-koth .kh-radio-display { --width: var(--display-width, 640px); position: absolute; left: calc(50% - var(--width) / 2); top: var(--display-top, 822px); width: var(--width); height: var(--display-height, 120px); box-sizing: border-box; padding: var(--display-padding-3d, 14px 22px); background: linear-gradient(color-mix(in srgb, var(--steel) 80%, white), var(--steel)); border: var(--display-border, 2px) solid var(--plate-dark); border-radius: var(--display-radius, 6px); box-shadow: inset 0 var(--display-shine, 1px) 0 color-mix(in srgb, white 20%, transparent), 0 var(--display-shadow-y, 20px) var(--display-shadow-blur, 40px) color-mix(in srgb, black 55%, transparent); }
+.theme-koth .kh-rivet { --inset: var(--rivet-inset, 6px); position: absolute; width: var(--rivet-size, 8px); height: var(--rivet-size, 8px); border-radius: 50%; background: color-mix(in srgb, var(--steel) 60%, black); box-shadow: inset 0 var(--display-shine, 1px) 0 color-mix(in srgb, white 30%, transparent); }
+.theme-koth .kh-rivet.top-left { left: var(--inset); top: var(--inset); }
+.theme-koth .kh-rivet.top-right { right: var(--inset); top: var(--inset); }
+.theme-koth .kh-rivet.bottom-left { left: var(--inset); bottom: var(--inset); }
+.theme-koth .kh-rivet.bottom-right { right: var(--inset); bottom: var(--inset); }
+.theme-koth .kh-radio-screen { position: relative; display: flex; align-items: center; justify-content: center; height: var(--screen-height, 88px); overflow: hidden; border-radius: var(--screen-radius, 3px); background: color-mix(in srgb, var(--accent2) calc(var(--flash, 0) * 100%), color-mix(in srgb, var(--oliveDark) 30%, black)); box-shadow: inset 0 0 var(--screen-depth, 22px) color-mix(in srgb, black 90%, transparent); }
+.theme-koth .kh-radio-screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(transparent 0 var(--scanline-gap, 3px), color-mix(in srgb, black 28%, transparent) var(--scanline-gap, 3px) var(--scanline-step, 4px)); }
+.theme-koth .kh-radio-count { font-family: var(--mono); font-weight: 400; font-size: var(--count-size, 76px); letter-spacing: var(--count-spacing, 6px); color: var(--accent2); font-variant-numeric: tabular-nums; text-shadow: 0 0 var(--count-glow, 12px) color-mix(in srgb, var(--accent2) 85%, transparent), 0 0 var(--count-halo, 34px) color-mix(in srgb, var(--accent2) 35%, transparent); }
+.theme-koth .kh-radio-line { position: absolute; left: 0; right: 0; top: var(--radio-top, 958px); min-height: var(--radio-height, 30px); margin: 0; text-align: center; font-family: var(--mono); font-size: var(--radio-size, 26px); letter-spacing: var(--radio-spacing, 2px); text-transform: uppercase; color: var(--accent2); opacity: 0.9; white-space: pre; }
+.theme-koth .kh-radio-line.noise { opacity: 0.55; }
+.theme-koth .kh-factions { position: absolute; right: var(--edge); bottom: var(--factions-bottom, 48px); display: flex; gap: var(--factions-gap, 10px); font-weight: 600; font-size: var(--factions-size, 15px); letter-spacing: var(--factions-spacing, 2px); text-transform: uppercase; }
+.theme-koth .kh-factions span { padding: var(--faction-padding, 6px 12px); border-radius: var(--faction-radius, 3px); color: var(--textColor); }
+.theme-koth .kh-warning-stripes { --dark: color-mix(in srgb, var(--oliveDark) 40%, black); position: absolute; left: 0; right: 0; bottom: 0; height: var(--stripes-height, 1.7vh); background: var(--dark); }
+.theme-koth .kh-warning-stripes i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--part, 0) * 100%); background: repeating-linear-gradient(-45deg, var(--accent) 0 var(--stripe-3d, 18px), var(--dark) var(--stripe-3d, 18px) var(--stripes-step, 36px)); }
+.theme-koth .kh-starting .kh-ticker { bottom: var(--stripes-height, 1.7vh); }

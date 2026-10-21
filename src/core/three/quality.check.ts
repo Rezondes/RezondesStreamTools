@@ -3,9 +3,9 @@ import assert from "node:assert/strict";
 import { clampBloom, MAX_BLOOM, particleCount, quality, QUALITIES } from "./quality.ts";
 
 assert.deepEqual(QUALITIES, ["hoch", "mittel", "niedrig"]);
-assert.deepEqual(quality("niedrig"), { pixelRatio: 0.75, bloom: false, antialias: false, particles: 0.4 });
-assert.deepEqual(quality("mittel"), { pixelRatio: 1, bloom: true, antialias: false, particles: 0.7 });
-assert.deepEqual(quality("hoch"), { pixelRatio: 1, bloom: true, antialias: true, particles: 1 });
+assert.deepEqual(quality("niedrig"), { pixelRatio: 0.75, bloom: false, antialias: false, shadows: false, particles: 0.4 });
+assert.deepEqual(quality("mittel"), { pixelRatio: 1, bloom: true, antialias: false, shadows: true, particles: 0.7 });
+assert.deepEqual(quality("hoch"), { pixelRatio: 1, bloom: true, antialias: true, shadows: true, particles: 1 });
 assert.deepEqual(quality("ultra"), quality("mittel"));
 
 assert.equal(clampBloom(5), MAX_BLOOM);

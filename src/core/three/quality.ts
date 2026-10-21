@@ -3,12 +3,12 @@
 export const QUALITIES = ["hoch", "mittel", "niedrig"] as const;
 export type Quality = (typeof QUALITIES)[number];
 
-export type QualitySettings = { pixelRatio: number; bloom: boolean; antialias: boolean; particles: number };
+export type QualitySettings = { pixelRatio: number; bloom: boolean; antialias: boolean; shadows: boolean; particles: number };
 
 const LEVELS: Record<Quality, QualitySettings> = {
-  hoch: { pixelRatio: 1, bloom: true, antialias: true, particles: 1 },
-  mittel: { pixelRatio: 1, bloom: true, antialias: false, particles: 0.7 },
-  niedrig: { pixelRatio: 0.75, bloom: false, antialias: false, particles: 0.4 },
+  hoch: { pixelRatio: 1, bloom: true, antialias: true, shadows: true, particles: 1 },
+  mittel: { pixelRatio: 1, bloom: true, antialias: false, shadows: true, particles: 0.7 },
+  niedrig: { pixelRatio: 0.75, bloom: false, antialias: false, shadows: false, particles: 0.4 },
 };
 
 // Unknown values (old settings) fall back to the middle level

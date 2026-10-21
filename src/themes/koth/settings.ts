@@ -7,6 +7,7 @@ import {
   MINIME_BASE_FIELDS, MINIME_COMBAT, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_TEAMS, MINIME_VARIANTS, minimeAimKey, minimeCombatFields,
   minimeFireKey, minimeTeamFields, minimeVariantFields,
 } from "../../core/minimeFields.ts";
+import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
@@ -31,6 +32,9 @@ const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
 const BANNER = "Banner";
+const WORLD = "Welt";
+const CAMP = "Lager";
+const CAMERA = "Kamera";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
 
@@ -44,6 +48,8 @@ export const TEAM_SET: MinimeVariantSet = {
     { id: "indfor", label: "INDFOR", names: ["gruen", "green", "indfor", "independent"], color: "#3a9a3a" },
   ],
 };
+
+const TEAM_IDS = TEAM_SET.variants.map(variant => variant.id);
 
 // Soldiers stand on fixed places at the hill and do not wander off (core fields with own defaults)
 const MINIME_FIELDS = withDefaults(MINIME_BASE_FIELDS, { minimePlacement: "slots", minimeWalkWeight: 0 });
@@ -96,6 +102,46 @@ const FIELDS = [
   number("dustCount", "Anzahl Staubkörner", HILL, 14, 0, 40),
   flag("hillName", "Kanal-Name am Hügel", HILL, true),
 
+  // 3D world (PLAN-KOTH.md package 2); colors of hill, mountains and beacon and the switches of tower, sandbags, smoke and
+  // dust come from the group Hügel
+  qualityField(WORLD),
+  number("worldSeed", "Startwert der Welt", WORLD, 301, 1, 9999),
+  color("skyTop", "Himmel oben", WORLD, "#5d4a3a"),
+  color("skyHorizon", "Himmel am Horizont", WORLD, "#f3dcb0"),
+  number("fogNear", "Nebel ab (m)", WORLD, 50, 5, 400),
+  number("fogFar", "Nebel dicht ab (m)", WORLD, 210, 10, 600),
+  color("sunColor", "Sonnenlicht", WORLD, "#ffd29a"),
+  number("bloomStrength", "Leuchten (Bloom)", WORLD, 0.55, 0, 2, undefined, 0.05),
+  flag("shadows", "Schatten", WORLD, true),
+  number("hillHeight", "Hügelhöhe (m)", WORLD, 7.2, 2, 14, undefined, 0.1),
+  color("sandColor", "Sand am Fuss", WORLD, "#b9a06a"),
+  number("mastHeight", "Funkmast: Höhe (m)", CAMP, 9.5, 4, 20, undefined, 0.1),
+  flag("mastWires", "Funkmast: Abspannseile", CAMP, true),
+  flag("mastDish", "Funkmast: Schüssel und Plattform", CAMP, true),
+  number("beaconEvery", "Funkmast: Blinken alle", CAMP, 1.4, 0.3, 10, "s", 0.1),
+  choice("flagFaction", "Flagge: Fraktion", CAMP, "blufor", TEAM_IDS),
+  number("flagSize", "Flagge: Länge (m)", CAMP, 2.8, 1, 6, undefined, 0.1),
+  number("flagWind", "Flagge: Wind", CAMP, 1, 0, 3, undefined, 0.1),
+  flag("bunkerOn", "Bunker", CAMP, true),
+  number("tents", "Zelte", CAMP, 2, 0, 6),
+  number("crateStacks", "Kistenstapel", CAMP, 3, 0, 8),
+  flag("fenceOn", "Stacheldrahtzaun", CAMP, true),
+  // fixed: at most 200 pines and rocks, more costs too much on weak PCs
+  number("trees", "Kiefern", CAMP, 46, 0, 200),
+  number("rocks", "Felsen", CAMP, 30, 0, 200),
+  flag("jeepOn", "Jeep", CAMP, true),
+  flag("helicopterOn", "Hubschrauber", CAMP, true),
+  flag("markerFlagsOn", "Fähnchen der anderen Fraktionen", CAMP, true),
+  number("smokeColumns", "Rauchsäulen", CAMP, 3, 0, 6),
+  number("smokeAmount", "Rauch: Wolken je Säule", CAMP, 22, 4, 60),
+  // fixed: at most 2000 grains of dust
+  number("dustAmount", "Staub im Licht (Körner)", CAMP, 300, 0, 2000),
+  flag("cameraIntro", "Kamerafahrt am Anfang", CAMERA, true),
+  number("cameraRadius", "Abstand (m)", CAMERA, 40, 10, 120),
+  number("cameraHeight", "Höhe (m)", CAMERA, 12, 2, 60),
+  number("cameraSpeed", "Kreisen: Tempo", CAMERA, 0.045, 0, 0.5, undefined, 0.005),
+  number("buildSpeed", "Aufbau: Tempo", CAMERA, 1, 0.25, 4, undefined, 0.05),
+
   inScene("starting", text("startingEyebrow", "Starting: Überzeile", SCREENS, "Einsatzbesprechung")),
   inScene("starting", text("startingTitle", "Starting: Titel", SCREENS, "Stream startet gleich")),
   inScene("starting", text("startingNote", "Starting: Untertitel", SCREENS, "Alle Einheiten sammeln sich am Hügel.")),
@@ -125,6 +171,11 @@ const FIELDS = [
   number("tickerSpeed", "Ticker: Zeit pro Durchlauf", SCREENS, 30, 5, 300, "s"),
   choice("powerOn", "Einschalten", SCREENS, "funkspruch", ["funkspruch", "blenden", "keins"]),
   number("powerOnDuration", "Einschalten (Dauer)", SCREENS, 1600, 0, 10000, "ms"),
+  inScene("starting", flag("briefingMapOn", "Starting: Lagekarte", SCREENS, true)),
+  inScene("starting", text("briefingLabel", "Starting: Lagekarte Beschriftung", SCREENS, "LAGEKARTE  M 1:25 000")),
+  inScene("starting", text("briefingTarget", "Starting: Lagekarte Ziel", SCREENS, "ZIEL: HÜGEL 301")),
+  inScene("starting", flag("radioLinesOn", "Starting: Funkzeilen", SCREENS, true)),
+  inScene("starting", number("radioStaticMs", "Starting: Rauschen zwischen Funkzeilen", SCREENS, 350, 0, 3000, "ms")),
 
   choice("alertStyle", "Stil", ALERTS, "funk", ["funk", "akte", "schild"]),
   text("alertCallsign", "Rufzeichen ({channel})", ALERTS, "{channel} an alle"),
@@ -287,6 +338,9 @@ const GROUP_SCENES = {
   [CAM]: ["cam"],
   [MUSIC]: ["music"],
   [FX]: ["fx"],
+  [WORLD]: ["starting"],
+  [CAMP]: ["starting"],
+  [CAMERA]: ["starting"],
   [STINGER]: [],
   [BANNER]: [],
   [MINIME_COMMANDS]: ["minimes"],

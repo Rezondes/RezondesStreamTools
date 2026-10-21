@@ -6,7 +6,7 @@ import { useEffect, useMemo } from "react";
 import { AdditiveBlending, BufferAttribute, BufferGeometry, Points, PointsMaterial } from "three";
 import { BURST_LIFE, bursts } from "../fireworks.ts";
 import type { BuildClock } from "../schedule.ts";
-import { softTexture } from "./softTexture.ts";
+import { softTexture } from "../../../core/three/softTexture.ts";
 
 type Props = { clock: BuildClock; seed: number; start: number; every: number; sparks: number; colors: readonly string[] };
 

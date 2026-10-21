@@ -9,14 +9,14 @@ import { DEMO_FIRST_LOGIN } from "../../../core/demo.ts";
 import { useMinimes, type MinimeCombatScene } from "../../../core/hooks/useMinimes.ts";
 import { actorRun, actorStyle, shownTeam, teamCounts, type MinimeAction, type MinimeActor } from "../../../core/minimeBehavior.ts";
 import { shownRole } from "../../../core/minimeCombat.ts";
-import { minimeTeamColorKey, minimeTeamLabelKey, readMinimeOptions } from "../../../core/minimeFields.ts";
+import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import { params } from "../../../core/params.ts";
 import { fillTemplate } from "../../../core/template.ts";
-import { TEAM_SET, type KothValues } from "../settings.ts";
+import { TEAM_SET } from "../settings.ts";
 import Soldier from "../Soldier.tsx";
 import { EXPLOSIVE, hillState, ROLE_SET } from "../soldiers.ts";
 import { COMBAT_TONES } from "../tones.ts";
-import { useKoth } from "../useKoth.ts";
+import { teamColor, teamLabel, useKoth } from "../useKoth.ts";
 import "../minimes.css";
 
 const DEMO = params.has("demo");
@@ -26,8 +26,6 @@ const COMBAT: MinimeCombatScene = { roles: ROLE_SET, teams: TEAM_SET, explosive:
 // fixed: dust puffs when a soldier is hit
 const PUFFS = 6;
 
-const teamColor = (values: KothValues, team: string) => String((values as Record<string, unknown>)[minimeTeamColorKey(team)]);
-const teamLabel = (values: KothValues, team: string) => String((values as Record<string, unknown>)[minimeTeamLabelKey(team)]);
 
 export default function Minimes() {
   const values = useKoth();
