@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>KOTH Alert 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Inter:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrambleTextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/TextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/" } }</script>
+<style>
+  :root { --text: #f2f0e6; --steel: #3c4146; --signal: #ff8a1f; --radio: #7cff6b; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; font-family: Inter, sans-serif; color: var(--text); }
+  /* preview only: checker stands for the transparent overlay over a game */
+  body { background: repeating-conic-gradient(#3a3d44 0 25%, #33363c 0 50%) 0 0 / 40px 40px; }
+  canvas { position: absolute; inset: 0; }
+  .radio { position: absolute; left: 700px; top: 96px; width: 760px; box-sizing: border-box; padding: 18px 22px 22px; border-radius: 8px;
+           background: linear-gradient(#5a6066, #3a3f44 60%, #2e3236); border: 2px solid #1c1f22;
+           box-shadow: inset 0 1px 0 rgba(255,255,255,.22), inset 0 -3px 0 rgba(0,0,0,.35), 0 26px 50px rgba(0,0,0,.55); }
+  .radio .bar { display: flex; justify-content: space-between; align-items: center; font: 400 16px "Share Tech Mono", monospace; letter-spacing: 4px; color: #b9c0c6; margin-bottom: 10px; }
+  .radio .led { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #ff3b30; box-shadow: 0 0 10px #ff3b30; margin-right: 10px; vertical-align: 1px; }
+  .radio .grille { width: 120px; height: 14px; background: repeating-linear-gradient(90deg, #1e2124 0 4px, transparent 4px 9px); border-radius: 2px; }
+  .screen { position: relative; overflow: hidden; height: 168px; padding: 16px 24px; box-sizing: border-box; border-radius: 4px; background: #0e180c; box-shadow: inset 0 0 26px rgba(0,0,0,.95); }
+  .screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(transparent 0 3px, rgba(0,0,0,.3) 3px 4px); pointer-events: none; }
+  .noise { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+  .tag { font: 400 20px "Share Tech Mono", monospace; letter-spacing: 6px; color: var(--signal); text-shadow: 0 0 8px rgba(255,138,31,.7); height: 26px; }
+  .name { font: 400 68px "Black Ops One", sans-serif; letter-spacing: 4px; color: var(--radio); line-height: 1.1; text-shadow: 0 0 12px rgba(124,255,107,.75), 0 0 32px rgba(124,255,107,.3); height: 76px; }
+  .line { font: 400 22px "Share Tech Mono", monospace; white-space: nowrap; color: var(--radio); opacity: .9; height: 30px; }
+  .timer { position: absolute; left: 22px; right: 22px; bottom: 8px; height: 6px; background: repeating-linear-gradient(-45deg, var(--signal) 0 8px, #1d1d1d 8px 16px); transform-origin: left; }
+  .radio { visibility: hidden; }
+</style>
+</head>
+<body>
+<div class="radio" id="radio">
+  <div class="bar"><span><i class="led" id="led"></i>KANAL 7 &nbsp;//&nbsp; 41.250 MHZ</span><span class="grille"></span></div>
+  <div class="screen">
+    <canvas class="noise" id="noise" width="240" height="60"></canvas>
+    <div class="tag" id="tag"></div>
+    <div class="name" id="name"></div>
+    <div class="line" id="line"></div>
+  </div>
+  <div class="timer" id="timer"></div>
+</div>
+<script type="module">
+import * as THREE from "three";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+gsap.registerPlugin(ScrambleTextPlugin, TextPlugin, CustomEase);
+gsap.ticker.lagSmoothing(0);
+CustomEase.create("stempel", "M0,0 C0.05,0.9 0.1,1.08 0.2,1.04 0.4,0.98 0.6,1 1,1");
+const at = new URLSearchParams(location.search).get("t");
+const NAME = "TRINITY";
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setPixelRatio(1); renderer.setSize(1920, 1080); renderer.setClearColor(0, 0);
+document.body.insertBefore(renderer.domElement, document.body.firstChild);
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), .04).texture;
+const camera = new THREE.OrthographicCamera(0, 1920, 0, -1080, -2000, 2000);
+camera.position.z = 1000;
+const key = new THREE.DirectionalLight(0xfff0d8, 2); key.position.set(-400, 300, 800); scene.add(key);
+scene.add(new THREE.AmbientLight(0xffffff, .4));
+
+// dog tag: rounded plate with a rolled rim and the stamped name, hanging from a ball chain
+const tagShape = new THREE.Shape();
+const w = 150, h = 240, r = 46;
+tagShape.moveTo(-w / 2 + r, -h / 2); tagShape.lineTo(w / 2 - r, -h / 2); tagShape.quadraticCurveTo(w / 2, -h / 2, w / 2, -h / 2 + r);
+tagShape.lineTo(w / 2, h / 2 - r); tagShape.quadraticCurveTo(w / 2, h / 2, w / 2 - r, h / 2); tagShape.lineTo(-w / 2 + r, h / 2);
+tagShape.quadraticCurveTo(-w / 2, h / 2, -w / 2, h / 2 - r); tagShape.lineTo(-w / 2, -h / 2 + r); tagShape.quadraticCurveTo(-w / 2, -h / 2, -w / 2 + r, -h / 2);
+const hole = new THREE.Path(); hole.absarc(0, h / 2 - 26, 10, 0, Math.PI * 2, true); tagShape.holes.push(hole);
+const tagGeo = new THREE.ExtrudeGeometry(tagShape, { depth: 8, bevelEnabled: true, bevelThickness: 4, bevelSize: 5, bevelSegments: 4, curveSegments: 18 });
+tagGeo.translate(0, 0, -6);
+// stamped letters: a bump map drawn on canvas (dark letters with a light edge read as pressed into metal)
+const stamp = document.createElement("canvas"); stamp.width = 300; stamp.height = 480;
+const sc = stamp.getContext("2d");
+await document.fonts.load("400 40px 'Share Tech Mono'");
+sc.fillStyle = "#8a8f94"; sc.fillRect(0, 0, 300, 480);
+sc.font = "400 40px 'Share Tech Mono'"; sc.textAlign = "center";
+["REZONDES", NAME, "SUB 001", "BLUFOR", "O POS"].forEach((text, i) => {
+  sc.fillStyle = "#e6e9ec"; sc.fillText(text, 152, 172 + i * 54); sc.fillStyle = "#2a2d30"; sc.fillText(text, 150, 170 + i * 54);
+});
+const stampTex = new THREE.CanvasTexture(stamp); stampTex.colorSpace = THREE.SRGBColorSpace;
+// planar UVs so the canvas lies flat on the plate (canvas y runs down, the plate's y runs up)
+const uv = tagGeo.attributes.uv, p = tagGeo.attributes.position;
+for (let i = 0; i < uv.count; i++) uv.setXY(i, (p.getX(i) + w / 2) / w, (p.getY(i) + h / 2) / h);
+const metal = new THREE.MeshStandardMaterial({ color: 0xd9dde1, metalness: .9, roughness: .3, map: stampTex, bumpMap: stampTex, bumpScale: 4 });
+const tag = new THREE.Mesh(tagGeo, metal);
+const tagRig = new THREE.Group(); tagRig.add(tag); scene.add(tagRig);
+tag.position.y = -150;
+// ball chain from the hole upwards, out of the picture
+const chain = new THREE.Group();
+const bead = new THREE.SphereGeometry(5, 12, 10), beadMat = new THREE.MeshStandardMaterial({ color: 0xb8bdc2, metalness: 1, roughness: .3 });
+for (let i = 0; i < 46; i++) { const b = new THREE.Mesh(bead, beadMat); b.position.y = h / 2 - 26 - 150 + i * 13; chain.add(b); }
+tagRig.add(chain);
+
+// smoke burst behind the tag when the radio opens: soft sprites, each placed from time only
+const puff = (() => {
+  const c = document.createElement("canvas"); c.width = c.height = 128; const g = c.getContext("2d");
+  const rg = g.createRadialGradient(64, 64, 4, 64, 64, 62); rg.addColorStop(0, "rgba(255,255,255,.95)"); rg.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = rg; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
+})();
+let s = 11; const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+const puffs = Array.from({ length: 26 }, () => {
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: puff, color: rnd() > .5 ? 0x8f9a7a : 0xa8a196, transparent: true, depthWrite: false, opacity: 0 }));
+  sp.userData = { a: rnd() * Math.PI * 2, v: 120 + rnd() * 260, size: 70 + rnd() * 120, delay: rnd() * .25 };
+  scene.add(sp); return sp;
+});
+const BURST = .5;
+function placePuffs(t) {
+  for (const sp of puffs) {
+    const u = sp.userData, k = Math.max(0, t - BURST - u.delay), life = 1.8, q = Math.min(1, k / life);
+    const ease = 1 - Math.pow(1 - q, 3);
+    sp.position.set(560 + Math.cos(u.a) * u.v * ease, -330 + Math.sin(u.a) * u.v * ease * .6 + q * 60, -200);
+    sp.scale.setScalar(u.size * (.4 + ease));
+    sp.material.opacity = k > 0 && q < 1 ? .7 * (1 - q) : 0;
+  }
+}
+
+// static noise on the display while the radio tunes in
+const noise = document.getElementById("noise"), nc = noise.getContext("2d"), img = nc.createImageData(240, 60);
+function drawNoise(t) {
+  let z = Math.floor(t * 30) * 9301 + 49297;
+  for (let i = 0; i < img.data.length; i += 4) { z = (z * 9301 + 49297) % 233280; const v = 40 + (z / 233280) * 140; img.data[i] = v * .55; img.data[i + 1] = v; img.data[i + 2] = v * .5; img.data[i + 3] = 255; }
+  nc.putImageData(img, 0, 0);
+}
+
+const swing = { angle: .9, drop: 0 };
+const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+tl.set("#radio", { visibility: "hidden" }, 0);
+tl.set(["#tag", "#name", "#line"], { text: "" }, 0);
+// the tag drops in on its chain and swings out like a pendulum
+tl.fromTo(swing, { drop: 0, angle: .9 }, { drop: 1, duration: .55, ease: "power3.in" }, .05);
+tl.to(swing, { angle: 0, duration: 2.6, ease: "elastic.out(1.1, .22)" }, .55);
+// the radio slams open from the tag outward, static, then the call comes through
+tl.set("#radio", { visibility: "visible" }, .55);
+tl.fromTo("#radio", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(-20px -20px -60px -20px)", duration: .45, ease: "stempel" }, .55);
+tl.fromTo("#noise", { opacity: 1 }, { opacity: 0, duration: .5, ease: "steps(4)" }, .9);
+tl.to("#tag", { text: { value: "KOTH AN ALLE // VERSTÄRKUNG" }, duration: .7, ease: "none" }, 1.1);
+tl.to("#name", { duration: 1, scrambleText: { text: NAME, chars: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#", revealDelay: .2, speed: .6 } }, 1.4);
+tl.to("#line", { text: { value: `${NAME} verstärkt die Truppe!  // "ENDLICH ABONNIERT!"` }, duration: 1.1, ease: "none" }, 2.2);
+tl.to("#led", { opacity: .2, duration: .12, repeat: 9, yoyo: true, ease: "steps(1)" }, 1.1);
+tl.fromTo("#timer", { scaleX: 1 }, { scaleX: 0, duration: 4.2, ease: "none" }, 2.2);
+// exit: static again, radio closes, the tag is pulled up
+tl.to("#noise", { opacity: 1, duration: .25, ease: "steps(3)" }, 6.4);
+tl.to("#radio", { clipPath: "inset(0 0 0 100%)", duration: .35, ease: "power3.in" }, 6.6);
+tl.to(swing, { drop: 0, angle: -.4, duration: .5, ease: "back.in(1.6)" }, 6.7);
+if (at) tl.pause(Number(at));
+
+gsap.ticker.add(() => {
+  const t = tl.time();
+  tagRig.position.set(560, -300 + (1 - swing.drop) * 720, 0);
+  tagRig.rotation.z = swing.angle * .5;
+  tag.rotation.y = Math.sin(t * 1.7) * .35 * (1 - Math.min(1, t / 4)) + .18;
+  placePuffs(t); drawNoise(t);
+  key.position.x = -400 + Math.sin(t * .8) * 500;
+  renderer.render(scene, camera);
+});
+</script>
+</body>
+</html>

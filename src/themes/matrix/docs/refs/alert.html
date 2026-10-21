@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Matrix Alert Pixi</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrambleTextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/TextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@8.22.0/dist/pixi.min.js"></script>
+<style>
+  :root { --accent: #39ff14; --dim: #1e9e0f; --line: #0e4d07; --glow: #39ff14; --hi: #b6ff9e; --flash: #d8ffcc; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; color: var(--accent); font-family: "Share Tech Mono", monospace; }
+  /* preview only: checker stands for the transparent overlay over a game */
+  body { background: repeating-conic-gradient(#3a3d44 0 25%, #33363c 0 50%) 0 0 / 40px 40px; }
+  canvas { position: absolute; inset: 0; }
+  .box { position: absolute; left: 610px; top: 110px; width: 700px; height: 250px; box-sizing: border-box; padding: 22px 30px; overflow: hidden;
+         background: rgba(0,10,0,.9); border: 1.5px solid var(--accent); box-shadow: 0 0 24px rgba(57,255,20,.35), inset 0 0 40px rgba(57,255,20,.08); }
+  .box::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(transparent 0 2px, rgba(0,0,0,.35) 2px 4px); pointer-events: none; }
+  .corner { position: absolute; width: 18px; height: 18px; border: 3px solid var(--hi); }
+  .glow { text-shadow: 0 0 6px var(--glow), 0 0 20px rgba(57,255,20,.45); }
+  .tag { font-size: 20px; color: var(--dim); letter-spacing: 3px; height: 26px; }
+  .name { font-size: 76px; letter-spacing: 8px; color: var(--hi); line-height: 1.15; height: 88px; }
+  .line { font-size: 26px; height: 32px; }
+  .quote { font-size: 20px; color: var(--dim); margin-top: 6px; height: 26px; }
+  .timer { position: absolute; left: 30px; bottom: 16px; height: 6px; width: 0; background: repeating-linear-gradient(90deg, var(--accent) 0 10px, transparent 10px 13px); box-shadow: 0 0 10px rgba(57,255,20,.6); }
+  .flash { position: absolute; inset: 0; background: var(--flash); opacity: 0; }
+  .box { visibility: hidden; }
+</style>
+</head>
+<body>
+<div class="box" id="box">
+  <i class="corner" style="left:-2px;top:-2px;border-right:0;border-bottom:0"></i><i class="corner" style="right:-2px;bottom:-2px;border-left:0;border-top:0"></i>
+  <div class="tag" id="tag"></div>
+  <div class="name glow" id="name"></div>
+  <div class="line glow" id="line"></div>
+  <div class="quote" id="quote"></div>
+  <div class="timer" id="timer"></div>
+  <div class="flash" id="flash"></div>
+</div>
+<script type="module">
+gsap.registerPlugin(ScrambleTextPlugin, TextPlugin);
+gsap.ticker.lagSmoothing(0);
+const at = new URLSearchParams(location.search).get("t");
+await document.fonts.ready;
+await document.fonts.load("500 40px 'Noto Sans JP'");
+const hash = (a, b, c = 0) => { const v = Math.sin(a * 127.1 + b * 311.7 + c * 74.7) * 43758.5453; return v - Math.floor(v); };
+
+const app = new PIXI.Application();
+await app.init({ width: 1920, height: 1080, antialias: false, autoStart: false, backgroundAlpha: 0, preference: "webgl" });
+document.body.prepend(app.canvas);
+const { Container, Sprite, Texture, Rectangle, BlurFilter } = PIXI;
+const GLYPHS = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789:.=*+-<>¦|Z".split("");
+const CELL = 48, COLS = 16, atlas = document.createElement("canvas");
+atlas.width = CELL * COLS; atlas.height = CELL * Math.ceil(GLYPHS.length / COLS);
+const ag = atlas.getContext("2d"); ag.fillStyle = "#fff"; ag.textAlign = "center"; ag.textBaseline = "middle"; ag.font = "500 40px 'Noto Sans JP', 'Share Tech Mono'";
+GLYPHS.forEach((ch, i) => { ag.save(); ag.translate((i % COLS) * CELL + CELL / 2, Math.floor(i / COLS) * CELL + CELL / 2); if (i % 3 === 0) ag.scale(-1, 1); ag.fillText(ch, 0, 0); ag.restore(); });
+const base = Texture.from(atlas);
+const glyphTex = GLYPHS.map((_, i) => new Texture({ source: base.source, frame: new Rectangle((i % COLS) * CELL, Math.floor(i / COLS) * CELL, CELL, CELL) }));
+
+// in: a curtain of rain pours down only over the box area and the glyphs land on its frame line;
+// out: the box dissolves back into glyphs that fall away. Every glyph is placed from time only.
+const BOX = { x: 610, y: 110, w: 700, h: 250 }, SIZE = 22;
+const layer = new Container(), glow = new Container(); glow.blendMode = "add"; glow.filters = [new BlurFilter({ strength: 10, quality: 3 })];
+app.stage.addChild(glow, layer);
+const cols = [];
+for (let x = BOX.x + SIZE / 2; x < BOX.x + BOX.w; x += SIZE) {
+  const ci = cols.length, trail = 8 + Math.floor(hash(ci, 1) * 10), speed = 1400 + hash(ci, 2) * 900, start = hash(ci, 3) * .35;
+  const sprites = Array.from({ length: trail }, () => { const s = new Sprite(glyphTex[0]); s.anchor.set(.5); s.width = s.height = SIZE; layer.addChild(s); return s; });
+  const head = new Sprite(glyphTex[0]); head.anchor.set(.5); head.width = head.height = SIZE * 1.8; head.tint = 0xd8ffcc; glow.addChild(head);
+  cols.push({ x, ci, trail, speed, start, sprites, head });
+}
+// the falling-away glyphs of the exit, one per cell of the box
+const dust = [];
+for (let y = BOX.y + SIZE / 2; y < BOX.y + BOX.h; y += SIZE) for (let x = BOX.x + SIZE / 2; x < BOX.x + BOX.w; x += SIZE) {
+  const s = new Sprite(glyphTex[0]); s.anchor.set(.5); s.width = s.height = SIZE; s.visible = false; layer.addChild(s); dust.push({ s, x, y, d: hash(x, y) * .35, v: 600 + hash(y, x) * 900 });
+}
+const IN_END = .9, OUT = 6.2;
+function paint(t) {
+  // pouring curtain: heads run from above the screen down to the box top line, then stop there and fade
+  for (const c of cols) {
+    const since = t - c.start, headY = -200 + since * c.speed, stop = BOX.y + BOX.h, fade = Math.max(0, 1 - (t - IN_END) / .4);
+    const hy = Math.min(headY, stop);
+    c.sprites.forEach((s, k) => { const y = Math.floor((hy - k * SIZE) / SIZE) * SIZE + SIZE / 2; s.visible = since > 0 && fade > 0 && y > -SIZE;
+      s.position.set(c.x, y); s.texture = glyphTex[Math.floor(hash(c.ci, Math.floor(y / SIZE), Math.floor(t * 12)) * GLYPHS.length)];
+      s.alpha = Math.pow(1 - k / c.trail, 1.5) * fade; s.tint = k === 0 ? 0xd8ffcc : 0x39ff14; });
+    c.head.visible = since > 0 && fade > 0; c.head.position.set(c.x, hy); c.head.texture = c.sprites[0].texture; c.head.alpha = .7 * fade;
+  }
+  // exit: the cells turn into glyphs and drop, the closer to the bottom the earlier
+  const q = t - OUT;
+  dust.forEach(p => { const k = q - p.d * (1 - (p.y - BOX.y) / BOX.h); p.s.visible = k > 0 && k < 1;
+    if (!p.s.visible) return; p.s.position.set(p.x, p.y + .5 * p.v * k * k); p.s.alpha = 1 - k; p.s.texture = glyphTex[Math.floor(hash(p.x, p.y, Math.floor(t * 20)) * GLYPHS.length)]; p.s.tint = 0x39ff14; });
+}
+
+const timerEl = document.getElementById("timer");
+const timerText = k => "▐" + "█".repeat(Math.round(58 * k)).padEnd(58, " ") + "▌";
+const tim = { k: 1 };
+const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+tl.set("#box", { visibility: "hidden", opacity: 1 }, 0);
+tl.set(["#tag", "#name", "#line", "#quote"], { text: "" }, 0);
+// the box switches on like a CRT where the rain hits: a line, then it opens, with a flash
+tl.set("#box", { visibility: "visible" }, .55);
+tl.fromTo("#box", { scaleY: .02, scaleX: .2, filter: "brightness(3)" }, { scaleX: 1, duration: .18, ease: "power3.out" }, .55);
+tl.to("#box", { scaleY: 1, duration: .25, ease: "expo.out" }, .73);
+tl.fromTo("#flash", { opacity: .8 }, { opacity: 0, duration: .4 }, .73);
+tl.to("#box", { filter: "brightness(1)", duration: .4 }, .8);
+tl.to("#tag", { duration: .6, text: "> INCOMING TRANSMISSION // SUB", ease: "none" }, .95);
+tl.to("#name", { duration: 1.1, scrambleText: { text: "TRINITY", chars: "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ0123456789", revealDelay: .3, speed: .5 } }, 1.2);
+tl.to("#line", { duration: .8, text: "hat die rote Pille genommen.", ease: "none" }, 2.0);
+tl.to("#quote", { duration: .6, text: "\"Endlich abonniert!\"", ease: "none" }, 2.7);
+tl.fromTo(tim, { k: 1 }, { k: 0, duration: 4.4, ease: "none" }, 1.6);
+// a short glitch in the middle of the hold
+tl.to("#box", { keyframes: [{ x: -10, clipPath: "inset(30% 0 40% 0)", filter: "drop-shadow(6px 0 0 #b6ff9e)" }, { x: 8, clipPath: "inset(60% 0 10% 0)" }, { x: 0, clipPath: "inset(0 0 0 0)", filter: "none" }], duration: .2, ease: "steps(3)" }, 4.2);
+// exit: the box goes dark, its cells fall away as glyphs
+tl.to("#box", { opacity: 0, duration: .25, ease: "steps(3)" }, OUT);
+if (at) tl.pause(Number(at));
+gsap.ticker.add(() => { const t = tl.time(); timerEl.style.width = t > 1.6 ? `${Math.round(640 * tim.k / 13) * 13}px` : "0px"; paint(t); app.renderer.render(app.stage); });
+</script>
+</body>
+</html>

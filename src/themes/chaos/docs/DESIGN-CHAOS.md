@@ -135,6 +135,23 @@ leuchtet nie, so bleibt es Hintergrund.
 - **Szenerie:** Kritzeleien an den Rändern hinter dem Dashboard, ein Cyan-Pinselstrich unten links, ein Magenta-X oben
   rechts; unter 1100px nur noch die Kritzeleien, unter 720px keine Szenerie.
 
+## Modernisierung (entschieden 2026-10-21)
+
+Abgenommene Prototypen: [refs/starting.html](refs/starting.html), [refs/alert.html](refs/alert.html) mit Standbildern;
+der Detailgrad der lokalen Referenzbilder bleibt der Massstab. Plan: [PLAN-CHAOS.md](PLAN-CHAOS.md) Packages 6 bis 9.
+
+- **Pinselstriche:** in PixiJS gemalt, mit Farbkörper, Borsten, trockenem Auslauf und Laufnasen; echter Neon-Glow als
+  unscharfe Kopie mit additiver Mischung; Sprühnebel stäubt an der Spitze, während der Strich gemalt wird.
+- **Kritzeleien:** der eigene Katalog bleibt; dazu Rough.js-Arten mit Füllung (Schraffur, Kreuzschraffur, Zickzack,
+  gestrichelt). Alle zeichnen sich nacheinander selbst.
+- **Titel:** wird von links nach rechts aufgesprüht, der Sprühnebel folgt der Kante.
+- **Bewegung nach dem Aufbau** (Einstellung, Standard an): Kritzeleien kochen wie Stop-Motion (drei Fassungen im
+  Wechsel) und treiben leicht, Borsten schimmern, Laufnasen laufen und tropfen ab, Sprühstaub schwebt, der Titel
+  flackert und glitcht ab und zu.
+- **Alerts:** keine Energie-Schwaden mehr; nur der Zettel in der Mitte, der an die Wand klatscht, mit Sprühstoss rundum,
+  Markerrand, Klebeband, aufgesprühtem Namen und Kritzel-Konfetti. Ersetzt die Beschreibung "Energie-Schwaden schlagen
+  von einer Seite herein" bei den Alerts oben.
+
 ## Im Code
 
 `.theme-chaos`, Klassen `ch-*`, Keyframes `chaos-*` und `chaos-minime-*`, Dateien in `src/themes/chaos/`.

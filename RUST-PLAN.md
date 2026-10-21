@@ -126,6 +126,8 @@ Abhängigkeiten: `rst-server` -> `rst-app` + `rst-infra`; `rst-infra` -> `rst-ap
 | 50 | Turm-Felder der Minimes | Ein Theme mit Minime-Typen kann die Felder für Türme einbinden, Rust und TS gleich, geprüft gespeichert. | 48 |
 | 51 | Merkmal "einfach" am Feld | Ein Feld kann im Rust-Schema als einfach markiert sein, der Server liefert das Merkmal mit. | - |
 | 52 | Stream-Statistik | Der Server zählt je Stream Alerts und Chat und schickt den Stand als SSE-Nachricht `stats`. | - |
+| 53 | Gemeinsame Stinger-Felder | Alle acht Themes führen Bildrate, Pause, Bewegungskurve und Ausgabegrösse des Stingers aus einem gemeinsamen Baustein im Schema. | - |
+| 54 | Gemeinsames Feld Leistungsstufe | Themes mit 3D oder PixiJS führen die Leistungsstufe aus einem gemeinsamen Baustein im Schema. | - |
 
 Parallel möglich: 3 neben 1 und 2; nach 5 die Packages 6, 7, 11, 14, 15, 16, 17 untereinander; 9 und 10 nach 8;
 18 neben Phase 1; 33 bis 36 nach 32 untereinander; 37 bis 42 nach ihren Abhängigkeiten untereinander; 47 vor 48, 49 unabhängig, 50 nach 48.
@@ -1990,6 +1992,79 @@ Muster für Laden, gedrosseltes Senden und Speichern im verschlüsselten Profil.
 6. Vertragstest `contract/`: SSE beim Verbinden enthält `stats`; Reset ohne Sitzung 401, mit Sitzung 0 (AC5, AC6)
 
 Testbefehl: `npm run verify`, `npm run contract`
+
+---
+
+## Package 53: Gemeinsame Stinger-Felder
+
+**Ziel:** Alle acht Themes führen Bildrate, Pause, Bewegungskurve und Ausgabegrösse des Stingers aus einem gemeinsamen
+Baustein im Schema.
+
+**Abhängigkeiten:** keine (TS-Seite: [plans/PLAN-GRAFIK.md](plans/PLAN-GRAFIK.md) Packages 6 und 7, im selben Commit wie
+Package 7 dort)
+
+**Betroffene Dateien:**
+- `server-rs/crates/rst-domain/src/themes/stinger_fields.rs` (neu): `stinger_fields(group, fps_default)` nach dem
+  Muster von `core_fields.rs`, Vorlage `stingerFields` in `src/core/stingerOptions.ts`; `themes/mod.rs` (Modul)
+- `server-rs/crates/rst-domain/src/themes/{standard,matrix,urlaub,plantage,koth,bears,chaos,dachdecker}.rs` (ändern:
+  die Gruppe "Stinger" hängt `stinger_fields` an; `dachdecker.rs` entfernt seine eigenen Zeilen `stingerFps` und
+  `stingerHold`)
+- `server-rs/crates/rst-domain/tests/fixtures/<id>.json` (neu erzeugt aus TS)
+
+### Kontext
+
+Die Felder sind dieselben wie in TS: `stingerFps` (10 bis 60, Standard je Theme 60, Dachdecker 30), `stingerHold` (0 bis
+80 %, Standard 0), `stingerEase` (Auswahl `linear`, `nagel`, `federnd`, `weich`, `stempel`, Standard `linear`),
+`stingerSize` (Auswahl `1080p`, `720p`, Standard `1080p`). Der Server prüft nur Bereiche und Auswahl; die Bildrate der
+Render-Aufträge kommt weiter beim Abschluss (`/api/render/done?fps=`).
+
+### Acceptance Criteria
+
+- [ ] AC1: `stinger_fields("Stinger", 60.0)` liefert die vier Felder in dieser Reihenfolge mit den Bereichen und
+      Standards oben.
+- [ ] AC2: Jedes der acht Themes hat die Felder in der Gruppe "Stinger"; die Fixture-Tests (`same_as_typescript`) sind
+      grün.
+- [ ] AC3: Ein Wert ausserhalb des Bereichs (z. B. `stingerFps = 5`) oder eine unbekannte Auswahl wird abgelehnt.
+
+### Tests (TDD)
+
+1. `rst-domain themes::stinger_fields::tests::fields_and_defaults` (AC1)
+2. `rst-domain themes::<id>::tests::same_as_typescript` je Theme (AC2)
+3. `rst-domain themes::stinger_fields::tests::rejects_out_of_range` (AC3)
+
+Testbefehl: `npm run verify`, `npm run contract`
+
+---
+
+## Package 54: Gemeinsames Feld Leistungsstufe
+
+**Ziel:** Themes mit 3D oder PixiJS führen die Leistungsstufe aus einem gemeinsamen Baustein im Schema.
+
+**Abhängigkeiten:** keine (TS-Seite: [plans/PLAN-GRAFIK.md](plans/PLAN-GRAFIK.md) Package 8, im selben Commit)
+
+**Betroffene Dateien:**
+- `server-rs/crates/rst-domain/src/themes/graphics_fields.rs` (neu): `quality_field(group)`, Vorlage `qualityField` in
+  `src/core/graphicsFields.ts`; `themes/mod.rs`
+- `server-rs/crates/rst-domain/src/themes/dachdecker.rs` (ändern: eigenes Feld `quality` durch `quality_field`)
+- `server-rs/crates/rst-domain/tests/fixtures/dachdecker.json`
+
+### Kontext
+
+Die modernisierten Themes hängen das Feld in ihrem ersten Package der Modernisierung an (siehe deren Pläne); dieses
+Package liefert nur den Baustein und stellt Dachdecker um. Schlüssel `quality`, Auswahl `hoch`, `mittel`, `niedrig`,
+Standard `mittel`.
+
+### Acceptance Criteria
+
+- [ ] AC1: `quality_field("Allgemein")` liefert das Auswahlfeld mit den drei Stufen und Standard `mittel`.
+- [ ] AC2: Dachdecker ist unverändert im Schema (gleicher Schlüssel, gleiche Gruppe), der Fixture-Test ist grün.
+
+### Tests (TDD)
+
+1. `rst-domain themes::graphics_fields::tests::quality_choices` (AC1)
+2. `rst-domain themes::dachdecker::tests::same_as_typescript` (AC2)
+
+Testbefehl: `npm run verify`
 
 ---
 

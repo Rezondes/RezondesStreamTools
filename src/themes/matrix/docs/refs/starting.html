@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Matrix Starting Pixi</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Noto+Sans+JP:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrambleTextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/TextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@8.22.0/dist/pixi.min.js"></script>
+<style>
+  :root { --accent: #39ff14; --dim: #1e9e0f; --line: #0e4d07; --glow: #39ff14; --hi: #b6ff9e; --flash: #d8ffcc; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #000; color: var(--accent); font-family: "Share Tech Mono", monospace; }
+  canvas { position: absolute; inset: 0; }
+  /* the CRT: dark glass over the rain, phosphor glow, scanlines and a soft vignette */
+  .crt { position: absolute; left: 380px; top: 380px; width: 1160px; height: 640px; box-sizing: border-box; padding: 34px 50px;
+         background: radial-gradient(ellipse at 50% 45%, rgba(0,22,4,.86), rgba(0,6,0,.94) 75%); border: 1.5px solid var(--dim);
+         box-shadow: 0 0 0 10px rgba(0,0,0,.6), 0 0 60px rgba(57,255,20,.18), inset 0 0 120px rgba(0,0,0,.9); transform-origin: 50% 50%; overflow: hidden; }
+  .crt::before { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 2px, rgba(0,0,0,.35) 2px 4px); z-index: 3; }
+  .crt::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(ellipse at 50% 50%, transparent 60%, rgba(0,0,0,.55)); z-index: 3; }
+  .bar { display: flex; justify-content: space-between; font-size: 20px; color: var(--dim); border-bottom: 1px solid var(--line); padding-bottom: 14px; letter-spacing: 2px; }
+  .glow { text-shadow: 0 0 6px var(--glow), 0 0 22px rgba(57,255,20,.45); }
+  .title { margin-top: 40px; font-size: 68px; letter-spacing: 7px; white-space: nowrap; line-height: 1; color: var(--hi); }
+  .count { margin-top: 30px; font-size: 62px; letter-spacing: 6px; }
+  .progress { margin-top: 18px; font-size: 26px; letter-spacing: 1px; white-space: pre; }
+  .log { position: absolute; left: 50px; right: 50px; bottom: 34px; border-top: 1px solid var(--line); padding-top: 16px; font-size: 20px; line-height: 1.5; color: var(--dim); height: 120px; overflow: hidden; }
+  .log b { color: var(--accent); font-weight: 400; }
+  .cursor { display: inline-block; width: 13px; height: 24px; background: var(--accent); vertical-align: -4px; box-shadow: 0 0 8px var(--glow); }
+  .flash { position: absolute; inset: 0; background: var(--flash); opacity: 0; pointer-events: none; z-index: 4; }
+  .crt, .flash { visibility: hidden; }
+</style>
+</head>
+<body>
+<div class="crt" id="crt">
+  <div class="bar"><span id="path">STREAM://rezondes/starting</span><span id="clock">14:22:18</span></div>
+  <div class="title glow" id="title">STREAM STARTET GLEICH</div>
+  <div class="count glow" id="count">T-00:04:59</div>
+  <div class="progress glow" id="progress"></div>
+  <div class="log" id="log"></div>
+  <div class="flash" id="flash"></div>
+</div>
+<script type="module">
+gsap.registerPlugin(ScrambleTextPlugin, TextPlugin);
+gsap.ticker.lagSmoothing(0);
+const at = new URLSearchParams(location.search).get("t");
+await document.fonts.ready;
+await document.fonts.load("500 40px 'Noto Sans JP'");
+const hash = (a, b, c = 0) => { const v = Math.sin(a * 127.1 + b * 311.7 + c * 74.7) * 43758.5453; return v - Math.floor(v); };
+
+const app = new PIXI.Application();
+await app.init({ width: 1920, height: 1080, antialias: false, autoStart: false, background: "#000000", preference: "webgl" });
+document.body.prepend(app.canvas);
+const { Container, Sprite, Texture, Rectangle, BlurFilter } = PIXI;
+
+// glyph atlas: half-width katakana, digits and a few symbols, white so every layer can tint them
+const GLYPHS = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789:.=*+-<>¦|Z".split("");
+const CELL = 48, COLS = 16, atlas = document.createElement("canvas");
+atlas.width = CELL * COLS; atlas.height = CELL * Math.ceil(GLYPHS.length / COLS);
+const ag = atlas.getContext("2d"); ag.fillStyle = "#fff"; ag.textAlign = "center"; ag.textBaseline = "middle"; ag.font = "500 40px 'Noto Sans JP', 'Share Tech Mono'";
+GLYPHS.forEach((ch, i) => { ag.save(); ag.translate((i % COLS) * CELL + CELL / 2, Math.floor(i / COLS) * CELL + CELL / 2); if (i % 3 === 0) ag.scale(-1, 1); ag.fillText(ch, 0, 0); ag.restore(); });
+const base = Texture.from(atlas);
+const glyphTex = GLYPHS.map((_, i) => new Texture({ source: base.source, frame: new Rectangle((i % COLS) * CELL, Math.floor(i / COLS) * CELL, CELL, CELL) }));
+
+// the channel name hidden in the rain: glyphs that fall through its letters light up
+const mask = document.createElement("canvas"); mask.width = 1920; mask.height = 1080;
+const mg = mask.getContext("2d"); mg.fillStyle = "#fff"; mg.font = "400 250px 'Share Tech Mono'"; mg.textAlign = "center"; mg.textBaseline = "middle"; mg.fillText("REZONDES", 960, 200);
+const maskData = mg.getImageData(0, 0, 1920, 1080).data;
+const inName = (x, y) => x >= 0 && x < 1920 && y >= 0 && y < 1080 && maskData[(Math.floor(y) * 1920 + Math.floor(x)) * 4 + 3] > 80;
+
+// three depth layers of rain: far small, dim and blurred, near big, bright and fast; heads glow on an additive layer
+const heads = new Container(); heads.blendMode = "add"; heads.filters = [new BlurFilter({ strength: 10, quality: 3 })];
+const LAYERS = [
+  { size: 15, alpha: .32, speed: [70, 140], trail: [10, 26], blur: 1.5, tint: 0x1e9e0f },
+  { size: 24, alpha: .65, speed: [130, 240], trail: [12, 28], blur: .5, tint: 0x2bd10f },
+  { size: 36, alpha: 1, speed: [240, 420], trail: [10, 22], blur: 0, tint: 0x39ff14 },
+].map((L, li) => {
+  const c = new Container(); if (L.blur) c.filters = [new BlurFilter({ strength: L.blur, quality: 2 })]; app.stage.addChild(c);
+  const columns = [];
+  for (let x = L.size / 2, ci = 0; x < 1920; x += L.size, ci++) {
+    const r = k => hash(li, ci, k), trail = Math.round(L.trail[0] + r(1) * (L.trail[1] - L.trail[0]));
+    const col = { x, speed: L.speed[0] + r(2) * (L.speed[1] - L.speed[0]), start: r(3) * 2.2 + li * .25, trail, sprites: [], ci, skip: r(4) < (li === 2 ? .55 : .15) };
+    if (col.skip) continue;
+    for (let k = 0; k < trail; k++) { const s = new Sprite(glyphTex[0]); s.anchor.set(.5); s.width = s.height = L.size * 1.05; c.addChild(s); col.sprites.push(s); }
+    const head = new Sprite(glyphTex[0]); head.anchor.set(.5); head.width = head.height = L.size * 1.6; head.tint = 0xb6ff9e; heads.addChild(head); col.head = head;
+    columns.push(col);
+  }
+  return { ...L, c, columns, li };
+});
+app.stage.addChild(heads);
+// the name itself: a fine grid of glyphs inside its letters, dim at rest, lit by a scan line running down and
+// flickering glyph by glyph
+const NAME_CELL = 13, nameLayer = new Container(), nameCells = [];
+for (let y = NAME_CELL / 2; y < 1080; y += NAME_CELL) for (let x = NAME_CELL / 2; x < 1920; x += NAME_CELL) {
+  if (!inName(x, y)) continue;
+  const s = new Sprite(glyphTex[0]); s.anchor.set(.5); s.width = s.height = NAME_CELL * 1.35; s.position.set(x, y); s.tint = 0x39ff14; nameLayer.addChild(s); nameCells.push({ s, x, y, i: nameCells.length });
+}
+const nameHalo = new Sprite(Texture.from(mask)); nameHalo.tint = 0x39ff14; nameHalo.blendMode = "add"; nameHalo.filters = [new BlurFilter({ strength: 18, quality: 4 })];
+app.stage.addChild(nameHalo, nameLayer);
+const nameState = { on: 0 };
+function paintName(t) {
+  const scan = ((t * 260) % 1400) - 200; nameHalo.alpha = nameState.on * (.14 + .04 * Math.sin(t * 2));
+  nameCells.forEach(c => {
+    c.s.texture = glyphTex[Math.floor(hash(c.x, c.y, Math.floor(t * 6 + hash(c.y, c.x) * 6)) * GLYPHS.length)];
+    const near = Math.max(0, 1 - Math.abs(c.y - scan) / 90);
+    c.s.alpha = nameState.on * (.5 + .15 * Math.sin(t * 3 + c.i) + near * .5);
+    c.s.tint = near > .5 ? 0xd8ffcc : 0x39ff14;
+  });
+}
+const rainState = { on: 1, glitch: 0 };
+function paintRain(t) {
+  for (const L of LAYERS) for (const col of L.columns) {
+    const since = t - col.start, span = 1080 + col.trail * L.size;
+    if (since <= 0) { col.sprites.forEach(s => s.visible = false); col.head.visible = false; continue; }
+    const headY = (since * col.speed) % span, headRow = Math.floor(headY / L.size), cycle = Math.floor(since * col.speed / span);
+    col.sprites.forEach((s, k) => {
+      const row = headRow - k, y = row * L.size + L.size / 2;
+      s.visible = y > -L.size && y < 1100;
+      if (!s.visible) return;
+      const glyph = Math.floor(hash(col.ci + L.li * 1000, row, Math.floor(t * (k < 3 ? 14 : 3) + k * .3) + cycle) * GLYPHS.length);
+      s.texture = glyphTex[glyph]; s.position.set(col.x + (rainState.glitch && hash(row, 7) > .7 ? (hash(row, t | 0) - .5) * 40 : 0), y);
+      const fade = Math.pow(1 - k / col.trail, 1.6), lit = L.li > 0 && inName(col.x, y);
+      s.alpha = (lit ? Math.max(fade, .55) * 1.2 : fade) * L.alpha * rainState.on;
+      s.tint = k === 0 ? 0xd8ffcc : lit ? 0xb6ff9e : L.tint;
+    });
+    const hy = headRow * L.size + L.size / 2; col.head.visible = hy < 1100; col.head.position.set(col.x, hy);
+    col.head.texture = col.sprites[0].texture; col.head.alpha = .55 * L.alpha * rainState.on;
+  }
+}
+
+// boot log, progress blocks
+const LOG = [["[ OK ]", " Mounting /dev/chat ..."], ["[ OK ]", " Loading emotes (412) ..."], ["[ OK ]", " Calibrating Kamera ..."], ["[WAIT]", " Waiting for operator REZONDES ..."], ["[ OK ]", " Red pill dispensed."]];
+const logEl = document.getElementById("log"), progEl = document.getElementById("progress");
+const progressText = k => { const n = 40, done = Math.round(n * k); return "[" + "█".repeat(done) + "░".repeat(n - done) + `] ${String(Math.round(k * 100)).padStart(3)}%`; };
+
+const tl = gsap.timeline();
+// CRT switches on: a bright line, it opens up vertically with a flash, then the picture settles
+tl.set(["#crt", "#flash"], { visibility: "visible" }, .5);
+tl.fromTo("#crt", { scaleX: 0, scaleY: .004, filter: "brightness(4)" }, { scaleX: 1, duration: .28, ease: "power3.out" }, .5);
+tl.to("#crt", { scaleY: 1, duration: .32, ease: "expo.out" }, .8);
+tl.fromTo("#flash", { opacity: .9 }, { opacity: 0, duration: .5, ease: "power2.out" }, .8);
+tl.to("#crt", { filter: "brightness(1)", duration: .6 }, .9);
+// header and title decode out of glyphs, the countdown counts in
+tl.from("#path", { duration: .8, text: "", ease: "none" }, 1.2);
+tl.from("#title", { duration: 1.6, scrambleText: { text: "STREAM STARTET GLEICH", chars: "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿ01", revealDelay: .4, speed: .4 } }, 1.4);
+tl.from("#count", { duration: 1, scrambleText: { text: "T-00:04:59", chars: "0123456789", speed: .7 } }, 2.6);
+const prog = { k: 0 }; tl.to(prog, { k: .18, duration: 2.2, ease: "steps(7)" }, 3.0);
+LOG.forEach(([tag, rest], i) => {
+  const line = document.createElement("div"); line.innerHTML = `<b></b><span></span>`; logEl.appendChild(line);
+  tl.to(line.querySelector("b"), { duration: .15, text: tag, ease: "none" }, 3.2 + i * .7);
+  tl.to(line.querySelector("span"), { duration: .5, text: rest, ease: "none" }, 3.35 + i * .7);
+});
+const cur = document.createElement("span"); cur.className = "cursor"; logEl.appendChild(cur);
+tl.to(cur, { opacity: 0, duration: .01, repeat: 40, yoyo: true, repeatDelay: .5, ease: "steps(1)" }, 3.2);
+// now and then a glitch: the CRT jumps in slices, the rain jitters
+const glitch = gsap.timeline({ repeat: -1, repeatDelay: 4.2 });
+glitch.to("#crt", { keyframes: [{ x: -12, clipPath: "inset(10% 0 60% 0)", filter: "brightness(1.6) drop-shadow(6px 0 0 #b6ff9e)" }, { x: 9, clipPath: "inset(45% 0 20% 0)" }, { x: 0, clipPath: "inset(0 0 0 0)", filter: "brightness(1)" }], duration: .2, ease: "steps(3)" });
+glitch.to(rainState, { glitch: 1, duration: .01 }, 0).to(rainState, { glitch: 0, duration: .01 }, .2);
+tl.add(glitch, 6.4);
+if (at) tl.pause(Number(at));
+
+tl.to(nameState, { on: 1, duration: 1.5, ease: "power1.in" }, 2.2);
+gsap.ticker.add(() => { progEl.textContent = tl.time() > 3 ? progressText(prog.k) : ""; paintRain(tl.time()); paintName(tl.time()); app.renderer.render(app.stage); });
+</script>
+</body>
+</html>

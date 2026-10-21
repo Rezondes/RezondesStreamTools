@@ -6,9 +6,12 @@ Heute zeichnen Themes alles als SVG und CSS, animiert mit Keyframes; Stinger und
 Rough.js (Skizzen-Look), dazu Kern-Bausteine, die die Projektregeln für diese Module erfüllen: Aufräumen, alles
 einstellbar, Clips als reine Funktion der Zeit.
 
-Kern-Plan nach der Regel in [PLAN.md](../PLAN.md). Kein Rust-Anteil: Der Server kennt weder Szenen noch Bibliotheken.
-Erster Nutzer ist das Theme Dachdecker; alle anderen Themes bleiben unverändert, bis bewusst entschieden wird, sie mit
-einem der Module zu modernisieren.
+Kern-Plan nach der Regel in [PLAN.md](../PLAN.md). Packages 1 bis 5 haben keinen Rust-Anteil: Der Server kennt weder
+Szenen noch Bibliotheken. Packages 7 und 8 brauchen neue Felder im Schema; deren Rust-Anteil steht in
+[RUST-PLAN.md](../RUST-PLAN.md) Packages 53 und 54. Erster Nutzer ist das Theme Dachdecker. Am 2026-10-21 ist
+entschieden, die Themes KOTH, Plantage, Chaos, Bärenbande, Urlaub und Matrix mit den Modulen zu modernisieren (je ein
+Abschnitt "Modernisierung" im Plan des Themes); Packages 6 bis 8 liefern die Kern-Bausteine, die sie dafür gemeinsam
+brauchen.
 
 Testbefehl: `npm test` (einzeln: `node <pfad>.check.ts`), Abschluss jedes Packages: `npm run verify`. Regeln:
 [CODING-RULES.md](../CODING-RULES.md), Theme-Aufbau: [THEMES.md](../THEMES.md).
@@ -22,9 +25,13 @@ Testbefehl: `npm test` (einzeln: `node <pfad>.check.ts`), Abschluss jedes Packag
 | 3 | 3D-Bühne | Szenen zeigen eine 3D-Welt in 1920x1080 mit Bloom und Leistungsstufen über einen Kern-Baustein. | 1 |
 | 4 | 3D-Clips | Stinger und Banner können eine 3D-Szene Bild für Bild deterministisch in den bestehenden Clip-Vertrag zeichnen. | 3 |
 | 5 | PixiJS und Rough.js | Szenen nutzen eine PixiJS-Bühne und Rough-Formen über Kern-Bausteine mit Aufräumen und festem Zufall. | 1 |
+| 6 | Stinger-Optionen im Kern | Ein Kern-Baustein gibt jedem Stinger Bildrate, Pause am Übergang, Bewegungskurve und Ausgabegrösse, ohne dass das Theme seine Zeichnung ändert. | 2 |
+| 7 | Stinger-Optionen in allen Themes | Alle acht Themes bieten die vier Stinger-Optionen in der Gruppe "Stinger" an, in TS und Rust gleich. | 6, RUST-PLAN 53 |
+| 8 | Bausteine für die Modernisierung | Partikel aus der Zeit, eine gemeinsame Leistungsstufe, Freigabe der Module je Theme und die Fallstricke aus den Prototypen stehen im Kern und in der Doku. | 5, RUST-PLAN 54 |
 
 Parallel möglich: 2, 3 und 5 nach 1 (verschiedene Dateien); 4 nach 3. Das Theme Dachdecker braucht 1 bis 4; Package 5
-bereitet die Modernisierung anderer Themes vor und blockiert nichts.
+bereitet die Modernisierung anderer Themes vor und blockiert nichts. 6 und 8 parallel (verschiedene Dateien); 7 nach 6.
+Die Modernisierung eines Themes beginnt nach 8; ihr Stinger-Package braucht 7.
 
 ## Annahmen
 
@@ -34,7 +41,14 @@ bereitet die Modernisierung anderer Themes vor und blockiert nichts.
   exakt gepinnt wie `figlet`.
 - **Nur Erweiterungen** (entschieden 2026-10-21): kein bestehendes Theme und kein bestehender Kern-Baustein ändert sein
   Verhalten. Bestehende Themes importieren die Module nicht; ein Bundle-Check stellt sicher, dass sie auch nicht im
-  Haupt-Chunk landen (Themes laden ihre Szenen schon heute mit `React.lazy`).
+  Haupt-Chunk landen (Themes laden ihre Szenen schon heute mit `React.lazy`). Gilt für Packages 1 bis 5; die
+  Modernisierung (entschieden 2026-10-21) gibt die Module je Theme frei (Package 8, `MODULE_THEMES`).
+- **Modernisierung** (entschieden 2026-10-21): KOTH wird komplett 3D wie Dachdecker; Plantage, Chaos, Bärenbande, Urlaub
+  und Matrix nutzen GSAP und PixiJS, Chaos und Bärenbande zusätzlich Rough.js, Urlaub für die Vollbild-Szenen three.js
+  (realistischer Look). Der alte Look wird ersetzt, es gibt keinen Schalter zwischen alt und neu. Die abgenommenen
+  Prototypen liegen je Theme in `src/themes/<id>/docs/refs/`.
+- **Stinger-Optionen** (entschieden 2026-10-21): Bildrate, Pause am Übergang, Bewegungskurve und Ausgabegrösse (1080p
+  oder 720p) in jedem Theme, auch Standard und Dachdecker.
 - **Alles einstellbar** (entschieden 2026-10-21, Regeln 19 und 20): Die Kern-Bausteine nehmen Farben, Zeiten, Stärken
   und An/Aus nur als Parameter entgegen, nie als eigene Konstante; das Theme reicht seine Einstellungen durch. Fest im
   Kern sind nur Schutzgrenzen (z. B. höchste Partikelzahl), markiert mit `fixed: <Grund>`.
@@ -301,3 +315,197 @@ unterschiedlich lange leben; darum rechnet `particles.ts` mit Delta-Zeit.
 ### Out of Scope
 
 - Umbau bestehender Themes.
+
+---
+
+## Package 6: Stinger-Optionen im Kern
+
+**Ziel:** Ein Kern-Baustein gibt jedem Stinger Bildrate, Pause am Übergang, Bewegungskurve und Ausgabegrösse, ohne dass
+das Theme seine Zeichnung ändert.
+
+**Abhängigkeiten:** Package 2 (Kurven in `ease.ts`)
+
+**Betroffene Dateien:**
+- `src/core/motion/ease.ts`, `ease.check.ts` (ändern: `easeAt(name, progress)` wertet die Kurven aus `EASES` ohne GSAP
+  aus, dazu `linear`; `EASE_CHOICES` = `["linear", ...EASE_NAMES]` für eine Auswahl-Einstellung)
+- `src/core/stingerOptions.ts`, `stingerOptions.check.ts` (neu): `stingerFields(group, defaults)`, `warpTime(time,
+  timing)`, `withStingerOptions(clip, options)`
+
+### Kontext
+
+Jeder Stinger ist heute `draw(context, time)` mit fester Bildrate (`FPS = 60` in `stinger.ts` von KOTH, Plantage, Chaos,
+Bärenbande, Urlaub; Dachdecker hat `stingerFps` und `stingerHold` als eigene Felder). Das Dashboard rendert Bild für Bild
+mit `clip.fps` und schickt PNGs an den Server (`src/dashboard/Render.tsx`); der Server baut WebM oder GIF in jeder
+Grösse, die Bilder bestimmen sie. Bildrate, Pause und Kurve lassen sich darum für alle Themes gleich lösen, indem der
+Kern die Zeit umrechnet, bevor er die Zeichnung des Themes aufruft (Regel 16: gemeinsame Logik einmal im Kern).
+
+### Gestaltung
+
+- **Pause am Übergang (`stingerHold`, Anteil je Hälfte):** Die Zeichnung erreicht ihren Übergangspunkt früher und steht
+  dort, bis die zweite Hälfte beginnt. Hineinlaufen: echte Zeit 0 bis `cut * (1 - hold)` wird zur Zeichnungszeit 0 bis
+  `cut`; Herauslaufen: echte Zeit ab `cut + (duration - cut) * hold` bis `duration` wird `cut` bis `duration`. Der
+  Schnitt im Video liegt weiter genau bei `cut`, mitten in der Pause.
+- **Bewegungskurve (`stingerEase`):** formt die Zeichnungszeit je Hälfte (`linear`, `nagel`, `federnd`, `weich`,
+  `stempel`).
+- **Ausgabegrösse (`stingerSize`):** `1080p` (1920x1080) oder `720p` (1280x720); die Zeichnung bleibt in 1920x1080 und
+  wird beim Zeichnen skaliert.
+- **Bildrate (`stingerFps`):** 10 bis 60 Bilder pro Sekunde.
+
+### Einstellungen
+
+`stingerFields(group, defaults)` liefert in dieser Reihenfolge: `stingerFps` ("Bildrate (Bilder pro Sekunde)", 10 bis
+60, Standard aus `defaults`, sonst 60), `stingerHold` ("Pause am Übergangspunkt (Anteil je Hälfte)", 0 bis 80 %,
+Standard 0), `stingerEase` ("Bewegungskurve", Auswahl `EASE_CHOICES`, Standard `linear`), `stingerSize`
+("Ausgabegrösse", `1080p` oder `720p`, Standard `1080p`). Die Schlüssel sind dieselben, die Dachdecker heute nutzt, damit
+gespeicherte Werte bleiben.
+
+### Acceptance Criteria
+
+- [ ] AC1: `easeAt(name, 0)` ist 0 und `easeAt(name, 1)` ist 1 für alle Namen; `linear` ist die Identität; `nagel` und
+      `federnd` überschiessen 1 irgendwo zwischen 0 und 1; das Ergebnis stimmt auf 0.01 mit `CustomEase` überein
+      (Vergleichswerte aus GSAP einmal ermittelt und im Check als Zahlen festgehalten).
+- [ ] AC2: `warpTime` mit `hold = 0` und `linear` ist die Identität; mit `hold = 0.2` ist die Zeichnungszeit im ganzen
+      Bereich von `cut * 0.8` bis `cut + (duration - cut) * 0.2` gleich `cut`, bei 0 gleich 0 und bei `duration` gleich
+      `duration`; sie fällt nie.
+- [ ] AC3: `withStingerOptions` liefert einen Clip mit `fps` aus den Werten, mit `720p` Breite 1280 und Höhe 720, und
+      ruft die Zeichnung des Themes mit skaliertem Kontext (Faktor 2/3) und umgerechneter Zeit auf; `cut`, `duration`,
+      `group`, `prepare` bleiben.
+- [ ] AC4: Die Option `ownHold: true` reicht die Pause nicht in `warpTime` (für Stinger, die sie selbst zeichnen, wie die
+      Rolle von Dachdecker).
+- [ ] AC5: `stingerFields` liefert vier Felder in der Gruppe, die Standards bestehen das Schema (`auditTheme` mit einem
+      Probe-Theme).
+
+### Tests (TDD)
+
+1. `src/core/motion/ease.check.ts > "Kurven ohne GSAP"` (AC1)
+2. `src/core/stingerOptions.check.ts > "Zeit mit Pause"` (AC2): Tabelle aus echten Zeiten und erwarteten Zeichnungszeiten
+3. `stingerOptions.check.ts > "Clip mit Optionen"` (AC3, AC4): Aufzeichnungs-Kontext zählt `scale` und die Zeiten an
+   `draw`
+4. `stingerOptions.check.ts > "Felder"` (AC5)
+
+### Umsetzungsschritte
+
+1. Tests 1 bis 4, rot.
+2. `easeAt` (kubische Bezier-Abschnitte aus dem Pfad, x per Bisektion), `warpTime`, `withStingerOptions`,
+   `stingerFields`, grün.
+3. `npm run verify`.
+
+### Out of Scope
+
+- Felder in den Themes (Package 7); Rust-Seite (RUST-PLAN 53).
+
+---
+
+## Package 7: Stinger-Optionen in allen Themes
+
+**Ziel:** Alle acht Themes bieten die vier Stinger-Optionen in der Gruppe "Stinger" an, in TS und Rust gleich.
+
+**Abhängigkeiten:** Package 6, [RUST-PLAN.md](../RUST-PLAN.md) Package 53 (im selben Commit)
+
+**Betroffene Dateien:**
+- `src/themes/<id>/settings.ts` für `standard`, `matrix`, `urlaub`, `plantage`, `koth`, `bears`, `chaos`, `dachdecker`
+  (ändern: `...stingerFields(STINGER, { stingerFps: <bisherige Bildrate> })` in der Gruppe "Stinger"; Dachdecker
+  entfernt seine eigenen Felder `stingerFps` und `stingerHold`)
+- `src/themes/<id>/render.ts` (ändern: der Stinger-Clip geht durch `withStingerOptions`), `src/themes/<id>/stinger.ts`
+  (ändern: die Konstante `FPS` fällt weg, wo sie nur die Bildrate des Clips war)
+- `src/themes/<id>/render.check.ts` (ändern: Bildrate und Grösse kommen aus den Werten)
+- `src/themes/renderers.check.ts` (ändern: jeder Stinger-Clip aller Themes folgt `stingerFps` und `stingerSize`)
+- Fixtures `server-rs/crates/rst-domain/tests/fixtures/<id>.json` (`node scripts/dumpSchema.ts`), erzeugte Typen
+  `src/generated/themes/<id>.ts` (`npm run gen:types`)
+
+### Kontext
+
+Bisherige Bildraten: 60 bei Standard, Matrix, Urlaub, Plantage, KOTH, Bärenbande und Chaos (je `FPS` in `stinger.ts`),
+30 bei Dachdecker (`stingerFps`). Die Standards bleiben dieselben, damit gerenderte Stinger ohne Änderung der
+Einstellungen gleich aussehen. Dachdecker zeichnet die Pause in seiner Rolle selbst (`roll.ts`), darum `ownHold: true`.
+
+### Acceptance Criteria
+
+- [ ] AC1: Jedes der acht Themes hat `stingerFps`, `stingerHold`, `stingerEase`, `stingerSize` in der Gruppe "Stinger";
+      `auditTheme` findet keinen ungenutzten Schlüssel.
+- [ ] AC2: Mit Standardwerten zeichnet jeder Stinger jedes Bild wie vorher (gleiche Aufrufe bei gleicher Zeit,
+      Bildrate wie vorher).
+- [ ] AC3: Mit `stingerSize = 720p` rendert jeder Stinger 1280x720; mit `stingerFps = 24` hat der Clip 24 Bilder pro
+      Sekunde.
+- [ ] AC4: Gespeicherte Werte von Dachdecker für `stingerFps` und `stingerHold` gelten weiter (gleiche Schlüssel).
+- [ ] AC5: Die Fixtures stimmen mit Rust überein (`cargo test same_as_typescript` je Theme).
+
+### Tests (TDD)
+
+1. `src/themes/renderers.check.ts > "Stinger-Optionen in jedem Theme"` (AC1, AC3)
+2. `src/themes/<id>/render.check.ts`: bestehende Checks bleiben grün (AC2)
+3. `cargo test` (AC5)
+
+### Umsetzungsschritte
+
+1. Test 1, rot.
+2. Je Theme Felder, `render.ts`, `stinger.ts`, Fixture, Typen; Rust-Seite nach RUST-PLAN 53.
+3. `npm run verify`, `npm run contract`; je Theme einen Stinger mit 720p und Pause 20 % im Dashboard rendern und ansehen.
+
+### Out of Scope
+
+- Neue Stinger-Zeichnungen (Abschnitte "Modernisierung" der Theme-Pläne).
+
+---
+
+## Package 8: Bausteine für die Modernisierung
+
+**Ziel:** Partikel aus der Zeit, eine gemeinsame Leistungsstufe, die Freigabe der Module je Theme und die Fallstricke
+aus den Prototypen stehen im Kern und in der Doku.
+
+**Abhängigkeiten:** Package 5, [RUST-PLAN.md](../RUST-PLAN.md) Package 54 (im selben Commit)
+
+**Betroffene Dateien:**
+- `src/core/motion/burst.ts`, `burst.check.ts` (neu): `burstAt(seed, count, time, options)` liefert Lage, Drehung und
+  Deckkraft jedes Teilchens eines Ausbruchs (Konfetti, Spritzer, Blätter, Funken) als reine Funktion der Zeit seit dem
+  Start; Optionen Startpunkt, Richtung und Streuung, Geschwindigkeit von bis, Schwerkraft, Luftwiderstand, Lebensdauer
+- `src/core/graphicsFields.ts`, `graphicsFields.check.ts` (neu): `qualityField(group)` mit dem Schlüssel `quality`
+  (Auswahl `hoch`, `mittel`, `niedrig`, Standard `mittel`), passend zu `src/core/three/quality.ts`
+- `src/themes/dachdecker/settings.ts` (ändern: eigenes Feld `quality` durch `qualityField` ersetzen, gleicher Schlüssel)
+- `scripts/bundle.ts`, `scripts/bundle.check.ts` (ändern: `MODULE_THEMES` um `koth`, `plantage`, `chaos`, `bears`,
+  `urlaub`, `matrix`)
+- `THEMES.md` (ändern: Abschnitt "Grafik- und Animationsmodule" um "Fallstricke" und um die Referenz-Prototypen)
+
+### Kontext
+
+`src/core/pixi/particles.ts` rechnet Schritt für Schritt (gut für Szenen), Stinger und Banner brauchen aber Teilchen,
+deren Lage nur aus Startwert und Zeit folgt (Regel 21). Die Prototypen haben dafür überall dieselbe Formel benutzt
+(Startgeschwindigkeit, exponentieller Luftwiderstand, Schwerkraft). Fallstricke, die beim Bau der Prototypen
+aufgefallen sind:
+- Eine angehaltene GSAP-Timeline, die mit `?t=` hinter einen Tween springt, ruft dessen `onUpdate` nicht auf; Ausgaben,
+  die von einem Tween-Wert abhängen (Fortschrittsbalken, Zähler), werden im Ticker aus dem Wert gesetzt.
+- Deckkraft unter 1 an einem Element mit `transform-style: preserve-3d` macht es flach; die Rückseite erscheint
+  gespiegelt. Ausgeblendet wird ein Elternelement.
+- SVG-Gruppen drehen mit `svgOrigin` (Koordinaten im `viewBox`), nicht mit CSS `transform-origin`.
+- `-webkit-mask-image` beschneidet `text-shadow` am Rand des Elements; nach einer Aufsprüh-Maske wird sie entfernt
+  oder das Element bekommt Innenabstand.
+- PixiJS 8 startet asynchron (`await app.init`); mit `autoStart: false` zeichnet der Ticker der Szene selbst
+  (`app.renderer.render`), damit `?t=` Standbilder stimmen.
+
+### Acceptance Criteria
+
+- [ ] AC1: `burstAt` ist deterministisch (gleicher Startwert und gleiche Zeit, gleiche Werte); zwei Startwerte geben
+      verschiedene Ausbrüche; vor dem Start und nach der Lebensdauer ist jedes Teilchen unsichtbar; ohne Schwerkraft
+      und Widerstand liegt ein Teilchen nach 1 s um seine Geschwindigkeit vom Startpunkt entfernt.
+- [ ] AC2: `qualityField("Allgemein")` liefert ein Auswahlfeld `quality` mit den drei Stufen; Dachdecker behält seine
+      gespeicherten Werte.
+- [ ] AC3: `scripts/bundle.ts` erlaubt die Module in den Chunks der sechs Themes und meldet sie weiter im
+      Einstiegs-Chunk und im Chunk von `standard`.
+- [ ] AC4: THEMES.md nennt die Fallstricke oben und den Ort der Referenz-Prototypen (`docs/refs/`, dürfen per CDN laden).
+
+### Tests (TDD)
+
+1. `src/core/motion/burst.check.ts > "Ausbruch aus der Zeit"` (AC1)
+2. `src/core/graphicsFields.check.ts > "Leistungsstufe"` (AC2)
+3. `scripts/bundle.check.ts > "Module in modernisierten Themes"` (AC3)
+
+### Umsetzungsschritte
+
+1. Tests 1 bis 3, rot; `burst.ts`, `graphicsFields.ts`, `bundle.ts`, grün.
+2. Dachdecker auf `qualityField`, Rust nach RUST-PLAN 54, Fixture, Typen.
+3. THEMES.md.
+4. `npm run verify`, `npm run contract`.
+
+### Out of Scope
+
+- Theme-eigene Teilchen-Formen und Abläufe (Pläne der Themes).

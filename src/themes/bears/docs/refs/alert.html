@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Bears Alert GSAP</title>
+<link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@800&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/Physics2DPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js"></script>
+<style>
+  :root { --outline: #1c1a19; --ink: #2b2522; --muted: #6b5d55; --paper: #fbf3e0; --paper-shade: #e9dcc0; --accent: #e2573f; --accent-text: #b83c28; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; font-family: Nunito, sans-serif; color: var(--ink); }
+  /* preview only: checker stands for the transparent overlay over a game */
+  body { background: repeating-conic-gradient(#3a3d44 0 25%, #33363c 0 50%) 0 0 / 40px 40px; }
+  .card { position: absolute; left: 700px; top: 150px; width: 720px; height: 280px; box-sizing: border-box; padding: 24px 40px 0 180px; z-index: 2;
+          background: var(--paper); border: 6px solid var(--outline); border-radius: 30px; box-shadow: inset 0 -14px 0 var(--paper-shade); }
+  .pill { display: inline-block; padding: 4px 22px; border: 5px solid var(--outline); border-radius: 999px; background: var(--accent); color: #fff; font: 800 24px Nunito; }
+  .name { font: 800 62px Sniglet; line-height: 1.1; margin-top: 6px; color: #fff; -webkit-text-stroke: 10px var(--outline); paint-order: stroke fill; }
+  .line { font: 800 26px Nunito; }
+  .quote { font: 600 italic 22px Nunito; color: var(--muted); }
+  .heart { position: absolute; left: 34px; top: 66px; width: 120px; height: 120px; overflow: visible; }
+  .timer { position: absolute; left: 30px; right: 30px; bottom: 14px; height: 12px; border: 4px solid var(--outline); border-radius: 999px; background: var(--paper-shade); overflow: hidden; }
+  .timer i { position: absolute; inset: 0; background: var(--accent); transform-origin: left; }
+  svg.bear { position: absolute; left: 560px; top: 60px; width: 200px; height: 332px; overflow: visible; z-index: 1; }
+  svg.confetti { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible; z-index: 3; pointer-events: none; }
+  .card, svg.bear { visibility: hidden; }
+</style>
+</head>
+<body>
+<svg class="bear" id="bear" viewBox="0 0 200 332" aria-hidden="true" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"><g id="bearRig"><g class="bb-figure bb-grizzly bb-pose-cheer" transform="translate(100 332) scale(1 0.88) translate(-100 -332)" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><g class="bb-body" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><g class="bb-bone bone-tail" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-back" d="M178 266 A12 12 0 1 0 202 266 A12 12 0 1 0 178 266 Z" style="fill:rgb(150, 105, 63);stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></g><g class="bb-bone bone-ears" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-back" d="M64 12 A12 12 0 1 0 88 12 A12 12 0 1 0 64 12 Z" style="fill:rgb(150, 105, 63);stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-back" d="M135 14 A11 11 0 1 0 157 14 A11 11 0 1 0 135 14 Z" style="fill:rgb(150, 105, 63);stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></g><g class="bb-bone bone-farArm" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-limb" d="M180.8 181.5 Q196.9 132.4 213.7 85.7 C224.5 55.5 179.3 39.3 168.5 69.4 Q151.5 116.8 135.2 166.5 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M180.8 181.5 Q196.9 132.4 213.7 85.7 C224.5 55.5 179.3 39.3 168.5 69.4 Q151.5 116.8 135.2 166.5" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-farLeg" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-limb" d="M108.5 293.9 Q110.3 289.9 110.2 283.8 C89.8 318.2 141.5 348.7 161.8 314.2 Q170.2 293.6 163.5 270.1 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M108.5 293.9 Q110.3 289.9 110.2 283.8 C89.8 318.2 141.5 348.7 161.8 314.2 Q170.2 293.6 163.5 270.1" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path><path class="part-line" d="M121 317 L119.5 329 M137.5 317 L139 329" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-body" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><defs style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><clipPath id="r0-body" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path d="M30 70 C40 30 70 8 104 6 C150 4 170 30 178 60 C192 110 200 170 198 230 C196 270 186 290 172 300 C140 316 56 316 26 294 C8 268 2 220 8 180 C12 164 18 154 24 148 C12 140 2 124 2 106 C2 84 14 72 30 70 Z" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></clipPath></defs><path class="part-fur" d="M30 70 C40 30 70 8 104 6 C150 4 170 30 178 60 C192 110 200 170 198 230 C196 270 186 290 172 300 C140 316 56 316 26 294 C8 268 2 220 8 180 C12 164 18 154 24 148 C12 140 2 124 2 106 C2 84 14 72 30 70 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><g clip-path="url(#r0-body)" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-shade" d="M156 22 C176 44 194 110 198 230 C196 270 186 290 172 300 L166 330 L148 330 L152 298 C168 276 178 246 178 200 C178 136 172 70 156 22 Z" style="fill:rgb(125, 85, 51);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></g><path class="part-outline" d="M30 70 C40 30 70 8 104 6 C150 4 170 30 178 60 C192 110 200 170 198 230 C196 270 186 290 172 300 C140 316 56 316 26 294 C8 268 2 220 8 180 C12 164 18 154 24 148 C12 140 2 124 2 106 C2 84 14 72 30 70 Z" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-nearLeg" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-limb" d="M32.1 292.6 Q34.6 291.9 33.1 289.2 C16.1 322.5 65.9 348 82.9 314.8 Q90.5 294.3 83.9 271.4 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M32.1 292.6 Q34.6 291.9 33.1 289.2 C16.1 322.5 65.9 348 82.9 314.8 Q90.5 294.3 83.9 271.4" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path><path class="part-line" d="M44 318.8 L42.6 330 M59.4 318.8 L60.8 330" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-head" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-eye" d="M34.4 73 A4.6 4.6 0 1 0 43.6 73 A4.6 4.6 0 1 0 34.4 73 Z" style="fill:rgb(17, 17, 17);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-eye" d="M77.4 79 A4.6 4.6 0 1 0 86.6 79 A4.6 4.6 0 1 0 77.4 79 Z" style="fill:rgb(17, 17, 17);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-nose" d="M21 98 A15 9 0 1 0 51 98 A15 9 0 1 0 21 98 Z" style="fill:rgb(17, 17, 17);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-mouth" d="M36 128 C40 148 62 152 70 132 C60 128 46 126 36 128 Z" style="fill:rgb(107, 56, 51);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-tongue" d="M44 142 C50 150 60 150 64 140 C58 138 50 138 44 142 Z" style="fill:rgb(224, 134, 138);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-teeth" d="M46 129 L48 135 L52 129 Z M58 129 L60 134 L63 130 Z" style="fill:rgb(255, 255, 255);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M36 128 C40 148 62 152 70 132 C60 128 46 126 36 128 Z" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-nearArm" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-limb" d="M154.5 182.9 Q177 136.4 199.8 92.3 C215.1 62.7 170.7 39.7 155.4 69.3 Q132.3 114 109.5 161.1 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M154.5 182.9 Q177 136.4 199.8 92.3 C215.1 62.7 170.7 39.7 155.4 69.3 Q132.3 114 109.5 161.1" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path><path class="part-pad" d="M172.6 69.5 A5 4 0 1 0 182.6 69.5 A5 4 0 1 0 172.6 69.5 Z" style="fill:rgb(125, 85, 51);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></g></g></g></g></svg>
+<div class="card" id="card">
+  <svg class="heart" id="heart" viewBox="0 0 120 120"><path d="M60 104 C20 78 6 56 10 36 C14 14 44 8 60 32 C76 8 106 14 110 36 C114 56 100 78 60 104 Z" fill="#e2573f" stroke="#1c1a19" stroke-width="7" stroke-linejoin="round"/><path d="M30 38 C32 28 40 24 48 26" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".7"/></svg>
+  <span class="pill" id="pill">Neues Abo</span>
+  <div class="name" id="name">Trinity</div>
+  <div class="line" id="line">Trinity zieht mit in die Höhle!</div>
+  <div class="quote" id="quote">„Endlich abonniert!“</div>
+  <div class="timer"><i id="timer"></i></div>
+</div>
+<svg class="confetti" id="confetti" viewBox="0 0 1920 1080"></svg>
+<script type="module">
+gsap.registerPlugin(SplitText, Physics2DPlugin, CustomEase);
+gsap.ticker.lagSmoothing(0);
+CustomEase.create("federnd", "M0,0 C0.2,0 0.3,1.2 0.5,1.2 0.62,1.2 0.68,0.94 0.8,0.94 0.88,0.94 0.92,1.02 1,1");
+const at = new URLSearchParams(location.search).get("t");
+await document.fonts.ready;
+let s = 5; const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+const between = (a, b) => a + rnd() * (b - a);
+
+// confetti: paw prints in brick red and leaves in meadow green, thrown with Physics2D from seeded values
+const conf = document.getElementById("confetti"), NS = "http://www.w3.org/2000/svg";
+const paw = `<ellipse cx="0" cy="6" rx="11" ry="9" fill="#e2573f"/><circle cx="-11" cy="-8" r="4.5" fill="#e2573f"/><circle cx="-3" cy="-13" r="4.5" fill="#e2573f"/><circle cx="6" cy="-12" r="4.5" fill="#e2573f"/><circle cx="13" cy="-5" r="4.5" fill="#e2573f"/>`;
+const leaf = `<path d="M-18 0 C-8 -12 10 -12 18 0 C10 12 -8 12 -18 0 Z" fill="#8fb24a" stroke="#1c1a19" stroke-width="3"/><path d="M-14 0 L14 0" stroke="#1c1a19" stroke-width="2"/>`;
+const pieces = Array.from({ length: 30 }, (_, i) => {
+  const g = document.createElementNS(NS, "g"); g.innerHTML = i % 2 ? paw : leaf; conf.appendChild(g);
+  gsap.set(g, { x: 1050, y: 260, opacity: 0, scale: between(.8, 1.3) });
+  return { g, velocity: between(500, 1000), angle: between(-160, -20), rot: between(-400, 400) };
+});
+
+const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+tl.set(["#card", "#bear"], { visibility: "visible" }, 0);
+// the card plops in: squashed wide, stretched tall, settled
+tl.fromTo("#card", { scaleX: .2, scaleY: .2, opacity: 0 }, { scaleX: 1, scaleY: 1, opacity: 1, duration: .25, ease: "power2.out" }, 0);
+tl.to("#card", { keyframes: [{ scaleX: 1.08, scaleY: .9, duration: .1 }, { scaleX: .96, scaleY: 1.05, duration: .12 }, { scaleX: 1, scaleY: 1, duration: .3, ease: "elastic.out(1, .4)" }] }, .25);
+tl.from("#heart", { scale: 0, rotate: -30, duration: .5, ease: "back.out(3)", transformOrigin: "50% 60%" }, .35);
+tl.to("#heart", { scale: 1.12, duration: .22, repeat: 9, yoyo: true, ease: "sine.inOut", transformOrigin: "50% 60%" }, 1.0);
+tl.from("#pill", { scale: 0, rotate: 10, duration: .4, ease: "back.out(3)" }, .45);
+const split = SplitText.create("#name", { type: "chars" });
+tl.from(split.chars, { y: -50, scaleY: 1.5, opacity: 0, duration: .45, ease: "bounce.out", stagger: .04 }, .55);
+tl.from(["#line", "#quote"], { opacity: 0, y: 10, duration: .3, stagger: .15 }, 1.0);
+// the bear peeks out from behind the card, cheers with both arms and an open mouth
+tl.fromTo("#bear", { x: 220, rotate: 12 }, { x: 0, rotate: -6, duration: .6, ease: "federnd" }, .45);
+tl.to("#bearRig", { y: -26, duration: .18, repeat: 5, yoyo: true, ease: "power1.out" }, 1.1);
+tl.fromTo("#bear .bone-nearArm", { rotation: 0 }, { rotation: -14, svgOrigin: "132 172", duration: .2, repeat: 9, yoyo: true, ease: "sine.inOut" }, 1.0);
+tl.fromTo("#bear .bone-farArm", { rotation: 0 }, { rotation: 12, svgOrigin: "158 174", duration: .2, repeat: 9, yoyo: true, ease: "sine.inOut" }, 1.1);
+tl.to("#bear .part-eye", { scaleY: .15, transformOrigin: "50% 50%", duration: .08, yoyo: true, repeat: 1 }, 2.6);
+pieces.forEach((p, i) => {
+  tl.set(p.g, { x: 1050, y: 260, opacity: 1, rotation: 0 }, .3);
+  tl.to(p.g, { duration: 2.6, physics2D: { velocity: p.velocity, angle: p.angle, gravity: 900 }, rotation: p.rot, ease: "none" }, .3 + i * .01);
+  tl.to(p.g, { opacity: 0, duration: .5 }, 2.5 + i * .01);
+});
+tl.fromTo("#timer", { scaleX: 1 }, { scaleX: 0, duration: 4.6, ease: "none" }, 1.0);
+// exit: the bear ducks back behind the card, the card shrinks with a little hop
+tl.to("#bear", { x: 220, rotate: 12, duration: .35, ease: "back.in(2)" }, 5.8);
+tl.to("#card", { keyframes: [{ scaleX: .95, scaleY: 1.06, duration: .1 }, { scale: 0, opacity: 0, duration: .25, ease: "back.in(2)" }] }, 6.0);
+if (at) tl.pause(Number(at));
+</script>
+</body>
+</html>

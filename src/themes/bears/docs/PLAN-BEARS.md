@@ -24,6 +24,10 @@ aller Pläne: [PLAN.md](../../../../PLAN.md).
 | 8 | Szenen-Korrekturen | Alerts, Musik und Kamera zeigen den Bären aus dem Modell richtig und vollständig; die Bären-Einstellungen gehören zu "Allgemein". | 6 |
 | 9 | Welt-Modell | Jedes Ding der Kulisse steht auf seinem Boden: Tannen auf der Wiese, die Stadt am Ufer, die Brücke von Ufer zu Ufer. | 1 |
 | 10 | Stinger mit Vorhang | Der Bär zieht einen Vorhang über das Bild, der am Übergangspunkt alles verdeckt, und zieht ihn danach wieder auf. | 6 |
+| 11 | Modernisierung: Stil-Probe Starting | Die Welt malt sich als Rough-Aquarell ein, der Weg führt zur Brücke, die Brücke ans ferne Ufer, und der Bär aus dem Rig watschelt, landet und winkt mit GSAP. | 9, PLAN-GRAFIK 1, 2, 5 und 8 |
+| 12 | Modernisierung: BRB und Ending | BRB und Ending zeigen die Aquarell-Welt zu anderen Tageszeiten, die Bären bewegen ihre Knochen mit GSAP. | 11 (Abnahme) |
+| 13 | Modernisierung: Overlays | Der Alert ploppt, der Bär lugt hervor und jubelt, Pfoten und Blätter fliegen; die übrigen Overlays bewegen sich mit GSAP. | 11 |
+| 14 | Modernisierung: Stinger und Banner | Stinger und Banner malen die Welt im selben Rough-Aquarell, der Bär watschelt aus dem Rig. | 12, PLAN-GRAFIK 7 |
 
 Parallel möglich: 2, 3 und 4 nach 1 untereinander (verschiedene Dateien bis auf `settings.ts`, `bears.rs` und die
 Fixture; wer später kommt, fügt seine Gruppen an). 5 nach 4 und dem Kern-Package. 6 bis 10 (Rückmeldung vom
@@ -739,3 +743,204 @@ Testbefehl: `npm test`, Abschluss `npm run verify`
 ### Out of Scope
 
 - Ton zum Stinger.
+
+---
+
+# Modernisierung (Packages 11 bis 14)
+
+Entschieden 2026-10-21: Die zwei Ebenen bleiben (Figuren mit klarer Kontur, Welt als Aquarell). Neu: die Welt wird mit
+Rough.js als Aquarell gemalt (auch in Stinger und Banner, wo es heute keine Filter gibt), die Bären bewegen ihre
+Knochen aus dem Rig mit GSAP statt CSS-Keyframes. Gestaltung: [DESIGN-BEARS.md](DESIGN-BEARS.md), Abschnitt
+"Modernisierung". Kern-Bausteine: [plans/PLAN-GRAFIK.md](../../../../plans/PLAN-GRAFIK.md) (`roughPath`,
+`useTimeline`, `chance`, `burstAt`, `qualityField`, Stinger-Optionen).
+
+## Annahmen der Modernisierung
+
+- **Referenz** (abgenommen 2026-10-21): [refs/starting.html](refs/starting.html), [refs/alert.html](refs/alert.html)
+  und die Standbilder daneben. Die Bären darin sind die echten Figuren aus `Bear.tsx` (aus der laufenden Seite
+  übernommen); jedes Package mit sichtbarer Arbeit endet mit Renders daneben und dem OK des Nutzers.
+- **Figuren:** immer aus dem Rig (`rig.ts`, `Bear.tsx`, `paint.ts`); nie eine vereinfachte Zeichnung (Feedback zur
+  Stil-Probe). GSAP dreht die Knochengruppen (`bone-<name>`) um ihre Drehpunkte aus dem Rig (`svgOrigin`).
+- **Rough.js** (entschieden 2026-10-21): nur für die Welt (Flächen als mehrere weiche Lasuren mit unruhigem Rand,
+  Skizzenlinie im Ton der Fläche, Papierkörnung); die Figuren behalten ihre gleichmässige Kontur.
+- **Welt-Modell:** jedes Ding steht auf seinem Boden (Package 9). Neu dazu: der Weg führt bis zum Anfang der Brücke,
+  die Brücke führt über das Wasser und landet am fernen Ufer, auf dem die Stadt steht (Feedback zur Stil-Probe).
+- **Alter Look:** SVG-Filter der Welt (`feTurbulence`) werden ersetzt, kein Schalter. **Alles einstellbar**, **Schema in
+  Rust und TS** (`bears.rs`, Fixture, Typen je Package), **Fallstricke** in [THEMES.md](../../../../THEMES.md),
+  **Commit** je Package nach grünem `npm run verify`. **Minimes** und Türme bleiben unverändert.
+- **Vorbild:** wird wie bisher nirgends genannt.
+
+---
+
+## Package 11: Modernisierung: Stil-Probe Starting
+
+**Ziel:** Die Welt malt sich als Rough-Aquarell ein, der Weg führt zur Brücke, die Brücke ans ferne Ufer, und der Bär
+aus dem Rig watschelt, landet und winkt mit GSAP.
+
+**Abhängigkeiten:** Package 9, PLAN-GRAFIK Packages 1, 2, 5 und 8
+
+**Betroffene Dateien:**
+- Neu in `src/themes/bears/`: `watercolor.ts`, `watercolor.check.ts` (eine Fläche als Lasuren: versetzte
+  Rough-Polygone mit festem Startwert, Deckkraft je Lasur, Skizzenlinie als Mischung aus Fläche und `outline`),
+  `boneMotion.ts`, `boneMotion.check.ts` (Abläufe als Gelenkwinkel über die Zeit: watscheln, landen mit Stauchen,
+  winken, Kopf wiegen, blinzeln, atmen; Drehpunkte aus dem Rig), `WorldCanvas.tsx` (malt die Welt aus `world.ts` mit
+  `watercolor.ts` auf ein Canvas, Einmalen von links nach rechts als Maske)
+- Ändern: `world.ts`, `world.check.ts` (Weg endet am Brückenanfang auf der Wiese; Brücke mit Pylonen über dem Wasser
+  landet am fernen Ufer; fernes Ufer als eigene Fläche unter der Stadt), `Bear.tsx` (Knochen per `useTimeline` statt
+  CSS-Keyframes, Drehpunkte bleiben), `scenes/Screen.tsx` (Starting mit `WorldCanvas`; BRB und Ending bis Package 12
+  alt), `World.tsx` (entfällt am Ende von Package 12), `settings.ts`, `theme.css`,
+  `server-rs/crates/rst-domain/src/themes/bears.rs`, Fixture, Typen
+
+### Gestaltung
+
+- **Welt:** Himmel, Wolken, ferne Hügel in Luftperspektive, fernes Ufer mit Stadt, Wasser der Bucht, rote Hängebrücke
+  vom Weg über das Wasser zum Ufer, Wiese in zwei Tönen, Höhlenhügel mit Eingang, Tannen, Grasbüschel, Papierkörnung;
+  sie malt sich in 2,2 s von links nach rechts ein.
+- **Bär:** watschelt ab 0,9 s von links herein (Schaukeln und Wippen), landet mit Stauchen und Nachfedern, winkt in
+  Schleife, wiegt den Kopf, blinzelt, atmet.
+- **Karten:** ploppen mit Stauchen und Strecken herein, Titelbuchstaben springen; der kleine Bär läuft den Weg als
+  Fortschritt (`motionPath`, Schaukeln je Schritt).
+
+### Einstellungen (neue Schlüssel)
+
+| Gruppe | Schlüssel (Standard) |
+|---|---|
+| Welt | `quality` (`qualityField`), `worldSeed` (3), `washLayers` (4), `washAlpha` (0.3), `washRoughness` (2.4), `sketchMix` (35 %), `paperGrain` (18), `paintInOn` (an), `paintInMs` (2200 ms) |
+| Bewegung | `waddleIn` (an), `waddleAngle` (6 Grad), `landSquash` (10 %), `waveSpeed` (Faktor 1), `headSway` (4 Grad), `blinkEvery` (2.6 s), `breathAmount` (1.2 %) |
+
+### Acceptance Criteria
+
+- [ ] AC1: `world.ts`: das obere Ende des Weges liegt am Anfang der Brücke; das Ende der Brücke liegt auf dem fernen
+      Ufer; jeder Pylon steht auf einem Sockel im Wasser; jedes Stadthaus steht auf dem Ufer.
+- [ ] AC2: `wash(points, seed)` ist für gleichen Startwert gleich; die Lasuren bleiben innerhalb eines Randes von 2 %
+      um die Fläche.
+- [ ] AC3: Jeder Ablauf in `boneMotion.ts` beginnt und endet in der Ruhepose (ausser "landen", das in der Ruhepose
+      endet); die Winkel bleiben in den Grenzen des Rigs.
+- [ ] AC4: `auditTheme` ohne Befund; `scripts/rules.check.ts`, `scripts/bundle.ts` grün; kein Name des Vorbilds im Diff.
+- [ ] AC5 (manuell): `starting.html?demo&preview&t=6` neben [refs/starting.png](refs/starting.png); Abnahme.
+
+### Tests (TDD)
+
+1. `world.check.ts > "Weg, Brücke und Ufer"` (AC1) 2. `watercolor.check.ts > "Lasuren"` (AC2) 3. `boneMotion.check.ts >
+"Ruhepose"` (AC3) 4. `settings.check.ts`, `cargo test` (AC4)
+
+### Umsetzungsschritte
+
+1. Tests, rot; Module, grün. 2. Einstellungen TS und Rust. 3. `WorldCanvas.tsx`, `Bear.tsx`, `Screen.tsx`.
+4. `npm run verify`, Vorschau, Abnahme.
+
+### Out of Scope
+
+- BRB und Ending (12), Overlays (13), Clips (14), Minimes, Türme.
+
+---
+
+## Package 12: Modernisierung: BRB und Ending
+
+**Ziel:** BRB und Ending zeigen die Aquarell-Welt zu anderen Tageszeiten, die Bären bewegen ihre Knochen mit GSAP.
+
+**Abhängigkeiten:** Package 11 (Abnahme)
+
+**Betroffene Dateien:** `boneMotion.ts` (kochen, aufs Handy schauen, Schild halten, Selfie, Abschied winken),
+`watercolor.ts` (Tageszeiten als Mischung), `scenes/Screen.tsx`, `World.tsx` (entfällt), `settings.ts`, `bears.rs`,
+Fixture, Typen
+
+### Gestaltung
+
+- **BRB:** Nachmittag; der Eisbär kocht (Pfanne schwenkt), der Panda schaut aufs Handy (Kopf nickt), der Grizzly hält
+  ein Schild (Arme wippen).
+- **Ending:** Abend; der Bär winkt zum Abschied, der Panda macht ein Selfie (Blitz), der Turm watschelt einmal ins Bild.
+
+### Acceptance Criteria
+
+- [ ] AC1: Jeder neue Ablauf beginnt und endet in seiner Ruhepose; Requisiten bleiben an der Pfote.
+- [ ] AC2: Die Welt zeigt je Szene die Tageszeit aus den Einstellungen (Mischung der Flächenfarben).
+- [ ] AC3 (manuell): BRB und Ending; Abnahme.
+
+### Tests (TDD)
+
+1. `boneMotion.check.ts > "neue Abläufe"` (AC1) 2. `watercolor.check.ts > "Tageszeit"` (AC2) 3. `settings.check.ts`,
+`cargo test`
+
+### Umsetzungsschritte
+
+1. Tests, rot; Module, grün. 2. Einstellungen. 3. Szene, `World.tsx` entfernen. 4. `npm run verify`, Vorschau, Abnahme.
+
+### Out of Scope
+
+- Overlays (13), Clips (14).
+
+---
+
+## Package 13: Modernisierung: Overlays
+
+**Ziel:** Der Alert ploppt, der Bär lugt hervor und jubelt, Pfoten und Blätter fliegen; die übrigen Overlays bewegen
+sich mit GSAP.
+
+**Abhängigkeiten:** Package 11
+
+**Betroffene Dateien:** `boneMotion.ts` (jubeln, lugen), `confetti.ts`, `confetti.check.ts` (Pfotenabdrücke und
+Blätter mit Wurfbahn aus `burstAt`), `scenes/Alerts.tsx`, `scenes/Chat.tsx`, `scenes/Cam.tsx`, `scenes/Music.tsx`,
+`scenes/Fx.tsx`, `scenes/Info.tsx`, `settings.ts`, `bears.rs`, Fixture, Typen, `theme.css`
+
+### Gestaltung
+
+- **Alert** (wie [refs/alert.html](refs/alert.html)): die Papierkarte ploppt (Stauchen, Strecken, Nachfedern), der Bär
+  lugt mit Federn hinter der Karte hervor und jubelt (Arme in Pose "cheer", wippen), das Herz pocht, der Name springt,
+  Pfoten und Blätter fliegen; Restzeit als Konturbalken; Abgang: der Bär duckt sich weg, die Karte hüpft und
+  verschwindet. Reaktion je Bär wie heute (Grizzly jubelt, Panda erschrickt froh, Eisbär nickt mit Daumen hoch).
+- **Chat, Kamera, Musik, Effekte, Befehlsseite:** ploppen statt einblenden; der Bär der Musik wippt im Takt über die
+  Knochen.
+
+### Acceptance Criteria
+
+- [ ] AC1: `confettiAt(seed, i, t)` ist deterministisch und verschwindet nach der Lebensdauer.
+- [ ] AC2: Jede Alert-Art zeigt ihre Texte wie bisher; jeder Bär hat seine Reaktion.
+- [ ] AC3 (manuell): neben [refs/alert.png](refs/alert.png); Abnahme.
+
+### Tests (TDD)
+
+1. `confetti.check.ts > "Wurf aus der Zeit"` (AC1) 2. bestehende Alert-Checks, `cargo test` (AC2)
+
+### Umsetzungsschritte
+
+1. Tests, rot; Module, grün. 2. Einstellungen. 3. Szenen. 4. `npm run verify`, Vorschau, Abnahme.
+
+### Out of Scope
+
+- Clips (14).
+
+---
+
+## Package 14: Modernisierung: Stinger und Banner
+
+**Ziel:** Stinger und Banner malen die Welt im selben Rough-Aquarell, der Bär watschelt aus dem Rig.
+
+**Abhängigkeiten:** Package 12, PLAN-GRAFIK Package 7
+
+**Betroffene Dateien:** `paint.ts` (Welt über `watercolor.ts` mit `rough.canvas`, Bär mit Posen aus `boneMotion.ts`),
+`paint.check.ts`, `stinger.ts`, `stinger.check.ts`, `banners.ts`, `banners.check.ts`, `render.ts`, `render.check.ts`
+
+### Gestaltung
+
+- **Stinger:** der Vorhang aus Package 10 bleibt; neu watschelt der Bär mit den Abläufen aus `boneMotion.ts`, der
+  Vorhang schwingt mit Nachfedern (Kurve aus den Stinger-Optionen).
+- **Banner:** Welt im Rough-Aquarell, Bär oder Turm davor.
+
+### Acceptance Criteria
+
+- [ ] AC1: Am Übergangspunkt deckt der Vorhang das Bild; die Welt ist für gleichen Startwert in jedem Bild gleich.
+- [ ] AC2: Stinger-Optionen aus dem Kern; gleiche Einstellungen, gleiche Bilder.
+- [ ] AC3 (manuell): WebM und GIF; Abnahme.
+
+### Tests (TDD)
+
+1. `stinger.check.ts > "gedeckt am Übergang"` (AC1) 2. `render.check.ts > "Clips"` (AC2)
+
+### Umsetzungsschritte
+
+1. Tests, rot; `paint.ts`, `stinger.ts`, `banners.ts`, grün. 2. `npm run verify`, rendern, Abnahme.
+
+### Out of Scope
+
+- Ton im Stinger.

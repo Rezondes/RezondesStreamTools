@@ -17,6 +17,10 @@ betroffen ist auch `npm run contract`. Regeln: [CODING-RULES.md](../../../../COD
 | 3 | Overlays | Alerts, Chat, Kamera, Musik, Effekte und Befehlsseite zeigen den Chaos-Look. | 2 |
 | 4 | Stinger und Banner | Stinger, Profil- und Offline-Banner rendern deterministisch mit Schwaden, Wand und Sprühschrift. | 2 |
 | 5 | Kritzel-Monster als Minimes | Chatter klinken sich als hüpfende Kritzel-Monster in ihrer Farbe ein, mit eigenen Animationen. | 2 |
+| 6 | Modernisierung: Stil-Probe Starting | Starting malt Pinselstriche mit Sprühnebel und echtem Glow in PixiJS, Rough-Kritzeleien zeichnen sich selbst, der Titel wird aufgesprüht, danach bewegt sich alles weiter (abschaltbar). | 1 bis 5, PLAN-GRAFIK 1, 2, 5 und 8 |
+| 7 | Modernisierung: BRB und Ending | BRB und Ending nutzen dieselbe Wand, dieselben Abläufe und dieselbe Bewegung nach dem Aufbau. | 6 (Abnahme) |
+| 8 | Modernisierung: Overlays | Der Alert ist nur noch der Zettel in der Mitte mit Sprühstoss und Kritzel-Konfetti; die übrigen Overlays bewegen sich mit GSAP. | 6 |
+| 9 | Modernisierung: Stinger und Banner | Stinger und Banner zeigen die neuen Striche, Rough-Kritzeleien und Sprühnebel als reine Funktion der Zeit. | 7, PLAN-GRAFIK 7 |
 
 Parallel möglich: 3, 4 und 5 nach 2 untereinander (verschiedene Dateien bis auf `settings.ts`, `chaos.rs` und die
 Fixture; wer später kommt, hängt seine Gruppen an). Package 1 endet mit einer Abnahme durch den Nutzer; ohne sie
@@ -343,3 +347,225 @@ Dauer und Häufigkeit als Einstellung (0 = nie). Name in Marker über dem Kopf, 
 ### Out of Scope
 
 - Typen, Fraktionen, Gefechte und Türme der Minimes.
+
+---
+
+# Modernisierung (Packages 6 bis 9)
+
+Entschieden 2026-10-21: Neon-Graffiti auf der Wand bleibt die Kernidee, der Detailgrad der Referenzbilder bleibt der
+Massstab. Neu: Pinselstriche und Sprühnebel in PixiJS mit echtem Glow, zusätzliche Kritzeleien aus Rough.js
+(Schraffur, Kreuzschraffur, Zickzack), Abläufe mit GSAP und Bewegung nach dem Aufbau. Gestaltung:
+[DESIGN-CHAOS.md](DESIGN-CHAOS.md), Abschnitt "Modernisierung". Kern-Bausteine:
+[plans/PLAN-GRAFIK.md](../../../../plans/PLAN-GRAFIK.md) (`PixiStage`, `roughPath`, `useTimeline`, `chance`, `burstAt`,
+`qualityField`, Stinger-Optionen).
+
+## Annahmen der Modernisierung
+
+- **Referenz** (abgenommen 2026-10-21): [refs/starting.html](refs/starting.html), [refs/alert.html](refs/alert.html)
+  und die Standbilder daneben, zusätzlich weiter die lokalen Referenzbilder unter `.claude/refs/chaos/` (nie
+  committen). Jedes Package mit sichtbarer Arbeit endet mit Renders daneben und dem OK des Nutzers.
+- **Technik:** Wand, Pinselstriche, Laufnasen, Sprühnebel und Staub in einer `PixiStage` (Glow als unscharfe Kopie mit
+  additiver Mischung statt SVG-Filter); Kritzeleien weiter als SVG, damit `drawSVG` sie zeichnet; Texte als HTML.
+- **Rough.js** (entschieden 2026-10-21): nur für Schraffur-Füllungen und neue Kritzel-Arten; der Pinselstrich bleibt
+  eigener Code (`strokes.ts`).
+- **Bewegung nach dem Aufbau** (entschieden 2026-10-21): eine Einstellung, Standard an.
+- **Alerts ohne Schwaden** (entschieden 2026-10-21): nur der Zettel in der Mitte; `alertSide` und `swathDensity`
+  entfallen in TS und Rust, `swathes.ts` bleibt nur, soweit Stinger oder Banner sie noch nutzen.
+- **Alter Look:** wird ersetzt, kein Schalter. **Alles einstellbar**, **Schema in Rust und TS** (`chaos.rs`, Fixture,
+  Typen je Package), **Fallstricke** in [THEMES.md](../../../../THEMES.md), **Commit** je Package nach grünem
+  `npm run verify`. **Minimes** bleiben unverändert.
+
+---
+
+## Package 6: Modernisierung: Stil-Probe Starting
+
+**Ziel:** Starting malt Pinselstriche mit Sprühnebel und echtem Glow in PixiJS, Rough-Kritzeleien zeichnen sich
+selbst, der Titel wird aufgesprüht, danach bewegt sich alles weiter (abschaltbar).
+
+**Abhängigkeiten:** Packages 1 bis 5, PLAN-GRAFIK Packages 1, 2, 5 und 8
+
+**Betroffene Dateien:**
+- Neu in `src/themes/chaos/`: `brush.ts`, `brush.check.ts` (Borsten, Farbkörper mit ausgefransten Kanten, trockener
+  Auslauf und Laufnasen eines Strichs bis zum Fortschritt `p`, aus `strokes.ts`), `idle.ts`, `idle.check.ts` (Bewegung
+  nach dem Aufbau: Fassung je Kritzelei beim "Kochen", Treiben, Schimmern der Borsten, Laufnasen in Schleife mit
+  abfallendem Tropfen, Staub, Zeitpunkte von Flackern und Glitch; alles aus Zeit und Startwert), `roughScribbles.ts`,
+  `roughScribbles.check.ts` (Rough-Arten mit Füllung: Stern, Herz, Kreis, Blitz, Krone mit `hachure`, `cross-hatch`,
+  `zigzag`, `dashed`)
+- Neu: `pixi/Wall.tsx` (Grund, Flecken, Körnung), `pixi/Brushes.tsx` (Striche scharf und als Glow-Kopie),
+  `pixi/Spray.tsx` (Nebel an der Strich-Spitze und an der Kante des Titels), `pixi/Dust.tsx`
+- Ändern: `scenes/Screen.tsx` (Starting; BRB und Ending bis Package 7 alt), `Backdrop.tsx` (Kritzeleien in drei
+  Fassungen, `drawSVG`), `SprayTitle.tsx` (Aufsprühen per Maske, danach Maske entfernen), `scribbles.ts` (Katalog um
+  die Rough-Arten), `settings.ts`, `theme.css`, `server-rs/crates/rst-domain/src/themes/chaos.rs`, Fixture, Typen
+
+### Gestaltung
+
+- **Aufbau (Standard):** Sprühstoss, die grossen Striche werden ab 0,2 s nacheinander gemalt (je 0,55 s, Sprühnebel an
+  der Spitze, Laufnasen laufen nach), ab 1,3 s zeichnen sich über 100 Kritzeleien, ab 2,0 s wird der Titel von links
+  nach rechts aufgesprüht, ab 3,0 s Countdown, Zickzack-Fortschritt, Zeile, Klebeband-Ticker.
+- **Bewegung nach dem Aufbau** (ab 4,6 s): Kritzeleien kochen wie Stop-Motion (drei Fassungen, 8 Bilder pro Sekunde)
+  und treiben leicht, Borsten schimmern, Laufnasen laufen und tropfen ab, Sprühstaub schwebt, der Titel flackert alle
+  paar Sekunden und glitcht ab und zu.
+
+### Einstellungen (neue Schlüssel)
+
+| Gruppe | Schlüssel (Standard) |
+|---|---|
+| Allgemein | `quality` (`qualityField`), `glowStrength` (22), `glowAlpha` (0.75), `roughShare` (35 % der Kritzeleien aus Rough), `roughFill` (an) |
+| Bewegung | `idleOn` (an), `boilOn` (an), `boilFps` (8), `driftAmount` (2.5 px), `bristleShimmer` (Faktor 1), `dripLoop` (an), `dustOn` (an), `dustCount` (90, Obergrenze 600 mit `fixed`); bestehend `flicker`, `glitch`, `glitchEvery` gelten auch nach dem Aufbau |
+| Starting | bestehende Texte bleiben; neu `strokeMs` (550 ms), `scribbleStagger` (45 ms), `sprayTitleMs` (1200 ms) |
+
+### Acceptance Criteria
+
+- [ ] AC1: `brushAt(stroke, p)` zeichnet bei `p = 0` nichts und bei `p = 1` den vollen Strich; Borsten und Laufnasen
+      sind deterministisch aus dem Startwert.
+- [ ] AC2: `boilTake(i, t)` wechselt mit `boilFps` zwischen drei Fassungen, nie zwei Kritzeleien im gleichen Takt; mit
+      `idleOn` oder `boilOn` aus immer Fassung 0.
+- [ ] AC3: Eine Laufnase wächst bis zu ihrer Länge, ein Tropfen fällt ab, dann beginnt sie neu (Schleife ohne Sprung).
+- [ ] AC4: `roughScribble(kind, seed)` ist für gleichen Startwert gleich; alle neuen Arten haben eine Füllung.
+- [ ] AC5: `auditTheme` ohne Befund; `scripts/rules.check.ts`, `scripts/bundle.ts` grün.
+- [ ] AC6 (manuell): `starting.html?demo&preview&t=12` neben [refs/starting.png](refs/starting.png) und den lokalen
+      Referenzbildern (Detailgrad); mit `idleOn` aus steht nach dem Aufbau alles still; Abnahme.
+
+### Tests (TDD)
+
+1. `brush.check.ts > "Strich bis p"` (AC1) 2. `idle.check.ts > "Kochen"` (AC2) 3. `idle.check.ts > "Laufnasen als
+Schleife"` (AC3) 4. `roughScribbles.check.ts > "fester Zufall"` (AC4) 5. `settings.check.ts`, `cargo test` (AC5)
+
+### Umsetzungsschritte
+
+1. Tests, rot; Module, grün. 2. Einstellungen TS und Rust. 3. PixiJS-Ebenen, Kritzeleien, Titel, `Screen.tsx`.
+4. `npm run verify`, Vorschau, Abnahme.
+
+### Out of Scope
+
+- BRB und Ending (7), Overlays (8), Clips (9), Minimes.
+
+---
+
+## Package 7: Modernisierung: BRB und Ending
+
+**Ziel:** BRB und Ending nutzen dieselbe Wand, dieselben Abläufe und dieselbe Bewegung nach dem Aufbau.
+
+**Abhängigkeiten:** Package 6 (Abnahme)
+
+**Betroffene Dateien:** `scenes/Screen.tsx`, `settings.ts`, `chaos.rs`, Fixture, Typen
+
+### Gestaltung
+
+- Komposition je Szene wie heute einstellbar (zwei X, ein X, ein Strich, keine), jede Szene mit eigenem Startwert.
+- **BRB:** Pausenzeit als Marker-Zahl; das Kochen der Kritzeleien ist langsamer (eigene `boilFps`).
+- **Ending:** der Titel wird aufgesprüht und läuft danach stärker (mehr Laufnasen), `endingNext` auf Klebeband.
+
+### Einstellungen
+
+| Gruppe | Schlüssel (Standard) |
+|---|---|
+| BRB | `brbBoilFps` (5) |
+| Ending | `endingDrips` (6) |
+
+### Acceptance Criteria
+
+- [ ] AC1: Jede Szene baut sich mit ihrem Startwert anders auf; gleicher Startwert, gleiches Bild.
+- [ ] AC2 (manuell): BRB und Ending in der Vorschau; Abnahme.
+
+### Tests (TDD)
+
+1. `idle.check.ts > "Startwert je Szene"` (AC1) 2. `settings.check.ts`, `cargo test`
+
+### Umsetzungsschritte
+
+1. Test, rot, grün. 2. Einstellungen. 3. Szene. 4. `npm run verify`, Vorschau, Abnahme.
+
+### Out of Scope
+
+- Overlays (8), Clips (9).
+
+---
+
+## Package 8: Modernisierung: Overlays
+
+**Ziel:** Der Alert ist nur noch der Zettel in der Mitte mit Sprühstoss und Kritzel-Konfetti; die übrigen Overlays
+bewegen sich mit GSAP.
+
+**Abhängigkeiten:** Package 6
+
+**Betroffene Dateien:**
+- Neu: `pixi/SprayBurst.tsx` (Sprühstoss rund um den Zettel über `burstAt`), `confetti.ts`, `confetti.check.ts`
+  (Kritzel-Konfetti aus Rough-Formen mit Wurfbahn aus der Zeit)
+- Ändern: `scenes/Alerts.tsx` (ohne `EnergySwathes`), `scenes/Chat.tsx`, `scenes/Cam.tsx`, `scenes/Music.tsx`,
+  `scenes/Fx.tsx`, `scenes/Info.tsx`, `Note.tsx` (Markerrand aus Rough, zeichnet sich), `settings.ts` (ohne `alertSide`,
+  `swathDensity`), `chaos.rs`, Fixture, Typen, `theme.css`
+
+### Gestaltung
+
+- **Alert** (wie [refs/alert.html](refs/alert.html)): der Zettel klatscht in der Mitte an die Wand (kurz zu gross, dann
+  flach), Sprühnebel stäubt rund um ihn, der Markerrand zeichnet sich, das Klebeband sitzt, die Art-Pille springt, der
+  Name wird aufgesprüht, Zeile und Zitat, Konfetti aus Kritzeleien fliegt heraus; Restzeit als Rough-Markerstrich, der
+  sich zurückzieht; Abgang als Glitch.
+- **Chat:** Zettel klatschen herein (GSAP), Klebeband zuletzt.
+- **Kamera:** Markerrahmen zeichnet sich, Kritzeleien an den Ecken kochen.
+- **Musik:** Zickzack-Fortschritt zeichnet sich, Equalizer zittert.
+
+### Einstellungen
+
+| Gruppe | Schlüssel (Standard) |
+|---|---|
+| Alerts | `alertSprayOn` (an), `alertSprayDots` (220, Obergrenze 1000 mit `fixed`), `alertConfetti` (34), `alertSlapScale` (1.35); entfällt: `alertSide`, `swathDensity` |
+
+### Acceptance Criteria
+
+- [ ] AC1: Im Alert gibt es keine Schwaden mehr; Schema ohne `alertSide` und `swathDensity` in TS und Rust (gespeicherte
+      Werte dieser Schlüssel werden beim Laden verworfen wie andere unbekannte Schlüssel).
+- [ ] AC2: `confettiAt(seed, i, t)` ist deterministisch und verschwindet nach der Lebensdauer.
+- [ ] AC3: Alle Overlays transparent; jede Alert-Art zeigt ihre Texte wie bisher.
+- [ ] AC4 (manuell): neben [refs/alert.png](refs/alert.png); Abnahme.
+
+### Tests (TDD)
+
+1. `settings.check.ts > "ohne Schwaden"` (AC1) 2. `confetti.check.ts > "Wurf aus der Zeit"` (AC2) 3. bestehende
+Alert-Checks, `cargo test` (AC3)
+
+### Umsetzungsschritte
+
+1. Tests, rot; Module, grün. 2. Einstellungen. 3. Szenen. 4. `npm run verify`, Vorschau, Abnahme.
+
+### Out of Scope
+
+- Clips (9).
+
+---
+
+## Package 9: Modernisierung: Stinger und Banner
+
+**Ziel:** Stinger und Banner zeigen die neuen Striche, Rough-Kritzeleien und Sprühnebel als reine Funktion der Zeit.
+
+**Abhängigkeiten:** Package 7, PLAN-GRAFIK Package 7
+
+**Betroffene Dateien:** `paint.ts` (Striche aus `brush.ts`, Rough-Kritzeleien über `rough.canvas` mit festem Startwert,
+Sprühnebel aus `burstAt`, Glow über `shadowBlur`), `paint.check.ts`, `stinger.ts`, `stinger.check.ts`, `banners.ts`,
+`banners.check.ts`, `render.ts`, `render.check.ts`
+
+### Gestaltung
+
+- **Stinger:** der klare Wisch bleibt (Wand kommt von links mit Magenta-Strich an der Kante, deckt am Übergangspunkt,
+  Titel wird aufgesprüht, Wand wischt mit Cyan-Strich nach rechts hinaus); neu sind der gemalte Strich mit Borsten, der
+  Sprühnebel an der Kante und die Rough-Kritzeleien.
+- **Banner:** Wand mit neuen Kritzeleien und gemaltem Strich.
+
+### Acceptance Criteria
+
+- [ ] AC1: Am Übergangspunkt deckt die Wand das ganze Bild; alle Teile folgen aus Startwert und Zeit.
+- [ ] AC2: Stinger-Optionen aus dem Kern; gleiche Einstellungen, gleiche Bilder.
+- [ ] AC3 (manuell): WebM und GIF im Dashboard; Abnahme.
+
+### Tests (TDD)
+
+1. `stinger.check.ts > "gedeckt am Übergang"` (AC1) 2. `render.check.ts > "Clips"` (AC2)
+
+### Umsetzungsschritte
+
+1. Tests, rot; `paint.ts`, `stinger.ts`, `banners.ts`, grün. 2. `npm run verify`, rendern, Abnahme.
+
+### Out of Scope
+
+- Ton im Stinger.

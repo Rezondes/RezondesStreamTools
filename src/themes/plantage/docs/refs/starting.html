@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Plantage Starting Pixi</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Fredoka:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@8.22.0/dist/pixi.min.js"></script>
+<style>
+  :root { --text-wood: #3a2410; --paper: #fff6df; --mango: #ffb02e; --mango-red: #ff5e3a; --accent: #ff8c1a; --leaf: #4caf50; --leaf-dark: #1d5e27; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #f6b98a; font-family: "Baloo 2", sans-serif; }
+  canvas { position: absolute; inset: 0; }
+  /* frosted harvest paper: blur of the world behind, thin light rim, light edge on top, soft lift */
+  .frost { background: rgba(255,246,223,.62); backdrop-filter: blur(14px) saturate(1.2); border: 1.5px solid rgba(255,255,255,.75); border-radius: 26px;
+           box-shadow: inset 0 2px 0 rgba(255,255,255,.9), 0 24px 48px rgba(74,40,10,.28), 0 6px 14px rgba(74,40,10,.18); }
+  .card { position: absolute; left: 50%; top: 150px; width: 1000px; margin-left: -500px; padding: 34px 40px 30px; box-sizing: border-box; text-align: center; color: var(--text-wood); }
+  .pill { display: inline-flex; align-items: center; gap: 12px; padding: 8px 22px 8px 16px; border-radius: 999px; background: #2f8f3a; color: #fff;
+          font: 800 22px "Baloo 2"; letter-spacing: 4px; box-shadow: 0 6px 14px rgba(29,94,39,.35), inset 0 2px 0 rgba(255,255,255,.25); }
+  .pill i { width: 16px; height: 16px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: radial-gradient(circle at 35% 30%, #ffe08a, var(--mango) 45%, var(--mango-red)); }
+  .title { font: 700 104px Fredoka; line-height: 1.02; margin: 18px 0 6px; color: #3a2410; text-shadow: 0 3px 0 rgba(255,255,255,.6); }
+  .sub { font: 500 34px "Baloo 2"; color: #6b4a2a; }
+  .count { position: absolute; left: 50%; top: 640px; width: 520px; margin-left: -260px; padding: 18px 30px 22px; box-sizing: border-box; text-align: center; color: var(--text-wood); }
+  .count b { display: block; font: 800 96px "Baloo 2"; line-height: 1; letter-spacing: 2px; }
+  .basket { position: relative; margin: 12px auto 0; width: 380px; height: 52px; border-radius: 10px 10px 26px 26px;
+            background: repeating-linear-gradient(90deg, #c8935a 0 14px, #a8733e 14px 16px), linear-gradient(#c8935a, #7a4a24); background-blend-mode: multiply;
+            box-shadow: inset 0 -8px 0 rgba(0,0,0,.18), inset 0 3px 0 rgba(255,255,255,.3), 0 8px 14px rgba(74,40,10,.25); }
+  .basket .m { position: absolute; bottom: 30px; width: 40px; height: 34px; border-radius: 50% 50% 46% 46%; background: radial-gradient(circle at 34% 30%, #fff1b8 0 8%, var(--mango) 28%, var(--mango-red) 100%);
+               box-shadow: 0 4px 6px rgba(74,40,10,.3); }
+  .line { position: absolute; left: 50%; top: 900px; transform: translateX(-50%); padding: 12px 34px; border-radius: 999px; font: 500 italic 30px "Baloo 2"; color: #4a2e14; white-space: nowrap; }
+  .clock { position: absolute; right: 50px; top: 40px; padding: 10px 26px; border-radius: 999px; font: 700 30px "Baloo 2"; color: #3a2410; }
+  .card, .count, .line, .clock { visibility: hidden; }
+  .banner { position: absolute; left: 0; top: 0; font: 700 26px Fredoka; color: #3a2410; white-space: nowrap; }
+  .banner span { display: inline-block; padding: 6px 22px; background: #fff6df; border-radius: 4px; box-shadow: 0 6px 12px rgba(74,40,10,.25); transform-origin: left center; }
+</style>
+</head>
+<body>
+<div class="frost card" id="card">
+  <span class="pill" id="pill"><i></i>GLEICH GEHT'S LOS</span>
+  <div class="title" id="title">Stream startet gleich</div>
+  <div class="sub" id="sub">Die Mangos sind fast reif!</div>
+</div>
+<div class="frost count" id="count"><b id="digits">04:59</b><div class="basket" id="basket"></div></div>
+<div class="frost line" id="line">Leiter wird aufgestellt …</div>
+<div class="frost clock" id="clock">06:42</div>
+<script type="module">
+gsap.registerPlugin(SplitText, MotionPathPlugin, CustomEase);
+gsap.ticker.lagSmoothing(0);
+CustomEase.create("federnd", "M0,0 C0.2,0 0.3,1.2 0.5,1.2 0.62,1.2 0.68,0.94 0.8,0.94 0.88,0.94 0.92,1.02 1,1");
+const at = new URLSearchParams(location.search).get("t");
+await document.fonts.ready;
+
+const app = new PIXI.Application();
+await app.init({ width: 1920, height: 1080, antialias: true, autoStart: false, background: "#f6b98a", preference: "webgl" });
+document.body.prepend(app.canvas);
+const { Container, Graphics, Sprite, Texture, BlurFilter } = PIXI;
+
+let s = 42; const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+const hex = c => [(c >> 16) & 255, (c >> 8) & 255, c & 255];
+// air perspective: mix a colour towards the sky by k (0 = own colour, 1 = sky)
+const mix = (a, b, k) => { const A = hex(a), B = hex(b); return (Math.round(A[0] + (B[0] - A[0]) * k) << 16) | (Math.round(A[1] + (B[1] - A[1]) * k) << 8) | Math.round(A[2] + (B[2] - A[2]) * k); };
+const SKY = 0xffd7a8;
+const gradientTexture = (stops, w = 4, h = 512, horizontal = false) => {
+  const c = document.createElement("canvas"); c.width = w; c.height = h; const g = c.getContext("2d");
+  const gr = horizontal ? g.createLinearGradient(0, 0, w, 0) : g.createLinearGradient(0, 0, 0, h);
+  stops.forEach(([o, col]) => gr.addColorStop(o, col)); g.fillStyle = gr; g.fillRect(0, 0, w, h); return Texture.from(c);
+};
+const radialTexture = (inner, outer, size = 256) => {
+  const c = document.createElement("canvas"); c.width = c.height = size; const g = c.getContext("2d");
+  const gr = g.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2); gr.addColorStop(0, inner); gr.addColorStop(1, outer);
+  g.fillStyle = gr; g.fillRect(0, 0, size, size); return Texture.from(c);
+};
+
+// sky: two gradients cross-faded by the sunrise (dawn violet to warm morning)
+const world = new Container(); app.stage.addChild(world);
+const skyDawn = new Sprite(gradientTexture([[0, "#3b3a6b"], [.55, "#c26b7a"], [1, "#f2a477"]])); skyDawn.width = 1920; skyDawn.height = 700;
+const skyDay = new Sprite(gradientTexture([[0, "#f7a27a"], [.5, "#ffc79a"], [1, "#ffe6bf"]])); skyDay.width = 1920; skyDay.height = 700;
+world.addChild(skyDawn, skyDay);
+const sunGlow = new Sprite(radialTexture("rgba(255,226,140,.95)", "rgba(255,200,120,0)")); sunGlow.anchor.set(.5); sunGlow.width = sunGlow.height = 620;
+const sun = new Graphics().circle(0, 0, 70).fill(0xffd23f);
+world.addChild(sunGlow, sun);
+// light rays turning slowly behind the sun
+const rays = new Graphics();
+for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2; rays.poly([0, 0, Math.cos(a - .06) * 900, Math.sin(a - .06) * 900, Math.cos(a + .06) * 900, Math.sin(a + .06) * 900]).fill({ color: 0xfff1c4, alpha: .09 }); }
+world.addChildAt(rays, 2);
+
+// a depth layer moves with the camera by its depth (parallax), far layers are blurred and mixed with the sky
+const layers = [];
+const layer = (depth, blur = 0) => { const c = new Container(); c.depth = depth; if (blur) c.filters = [new BlurFilter({ strength: blur, quality: 3 })]; world.addChild(c); layers.push(c); return c; };
+
+// clouds
+const clouds = layer(.05, 2);
+const cloud = (x, y, k) => { const g = new Graphics(); [[0, 0, 60], [55, -18, 50], [105, 2, 54], [40, 18, 52], [85, 22, 44]].forEach(([dx, dy, r]) => g.circle(dx * k, dy * k, r * k).fill({ color: 0xfff7ea, alpha: .9 })); g.ellipse(52 * k, 40 * k, 120 * k, 14 * k).fill({ color: 0xf2c9a0, alpha: .35 }); g.position.set(x, y); g.baseX = x; return g; };
+[[260, 210, 1], [1450, 150, .8], [900, 90, .6], [1750, 280, .9]].forEach(a => clouds.addChild(cloud(...a)));
+
+// hills in air perspective
+const hills = (y, amp, color, depth, blur, seed0) => {
+  const L = layer(depth, blur), g = new Graphics(); const pts = [-200, 1080];
+  for (let x = -200; x <= 2120; x += 40) pts.push(x, y - amp * (.5 + .5 * Math.sin(x * .0032 + seed0) * Math.cos(x * .0011 + seed0 * 2)));
+  pts.push(2120, 1080); g.poly(pts).fill(color); L.addChild(g); return L;
+};
+hills(560, 120, mix(0x8fbf5a, SKY, .62), .12, 3, 1);
+hills(600, 90, mix(0xbcd88a, SKY, .4), .2, 2, 4);
+
+// a mango tree: trunk, crown in three tones (dark bottom right, mid, light top left), hanging mangos with gloss
+const mango = (g, x, y, r) => {
+  g.ellipse(x, y, r * .82, r).fill(0xff7a35);
+  g.ellipse(x - r * .12, y - r * .12, r * .66, r * .8).fill(0xffb02e);
+  g.circle(x - r * .3, y - r * .38, r * .18).fill({ color: 0xfff1b8, alpha: .9 });
+};
+const tree = (x, ground, k, haze) => {
+  const c = new Container(); const g = new Graphics(); const m = col => mix(col, SKY, haze);
+  g.ellipse(0, 0, 120 * k, 18 * k).fill({ color: 0x3a220f, alpha: .22 * (1 - haze) });
+  g.roundRect(-14 * k, -170 * k, 28 * k, 175 * k, 10 * k).fill(m(0x6d4c2f));
+  g.rect(2 * k, -170 * k, 12 * k, 175 * k).fill(m(0x553820));
+  const blobs = [[-70, -220, 78], [60, -230, 82], [0, -290, 88], [-30, -170, 66], [55, -165, 64]];
+  blobs.forEach(([bx, by, r]) => g.circle((bx + 10) * k, (by + 12) * k, r * k).fill(m(0x1d5e27)));
+  blobs.forEach(([bx, by, r]) => g.circle(bx * k, by * k, r * k * .92).fill(m(0x2f8f3a)));
+  blobs.forEach(([bx, by, r]) => g.circle((bx - 18) * k, (by - 22) * k, r * k * .5).fill(m(0x58b84a)));
+  if (haze < .5) [[-60, -170], [-20, -150], [40, -160], [80, -190], [-90, -200], [10, -200]].forEach(([mx, my]) => mango(g, mx * k, my * k, 14 * k));
+  c.addChild(g); c.position.set(x, ground); c.sway = rnd() * 6; return c;
+};
+// three tree rows from far to near
+const rowFar = layer(.3, 1.5), rowMid = layer(.5, .6);
+for (let i = 0; i < 11; i++) rowFar.addChild(tree(-80 + i * 205 + rnd() * 40, 640, .38, .55));
+for (let i = 0; i < 8; i++) rowMid.addChild(tree(-60 + i * 290 + rnd() * 50, 690, .6, .3));
+
+// the field: earth with furrows running to the horizon
+const field = layer(.6); const fg = new Graphics();
+fg.poly([-200, 650, 2120, 650, 2120, 1080, -200, 1080]).fill(0x8b5e3c);
+for (let i = -16; i <= 16; i++) fg.poly([960 + i * 40, 650, 960 + i * 44 + 6, 650, 960 + i * 300 + 40, 1080, 960 + i * 300 - 10, 1080]).fill({ color: 0x5e3b22, alpha: .5 });
+fg.rect(-200, 640, 2320, 18).fill({ color: 0x6aa23f, alpha: .9 });
+field.addChild(fg);
+
+const rowNear = layer(.85);
+[[150, 860, 1.05], [1760, 880, 1.1]].forEach(([x, y, k]) => rowNear.addChild(tree(x, y, k, 0)));
+
+// the picker: straw hat, blue shirt, bamboo pole and a woven basket, no outlines, light from the top left
+const picker = new Container(); const pg = new Graphics();
+pg.ellipse(0, 0, 70, 12).fill({ color: 0x3a220f, alpha: .28 });
+pg.roundRect(-26, -120, 22, 120, 8).fill(0x5a3a22); pg.roundRect(4, -120, 22, 120, 8).fill(0x4a2e18);
+pg.roundRect(-38, -250, 76, 140, 26).fill(0x3d78c4); pg.roundRect(6, -250, 32, 140, 20).fill(0x2f62a6);
+pg.circle(0, -290, 38).fill(0xf2c49b); pg.circle(12, -284, 30).fill({ color: 0xdea47a, alpha: .5 });
+pg.circle(-12, -294, 4).fill(0x3a2410); pg.circle(12, -294, 4).fill(0x3a2410);
+pg.ellipse(0, -318, 84, 18).fill(0xe8c56a); pg.ellipse(0, -340, 44, 30).fill(0xf0d27e); pg.rect(-44, -330, 88, 8).fill(0xff8c1a);
+picker.addChild(pg);
+const arm = new Container(); const ag = new Graphics();
+ag.roundRect(-10, -110, 20, 116, 10).fill(0x3d78c4); ag.circle(0, -112, 13).fill(0xf2c49b);
+ag.roundRect(-5, -330, 10, 400, 5).fill(0xb48a4a); ag.circle(0, -330, 9).fill(0x8d6a34);
+arm.addChild(ag); arm.position.set(-30, -235); picker.addChildAt(arm, 0);
+const basket = new Graphics(); basket.roundRect(-48, -46, 96, 64, 16).fill(0xb07a3e); basket.roundRect(-48, -46, 96, 14, 6).fill(0xcf9a58);
+for (let i = 0; i < 6; i++) basket.rect(-44 + i * 16, -30, 3, 46).fill({ color: 0x7a4a24, alpha: .6 });
+basket.position.set(55, -120); picker.addChild(basket);
+picker.position.set(470, 990); rowNear.addChild(picker);
+
+// crates with mangos and the channel name in the front corner
+const crate = (x, y, label) => {
+  const g = new Graphics();
+  g.ellipse(0, 6, 150, 14).fill({ color: 0x3a220f, alpha: .25 });
+  for (let i = 0; i < 6; i++) mango(g, -105 + i * 42, -112 - (i % 2) * 8, 22);
+  g.roundRect(-130, -110, 260, 112, 8).fill(0x7a4a24);
+  [-108, -72, -36].forEach(dy => g.roundRect(-126, dy, 252, 32, 5).fill(0xc8935a));
+  [-108, -72, -36].forEach(dy => g.rect(-126, dy, 252, 7).fill({ color: 0xffffff, alpha: .16 }));
+  const c = new Container(); c.addChild(g);
+  if (label) { const tx = new PIXI.Text({ text: label, style: { fontFamily: "Fredoka", fontWeight: "700", fontSize: 40, fill: 0x3a2410 } }); tx.anchor.set(.5); tx.position.set(0, -55); c.addChild(tx); }
+  c.position.set(x, y); return c;
+};
+const front = layer(1);
+front.addChild(crate(1480, 1060, "REZONDES"), crate(220, 1075, ""));
+// grass tufts in the very front, they sway
+const tufts = [];
+for (let i = 0; i < 16; i++) { const g = new Graphics(); for (let b = -2; b <= 2; b++) g.poly([b * 9, 0, b * 9 + 5, 0, b * 22 + 4, -70 - Math.abs(b) * -8 - rnd() * 30]).fill(b % 2 ? 0x2f8f3a : 0x4caf50); g.position.set(60 + i * 122 + rnd() * 40, 1085); front.addChild(g); tufts.push(g); }
+
+// falling leaves and drifting sun motes: positions come from time only (no running state)
+const leaves = new Container(); app.stage.addChild(leaves);
+const leafList = Array.from({ length: 18 }, () => {
+  const g = new Graphics(); g.ellipse(0, 0, 18, 8).fill(rnd() > .5 ? 0x4caf50 : 0x2f8f3a); g.rect(-18, -1, 36, 2).fill({ color: 0x1d5e27, alpha: .6 });
+  g.data = { x: rnd() * 1920, speed: 50 + rnd() * 50, phase: rnd() * 10, offset: rnd() }; leaves.addChild(g); return g;
+});
+const motes = new Graphics(); motes.blendMode = "add"; app.stage.addChild(motes);
+const moteList = Array.from({ length: 70 }, () => ({ x: rnd() * 1920, y: 200 + rnd() * 700, r: 1.5 + rnd() * 3, ph: rnd() * 6 }));
+
+const state = { sunrise: 0, cam: 0, arm: 0 };
+function place(t) {
+  skyDay.alpha = state.sunrise;
+  const sx = 520, sy = 700 - state.sunrise * 330;
+  sun.position.set(sx, sy); sunGlow.position.set(sx, sy); rays.position.set(sx, sy); rays.rotation = t * .03; rays.alpha = state.sunrise;
+  sunGlow.alpha = .4 + state.sunrise * .6;
+
+  for (const L of layers) L.x = -state.cam * 120 * L.depth;
+  clouds.children.forEach((c, i) => c.x = ((c.baseX + t * (8 + i * 3)) % 2200) - 140);
+  [rowFar, rowMid, rowNear].forEach(L => L.children.forEach(c => { if (c !== picker) c.skew.x = Math.sin(t * .9 + c.sway) * .02; }));
+  tufts.forEach((g, i) => g.skew.x = Math.sin(t * 1.6 + i) * .08);
+  arm.rotation = -.15 - state.arm * .3 + Math.sin(t * 2.2) * .06 * state.arm;
+  leafList.forEach(g => {
+    const d = g.data, life = 1180 / d.speed, k = ((t / life) + d.offset) % 1;
+    g.position.set(d.x + Math.sin(k * 8 + d.phase) * 60 - state.cam * 140, -40 + k * 1160);
+    g.rotation = Math.sin(k * 10 + d.phase) * 1.2; g.alpha = state.sunrise;
+  });
+  motes.clear();
+  moteList.forEach(m => motes.circle(m.x + Math.sin(t * .4 + m.ph) * 30, m.y + Math.sin(t * .3 + m.ph * 2) * 20, m.r).fill({ color: 0xfff2c0, alpha: (.3 + .3 * Math.sin(t * 1.3 + m.ph)) * state.sunrise }));
+}
+
+// world darker before the sunrise, brightens with it
+const dusk = new PIXI.ColorMatrixFilter(); world.filters = [dusk];
+
+const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+tl.fromTo(state, { sunrise: 0 }, { sunrise: 1, duration: 3.2, ease: "power1.inOut" }, 0);
+tl.fromTo(state, { cam: -1 }, { cam: 1, duration: 14, ease: "sine.inOut", repeat: -1, yoyo: true }, 0);
+tl.fromTo(state, { arm: 0 }, { arm: 1, duration: 1.2, ease: "federnd" }, 2.2);
+// frosted cards fall in like ripe fruit and settle with a spring
+tl.set(["#card", "#count", "#line", "#clock"], { visibility: "visible" }, 0);
+tl.from("#card", { y: -520, rotate: -4, duration: 1.1, ease: "federnd" }, 1.2);
+const split = SplitText.create("#title", { type: "words" });
+tl.from(split.words, { y: 40, opacity: 0, duration: .5, stagger: .12, ease: "back.out(2)" }, 1.9);
+tl.from("#pill", { scale: 0, duration: .45, ease: "back.out(3)" }, 2.0);
+tl.from("#sub", { opacity: 0, y: 14, duration: .4 }, 2.4);
+tl.from("#count", { y: 520, duration: 1, ease: "federnd" }, 1.6);
+tl.from("#line", { scale: 0, duration: .5, ease: "back.out(2.4)" }, 2.6);
+tl.from("#clock", { y: -120, duration: .7, ease: "federnd" }, 1.4);
+// progress: mangos drop into the basket one by one, each with a small bounce
+const basketEl = document.getElementById("basket");
+for (let i = 0; i < 5; i++) {
+  const m = document.createElement("i"); m.className = "m"; m.style.left = `${24 + i * 44}px`; basketEl.appendChild(m);
+  tl.from(m, { y: -260, opacity: 0, duration: .55, ease: "bounce.out" }, 3.0 + i * .35);
+}
+// a dark-to-bright colour wash over the world during the sunrise
+const bright = { v: .55 };
+tl.fromTo(bright, { v: .55 }, { v: 1, duration: 3.2, ease: "power1.inOut" }, 0);
+if (at) tl.pause(Number(at));
+
+gsap.ticker.add(() => {
+  const t = tl.time();
+  dusk.reset(); dusk.brightness(bright.v, false); dusk.saturate((1 - bright.v) * -.5, true);
+  place(t);
+  app.renderer.render(app.stage);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Chaos Starting Pixi Rough</title>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrambleTextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@8.22.0/dist/pixi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<style>
+  :root { --ground: #120910; --magenta: #d123a0; --magenta-text: #ff5ccb; --cyan: #09d0fe; --violet: #502a5f; --violet-light: #986ea9; --lilac: #d39dd4; --muted: #b8a6c4; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: var(--ground); color: #fff; font-family: "Space Grotesk", sans-serif; }
+  canvas, svg.wall { position: absolute; inset: 0; }
+  svg.wall path { filter: drop-shadow(0 0 4px currentColor); }
+  .haze { position: absolute; left: 360px; top: 260px; width: 1200px; height: 560px; border-radius: 50%; background: radial-gradient(closest-side, rgba(18,9,16,.85), rgba(18,9,16,0)); }
+  .over { position: absolute; left: 0; right: 0; top: 300px; text-align: center; font: 700 34px "Space Grotesk"; letter-spacing: 14px; }
+  .title { position: absolute; left: 0; right: 0; top: 272px; padding: 80px 0; text-align: center; font: 400 150px "Permanent Marker"; color: var(--magenta-text); line-height: 1.1;
+           text-shadow: 0 0 6px #fff4fb, 0 0 18px var(--magenta), 0 0 44px var(--magenta), 0 0 90px rgba(209,35,160,.6);
+           -webkit-mask-image: linear-gradient(90deg, #000 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; -webkit-mask-position: 100% 0; -webkit-mask-repeat: no-repeat; }
+  .count { position: absolute; left: 0; right: 0; top: 548px; text-align: center; font: 400 112px "Permanent Marker"; color: #e9fbff;
+           text-shadow: 0 0 6px #fff, 0 0 18px var(--cyan), 0 0 42px var(--cyan); }
+  svg.progress { position: absolute; left: 640px; top: 690px; width: 640px; height: 60px; overflow: visible; }
+  .line { position: absolute; left: 0; right: 0; top: 770px; text-align: center; font: 500 30px "Space Grotesk"; color: var(--muted); }
+  .tape { position: absolute; left: 0; right: 0; bottom: 34px; height: 46px; background: rgba(211,157,212,.88); transform: rotate(-1deg); font: 700 22px "Space Grotesk"; letter-spacing: 6px;
+          color: #120910; display: flex; align-items: center; white-space: nowrap; overflow: hidden; clip-path: polygon(0 8%, 100% 0, 100% 92%, 0 100%); }
+  .over, .count, .line, .tape { opacity: 0; }
+</style>
+</head>
+<body>
+<svg class="wall" id="wall" viewBox="0 0 1920 1080"></svg>
+<div class="haze"></div>
+<div class="over" id="over">STREAM STARTET</div>
+<div class="title" id="title">GLEICH GEHT'S LOS</div>
+<div class="count" id="count">04:59</div>
+<svg class="progress" id="progress" viewBox="0 0 640 60"></svg>
+<div class="line" id="line">… vielleicht.</div>
+<div class="tape" id="tape"><span id="tapeText">&nbsp; REZONDES ✶ CHAOS AN DER WAND ✶ GLEICH GEHT'S LOS ✶ NICHT ANFASSEN, IST NOCH NASS ✶ REZONDES ✶ CHAOS AN DER WAND ✶ GLEICH GEHT'S LOS ✶</span></div>
+<script type="module">
+gsap.registerPlugin(DrawSVGPlugin, ScrambleTextPlugin, CustomEase);
+gsap.ticker.lagSmoothing(0);
+const at = new URLSearchParams(location.search).get("t");
+// after the build everything keeps moving (setting, off with ?idle=0): scribbles boil and drift, bristles shimmer,
+// drips run and drop, dust floats, the title flickers and glitches now and then
+const IDLE = new URLSearchParams(location.search).get("idle") !== "0";
+const IDLE_FROM = 4.6, BOIL_FPS = 8;
+let NOW = 0;
+const start = performance.now() / 1000;
+await document.fonts.ready;
+let s = 2026; const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+const between = (a, b) => a + rnd() * (b - a);
+
+const app = new PIXI.Application();
+await app.init({ width: 1920, height: 1080, antialias: true, autoStart: false, background: "#120910", preference: "webgl" });
+document.body.prepend(app.canvas);
+const { Container, Graphics, Sprite, Texture, BlurFilter } = PIXI;
+const C = { magenta: 0xd123a0, cyan: 0x09d0fe, violet: 0x502a5f, violetLight: 0x986ea9, lilac: 0xd39dd4, white: 0xffffff };
+
+// the wall: radial light in the middle, violet blotches, grain over everything
+const tex = draw => { const c = document.createElement("canvas"); c.width = 1920; c.height = 1080; draw(c.getContext("2d")); return Texture.from(c); };
+app.stage.addChild(new Sprite(tex(g => {
+  const r = g.createRadialGradient(960, 540, 60, 960, 540, 1100); r.addColorStop(0, "#2a1d38"); r.addColorStop(1, "#120910"); g.fillStyle = r; g.fillRect(0, 0, 1920, 1080);
+  for (let i = 0; i < 26; i++) { const x = between(0, 1920), y = between(0, 1080), rr = between(80, 260); const b = g.createRadialGradient(x, y, 0, x, y, rr); b.addColorStop(0, "rgba(80,42,95,.45)"); b.addColorStop(1, "rgba(80,42,95,0)"); g.fillStyle = b; g.fillRect(x - rr, y - rr, rr * 2, rr * 2); }
+})));
+const grain = new Sprite(tex(g => { const d = g.createImageData(1920, 1080); for (let i = 0; i < d.data.length; i += 4) { const v = rnd() * 255; d.data[i] = d.data[i + 1] = d.data[i + 2] = v; d.data[i + 3] = 26; } g.putImageData(d, 0, 0); }));
+
+// brush strokes: many bristle tracks side by side, ragged ends, a dry tail; drawn up to progress p.
+// Every stroke is drawn twice: sharp, and blurred with additive blending as the neon glow.
+const strokes = new Container(), glow = new Container();
+glow.filters = [new BlurFilter({ strength: 22, quality: 4 })]; glow.blendMode = "add"; glow.alpha = .75;
+app.stage.addChild(glow, strokes, grain);
+const strokeDefs = [
+  { a: [120, 300], b: [1020, 980], w: 150, color: C.cyan, start: .2 },
+  { a: [520, 200], b: [180, 1000], w: 70, color: C.cyan, start: .55 },
+  { a: [1420, 140], b: [1820, 900], w: 70, color: C.magenta, start: .4 },
+  { a: [1860, 330], b: [980, 740], w: 160, color: C.magenta, start: .75 },
+  { a: [60, 90], b: [520, 40], w: 34, color: C.magenta, start: 1.1 },
+  { a: [1500, 1000], b: [1900, 880], w: 40, color: C.cyan, start: 1.2 },
+].map(d => {
+  const dx = d.b[0] - d.a[0], dy = d.b[1] - d.a[1], len = Math.hypot(dx, dy), ux = dx / len, uy = dy / len, nx = -uy, ny = ux;
+  const bristles = Array.from({ length: Math.round(d.w / 2.2) }, (_, i) => {
+    const off = (i / (d.w / 2.2) - .5) * d.w;
+    return { off, startK: between(0, .06) + Math.abs(off) / d.w * .08, endK: between(.78, 1) - Math.abs(off) / d.w * .15, width: between(1, 3.6), alpha: between(.35, 1), light: rnd() > .85, wob: rnd() * 9 };
+  });
+  const drips = Array.from({ length: 3 + Math.floor(rnd() * 3) }, () => ({ k: between(.15, .8), off: between(.1, .5) * d.w, len: between(60, 200), speed: between(30, 70), w: between(3, 7) }));
+  const sharp = new Graphics(), soft = new Graphics(); strokes.addChild(sharp); glow.addChild(soft);
+  return { ...d, len, ux, uy, nx, ny, bristles, drips, sharp, soft };
+});
+const STROKE_TIME = .55;
+function paintStroke(st, t) {
+  const p = Math.min(1, Math.max(0, (t - st.start) / STROKE_TIME));
+  for (const g of [st.sharp, st.soft]) g.clear();
+  if (p <= 0) return;
+  const ease = 1 - Math.pow(1 - p, 2);
+  // the paint body under the bristles, with ragged edges
+  const body = [], back = [], n = 24;
+  for (let i = 0; i <= n; i++) {
+    const k = .03 + (ease - .03) * i / n, h = st.w * .42 * (1 - Math.pow(Math.max(0, k - .7) / .3, 2) * .6);
+    const j1 = Math.sin(i * 2.7 + st.w) * 5, j2 = Math.cos(i * 3.1 + st.w) * 5, x = st.a[0] + st.ux * st.len * k, y = st.a[1] + st.uy * st.len * k;
+    body.push(x + st.nx * (h + j1), y + st.ny * (h + j1)); back.unshift(x - st.nx * (h + j2), y - st.ny * (h + j2));
+  }
+  if (ease > .04) { st.sharp.poly([...body, ...back]).fill({ color: st.color, alpha: .42 }); st.soft.poly([...body, ...back]).fill({ color: st.color, alpha: .35 }); }
+  for (const b of st.bristles) {
+    const k0 = b.startK, k1 = Math.min(b.endK, ease);
+    if (k1 <= k0) continue;
+    const steps = 12, pts = [];
+    for (let i = 0; i <= steps; i++) {
+      const k = k0 + (k1 - k0) * i / steps, w = Math.sin(k * 14 + b.wob + (IDLE ? NOW * 1.3 : 0)) * 2.5 + (IDLE ? Math.sin(NOW * 2.1 + b.wob + k * 5) * 1.2 : 0);
+      pts.push(st.a[0] + st.ux * st.len * k + st.nx * (b.off + w), st.a[1] + st.uy * st.len * k + st.ny * (b.off + w));
+    }
+    const color = b.light ? 0xffffff : st.color;
+    st.sharp.poly(pts, false).stroke({ width: b.width, color, alpha: b.alpha, cap: "round" });
+    st.soft.poly(pts, false).stroke({ width: b.width * 2, color: st.color, alpha: .5 });
+  }
+  // drips run down from the lower edge once the brush has passed
+  for (const d of st.drips) {
+    const since = t - st.start - STROKE_TIME * d.k; if (since <= 0 || ease < d.k) continue;
+    const x = st.a[0] + st.ux * st.len * d.k + st.nx * d.off, y = st.a[1] + st.uy * st.len * d.k + st.ny * d.off;
+    // idle: the drip keeps running, a drop falls off its end and a new one grows
+    const cyc = IDLE ? (since * d.speed) % (d.len + 160) : since * d.speed, run = Math.min(d.len, cyc);
+    st.sharp.moveTo(x, y).lineTo(x, y + run).stroke({ width: d.w, color: st.color, cap: "round" });
+    st.sharp.circle(x, y + run, d.w * .9).fill(st.color);
+    if (IDLE && cyc > d.len) { const fall = (cyc - d.len) / 160; st.sharp.ellipse(x, y + d.len + fall * fall * 420, d.w * .7, d.w * 1.1).fill({ color: st.color, alpha: 1 - fall }); }
+  }
+}
+
+// spray mist at the tip of each stroke and along the title edge: dots placed from time only
+const spray = new Graphics(); spray.blendMode = "add"; app.stage.addChild(spray);
+const sprayDots = Array.from({ length: 140 }, () => ({ a: rnd() * Math.PI * 2, r: Math.pow(rnd(), .6), ph: rnd() }));
+function paintSpray(t, titleEdge) {
+  spray.clear();
+  for (const st of strokeDefs) {
+    const p = (t - st.start) / STROKE_TIME; if (p <= 0 || p >= 1.15) continue;
+    const k = Math.min(1, 1 - Math.pow(1 - Math.min(p, 1), 2)), x = st.a[0] + st.ux * st.len * k, y = st.a[1] + st.uy * st.len * k;
+    for (const d of sprayDots) { const r = d.r * st.w * .9 * (1 + (p - .5) * .4); spray.circle(x + Math.cos(d.a + t * 9 * d.ph) * r, y + Math.sin(d.a) * r, 1.6).fill({ color: st.color, alpha: .55 * (1.15 - p) }); }
+  }
+  if (titleEdge.on > 0) for (const d of sprayDots) {
+    const r = d.r * 120; spray.circle(titleEdge.x + Math.cos(d.a + t * 12) * r, 436 + Math.sin(d.a + t * 7) * r * .8, 2.4).fill({ color: C.magenta, alpha: .6 * titleEdge.on });
+  }
+}
+
+// scribbles with rough.js: open lines with jitter, hatched and zigzag fills, each one draws itself
+const wall = document.getElementById("wall"), rc = rough.svg(wall);
+const colors = ["#d123a0", "#09d0fe", "#986ea9", "#d39dd4", "#ffffff"];
+const star = (cx, cy, r) => Array.from({ length: 10 }, (_, i) => { const a = -Math.PI / 2 + i * Math.PI / 5, q = i % 2 ? r * .45 : r; return [cx + Math.cos(a) * q, cy + Math.sin(a) * q]; });
+const kinds = [
+  (x, y, r, o) => rc.polygon(star(x, y, r), { ...o, fill: rnd() > .5 ? o.stroke : undefined, fillStyle: "hachure", hachureGap: 6 }),
+  (x, y, r, o) => rc.path(`M${x} ${y + r * .8} C${x - r * 1.6} ${y - r * .2} ${x - r * .6} ${y - r * 1.2} ${x} ${y - r * .3} C${x + r * .6} ${y - r * 1.2} ${x + r * 1.6} ${y - r * .2} ${x} ${y + r * .8}Z`, { ...o, fill: o.stroke, fillStyle: "cross-hatch", hachureGap: 7 }),
+  (x, y, r, o) => rc.circle(x, y, r * 2, { ...o, fill: o.stroke, fillStyle: "zigzag", hachureGap: 8 }),
+  (x, y, r, o) => rc.linearPath(Array.from({ length: 7 }, (_, i) => [x - r + i * r / 3, y + (i % 2 ? -r * .4 : r * .4)]), o),
+  (x, y, r, o) => rc.path(`M${x - r} ${y} L${x + r} ${y} M${x + r * .5} ${y - r * .4} L${x + r} ${y} L${x + r * .5} ${y + r * .4}`, o),
+  (x, y, r, o) => rc.path(`M${x - r} ${y - r} L${x + r} ${y + r} M${x + r} ${y - r} L${x - r} ${y + r}`, { ...o, strokeWidth: o.strokeWidth * 1.6 }),
+  (x, y, r, o) => rc.polygon([[x - r * .3, y - r], [x + r * .5, y - r], [x, y - r * .1], [x + r * .6, y - r * .1], [x - r * .4, y + r], [x - r * .05, y + r * .05], [x - r * .5, y + r * .05]], { ...o, fill: o.stroke, fillStyle: "hachure", hachureGap: 5 }),
+  (x, y, r, o) => rc.curve(Array.from({ length: 18 }, (_, i) => { const a = i * .7, q = r * i / 18; return [x + Math.cos(a) * q, y + Math.sin(a) * q]; }), o),
+  (x, y, r, o) => rc.polygon([[x - r, y + r * .6], [x - r, y - r * .3], [x - r * .5, y + r * .1], [x, y - r * .7], [x + r * .5, y + r * .1], [x + r, y - r * .3], [x + r, y + r * .6]], { ...o, fill: o.stroke, fillStyle: "dashed", hachureGap: 6 }),
+];
+const free = (x, y) => x > 520 && x < 1400 && y > 250 && y < 820;
+const scribbles = [], drift = [];
+for (let n = 0; scribbles.length < 110 && n < 2000; n++) {
+  const x = between(30, 1890), y = between(30, 1050); if (free(x, y)) continue;
+  const big = rnd() > .93, r = big ? between(50, 80) : between(12, 34);
+  const stroke = colors[Math.floor(rnd() * colors.length)];
+  // three takes of the same scribble with other seeds: shown in turn they make the line boil like stop motion
+  const kind = kinds[Math.floor(rnd() * kinds.length)], opts = { stroke, strokeWidth: between(1.4, 3.2), roughness: between(1.2, 2.6), bowing: 2 };
+  const group = document.createElementNS("http://www.w3.org/2000/svg", "g"), rot = between(-25, 25);
+  const takes = [n + 1, n + 5001, n + 9001].map((seed, i) => { const node = kind(x, y, r, { ...opts, seed }); node.setAttribute("transform", `rotate(${rot.toFixed(1)} ${x.toFixed(0)} ${y.toFixed(0)})`); node.style.color = stroke; if (i) node.style.display = "none"; group.appendChild(node); return node; });
+  wall.appendChild(group); scribbles.push(takes[0]); drift.push({ group, takes, x, y, ph: rnd() * 6, amp: big ? 1.2 : 2.5 });
+}
+// progress: a zigzag in rough marker, the done part in magenta, the rest dim
+const prog = document.getElementById("progress"), rp = rough.svg(prog);
+const zig = Array.from({ length: 17 }, (_, i) => [i * 40, i % 2 ? 10 : 46]);
+const zigDim = rp.linearPath(zig, { stroke: "#502a5f", strokeWidth: 5, roughness: 1.4, seed: 3 }); prog.appendChild(zigDim);
+const zigDone = rp.linearPath(zig.slice(0, 6), { stroke: "#ff5ccb", strokeWidth: 6, roughness: 1.4, seed: 4 }); zigDone.style.filter = "drop-shadow(0 0 6px #d123a0)"; prog.appendChild(zigDone);
+
+const titleEdge = { x: 0, on: 0 };
+const tl = gsap.timeline();
+scribbles.forEach(n => gsap.set(n.querySelectorAll("path"), { drawSVG: "0%" }));
+// spray burst: strokes are painted (pixi, by time), then scribbles draw themselves around them
+const paths = scribbles.map(n => [...n.querySelectorAll("path")]);
+paths.forEach((p, i) => tl.to(p, { drawSVG: "100%", duration: .35, ease: "power1.out", stagger: .04 }, 1.3 + (i % 40) * .045 + Math.floor(i / 40) * .3));
+// title is sprayed from left to right, the spray cloud follows the edge
+tl.to("#over", { opacity: 1, duration: .1, ease: "steps(1)" }, 1.6);
+tl.from("#over", { duration: .7, scrambleText: { text: "STREAM STARTET", chars: "!?#*✶×", speed: .8 } }, 1.6);
+tl.fromTo("#title", { webkitMaskPosition: "100% 0" }, { webkitMaskPosition: "0% 0", duration: 1.2, ease: "power1.inOut" }, 2.0);
+tl.fromTo(titleEdge, { x: 220, on: 1 }, { x: 1720, duration: 1.2, ease: "power1.inOut" }, 2.0);
+tl.to(titleEdge, { on: 0, duration: .3 }, 3.1);
+tl.set("#title", { webkitMaskImage: "none" }, 3.25);
+// countdown slaps in, the zigzag draws, the line types, tape slides in
+tl.fromTo("#count", { opacity: 0, scale: 1.6 }, { opacity: 1, scale: 1, duration: .35, ease: "back.out(2.6)" }, 3.0);
+tl.from([...zigDim.querySelectorAll("path")], { drawSVG: "0%", duration: .8, ease: "none" }, 3.2);
+tl.from([...zigDone.querySelectorAll("path")], { drawSVG: "0%", duration: .5, ease: "none" }, 3.6);
+tl.to("#line", { opacity: 1, duration: .4 }, 3.8);
+tl.fromTo("#tape", { opacity: 1, xPercent: -110 }, { xPercent: 0, duration: .6, ease: "power3.out" }, 3.4);
+tl.to("#tapeText", { x: -900, duration: 30, ease: "none" }, 4.0);
+// neon flicker and a short glitch on the title, now and then
+tl.to("#title", { opacity: .55, duration: .04, repeat: 5, yoyo: true, ease: "steps(1)" }, 5.2);
+tl.to("#title", { keyframes: [{ x: -14, textShadow: "-10px 0 0 #09d0fe, 8px 0 0 #d123a0, 0 0 18px #d123a0" }, { x: 9 }, { x: 0, textShadow: "0 0 6px #fff4fb, 0 0 18px #d123a0, 0 0 44px #d123a0, 0 0 90px rgba(209,35,160,.6)" }], duration: .22, ease: "steps(3)" }, 6.4);
+if (at) tl.pause(Number(at));
+
+// floating spray dust for the idle state
+const dust = new Graphics(); dust.blendMode = "add"; app.stage.addChild(dust);
+const dustList = Array.from({ length: 90 }, () => ({ x: between(0, 1920), y: between(0, 1080), r: between(1, 2.6), sp: between(8, 26), ph: rnd() * 6, c: rnd() > .5 ? C.magenta : C.cyan }));
+const titleEl = document.getElementById("title");
+const hash = n => { const v = Math.sin(n * 127.1) * 43758.5453; return v - Math.floor(v); };
+gsap.ticker.add(() => {
+  const t = tl.time();
+  NOW = at ? Number(at) : performance.now() / 1000 - start;
+  const idleOn = IDLE && t >= IDLE_FROM;
+  // boil and drift of the scribbles
+  drift.forEach((d, i) => {
+    const take = idleOn ? Math.floor(NOW * BOIL_FPS + i * .37) % 3 : 0;
+    d.takes.forEach((node, k) => node.style.display = k === take ? "" : "none");
+    if (idleOn) d.group.setAttribute("transform", `translate(${(Math.sin(NOW * .7 + d.ph) * d.amp).toFixed(2)} ${(Math.cos(NOW * .5 + d.ph) * d.amp * 1.4).toFixed(2)}) rotate(${(Math.sin(NOW * .6 + d.ph) * d.amp).toFixed(2)} ${d.x.toFixed(0)} ${d.y.toFixed(0)})`);
+  });
+  dust.clear();
+  if (idleOn) dustList.forEach(p => dust.circle(p.x + Math.sin(NOW * .4 + p.ph) * 30, (p.y - NOW * p.sp) % 1080 + (p.y - NOW * p.sp < 0 ? 1080 : 0), p.r).fill({ color: p.c, alpha: .35 + .25 * Math.sin(NOW * 2 + p.ph) }));
+  // neon flicker every few seconds and a short glitch now and then
+  if (idleOn && t > 6.8) {
+    const slot = Math.floor(NOW / 4.3), inSlot = NOW - slot * 4.3, flick = hash(slot) > .35 && inSlot < .3 && Math.floor(inSlot * 30) % 2 === 0;
+    const gslot = Math.floor(NOW / 7.1), ginSlot = NOW - gslot * 7.1, glitch = hash(gslot + 99) > .3 && ginSlot < .18;
+    titleEl.style.opacity = flick ? .55 : 1;
+    titleEl.style.transform = glitch ? `translateX(${(hash(Math.floor(ginSlot * 30)) - .5) * 30}px)` : "";
+    titleEl.style.textShadow = glitch ? "-10px 0 0 #09d0fe, 8px 0 0 #d123a0, 0 0 18px #d123a0" : "";
+  }
+  for (const st of strokeDefs) paintStroke(st, t);
+  paintSpray(t, titleEdge);
+  glow.alpha = .62 + .08 * Math.sin(t * 7) * Math.sin(t * 2.3);
+  app.renderer.render(app.stage);
+});
+</script>
+</body>
+</html>

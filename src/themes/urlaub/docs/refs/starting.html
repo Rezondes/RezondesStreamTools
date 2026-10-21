@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Urlaub Starting Realistisch</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MotionPathPlugin.min.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/" } }</script>
+<style>
+  :root { --ink: #2e1a0c; --hibiscus: #ff4f8b; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #f3c9a0; font-family: Fredoka, sans-serif; color: var(--ink); }
+  canvas { position: absolute; inset: 0; }
+  /* weathered driftwood: grain from turbulence, darker joints, worn edges, lit from above */
+  .wood { position: relative; border-radius: 16px; border: 3px solid #5b3a1c;
+          background:
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .18' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .22 0 0 0 0 .1 0 0 0 1.1 -.35'/%3E%3C/filter%3E%3Crect width='600' height='200' filter='url(%23g)'/%3E%3C/svg%3E"),
+            repeating-linear-gradient(180deg, transparent 0 58px, rgba(50,28,10,.55) 58px 61px, rgba(255,230,190,.18) 61px 63px),
+            linear-gradient(180deg, #c99a62, #a8743f 55%, #8d5d2f);
+          box-shadow: inset 0 2px 0 rgba(255,236,200,.45), inset 0 -8px 14px rgba(40,20,5,.35), 0 26px 40px rgba(30,15,5,.45); }
+  .sign { position: absolute; left: 50%; top: 150px; width: 1040px; margin-left: -520px; padding: 24px 40px 30px; box-sizing: border-box; text-align: center; transform-origin: 50% -150px; }
+  .rope { position: absolute; top: -150px; width: 9px; height: 154px; border-radius: 4px; background: repeating-linear-gradient(-32deg, #d9b97e 0 5px, #8f6f3c 5px 9px); box-shadow: 1px 0 2px rgba(0,0,0,.4); }
+  .over { font: 700 26px Fredoka; letter-spacing: 6px; color: #f6e4c4; text-shadow: 0 -1px 0 rgba(0,0,0,.45); }
+  .title { font: 400 100px Pacifico; line-height: 1.3; color: #fff4e0; text-shadow: 0 -2px 0 rgba(60,30,10,.6), 0 3px 0 rgba(255,240,210,.25), 0 6px 18px rgba(0,0,0,.35); }
+  .sub { font: 600 30px Fredoka; color: #f6e4c4; text-shadow: 0 -1px 0 rgba(0,0,0,.45); }
+  .post { position: absolute; left: 50%; top: 610px; width: 540px; margin-left: -270px; padding: 12px 30px 24px; box-sizing: border-box; text-align: center; }
+  .post b { font: 700 88px Fredoka; letter-spacing: 2px; color: #fff4e0; text-shadow: 0 -2px 0 rgba(60,30,10,.6), 0 6px 14px rgba(0,0,0,.35); }
+  .pole { position: absolute; left: 50%; top: 790px; margin-left: -15px; width: 30px; height: 320px; background: linear-gradient(90deg, #5b3a1c, #9c6a38 45%, #5b3a1c); }
+  .ropeBar { position: relative; height: 34px; margin: 4px 10px 0; }
+  .ropeBar svg { position: absolute; inset: -10px 0; width: 100%; height: 54px; overflow: visible; }
+  .line { position: absolute; left: 50%; top: 908px; transform: translateX(-50%); padding: 10px 32px; border-radius: 999px; background: rgba(255,250,240,.86); backdrop-filter: blur(8px);
+          font: 500 30px Fredoka; color: #3b2412; box-shadow: 0 8px 18px rgba(0,0,0,.25); white-space: nowrap; }
+  .clock { position: absolute; right: 46px; top: 36px; padding: 8px 26px; border-radius: 999px; background: rgba(255,250,240,.86); backdrop-filter: blur(8px); font: 600 32px Fredoka; box-shadow: 0 8px 18px rgba(0,0,0,.25); }
+  .sign, .post, .pole, .line, .clock { visibility: hidden; }
+</style>
+</head>
+<body>
+<div class="pole" id="pole"></div>
+<div class="wood sign" id="sign"><i class="rope" style="left:140px"></i><i class="rope" style="right:140px"></i>
+  <div class="over" id="over">GLEICH GEHT'S LOS</div>
+  <div class="title" id="title">Stream startet gleich</div>
+  <div class="sub" id="sub">Schnapp dir einen Cocktail!</div>
+</div>
+<div class="wood post" id="post"><b id="digits">04:59</b>
+  <div class="ropeBar"><svg viewBox="0 0 480 54"><path id="ropePath" d="M0 27 C120 40 240 14 360 30 S460 28 480 26" fill="none" stroke="#5b3a1c" stroke-width="9" stroke-linecap="round"/>
+    <path d="M0 27 C120 40 240 14 360 30 S460 28 480 26" fill="none" stroke="#d9b97e" stroke-width="5" stroke-linecap="round" stroke-dasharray="6 4"/>
+    <g id="buoy"><circle r="17" fill="#fff" stroke="#3b2412" stroke-width="2.5"/><path d="M-17 0 A17 17 0 0 1 0 -17 L0 0 Z M17 0 A17 17 0 0 1 0 17 L0 0 Z" fill="#e8394a"/><circle r="6" fill="#fff" stroke="#3b2412" stroke-width="2"/></g></svg></div></div>
+<div class="line" id="line">Liegestuhl wird aufgestellt …</div>
+<div class="clock" id="clock">07:15</div>
+<script type="module">
+import * as THREE from "three";
+import { Water } from "three/addons/objects/Water.js";
+import { Sky } from "three/addons/objects/Sky.js";
+gsap.registerPlugin(SplitText, MotionPathPlugin);
+gsap.ticker.lagSmoothing(0);
+const at = new URLSearchParams(location.search).get("t");
+await document.fonts.ready;
+let seed = 12; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+const canvasTexture = (w, h, draw, repeat) => { const c = document.createElement("canvas"); c.width = w; c.height = h; draw(c.getContext("2d"), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; if (repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(...repeat); } t.anisotropy = 8; return t; };
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(1); renderer.setSize(1920, 1080);
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .42;
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.insertBefore(renderer.domElement, document.body.firstChild);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 1920 / 1080, .1, 20000);
+
+// physical sky with the rising sun; the sun direction drives the water reflection and the light
+const sky = new Sky(); sky.scale.setScalar(10000); scene.add(sky);
+Object.assign(sky.material.uniforms, {}); sky.material.uniforms.turbidity.value = 6; sky.material.uniforms.rayleigh.value = 2.2;
+sky.material.uniforms.mieCoefficient.value = .006; sky.material.uniforms.mieDirectionalG.value = .86;
+const sunDir = new THREE.Vector3();
+const sunLight = new THREE.DirectionalLight(0xffd2a0, 2.4); sunLight.castShadow = true; sunLight.shadow.mapSize.set(2048, 2048);
+Object.assign(sunLight.shadow.camera, { left: -40, right: 40, top: 40, bottom: -40, near: 1, far: 300 }); scene.add(sunLight, sunLight.target);
+const hemi = new THREE.HemisphereLight(0xbfd8ff, 0xd9b98a, .8); scene.add(hemi);
+const pmrem = new THREE.PMREMGenerator(renderer); let envFor = -99, envTex = null;
+
+// ocean: the Water shader with a tileable normal map made here from summed waves (no image file needed)
+const normals = (() => {
+  const N = 256, c = document.createElement("canvas"); c.width = c.height = N; const g = c.getContext("2d"), img = g.createImageData(N, N);
+  const waves = Array.from({ length: 14 }, () => ({ fx: Math.round((rnd() - .5) * 16), fy: Math.round((rnd() - .5) * 16), a: .4 + rnd(), p: rnd() * 6.3 }));
+  const h = (x, y) => waves.reduce((s, w) => s + w.a * Math.sin((w.fx * x + w.fy * y) * 2 * Math.PI / N + w.p), 0);
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    const dx = h(x + 1, y) - h(x - 1, y), dy = h(x, y + 1) - h(x, y - 1), n = new THREE.Vector3(-dx, -dy, 2.2).normalize(), i = (y * N + x) * 4;
+    img.data[i] = (n.x * .5 + .5) * 255; img.data[i + 1] = (n.y * .5 + .5) * 255; img.data[i + 2] = (n.z * .5 + .5) * 255; img.data[i + 3] = 255;
+  }
+  g.putImageData(img, 0, 0); const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; return t;
+})();
+const water = new Water(new THREE.PlaneGeometry(10000, 10000), { textureWidth: 1024, textureHeight: 1024, waterNormals: normals, sunDirection: new THREE.Vector3(), sunColor: 0xfff0d8, waterColor: 0x0a4a5e, distortionScale: 2.6, fog: false });
+water.rotation.x = -Math.PI / 2; water.material.uniforms.size.value = 6; scene.add(water);
+
+// beach: sand rising out of the water toward the camera, ripples and grain, darker where it is wet
+const SHORE = 6;
+const beachH = (x, z) => (z - SHORE) * .085 + Math.sin(x * .09) * .18 + Math.sin(x * .31 + z * .2) * .05 - .25;
+const sandTex = canvasTexture(1024, 1024, (g, w, h) => {
+  g.fillStyle = "#e4c899"; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 90000; i++) { const v = rnd(); g.fillStyle = v > .5 ? `rgba(255,245,220,${rnd() * .35})` : `rgba(120,90,50,${rnd() * .25})`; g.fillRect(rnd() * w, rnd() * h, 1.5, 1.5); }
+  for (let y = 0; y < h; y += 9) { g.strokeStyle = "rgba(150,115,70,.12)"; g.lineWidth = 3; g.beginPath(); for (let x = 0; x <= w; x += 16) g.lineTo(x, y + Math.sin(x * .02 + y * .3) * 4); g.stroke(); }
+}, [18, 9]);
+const beachGeo = new THREE.PlaneGeometry(260, 80, 200, 80); beachGeo.rotateX(-Math.PI / 2); beachGeo.translate(0, 0, 30);
+const bp = beachGeo.attributes.position, bc = [], dry = new THREE.Color(1, 1, 1), wet = new THREE.Color(.62, .55, .46);
+for (let i = 0; i < bp.count; i++) { const y = beachH(bp.getX(i), bp.getZ(i)); bp.setY(i, y); const c = dry.clone().lerp(wet, THREE.MathUtils.clamp(1 - (y - .02) / .4, 0, 1)); bc.push(c.r, c.g, c.b); }
+beachGeo.setAttribute("color", new THREE.Float32BufferAttribute(bc, 3)); beachGeo.computeVertexNormals();
+const beach = new THREE.Mesh(beachGeo, new THREE.MeshStandardMaterial({ map: sandTex, vertexColors: true, roughness: .95 })); beach.receiveShadow = true; scene.add(beach);
+
+// surf: foam bands run up the beach, thin out and fade; each band placed from time only
+const foamTex = canvasTexture(1024, 64, (g, w, h) => {
+  for (let i = 0; i < 2600; i++) { const x = rnd() * w, y = h * .5 + (rnd() - .5) * h * (.3 + .7 * Math.sin(x * .02) ** 2); g.fillStyle = `rgba(255,255,255,${.3 + rnd() * .6})`; g.beginPath(); g.arc(x, y, 1 + rnd() * 3, 0, 7); g.fill(); }
+}, [6, 1]);
+const foams = [0, .33, .66].map(o => { const m = new THREE.Mesh(new THREE.PlaneGeometry(260, 4, 120, 1), new THREE.MeshBasicMaterial({ map: foamTex.clone(), transparent: true, depthWrite: false }));
+  m.rotation.x = -Math.PI / 2; m.material.map.repeat.set(6, 1); m.material.map.offset.x = o * 3; m.userData.o = o; scene.add(m); return m; });
+function placeFoam(t) {
+  foams.forEach(m => { const k = ((t / 7) + m.userData.o) % 1, z = SHORE - 7 + k * 9.5, ease = Math.sin(k * Math.PI);
+    m.position.set(Math.sin(t * .1 + m.userData.o * 4) * 3, Math.max(.03, beachH(0, z) + .03), z); m.material.opacity = ease * .9; m.scale.z = 1 + k * .8;
+    const p = m.geometry.attributes.position; for (let i = 0; i < p.count; i++) { const x = p.getX(i); p.setZ(i, (i < p.count / 2 ? -1.2 : 1.2) + Math.sin(x * .12 + m.userData.o * 9) * 1.4 * k); } p.needsUpdate = true; });
+}
+
+// palms: a curved, ringed trunk and pinnate fronds with an alpha texture that droop and sway
+const frondTex = canvasTexture(512, 128, (g, w, h) => {
+  g.strokeStyle = "#5c7a2a"; g.lineWidth = 5; g.beginPath(); g.moveTo(0, h / 2); g.lineTo(w, h / 2); g.stroke();
+  for (let i = 4; i < w - 6; i += 7) { const k = i / w, L = (1 - Math.pow(k - .35, 2) * 1.6) * h * .48;
+    for (const s of [-1, 1]) { const grad = g.createLinearGradient(i, h / 2, i + 30, h / 2 + s * L); grad.addColorStop(0, "#3f6b22"); grad.addColorStop(1, rnd() > .5 ? "#6d9a35" : "#557f2b");
+      g.fillStyle = grad; g.beginPath(); g.moveTo(i, h / 2); g.quadraticCurveTo(i + 8, h / 2 + s * L * .5, i + 26, h / 2 + s * L); g.lineTo(i + 30, h / 2 + s * L * .96); g.quadraticCurveTo(i + 12, h / 2 + s * L * .45, i + 6, h / 2); g.fill(); } }
+});
+const barkTex = canvasTexture(128, 512, (g, w, h) => { g.fillStyle = "#7a5a3a"; g.fillRect(0, 0, w, h); for (let y = 0; y < h; y += 22) { g.fillStyle = "#4e3622"; g.fillRect(0, y, w, 5); g.fillStyle = "rgba(200,170,120,.35)"; g.fillRect(0, y + 5, w, 3); }
+  for (let i = 0; i < 4000; i++) { g.fillStyle = `rgba(40,25,10,${rnd() * .3})`; g.fillRect(rnd() * w, rnd() * h, 2, 6); } }, [1, 6]);
+const palms = [];
+function palm(x, z, height, lean, turn) {
+  const base = new THREE.Vector3(x, beachH(x, z) - .2, z);
+  const curve = new THREE.CatmullRomCurve3([base, base.clone().add(new THREE.Vector3(lean * .3, height * .35, 0)), base.clone().add(new THREE.Vector3(lean * .75, height * .7, 0)), base.clone().add(new THREE.Vector3(lean, height, 0))]);
+  const trunk = new THREE.Mesh(new THREE.TubeGeometry(curve, 40, .32, 10), new THREE.MeshStandardMaterial({ map: barkTex, roughness: 1 }));
+  trunk.castShadow = true; scene.add(trunk);
+  const crown = new THREE.Group(); crown.position.copy(curve.getPoint(1)); scene.add(crown);
+  for (let i = 0; i < 11; i++) {
+    const geo = new THREE.PlaneGeometry(6.5, 1.7, 24, 1); geo.translate(3.25, 0, 0);
+    const p = geo.attributes.position; for (let j = 0; j < p.count; j++) { const u = p.getX(j) / 6.5; p.setY(j, p.getY(j) * (1 - u * .3)); p.setZ(j, -u * u * 3.2 + Math.abs(p.getY(j)) * .35); } geo.computeVertexNormals();
+    const frond = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: frondTex, alphaTest: .45, side: THREE.DoubleSide, roughness: .8 }));
+    frond.rotation.order = "YXZ"; frond.rotation.y = i / 11 * Math.PI * 2 + turn; frond.rotation.x = -Math.PI / 2 + .25 + rnd() * .3; frond.castShadow = true;
+    frond.userData = { x: frond.rotation.x, ph: rnd() * 6 }; crown.add(frond);
+  }
+  [[.3, .1], [-.2, .25], [.05, -.3]].forEach(([a, b]) => { const nut = new THREE.Mesh(new THREE.SphereGeometry(.28, 12, 10), new THREE.MeshStandardMaterial({ color: 0x5a3c1c, roughness: .7 })); nut.position.set(a, -.35, b); crown.add(nut); });
+  palms.push(crown);
+}
+palm(-12.5, 13, 12, 2.4, .3); palm(-16, 10, 9.5, 1.6, 1.2); palm(13.5, 12, 11, -2.2, 2);
+// rocks at the water line and a sailboat far out
+for (let i = 0; i < 9; i++) { const x = (rnd() - .5) * 70, z = SHORE + rnd() * 3 - 2; const r = new THREE.Mesh(new THREE.DodecahedronGeometry(.4 + rnd() * .9, 1), new THREE.MeshStandardMaterial({ color: 0x6b6258, roughness: .9 })); r.position.set(x, beachH(x, z) - .1, z); r.scale.y = .6; r.castShadow = true; scene.add(r); }
+const boat = new THREE.Group();
+const hull = new THREE.Mesh(new THREE.BoxGeometry(6, 1, 1.8), new THREE.MeshStandardMaterial({ color: 0xf2f2ee, roughness: .5 })); hull.position.y = .5; boat.add(hull);
+const sailShape = new THREE.Shape(); sailShape.moveTo(0, 0); sailShape.lineTo(0, 7); sailShape.lineTo(3.4, 0); sailShape.lineTo(0, 0);
+const sail = new THREE.Mesh(new THREE.ShapeGeometry(sailShape), new THREE.MeshStandardMaterial({ color: 0xfffaf0, side: THREE.DoubleSide, roughness: .8 })); sail.position.set(-.5, 1, 0); boat.add(sail);
+boat.position.set(60, 0, -300); scene.add(boat);
+// gulls: small soft sprites gliding
+const gullTex = canvasTexture(64, 32, g => { g.strokeStyle = "#2b2b2b"; g.lineWidth = 3; g.lineCap = "round"; g.beginPath(); g.moveTo(4, 18); g.quadraticCurveTo(18, 6, 32, 18); g.quadraticCurveTo(46, 6, 60, 18); g.stroke(); });
+const gulls = Array.from({ length: 5 }, (_, i) => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: gullTex, transparent: true })); s.scale.set(2.4, 1.2, 1); s.userData = { ph: i * 1.3, r: 30 + i * 8, h: 14 + i * 2 }; scene.add(s); return s; });
+
+const state = { sun: -2.5 };
+function place(t) {
+  // sun from just below the horizon to a low morning sun
+  const elev = THREE.MathUtils.degToRad(state.sun), azim = THREE.MathUtils.degToRad(196);
+  sunDir.setFromSphericalCoords(1, Math.PI / 2 - elev, azim);
+  sky.material.uniforms.sunPosition.value.copy(sunDir); water.material.uniforms.sunDirection.value.copy(sunDir).normalize();
+  sunLight.position.copy(sunDir).multiplyScalar(120); sunLight.intensity = THREE.MathUtils.clamp((state.sun + 2) / 6, 0, 1) * 2.6;
+  hemi.intensity = .25 + THREE.MathUtils.clamp((state.sun + 3) / 9, 0, 1) * .7;
+  if (Math.abs(state.sun - envFor) > .6) { envTex?.dispose(); const env = new THREE.Scene(); env.add(sky.clone()); envTex = pmrem.fromScene(env).texture; scene.environment = envTex; envFor = state.sun; }
+  water.material.uniforms.time.value = t * .55;
+  placeFoam(t);
+  palms.forEach((c, i) => c.children.forEach(f => { if (f.userData.x !== undefined) f.rotation.x = f.userData.x + Math.sin(t * 1.3 + f.userData.ph + i) * .05; }));
+  boat.position.x = 60 + Math.sin(t * .05) * 8; boat.rotation.z = Math.sin(t * .9) * .04; boat.position.y = Math.sin(t * 1.1) * .2;
+  gulls.forEach(g => { const a = t * .15 + g.userData.ph; g.position.set(Math.cos(a) * g.userData.r, g.userData.h + Math.sin(t * .8 + g.userData.ph) * 1.2, -40 + Math.sin(a) * 18); g.material.rotation = Math.sin(t * 6 + g.userData.ph) * .1; });
+  camera.position.set(Math.sin(t * .04) * 3, 3.2 + Math.sin(t * .1) * .15, 34);
+  camera.lookAt(0, 3.4, -20);
+}
+
+const tl = gsap.timeline();
+tl.fromTo(state, { sun: -2.5 }, { sun: 4.5, duration: 4, ease: "power1.inOut" }, 0);
+// the wooden sign drops in on its ropes and swings out, the post rises out of the sand
+tl.set(["#sign", "#post", "#pole", "#line", "#clock"], { visibility: "visible" }, 0);
+tl.fromTo("#sign", { y: -700 }, { y: 0, duration: .8, ease: "power2.in" }, 1.0);
+tl.fromTo("#sign", { rotate: -8 }, { rotate: 0, duration: 3, ease: "elastic.out(1, .18)" }, 1.8);
+const split = SplitText.create("#title", { type: "words" });
+tl.from(split.words, { y: 30, opacity: 0, rotate: -6, duration: .5, stagger: .12, ease: "back.out(2.4)" }, 1.9);
+tl.from("#over", { opacity: 0, letterSpacing: "20px", duration: .6 }, 1.9);
+tl.from("#sub", { opacity: 0, y: 10, duration: .4 }, 2.4);
+tl.from(["#post", "#pole"], { y: 520, duration: .9, ease: "back.out(1.4)" }, 1.6);
+tl.to("#buoy", { motionPath: { path: "#ropePath", align: "#ropePath", alignOrigin: [.5, .5], start: 0, end: .22 }, duration: 3, ease: "power1.inOut" }, 2.4);
+tl.to("#buoy", { y: "-=5", rotation: 12, duration: .9, repeat: -1, yoyo: true, ease: "sine.inOut" }, 5.4);
+tl.from("#line", { scale: 0, duration: .5, ease: "back.out(2.6)" }, 2.8);
+tl.from("#clock", { y: -110, duration: .6, ease: "back.out(2)" }, 1.4);
+if (at) tl.pause(Number(at));
+const t0 = performance.now();
+gsap.ticker.add(() => { place(at ? Number(at) : (performance.now() - t0) / 1000); renderer.render(scene, camera); });
+</script>
+</body>
+</html>

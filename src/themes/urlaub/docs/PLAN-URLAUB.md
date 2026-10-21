@@ -21,6 +21,10 @@ Commit-Beschreibungen steht. Jedes Package endet mit grünem `npm run verify`.
 | 2 | Theme Südfrucht (erledigt) | Das Theme `suedfrucht` bringt alle Szenen, Stinger, Banner, Töne und hüpfende Frucht-Minimes im Tropen-Look mit, alles einstellbar. | 1 |
 | 3 | Umbenennen zu Urlaub | Das Theme heisst `urlaub`, gespeicherte Werte und das aktive Theme der Streamer gehen ohne Verlust mit. | 2 |
 | 4 | Urlaub-Minimes | Die Minimes sind Strandsachen (Rettungsring, Badeente, ...) statt Früchte; der Rest des Themes bleibt. | 3 |
+| 5 | Modernisierung: Stil-Probe Starting realistisch | Starting zeigt einen realistischen Strand in 3D mit Himmel, Meer, Brandung und Palmen, davor Treibholz-Schilder, abgenommen neben dem Prototyp. | 4, PLAN-GRAFIK 1 bis 3 und 8 |
+| 6 | Modernisierung: BRB und Ending | BRB zeigt den Strand am Mittag, Ending im Sonnenuntergang, mit derselben Welt. | 5 (Abnahme) |
+| 7 | Modernisierung: Overlays | Der Alert surft als Postkarte auf einer Welle herein und wird von einer zweiten Welle weggespült; die übrigen Overlays bewegen sich mit GSAP und PixiJS. | 5 |
+| 8 | Modernisierung: Stinger und Banner | Der Stinger rollt eine Welle mit Gischt aus `burstAt` durchs Bild, die Banner zeigen den realistischen Strand. | 6, PLAN-GRAFIK 4 und 7 |
 
 ## Annahmen
 
@@ -541,3 +545,219 @@ Chat-Namen, an/aus je Typ, Farben je Typ) bleibt; nur der Inhalt ändert sich.
 ### Out of Scope
 
 - Hüpf-Logik (unverändert; sie wandert mit [PLAN-MINIMES.md](../../../../plans/PLAN-MINIMES.md) Package 8 in den Kern).
+
+---
+
+# Modernisierung (Packages 5 bis 8)
+
+Entschieden 2026-10-21: Strand und Ferien bleiben die Kernidee. Die Vollbild-Szenen werden realistisch (Himmel, Meer,
+Sand und Palmen in 3D statt Illustration); die Overlays bleiben im freundlichen, runden Stil und bekommen Bewegung mit
+GSAP und PixiJS. Gestaltung: [DESIGN-URLAUB.md](DESIGN-URLAUB.md), Abschnitt "Modernisierung". Kern-Bausteine:
+[plans/PLAN-GRAFIK.md](../../../../plans/PLAN-GRAFIK.md) (`Stage3D`, `PixiStage`, `useTimeline`, `chance`, `burstAt`,
+`glClip`, `qualityField`, Stinger-Optionen).
+
+## Annahmen der Modernisierung
+
+- **Referenz** (abgenommen 2026-10-21): [refs/starting.html](refs/starting.html), [refs/alert.html](refs/alert.html)
+  und die Standbilder daneben (Alert: Eingang, Halten, Ausgang). Jedes Package mit sichtbarer Arbeit endet mit Renders
+  daneben und dem OK des Nutzers. Die Prototypen dürfen per CDN laden, das Theme nicht.
+- **Technik Vollbild:** three.js über `Stage3D`; Himmel und Meer aus den Beispiel-Objekten von three.js (`Sky`, `Water`
+  aus `three/examples/jsm/objects/`, über `<primitive>` in R3F), die Normalen-Textur des Wassers wird im Code aus
+  überlagerten Wellen erzeugt (keine Bilddatei); Strand, Brandung, Palmen, Boot und Möwen eigene Geometrie. Schilder
+  bleiben HTML und CSS (verwittertes Treibholz).
+- **Technik Overlays:** Wellen und Teilchen in einer transparenten `PixiStage`, Karten als HTML mit 3D-Drehung per CSS.
+- **Alter Look:** die illustrierte Kulisse (`Beach.tsx`) wird ersetzt, kein Schalter.
+- **Fallstrick:** die Postkarte wird nie selbst ausgeblendet (Deckkraft unter 1 macht sie flach), sondern ihr
+  Elternelement ([THEMES.md](../../../../THEMES.md)).
+- **Alles einstellbar**, **Schema in Rust und TS** (`urlaub.rs`, Fixture, Typen je Package), **Commit** je Package nach
+  grünem `npm run verify`. **Minimes** bleiben unverändert.
+
+---
+
+## Package 5: Modernisierung: Stil-Probe Starting realistisch
+
+**Ziel:** Starting zeigt einen realistischen Strand in 3D mit Himmel, Meer, Brandung und Palmen, davor
+Treibholz-Schilder, abgenommen neben dem Prototyp.
+
+**Abhängigkeiten:** Package 4, PLAN-GRAFIK Packages 1 bis 3 und 8
+
+**Betroffene Dateien:**
+- Neu in `src/themes/urlaub/`: `waterNormals.ts`, `waterNormals.check.ts` (kachelbare Normalen aus ganzzahligen
+  Wellenfrequenzen), `shore.ts`, `shore.check.ts` (Höhe des Strandes, Uferlinie, nasser Saum, Brandungsbänder als Lage
+  und Deckkraft aus der Zeit), `palm.ts`, `palm.check.ts` (Stamm als Kurve, Wedel als gebogene Streifen mit Fiederung,
+  Wiegen aus der Zeit), `sun.ts`, `sun.check.ts` (Sonnenstand aus Tageszeit und Sonnenaufgang)
+- Neu: `three/Sky.tsx`, `three/Ocean.tsx`, `three/Beach.tsx`, `three/Surf.tsx`, `three/Palms.tsx`, `three/Boat.tsx`,
+  `three/Gulls.tsx`, `three/BeachCamera.tsx`, `signs/DriftwoodSign.tsx` (Holz mit Maserung aus SVG-Turbulenz, Seile,
+  Pendel), `signs/BuoyRope.tsx` (Boje treibt am Seil als Fortschritt)
+- Ändern: `scenes/Screen.tsx` (Starting; BRB und Ending bis Package 6 alt), `settings.ts`, `theme.css`,
+  `server-rs/crates/rst-domain/src/themes/urlaub.rs`, Fixture, Typen
+
+### Gestaltung
+
+- **Welt:** physikalischer Himmel mit Sonnenaufgang (Höhe von -2,5 auf 4,5 Grad in 4 s), Meer mit Spiegelung der Sonne,
+  Sandstrand mit Körnung und nassem Saum, Brandung läuft in drei Bändern den Strand hinauf, drei Palmen, Felsen an der
+  Wasserlinie, Segelboot am Horizont, Möwen; Kamera tief am Strand, leichtes Schwanken.
+- **Schilder:** das Holzschild fällt an seinen Seilen herein und pendelt aus, der Pfahl wächst aus dem Sand, die Boje
+  treibt am Seil als Fortschritt; helle, eingeschnitzt wirkende Schrift.
+
+### Einstellungen (neue Gruppen)
+
+| Gruppe | Schlüssel (Standard) |
+|---|---|
+| Welt | `quality` (`qualityField`), `worldSeed` (12), `sunriseOn` (an), `sunriseMs` (4000 ms), `sunHeight` (4.5 Grad), `sunAzimuth` (196 Grad), `turbidity` (6), `exposure` (0.42), `waterColor` (`#0a4a5e`), `waveDistortion` (2.6), `sandColor` (`#e4c899`), `surfOn` (an), `surfBands` (3), `surfSeconds` (7 s), `palms` (3), `palmSway` (Faktor 1), `rocks` (9), `boatOn` (an), `gulls` (5, Obergrenze 40 mit `fixed`), `cameraHeight` (3.2 m), `cameraDrift` (an) |
+| Starting | bestehende Texte bleiben; neu `woodColor` (`#a8743f`), `woodGrain` (an), `signSwing` (8 Grad) |
+
+### Acceptance Criteria
+
+- [ ] AC1: `waterNormals(size, seed)` ist kachelbar (erste und letzte Spalte und Zeile passen aneinander) und
+      deterministisch.
+- [ ] AC2: `shoreHeight` liegt unter der Wasserlinie Richtung Meer und darüber Richtung Kamera; jedes Brandungsband
+      läuft periodisch hinauf und verblasst.
+- [ ] AC3: Jede Palme steht mit dem Stammfuss im Sand (Höhe aus `shoreHeight`); die Wedel hängen nach aussen.
+- [ ] AC4: Der Sonnenstand folgt der Zeit des Sonnenaufgangs; ohne `sunriseOn` steht die Sonne gleich auf `sunHeight`.
+- [ ] AC5: `auditTheme` ohne Befund; `scripts/rules.check.ts`, `scripts/bundle.ts` grün.
+- [ ] AC6 (manuell): `starting.html?demo&preview&t=6.5` neben [refs/starting.png](refs/starting.png); mit
+      `quality = niedrig` kleinere Wassertextur ohne Schatten; Abnahme.
+
+### Tests (TDD)
+
+1. `waterNormals.check.ts > "kachelbar"` (AC1) 2. `shore.check.ts > "Ufer und Brandung"` (AC2) 3. `palm.check.ts > "steht
+im Sand"` (AC3) 4. `sun.check.ts > "Sonnenaufgang"` (AC4) 5. `settings.check.ts`, `cargo test` (AC5)
+
+### Umsetzungsschritte
+
+1. Tests, rot; Module, grün. 2. Einstellungen TS und Rust. 3. 3D-Komponenten, Schilder, `Screen.tsx`.
+4. `npm run verify`, Vorschau, Abnahme.
+
+### Out of Scope
+
+- BRB und Ending (6), Overlays (7), Clips (8), Minimes, Dashboard-Skin.
+
+---
+
+## Package 6: Modernisierung: BRB und Ending
+
+**Ziel:** BRB zeigt den Strand am Mittag, Ending im Sonnenuntergang, mit derselben Welt.
+
+**Abhängigkeiten:** Package 5 (Abnahme)
+
+**Betroffene Dateien:** `sun.ts` (Mittag, Untergang), neu `three/Umbrella.tsx` (Sonnenschirm und Liegestuhl),
+`three/Torches.tsx` (Fackeln mit Flackern), `scenes/Screen.tsx`, `Beach.tsx` (entfällt), `settings.ts`, `urlaub.rs`,
+Fixture, Typen
+
+### Gestaltung
+
+- **BRB:** Mittag, hohe Sonne, Sonnenschirm wiegt im Wind, Liegestuhl, Pausenzeit auf dem Pfahl.
+- **Ending:** Sonnenuntergang (Sonne sinkt in 5 s unter den Horizont), Fackeln am Strand flackern, `endingNext` am Schild.
+
+### Einstellungen
+
+| Gruppe | Schlüssel (Standard) |
+|---|---|
+| BRB | `brbSunHeight` (55 Grad), `umbrellaOn` (an), `umbrellaColor` (`#ff4f8b`) |
+| Ending | `sunsetMs` (5000 ms), `torchesOn` (an), `torches` (4) |
+
+### Acceptance Criteria
+
+- [ ] AC1: `sun.ts` liefert für Mittag und Untergang die Höhen aus den Einstellungen; der Untergang endet unter dem
+      Horizont.
+- [ ] AC2 (manuell): BRB und Ending; Abnahme.
+
+### Tests (TDD)
+
+1. `sun.check.ts > "Mittag und Untergang"` (AC1) 2. `settings.check.ts`, `cargo test`
+
+### Umsetzungsschritte
+
+1. Test, rot, grün. 2. Einstellungen. 3. Komponenten, Szene, `Beach.tsx` entfernen. 4. `npm run verify`, Vorschau,
+Abnahme.
+
+### Out of Scope
+
+- Overlays (7), Clips (8).
+
+---
+
+## Package 7: Modernisierung: Overlays
+
+**Ziel:** Der Alert surft als Postkarte auf einer Welle herein und wird von einer zweiten Welle weggespült; die übrigen
+Overlays bewegen sich mit GSAP und PixiJS.
+
+**Abhängigkeiten:** Package 5
+
+**Betroffene Dateien:**
+- Neu: `swell.ts`, `swell.check.ts` (Welle als Profil mit steiler Front und langem Rücken, Lage des Kamms aus der Zeit,
+  Richtung je Phase), `pixi/Swell.tsx` (Welle mit Schaumkrone und überschlagender Gischt), `pixi/Petals.tsx`
+  (Hibiskusblüten über `burstAt`), `cards/Postcard.tsx` (Vorder- und Rückseite, Briefmarke, Poststempel)
+- Ändern: `scenes/Alerts.tsx`, `scenes/Chat.tsx`, `scenes/Cam.tsx`, `scenes/Music.tsx`, `scenes/Fx.tsx`,
+  `scenes/Info.tsx`, `settings.ts`, `urlaub.rs`, Fixture, Typen, `theme.css`
+
+### Gestaltung
+
+- **Alert** (wie [refs/alert.html](refs/alert.html)): eine Welle läuft von links durch; die Postkarte (Strandbild vorn)
+  reitet auf dem Kamm herein und wird abgesetzt, als die Welle weiterzieht; sie dreht sich auf die Rückseite, der Name
+  springt, der Poststempel knallt mit Wackeln, Hibiskusblüten fliegen, ein Knoten wandert das Seil entlang als
+  Restzeit. Ausgang: eine Welle kommt von rechts, hebt die Karte an, kippt sie und trägt sie nach links weg; Gischt
+  spritzt bei jedem Brechen.
+- **Chat:** Luftblasen steigen auf (PixiJS), Planken schaukeln.
+- **Kamera:** Bambusrahmen, Palmblätter in den Ecken wiegen sich.
+- **Musik:** Strandradio, Wellen-Equalizer in PixiJS.
+
+### Einstellungen
+
+| Gruppe | Schlüssel (Standard) |
+|---|---|
+| Alerts | `alertStyle` (postkarte: postkarte, surfbrett, flaschenpost), `alertSwellIn` (1300 ms), `alertSwellOut` (1300 ms), `alertSwellHeight` (300 px), `alertSpray` (60 Tropfen), `alertPetals` (26), `alertStamp` ("STRAND {date}") |
+
+### Acceptance Criteria
+
+- [ ] AC1: `swellAt(t)` liefert in der Eingangsphase einen Kamm von links nach rechts, in der Ausgangsphase von rechts
+      nach links, dazwischen keine Welle; die Höhe ist am Rand 0.
+- [ ] AC2: Die Karte erreicht ihren Platz, wenn der Kamm die Mitte erreicht; am Ende verlässt sie das Bild.
+- [ ] AC3: Alle Overlays transparent; jede Alert-Art zeigt ihre Texte wie bisher.
+- [ ] AC4 (manuell): Eingang, Halten und Ausgang neben [refs/alert-in.png](refs/alert-in.png),
+      [refs/alert.png](refs/alert.png), [refs/alert-out.png](refs/alert-out.png); Abnahme.
+
+### Tests (TDD)
+
+1. `swell.check.ts > "Welle je Phase"` (AC1) 2. `swell.check.ts > "Karte reitet mit"` (AC2) 3. bestehende Alert-Checks,
+`cargo test` (AC3)
+
+### Umsetzungsschritte
+
+1. Tests, rot; Module, grün. 2. Einstellungen. 3. Szenen. 4. `npm run verify`, Vorschau, Abnahme.
+
+### Out of Scope
+
+- Clips (8).
+
+---
+
+## Package 8: Modernisierung: Stinger und Banner
+
+**Ziel:** Der Stinger rollt eine Welle mit Gischt aus `burstAt` durchs Bild, die Banner zeigen den realistischen Strand.
+
+**Abhängigkeiten:** Package 6, PLAN-GRAFIK Packages 4 und 7
+
+**Betroffene Dateien:** `stinger.ts` (Welle aus `swell.ts`, deckt am Übergangspunkt, Gischt aus `burstAt`),
+`stinger.check.ts`, `clips3d.ts` (neu: Strand als Vanilla-Three.js-Szene für die Banner über `glClip`, lädt in
+`prepare`), `banners.ts`, `banners.check.ts`, `render.ts`, `render.check.ts`
+
+### Acceptance Criteria
+
+- [ ] AC1: Am Übergangspunkt deckt die Welle das ganze Bild; Gischt aus Startwert und Zeit.
+- [ ] AC2: Die Banner rendern den Strand bei Tag und im Sonnenuntergang; gleiche Einstellungen, gleiche Bilder.
+- [ ] AC3: Stinger-Optionen aus dem Kern.
+- [ ] AC4 (manuell): WebM, GIF und Banner im Dashboard; Abnahme.
+
+### Tests (TDD)
+
+1. `stinger.check.ts > "gedeckt am Übergang"` (AC1) 2. `render.check.ts > "Clips"` (AC2, AC3)
+
+### Umsetzungsschritte
+
+1. Tests, rot; `stinger.ts`, `clips3d.ts`, `banners.ts`, grün. 2. `npm run verify`, rendern, Abnahme.
+
+### Out of Scope
+
+- Ton im Stinger.

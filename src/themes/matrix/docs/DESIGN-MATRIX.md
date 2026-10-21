@@ -32,6 +32,24 @@ Grundsätze für alle Themes: [DESIGN.md](../../../../DESIGN.md).
   Einschaltzeile, dann fallen die Spalten unten heraus.
 - **Banner:** Matrix-Regen mit Texten, Dichte einstellbar, Schleife ohne Sprung.
 
+## Modernisierung (entschieden 2026-10-21)
+
+Abgenommene Prototypen: [refs/starting.html](refs/starting.html), [refs/alert.html](refs/alert.html) mit Standbildern.
+Plan: [PLAN-MATRIX.md](PLAN-MATRIX.md). Monochrom bleibt; PixiJS zeichnet, GSAP bewegt.
+
+- **Regen in drei Tiefenebenen:** fern klein, dunkel und unscharf; nah gross, hell und schnell; Köpfe fast weiss mit
+  Glow, Spuren verblassen, Zeichen wechseln laufend.
+- **Kanalname im Regen:** oben aus einem feinen Gitter von Regen-Zeichen mit leichtem Schein, eine Scanlinie läuft
+  durch.
+- **CRT:** schaltet sich ein wie eine Röhre (Linie, öffnet sich, Blitz) und am Ende aus (Linie, Punkt); Scanlinien,
+  Vignette, Glitch in Streifen, bei dem der Regen mitzittert.
+- **Texte:** Titel, Namen und Countdown entschlüsseln sich aus Katakana, Zeilen tippen sich, Fortschritt aus
+  Blockzeichen, Boot-Log mit hervorgehobenem `[ OK ]`.
+- **BRB:** "SIGNAL LOST", der Regen wird langsam, Wiederverbindungs-Versuche. **Ending:** "LOGOUT" mit Stream-Zahlen,
+  der Regen fällt aus dem Bild.
+- **Alerts:** Regen giesst sich über die Stelle, dort schaltet sich die Box ein, der Name entschlüsselt sich; am Ende
+  zerfällt die Box in fallende Zeichen.
+
 ## Im Code
 
 `.theme-matrix`, Keyframes `matrix-*`. Die Klassen haben historisch kein Präfix (`stage`, `crt`, ...), die Kapselung

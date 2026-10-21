@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>KOTH Starting 3D</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Inter:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrambleTextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/TextPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js"></script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/" } }</script>
+<style>
+  :root { --text: #f2f0e6; --olive: #4b5320; --olive-dark: #2f3416; --sand: #c2b280; --steel: #3c4146; --paper: #e9e4d0; --ink: #23251c; --signal: #ff8a1f; --radio: #7cff6b; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #2a2418; font-family: Inter, sans-serif; color: var(--text); }
+  canvas { position: absolute; inset: 0; }
+  .shade { position: absolute; inset: 0; pointer-events: none;
+           background: linear-gradient(to top, rgba(18,16,8,.88) 0%, rgba(18,16,8,.45) 22%, transparent 40%), radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(10,8,4,.55) 100%); }
+  .head { position: absolute; left: 72px; top: 60px; font: 400 20px "Share Tech Mono", monospace; letter-spacing: 5px; color: var(--radio); text-shadow: 0 0 8px rgba(124,255,107,.6); }
+  .head b { color: var(--signal); font-weight: 400; text-shadow: 0 0 8px rgba(255,138,31,.7); }
+  .clock { position: absolute; right: 72px; top: 46px; padding: 8px 18px; background: linear-gradient(#4a5056, #2f3338); border: 2px solid #1c1f22; border-radius: 4px;
+           font: 400 30px "Share Tech Mono", monospace; color: var(--radio); text-shadow: 0 0 10px rgba(124,255,107,.7); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 10px 26px rgba(0,0,0,.45); }
+  /* briefing map: paper sheet with grid, contour lines of the hill and the route, held by tape */
+  .map { position: absolute; left: 72px; top: 120px; width: 420px; height: 300px; background: var(--paper); transform: rotate(-2.5deg); box-shadow: 0 18px 40px rgba(0,0,0,.45);
+         background-image: linear-gradient(rgba(35,37,28,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(35,37,28,.12) 1px, transparent 1px); background-size: 30px 30px; }
+  .map::before, .map::after { content: ""; position: absolute; top: -14px; width: 110px; height: 30px; background: rgba(214,200,150,.85); }
+  .map::before { left: 20px; transform: rotate(-6deg); } .map::after { right: 20px; transform: rotate(5deg); }
+  .map svg { position: absolute; inset: 0; }
+  .map .label { position: absolute; left: 16px; bottom: 10px; font: 400 15px "Share Tech Mono", monospace; color: var(--ink); letter-spacing: 2px; }
+  .title { position: absolute; left: 0; right: 0; top: 700px; text-align: center; font: 400 92px "Black Ops One", sans-serif; letter-spacing: 6px; color: var(--text);
+           text-shadow: 0 4px 0 rgba(0,0,0,.35), 0 0 30px rgba(0,0,0,.6); }
+  .display { position: absolute; left: 50%; top: 822px; width: 640px; margin-left: -320px; height: 120px; box-sizing: border-box; padding: 14px 22px;
+             background: linear-gradient(#50565c, #33373b); border: 2px solid #1c1f22; border-radius: 6px; box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 20px 40px rgba(0,0,0,.55); }
+  .display .screen { height: 88px; background: #0f1a0d; border-radius: 3px; box-shadow: inset 0 0 22px rgba(0,0,0,.9); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+  .display .screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(transparent 0 3px, rgba(0,0,0,.28) 3px 4px); }
+  .count { font: 400 76px "Share Tech Mono", monospace; color: var(--radio); letter-spacing: 6px; text-shadow: 0 0 12px rgba(124,255,107,.85), 0 0 34px rgba(124,255,107,.35); }
+  .rivet { position: absolute; width: 8px; height: 8px; border-radius: 50%; background: #23272a; box-shadow: inset 0 1px 0 rgba(255,255,255,.3); }
+  .radioline { position: absolute; left: 0; right: 0; top: 958px; text-align: center; font: 400 26px "Share Tech Mono", monospace; color: var(--radio); letter-spacing: 2px; opacity: .9; min-height: 30px; }
+  .stripes { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: #1d1d1d; }
+  .stripes i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; background: repeating-linear-gradient(-45deg, var(--signal) 0 18px, #1d1d1d 18px 36px); }
+  .factions { position: absolute; right: 72px; bottom: 48px; display: flex; gap: 10px; font: 600 15px Inter, sans-serif; letter-spacing: 2px; }
+  .factions span { padding: 6px 12px; border-radius: 3px; color: #fff; }
+  .head, .clock, .map, .title, .display, .radioline, .factions { opacity: 0; }
+</style>
+</head>
+<body>
+<div class="shade"></div>
+<div class="head" id="head"><b>KOTH</b> AN ALLE &nbsp;//&nbsp; EINSATZBESPRECHUNG &nbsp;//&nbsp; SEKTOR REZONDES</div>
+<div class="clock" id="clock">19:42:07</div>
+<div class="map" id="map">
+  <svg viewBox="0 0 420 300">
+    <g fill="none" stroke="#5a5a3a" stroke-width="1.6" opacity=".7">
+      <path class="contour" d="M210 70 C290 70 340 120 330 170 C320 220 260 240 200 236 C130 232 90 200 96 156 C102 110 140 70 210 70Z"/>
+      <path class="contour" d="M212 100 C268 100 300 132 294 166 C288 200 246 212 204 210 C156 208 128 188 132 158 C136 124 164 100 212 100Z"/>
+      <path class="contour" d="M214 128 C246 128 264 146 260 166 C256 186 232 192 208 190 C182 188 166 178 168 160 C170 142 186 128 214 128Z"/>
+    </g>
+    <path id="route" d="M30 270 C70 250 80 210 120 196 C150 186 170 176 196 164" fill="none" stroke="#ff8a1f" stroke-width="4" stroke-linecap="round"/>
+    <path id="arrow" d="M184 152 L200 162 L184 176" fill="none" stroke="#ff8a1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle id="objective" cx="214" cy="160" r="30" fill="none" stroke="#d63a2f" stroke-width="4"/>
+    <path id="cross" d="M200 146 L228 174 M228 146 L200 174" stroke="#d63a2f" stroke-width="3" fill="none"/>
+    <text x="252" y="128" font-family="Share Tech Mono" font-size="16" fill="#23251c" id="obj">ZIEL: HÜGEL 301</text>
+  </svg>
+  <div class="label">LAGEKARTE &nbsp;M 1:25 000</div>
+</div>
+<div class="title" id="title">STREAM STARTET GLEICH</div>
+<div class="display" id="display">
+  <i class="rivet" style="left:6px;top:6px"></i><i class="rivet" style="right:6px;top:6px"></i><i class="rivet" style="left:6px;bottom:6px"></i><i class="rivet" style="right:6px;bottom:6px"></i>
+  <div class="screen" id="screen"><div class="count" id="count">T-04:59</div></div>
+</div>
+<div class="radioline" id="radio"></div>
+<div class="factions" id="factions"><span style="background:#2f6fd6">BLUFOR</span><span style="background:#d63a2f">OPFOR</span><span style="background:#3a9a3a">INDFOR</span></div>
+<div class="stripes"><i id="progress"></i></div>
+<script type="module">
+import * as THREE from "three";
+import { EffectComposer } from "three/addons/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/addons/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/addons/postprocessing/OutputPass.js";
+
+gsap.registerPlugin(ScrambleTextPlugin, TextPlugin, DrawSVGPlugin, SplitText, CustomEase);
+gsap.ticker.lagSmoothing(0);
+CustomEase.create("nagel", "M0,0 C0.14,0 0.24,1.12 0.42,1.12 0.56,1.12 0.6,0.96 0.72,0.96 0.82,0.96 0.86,1 1,1");
+const at = new URLSearchParams(location.search).get("t");
+
+// fixed random from a seed, so a still at ?t= always shows the same picture
+let seed = 301;
+const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setPixelRatio(1); renderer.setSize(1920, 1080);
+renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+document.body.insertBefore(renderer.domElement, document.body.firstChild);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(34, 1920 / 1080, .1, 400);
+
+// evening sky as a gradient behind everything, fog in the horizon colour gives the air perspective
+const sky = document.createElement("canvas"); sky.width = 4; sky.height = 512;
+const sg = sky.getContext("2d"), grad = sg.createLinearGradient(0, 0, 0, 512);
+grad.addColorStop(0, "#5d4a3a"); grad.addColorStop(.45, "#b7895a"); grad.addColorStop(.72, "#e9c48c"); grad.addColorStop(1, "#f3dcb0");
+sg.fillStyle = grad; sg.fillRect(0, 0, 4, 512);
+scene.background = new THREE.CanvasTexture(sky); scene.background.colorSpace = THREE.SRGBColorSpace;
+scene.fog = new THREE.Fog(0xd9b585, 50, 210);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(1920, 1080), .55, .5, .82));
+composer.addPass(new OutputPass());
+
+scene.add(new THREE.HemisphereLight(0xffe2b8, 0x3a3420, 1.1));
+const sun = new THREE.DirectionalLight(0xffd29a, 2.6);
+sun.position.set(-30, 22, 18); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -26, right: 26, top: 26, bottom: -26, far: 120 });
+scene.add(sun);
+// low sun disc with glow on the horizon
+const sunDisc = new THREE.Mesh(new THREE.CircleGeometry(9, 40), new THREE.MeshBasicMaterial({ color: 0xffe7a8, fog: false }));
+sunDisc.position.set(-150, 9, -190); sunDisc.lookAt(0, 0, 0); scene.add(sunDisc);
+
+// the hill: a low-poly mound with flat shading, olive on top, sand at the foot
+const hillHeight = (x, z) => {
+  const r2 = x * x + z * z;
+  return 7.2 * Math.exp(-r2 / 90) + .55 * Math.sin(x * .45) * Math.cos(z * .38) + .3 * Math.sin(x * 1.3 + z * .7);
+};
+const groundGeo = new THREE.PlaneGeometry(160, 160, 90, 90); groundGeo.rotateX(-Math.PI / 2);
+const pos = groundGeo.attributes.position, colors = [];
+const olive = new THREE.Color("#6b7a3a"), oliveDark = new THREE.Color("#4a5628"), sand = new THREE.Color("#b9a06a");
+for (let i = 0; i < pos.count; i++) {
+  const x = pos.getX(i), z = pos.getZ(i), y = hillHeight(x, z) + (rnd() - .5) * (Math.hypot(x, z) < 22 ? .25 : .08);
+  pos.setY(i, y);
+  const c = sand.clone().lerp(olive, Math.min(1, Math.max(0, (y - .4) / 2.4))).lerp(oliveDark, rnd() * (y > 1 ? .35 : .08));
+  colors.push(c.r, c.g, c.b);
+}
+groundGeo.setAttribute("color", new THREE.Float32BufferAttribute(colors, 3));
+groundGeo.computeVertexNormals();
+const ground = new THREE.Mesh(groundGeo, new THREE.MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 1 }));
+ground.receiveShadow = true; scene.add(ground);
+
+// far mountains as a ring of low-poly cones, faded by the fog
+const mountainMat = new THREE.MeshStandardMaterial({ color: 0x6b7280, flatShading: true, roughness: 1 });
+for (let i = 0; i < 16; i++) {
+  const a = (i / 16) * Math.PI * 2 + rnd() * .2, r = 170 + rnd() * 25, h = 9 + rnd() * 9;
+  const m = new THREE.Mesh(new THREE.ConeGeometry(34 + rnd() * 18, h, 5 + Math.floor(rnd() * 3)), mountainMat);
+  m.position.set(Math.cos(a) * r, h / 2 - 2, Math.sin(a) * r); m.rotation.y = rnd() * 3; scene.add(m);
+}
+
+// radio mast: a lattice tower of three legs with zigzag braces, drawn segment by segment
+const top = hillHeight(0, 0);
+const mastLines = [], mastH = 9.5;
+const leg = k => { const a = k * Math.PI * 2 / 3; return h => new THREE.Vector3(Math.cos(a) * (.9 - h * .075), top + h, Math.sin(a) * (.9 - h * .075)); };
+const legs = [0, 1, 2].map(leg);
+for (let h = 0; h < mastH; h += .9) {
+  for (let k = 0; k < 3; k++) {
+    const a = legs[k], b = legs[(k + 1) % 3];
+    mastLines.push(a(h), a(h + .9), a(h), b(h + .9));
+  }
+}
+const mastGeo = new THREE.BufferGeometry().setFromPoints(mastLines);
+const mast = new THREE.LineSegments(mastGeo, new THREE.LineBasicMaterial({ color: 0x2b2e30 }));
+scene.add(mast);
+const mastState = { built: 0 };
+const beacon = new THREE.Mesh(new THREE.SphereGeometry(.22, 16, 12), new THREE.MeshBasicMaterial({ color: 0xff3b30 }));
+beacon.position.set(0, top + mastH + .15, 0); scene.add(beacon);
+const beaconLight = new THREE.PointLight(0xff3b30, 0, 12, 1.6); beaconLight.position.copy(beacon.position); scene.add(beaconLight);
+
+// flag pole beside the mast and the flag cloth that waves along its length
+const poleX = 2.6, poleZ = 1.2, poleBase = hillHeight(poleX, poleZ), poleH = 6.2;
+const pole = new THREE.Mesh(new THREE.CylinderGeometry(.06, .08, poleH, 8), new THREE.MeshStandardMaterial({ color: 0x3c4146, metalness: .6, roughness: .4 }));
+pole.position.set(poleX, poleBase + poleH / 2, poleZ); pole.castShadow = true; scene.add(pole);
+const flagTex = (() => {
+  const c = document.createElement("canvas"); c.width = 256; c.height = 160; const g = c.getContext("2d");
+  g.fillStyle = "#2f6fd6"; g.fillRect(0, 0, 256, 160);
+  g.fillStyle = "rgba(0,0,0,.18)"; g.fillRect(0, 0, 256, 18); g.fillRect(0, 142, 256, 18);
+  g.fillStyle = "#f2f0e6"; g.beginPath();
+  for (let i = 0; i < 10; i++) { const r = i % 2 ? 22 : 52, a = -Math.PI / 2 + i * Math.PI / 5; g.lineTo(128 + Math.cos(a) * r, 80 + Math.sin(a) * r); }
+  g.fill(); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+})();
+const flagW = 2.8, flagH = 1.75;
+const flagGeo = new THREE.PlaneGeometry(flagW, flagH, 24, 10); flagGeo.translate(flagW / 2, -flagH / 2, 0);
+const flagRest = flagGeo.attributes.position.array.slice();
+const flag = new THREE.Mesh(flagGeo, new THREE.MeshStandardMaterial({ map: flagTex, side: THREE.DoubleSide, roughness: .9 }));
+flag.castShadow = true; scene.add(flag);
+const flagState = { hoist: 0 };
+function waveFlag(t) {
+  const p = flagGeo.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = flagRest[i * 3], y = flagRest[i * 3 + 1], k = x / flagW;
+    p.setZ(i, Math.sin(x * 2.2 - t * 6.5) * .28 * k + Math.sin(x * 4.1 - t * 9 + y) * .06 * k);
+    p.setY(i, y - k * k * .18);
+  }
+  p.needsUpdate = true; flagGeo.computeVertexNormals();
+  flag.position.set(poleX + .06, poleBase + 1.9 + (poleH - 1.9) * flagState.hoist, poleZ);
+}
+
+// sandbag rings around the top and a camouflage net on poles
+const bagGeo = new THREE.CapsuleGeometry(.24, .5, 4, 8); bagGeo.rotateZ(Math.PI / 2); bagGeo.scale(1, .6, .8);
+const bagMat = new THREE.MeshStandardMaterial({ color: 0xc2b280, roughness: 1, flatShading: true });
+const bags = [];
+for (const [cx, cz, a0, n] of [[-3.4, 2.4, -.6, 7], [3.8, -2.6, 2.4, 6], [-1.5, -4.2, 1.2, 6]]) {
+  for (let row = 0; row < 2; row++) for (let i = 0; i < n - row; i++) {
+    const a = a0 + (i + row * .5) * .22, r = 2.2;
+    const x = cx + Math.cos(a) * r, z = cz + Math.sin(a) * r;
+    const bag = new THREE.Mesh(bagGeo, bagMat); bag.castShadow = true; bag.receiveShadow = true;
+    bag.position.set(x, hillHeight(x, z) + .2 + row * .3, z); bag.rotation.y = -a; bag.userData.y = bag.position.y;
+    scene.add(bag); bags.push(bag);
+  }
+}
+// detail around the top: everything stands on the ground (y from hillHeight) and is built from simple low-poly parts
+const mat = c => new THREE.MeshStandardMaterial({ color: c, roughness: 1, flatShading: true });
+const place = (obj, x, z, lift = 0, rotY = 0) => { obj.position.set(x, hillHeight(x, z) + lift, z); obj.rotation.y = rotY; obj.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } }); scene.add(obj); return obj; };
+// guy wires from the mast to three anchors, a dish and a platform on the mast
+const wires = [];
+for (let k = 0; k < 3; k++) {
+  const a = k * Math.PI * 2 / 3 + .5, ax = Math.cos(a) * 7.5, az = Math.sin(a) * 7.5, anchor = new THREE.Vector3(ax, hillHeight(ax, az), az);
+  wires.push(new THREE.Vector3(0, top + mastH * .85, 0), anchor, new THREE.Vector3(0, top + mastH * .5, 0), anchor.clone());
+}
+const wireGeo = new THREE.BufferGeometry().setFromPoints(wires);
+const wireLines = new THREE.LineSegments(wireGeo, new THREE.LineBasicMaterial({ color: 0x3a3a34, transparent: true, opacity: .6 }));
+scene.add(wireLines);
+const dish = new THREE.Mesh(new THREE.CylinderGeometry(.85, .12, .35, 18, 1, true), new THREE.MeshStandardMaterial({ color: 0xc9c4b4, side: THREE.DoubleSide, roughness: .6 }));
+dish.rotation.z = -Math.PI / 2.4; dish.position.set(1.1, top + mastH * .7, .3); dish.scale.setScalar(.0001); scene.add(dish);
+const platform = new THREE.Mesh(new THREE.CylinderGeometry(1.05, 1.05, .08, 3), mat(0x3c4146)); platform.position.set(0, top + mastH * .55, 0); platform.scale.setScalar(.0001); scene.add(platform);
+// concrete bunker with a firing slit, dug into the slope
+const bunker = new THREE.Group();
+bunker.add(new THREE.Mesh(new THREE.BoxGeometry(3.4, 1.4, 2.4), mat(0x8f8a7a)));
+const bunkerRoof = new THREE.Mesh(new THREE.BoxGeometry(3.8, .3, 2.8), mat(0x7d786a)); bunkerRoof.position.y = .85; bunker.add(bunkerRoof);
+const slit = new THREE.Mesh(new THREE.BoxGeometry(2.2, .22, .1), new THREE.MeshBasicMaterial({ color: 0x14140f })); slit.position.set(0, .25, 1.22); bunker.add(slit);
+place(bunker, -4.6, 4.2, .2, .6);
+// tents (a lying prism with a dark door) and stacks of ammo crates with light edges
+const tent = (x, z, r) => {
+  const g = new THREE.Group(), body = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.4, 3.2, 3, 1), mat(0x556030));
+  body.rotation.z = Math.PI / 2; body.rotation.x = Math.PI / 6; body.position.y = .7; g.add(body);
+  const door = new THREE.Mesh(new THREE.PlaneGeometry(.9, 1), new THREE.MeshBasicMaterial({ color: 0x1d2010 })); door.position.set(1.62, .55, 0); door.rotation.y = Math.PI / 2; g.add(door);
+  return place(g, x, z, 0, r);
+};
+tent(5.6, 3.2, -.5); tent(7.4, -1, .2);
+const crates = (x, z, r, n) => {
+  const g = new THREE.Group();
+  for (let i = 0; i < n; i++) {
+    const c = new THREE.Mesh(new THREE.BoxGeometry(.9, .5, .6), mat(i % 2 ? 0x5a6634 : 0x4b5320));
+    c.position.set((i % 2) * .5, .25 + Math.floor(i / 2) * .5, (i % 3) * .1); c.rotation.y = (i % 3) * .2;
+    c.add(new THREE.LineSegments(new THREE.EdgesGeometry(c.geometry), new THREE.LineBasicMaterial({ color: 0xc2b280, transparent: true, opacity: .5 }))); g.add(c);
+  }
+  return place(g, x, z, 0, r);
+};
+crates(2.4, 3.8, .3, 5); crates(-2.8, -3.2, 1.2, 3); crates(4.2, -4.4, -.4, 4);
+// barbed wire fence on short posts around the top
+const fencePts = [], posts = [];
+for (let i = 0; i <= 26; i++) {
+  const a = i / 26 * Math.PI * 2, r = 9.5 + Math.sin(a * 3) * .6, x = Math.cos(a) * r, z = Math.sin(a) * r, y = hillHeight(x, z);
+  posts.push([x, y, z]);
+  if (i) { const [px, py, pz] = posts[i - 1]; for (const h of [.45, .8]) fencePts.push(new THREE.Vector3(px, py + h, pz), new THREE.Vector3(x, y + h, z)); }
+}
+scene.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(fencePts), new THREE.LineBasicMaterial({ color: 0x2c2a24 })));
+posts.forEach(([x, y, z]) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(.05, .06, 1, 5), mat(0x4a3a24)); m.position.set(x, y + .5, z); m.castShadow = true; scene.add(m); });
+// low-poly pines and rocks on the slopes
+for (let i = 0; i < 46; i++) {
+  const a = rnd() * Math.PI * 2, r = 12 + rnd() * 26, x = Math.cos(a) * r, z = Math.sin(a) * r, h = 1.6 + rnd() * 1.8;
+  const g = new THREE.Group(), trunk = new THREE.Mesh(new THREE.CylinderGeometry(.08, .1, .5, 5), mat(0x4a3a24)); trunk.position.y = .25; g.add(trunk);
+  [0, 1, 2].forEach(k => { const c = new THREE.Mesh(new THREE.ConeGeometry(h * (.5 - k * .12), h * .5, 6), mat([0x3a4a22, 0x46562a, 0x52632f][k])); c.position.y = .5 + k * h * .26; g.add(c); });
+  place(g, x, z, 0, rnd() * 3);
+}
+for (let i = 0; i < 30; i++) {
+  const a = rnd() * Math.PI * 2, r = 5 + rnd() * 30, x = Math.cos(a) * r, z = Math.sin(a) * r;
+  const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(.3 + rnd() * .6, 0), mat(0x7d786a)); rock.scale.y = .6; place(rock, x, z, .05, rnd() * 3);
+}
+// a jeep parked on the slope
+const jeep = new THREE.Group();
+const jeepBody = new THREE.Mesh(new THREE.BoxGeometry(2.4, .7, 1.3), mat(0x4b5320)); jeepBody.position.y = .75; jeep.add(jeepBody);
+const jeepCab = new THREE.Mesh(new THREE.BoxGeometry(1.1, .5, 1.25), mat(0x3f461b)); jeepCab.position.set(-.4, 1.35, 0); jeep.add(jeepCab);
+const jeepGlass = new THREE.Mesh(new THREE.PlaneGeometry(1.1, .45), new THREE.MeshStandardMaterial({ color: 0x9fb3b8, roughness: .2, metalness: .3 })); jeepGlass.position.set(.16, 1.35, 0); jeepGlass.rotation.y = Math.PI / 2; jeep.add(jeepGlass);
+[[.8, .65], [.8, -.65], [-.8, .65], [-.8, -.65]].forEach(([x, z]) => { const w = new THREE.Mesh(new THREE.CylinderGeometry(.36, .36, .28, 12), mat(0x1f1f1c)); w.rotation.x = Math.PI / 2; w.position.set(x, .36, z); jeep.add(w); });
+place(jeep, 9.5, 6.5, 0, -2.2);
+// helicopter circling far off: body, tail boom, spinning rotor
+const heli = new THREE.Group();
+const heliBody = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 8), mat(0x3f461b)); heliBody.scale.set(1.6, .9, .9); heli.add(heliBody);
+const heliTail = new THREE.Mesh(new THREE.CylinderGeometry(.12, .25, 3.2, 6), mat(0x3f461b)); heliTail.rotation.z = Math.PI / 2; heliTail.position.x = -2.4; heli.add(heliTail);
+const rotor = new THREE.Mesh(new THREE.BoxGeometry(6, .04, .25), new THREE.MeshBasicMaterial({ color: 0x1a1a18, transparent: true, opacity: .55 })); rotor.position.y = 1.05; heli.add(rotor);
+const rotorCross = rotor.clone(); rotorCross.position.y = 0; rotorCross.rotation.y = Math.PI / 2; rotor.add(rotorCross);
+scene.add(heli);
+const wireState = { k: 0 };
+
+// faction markers: small flags of the other two factions at the foot of the hill
+const markerFlags = [[-15, -3, 0xd63a2f], [14, -6, 0x3a9a3a]].map(([x, z, color]) => {
+  const g = new THREE.Group();
+  const p = new THREE.Mesh(new THREE.CylinderGeometry(.04, .04, 2.4, 6), new THREE.MeshStandardMaterial({ color: 0x3c4146 }));
+  p.position.y = 1.2; g.add(p);
+  const f = new THREE.Mesh(new THREE.PlaneGeometry(1.1, .7), new THREE.MeshStandardMaterial({ color, side: THREE.DoubleSide }));
+  f.position.set(.55, 2.05, 0); g.add(f);
+  g.position.set(x, hillHeight(x, z), z); g.scale.setScalar(.0001); scene.add(g); return g;
+});
+
+// smoke columns: soft sprites rising, each one placed purely from time (no running state, works for seeking)
+const puff = (() => {
+  const c = document.createElement("canvas"); c.width = c.height = 128; const g = c.getContext("2d");
+  const r = g.createRadialGradient(64, 64, 4, 64, 64, 62); r.addColorStop(0, "rgba(255,255,255,.9)"); r.addColorStop(1, "rgba(255,255,255,0)");
+  g.fillStyle = r; g.fillRect(0, 0, 128, 128); return new THREE.CanvasTexture(c);
+})();
+const smokes = [];
+for (const [x, z, color] of [[-16, -10, 0x9a948a], [14, -14, 0x7d786f], [-24, 8, 0xa8a196]]) {
+  for (let i = 0; i < 22; i++) {
+    const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: puff, color, transparent: true, depthWrite: false, opacity: 0 }));
+    s.userData = { x, z, base: hillHeight(x, z), offset: i / 22, sway: rnd() * 6 };
+    scene.add(s); smokes.push(s);
+  }
+}
+const smokeState = { on: 0 };
+function placeSmoke(t) {
+  for (const s of smokes) {
+    const life = 7, k = ((t / life) + s.userData.offset) % 1;
+    s.position.set(s.userData.x + Math.sin(k * 3 + s.userData.sway) * .8 + k * 4, s.userData.base + k * 14, s.userData.z);
+    s.scale.setScalar(1.2 + k * 5);
+    s.material.opacity = smokeState.on * .55 * Math.sin(k * Math.PI);
+  }
+}
+
+// dust in the evening light
+const dustGeo = new THREE.BufferGeometry(), dustBase = [];
+for (let i = 0; i < 300; i++) dustBase.push((rnd() - .5) * 40, rnd() * 10, (rnd() - .5) * 40);
+dustGeo.setAttribute("position", new THREE.Float32BufferAttribute(dustBase.slice(), 3));
+const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xffe2a8, size: .08, transparent: true, opacity: .7 }));
+scene.add(dust);
+
+// choreography: the hill rises, the mast grows, the flag goes up, sandbags drop, the markers pop, smoke starts
+ground.scale.y = .0001;
+bags.forEach(b => b.position.y = b.userData.y + 6);
+const tl = gsap.timeline({ defaults: { ease: "power2.inOut" } });
+tl.to(ground.scale, { y: 1, duration: 1.6, ease: "power3.out" }, .1);
+tl.to(mastState, { built: 1, duration: 1.6, ease: "none" }, 1.0);
+tl.to(bags.map(b => b.position), { y: i => bags[i].userData.y, duration: .55, ease: "bounce.out", stagger: .025 }, 1.4);
+tl.to(flagState, { hoist: 1, duration: 1.8, ease: "power1.inOut" }, 2.4);
+tl.to(markerFlags.map(m => m.scale), { x: 1, y: 1, z: 1, duration: .6, ease: "nagel", stagger: .2 }, 3.2);
+tl.to(smokeState, { on: 1, duration: 2 }, 1.2);
+tl.to([dish.scale, platform.scale], { x: 1, y: 1, z: 1, duration: .5, ease: "nagel", stagger: .15 }, 2.4);
+tl.to(wireState, { k: 1, duration: .8, ease: "power2.out" }, 2.6);
+// 2D: header and clock, the map, its route draws itself, the objective gets circled and crossed
+tl.to(["#head", "#clock"], { opacity: 1, duration: .5, stagger: .15 }, .4);
+tl.fromTo("#map", { opacity: 0, y: -40, rotate: -9 }, { opacity: 1, y: 0, rotate: -2.5, duration: .7, ease: "back.out(1.6)" }, .9);
+tl.from(".contour", { drawSVG: "0%", duration: 1, stagger: .2 }, 1.3);
+tl.from("#route", { drawSVG: "0%", duration: 1.2, ease: "power1.inOut" }, 1.9);
+tl.from("#arrow", { drawSVG: "0%", duration: .3 }, 3.0);
+tl.from("#objective", { drawSVG: "0%", duration: .6 }, 3.2);
+tl.from("#cross", { drawSVG: "0%", duration: .4 }, 3.7);
+tl.from("#obj", { text: "", duration: .7, ease: "none" }, 3.7);
+// stencil title stamps in letter by letter, the radio display switches on, then the countdown decodes
+const split = SplitText.create("#title", { type: "chars" });
+tl.set("#title", { opacity: 1 }, 2.6);
+tl.from(split.chars, { opacity: 0, scale: 1.8, duration: .28, ease: "power4.in", stagger: .045 }, 2.6);
+tl.fromTo("#display", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5, ease: "power3.out" }, 3.4);
+tl.fromTo("#screen", { backgroundColor: "#7cff6b" }, { backgroundColor: "#0f1a0d", duration: .25, ease: "steps(3)" }, 3.6);
+tl.from("#count", { duration: 1, scrambleText: { text: "T-04:59", chars: "0123456789#/", speed: .7 } }, 3.6);
+tl.to("#factions", { opacity: 1, duration: .4 }, 4.2);
+tl.to("#progress", { width: "24%", duration: 2.4, ease: "power1.out" }, 3.6);
+// radio lines are typed one after another, with static between them
+const lines = ["> FUNKGERÄTE WERDEN GEPRÜFT ...", "> ALLE EINHEITEN SAMMELN SICH AM HÜGEL", "> FLAGGE STEHT. WARTEN AUF FREIGABE."];
+tl.set("#radio", { opacity: 1 }, 4.4);
+lines.forEach((text, i) => {
+  tl.to("#radio", { duration: 1.2, text: { value: text }, ease: "none" }, 4.4 + i * 3.4);
+  tl.to("#radio", { duration: .35, scrambleText: { text: "░▒▓▒░▒▓▒░", chars: "▒░▓", speed: 1 } }, 4.4 + i * 3.4 + 2.9);
+});
+if (at) tl.pause(Number(at));
+
+// camera: starts at the flag, pulls back and up, then circles the hill slowly
+const center = new THREE.Vector3(0, top - .6, 0);
+gsap.ticker.add((time) => {
+  const t = at ? Number(at) : time;
+  const k = gsap.parseEase("power3.inOut")(Math.min(1, Math.max(0, (t - .3) / 5.5)));
+  const radius = 9 + (40 - 9) * k, height = top + 2.5 + (12 - 2.5) * k, angle = .9 - k * .55 + Math.max(0, t - 5.8) * .045;
+  camera.position.set(Math.sin(angle) * radius, height, Math.cos(angle) * radius);
+  camera.lookAt(center.x, center.y + 2.6 * (1 - k) + 2.2 * k, center.z);
+  mastGeo.setDrawRange(0, Math.floor(mastLines.length * mastState.built / 2) * 2);
+  const blink = (t % 1.4) < .18 && mastState.built > .98 ? 1 : 0;
+  beacon.material.color.setHex(blink ? 0xff5a4a : 0x5a1410); beaconLight.intensity = blink * 40;
+  waveFlag(t);
+  markerFlags.forEach((m, i) => m.children[1].rotation.y = Math.sin(t * 3 + i) * .35);
+  placeSmoke(t);
+  wireGeo.setDrawRange(0, Math.floor(wires.length * wireState.k / 2) * 2);
+  const ha = t * .12; heli.position.set(Math.cos(ha) * 75 - 20, 24 + Math.sin(t * .7) * .8, Math.sin(ha) * 30 - 70); heli.rotation.y = -ha - Math.PI / 2; heli.rotation.z = .08; heli.castShadow = false; heli.traverse(o => o.castShadow = false); rotor.rotation.y = t * 30;
+  const dp = dustGeo.attributes.position;
+  for (let i = 0; i < dp.count; i++) { dp.setY(i, (dustBase[i * 3 + 1] + t * .15) % 10); dp.setX(i, dustBase[i * 3] + Math.sin(t * .3 + i) * .4); }
+  dp.needsUpdate = true;
+  composer.render();
+});
+</script>
+</body>
+</html>

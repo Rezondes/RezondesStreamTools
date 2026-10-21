@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Urlaub Alert Pixi</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Pacifico&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@8.22.0/dist/pixi.min.js"></script>
+<style>
+  :root { --ink: #3b2412; --hibiscus: #ff4f8b; --sea: #1fb5c9; --sea-dark: #0b6f8e; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; font-family: Fredoka, sans-serif; color: var(--ink); }
+  /* preview only: checker stands for the transparent overlay over a game */
+  body { background: repeating-conic-gradient(#3a3d44 0 25%, #33363c 0 50%) 0 0 / 40px 40px; }
+  canvas { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+  .stage3d { position: absolute; left: 640px; top: 110px; width: 640px; height: 380px; perspective: 1400px; z-index: 1; }
+  .card { position: absolute; inset: 0; transform-style: preserve-3d; }
+  .face { position: absolute; inset: 0; border-radius: 14px; backface-visibility: hidden; box-shadow: 0 26px 50px rgba(0,0,0,.4); overflow: hidden; }
+  /* front: a beach photo with "Grüße aus" lettering */
+  .front { background: linear-gradient(#ffb48a 0 38%, #ffd9a8 38% 46%, #1fb5c9 46% 66%, #0b6f8e 66% 70%, #f2d49b 70%); border: 12px solid #fffaf0; box-sizing: border-box; }
+  .front .sun { position: absolute; left: 70px; top: 40px; width: 90px; height: 90px; border-radius: 50%; background: #ffd23f; box-shadow: 0 0 40px #ffd23f; }
+  .front b { position: absolute; left: 0; right: 0; top: 120px; text-align: center; font: 400 64px Pacifico; color: #fff; text-shadow: 0 4px 0 #ff4f8b, 0 8px 14px rgba(0,0,0,.25); }
+  /* back: the message side with lines, address, stamp */
+  .back { background: #fffaf0; transform: rotateY(180deg); padding: 30px 34px; box-sizing: border-box;
+          background-image: linear-gradient(90deg, transparent 372px, rgba(59,36,18,.25) 372px 374px, transparent 374px); }
+  .back .tag { display: inline-block; padding: 4px 16px; border-radius: 999px; background: var(--sea-dark); color: #fff; font: 700 20px Fredoka; letter-spacing: 3px; }
+  .back .name { font: 400 66px Pacifico; color: var(--hibiscus); line-height: 1.35; margin-top: 6px; }
+  .back .line { font: 600 26px Fredoka; width: 320px; line-height: 1.3; }
+  .back .quote { font: 500 22px Fredoka; color: #7a5536; margin-top: 8px; width: 320px; }
+  .back .addr { position: absolute; left: 396px; top: 210px; width: 210px; font: 500 20px Fredoka; color: #7a5536; line-height: 2.1; }
+  .back .addr i { display: block; border-bottom: 2px solid rgba(59,36,18,.3); }
+  .stampbox { position: absolute; right: 30px; top: 26px; width: 110px; height: 130px; padding: 8px; box-sizing: border-box; background: #fff;
+              -webkit-mask: radial-gradient(circle 6px at 6px 6px, transparent 98%, #000) -6px -6px / 16px 16px; }
+  .stampbox div { width: 100%; height: 100%; background: linear-gradient(#ffb48a 0 50%, #1fb5c9 50%); display: flex; align-items: center; justify-content: center; font: 700 28px Fredoka; color: #fff; }
+  .postmark { position: absolute; right: 100px; top: 60px; width: 150px; height: 150px; border: 5px solid rgba(194,24,91,.75); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+              font: 700 20px Fredoka; color: rgba(194,24,91,.85); letter-spacing: 2px; text-align: center; transform: rotate(-14deg); }
+  .postmark::after { content: ""; position: absolute; left: 140px; top: 40px; width: 140px; height: 60px; background: repeating-linear-gradient(transparent 0 10px, rgba(194,24,91,.7) 10px 14px); }
+  svg.timer { position: absolute; left: 650px; top: 510px; width: 620px; height: 40px; overflow: visible; z-index: 1; }
+  .stage3d, svg.timer { visibility: hidden; }
+</style>
+</head>
+<body>
+<div class="stage3d" id="stage">
+  <div class="card" id="card">
+    <div class="face front"><i class="sun"></i><b>Grüße aus dem Chat</b></div>
+    <div class="face back">
+      <span class="tag" id="tag">NEUES ABO</span>
+      <div class="name" id="name">Trinity</div>
+      <div class="line" id="line">Trinity bucht den Urlaub mit uns!</div>
+      <div class="quote" id="quote">„Endlich abonniert!“</div>
+      <div class="addr"><i>An: Rezondes</i><i>Strandkorb 7</i><i>Am Meer</i></div>
+      <div class="stampbox"><div>ABO</div></div>
+      <div class="postmark" id="postmark">STRAND<br>21.10.</div>
+    </div>
+  </div>
+</div>
+<svg class="timer" id="timer" viewBox="0 0 620 40"><path id="ropeTrack" d="M10 20 C160 34 300 6 460 22 S600 18 610 20" fill="none" stroke="#8a6a34" stroke-width="9" stroke-linecap="round"/>
+  <path id="rope" d="M10 20 C160 34 300 6 460 22 S600 18 610 20" fill="none" stroke="#e8c27a" stroke-width="6" stroke-linecap="round" stroke-dasharray="3 8"/>
+  <g id="knot"><circle r="12" fill="#c49a5a" stroke="#6b4a1a" stroke-width="3"/></g></svg>
+<script type="module">
+gsap.registerPlugin(SplitText, CustomEase);
+gsap.ticker.lagSmoothing(0);
+CustomEase.create("stempel", "M0,0 C0.05,0.9 0.1,1.08 0.2,1.04 0.4,0.98 0.6,1 1,1");
+const at = new URLSearchParams(location.search).get("t");
+await document.fonts.ready;
+let s = 21; const rnd = () => { s = (s * 16807) % 2147483647; return s / 2147483647; };
+const between = (a, b) => a + rnd() * (b - a);
+
+const app = new PIXI.Application();
+await app.init({ width: 1920, height: 1080, antialias: true, autoStart: false, backgroundAlpha: 0, preference: "webgl" });
+document.body.prepend(app.canvas);
+const { Graphics } = PIXI;
+
+// a swell travels across the overlay: in, it comes from the left and carries the card to its place; out, a second one
+// comes from the right and sweeps the card away. Steep front, long back, foam on the crest; drawn purely from time.
+const wave = new Graphics(), splash = new Graphics(), petals = new Graphics();
+app.stage.addChild(wave, splash, petals);
+const X0 = 380, X1 = 1540, BASE = 600, IN = [0, 1.3], OUT = [5.9, 1.3];
+const swell = t => {
+  const pin = (t - IN[0]) / IN[1], pout = (t - OUT[0]) / OUT[1];
+  if (pin > 0 && pin < 1) return { cx: X0 + pin * (X1 - X0), amp: 300 * Math.sin(pin * Math.PI) ** .7, dir: 1 };
+  if (pout > 0 && pout < 1) return { cx: X1 - pout * (X1 - X0), amp: 320 * Math.sin(pout * Math.PI) ** .7, dir: -1 };
+  return null;
+};
+function paintWave(t) {
+  wave.clear();
+  const s = swell(t); if (!s) return;
+  const top = [], back = [];
+  for (let x = X0; x <= X1; x += 12) {
+    const d = (x - s.cx) * s.dir, width = d > 0 ? 120 : 300, edge = Math.sin((x - X0) / (X1 - X0) * Math.PI);
+    top.push(x, BASE - edge * (s.amp * Math.exp(-((d / width) ** 2)) + 40) + Math.sin(x * .05 + t * 9) * 5 * edge);
+  }
+  for (let x = X1; x >= X0; x -= 40) back.push(x, BASE + Math.sin((x - X0) / (X1 - X0) * Math.PI) * 50);
+  wave.poly([...top, ...back]).fill({ color: 0x1fb5c9, alpha: .94 });
+  wave.poly(top.map((v, i) => i % 2 ? v + 36 : v), false).stroke({ width: 26, color: 0x0b6f8e, alpha: .45 });
+  wave.poly(top.map((v, i) => i % 2 ? v + 12 : v), false).stroke({ width: 10, color: 0x7fe0ea, alpha: .7 });
+  wave.poly(top, false).stroke({ width: 8, color: 0xf4fffd });
+  // the curl: foam blobs tumbling over the steep front of the crest
+  for (let i = 0; i < 18; i++) { const a = i / 18, fx = s.cx + s.dir * (20 + a * 90), fy = BASE - (s.amp + 40) * Math.exp(-(((a * 90 + 20) / 120) ** 2)) + Math.sin(t * 14 + i) * 8;
+    wave.circle(fx, fy + a * 40, 7 + (1 - a) * 9).fill({ color: 0xf4fffd, alpha: .9 - a * .5 }); }
+}
+// water drops where each swell breaks, hibiscus petals when the stamp hits; both placed from start time and velocity
+const BREAKS = [IN[0] + IN[1] * .5, OUT[0] + OUT[1] * .5];
+const drops = Array.from({ length: 60 }, () => { const a = -Math.PI * between(.1, .9); return { x: between(820, 1100), vx: Math.cos(a) * between(80, 460), vy: Math.sin(a) * between(420, 950), r: between(4, 10) }; });
+const STAMP = 2.0;
+const petalList = Array.from({ length: 26 }, () => { const a = -Math.PI * between(.05, .95); return { vx: Math.cos(a) * between(200, 700), vy: Math.sin(a) * between(300, 800), spin: between(-8, 8), c: rnd() > .5 ? 0xff4f8b : 0xffa62b, size: between(10, 18) }; });
+function paintParticles(t) {
+  splash.clear(); petals.clear();
+  for (const b of BREAKS) { const k = t - b;
+    if (k > 0 && k < 1.2) drops.forEach(d => splash.circle(d.x + d.vx * k, 300 + d.vy * k + 1300 * k * k, d.r * (1 - k / 1.2)).fill({ color: 0xe8fbff, alpha: 1 - k / 1.2 })); }
+  const q = t - STAMP;
+  if (q > 0 && q < 2) petalList.forEach(p => {
+    const drag = 1 - Math.exp(-q * 2.2), x = 1120 + p.vx * drag / 2.2, y = 200 + p.vy * drag / 2.2 + 160 * q * q, a = p.spin * drag;
+    for (let i = 0; i < 5; i++) { const ang = a + i * Math.PI * 2 / 5; petals.ellipse(x + Math.cos(ang) * p.size * .6, y + Math.sin(ang) * p.size * .6, p.size * .55, p.size * .35).fill({ color: p.c, alpha: 1 - q / 2 }); }
+    petals.circle(x, y, p.size * .22).fill({ color: 0xffd23f, alpha: 1 - q / 2 });
+  });
+}
+
+const tl = gsap.timeline({ repeat: -1, repeatDelay: 1 });
+tl.set(["#stage", "#timer"], { visibility: "visible" }, 0);
+// the card surfs in on the crest from the left (beach side up), is set down as the swell passes, then flips over
+tl.fromTo("#card", { x: -560, y: 160, rotateY: 0, rotateZ: -14, scale: .78 }, { x: 0, y: -30, rotateZ: 4, scale: 1, duration: .65, ease: "none" }, 0);
+tl.fromTo("#stage", { opacity: 0 }, { opacity: 1, duration: .25 }, 0);
+tl.to("#card", { y: 0, rotateZ: 0, duration: .5, ease: "back.out(2)" }, .65);
+tl.to("#card", { rotateY: 180, rotateZ: -2, duration: .8, ease: "back.out(1.4)" }, 1.1);
+tl.to("#card", { rotateZ: 0, duration: 1.2, ease: "elastic.out(1, .3)" }, 1.8);
+const split = SplitText.create("#name", { type: "chars" });
+tl.from(split.chars, { y: 30, opacity: 0, rotate: -20, duration: .4, ease: "back.out(3)", stagger: .05 }, 1.5);
+tl.from("#tag", { scale: 0, duration: .35, ease: "back.out(3)" }, 1.4);
+tl.from(["#line", "#quote"], { opacity: 0, y: 10, duration: .3, stagger: .12 }, 1.8);
+// the postmark slams down: big and lifted first, then pressed flat with a small shake of the card
+tl.fromTo("#postmark", { scale: 2.2, opacity: 0 }, { scale: 1, opacity: 1, duration: .25, ease: "stempel" }, STAMP);
+tl.to("#stage", { x: 6, duration: .05, repeat: 3, yoyo: true }, STAMP + .2);
+// the rope is the remaining time: the knot slides along it
+tl.fromTo("#knot", { x: 610, y: 20 }, { x: 10, duration: 4.4, ease: "none" }, 1.6);
+tl.fromTo("#rope", { strokeDashoffset: 0 }, { strokeDashoffset: -120, duration: 4.4, ease: "none" }, 1.6);
+// exit: a swell comes from the right; when its crest reaches the card it lifts it, turns it and carries it off left
+tl.to("#timer", { opacity: 0, duration: .3 }, 6.0);
+tl.to("#card", { y: -40, rotateZ: -6, duration: .25, ease: "power2.out" }, 6.35);
+tl.to("#card", { x: -620, y: 180, rotateZ: -28, scale: .72, duration: .75, ease: "power2.in" }, 6.55);
+tl.to("#stage", { opacity: 0, duration: .3 }, 7.0);
+tl.set("#timer", { opacity: 1 }, 7.4);
+if (at) tl.pause(Number(at));
+
+gsap.ticker.add(() => {
+  const t = tl.time();
+  paintWave(t); paintParticles(t);
+  app.renderer.render(app.stage);
+});
+</script>
+</body>
+</html>

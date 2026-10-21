@@ -41,6 +41,22 @@ Grundsätze für alle Themes: [DESIGN.md](../../../../DESIGN.md). Plan des Theme
 - **Stinger:** eine Welle mit Gischt rollt herein, deckt am Übergangspunkt alles, zeigt Text und Palme.
 - **Banner:** Strandpanorama am Tag, Offline-Banner im Sonnenuntergang mit Holzschild.
 
+## Modernisierung (entschieden 2026-10-21)
+
+Abgenommene Prototypen: [refs/starting.html](refs/starting.html), [refs/alert.html](refs/alert.html) mit Standbildern.
+Plan: [PLAN-URLAUB.md](PLAN-URLAUB.md) Packages 5 bis 8.
+
+- **Vollbild-Szenen realistisch** statt Illustration: physikalischer Himmel mit Sonnenstand je Szene (Sonnenaufgang im
+  Starting, Mittag im BRB, Sonnenuntergang im Ending), Meer mit Spiegelung der Sonne, Sandstrand mit Körnung und nassem
+  Saum, Brandung läuft den Strand hinauf, Palmen mit gebogenem Stamm und gefiederten Wedeln, Felsen, Segelboot, Möwen;
+  BRB mit Sonnenschirm und Liegestuhl, Ending mit Fackeln.
+- **Schilder:** verwittertes Treibholz mit Maserung, helle eingeschnitzt wirkende Schrift; das Schild fällt an Seilen
+  herein und pendelt aus, der Pfahl wächst aus dem Sand, die Boje treibt am Seil als Fortschritt.
+- **Overlays** bleiben freundlich und rund (Illustration), mit Bewegung aus GSAP und PixiJS.
+- **Alerts:** eine Welle läuft von links durch und trägt die Postkarte an ihren Platz, die Karte dreht sich auf die
+  Rückseite, der Poststempel knallt, Hibiskusblüten fliegen, ein Knoten wandert das Seil entlang; am Ende spült eine
+  Welle von rechts die Karte weg.
+
 ## Im Code
 
 `.theme-urlaub`, Klassen `ul-*`, Keyframes `urlaub-*` und `urlaub-minime-*`, Dateien in `src/themes/urlaub/`.

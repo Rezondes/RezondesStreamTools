@@ -139,6 +139,23 @@ Drehpunkt) und Canvas (`paint.ts`) zeichnen dieselben Ebenen.
   beim Drücken um die Höhe des Bandes ein. Keine Weichzeichner, keine Schlagschatten.
 - **Szenerie:** die Kulisse, rechts unten der Bärenturm, der ab und zu blinzelt.
 
+## Modernisierung (entschieden 2026-10-21)
+
+Abgenommene Prototypen: [refs/starting.html](refs/starting.html), [refs/alert.html](refs/alert.html) mit Standbildern.
+Plan: [PLAN-BEARS.md](PLAN-BEARS.md) Packages 11 bis 14. Die zwei Ebenen bleiben.
+
+- **Welt als Rough-Aquarell:** jede Fläche besteht aus mehreren weichen Lasuren mit unruhigem Rand, darüber eine
+  Skizzenlinie im Ton der Fläche, dazu Papierkörnung. So sieht die Welt in Szenen, Stinger und Banner gleich aus (auch
+  ohne SVG-Filter). Einschalten: die Welt malt sich von links nach rechts ein.
+- **Welt-Modell:** der Weg führt bis zum Anfang der roten Brücke, die Brücke führt über das Wasser und landet am fernen
+  Ufer, auf dem die Stadt steht. Nichts führt ins Leere.
+- **Figuren:** immer aus dem Rig; GSAP bewegt die Knochen (watscheln mit Schaukeln, landen mit Stauchen und
+  Nachfedern, winken, Kopf wiegen, blinzeln, atmen). Keine vereinfachten Bären.
+- **Karten:** ploppen mit Stauchen und Strecken; Titelbuchstaben springen; der kleine Bär läuft den Weg als
+  Fortschritt.
+- **Alerts:** die Karte ploppt, der Bär lugt mit Federn dahinter hervor und jubelt, das Herz pocht, Pfoten und Blätter
+  fliegen; Abgang: der Bär duckt sich weg.
+
 ## Im Code
 
 `.theme-bears`, Klassen `bb-*`, Keyframes `bears-*` und `bears-minime-*`, Dateien in `src/themes/bears/`.

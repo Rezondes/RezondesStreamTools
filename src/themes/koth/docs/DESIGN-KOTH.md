@@ -53,6 +53,30 @@ Grundsätze für alle Themes: [DESIGN.md](../../../../DESIGN.md). Plan des Theme
 - **Stinger:** eine Rauchgranate füllt das Bild, im Rauch wechselt die Flagge von der ersten zur zweiten Fraktion.
 - **Banner:** Hügel mit Funkmast und wehender Flagge am Tag, Offline-Banner am Abend mit Einsatzblatt.
 
+## Modernisierung (entschieden 2026-10-21)
+
+Abgenommene Prototypen: [refs/starting.html](refs/starting.html), [refs/alert.html](refs/alert.html) mit Standbildern.
+Plan: [PLAN-KOTH.md](PLAN-KOTH.md) Packages 2 bis 6. Der alte Look wird ersetzt.
+
+- **Bildsprache Vollbild:** 3D-Welt im Low-Poly-Stil mit flacher Schattierung. Abendhimmel als Verlauf, Nebel in
+  Horizontfarbe (Luftperspektive), tiefe Sonne mit Schein, Bergkranz in der Ferne, weiche Schatten. Hügel oben Oliv,
+  am Fuss Sand. Alles steht auf dem Gelände, nichts schwebt.
+- **Details am Hügel:** Gittermast mit Blinklicht, Abspannseilen, Schüssel und Plattform; Fahnenmast mit wehendem
+  Tuch in der Farbe der haltenden Fraktion; Sandsack-Ringe, Betonbunker mit Sehschlitz, zwei Zelte, Kistenstapel mit
+  hellen Kanten, Stacheldrahtzaun auf Pfosten, Kiefern und Felsen am Hang, Jeep, Fraktionsfähnchen am Fuss,
+  Rauchsäulen, Staub im Licht, Hubschrauber in der Ferne.
+- **Bewegung:** Aufbau wie eine Lagebesprechung: Gelände wächst, Mast baut sich Segment für Segment, Sandsäcke fallen
+  mit Abprallen, Flagge geht hoch; die Kamera fährt von der Flagge zurück und kreist. Texte erscheinen als
+  Schablonenschrift Buchstabe für Buchstabe, Funkzeilen tippen sich mit Rauschen dazwischen, die Lagekarte zeichnet
+  Höhenlinien, Route und Ziel.
+- **BRB:** Nacht, Mondlicht, Suchscheinwerfer schwenkt, Lagerfeuer. **Ending:** Dämmerung, Siegerflagge, Leuchtraketen
+  in Fraktionsfarben, Einsatzbericht mit echten Zahlen und Stempel.
+- **Alerts:** eine metallische Hundemarke mit geprägtem Namen pendelt an der Kugelkette herein, Rauchstoss, das
+  Funkgerät (Stahlgehäuse, LED, Gitter, grünes Display) knallt auf, Rauschen, Text tippt sich, Name entschlüsselt sich.
+- **Stinger:** Rauchgranate in 3D, Rauch deckt am Übergangspunkt das Bild, die Flagge wechselt im Rauch.
+- **Minimes:** 3D-Soldaten mit Helm, Uniform in Fraktionsfarbe und Waffe je Rolle, Gefechte mit Mündungsfeuer,
+  Explosion und Staub.
+
 ## Im Code
 
 `.theme-koth`, Klassen `kh-*`, Keyframes `koth-*` und `koth-minime-*`, Dateien in `src/themes/koth/`.

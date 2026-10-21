@@ -73,6 +73,24 @@ Gilt für Kulisse, Figur, Overlays, Stinger, Banner und Dashboard-Skin. Chat und
   aus beleuchteten Brettern. Login-Zeile und Benutzer als Milchglas-Pille, damit sie vor dem Himmel lesbar bleiben.
 - **Szenerie:** die illustrierte Kulisse, die fünf Mango-Soldaten in der Titelzeile.
 
+## Modernisierung (entschieden 2026-10-21)
+
+Abgenommene Prototypen: [refs/starting.html](refs/starting.html), [refs/alert.html](refs/alert.html) mit Standbildern.
+Plan: [PLAN-PLANTAGE.md](PLAN-PLANTAGE.md) Packages 2 bis 5. Die Bildsprache "Illustration mit Tiefe" bleibt; gezeichnet
+wird mit PixiJS, bewegt mit GSAP.
+
+- **Tiefe:** die Welt besteht aus Ebenen (Wolken, zwei Hügel, drei Baumreihen, Feld, vordere Bäume, Kisten, Gras);
+  ferne Ebenen sind unscharf und mischen sich mit dem Himmel, die Kamera schwenkt langsam (Parallax).
+- **Licht:** Einschalten als Sonnenaufgang (Himmel von Dämmerung zu Morgen, die Welt hellt auf, Strahlen drehen sich),
+  Ending als Sonnenuntergang mit Glühwürmchen.
+- **Leben:** Bäume und Gras wiegen sich, Blätter fallen, Lichtstaub glitzert; der Pflücker greift mit dem Stab in den
+  Baum (Starting), pflückt (BRB), winkt mit vollem Korb (Ending).
+- **Karten:** Milchglas fällt wie reife Früchte herein und federt nach (`federnd`); Mangos plumpsen als Fortschritt in
+  den Korb.
+- **Alerts:** eine glänzende Mango fällt auf das Papiermedaillon, staucht sich und federt nach, Saft und Blätter
+  spritzen, die Karte wächst aus dem Medaillon, der Ast verliert als Restzeit seine Blätter. Zwischen Medaillon und
+  Text mindestens 48 px; das Ganze steht mittig.
+
 ## Im Code
 
 `.theme-plantage`, Klassen `pl-*`, Keyframes `plantage-*` und `plantage-minime-*`, Dateien in `src/themes/plantage/`.

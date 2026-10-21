@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Bears Starting Rough</title>
+<link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@800&family=Nunito:wght@600;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<style>
+  :root { --outline: #1c1a19; --ink: #2b2522; --muted: #6b5d55; --paper: #fbf3e0; --paper-shade: #e9dcc0; --accent: #e2573f; --accent-text: #b83c28; --sky: #4d9de0;
+          --fur: #96693f; --fur-shade: #7d5533; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #f4ecd8; font-family: Nunito, sans-serif; color: var(--ink); }
+  canvas.world { position: absolute; inset: 0; -webkit-mask-image: linear-gradient(90deg, #000 0 40%, transparent 60%); -webkit-mask-size: 300% 100%; -webkit-mask-repeat: no-repeat; -webkit-mask-position: 100% 0; }
+  /* sticker card: paper, one outline, one shade band inside at the bottom (the same idea as the one shade tone of the figures) */
+  .card { position: absolute; background: var(--paper); border: 6px solid var(--outline); border-radius: 30px; box-shadow: inset 0 -14px 0 var(--paper-shade); box-sizing: border-box; }
+  .main { left: 800px; top: 150px; width: 980px; padding: 30px 40px 46px; text-align: center; }
+  .pill { display: inline-block; padding: 6px 26px; border: 5px solid var(--outline); border-radius: 999px; background: var(--accent); color: #fff; font: 800 28px Nunito; }
+  .title { font: 800 96px Sniglet; line-height: 1.02; margin: 14px 0 8px; color: #fff; -webkit-text-stroke: 12px var(--outline); paint-order: stroke fill; }
+  .sub { font: 600 34px Nunito; color: var(--muted); }
+  .count { left: 1300px; top: 600px; width: 460px; height: 200px; text-align: center; padding-top: 14px; }
+  .count b { font: 800 92px Sniglet; color: var(--accent-text); letter-spacing: 3px; }
+  .count svg { position: absolute; left: 30px; top: 118px; width: 400px; height: 60px; overflow: visible; }
+  .line { left: 1290px; top: 830px; padding: 10px 30px; border-radius: 999px; font: 800 32px Nunito; box-shadow: inset 0 -8px 0 var(--paper-shade); }
+  .line i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--sky); margin-right: 12px; vertical-align: 3px; }
+  .clock { right: 50px; top: 40px; padding: 8px 26px; border-radius: 999px; font: 800 36px Nunito; box-shadow: inset 0 -8px 0 var(--paper-shade); }
+  .name { left: 170px; top: 1006px; padding: 4px 24px; border-radius: 999px; font: 800 30px Nunito; box-shadow: inset 0 -6px 0 var(--paper-shade); }
+  svg.bear { position: absolute; left: 110px; top: 490px; width: 313px; height: 520px; overflow: visible; }
+  .ground-shadow { position: absolute; left: 110px; top: 985px; width: 320px; height: 40px; border-radius: 50%; background: rgba(60,50,30,.25); filter: blur(6px); }
+  .card, svg.bear, .ground-shadow { visibility: hidden; }
+</style>
+</head>
+<body>
+<canvas class="world" id="world" width="1920" height="1080"></canvas>
+<div class="ground-shadow" id="gshadow"></div>
+<svg class="bear" id="bear" viewBox="0 0 200 332" aria-hidden="true" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter"><g id="bearRig"><g class="bb-figure bb-grizzly bb-pose-wave" transform="translate(100 332) scale(1 0.88) translate(-100 -332)" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><g class="bb-body" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><g class="bb-bone bone-tail" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-back" d="M178 266 A12 12 0 1 0 202 266 A12 12 0 1 0 178 266 Z" style="fill:rgb(150, 105, 63);stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></g><g class="bb-bone bone-ears" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-back" d="M64 12 A12 12 0 1 0 88 12 A12 12 0 1 0 64 12 Z" style="fill:rgb(150, 105, 63);stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-back" d="M135 14 A11 11 0 1 0 157 14 A11 11 0 1 0 135 14 Z" style="fill:rgb(150, 105, 63);stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></g><g class="bb-bone bone-farArm" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-limb" d="M137.5 186.5 Q158.7 216.3 143.7 247.1 C131.9 276.9 176.5 294.6 188.3 264.9 Q206.5 212.2 178.5 161.5 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M137.5 186.5 Q158.7 216.3 143.7 247.1 C131.9 276.9 176.5 294.6 188.3 264.9 Q206.5 212.2 178.5 161.5" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-farLeg" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-limb" d="M108.5 293.9 Q110.3 289.9 110.2 283.8 C89.8 318.2 141.5 348.7 161.8 314.2 Q170.2 293.6 163.5 270.1 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M108.5 293.9 Q110.3 289.9 110.2 283.8 C89.8 318.2 141.5 348.7 161.8 314.2 Q170.2 293.6 163.5 270.1" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path><path class="part-line" d="M121 317 L119.5 329 M137.5 317 L139 329" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-body" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><defs style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><clipPath id="r4-body" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path d="M30 70 C40 30 70 8 104 6 C150 4 170 30 178 60 C192 110 200 170 198 230 C196 270 186 290 172 300 C140 316 56 316 26 294 C8 268 2 220 8 180 C12 164 18 154 24 148 C12 140 2 124 2 106 C2 84 14 72 30 70 Z" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></clipPath></defs><path class="part-fur" d="M30 70 C40 30 70 8 104 6 C150 4 170 30 178 60 C192 110 200 170 198 230 C196 270 186 290 172 300 C140 316 56 316 26 294 C8 268 2 220 8 180 C12 164 18 154 24 148 C12 140 2 124 2 106 C2 84 14 72 30 70 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><g clip-path="url(#r4-body)" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-shade" d="M156 22 C176 44 194 110 198 230 C196 270 186 290 172 300 L166 330 L148 330 L152 298 C168 276 178 246 178 200 C178 136 172 70 156 22 Z" style="fill:rgb(125, 85, 51);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></g><path class="part-outline" d="M30 70 C40 30 70 8 104 6 C150 4 170 30 178 60 C192 110 200 170 198 230 C196 270 186 290 172 300 C140 316 56 316 26 294 C8 268 2 220 8 180 C12 164 18 154 24 148 C12 140 2 124 2 106 C2 84 14 72 30 70 Z" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-nearLeg" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-limb" d="M32.1 292.6 Q34.6 291.9 33.1 289.2 C16.1 322.5 65.9 348 82.9 314.8 Q90.5 294.3 83.9 271.4 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M32.1 292.6 Q34.6 291.9 33.1 289.2 C16.1 322.5 65.9 348 82.9 314.8 Q90.5 294.3 83.9 271.4" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path><path class="part-line" d="M44 318.8 L42.6 330 M59.4 318.8 L60.8 330" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-head" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-eye" d="M34.4 73 A4.6 4.6 0 1 0 43.6 73 A4.6 4.6 0 1 0 34.4 73 Z" style="fill:rgb(17, 17, 17);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-eye" d="M77.4 79 A4.6 4.6 0 1 0 86.6 79 A4.6 4.6 0 1 0 77.4 79 Z" style="fill:rgb(17, 17, 17);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-nose" d="M21 98 A15 9 0 1 0 51 98 A15 9 0 1 0 21 98 Z" style="fill:rgb(17, 17, 17);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-mouth" d="M36 128 C40 148 62 152 70 132 C60 128 46 126 36 128 Z" style="fill:rgb(107, 56, 51);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-tongue" d="M44 142 C50 150 60 150 64 140 C58 138 50 138 44 142 Z" style="fill:rgb(224, 134, 138);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-teeth" d="M46 129 L48 135 L52 129 Z M58 129 L60 134 L63 130 Z" style="fill:rgb(255, 255, 255);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M36 128 C40 148 62 152 70 132 C60 128 46 126 36 128 Z" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path></g><g class="bb-bone bone-nearArm" style="fill:rgb(0, 0, 0);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"><path class="part-limb" d="M154.5 182.9 Q177 136.4 199.8 92.3 C215.1 62.7 170.7 39.7 155.4 69.3 Q132.3 114 109.5 161.1 Z" style="fill:rgb(150, 105, 63);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path><path class="part-line" d="M154.5 182.9 Q177 136.4 199.8 92.3 C215.1 62.7 170.7 39.7 155.4 69.3 Q132.3 114 109.5 161.1" style="fill:none;stroke:rgb(28, 26, 25);stroke-width:4.5px;stroke-linecap:round;stroke-linejoin:round;display:inline"></path><path class="part-pad" d="M172.6 69.5 A5 4 0 1 0 182.6 69.5 A5 4 0 1 0 172.6 69.5 Z" style="fill:rgb(125, 85, 51);stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;display:inline"></path></g></g></g></g></svg>
+<div class="card main" id="main"><span class="pill" id="pill">Gleich geht's los</span><div class="title" id="title">Stream startet gleich</div><div class="sub" id="sub">Die Bande sammelt sich noch.</div></div>
+<div class="card count" id="count"><b id="digits">04:59</b>
+  <svg viewBox="0 0 400 60"><path id="trail" d="M10 40 C90 20 150 54 220 36 C290 18 340 44 390 30" fill="none" stroke="#1c1a19" stroke-width="5" stroke-dasharray="14 12" stroke-linecap="round"/>
+    <g id="mini"><ellipse cx="0" cy="-16" rx="16" ry="20" fill="#96693f" stroke="#1c1a19" stroke-width="4"/><circle cx="-12" cy="-30" r="3" fill="#111"/></g></svg></div>
+<div class="card line" id="line"><i></i><span id="lineText">Snacks werden verteilt …</span></div>
+<div class="card clock" id="clock">13:13</div>
+<div class="card name" id="name">Bärenbande</div>
+<script type="module">
+gsap.registerPlugin(SplitText, MotionPathPlugin, CustomEase);
+gsap.ticker.lagSmoothing(0);
+CustomEase.create("federnd", "M0,0 C0.2,0 0.3,1.2 0.5,1.2 0.62,1.2 0.68,0.94 0.8,0.94 0.88,0.94 0.92,1.02 1,1");
+const at = new URLSearchParams(location.search).get("t");
+await document.fonts.ready;
+
+// the watercolour world with rough.js: every surface is several soft, irregular washes on top of each other,
+// then a thin sketch line in the tone of the surface (never black), all on paper grain
+const canvas = document.getElementById("world"), g = canvas.getContext("2d"), rc = rough.canvas(canvas);
+let seed = 3; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+const sky = g.createLinearGradient(0, 0, 0, 640); sky.addColorStop(0, "#7fc3e8"); sky.addColorStop(1, "#cfe9f5");
+g.fillStyle = sky; g.fillRect(0, 0, 1920, 1080);
+const mixHex = (a, b, k) => { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); const A = p(a), B = p(b); return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * k).toString(16).padStart(2, "0")).join(""); };
+function wash(points, color, { layers = 4, alpha = .3, rough = 2.4, sketch = .35 } = {}) {
+  for (let i = 0; i < layers; i++) {
+    g.globalAlpha = alpha;
+    rc.polygon(points.map(([x, y]) => [x + (rnd() - .5) * 14, y + (rnd() - .5) * 10]), { fill: color, fillStyle: "solid", stroke: "none", roughness: rough, seed: Math.floor(rnd() * 1e6) });
+  }
+  g.globalAlpha = .55;
+  rc.polygon(points, { stroke: mixHex(color, "#1c1a19", sketch), strokeWidth: 1.6, roughness: 1.6, bowing: 1.2, seed: Math.floor(rnd() * 1e6) });
+  g.globalAlpha = 1;
+}
+const ridge = (y0, amp, step, f) => { const pts = [[-40, 1080]]; for (let x = -40; x <= 1960; x += step) pts.push([x, y0 - amp * f(x)]); pts.push([1960, 1080]); return pts; };
+// clouds
+[[260, 150, 1], [1500, 110, .8], [980, 70, .55]].forEach(([x, y, k]) => wash(Array.from({ length: 40 }, (_, i) => { const a = i / 40 * Math.PI * 2; return [x + Math.cos(a) * 170 * k * (1 + .25 * Math.sin(a * 3)), y + Math.sin(a) * 52 * k]; }), "#ffffff", { alpha: .45, sketch: .15, rough: 1.2 }));
+// far hills in air perspective
+wash(ridge(600, 90, 60, x => .5 + .5 * Math.sin(x * .004 + 1)), mixHex("#a9c7b9", "#cfe9f5", .35), { sketch: .2 });
+// the far shore the city stands on, mixed with the sky
+wash([[980, 662], [980, 636], [1960, 622], [1960, 664]], mixHex("#b9cf63", "#cfe9f5", .45), { layers: 3, sketch: .25 });
+// far city on the far shore, mixed with the sky
+for (let i = 0; i < 16; i++) { const x = 1080 + i * 52, h = 70 + rnd() * 130; wash([[x, 640], [x, 640 - h], [x + 44, 640 - h], [x + 44, 640]], mixHex("#d8dde3", "#cfe9f5", .2), { layers: 2, sketch: .3 });
+  for (let r = 0; r < h / 28 - 1; r++) { g.globalAlpha = .5; g.fillStyle = "#9fb0c0"; g.fillRect(x + 10, 640 - h + 14 + r * 26, 8, 10); g.fillRect(x + 26, 640 - h + 14 + r * 26, 8, 10); } g.globalAlpha = 1; }
+// water of the bay
+wash([[-40, 664], [1960, 664], [1960, 712], [-40, 718]], "#9fd0e6", { sketch: .25 });
+
+// meadow in two tones and the path into the depth
+wash(ridge(760, 30, 80, x => .5 + .5 * Math.sin(x * .003)), "#b9cf63", { sketch: .3 });
+wash(ridge(930, 26, 80, x => .5 + .5 * Math.cos(x * .004 + 2)), "#8fb24a", { alpha: .25, sketch: .3 });
+wash([[872, 746], [934, 746], [1160, 1080], [740, 1080]], "#a8aaa6", { layers: 3, sketch: .3 });
+// red suspension bridge: starts where the path ends on the meadow, crosses the water into the depth, lands on the far shore
+const deck = k => [892 + (1220 - 892) * k, 744 - (744 - 652) * k];
+g.globalAlpha = .95;
+const towers = [[.28, 250], [.72, 170]].map(([k, h]) => { const [x, y] = deck(k); rc.rectangle(x - 9 * (1 - k * .4), y - h, 18 * (1 - k * .4), h + 26, { fill: "#d9573b", fillStyle: "solid", stroke: mixHex("#d9573b", "#1c1a19", .35), strokeWidth: 1.6, roughness: 1, seed: Math.round(x) }); return [x, y - h]; });
+const [a0, a1] = [deck(0), deck(1)];
+rc.curve([[a0[0], a0[1] - 6], [ (a0[0] + towers[0][0]) / 2, (a0[1] + towers[0][1]) / 2 + 40], towers[0]], { stroke: "#d9573b", strokeWidth: 4, roughness: .8, seed: 11 });
+rc.curve([towers[0], [(towers[0][0] + towers[1][0]) / 2, (towers[0][1] + towers[1][1]) / 2 + 70], towers[1]], { stroke: "#d9573b", strokeWidth: 3.5, roughness: .8, seed: 12 });
+rc.curve([towers[1], [(towers[1][0] + a1[0]) / 2, (towers[1][1] + a1[1]) / 2 + 30], [a1[0], a1[1] - 4]], { stroke: "#d9573b", strokeWidth: 3, roughness: .8, seed: 13 });
+for (let i = 1; i < 16; i++) { const k = i / 16, [x, y] = deck(k); rc.line(x, y, x, y - 60 * (1 - k * .6) * Math.abs(Math.sin(k * Math.PI * 2.3)), { stroke: "#d9573b", strokeWidth: 1.4, roughness: .5, seed: 50 + i }); }
+rc.polygon([[a0[0] - 22, a0[1] + 4], [a1[0] - 4, a1[1] + 2], [a1[0] + 4, a1[1] - 4], [a0[0] + 22, a0[1] - 6]], { fill: "#c4473a", fillStyle: "solid", stroke: mixHex("#d9573b", "#1c1a19", .4), strokeWidth: 1.4, roughness: .8, seed: 14 });
+g.globalAlpha = 1;
+// cave hill and entrance on the left, firs in front of it
+wash([[-40, 780], [-40, 420], [120, 380], [330, 470], [460, 780]], "#8b6352", { sketch: .4 });
+wash([[60, 780], [90, 620], [170, 580], [250, 630], [270, 780]], "#6e4a3a", { alpha: .4, sketch: .5 });
+const fir = (x, y, h, c) => wash([[x, y - h], [x + h * .12, y - h * .62], [x + h * .2, y - h * .6], [x + h * .34, y], [x - h * .34, y], [x - h * .2, y - h * .6], [x - h * .12, y - h * .62]], c, { layers: 5, alpha: .45, sketch: .35 });
+[[380, 790, 330, "#5e8f6a"], [470, 800, 260, "#3f6b52"], [560, 790, 300, "#5e8f6a"], [700, 780, 220, "#3f6b52"], [1820, 800, 300, "#5e8f6a"]].forEach(a => fir(...a));
+// grass strokes and paper grain over everything
+for (let i = 0; i < 60; i++) { const x = rnd() * 1920, y = 820 + rnd() * 240; rc.linearPath([[x - 8, y], [x - 4, y - 22], [x, y], [x + 5, y - 26], [x + 9, y]], { stroke: "#6f8f3a", strokeWidth: 2, roughness: 1, seed: i + 100 }); }
+const grain = g.getImageData(0, 0, 1920, 1080);
+for (let i = 0; i < grain.data.length; i += 4) { const n = (rnd() - .5) * 18; grain.data[i] += n; grain.data[i + 1] += n; grain.data[i + 2] += n; }
+g.putImageData(grain, 0, 0);
+
+// choreography
+const tl = gsap.timeline();
+// the world paints itself in as watercolour from left to right
+tl.to("#world", { webkitMaskPosition: "0% 0", duration: 2.2, ease: "power1.inOut" }, 0);
+// the bear waddles in from the left: rocking side to side, bobbing, then lands with a squash and stretches back
+tl.set(["#bear", "#gshadow"], { visibility: "visible" }, .9);
+tl.fromTo("#bear", { x: -520 }, { x: 0, duration: 1.4, ease: "power1.out" }, .9);
+tl.fromTo("#gshadow", { x: -520 }, { x: 0, duration: 1.4, ease: "power1.out" }, .9);
+tl.fromTo("#bearRig", { rotation: -6 }, { rotation: 6, svgOrigin: "100 332", duration: .2, repeat: 6, yoyo: true, ease: "sine.inOut" }, .9);
+tl.fromTo("#bearRig", { y: 0 }, { y: -10, duration: .2, repeat: 6, yoyo: true, ease: "power1.out" }, .9);
+tl.to("#bearRig", { rotation: 0, y: 0, svgOrigin: "100 332", duration: .1 }, 2.3);
+tl.to("#bearRig", { scaleY: .9, scaleX: 1.08, svgOrigin: "100 332", duration: .12, ease: "power2.out" }, 2.4);
+tl.to("#bearRig", { scaleY: 1, scaleX: 1, svgOrigin: "100 332", duration: .7, ease: "elastic.out(1.2, .35)" }, 2.52);
+// then he waves: the near arm swings up with a spring and waves in a loop
+tl.fromTo("#bear .bone-nearArm", { rotation: 0 }, { rotation: -16, svgOrigin: "132 172", duration: .32, repeat: -1, yoyo: true, ease: "sine.inOut" }, 2.9);
+tl.to("#bear .bone-head", { rotation: 4, svgOrigin: "100 150", duration: .64, repeat: -1, yoyo: true, ease: "sine.inOut" }, 2.9);
+tl.to("#bear .part-mouth", { scaleY: 1.25, transformOrigin: "50% 0%", duration: .3, repeat: -1, yoyo: true, ease: "sine.inOut" }, 3.5);
+// the cards plop in: squashed, stretched, settled
+tl.set(".card", { visibility: "visible" }, 1.4);
+tl.from("#main", { scaleX: .4, scaleY: 1.4, opacity: 0, duration: .7, ease: "elastic.out(1, .45)", transformOrigin: "50% 100%" }, 1.4);
+const split = SplitText.create("#title", { type: "words,chars" });
+tl.from(split.chars, { y: -60, scaleY: 1.4, opacity: 0, duration: .5, ease: "bounce.out", stagger: .03 }, 1.7);
+tl.from("#pill", { scale: 0, rotate: -12, duration: .5, ease: "back.out(3)" }, 1.8);
+tl.from("#sub", { opacity: 0, y: 12, duration: .4 }, 2.3);
+tl.from("#count", { scaleX: .4, scaleY: 1.4, opacity: 0, duration: .7, ease: "elastic.out(1, .45)", transformOrigin: "50% 100%" }, 2.0);
+tl.from("#line", { x: 120, opacity: 0, duration: .5, ease: "back.out(2)" }, 2.4);
+tl.from("#clock", { y: -110, duration: .6, ease: "federnd" }, 1.6);
+tl.from("#name", { scale: 0, duration: .45, ease: "back.out(3)" }, 2.6);
+// the little bear walks along the trail as the progress, rocking on every step
+tl.from("#trail", { strokeDashoffset: 400, duration: .1 }, 2.6);
+tl.to("#mini", { motionPath: { path: "#trail", align: "#trail", alignOrigin: [.5, 1], start: 0, end: .3 }, duration: 6, ease: "none" }, 2.6);
+tl.fromTo("#mini", { rotation: -8 }, { rotation: 8, duration: .25, repeat: 23, yoyo: true, ease: "sine.inOut" }, 2.6);
+if (at) tl.pause(Number(at));
+// blink and breath, independent of the build
+const life = gsap.timeline({ repeat: -1, repeatDelay: 2.6 });
+life.to("#bear .part-eye", { scaleY: .1, transformOrigin: "50% 50%", duration: .08, yoyo: true, repeat: 1 });
+if (at) life.pause(0);
+gsap.to("#bear", { scaleY: 1.012, transformOrigin: "50% 100%", duration: 1.6, repeat: -1, yoyo: true, ease: "sine.inOut", paused: !!at });
+</script>
+</body>
+</html>
