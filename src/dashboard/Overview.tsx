@@ -64,13 +64,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
           {TEST_ALERTS.map(kind => <button key={kind} className="btn" onClick={() => act(`/api/test?kind=${kind}`)}>{TEXTS.overview.alertNames[kind]}</button>)}
         </p>
       )}
-      {me.features.alerts && (
-        <p className="actions">
-          <span className="muted">{TEXTS.overview.statsHint}</span>
-          <button className="btn" onClick={() => { if (confirm(TEXTS.overview.statsResetConfirm)) act("/api/stats/reset"); }}>{TEXTS.overview.statsReset}</button>
-        </p>
-      )}
-      {me.features.alerts && <StatsTable me={me} />}
+      {me.features.alerts && <Stats me={me} act={act} />}
       {me.features.triggers && me.features.fx && <TriggerButtons act={act} />}
       <ObsImport login={me.login} layout={layout} />
       <ChatHelp login={me.login} />
@@ -80,21 +74,33 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
 
 const STAT_LINES = (Object.keys(TEXTS.overview.statNames) as StatKey[]).map(key => ({ key, label: TEXTS.overview.statNames[key] }));
 
-// The stored count; me changes with every reload of the account (also after the reset), then it loads again
-function StatsTable({ me }: { me: Me }) {
+// Reset, reload and the stored count; it loads again with every reload of the account (me changes, also after the
+// reset) and on the reload button
+function Stats({ me, act }: { me: Me; act: Act }) {
   const [stats, setStats] = useState<StreamStats | null>(null);
+  const [loads, setLoads] = useState(0);
   useEffect(() => {
     let active = true;
     void getJson<StreamStats | null>("/api/stats", null).then(value => { if (active) setStats(value); });
     return () => { active = false; };
-  }, [me]);
-  if (!stats) return null;
+  }, [me, loads]);
   return (
-    <table>
-      <tbody>
-        {describeStats(stats, STAT_LINES, "de-DE", Date.now()).map(line => <tr key={line.key}><td>{line.label}</td><td>{line.value}</td></tr>)}
-      </tbody>
-    </table>
+    <>
+      <p className="actions">
+        <span className="muted">{TEXTS.overview.statsHint}</span>
+        <button className="btn" onClick={() => { if (confirm(TEXTS.overview.statsResetConfirm)) act("/api/stats/reset"); }}>{TEXTS.overview.statsReset}</button>
+        <button className="btn" onClick={() => setLoads(count => count + 1)} aria-label={TEXTS.overview.statsReload} title={TEXTS.overview.statsReload}>
+          <span aria-hidden="true">{"↻"}</span>
+        </button>
+      </p>
+      {stats && (
+        <table>
+          <tbody>
+            {describeStats(stats, STAT_LINES, "de-DE", Date.now()).map(line => <tr key={line.key}><td>{line.label}</td><td>{line.value}</td></tr>)}
+          </tbody>
+        </table>
+      )}
+    </>
   );
 }
 
