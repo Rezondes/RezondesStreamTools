@@ -2,6 +2,8 @@
 // same moment, off means the first take; drips run, a drop forms and falls in a loop without a jump; drift and dust
 // come from the time. Runs with npm test.
 import assert from "node:assert/strict";
+import { seedOf } from "../../core/hash.ts";
+import { brushSchedule } from "./brush.ts";
 import { boilTake, dripAt, driftAt, dustAt, TAKES } from "./idle.ts";
 
 // Kochen: three takes at fps, neighbours switch at other moments, off means take 0
@@ -36,5 +38,12 @@ for (const time of [0, 7, 300]) {
   const dust = dustAt(9, 4, time);
   assert.ok(dust.y >= 0 && dust.y < 1080, `dust stays on the stage at ${time}`);
 }
+
+// Startwert je Szene: every screen builds its wall from its own seed, the same seed gives the same picture
+const [starting, brb, ending] = ["starting", "brb", "ending"].map(scene => brushSchedule("zweix", seedOf(scene)));
+assert.notDeepEqual(starting, brb);
+assert.notDeepEqual(brb, ending);
+assert.deepEqual(brushSchedule("zweix", seedOf("brb")), brb);
+assert.notDeepEqual(dustAt(seedOf("brb"), 1, 3), dustAt(seedOf("ending"), 1, 3));
 
 console.log("chaos idle ok");

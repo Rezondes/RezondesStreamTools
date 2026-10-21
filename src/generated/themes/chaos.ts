@@ -38,6 +38,7 @@ export type ChaosValues = {
   readonly idleOn: boolean;
   readonly boilOn: boolean;
   readonly boilFps: number;
+  readonly brbBoilFps: number;
   readonly driftAmount: number;
   readonly bristleShimmer: number;
   readonly dripLoop: boolean;
@@ -80,6 +81,7 @@ export type ChaosValues = {
   readonly strokeMs: number;
   readonly scribbleStagger: number;
   readonly sprayTitleMs: number;
+  readonly endingDrips: number;
   readonly ticker: string;
   readonly tickerSpeed: number;
   readonly powerOn: string;

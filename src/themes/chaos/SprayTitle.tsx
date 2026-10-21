@@ -7,7 +7,7 @@ import { seedOf } from "../../core/hash.ts";
 import { dripPath, speckles, titleDrips } from "./strokes.ts";
 import { useChaos } from "./useChaos.ts";
 
-type Props = { text: string; seed: string; className?: string };
+type Props = { text: string; seed: string; className?: string; extraDrips?: number };
 
 // Speckles per square pixel of the title box, drips per title, where drips start (share of the height)
 const SPECKLE_DENSITY = 1 / 250;
@@ -16,7 +16,7 @@ const DRIP_START = 0.72;
 // Drip lengths are made for a title this high (pixels); smaller titles get shorter drips, so they stay off the text below
 const DRIP_HEIGHT = 160;
 
-export default function SprayTitle({ text, seed, className = "" }: Props) {
+export default function SprayTitle({ text, seed, className = "", extraDrips = 0 }: Props) {
   const values = useChaos();
   const id = useId().replace(/[^a-zA-Z0-9-]/g, "");
   const title = useRef<HTMLHeadingElement>(null);
@@ -32,7 +32,7 @@ export default function SprayTitle({ text, seed, className = "" }: Props) {
   }, []);
   const base = seedOf(`${seed}:${text}`);
   const dots = useMemo(() => speckles(base, box.width, box.height, Math.round(box.width * box.height * SPECKLE_DENSITY)), [base, box]);
-  const drips = useMemo(() => titleDrips(base, DRIPS), [base]);
+  const drips = useMemo(() => titleDrips(base, DRIPS + extraDrips), [base, extraDrips]);
 
   return (
     <div className={`ch-title-wrap ${className}`}>

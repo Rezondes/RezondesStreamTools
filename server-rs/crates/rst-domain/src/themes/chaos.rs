@@ -81,6 +81,10 @@ fn general() -> Vec<SettingField> {
         flag("idleOn", "Bewegung nach dem Aufbau", MOTION, true),
         flag("boilOn", "Kritzeleien kochen", MOTION, true),
         number("boilFps", "Kochen: Bilder pro Sekunde", MOTION, 8.0, 1.0, 24.0, None, None),
+        in_scene(
+            SceneName::Brb,
+            number("brbBoilFps", "BRB: Kochen (Bilder pro Sekunde)", MOTION, 5.0, 1.0, 24.0, None, None),
+        ),
         number("driftAmount", "Treiben der Kritzeleien", MOTION, 2.5, 0.0, 20.0, PX, Some(0.5)),
         number("bristleShimmer", "Schimmern der Borsten (Faktor)", MOTION, 1.0, 0.0, 4.0, None, Some(0.1)),
         flag("dripLoop", "Laufnasen tropfen ab", MOTION, true),
@@ -174,6 +178,10 @@ fn screens() -> Vec<SettingField> {
             None,
         )),
         starting(number("sprayTitleMs", "Starting: Titel aufsprühen (Dauer)", SCREENS, 1200.0, 0.0, 5000.0, MS, None)),
+        in_scene(
+            SceneName::Ending,
+            number("endingDrips", "Ending: zusätzliche Laufnasen am Titel", SCREENS, 6.0, 0.0, 30.0, None, None),
+        ),
         text("ticker", "Klebeband unten (leer = aus)", SCREENS, "", Some(300)),
         number("tickerSpeed", "Klebeband: Dauer eines Durchlaufs", SCREENS, 25.0, 5.0, 200.0, S, None),
         choice("powerOn", "Einschalten", SCREENS, "spray", &["spray", "blende", "keins"]),

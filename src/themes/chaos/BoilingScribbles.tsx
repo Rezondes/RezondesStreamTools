@@ -12,7 +12,7 @@ import { layoutScribbles, type Scribble, scribbleShape } from "./scribbles.ts";
 import { useChaos } from "./useChaos.ts";
 
 type Take = { rough: boolean; parts: { d: string; filled: boolean }[] };
-type Boiling = { seed: string; clock: () => number; idleFrom: number };
+type Boiling = { seed: string; clock: () => number; idleFrom: number; fps: number };
 
 function takesOf(mark: Scribble, index: number, base: number, rough: { share: number; fill: boolean; width: number }): Take[] {
   const takeSeed = (take: number) => base * 101 + index * 7 + take * 5003;
@@ -23,7 +23,7 @@ function takesOf(mark: Scribble, index: number, base: number, rough: { share: nu
   return Array.from({ length: TAKES }, (_, take) => ({ rough: false, parts: (take === 0 ? mark.paths : scribbleShape(mark.kind, chance(takeSeed(take)))).map(path => ({ d: path, filled: false })) }));
 }
 
-export default function BoilingScribbles({ seed, clock, idleFrom }: Boiling) {
+export default function BoilingScribbles({ seed, clock, idleFrom, fps }: Boiling) {
   const values = useChaos();
   const id = useId().replace(/[^a-zA-Z0-9-]/g, "");
   const base = seedOf(seed);
@@ -38,7 +38,7 @@ export default function BoilingScribbles({ seed, clock, idleFrom }: Boiling) {
       const idle = values.idleOn && seconds >= idleFrom;
       groups.current.forEach((group, index) => {
         if (!group) return;
-        const take = boilTake(index, seconds, values.boilFps, idle && values.boilOn);
+        const take = boilTake(index, seconds, fps, idle && values.boilOn);
         [...group.children].forEach((child, which) => child.setAttribute("display", which === take ? "inline" : "none"));
         const drift = driftAt(index, seconds, values.driftAmount, idle);
         const { x, y } = marks[index].mark;
@@ -48,7 +48,7 @@ export default function BoilingScribbles({ seed, clock, idleFrom }: Boiling) {
     };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [clock, idleFrom, marks, values.idleOn, values.boilOn, values.boilFps, values.driftAmount]);
+  }, [clock, idleFrom, marks, fps, values.idleOn, values.boilOn, values.driftAmount]);
   const url = (name: string) => `url(#${id}-${name})`;
   return (
     <svg className="ch-layer ch-scribbles ch-boil" viewBox={VIEW_BOX} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
