@@ -3,7 +3,7 @@
 // move. Runs with npm test.
 import assert from "node:assert/strict";
 import {
-  blinkAt, BONE_LIMITS, breathAt, ENTER, flashAt, LAND_LENGTH, landAt, moveAt, REST_BODY, sceneMotion, swayAt, SWAY_LOOP_SECONDS, waddleAt, waddleLength, waveAt,
+  alertMotion, blinkAt, BONE_LIMITS, breathAt, ENTER, flashAt, LAND_LENGTH, landAt, moveAt, REST_BODY, sceneMotion, swayAt, SWAY_LOOP_SECONDS, waddleAt, waddleLength, waveAt,
   waveLoop, type BodyFrame, type Move, type SceneMotion,
 } from "./boneMotion.ts";
 
@@ -72,5 +72,24 @@ assert.ok(sceneMotion(ENTER.move + 0.55, "sign", motion, -1).lift < 0);
 // Without the entry the bear stands from the start and moves
 const standing = sceneMotion(0.2, "wave", { ...motion, waddleIn: false }, -1);
 assert.ok(standing.visible && standing.body.x === 0 && standing.arm < 0);
+
+// The alert bear peeks out from behind the card into its spot, then reacts its way within the bounds
+const still = { blinkEvery: 0, breathe: false, breathAmount: 0, breathSeconds: 3.6 };
+assert.ok(alertMotion(0, "cheer", still).body.x > 200);
+near(alertMotion(1.05, "cheer", still).body.x, 0, "peeked out");
+const cheering = alertMotion(1.2, "cheer", still);
+assert.ok(cheering.body.y < 0 && cheering.arm < 0 && cheering.farArm > 0);
+assert.ok(alertMotion(1.2, "startle", still).body.y < cheering.body.y);
+const nodding = alertMotion(1.4, "nod", still);
+assert.ok(nodding.head > 0 && nodding.body.y === 0 && nodding.arm === 0);
+for (const reaction of ["cheer", "startle", "nod"] as const) {
+  for (let time = 0; time < 6; time += 0.01) {
+    const frame = alertMotion(time, reaction, still);
+    within(frame.arm, BONE_LIMITS.arm, `${reaction} arm`);
+    within(frame.farArm, BONE_LIMITS.arm, `${reaction} far arm`);
+    within(frame.head, BONE_LIMITS.head, `${reaction} head`);
+    within(frame.body.rotate, BONE_LIMITS.body, `${reaction} body`);
+  }
+}
 
 console.log("boneMotion ok");

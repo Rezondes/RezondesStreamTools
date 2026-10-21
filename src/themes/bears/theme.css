@@ -231,7 +231,6 @@
 @keyframes bears-slide-out { from { translate: 0 0; opacity: 1; } to { translate: 0 calc(-1 * var(--slide, 120px)); opacity: 0; } }
 @keyframes bears-fade-out { from { opacity: 1; } to { opacity: 0; } }
 @keyframes bears-shrink { from { scale: 1 1; } to { scale: 0 1; } }
-@keyframes bears-fall { from { translate: 0 0; rotate: 0deg; } to { translate: 0 calc(100vh + var(--piece-size, 60px) * 2); rotate: calc(var(--spin) * 720deg - 360deg); } }
 
 /* --- Alerts ------------------------------------------------------------------------------------------------------ */
 .theme-bears .bb-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
@@ -239,8 +238,8 @@
 .theme-bears .bb-alerts.align-right { justify-content: flex-end; }
 .theme-bears .bb-alert { position: relative; display: flex; align-items: flex-end; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
 .theme-bears .bb-alert.leaving { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
-.theme-bears .bb-alert-bear { position: relative; flex: none; height: var(--alertBearSize); margin-right: calc(-1 * var(--peek-overlap, 40px)); z-index: 1; }
-.theme-bears .bb-alert-card { position: relative; flex: 1; display: flex; align-items: center; gap: var(--alert-gap, 22px); margin-bottom: var(--card-lift, 20px); overflow: hidden; }
+.theme-bears .bb-alert-bear { position: relative; flex: none; height: var(--alertBearSize); margin-right: calc(-1 * var(--peek-overlap, 40px)); z-index: 0; }
+.theme-bears .bb-alert-card { position: relative; z-index: 1; flex: 1; display: flex; align-items: center; gap: var(--alert-gap, 22px); margin-bottom: var(--card-lift, 20px); overflow: hidden; }
 .theme-bears .bb-alert-icon { flex: none; width: var(--icon-size, 96px); }
 .theme-bears .bb-alert-text { display: grid; gap: var(--text-gap, 6px); min-width: 0; }
 .theme-bears .bb-tag { justify-self: start; background: var(--accent); color: var(--textColor); font-size: 0.8em; }
@@ -254,7 +253,8 @@
 .theme-bears .part-icon-detail { fill: var(--paperShade); }
 .theme-bears .bb-icon .part-line { stroke-width: var(--icon-line, 6); }
 .theme-bears .bb-confetti { position: absolute; inset: 0; pointer-events: none; }
-.theme-bears .bb-piece { position: absolute; top: calc(-1 * var(--piece-size, 60px)); left: calc(var(--x) * 100%); width: var(--piece-size, 60px); animation: bears-fall var(--alertDuration) linear both; animation-delay: calc(var(--delay) * var(--alertDuration) / -3); }
+/* Confetti pieces: placed around their middle by the timeline (confetti.ts), hidden until thrown */
+.theme-bears .bb-piece { position: absolute; left: calc(-0.5 * var(--piece-size, 60px)); top: calc(-0.5 * var(--piece-size, 60px)); width: var(--piece-size, 60px); opacity: 0; }
 .theme-bears .bb-piece:nth-child(even) .part-icon { fill: var(--treeLeaf, var(--accent2)); }
 
 /* --- Chat -------------------------------------------------------------------------------------------------------- */

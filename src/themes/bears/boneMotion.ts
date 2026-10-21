@@ -4,13 +4,13 @@
 // in it after its length (landing only ends in it); looping moves pass the rest pose once per loop. The angles stay in
 // BONE_LIMITS. Check: boneMotion.check.ts.
 
-// Degrees; positive turns clockwise on the stage. lift moves the near arm with its paw and prop up (negative) or down;
-// flash: the light of a selfie flash from 0 to 1
+// Degrees; positive turns clockwise on the stage. arm and farArm turn the near and the far arm; lift moves the near arm
+// with its paw and prop up (negative) or down; flash: the light of a selfie flash from 0 to 1
 export type BodyFrame = { x: number; y: number; rotate: number; scaleX: number; scaleY: number };
-export type BoneFrame = { visible: boolean; body: BodyFrame; arm: number; lift: number; head: number; eyes: number; flash: number };
+export type BoneFrame = { visible: boolean; body: BodyFrame; arm: number; farArm: number; lift: number; head: number; eyes: number; flash: number };
 
 export const REST_BODY: BodyFrame = { x: 0, y: 0, rotate: 0, scaleX: 1, scaleY: 1 };
-export const REST: BoneFrame = { visible: true, body: REST_BODY, arm: 0, lift: 0, head: 0, eyes: 1, flash: 0 };
+export const REST: BoneFrame = { visible: true, body: REST_BODY, arm: 0, farArm: 0, lift: 0, head: 0, eyes: 1, flash: 0 };
 
 // The bounds of the moves in degrees (arm and head around their pivots, body around the feet), the body scale and the
 // lift of the arm in rig units
@@ -92,8 +92,8 @@ export function flashAt(seconds: number, every: number): number {
 }
 
 export type MoveSettings = { waveSpeed: number; headSway: number; flashEvery: number };
-type Pose = Pick<BoneFrame, "arm" | "lift" | "head" | "flash">;
-const STILL: Pose = { arm: 0, lift: 0, head: 0, flash: 0 };
+type Pose = Pick<BoneFrame, "arm" | "farArm" | "lift" | "head" | "flash">;
+const STILL: Pose = { arm: 0, farArm: 0, lift: 0, head: 0, flash: 0 };
 
 export function moveAt(move: Move, seconds: number, settings: MoveSettings): Pose {
   switch (move) {
@@ -125,4 +125,42 @@ export function sceneMotion(seconds: number, move: Move, motion: SceneMotion, si
   const body = seconds < ENTER.land ? waddleAt(seconds - ENTER.from, motion.waddleAngle, ENTER.steps) : landAt(seconds - ENTER.land, motion.landSquash);
   const moving = seconds - ENTER.move;
   return { visible: true, body: { ...body, x, scaleY: body.scaleY * breath }, ...(moving > 0 ? moveAt(move, moving, motion) : STILL), eyes };
+}
+
+// The alert bear (PLAN-BEARS.md package 13): it peeks out from behind the card with a spring (x in px toward the card),
+// then reacts its way: cheer (hops and swings both arms), startle (one big jump, then cheers), nod (nods with its thumb
+// up); blinks and breathes all along
+export type Reaction = "cheer" | "startle" | "nod";
+export type AlertMotion = { blinkEvery: number; breathe: boolean; breathAmount: number; breathSeconds: number };
+// fixed: the peek of the prototype: from (px), when (s), how long (s), the turn behind the card and the lean after it
+// (degrees); the reaction from (s): hop height (rig units) and loop (s), the arm swings (degrees) and their loop (s), the
+// startle jump (rig units) and its length (s), the nod (degrees) and its loop (s)
+const PEEK = { from: 220, at: 0.45, length: 0.6, turn: 12, lean: -6, overshoot: 1.7 };
+const REACT = { at: 1, hop: -26, hopLoop: 0.36, near: -14, far: 12, swing: 0.4, startle: -60, startleLength: 0.4, nod: 8, nodLoop: 0.8 };
+
+function reactionAt(reaction: Reaction, seconds: number): Pose & { y: number } {
+  if (reaction === "nod") return { ...STILL, y: 0, head: clamp(REACT.nod * rise(seconds, REACT.nodLoop), BONE_LIMITS.head) };
+  if (reaction === "startle" && seconds < REACT.startleLength) return { ...STILL, y: REACT.startle * Math.sin((Math.PI * seconds) / REACT.startleLength) };
+  const cheering = reaction === "startle" ? seconds - REACT.startleLength : seconds;
+  return {
+    ...STILL,
+    y: REACT.hop * Math.abs(Math.sin((Math.PI * cheering) / REACT.hopLoop)),
+    arm: clamp(REACT.near * rise(cheering, REACT.swing), BONE_LIMITS.arm),
+    farArm: clamp(REACT.far * rise(cheering, REACT.swing), BONE_LIMITS.arm),
+  };
+}
+
+export function alertMotion(seconds: number, reaction: Reaction, motion: AlertMotion): BoneFrame {
+  const peeked = Math.min(1, Math.max(0, (seconds - PEEK.at) / PEEK.length));
+  // Overshooting a little before it settles (back out)
+  const spring = 1 + (PEEK.overshoot + 1) * (peeked - 1) ** 3 + PEEK.overshoot * (peeked - 1) ** 2;
+  const reacting = seconds - REACT.at;
+  const { y, ...pose } = reacting > 0 ? reactionAt(reaction, reacting) : { ...STILL, y: 0 };
+  const breath = motion.breathe ? breathAt(seconds, motion.breathAmount, motion.breathSeconds) : 1;
+  return {
+    visible: true,
+    body: { ...REST_BODY, x: PEEK.from * (1 - spring), y, rotate: clamp(PEEK.turn + (PEEK.lean - PEEK.turn) * spring, BONE_LIMITS.body), scaleY: breath },
+    ...pose,
+    eyes: blinkAt(seconds, motion.blinkEvery),
+  };
 }

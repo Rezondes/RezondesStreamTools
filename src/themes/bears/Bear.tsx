@@ -68,8 +68,10 @@ export default function Bear({ bear, pose, sign, turn, drops, className = "" }: 
   );
 }
 
-// The bones that turn with the near arm (its paw and what it holds) and with the head (ears and what it wears)
+// The bones that turn with the near arm (its paw and what it holds), with the far arm and with the head (ears and what it
+// wears)
 const ARM_BONES = ["nearArm", "nearArmPaw", "thumb", "prop"];
+const FAR_ARM_BONES = ["farArm", "farArmPaw"];
 const HEAD_BONES = ["head", "ears", "worn", "headset"];
 
 // Sets frames of boneMotion.ts on a bear drawn by Bear: the rig turns and scales around the feet and bobs, the arm (lifted
@@ -82,7 +84,7 @@ export function bearDriver(svg: SVGSVGElement, bear: BearId, pose: PoseName): (f
     for (const group of groups) group.style.transformOrigin = `${pivot[0]}px ${pivot[1]}px`;
     return (degrees: number, lift = 0) => { for (const group of groups) group.style.transform = `translateY(${lift}px) rotate(${degrees}deg)`; };
   };
-  const [arm, head] = [turner(ARM_BONES, pivotOf("nearArm")), turner(HEAD_BONES, pivotOf("head"))];
+  const [arm, farArm, head] = [turner(ARM_BONES, pivotOf("nearArm")), turner(FAR_ARM_BONES, pivotOf("farArm")), turner(HEAD_BONES, pivotOf("head"))];
   const rig = svg.querySelector<SVGGElement>(".bb-rig");
   const eyes = [...svg.querySelectorAll<SVGPathElement>(".part-eye")];
   const { width, height } = POSES[pose];
@@ -90,6 +92,7 @@ export function bearDriver(svg: SVGSVGElement, bear: BearId, pose: PoseName): (f
   return frame => {
     if (rig) rig.style.transform = `translateY(${frame.body.y}px) rotate(${frame.body.rotate}deg) scale(${frame.body.scaleX}, ${frame.body.scaleY})`;
     arm(frame.arm, frame.lift);
+    farArm(frame.farArm);
     head(frame.head);
     for (const eye of eyes) eye.style.transform = frame.eyes === 1 ? "" : `scaleY(${frame.eyes})`;
   };
