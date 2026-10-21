@@ -14,13 +14,13 @@ import { blotches, dust } from "./wall.ts";
 
 type Props = { seed: string; gesture: GestureKind; mainColor: string };
 
-const VIEW_BOX = `0 0 ${STAGE.width} ${STAGE.height}`;
+export const VIEW_BOX = `0 0 ${STAGE.width} ${STAGE.height}`;
 // The content in the middle stays free of scribbles (shares of the stage)
-const FREE = { x: 0.2, y: 0.2, width: 0.6, height: 0.6 };
+export const FREE = { x: 0.2, y: 0.2, width: 0.6, height: 0.6 };
 const BLOTCHES = 6;
 const DUST = 2600;
 // Seeds of the layers below the scene's own seed
-const LAYER = { scribbles: 1, gestures: 2, blotches: 3, dust: 4 };
+export const LAYER = { scribbles: 1, gestures: 2, blotches: 3, dust: 4 };
 
 export default function Backdrop({ seed, gesture, mainColor }: Props) {
   const values = useChaos();
@@ -93,7 +93,7 @@ function Mark({ mark, index }: { mark: Scribble; index: number }) {
 }
 
 // The filters of the wall; their strengths follow the settings (jitter, glow), the colors come from theme.css
-function Filters({ id }: { id: string }) {
+export function Filters({ id }: { id: string }) {
   const values = useChaos();
   const jitter = values.jitter;
   const glow = values.glow;

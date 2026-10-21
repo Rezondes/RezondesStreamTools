@@ -5,6 +5,7 @@
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, inScene, lines, markBasic, number, text } from "../../core/fields.ts";
+import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import { stingerFields } from "../../core/stingerOptions.ts";
@@ -18,6 +19,7 @@ const GESTURE_COLORS = ["cyan", "magenta"] as const;
 const GENERAL = "Allgemein";
 const SCRIBBLES = "Kritzeleien";
 const SCREENS = "Starting, BRB, Ending";
+const MOTION = "Bewegung";
 const ALERTS = "Alerts";
 const CHAT = "Chat";
 const CAM = "Kamera-Rahmen";
@@ -54,6 +56,22 @@ const FIELDS = [
   number("glitch", "Glitch-Stärke (0 = aus)", GENERAL, 0.3, 0, 1, undefined, 0.05),
   number("glitchEvery", "Glitch alle", GENERAL, 9, 2, 120, "s"),
   number("fadeDuration", "Ein- und Ausblenden", GENERAL, 450, 0, 3000, "ms"),
+  // The PixiJS wall of the screens (PLAN-CHAOS.md package 6)
+  qualityField(GENERAL),
+  number("glowStrength", "Leuchten der Striche (Unschärfe)", GENERAL, 22, 0, 60, "px"),
+  number("glowAlpha", "Leuchten der Striche (Stärke)", GENERAL, 0.75, 0, 1, undefined, 0.05),
+  number("roughShare", "Kritzeleien mit Füllung (Anteil)", GENERAL, 35, 0, 100, "%"),
+  flag("roughFill", "Kritzeleien gefüllt", GENERAL, true),
+
+  flag("idleOn", "Bewegung nach dem Aufbau", MOTION, true),
+  flag("boilOn", "Kritzeleien kochen", MOTION, true),
+  number("boilFps", "Kochen: Bilder pro Sekunde", MOTION, 8, 1, 24),
+  number("driftAmount", "Treiben der Kritzeleien", MOTION, 2.5, 0, 20, "px", 0.5),
+  number("bristleShimmer", "Schimmern der Borsten (Faktor)", MOTION, 1, 0, 4, undefined, 0.1),
+  flag("dripLoop", "Laufnasen tropfen ab", MOTION, true),
+  flag("dustOn", "Sprühstaub schwebt", MOTION, true),
+  // fixed: at most 600 grains of dust
+  number("dustCount", "Sprühstaub (Anzahl)", MOTION, 90, 0, 600),
 
   number("scribbleCount", "Anzahl", SCRIBBLES, 340, 0, 600),
   number("scribbleWidth", "Strichstärke (Faktor)", SCRIBBLES, 1, 0.3, 3, undefined, 0.1),
@@ -90,6 +108,9 @@ const FIELDS = [
   inScene("starting", text("countdownPrefix", "Text vor dem Countdown", SCREENS, "")),
   inScene("starting", text("countdownDone", "Text nach dem Countdown", SCREENS, "Gleich live")),
   inScene("starting", choice("progressStyle", "Fortschritt", SCREENS, "zickzack", ["zickzack", "balken", "aus"])),
+  inScene("starting", number("strokeMs", "Starting: Pinselstrich (Dauer)", SCREENS, 550, 100, 3000, "ms")),
+  inScene("starting", number("scribbleStagger", "Starting: Kritzeleien nacheinander (Abstand)", SCREENS, 45, 0, 500, "ms")),
+  inScene("starting", number("sprayTitleMs", "Starting: Titel aufsprühen (Dauer)", SCREENS, 1200, 0, 5000, "ms")),
   text("ticker", "Klebeband unten (leer = aus)", SCREENS, "", 300),
   number("tickerSpeed", "Klebeband: Dauer eines Durchlaufs", SCREENS, 25, 5, 200, "s"),
   choice("powerOn", "Einschalten", SCREENS, "spray", ["spray", "blende", "keins"]),
@@ -205,6 +226,7 @@ export type { ChaosValues } from "../../generated/themes/chaos.ts";
 
 const GROUP_SCENES = {
   [SCREENS]: ["starting", "brb", "ending"],
+  [MOTION]: ["starting", "brb", "ending"],
   [ALERTS]: ["alerts"],
   [CHAT]: ["chat"],
   [CAM]: ["cam"],

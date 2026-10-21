@@ -9,7 +9,7 @@ export type RoughShape =
   | { kind: "polygon"; points: [number, number][] }
   | { kind: "path"; d: string };
 
-export type RoughStyle = { roughness: number; bowing: number; strokeWidth: number; fill: "none" | "hachure" | "solid" | "zigzag" | "cross-hatch" | "dots" };
+export type RoughStyle = { roughness: number; bowing: number; strokeWidth: number; fill: "none" | "hachure" | "solid" | "zigzag" | "cross-hatch" | "dots" | "dashed" };
 
 // One path per part: the outline and, if filled, the fill strokes
 export type RoughPart = { d: string; filled: boolean };

@@ -224,6 +224,122 @@
       "unit": "ms"
     },
     {
+      "key": "quality",
+      "type": "select",
+      "label": "Leistungsstufe 3D",
+      "group": "Allgemein",
+      "default": "mittel",
+      "options": [
+        "hoch",
+        "mittel",
+        "niedrig"
+      ]
+    },
+    {
+      "key": "glowStrength",
+      "type": "number",
+      "label": "Leuchten der Striche (Unschärfe)",
+      "group": "Allgemein",
+      "default": 22,
+      "min": 0,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "glowAlpha",
+      "type": "number",
+      "label": "Leuchten der Striche (Stärke)",
+      "group": "Allgemein",
+      "default": 0.75,
+      "min": 0,
+      "max": 1,
+      "step": 0.05
+    },
+    {
+      "key": "roughShare",
+      "type": "number",
+      "label": "Kritzeleien mit Füllung (Anteil)",
+      "group": "Allgemein",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "roughFill",
+      "type": "boolean",
+      "label": "Kritzeleien gefüllt",
+      "group": "Allgemein",
+      "default": true
+    },
+    {
+      "key": "idleOn",
+      "type": "boolean",
+      "label": "Bewegung nach dem Aufbau",
+      "group": "Bewegung",
+      "default": true
+    },
+    {
+      "key": "boilOn",
+      "type": "boolean",
+      "label": "Kritzeleien kochen",
+      "group": "Bewegung",
+      "default": true
+    },
+    {
+      "key": "boilFps",
+      "type": "number",
+      "label": "Kochen: Bilder pro Sekunde",
+      "group": "Bewegung",
+      "default": 8,
+      "min": 1,
+      "max": 24
+    },
+    {
+      "key": "driftAmount",
+      "type": "number",
+      "label": "Treiben der Kritzeleien",
+      "group": "Bewegung",
+      "default": 2.5,
+      "min": 0,
+      "max": 20,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "bristleShimmer",
+      "type": "number",
+      "label": "Schimmern der Borsten (Faktor)",
+      "group": "Bewegung",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.1
+    },
+    {
+      "key": "dripLoop",
+      "type": "boolean",
+      "label": "Laufnasen tropfen ab",
+      "group": "Bewegung",
+      "default": true
+    },
+    {
+      "key": "dustOn",
+      "type": "boolean",
+      "label": "Sprühstaub schwebt",
+      "group": "Bewegung",
+      "default": true
+    },
+    {
+      "key": "dustCount",
+      "type": "number",
+      "label": "Sprühstaub (Anzahl)",
+      "group": "Bewegung",
+      "default": 90,
+      "min": 0,
+      "max": 600
+    },
+    {
       "key": "scribbleCount",
       "type": "number",
       "label": "Anzahl",
@@ -575,6 +691,39 @@
         "balken",
         "aus"
       ],
+      "scene": "starting"
+    },
+    {
+      "key": "strokeMs",
+      "type": "number",
+      "label": "Starting: Pinselstrich (Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": 550,
+      "min": 100,
+      "max": 3000,
+      "unit": "ms",
+      "scene": "starting"
+    },
+    {
+      "key": "scribbleStagger",
+      "type": "number",
+      "label": "Starting: Kritzeleien nacheinander (Abstand)",
+      "group": "Starting, BRB, Ending",
+      "default": 45,
+      "min": 0,
+      "max": 500,
+      "unit": "ms",
+      "scene": "starting"
+    },
+    {
+      "key": "sprayTitleMs",
+      "type": "number",
+      "label": "Starting: Titel aufsprühen (Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": 1200,
+      "min": 0,
+      "max": 5000,
+      "unit": "ms",
       "scene": "starting"
     },
     {
@@ -2110,6 +2259,11 @@
   ],
   "groupScenes": {
     "Starting, BRB, Ending": [
+      "starting",
+      "brb",
+      "ending"
+    ],
+    "Bewegung": [
       "starting",
       "brb",
       "ending"

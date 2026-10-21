@@ -12,6 +12,7 @@ use crate::settings::field::{
     text,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
+use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{
     MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, minime_fields, minime_hop_fields,
@@ -28,6 +29,7 @@ const GESTURE_COLORS: [&str; 2] = ["cyan", "magenta"];
 const GENERAL: &str = "Allgemein";
 const SCRIBBLES: &str = "Kritzeleien";
 const SCREENS: &str = "Starting, BRB, Ending";
+const MOTION: &str = "Bewegung";
 const ALERTS: &str = "Alerts";
 const CHAT: &str = "Chat";
 const CAM: &str = "Kamera-Rahmen";
@@ -71,6 +73,19 @@ fn general() -> Vec<SettingField> {
         number("glitch", "Glitch-Stärke (0 = aus)", GENERAL, 0.3, 0.0, 1.0, None, STEP),
         number("glitchEvery", "Glitch alle", GENERAL, 9.0, 2.0, 120.0, S, None),
         number("fadeDuration", "Ein- und Ausblenden", GENERAL, 450.0, 0.0, 3000.0, MS, None),
+        quality_field(GENERAL),
+        number("glowStrength", "Leuchten der Striche (Unschärfe)", GENERAL, 22.0, 0.0, 60.0, PX, None),
+        number("glowAlpha", "Leuchten der Striche (Stärke)", GENERAL, 0.75, 0.0, 1.0, None, STEP),
+        number("roughShare", "Kritzeleien mit Füllung (Anteil)", GENERAL, 35.0, 0.0, 100.0, PERCENT, None),
+        flag("roughFill", "Kritzeleien gefüllt", GENERAL, true),
+        flag("idleOn", "Bewegung nach dem Aufbau", MOTION, true),
+        flag("boilOn", "Kritzeleien kochen", MOTION, true),
+        number("boilFps", "Kochen: Bilder pro Sekunde", MOTION, 8.0, 1.0, 24.0, None, None),
+        number("driftAmount", "Treiben der Kritzeleien", MOTION, 2.5, 0.0, 20.0, PX, Some(0.5)),
+        number("bristleShimmer", "Schimmern der Borsten (Faktor)", MOTION, 1.0, 0.0, 4.0, None, Some(0.1)),
+        flag("dripLoop", "Laufnasen tropfen ab", MOTION, true),
+        flag("dustOn", "Sprühstaub schwebt", MOTION, true),
+        number("dustCount", "Sprühstaub (Anzahl)", MOTION, 90.0, 0.0, 600.0, None, None),
     ]
 }
 
@@ -147,6 +162,18 @@ fn screens() -> Vec<SettingField> {
         starting(text("countdownPrefix", "Text vor dem Countdown", SCREENS, "", None)),
         starting(text("countdownDone", "Text nach dem Countdown", SCREENS, "Gleich live", None)),
         starting(choice("progressStyle", "Fortschritt", SCREENS, "zickzack", &["zickzack", "balken", "aus"])),
+        starting(number("strokeMs", "Starting: Pinselstrich (Dauer)", SCREENS, 550.0, 100.0, 3000.0, MS, None)),
+        starting(number(
+            "scribbleStagger",
+            "Starting: Kritzeleien nacheinander (Abstand)",
+            SCREENS,
+            45.0,
+            0.0,
+            500.0,
+            MS,
+            None,
+        )),
+        starting(number("sprayTitleMs", "Starting: Titel aufsprühen (Dauer)", SCREENS, 1200.0, 0.0, 5000.0, MS, None)),
         text("ticker", "Klebeband unten (leer = aus)", SCREENS, "", Some(300)),
         number("tickerSpeed", "Klebeband: Dauer eines Durchlaufs", SCREENS, 25.0, 5.0, 200.0, S, None),
         choice("powerOn", "Einschalten", SCREENS, "spray", &["spray", "blende", "keins"]),
@@ -278,6 +305,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Minimes, Music, Starting};
     [
         (SCREENS, vec![Starting, Brb, Ending]),
+        (MOTION, vec![Starting, Brb, Ending]),
         (ALERTS, vec![Alerts]),
         (CHAT, vec![Chat]),
         (CAM, vec![Cam]),

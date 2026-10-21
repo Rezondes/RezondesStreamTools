@@ -418,3 +418,15 @@
 @media (prefers-reduced-motion: reduce) {
   .theme-chaos .ch-equalizer i, .theme-chaos .ch-reels i, .theme-chaos .ch-cam-live, .theme-chaos .ch-piece { animation: none; }
 }
+
+/* --- Painted screens (scenes/Screen.tsx, PLAN-CHAOS.md package 6): the PixiJS wall under the boiling scribbles, a dark
+   haze behind the content; the scribbles draw themselves one after the other from 1.3 s on, the title is sprayed on
+   from the left and loses its mask afterwards (the mask would cut its glow) -------------------------------------- */
+.theme-chaos .ch-world-haze { position: absolute; left: 50%; top: 56%; width: 64%; height: 46%; translate: -50% -50%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--ground) 85%, transparent), transparent); opacity: var(--haze); pointer-events: none; }
+.theme-chaos .ch-boil .ch-rough-fill { stroke-width: calc(var(--w) * var(--scribbleWidth) * 0.6); }
+.theme-chaos .ch-painted .ch-boil .ch-mark path { stroke-dasharray: 1; animation: chaos-draw var(--drawMs) ease-out both; animation-delay: calc(var(--draw-from, 1.3s) + var(--i) * var(--scribbleStagger) * 0.08); }
+.theme-chaos .ch-painted .ch-title { animation: chaos-spray-title var(--sprayTitleMs) ease-in-out var(--title-from, 2s) backwards; }
+@keyframes chaos-spray-title {
+  from { -webkit-mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to { -webkit-mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 0 0; mask-position: 0 0; }
+}
