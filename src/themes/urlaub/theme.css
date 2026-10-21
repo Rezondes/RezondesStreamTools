@@ -26,84 +26,6 @@
 
 /* --- Backdrop ------------------------------------------------------------------------------------------------ */
 .theme-urlaub .ul-screen { position: fixed; inset: 0; overflow: hidden; background: var(--seaDeep); }
-.theme-urlaub .ul-beach { position: absolute; inset: 0; overflow: hidden; }
-.theme-urlaub .time-morgen { --sky-top: var(--skyMorningTop); --sky-bottom: var(--skyMorningBottom); --sun-x: 22%; --sun-y: 50%; --light: var(--sun); }
-.theme-urlaub .time-mittag { --sky-top: var(--skyDayTop); --sky-bottom: var(--skyDayBottom); --sun-x: 72%; --sun-y: 16%; --light: var(--sun); }
-.theme-urlaub .time-abend { --sky-top: var(--skyEveningTop); --sky-bottom: var(--skyEveningBottom); --sun-x: 78%; --sun-y: 52%; --light: var(--sun); }
-.theme-urlaub .time-nacht { --sky-top: var(--skyNightTop); --sky-bottom: var(--skyNightBottom); --sun-x: 80%; --sun-y: 16%; --light: var(--moon); }
-.theme-urlaub .ul-sky { position: absolute; inset: 0; background: linear-gradient(var(--sky-top), var(--sky-bottom) 62%); }
-.theme-urlaub .ul-sun {
-  position: absolute;
-  left: var(--sun-x);
-  top: var(--sun-y);
-  width: var(--sun-size, 12vmin);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: var(--light);
-  translate: -50% -50%;
-  box-shadow: 0 0 calc(var(--sunGlow) * var(--glow-size, 8vmin)) var(--light);
-}
-.theme-urlaub .ul-cloud {
-  position: absolute;
-  left: 0;
-  top: calc(var(--y) * 30%);
-  width: calc(var(--cloud-size, 15vw) * (0.6 + var(--size) * 0.8));
-  opacity: 0.92;
-  animation: urlaub-drift var(--cloudSpeed) linear infinite;
-  animation-delay: calc(var(--i) * var(--cloudSpeed) / -4 - var(--y) * var(--cloudSpeed));
-}
-.theme-urlaub .ul-cloud .part-main { fill: var(--foam); }
-.theme-urlaub .ul-boat { position: absolute; left: 60%; top: calc(60% - var(--boat-size, 5vw) * 0.85); width: var(--boat-size, 5vw); animation: urlaub-bob var(--bob, 4s) ease-in-out infinite alternate; }
-.theme-urlaub .ul-boat .part-main { fill: var(--woodDark); }
-.theme-urlaub .ul-boat .part-detail { fill: var(--foam); }
-.theme-urlaub .ul-boat .part-line { stroke: var(--woodDark); }
-.theme-urlaub .ul-sea { position: absolute; inset: 0; width: 100%; height: 100%; }
-.theme-urlaub .ul-sea-deep { fill: var(--seaDeep); }
-.theme-urlaub .ul-wave { transform-box: fill-box; animation: urlaub-waves var(--waveSpeed) linear infinite; }
-.theme-urlaub .ul-wave-far { fill: color-mix(in srgb, var(--sea) 55%, var(--seaDeep)); animation-duration: calc(var(--waveSpeed) * 1.6); }
-.theme-urlaub .ul-wave-mid { fill: color-mix(in srgb, var(--sea) 80%, var(--seaDeep)); animation-duration: calc(var(--waveSpeed) * 1.25); animation-direction: reverse; }
-.theme-urlaub .ul-wave-near { fill: var(--sea); stroke: var(--foam); stroke-width: var(--foam-width, 4); }
-.theme-urlaub .ul-sparkle { fill: var(--foam); animation: urlaub-twinkle var(--twinkle, 2.4s) ease-in-out infinite; animation-delay: calc(var(--i) * var(--twinkle, 2.4s) / -7); }
-.theme-urlaub .ul-sand {
-  position: absolute;
-  left: -5%;
-  right: -5%;
-  bottom: -6%;
-  height: 24%;
-  background: linear-gradient(var(--sand), var(--sandDark));
-  border-radius: 50% 50% 0 0 / var(--dune, 70px) var(--dune, 70px) 0 0;
-  box-shadow: 0 calc(-1 * var(--foam-line, 6px)) 0 var(--foam);
-}
-.theme-urlaub .ul-shell { position: absolute; left: calc(var(--x) * 1%); top: 28%; width: var(--shell-size, 3.4vw); rotate: calc(var(--i) * 25deg - 20deg); }
-.theme-urlaub .ul-shell .part-main { fill: color-mix(in srgb, var(--accent2) 70%, var(--sand)); }
-.theme-urlaub .ul-shell .part-detail { fill: var(--accent); }
-.theme-urlaub .ul-shell .part-line { stroke: var(--woodDark); }
-.theme-urlaub .ul-sand-name {
-  position: absolute;
-  left: 40%;
-  top: 16%;
-  font-family: var(--titleFont), cursive;
-  font-size: var(--sand-name-size, 4.4vw);
-  color: color-mix(in srgb, var(--sandDark) 70%, var(--woodDark));
-  rotate: -4deg;
-  opacity: 0.75;
-}
-.theme-urlaub .ul-palm {
-  position: absolute;
-  bottom: 3%;
-  width: calc(var(--palm-width, 22vw) * var(--palmSize));
-  transform-origin: 40% 100%;
-  animation: urlaub-sway var(--palmSwaySpeed) ease-in-out infinite alternate;
-  animation-delay: calc(var(--i) * var(--palmSwaySpeed) / -3);
-}
-.theme-urlaub .ul-palm-left { left: calc(var(--i) * var(--palm-step, 11vw) - var(--palm-edge, 6vw)); }
-.theme-urlaub .ul-palm-right { right: calc(var(--i) * var(--palm-step, 11vw) - var(--palm-edge, 6vw)); scale: -1 1; }
-.theme-urlaub .ul-palm .part-main { fill: var(--palmTrunk); }
-.theme-urlaub .ul-palm .part-detail { fill: var(--palmLeaf); }
-.theme-urlaub .ul-palm .part-line { stroke: var(--woodDark); stroke-width: var(--trunk-line, 3); }
-.theme-urlaub .ul-gulls { position: absolute; top: 16%; left: 0; display: flex; gap: var(--gull-gap, 2vw); width: var(--gull-size, 7vw); animation: urlaub-fly var(--gullEvery) linear infinite; }
-.theme-urlaub .ul-gulls .part-line { stroke: var(--textOnWood); stroke-width: var(--gull-line, 3); }
-
 /* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
 .theme-urlaub .ul-stage {
   /* Position, size and scaling: stage-box from src/core/screens/stage.css */
@@ -136,17 +58,6 @@
 }
 .theme-urlaub .ul-sign-haengend::before { left: 14%; }
 .theme-urlaub .ul-sign-haengend::after { right: 14%; }
-.theme-urlaub .ul-sign-pfahl::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  width: var(--post, 42px);
-  height: var(--post-height, 600px);
-  translate: -50% 0;
-  background: var(--woodDark);
-  z-index: -1;
-}
 .theme-urlaub .ul-eyebrow { font-size: var(--eyebrow-size, 32px); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--woodDark); }
 .theme-urlaub .ul-title {
   margin: var(--title-margin, 6px 0);
@@ -222,11 +133,7 @@
 }
 .theme-urlaub .ul-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--ticker-padding, 10px 0); overflow: hidden; white-space: nowrap; font-size: var(--ticker-size, 2vw); border-radius: 0; }
 .theme-urlaub .ul-ticker span { display: inline-block; padding-left: 100%; animation: urlaub-marquee var(--tickerSpeed) linear infinite; }
-.theme-urlaub .power-sonnenaufgang .ul-beach { animation: urlaub-sunrise var(--powerOnDuration) ease-out both; }
-.theme-urlaub .power-sonnenaufgang .ul-sun { animation: urlaub-sun-up var(--powerOnDuration) ease-out both; }
 .theme-urlaub .power-sonnenaufgang .ul-stage, .theme-urlaub .power-blenden .ul-stage { animation: urlaub-fade var(--powerOnDuration) ease-out both; }
-.theme-urlaub .power-blenden .ul-beach { animation: urlaub-fade var(--powerOnDuration) ease-out both; }
-
 /* --- Alerts ------------------------------------------------------------------------------------------------- */
 .theme-urlaub .ul-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
 .theme-urlaub .ul-alerts.align-left { justify-content: flex-start; }
@@ -474,18 +381,11 @@
 }
 
 /* --- Keyframes ------------------------------------------------------------------------------------------------ */
-@keyframes urlaub-drift { from { translate: -30vw 0; } to { translate: 110vw 0; } }
 @keyframes urlaub-bob { from { translate: 0 0; rotate: -2deg; } to { translate: 0 calc(-1 * var(--bob-height, 6px)); rotate: 2deg; } }
-@keyframes urlaub-waves { from { translate: 0 0; } to { translate: -50% 0; } }
-@keyframes urlaub-twinkle { 0%, 100% { opacity: 0.1; } 50% { opacity: 1; } }
-@keyframes urlaub-sway { from { rotate: calc(var(--palmSway) * -1deg); } to { rotate: calc(var(--palmSway) * 1deg); } }
-@keyframes urlaub-fly { 0% { translate: -10vw 0; } 45% { translate: 110vw -6vh; } 100% { translate: 110vw -6vh; } }
 @keyframes urlaub-swing { from { rotate: -1.2deg; } to { rotate: 1.2deg; } }
 @keyframes urlaub-unroll { from { opacity: 0; scale: 0.2 1; } to { opacity: 1; scale: 1 1; } }
 @keyframes urlaub-plane { from { translate: -100% 0; } to { translate: 110vw 0; } }
 @keyframes urlaub-marquee { to { translate: -100% 0; } }
-@keyframes urlaub-sunrise { from { filter: brightness(0.25) saturate(0.4); } to { filter: none; } }
-@keyframes urlaub-sun-up { from { transform: translateY(35vh); } to { transform: none; } }
 @keyframes urlaub-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes urlaub-fade-out { from { opacity: 1; } to { opacity: 0; } }
 @keyframes urlaub-wave-in { 0% { opacity: 0; translate: 0 -120%; rotate: -6deg; } 60% { opacity: 1; translate: 0 6%; rotate: 2deg; } 100% { translate: 0 0; rotate: 0deg; } }

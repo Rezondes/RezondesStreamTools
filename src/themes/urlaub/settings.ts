@@ -14,7 +14,6 @@ import { BEACH_THINGS, THING_IDS, THING_SET } from "./beachThings.ts";
 
 export const FONTS = ["Fredoka", "Baloo 2", "Nunito", "Inter", "DM Sans"] as const;
 const TITLE_FONTS = ["Pacifico", "Fredoka", "Baloo 2", "Nunito"] as const;
-const TIMES = ["morgen", "mittag", "abend", "nacht"] as const;
 const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"] as const;
 const MOTIONS = ["welle", "plopp", "gleiten", "blenden", "keins"] as const;
 
@@ -45,7 +44,6 @@ const FIELDS = [
   color("seaDeep", "Meer tief", GENERAL, "#0b6f8e"),
   color("foam", "Gischt", GENERAL, "#f4fffd"),
   color("sand", "Sand", GENERAL, "#f2d49b"),
-  color("sandDark", "Sand dunkel", GENERAL, "#d9b26f"),
   color("palmLeaf", "Palmblätter", GENERAL, "#2e9e4f"),
   color("palmTrunk", "Palmstamm", GENERAL, "#8b5a2b"),
   color("accent", "Akzent (Hibiskus)", GENERAL, "#ff4f8b"),
@@ -55,37 +53,17 @@ const FIELDS = [
   number("fadeDuration", "Ein- und Ausblenden", GENERAL, 500, 0, 3000, "ms"),
   choice("locale", "Uhrzeit-Format", GENERAL, "de-DE", LOCALES),
 
-  inScene("starting", choice("timeStarting", "Tageszeit Starting", BEACH, "morgen", TIMES)),
-  inScene("brb", choice("timeBrb", "Tageszeit BRB", BEACH, "mittag", TIMES)),
-  inScene("ending", choice("timeEnding", "Tageszeit Ending", BEACH, "abend", TIMES)),
-  color("skyMorningTop", "Himmel Morgen oben", BEACH, "#ff9a76"),
   color("skyMorningBottom", "Himmel Morgen unten", BEACH, "#ffe2b0"),
   color("skyDayTop", "Himmel Mittag oben", BEACH, "#2fa8ec"),
   color("skyDayBottom", "Himmel Mittag unten", BEACH, "#b8ecff"),
   color("skyEveningTop", "Himmel Abend oben", BEACH, "#ff5f6d"),
   color("skyEveningBottom", "Himmel Abend unten", BEACH, "#ffc371"),
-  color("skyNightTop", "Himmel Nacht oben", BEACH, "#0b1d3a"),
-  color("skyNightBottom", "Himmel Nacht unten", BEACH, "#2c4a7a"),
   color("sun", "Sonne", BEACH, "#ffd23f"),
-  number("sunGlow", "Sonnenschein (Stärke)", BEACH, 1, 0, 3, undefined, 0.1),
-  color("moon", "Mond", BEACH, "#f5f1d6"),
-  flag("clouds", "Wolken", BEACH, true),
-  number("cloudCount", "Anzahl Wolken", BEACH, 4, 0, 8),
-  number("cloudSpeed", "Wolken: Zeit für eine Durchquerung", BEACH, 90, 10, 600, "s"),
-  number("waveLayers", "Wellenschichten", BEACH, 3, 1, 3),
-  number("waveSpeed", "Wellen: Tempo (Zeit pro Durchlauf)", BEACH, 14, 2, 120, "s"),
-  number("waveHeight", "Wellenhöhe (Faktor)", BEACH, 1, 0.2, 3, undefined, 0.1),
-  flag("sparkles", "Glitzern auf dem Wasser", BEACH, true),
   number("palmsLeft", "Palmen links", BEACH, 2, 0, 3),
   number("palmsRight", "Palmen rechts", BEACH, 1, 0, 3),
-  number("palmSize", "Palmengrösse (Faktor)", BEACH, 1, 0.4, 2, undefined, 0.05),
   number("palmSway", "Palmen wiegen (Grad)", BEACH, 3, 0, 20),
-  number("palmSwaySpeed", "Palmen wiegen (Dauer)", BEACH, 5, 1, 30, "s"),
   flag("boat", "Segelboot am Horizont", BEACH, true),
   flag("gulls", "Möwen", BEACH, true),
-  number("gullEvery", "Möwen: alle", BEACH, 16, 4, 120, "s"),
-  flag("shells", "Muscheln und Seesterne im Sand", BEACH, true),
-  flag("sandName", "Kanal-Name in den Sand geschrieben", BEACH, true),
   qualityField(BEACH),
   number("worldSeed", "Startwert der Welt", BEACH, 12, 0, 9999),
   flag("sunriseOn", "Sonnenaufgang im Starting", BEACH, true),
@@ -103,6 +81,12 @@ const FIELDS = [
   number("gullCount", "Möwen (Anzahl)", BEACH, 5, 1, 40),
   number("cameraHeight", "Kamera: Höhe", BEACH, 3.2, 1, 10, undefined, 0.1),
   flag("cameraDrift", "Kamera schwankt leicht", BEACH, true),
+  inScene("brb", number("brbSunHeight", "BRB: Sonnenhöhe (Grad)", BEACH, 55, 0, 90)),
+  inScene("brb", flag("umbrellaOn", "BRB: Sonnenschirm und Liegestuhl", BEACH, true)),
+  inScene("brb", color("umbrellaColor", "BRB: Sonnenschirm", BEACH, "#ff4f8b")),
+  inScene("ending", number("sunsetMs", "Ending: Sonnenuntergang (Dauer)", BEACH, 5000, 0, 30000, "ms")),
+  inScene("ending", flag("torchesOn", "Ending: Fackeln", BEACH, true)),
+  inScene("ending", number("torches", "Ending: Anzahl Fackeln", BEACH, 4, 1, 8)),
 
   inScene("starting", text("startingEyebrow", "Starting: Überzeile", SCREENS, "Gleich geht's los")),
   inScene("starting", text("startingTitle", "Starting: Titel", SCREENS, "Stream startet gleich")),
@@ -113,7 +97,6 @@ const FIELDS = [
   inScene("ending", text("endingEyebrow", "Ending: Überzeile", SCREENS, "Danke fürs Zuschauen")),
   inScene("ending", text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet")),
   inScene("ending", text("endingNote", "Ending: Untertitel", SCREENS, "Bis zum nächsten Sonnenuntergang!")),
-  choice("signStyle", "Schild", SCREENS, "haengend", ["haengend", "pfahl"]),
   flag("woodGrain", "Schild: Holzmaserung", SCREENS, true),
   number("signSwing", "Schild: Pendeln (Grad)", SCREENS, 8, 0, 30),
   number("signWidth", "Schild: Breite", SCREENS, 1100, 400, 1800, "px"),
@@ -280,7 +263,6 @@ const FIELDS = [
   number("splashDrops", "Reaktion auf Chat: Wasserspritzer", MINIME_MOVES, 8, 0, 20),
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
-  choice("timeInfo", "Befehlsseite: Tageszeit am Strand", INFO_GROUP, "mittag", TIMES),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -328,8 +310,7 @@ const personalize = (login: string) => ({ channelName: capital(login) });
 
 // Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
 const BASIC = [
-  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "clouds", "boat", "gulls", "timeStarting",
-  "startingEyebrow", "startingTitle", "ticker", "timeBrb", "brbTitle", "brbNote", "timeEnding", "endingTitle", "endingNext", "alertStyle",
+  "channelName", "font", "titleFont", "textColor", "accent", "accent2", "boat", "gulls",   "startingEyebrow", "startingTitle", "ticker", "brbTitle", "brbNote", "endingTitle", "endingNext", "alertStyle",
   "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatStyle", "chatBadges",
   "camStyle", "camLabel", "camLive", "musicStyle", "musicHide", "fxIn", "fxOut", "fruitDefault", "fruitNames",
 ];

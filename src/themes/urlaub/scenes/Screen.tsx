@@ -1,17 +1,16 @@
-// Full-screen scenes of the Urlaub theme (Starting, BRB, Ending): beach backdrop per time of day, wooden sign with overline,
-// title and subtitle, below it countdown, break time or next stream, rotating quotes and a ticker on an
-// airplane or as a wooden bar. Built for 1920x1080, scaled to any source size. The Starting (PLAN-URLAUB.md package 5) is
-// the realistic beach in 3D at sunrise with driftwood signs: the sign drops in on its ropes and swings out, the post rises
-// out of the sand, a buoy drifts along a rope as the progress; one GSAP timeline drives it all (stills with ?t=).
-// Stage, countdown, break time, quotes and parameters come from the screens context of the core (src/core/screens).
-// Parameter pro Quelle: ?min=5, ?at=20:00, ?next=..., ?ticker=...
+// Full-screen scenes of the Urlaub theme (Starting, BRB, Ending; PLAN-URLAUB.md packages 5 and 6): the realistic beach in
+// 3D with the sun of the scene (sunrise in the Starting, noon with umbrella and deck chair in the BRB, sunset with
+// torches in the Ending), driftwood signs in front: the sign with overline, title and subtitle drops in on its ropes and
+// swings out, the post with countdown and buoy, break time or next stream rises out of the sand; rotating quotes and a
+// ticker on an airplane or as a wooden bar. One GSAP timeline drives it all (stills with ?t=). Built for 1920x1080,
+// scaled to any source size. Stage, countdown, break time, quotes and parameters come from the screens context of the
+// core (src/core/screens). Parameter pro Quelle: ?min=5, ?at=20:00, ?next=..., ?ticker=...
 import { SplitText } from "gsap/SplitText";
 import { type RefObject, useRef, useState } from "react";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { rotating, shortClock, type ScreenKind } from "../../../core/screens/screens.ts";
 import { useScreen } from "../../../core/screens/useScreen.ts";
 import { useStage } from "../../../core/screens/useStage.ts";
-import Beach, { type TimeOfDay } from "../Beach.tsx";
 import { PLANE } from "../beach.ts";
 import ShapeIcon from "../ShapeIcon.tsx";
 import type { UrlaubValues } from "../settings.ts";
@@ -24,7 +23,7 @@ import { useUrlaub } from "../useUrlaub.ts";
 // fixed: seconds in ms for the rhythm of the quotes
 const SECOND_MS = 1000;
 
-// fixed: how long the clock of the realistic Starting runs (s)
+// fixed: how long the clock of the beach runs (s)
 const RUN = 24 * 60 * 60;
 // fixed: when the parts come in (s): clock, sign drop, post, sign swing, words, note
 const AT = { clock: 1.4, drop: 1, post: 1.6, swing: 1.8, words: 1.9, note: 2.4 };
@@ -36,11 +35,11 @@ const RISE = { opacity: 0, y: 10, duration: 0.4 }; // fixed: the note rises
 const POST = { y: 520, duration: 0.9, ease: "back.out(1.4)" }; // fixed: the post rises out of the sand
 const CLOCK = { y: -110, duration: 0.6, ease: "back.out(2)" }; // fixed: the clock drops in
 
-// The realistic Starting: the clock of the 3D beach, the signs dropping, swinging and rising
-function useStartingTimeline(scope: RefObject<HTMLDivElement | null>, clock: BeachClock, values: UrlaubValues, on: boolean) {
+// The build of a screen: the clock of the 3D beach, the signs dropping, swinging and rising
+function useScreenTimeline(scope: RefObject<HTMLDivElement | null>, clock: BeachClock, values: UrlaubValues, kind: ScreenKind) {
   useTimeline(timeline => {
     const root = scope.current;
-    if (!on || !root) return;
+    if (!root) return;
     clock.time = 0;
     timeline.to(clock, { time: RUN, duration: RUN, ease: "none" }, 0);
     timeline.from(root.querySelector(".ul-clock"), CLOCK, AT.clock);
@@ -51,8 +50,9 @@ function useStartingTimeline(scope: RefObject<HTMLDivElement | null>, clock: Bea
     timeline.from(root.querySelector(".ul-eyebrow"), SPREAD, AT.words);
     const note = root.querySelector(".ul-note");
     if (note) timeline.from(note, RISE, AT.note);
-    timeline.from(root.querySelector(".ul-post"), POST, AT.post);
-  }, [clock, values, on], scope);
+    const post = root.querySelector(".ul-post");
+    if (post) timeline.from(post, POST, AT.post);
+  }, [clock, values, kind], scope);
 }
 
 export default function Screen({ kind }: { kind: ScreenKind }) {
@@ -64,36 +64,33 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
     brb: [values.brbEyebrow, values.brbTitle, values.brbNote],
     ending: [values.endingEyebrow, values.endingTitle, values.endingNote],
   }[kind];
-  const time = { starting: values.timeStarting, brb: values.timeBrb, ending: values.timeEnding }[kind] as TimeOfDay;
   const sayings = { starting: values.startingLines, brb: values.brbLines, ending: values.endingLines }[kind];
   const saying = rotating(sayings, values.linesEvery * SECOND_MS, now - start);
-  const real = kind === "starting";
   const scope = useRef<HTMLDivElement>(null);
   const [clock] = useState<BeachClock>(() => ({ time: 0 }));
-  useStartingTimeline(scope, clock, values, real);
-  const big = <b className="ul-big">{left > 0 ? values.countdownPrefix + shortClock(left) : values.countdownDone}</b>;
-  const heading = (
-    <>
-      <p className="ul-eyebrow">{eyebrow}</p>
-      <h1 className="ul-title">{title}</h1>
-      {note && <p className="ul-note">{note}</p>}
-    </>
-  );
+  useScreenTimeline(scope, clock, values, kind);
+  const post = {
+    starting: (
+      <>
+        <b className="ul-big">{left > 0 ? values.countdownPrefix + shortClock(left) : values.countdownDone}</b>
+        {values.progressStyle !== "aus" && <BuoyRope progress={progress} />}
+      </>
+    ),
+    brb: <b className="ul-big">{values.afkPrefix + shortClock(away)}</b>,
+    ending: next ? <b className="ul-next">{`${values.endingNextLabel}: ${next}`}</b> : null,
+  }[kind];
 
   return (
-    <div ref={scope} className={`ul-screen power-${values.powerOn}${real ? " ul-real" : ""}`}>
-      {real ? <BeachWorld values={values} clock={clock} /> : <Beach time={time} />}
+    <div ref={scope} className={`ul-screen ul-real power-${values.powerOn}`}>
+      <BeachWorld values={values} clock={clock} scene={kind} />
       <div className="ul-stage stage-box" ref={stage}>
         <span className="ul-clock">{new Date(now).toLocaleTimeString(values.locale)}</span>
-        {real ? <DriftwoodSign hanging grain={values.woodGrain} className="ul-sign">{heading}</DriftwoodSign> : <div className={`ul-sign ul-wood ul-sign-${values.signStyle}`}>{heading}</div>}
-        {real && (
-          <DriftwoodSign hanging={false} grain={values.woodGrain} className="ul-board">
-            {big}
-            {values.progressStyle !== "aus" && <BuoyRope progress={progress} />}
-          </DriftwoodSign>
-        )}
-        {kind === "brb" && <div className="ul-board ul-wood"><b className="ul-big">{values.afkPrefix + shortClock(away)}</b></div>}
-        {kind === "ending" && next && <div className="ul-board ul-wood"><b className="ul-next">{`${values.endingNextLabel}: ${next}`}</b></div>}
+        <DriftwoodSign hanging grain={values.woodGrain} className="ul-sign">
+          <p className="ul-eyebrow">{eyebrow}</p>
+          <h1 className="ul-title">{title}</h1>
+          {note && <p className="ul-note">{note}</p>}
+        </DriftwoodSign>
+        {post && <DriftwoodSign hanging={false} grain={values.woodGrain} className="ul-board">{post}</DriftwoodSign>}
         {saying && <p key={saying} className="ul-saying">{saying}</p>}
       </div>
       {ticker && values.tickerStyle === "flugzeug" && (

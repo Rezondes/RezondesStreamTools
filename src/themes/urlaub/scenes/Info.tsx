@@ -1,19 +1,23 @@
-// Commands page of the Urlaub theme (public under /s/<login>/): the beach at the chosen time of day stays fixed in the
+// Commands page of the Urlaub theme (public under /s/<login>/): the realistic beach at noon stays fixed in the
 // background, in front of it wooden signs with the commands (beach things as minime variants). List, texts and intro come
 // from the info context of the core (useInfoPage), here only the beach look.
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
-import Beach, { type TimeOfDay } from "../Beach.tsx";
+import { useState } from "react";
+import BeachWorld from "../three/BeachWorld.tsx";
+import type { BeachClock } from "../three/Sky.tsx";
 import { urlaubSettings } from "../settings.ts";
 import { urlaubNames, useUrlaub } from "../useUrlaub.ts";
 
 export default function Info() {
   const values = useUrlaub();
+  // The commands page shows the beach at noon, standing still
+  const [clock] = useState<BeachClock>(() => ({ time: 0 }));
   const page = useInfoPage(values, urlaubNames(values), readMinimeOptions(values, urlaubSettings.minimeVariants).rules);
   if (!page) return null;
   return (
     <div className="ul-info">
-      <div className="ul-info-backdrop"><Beach time={values.timeInfo as TimeOfDay} /></div>
+      <div className="ul-info-backdrop"><BeachWorld values={values} clock={clock} scene="info" /></div>
       <main className="ul-info-column">
         <header className="ul-wood ul-info-sign">
           <h1 className="ul-title">{page.title}</h1>

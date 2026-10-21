@@ -1,15 +1,15 @@
-// The physical sky of the realistic Urlaub beach (three.js Sky): the sun at its height for the clock (sun.ts) and the
+// The physical sky of the realistic Urlaub beach (three.js Sky): the sun at its height for the clock (heightAt, sun.ts) and the
 // azimuth; the sun lights the scene with soft shadows, the sky lights it from above and the sand from below, and the
 // sky is the environment for reflections (made again when the sun has moved noticeably). direction is shared with the
-// sea, which mirrors the sun.
+// sea, which mirrors the sun. The exposure follows the height of the sun (sun.ts).
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import { type DirectionalLight, type HemisphereLight, PMREMGenerator, Scene, type Texture, type Vector3 } from "three";
 import { Sky as SkyShader } from "three/examples/jsm/objects/Sky.js";
-import { skyLight, sunDirection, sunHeight, sunLight, type SunOptions } from "../sun.ts";
+import { exposureFactor, skyLight, sunDirection, sunLight } from "../sun.ts";
 
 export type BeachClock = { time: number };
-type Props = { clock: BeachClock; sun: SunOptions; azimuth: number; turbidity: number; shadows: boolean; direction: Vector3 };
+type Props = { clock: BeachClock; heightAt: (seconds: number) => number; azimuth: number; turbidity: number; exposure: number; shadows: boolean; direction: Vector3 };
 
 // fixed: the sky of the prototype: size, air and haze scattering
 const SKY = { scale: 10000, rayleigh: 2.2, mie: 0.006, mieDirection: 0.86 };
@@ -20,7 +20,7 @@ const HEMI = { sky: "#bfd8ff", ground: "#d9b98a" };
 // fixed: the environment is made again when the sun moved this far (degrees)
 const ENV_STEP = 0.6;
 
-export default function Sky({ clock, sun, azimuth, turbidity, shadows, direction }: Props) {
+export default function Sky({ clock, heightAt, azimuth, turbidity, exposure, shadows, direction }: Props) {
   const gl = useThree(state => state.gl);
   const scene = useThree(state => state.scene);
   const sky = useMemo(() => {
@@ -42,7 +42,9 @@ export default function Sky({ clock, sun, azimuth, turbidity, shadows, direction
   const light = useRef<DirectionalLight>(null);
   const hemi = useRef<HemisphereLight>(null);
   useFrame(() => {
-    const height = sunHeight(clock.time, sun);
+    const height = heightAt(clock.time);
+    // The exposure follows the sun, so noon is not blown out and the dusk not black
+    gl.toneMappingExposure = exposure * exposureFactor(height);
     direction.set(...sunDirection(height, azimuth));
     (sky.material.uniforms.sunPosition.value as Vector3).copy(direction);
     if (light.current) {

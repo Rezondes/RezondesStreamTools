@@ -108,13 +108,6 @@
       "default": "#f2d49b"
     },
     {
-      "key": "sandDark",
-      "type": "color",
-      "label": "Sand dunkel",
-      "group": "Allgemein",
-      "default": "#d9b26f"
-    },
-    {
       "key": "palmLeaf",
       "type": "color",
       "label": "Palmblätter",
@@ -192,58 +185,6 @@
       ]
     },
     {
-      "key": "timeStarting",
-      "type": "select",
-      "label": "Tageszeit Starting",
-      "group": "Kulisse",
-      "default": "morgen",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ],
-      "scene": "starting",
-      "basic": true
-    },
-    {
-      "key": "timeBrb",
-      "type": "select",
-      "label": "Tageszeit BRB",
-      "group": "Kulisse",
-      "default": "mittag",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ],
-      "scene": "brb",
-      "basic": true
-    },
-    {
-      "key": "timeEnding",
-      "type": "select",
-      "label": "Tageszeit Ending",
-      "group": "Kulisse",
-      "default": "abend",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ],
-      "scene": "ending",
-      "basic": true
-    },
-    {
-      "key": "skyMorningTop",
-      "type": "color",
-      "label": "Himmel Morgen oben",
-      "group": "Kulisse",
-      "default": "#ff9a76"
-    },
-    {
       "key": "skyMorningBottom",
       "type": "color",
       "label": "Himmel Morgen unten",
@@ -279,105 +220,11 @@
       "default": "#ffc371"
     },
     {
-      "key": "skyNightTop",
-      "type": "color",
-      "label": "Himmel Nacht oben",
-      "group": "Kulisse",
-      "default": "#0b1d3a"
-    },
-    {
-      "key": "skyNightBottom",
-      "type": "color",
-      "label": "Himmel Nacht unten",
-      "group": "Kulisse",
-      "default": "#2c4a7a"
-    },
-    {
       "key": "sun",
       "type": "color",
       "label": "Sonne",
       "group": "Kulisse",
       "default": "#ffd23f"
-    },
-    {
-      "key": "sunGlow",
-      "type": "number",
-      "label": "Sonnenschein (Stärke)",
-      "group": "Kulisse",
-      "default": 1,
-      "min": 0,
-      "max": 3,
-      "step": 0.1
-    },
-    {
-      "key": "moon",
-      "type": "color",
-      "label": "Mond",
-      "group": "Kulisse",
-      "default": "#f5f1d6"
-    },
-    {
-      "key": "clouds",
-      "type": "boolean",
-      "label": "Wolken",
-      "group": "Kulisse",
-      "default": true,
-      "basic": true
-    },
-    {
-      "key": "cloudCount",
-      "type": "number",
-      "label": "Anzahl Wolken",
-      "group": "Kulisse",
-      "default": 4,
-      "min": 0,
-      "max": 8
-    },
-    {
-      "key": "cloudSpeed",
-      "type": "number",
-      "label": "Wolken: Zeit für eine Durchquerung",
-      "group": "Kulisse",
-      "default": 90,
-      "min": 10,
-      "max": 600,
-      "unit": "s"
-    },
-    {
-      "key": "waveLayers",
-      "type": "number",
-      "label": "Wellenschichten",
-      "group": "Kulisse",
-      "default": 3,
-      "min": 1,
-      "max": 3
-    },
-    {
-      "key": "waveSpeed",
-      "type": "number",
-      "label": "Wellen: Tempo (Zeit pro Durchlauf)",
-      "group": "Kulisse",
-      "default": 14,
-      "min": 2,
-      "max": 120,
-      "unit": "s"
-    },
-    {
-      "key": "waveHeight",
-      "type": "number",
-      "label": "Wellenhöhe (Faktor)",
-      "group": "Kulisse",
-      "default": 1,
-      "min": 0.2,
-      "max": 3,
-      "step": 0.1
-    },
-    {
-      "key": "sparkles",
-      "type": "boolean",
-      "label": "Glitzern auf dem Wasser",
-      "group": "Kulisse",
-      "default": true
     },
     {
       "key": "palmsLeft",
@@ -398,16 +245,6 @@
       "max": 3
     },
     {
-      "key": "palmSize",
-      "type": "number",
-      "label": "Palmengrösse (Faktor)",
-      "group": "Kulisse",
-      "default": 1,
-      "min": 0.4,
-      "max": 2,
-      "step": 0.05
-    },
-    {
       "key": "palmSway",
       "type": "number",
       "label": "Palmen wiegen (Grad)",
@@ -415,16 +252,6 @@
       "default": 3,
       "min": 0,
       "max": 20
-    },
-    {
-      "key": "palmSwaySpeed",
-      "type": "number",
-      "label": "Palmen wiegen (Dauer)",
-      "group": "Kulisse",
-      "default": 5,
-      "min": 1,
-      "max": 30,
-      "unit": "s"
     },
     {
       "key": "boat",
@@ -441,30 +268,6 @@
       "group": "Kulisse",
       "default": true,
       "basic": true
-    },
-    {
-      "key": "gullEvery",
-      "type": "number",
-      "label": "Möwen: alle",
-      "group": "Kulisse",
-      "default": 16,
-      "min": 4,
-      "max": 120,
-      "unit": "s"
-    },
-    {
-      "key": "shells",
-      "type": "boolean",
-      "label": "Muscheln und Seesterne im Sand",
-      "group": "Kulisse",
-      "default": true
-    },
-    {
-      "key": "sandName",
-      "type": "boolean",
-      "label": "Kanal-Name in den Sand geschrieben",
-      "group": "Kulisse",
-      "default": true
     },
     {
       "key": "quality",
@@ -622,6 +425,61 @@
       "default": true
     },
     {
+      "key": "brbSunHeight",
+      "type": "number",
+      "label": "BRB: Sonnenhöhe (Grad)",
+      "group": "Kulisse",
+      "default": 55,
+      "min": 0,
+      "max": 90,
+      "scene": "brb"
+    },
+    {
+      "key": "umbrellaOn",
+      "type": "boolean",
+      "label": "BRB: Sonnenschirm und Liegestuhl",
+      "group": "Kulisse",
+      "default": true,
+      "scene": "brb"
+    },
+    {
+      "key": "umbrellaColor",
+      "type": "color",
+      "label": "BRB: Sonnenschirm",
+      "group": "Kulisse",
+      "default": "#ff4f8b",
+      "scene": "brb"
+    },
+    {
+      "key": "sunsetMs",
+      "type": "number",
+      "label": "Ending: Sonnenuntergang (Dauer)",
+      "group": "Kulisse",
+      "default": 5000,
+      "min": 0,
+      "max": 30000,
+      "unit": "ms",
+      "scene": "ending"
+    },
+    {
+      "key": "torchesOn",
+      "type": "boolean",
+      "label": "Ending: Fackeln",
+      "group": "Kulisse",
+      "default": true,
+      "scene": "ending"
+    },
+    {
+      "key": "torches",
+      "type": "number",
+      "label": "Ending: Anzahl Fackeln",
+      "group": "Kulisse",
+      "default": 4,
+      "min": 1,
+      "max": 8,
+      "scene": "ending"
+    },
+    {
       "key": "startingEyebrow",
       "type": "text",
       "label": "Starting: Überzeile",
@@ -706,17 +564,6 @@
       "default": "Bis zum nächsten Sonnenuntergang!",
       "maxLength": 200,
       "scene": "ending"
-    },
-    {
-      "key": "signStyle",
-      "type": "select",
-      "label": "Schild",
-      "group": "Starting, BRB, Ending",
-      "default": "haengend",
-      "options": [
-        "haengend",
-        "pfahl"
-      ]
     },
     {
       "key": "woodGrain",
@@ -2823,19 +2670,6 @@
       "group": "Befehlsseite",
       "default": "Pro Person: {seconds} s",
       "maxLength": 200
-    },
-    {
-      "key": "timeInfo",
-      "type": "select",
-      "label": "Befehlsseite: Tageszeit am Strand",
-      "group": "Befehlsseite",
-      "default": "mittag",
-      "options": [
-        "morgen",
-        "mittag",
-        "abend",
-        "nacht"
-      ]
     },
     {
       "key": "minimeVariantCommand",

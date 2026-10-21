@@ -18,8 +18,8 @@ assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 // Required keys per group
 const REQUIRED: Record<string, string[]> = {
   "Allgemein": ["channelName", "font", "titleFont", "wood", "sea", "sand", "palmLeaf", "accent", "accent2", "radius", "fadeDuration"],
-  "Kulisse": ["timeStarting", "timeBrb", "timeEnding", "skyNightTop", "sun", "moon", "clouds", "waveLayers", "waveSpeed", "palmsLeft", "palmsRight", "palmSway", "boat", "gulls", "shells", "sandName"],
-  "Starting, BRB, Ending": ["startingTitle", "brbTitle", "endingTitle", "signStyle", "countdown", "progressStyle", "startingLines", "brbLines", "endingLines", "ticker", "tickerStyle", "powerOn"],
+  "Kulisse": ["sun", "palmsLeft", "palmsRight", "palmSway", "boat", "gulls", "worldSeed", "exposure", "brbSunHeight", "torches"],
+  "Starting, BRB, Ending": ["startingTitle", "brbTitle", "endingTitle", "signSwing", "countdown", "progressStyle", "startingLines", "brbLines", "endingLines", "ticker", "tickerStyle", "powerOn"],
   "Alerts": ["alertStyle", "followLine", "followIcon", "hypeEndLine", "alertDuration", "alertIn", "alertOut", "alertTimer", "petals", "splash", "soundFollow", "soundLeave"],
   "Chat": ["chatStyle", "chatFade", "chatMax", "chatAlign", "chatSway"],
   "Kamera-Rahmen": ["camStyle", "camLeaves", "camFlower", "camLabel", "camLive"],
