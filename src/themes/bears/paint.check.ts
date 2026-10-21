@@ -60,4 +60,12 @@ drawWorld(world.context, worldOf(values, values.skyDayTop, values.skyDayBottom, 
 assert.ok(world.calls.some(call => call[0] === "fillRect"));
 assert.ok(fills(world.calls).length > 10);
 
+// Bones on the canvas: a turned arm rotates its layers around the pivot of the rig, without bones nothing turns
+const turnedArm = recorder();
+drawBear(turnedArm.context, "grizzly", "wave", 100, 300, 300, palette, 1, 0, {}, { arm: -14, head: 4 });
+assert.equal(turnedArm.calls.filter(call => call[0] === "rotate").length, ["nearArm", "head", "ears"].filter(bone => POSES.wave.layers.some(layer => layer.bone === bone)).length);
+const plainArm = recorder();
+drawBear(plainArm.context, "grizzly", "wave", 100, 300, 300, palette);
+assert.equal(plainArm.calls.filter(call => call[0] === "rotate").length, 0);
+
 console.log("bears paint ok");

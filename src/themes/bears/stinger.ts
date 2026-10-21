@@ -3,10 +3,12 @@
 // curtain covers everything and shows the text; the bear peeks in at the edge, turns its head to the camera and blinks.
 // Then it pulls the curtain open toward where it came from (ziehen) or the curtain rises (heben). The curtain in the
 // style of the theme: flat fabric with folds in one shade tone, the outline at its free edges, a hem, paw prints if
-// wanted. Before and after transparent. Drawn from the character model (paint.ts). Pure function of time, so it can be
-// rendered frame by frame. Check: stinger.check.ts.
+// wanted; its folds spring after the curtain stops. The bear waddles with the steps of boneMotion.ts. Before and after
+// transparent. Drawn from the character model (paint.ts). Pure function of time, so it can be rendered frame by frame.
+// Check: stinger.check.ts.
 import { clamp01, easeIn, easeInOut } from "../../core/easing.ts";
 import { isBearChoice, oval, TOWER } from "./bears.ts";
+import { waddleAt, waddleLength } from "./boneMotion.ts";
 import { drawBear, drawTower, mix, pawX, shapeOf, TOWER_SIZE, type Palette } from "./paint.ts";
 import { POSES, type PoseName } from "./rig.ts";
 
@@ -34,11 +36,17 @@ const TOWER_HEIGHT = 720;
 const GROUND = HEIGHT - 40;
 const CLOSING = 0.8;
 const STEPS_PER_SECOND = 3;
+// The length of a half step of the waddle in boneMotion.ts (s)
+const WADDLE_STEP = waddleLength(1);
 const PEEK = 0.15;
 const BLINK_S = 0.06;
 const MARGIN = 20;
 const HEM = 36;
 const PRINTS = { gap: 260, size: 22, start: 140 };
+// fixed: the folds sway (share of their spacing) and after the curtain stops they spring once more: kick (share), how fast
+// it settles (per second) and swings (radians per second)
+const SWAY = 0.06;
+const SPRING = { kick: 0.25, settle: 3, swing: 9 };
 
 // The figure at a moment: where it stands (x of its middle on the ground), where it looks (1 = left, -1 = right, as for
 // drawBear), its pose, the turn of its head toward the camera and whether it walks
@@ -87,7 +95,14 @@ function pawPrint(context: CanvasRenderingContext2D, x: number, y: number, size:
 
 // The curtain from the left margin to its edge, from the top margin down to its bottom: fabric, folds swaying a little,
 // paw prints, hem, the outline at the free edges
-function drawCurtain(context: CanvasRenderingContext2D, time: number, state: StingerState, look: CurtainLook, palette: Palette) {
+// How far the folds swing at a moment (share of their spacing): a steady sway and the spring after the curtain stopped
+export function foldSwing(time: number, index: number, stopped: number): number {
+  const since = time - stopped;
+  const spring = since > 0 ? SPRING.kick * Math.exp(-SPRING.settle * since) * Math.sin(SPRING.swing * since) : 0;
+  return SWAY * Math.sin(time * 4 + index) + spring;
+}
+
+function drawCurtain(context: CanvasRenderingContext2D, time: number, state: StingerState, look: CurtainLook, palette: Palette, stopped: number) {
   const [left, top, right, bottom] = [-MARGIN, -MARGIN, state.edge, state.bottom];
   if (right <= left || bottom <= top) return;
   context.fillStyle = look.color;
@@ -97,7 +112,7 @@ function drawCurtain(context: CanvasRenderingContext2D, time: number, state: Sti
   const tall = bottom - top;
   context.fillStyle = look.shade;
   for (let index = 0; index < folds; index++) {
-    const x = left + spacing * (index + 0.6) + Math.sin(time * 4 + index) * spacing * 0.06;
+    const x = left + spacing * (index + 0.6) + foldSwing(time, index, stopped) * spacing;
     const band = spacing * 0.32;
     context.fill(shapeOf(
       `M${x} ${top} C${x + band * 0.6} ${top + tall * 0.3} ${x - band * 0.2} ${top + tall * 0.7} ${x + band * 0.3} ${bottom} ` +
@@ -123,7 +138,12 @@ function drawFigure(context: CanvasRenderingContext2D, time: number, bear: Sting
   const choice = choiceOf(options.bear);
   context.save();
   context.translate(bear.x, GROUND);
-  if (bear.walking) context.rotate((Math.sin(time * Math.PI * 2 * STEPS_PER_SECOND) * options.waddle * Math.PI) / 180);
+  if (bear.walking) {
+    // One rock per step of the walk: the waddle of the rig, scaled from rig units to the figure
+    const step = waddleAt((time * STEPS_PER_SECOND) % 1 * WADDLE_STEP * 2, options.waddle, 2);
+    context.translate(0, step.y * (figureHeight(options.bear) / POSES.stand.height));
+    context.rotate((step.rotate * Math.PI) / 180);
+  }
   if (choice === TOWER) drawTower(context, 0, 0, TOWER_HEIGHT, options.palette, bear.facing);
   else drawBear(context, choice, bear.pose, 0, 0, BEAR_HEIGHT, options.palette, bear.facing, bear.turn);
   context.restore();
@@ -139,7 +159,7 @@ export function drawBearsStinger(context: CanvasRenderingContext2D, time: number
     context.translate(WIDTH, 0);
     context.scale(-1, 1);
   }
-  drawCurtain(context, time, state, options.curtain, options.palette);
+  drawCurtain(context, time, state, options.curtain, options.palette, options.cut * CLOSING);
   drawFigure(context, time, state.bear, options);
   context.restore();
 

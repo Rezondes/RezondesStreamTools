@@ -1,11 +1,13 @@
 // Renderable clips of the Bärenbande theme: stinger (group Stinger) and profile and offline banners (group Banner), drawn
-// from the character model with the resolved settings. Check: render.check.ts.
+// from the character model with the resolved settings. The banners paint their world as watercolor; Rough.js loads
+// only in prepare (clipWorld.ts), so it stays out of the entry chunk, until then the world is flat. Check: render.check.ts.
 import { mixHex } from "../../core/color.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
-import { drawBearsOfflineBanner, drawBearsProfileBanner, type BearsBannerOptions } from "./banners.ts";
+import { drawBearsOfflineBanner, drawBearsProfileBanner, type BearsBannerOptions, type WorldPainter } from "./banners.ts";
+import type * as ClipWorld from "./clipWorld.ts";
 import type { Palette, WorldColors } from "./paint.ts";
 import type { BearsValues } from "./settings.ts";
 import { drawBearsStinger, HEIGHT, WIDTH, type BearsStingerOptions } from "./stinger.ts";
@@ -14,6 +16,20 @@ import type { TimeOfDay } from "./world.ts";
 // Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
 const BANNER_LOOP = 6;
 const BANNER_FPS = 1;
+
+type Draw = (context: CanvasRenderingContext2D, time: number) => void;
+
+// The watercolor world, loaded once by prepare
+let clipWorld: typeof ClipWorld | null = null;
+const prepare = async () => { clipWorld ??= await import("./clipWorld.ts"); };
+// The picture with the watercolor world once prepare has loaded it, with the flat world before; each built once
+function clipDraw(build: (world?: WorldPainter) => Draw, painter: (loaded: typeof ClipWorld) => WorldPainter): Draw {
+  let [flat, painted]: (Draw | null)[] = [null, null];
+  return (context, time) => {
+    if (clipWorld) (painted ??= build(painter(clipWorld)))(context, time);
+    else (flat ??= build())(context, time);
+  };
+}
 
 // The colors of the bears and their things from the settings
 export function paletteOf(field: BearsValues): Palette {
@@ -68,18 +84,21 @@ export function bearsClips(values: SettingValues, login: string): RenderClip[] {
   };
   const banner: BearsBannerOptions = {
     loop: BANNER_LOOP, font: field.font, titleFont: field.titleFont, palette,
-    day: worldOf(field, field.skyDayTop, field.skyDayBottom, field.sun),
-    evening: worldOf(field, field.skyEveningTop, field.skyEveningBottom, field.sun),
+    day: worldAt(field, "mittag"),
+    evening: worldAt(field, "abend"),
     profileBear: field.bannerProfileBear, offlineBear: field.bannerOfflineBear, title: fillTemplate(field.bannerTitle, names),
     profileText: field.bannerProfileText, offlineTitle: field.bannerOfflineTitle, offlineText: field.bannerOfflineText,
     offlineLines: field.bannerOfflineLines, lights: field.fairyLights, lightColors: [field.accent, field.sun, field.accent2],
     textDark: field.textDark, textDim: field.textDim, paperShade: field.paperShade, sleepText: field.bannerSleepText,
   };
+  const look = { seed: field.worldSeed, layers: field.washLayers, alpha: field.washAlpha, roughness: field.washRoughness, sketch: field.sketchLines, grain: 0 };
+  const show = { city: field.showCity, bridge: field.showBridge, cave: field.showCave, flowers: field.flowers };
+  const painter = (loaded: typeof ClipWorld) => loaded.watercolorWorld(look, show);
   const font = `800 24px "${field.titleFont}"`;
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawBearsStinger(context, time, stinger) }, options),
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawBearsProfileBanner(context, time, banner) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawBearsOfflineBanner(context, time, banner) },
+    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsProfileBanner(context, time, { ...banner, world }), painter) },
+    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsOfflineBanner(context, time, { ...banner, world }), painter) },
   ];
 }

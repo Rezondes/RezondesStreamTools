@@ -5,7 +5,8 @@
 // Path2D (checks in Node) the path text goes to the canvas as is, a recording mock only counts the calls.
 // Check: paint.check.ts.
 import { BEARS, isBearChoice, TOWER, TOWER_LEVELS, type BearId, type BodyShape, type PartKind } from "./bears.ts";
-import { poseOf, POSES, towerLayout, type Drops, type PoseName } from "./rig.ts";
+import { BONE_GROUPS, type BoneFrame, type BoneGroup } from "./boneMotion.ts";
+import { poseOf, POSES, towerLayout, type Drops, type PoseName, type RigLayer } from "./rig.ts";
 import { SCENE, SHAPES, WORLD } from "./world.ts";
 
 export type BearColors = { fur: string; shade: string; limb: string };
@@ -92,10 +93,28 @@ function drawBody(context: CanvasRenderingContext2D, body: BodyShape, colors: Be
   strokeLine(context, body.silhouette, palette);
 }
 
+// The bones a frame of boneMotion.ts turns on the canvas: degrees per group, the lift of the near arm in rig units
+export type Bones = Partial<Pick<BoneFrame, "arm" | "farArm" | "head" | "lift">>;
+const NO_BONES: Bones = {};
+// Per bone of the layers: its turn around the pivot of its group and the lift (only the near arm lifts)
+function boneTurns(layers: readonly RigLayer[], bones: Bones) {
+  const turned = new Map<string, { pivot: readonly [number, number]; degrees: number; lift: number }>();
+  for (const group of Object.keys(BONE_GROUPS) as BoneGroup[]) {
+    const degrees = bones[group] ?? 0;
+    const lift = group === "arm" ? (bones.lift ?? 0) : 0;
+    const pivot = layers.find(layer => layer.bone === BONE_GROUPS[group][0])?.pivot;
+    if (!pivot || (degrees === 0 && lift === 0)) continue;
+    for (const bone of BONE_GROUPS[group]) turned.set(bone, { pivot, degrees, lift });
+  }
+  return turned;
+}
+
 // One bear standing with its feet on (x, baseY), height in px; facing -1 mirrors it, turn turns it around its upright
-// axis (radians, positive toward the camera), drops let legs reach further down. Draws the layers of the rig in order.
-export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: PoseName, x: number, baseY: number, height: number, palette: Palette, facing = 1, turn = 0, drops: Drops = {}) {
+// axis (radians, positive toward the camera), drops let legs reach further down, bones turns arms and head (boneMotion.ts).
+// Draws the layers of the rig in order.
+export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: PoseName, x: number, baseY: number, height: number, palette: Palette, facing = 1, turn = 0, drops: Drops = {}, bones: Bones = NO_BONES) {
   const shape = poseOf(bear, pose, turn, drops);
+  const turned = boneTurns(shape.layers, bones);
   const { scaleX, scaleY, patched } = BEARS[bear];
   const size = height / shape.height;
   const colors = palette.bears[bear];
@@ -108,6 +127,13 @@ export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: 
       drawBody(context, layer.body, colors, patched, palette);
       continue;
     }
+    const turn = turned.get(layer.bone);
+    context.save();
+    if (turn) {
+      context.translate(turn.pivot[0], turn.pivot[1] + turn.lift);
+      context.rotate((turn.degrees * Math.PI) / 180);
+      context.translate(-turn.pivot[0], -turn.pivot[1]);
+    }
     for (const part of layer.parts) {
       if (part.kind === "patch" && !patched) continue;
       const fill = fillOf(part.kind, bear, pose, palette);
@@ -117,6 +143,7 @@ export function drawBear(context: CanvasRenderingContext2D, bear: BearId, pose: 
       }
       if (!fill || part.kind === "back") strokeLine(context, part.d, palette);
     }
+    context.restore();
   }
   context.restore();
 }
@@ -171,7 +198,11 @@ function surface(context: CanvasRenderingContext2D, path: string, fill: string, 
   }
 }
 
-const CLOUDS = 4;
+export const CLOUDS = 4;
+// Where cloud index floats for a drift 0..1 (once across the world) and how big it is
+export function cloudSpot(index: number, drift: number) {
+  return { x: ((index / CLOUDS + drift) % 1) * (WORLD.width + 400) - 400, y: 60 + ((index * 83) % 240), size: 1.4 + (index % 3) * 0.5 };
+}
 
 // Sky with sun or moon and clouds; drift 0..1 moves the clouds once across (1 = back at the start)
 function drawSky(context: CanvasRenderingContext2D, colors: WorldColors, drift: number, light: readonly [number, number], night: boolean) {
@@ -186,10 +217,10 @@ function drawSky(context: CanvasRenderingContext2D, colors: WorldColors, drift: 
   context.fill(shapeOf(night ? SHAPES.moon : SHAPES.sun));
   context.restore();
   for (let index = 0; index < CLOUDS; index++) {
-    const size = 1.4 + (index % 3) * 0.5;
+    const spot = cloudSpot(index, drift);
     context.save();
-    context.translate(((index / CLOUDS + drift) % 1) * (WORLD.width + 400) - 400, 60 + ((index * 83) % 240));
-    context.scale(size, size);
+    context.translate(spot.x, spot.y);
+    context.scale(spot.size, spot.size);
     context.fillStyle = colors.cloud;
     context.fill(shapeOf(SHAPES.cloud));
     context.restore();

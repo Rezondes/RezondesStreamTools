@@ -2,11 +2,18 @@
 // shows the meadow at noon with forest edge, city and bridge, the channel name and a text on a paper sign and the chosen
 // bear (or the tower); the offline banner (1920 x 1080) the evening in front of the cave with a string of fairy lights, the
 // chosen bear asleep with rising z and a paper card with title, text and lines. Clouds, lights and z run in one seamless
-// loop (frame 0 = frame at the loop end). Pure functions of time. Check: banners.check.ts.
-import type { BearId } from "./bears.ts";
+// loop (frame 0 = frame at the loop end). The world comes from a painter (the watercolor of clipWorld.ts once render.ts
+// has loaded it, the flat drawWorld before); the awake bear waves its arm with boneMotion.ts. Pure functions of time.
+// Check: banners.check.ts.
+import { isBearChoice, TOWER, type BearId } from "./bears.ts";
+import { waveAt, waveLoop } from "./boneMotion.ts";
 import type { PoseName } from "./rig.ts";
-import { drawHero, drawWorld, type Palette, type WorldColors } from "./paint.ts";
-import { WORLD } from "./world.ts";
+import { drawBear, drawHero, drawWorld, type Palette, type WorldColors } from "./paint.ts";
+import { LIGHT, type TimeOfDay, WORLD } from "./world.ts";
+
+// Paints the world in its 1920 x 1080 space at a time of day, the clouds at drift 0..1
+export type WorldPainter = (context: CanvasRenderingContext2D, colors: WorldColors, drift: number, time: TimeOfDay) => void;
+export const flatWorld: WorldPainter = (context, colors, drift, time) => drawWorld(context, colors, drift, LIGHT[time], time === "nacht");
 
 export type BearsBannerOptions = {
   loop: number; // seconds
@@ -28,12 +35,11 @@ export type BearsBannerOptions = {
   textDim: string;
   paperShade: string;
   sleepText: string;
+  world?: WorldPainter;
 };
 
 const TURN = Math.PI * 2;
-// fixed: where sun and evening light stand in the world, poses for awake and asleep
-const NOON: readonly [number, number] = [980, 150];
-const EVENING: readonly [number, number] = [1500, 420];
+// fixed: poses for awake and asleep
 const AWAKE: Record<BearId, PoseName> = { eisbaer: "wave", grizzly: "wave", panda: "wave" };
 const ASLEEP: Record<BearId, PoseName> = { eisbaer: "sleep", grizzly: "sleep", panda: "sleep" };
 
@@ -77,6 +83,15 @@ function line(context: CanvasRenderingContext2D, text: string, x: number, y: num
   context.fillText(text, x - width / 2, y);
 }
 
+// The awake bear of the profile banner waves, a whole number of waves per loop so the loop stays seamless; the tower stands
+function awake(context: CanvasRenderingContext2D, time: number, options: BearsBannerOptions) {
+  const [x, baseY, height] = [230, 462, 330];
+  const bear = isBearChoice(options.profileBear) && options.profileBear !== TOWER ? options.profileBear : null;
+  if (!bear) return drawHero(context, options.profileBear, AWAKE, x, baseY, height, options.palette);
+  const speed = (Math.max(1, Math.round(options.loop / waveLoop(1))) * waveLoop(1)) / options.loop;
+  drawBear(context, bear, AWAKE[bear], x, baseY, height, options.palette, 1, 0, {}, { arm: waveAt(time, speed) });
+}
+
 export function drawBearsProfileBanner(context: CanvasRenderingContext2D, time: number, options: BearsBannerOptions) {
   const width = 1200;
   const height = 480;
@@ -85,9 +100,9 @@ export function drawBearsProfileBanner(context: CanvasRenderingContext2D, time: 
   context.save();
   context.translate(0, height - WORLD.height * scale);
   context.scale(scale, scale);
-  drawWorld(context, options.day, phase, NOON, false);
+  (options.world ?? flatWorld)(context, options.day, phase, "mittag");
   context.restore();
-  drawHero(context, options.profileBear, AWAKE, 230, 462, 330, options.palette);
+  awake(context, time, options);
   card(context, 520, 120, 600, 230, options);
   title(context, options.title, 820, 205, 76, options);
   line(context, options.profileText, 820, 290, 30, options.textDark, options);
@@ -132,7 +147,7 @@ function sleep(context: CanvasRenderingContext2D, phase: number, options: BearsB
 
 export function drawBearsOfflineBanner(context: CanvasRenderingContext2D, time: number, options: BearsBannerOptions) {
   const phase = (time / options.loop) % 1;
-  drawWorld(context, options.evening, phase, EVENING, false);
+  (options.world ?? flatWorld)(context, options.evening, phase, "abend");
   if (options.lights) fairyLights(context, phase, options);
   drawHero(context, options.offlineBear, ASLEEP, 340, 900, 420, options.palette);
   sleep(context, phase, options);

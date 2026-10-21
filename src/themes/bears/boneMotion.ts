@@ -12,6 +12,15 @@ export type BoneFrame = { visible: boolean; body: BodyFrame; arm: number; farArm
 export const REST_BODY: BodyFrame = { x: 0, y: 0, rotate: 0, scaleX: 1, scaleY: 1 };
 export const REST: BoneFrame = { visible: true, body: REST_BODY, arm: 0, farArm: 0, lift: 0, head: 0, eyes: 1, flash: 0 };
 
+// The bone groups of the rig a frame turns, each around the pivot of its first bone: the near arm with its paw and what
+// it holds, the far arm with its paw, the head with the ears and what it wears
+export const BONE_GROUPS = {
+  arm: ["nearArm", "nearArmPaw", "thumb", "prop"],
+  farArm: ["farArm", "farArmPaw"],
+  head: ["head", "ears", "worn", "headset"],
+} as const;
+export type BoneGroup = keyof typeof BONE_GROUPS;
+
 // The bounds of the moves in degrees (arm and head around their pivots, body around the feet), the body scale and the
 // lift of the arm in rig units
 export const BONE_LIMITS = { arm: [-40, 40], head: [-15, 15], body: [-20, 20], scale: [0.6, 1.4], lift: [-12, 12] } as const;

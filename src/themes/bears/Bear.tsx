@@ -7,7 +7,7 @@
 // group (for the tower), Bear the figure in its own SVG inside a rig group that turns and scales around the feet.
 import { useId } from "react";
 import { BEARS, type BearId } from "./bears.ts";
-import type { BoneFrame } from "./boneMotion.ts";
+import { BONE_GROUPS, type BoneFrame } from "./boneMotion.ts";
 import { poseOf, POSES, type Drops, type PoseName, type RigLayer } from "./rig.ts";
 
 // turn: radians around the upright axis (0 = three-quarter view, positive toward the camera); drops: how far legs reach
@@ -68,11 +68,6 @@ export default function Bear({ bear, pose, sign, turn, drops, className = "" }: 
   );
 }
 
-// The bones that turn with the near arm (its paw and what it holds), with the far arm and with the head (ears and what it
-// wears)
-const ARM_BONES = ["nearArm", "nearArmPaw", "thumb", "prop"];
-const FAR_ARM_BONES = ["farArm", "farArmPaw"];
-const HEAD_BONES = ["head", "ears", "worn", "headset"];
 
 // Sets frames of boneMotion.ts on a bear drawn by Bear: the rig turns and scales around the feet and bobs, the arm (lifted
 // with what it holds) and the head turn around the pivots of the rig, the eyes close; the elements are looked up once
@@ -84,7 +79,7 @@ export function bearDriver(svg: SVGSVGElement, bear: BearId, pose: PoseName): (f
     for (const group of groups) group.style.transformOrigin = `${pivot[0]}px ${pivot[1]}px`;
     return (degrees: number, lift = 0) => { for (const group of groups) group.style.transform = `translateY(${lift}px) rotate(${degrees}deg)`; };
   };
-  const [arm, farArm, head] = [turner(ARM_BONES, pivotOf("nearArm")), turner(FAR_ARM_BONES, pivotOf("farArm")), turner(HEAD_BONES, pivotOf("head"))];
+  const [arm, farArm, head] = [BONE_GROUPS.arm, BONE_GROUPS.farArm, BONE_GROUPS.head].map(bones => turner(bones, pivotOf(bones[0])));
   const rig = svg.querySelector<SVGGElement>(".bb-rig");
   const eyes = [...svg.querySelectorAll<SVGPathElement>(".part-eye")];
   const { width, height } = POSES[pose];

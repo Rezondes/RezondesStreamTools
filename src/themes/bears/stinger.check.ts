@@ -6,7 +6,7 @@ import { resolveSettings } from "../../core/settings.ts";
 import { paletteOf } from "./render.ts";
 import { bearsSettings, type BearsValues } from "./settings.ts";
 import { pawX } from "./paint.ts";
-import { drawBearsStinger, figureHeight, HEIGHT, stingerState, WIDTH, type BearsStingerOptions } from "./stinger.ts";
+import { drawBearsStinger, foldSwing, figureHeight, HEIGHT, stingerState, WIDTH, type BearsStingerOptions } from "./stinger.ts";
 
 // One gradient for all recordings, so equal pictures give equal calls
 const gradient = { addColorStop: () => {} };
@@ -29,7 +29,7 @@ const options: BearsStingerOptions = {
 const rects = (calls: unknown[][]) => calls.filter(call => call[0] === "fillRect").map(call => call.slice(1) as number[]);
 const covers = ([x, y, width, height]: number[]) => x <= 0 && y <= 0 && x + width >= WIDTH && y + height >= HEIGHT;
 
-// At the transition point the curtain covers the whole picture and the text shows: every bear, the tower, both ways to
+// Gedeckt am Übergang: at the transition point the curtain covers the whole picture and the text shows: every bear, the tower, both ways to
 // open, both sides
 for (const bear of ["grizzly", "panda", "turm"]) {
   for (const open of ["ziehen", "heben"]) {
@@ -74,6 +74,12 @@ assert.ok(rising && rising.bottom < HEIGHT / 2 && rising.edge >= WIDTH);
 // At the cut the bear peeks in with its head turned to the camera and blinks
 const peek = stingerState(options.cut, options);
 assert.ok(peek && peek.bear.turn > 0.4 && peek.bear.pose === "blink" && peek.bear.x > WIDTH);
+
+// The folds spring after the curtain stopped and settle again: a bigger swing right after the stop than before it and long after
+const swing = (time: number) => Math.abs(foldSwing(time, 0, 1) - foldSwing(time, 0, 99));
+assert.equal(swing(0.9), 0);
+assert.ok(swing(1.15) > 0.1);
+assert.ok(swing(3) < 0.001);
 
 // Same time, same draw commands (no randomness)
 const first = recorder();
