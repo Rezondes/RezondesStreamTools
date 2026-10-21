@@ -156,6 +156,9 @@ export type UrlaubValues = {
   readonly chatOpacity: number;
   readonly chatGap: number;
   readonly chatSway: boolean;
+  readonly chatBubbles: boolean;
+  readonly chatBubbleCount: number;
+  readonly chatBubbleRise: number;
   readonly camStyle: string;
   readonly camFrameWidth: number;
   readonly camRadius: number;

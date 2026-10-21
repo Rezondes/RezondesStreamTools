@@ -176,6 +176,9 @@ const FIELDS = [
   number("chatOpacity", "Deckkraft", CHAT, 0.92, 0, 1, undefined, 0.01),
   number("chatGap", "Abstand", CHAT, 10, 0, 40, "px"),
   flag("chatSway", "Sanft schaukeln", CHAT, true),
+  flag("chatBubbles", "Luftblasen steigen auf", CHAT, true),
+  number("chatBubbleCount", "Luftblasen: Anzahl", CHAT, 14, 0, 60),
+  number("chatBubbleRise", "Luftblasen: Steigen (px pro s)", CHAT, 60, 10, 300),
 
   choice("camStyle", "Rahmen", CAM, "bambus", ["bambus", "holz", "seil"]),
   number("camFrameWidth", "Rahmenbreite", CAM, 18, 2, 60, "px"),

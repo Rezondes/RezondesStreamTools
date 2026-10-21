@@ -1456,6 +1456,31 @@
       "default": true
     },
     {
+      "key": "chatBubbles",
+      "type": "boolean",
+      "label": "Luftblasen steigen auf",
+      "group": "Chat",
+      "default": true
+    },
+    {
+      "key": "chatBubbleCount",
+      "type": "number",
+      "label": "Luftblasen: Anzahl",
+      "group": "Chat",
+      "default": 14,
+      "min": 0,
+      "max": 60
+    },
+    {
+      "key": "chatBubbleRise",
+      "type": "number",
+      "label": "Luftblasen: Steigen (px pro s)",
+      "group": "Chat",
+      "default": 60,
+      "min": 10,
+      "max": 300
+    },
+    {
       "key": "camStyle",
       "type": "select",
       "label": "Rahmen",

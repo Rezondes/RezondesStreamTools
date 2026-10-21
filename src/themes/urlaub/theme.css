@@ -288,6 +288,8 @@
 /* --- Chat ----------------------------------------------------------------------------------------------------- */
 .theme-urlaub .ul-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chat-padding, 14px); overflow: hidden; font-size: var(--chatFontSize); }
 .theme-urlaub .ul-chat-top { flex-direction: column-reverse; }
+/* The air bubbles (pixi/Bubbles.tsx) lie behind the messages */
+.theme-urlaub .ul-bubbles { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
 .theme-urlaub .ul-row { flex: none; position: relative; padding: var(--row-padding, 10px 16px); overflow-wrap: anywhere; animation: urlaub-rise-in var(--fadeDuration) ease-out both; }
 .theme-urlaub .ul-row.fades { animation: urlaub-rise-in var(--fadeDuration) ease-out both, urlaub-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
 .theme-urlaub .ul-row.action { font-style: italic; }
@@ -402,9 +404,7 @@
 .theme-urlaub .ul-artist, .theme-urlaub .ul-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: 0.85; }
 .theme-urlaub .ul-wave-progress { position: relative; height: var(--wave-progress, 8px); border-radius: var(--pill, 999px); background: color-mix(in srgb, currentColor 20%, transparent); overflow: hidden; }
 .theme-urlaub .ul-wave-progress span { display: block; height: 100%; width: calc(var(--part) * 100%); background: linear-gradient(90deg, var(--sea), var(--accent2)); transition: width var(--tick, 250ms) linear; }
-.theme-urlaub .ul-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eq-gap, 4px); height: var(--eq-height, 40px); }
-.theme-urlaub .ul-eq i { width: var(--eq-bar, 7px); height: 100%; border-radius: var(--pill, 999px); background: linear-gradient(var(--foam), var(--sea)); transform-origin: bottom; animation: urlaub-eq var(--eq-time, 900ms) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--eq-time, 900ms) / -5); }
-.theme-urlaub .paused .ul-eq i { animation-play-state: paused; }
+.theme-urlaub .ul-eq { flex: none; display: flex; }
 
 /* --- Effects -------------------------------------------------------------------------------------------------- */
 .theme-urlaub .ul-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
@@ -447,7 +447,6 @@
 @keyframes urlaub-rock { from { rotate: -0.6deg; } to { rotate: 0.6deg; } }
 @keyframes urlaub-leaf { from { rotate: -5deg; } to { rotate: 5deg; } }
 @keyframes urlaub-spin { to { rotate: 1turn; } }
-@keyframes urlaub-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
 
 /* --- Commands page (public): beach fixed in the background, wooden signs scroll in front as a normal page ----------- */
 .theme-urlaub.theme-root:has(.ul-info) { min-height: 100dvh; background: var(--seaDeep); }
