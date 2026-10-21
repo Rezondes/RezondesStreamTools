@@ -8,6 +8,7 @@ pub mod core_fields;
 pub mod dachdecker;
 #[cfg(test)]
 mod fixture;
+pub mod graphics_fields;
 pub mod info_fields;
 pub mod koth;
 pub mod matrix;

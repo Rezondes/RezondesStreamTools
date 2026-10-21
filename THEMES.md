@@ -166,8 +166,9 @@ Hilfe-Befehl, die Minimes-Befehle des gewählten Themes und die öffentlichen Tr
 ## Grafik- und Animationsmodule (optional)
 
 Für Themes, die mehr brauchen als SVG und CSS, gibt es Module mit Kern-Bausteinen ([plans/PLAN-GRAFIK.md](plans/PLAN-GRAFIK.md)).
-Bestehende Themes nutzen sie nicht; ein Theme, das sie nutzt, steht in `MODULE_THEMES` in `scripts/bundle.ts`, sonst
-schlägt `npm run verify` fehl.
+Ein Theme, das sie nutzt, steht in `MODULE_THEMES` in `scripts/bundle.ts` (heute Dachdecker und die modernisierten
+Themes KOTH, Plantage, Chaos, Bärenbande, Urlaub, Matrix), sonst schlägt `npm run verify` fehl; im Einstiegs-Chunk und
+bei Standard bleiben sie verboten.
 
 | Modul | wann | Kern-Baustein |
 |---|---|---|
@@ -179,6 +180,25 @@ schlägt `npm run verify` fehl.
 
 Farben, Zeiten und Mengen reicht das Theme aus seinen Einstellungen an die Bausteine durch; Geometrie liegt in reinen
 `.ts`-Modulen mit Checks. 3D braucht in OBS die Hardware-Beschleunigung der Browserquelle.
+
+Für jedes Theme gleich: die Stinger-Optionen (`stingerFields`, `withStingerOptions` in `src/core/stingerOptions.ts`),
+Teilchen-Ausbrüche als reine Funktion der Zeit für Stinger und Banner (`burstAt` in `src/core/motion/burst.ts`) und die
+Leistungsstufe (`qualityField` in `src/core/graphicsFields.ts`, Bedeutung in `src/core/three/quality.ts`).
+
+**Referenz-Prototypen:** liegen je Theme in `src/themes/<id>/docs/refs/` (z. B. `starting.html`, `alert.html`). Sie sind
+Vorlagen für Look und Ablauf, kein Teil des Builds, und dürfen ihre Module per CDN laden; mit `?t=<Sekunden>` zeigen
+sie ein Standbild.
+
+**Fallstricke aus den Prototypen:**
+- Eine angehaltene GSAP-Timeline, die mit `?t=` hinter einen Tween springt, ruft dessen `onUpdate` nicht auf. Ausgaben,
+  die von einem Tween-Wert abhängen (Fortschrittsbalken, Zähler), setzt der Ticker aus dem Wert.
+- Deckkraft unter 1 an einem Element mit `transform-style: preserve-3d` macht es flach, die Rückseite erscheint
+  gespiegelt. Ausgeblendet wird ein Elternelement.
+- SVG-Gruppen drehen mit `svgOrigin` (Koordinaten im `viewBox`), nicht mit CSS `transform-origin`.
+- `-webkit-mask-image` beschneidet `text-shadow` am Rand des Elements; nach einer Aufsprüh-Maske wird die Maske entfernt
+  oder das Element bekommt Innenabstand.
+- PixiJS 8 startet asynchron (`await app.init`); mit `autoStart: false` zeichnet der Ticker der Szene selbst
+  (`app.renderer.render`), damit `?t=`-Standbilder stimmen.
 
 ## Regeln, die automatisch geprüft werden
 

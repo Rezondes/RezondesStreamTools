@@ -11,6 +11,7 @@ use crate::settings::field::{
     SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, lines, mark_basic, number, text,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
+use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{
     MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minime_base_fields,
@@ -21,7 +22,6 @@ use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, Them
 use crate::themes::stinger_fields::stinger_fields;
 
 const FONTS: [&str; 4] = ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"];
-const QUALITIES: [&str; 3] = ["hoch", "mittel", "niedrig"];
 const PROGRESS: [&str; 2] = ["masskette", "aus"];
 const CHAT_STYLES: [&str; 3] = ["zettel", "liste", "schlicht"];
 const NAME_COLORS: [&str; 2] = ["kupfer", "chatter"];
@@ -69,7 +69,7 @@ fn general() -> Vec<SettingField> {
         color("muted", "Gedämpfter Text und Füllung", GENERAL, "#b4c2e0"),
         color("rain", "Regen (Cyan)", GENERAL, "#7fe3ff"),
         color("dusk", "Abendglühen", GENERAL, "#8a3d16"),
-        choice("quality", "Leistungsstufe 3D", GENERAL, "mittel", &QUALITIES),
+        quality_field(GENERAL),
         flag("bloom", "Leuchten (Bloom)", GENERAL, true),
         number("bloomStrength", "Leuchten: Stärke", GENERAL, 0.42, 0.0, 2.0, None, Some(0.02)),
         number("glow", "Text-Leuchten (0 = aus)", GENERAL, 0.8, 0.0, 1.0, None, Some(0.05)),

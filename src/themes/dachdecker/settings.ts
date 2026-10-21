@@ -5,11 +5,11 @@
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, lines, markBasic, number, text } from "../../core/fields.ts";
+import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
 import { stingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
-import { QUALITIES } from "../../core/three/quality.ts";
 import { FIGURE_SET, FIGURE_TYPES } from "./figures.ts";
 
 const FONTS = ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"] as const;
@@ -49,7 +49,7 @@ const FIELDS = [
   color("muted", "Gedämpfter Text und Füllung", GENERAL, "#b4c2e0"),
   color("rain", "Regen (Cyan)", GENERAL, "#7fe3ff"),
   color("dusk", "Abendglühen", GENERAL, "#8a3d16"),
-  choice("quality", "Leistungsstufe 3D", GENERAL, "mittel", QUALITIES),
+  qualityField(GENERAL),
   flag("bloom", "Leuchten (Bloom)", GENERAL, true),
   number("bloomStrength", "Leuchten: Stärke", GENERAL, 0.42, 0, 2, undefined, 0.02),
   number("glow", "Text-Leuchten (0 = aus)", GENERAL, 0.8, 0, 1, undefined, 0.05),

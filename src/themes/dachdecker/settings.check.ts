@@ -1,6 +1,7 @@
 // Check for settings.ts (schema of the Dachdecker theme): valid defaults, no dead key, simple view, required keys per
 // group, every group mapped to a scene, personal start values. Runs with npm test.
 import assert from "node:assert/strict";
+import { qualityField } from "../../core/graphicsFields.ts";
 import { auditTheme } from "../schemaAudit.ts";
 import { dachdeckerSettings } from "./settings.ts";
 
@@ -30,5 +31,8 @@ for (const group of new Set(fields.map(field => field.group))) {
 }
 
 assert.deepEqual(dachdeckerSettings.personalize?.("neo"), { channelName: "NEO" });
+
+// The performance level is the shared core field (same key, so stored levels stay)
+assert.deepEqual(fields.find(field => field.key === "quality"), { ...qualityField("Allgemein"), basic: true });
 
 console.log("dachdecker settings ok");
