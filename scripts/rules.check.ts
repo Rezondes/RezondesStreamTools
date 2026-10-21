@@ -124,6 +124,21 @@ assert.deepEqual(importViolations("src/themes/probe/settings.check.ts", "import 
 
 for (const file of files.filter(file => SOURCE.test(file))) failures.push(...importViolations(file, readFileSync(file, "utf8")));
 
+// Rule 21, 3D clips: a file that builds a clip with glClip is a pure function of time; Math.random and the wall clock
+// would give a different video for the same settings. Checks are exempt.
+const GL_CLIP_IMPORT = /from\s+["'][^"']*\/glClip\.ts["']/;
+const UNSTABLE = /\bMath\.random\b|\bperformance\.now\b|\bDate\.now\b/;
+function clipViolations(file: string, source: string): string[] {
+  if (file.endsWith(".check.ts") || !GL_CLIP_IMPORT.test(source)) return [];
+  return UNSTABLE.test(source) ? [`${file}: Math.random or a clock in a 3D clip (rule 21)`] : [];
+}
+
+assert.deepEqual(clipViolations("src/themes/probe/stinger.ts", "import { glClip } from \"../../core/three/glClip.ts\";\nconst x = Math.random();"), ["src/themes/probe/stinger.ts: Math.random or a clock in a 3D clip (rule 21)"]);
+assert.deepEqual(clipViolations("src/themes/probe/stinger.ts", "import { glClip } from \"../../core/three/glClip.ts\";\nconst x = hash(1);"), []);
+assert.deepEqual(clipViolations("src/themes/probe/Scene.tsx", "const x = Math.random();"), []);
+
+for (const file of files.filter(file => SOURCE.test(file))) failures.push(...clipViolations(file, readFileSync(file, "utf8")));
+
 // Rule 20: theme code without fixed design values. Colors, visible texts, sizes and times come from the
 // settings (src/themes/<id>/settings.ts, allowed there). Reported are color literals, visible JSX text,
 // px/ms/s in CSS outside of var(--name, default) and numbers above 1 in scenes except indices.
