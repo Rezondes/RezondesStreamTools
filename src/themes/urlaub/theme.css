@@ -161,29 +161,42 @@
 .theme-urlaub .ul-board { display: flex; flex-direction: column; align-items: center; gap: var(--board-gap, 12px); min-width: var(--board-width, 520px); padding: var(--board-padding, 16px 40px); }
 .theme-urlaub .ul-big { font-size: var(--big-size, 80px); font-variant-numeric: tabular-nums; }
 .theme-urlaub .ul-next { font-size: var(--next-size, 40px); }
-.theme-urlaub .ul-progress { position: relative; width: var(--progress-width, 520px); }
-.theme-urlaub .ul-progress-welle { height: var(--progress-height, 24px); border-radius: var(--pill, 999px); background: color-mix(in srgb, var(--seaDeep) 30%, transparent); overflow: hidden; }
-.theme-urlaub .ul-progress-welle span {
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: calc(var(--part) * 100%);
-  background: linear-gradient(var(--foam) 0 22%, var(--sea) 22%);
-  border-radius: inherit;
-  transition: width var(--tick, 1s) linear;
+/* The realistic Starting (signs/DriftwoodSign.tsx): weathered driftwood lit from above, darker joints, worn edges, grain
+   from a turbulence when switched on; light carved letters; the sign swings on the timeline, the board stands on a post */
+.theme-urlaub .ul-real .ul-stage { animation: none; }
+.theme-urlaub .ul-driftwood {
+  background:
+    var(--grain, linear-gradient(transparent, transparent)),
+    repeating-linear-gradient(180deg, transparent 0 var(--plank, 58px), color-mix(in srgb, var(--woodDark) 60%, transparent) var(--plank, 58px) calc(var(--plank, 58px) + var(--joint, 3px)), color-mix(in srgb, var(--foam) 18%, transparent) calc(var(--plank, 58px) + var(--joint, 3px)) calc(var(--plank, 58px) + 2 * var(--joint, 3px))),
+    linear-gradient(180deg, color-mix(in srgb, var(--wood) 85%, var(--foam)), var(--wood) 55%, var(--woodDark));
+  border-color: color-mix(in srgb, var(--woodDark) 70%, var(--textOnWood));
+  box-shadow: inset 0 var(--lit, 2px) 0 color-mix(in srgb, var(--foam) 45%, transparent), inset 0 calc(-1 * var(--worn, 8px)) var(--worn-blur, 14px) color-mix(in srgb, var(--textOnWood) 35%, transparent), var(--shadow);
 }
-.theme-urlaub .ul-progress-seil { height: var(--rope-thickness, 8px); margin: var(--buoy-room, 12px) 0; border-radius: var(--pill, 999px); background: var(--rope-pattern); }
-.theme-urlaub .ul-progress-seil span {
-  position: absolute;
-  top: 50%;
-  left: calc(var(--part) * 100%);
-  width: var(--buoy, 32px);
-  aspect-ratio: 1;
-  border-radius: 50%;
-  translate: -50% -50%;
-  background: repeating-linear-gradient(90deg, var(--accent) 0 25%, var(--foam) 25% 50%);
-  border: var(--buoy-border, 3px) solid var(--woodDark);
-  transition: left var(--tick, 1s) linear;
+.theme-urlaub .ul-grain {
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004 .18' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .22 0 0 0 0 .1 0 0 0 1.1 -.35'/%3E%3C/filter%3E%3Crect width='600' height='200' filter='url(%23g)'/%3E%3C/svg%3E");
 }
+.theme-urlaub .ul-driftwood :is(.ul-eyebrow, .ul-title, .ul-note, .ul-big) { color: color-mix(in srgb, var(--foam) 92%, var(--wood)); text-shadow: 0 calc(-1 * var(--carve, 2px)) 0 color-mix(in srgb, var(--textOnWood) 60%, transparent), 0 var(--carve-blur, 6px) var(--carve-glow, 16px) color-mix(in srgb, var(--textOnWood) 35%, transparent); }
+.theme-urlaub .ul-real .ul-sign-haengend { animation: none; }
+.theme-urlaub .ul-post { position: relative; }
+.theme-urlaub .ul-post::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  width: var(--post, 30px);
+  height: var(--post-height, 320px);
+  translate: -50% 0;
+  background: linear-gradient(90deg, var(--woodDark), var(--wood) 45%, var(--woodDark));
+  z-index: -1;
+}
+.theme-urlaub .ul-buoy-rope { width: var(--progress-width, 480px); height: var(--rope-bar, 54px); overflow: visible; }
+.theme-urlaub .ul-rope-line, .theme-urlaub .ul-rope-twist { fill: none; stroke-linecap: round; }
+.theme-urlaub .ul-rope-line { stroke: var(--woodDark); stroke-width: 9; }
+.theme-urlaub .ul-rope-twist { stroke: color-mix(in srgb, var(--wood) 60%, var(--foam)); stroke-width: 5; stroke-dasharray: 6 4; }
+.theme-urlaub .ul-buoy-ring { fill: var(--foam); stroke: var(--textOnWood); stroke-width: 2.5; }
+.theme-urlaub .ul-buoy-stripes { fill: var(--accent); }
+.theme-urlaub .ul-buoy { animation: urlaub-bob var(--bob, 1.8s) ease-in-out infinite alternate; }
+@keyframes urlaub-bob { from { translate: 0 0; rotate: -6deg; } to { translate: 0 calc(-1 * var(--bob-height, 5px)); rotate: 6deg; } }
 .theme-urlaub .ul-saying {
   max-width: var(--signWidth);
   padding: var(--saying-padding, 10px 28px);

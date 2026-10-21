@@ -6,6 +6,7 @@ import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MIN
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
+import { qualityField } from "../../core/graphicsFields.ts";
 import { stingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./beach.ts";
@@ -85,6 +86,23 @@ const FIELDS = [
   number("gullEvery", "Möwen: alle", BEACH, 16, 4, 120, "s"),
   flag("shells", "Muscheln und Seesterne im Sand", BEACH, true),
   flag("sandName", "Kanal-Name in den Sand geschrieben", BEACH, true),
+  qualityField(BEACH),
+  number("worldSeed", "Startwert der Welt", BEACH, 12, 0, 9999),
+  flag("sunriseOn", "Sonnenaufgang im Starting", BEACH, true),
+  number("sunriseMs", "Sonnenaufgang (Dauer)", BEACH, 4000, 0, 20000, "ms"),
+  number("sunHeight", "Sonnenhöhe (Grad)", BEACH, 4.5, -5, 90, undefined, 0.5),
+  number("sunAzimuth", "Sonnenrichtung (Grad)", BEACH, 196, 0, 360),
+  number("turbidity", "Dunst am Himmel", BEACH, 6, 1, 20, undefined, 0.5),
+  number("exposure", "Belichtung", BEACH, 0.42, 0.1, 2, undefined, 0.02),
+  color("waterColor", "Meer in der Tiefe (3D)", BEACH, "#0a4a5e"),
+  number("waveDistortion", "Wellen: Verzerrung der Spiegelung", BEACH, 2.6, 0, 10, undefined, 0.1),
+  flag("surfOn", "Brandung", BEACH, true),
+  number("surfBands", "Brandung: Bänder", BEACH, 3, 1, 6),
+  number("surfSeconds", "Brandung: Zeit je Welle", BEACH, 7, 2, 30, "s"),
+  number("rocks", "Felsen an der Wasserlinie", BEACH, 9, 0, 30),
+  number("gullCount", "Möwen (Anzahl)", BEACH, 5, 1, 40),
+  number("cameraHeight", "Kamera: Höhe", BEACH, 3.2, 1, 10, undefined, 0.1),
+  flag("cameraDrift", "Kamera schwankt leicht", BEACH, true),
 
   inScene("starting", text("startingEyebrow", "Starting: Überzeile", SCREENS, "Gleich geht's los")),
   inScene("starting", text("startingTitle", "Starting: Titel", SCREENS, "Stream startet gleich")),
@@ -96,6 +114,8 @@ const FIELDS = [
   inScene("ending", text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet")),
   inScene("ending", text("endingNote", "Ending: Untertitel", SCREENS, "Bis zum nächsten Sonnenuntergang!")),
   choice("signStyle", "Schild", SCREENS, "haengend", ["haengend", "pfahl"]),
+  flag("woodGrain", "Schild: Holzmaserung", SCREENS, true),
+  number("signSwing", "Schild: Pendeln (Grad)", SCREENS, 8, 0, 30),
   number("signWidth", "Schild: Breite", SCREENS, 1100, 400, 1800, "px"),
   number("titleSize", "Titelgrösse", SCREENS, 110, 30, 240, "px"),
   inScene("starting", number("countdown", "Countdown-Standard", SCREENS, 300, 0, 86400, "s")),

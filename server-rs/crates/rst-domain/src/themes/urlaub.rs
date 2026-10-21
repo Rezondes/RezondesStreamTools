@@ -13,6 +13,7 @@ use crate::settings::field::{
     text,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
+use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{
     MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minime_base_fields, minime_hop_fields,
@@ -153,6 +154,23 @@ fn fields() -> Vec<SettingField> {
             number("gullEvery", "Möwen: alle", BEACH, 16.0, 4.0, 120.0, S, None),
             flag("shells", "Muscheln und Seesterne im Sand", BEACH, true),
             flag("sandName", "Kanal-Name in den Sand geschrieben", BEACH, true),
+            quality_field(BEACH),
+            number("worldSeed", "Startwert der Welt", BEACH, 12.0, 0.0, 9999.0, None, None),
+            flag("sunriseOn", "Sonnenaufgang im Starting", BEACH, true),
+            number("sunriseMs", "Sonnenaufgang (Dauer)", BEACH, 4000.0, 0.0, 20000.0, MS, None),
+            number("sunHeight", "Sonnenhöhe (Grad)", BEACH, 4.5, -5.0, 90.0, None, Some(0.5)),
+            number("sunAzimuth", "Sonnenrichtung (Grad)", BEACH, 196.0, 0.0, 360.0, None, None),
+            number("turbidity", "Dunst am Himmel", BEACH, 6.0, 1.0, 20.0, None, Some(0.5)),
+            number("exposure", "Belichtung", BEACH, 0.42, 0.1, 2.0, None, Some(0.02)),
+            color("waterColor", "Meer in der Tiefe (3D)", BEACH, "#0a4a5e"),
+            number("waveDistortion", "Wellen: Verzerrung der Spiegelung", BEACH, 2.6, 0.0, 10.0, None, Some(0.1)),
+            flag("surfOn", "Brandung", BEACH, true),
+            number("surfBands", "Brandung: Bänder", BEACH, 3.0, 1.0, 6.0, None, None),
+            number("surfSeconds", "Brandung: Zeit je Welle", BEACH, 7.0, 2.0, 30.0, S, None),
+            number("rocks", "Felsen an der Wasserlinie", BEACH, 9.0, 0.0, 30.0, None, None),
+            number("gullCount", "Möwen (Anzahl)", BEACH, 5.0, 1.0, 40.0, None, None),
+            number("cameraHeight", "Kamera: Höhe", BEACH, 3.2, 1.0, 10.0, None, Some(0.1)),
+            flag("cameraDrift", "Kamera schwankt leicht", BEACH, true),
             in_scene(
                 SceneName::Starting,
                 text("startingEyebrow", "Starting: Überzeile", SCREENS, "Gleich geht's los", None),
@@ -181,6 +199,8 @@ fn fields() -> Vec<SettingField> {
                 text("endingNote", "Ending: Untertitel", SCREENS, "Bis zum nächsten Sonnenuntergang!", None),
             ),
             choice("signStyle", "Schild", SCREENS, "haengend", &["haengend", "pfahl"]),
+            flag("woodGrain", "Schild: Holzmaserung", SCREENS, true),
+            number("signSwing", "Schild: Pendeln (Grad)", SCREENS, 8.0, 0.0, 30.0, None, None),
             number("signWidth", "Schild: Breite", SCREENS, 1100.0, 400.0, 1800.0, PX, None),
             number("titleSize", "Titelgrösse", SCREENS, 110.0, 30.0, 240.0, PX, None),
             in_scene(

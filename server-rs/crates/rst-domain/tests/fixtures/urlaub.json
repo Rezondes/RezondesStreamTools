@@ -467,6 +467,161 @@
       "default": true
     },
     {
+      "key": "quality",
+      "type": "select",
+      "label": "Leistungsstufe 3D",
+      "group": "Kulisse",
+      "default": "mittel",
+      "options": [
+        "hoch",
+        "mittel",
+        "niedrig"
+      ]
+    },
+    {
+      "key": "worldSeed",
+      "type": "number",
+      "label": "Startwert der Welt",
+      "group": "Kulisse",
+      "default": 12,
+      "min": 0,
+      "max": 9999
+    },
+    {
+      "key": "sunriseOn",
+      "type": "boolean",
+      "label": "Sonnenaufgang im Starting",
+      "group": "Kulisse",
+      "default": true
+    },
+    {
+      "key": "sunriseMs",
+      "type": "number",
+      "label": "Sonnenaufgang (Dauer)",
+      "group": "Kulisse",
+      "default": 4000,
+      "min": 0,
+      "max": 20000,
+      "unit": "ms"
+    },
+    {
+      "key": "sunHeight",
+      "type": "number",
+      "label": "Sonnenhöhe (Grad)",
+      "group": "Kulisse",
+      "default": 4.5,
+      "min": -5,
+      "max": 90,
+      "step": 0.5
+    },
+    {
+      "key": "sunAzimuth",
+      "type": "number",
+      "label": "Sonnenrichtung (Grad)",
+      "group": "Kulisse",
+      "default": 196,
+      "min": 0,
+      "max": 360
+    },
+    {
+      "key": "turbidity",
+      "type": "number",
+      "label": "Dunst am Himmel",
+      "group": "Kulisse",
+      "default": 6,
+      "min": 1,
+      "max": 20,
+      "step": 0.5
+    },
+    {
+      "key": "exposure",
+      "type": "number",
+      "label": "Belichtung",
+      "group": "Kulisse",
+      "default": 0.42,
+      "min": 0.1,
+      "max": 2,
+      "step": 0.02
+    },
+    {
+      "key": "waterColor",
+      "type": "color",
+      "label": "Meer in der Tiefe (3D)",
+      "group": "Kulisse",
+      "default": "#0a4a5e"
+    },
+    {
+      "key": "waveDistortion",
+      "type": "number",
+      "label": "Wellen: Verzerrung der Spiegelung",
+      "group": "Kulisse",
+      "default": 2.6,
+      "min": 0,
+      "max": 10,
+      "step": 0.1
+    },
+    {
+      "key": "surfOn",
+      "type": "boolean",
+      "label": "Brandung",
+      "group": "Kulisse",
+      "default": true
+    },
+    {
+      "key": "surfBands",
+      "type": "number",
+      "label": "Brandung: Bänder",
+      "group": "Kulisse",
+      "default": 3,
+      "min": 1,
+      "max": 6
+    },
+    {
+      "key": "surfSeconds",
+      "type": "number",
+      "label": "Brandung: Zeit je Welle",
+      "group": "Kulisse",
+      "default": 7,
+      "min": 2,
+      "max": 30,
+      "unit": "s"
+    },
+    {
+      "key": "rocks",
+      "type": "number",
+      "label": "Felsen an der Wasserlinie",
+      "group": "Kulisse",
+      "default": 9,
+      "min": 0,
+      "max": 30
+    },
+    {
+      "key": "gullCount",
+      "type": "number",
+      "label": "Möwen (Anzahl)",
+      "group": "Kulisse",
+      "default": 5,
+      "min": 1,
+      "max": 40
+    },
+    {
+      "key": "cameraHeight",
+      "type": "number",
+      "label": "Kamera: Höhe",
+      "group": "Kulisse",
+      "default": 3.2,
+      "min": 1,
+      "max": 10,
+      "step": 0.1
+    },
+    {
+      "key": "cameraDrift",
+      "type": "boolean",
+      "label": "Kamera schwankt leicht",
+      "group": "Kulisse",
+      "default": true
+    },
+    {
       "key": "startingEyebrow",
       "type": "text",
       "label": "Starting: Überzeile",
@@ -562,6 +717,22 @@
         "haengend",
         "pfahl"
       ]
+    },
+    {
+      "key": "woodGrain",
+      "type": "boolean",
+      "label": "Schild: Holzmaserung",
+      "group": "Starting, BRB, Ending",
+      "default": true
+    },
+    {
+      "key": "signSwing",
+      "type": "number",
+      "label": "Schild: Pendeln (Grad)",
+      "group": "Starting, BRB, Ending",
+      "default": 8,
+      "min": 0,
+      "max": 30
     },
     {
       "key": "signWidth",
