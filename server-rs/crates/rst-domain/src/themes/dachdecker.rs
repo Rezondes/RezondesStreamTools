@@ -324,9 +324,26 @@ fn cam_music_fx() -> Vec<SettingField> {
 
 fn stinger_banner() -> Vec<SettingField> {
     vec![
-        text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}", None),
+        text("stingerText", "Bauplan: Titel ({channel})", STINGER, "{channel}", None),
+        text("stingerSubtitle", "Bauplan: Unterzeile ({channel})", STINGER, "AUSFÜHRUNGSPLAN // DACHSTUHL", None),
+        lines(
+            "stingerBlockLines",
+            "Bauplan: Schriftfeld (| trennt Bezeichnung und Wert, {channel})",
+            STINGER,
+            &["BAUHERR | {channel}", "PROJEKT | DACHSTUHL", "MASSSTAB | 1:50", "BLATT | 1/1"],
+            Some(6),
+        ),
+        lines(
+            "stingerNotes",
+            "Bauplan: Hinweise",
+            STINGER,
+            &["ALLE MASSE IN METERN", "EINDECKUNG: TERRAKOTTA UND SCHIEFER", "FIRST MIT LÜFTUNG"],
+            Some(6),
+        ),
+        text("stingerStamp", "Bauplan: Stempel (leer = aus)", STINGER, "GEPRÜFT", None),
         number("stingerDuration", "Länge", STINGER, 2.4, 0.5, 6.0, S, Some(0.05)),
         number("stingerCut", "Übergangspunkt", STINGER, 1.2, 0.1, 6.0, S, Some(0.05)),
+        number("stingerFps", "Bildrate (Bilder pro Sekunde)", STINGER, 30.0, 10.0, 60.0, None, None),
         number("stingerHold", "Pause am Übergangspunkt (Anteil je Hälfte)", STINGER, 20.0, 0.0, 80.0, PERCENT, None),
         number("stingerGrid", "Bauplan: Rastergrösse", STINGER, 40.0, 10.0, 200.0, PX, None),
         number("stingerRollSize", "Rolle: Durchmesser", STINGER, 180.0, 40.0, 600.0, PX, None),
@@ -345,7 +362,6 @@ fn stinger_banner() -> Vec<SettingField> {
             None,
         ),
         number("bannerGrid", "Bauplan: Rastergrösse", BANNER, 50.0, 10.0, 200.0, PX, None),
-        number("bannerDuration", "Schleifenlänge", BANNER, 4.0, 1.0, 20.0, S, None),
         flag("bannerRain", "Offline-Banner: Regen", BANNER, true),
         number("bannerRainCount", "Offline-Banner: Tropfen", BANNER, 1200.0, 0.0, 4000.0, None, None),
     ]

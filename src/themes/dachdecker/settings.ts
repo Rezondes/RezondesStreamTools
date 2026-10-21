@@ -225,9 +225,14 @@ const FIELDS = [
   flag("fxText", "Text zeigen", FX, true),
   number("fxTextSize", "Textgrösse", FX, 96, 8, 300, "px"),
 
-  text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}"),
+  text("stingerText", "Bauplan: Titel ({channel})", STINGER, "{channel}"),
+  text("stingerSubtitle", "Bauplan: Unterzeile ({channel})", STINGER, "AUSFÜHRUNGSPLAN // DACHSTUHL"),
+  lines("stingerBlockLines", "Bauplan: Schriftfeld (| trennt Bezeichnung und Wert, {channel})", STINGER, ["BAUHERR | {channel}", "PROJEKT | DACHSTUHL", "MASSSTAB | 1:50", "BLATT | 1/1"], 6),
+  lines("stingerNotes", "Bauplan: Hinweise", STINGER, ["ALLE MASSE IN METERN", "EINDECKUNG: TERRAKOTTA UND SCHIEFER", "FIRST MIT LÜFTUNG"], 6),
+  text("stingerStamp", "Bauplan: Stempel (leer = aus)", STINGER, "GEPRÜFT"),
   number("stingerDuration", "Länge", STINGER, 2.4, 0.5, 6, "s", 0.05),
   number("stingerCut", "Übergangspunkt", STINGER, 1.2, 0.1, 6, "s", 0.05),
+  number("stingerFps", "Bildrate (Bilder pro Sekunde)", STINGER, 30, 10, 60),
   number("stingerHold", "Pause am Übergangspunkt (Anteil je Hälfte)", STINGER, 20, 0, 80, "%"),
   number("stingerGrid", "Bauplan: Rastergrösse", STINGER, 40, 10, 200, "px"),
   number("stingerRollSize", "Rolle: Durchmesser", STINGER, 180, 40, 600, "px"),
@@ -241,7 +246,6 @@ const FIELDS = [
   text("offlineTag", "Offline-Banner: Überzeile ({channel})", BANNER, "FEIERABEND"),
   text("offlineSubtitle", "Offline-Banner: Unterzeile ({channel})", BANNER, "Dach dicht, bis zum nächsten Stream!"),
   number("bannerGrid", "Bauplan: Rastergrösse", BANNER, 50, 10, 200, "px"),
-  number("bannerDuration", "Schleifenlänge", BANNER, 4, 1, 20, "s"),
   flag("bannerRain", "Offline-Banner: Regen", BANNER, true),
   number("bannerRainCount", "Offline-Banner: Tropfen", BANNER, 1200, 0, 4000),
 

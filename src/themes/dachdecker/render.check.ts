@@ -1,29 +1,30 @@
-// Check for render.ts of the Dachdecker theme: stinger, profile and offline banner with sizes, groups, timing and the
-// lazy 3D loader; captions draw only non-empty lines. Runs with npm test.
+// Check for render.ts of the Dachdecker theme: stinger, profile and offline banner with sizes, groups, timing, the frame
+// rate of the stinger from the settings and the lazy 3D loader. Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
-import { dachdeckerClips, drawCaptions } from "./render.ts";
+import { dachdeckerClips } from "./render.ts";
 import { dachdeckerSettings } from "./settings.ts";
 
-const clips = dachdeckerClips(resolveSettings(dachdeckerSettings, { stingerDuration: 2, stingerCut: 1, bannerDuration: 6 }), "neo");
+const clips = dachdeckerClips(resolveSettings(dachdeckerSettings, { stingerDuration: 2, stingerCut: 1, stingerFps: 48 }), "neo");
 assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.height]), [
   ["stinger", "Stinger", 1920, 1080], ["profile", "Banner", 1200, 480], ["offline", "Banner", 1920, 1080],
 ]);
 assert.equal(clips[0].duration, 2);
 assert.equal(clips[0].cut, 1);
-assert.equal(clips[1].duration, 6);
+assert.equal(clips[0].fps, 48);
 assert.equal(clips[2].cut, null);
 // Only the stinger is 3D and loads three.js lazily; the banners draw in 2D right away
 assert.deepEqual(clips.map(clip => typeof clip.prepare), ["function", "undefined", "undefined"]);
 assert.match(clips[0].font, /Roboto Mono/);
 
-// Captions: one fillText per non-empty line, centred
-const texts: unknown[][] = [];
+// Before the 3D part has loaded the stinger draws the covered share of the sheet: nothing at the start, all at the cut
+const fills: number[][] = [];
 const context = new Proxy({}, {
-  get: (_, key: string) => (key === "fillText" ? (...args: unknown[]) => texts.push(args) : () => {}),
+  get: (_, key: string) => (key === "fillRect" ? (...args: number[]) => fills.push(args) : () => {}),
   set: () => true,
 }) as unknown as CanvasRenderingContext2D;
-drawCaptions(context, [{ text: "NEO", size: 80, color: "#fff", y: 0.5 }, { text: "", size: 20, color: "#fff", y: 0.6 }], "Roboto Mono", 1000, 400);
-assert.deepEqual(texts, [["NEO", 500, 200]]);
+clips[0].draw(context, 0);
+clips[0].draw(context, 1);
+assert.deepEqual(fills.map(args => args[2]), [0, 1920]);
 
 console.log("dachdecker render ok");

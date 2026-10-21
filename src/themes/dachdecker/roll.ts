@@ -1,7 +1,8 @@
 // Timing of the Dachdecker stinger without three.js (render.ts needs it in the entry chunk): where the roll of the
 // blueprint is at a time, how thick it is and how much of the picture the sheet covers. stinger.ts builds the 3D scene
 // from it. Check: stinger.check.ts.
-export const STINGER_SIZE = { width: 1920, height: 1080, fps: 30 };
+// Size of the stinger in px; the frame rate is a setting (stingerFps)
+export const STINGER_SIZE = { width: 1920, height: 1080 };
 
 // duration and cut in s, hold as a share of each half, roll = full diameter of the roll in px
 export type RollTiming = { duration: number; cut: number; hold: number; roll: number };

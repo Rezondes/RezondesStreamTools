@@ -197,8 +197,13 @@ export type DachdeckerValues = {
   readonly fxText: boolean;
   readonly fxTextSize: number;
   readonly stingerText: string;
+  readonly stingerSubtitle: string;
+  readonly stingerBlockLines: readonly string[];
+  readonly stingerNotes: readonly string[];
+  readonly stingerStamp: string;
   readonly stingerDuration: number;
   readonly stingerCut: number;
+  readonly stingerFps: number;
   readonly stingerHold: number;
   readonly stingerGrid: number;
   readonly stingerRollSize: number;
@@ -211,7 +216,6 @@ export type DachdeckerValues = {
   readonly offlineTag: string;
   readonly offlineSubtitle: string;
   readonly bannerGrid: number;
-  readonly bannerDuration: number;
   readonly bannerRain: boolean;
   readonly bannerRainCount: number;
   readonly minimeJoinCommand: string;

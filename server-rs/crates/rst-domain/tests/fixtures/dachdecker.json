@@ -1712,9 +1712,50 @@
     {
       "key": "stingerText",
       "type": "text",
-      "label": "Text in der Mitte ({channel})",
+      "label": "Bauplan: Titel ({channel})",
       "group": "Stinger",
       "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "stingerSubtitle",
+      "type": "text",
+      "label": "Bauplan: Unterzeile ({channel})",
+      "group": "Stinger",
+      "default": "AUSFÜHRUNGSPLAN // DACHSTUHL",
+      "maxLength": 200
+    },
+    {
+      "key": "stingerBlockLines",
+      "type": "lines",
+      "label": "Bauplan: Schriftfeld (| trennt Bezeichnung und Wert, {channel})",
+      "group": "Stinger",
+      "default": [
+        "BAUHERR | {channel}",
+        "PROJEKT | DACHSTUHL",
+        "MASSSTAB | 1:50",
+        "BLATT | 1/1"
+      ],
+      "maxLines": 6
+    },
+    {
+      "key": "stingerNotes",
+      "type": "lines",
+      "label": "Bauplan: Hinweise",
+      "group": "Stinger",
+      "default": [
+        "ALLE MASSE IN METERN",
+        "EINDECKUNG: TERRAKOTTA UND SCHIEFER",
+        "FIRST MIT LÜFTUNG"
+      ],
+      "maxLines": 6
+    },
+    {
+      "key": "stingerStamp",
+      "type": "text",
+      "label": "Bauplan: Stempel (leer = aus)",
+      "group": "Stinger",
+      "default": "GEPRÜFT",
       "maxLength": 200
     },
     {
@@ -1738,6 +1779,15 @@
       "max": 6,
       "unit": "s",
       "step": 0.05
+    },
+    {
+      "key": "stingerFps",
+      "type": "number",
+      "label": "Bildrate (Bilder pro Sekunde)",
+      "group": "Stinger",
+      "default": 30,
+      "min": 10,
+      "max": 60
     },
     {
       "key": "stingerHold",
@@ -1842,16 +1892,6 @@
       "min": 10,
       "max": 200,
       "unit": "px"
-    },
-    {
-      "key": "bannerDuration",
-      "type": "number",
-      "label": "Schleifenlänge",
-      "group": "Banner",
-      "default": 4,
-      "min": 1,
-      "max": 20,
-      "unit": "s"
     },
     {
       "key": "bannerRain",
