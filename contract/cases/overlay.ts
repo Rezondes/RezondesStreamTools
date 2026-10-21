@@ -85,6 +85,13 @@ export const OVERLAY_CASES: Case[] = [
     },
   },
   {
+    name: "stats: the dashboard reads the count with a session",
+    async run(context) {
+      await expectCode(await request(context, "/api/stats"), 401, "unauthorized");
+      await expect(await request(context, "/api/stats", { session: STREAMER.login }), 200, { follows: "number", chatters: "number" });
+    },
+  },
+  {
     name: "events: unknown alert kind is 400",
     async run(context) {
       await expectCode(await request(context, "/api/test?kind=nothing", { method: "POST", session: STREAMER.login }), 400, "unknown-kind");

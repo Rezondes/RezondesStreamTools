@@ -40,6 +40,7 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::OverlayKey => auth::rotate_overlay_key(call).await,
         Route::TwitchDisconnect => auth::disconnect(call).await,
         Route::TestAlert => events::test_alert(&call),
+        Route::Stats => events::stats(call).await,
         Route::StatsReset => events::reset_stats(call).await,
         Route::HelpConfig => commands::help(call).await,
         Route::SaveHelpConfig => commands::save(call).await,

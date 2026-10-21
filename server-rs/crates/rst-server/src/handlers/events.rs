@@ -83,6 +83,19 @@ pub fn test_alert(call: &Call<'_>) -> Response {
     json(&json!({ "ok": true }), 200)
 }
 
+/// Dashboard: the current stream stats of the own streamer, from the running runtime or else the stored count
+pub async fn stats(call: Call<'_>) -> Response {
+    let app = call.app;
+    let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
+    if let Some(runtime) = app.runtimes.get(id) {
+        return json(&runtime.stats.current(), 200);
+    }
+    match app.stores.profile.stats(id).await {
+        Ok(tally) => json(&tally.snapshot(), 200),
+        Err(error) => server_error(&error.to_string()),
+    }
+}
+
 /// Dashboard: clears the stream stats of the own streamer. A running runtime stores and sends them at once; without
 /// one the stored count is cleared directly.
 pub async fn reset_stats(call: Call<'_>) -> Response {

@@ -6,7 +6,8 @@ import * as streamerPath from "../core/streamerPath.ts";
 import { OBS_SCENES, SCENE_SIZES } from "../core/theme.ts";
 import { sceneNames } from "../core/themeRuntime.ts";
 import { THEME_SCENES } from "../themes/scenes.tsx";
-import type { AlertKind } from "../core/types.ts";
+import { describeStats, type StatKey } from "../core/stats/stats.ts";
+import type { AlertKind, StreamStats } from "../core/types.ts";
 import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
 import type { Me } from "./navigation.ts";
@@ -69,10 +70,31 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
           <button className="btn" onClick={() => { if (confirm(TEXTS.overview.statsResetConfirm)) act("/api/stats/reset"); }}>{TEXTS.overview.statsReset}</button>
         </p>
       )}
+      {me.features.alerts && <StatsTable me={me} />}
       {me.features.triggers && me.features.fx && <TriggerButtons act={act} />}
       <ObsImport login={me.login} layout={layout} />
       <ChatHelp login={me.login} />
     </section>
+  );
+}
+
+const STAT_LINES = (Object.keys(TEXTS.overview.statNames) as StatKey[]).map(key => ({ key, label: TEXTS.overview.statNames[key] }));
+
+// The stored count; me changes with every reload of the account (also after the reset), then it loads again
+function StatsTable({ me }: { me: Me }) {
+  const [stats, setStats] = useState<StreamStats | null>(null);
+  useEffect(() => {
+    let active = true;
+    void getJson<StreamStats | null>("/api/stats", null).then(value => { if (active) setStats(value); });
+    return () => { active = false; };
+  }, [me]);
+  if (!stats) return null;
+  return (
+    <table>
+      <tbody>
+        {describeStats(stats, STAT_LINES, "de-DE", Date.now()).map(line => <tr key={line.key}><td>{line.label}</td><td>{line.value}</td></tr>)}
+      </tbody>
+    </table>
   );
 }
 
