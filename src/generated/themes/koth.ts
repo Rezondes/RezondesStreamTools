@@ -130,6 +130,15 @@ export type KothValues = {
   readonly radioLinesOn: boolean;
   readonly radioStaticMs: number;
   readonly alertStyle: string;
+  readonly dogtagOn: boolean;
+  readonly dogtagLines: readonly string[];
+  readonly dogtagMetal: string;
+  readonly dogtagSwing: number;
+  readonly alertSmokeOn: boolean;
+  readonly radioChannel: string;
+  readonly alertStaticMs: number;
+  readonly alertOpenMs: number;
+  readonly alertCloseMs: number;
   readonly alertCallsign: string;
   readonly followTag: string;
   readonly followLine: string;

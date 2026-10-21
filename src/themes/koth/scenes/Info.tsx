@@ -1,6 +1,8 @@
 // Commands page of the KOTH theme (public under /s/<login>/): the hill at the chosen time of day stays fixed in the
 // background, in front of it briefing sheets with the commands (roles and factions of the soldiers). List, texts and
-// intro come from the info context of the core (useInfoPage), here only the military look.
+// intro come from the info context of the core (useInfoPage), here only the military look; the sheets drop in one after
+// the other.
+import type { CSSProperties } from "react";
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import Hill, { type TimeOfDay } from "../Hill.tsx";
@@ -20,8 +22,8 @@ export default function Info() {
           <p>{page.intro}</p>
         </header>
         {page.sections.length === 0 && <p className="kh-sheet kh-info-board">{page.empty}</p>}
-        {page.sections.map(section => (
-          <section key={section.id} className="kh-sheet kh-info-board">
+        {page.sections.map((section, index) => (
+          <section key={section.id} className="kh-sheet kh-info-board" style={{ "--i": index + 1 } as CSSProperties}>
             <h2 className="kh-eyebrow">{section.heading}</h2>
             {section.entries.map((entry, index) => (
               <article key={index} className="kh-info-entry">

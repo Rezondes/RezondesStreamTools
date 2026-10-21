@@ -10,6 +10,9 @@ import { clampBloom, quality } from "./quality.ts";
 export type StageBloom = { strength: number; radius: number; threshold: number };
 export type StageFog = { color: string; near: number; far: number };
 
+// fixed: distance of the orthographic camera in front of the stage plane
+const ORTHO_DISTANCE = 1000;
+
 type Props = {
   background: string | null; // null = transparent (alerts, minimes); bloom is then off, it would break transparency
   fog?: StageFog | null;
@@ -17,13 +20,14 @@ type Props = {
   level: string; // performance level, see quality.ts
   fov: number;
   far?: number; // far plane of the camera in world units
+  orthographic?: boolean; // overlays: one world unit is one stage pixel, the middle of the stage at 0, 0
   shadows?: boolean; // soft shadows of lights with castShadow; off at the low level
   paused?: boolean;
   className?: string;
   children: ReactNode;
 };
 
-export default function Stage3D({ background, fog = null, bloom = null, level, fov, far = 200, shadows = false, paused = false, className = "", children }: Props) {
+export default function Stage3D({ background, fog = null, bloom = null, level, fov, far = 200, orthographic = false, shadows = false, paused = false, className = "", children }: Props) {
   const stage = useStage();
   const settings = quality(level);
   const glow = bloom && settings.bloom && background !== null ? bloom : null;
@@ -38,7 +42,8 @@ export default function Stage3D({ background, fog = null, bloom = null, level, f
         shadows={shadows && settings.shadows ? "soft" : false}
         frameloop={paused ? "never" : "always"}
         gl={{ antialias: settings.antialias, alpha: background === null }}
-        camera={{ fov, near: 0.1, far }}
+        orthographic={orthographic}
+        camera={orthographic ? { zoom: 1, position: [0, 0, ORTHO_DISTANCE], near: 0.1, far } : { fov, near: 0.1, far }}
       >
         {background !== null && <color attach="background" args={[background]} />}
         {fog && <fog attach="fog" args={[fog.color, fog.near, fog.far]} />}

@@ -267,7 +267,22 @@ fn screens() -> Vec<SettingField> {
 
 fn alerts() -> Vec<SettingField> {
     let mut fields = vec![
-        choice("alertStyle", "Stil", ALERTS, "funk", &["funk", "akte", "schild"]),
+        choice("alertStyle", "Stil", ALERTS, "marke", &["marke", "funk", "akte"]),
+        flag("dogtagOn", "Hundemarke", ALERTS, true),
+        lines(
+            "dogtagLines",
+            "Hundemarke: Prägung ({channel}, {user}, {amount})",
+            ALERTS,
+            &["{channel}", "{user}", "{amount}", "O POS"],
+            Some(6),
+        ),
+        color("dogtagMetal", "Hundemarke: Metall", ALERTS, "#d9dde1"),
+        number("dogtagSwing", "Hundemarke: Pendeln", ALERTS, 1.0, 0.0, 3.0, None, Some(0.1)),
+        flag("alertSmokeOn", "Rauchstoss", ALERTS, true),
+        text("radioChannel", "Funkgerät: Kanal", ALERTS, "KANAL 7  //  41.250 MHZ", None),
+        number("alertStaticMs", "Funkgerät: Rauschen", ALERTS, 500.0, 0.0, 3000.0, MS, None),
+        number("alertOpenMs", "Funkgerät: Aufklappen", ALERTS, 450.0, 0.0, 3000.0, MS, None),
+        number("alertCloseMs", "Funkgerät: Zuklappen", ALERTS, 350.0, 0.0, 3000.0, MS, None),
         text("alertCallsign", "Rufzeichen ({channel})", ALERTS, "{channel} an alle", None),
         text("followTag", "Follow: Kopfzeile", ALERTS, "Neuer Rekrut", None),
         text("followLine", "Follow: Zeile", ALERTS, "{user} meldet sich zum Dienst!", None),

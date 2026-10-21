@@ -1094,13 +1094,95 @@
       "type": "select",
       "label": "Stil",
       "group": "Alerts",
-      "default": "funk",
+      "default": "marke",
       "options": [
+        "marke",
         "funk",
-        "akte",
-        "schild"
+        "akte"
       ],
       "basic": true
+    },
+    {
+      "key": "dogtagOn",
+      "type": "boolean",
+      "label": "Hundemarke",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "dogtagLines",
+      "type": "lines",
+      "label": "Hundemarke: Prägung ({channel}, {user}, {amount})",
+      "group": "Alerts",
+      "default": [
+        "{channel}",
+        "{user}",
+        "{amount}",
+        "O POS"
+      ],
+      "maxLines": 6
+    },
+    {
+      "key": "dogtagMetal",
+      "type": "color",
+      "label": "Hundemarke: Metall",
+      "group": "Alerts",
+      "default": "#d9dde1"
+    },
+    {
+      "key": "dogtagSwing",
+      "type": "number",
+      "label": "Hundemarke: Pendeln",
+      "group": "Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "step": 0.1
+    },
+    {
+      "key": "alertSmokeOn",
+      "type": "boolean",
+      "label": "Rauchstoss",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "radioChannel",
+      "type": "text",
+      "label": "Funkgerät: Kanal",
+      "group": "Alerts",
+      "default": "KANAL 7  //  41.250 MHZ",
+      "maxLength": 200
+    },
+    {
+      "key": "alertStaticMs",
+      "type": "number",
+      "label": "Funkgerät: Rauschen",
+      "group": "Alerts",
+      "default": 500,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "alertOpenMs",
+      "type": "number",
+      "label": "Funkgerät: Aufklappen",
+      "group": "Alerts",
+      "default": 450,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "alertCloseMs",
+      "type": "number",
+      "label": "Funkgerät: Zuklappen",
+      "group": "Alerts",
+      "default": 350,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms"
     },
     {
       "key": "alertCallsign",

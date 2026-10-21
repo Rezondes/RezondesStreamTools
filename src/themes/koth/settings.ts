@@ -192,7 +192,17 @@ const FIELDS = [
   inScene("starting", flag("radioLinesOn", "Starting: Funkzeilen", SCREENS, true)),
   inScene("starting", number("radioStaticMs", "Starting: Rauschen zwischen Funkzeilen", SCREENS, 350, 0, 3000, "ms")),
 
-  choice("alertStyle", "Stil", ALERTS, "funk", ["funk", "akte", "schild"]),
+  choice("alertStyle", "Stil", ALERTS, "marke", ["marke", "funk", "akte"]),
+  // Dog tag with radio (PLAN-KOTH.md package 4): stamped lines take the placeholders of the alert texts
+  flag("dogtagOn", "Hundemarke", ALERTS, true),
+  lines("dogtagLines", "Hundemarke: Prägung ({channel}, {user}, {amount})", ALERTS, ["{channel}", "{user}", "{amount}", "O POS"], 6),
+  color("dogtagMetal", "Hundemarke: Metall", ALERTS, "#d9dde1"),
+  number("dogtagSwing", "Hundemarke: Pendeln", ALERTS, 1, 0, 3, undefined, 0.1),
+  flag("alertSmokeOn", "Rauchstoss", ALERTS, true),
+  text("radioChannel", "Funkgerät: Kanal", ALERTS, "KANAL 7  //  41.250 MHZ"),
+  number("alertStaticMs", "Funkgerät: Rauschen", ALERTS, 500, 0, 3000, "ms"),
+  number("alertOpenMs", "Funkgerät: Aufklappen", ALERTS, 450, 0, 3000, "ms"),
+  number("alertCloseMs", "Funkgerät: Zuklappen", ALERTS, 350, 0, 3000, "ms"),
   text("alertCallsign", "Rufzeichen ({channel})", ALERTS, "{channel} an alle"),
   text("followTag", "Follow: Kopfzeile", ALERTS, "Neuer Rekrut"),
   text("followLine", "Follow: Zeile", ALERTS, "{user} meldet sich zum Dienst!"),
