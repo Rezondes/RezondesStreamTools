@@ -10,7 +10,9 @@ export type ClipFrame = { width: number; height: number; duration: number; fps: 
 
 function webgl(width: number, height: number): GlRenderer {
   const canvas = document.createElement("canvas");
-  const renderer = new WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+  // alpha: a scene without background stays transparent (stinger as WebM with alpha); clipping planes of materials apply
+  const renderer = new WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, alpha: true });
+  renderer.localClippingEnabled = true;
   renderer.setPixelRatio(1);
   renderer.setSize(width, height, false);
   return {

@@ -1,30 +1,34 @@
-// Check for banners.ts of the Dachdecker theme: drops of the offline banner loop seamlessly, the scenes build and update
-// the same way for the same time. Runs with npm test.
+// Check for banners.ts of the Dachdecker theme: drops and the dimension marker loop seamlessly, both banners draw their
+// texts and leave empty ones out. Runs with npm test.
 import assert from "node:assert/strict";
-import { dropHeight, offlineSetup, profileSetup } from "./banners.ts";
+import { drawOffline, drawProfile, dropFall, markerAt } from "./banners.ts";
 
-// Seamless loop: at 0 and at the loop length every drop is in the same place, in between it moved
+// Seamless loop: at 0 and at the loop length every drop and the marker are in the same place, in between they moved
 for (let index = 0; index < 50; index++) {
-  assert.ok(Math.abs(dropHeight(index, 0, 4, 7) - dropHeight(index, 4, 4, 7)) < 1e-9, `drop ${index}`);
-  assert.ok(dropHeight(index, 1.3, 4, 7) >= 0 && dropHeight(index, 1.3, 4, 7) <= 14);
+  assert.ok(Math.abs(dropFall(index, 0, 4, 7) - dropFall(index, 4, 4, 7)) < 1e-9, `drop ${index}`);
+  assert.ok(dropFall(index, 1.3, 4, 7) >= 0 && dropFall(index, 1.3, 4, 7) < 1);
 }
-assert.notEqual(dropHeight(3, 1, 4, 7), dropHeight(3, 0, 4, 7));
+assert.notEqual(dropFall(3, 1, 4, 7), dropFall(3, 0, 4, 7));
+assert.ok(Math.abs(markerAt(0, 4) - markerAt(4, 4)) < 1e-9);
+assert.ok(markerAt(2, 4) > markerAt(1, 4));
 
-const colors = {
-  accent: "#e67e22", line: "#ffffff", muted: "#b4c2e0", slate: "#2c3e50", copper: "#d4a373", brick: "#d35400", card: "#22356a", slateDark: "#1a252f",
-  blueprint: "#192a56", page: "#121e40", dusk: "#8a3d16", rainColor: "#7fe3ff",
+// Drawing: every non-empty text once; a context that records fillText and accepts everything else
+const record = () => {
+  const texts: string[] = [];
+  const gradient = { addColorStop: () => {} };
+  const context = new Proxy({}, {
+    get: (_, key: string) => (key === "fillText" ? (text: string) => texts.push(text) : key === "createLinearGradient" ? () => gradient : () => {}),
+    set: () => true,
+  }) as unknown as CanvasRenderingContext2D;
+  return { texts, context };
 };
-const options = { dims: { span: 8.4, rise: 3.25, trusses: 5, gap: 1.5, overhang: 0.12 }, wallHeight: 2.7, seed: 7, copperShare: 0.15, lineOpacity: 0.62, fillOpacity: 0.1, loop: 4, rain: true, drops: 200, colors };
-const pose = (setup: typeof offlineSetup, time: number) => {
-  const built = setup(options);
-  built.update(time);
-  const result = built.camera.position.toArray();
-  built.dispose?.();
-  return result;
-};
-assert.deepEqual(pose(offlineSetup, 1.5), pose(offlineSetup, 1.5));
-const start = pose(offlineSetup, 0);
-pose(offlineSetup, 4).forEach((value, axis) => assert.ok(Math.abs(value - start[axis]) < 1e-9));
-assert.deepEqual(pose(profileSetup, 2), pose(profileSetup, 2));
+const colors = { blueprint: "#192a56", page: "#121e40", accent: "#e67e22", copper: "#d4a373", line: "#ffffff", rainColor: "#7fe3ff" };
+const options = { width: 1200, height: 480, loop: 4, font: "Roboto Mono", titleSize: 72, fontSize: 26, grid: 40, glow: 0.8, rain: true, drops: 100, seed: 7, colors };
+const profile = record();
+drawProfile(profile.context, 1, options, { title: "NEO", overline: "BAUPLAN", subtitle: "" });
+assert.deepEqual(profile.texts, ["BAUPLAN", "NEO"]);
+const offline = record();
+drawOffline(offline.context, 1, { ...options, width: 1920, height: 1080 }, { title: "OFFLINE", overline: "NEO", subtitle: "BIS BALD" });
+assert.deepEqual(offline.texts, ["NEO", "OFFLINE", "BIS BALD"]);
 
 console.log("dachdecker banners ok");

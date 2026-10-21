@@ -1,12 +1,12 @@
-// A minime figure of the Dachdecker theme in 3D (DESIGN-DACHDECKER.md "Figuren"): the parts of figures.ts as nearly
-// transparent bodies with plan edges, the helmet filled in the color of the type, the tool in copper. Every frame it
-// follows its anchor element (moved by the core with CSS: walking, hops, towers) and takes the pose of its animation.
+// A minime figure of the Dachdecker theme in 3D (DESIGN-DACHDECKER.md "Figuren"): the parts of figures.ts as solid,
+// lit bodies in the colors of the settings (skin, shirt, pants, boots, helmet of the type, tool). Every frame it follows
+// its anchor element (moved by the core with CSS: walking, hops, towers) and takes the pose of its animation.
 import { useFrame } from "@react-three/fiber";
 import { type ReactNode, type RefObject, useEffect, useMemo, useRef } from "react";
-import { BoxGeometry, type BufferGeometry, EdgesGeometry, type Group, LineBasicMaterial, MeshBasicMaterial, SphereGeometry } from "three";
-import { type FigurePart, type FigureType, type Joint, figure, pose } from "../figures.ts";
+import { BoxGeometry, type BufferGeometry, CapsuleGeometry, CylinderGeometry, DoubleSide, type Group, MeshLambertMaterial, SphereGeometry } from "three";
+import { type FigurePart, type FigureTone, type FigureType, type Joint, figure, pose } from "../figures.ts";
 
-export type FigureLooks = { line: string; fill: number; helmet: string; tool: string };
+export type FigureLooks = Record<FigureTone, string>;
 // What the figure does right now: animation of figures.ts with start and duration in ms, facing of the core
 export type FigureRun = { animation: string; startedAt: number; durationMs: number; facing: 1 | -1 };
 
@@ -14,8 +14,9 @@ type Box = RefObject<HTMLElement | null>;
 type Props = { type: FigureType; looks: FigureLooks; run: FigureRun; anchor: Box; stage: Box };
 type Looks = ReturnType<typeof useLooks>;
 
-// Low-poly spheres, so their edges read as plan lines; the figure turns a little towards where it looks
-const SPHERE = [10, 6] as const;
+// Segments of the round shapes; the figure turns a little towards where it looks
+const SPHERE = [16, 12] as const;
+const ROUND = 14;
 const TURN = 0.55;
 const UPPER: Joint[] = ["torso", "armL", "armR", "head"];
 // The upper body bends at the hip; arms, head and tool hang at their joints inside it
@@ -23,35 +24,33 @@ const HIP = [0, 0.36, 0] as const;
 const FEET = [0, 0, 0] as const;
 
 function geometryOf(part: FigurePart): BufferGeometry {
-  const [width, height, depth] = part.size;
-  if (part.shape === "box") return new BoxGeometry(width, height, depth);
+  const [first, second, third] = part.size;
   const [segments, rings] = SPHERE;
-  return part.shape === "dome" ? new SphereGeometry(width, segments, rings, 0, Math.PI * 2, 0, Math.PI / 2) : new SphereGeometry(width, segments, rings);
+  switch (part.shape) {
+    case "box": return new BoxGeometry(first, second, third);
+    case "sphere": return new SphereGeometry(first, segments, rings);
+    case "dome": return new SphereGeometry(first, segments, rings, 0, Math.PI * 2, 0, Math.PI / 2);
+    case "capsule": return new CapsuleGeometry(first, second, 2, ROUND / 2 + 2);
+    case "cylinder": return new CylinderGeometry(first, third, second, ROUND);
+    case "gutter": return new CylinderGeometry(first, first, second, ROUND, 1, true, 0, Math.PI);
+  }
 }
 
-function useLooks({ line, fill, helmet, tool }: FigureLooks) {
-  const looks = useMemo(() => ({
-    edge: new LineBasicMaterial({ color: line }),
-    line: new MeshBasicMaterial({ color: line, transparent: true, opacity: fill, depthWrite: false }),
-    helmet: new MeshBasicMaterial({ color: helmet }),
-    tool: new MeshBasicMaterial({ color: tool }),
-  }), [line, fill, helmet, tool]);
+// One lit material per tone; both sides, so the open gutter shows its inside
+function useLooks(colors: FigureLooks) {
+  const key = JSON.stringify(colors);
+  const looks = useMemo(() => {
+    const tones = JSON.parse(key) as FigureLooks;
+    return Object.fromEntries(Object.entries(tones).map(([tone, color]) => [tone, new MeshLambertMaterial({ color, side: DoubleSide })])) as Record<FigureTone, MeshLambertMaterial>;
+  }, [key]);
   useEffect(() => () => Object.values(looks).forEach(look => look.dispose()), [looks]);
   return looks;
 }
 
 function Part({ part, looks }: { part: FigurePart; looks: Looks }) {
-  const shapes = useMemo(() => {
-    const body = geometryOf(part);
-    return { body, edges: new EdgesGeometry(body) };
-  }, [part]);
-  useEffect(() => () => { shapes.body.dispose(); shapes.edges.dispose(); }, [shapes]);
-  return (
-    <group position={[...part.offset]}>
-      <mesh geometry={shapes.body} material={looks[part.tone]} />
-      {part.tone === "line" && <lineSegments geometry={shapes.edges} material={looks.edge} />}
-    </group>
-  );
+  const body = useMemo(() => geometryOf(part), [part]);
+  useEffect(() => () => body.dispose(), [body]);
+  return <mesh geometry={body} material={looks[part.tone]} position={[...part.offset]} rotation={part.turn ? [...part.turn] : undefined} />;
 }
 
 export default function Figure({ type, looks: colors, run, anchor, stage }: Props) {
@@ -80,7 +79,7 @@ export default function Figure({ type, looks: colors, run, anchor, stage }: Prop
   });
 
   const pivotOf = (joint: Joint) => parts.find(part => part.joint === joint)!.pivot;
-  const partsOf = (joint: Joint) => parts.filter(part => part.joint === joint && part.tone !== "helmet").map((part, index) => <Part key={index} part={part} looks={looks} />);
+  const partsOf = (joint: Joint, lifts = false) => parts.filter(part => part.joint === joint && Boolean(part.lifts) === lifts).map((part, index) => <Part key={index} part={part} looks={looks} />);
   // A joint as a group at its pivot, relative to the pivot of the group it hangs in
   const jointGroup = (joint: Joint, base: readonly number[], children: ReactNode) => {
     const pivot = pivotOf(joint);
@@ -90,7 +89,6 @@ export default function Figure({ type, looks: colors, run, anchor, stage }: Prop
       </group>
     );
   };
-  const helmet = parts.find(part => part.tone === "helmet")!;
   return (
     <group ref={root}>
       {jointGroup("legL", FEET, partsOf("legL"))}
@@ -99,7 +97,7 @@ export default function Figure({ type, looks: colors, run, anchor, stage }: Prop
         {UPPER.map(joint => jointGroup(joint, HIP, (
           <>
             {partsOf(joint)}
-            {joint === "head" && <group ref={group => { joints.current.helmet = group; }}><Part part={helmet} looks={looks} /></group>}
+            {joint === "head" && <group ref={group => { joints.current.helmet = group; }}>{partsOf("head", true)}</group>}
             {joint === "armR" && jointGroup("tool", pivotOf("armR"), partsOf("tool"))}
           </>
         )))}

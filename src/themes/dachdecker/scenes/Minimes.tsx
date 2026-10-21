@@ -67,12 +67,15 @@ export default function Minimes() {
     <div ref={stage} className={`dd-minimes${values.minimeRidge ? " dd-on-ridge" : ""}`} aria-hidden="true">
       {values.minimeRidge && <div className="dd-minime-ridge" />}
       {shown.map(({ actor }) => <Anchor key={actor.login} actor={actor} anchor={anchorOf(actor.login)} />)}
-      <MinimeStage level={values.quality}>
+      <MinimeStage level={values.quality} light={values.line}>
         {shown.map(({ actor, type }) => (
           <Figure
             key={actor.login}
             type={type}
-            looks={{ line: values.line, fill: values.minimeFill, helmet: values[HELMETS[type]], tool: values.copper }}
+            looks={{
+              skin: values.minimeSkin, shirt: values.minimeShirt, pants: values.minimePants, boots: values.minimeBoots, metal: values.slateDark,
+              helmet: values[HELMETS[type]], tool: values.copper, tile: values.accent, paper: values.line,
+            }}
             run={runOf(actor, type, values.minimeStumble)}
             anchor={anchorOf(actor.login)}
             stage={stage}

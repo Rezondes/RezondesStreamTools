@@ -1740,30 +1740,34 @@
       "step": 0.05
     },
     {
-      "key": "stingerRows",
+      "key": "stingerHold",
       "type": "number",
-      "label": "Ziegelreihen",
+      "label": "Pause am Übergangspunkt (Anteil je Hälfte)",
       "group": "Stinger",
-      "default": 9,
-      "min": 3,
-      "max": 24
-    },
-    {
-      "key": "stingerShine",
-      "type": "boolean",
-      "label": "Glanz über den Ziegeln",
-      "group": "Stinger",
-      "default": true
-    },
-    {
-      "key": "stingerCopperShare",
-      "type": "number",
-      "label": "Anteil Kupferziegel",
-      "group": "Stinger",
-      "default": 15,
+      "default": 20,
       "min": 0,
-      "max": 50,
+      "max": 80,
       "unit": "%"
+    },
+    {
+      "key": "stingerGrid",
+      "type": "number",
+      "label": "Bauplan: Rastergrösse",
+      "group": "Stinger",
+      "default": 40,
+      "min": 10,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "stingerRollSize",
+      "type": "number",
+      "label": "Rolle: Durchmesser",
+      "group": "Stinger",
+      "default": 180,
+      "min": 40,
+      "max": 600,
+      "unit": "px"
     },
     {
       "key": "profileTitle",
@@ -1774,20 +1778,54 @@
       "maxLength": 200
     },
     {
-      "key": "profileSubtitle",
+      "key": "profileOverline",
       "type": "text",
-      "label": "Profilbanner: Unterzeile",
+      "label": "Profilbanner: Masslinie ({channel})",
       "group": "Banner",
       "default": "BAUPLAN // RICHTFEST",
       "maxLength": 200
     },
     {
+      "key": "profileSubtitle",
+      "type": "text",
+      "label": "Profilbanner: Unterzeile ({channel})",
+      "group": "Banner",
+      "default": "LIVE VOM DACH",
+      "maxLength": 200
+    },
+    {
       "key": "offlineText",
       "type": "text",
-      "label": "Offline-Banner: Text",
+      "label": "Offline-Banner: Titel ({channel})",
       "group": "Banner",
-      "default": "OFFLINE // DACH DICHT",
+      "default": "OFFLINE",
       "maxLength": 200
+    },
+    {
+      "key": "offlineOverline",
+      "type": "text",
+      "label": "Offline-Banner: Masslinie ({channel})",
+      "group": "Banner",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "offlineSubtitle",
+      "type": "text",
+      "label": "Offline-Banner: Unterzeile ({channel})",
+      "group": "Banner",
+      "default": "DACH DICHT // BIS ZUM NÄCHSTEN STREAM",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerGrid",
+      "type": "number",
+      "label": "Bauplan: Rastergrösse",
+      "group": "Banner",
+      "default": 40,
+      "min": 10,
+      "max": 200,
+      "unit": "px"
     },
     {
       "key": "bannerDuration",
@@ -2110,26 +2148,44 @@
       "basic": true
     },
     {
-      "key": "minimeFill",
-      "type": "number",
-      "label": "Füllung: Deckkraft",
+      "key": "minimeSkin",
+      "type": "color",
+      "label": "Haut",
       "group": "Minimes: Aussehen",
-      "default": 0.18,
-      "min": 0,
-      "max": 1,
-      "step": 0.02
+      "default": "#e8b98f"
+    },
+    {
+      "key": "minimeShirt",
+      "type": "color",
+      "label": "Hemd",
+      "group": "Minimes: Aussehen",
+      "default": "#e9edf5"
+    },
+    {
+      "key": "minimePants",
+      "type": "color",
+      "label": "Arbeitshose",
+      "group": "Minimes: Aussehen",
+      "default": "#3b4a66"
+    },
+    {
+      "key": "minimeBoots",
+      "type": "color",
+      "label": "Stiefel und Gürtel",
+      "group": "Minimes: Aussehen",
+      "default": "#5a3a22"
     },
     {
       "key": "minimeRidge",
       "type": "boolean",
-      "label": "Firststreifen am unteren Rand",
+      "label": "Boden zeigen (Firststreifen)",
       "group": "Minimes: Aussehen",
       "default": true
     },
     {
       "key": "minimeRidgeHeight",
       "type": "number",
-      "label": "Firststreifen: Höhe",
+      "label": "Boden: Höhe",
       "group": "Minimes: Aussehen",
       "default": 34,
       "min": 4,

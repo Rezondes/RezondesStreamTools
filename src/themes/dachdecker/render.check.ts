@@ -13,7 +13,8 @@ assert.equal(clips[0].duration, 2);
 assert.equal(clips[0].cut, 1);
 assert.equal(clips[1].duration, 6);
 assert.equal(clips[2].cut, null);
-assert.ok(clips.every(clip => typeof clip.prepare === "function"));
+// Only the stinger is 3D and loads three.js lazily; the banners draw in 2D right away
+assert.deepEqual(clips.map(clip => typeof clip.prepare), ["function", "undefined", "undefined"]);
 assert.match(clips[0].font, /Roboto Mono/);
 
 // Captions: one fillText per non-empty line, centred

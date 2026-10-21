@@ -1,85 +1,121 @@
-// Stinger of the Dachdecker theme (DESIGN-DACHDECKER.md "Stinger"): slate and copper tiles flip into the picture row by
-// row from the bottom up, at the transition point they cover it completely, a shine runs across, then they flip away
-// from the top down. A Vanilla-Three.js scene for glClip; the angle of every tile is a pure function of the time. Check:
-// stinger.check.ts.
-import { AdditiveBlending, Color, EdgesGeometry, Group, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial, OrthographicCamera, PlaneGeometry, Scene } from "three";
+// Stinger of the Dachdecker theme (DESIGN-DACHDECKER.md "Stinger"): a blueprint rolls out from left to right, covers the
+// picture at the transition point, holds briefly and is rolled up again from left to right. The roll is a shaded paper
+// cylinder that turns as it travels and gets thinner while it unrolls (thicker while it rolls up); the sheet behind it
+// is cut at the roll with a clipping plane. A Vanilla-Three.js scene for glClip, every part a pure function of the time.
+// Check: stinger.check.ts.
+import {
+  AmbientLight, BufferGeometry, Color, CylinderGeometry, DirectionalLight, DoubleSide, EdgesGeometry, Float32BufferAttribute, LineBasicMaterial,
+  LineSegments, Mesh, MeshBasicMaterial, MeshLambertMaterial, OrthographicCamera, Plane, PlaneGeometry, Scene, Vector3,
+} from "three";
 import type { GlSetup } from "../../core/three/glClip.ts";
-import { chance } from "../../core/three/chance.ts";
 import { disposeAll } from "./clipParts.ts";
-
-import { STINGER_SIZE } from "./render.ts";
+import { rollAt, type RollTiming, STINGER_SIZE } from "./roll.ts";
 
 const WIDTH = STINGER_SIZE.width;
 const HEIGHT = STINGER_SIZE.height;
 
-// Of its half (in or out) a row waits up to 60 % and then flips in the remaining 40 %
-const WAIT = 0.6;
-const FLIP = 0.4;
-const QUARTER = Math.PI / 2;
-const outCubic = (part: number) => 1 - (1 - part) ** 3;
-const clamp01 = (value: number) => Math.min(1, Math.max(0, value));
+export type StingerOptions = RollTiming & { grid: number; blueprint: string; line: string; accent: string; copper: string; shadow: string };
 
-// Angle of the tiles of a row (0 = bottom row): a quarter turn before they flip in, 0 when flat, then the other way out.
-// Lower rows flip in earlier and out later.
-export function tileAngle(row: number, rows: number, time: number, duration: number, cut: number): number {
-  const share = rows > 1 ? row / (rows - 1) : 0;
-  if (time <= cut) {
-    const start = share * WAIT * cut;
-    return QUARTER * (1 - outCubic(clamp01((time - start) / (FLIP * cut))));
-  }
-  const rest = duration - cut;
-  const start = cut + (1 - share) * WAIT * rest;
-  return -QUARTER * outCubic(clamp01((time - start) / (FLIP * rest)));
-}
+// The paper of the roll overlaps the picture top and bottom
+const OVERHANG = 1.06;
+const SEGMENTS = 28;
+const MAJOR = 5;
+const LINES = { minor: 0.1, major: 0.22, drawing: 0.85, roll: 0.3, shadow: 0.35 };
+// Paper of the roll lighter than the sheet; light mostly from the left, so the roll reads as round
+const PAPER_LIGHT = 0.35;
+const LIGHT = { ambient: 0.35, sun: 2.2 };
 
-export type StingerOptions = {
-  duration: number; cut: number; rows: number; shine: boolean; copperShare: number; seed: number;
-  slate: string; copper: string; brick: string; line: string;
+const lines = (points: number[], color: string, opacity: number, clip: Plane[]) => {
+  const geometry = new BufferGeometry();
+  geometry.setAttribute("position", new Float32BufferAttribute(points, 3));
+  return new LineSegments(geometry, new LineBasicMaterial({ color, transparent: opacity < 1, opacity, clippingPlanes: clip }));
+};
+const segment = (points: number[], from: readonly [number, number], to: readonly [number, number]) => points.push(from[0], from[1], 1, to[0], to[1], 1);
+const rect = (points: number[], x: number, y: number, wide: number, high: number) => {
+  segment(points, [x, y], [x + wide, y]);
+  segment(points, [x + wide, y], [x + wide, y + high]);
+  segment(points, [x + wide, y + high], [x, y + high]);
+  segment(points, [x, y + high], [x, y]);
 };
 
-// The shine is a bright band that crosses the picture around the transition point
-const SHINE = { width: 0.25, opacity: 0.18, before: 0.35, after: 0.25 };
-const EDGE_OPACITY = 0.5;
-const OVERLAP = 1.02;
+// The drawing on the sheet: grid, border with title block, house elevation with roof truss and a dimension line
+function sheetLines(options: StingerOptions, clip: Plane[]) {
+  const minor: number[] = [];
+  const major: number[] = [];
+  for (let index = 0; index * options.grid <= WIDTH; index++) segment(index % MAJOR ? minor : major, [index * options.grid, 0], [index * options.grid, HEIGHT]);
+  for (let index = 0; index * options.grid <= HEIGHT; index++) segment(index % MAJOR ? minor : major, [0, index * options.grid], [WIDTH, index * options.grid]);
+  const plan: number[] = [];
+  const margin = HEIGHT * 0.05;
+  rect(plan, margin, margin, WIDTH - 2 * margin, HEIGHT - 2 * margin);
+  const block = { w: WIDTH * 0.22, h: HEIGHT * 0.12 };
+  rect(plan, WIDTH - margin - block.w, margin, block.w, block.h);
+  segment(plan, [WIDTH - margin - block.w, margin + block.h / 2], [WIDTH - margin, margin + block.h / 2]);
+  segment(plan, [WIDTH - margin - block.w / 2, margin], [WIDTH - margin - block.w / 2, margin + block.h / 2]);
+  // House: walls, roof truss with king post, collar tie and struts, dimension line under it
+  const house = { x: WIDTH / 2, base: HEIGHT * 0.2, span: WIDTH * 0.36, wall: HEIGHT * 0.2, rise: HEIGHT * 0.2 };
+  const [left, right] = [house.x - house.span / 2, house.x + house.span / 2];
+  const eave = house.base + house.wall;
+  const top = eave + house.rise;
+  rect(plan, left, house.base, house.span, house.wall);
+  segment(plan, [house.x, eave], [house.x, top]);
+  segment(plan, [house.x - house.span / 4, eave + house.rise / 2], [house.x + house.span / 4, eave + house.rise / 2]);
+  segment(plan, [house.x - house.span / 4, eave], [house.x, eave + house.rise / 2]);
+  segment(plan, [house.x + house.span / 4, eave], [house.x, eave + house.rise / 2]);
+  const dim = house.base - HEIGHT * 0.05;
+  const tick = HEIGHT * 0.015;
+  segment(plan, [left, dim], [right, dim]);
+  for (const end of [left, right]) {
+    segment(plan, [end, dim - tick], [end, dim + tick]);
+    segment(plan, [end - tick, dim - tick], [end + tick, dim + tick]);
+  }
+  const roof: number[] = [];
+  const over = house.span * 0.06;
+  const drop = over * (house.rise / (house.span / 2));
+  segment(roof, [left - over, eave - drop], [house.x, top]);
+  segment(roof, [house.x, top], [right + over, eave - drop]);
+  segment(roof, [left, eave], [right, eave]);
+  return [
+    lines(minor, options.line, LINES.minor, clip), lines(major, options.line, LINES.major, clip),
+    lines(plan, options.line, LINES.drawing, clip), lines(roof, options.accent, 1, clip),
+  ];
+}
 
 export function stingerSetup(options: StingerOptions): GlSetup {
   const scene = new Scene();
   const camera = new OrthographicCamera(0, WIDTH, HEIGHT, 0, -HEIGHT, HEIGHT);
-  const size = HEIGHT / options.rows;
-  // One more column, so the offset rows reach the right edge too
-  const columns = Math.ceil(WIDTH / size) + 1;
-  const random = chance(options.seed);
-  const metal = new Color(options.copper).lerp(new Color(options.brick), 0.5);
-  const looks = { slate: new MeshBasicMaterial({ color: options.slate }), copper: new MeshBasicMaterial({ color: metal }) };
-  const edge = new LineBasicMaterial({ color: options.line, transparent: true, opacity: EDGE_OPACITY });
-  const plane = new PlaneGeometry(size, size * OVERLAP);
-  plane.translate(0, (size * OVERLAP) / 2, 0);
-  const rows = Array.from({ length: options.rows }, (_, row) => {
-    const group = new Group();
-    for (let column = 0; column < columns; column++) {
-      const tile = new Group();
-      tile.add(new Mesh(plane, random.next() < options.copperShare ? looks.copper : looks.slate), new LineSegments(new EdgesGeometry(plane), edge));
-      tile.position.set(column * size + size / 2 - (row % 2) * (size / 2), row * size, 0);
-      group.add(tile);
-    }
-    scene.add(group);
-    return group;
-  });
-  const band = new Mesh(new PlaneGeometry(WIDTH * SHINE.width, HEIGHT * 2), new MeshBasicMaterial({ color: options.line, transparent: true, opacity: 0, blending: AdditiveBlending, depthWrite: false }));
-  band.rotation.z = -0.4;
-  band.position.y = HEIGHT / 2;
-  band.position.z = 1;
-  scene.add(band);
+  const cut = new Plane(new Vector3(-1, 0, 0), 0);
+  const clip = [cut];
+  const sheet = new Mesh(new PlaneGeometry(WIDTH, HEIGHT), new MeshBasicMaterial({ color: options.blueprint, clippingPlanes: clip }));
+  sheet.position.set(WIDTH / 2, HEIGHT / 2, 0);
+  scene.add(sheet, ...sheetLines(options, clip));
+
+  // The roll: a paper cylinder of unit radius, scaled per frame, with its seams as lines so the turning shows
+  const paper = new Color(options.blueprint).lerp(new Color(options.line), PAPER_LIGHT);
+  const cylinder = new CylinderGeometry(1, 1, HEIGHT * OVERHANG, SEGMENTS, 1, true);
+  const roll = new Mesh(cylinder, new MeshLambertMaterial({ color: paper, side: DoubleSide }));
+  roll.add(new LineSegments(new EdgesGeometry(cylinder, 1), new LineBasicMaterial({ color: options.copper, transparent: true, opacity: LINES.roll })));
+  const shadow = new Mesh(new PlaneGeometry(1, HEIGHT), new MeshBasicMaterial({ color: options.shadow, transparent: true, opacity: LINES.shadow, depthWrite: false }));
+  shadow.position.set(0, HEIGHT / 2, 2);
+  const sun = new DirectionalLight(options.line, LIGHT.sun);
+  sun.position.set(-1, 0.3, 0.6);
+  scene.add(roll, shadow, new AmbientLight(options.line, LIGHT.ambient), sun);
+
   return {
     scene,
     camera,
     update: time => {
-      rows.forEach((group, row) => group.children.forEach(tile => { tile.rotation.x = tileAngle(row, options.rows, time, options.duration, options.cut); }));
-      const from = options.cut * (1 - SHINE.before);
-      const part = (time - from) / (options.cut * SHINE.before + (options.duration - options.cut) * SHINE.after);
-      band.visible = options.shine && part >= 0 && part <= 1;
-      band.position.x = -WIDTH * SHINE.width + part * WIDTH * (1 + 2 * SHINE.width);
-      band.material.opacity = SHINE.opacity;
+      const state = rollAt(time, options);
+      const out = state.phase === "out";
+      cut.normal.set(out ? -1 : 1, 0, 0);
+      cut.constant = out ? state.x : -state.x;
+      roll.scale.set(state.radius, 1, state.radius);
+      roll.position.set(state.x, HEIGHT / 2, state.radius + 3);
+      // Rolling without slipping: the angle follows the way travelled
+      roll.rotation.y = -state.x / Math.max(1, state.radius);
+      roll.visible = state.x > -state.radius && state.x < WIDTH + state.radius;
+      shadow.scale.x = state.radius * 0.6;
+      shadow.position.x = state.x + (out ? -1 : 1) * state.radius * 1.3;
+      shadow.visible = roll.visible;
     },
     dispose: () => disposeAll(scene),
   };

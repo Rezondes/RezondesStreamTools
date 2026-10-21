@@ -12,7 +12,7 @@ for (const type of FIGURE_TYPES) {
     const centre = part.pivot.map((value, axis) => value + part.offset[axis]);
     assert.ok(centre[1] >= 0 && centre[1] <= 1 && Math.abs(centre[0]) <= 0.5, `${type}: part outside the box`);
   }
-  tools.add(JSON.stringify(parts.find(part => part.joint === "tool")!.size));
+  tools.add(JSON.stringify(parts.filter(part => part.joint === "tool")));
 }
 assert.equal(tools.size, FIGURE_TYPES.length, "every type has its own tool");
 
