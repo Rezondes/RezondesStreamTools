@@ -1,6 +1,7 @@
 // Renderable clips of the Bärenbande theme: stinger (group Stinger) and profile and offline banners (group Banner), drawn
 // from the character model with the resolved settings. The banners paint their world as watercolor; Rough.js loads
 // only in prepare (clipWorld.ts), so it stays out of the entry chunk, until then the world is flat. Check: render.check.ts.
+import { centeredTop, PANEL_START_HEIGHT, type PanelDesign, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
 import { mixHex } from "../../core/color.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
@@ -101,4 +102,21 @@ export function bearsClips(values: SettingValues, login: string): RenderClip[] {
     { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsProfileBanner(context, time, { ...banner, world }), painter) },
     { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsOfflineBanner(context, time, { ...banner, world }), painter) },
   ];
+}
+
+// Panel template of the Bärenbande theme (panel designer): a paper card with the shade band and the outline on the
+// sky, the title in the title font
+export function bearsPanel(values: SettingValues, title: string): PanelDesign {
+  const look = values as unknown as BearsValues;
+  const size = 30;
+  const card = { radius: 22 };
+  return {
+    height: PANEL_START_HEIGHT, background: look.accent2,
+    layers: [
+      rectLayer("shade", 10, 12, PANEL_WIDTH - 20, PANEL_START_HEIGHT - 24, look.paperShade, card),
+      rectLayer("paper", 10, 12, PANEL_WIDTH - 20, PANEL_START_HEIGHT - 32, look.paper, card),
+      rectLayer("outline", 10, 12, PANEL_WIDTH - 20, PANEL_START_HEIGHT - 24, "transparent", { ...card, stroke: look.outline, strokeWidth: 3 }),
+      textLayer("title", 24, centeredTop(size) - 3, PANEL_WIDTH - 48, title, look.titleFont, size, look.textDark, { weight: 800 }),
+    ],
+  };
 }

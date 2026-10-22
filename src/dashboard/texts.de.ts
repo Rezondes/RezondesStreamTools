@@ -1,5 +1,6 @@
 // Texts of the dashboard (German). The components take every visible text from here (rule 20);
 // errors translates the server's error codes (src/core/errorCodes.ts). Checked in texts.de.check.ts.
+import { PANEL_TEXTS } from "./texts.panels.de.ts";
 import type { Feature } from "../generated/Feature.ts";
 import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
 import type { ErrorCode } from "../core/errorCodes.ts";
@@ -39,7 +40,7 @@ export const TEXTS = {
     theme: "Theme",
     triggers: "Trigger",
     media: "Medien",
-    render: "Rendern",
+    render: "Rendern", panels: "Panels",
     connections: "Verbindungen",
     admin: "Admin",
   } satisfies Record<Section, string>,
@@ -276,7 +277,7 @@ export const TEXTS = {
     backupRestored: (restored: number, skipped: number) =>
       skipped > 0 ? `Wiederhergestellt: ${restored} Profile, ${skipped} gelöschte übersprungen.` : `Wiederhergestellt: ${restored} Profile.`,
   },
-  render: {
+  panels: PANEL_TEXTS, render: {
     clips: { stinger: "Stinger", profile: "Profilbanner", offline: "Offline-Banner" },
     play: "Play",
     pause: "Pause",

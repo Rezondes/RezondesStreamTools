@@ -13,6 +13,7 @@ import Connections from "./Connections.tsx";
 import Media from "./Media.tsx";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 import Overview from "./Overview.tsx";
+import Panels from "./Panels.tsx";
 import Render from "./Render.tsx";
 import Scenery from "./Scenery.tsx";
 import { applySkin, rememberedSkin, skinOf } from "./skin.ts";
@@ -85,7 +86,7 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
 
   const visible = visibleSections(account);
   const section = sectionFromHash(hash, visible);
-  const split = section === "theme" || section === "render";
+  const split = section === "theme" || section === "render" || section === "panels";
   return (
     <>
       <nav className="dashboard-nav">
@@ -106,6 +107,7 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
         {section === "triggers" && <Triggers />}
         {section === "media" && <Media login={account.login} />}
         {section === "render" && <Render me={account} />}
+        {section === "panels" && <Panels me={account} />}
         {section === "admin" && <Admin />}
       </div>
     </>

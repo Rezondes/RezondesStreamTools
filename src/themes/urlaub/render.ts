@@ -2,6 +2,7 @@
 // with spray) and the profile and offline banners (group Banner) as the realistic beach by day and in the sunset with
 // their texts. The 3D module loads only in prepare (clips3d.ts), so three.js stays out of the entry chunk; until then
 // the banners draw only their texts. Check: render.check.ts.
+import { centeredTop, PANEL_START_HEIGHT, type PanelDesign, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
@@ -67,4 +68,21 @@ export function urlaubClips(values: SettingValues, login: string): RenderClip[] 
       draw: clipDraw(loaded => loaded.offlineDraw(dusk, beach.exposure, texts), context => drawUrlaubOfflineBanner(context, texts)),
     },
   ];
+}
+
+// Panel template of the Urlaub theme (panel designer): the sea as a gradient, a wooden plank with grain and the title in
+// the title font on the wood
+export function urlaubPanel(values: SettingValues, title: string): PanelDesign {
+  const look = values as unknown as UrlaubValues;
+  const size = 30;
+  return {
+    height: PANEL_START_HEIGHT, background: look.seaDeep,
+    layers: [
+      rectLayer("sea", 0, 0, PANEL_WIDTH, PANEL_START_HEIGHT, look.sea, { fill2: look.seaDeep }),
+      rectLayer("plank", 14, 16, PANEL_WIDTH - 28, PANEL_START_HEIGHT - 32, look.wood, { radius: 10, stroke: look.woodDark, strokeWidth: 3 }),
+      rectLayer("grain", 26, 34, PANEL_WIDTH - 52, 2, look.woodDark, { opacity: 0.35 }),
+      rectLayer("grain2", 40, 66, PANEL_WIDTH - 90, 2, look.woodDark, { opacity: 0.35 }),
+      textLayer("title", 20, centeredTop(size) - 2, PANEL_WIDTH - 40, title, look.titleFont, size, look.textOnWood, { weight: 400 }),
+    ],
+  };
 }

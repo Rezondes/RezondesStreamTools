@@ -2,6 +2,7 @@
 // its printed drawing, and the profile and offline banners (group Banner) as still pictures in 2D, with the resolved
 // settings. The 3D module loads only in prepare (clips3d.ts), so three.js stays out of the entry chunk. Check:
 // render.check.ts.
+import { centeredTop, PANEL_START_HEIGHT, type PanelDesign, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
@@ -84,4 +85,24 @@ export function dachdeckerClips(settings: SettingValues, login: string): RenderC
       }),
     },
   ];
+}
+
+// Panel template of the Dachdecker theme (panel designer): a blueprint with a faint grid, a thin plan frame, the title
+// in the mono font and a small sheet label in the corner
+export function dachdeckerPanel(values: SettingValues, title: string): PanelDesign {
+  const look = values as unknown as DachdeckerValues;
+  const size = 24;
+  const grid = { opacity: 0.12 };
+  const columns = [40, 80, 120, 160, 200, 240, 280].map(x => rectLayer(`grid${x}`, x, 0, 1, PANEL_START_HEIGHT, look.line, grid));
+  const rows = [25, 50, 75].map(y => rectLayer(`row${y}`, 0, y, PANEL_WIDTH, 1, look.line, grid));
+  return {
+    height: PANEL_START_HEIGHT, background: look.page,
+    layers: [
+      rectLayer("paper", 0, 0, PANEL_WIDTH, PANEL_START_HEIGHT, look.blueprint, { fill2: look.page }),
+      ...columns, ...rows,
+      rectLayer("frame", 6, 6, PANEL_WIDTH - 12, PANEL_START_HEIGHT - 12, "transparent", { stroke: look.line, strokeWidth: 1.5 }),
+      textLayer("title", 16, centeredTop(size) - 4, PANEL_WIDTH - 32, title.toUpperCase(), look.font, size, look.line),
+      textLayer("sheet", PANEL_WIDTH - 110, PANEL_START_HEIGHT - 22, 96, "BLATT 1", look.font, 10, look.muted, { align: "right", weight: 400 }),
+    ],
+  };
 }

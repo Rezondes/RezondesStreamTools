@@ -4,6 +4,7 @@ import type { ComponentType } from "react";
 import type { SceneName } from "../generated/SceneName.ts";
 import type { SettingValue } from "../generated/SettingValue.ts";
 import type { SoundValue } from "../generated/SoundValue.ts";
+import type { PanelDesign } from "./panels.ts";
 import type { RenderClip } from "./renderClip.ts";
 
 // info: public commands page for viewers (/s/<login>/), not a source for OBS
@@ -73,7 +74,8 @@ export type ThemeSchema = {
 
 // Contract of a theme, data side (without React, also for the server): its schema and the clips for stinger and banners
 // (render section), computed from the values resolved against the schema. Registered in src/themes/registry.ts.
-export type ThemeModule = { schema: ThemeSchema; clips: (values: SettingValues, login: string) => RenderClip[] };
+// panel: the template of a new Twitch panel in the theme's look (panel designer, src/core/panels.ts)
+export type ThemeModule = { schema: ThemeSchema; clips: (values: SettingValues, login: string) => RenderClip[]; panel: (values: SettingValues, title: string) => PanelDesign };
 
 // Contract of a theme, view: its scenes (React.lazy), id equal to schema.id. Registered in src/themes/scenes.tsx.
 // Missing scenes come from the standard theme, except theme-specific features (src/core/themeRuntime.ts).

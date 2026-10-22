@@ -1,5 +1,6 @@
 // Renderable clips of the standard theme: stinger (group Stinger) and profile and offline banners (group Banner),
 // drawn with the resolved settings. Check: render.check.ts.
+import { centeredTop, PANEL_START_HEIGHT, type PanelDesign, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
@@ -31,4 +32,19 @@ export function standardClips(values: SettingValues, login: string): RenderClip[
     { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawStandardProfileBanner(context, time, banner) },
     { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawStandardOfflineBanner(context, time, banner) },
   ];
+}
+
+// Panel template of the standard theme (panel designer): a dark rounded card on the background, a gradient bar at the
+// left and the title in the theme font
+export function standardPanel(values: SettingValues, title: string): PanelDesign {
+  const look = values as unknown as StandardValues;
+  const size = 30;
+  return {
+    height: PANEL_START_HEIGHT, background: look.background,
+    layers: [
+      rectLayer("card", 8, 8, PANEL_WIDTH - 16, PANEL_START_HEIGHT - 16, look.card, { radius: 16, stroke: look.accent, strokeWidth: 2 }),
+      rectLayer("bar", 18, 22, 6, PANEL_START_HEIGHT - 44, look.accent, { fill2: look.accent2, radius: 3 }),
+      textLayer("title", 36, centeredTop(size), PANEL_WIDTH - 60, title, look.font, size, look.textColor, { weight: 800 }),
+    ],
+  };
 }

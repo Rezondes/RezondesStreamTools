@@ -8,10 +8,10 @@ const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo"
 assert.deepEqual(visibleSections(me({})), ["overview", "connections"]);
 // Theme with themes, triggers and media only with triggers and fx together
 assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true })), ["overview", "theme", "media", "triggers", "connections"]);
-// Order with everything: overview, theme, render, media, triggers, connections, admin
-assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true, stinger: true }, true)), ["overview", "theme", "render", "media", "triggers", "connections", "admin"]);
+// Order with everything: overview, theme, render, panels, media, triggers, connections, admin
+assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true, stinger: true, banners: true }, true)), ["overview", "theme", "render", "panels", "media", "triggers", "connections", "admin"]);
 // Render with stinger or banners
-assert.deepEqual(visibleSections(me({ banners: true })), ["overview", "render", "connections"]);
+assert.deepEqual(visibleSections(me({ banners: true })), ["overview", "render", "panels", "connections"]);
 assert.deepEqual(visibleSections(me({ stinger: true, banners: false })), ["overview", "render", "connections"]);
 assert.deepEqual(visibleSections(me({ triggers: true, fx: false })), ["overview", "connections"]);
 // Admin only for admins

@@ -26,6 +26,18 @@ const TRIGGERS: &str = "triggers";
 const HELP: &str = "help";
 const MINIMES: &str = "minimes";
 const STATS: &str = "stats";
+const PANELS: &str = "panels";
+/// At most this many panels; the dashboard draws them, the server only keeps them
+pub const MAX_PANELS: usize = 20;
+
+/// The panel list of the panel designer is kept as the dashboard sends it, as long as it is a list of at most
+/// `MAX_PANELS` objects (the body size is limited by the handler)
+fn check_panels(panels: &Value) -> Result<(), ProfileError> {
+    match panels.as_array() {
+        Some(list) if list.len() <= MAX_PANELS && list.iter().all(Value::is_object) => Ok(()),
+        _ => Err(ProfileError::Invalid(vec!["panels".to_owned()])),
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ProfileError {
@@ -202,6 +214,21 @@ impl<S: RecordStore, K: KeyStore> Profile<S, K> {
     pub async fn save_stats(&self, id: &StreamerId, tally: &StreamTally, now: i64) -> Result<(), VaultError> {
         self.vault.put_json(id, STATS, "", tally, now).await
     }
+
+    /// The panels of the panel designer; an empty list before the first save
+    ///
+    /// # Errors
+    /// `Unreadable` after the streamer was shredded.
+    pub async fn panels(&self, id: &StreamerId) -> Result<Value, VaultError> {
+        Ok(self.vault.get_json(id, PANELS, "").await?.unwrap_or_else(|| Value::Array(Vec::new())))
+    }
+
+    /// # Errors
+    /// `Invalid` when it is no list of at most `MAX_PANELS` objects, otherwise as [`Vault::put`].
+    pub async fn save_panels(&self, id: &StreamerId, panels: &Value, now: i64) -> Result<(), ProfileError> {
+        check_panels(panels)?;
+        Ok(self.vault.put_json(id, PANELS, "", panels, now).await?)
+    }
 }
 
 #[cfg(test)]
@@ -212,6 +239,20 @@ mod tests {
 
     use super::*;
     use crate::testing::{MemoryKeys, MemoryRecords};
+
+    #[tokio::test]
+    async fn panels_are_kept_as_a_list_of_objects() {
+        let profile = profile();
+        profile.vault.keys().create(&neo()).await.expect("key");
+        assert_eq!(profile.panels(&neo()).await.expect("empty"), json!([]));
+        let panels = json!([{ "name": "Über mich", "layers": [] }]);
+        profile.save_panels(&neo(), &panels, 1).await.expect("save");
+        assert_eq!(profile.panels(&neo()).await.expect("read"), panels);
+        for wrong in [json!({}), json!([1]), Value::Array(vec![json!({}); MAX_PANELS + 1])] {
+            assert!(matches!(profile.save_panels(&neo(), &wrong, 2).await, Err(ProfileError::Invalid(_))));
+        }
+        assert_eq!(profile.panels(&neo()).await.expect("unchanged"), panels);
+    }
 
     fn profile() -> Profile<MemoryRecords, MemoryKeys> {
         Profile::new(Vault::new(MemoryRecords::default(), MemoryKeys::default()))

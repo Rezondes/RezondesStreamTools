@@ -175,3 +175,59 @@
   .dashboard tr { border-bottom: var(--border-w) solid var(--line); padding: 12px 0; }
   .dashboard-user { margin-left: 0; }
 }
+
+/* --- Panel designer: save and export on top; the panels, the stage and the properties as columns that scroll on their
+   own (tight inside a column, wide between them). Selection, handle and guides in the signature, the grid in --line,
+   the stage on the checker like the previews --------------------------------------------------------------------- */
+.panel-designer { gap: var(--gap-tight, 8px); }
+.panel-designer-bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--gap-tight, 8px); padding-bottom: var(--gap-tight, 8px); border-bottom: var(--border-w) solid var(--line); }
+.panel-export .setting { display: flex; align-items: center; gap: var(--gap-tight, 8px); padding: 0; }
+.panel-designer-layout { display: grid; gap: var(--gap-wide, 24px); grid-template-columns: minmax(var(--gallery-min, 150px), var(--gallery-max, 190px)) minmax(0, 1fr) minmax(var(--props-min, 260px), var(--props-max, 340px)); align-items: start; }
+.dashboard-content.split .panel-designer-layout { flex: 1 1 auto; min-height: 0; align-items: stretch; }
+.panel-gallery, .panel-editor, .panel-properties { min-height: 0; overflow-y: auto; overflow-x: hidden; }
+.panel-properties .settings-group { min-width: 0; }
+.panel-gallery { display: flex; flex-direction: column; gap: var(--gap-tight, 8px); }
+.panel-thumbs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap-tight, 8px); }
+.panel-thumb { display: grid; gap: 4px; width: 100%; padding: 4px; text-align: left; font: inherit; color: var(--fg-dim); background: none; border: var(--border-w) solid transparent; border-radius: var(--radius-sm); cursor: pointer; }
+.panel-thumb canvas { display: block; width: 100%; height: auto; border-radius: var(--radius-sm); background: var(--checker); }
+.panel-thumb span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.panel-thumb:hover { border-color: var(--line); color: var(--fg); }
+.panel-thumb[aria-current=true] { border-color: var(--accent); color: var(--fg); }
+.panel-thumb:focus-visible { outline: var(--select-w, 2px) solid var(--focus); outline-offset: 2px; }
+.panel-editor { display: flex; flex-direction: column; gap: var(--gap-tight, 8px); }
+.panel-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px var(--gap-wide, 24px); }
+.panel-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.panel-stage-box { overflow: auto; padding: var(--stage-pad, 16px); border-radius: var(--radius-sm); background: var(--checker); }
+.panel-stage { position: relative; touch-action: none; cursor: move; outline: none; }
+.panel-stage:focus-visible { outline: var(--select-w, 2px) solid var(--focus); outline-offset: 4px; }
+.panel-stage canvas { display: block; width: 100%; height: 100%; }
+.panel-grid { position: absolute; inset: 0; pointer-events: none; opacity: 0.6; background-image: linear-gradient(to right, var(--line) 1px, transparent 1px), linear-gradient(to bottom, var(--line) 1px, transparent 1px); }
+.panel-center { position: absolute; inset: 0; pointer-events: none; opacity: 0.7;
+  background: linear-gradient(to right, transparent calc(50% - 0.5px), var(--accent) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(50% - 0.5px), var(--accent) calc(50% - 0.5px) calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+.panel-select { position: absolute; outline: var(--select-w, 2px) dashed var(--accent); outline-offset: 2px; pointer-events: none; }
+.panel-handle { position: absolute; right: calc(-1 * var(--handle, 12px) / 2 - 2px); bottom: calc(-1 * var(--handle, 12px) / 2 - 2px); width: var(--handle, 12px); height: var(--handle, 12px); background: var(--accent); border: 2px solid var(--surface); border-radius: var(--radius-sm); cursor: nwse-resize; pointer-events: auto; }
+/* Turn handle: a dot above the middle of the one selected layer, on a short stem */
+.panel-turn { position: absolute; left: calc(50% - var(--handle, 12px) / 2); top: calc(-1 * var(--turn-reach, 28px)); width: var(--handle, 12px); height: var(--handle, 12px); background: var(--accent); border: 2px solid var(--surface); border-radius: 50%; cursor: grab; pointer-events: auto; }
+.panel-turn::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: calc(var(--turn-reach, 28px) - var(--handle, 12px)); background: var(--accent); }
+/* Smart guide: the line an edge or middle snapped to while dragging */
+.panel-guide { position: absolute; pointer-events: none; background: var(--accent); }
+.panel-guide.vertical { top: 0; bottom: 0; width: 1px; }
+.panel-guide.horizontal { left: 0; right: 0; height: 1px; }
+.panel-empty { grid-column: 2 / -1; }
+.panel-layers { list-style: none; display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; margin: 0; padding: 0; }
+.panel-layers li { display: flex; gap: 4px; align-items: center; }
+.panel-layers li > .btn:first-child { flex: 1; min-width: 0; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.panel-layers li > .btn:not(:first-child) { flex: none; }
+.panel-layers li.off > .btn:first-child { opacity: 0.55; text-decoration: line-through; }
+/* Narrower: the panels as a strip on top, stage and properties below each other; the area scrolls as a whole (the
+   stage is too tall to share the height), the page still does not */
+@media (max-width: 1099px) {
+  .dashboard-content.split:has(> .panel-designer) { display: block; overflow-y: auto; }
+  .dashboard-content.split > .panel-designer { display: block; }
+  .panel-designer-layout, .dashboard-content.split .panel-designer-layout { display: grid; grid-template-columns: minmax(0, 1fr); margin-top: var(--gap-tight, 8px); }
+  .panel-gallery, .panel-editor, .panel-properties { overflow: visible; }
+  .panel-thumbs { grid-auto-flow: column; grid-auto-columns: var(--thumb-strip, 140px); overflow-x: auto; }
+  .panel-empty { grid-column: auto; }
+}
+

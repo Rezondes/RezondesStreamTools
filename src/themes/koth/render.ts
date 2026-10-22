@@ -2,6 +2,7 @@
 // the flag changes from the first faction to the second) and the profile and offline banners as the 3D hill with their
 // texts. The 3D module loads only in prepare (clips3d.ts), so three.js stays out of the entry chunk; until then the
 // stinger draws its smoke cover flat and the banners only their texts. Check: render.check.ts.
+import { centeredTop, PANEL_START_HEIGHT, type PanelDesign, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
 import { minimeTeamColorKey } from "../../core/minimeFields.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
@@ -81,4 +82,21 @@ export function kothClips(values: SettingValues, login: string): RenderClip[] {
       draw: clipDraw(loaded => loaded.offlineDraw(dusk, texts), context => drawKothOfflineBanner(context, texts)),
     },
   ];
+}
+
+// Panel template of the KOTH theme (panel designer): an olive metal plate with warning stripes on top, rivets in the
+// corners and the title stenciled in the title font
+export function kothPanel(values: SettingValues, title: string): PanelDesign {
+  const look = values as unknown as KothValues;
+  const size = 28;
+  const rivet = (id: string, x: number, y: number) => rectLayer(id, x, y, 6, 6, look.sandDark, { radius: 3 });
+  return {
+    height: PANEL_START_HEIGHT, background: look.oliveDark,
+    layers: [
+      rectLayer("plate", 10, 10, PANEL_WIDTH - 20, PANEL_START_HEIGHT - 20, look.olive, { fill2: look.oliveDark, radius: 4, stroke: look.sandDark, strokeWidth: 2 }),
+      rectLayer("stripes", 10, 10, PANEL_WIDTH - 20, 7, look.accent, { radius: 2 }),
+      rivet("rivet1", 18, 24), rivet("rivet2", PANEL_WIDTH - 24, 24), rivet("rivet3", 18, PANEL_START_HEIGHT - 24), rivet("rivet4", PANEL_WIDTH - 24, PANEL_START_HEIGHT - 24),
+      textLayer("title", 30, centeredTop(size) + 3, PANEL_WIDTH - 60, title.toUpperCase(), look.titleFont, size, look.textColor, { weight: 400 }),
+    ],
+  };
 }

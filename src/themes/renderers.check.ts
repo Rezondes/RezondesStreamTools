@@ -3,7 +3,8 @@
 import assert from "node:assert/strict";
 import { resolveSettings } from "../core/settings.ts";
 import { THEMES } from "./registry.ts";
-import { CLIP_NAMES, clipsFor } from "./renderers.ts";
+import { PANEL_HEIGHT, PANEL_WIDTH, layerBox } from "../core/panels.ts";
+import { CLIP_NAMES, clipsFor, panelFor } from "./renderers.ts";
 
 // Mock canvas that accepts everything; counts the draw calls
 function canvas() {
@@ -52,6 +53,19 @@ for (const schema of THEMES) {
   stinger.draw(mock.context, stinger.cut ?? 0);
   assert.ok(mock.count() > 0, `${schema.id}: draws at 720p`);
 }
+
+// Panel template of every theme: the title is in a text layer, the panel has a valid height and its layers stay inside
+for (const schema of THEMES) {
+  const design = panelFor(schema.id, resolveSettings(schema, {}), "Über mich");
+  assert.ok(design.height >= PANEL_HEIGHT.min && design.height <= PANEL_HEIGHT.max, schema.id);
+  assert.ok(design.layers.some(layer => layer.kind === "text" && layer.text.toLowerCase().includes("über mich")), `${schema.id}: title`);
+  assert.equal(new Set(design.layers.map(layer => layer.id)).size, design.layers.length, `${schema.id}: layer ids`);
+  for (const layer of design.layers) {
+    const box = layerBox(layer);
+    assert.ok(box.x >= 0 && box.y >= 0 && box.x + box.w <= PANEL_WIDTH && box.y + box.h <= design.height, `${schema.id}/${layer.id}: outside`);
+  }
+}
+assert.equal(panelFor("does-not-exist", resolveSettings(THEMES[0], {}), "X").background, panelFor(THEMES[0].id, resolveSettings(THEMES[0], {}), "X").background);
 
 // Unknown theme: no clips (nothing is inherited)
 assert.equal(clipsFor("does-not-exist", resolveSettings(THEMES[0], {}), "rezondes").length, 0);

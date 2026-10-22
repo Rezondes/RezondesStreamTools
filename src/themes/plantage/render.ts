@@ -1,5 +1,6 @@
 // Renderable clips of the Plantage theme: stinger (group Stinger) and profile and offline banners (group Banner),
 // drawn with the resolved settings. Check: render.check.ts.
+import { centeredTop, PANEL_START_HEIGHT, type PanelDesign, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
@@ -50,4 +51,20 @@ export function plantageClips(values: SettingValues, login: string): RenderClip[
     { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageProfileBanner(context, time, banner) },
     { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageOfflineBanner(context, time, banner) },
   ];
+}
+
+// Panel template of the Plantage theme (panel designer): leaves as a gradient, a slightly tilted harvest slip with a
+// mango in the corner and the title in the title font
+export function plantagePanel(values: SettingValues, title: string): PanelDesign {
+  const look = values as unknown as PlantageValues;
+  const size = 30;
+  return {
+    height: PANEL_START_HEIGHT, background: look.leafDark,
+    layers: [
+      rectLayer("leaves", 0, 0, PANEL_WIDTH, PANEL_START_HEIGHT, look.leaf, { fill2: look.leafDark }),
+      rectLayer("slip", 22, 16, PANEL_WIDTH - 44, PANEL_START_HEIGHT - 32, look.paper, { radius: 8, stroke: look.woodDark, strokeWidth: 2, rotate: -1.5 }),
+      rectLayer("mango", PANEL_WIDTH - 46, 8, 28, 28, look.mango, { fill2: look.mangoBlush, radius: 14 }),
+      textLayer("title", 30, centeredTop(size) - 2, PANEL_WIDTH - 60, title, look.titleFont, size, look.textOnWood, { rotate: -1.5 }),
+    ],
+  };
 }

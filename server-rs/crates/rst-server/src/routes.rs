@@ -106,6 +106,9 @@ routes! {
     SaveBackupSettings => "POST" "/api/admin/backup-settings", Guard::Admin;
     // New: the schemas of all themes for the forms
     Themes => "GET" "/api/themes", SESSION;
+    // New: the panel designer, part of the banners
+    Panels => "GET" "/api/panels", Guard::Session(&[Feature::Banners]);
+    SavePanels => "POST" "/api/panels", Guard::Session(&[Feature::Banners]);
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

@@ -13,6 +13,7 @@ pub mod events;
 pub mod media;
 pub mod music;
 pub mod overlay;
+pub mod panels;
 pub mod render;
 pub mod settings;
 pub mod triggers;
@@ -64,6 +65,8 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::Settings => settings::settings(call).await,
         Route::SaveSettings => settings::save(call).await,
         Route::Themes => settings::schemas(&call),
+        Route::Panels => panels::list(call).await,
+        Route::SavePanels => panels::save(call).await,
         Route::AdminAccess => admin::access(call).await,
         Route::SaveAdminAccess => admin::save_access(call).await,
         Route::AdminStreamers => admin::streamers(call).await,
