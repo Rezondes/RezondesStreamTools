@@ -88,8 +88,13 @@ function trace(context: CanvasRenderingContext2D, points: readonly number[], clo
   if (closed) context.closePath();
 }
 
-// A painted brush stroke (brushAt of brush.ts): the paint body with glow, the bristles over it, light ones in the light color
-export function paintBrushFrame(context: CanvasRenderingContext2D, frame: BrushFrame, ink: string, light: string, glow: number) {
+// fixed: the shimmer of the light bristles: how deep it dims, how far apart neighbouring bristles are in its wave
+const SHIMMER = { depth: 0.45, spread: 0.13 };
+
+// A painted brush stroke (brushAt of brush.ts): the paint body with glow, the bristles over it, light ones in the light
+// color; shimmer (banners) runs a light wave along the light bristles at a share of the loop, the same at 0 and 1, its
+// depth times strength
+export function paintBrushFrame(context: CanvasRenderingContext2D, frame: BrushFrame, ink: string, light: string, glow: number, shimmer?: { at: number; strength: number }) {
   context.save();
   context.lineCap = "round";
   context.lineJoin = "round";
@@ -102,13 +107,15 @@ export function paintBrushFrame(context: CanvasRenderingContext2D, frame: BrushF
     context.fill();
     context.shadowBlur = 0;
   }
-  for (const bristle of frame.bristles) {
-    context.globalAlpha = bristle.alpha;
+  frame.bristles.forEach((bristle, index) => {
+    const depth = shimmer && bristle.light ? Math.min(1, SHIMMER.depth * shimmer.strength) : 0;
+    const wave = 1 - depth * (0.5 + 0.5 * Math.sin(((shimmer?.at ?? 0) + index * SHIMMER.spread) * Math.PI * 2));
+    context.globalAlpha = bristle.alpha * wave;
     context.strokeStyle = bristle.light ? light : ink;
     context.lineWidth = bristle.width;
     trace(context, bristle.points, false);
     context.stroke();
-  }
+  });
   context.restore();
 }
 

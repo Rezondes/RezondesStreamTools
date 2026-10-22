@@ -256,8 +256,7 @@
   overflow: hidden;
 }
 .theme-chaos .ch-chat-top { justify-content: flex-start; }
-.theme-chaos .ch-row { animation: chaos-slap var(--fadeDuration) cubic-bezier(0.2, 1.6, 0.4, 1) both; }
-.theme-chaos .ch-row.fades { animation: chaos-slap var(--fadeDuration) cubic-bezier(0.2, 1.6, 0.4, 1) both, chaos-fade var(--fadeDuration) ease-in var(--chatFade) reverse forwards; }
+.theme-chaos .ch-row.fades { animation: chaos-fade var(--fadeDuration) ease-in var(--chatFade) reverse forwards; }
 .theme-chaos .ch-chat-zettel .ch-row:nth-child(even) { --note-tilt: 0.9deg; }
 .theme-chaos .ch-chat-blasen .ch-row {
   align-self: flex-start;
@@ -389,7 +388,10 @@
    from the left and loses its mask afterwards (the mask would cut its glow) -------------------------------------- */
 .theme-chaos .ch-world-haze { position: absolute; left: 50%; top: 56%; width: 64%; height: 46%; translate: -50% -50%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--ground) 85%, transparent), transparent); opacity: var(--haze); pointer-events: none; }
 .theme-chaos .ch-boil .ch-rough-fill { stroke-width: calc(var(--w) * var(--scribbleWidth) * 0.6); }
-.theme-chaos .ch-painted .ch-boil .ch-mark path { stroke-dasharray: 1; animation: chaos-draw var(--drawMs) ease-out both; animation-delay: calc(var(--draw-from, 1.3s) + var(--i) * var(--scribbleStagger) * 0.08); }
+/* The painted screen draws its scribbles with GSAP drawSVG and drives the title glitch from idle.ts */
+.theme-chaos .ch-painted .ch-title::before, .theme-chaos .ch-painted .ch-title::after { animation: none; clip-path: var(--clip); translate: calc(var(--shift) * var(--glitch) * var(--glitch-reach, 14px) * var(--x)) 0; opacity: calc(var(--on) * var(--glitch)); }
+.theme-chaos .ch-painted .ch-title::before { --on: var(--ga-on, 0); --x: var(--ga-x, 0); --clip: var(--ga-clip, none); }
+.theme-chaos .ch-painted .ch-title::after { --on: var(--gb-on, 0); --x: var(--gb-x, 0); --clip: var(--gb-clip, none); }
 .theme-chaos .ch-painted .ch-title { animation: chaos-spray-title var(--sprayTitleMs) ease-in-out var(--title-from, 2s) backwards; }
 @keyframes chaos-spray-title {
   from { -webkit-mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0; }

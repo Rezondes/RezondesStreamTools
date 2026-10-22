@@ -57,3 +57,27 @@ export function dustAt(seed: number, index: number, seconds: number): { x: numbe
     hot: random(5) > 0.5,
   };
 }
+
+// fixed: where the neon dips within its cycle (share of the cycle, how long, how deep times the flicker strength)
+const FLICKER = [{ at: 0.41, length: 0.02, depth: 0.7 }, { at: 0.71, length: 0.01, depth: 0.5 }] as const;
+
+// Opacity of the neon scribbles at seconds: 1, but twice per cycle it dips for a moment
+export function flickerAt(seconds: number, cycle: number, strength: number): number {
+  const phase = (((seconds % cycle) + cycle) % cycle) / cycle;
+  const dip = FLICKER.find(step => phase >= step.at && phase < step.at + step.length);
+  return dip ? 1 - strength * dip.depth : 1;
+}
+
+// fixed: the glitch at the end of each glitchEvery: two slices (share of the cycle, how long, shift factor, clip)
+const GLITCH = [
+  { at: 0.96, length: 0.01, shift: 1, clip: "inset(10% 0% 55% 0%)" },
+  { at: 0.97, length: 0.01, shift: -0.6, clip: "inset(48% 0% 18% 0%)" },
+] as const;
+export type GlitchSlice = { shift: number; clip: string };
+
+// The slice of the title glitch shown at seconds, null between the glitches
+export function glitchAt(seconds: number, every: number): GlitchSlice | null {
+  const phase = (((seconds % every) + every) % every) / every;
+  const slice = GLITCH.find(step => phase >= step.at && phase < step.at + step.length);
+  return slice ? { shift: slice.shift, clip: slice.clip } : null;
+}

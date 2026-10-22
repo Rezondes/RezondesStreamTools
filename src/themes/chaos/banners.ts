@@ -1,9 +1,10 @@
 // Twitch banners of the Chaos theme: profile banner (1200x480) and offline banner (1920x1080) on the scribble wall. The
 // profile banner shows the two brush X and the channel name as sprayed graffiti with a line below; the offline banner a
 // magenta X, "offline" as graffiti, a text and a scribble monster asleep in the corner with rising "z". The glow pulses
-// once per loop, so the GIF loops seamlessly. The brush strokes are painted with bristles and run-down drips (brush.ts),
-// a share of the scribbles are Rough shapes (takesOf, loaded lazily by render.ts) in their first take. Pure functions of
-// time (layers built once per options). Check: banners.check.ts.
+// once per loop, so the GIF loops seamlessly; the light bristles of the brush strokes shimmer once per loop. The brush
+// strokes are painted with bristles and run-down drips (brush.ts), a share of the scribbles are Rough shapes (takesOf,
+// loaded lazily by render.ts) in their first take. Pure functions of time (layers built once per options).
+// Check: banners.check.ts.
 import { brushAt, brushSchedule } from "./brush.ts";
 import { chance } from "./chance.ts";
 import { browserPath, paintBrushDrips, paintBrushFrame, paintScribbles, paintSpray, paintWall, type ChaosColors, type MakePath } from "./paint.ts";
@@ -20,6 +21,7 @@ export type ChaosBannerOptions = {
   colors: ChaosColors;
   glow: number;
   drips: boolean;
+  shimmer: number; // strength of the bristle shimmer, factor (0 = still)
   scribbleCount: number;
   scribbleWidth: number;
   rough: Omit<RoughMix, "width">; // share 0 to 1
@@ -43,13 +45,13 @@ function bannerWall(options: ChaosBannerOptions, seed: number, width: number, ge
   const stains = blotches(seed + 2, 6);
   const dots = dust(seed + 3, Math.round(1800 * scale));
   const ink = { cyan: options.colors.accent2, magenta: options.colors.accent, main: options.colors.accent };
-  return (context: CanvasRenderingContext2D, height: number, glow: number) => {
+  return (context: CanvasRenderingContext2D, height: number, glow: number, shimmer: number) => {
     paintWall(context, width, height, options.colors, stains, dots, scale);
     context.save();
     context.scale(scale, scale);
     paintScribbles(context, marks, options.colors, options.scribbleWidth, glow, 1, makePath, takeOf);
     for (const stroke of strokes) {
-      paintBrushFrame(context, stroke.frame, ink[stroke.color], options.colors.textColor, glow);
+      paintBrushFrame(context, stroke.frame, ink[stroke.color], options.colors.textColor, glow, { at: shimmer, strength: options.shimmer });
       if (options.drips) paintBrushDrips(context, stroke.brush, ink[stroke.color], Infinity, makePath);
     }
     context.restore();
@@ -73,7 +75,7 @@ export function makeChaosProfileBanner(options: ChaosBannerOptions, makePath: Ma
   const wall = bannerWall(options, 2203, width, "zweix", makePath, takesOf);
   return function draw(context: CanvasRenderingContext2D, time: number) {
     const glow = pulse(options, time);
-    wall(context, height, glow);
+    wall(context, height, glow, time / options.loop);
     paintSpray(context, { text: options.title, x: width * 0.58, y: 250, size: 120, font: options.titleFont, color: options.colors.accentText, glowColor: options.colors.accent, glow, seed: 2210, drips: options.drips }, makePath);
     write(context, options.profileText, width * 0.58, 340, 34, options.colors.textColor, options.font);
   };
@@ -87,7 +89,7 @@ export function makeChaosOfflineBanner(options: ChaosBannerOptions, makePath: Ma
   const sleep = scribbleShape("scrawl", chance(3311));
   return function draw(context: CanvasRenderingContext2D, time: number) {
     const glow = pulse(options, time);
-    wall(context, height, glow);
+    wall(context, height, glow, time / options.loop);
     write(context, options.title, width / 2, 330, 46, options.colors.mutedColor, options.font);
     paintSpray(context, { text: options.offlineTitle, x: width / 2, y: 540, size: 200, font: options.titleFont, color: options.colors.accentText, glowColor: options.colors.accent, glow, seed: 3312, drips: options.drips }, makePath);
     write(context, options.offlineText, width / 2, 700, 46, options.colors.textColor, options.font);

@@ -57,6 +57,19 @@ const unpainted = recorder();
 paintBrushFrame(unpainted.context, brushAt(brush, 0), COLORS.accent2, COLORS.textColor, 0.6);
 assert.equal(unpainted.calls.filter(call => call.name === "fill" || call.name === "stroke").length, 0);
 
+// Shimmer: the light bristles dim along a wave that is the same at 0 and 1 of the loop, strength 0 keeps them still
+const alphas = (shimmer?: { at: number; strength: number }) => {
+  const seen: number[] = [];
+  const target = { globalAlpha: 1, stroke: () => { seen.push(target.globalAlpha); } };
+  const context = new Proxy(target, { get: (object, key: string) => (key in object ? object[key as keyof typeof object] : () => {}), set: (object, key: string, value) => { (object as Record<string, unknown>)[key] = value; return true; } });
+  paintBrushFrame(context as unknown as CanvasRenderingContext2D, frame, COLORS.accent2, COLORS.textColor, 0, shimmer);
+  return seen;
+};
+assert.ok(frame.bristles.some(bristle => bristle.light));
+assert.deepEqual(alphas({ at: 0.3, strength: 0 }), alphas());
+assert.notDeepEqual(alphas({ at: 0.3, strength: 1 }), alphas());
+alphas({ at: 0, strength: 1 }).forEach((alpha, index) => assert.ok(Math.abs(alpha - alphas({ at: 1, strength: 1 })[index]) < 1e-9));
+
 // Drips: none right as the brush passes, all of them once they ran
 const dripping = (since: number) => {
   const calls = recorder();

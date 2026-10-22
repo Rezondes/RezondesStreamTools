@@ -6,7 +6,7 @@ import { COLORS, fakePath, recorder } from "./paint.check.ts";
 import { scribbleTakes } from "./roughScribbles.ts";
 
 const options: ChaosBannerOptions = {
-  loop: 4, font: "Space Grotesk", titleFont: "Permanent Marker", colors: COLORS, glow: 0.6, drips: true, scribbleCount: 120, scribbleWidth: 1, rough: { share: 0.35, fill: true },
+  loop: 4, font: "Space Grotesk", titleFont: "Permanent Marker", colors: COLORS, glow: 0.6, drips: true, shimmer: 1, scribbleCount: 120, scribbleWidth: 1, rough: { share: 0.35, fill: true },
   title: "CHAOS", profileText: "Kritzeleien", offlineTitle: "Offline", offlineText: "Bis bald",
 };
 

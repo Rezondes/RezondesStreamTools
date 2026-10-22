@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { seedOf } from "../../core/hash.ts";
 import { brushSchedule } from "./brush.ts";
-import { boilTake, dripAt, driftAt, dustAt, TAKES } from "./idle.ts";
+import { boilTake, dripAt, driftAt, dustAt, TAKES, flickerAt, glitchAt } from "./idle.ts";
 
 // Kochen: three takes at fps, neighbours switch at other moments, off means take 0
 const takes = new Set(Array.from({ length: 40 }, (_, step) => boilTake(0, step / 16, 8, true)));
@@ -45,5 +45,15 @@ assert.notDeepEqual(starting, brb);
 assert.notDeepEqual(brb, ending);
 assert.deepEqual(brushSchedule("zweix", seedOf("brb")), brb);
 assert.notDeepEqual(dustAt(seedOf("brb"), 1, 3), dustAt(seedOf("ending"), 1, 3));
+
+// Flackern und Glitch: the neon dips twice per cycle and is full otherwise; the glitch shows two slices at the end of
+// its cycle and nothing between
+assert.equal(flickerAt(1, 7, 0.4), 1);
+assert.ok(Math.abs(flickerAt(7 * 0.415, 7, 0.4) - (1 - 0.4 * 0.7)) < 1e-9);
+assert.ok(flickerAt(7 * 0.715, 7, 0.4) < 1);
+assert.equal(glitchAt(3, 9), null);
+assert.equal(glitchAt(9 * 0.965, 9)?.shift, 1);
+assert.equal(glitchAt(9 * 0.975, 9)?.shift, -0.6);
+assert.equal(glitchAt(9 * 0.99, 9), null);
 
 console.log("chaos idle ok");

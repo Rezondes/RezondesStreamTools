@@ -2,7 +2,8 @@
 // sprayed edge, overline on tape, title in marker and artist, zigzag progress and a shaky equalizer; long lines scroll.
 // On pause or stop it fades out (can be switched off). Visibility, progress, cover and scrolling text come from the
 // music context of the core (src/core/music). Parameters: ?demo
-import type { CSSProperties } from "react";
+import { type CSSProperties, useRef } from "react";
+import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import Marquee from "../../../core/music/Marquee.tsx";
 import { useCover } from "../../../core/music/useCover.ts";
 import { useNowPlaying } from "../../../core/music/useNowPlaying.ts";
@@ -25,15 +26,23 @@ export default function Music() {
   );
 }
 
+// fixed: how long the zigzag draws itself on a new track (s)
+const ZIGZAG_DRAW = 0.9;
+
 function Playing({ track, at }: { track: Track; at: number }) {
   const values = useChaos();
   const { part, elapsed, total } = useTrackProgress(track, at);
   const cover = useCover(track.cover);
+  const scope = useRef<HTMLDivElement>(null);
+  useTimeline(timeline => {
+    const zigzag = scope.current?.querySelector(".ch-progress-track");
+    if (zigzag) timeline.from(zigzag, { drawSVG: "0%", duration: ZIGZAG_DRAW, ease: "power2.out" });
+  }, [track.id], scope);
   const line = (text: string, className: string) => <Marquee text={text} speed={values.musicMarqueeSpeed} enabled={values.musicMarquee} className={className} />;
   return (
     <>
       {values.musicCover && cover.src && <img className="ch-cover" src={cover.src} alt="" onError={cover.onError} />}
-      <div className="ch-track">
+      <div ref={scope} className="ch-track">
         <span className="ch-chip">{values.musicLabel}</span>
         {line(track.title, "ch-track-title")}
         {line(track.artist, "ch-muted")}

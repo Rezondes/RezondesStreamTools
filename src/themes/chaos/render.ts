@@ -47,7 +47,7 @@ export function chaosClips(values: SettingValues, login: string): RenderClip[] {
   };
   const banner: ChaosBannerOptions = {
     ...shared, loop: BANNER_LOOP, font: chaos.font, title: fillTemplate(chaos.bannerTitle, names), profileText: chaos.bannerProfileText,
-    offlineTitle: chaos.bannerOfflineTitle, offlineText: chaos.bannerOfflineText,
+    offlineTitle: chaos.bannerOfflineTitle, offlineText: chaos.bannerOfflineText, shimmer: chaos.idleOn ? chaos.bristleShimmer : 0,
   };
   const font = `24px "${chaos.titleFont}"`;
   const options = readStingerOptions(values);

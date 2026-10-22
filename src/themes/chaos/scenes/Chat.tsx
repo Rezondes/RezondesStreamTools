@@ -1,6 +1,9 @@
 // Chat of the Chaos theme: messages as crooked notes with tape, as marker bubbles or plain glowing lines; the name in
 // marker, badges on small tape pieces, new ones slap in at the bottom (or top), optional fading. Messages (useChat),
 // badge texts (badgeLabel) and content with emotes (MessageParts) come from the core, here the look.
+import { useRef } from "react";
+import { hash, seedOf } from "../../../core/hash.ts";
+import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { badgeLabel } from "../../../core/chat/chat.ts";
 import MessageParts from "../../../core/chat/MessageParts.tsx";
 import { useChat } from "../../../core/hooks/useChat.ts";
@@ -18,10 +21,21 @@ export default function Chat() {
   );
 }
 
+// fixed: a new row slaps on: how big it starts, how far it may be turned (deg), how long (s), how it lands
+const SLAP = { scale: 1.5, turn: 7, length: 0.35, ease: "back.out(3)" };
+
 function Row({ message, ink }: { message: ChatMessage; ink: "magenta" | "cyan" }) {
   const values = useChaos();
+  // A hidden mark inside the row finds the row, also when it is a Note
+  const mark = useRef<HTMLElement>(null);
+  useTimeline(timeline => {
+    const row = mark.current?.closest(".ch-row");
+    // fixed: the hash of the id (0 to 1) turned into -1 to 1
+    if (row) timeline.from(row, { opacity: 0, scale: SLAP.scale, rotate: (hash(seedOf(String(message.id))) - 0.5) * 2 * SLAP.turn, duration: SLAP.length, ease: SLAP.ease });
+  }, []);
   const content = (
     <>
+      <i ref={mark} hidden />
       {values.chatBadges && message.badges.map(badge => <span key={badge} className="ch-badge">{badgeLabel(badge, values)}</span>)}
       <b className="ch-user">{message.user}</b>
       <span className="ch-message"><MessageParts parts={message.parts} emoteClassName="ch-emote" /></span>
