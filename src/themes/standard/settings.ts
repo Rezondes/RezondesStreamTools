@@ -11,6 +11,7 @@ import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 const STANDARD_FONTS = ["Inter", "Manrope", "DM Sans", "Space Grotesk"] as const;
 const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"] as const;
+const ALERT_EXITS = ["Unschärfe", "Gleiten", "Blenden"] as const;
 
 const GENERAL = "Allgemein";
 const SCREENS = "Starting, BRB, Ending";
@@ -104,6 +105,13 @@ const FIELDS = [
   number("alertDuration", "Dauer", ALERTS, 6000, 2000, 60000, "ms"),
   number("alertTop", "Abstand oben", ALERTS, 48, 0, 1000, "px"),
   number("alertWidth", "Breite", ALERTS, 640, 200, 1900, "px"),
+  flag("alertTraceOn", "Rand zeichnet sich ein", ALERTS, true),
+  number("alertTraceMs", "Rand: Dauer", ALERTS, 700, 0, 3000, "ms"),
+  number("alertGlow", "Schein um die Karte", ALERTS, 24, 0, 80, "px"),
+  flag("alertSparksOn", "Funken", ALERTS, true),
+  // fixed: at most 300 sparks, more costs too much in OBS
+  number("alertSparks", "Anzahl Funken", ALERTS, 36, 0, 300),
+  choice("alertExit", "Abgang", ALERTS, "Unschärfe", ALERT_EXITS),
   flag("alertSound", "Töne", ALERTS, true),
   ...alertSoundFields(ALERTS),
 
@@ -117,6 +125,8 @@ const FIELDS = [
   flag("camLive", "Live-Anzeige", CAM, true),
   text("camLiveText", "Live-Text", CAM, "LIVE"),
   number("camBorder", "Rahmenstärke", CAM, 4, 0, 24, "px"),
+  flag("camSpinOn", "Verlauf wandert ringsum", CAM, true),
+  number("camSpinSeconds", "Verlauf: Dauer einer Runde", CAM, 8, 2, 120, "s"),
 
   text("musicLabel", "Überzeile", MUSIC, "Läuft gerade"),
   text("musicIdle", "Text ohne Wiedergabe", MUSIC, "Keine Musik"),

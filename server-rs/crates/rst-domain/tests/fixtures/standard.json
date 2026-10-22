@@ -683,6 +683,61 @@
       "unit": "px"
     },
     {
+      "key": "alertTraceOn",
+      "type": "boolean",
+      "label": "Rand zeichnet sich ein",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "alertTraceMs",
+      "type": "number",
+      "label": "Rand: Dauer",
+      "group": "Alerts",
+      "default": 700,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "alertGlow",
+      "type": "number",
+      "label": "Schein um die Karte",
+      "group": "Alerts",
+      "default": 24,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "alertSparksOn",
+      "type": "boolean",
+      "label": "Funken",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "alertSparks",
+      "type": "number",
+      "label": "Anzahl Funken",
+      "group": "Alerts",
+      "default": 36,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "key": "alertExit",
+      "type": "select",
+      "label": "Abgang",
+      "group": "Alerts",
+      "default": "Unschärfe",
+      "options": [
+        "Unschärfe",
+        "Gleiten",
+        "Blenden"
+      ]
+    },
+    {
       "key": "alertSound",
       "type": "boolean",
       "label": "Töne",
@@ -860,6 +915,23 @@
       "min": 0,
       "max": 24,
       "unit": "px"
+    },
+    {
+      "key": "camSpinOn",
+      "type": "boolean",
+      "label": "Verlauf wandert ringsum",
+      "group": "Kamera-Rahmen",
+      "default": true
+    },
+    {
+      "key": "camSpinSeconds",
+      "type": "number",
+      "label": "Verlauf: Dauer einer Runde",
+      "group": "Kamera-Rahmen",
+      "default": 8,
+      "min": 2,
+      "max": 120,
+      "unit": "s"
     },
     {
       "key": "musicLabel",

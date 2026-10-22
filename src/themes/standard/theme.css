@@ -27,7 +27,6 @@
   border-radius: var(--radius);
   background: var(--surface);
   box-shadow: 0 var(--shadow-y, 12px) var(--shadow-blur, 32px) color-mix(in srgb, var(--card) 50%, transparent);
-  animation: standard-in var(--fadeDuration) cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 .theme-standard .standard-card.leaving { animation: standard-out var(--fadeDuration) ease-in forwards; }
 
@@ -107,26 +106,61 @@
 .theme-standard .standard-st-stat span { font-size: var(--stat-label-size, 20px); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mutedColor); }
 
 /* --- Alerts ------------------------------------------------------------------ */
-.theme-standard .standard-alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alertTop); }
+/* Card like the prototype refs/alert.html: GSAP brings it in, the SVG edge draws itself (scenes/Alerts.tsx), the glow
+   pulses, the sparks fly in a PixiStage around it; the exit is a CSS animation per alertExit */
+.theme-standard .standard-alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alertTop); perspective: var(--alert-perspective, 900px); }
+.theme-standard .standard-alert-scope { position: relative; }
 .theme-standard .standard-alert {
+  position: relative;
+  box-sizing: border-box;
   width: var(--alertWidth);
-  display: grid;
-  gap: var(--alert-gap, 8px);
-  justify-items: start;
-  padding: var(--alert-padding, 20px 24px 24px);
+  padding: var(--alert-padding, 26px 32px 40px);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 var(--alert-shadow-y, 18px) var(--alert-shadow-blur, 50px) color-mix(in srgb, var(--background) 60%, transparent);
+  transform-origin: 50% 0;
+}
+.theme-standard .standard-alert-glow {
+  position: absolute;
+  inset: calc(-1 * var(--alert-glow-gap, 2px));
+  border-radius: calc(var(--radius) + var(--alert-glow-gap, 2px));
+  box-shadow: 0 0 var(--alertGlow) color-mix(in srgb, var(--accent) 75%, transparent), 0 0 calc(var(--alertGlow) * 2) color-mix(in srgb, var(--accent2) 35%, transparent);
+  opacity: 0;
+  pointer-events: none;
+}
+.theme-standard .standard-alert-edge { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.theme-standard .standard-alert-sparks { position: absolute; pointer-events: none; }
+.theme-standard .standard-alert-label {
+  display: inline-block;
+  padding: var(--alert-label-padding, 6px 14px);
+  border-radius: var(--pill-radius, 999px);
+  font-size: var(--alert-label-size, 18px);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 25%, transparent), color-mix(in srgb, var(--accent2) 25%, transparent));
+  color: color-mix(in srgb, var(--textColor) 85%, var(--accent));
+}
+.theme-standard .standard-alert-name { margin: var(--alert-name-margin, 16px 0 4px); font-size: var(--alert-name-size, 56px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+/* Each letter (SplitText) shows its slice of the gradient */
+.theme-standard .standard-alert-name > div { background: linear-gradient(90deg, var(--accent), var(--accent2)); background-size: 600% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+.theme-standard .standard-alert-line { margin-top: var(--alert-line-gap, 8px); font-size: var(--alert-line-size, 26px); font-weight: 500; }
+.theme-standard .standard-alert-quote { margin-top: var(--alert-quote-gap, 10px); font-size: var(--alert-quote-size, 21px); color: var(--mutedColor); }
+.theme-standard .standard-alert-bar {
+  position: absolute;
+  left: var(--alert-bar-side, 32px);
+  right: var(--alert-bar-side, 32px);
+  bottom: var(--alert-bar-bottom, 14px);
+  height: var(--alert-bar-height, 5px);
+  border-radius: var(--pill-radius, 999px);
+  background: color-mix(in srgb, var(--textColor) 8%, transparent);
   overflow: hidden;
 }
-/* Gradient edge at the top */
-.theme-standard .standard-alert::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: var(--edge, 4px); background: var(--gradient); }
-.theme-standard .standard-alert .standard-line { font-size: 1.3em; }
-.theme-standard .standard-timer {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: var(--edge, 4px);
-  background: var(--gradient);
-  animation: standard-timer var(--alertDuration) linear forwards;
-}
+.theme-standard .standard-timer { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent2)); animation: standard-timer var(--alertDuration) linear forwards; }
+.theme-standard .standard-alert-shine { position: absolute; top: 0; bottom: 0; left: 0; width: var(--alert-shine-width, 90px); background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--textColor) 80%, transparent), transparent); mix-blend-mode: soft-light; }
+.theme-standard .standard-alert.leaving.exit-blur { animation: standard-exit-blur var(--fadeDuration) ease-in forwards; }
+.theme-standard .standard-alert.leaving.exit-glide { animation: standard-exit-glide var(--fadeDuration) ease-in forwards; }
+.theme-standard .standard-alert.leaving.exit-fade { animation: standard-fade var(--fadeDuration) ease-in reverse forwards; }
 
 /* --- Chat ---------------------------------------------------------------------- */
 .theme-standard .standard-chat {
@@ -140,14 +174,14 @@
   overflow: hidden;
 }
 .theme-standard .standard-row { flex: none; padding: var(--row-padding, 10px 14px); overflow-wrap: anywhere; }
-/* Appear, fade out after chatFade */
-.theme-standard .standard-row.fades { animation: standard-in var(--fadeDuration) ease-out both, standard-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
+/* Fade out after chatFade with a light blur; GSAP brings the card in */
+.theme-standard .standard-row.fades { animation: standard-row-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
 .theme-standard .standard-user { margin-right: var(--name-gap, 8px); background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .theme-standard .standard-emote { height: var(--emoteSize); vertical-align: middle; }
 
 /* --- Camera frame ------------------------------------------------------------- */
-.theme-standard .standard-cam { position: fixed; inset: 0; animation: standard-fade var(--fadeDuration) ease-out both; }
-/* Frame in a gradient: area with a gradient, cut out inside via a mask */
+.theme-standard .standard-cam { position: fixed; inset: 0; }
+/* Frame in a gradient: area with a gradient, cut out inside via a mask; with .spins the gradient wanders around */
 .theme-standard .standard-cam::before {
   content: "";
   position: absolute;
@@ -159,6 +193,7 @@
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
+.theme-standard .standard-cam.spins::before { background: conic-gradient(from var(--cam-angle), var(--accent), var(--accent2), var(--accent)); animation: standard-spin var(--camSpinSeconds) linear infinite; }
 .theme-standard .standard-pill {
   position: absolute;
   display: inline-flex;
@@ -191,8 +226,7 @@
   display: grid;
   gap: var(--fx-gap, 12px);
   justify-items: center;
-  transform: translate(-50%, -50%);
-  animation: standard-pop var(--fadeDuration) cubic-bezier(0.2, 0.8, 0.2, 1) both, standard-out var(--fadeDuration) ease-in calc(var(--life) - var(--fadeDuration)) forwards;
+  animation: standard-out var(--fadeDuration) ease-in calc(var(--life) - var(--fadeDuration)) forwards;
 }
 .theme-standard .standard-fx-item img, .theme-standard .standard-fx-item video, .theme-standard .standard-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); }
 .theme-standard .standard-fx-text { padding: var(--fx-text-padding, 10px 20px); font-size: var(--fxTextSize); font-weight: 700; text-align: center; overflow-wrap: anywhere; }
@@ -200,9 +234,13 @@
 @keyframes standard-in { from { opacity: 0; translate: 0 calc(-1 * var(--slide, 16px)); scale: 0.98; } to { opacity: 1; translate: 0 0; scale: 1; } }
 @keyframes standard-out { from { opacity: 1; } to { opacity: 0; translate: 0 calc(-1 * var(--slide, 16px)); } }
 @keyframes standard-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes standard-pop { from { opacity: 0; scale: 0.85; } to { opacity: 1; scale: 1; } }
 @keyframes standard-timer { from { width: 100%; } to { width: 0; } }
+@keyframes standard-exit-blur { to { opacity: 0; transform: translateY(var(--exit-rise, -24px)) rotateX(18deg); filter: blur(var(--exit-blur, 10px)); } }
+@keyframes standard-exit-glide { to { opacity: 0; transform: translateY(var(--exit-glide, -80px)); } }
 @keyframes standard-pulse { 50% { opacity: 0.3; } }
+@property --cam-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+@keyframes standard-spin { to { --cam-angle: 360deg; } }
+@keyframes standard-row-out { to { opacity: 0; filter: blur(var(--row-blur, 4px)); } }
 @keyframes standard-roll-in { from { translate: 0 110%; } to { translate: 0 0; } }
 @keyframes standard-roll-out { from { translate: 0 0; opacity: 1; } to { translate: 0 -110%; opacity: 0; } }
 

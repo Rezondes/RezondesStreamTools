@@ -20,6 +20,7 @@ use crate::themes::stinger_fields::with_stinger_fields;
 
 const FONTS: [&str; 4] = ["Inter", "Manrope", "DM Sans", "Space Grotesk"];
 const LOCALES: [&str; 8] = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"];
+const ALERT_EXITS: [&str; 3] = ["Unschärfe", "Gleiten", "Blenden"];
 
 const GENERAL: &str = "Allgemein";
 const SCREENS: &str = "Starting, BRB, Ending";
@@ -139,6 +140,13 @@ fn alerts() -> Vec<SettingField> {
         number("alertDuration", "Dauer", ALERTS, 6000.0, 2000.0, 60000.0, MS, None),
         number("alertTop", "Abstand oben", ALERTS, 48.0, 0.0, 1000.0, PX, None),
         number("alertWidth", "Breite", ALERTS, 640.0, 200.0, 1900.0, PX, None),
+        flag("alertTraceOn", "Rand zeichnet sich ein", ALERTS, true),
+        number("alertTraceMs", "Rand: Dauer", ALERTS, 700.0, 0.0, 3000.0, MS, None),
+        number("alertGlow", "Schein um die Karte", ALERTS, 24.0, 0.0, 80.0, PX, None),
+        flag("alertSparksOn", "Funken", ALERTS, true),
+        // fixed: at most 300 sparks, more costs too much in OBS
+        number("alertSparks", "Anzahl Funken", ALERTS, 36.0, 0.0, 300.0, None, None),
+        choice("alertExit", "Abgang", ALERTS, "Unschärfe", &ALERT_EXITS),
         flag("alertSound", "Töne", ALERTS, true),
     ];
     fields.extend(alert_sound_fields(ALERTS));
@@ -156,6 +164,8 @@ fn chat_cam_music() -> Vec<SettingField> {
         flag("camLive", "Live-Anzeige", CAM, true),
         text("camLiveText", "Live-Text", CAM, "LIVE", None),
         number("camBorder", "Rahmenstärke", CAM, 4.0, 0.0, 24.0, PX, None),
+        flag("camSpinOn", "Verlauf wandert ringsum", CAM, true),
+        number("camSpinSeconds", "Verlauf: Dauer einer Runde", CAM, 8.0, 2.0, 120.0, S, None),
         text("musicLabel", "Überzeile", MUSIC, "Läuft gerade", None),
         text("musicIdle", "Text ohne Wiedergabe", MUSIC, "Keine Musik", None),
         flag("musicHide", "Bei Pause ausblenden", MUSIC, true),

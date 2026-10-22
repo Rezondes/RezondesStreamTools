@@ -77,6 +77,12 @@ export type StandardValues = {
   readonly alertDuration: number;
   readonly alertTop: number;
   readonly alertWidth: number;
+  readonly alertTraceOn: boolean;
+  readonly alertTraceMs: number;
+  readonly alertGlow: number;
+  readonly alertSparksOn: boolean;
+  readonly alertSparks: number;
+  readonly alertExit: string;
   readonly alertSound: boolean;
   readonly soundFollow: SoundValue;
   readonly soundSub: SoundValue;
@@ -96,6 +102,8 @@ export type StandardValues = {
   readonly camLive: boolean;
   readonly camLiveText: string;
   readonly camBorder: number;
+  readonly camSpinOn: boolean;
+  readonly camSpinSeconds: number;
   readonly musicLabel: string;
   readonly musicIdle: string;
   readonly musicHide: boolean;
