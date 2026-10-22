@@ -237,7 +237,12 @@
 .theme-bears .bb-alerts.align-left { justify-content: flex-start; }
 .theme-bears .bb-alerts.align-right { justify-content: flex-end; }
 .theme-bears .bb-alert { position: relative; display: flex; align-items: flex-end; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
-.theme-bears .bb-alert.leaving { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
+/* With plopp the card squashes, stretches and springs on its GSAP timeline (Alerts.tsx) instead of the CSS plop. Leaving,
+   the card takes the out motion (plopp: it hops and vanishes) and the bear ducks away on its own timeline */
+.theme-bears .bb-alert.in-plopp { animation: none; }
+.theme-bears .bb-alert.leaving .bb-alert-card { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
+.theme-bears .bb-alert.leaving.out-plopp .bb-alert-card { animation-name: bears-hop-out; }
+@keyframes bears-hop-out { 0% { translate: 0 0; opacity: 1; } 35% { translate: 0 calc(-1 * var(--hop, 22px)); opacity: 1; } 100% { translate: 0 var(--hop-drop, 30px); scale: 0.6; opacity: 0; } }
 .theme-bears .bb-alert-bear { position: relative; flex: none; height: var(--alertBearSize); margin-right: calc(-1 * var(--peek-overlap, 40px)); z-index: 0; }
 .theme-bears .bb-alert-card { position: relative; z-index: 1; flex: 1; display: flex; align-items: center; gap: var(--alert-gap, 22px); margin-bottom: var(--card-lift, 20px); overflow: hidden; }
 .theme-bears .bb-alert-icon { flex: none; width: var(--icon-size, 96px); }

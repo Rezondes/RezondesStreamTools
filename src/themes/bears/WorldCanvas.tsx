@@ -1,19 +1,21 @@
 // The painted watercolor world of the Bärenbande screens (PLAN-BEARS.md package 11, watercolor.ts): the sky on one
 // canvas, the clouds as washes of their own drifting across it (theme.css), the land and the far things on a second
 // canvas, both with paper grain; painted once per look. The world paints itself in from left to right through a mask
-// while --paint runs from 0 to 1 (set by the scene's timeline; 1 without one).
+// while --paint runs from 0 to 1 (set by the scene's timeline; 1 without one). cached (dashboard skin) keeps the painted
+// canvases in the browser (worldCache.ts), so the world is only painted again when its look changes.
 import { type CSSProperties, useEffect, useMemo, useRef, useState } from "react";
 import { worldAt } from "./render.ts";
 import { useBears } from "./useBears.ts";
 import { CLOUD_SIZE, paintCloud, paintGrain, paintLand, paintSky, type WashLook } from "./watercolor.ts";
 import { type TimeOfDay, WORLD } from "./world.ts";
+import { paintCached } from "./worldCache.ts";
 
 const MAX_CLOUDS = 8;
 const VIEW_BOX = `0 0 ${WORLD.width} ${WORLD.height}`;
 // fixed: the grain of the sky canvas gets another seed than the land
 const SKY_GRAIN_SEED = 7;
 
-export default function WorldCanvas({ time }: { time: TimeOfDay }) {
+export default function WorldCanvas({ time, cached = false }: { time: TimeOfDay; cached?: boolean }) {
   const values = useBears();
   const sky = useRef<HTMLCanvasElement>(null);
   const land = useRef<HTMLCanvasElement>(null);
@@ -27,14 +29,21 @@ export default function WorldCanvas({ time }: { time: TimeOfDay }) {
   const count = Math.min(values.cloudCount, MAX_CLOUDS);
 
   useEffect(() => {
-    const [skyContext, landContext] = [sky.current?.getContext("2d", { willReadFrequently: true }), land.current?.getContext("2d", { willReadFrequently: true })];
-    if (!skyContext || !landContext) return;
-    paintSky(skyContext, colors, time);
-    paintGrain(skyContext, WORLD.width, WORLD.height, look.grain, look.seed + SKY_GRAIN_SEED);
-    landContext.clearRect(0, 0, WORLD.width, WORLD.height);
-    paintLand(landContext, colors, look, show);
-    paintGrain(landContext, WORLD.width, WORLD.height, look.grain, look.seed);
-  }, [colors, look, show, time]);
+    const [skyCanvas, landCanvas] = [sky.current, land.current];
+    const [skyContext, landContext] = [skyCanvas?.getContext("2d", { willReadFrequently: true }), landCanvas?.getContext("2d", { willReadFrequently: true })];
+    if (!skyCanvas || !landCanvas || !skyContext || !landContext) return;
+    const paint = () => {
+      paintSky(skyContext, colors, time);
+      paintGrain(skyContext, WORLD.width, WORLD.height, look.grain, look.seed + SKY_GRAIN_SEED);
+      landContext.clearRect(0, 0, WORLD.width, WORLD.height);
+      paintLand(landContext, colors, look, show);
+      paintGrain(landContext, WORLD.width, WORLD.height, look.grain, look.seed);
+    };
+    if (!cached) return paint();
+    let stopped = false;
+    void paintCached({ colors, look, show, time }, [skyCanvas, landCanvas], paint, () => stopped);
+    return () => { stopped = true; };
+  }, [colors, look, show, time, cached]);
 
   useEffect(() => {
     setClouds(Array.from({ length: count }, (_, index) => {

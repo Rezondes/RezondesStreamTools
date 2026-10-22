@@ -196,7 +196,7 @@ const FIELDS = [
   choice("alertAlign", "Position", ALERTS, "center", ["left", "center", "right"]),
   number("alertWidth", "Breite", ALERTS, 760, 300, 1800, "px"),
   choice("alertIn", "Einblenden", ALERTS, "plopp", MOTIONS),
-  choice("alertOut", "Ausblenden", ALERTS, "blenden", MOTIONS),
+  choice("alertOut", "Ausblenden", ALERTS, "plopp", MOTIONS),
   flag("alertTimer", "Restzeit als Balken", ALERTS, true),
   flag("confetti", "Konfetti aus Pfoten und Blättern", ALERTS, true),
   number("confettiCount", "Anzahl Konfetti", ALERTS, 14, 0, 40),

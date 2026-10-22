@@ -2,7 +2,8 @@
 // symbol of the alert kind; the chosen bear (or the tower) peeks out from behind it with a spring and reacts with its
 // bones (boneMotion.ts: the Grizzly cheers, the Panda startles happily, the Eisbär nods with its thumb up); the symbol
 // pops and beats, the tag pops, the name letters fall in, the quote rises; paw prints and leaves fly out of the card
-// (confetti.ts); the remaining time as a shrinking outlined bar. All on GSAP timelines (stills with ?t=). Texts, quote
+// (confetti.ts); the remaining time as a shrinking outlined bar. With plopp the card squashes, stretches and springs in;
+// leaving, the bear ducks away while the card takes the out motion. All on GSAP timelines (stills with ?t=). Texts, quote
 // rule and sounds come from the alerts context of the core (src/core/alerts), here keys, symbols and the look.
 // Parameters: ?sound=0, ?volume=0.5
 import { SplitText } from "gsap/SplitText";
@@ -48,6 +49,10 @@ const BEAT = { scale: 1.12, duration: 0.22, repeat: 9, yoyo: true, ease: "sine.i
 const POP_TAG = { scale: 0, rotate: 10, duration: 0.4, ease: "back.out(3)" }; // fixed: see above
 const LETTERS = { y: -50, scaleY: 1.5, opacity: 0, duration: 0.45, ease: "bounce.out", stagger: 0.04 }; // fixed: see above
 const RISE = { opacity: 0, y: 10, duration: 0.3 }; // fixed: see above
+// fixed: the plop of the card from nothing: squash, stretch, spring back (scale x and y, share of fadeDuration)
+const PLOP = [{ scaleX: 1.25, scaleY: 0.7, share: 0.35 }, { scaleX: 0.9, scaleY: 1.12, share: 0.25 }, { scaleX: 1.04, scaleY: 0.97, share: 0.2 }, { scaleX: 1, scaleY: 1, share: 0.2 }];
+// fixed: leaving, the bear ducks away: how far down (share of its height) and how
+const DUCK = { yPercent: 70, ease: "back.in(2)" };
 
 function describe(alert: Alert, values: BearsValues) {
   return { ...describeAlert(alert, values, KEYS), icon: values[ICONS_BY_KIND[alert.kind]] as IconName, sound: values[ALERT_SOUND_KEYS[alert.kind]] };
@@ -77,6 +82,12 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   useTimeline(timeline => {
     const root = scope.current;
     if (!root) return;
+    // First on the timeline, so the steps follow each other from 0
+    const card = root.querySelector(".bb-alert-card");
+    if (card && values.alertIn === "plopp") {
+      timeline.set(card, { scaleX: 0, scaleY: 0, transformOrigin: "50% 100%" }, 0);
+      for (const step of PLOP) timeline.to(card, { scaleX: step.scaleX, scaleY: step.scaleY, duration: (step.share * values.fadeDuration) / SECOND_MS, ease: "sine.out" });
+    }
     const symbol = root.querySelector(".bb-alert-icon");
     if (symbol) timeline.from(symbol, POP_ICON, PARTS_AT.icon).to(symbol, BEAT, PARTS_AT.beat);
     timeline.from(root.querySelector(".bb-tag"), POP_TAG, PARTS_AT.tag);
@@ -99,6 +110,10 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
     place();
     timeline.to(clock, { seconds: RUN, duration: RUN, ease: "none", onUpdate: place }, 0);
   }, [values, alert], scope);
+  useTimeline(timeline => {
+    const spot = scope.current?.querySelector(".bb-alert-bear");
+    if (leaving && spot) timeline.to(spot, { yPercent: DUCK.yPercent, opacity: 0, duration: values.fadeDuration / SECOND_MS, ease: DUCK.ease });
+  }, [leaving, values.fadeDuration], scope);
   return (
     <div ref={scope} className={`bb-alert in-${values.alertIn} out-${values.alertOut}${leaving ? " leaving" : ""}`}>
       <div className="bb-alert-bear"><Hero choice={values.bearAlerts} poses={POSES} className="bb-hero" /></div>

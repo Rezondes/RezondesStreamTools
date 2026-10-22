@@ -1475,7 +1475,7 @@
       "type": "select",
       "label": "Ausblenden",
       "group": "Alerts",
-      "default": "blenden",
+      "default": "plopp",
       "options": [
         "watscheln",
         "plopp",

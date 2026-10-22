@@ -11,7 +11,7 @@ const gradient = { addColorStop: () => {} };
 
 function recorder() {
   const calls: unknown[][] = [];
-  const target: Record<string, unknown> = { measureText: () => ({ width: 300 }), createLinearGradient: () => gradient, createRadialGradient: () => gradient };
+  const target: Record<string, unknown> = { measureText: (text: string) => ({ width: text.length * 20 }), createLinearGradient: () => gradient, createRadialGradient: () => gradient };
   const context = new Proxy(target, {
     get: (object, key: string) => object[key] ?? ((...args: unknown[]) => { calls.push([key, ...args]); }),
     set: (_, key: string, value) => { calls.push([`set ${key}`, value]); return true; },
@@ -47,5 +47,20 @@ const arcs = (lights: boolean) => {
   return frame.calls.filter(call => call[0] === "arc").length;
 };
 assert.ok(arcs(false) < arcs(true));
+
+// The offline card grows with a long title up to the right edge, beyond that the title shrinks
+const offlineCard = (title: string) => {
+  const [, , clip] = bearsClips(resolveSettings(bearsSettings, { bannerOfflineTitle: title }), "neo");
+  const frame = recorder();
+  clip.draw(frame.context, 1);
+  const cards = frame.calls.filter(call => call[0] === "roundRect");
+  const fonts = frame.calls.filter(call => call[0] === "set font" && String(call[1]).startsWith("800"));
+  return { width: cards[cards.length - 1][3] as number, font: fonts[fonts.length - 1][1] as string };
+};
+assert.equal(offlineCard("Weg").width, 860);
+assert.ok(offlineCard("x".repeat(45)).width > 860);
+assert.equal(offlineCard("x".repeat(45)).font, offlineCard("Weg").font);
+assert.equal(offlineCard("x".repeat(90)).width, offlineCard("x".repeat(200)).width);
+assert.notEqual(offlineCard("x".repeat(90)).font, offlineCard("Weg").font);
 
 console.log("bears banners ok");

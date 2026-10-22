@@ -387,7 +387,7 @@ fn fields() -> Vec<SettingField> {
         choice("alertAlign", "Position", ALERTS, "center", &["left", "center", "right"]),
         number("alertWidth", "Breite", ALERTS, 760.0, 300.0, 1800.0, PX, None),
         choice("alertIn", "Einblenden", ALERTS, "plopp", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
-        choice("alertOut", "Ausblenden", ALERTS, "blenden", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
+        choice("alertOut", "Ausblenden", ALERTS, "plopp", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
         flag("alertTimer", "Restzeit als Balken", ALERTS, true),
         flag("confetti", "Konfetti aus Pfoten und Blättern", ALERTS, true),
         number("confettiCount", "Anzahl Konfetti", ALERTS, 14.0, 0.0, 40.0, None, None),

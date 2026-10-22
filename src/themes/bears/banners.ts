@@ -42,6 +42,8 @@ const TURN = Math.PI * 2;
 // fixed: poses for awake and asleep
 const AWAKE: Record<BearId, PoseName> = { eisbaer: "wave", grizzly: "wave", panda: "wave" };
 const ASLEEP: Record<BearId, PoseName> = { eisbaer: "sleep", grizzly: "sleep", panda: "sleep" };
+// fixed: the offline card: its center, smallest width, room beside the title, how far right it may reach, title size
+const OFFLINE_CARD = { x: 1330, width: 860, padding: 70, right: 1880, titleSize: 92 };
 
 // A paper card with the outline and one shade band at the bottom
 function card(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, options: BearsBannerOptions) {
@@ -151,8 +153,13 @@ export function drawBearsOfflineBanner(context: CanvasRenderingContext2D, time: 
   if (options.lights) fairyLights(context, phase, options);
   drawHero(context, options.offlineBear, ASLEEP, 340, 900, 420, options.palette);
   sleep(context, phase, options);
-  card(context, 900, 240, 860, 520, options);
-  title(context, options.offlineTitle, 1330, 350, 92, options);
+  // The card grows with a long title up to the right edge, beyond that the title gets smaller
+  context.font = `800 ${OFFLINE_CARD.titleSize}px "${options.titleFont}", sans-serif`;
+  const words = context.measureText(options.offlineTitle).width;
+  const room = (OFFLINE_CARD.right - OFFLINE_CARD.x) * 2 - OFFLINE_CARD.padding * 2;
+  const width = Math.min(room, Math.max(OFFLINE_CARD.width - OFFLINE_CARD.padding * 2, words)) + OFFLINE_CARD.padding * 2;
+  card(context, OFFLINE_CARD.x - width / 2, 240, width, 520, options);
+  title(context, options.offlineTitle, OFFLINE_CARD.x, 350, OFFLINE_CARD.titleSize * Math.min(1, room / words), options);
   line(context, options.offlineText, 1330, 460, 36, options.textDark, options);
   options.offlineLines.forEach((text, index) => line(context, text, 1330, 550 + index * 60, 32, options.textDim, options));
 }

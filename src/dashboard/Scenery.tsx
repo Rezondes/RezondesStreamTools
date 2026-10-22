@@ -88,7 +88,7 @@ export default function Scenery({ skin }: { skin: Skin }) {
   if (skin === "bears") return (
     <div className="skin-scenery skin-scenery-bears theme-bears bb-blinking" style={BEARS} aria-hidden="true">
       <ThemeValues.Provider value={BEARS_VALUES}>
-        <Suspense fallback={null}><BearsWorld time="mittag" /></Suspense>
+        <Suspense fallback={null}><BearsWorld time="mittag" cached /></Suspense>
       </ThemeValues.Provider>
       <BearTower className="skin-bear-tower" />
     </div>
