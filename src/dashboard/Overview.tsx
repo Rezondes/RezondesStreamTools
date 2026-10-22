@@ -4,9 +4,11 @@
 // streamers without the trigger section, which has it otherwise. Every URL can be dragged onto the OBS window.
 import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
-import { OBS_SCENES, SCENE_SIZES } from "../core/theme.ts";
+import { areasOf } from "../core/sceneArea.ts";
+import { resolveSettings } from "../core/settings.ts";
+import { OBS_SCENES } from "../core/theme.ts";
 import { sceneNames } from "../core/themeRuntime.ts";
-import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
+import { DEFAULT_THEME, findModule, findTheme } from "../themes/registry.ts";
 import { THEME_SCENES } from "../themes/scenes.tsx";
 import { describeStats, type StatKey } from "../core/stats/stats.ts";
 import type { AlertKind, StreamStats } from "../core/types.ts";
@@ -83,10 +85,25 @@ function Live({ me, act }: { me: Me; act: Act }) {
   );
 }
 
+type SettingsFile = { values: Record<string, Record<string, unknown>> };
+
+// The size of every OBS source for the saved values of the active theme; the defaults until they are loaded
+function useAreas(themeId: string) {
+  const schema = findTheme(themeId) ?? findTheme(DEFAULT_THEME)!;
+  const [values, setValues] = useState(() => resolveSettings(schema, {}));
+  useEffect(() => {
+    getJson<SettingsFile | null>("/api/settings", null)
+      .then(file => setValues(resolveSettings(schema, file?.values[schema.id])))
+      .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "GET /api/settings", Grund: String(failure) }));
+  }, [schema]);
+  return areasOf(findModule(schema.id), values);
+}
+
 // Setting up OBS: everything at once first (the usual way), then single sources, the key that is in every URL last
 function ObsSetup({ me, act }: { me: Me; act: Act }) {
   const base = `${location.origin}${streamerPath.base(me.login)}`;
-  const layout = obsLayout(base, me.login, me.overlayKey, TEXTS.scenes, TEXTS.obs.overlayScene);
+  const areas = useAreas(me.theme);
+  const layout = obsLayout(base, me.login, me.overlayKey, { scenes: TEXTS.scenes, overlayScene: TEXTS.obs.overlayScene }, areas);
   const sources = new Map(layout.flatMap(scene => scene.sources).map(source => [source.scene, source]));
   const available = sceneNames(THEME_SCENES, me.theme);
   return (
@@ -110,7 +127,7 @@ function ObsSetup({ me, act }: { me: Me; act: Act }) {
                   <td>{TEXTS.scenes[scene]}</td>
                   {/* A click opens nothing, dragging onto OBS creates the source */}
                   <td><a className="obs-drag" href={dragUrl(sources.get(scene)!)} onClick={event => event.preventDefault()}><code>{url}</code></a></td>
-                  <td>{SCENE_SIZES[scene].width}x{SCENE_SIZES[scene].height}</td>
+                  <td>{TEXT.sourceSize(areas[scene])}</td>
                   <td className="actions">
                     <CopyButton text={url} />
                     <a className="btn" href={`${url}&demo`} target="_blank" rel="noreferrer">{TEXT.test}</a>

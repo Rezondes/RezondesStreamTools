@@ -5,6 +5,9 @@ export const OVERVIEW_TEXTS = {
   scene: "Szene",
   url: "URL",
   size: "Grösse",
+  // An alert cut out of the stage also says where it belongs in a 1920x1080 scene (the OBS import puts it there)
+  sourceSize: ({ width, height, offset }: { width: number; height: number; offset?: { x: number; y: number } }) =>
+    `${width}x${height}${offset ? ` an Position ${offset.x}, ${offset.y}` : ""}`,
   copy: "Kopieren",
   copied: "Kopiert",
   copyFailed: "Kopieren nicht erlaubt: URL ist markiert, bitte mit Strg+C kopieren.",

@@ -237,7 +237,7 @@
 .theme-matrix .alert-head { position: relative; font-size: var(--alert-head-size, 20px); color: var(--dim); min-height: 1.25em; letter-spacing: var(--alert-head-spacing, 1px); }
 .theme-matrix .alert-name { position: relative; font-size: var(--alert-name-size, 68px); line-height: 1.1; margin: var(--alert-name-margin, 10px 0 6px); min-height: 1.1em; overflow-wrap: anywhere; }
 .theme-matrix .alert-line { position: relative; font-size: var(--alert-line-size, 30px); min-height: 1.25em; }
-.theme-matrix .alert-quote { position: relative; font-size: var(--alert-quote-size, 22px); margin-top: var(--alert-quote-gap, 10px); }
+.theme-matrix .alert-quote { position: relative; font-size: var(--alert-quote-size, 22px); margin-top: var(--alert-quote-gap, 10px); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
 .theme-matrix .alert-timer {
   position: absolute;
   left: 0;

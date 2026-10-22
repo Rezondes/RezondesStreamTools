@@ -10,7 +10,9 @@ import { SCENES, type SceneName } from "./core/theme.ts";
 import { resolveSettings } from "./core/settings.ts";
 import { cssVariables, resolveScene } from "./core/themeRuntime.ts";
 import { ThemeValues, useSettings } from "./core/hooks/useSettings.ts";
-import { DEFAULT_THEME, findTheme } from "./themes/registry.ts";
+import { areaOf, setSceneFrame } from "./core/sceneArea.ts";
+import { STAGE } from "./core/screens/screens.ts";
+import { DEFAULT_THEME, findModule, findTheme } from "./themes/registry.ts";
 import { THEME_SCENES } from "./themes/scenes.tsx";
 
 const file = location.pathname.split("/").pop()!.replace(/\.html$/, "");
@@ -42,9 +44,13 @@ function ThemedScene({ scene }: { scene: SceneName }) {
   if (!Scene) return null;
   // Values are always resolved, so values from the dashboard preview also end up complete and valid in the scene
   const values = resolveSettings(chosen, settings.values);
+  // A scene with offset (alerts) is drawn on the stage, the source shows only its part (sceneArea.ts)
+  const { offset } = areaOf(findModule(chosen.id), values, scene);
+  setSceneFrame(offset ? STAGE : null);
+  const crop = offset ? { position: "fixed", left: 0, top: 0, width: STAGE.width, height: STAGE.height, transform: `translate(${-offset.x}px, ${-offset.y}px)` } as const : {};
   return (
     <ThemeValues.Provider value={values}>
-      <div className={`theme-root theme-${chosen.id}`} style={cssVariables(chosen, values)}>
+      <div className={`theme-root theme-${chosen.id}`} style={{ ...cssVariables(chosen, values), ...crop }}>
         <Suspense fallback={null}>
           <Scene />
         </Suspense>

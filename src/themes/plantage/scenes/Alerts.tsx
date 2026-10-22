@@ -16,8 +16,8 @@ import type { Alert, AlertKind } from "../../../core/types.ts";
 import Branch from "../cards/Branch.tsx";
 import Medallion from "../cards/Medallion.tsx";
 import type { IconName } from "../field.ts";
-import { alertLayout } from "../mangoDrop.ts";
-import AlertBurst, { BURST_CANVAS } from "../pixi/AlertBurst.tsx";
+import { alertLayout, BURST_CANVAS, MEDAL } from "../mangoDrop.ts";
+import AlertBurst from "../pixi/AlertBurst.tsx";
 import type { PlantageValues } from "../settings.ts";
 import { playChime, playLeave } from "../tones.ts";
 import { usePlantage } from "../usePlantage.ts";
@@ -29,8 +29,6 @@ const ICONS_BY_KIND = {
   follow: "followIcon", sub: "subIcon", resub: "resubIcon", gift: "giftIcon", raid: "raidIcon", cheer: "cheerIcon", redeem: "redeemIcon", hype: "hypeIcon",
 } as const satisfies Record<AlertKind, Key>;
 
-// fixed: medallion size, ring and how far the card reaches behind it in px, like the prototype
-const MEDAL = { size: 260, ring: 16, overlap: 10 };
 // fixed: the entrance in s, like the prototype
 const ENTER = { medal: 0.3, card: 0.8, name: 1.0, branch: 1.0, line: 1.4, quote: 1.6 };
 // fixed: how far the name letters and the text lines rise in px, like the prototype

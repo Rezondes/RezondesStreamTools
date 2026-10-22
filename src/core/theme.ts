@@ -12,7 +12,7 @@ export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "mu
 export type { SceneName } from "../generated/SceneName.ts";
 export const OBS_SCENES = SCENES.filter(scene => scene !== "info");
 
-// Recommended size of the browser source in OBS; themes design their scenes for these sizes
+// Size of the browser source in OBS when the theme does not say otherwise (ThemeModule.areas, src/core/sceneArea.ts)
 export const SCENE_SIZES: Record<SceneName, { width: number; height: number }> = {
   starting: { width: 1920, height: 1080 },
   brb: { width: 1920, height: 1080 },
@@ -75,7 +75,19 @@ export type ThemeSchema = {
 // Contract of a theme, data side (without React, also for the server): its schema and the clips for stinger and banners
 // (render section), computed from the values resolved against the schema. Registered in src/themes/registry.ts.
 // panel: the template of a new Twitch panel in the theme's look (panel designer, src/core/panels.ts)
-export type ThemeModule = { schema: ThemeSchema; clips: (values: SettingValues, login: string) => RenderClip[]; panel: (values: SettingValues, title: string) => PanelDesign };
+// areas: the size of the OBS source per scene, computed from the values, so nothing is cut off and nothing is larger
+// than needed; a scene the theme leaves out gets SCENE_SIZES
+export type ThemeModule = {
+  schema: ThemeSchema;
+  clips: (values: SettingValues, login: string) => RenderClip[];
+  panel: (values: SettingValues, title: string) => PanelDesign;
+  areas?: (values: SettingValues) => Partial<Record<SceneName, SceneArea>>;
+};
+
+// Size of the OBS source of a scene. Without offset the scene fills its source. With offset the scene is drawn on the
+// 1920x1080 stage and the source shows only the part whose top left corner sits at offset (alerts: the card and the
+// room for its effects).
+export type SceneArea = { width: number; height: number; offset?: { x: number; y: number } };
 
 // Contract of a theme, view: its scenes (React.lazy), id equal to schema.id. Registered in src/themes/scenes.tsx.
 // Missing scenes come from the standard theme, except theme-specific features (src/core/themeRuntime.ts).

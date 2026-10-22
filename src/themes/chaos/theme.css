@@ -238,7 +238,7 @@
 .theme-chaos .ch-alert.leaving { animation: chaos-glitch-out var(--fadeDuration) steps(4, end) both; }
 .theme-chaos .ch-alert-name .ch-title { font-size: calc(var(--titleSize) * 0.55); }
 .theme-chaos .ch-alert-line { font-size: 1.05em; }
-.theme-chaos .ch-quote { color: var(--mutedColor); }
+.theme-chaos .ch-quote { color: var(--mutedColor); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
 .theme-chaos .ch-timer { align-self: stretch; width: 100%; height: var(--timer-height, 22px); overflow: visible; }
 .theme-chaos .ch-timer path { fill: none; stroke: var(--accent2); stroke-linecap: round; filter: drop-shadow(0 0 calc(var(--glow) * var(--drip-glow, 6px)) var(--accent2)); stroke-dasharray: 1; animation: chaos-retract var(--alertDuration) linear both; }
 .theme-chaos .ch-confetti { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }

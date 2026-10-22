@@ -145,7 +145,7 @@
 /* Each letter (SplitText) shows its slice of the gradient */
 .theme-standard .standard-alert-name > div { background: linear-gradient(90deg, var(--accent), var(--accent2)); background-size: 600% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
 .theme-standard .standard-alert-line { margin-top: var(--alert-line-gap, 8px); font-size: var(--alert-line-size, 26px); font-weight: 500; }
-.theme-standard .standard-alert-quote { margin-top: var(--alert-quote-gap, 10px); font-size: var(--alert-quote-size, 21px); color: var(--mutedColor); }
+.theme-standard .standard-alert-quote { margin-top: var(--alert-quote-gap, 10px); font-size: var(--alert-quote-size, 21px); color: var(--mutedColor); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
 .theme-standard .standard-alert-bar {
   position: absolute;
   left: var(--alert-bar-side, 32px);

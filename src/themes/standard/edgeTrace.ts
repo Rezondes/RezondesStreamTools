@@ -38,6 +38,8 @@ const SIZE = { least: 8, more: 14, shrink: 0.6 };
 
 // Seconds after the burst when every spark is gone
 export const SPARK_DONE = LIFE + LATEST;
+// fixed: room around the card in px for the flight of the sparks (their canvas, and the OBS source of the alerts)
+export const SPARK_ROOM = 360;
 
 // Sparks seconds after the burst: each starts at its own point of the edge a little later than the burst, flies out
 // along the normal and fades; positions relative to the top left corner of the card

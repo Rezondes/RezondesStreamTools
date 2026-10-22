@@ -249,7 +249,7 @@
 .theme-bears .bb-alert-text { display: grid; gap: var(--text-gap, 6px); min-width: 0; }
 .theme-bears .bb-tag { justify-self: start; background: var(--accent); color: var(--textColor); font-size: 0.8em; }
 .theme-bears .bb-alert-line { font-family: var(--titleFont), var(--font), sans-serif; font-size: var(--line-size, 34px); line-height: 1.15; overflow-wrap: anywhere; }
-.theme-bears .bb-quote { color: var(--textDim); overflow-wrap: anywhere; }
+.theme-bears .bb-quote { color: var(--textDim); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
 .theme-bears .bb-timer { position: absolute; left: 0; right: 0; bottom: 0; height: var(--timer-height, 10px); background: var(--paperShade); }
 .theme-bears .bb-timer span { display: block; height: 100%; background: var(--accent); transform-origin: left; animation: bears-shrink var(--alertDuration) linear forwards; }
 /* Icons: the colored shape with the outline, a second tone in the paper shade */

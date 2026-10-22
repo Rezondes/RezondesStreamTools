@@ -184,7 +184,7 @@
 .theme-urlaub .ul-alert-text { display: grid; gap: var(--text-gap, 4px); min-width: 0; }
 .theme-urlaub .ul-tag { font-family: var(--titleFont), cursive; font-size: 1.35em; color: var(--accent); }
 .theme-urlaub .ul-alert-line { font-size: 1.3em; overflow-wrap: anywhere; }
-.theme-urlaub .ul-quote { opacity: 0.85; overflow-wrap: anywhere; }
+.theme-urlaub .ul-quote { opacity: 0.85; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
 /* The message side of the postcard: text on the left, stamp and address lines on the right of a divider */
 .theme-urlaub .ul-alert-postkarte .ul-postcard { aspect-ratio: var(--postcard-ratio, 64 / 38); }
 .theme-urlaub .ul-alert-postkarte .ul-card-back { display: flex; }

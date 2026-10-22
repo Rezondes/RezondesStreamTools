@@ -6,13 +6,12 @@ import { type RefObject, useCallback } from "react";
 import { burstAt } from "../../../core/motion/burst.ts";
 import { seekFromQuery } from "../../../core/motion/seek.ts";
 import PixiStage from "../../../core/pixi/PixiStage.tsx";
-import { mangoDrop, mangoRoll } from "../mangoDrop.ts";
+import { BURST_CANVAS, mangoDrop, mangoRoll } from "../mangoDrop.ts";
 import type { PlantageValues } from "../settings.ts";
 
 type Props = { values: PlantageValues; start: number; leavingAt: RefObject<number | null>; seed: number };
 
-// fixed: canvas size and where the middle of the medallion is on it (px); the mango rests a little below the middle
-export const BURST_CANVAS = { width: 900, height: 1400, x: 450, y: 500 };
+// fixed: the mango rests a little below the middle of the medallion
 const REST = 6;
 const MANGO = { land: 0.62, height: 430, scale: 0.82, size: [220, 240] as const };
 const SHADOW = { y: 78, width: 80, height: 16, alpha: 0.3, from: 0.2 };

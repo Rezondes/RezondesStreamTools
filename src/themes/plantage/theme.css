@@ -275,7 +275,7 @@
 .theme-plantage .pl-alert-card .pl-st-pill { font-size: var(--alert-pill-size, 18px); letter-spacing: var(--alert-pill-spacing, 3px); padding: var(--alert-pill-padding, 6px 18px 6px 12px); }
 .theme-plantage .pl-alert-name { margin-top: var(--name-gap, 4px); font-family: var(--titleFont), sans-serif; font-size: var(--alert-name-size, 74px); line-height: 1.05; color: var(--accent); text-shadow: 0 var(--name-lift, 3px) 0 color-mix(in srgb, white 70%, transparent); overflow-wrap: anywhere; }
 .theme-plantage .pl-alert-line { font-size: var(--alert-line-size, 26px); font-weight: 600; overflow-wrap: anywhere; }
-.theme-plantage .pl-quote { font-size: var(--alert-quote-size, 22px); font-weight: 500; color: color-mix(in srgb, var(--textOnWood) 70%, var(--wood)); overflow-wrap: anywhere; }
+.theme-plantage .pl-quote { font-size: var(--alert-quote-size, 22px); font-weight: 500; color: color-mix(in srgb, var(--textOnWood) 70%, var(--wood)); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
 .theme-plantage .pl-twig {
   position: absolute;
   left: calc(var(--card-left) + var(--text-pad));

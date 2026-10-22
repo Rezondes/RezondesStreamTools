@@ -5,7 +5,9 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { PREVIEW } from "../core/hooks/useSettings.ts";
 import * as streamerPath from "../core/streamerPath.ts";
-import { SCENE_SIZES, type SceneName } from "../core/theme.ts";
+import { areaOf } from "../core/sceneArea.ts";
+import type { SceneName } from "../core/theme.ts";
+import { findModule } from "../themes/registry.ts";
 import type { PublicSettings } from "../core/types.ts";
 import { TEXTS } from "./texts.de.ts";
 
@@ -14,7 +16,9 @@ type Size = { width: number; height: number };
 
 export default function ScenePreview({ login, overlayKey, scene, settings, available }: Props) {
   const [maximized, setMaximized] = useState(false);
-  const size = SCENE_SIZES[scene];
+  // As large as the OBS source for these values
+  const { width, height } = areaOf(findModule(settings.theme), settings.values, scene);
+  const size = { width, height };
 
   // One channel for the whole lifetime; latest holds the current values for scenes that report "ready" later
   const channel = useRef<BroadcastChannel | null>(null);

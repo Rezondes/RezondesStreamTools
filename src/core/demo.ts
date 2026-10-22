@@ -23,7 +23,10 @@ const DEMO_COVER = "data:image/svg+xml," + encodeURIComponent(
   + '<rect width="100" height="100" fill="url(#g)"/><circle cx="30" cy="35" r="18" fill="#000"/><circle cx="68" cy="62" r="24" fill="none" stroke="#000" stroke-width="5"/>'
   + '<text x="8" y="92" font-family="monospace" font-size="13" fill="#000">DEMO</text></svg>',
 );
+// The first sample is the largest an alert gets (a name of 25 characters, the Twitch limit, and a message beyond the
+// line limit of the quotes), so the preview shows at once whether the OBS source is large enough
 const SAMPLES: Alert[] = [
+  { kind: "resub", user: "Der_Laengste_Name_Moeglic", amount: 120, text: "Zehn Jahre dabei und immer noch der beste Stream auf ganz Twitch, danke für jede einzelne Stunde und auf die nächsten zehn Jahre mit euch allen!" },
   { kind: "follow", user: "neo_42" },
   { kind: "sub", user: "Trinity", text: "Endlich abonniert!" },
   { kind: "resub", user: "MorpheusTV", amount: 12, text: "Ein Jahr schon!" },

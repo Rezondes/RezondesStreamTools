@@ -102,9 +102,27 @@ async function importViaWebSocket(port: number, password: string, layout: ObsSce
     const { scenes } = (await call("GetSceneList")) as { scenes: { sceneName: string }[] };
     const { inputs } = (await call("GetInputList")) as { inputs: { inputName: string }[] };
     const requests = obsRequests(layout, scenes.map(scene => scene.sceneName), inputs.map(input => input.inputName));
-    for (const request of requests) await call(request.requestType, request.requestData);
+    for (const request of requests) {
+      const answer = (await call(request.requestType, request.requestData)) as { sceneItemId?: number } | null;
+      if (request.place) await placeItem(call, request.requestData.inputName as string, request.place, answer?.sceneItemId);
+    }
     return requests.length;
   } finally {
     socket.close();
   }
+}
+
+type Call = (requestType: string, requestData?: Record<string, unknown>) => Promise<unknown>;
+
+// Puts the item of a source where it belongs on the canvas: a new one always, an existing one only while it still sits
+// at 0, 0 (where it was before the source got smaller), so a source the streamer moved stays where it is
+async function placeItem(call: Call, sourceName: string, place: { sceneName: string; x: number; y: number }, created: number | undefined) {
+  const { sceneName, x, y } = place;
+  let sceneItemId = created;
+  if (sceneItemId === undefined) {
+    ({ sceneItemId } = (await call("GetSceneItemId", { sceneName, sourceName })) as { sceneItemId: number });
+    const { sceneItemTransform } = (await call("GetSceneItemTransform", { sceneName, sceneItemId })) as { sceneItemTransform: { positionX: number; positionY: number } };
+    if (sceneItemTransform.positionX !== 0 || sceneItemTransform.positionY !== 0) return;
+  }
+  await call("SetSceneItemTransform", { sceneName, sceneItemId, sceneItemTransform: { positionX: x, positionY: y } });
 }

@@ -44,6 +44,11 @@ export function mangoRoll(seconds: number): { x: number; y: number; rotation: nu
   return { x: ROLL.x * part, y: ROLL.y * part, rotation: ROLL.turn * part };
 }
 
+// fixed: medallion size, ring and how far the card reaches behind it in px, like the prototype
+export const MEDAL = { size: 260, ring: 16, overlap: 10 };
+// fixed: canvas size of the burst and where the middle of the medallion is on it (px)
+export const BURST_CANVAS = { width: 900, height: 1400, x: 450, y: 500 };
+
 // fixed: the text never comes closer than this to the medallion, for legibility
 export const MIN_GAP = 24;
 

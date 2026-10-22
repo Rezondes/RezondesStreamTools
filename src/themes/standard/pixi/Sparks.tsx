@@ -6,14 +6,12 @@ import { useCallback } from "react";
 import { mixHex } from "../../../core/color.ts";
 import { hash } from "../../../core/hash.ts";
 import PixiStage from "../../../core/pixi/PixiStage.tsx";
-import { sparksAt } from "../edgeTrace.ts";
+import { SPARK_ROOM as MARGIN, sparksAt } from "../edgeTrace.ts";
 import type { StandardValues } from "../settings.ts";
 import { softDot } from "./softDot.ts";
 
 type Props = { size: { width: number; height: number }; clock: () => number; values: StandardValues; seed: number; burstAt: number };
 
-// fixed: room around the card in px for the flight of the sparks
-const MARGIN = 360;
 // fixed: texture size in px and share of the bright core, like the prototype (refs/alert.html)
 const TEXTURE = { size: 32, core: 0.3 };
 

@@ -9,6 +9,7 @@ import { ALERT_SOUND_KEYS, alertQuote, alertTextKeys, describeAlert } from "../.
 import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
 import { useAlerts } from "../../../core/hooks/useAlerts.ts";
 import { roughPath } from "../../../core/rough/roughSvg.ts";
+import { sceneFrame } from "../../../core/sceneArea.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import type { Alert } from "../../../core/types.ts";
 import Confetti from "../Confetti.tsx";
@@ -40,7 +41,7 @@ export default function Alerts() {
 function Thrown({ alert, leaving }: { alert: Queued; leaving: boolean }) {
   const values = useChaos();
   const [start] = useState(() => performance.now());
-  const origin = useMemo(() => ({ x: innerWidth * 0.5, y: values.alertTop + NOTE_HEIGHT * 0.5 }), [values.alertTop]);
+  const origin = useMemo(() => ({ x: sceneFrame().width * 0.5, y: values.alertTop + NOTE_HEIGHT * 0.5 }), [values.alertTop]);
   const note = useMemo(() => ({ top: values.alertTop, width: values.alertWidth, height: NOTE_HEIGHT }), [values.alertTop, values.alertWidth]);
   return (
     <>

@@ -83,7 +83,7 @@
 .theme-koth .kh-alert-text { display: grid; gap: var(--text-gap, 4px); min-width: 0; }
 .theme-koth .kh-tag { font-size: 1.3em; color: var(--accent); }
 .theme-koth .kh-alert-line { font-size: 1.25em; overflow-wrap: anywhere; }
-.theme-koth .kh-quote { opacity: 0.85; overflow-wrap: anywhere; }
+.theme-koth .kh-quote { opacity: 0.85; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
 /* Radio message: steel case with a green display */
 .theme-koth .kh-alert-funk .kh-alert-body { background: var(--steel-plate); border: var(--plate-border, 3px) solid var(--oliveDark); border-radius: var(--radius); color: var(--accent2); }
 .theme-koth .kh-alert-funk .kh-alert-text { padding: var(--display-padding, 8px 14px); background: color-mix(in srgb, var(--oliveDark) 85%, black); border-radius: var(--radius); font-family: "Share Tech Mono", monospace; }

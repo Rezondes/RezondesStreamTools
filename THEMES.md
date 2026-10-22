@@ -59,8 +59,13 @@ steht in `MODULE_THEMES` (`scripts/bundle.ts`).
    Feste Masse nur als Standardwert einer Variable: `padding: var(--card-padding, 16px 20px)`.
 6. **Registrieren**: ein Theme erfüllt den Vertrag aus `src/core/theme.ts` an zwei Stellen (ohne Klassen, nur Typen):
    - `ThemeModule` (Daten, ohne React, auch für den Server): in `src/themes/registry.ts` in `THEME_MODULES` als
-     `{ schema: <id>Settings, clips: <id>Clips }` eintragen. `clips` liefert Stinger, Profil- und Offline-Banner aus
-     `render.ts` (siehe `src/themes/standard/render.ts`). Der erste Eintrag ist das Standard-Theme, bleibt `standard`.
+     `{ schema: <id>Settings, clips: <id>Clips, panel: <id>Panel, areas: <id>Areas }` eintragen. `clips` liefert
+     Stinger, Profil- und Offline-Banner aus `render.ts` (siehe `src/themes/standard/render.ts`). `areas` (`areas.ts`)
+     rechnet aus den Werten die Grösse der OBS-Quellen, damit nichts abgeschnitten wird und keine Quelle grösser als
+     nötig ist: Chat, Kamera und Musik füllen ihre Quelle (`{ width, height }`), Alerts werden auf der 1920x1080-Bühne
+     gezeichnet und die Quelle zeigt nur ihren Teil (`alertArea` aus `src/core/sceneArea.ts`: Karte plus Platz für
+     Effekte). Eine Szene ohne Eintrag bekommt `SCENE_SIZES`. In Alerts-Szenen statt `innerWidth`/`innerHeight` immer
+     `sceneFrame()` nehmen. Der erste Eintrag ist das Standard-Theme, bleibt `standard`.
    - `ThemeView` (Szenen): `index.tsx` exportiert `<id>View = { id: <id>Settings.id, scenes: { ... } }`, eingetragen
      in `src/themes/scenes.tsx` in `THEME_VIEWS`.
    `registry.check.ts` prüft, dass jeder Ordner unter `src/themes/` in beiden Listen steht; ein Ordner, der nur

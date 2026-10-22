@@ -38,7 +38,7 @@
   text-shadow: 0 0 calc(var(--dd-big-glow, 10px) * var(--glow)) color-mix(in srgb, var(--accent) 70%, transparent);
 }
 .theme-dachdecker .dd-alert-line { margin: 0; font-size: var(--fontSize); font-weight: 500; }
-.theme-dachdecker .dd-quote { display: block; margin-top: var(--dd-alert-name-gap, 6px); font-size: calc(var(--fontSize) * 0.8); color: var(--muted); }
+.theme-dachdecker .dd-quote { margin-top: var(--dd-alert-name-gap, 6px); font-size: calc(var(--fontSize) * 0.8); color: var(--muted); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
 .theme-dachdecker .dd-alert-timer {
   display: block;
   height: var(--dd-timer-height, 3px);

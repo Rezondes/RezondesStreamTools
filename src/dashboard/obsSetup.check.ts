@@ -3,15 +3,20 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { dragUrl, obsAuth, obsLayout, obsRequests, sceneCollection } from "./obsSetup.ts";
+import { SCENE_SIZES } from "../core/theme.ts";
 import { TEXTS } from "./texts.de.ts";
 
-const layout = obsLayout("https://overlays.example/s/neo", "neo", "k1", TEXTS.scenes, "Overlays");
+// The alert cut out of the stage at 400, 30; all other sources in their default size
+const areas = { ...SCENE_SIZES, alerts: { width: 1100, height: 500, offset: { x: 400, y: 30 } } };
+const layout = obsLayout("https://overlays.example/s/neo", "neo", "k1", { scenes: TEXTS.scenes, overlayScene: "Overlays" }, areas);
 
 // Three full-screen scenes with one source each, plus one scene with the other five overlays
 assert.deepEqual(layout.map(scene => scene.name), [TEXTS.scenes.starting, TEXTS.scenes.brb, TEXTS.scenes.ending, "Overlays"]);
 assert.deepEqual(layout[3].sources.map(source => source.name), ["neo alerts", "neo chat", "neo cam", "neo music", "neo fx", "neo minimes"]);
 const chat = layout[3].sources[1];
-assert.deepEqual(chat, { scene: "chat", name: "neo chat", url: "https://overlays.example/s/neo/chat?key=k1", width: 500, height: 900 });
+assert.deepEqual(chat, { scene: "chat", name: "neo chat", url: "https://overlays.example/s/neo/chat?key=k1", width: 500, height: 900, x: 0, y: 0 });
+const alerts = layout[3].sources[0];
+assert.deepEqual([alerts.width, alerts.height, alerts.x, alerts.y], [1100, 500, 400, 30], "the alert keeps its place on the canvas");
 
 // Dragging: name and size as layer parameters
 assert.equal(dragUrl(chat), "https://overlays.example/s/neo/chat?key=k1&layer-name=neo+chat&layer-width=500&layer-height=900");
@@ -28,12 +33,16 @@ const brb = collection.sources.find(source => source.name === "neo brb")!;
 assert.deepEqual(brb.settings, { url: "https://overlays.example/s/neo/brb?key=k1", width: 1920, height: 1080, reroute_audio: true, restart_when_active: true, shutdown: true });
 const overlays = collection.sources.find(source => source.name === "Overlays") as { settings: { items: { name: string; source_uuid?: string }[] } };
 assert.deepEqual(overlays.settings.items.find(item => item.name === "neo chat")?.source_uuid, input.uuid);
+const items = (overlays as unknown as { settings: { items: { name: string; pos: { x: number; y: number } }[] } }).settings.items;
+assert.deepEqual(items.find(item => item.name === "neo alerts")?.pos, { x: 400, y: 30 }, "the file puts the alert where it was drawn");
 
 // websocket: create missing scenes and sources, only update existing sources
 const requests = obsRequests(layout, ["Overlays"], ["neo chat"]);
 assert.deepEqual(requests.filter(request => request.requestType === "CreateScene").map(request => request.requestData.sceneName), [TEXTS.scenes.starting, TEXTS.scenes.brb, TEXTS.scenes.ending]);
 assert.deepEqual(requests.filter(request => request.requestType === "SetInputSettings").map(request => request.requestData.inputName), ["neo chat"]);
 assert.equal(requests.filter(request => request.requestType === "CreateInput").length, 8);
+// Only the alert says where its item belongs
+assert.deepEqual(requests.filter(request => request.place).map(request => [request.requestData.inputName, request.place]), [["neo alerts", { sceneName: "Overlays", x: 400, y: 30 }]]);
 
 // Authentication as described in the protocol
 const sha = (text: string) => createHash("sha256").update(text).digest("base64");
