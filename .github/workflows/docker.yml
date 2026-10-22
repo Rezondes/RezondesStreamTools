@@ -1,6 +1,8 @@
-# Docker image on ghcr.io: on every push to main (or by hand) first all checks (npm run verify with the Rust workspace)
-# and the contract tests against the Rust server in one job, then build and publish as ghcr.io/<owner>/<repo>:latest and
-# :sha-<commit>.
+# Docker image on ghcr.io and a GitHub Release: on every push to main (or by hand) first all checks (npm run verify with
+# the Rust workspace) and the contract tests against the Rust server in one job, then build and publish as
+# ghcr.io/<owner>/<repo>:latest, :sha-<commit> and :<version>, then a release with the commits since the previous one.
+# Versioning as in OpenVoiceSpeak: no semver, one UTC instant per run gives "DDMMYY.stamp" (stamp: seconds since UTC
+# midnight in base36, 4 characters), the release is tagged deploy-<sha7>.
 # The package is private at first; switch it to public once under Package settings.
 name: Docker-Image
 
@@ -45,10 +47,28 @@ jobs:
       # pages (dist) and the compiled workspace from verify instead of building both again
       - run: npm run contract
 
-  image:
+  version:
     needs: verify
     # Only main is published, also when started by hand on another branch
     if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - id: version
+        run: |
+          set -euo pipefail
+          now="$(date -u +%s)"
+          seconds=$(( now % 86400 ))
+          digits=0123456789abcdefghijklmnopqrstuvwxyz
+          stamp=""
+          for _ in 1 2 3 4; do stamp="${digits:$(( seconds % 36 )):1}$stamp"; seconds=$(( seconds / 36 )); done
+          version="$(date -u -d "@$now" +%d%m%y).$stamp"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "Version $version"
+
+  image:
+    needs: [verify, version]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -71,6 +91,7 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=sha
+            type=raw,value=${{ needs.version.outputs.version }}
       - uses: docker/build-push-action@v6
         with:
           context: .
@@ -79,3 +100,33 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           # No layer cache: the upload to the Actions cache (node_modules, ffmpeg) took minutes, the build without cache
           # needs only seconds more
+
+  release:
+    # Only when the image is published: the release names exactly that build
+    needs: [version, image]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      # Notes: the commit messages since the previous release, so every build shows what is new in it
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.version.outputs.version }}
+          IMAGE: ghcr.io/${{ github.repository }}
+        run: |
+          set -euo pipefail
+          previous="$(gh release list --limit 1 --json tagName --jq '.[0].tagName' 2>/dev/null || true)"
+          : > /tmp/notes.md
+          if [ -n "$previous" ]; then
+            git log "$previous..HEAD" --pretty=format:'- %s (%h)' --no-merges > /tmp/notes.md
+          fi
+          [ -s /tmp/notes.md ] || echo "- Erste veröffentlichte Version." > /tmp/notes.md
+          { echo "Image: \`${IMAGE,,}:$VERSION\`"; echo; cat /tmp/notes.md; echo; } > /tmp/release.md
+          gh release create "deploy-${GITHUB_SHA::7}" \
+            --title "RezondesStream $VERSION" \
+            --notes-file /tmp/release.md \
+            --target "$GITHUB_SHA"
