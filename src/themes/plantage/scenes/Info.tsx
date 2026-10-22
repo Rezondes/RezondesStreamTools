@@ -1,21 +1,32 @@
 // Commands page of the Plantage theme (public under /s/<login>/): the mango field at the chosen time of day stays fixed in
 // the background, in front of it frosted paper cards with the commands (roles of the mango soldiers as minime variants).
 // List, texts and intro come from the info context of the core (useInfoPage), here only the plantation look.
+import { useRef } from "react";
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
+import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import WorldBackdrop from "../pixi/WorldBackdrop.tsx";
 import { kindOfTime } from "../world.ts";
 import { plantageSettings } from "../settings.ts";
 import { plantageNames, usePlantage } from "../usePlantage.ts";
 
+// fixed: how a card drops and bounces (px, deg, s, ease)
+const DROP = { fall: -120, turn: -3, length: 1.1, ease: "bounce.out" };
+const STEP = 0.12; // fixed: s between two cards
+
 export default function Info() {
   const values = usePlantage();
   const page = useInfoPage(values, plantageNames(values), readMinimeOptions(values, plantageSettings.minimeVariants).rules);
+  const column = useRef<HTMLElement>(null);
+  useTimeline(timeline => {
+    const cards = column.current?.querySelectorAll(":scope > .pl-card");
+    if (cards?.length) timeline.from(cards, { opacity: 0, y: DROP.fall, rotate: DROP.turn, duration: DROP.length, ease: DROP.ease, stagger: STEP });
+  }, [page?.sections.length ?? 0], column);
   if (!page) return null;
   return (
     <div className="pl-info">
       <div className="pl-info-backdrop"><WorldBackdrop values={values} kind={kindOfTime(values.timeInfo)} /></div>
-      <main className="pl-info-column">
+      <main ref={column} className="pl-info-column">
         <header className="pl-card pl-info-sign">
           <h1 className="pl-title">{page.title}</h1>
           <p>{page.intro}</p>

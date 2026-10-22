@@ -340,8 +340,8 @@
 /* --- Chat ----------------------------------------------------------------------------------------------------- */
 .theme-plantage .pl-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chat-padding, 14px); overflow: hidden; font-size: var(--chatFontSize); }
 .theme-plantage .pl-chat-top { flex-direction: column-reverse; }
-.theme-plantage .pl-row { flex: none; position: relative; padding: var(--row-padding, 10px 16px); overflow-wrap: anywhere; color: var(--textOnWood); animation: plantage-leaf-in var(--chat-float, 1100ms) ease-out both; }
-.theme-plantage .pl-row.fades { animation: plantage-leaf-in var(--chat-float, 1100ms) ease-out both, plantage-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
+.theme-plantage .pl-row { flex: none; position: relative; padding: var(--row-padding, 10px 16px); overflow-wrap: anywhere; color: var(--textOnWood); }
+.theme-plantage .pl-row.fades { animation: plantage-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
 .theme-plantage .pl-row.action { font-style: italic; }
 .theme-plantage .pl-msg { display: block; }
 .theme-plantage .sway .pl-msg { animation: plantage-rock var(--rock, 5s) ease-in-out infinite alternate; }
@@ -457,11 +457,10 @@
 .theme-plantage .pl-head { font-size: 0.72em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent2); }
 .theme-plantage .pl-song { font-weight: bold; font-size: var(--musicTitleSize); }
 .theme-plantage .pl-artist, .theme-plantage .pl-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: 0.85; }
-.theme-plantage .pl-vine { position: relative; height: var(--vine, 8px); border-radius: var(--pill, 999px); background: color-mix(in srgb, currentColor 20%, transparent); overflow: hidden; animation: plantage-vine-grow var(--vine-grow, 900ms) ease-out both; }
+.theme-plantage .pl-vine { position: relative; height: var(--vine, 8px); border-radius: var(--pill, 999px); background: color-mix(in srgb, currentColor 20%, transparent); overflow: hidden; }
 .theme-plantage .pl-vine span { display: block; height: 100%; width: calc(var(--part) * 100%); border-radius: inherit; background: linear-gradient(180deg, color-mix(in srgb, var(--leaf) 65%, var(--paper)), var(--leaf) 50%, var(--leafDark)); transition: width var(--tick, 250ms) linear; }
-.theme-plantage .pl-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eq-gap, 5px); height: var(--eq-height, 44px); }
-.theme-plantage .pl-eq i { width: var(--eq-bar, 9px); height: 100%; border-radius: var(--pill, 999px) var(--pill, 999px) var(--eq-foot, 3px) var(--eq-foot, 3px); background: linear-gradient(var(--mango), var(--leaf) 45%, var(--leafDark)); transform-origin: bottom; animation: plantage-eq var(--eq-time, 900ms) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--eq-time, 900ms) / -5); }
-.theme-plantage .paused .pl-eq i { animation-play-state: paused; }
+.theme-plantage .pl-eq { flex: none; display: flex; }
+.theme-plantage .pl-tuned { display: contents; }
 
 /* --- Effects -------------------------------------------------------------------------------------------------- */
 .theme-plantage .pl-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
@@ -475,7 +474,6 @@
 }
 .theme-plantage .pl-fx-item img, .theme-plantage .pl-fx-item video, .theme-plantage .pl-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); }
 .theme-plantage .pl-fx-text { font-size: var(--fxTextSize); font-weight: 700; text-align: center; overflow-wrap: anywhere; text-shadow: 0 var(--text-shadow, 3px) 0 var(--soilDark); }
-.theme-plantage .pl-fx-text.slip { animation: plantage-card-drop var(--card-drop, 1100ms) cubic-bezier(0.3, 1.4, 0.5, 1) both; }
 .theme-plantage .pl-fx-text.slip {
   position: relative;
   padding: var(--fx-padding, 14px 28px);
@@ -508,14 +506,12 @@
 @keyframes plantage-rise-in { from { opacity: 0; translate: 0 var(--rise, 20px); scale: 0.96; } to { opacity: 1; translate: 0 0; scale: 1; } }
 @keyframes plantage-rock { from { rotate: -0.6deg; } to { rotate: 0.6deg; } }
 @keyframes plantage-leaf { from { rotate: -5deg; } to { rotate: 5deg; } }
-@keyframes plantage-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
 
 /* --- Commands page (public): field fixed in the background, paper cards scroll in front as a normal page -------------- */
 .theme-plantage.theme-root:has(.pl-info) { min-height: 100dvh; background: var(--soilDark); }
 .theme-plantage .pl-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
 .theme-plantage .pl-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
 .theme-plantage .pl-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--info-gap, 28px); }
-.theme-plantage .pl-info .pl-card { animation: plantage-card-drop var(--card-drop, 1100ms) cubic-bezier(0.3, 1.4, 0.5, 1) both; }
 .theme-plantage .pl-info .pl-card:nth-child(2) { animation-delay: var(--card-step, 120ms); }
 .theme-plantage .pl-info .pl-card:nth-child(3) { animation-delay: calc(2 * var(--card-step, 120ms)); }
 .theme-plantage .pl-info .pl-card:nth-child(n + 4) { animation-delay: calc(3 * var(--card-step, 120ms)); }
@@ -530,15 +526,3 @@
 
 /* Overlays (PLAN-PLANTAGE.md package 4): chat slips float in like leaves and settle, the music vine grows with a new
    track, frosted cards fall in like ripe fruit and spring */
-@keyframes plantage-leaf-in {
-  0% { opacity: 0; translate: calc(-1 * var(--leaf-drift, 30px)) calc(-1 * var(--leaf-height, 70px)); rotate: -14deg; }
-  40% { opacity: 1; translate: calc(0.6 * var(--leaf-drift, 30px)) calc(-0.45 * var(--leaf-height, 70px)); rotate: 8deg; }
-  70% { translate: calc(-0.25 * var(--leaf-drift, 30px)) calc(-0.1 * var(--leaf-height, 70px)); rotate: -3deg; }
-  100% { opacity: 1; translate: 0 0; rotate: 0deg; }
-}
-@keyframes plantage-vine-grow { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
-@keyframes plantage-card-drop {
-  0% { opacity: 0; translate: 0 calc(-1 * var(--card-fall, 120px)); rotate: -3deg; }
-  60% { opacity: 1; translate: 0 calc(0.08 * var(--card-fall, 120px)); rotate: 1deg; }
-  100% { opacity: 1; translate: 0 0; rotate: 0deg; }
-}
