@@ -8,6 +8,7 @@
 use std::collections::BTreeMap;
 use std::future::Future;
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
 use rst_domain::access::Feature;
@@ -100,6 +101,8 @@ pub struct StreamerRuntime<T, S, K, P> {
     pub spotify: Option<Arc<SpotifyPlayer<P, S, K>>>,
     /// Stream stats, counted from the alerts and chat lines this runtime receives
     pub stats: Arc<StatsRunner<S, K>>,
+    /// Whether the `EventSub` connection is subscribed right now (always false without the feature alerts)
+    events_live: Arc<AtomicBool>,
     cancel: CancellationToken,
 }
 
@@ -117,6 +120,7 @@ struct Shared<T, S, K> {
     twitch: T,
     profile: Profile<S, K>,
     features: BTreeMap<Feature, bool>,
+    events_live: Arc<AtomicBool>,
     now: fn() -> i64,
 }
 
@@ -148,7 +152,7 @@ where
     /// `EventSub`: alerts to the overlays, the end of the stream to the minimes
     async fn read_events<C: SocketConnector>(self: Arc<Self>, sockets: Arc<C>, url: String, cancel: CancellationToken) {
         let subscribe = |session_id: String| subscribe_all(&self.keeper, &self.twitch, session_id, self.now);
-        alerts::listen(&*sockets, &url, &cancel, subscribe, |message| match message {
+        alerts::listen(&*sockets, &url, &cancel, &self.events_live, subscribe, |message| match message {
             EventSubMessage::Alert(alert) => {
                 self.stats.record_alert(&alert);
                 self.hubs.emit(&self.id, &ServerMessage::Alert { alert });
@@ -226,6 +230,14 @@ where
     }
 }
 
+impl<T, S, K, P> StreamerRuntime<T, S, K, P> {
+    /// Whether alerts arrive right now: the `EventSub` connection is up and subscribed
+    #[must_use]
+    pub fn events_live(&self) -> bool {
+        self.events_live.load(Ordering::Relaxed)
+    }
+}
+
 impl<T, S, K, P> StreamerRuntime<T, S, K, P>
 where
     P: SpotifyApi,
@@ -275,6 +287,7 @@ where
         };
         let keeper = Arc::new(TokenKeeper::new(id.clone(), tokens, twitch.clone(), profile.clone()));
         let cancel = CancellationToken::new();
+        let events_live = Arc::new(AtomicBool::new(false));
         {
             let (help, twitch, tokens) = (Arc::clone(&help), twitch.clone(), keeper.current());
             tokio::spawn(async move { help.set_can_chat(twitch.can_chat(&tokens).await) });
@@ -292,6 +305,7 @@ where
             twitch,
             profile,
             features: features.clone(),
+            events_live: Arc::clone(&events_live),
             now,
         });
         let name = |task: &str| format!("{task} of {login}");
@@ -322,7 +336,7 @@ where
             let chat = move || Arc::clone(&shared).read_chat(Arc::clone(&sockets), irc_url.clone(), stop.clone());
             supervise(name("Chat"), cancel.clone(), chat);
         }
-        Ok(Some(Self { id, login, keeper, triggers, minimes, help, spotify, stats, cancel }))
+        Ok(Some(Self { id, login, keeper, triggers, minimes, help, spotify, stats, events_live, cancel }))
     }
 }
 
@@ -494,11 +508,13 @@ mod tests {
         let (twitch, hubs) = (setup.twitch.clone(), Arc::clone(&setup.hubs));
         let mut stream = hubs.subscribe(&id(1), false).expect("stream");
         let runtime = StreamerRuntime::start(setup).await.expect("start").expect("runtime");
+        assert!(!runtime.events_live(), "not live before the welcome");
         let alert = stream.next().await.expect("alert");
         assert!(alert.contains(r#""type":"alert""#) && alert.contains("Neo"), "{alert}");
         let subscribed = twitch.subscribed.lock().expect("subscribed").clone();
         assert_eq!(subscribed.len(), 10);
         assert!(subscribed.iter().any(|kind| kind == "stream.offline"));
+        assert!(runtime.events_live(), "live once subscribed");
         runtime.stop();
     }
 

@@ -274,6 +274,11 @@ impl App {
 
     /// Whether the running player of the streamer has a Spotify login
     #[must_use]
+    /// Whether the alerts of the streamer arrive right now (`EventSub` up and subscribed)
+    pub fn events_live(&self, id: &StreamerId) -> bool {
+        self.runtimes.get(id).is_some_and(|runtime| runtime.events_live())
+    }
+
     pub fn spotify_connected(&self, id: &StreamerId) -> bool {
         self.runtimes
             .get(id)

@@ -105,7 +105,7 @@ pub async fn me(call: Call<'_>) -> Response {
         &json!({
             "login": call.visitor.login,
             "admin": call.visitor.admin,
-            "live": false,
+            "live": app.events_live(id),
             "spotify": spotify,
             "features": call.visitor.features,
             "theme": theme,

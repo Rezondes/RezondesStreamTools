@@ -36,7 +36,7 @@ pub async fn serve(app: &App, path: &StreamerPath, uri: &Uri, cookies: Option<&s
             let spotify = (app.spotify.is_some() && music).then(|| app.spotify_connected(&id));
             // channelId: the Twitch id of the channel, for the emotes of 7TV, BTTV and FFZ in the chat overlay
             let channel = app.runtimes.get(&id).map(|runtime| runtime.keeper.current().user_id.as_str().to_owned());
-            let status = json!({ "login": path.login, "live": false, "spotify": spotify, "features": features, "channelId": channel });
+            let status = json!({ "login": path.login, "live": app.events_live(&id), "spotify": spotify, "features": features, "channelId": channel });
             json(&status, 200)
         }
         OverlayRoute::Settings => match app.settings_service().public(&id).await {

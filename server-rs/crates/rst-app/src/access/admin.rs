@@ -100,11 +100,11 @@ where
         Ok((after, revoked))
     }
 
-    /// Every streamer with access, connection and last login
+    /// Every streamer with access, connection, whether its alerts arrive right now (`live`) and last login
     ///
     /// # Errors
     /// When a store fails.
-    pub async fn streamers(&self) -> Result<Vec<StreamerRow>, VaultError> {
+    pub async fn streamers(&self, live: impl Fn(&StreamerId) -> bool) -> Result<Vec<StreamerRow>, VaultError> {
         let policy = self.access.load(self.admins).await?;
         let mut rows = Vec::new();
         for streamer in self.streamers.list().await? {
@@ -113,7 +113,7 @@ where
                 allowed: policy.can_use(self.admins, &streamer.login),
                 admin: is_admin(self.admins, &streamer.login),
                 connected: self.profile.twitch_tokens(id).await?.is_some(),
-                live: false,
+                live: live(id),
                 last_login: Some(streamer.last_login),
                 login: streamer.login.to_string(),
             });
@@ -259,7 +259,7 @@ mod tests {
         let neo = StreamerId::from_bytes([1; 16]);
         world
             .streamers
-            .register(&TwitchUserId::parse("7").expect("id"), &login("neo"), neo, 5)
+            .register(&TwitchUserId::parse("7").expect("id"), &login("neo"), neo.clone(), 5)
             .await
             .expect("register");
         world
@@ -267,16 +267,17 @@ mod tests {
             .register(&TwitchUserId::parse("1").expect("id"), &login("rezondes"), StreamerId::from_bytes([2; 16]), 6)
             .await
             .expect("admin");
-        let rows = world.admin().streamers().await.expect("rows");
+        // Only the runtime of neo has its alerts up
+        let rows = world.admin().streamers(|id| *id == neo).await.expect("rows");
         let neo_row = StreamerRow {
             login: "neo".to_owned(),
             allowed: false,
             admin: false,
             connected: false,
-            live: false,
+            live: true,
             last_login: Some(5),
         };
         assert_eq!(rows[0], neo_row);
-        assert!(rows[1].admin && rows[1].allowed);
+        assert!(rows[1].admin && rows[1].allowed && !rows[1].live);
     }
 }

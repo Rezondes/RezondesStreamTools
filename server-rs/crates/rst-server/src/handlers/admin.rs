@@ -49,7 +49,7 @@ pub async fn save_access(call: Call<'_>) -> Response {
 }
 
 pub async fn streamers(call: Call<'_>) -> Response {
-    match call.app.access_admin().streamers().await {
+    match call.app.access_admin().streamers(|id| call.app.events_live(id)).await {
         Ok(rows) => json(&rows, 200),
         Err(error) => server_error(&error.to_string()),
     }

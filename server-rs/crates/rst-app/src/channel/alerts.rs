@@ -4,6 +4,7 @@
 //! keepalive (plus five seconds) or after a broken connection it starts again from the configured URL after a pause.
 
 use std::future::Future;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
 use rst_domain::twitch::eventsub::{DEFAULT_KEEPALIVE_SECONDS, EventSubMessage, parse_message};
@@ -16,11 +17,13 @@ pub const RETRY: Duration = Duration::from_secs(5);
 /// Grace on top of the keepalive from the welcome
 const KEEPALIVE_GRACE: u64 = 5;
 
-/// Listens until `cancel`; `subscribe` gets the session id of the first welcome of every connection
+/// Listens until `cancel`; `subscribe` gets the session id of the first welcome of every connection. `live` is true
+/// while a connection is subscribed and false from the moment it breaks or ends.
 pub async fn listen<C, F, Fut>(
     connector: &C,
     url: &str,
     cancel: &CancellationToken,
+    live: &AtomicBool,
     subscribe: F,
     mut handle: impl FnMut(EventSubMessage) + Send,
 ) where
@@ -31,7 +34,9 @@ pub async fn listen<C, F, Fut>(
     loop {
         match connector.connect(url).await {
             Ok(socket) => {
-                if session(connector, socket, cancel, &subscribe, &mut handle).await {
+                let cancelled = session(connector, socket, cancel, live, &subscribe, &mut handle).await;
+                live.store(false, Ordering::Relaxed);
+                if cancelled {
                     return;
                 }
             }
@@ -49,6 +54,7 @@ async fn session<C, F, Fut>(
     connector: &C,
     mut socket: C::Socket,
     cancel: &CancellationToken,
+    live: &AtomicBool,
     subscribe: &F,
     handle: &mut (impl FnMut(EventSubMessage) + Send),
 ) -> bool
@@ -71,6 +77,7 @@ where
                 if let Some(session_id) = session_id.filter(|_| !subscribed) {
                     subscribed = true;
                     subscribe(session_id).await;
+                    live.store(true, Ordering::Relaxed);
                 }
             }
             Ok(EventSubMessage::Reconnect { url }) => match connector.connect(&url).await {
@@ -136,7 +143,7 @@ mod tests {
                     let sessions = Arc::clone(&sessions);
                     async move { sessions.lock().expect("sessions").push(id) }
                 };
-                listen(&sockets, "wss://eventsub", &cancel, subscribe, |message| {
+                listen(&sockets, "wss://eventsub", &cancel, &AtomicBool::new(false), subscribe, |message| {
                     alerts.lock().expect("alerts").push(message);
                 })
                 .await;
@@ -162,22 +169,30 @@ mod tests {
         sockets.script_then_silence(vec![welcome("one")]);
         sockets.script_then_silence(vec![welcome("two")]);
         let sessions = Arc::new(Mutex::new(Vec::new()));
+        let live = Arc::new(AtomicBool::new(false));
         let cancel = CancellationToken::new();
         let task = tokio::spawn({
-            let (sockets, sessions, cancel) = (sockets.clone(), Arc::clone(&sessions), cancel.clone());
+            let (sockets, sessions, live, cancel) =
+                (sockets.clone(), Arc::clone(&sessions), Arc::clone(&live), cancel.clone());
             async move {
                 let subscribe = |id: String| {
                     let sessions = Arc::clone(&sessions);
                     async move { sessions.lock().expect("sessions").push(id) }
                 };
-                listen(&sockets, "wss://eventsub", &cancel, subscribe, |_| {}).await;
+                listen(&sockets, "wss://eventsub", &cancel, &live, subscribe, |_| {}).await;
             }
         });
         tokio::time::sleep(Duration::from_secs(1)).await;
         assert_eq!(*sessions.lock().expect("sessions"), ["one"]);
-        tokio::time::sleep(Duration::from_secs(10 + KEEPALIVE_GRACE) + RETRY).await;
+        assert!(live.load(Ordering::Relaxed), "subscribed");
+        // The silence breaks the connection: not live during the pause before the next one
+        tokio::time::sleep(Duration::from_secs(10 + KEEPALIVE_GRACE)).await;
+        assert!(!live.load(Ordering::Relaxed), "broken");
+        tokio::time::sleep(RETRY).await;
         assert_eq!(*sessions.lock().expect("sessions"), ["one", "two"]);
+        assert!(live.load(Ordering::Relaxed), "subscribed again");
         cancel.cancel();
         task.await.expect("listener ends");
+        assert!(!live.load(Ordering::Relaxed), "ended");
     }
 }
