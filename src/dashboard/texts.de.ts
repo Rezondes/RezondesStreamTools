@@ -163,6 +163,11 @@ export const TEXTS = {
     confirmUsed: (name: string, triggers: string) => `"${name}" wird noch von diesen Triggern genutzt: ${triggers}. Trotzdem löschen?`,
   },
   adminArea: {
+    tabs: { access: "Zugang", features: "Funktionen", streamers: "Streamer", backups: "Backups" },
+    tabsLabel: "Bereiche der Verwaltung",
+    feature: "Funktion",
+    unsaved: "Ungespeicherte Änderungen",
+    clean: "Alles gespeichert.",
     access: "Zugang",
     registration: "Anmeldung",
     registrationModes: { allowlist: "nur Allowlist", open: "offen für alle" },

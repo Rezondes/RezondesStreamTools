@@ -58,14 +58,24 @@
 .sub-tab[aria-selected=true] { color: var(--fg); box-shadow: inset 0 -3px 0 var(--accent); }
 .sub-tab:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
 
-/* Overview: the status line, then cards (planes of --surface-2 like the setting groups), side by side where there is
+/* Admin: allowlist and beta testers side by side where there is room; the features as rows with one radio per level,
+   the levels centered under their heading */
+.admin-lists { display: grid; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+.admin-features th:not(:first-child), .admin-features td:not(:first-child) { width: 7em; text-align: center; }
+.admin-features input[type=radio] { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); cursor: pointer; vertical-align: middle; }
+.admin-features input[type=radio]:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.admin-features tbody tr:hover { background: var(--surface); }
+/* Hours and counts are short numbers: the field is as wide as they need */
+.admin input[type=number] { max-width: 10em; }
+
+/* Sections with tabs (overview, admin): the status line, then cards (planes of --surface-2 like the setting groups), side by side where there is
    room; tight inside a card, wide between them */
-.overview-area { display: grid; gap: var(--gap-wide, 24px); padding-top: var(--gap-tight, 8px); }
+.section-area { display: grid; gap: var(--gap-wide, 24px); padding-top: var(--gap-tight, 8px); }
 .overview-status { display: flex; flex-wrap: wrap; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); margin: 0; }
-.overview-cards { display: grid; gap: var(--gap-wide, 24px); grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min, 380px)), 1fr)); align-items: start; }
-.overview-card { display: grid; gap: var(--gap-tight, 8px); align-content: start; min-width: 0; padding: var(--card-pad, 16px); }
-.overview-card h3 { margin: var(--gap-tight, 8px) 0 0; font-size: 14px; font-weight: var(--heading-weight); color: var(--fg-dim); text-transform: var(--label-case); }
-.overview-card > p, .overview-card .obs-import > p { margin: 0; max-width: var(--prose-max, 75ch); }.overview-card-head { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-tight, 8px); }
+.section-cards { display: grid; gap: var(--gap-wide, 24px); grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min, 380px)), 1fr)); align-items: start; }
+.section-card { display: grid; gap: var(--gap-tight, 8px); align-content: start; min-width: 0; padding: var(--card-pad, 16px); }
+.section-card h3 { margin: var(--gap-tight, 8px) 0 0; font-size: 14px; font-weight: var(--heading-weight); color: var(--fg-dim); text-transform: var(--label-case); }
+.section-card > p, .section-card .obs-import > p { margin: 0; max-width: var(--prose-max, 75ch); }.section-card-head { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-tight, 8px); }
 /* Statistics: the number large, its name small below; numbers never break */
 .stat-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--tile-min, 110px), 1fr)); gap: var(--gap-tight, 8px); margin: 0; }
 .stat-tiles > div { display: flex; flex-direction: column-reverse; gap: 2px; padding: 8px 10px; border-radius: var(--radius-sm); background: var(--surface); }
@@ -124,7 +134,7 @@
 .setting-error { background: var(--error); color: var(--on-error); border-radius: var(--radius-sm); padding: 2px 6px; justify-self: start; }
 .setting-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .setting-volume { display: flex; align-items: center; gap: 6px; }
-.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]), .dashboard select, .dashboard textarea {
+.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):not([type=radio]), .dashboard select, .dashboard textarea {
   min-height: 44px;
   padding: 6px 8px;
   background: var(--field);
@@ -146,7 +156,7 @@
   cursor: pointer;
 }
 .dashboard select:disabled, .dashboard input:disabled, .dashboard textarea:disabled { color: var(--fg-dim); cursor: default; }
-.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):hover:not(:disabled), .dashboard select:hover:not(:disabled), .dashboard textarea:hover:not(:disabled) { border-color: var(--fg-dim); }
+.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):not([type=radio]):hover:not(:disabled), .dashboard select:hover:not(:disabled), .dashboard textarea:hover:not(:disabled) { border-color: var(--fg-dim); }
 /* Color swatch: the color fills the whole field, without the gray system frame */
 .dashboard input[type=color] { flex: none; width: 44px; height: 44px; padding: 0; border: var(--border-w) solid var(--border); border-radius: var(--radius-sm); background: var(--field); cursor: pointer; overflow: hidden; }
 .dashboard input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
@@ -189,7 +199,7 @@
 
 /* Phones: fields at 16px, below that iOS zooms the whole page when one gets the focus */
 @media (max-width: 639px) {
-  .dashboard input:not([type=checkbox]):not([type=range]):not([type=color]), .dashboard select, .dashboard textarea { font-size: 16px; }
+  .dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):not([type=radio]), .dashboard select, .dashboard textarea { font-size: 16px; }
 }
 
 /* Touch screens: every target at least 44px high (the mouse keeps the denser sizes) */
@@ -205,7 +215,7 @@
      cards pad less, so the fields keep their width */
   .dashboard { max-width: none; padding: 12px; }
   .dashboard .panel { padding: 12px; }
-  .overview-card { padding: 12px; }
+  .section-card { padding: 12px; }
   .dashboard thead { display: none; }
   .dashboard tr, .dashboard td { display: block; border: none; padding: 4px 0; }
   .dashboard tr { border-bottom: var(--border-w) solid var(--line); padding: 12px 0; }

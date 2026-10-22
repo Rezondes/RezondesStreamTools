@@ -31,10 +31,10 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
   return (
     <section className="panel overview">
       <SubTabs label={TEXT.tabsLabel} tabs={TABS} current={tab} onChange={setTab} />
-      <div className="overview-area" {...subTabPanel(tab)}>
+      <div className="section-area" {...subTabPanel(tab)}>
         {tab === "live" && <Live me={me} act={act} />}
         {tab === "obs" && <ObsSetup me={me} act={act} />}
-        {tab === "chat" && <section className="settings-group overview-card"><ChatHelp login={me.login} /></section>}
+        {tab === "chat" && <section className="settings-group section-card"><ChatHelp login={me.login} /></section>}
       </div>
     </section>
   );
@@ -56,9 +56,9 @@ function Live({ me, act }: { me: Me; act: Act }) {
         )}
         <span>{TEXT.themeLabel} <b>{theme.name}</b>{sections.includes("theme") && <> <a href="#/theme">{TEXT.changeTheme}</a></>}</span>
       </p>
-      <div className="overview-cards">
+      <div className="section-cards">
         {(me.features.alerts || fire) && (
-          <section className="settings-group overview-card">
+          <section className="settings-group section-card">
             <h2>{TEXT.testTitle}</h2>
             {me.features.alerts && (
               <>
@@ -86,8 +86,8 @@ function ObsSetup({ me, act }: { me: Me; act: Act }) {
   const available = sceneNames(THEME_SCENES, me.theme);
   return (
     <>
-      <section className="settings-group overview-card"><ObsImport login={me.login} layout={layout} /></section>
-      <section className="settings-group overview-card">
+      <section className="settings-group section-card"><ObsImport login={me.login} layout={layout} /></section>
+      <section className="settings-group section-card">
         <h2>{TEXT.singleTitle}</h2>
         <p className="muted">{TEXT.obsHint}</p>
         <p className="muted">{TEXT.dragHint}</p>
@@ -116,7 +116,7 @@ function ObsSetup({ me, act }: { me: Me; act: Act }) {
           </tbody>
         </table>
       </section>
-      <section className="settings-group overview-card">
+      <section className="settings-group section-card">
         <h2>{TEXT.keyTitle}</h2>
         <p className="muted">{TEXT.keyHint}</p>
         <p className="actions">
@@ -140,8 +140,8 @@ function Stats({ me, act }: { me: Me; act: Act }) {
     return () => { active = false; };
   }, [me, loads]);
   return (
-    <section className="settings-group overview-card">
-      <div className="overview-card-head">
+    <section className="settings-group section-card">
+      <div className="section-card-head">
         <h2>{TEXT.statsTitle}</h2>
         <button className="btn" onClick={() => setLoads(count => count + 1)} aria-label={TEXT.statsReload} title={TEXT.statsReload}>
           <span aria-hidden="true">{"↻"}</span>

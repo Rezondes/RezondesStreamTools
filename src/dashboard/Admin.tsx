@@ -8,9 +8,13 @@ import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
 import { createBackup, deleteBackup, deleteStreamer, getJson, postJson, restoreBackup, uploadBackup } from "./api.ts";
+import { Segmented } from "./PanelFields.tsx";
+import { SubTabs, subTabPanel } from "./SubTabs.tsx";
 import { TEXTS } from "./texts.de.ts";
 
 const ADMIN_TEXT = TEXTS.adminArea;
+const TABS = (["access", "features", "streamers", "backups"] as const).map(id => ({ id, label: ADMIN_TEXT.tabs[id] }));
+type Tab = (typeof TABS)[number]["id"];
 const FEATURES = Object.keys(ADMIN_TEXT.featureNames) as Feature[];
 const LEVELS = Object.keys(ADMIN_TEXT.levels) as Level[];
 
@@ -40,6 +44,7 @@ export default function Admin() {
   const [saved, setSaved] = useState<Access | null>(null);
   const [streamers, setStreamers] = useState<StreamerRow[]>([]);
   const [notice, setNotice] = useState<"saved" | ErrorCode | null>(null);
+  const [tab, setTab] = useState<Tab>("access");
 
   const load = useCallback(() => {
     getJson<Access | null>("/api/admin/access", null).then(loaded => {
@@ -75,20 +80,29 @@ export default function Admin() {
       .catch(() => setNotice("server-error"));
   };
 
+  // Access and features are one setting on the server: both tabs show the same save bar
+  const failed = notice !== null && notice !== "saved";
+  const saveBar = <SaveBar dirty={saved !== null && JSON.stringify(fromDraft(access)) !== JSON.stringify(saved)} notice={notice} onSave={save} />;
+
   return (
     <section className="panel admin">
-      <h2>{ADMIN_TEXT.access}</h2>
-      <AccessForm access={access} onChange={setAccess} />
-      <div className="actions">
-        <button className="btn primary" onClick={save}>{ADMIN_TEXT.save}</button>
-        <span role="status" className={notice === "saved" ? "" : "error"}>{notice === "saved" ? ADMIN_TEXT.saved : notice ? TEXTS.errors[notice] : ""}</span>
+      <SubTabs label={ADMIN_TEXT.tabsLabel} tabs={TABS} current={tab} onChange={setTab} />
+      <div className="section-area" {...subTabPanel(tab)}>
+        {tab === "access" && <section className="settings-group section-card"><AccessLists access={access} onChange={setAccess} />{saveBar}</section>}
+        {tab === "features" && <section className="settings-group section-card"><FeatureTable access={access} onChange={setAccess} />{saveBar}</section>}
+        {tab === "streamers" && (
+          <section className="settings-group section-card">
+            {failed && <p className="error" role="alert">{TEXTS.errors[notice]}</p>}
+            <StreamerTable streamers={streamers} onDelete={remove} />
+          </section>
+        )}
+        {tab === "backups" && (
+          <div className="section-cards">
+            <section className="settings-group section-card"><h2>{ADMIN_TEXT.backups}</h2><Backups /></section>
+            <section className="settings-group section-card"><h2>{ADMIN_TEXT.schedule}</h2><BackupScheduleForm /></section>
+          </div>
+        )}
       </div>
-      <h2>{ADMIN_TEXT.streamers}</h2>
-      <StreamerTable streamers={streamers} onDelete={remove} />
-      <h2>{ADMIN_TEXT.backups}</h2>
-      <Backups />
-      <h2>{ADMIN_TEXT.schedule}</h2>
-      <BackupScheduleForm />
     </section>
   );
 }
@@ -106,36 +120,58 @@ function confirmLosses(saved: Access, next: Access) {
   return confirm([ADMIN_TEXT.confirmTitle, ...lines.map(line => `- ${line}`), "", ADMIN_TEXT.confirmEnd].join("\n"));
 }
 
-function AccessForm({ access, onChange }: { access: AccessDraft; onChange: (access: AccessDraft) => void }) {
+// Save with its state: unsaved changes, saved, or the error of the server
+function SaveBar({ dirty, notice, onSave }: { dirty: boolean; notice: "saved" | ErrorCode | null; onSave: () => void }) {
+  const failed = notice !== null && notice !== "saved";
+  return (
+    <div className="actions">
+      <button className="btn primary" disabled={!dirty} onClick={onSave}>{ADMIN_TEXT.save}</button>
+      <span role="status" className={failed ? "error" : "muted"}>
+        {failed ? TEXTS.errors[notice] : dirty ? ADMIN_TEXT.unsaved : notice === "saved" ? ADMIN_TEXT.saved : ADMIN_TEXT.clean}
+      </span>
+    </div>
+  );
+}
+
+// Who may log in: the mode as two buttons, the two lists side by side where there is room
+function AccessLists({ access, onChange }: { access: AccessDraft; onChange: (access: AccessDraft) => void }) {
+  const modes = (Object.keys(ADMIN_TEXT.registrationModes) as Access["registration"][]).map(mode => ({ value: mode, label: ADMIN_TEXT.registrationModes[mode] }));
   return (
     <>
-      <label className="setting">
-        {ADMIN_TEXT.registration}
-        <select value={access.registration} onChange={event => onChange({ ...access, registration: event.target.value as Access["registration"] })}>
-          <option value="allowlist">{ADMIN_TEXT.registrationModes.allowlist}</option>
-          <option value="open">{ADMIN_TEXT.registrationModes.open}</option>
-        </select>
-      </label>
-      <label className="setting">
-        {ADMIN_TEXT.allowlist}
-        <textarea rows={4} value={access.allowlist} spellCheck={false} onChange={event => onChange({ ...access, allowlist: event.target.value })} />
-      </label>
-      <label className="setting">
-        {ADMIN_TEXT.beta}
-        <textarea rows={3} value={access.beta} spellCheck={false} onChange={event => onChange({ ...access, beta: event.target.value })} />
-      </label>
-      <fieldset className="settings-group">
-        <legend>{ADMIN_TEXT.features}</legend>
-        {FEATURES.map(feature => (
-          <label key={feature} className="setting">
-            {ADMIN_TEXT.featureNames[feature]}
-            <select value={access.features[feature]} onChange={event => onChange({ ...access, features: { ...access.features, [feature]: event.target.value as Level } })}>
-              {LEVELS.map(level => <option key={level} value={level}>{ADMIN_TEXT.levels[level]}</option>)}
-            </select>
-          </label>
-        ))}
-      </fieldset>
+      <Segmented label={ADMIN_TEXT.registration} value={access.registration} options={modes} onChange={registration => onChange({ ...access, registration })} />
+      <div className="admin-lists">
+        <label className="setting">
+          {ADMIN_TEXT.allowlist}
+          <textarea rows={8} value={access.allowlist} spellCheck={false} onChange={event => onChange({ ...access, allowlist: event.target.value })} />
+        </label>
+        <label className="setting">
+          {ADMIN_TEXT.beta}
+          <textarea rows={8} value={access.beta} spellCheck={false} onChange={event => onChange({ ...access, beta: event.target.value })} />
+        </label>
+      </div>
     </>
+  );
+}
+
+// Every feature one row, its level as one of three radio buttons, so all levels are visible at once
+function FeatureTable({ access, onChange }: { access: AccessDraft; onChange: (access: AccessDraft) => void }) {
+  return (
+    <table className="admin-features">
+      <thead><tr><th>{ADMIN_TEXT.feature}</th>{LEVELS.map(level => <th key={level}>{ADMIN_TEXT.levels[level]}</th>)}</tr></thead>
+      <tbody>
+        {FEATURES.map(feature => (
+          <tr key={feature}>
+            <td>{ADMIN_TEXT.featureNames[feature]}</td>
+            {LEVELS.map(level => (
+              <td key={level}>
+                <input type="radio" name={`feature-${feature}`} checked={access.features[feature] === level} aria-label={`${ADMIN_TEXT.featureNames[feature]}: ${ADMIN_TEXT.levels[level]}`}
+                  onChange={() => onChange({ ...access, features: { ...access.features, [feature]: level } })} />
+              </td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
@@ -267,9 +303,8 @@ function BackupScheduleForm() {
   return (
     <>
       <p className="muted">{ADMIN_TEXT.scheduleHint}</p>
-      <label className="setting">
-        {ADMIN_TEXT.scheduleEnabled}
-        <input type="checkbox" checked={schedule.enabled} onChange={event => setSchedule({ ...schedule, enabled: event.target.checked })} />
+      <label className="setting-row">
+        <input type="checkbox" checked={schedule.enabled} onChange={event => setSchedule({ ...schedule, enabled: event.target.checked })} /> {ADMIN_TEXT.scheduleEnabled}
       </label>
       <label className="setting">
         {ADMIN_TEXT.scheduleInterval}
