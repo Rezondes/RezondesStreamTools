@@ -34,7 +34,9 @@
 .dashboard .login .btn { padding: 12px 26px; font-size: 1.05em; }
 
 .dashboard-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: var(--border-w) solid var(--line); }
+.dashboard-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; min-width: 0; }
 .dashboard-user { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.dashboard-account { overflow-wrap: anywhere; }
 
 .dashboard .panel { display: grid; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); padding: var(--panel-pad, 20px); border: var(--border-w) solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
 .dashboard .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
@@ -239,8 +241,9 @@
 /* Little space (phone, low window): navigation in one line and scrollable sideways, theme and render scroll as
    a whole in the content area instead of in too small columns; the page itself still does not scroll */
 @media (max-width: 719px), (max-height: 559px) {
-  .dashboard-nav { flex-wrap: nowrap; overflow-x: auto; }
-  .dashboard-nav > * { flex: none; }
+  /* Narrow: the tabs scroll in their own row, the signed in name and logout take the next row and are never cut off */
+  .dashboard-tabs { flex: 1 1 100%; flex-wrap: nowrap; overflow-x: auto; }
+  .dashboard-tabs > * { flex: none; }
   .dashboard-content.split { display: block; overflow-y: auto; }
   .dashboard-content.split > .panel { display: block; }
   .dashboard-content.split .settings-groups, .dashboard-content.split .scene-preview { max-height: none; overflow: visible; }

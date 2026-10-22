@@ -99,11 +99,13 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
   return (
     <>
       <nav className="dashboard-nav">
-        {visible.filter(id => id !== "account" && id !== "admin").map(id => (
-          <a key={id} className={`btn${id === section ? " primary" : ""}`} href={`#/${id}`} aria-current={id === section ? "page" : undefined}>
-            {TEXTS.sections[id]}
-          </a>
-        ))}
+        <div className="dashboard-tabs">
+          {visible.filter(id => id !== "account" && id !== "admin").map(id => (
+            <a key={id} className={`btn${id === section ? " primary" : ""}`} href={`#/${id}`} aria-current={id === section ? "page" : undefined}>
+              {TEXTS.sections[id]}
+            </a>
+          ))}
+        </div>
         <span className="dashboard-user">
           {TEXTS.signedInAs}{" "}
           <a className="glow dashboard-account" href="#/account" title={TEXTS.toAccount} aria-current={section === "account" || section === "admin" ? "page" : undefined}>{account.login}</a>
