@@ -90,31 +90,49 @@ const FADE = 1.6;
 // so the GIF stays seamless
 function rain(context: CanvasRenderingContext2D, time: number, width: number, height: number, scale: number, alpha: number, options: BannerOptions) {
   if (options.density <= 0) return;
+  const first = LAYERS.length - Math.max(1, Math.min(LAYERS.length, options.layers));
+  for (let layer = first; layer < LAYERS.length; layer++) {
+    const blur = layer === 0 && options.blurFar > 0 ? options.blurFar : 0;
+    const scratch = blur > 0 && typeof document !== "undefined" ? document.createElement("canvas").getContext("2d") : null;
+    if (!scratch) {
+      context.filter = blur > 0 ? `blur(${blur}px)` : "none";
+      rainLayer(context, layer, time, width, height, scale, alpha, options);
+      continue;
+    }
+    // The far layer is drawn sharp and then blurred once as a whole: a filter on every single glyph costs one blur
+    // pass each (thousands per banner) and froze the whole browser in Opera GX
+    [scratch.canvas.width, scratch.canvas.height] = [width, height];
+    rainLayer(scratch, layer, time, width, height, scale, alpha, options);
+    context.filter = `blur(${blur}px)`;
+    context.drawImage(scratch.canvas, 0, 0);
+    context.filter = "none";
+  }
+  Object.assign(context, { globalAlpha: 1, shadowBlur: 0, filter: "none", textAlign: "start" });
+}
+
+// One depth layer of the rain, without its blur
+function rainLayer(context: CanvasRenderingContext2D, layer: number, time: number, width: number, height: number, scale: number, alpha: number, options: BannerOptions) {
   const glyphs = Array.from(options.glyphs);
   const tints = [options.dim, options.accent, options.accent];
-  const first = LAYERS.length - Math.max(1, Math.min(LAYERS.length, options.layers));
+  const size = Math.max(1, Math.round(options.sizes[layer] * scale));
   context.textBaseline = "middle";
   context.textAlign = "center";
   context.shadowColor = options.accent;
-  for (let layer = first; layer < LAYERS.length; layer++) {
-    const size = Math.max(1, Math.round(options.sizes[layer] * scale));
-    context.font = `${size}px ${fontStack(options.font)}`;
-    context.filter = layer === 0 && options.blurFar > 0 ? `blur(${options.blurFar}px)` : "none";
-    for (const column of rainColumns(layer, size, { seed: options.seed, width, density: options.density })) {
-      const at = headAt(column, size, height, RAIN_STILL);
-      if (!at) continue;
-      for (let behind = 0; behind < column.trail; behind++) {
-        const row = at.row - behind;
-        const y = row * size + size / 2;
-        if (y < -size || y > height + size) continue;
-        context.globalAlpha = alpha * LAYERS[layer].alpha * (1 - behind / column.trail) ** FADE;
-        context.fillStyle = behind === 0 ? options.flash : tints[layer];
-        context.shadowBlur = behind === 0 ? options.headGlow : 0;
-        context.fillText(glyphs[rainGlyph(options.seed + at.run, column, row, behind, time, glyphs.length, options.change)] ?? "", column.x, y);
-      }
+  context.font = `${size}px ${fontStack(options.font)}`;
+  for (const column of rainColumns(layer, size, { seed: options.seed, width, density: options.density })) {
+    const at = headAt(column, size, height, RAIN_STILL);
+    if (!at) continue;
+    for (let behind = 0; behind < column.trail; behind++) {
+      const row = at.row - behind;
+      const y = row * size + size / 2;
+      if (y < -size || y > height + size) continue;
+      context.globalAlpha = alpha * LAYERS[layer].alpha * (1 - behind / column.trail) ** FADE;
+      context.fillStyle = behind === 0 ? options.flash : tints[layer];
+      context.shadowBlur = behind === 0 ? options.headGlow : 0;
+      context.fillText(glyphs[rainGlyph(options.seed + at.run, column, row, behind, time, glyphs.length, options.change)] ?? "", column.x, y);
     }
   }
-  Object.assign(context, { globalAlpha: 1, shadowBlur: 0, filter: "none", textAlign: "start" });
+  Object.assign(context, { globalAlpha: 1, shadowBlur: 0 });
 }
 
 function scanlines(context: CanvasRenderingContext2D, width: number, height: number, options: BannerOptions) {
