@@ -1,5 +1,6 @@
 // Check for glClip.ts with a fake renderer: update gets exactly the drawn time before every render, the result lands in
-// the 2D context, and after the last frame everything is freed and built again on the next draw. Runs with npm test.
+// the 2D context, after the last frame everything is freed and built again on the next draw, the setup gets the renderer.
+// Runs with npm test.
 import assert from "node:assert/strict";
 import { Camera, Scene } from "three";
 import { glClip, type GlRenderer } from "./glClip.ts";
@@ -30,5 +31,11 @@ assert.deepEqual(log, ["update 0.75", "render", "clear", "draw", "scene disposed
 log.length = 0;
 draw(context, 0);
 assert.deepEqual(log, ["renderer", "setup", "update 0", "render", "clear", "draw"]);
+
+// The setup gets the renderer of its clip (for an environment map)
+let given: GlRenderer | null = null;
+const made = fakeRenderer();
+glClip({ width: 2, height: 2, duration: 1, fps: 1 }, renderer => { given = renderer; return setup(); }, () => made)(context, 0);
+assert.equal(given, made);
 
 console.log("glClip ok");

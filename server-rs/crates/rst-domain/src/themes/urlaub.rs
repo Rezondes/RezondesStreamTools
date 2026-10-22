@@ -141,6 +141,10 @@ fn fields() -> Vec<SettingField> {
                 SceneName::Brb,
                 number("brbSunHeight", "BRB: Sonnenhöhe (Grad)", BEACH, 55.0, 0.0, 90.0, None, None),
             ),
+            in_scene(
+                SceneName::Brb,
+                number("brbExposure", "BRB: Belichtung (Faktor)", BEACH, 0.8, 0.2, 2.0, None, Some(0.05)),
+            ),
             in_scene(SceneName::Brb, flag("umbrellaOn", "BRB: Sonnenschirm und Liegestuhl", BEACH, true)),
             in_scene(SceneName::Brb, color("umbrellaColor", "BRB: Sonnenschirm", BEACH, "#ff4f8b")),
             in_scene(

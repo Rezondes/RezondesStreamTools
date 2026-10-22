@@ -78,6 +78,7 @@ const FIELDS = [
   number("cameraHeight", "Kamera: Höhe", BEACH, 3.2, 1, 10, undefined, 0.1),
   flag("cameraDrift", "Kamera schwankt leicht", BEACH, true),
   inScene("brb", number("brbSunHeight", "BRB: Sonnenhöhe (Grad)", BEACH, 55, 0, 90)),
+  inScene("brb", number("brbExposure", "BRB: Belichtung (Faktor)", BEACH, 0.8, 0.2, 2, undefined, 0.05)),
   inScene("brb", flag("umbrellaOn", "BRB: Sonnenschirm und Liegestuhl", BEACH, true)),
   inScene("brb", color("umbrellaColor", "BRB: Sonnenschirm", BEACH, "#ff4f8b")),
   inScene("ending", number("sunsetMs", "Ending: Sonnenuntergang (Dauer)", BEACH, 5000, 0, 30000, "ms")),

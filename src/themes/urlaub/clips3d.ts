@@ -11,7 +11,7 @@ const STILL = { duration: 1, fps: 1 };
 type Draw = (context: CanvasRenderingContext2D, time: number) => void;
 
 function banner(size: { width: number; height: number }, world: BannerWorldOptions, exposure: number, texts: (context: CanvasRenderingContext2D) => void): Draw {
-  const picture = glClip({ ...size, ...STILL, exposure: exposure * exposureFactor(world.sunHeight) }, () => bannerSetup(size, world));
+  const picture = glClip({ ...size, ...STILL, exposure: exposure * exposureFactor(world.sunHeight) }, renderer => bannerSetup(size, world, renderer));
   return (context, time) => {
     picture(context, time);
     texts(context);

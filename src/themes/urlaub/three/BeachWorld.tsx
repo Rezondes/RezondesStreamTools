@@ -34,9 +34,11 @@ export default memo(function BeachWorld({ values, clock, scene }: { values: Urla
     };
     return (seconds: number) => sceneSunHeight(scene, seconds, sun);
   }, [scene, values.sunriseOn, values.sunriseMs, values.sunHeight, values.brbSunHeight, values.sunsetMs]);
+  // The noon of the BRB gets its own share of the exposure
+  const exposure = scene === "brb" ? values.exposure * values.brbExposure : values.exposure;
   return (
-    <Stage3D background={values.skyMorningBottom} level={values.quality} fov={FOV} far={FAR} shadows exposure={values.exposure} className="ul-world">
-      <Sky clock={clock} heightAt={heightAt} azimuth={values.sunAzimuth} turbidity={values.turbidity} exposure={values.exposure} shadows direction={direction} />
+    <Stage3D background={values.skyMorningBottom} level={values.quality} fov={FOV} far={FAR} shadows exposure={exposure} className="ul-world">
+      <Sky clock={clock} heightAt={heightAt} azimuth={values.sunAzimuth} turbidity={values.turbidity} exposure={exposure} shadows direction={direction} />
       <Ocean clock={clock} color={values.waterColor} distortion={values.waveDistortion} seed={values.worldSeed} low={values.quality === LOW} direction={direction} />
       <Beach sand={values.sand} rocks={values.rocks} seed={values.worldSeed} />
       {values.surfOn && <Surf clock={clock} bands={values.surfBands} seconds={values.surfSeconds} foam={values.foam} seed={values.worldSeed} />}

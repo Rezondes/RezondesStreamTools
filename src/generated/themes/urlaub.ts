@@ -50,6 +50,7 @@ export type UrlaubValues = {
   readonly cameraHeight: number;
   readonly cameraDrift: boolean;
   readonly brbSunHeight: number;
+  readonly brbExposure: number;
   readonly umbrellaOn: boolean;
   readonly umbrellaColor: string;
   readonly sunsetMs: number;
