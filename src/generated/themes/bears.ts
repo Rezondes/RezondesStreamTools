@@ -244,6 +244,7 @@ export type BearsValues = {
   readonly bannerProfileBear: string;
   readonly bannerOfflineBear: string;
   readonly bannerTitle: string;
+  readonly bannerOfflineName: string;
   readonly bannerProfileText: string;
   readonly bannerOfflineTitle: string;
   readonly bannerOfflineText: string;

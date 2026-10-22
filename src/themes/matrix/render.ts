@@ -17,12 +17,14 @@ export function matrixClips(values: SettingValues, login: string): RenderClip[] 
   const matrix = values as unknown as MatrixValues;
   const stinger = stingerOptions(matrix);
   const banner = bannerOptions(matrix, login);
+  // The offline banner has its own rain density (percent)
+  const offlineBanner = { ...banner, density: matrix.bannerOfflineRainDensity / 100 };
   const font = `24px "${matrix.font}"`;
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, prepare: loadGlyphFont, draw: (context, time) => drawStinger(context, time, stinger) }, options),
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare: loadGlyphFont, draw: (context, time) => drawProfileBanner(context, time, banner) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare: loadGlyphFont, draw: (context, time) => drawOfflineBanner(context, time, banner) },
+    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare: loadGlyphFont, draw: (context, time) => drawProfileBanner(context, time, banner) },
+    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare: loadGlyphFont, draw: (context, time) => drawOfflineBanner(context, time, offlineBanner) },
   ];
 }
 

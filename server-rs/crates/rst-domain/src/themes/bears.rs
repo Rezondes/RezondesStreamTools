@@ -39,7 +39,8 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 const BEAR_IDS: [&str; 3] = ["eisbaer", "grizzly", "panda"];
@@ -457,21 +458,16 @@ fn fields() -> Vec<SettingField> {
         number("stingerFolds", "Vorhang: Falten (Anzahl)", STINGER, 7.0, 1.0, 20.0, None, None),
         choice("stingerFrom", "Bär kommt von", STINGER, "links", &["links", "rechts"]),
         choice("stingerOpen", "Öffnen: zurückziehen oder hochziehen", STINGER, "ziehen", &["ziehen", "heben"]),
-        choice("bannerProfileBear", "Profilbanner: Bär", BANNER, "turm", &["eisbaer", "grizzly", "panda", "turm"]),
-        choice("bannerOfflineBear", "Offline-Banner: Bär", BANNER, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
-        text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
-        text("bannerProfileText", "Profilbanner: Text", BANNER, "Gemütliche Streams mit der Bande", None),
-        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade nicht live", None),
-        text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Bande macht ein Nickerchen in der Höhle.", None),
-        lines(
-            "bannerOfflineLines",
-            "Offline-Banner: Zeilen",
-            BANNER,
-            &["Bald wieder live", "Folgen nicht vergessen"],
-            None,
-        ),
-        flag("fairyLights", "Offline-Banner: Lichterkette", BANNER, true),
-        text("bannerSleepText", "Offline-Banner: Schlafzeichen", BANNER, "z", Some(4)),
+        choice("bannerProfileBear", "Bär", PROFILE_BANNER, "turm", &["eisbaer", "grizzly", "panda", "turm"]),
+        choice("bannerOfflineBear", "Bär", OFFLINE_BANNER, "grizzly", &["eisbaer", "grizzly", "panda", "turm"]),
+        text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}", None),
+        text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}", None),
+        text("bannerProfileText", "Text", PROFILE_BANNER, "Gemütliche Streams mit der Bande", None),
+        text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Gerade nicht live", None),
+        text("bannerOfflineText", "Text", OFFLINE_BANNER, "Die Bande macht ein Nickerchen in der Höhle.", None),
+        lines("bannerOfflineLines", "Zeilen", OFFLINE_BANNER, &["Bald wieder live", "Folgen nicht vergessen"], None),
+        flag("fairyLights", "Lichterkette", OFFLINE_BANNER, true),
+        text("bannerSleepText", "Schlafzeichen", OFFLINE_BANNER, "z", Some(4)),
     ]);
     fields.extend(minime_fields());
     fields.extend(info_fields());
@@ -495,7 +491,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MUSIC, vec![Music]),
         (FX, vec![Fx]),
         (STINGER, vec![]),
-        (BANNER, vec![]),
+        (PROFILE_BANNER, vec![]),
+        (OFFLINE_BANNER, vec![]),
         (MINIME_COMMANDS, vec![Minimes]),
         (MINIME_RULES, vec![Minimes]),
         (MINIME_MOTION, vec![Minimes]),

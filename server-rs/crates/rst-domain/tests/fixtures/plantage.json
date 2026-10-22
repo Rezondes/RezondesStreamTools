@@ -1993,39 +1993,47 @@
       "key": "bannerTitle",
       "type": "text",
       "label": "Titel ({channel})",
-      "group": "Banner",
+      "group": "Profilbanner",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineName",
+      "type": "text",
+      "label": "Kanalzeile ({channel})",
+      "group": "Offline-Banner",
       "default": "{channel}",
       "maxLength": 200
     },
     {
       "key": "bannerProfileText",
       "type": "text",
-      "label": "Profilbanner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Profilbanner",
       "default": "Mangos, Ernte und gute Streams",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineTitle",
       "type": "text",
-      "label": "Offline-Banner: Titel",
-      "group": "Banner",
+      "label": "Titel",
+      "group": "Offline-Banner",
       "default": "Gerade auf der Plantage",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineText",
       "type": "text",
-      "label": "Offline-Banner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Offline-Banner",
       "default": "Folge dem Kanal und verpasse keine Ernte.",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineLines",
       "type": "lines",
-      "label": "Offline-Banner: Zeilen",
-      "group": "Banner",
+      "label": "Zeilen",
+      "group": "Offline-Banner",
       "default": [
         "Bald wieder live",
         "Die Mangos reifen noch"
@@ -3126,7 +3134,8 @@
       "fx"
     ],
     "Stinger": [],
-    "Banner": [],
+    "Profilbanner": [],
+    "Offline-Banner": [],
     "Minimes: Befehle": [
       "minimes"
     ],

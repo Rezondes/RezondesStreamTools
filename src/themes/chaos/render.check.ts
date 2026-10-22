@@ -12,8 +12,8 @@ const values = resolveSettings(chaosSettings, { channelName: "REZONDES" });
 const clips = chaosClips(values, "rezondes");
 assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.height]), [
   ["stinger", "Stinger", 1920, 1080],
-  ["profile", "Banner", 1200, 480],
-  ["offline", "Banner", 1920, 1080],
+  ["profile", "Profilbanner", 1200, 480],
+  ["offline", "Offline-Banner", 1920, 1080],
 ]);
 assert.equal(clips[0].cut, values.stingerCut);
 assert.equal(clips[1].duration, 4);

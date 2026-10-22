@@ -2231,39 +2231,47 @@
       "key": "bannerTitle",
       "type": "text",
       "label": "Titel ({channel})",
-      "group": "Banner",
+      "group": "Profilbanner",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineName",
+      "type": "text",
+      "label": "Kanalzeile ({channel})",
+      "group": "Offline-Banner",
       "default": "{channel}",
       "maxLength": 200
     },
     {
       "key": "bannerProfileText",
       "type": "text",
-      "label": "Profilbanner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Profilbanner",
       "default": "Halte den Hügel.",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineTitle",
       "type": "text",
-      "label": "Offline-Banner: Titel",
-      "group": "Banner",
+      "label": "Titel",
+      "group": "Offline-Banner",
       "default": "Funkstille",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineText",
       "type": "text",
-      "label": "Offline-Banner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Offline-Banner",
       "default": "Folge dem Kanal und verpasse keinen Einsatz.",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineLines",
       "type": "lines",
-      "label": "Offline-Banner: Zeilen",
-      "group": "Banner",
+      "label": "Zeilen",
+      "group": "Offline-Banner",
       "default": [
         "Bald wieder im Einsatz",
         "Der Hügel wartet"
@@ -3477,7 +3485,8 @@
       "ending"
     ],
     "Stinger": [],
-    "Banner": [],
+    "Profilbanner": [],
+    "Offline-Banner": [],
     "Minimes: Befehle": [
       "minimes"
     ],

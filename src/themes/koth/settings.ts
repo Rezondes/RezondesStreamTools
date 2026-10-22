@@ -31,7 +31,8 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 const WORLD = "Welt";
 const CAMP = "Lager";
 const CAMERA = "Kamera";
@@ -301,11 +302,12 @@ const FIELDS = [
   color("smokeColor", "Rauch", STINGER, "#9ea3a0"),
   number("stingerPuffs", "Rauchwolken", STINGER, 40, 10, 120),
 
-  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
-  text("bannerProfileText", "Profilbanner: Text", BANNER, "Halte den Hügel."),
-  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Funkstille"),
-  text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keinen Einsatz."),
-  lines("bannerOfflineLines", "Offline-Banner: Zeilen", BANNER, ["Bald wieder im Einsatz", "Der Hügel wartet"]),
+  text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}"),
+  text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}"),
+  text("bannerProfileText", "Text", PROFILE_BANNER, "Halte den Hügel."),
+  text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Funkstille"),
+  text("bannerOfflineText", "Text", OFFLINE_BANNER, "Folge dem Kanal und verpasse keinen Einsatz."),
+  lines("bannerOfflineLines", "Zeilen", OFFLINE_BANNER, ["Bald wieder im Einsatz", "Der Hügel wartet"]),
 
   ...MINIME_FIELDS,
   number("soldierSize", "Grösse", MINIME_LOOK, 70, 30, 300, "px"),
@@ -375,7 +377,8 @@ const GROUP_SCENES = {
   [NIGHT]: ["brb"],
   [DUSK]: ["ending"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],

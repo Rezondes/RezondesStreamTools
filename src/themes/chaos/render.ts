@@ -1,4 +1,4 @@
-// Renderable clips of the Chaos theme: stinger (group Stinger) and profile and offline banners (group Banner), drawn with
+// Renderable clips of the Chaos theme: stinger (group Stinger) and profile banner (group Profilbanner) and offline banner (group Offline-Banner), drawn with
 // the resolved settings; the layers of each clip are built once per render. Rough.js loads only in prepare
 // (roughScribbles.ts), so it stays out of the entry chunk; until then every scribble keeps its own hand.
 // Check: render.check.ts.
@@ -54,8 +54,8 @@ export function chaosClips(values: SettingValues, login: string): RenderClip[] {
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, prepare, draw: clipDraw(takes => makeChaosStinger(stinger, undefined, takes)) }, options),
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(takes => makeChaosProfileBanner(banner, undefined, takes)) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(takes => makeChaosOfflineBanner(banner, undefined, takes)) },
+    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(takes => makeChaosProfileBanner(banner, undefined, takes)) },
+    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(takes => makeChaosOfflineBanner({ ...banner, title: fillTemplate(chaos.bannerOfflineName, names) }, undefined, takes)) },
   ];
 }
 

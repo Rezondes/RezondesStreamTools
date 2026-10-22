@@ -1,5 +1,5 @@
 // Renderable clips of the Urlaub theme (PLAN-URLAUB.md package 8): the stinger (group Stinger, the swell of stinger.ts
-// with spray) and the profile and offline banners (group Banner) as the realistic beach by day and in the sunset with
+// with spray) and the profile banner (group Profilbanner) and the offline banner (group Offline-Banner) as the realistic beach by day and in the sunset with
 // their texts. The 3D module loads only in prepare (clips3d.ts), so three.js stays out of the entry chunk; until then
 // the banners draw only their texts. Check: render.check.ts.
 import { centeredTop, PANEL_START_HEIGHT, type PanelDesign, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
@@ -53,6 +53,8 @@ export function urlaubClips(values: SettingValues, login: string): RenderClip[] 
     title: fillTemplate(beach.bannerTitle, names), profileText: beach.bannerProfileText,
     offlineTitle: beach.bannerOfflineTitle, offlineText: beach.bannerOfflineText, offlineLines: beach.bannerOfflineLines,
   };
+  // The offline banner has its own line with the channel
+  const offlineTexts = { ...texts, title: fillTemplate(beach.bannerOfflineName, names) };
   const day = bannerWorld(beach, beach.bannerSunHeight);
   const dusk = bannerWorld(beach, beach.bannerSunset);
   const font = `400 24px "${beach.titleFont}"`;
@@ -60,12 +62,12 @@ export function urlaubClips(values: SettingValues, login: string): RenderClip[] 
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawUrlaubStinger(context, time, stinger) }, options),
     {
-      name: "profile", feature: "banners", group: "Banner", font, ...PROFILE_SIZE, ...STILL, cut: null, prepare,
+      name: "profile", feature: "banners", group: "Profilbanner", font, ...PROFILE_SIZE, ...STILL, cut: null, prepare,
       draw: clipDraw(loaded => loaded.profileDraw(day, beach.exposure, texts), context => drawUrlaubProfileBanner(context, texts)),
     },
     {
-      name: "offline", feature: "banners", group: "Banner", font, ...OFFLINE_SIZE, ...STILL, cut: null, prepare,
-      draw: clipDraw(loaded => loaded.offlineDraw(dusk, beach.exposure, texts), context => drawUrlaubOfflineBanner(context, texts)),
+      name: "offline", feature: "banners", group: "Offline-Banner", font, ...OFFLINE_SIZE, ...STILL, cut: null, prepare,
+      draw: clipDraw(loaded => loaded.offlineDraw(dusk, beach.exposure, offlineTexts), context => drawUrlaubOfflineBanner(context, offlineTexts)),
     },
   ];
 }

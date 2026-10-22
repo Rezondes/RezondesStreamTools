@@ -36,7 +36,8 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 
@@ -222,13 +223,14 @@ fn fields() -> Vec<SettingField> {
         number("stingerColumn", "Spaltenbreite", STINGER, 24.0, 8.0, 96.0, PX, None),
         text("stingerText", "Text", STINGER, "> SZENENWECHSEL", None),
         flag("stingerLogo", "Logo", STINGER, true),
-        text("bannerProfileText", "Profilbanner: Text", BANNER, "> willkommen in der matrix", None),
-        text("bannerProfileSub", "Profilbanner: Untertitel", BANNER, "Games · Talk · Community", None),
-        text("bannerOfflineStatus", "Offline-Banner: Status", BANNER, "○ OFFLINE", None),
-        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "STREAM OFFLINE", None),
-        text("bannerOfflineText", "Offline-Banner: Text", BANNER, "> Folge dem Kanal, dann verpasst du den nächsten Stream nicht.", None),
-        lines("bannerOfflineLines", "Offline-Banner: Terminal", BANNER, &["connection closed by remote host", "saving session ... ok", "awaiting next broadcast"], None),
-        number("bannerRainDensity", "Regen-Dichte", BANNER, 100.0, 0.0, 100.0, Some(Unit::Percent), None),
+        text("bannerProfileText", "Text", PROFILE_BANNER, "> willkommen in der matrix", None),
+        text("bannerProfileSub", "Untertitel", PROFILE_BANNER, "Games · Talk · Community", None),
+        text("bannerOfflineStatus", "Status", OFFLINE_BANNER, "○ OFFLINE", None),
+        text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "STREAM OFFLINE", None),
+        text("bannerOfflineText", "Text", OFFLINE_BANNER, "> Folge dem Kanal, dann verpasst du den nächsten Stream nicht.", None),
+        lines("bannerOfflineLines", "Terminal", OFFLINE_BANNER, &["connection closed by remote host", "saving session ... ok", "awaiting next broadcast"], None),
+        number("bannerRainDensity", "Regen-Dichte", PROFILE_BANNER, 100.0, 0.0, 100.0, Some(Unit::Percent), None),
+        number("bannerOfflineRainDensity", "Regen-Dichte", OFFLINE_BANNER, 100.0, 0.0, 100.0, Some(Unit::Percent), None),
     ],
     minime_fields(),
     vec![
@@ -288,7 +290,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MUSIC, vec![SceneName::Music]),
         (FX, vec![SceneName::Fx]),
         (STINGER, vec![]),
-        (BANNER, vec![]),
+        (PROFILE_BANNER, vec![]),
+        (OFFLINE_BANNER, vec![]),
         (MINIME_LOOK, vec![SceneName::Minimes]),
         (MINIME_MOVES, vec![SceneName::Minimes]),
         (MINIME_COMMANDS, vec![SceneName::Minimes]),

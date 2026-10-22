@@ -36,7 +36,8 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 
@@ -267,10 +268,11 @@ fn stinger_banner() -> Vec<SettingField> {
         number("stingerCut", "Übergangspunkt", STINGER, 0.7, 0.1, 5.0, S, Some(0.05)),
         text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}", None),
         number("stingerTextSize", "Textgrösse", STINGER, 260.0, 40.0, 600.0, PX, None),
-        text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
-        text("bannerProfileText", "Profilbanner: Text", BANNER, "Kritzeleien, Neon und gute Laune", None),
-        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Offline", None),
-        text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Farbe trocknet noch. Folge dem Kanal!", None),
+        text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}", None),
+        text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}", None),
+        text("bannerProfileText", "Text", PROFILE_BANNER, "Kritzeleien, Neon und gute Laune", None),
+        text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Offline", None),
+        text("bannerOfflineText", "Text", OFFLINE_BANNER, "Die Farbe trocknet noch. Folge dem Kanal!", None),
     ]
 }
 
@@ -321,7 +323,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MUSIC, vec![Music]),
         (FX, vec![Fx]),
         (STINGER, vec![]),
-        (BANNER, vec![]),
+        (PROFILE_BANNER, vec![]),
+        (OFFLINE_BANNER, vec![]),
         (MINIME_LOOK, vec![Minimes]),
         (MINIME_MOVES, vec![Minimes]),
         (MINIME_COMMANDS, vec![Minimes]),

@@ -1,4 +1,4 @@
-// Renderable clips of the Bärenbande theme: stinger (group Stinger) and profile and offline banners (group Banner), drawn
+// Renderable clips of the Bärenbande theme: stinger (group Stinger) and profile banner (group Profilbanner) and offline banner (group Offline-Banner), drawn
 // from the character model with the resolved settings. The banners paint their world as watercolor; Rough.js loads
 // only in prepare (clipWorld.ts), so it stays out of the entry chunk, until then the world is flat. Check: render.check.ts.
 import { centeredTop, PANEL_START_HEIGHT, type PanelDesign, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
@@ -99,8 +99,8 @@ export function bearsClips(values: SettingValues, login: string): RenderClip[] {
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawBearsStinger(context, time, stinger) }, options),
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsProfileBanner(context, time, { ...banner, world }), painter) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsOfflineBanner(context, time, { ...banner, world }), painter) },
+    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsProfileBanner(context, time, { ...banner, world }), painter) },
+    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsOfflineBanner(context, time, { ...banner, title: fillTemplate(field.bannerOfflineName, names), world }), painter) },
   ];
 }
 

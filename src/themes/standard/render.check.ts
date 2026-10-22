@@ -6,7 +6,7 @@ import { standardClips } from "./render.ts";
 import { standardSettings } from "./settings.ts";
 
 const clips = standardClips(resolveSettings(standardSettings, { stingerDuration: 1.5, stingerCut: 0.7 }), "rezondes");
-assert.deepEqual(clips.map(clip => [clip.name, clip.group]), [["stinger", "Stinger"], ["profile", "Banner"], ["offline", "Banner"]]);
+assert.deepEqual(clips.map(clip => [clip.name, clip.group]), [["stinger", "Stinger"], ["profile", "Profilbanner"], ["offline", "Offline-Banner"]]);
 assert.equal(clips[0].duration, 1.5);
 assert.equal(clips[0].cut, 0.7);
 assert.equal(clips[2].duration, 6);

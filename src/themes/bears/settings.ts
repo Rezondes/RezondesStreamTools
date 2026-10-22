@@ -32,7 +32,8 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
 
@@ -268,15 +269,16 @@ const FIELDS = [
   choice("stingerFrom", "Bär kommt von", STINGER, "links", ["links", "rechts"]),
   choice("stingerOpen", "Öffnen: zurückziehen oder hochziehen", STINGER, "ziehen", ["ziehen", "heben"]),
 
-  choice("bannerProfileBear", "Profilbanner: Bär", BANNER, "turm", BEAR_CHOICES),
-  choice("bannerOfflineBear", "Offline-Banner: Bär", BANNER, "grizzly", BEAR_CHOICES),
-  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
-  text("bannerProfileText", "Profilbanner: Text", BANNER, "Gemütliche Streams mit der Bande"),
-  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade nicht live"),
-  text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Bande macht ein Nickerchen in der Höhle."),
-  lines("bannerOfflineLines", "Offline-Banner: Zeilen", BANNER, ["Bald wieder live", "Folgen nicht vergessen"]),
-  flag("fairyLights", "Offline-Banner: Lichterkette", BANNER, true),
-  text("bannerSleepText", "Offline-Banner: Schlafzeichen", BANNER, "z", 4),
+  choice("bannerProfileBear", "Bär", PROFILE_BANNER, "turm", BEAR_CHOICES),
+  choice("bannerOfflineBear", "Bär", OFFLINE_BANNER, "grizzly", BEAR_CHOICES),
+  text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}"),
+  text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}"),
+  text("bannerProfileText", "Text", PROFILE_BANNER, "Gemütliche Streams mit der Bande"),
+  text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Gerade nicht live"),
+  text("bannerOfflineText", "Text", OFFLINE_BANNER, "Die Bande macht ein Nickerchen in der Höhle."),
+  lines("bannerOfflineLines", "Zeilen", OFFLINE_BANNER, ["Bald wieder live", "Folgen nicht vergessen"]),
+  flag("fairyLights", "Lichterkette", OFFLINE_BANNER, true),
+  text("bannerSleepText", "Schlafzeichen", OFFLINE_BANNER, "z", 4),
 
   ...MINIME_BASE_FIELDS,
   number("minimeBearSize", "Grösse (Höhe)", MINIME_LOOK, 120, 40, 400, "px"),
@@ -332,7 +334,8 @@ const GROUP_SCENES = {
   [MUSIC]: ["music"],
   [FX]: ["fx"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],

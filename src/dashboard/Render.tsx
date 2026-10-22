@@ -1,6 +1,6 @@
 // Render section in the dashboard: stinger (WebM with alpha) and profile and offline banners (a still PNG, Twitch takes no
 // animated banners) of the active theme (chosen in the THEME section), one tab each. Save and discard of the values sit
-// on top; next to the preview are the settings of the clip's group (stinger or banners). The preview shows unsaved
+// on top; next to the preview are the settings of the clip's group (Stinger, Profilbanner or Offline-Banner). The preview shows unsaved
 // values immediately, saving does not change the overlay theme; the stinger only loops after Play. Rendering: the
 // browser draws every frame and sends it as PNG to the server, which builds the stinger with ffmpeg; a banner is its
 // first frame. The finished file of the tab can be downloaded next to rendering.

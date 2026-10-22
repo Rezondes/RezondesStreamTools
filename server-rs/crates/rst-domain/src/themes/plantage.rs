@@ -38,7 +38,8 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 
@@ -323,17 +324,12 @@ fn stinger_banner() -> Vec<SettingField> {
         text("stingerText", "Text ({channel})", STINGER, "{channel}", None),
         flag("stingerLeaves", "Blätter fliegen mit", STINGER, true),
         number("stingerLeafCount", "Anzahl Blätter im Stinger", STINGER, 24.0, 0.0, 120.0, None, None),
-        text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
-        text("bannerProfileText", "Profilbanner: Text", BANNER, "Mangos, Ernte und gute Streams", None),
-        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade auf der Plantage", None),
-        text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keine Ernte.", None),
-        lines(
-            "bannerOfflineLines",
-            "Offline-Banner: Zeilen",
-            BANNER,
-            &["Bald wieder live", "Die Mangos reifen noch"],
-            None,
-        ),
+        text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}", None),
+        text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}", None),
+        text("bannerProfileText", "Text", PROFILE_BANNER, "Mangos, Ernte und gute Streams", None),
+        text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Gerade auf der Plantage", None),
+        text("bannerOfflineText", "Text", OFFLINE_BANNER, "Folge dem Kanal und verpasse keine Ernte.", None),
+        lines("bannerOfflineLines", "Zeilen", OFFLINE_BANNER, &["Bald wieder live", "Die Mangos reifen noch"], None),
     ]
 }
 
@@ -423,7 +419,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MUSIC, vec![SceneName::Music]),
         (FX, vec![SceneName::Fx]),
         (STINGER, vec![]),
-        (BANNER, vec![]),
+        (PROFILE_BANNER, vec![]),
+        (OFFLINE_BANNER, vec![]),
         (MINIME_COMMANDS, vec![SceneName::Minimes]),
         (MINIME_RULES, vec![SceneName::Minimes]),
         (MINIME_MOTION, vec![SceneName::Minimes]),

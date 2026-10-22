@@ -31,7 +31,8 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -187,10 +188,11 @@ fn fx_stinger_banner() -> Vec<SettingField> {
         number("stingerCut", "Übergangspunkt", STINGER, 0.6, 0.1, 5.0, S, Some(0.05)),
         number("stingerPanels", "Anzahl Streifen", STINGER, 3.0, 1.0, 8.0, None, None),
         text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}", None),
-        text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
-        text("bannerProfileText", "Profilbanner: Text", BANNER, "Games, Talk und gute Laune", None),
-        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade offline", None),
-        text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keinen Stream.", None),
+        text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}", None),
+        text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}", None),
+        text("bannerProfileText", "Text", PROFILE_BANNER, "Games, Talk und gute Laune", None),
+        text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Gerade offline", None),
+        text("bannerOfflineText", "Text", OFFLINE_BANNER, "Folge dem Kanal und verpasse keinen Stream.", None),
     ]
 }
 
@@ -205,7 +207,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MUSIC, vec![Music]),
         (FX, vec![Fx]),
         (STINGER, vec![]),
-        (BANNER, vec![]),
+        (PROFILE_BANNER, vec![]),
+        (OFFLINE_BANNER, vec![]),
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()

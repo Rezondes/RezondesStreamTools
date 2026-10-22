@@ -7,7 +7,7 @@ import { kothClips } from "./render.ts";
 import { kothSettings } from "./settings.ts";
 
 const clips = kothClips(resolveSettings(kothSettings, { stingerDuration: 1.5, stingerCut: 0.8, stingerFps: 30 }), "neo");
-assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.height]), [["stinger", "Stinger", 1920, 1080], ["profile", "Banner", 1200, 480], ["offline", "Banner", 1920, 1080]]);
+assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.height]), [["stinger", "Stinger", 1920, 1080], ["profile", "Profilbanner", 1200, 480], ["offline", "Offline-Banner", 1920, 1080]]);
 assert.equal(clips[0].duration, 1.5);
 assert.equal(clips[0].cut, 0.8);
 assert.equal(clips[0].fps, 30);

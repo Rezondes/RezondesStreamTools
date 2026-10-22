@@ -37,7 +37,8 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 const WORLD: &str = "Welt";
 const CAMP: &str = "Lager";
 const CAMERA: &str = "Kamera";
@@ -387,17 +388,12 @@ fn stinger_banner() -> Vec<SettingField> {
         flag("stingerFlag", "Flaggenwechsel", STINGER, true),
         color("smokeColor", "Rauch", STINGER, "#9ea3a0"),
         number("stingerPuffs", "Rauchwolken", STINGER, 40.0, 10.0, 120.0, None, None),
-        text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
-        text("bannerProfileText", "Profilbanner: Text", BANNER, "Halte den Hügel.", None),
-        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Funkstille", None),
-        text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keinen Einsatz.", None),
-        lines(
-            "bannerOfflineLines",
-            "Offline-Banner: Zeilen",
-            BANNER,
-            &["Bald wieder im Einsatz", "Der Hügel wartet"],
-            None,
-        ),
+        text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}", None),
+        text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}", None),
+        text("bannerProfileText", "Text", PROFILE_BANNER, "Halte den Hügel.", None),
+        text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Funkstille", None),
+        text("bannerOfflineText", "Text", OFFLINE_BANNER, "Folge dem Kanal und verpasse keinen Einsatz.", None),
+        lines("bannerOfflineLines", "Zeilen", OFFLINE_BANNER, &["Bald wieder im Einsatz", "Der Hügel wartet"], None),
     ]
 }
 
@@ -497,7 +493,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (NIGHT, vec![SceneName::Brb]),
         (DUSK, vec![SceneName::Ending]),
         (STINGER, vec![]),
-        (BANNER, vec![]),
+        (PROFILE_BANNER, vec![]),
+        (OFFLINE_BANNER, vec![]),
         (MINIME_COMMANDS, vec![SceneName::Minimes]),
         (MINIME_RULES, vec![SceneName::Minimes]),
         (MINIME_MOTION, vec![SceneName::Minimes]),

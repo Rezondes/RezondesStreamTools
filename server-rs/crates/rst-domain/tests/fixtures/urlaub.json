@@ -1880,8 +1880,8 @@
     {
       "key": "bannerSunHeight",
       "type": "number",
-      "label": "Profilbanner: Sonnenhöhe (Grad)",
-      "group": "Banner",
+      "label": "Sonnenhöhe (Grad)",
+      "group": "Profilbanner",
       "default": 30,
       "min": 0,
       "max": 90
@@ -1889,8 +1889,8 @@
     {
       "key": "bannerSunset",
       "type": "number",
-      "label": "Offline-Banner: Sonnenhöhe (Grad)",
-      "group": "Banner",
+      "label": "Sonnenhöhe (Grad)",
+      "group": "Offline-Banner",
       "default": 3,
       "min": -4,
       "max": 20
@@ -1899,39 +1899,47 @@
       "key": "bannerTitle",
       "type": "text",
       "label": "Titel ({channel})",
-      "group": "Banner",
+      "group": "Profilbanner",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineName",
+      "type": "text",
+      "label": "Kanalzeile ({channel})",
+      "group": "Offline-Banner",
       "default": "{channel}",
       "maxLength": 200
     },
     {
       "key": "bannerProfileText",
       "type": "text",
-      "label": "Profilbanner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Profilbanner",
       "default": "Sonne, Strand und gute Streams",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineTitle",
       "type": "text",
-      "label": "Offline-Banner: Titel",
-      "group": "Banner",
+      "label": "Titel",
+      "group": "Offline-Banner",
       "default": "Gerade am Strand",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineText",
       "type": "text",
-      "label": "Offline-Banner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Offline-Banner",
       "default": "Folge dem Kanal und verpasse keinen Stream.",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineLines",
       "type": "lines",
-      "label": "Offline-Banner: Zeilen",
-      "group": "Banner",
+      "label": "Zeilen",
+      "group": "Offline-Banner",
       "default": [
         "Bald wieder live",
         "Sonnencreme nicht vergessen"
@@ -3175,7 +3183,8 @@
       "fx"
     ],
     "Stinger": [],
-    "Banner": [],
+    "Profilbanner": [],
+    "Offline-Banner": [],
     "Minimes: Befehle": [
       "minimes"
     ],

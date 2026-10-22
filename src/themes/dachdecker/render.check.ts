@@ -7,7 +7,7 @@ import { dachdeckerSettings } from "./settings.ts";
 
 const clips = dachdeckerClips(resolveSettings(dachdeckerSettings, { stingerDuration: 2, stingerCut: 1, stingerFps: 48 }), "neo");
 assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.height]), [
-  ["stinger", "Stinger", 1920, 1080], ["profile", "Banner", 1200, 480], ["offline", "Banner", 1920, 1080],
+  ["stinger", "Stinger", 1920, 1080], ["profile", "Profilbanner", 1200, 480], ["offline", "Offline-Banner", 1920, 1080],
 ]);
 assert.equal(clips[0].duration, 2);
 assert.equal(clips[0].cut, 1);

@@ -221,6 +221,7 @@ export type DachdeckerValues = {
   readonly offlineTag: string;
   readonly offlineSubtitle: string;
   readonly bannerGrid: number;
+  readonly bannerOfflineGrid: number;
   readonly bannerRain: boolean;
   readonly bannerRainCount: number;
   readonly minimeJoinCommand: string;

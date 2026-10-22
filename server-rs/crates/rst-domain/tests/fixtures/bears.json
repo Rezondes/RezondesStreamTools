@@ -2271,8 +2271,8 @@
     {
       "key": "bannerProfileBear",
       "type": "select",
-      "label": "Profilbanner: Bär",
-      "group": "Banner",
+      "label": "Bär",
+      "group": "Profilbanner",
       "default": "turm",
       "options": [
         "eisbaer",
@@ -2284,8 +2284,8 @@
     {
       "key": "bannerOfflineBear",
       "type": "select",
-      "label": "Offline-Banner: Bär",
-      "group": "Banner",
+      "label": "Bär",
+      "group": "Offline-Banner",
       "default": "grizzly",
       "options": [
         "eisbaer",
@@ -2298,39 +2298,47 @@
       "key": "bannerTitle",
       "type": "text",
       "label": "Titel ({channel})",
-      "group": "Banner",
+      "group": "Profilbanner",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineName",
+      "type": "text",
+      "label": "Kanalzeile ({channel})",
+      "group": "Offline-Banner",
       "default": "{channel}",
       "maxLength": 200
     },
     {
       "key": "bannerProfileText",
       "type": "text",
-      "label": "Profilbanner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Profilbanner",
       "default": "Gemütliche Streams mit der Bande",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineTitle",
       "type": "text",
-      "label": "Offline-Banner: Titel",
-      "group": "Banner",
+      "label": "Titel",
+      "group": "Offline-Banner",
       "default": "Gerade nicht live",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineText",
       "type": "text",
-      "label": "Offline-Banner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Offline-Banner",
       "default": "Die Bande macht ein Nickerchen in der Höhle.",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineLines",
       "type": "lines",
-      "label": "Offline-Banner: Zeilen",
-      "group": "Banner",
+      "label": "Zeilen",
+      "group": "Offline-Banner",
       "default": [
         "Bald wieder live",
         "Folgen nicht vergessen"
@@ -2340,15 +2348,15 @@
     {
       "key": "fairyLights",
       "type": "boolean",
-      "label": "Offline-Banner: Lichterkette",
-      "group": "Banner",
+      "label": "Lichterkette",
+      "group": "Offline-Banner",
       "default": true
     },
     {
       "key": "bannerSleepText",
       "type": "text",
-      "label": "Offline-Banner: Schlafzeichen",
-      "group": "Banner",
+      "label": "Schlafzeichen",
+      "group": "Offline-Banner",
       "default": "z",
       "maxLength": 4
     },
@@ -3352,7 +3360,8 @@
       "fx"
     ],
     "Stinger": [],
-    "Banner": [],
+    "Profilbanner": [],
+    "Offline-Banner": [],
     "Minimes: Befehle": [
       "minimes"
     ],

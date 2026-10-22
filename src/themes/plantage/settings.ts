@@ -31,7 +31,8 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
 
@@ -249,11 +250,12 @@ const FIELDS = [
   // fixed: at most 120 leaves in the stinger
   number("stingerLeafCount", "Anzahl Blätter im Stinger", STINGER, 24, 0, 120),
 
-  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
-  text("bannerProfileText", "Profilbanner: Text", BANNER, "Mangos, Ernte und gute Streams"),
-  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade auf der Plantage"),
-  text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keine Ernte."),
-  lines("bannerOfflineLines", "Offline-Banner: Zeilen", BANNER, ["Bald wieder live", "Die Mangos reifen noch"]),
+  text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}"),
+  text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}"),
+  text("bannerProfileText", "Text", PROFILE_BANNER, "Mangos, Ernte und gute Streams"),
+  text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Gerade auf der Plantage"),
+  text("bannerOfflineText", "Text", OFFLINE_BANNER, "Folge dem Kanal und verpasse keine Ernte."),
+  lines("bannerOfflineLines", "Zeilen", OFFLINE_BANNER, ["Bald wieder live", "Die Mangos reifen noch"]),
 
   ...MINIME_BASE_FIELDS,
   number("mangoSize", "Grösse", MINIME_LOOK, 84, 30, 300, "px"),
@@ -316,7 +318,8 @@ const GROUP_SCENES = {
   [MUSIC]: ["music"],
   [FX]: ["fx"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],

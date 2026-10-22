@@ -26,7 +26,8 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
 const THING_COLORS = "Typen: Farben";
@@ -221,13 +222,14 @@ const FIELDS = [
   flag("stingerPalm", "Palme im Bild", STINGER, true),
   number("stingerSpray", "Gischt: Tropfen", STINGER, 50, 0, 200),
 
-  number("bannerSunHeight", "Profilbanner: Sonnenhöhe (Grad)", BANNER, 30, 0, 90),
-  number("bannerSunset", "Offline-Banner: Sonnenhöhe (Grad)", BANNER, 3, -4, 20),
-  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
-  text("bannerProfileText", "Profilbanner: Text", BANNER, "Sonne, Strand und gute Streams"),
-  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade am Strand"),
-  text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keinen Stream."),
-  lines("bannerOfflineLines", "Offline-Banner: Zeilen", BANNER, ["Bald wieder live", "Sonnencreme nicht vergessen"]),
+  number("bannerSunHeight", "Sonnenhöhe (Grad)", PROFILE_BANNER, 30, 0, 90),
+  number("bannerSunset", "Sonnenhöhe (Grad)", OFFLINE_BANNER, 3, -4, 20),
+  text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}"),
+  text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}"),
+  text("bannerProfileText", "Text", PROFILE_BANNER, "Sonne, Strand und gute Streams"),
+  text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Gerade am Strand"),
+  text("bannerOfflineText", "Text", OFFLINE_BANNER, "Folge dem Kanal und verpasse keinen Stream."),
+  lines("bannerOfflineLines", "Zeilen", OFFLINE_BANNER, ["Bald wieder live", "Sonnencreme nicht vergessen"]),
 
   ...MINIME_BASE_FIELDS,
   number("fruitSize", "Grösse", MINIME_LOOK, 84, 30, 300, "px"),
@@ -301,7 +303,8 @@ const GROUP_SCENES = {
   [MUSIC]: ["music"],
   [FX]: ["fx"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],

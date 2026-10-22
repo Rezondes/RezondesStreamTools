@@ -247,6 +247,7 @@ export type KothValues = {
   readonly smokeColor: string;
   readonly stingerPuffs: number;
   readonly bannerTitle: string;
+  readonly bannerOfflineName: string;
   readonly bannerProfileText: string;
   readonly bannerOfflineTitle: string;
   readonly bannerOfflineText: string;

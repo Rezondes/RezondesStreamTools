@@ -56,6 +56,8 @@ export function kothClips(values: SettingValues, login: string): RenderClip[] {
     title: fillTemplate(koth.bannerTitle, names), profileText: koth.bannerProfileText,
     offlineTitle: koth.bannerOfflineTitle, offlineText: koth.bannerOfflineText, offlineLines: koth.bannerOfflineLines,
   };
+  // The offline banner has its own line with the channel
+  const offlineTexts = { ...texts, title: fillTemplate(koth.bannerOfflineName, names) };
   const flag = values[minimeTeamColorKey(koth.flagFaction)] as string;
   const day = bannerWorld(koth, { top: koth.skyTop, horizon: koth.skyHorizon }, flag);
   const dusk = bannerWorld(koth, { top: koth.endingSkyTop, horizon: koth.endingSkyHorizon }, flag);
@@ -74,12 +76,12 @@ export function kothClips(values: SettingValues, login: string): RenderClip[] {
       draw: clipDraw(loaded => loaded.stingerDraw(stinger, label, options.fps), coverOnly),
     }, options),
     {
-      name: "profile", feature: "banners", group: "Banner", font, ...PROFILE_SIZE, ...STILL, cut: null, prepare,
+      name: "profile", feature: "banners", group: "Profilbanner", font, ...PROFILE_SIZE, ...STILL, cut: null, prepare,
       draw: clipDraw(loaded => loaded.profileDraw(day, texts), context => drawKothProfileBanner(context, texts)),
     },
     {
-      name: "offline", feature: "banners", group: "Banner", font, ...OFFLINE_SIZE, ...STILL, cut: null, prepare,
-      draw: clipDraw(loaded => loaded.offlineDraw(dusk, texts), context => drawKothOfflineBanner(context, texts)),
+      name: "offline", feature: "banners", group: "Offline-Banner", font, ...OFFLINE_SIZE, ...STILL, cut: null, prepare,
+      draw: clipDraw(loaded => loaded.offlineDraw(dusk, offlineTexts), context => drawKothOfflineBanner(context, offlineTexts)),
     },
   ];
 }

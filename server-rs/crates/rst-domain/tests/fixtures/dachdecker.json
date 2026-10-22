@@ -1871,64 +1871,64 @@
     {
       "key": "profileTitle",
       "type": "text",
-      "label": "Profilbanner: Titel ({channel})",
-      "group": "Banner",
+      "label": "Titel ({channel})",
+      "group": "Profilbanner",
       "default": "{channel}",
       "maxLength": 200
     },
     {
       "key": "profileOverline",
       "type": "text",
-      "label": "Profilbanner: Masslinie ({channel})",
-      "group": "Banner",
+      "label": "Masslinie ({channel})",
+      "group": "Profilbanner",
       "default": "BAUPLAN // RICHTFEST",
       "maxLength": 200
     },
     {
       "key": "profileTag",
       "type": "text",
-      "label": "Profilbanner: Überzeile ({channel})",
-      "group": "Banner",
+      "label": "Überzeile ({channel})",
+      "group": "Profilbanner",
       "default": "DACHDECKEREI",
       "maxLength": 200
     },
     {
       "key": "profileSubtitle",
       "type": "text",
-      "label": "Profilbanner: Unterzeile ({channel})",
-      "group": "Banner",
+      "label": "Unterzeile ({channel})",
+      "group": "Profilbanner",
       "default": "Live vom Dach!",
       "maxLength": 200
     },
     {
       "key": "offlineText",
       "type": "text",
-      "label": "Offline-Banner: Titel ({channel})",
-      "group": "Banner",
+      "label": "Titel ({channel})",
+      "group": "Offline-Banner",
       "default": "OFFLINE",
       "maxLength": 200
     },
     {
       "key": "offlineOverline",
       "type": "text",
-      "label": "Offline-Banner: Masslinie ({channel})",
-      "group": "Banner",
+      "label": "Masslinie ({channel})",
+      "group": "Offline-Banner",
       "default": "{channel}",
       "maxLength": 200
     },
     {
       "key": "offlineTag",
       "type": "text",
-      "label": "Offline-Banner: Überzeile ({channel})",
-      "group": "Banner",
+      "label": "Überzeile ({channel})",
+      "group": "Offline-Banner",
       "default": "FEIERABEND",
       "maxLength": 200
     },
     {
       "key": "offlineSubtitle",
       "type": "text",
-      "label": "Offline-Banner: Unterzeile ({channel})",
-      "group": "Banner",
+      "label": "Unterzeile ({channel})",
+      "group": "Offline-Banner",
       "default": "Dach dicht, bis zum nächsten Stream!",
       "maxLength": 200
     },
@@ -1936,7 +1936,17 @@
       "key": "bannerGrid",
       "type": "number",
       "label": "Bauplan: Rastergrösse",
-      "group": "Banner",
+      "group": "Profilbanner",
+      "default": 50,
+      "min": 10,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineGrid",
+      "type": "number",
+      "label": "Bauplan: Rastergrösse",
+      "group": "Offline-Banner",
       "default": 50,
       "min": 10,
       "max": 200,
@@ -1945,15 +1955,15 @@
     {
       "key": "bannerRain",
       "type": "boolean",
-      "label": "Offline-Banner: Regen",
-      "group": "Banner",
+      "label": "Regen",
+      "group": "Offline-Banner",
       "default": true
     },
     {
       "key": "bannerRainCount",
       "type": "number",
-      "label": "Offline-Banner: Tropfen",
-      "group": "Banner",
+      "label": "Tropfen",
+      "group": "Offline-Banner",
       "default": 1200,
       "min": 0,
       "max": 4000
@@ -2971,7 +2981,8 @@
       "fx"
     ],
     "Stinger": [],
-    "Banner": [],
+    "Profilbanner": [],
+    "Offline-Banner": [],
     "Minimes: Befehle": [
       "minimes"
     ],

@@ -1844,48 +1844,48 @@
     {
       "key": "bannerProfileText",
       "type": "text",
-      "label": "Profilbanner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Profilbanner",
       "default": "> willkommen in der matrix",
       "maxLength": 200
     },
     {
       "key": "bannerProfileSub",
       "type": "text",
-      "label": "Profilbanner: Untertitel",
-      "group": "Banner",
+      "label": "Untertitel",
+      "group": "Profilbanner",
       "default": "Games · Talk · Community",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineStatus",
       "type": "text",
-      "label": "Offline-Banner: Status",
-      "group": "Banner",
+      "label": "Status",
+      "group": "Offline-Banner",
       "default": "○ OFFLINE",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineTitle",
       "type": "text",
-      "label": "Offline-Banner: Titel",
-      "group": "Banner",
+      "label": "Titel",
+      "group": "Offline-Banner",
       "default": "STREAM OFFLINE",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineText",
       "type": "text",
-      "label": "Offline-Banner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Offline-Banner",
       "default": "> Folge dem Kanal, dann verpasst du den nächsten Stream nicht.",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineLines",
       "type": "lines",
-      "label": "Offline-Banner: Terminal",
-      "group": "Banner",
+      "label": "Terminal",
+      "group": "Offline-Banner",
       "default": [
         "connection closed by remote host",
         "saving session ... ok",
@@ -1897,7 +1897,17 @@
       "key": "bannerRainDensity",
       "type": "number",
       "label": "Regen-Dichte",
-      "group": "Banner",
+      "group": "Profilbanner",
+      "default": 100,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "bannerOfflineRainDensity",
+      "type": "number",
+      "label": "Regen-Dichte",
+      "group": "Offline-Banner",
       "default": 100,
       "min": 0,
       "max": 100,
@@ -2769,7 +2779,8 @@
       "fx"
     ],
     "Stinger": [],
-    "Banner": [],
+    "Profilbanner": [],
+    "Offline-Banner": [],
     "Minimes: Aussehen": [
       "minimes"
     ],

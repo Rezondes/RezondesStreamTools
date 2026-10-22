@@ -26,7 +26,8 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
 
@@ -239,17 +240,18 @@ const FIELDS = [
   number("stingerGrid", "Bauplan: Rastergrösse", STINGER, 40, 10, 200, "px"),
   number("stingerRollSize", "Rolle: Durchmesser", STINGER, 180, 40, 600, "px"),
 
-  text("profileTitle", "Profilbanner: Titel ({channel})", BANNER, "{channel}"),
-  text("profileOverline", "Profilbanner: Masslinie ({channel})", BANNER, "BAUPLAN // RICHTFEST"),
-  text("profileTag", "Profilbanner: Überzeile ({channel})", BANNER, "DACHDECKEREI"),
-  text("profileSubtitle", "Profilbanner: Unterzeile ({channel})", BANNER, "Live vom Dach!"),
-  text("offlineText", "Offline-Banner: Titel ({channel})", BANNER, "OFFLINE"),
-  text("offlineOverline", "Offline-Banner: Masslinie ({channel})", BANNER, "{channel}"),
-  text("offlineTag", "Offline-Banner: Überzeile ({channel})", BANNER, "FEIERABEND"),
-  text("offlineSubtitle", "Offline-Banner: Unterzeile ({channel})", BANNER, "Dach dicht, bis zum nächsten Stream!"),
-  number("bannerGrid", "Bauplan: Rastergrösse", BANNER, 50, 10, 200, "px"),
-  flag("bannerRain", "Offline-Banner: Regen", BANNER, true),
-  number("bannerRainCount", "Offline-Banner: Tropfen", BANNER, 1200, 0, 4000),
+  text("profileTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}"),
+  text("profileOverline", "Masslinie ({channel})", PROFILE_BANNER, "BAUPLAN // RICHTFEST"),
+  text("profileTag", "Überzeile ({channel})", PROFILE_BANNER, "DACHDECKEREI"),
+  text("profileSubtitle", "Unterzeile ({channel})", PROFILE_BANNER, "Live vom Dach!"),
+  text("offlineText", "Titel ({channel})", OFFLINE_BANNER, "OFFLINE"),
+  text("offlineOverline", "Masslinie ({channel})", OFFLINE_BANNER, "{channel}"),
+  text("offlineTag", "Überzeile ({channel})", OFFLINE_BANNER, "FEIERABEND"),
+  text("offlineSubtitle", "Unterzeile ({channel})", OFFLINE_BANNER, "Dach dicht, bis zum nächsten Stream!"),
+  number("bannerGrid", "Bauplan: Rastergrösse", PROFILE_BANNER, 50, 10, 200, "px"),
+  number("bannerOfflineGrid", "Bauplan: Rastergrösse", OFFLINE_BANNER, 50, 10, 200, "px"),
+  flag("bannerRain", "Regen", OFFLINE_BANNER, true),
+  number("bannerRainCount", "Tropfen", OFFLINE_BANNER, 1200, 0, 4000),
 
   // Minimes (core fields plus the look and the own animations of the figures, figures.ts)
   ...MINIME_BASE_FIELDS,
@@ -306,7 +308,8 @@ const GROUP_SCENES = {
   [MUSIC]: ["music"],
   [FX]: ["fx"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],

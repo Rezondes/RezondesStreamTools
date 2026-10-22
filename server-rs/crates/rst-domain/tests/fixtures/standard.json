@@ -1129,31 +1129,39 @@
       "key": "bannerTitle",
       "type": "text",
       "label": "Titel ({channel})",
-      "group": "Banner",
+      "group": "Profilbanner",
+      "default": "{channel}",
+      "maxLength": 200
+    },
+    {
+      "key": "bannerOfflineName",
+      "type": "text",
+      "label": "Kanalzeile ({channel})",
+      "group": "Offline-Banner",
       "default": "{channel}",
       "maxLength": 200
     },
     {
       "key": "bannerProfileText",
       "type": "text",
-      "label": "Profilbanner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Profilbanner",
       "default": "Games, Talk und gute Laune",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineTitle",
       "type": "text",
-      "label": "Offline-Banner: Titel",
-      "group": "Banner",
+      "label": "Titel",
+      "group": "Offline-Banner",
       "default": "Gerade offline",
       "maxLength": 200
     },
     {
       "key": "bannerOfflineText",
       "type": "text",
-      "label": "Offline-Banner: Text",
-      "group": "Banner",
+      "label": "Text",
+      "group": "Offline-Banner",
       "default": "Folge dem Kanal und verpasse keinen Stream.",
       "maxLength": 200
     },
@@ -1421,7 +1429,8 @@
       "fx"
     ],
     "Stinger": [],
-    "Banner": [],
+    "Profilbanner": [],
+    "Offline-Banner": [],
     "Befehlsseite": [
       "info"
     ]

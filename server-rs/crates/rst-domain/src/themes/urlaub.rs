@@ -45,7 +45,8 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 const THING_COLORS: &str = "Typen: Farben";
@@ -410,22 +411,17 @@ fn fields() -> Vec<SettingField> {
             flag("stingerFoam", "Schaumkrone", STINGER, true),
             flag("stingerPalm", "Palme im Bild", STINGER, true),
             number("stingerSpray", "Gischt: Tropfen", STINGER, 50.0, 0.0, 200.0, None, None),
-            number("bannerSunHeight", "Profilbanner: Sonnenhöhe (Grad)", BANNER, 30.0, 0.0, 90.0, None, None),
-            number("bannerSunset", "Offline-Banner: Sonnenhöhe (Grad)", BANNER, 3.0, -4.0, 20.0, None, None),
-            text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", None),
-            text("bannerProfileText", "Profilbanner: Text", BANNER, "Sonne, Strand und gute Streams", None),
-            text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade am Strand", None),
-            text(
-                "bannerOfflineText",
-                "Offline-Banner: Text",
-                BANNER,
-                "Folge dem Kanal und verpasse keinen Stream.",
-                None,
-            ),
+            number("bannerSunHeight", "Sonnenhöhe (Grad)", PROFILE_BANNER, 30.0, 0.0, 90.0, None, None),
+            number("bannerSunset", "Sonnenhöhe (Grad)", OFFLINE_BANNER, 3.0, -4.0, 20.0, None, None),
+            text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}", None),
+            text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}", None),
+            text("bannerProfileText", "Text", PROFILE_BANNER, "Sonne, Strand und gute Streams", None),
+            text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Gerade am Strand", None),
+            text("bannerOfflineText", "Text", OFFLINE_BANNER, "Folge dem Kanal und verpasse keinen Stream.", None),
             lines(
                 "bannerOfflineLines",
-                "Offline-Banner: Zeilen",
-                BANNER,
+                "Zeilen",
+                OFFLINE_BANNER,
                 &["Bald wieder live", "Sonnencreme nicht vergessen"],
                 None,
             ),
@@ -497,7 +493,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MUSIC, vec![SceneName::Music]),
         (FX, vec![SceneName::Fx]),
         (STINGER, vec![]),
-        (BANNER, vec![]),
+        (PROFILE_BANNER, vec![]),
+        (OFFLINE_BANNER, vec![]),
         (MINIME_COMMANDS, vec![SceneName::Minimes]),
         (MINIME_RULES, vec![SceneName::Minimes]),
         (MINIME_MOTION, vec![SceneName::Minimes]),

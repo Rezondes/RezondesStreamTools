@@ -26,7 +26,8 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
 
@@ -191,10 +192,11 @@ const FIELDS = [
   text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}"),
   number("stingerTextSize", "Textgrösse", STINGER, 260, 40, 600, "px"),
 
-  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
-  text("bannerProfileText", "Profilbanner: Text", BANNER, "Kritzeleien, Neon und gute Laune"),
-  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Offline"),
-  text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Die Farbe trocknet noch. Folge dem Kanal!"),
+  text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}"),
+  text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}"),
+  text("bannerProfileText", "Text", PROFILE_BANNER, "Kritzeleien, Neon und gute Laune"),
+  text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Offline"),
+  text("bannerOfflineText", "Text", OFFLINE_BANNER, "Die Farbe trocknet noch. Folge dem Kanal!"),
   // Minimes: commands, rules, movement and hopping are the same for all themes with minimes; the look is the monster
   ...MINIME_FIELDS,
   ...MINIME_HOP_FIELDS,
@@ -237,7 +239,8 @@ const GROUP_SCENES = {
   [MUSIC]: ["music"],
   [FX]: ["fx"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [MINIME_LOOK]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
   [MINIME_COMMANDS]: ["minimes"],

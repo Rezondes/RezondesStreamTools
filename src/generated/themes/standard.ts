@@ -125,6 +125,7 @@ export type StandardValues = {
   readonly stingerPanels: number;
   readonly stingerText: string;
   readonly bannerTitle: string;
+  readonly bannerOfflineName: string;
   readonly bannerProfileText: string;
   readonly bannerOfflineTitle: string;
   readonly bannerOfflineText: string;

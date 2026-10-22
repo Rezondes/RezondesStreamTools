@@ -1,4 +1,4 @@
-// Renderable clips of the Plantage theme: stinger (group Stinger) and profile and offline banners (group Banner),
+// Renderable clips of the Plantage theme: stinger (group Stinger) and profile banner (group Profilbanner) and offline banner (group Offline-Banner),
 // drawn with the resolved settings. Check: render.check.ts.
 import { centeredTop, PANEL_START_HEIGHT, type PanelDesign, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
@@ -48,8 +48,8 @@ export function plantageClips(values: SettingValues, login: string): RenderClip[
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawPlantageStinger(context, time, stinger) }, options),
-    { name: "profile", feature: "banners", group: "Banner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageProfileBanner(context, time, banner) },
-    { name: "offline", feature: "banners", group: "Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageOfflineBanner(context, time, banner) },
+    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageProfileBanner(context, time, banner) },
+    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageOfflineBanner(context, time, { ...banner, title: fillTemplate(field.bannerOfflineName, names) }) },
   ];
 }
 

@@ -22,7 +22,8 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 
 const FIELDS = [
   color("accent", "Akzentfarbe", GENERAL, "#7c5cff"),
@@ -147,10 +148,11 @@ const FIELDS = [
   number("stingerPanels", "Anzahl Streifen", STINGER, 3, 1, 8),
   text("stingerText", "Text in der Mitte ({channel})", STINGER, "{channel}"),
 
-  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}"),
-  text("bannerProfileText", "Profilbanner: Text", BANNER, "Games, Talk und gute Laune"),
-  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "Gerade offline"),
-  text("bannerOfflineText", "Offline-Banner: Text", BANNER, "Folge dem Kanal und verpasse keinen Stream."),
+  text("bannerTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}"),
+  text("bannerOfflineName", "Kanalzeile ({channel})", OFFLINE_BANNER, "{channel}"),
+  text("bannerProfileText", "Text", PROFILE_BANNER, "Games, Talk und gute Laune"),
+  text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "Gerade offline"),
+  text("bannerOfflineText", "Text", OFFLINE_BANNER, "Folge dem Kanal und verpasse keinen Stream."),
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 860, 400, 1600, "px"),
@@ -168,7 +170,8 @@ const GROUP_SCENES = {
   [MUSIC]: ["music"],
   [FX]: ["fx"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [INFO_GROUP]: ["info"],
 } as const;
 

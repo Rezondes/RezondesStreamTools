@@ -202,6 +202,7 @@ export type MatrixValues = {
   readonly bannerOfflineText: string;
   readonly bannerOfflineLines: readonly string[];
   readonly bannerRainDensity: number;
+  readonly bannerOfflineRainDensity: number;
   readonly minimeJoinCommand: string;
   readonly minimeLeaveCommand: string;
   readonly minimeJoinRole: string;

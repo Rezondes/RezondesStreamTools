@@ -217,6 +217,7 @@ export type PlantageValues = {
   readonly stingerLeaves: boolean;
   readonly stingerLeafCount: number;
   readonly bannerTitle: string;
+  readonly bannerOfflineName: string;
   readonly bannerProfileText: string;
   readonly bannerOfflineTitle: string;
   readonly bannerOfflineText: string;

@@ -28,7 +28,8 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
 
@@ -273,13 +274,14 @@ const FIELDS = [
   flag("stingerLogo", "Logo", STINGER, true),
 
   // Twitch banners
-  text("bannerProfileText", "Profilbanner: Text", BANNER, "> willkommen in der matrix"),
-  text("bannerProfileSub", "Profilbanner: Untertitel", BANNER, "Games · Talk · Community"),
-  text("bannerOfflineStatus", "Offline-Banner: Status", BANNER, "○ OFFLINE"),
-  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "STREAM OFFLINE"),
-  text("bannerOfflineText", "Offline-Banner: Text", BANNER, "> Folge dem Kanal, dann verpasst du den nächsten Stream nicht."),
-  lines("bannerOfflineLines", "Offline-Banner: Terminal", BANNER, ["connection closed by remote host", "saving session ... ok", "awaiting next broadcast"]),
-  number("bannerRainDensity", "Regen-Dichte", BANNER, 100, 0, 100, "%"),
+  text("bannerProfileText", "Text", PROFILE_BANNER, "> willkommen in der matrix"),
+  text("bannerProfileSub", "Untertitel", PROFILE_BANNER, "Games · Talk · Community"),
+  text("bannerOfflineStatus", "Status", OFFLINE_BANNER, "○ OFFLINE"),
+  text("bannerOfflineTitle", "Titel", OFFLINE_BANNER, "STREAM OFFLINE"),
+  text("bannerOfflineText", "Text", OFFLINE_BANNER, "> Folge dem Kanal, dann verpasst du den nächsten Stream nicht."),
+  lines("bannerOfflineLines", "Terminal", OFFLINE_BANNER, ["connection closed by remote host", "saving session ... ok", "awaiting next broadcast"]),
+  number("bannerRainDensity", "Regen-Dichte", PROFILE_BANNER, 100, 0, 100, "%"),
+  number("bannerOfflineRainDensity", "Regen-Dichte", OFFLINE_BANNER, 100, 0, 100, "%"),
   // Minimes: commands, rules and movement are the same for all themes with minimes
   ...MINIME_FIELDS,
   color("minimeDefaultColor", "Farbe ohne eigene Wahl", MINIME_LOOK, "#39ff14"),
@@ -337,7 +339,8 @@ const GROUP_SCENES = {
   [MUSIC]: ["music"],
   [FX]: ["fx"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [MINIME_LOOK]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
   [MINIME_COMMANDS]: ["minimes"],

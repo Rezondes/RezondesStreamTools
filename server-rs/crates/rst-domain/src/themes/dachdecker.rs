@@ -39,7 +39,8 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 const FIGURE_TYPES: [&str; 5] = ["dachdecker", "zimmerer", "spengler", "azubi", "polier"];
@@ -349,23 +350,18 @@ fn stinger_banner() -> Vec<SettingField> {
         number("stingerCut", "Übergangspunkt", STINGER, 1.2, 0.1, 6.0, S, Some(0.05)),
         number("stingerGrid", "Bauplan: Rastergrösse", STINGER, 40.0, 10.0, 200.0, PX, None),
         number("stingerRollSize", "Rolle: Durchmesser", STINGER, 180.0, 40.0, 600.0, PX, None),
-        text("profileTitle", "Profilbanner: Titel ({channel})", BANNER, "{channel}", None),
-        text("profileOverline", "Profilbanner: Masslinie ({channel})", BANNER, "BAUPLAN // RICHTFEST", None),
-        text("profileTag", "Profilbanner: Überzeile ({channel})", BANNER, "DACHDECKEREI", None),
-        text("profileSubtitle", "Profilbanner: Unterzeile ({channel})", BANNER, "Live vom Dach!", None),
-        text("offlineText", "Offline-Banner: Titel ({channel})", BANNER, "OFFLINE", None),
-        text("offlineOverline", "Offline-Banner: Masslinie ({channel})", BANNER, "{channel}", None),
-        text("offlineTag", "Offline-Banner: Überzeile ({channel})", BANNER, "FEIERABEND", None),
-        text(
-            "offlineSubtitle",
-            "Offline-Banner: Unterzeile ({channel})",
-            BANNER,
-            "Dach dicht, bis zum nächsten Stream!",
-            None,
-        ),
-        number("bannerGrid", "Bauplan: Rastergrösse", BANNER, 50.0, 10.0, 200.0, PX, None),
-        flag("bannerRain", "Offline-Banner: Regen", BANNER, true),
-        number("bannerRainCount", "Offline-Banner: Tropfen", BANNER, 1200.0, 0.0, 4000.0, None, None),
+        text("profileTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}", None),
+        text("profileOverline", "Masslinie ({channel})", PROFILE_BANNER, "BAUPLAN // RICHTFEST", None),
+        text("profileTag", "Überzeile ({channel})", PROFILE_BANNER, "DACHDECKEREI", None),
+        text("profileSubtitle", "Unterzeile ({channel})", PROFILE_BANNER, "Live vom Dach!", None),
+        text("offlineText", "Titel ({channel})", OFFLINE_BANNER, "OFFLINE", None),
+        text("offlineOverline", "Masslinie ({channel})", OFFLINE_BANNER, "{channel}", None),
+        text("offlineTag", "Überzeile ({channel})", OFFLINE_BANNER, "FEIERABEND", None),
+        text("offlineSubtitle", "Unterzeile ({channel})", OFFLINE_BANNER, "Dach dicht, bis zum nächsten Stream!", None),
+        number("bannerGrid", "Bauplan: Rastergrösse", PROFILE_BANNER, 50.0, 10.0, 200.0, PX, None),
+        number("bannerOfflineGrid", "Bauplan: Rastergrösse", OFFLINE_BANNER, 50.0, 10.0, 200.0, PX, None),
+        flag("bannerRain", "Regen", OFFLINE_BANNER, true),
+        number("bannerRainCount", "Tropfen", OFFLINE_BANNER, 1200.0, 0.0, 4000.0, None, None),
     ]
 }
 
@@ -452,7 +448,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MUSIC, vec![Music]),
         (FX, vec![Fx]),
         (STINGER, vec![]),
-        (BANNER, vec![]),
+        (PROFILE_BANNER, vec![]),
+        (OFFLINE_BANNER, vec![]),
         (MINIME_COMMANDS, vec![Minimes]),
         (MINIME_RULES, vec![Minimes]),
         (MINIME_MOTION, vec![Minimes]),

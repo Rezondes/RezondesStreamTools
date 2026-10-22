@@ -61,7 +61,8 @@ export function dachdeckerClips(settings: SettingValues, login: string): RenderC
     colors: { blueprint: values.blueprint, page: values.page, accent: values.accent, copper: values.copper, line: values.line, rainColor: values.rain },
   });
   const profile = banner(PROFILE_SIZE);
-  const offline = banner(OFFLINE_SIZE);
+  // The offline banner has its own grid size
+  const offline = { ...banner(OFFLINE_SIZE), grid: values.bannerOfflineGrid };
   const font = `700 24px "${values.font}"`;
   // The roll draws the hold itself (roll.ts), so the core only takes frame rate, curve and size
   return [
@@ -73,13 +74,13 @@ export function dachdeckerClips(settings: SettingValues, login: string): RenderC
       }),
     }, { ...readStingerOptions(settings), ownHold: true }),
     {
-      name: "profile", feature: "banners", group: "Banner", font, ...PROFILE_SIZE, duration: STILL, cut: null,
+      name: "profile", feature: "banners", group: "Profilbanner", font, ...PROFILE_SIZE, duration: STILL, cut: null,
       draw: (context, time) => drawProfile(context, time, profile, {
         dim: fill(values.profileOverline), tag: fill(values.profileTag), title: fill(values.profileTitle), line: fill(values.profileSubtitle),
       }),
     },
     {
-      name: "offline", feature: "banners", group: "Banner", font, ...OFFLINE_SIZE, duration: STILL, cut: null,
+      name: "offline", feature: "banners", group: "Offline-Banner", font, ...OFFLINE_SIZE, duration: STILL, cut: null,
       draw: (context, time) => drawOffline(context, time, offline, {
         dim: fill(values.offlineOverline), tag: fill(values.offlineTag), title: fill(values.offlineText), line: fill(values.offlineSubtitle),
       }),

@@ -203,6 +203,7 @@ export type UrlaubValues = {
   readonly bannerSunHeight: number;
   readonly bannerSunset: number;
   readonly bannerTitle: string;
+  readonly bannerOfflineName: string;
   readonly bannerProfileText: string;
   readonly bannerOfflineTitle: string;
   readonly bannerOfflineText: string;
