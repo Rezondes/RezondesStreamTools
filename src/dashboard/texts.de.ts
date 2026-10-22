@@ -43,6 +43,7 @@ export const TEXTS = {
     copied: "Kopiert",
   },
   signedInAs: "Angemeldet als",
+  toAccount: "Zum Konto",
   admin: "(Admin)",
   sections: {
     overview: "Übersicht",

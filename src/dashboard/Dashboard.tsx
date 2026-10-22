@@ -1,7 +1,8 @@
 // Dashboard under /: without a session only the login with Twitch, afterwards the navigation over the sections that are
 // released for the streamer (navigation.ts), section in the hash (#/theme). Account from /api/me, refreshed every 5 seconds;
 // results of actions come as toasts, errors (also ?error=<code> after an aborted login) as a dialog with details for
-// the admin (notices.ts).
+// the admin (notices.ts). The account page opens from the name at the top right, admin from the account page; both stay
+// out of the navigation.
 // The page never scrolls as a whole (terminal): title and navigation stay fixed, the section below scrolls inside;
 // theme and render split it into settings (scroll) and preview (fixed). The look follows the active theme
 // (skin.ts, skins.css).
@@ -98,14 +99,15 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
   return (
     <>
       <nav className="dashboard-nav">
-        {visible.map(id => (
+        {visible.filter(id => id !== "account" && id !== "admin").map(id => (
           <a key={id} className={`btn${id === section ? " primary" : ""}`} href={`#/${id}`} aria-current={id === section ? "page" : undefined}>
             {TEXTS.sections[id]}
           </a>
         ))}
         <span className="dashboard-user">
-          {TEXTS.signedInAs} <b className="glow">{account.login}</b>{account.admin && <span className="muted"> {TEXTS.admin}</span>}{" "}
-          <button className="btn" onClick={() => act("/auth/logout")}>{TEXTS.logout}</button>
+          {TEXTS.signedInAs}{" "}
+          <a className="glow dashboard-account" href="#/account" title={TEXTS.toAccount} aria-current={section === "account" || section === "admin" ? "page" : undefined}>{account.login}</a>
+          {account.admin && <span className="muted"> {TEXTS.admin}</span>}
         </span>
       </nav>
       <div className={`dashboard-content${split ? " split" : ""}`}>

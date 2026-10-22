@@ -341,3 +341,10 @@
 .error-details { margin: 0; padding: 10px; max-height: 40vh; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; border: var(--border-w) solid var(--line); border-radius: var(--radius-sm); background: var(--field); font: 13px/1.4 ui-monospace, monospace; }
 @keyframes toast-in { from { opacity: 0; translate: 0 8px; } }
 @media (prefers-reduced-motion: reduce) { .toast { animation: none; } }
+
+/* The name at the top right leads to the account page; there logout is a red icon button and admin a button */
+.dashboard-account { font-weight: 700; text-decoration: none; }
+.dashboard-account:hover, .dashboard-account[aria-current=page] { text-decoration: underline; text-underline-offset: 3px; }
+.dashboard .btn.icon { min-width: 44px; justify-content: center; }
+.btn.danger { border-color: var(--danger, #e5383b); color: var(--danger, #e5383b); }
+.btn.danger:hover { border-color: var(--danger, #e5383b); background: var(--danger, #e5383b); color: #ffffff; }
