@@ -1,8 +1,10 @@
 // Render section in the dashboard: stinger (WebM with alpha) and profile and offline banners (a still PNG, Twitch takes no
-// animated banners) of the active theme (chosen in the THEME section). Next to the preview are the settings of the clip's group (stinger or banners); the
-// preview shows unsaved values immediately, saving does not change the overlay theme. Rendering: the browser draws
-// every frame and sends it as PNG to the server, which builds the stinger with ffmpeg; a banner is its first frame.
-import { useCallback, useEffect, useRef, useState } from "react";
+// animated banners) of the active theme (chosen in the THEME section), one tab each. Save and discard of the values sit
+// on top; next to the preview are the settings of the clip's group (stinger or banners). The preview shows unsaved
+// values immediately, saving does not change the overlay theme; the stinger only loops after Play. Rendering: the
+// browser draws every frame and sends it as PNG to the server, which builds the stinger with ffmpeg; a banner is its
+// first frame. The finished file of the tab can be downloaded next to rendering.
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import type { ClipName, RenderClip } from "../core/renderClip.ts";
 import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
@@ -13,6 +15,7 @@ import { getJson, postJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
 import SettingInput from "./SettingInput.tsx";
 import { changedKeys, errorsByKey, resetField } from "./settingsForm.ts";
+import { SubTabs, subTabPanel } from "./SubTabs.tsx";
 import { TEXTS } from "./texts.de.ts";
 
 const RENDER_TEXT = TEXTS.render;
@@ -28,45 +31,56 @@ type RenderedFile = { name: string; size: number };
 
 export default function Render({ me }: { me: Me }) {
   const settings = useThemeDraft();
+  const files = useRenderedFiles();
   const [clipName, setClipName] = useState<ClipName | null>(null);
-  if (!settings.ready) return <p className="muted">{TEXTS.loading}</p>;
   const schema = findTheme(settings.theme) ?? findTheme(DEFAULT_THEME)!;
-  const clips = clipsFor(schema.id, resolveSettings(schema, settings.draft), me.login).filter(clip => me.features[clip.feature]);
+  // New clip objects only when the draft changes: the account reload every 5 s must not restart the preview loop
+  const allClips = useMemo(() => clipsFor(schema.id, resolveSettings(schema, settings.draft), me.login), [schema, settings.draft, me.login]);
+  if (!settings.ready) return <p className="muted">{TEXTS.loading}</p>;
+  const clips = allClips.filter(clip => me.features[clip.feature]);
   const clip = clips.find(candidate => candidate.name === clipName) ?? clips.at(0);
-  // Clips the theme does not bring (and the feature would allow): named with a hint instead of a button
+  // Clips the theme does not bring (and the feature would allow): named with a hint instead of a tab
   const missing = CLIP_NAMES.filter(name => !clips.some(candidate => candidate.name === name) && me.features[name === "stinger" ? "stinger" : "banners"]);
   const canSave = me.features.themes === true;
   return (
     <section className="panel render">
-      <p className="muted">{RENDER_TEXT.theme(schema.name)}</p>
-      <p className="actions">
-        {clips.map(candidate => (
-          <button key={candidate.name} className={`btn${candidate === clip ? " primary" : ""}`} aria-pressed={candidate === clip} onClick={() => setClipName(candidate.name)}>
-            {RENDER_TEXT.clips[candidate.name]}
-          </button>
-        ))}
-        {missing.length > 0 && <span className="muted">{missing.map(name => RENDER_TEXT.clips[name]).join(", ")}: {TEXTS.notInTheme}</span>}
-      </p>
+      <div className="render-head">
+        {canSave ? <SaveBar settings={settings} /> : <p className="muted">{RENDER_TEXT.readOnly}</p>}
+        <p className="muted">{RENDER_TEXT.theme(schema.name)}</p>
+      </div>
+      {clips.length > 0 && (
+        <SubTabs label={RENDER_TEXT.tabsLabel} tabs={clips.map(candidate => ({ id: candidate.name, label: RENDER_TEXT.clips[candidate.name] }))} current={clip!.name} onChange={setClipName} />
+      )}
+      {missing.length > 0 && <p className="muted">{missing.map(name => RENDER_TEXT.clips[name]).join(", ")}: {TEXTS.notInTheme}</p>}
       {clip && (
-        <div className="settings-layout">
+        <div className="settings-layout" {...subTabPanel(clip.name)}>
           <ClipSettings clip={clip} settings={settings} canSave={canSave} />
-          <ClipPreview key={`${schema.id}-${clip.name}`} clip={clip} />
+          <ClipPreview key={`${schema.id}-${clip.name}`} clip={clip} file={files.find(file => file.name.startsWith(`${clip.name}.`))} />
         </div>
       )}
-      <RenderedFiles />
     </section>
   );
 }
 
-// Settings of the clip's group, with save and discard
+// Save and discard of the theme values, on top like on the theme page; with the number of changes or the error
+function SaveBar({ settings }: { settings: ThemeDraft }) {
+  const changed = settings.changed.length;
+  return (
+    <div className="actions">
+      <button className="btn primary" disabled={changed === 0} onClick={settings.save}>{RENDER_TEXT.save}</button>
+      <button className="btn" disabled={changed === 0} onClick={settings.discard}>{RENDER_TEXT.discard}</button>
+      <span className="muted" role="status">{changed > 0 ? `${RENDER_TEXT.unsaved} ${changed}` : settings.notice === "saved" ? RENDER_TEXT.saved : ""}</span>
+      {settings.notice && settings.notice !== "saved" && <span className="error" role="alert">{TEXTS.errors[settings.notice]}</span>}
+    </div>
+  );
+}
+
+// Settings of the clip's group
 function ClipSettings({ clip, settings, canSave }: { clip: RenderClip; settings: ThemeDraft; canSave: boolean }) {
   const schema = findTheme(settings.theme) ?? findTheme(DEFAULT_THEME)!;
   const fields = schema.fields.filter(field => field.group === clip.group);
-  const changed = settings.changed.length;
   return (
     <div className="settings-groups">
-      <h2>{RENDER_TEXT.settings}</h2>
-      {!canSave && <p className="muted">{RENDER_TEXT.readOnly}</p>}
       <fieldset className="settings-group" disabled={!canSave}>
         <legend>{clip.group}</legend>
         {fields.map(field => (
@@ -81,29 +95,20 @@ function ClipSettings({ clip, settings, canSave }: { clip: RenderClip; settings:
           />
         ))}
       </fieldset>
-      {/* Stays at the bottom of the column while the fields scroll */}
-      <div className="render-save">
-        <p className="muted">{RENDER_TEXT.colorsHint}</p>
-        {canSave && (
-          <div className="actions">
-            <button className="btn primary" disabled={changed === 0} onClick={settings.save}>{RENDER_TEXT.save}</button>
-            <button className="btn" disabled={changed === 0} onClick={settings.discard}>{RENDER_TEXT.discard}</button>
-            <span className="muted" role="status">{changed > 0 ? `${RENDER_TEXT.unsaved} ${changed}` : settings.notice === "saved" ? RENDER_TEXT.saved : ""}</span>
-          </div>
-        )}
-        {settings.notice && settings.notice !== "saved" && <p className="error" role="alert">{TEXTS.errors[settings.notice]}</p>}
-      </div>
+      <p className="muted">{RENDER_TEXT.colorsHint}</p>
     </div>
   );
 }
 
-// Preview with timeline and rendering
-function ClipPreview({ clip }: { clip: RenderClip }) {
+// Preview with timeline and rendering; the download of the file this clip rendered last sits next to rendering
+function ClipPreview({ clip, file }: { clip: RenderClip; file: RenderedFile | undefined }) {
   const canvas = useRef<HTMLCanvasElement>(null);
   const preview = usePreview(clip, canvas);
   const job = useRenderJob(clip, canvas, preview.setPlaying);
   const cut = clip.cut;
   const still = isStill(clip);
+  const at = Math.min(preview.time, clip.duration);
+  const frames = Math.round(clip.duration * clip.fps);
   return (
     <div className="scene-preview">
       <div className="render-view" style={{ aspectRatio: `${clip.width} / ${clip.height}` }}>
@@ -111,18 +116,27 @@ function ClipPreview({ clip }: { clip: RenderClip }) {
         {cut !== null && <div className={`fake-scene ${preview.time < cut ? "a" : "b"}`}>{preview.time < cut ? RENDER_TEXT.sceneA : RENDER_TEXT.sceneB}</div>}
         <canvas ref={canvas} width={clip.width} height={clip.height} />
       </div>
+      {/* A banner is one picture: no timeline */}
+      {!still && (
+        <div className="render-bar">
+          <button className="btn icon" aria-label={preview.playing ? RENDER_TEXT.pause : RENDER_TEXT.play} title={preview.playing ? RENDER_TEXT.pause : RENDER_TEXT.play}
+            onClick={() => preview.setPlaying(value => !value)}>
+            <span aria-hidden="true">{preview.playing ? "❚❚" : "▶"}</span>
+          </button>
+          <input type="range" min={0} max={clip.duration} step={1 / clip.fps} value={at} aria-label={RENDER_TEXT.time}
+            onChange={event => { preview.setPlaying(false); preview.setTime(Number(event.target.value)); }} />
+          <span className="render-time">{at.toFixed(2)} {RENDER_TEXT.seconds} · {RENDER_TEXT.frame(Math.min(frames, Math.floor(at * clip.fps) + 1), frames)}</span>
+        </div>
+      )}
       <div className="render-bar">
-        {/* A banner is one picture: no timeline */}
-        {!still && (
-          <>
-            <button className="btn" onClick={() => preview.setPlaying(value => !value)}>{preview.playing ? RENDER_TEXT.pause : RENDER_TEXT.play}</button>
-            <input type="range" min={0} max={clip.duration} step={1 / clip.fps} value={Math.min(preview.time, clip.duration)} aria-label={RENDER_TEXT.time}
-              onChange={event => { preview.setPlaying(false); preview.setTime(Number(event.target.value)); }} />
-            <span>{Math.min(preview.time, clip.duration).toFixed(2)} {RENDER_TEXT.seconds}</span>
-          </>
-        )}
         <button className="btn primary" disabled={job.busy} onClick={job.render}>{RENDER_TEXT.render}</button>
         {job.canCancel && <button className="btn" onClick={job.cancel}>{RENDER_TEXT.cancel}</button>}
+        {file ? (
+          <span className="actions">
+            <a className="btn" href={`/api/render/file?name=${encodeURIComponent(file.name)}`} download={file.name}>{RENDER_TEXT.download}</a>
+            <span className="muted">{file.name}, {(file.size / MEGABYTE).toFixed(1)} MB</span>
+          </span>
+        ) : <span className="muted">{RENDER_TEXT.notRendered}</span>}
         <span className="muted" role="status">{job.status}</span>
       </div>
       <p className="muted">{cut !== null ? RENDER_TEXT.hints.stinger(Math.round(cut * SECOND_MS)) : RENDER_TEXT.hints[clip.name === "profile" ? "profile" : "offline"]}</p>
@@ -130,7 +144,8 @@ function ClipPreview({ clip }: { clip: RenderClip }) {
   );
 }
 
-function RenderedFiles() {
+// The finished files on the server; asked again after every render ("render-done")
+function useRenderedFiles(): RenderedFile[] {
   const [files, setFiles] = useState<RenderedFile[]>([]);
   useEffect(() => {
     const refresh = () => { getJson<RenderedFile[]>("/api/render/files", []).then(setFiles).catch(() => {}); };
@@ -138,20 +153,7 @@ function RenderedFiles() {
     addEventListener("render-done", refresh);
     return () => removeEventListener("render-done", refresh);
   }, []);
-  return (
-    <div className="render-files-box">
-      <h2>{RENDER_TEXT.files}</h2>
-      {files.length === 0 && <p className="muted">{RENDER_TEXT.noFiles}</p>}
-      <ul className="render-files">
-        {files.map(file => (
-          <li key={file.name}>
-            <code>{file.name}</code> <span className="muted">{(file.size / MEGABYTE).toFixed(1)} MB</span>{" "}
-            <a className="btn" href={`/api/render/file?name=${encodeURIComponent(file.name)}`} download={file.name}>{RENDER_TEXT.download}</a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+  return files;
 }
 
 type ThemeDraft = ReturnType<typeof useThemeDraft>;
@@ -199,7 +201,8 @@ function useThemeDraft() {
 // Preview: endless loop over the clip and drawing of the current point in time; a banner stands at its first frame
 function usePreview(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement | null>) {
   const [time, setTime] = useState(0);
-  const [playing, setPlaying] = useState(true);
+  // The stinger waits for Play, then loops
+  const [playing, setPlaying] = useState(false);
   useEffect(() => {
     if (!playing || isStill(clip)) return;
     let frame = 0;
@@ -260,7 +263,7 @@ function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElemen
     setCanCancel(true);
     run()
       .catch(() => setStatus(TEXTS.errors["server-error"]))
-      .finally(() => { setBusy(false); setCanCancel(false); setPlaying(true); dispatchEvent(new Event("render-done")); });
+      .finally(() => { setBusy(false); setCanCancel(false); dispatchEvent(new Event("render-done")); });
   };
   const cancel = () => { cancelled.current = true; setCanCancel(false); };
   return { status, busy, canCancel, render, cancel };

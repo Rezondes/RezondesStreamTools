@@ -263,9 +263,9 @@ export const TEXTS = {
     sceneB: "SZENE B",
     frame: (done: number, total: number) => `Frame ${done}/${total}`,
     encoding: "Kodiere mit ffmpeg ...",
-    done: "Fertig. Die Datei steht unten zum Herunterladen.",
-    files: "Fertige Dateien",
-    noFiles: "Noch nichts gerendert.",
+    done: "Fertig. Die Datei lässt sich jetzt herunterladen.",
+    tabsLabel: "Clips",
+    notRendered: "Noch nicht gerendert.",
     download: "Herunterladen",
     hints: {
       stinger: (cutMs: number) => `OBS: Szenenübergänge, +, Stinger, Videodatei stinger.webm, Übergangspunkt ${cutMs} ms.`,

@@ -15,7 +15,6 @@
 .dashboard-content.split .preview-box { flex: 0 1 auto; min-height: 0; max-height: none; }
 .event-log { list-style: none; margin: 0; padding: 8px 0 0; display: grid; gap: 4px; max-height: var(--log-height, 360px); overflow-y: auto; border-top: var(--border-w) solid var(--line); }
 .event-kind { display: inline-block; min-width: 9ch; color: var(--fg-dim); }
-.render-files-box { display: grid; gap: 8px; max-height: var(--files-height, 160px); overflow-y: auto; padding-top: 8px; border-top: var(--border-w) solid var(--line); }
 .dashboard h1 { font: var(--title-weight) var(--title-size) / 1.15 var(--font-title); text-transform: var(--title-case); color: var(--title-color); letter-spacing: var(--title-tracking, normal); }
 /* Section headings carry the hierarchy inside a panel: clearly above the 14-16px of labels and text, and a section
    after the first one starts with wide space, so tight groups read as groups (compression inside, release between) */
@@ -123,9 +122,11 @@
 .fake-scene.b { background: linear-gradient(135deg, #6b3a1b, #1b6b4a); }
 .render-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .render-bar input { flex: 1; min-width: 160px; }
-.render-files { list-style: none; display: grid; gap: 8px; }
-/* Hint, save and discard stay visible at the bottom of the settings column while its fields scroll */
-.render-save { position: sticky; bottom: 0; z-index: 1; display: grid; gap: 8px; padding: 10px 0 4px; border-top: var(--border-w) solid var(--line); background: var(--surface); }
+/* Save, discard and the theme hint on top of the render page, the play button square, time and frame in fixed digits */
+.render-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); }
+.render-head > p { margin: 0; }
+.render-bar .btn.icon { min-width: 44px; justify-content: center; }
+.render-time { white-space: nowrap; font-variant-numeric: tabular-nums; }
 
 /* Media: small preview per file */
 /* Media: storage bar and upload on top, the files as tiles; pictures and videos fill a 16:9 frame on the checker, sound
