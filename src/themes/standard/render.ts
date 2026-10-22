@@ -5,7 +5,9 @@ import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
+import { auroraOptions } from "./aurora.ts";
 import { drawStandardOfflineBanner, drawStandardProfileBanner, type StandardBannerOptions } from "./banners.ts";
+import type { LightsOptions } from "./lights.ts";
 import type { StandardValues } from "./settings.ts";
 import { drawStandardStinger, HEIGHT, WIDTH, type StandardStingerOptions } from "./stinger.ts";
 
@@ -18,12 +20,14 @@ export function standardClips(values: SettingValues, login: string): RenderClip[
   const standard = values as unknown as StandardValues;
   const names = { channel: standard.channelName, login };
   const colors = { accent: standard.accent, accent2: standard.accent2, textColor: standard.textColor };
+  // The light fields and the dust of the screens; without blobs or dustOn none of them
+  const lights: LightsOptions = { ...auroraOptions(standard), count: standard.blobs ? standard.auroraFields : 0, dust: standard.dustOn ? standard.dustCount : 0 };
   const stinger: StandardStingerOptions = {
-    ...colors, duration: standard.stingerDuration, cut: standard.stingerCut, panels: standard.stingerPanels, text: fillTemplate(standard.stingerText, names), font: standard.font,
+    ...colors, duration: standard.stingerDuration, cut: standard.stingerCut, panels: standard.stingerPanels, text: fillTemplate(standard.stingerText, names), font: standard.font, background: standard.background, lights,
   };
   const banner: StandardBannerOptions = {
     ...colors, loop: BANNER_LOOP, font: standard.font, background: standard.background, mutedColor: standard.mutedColor,
-    title: fillTemplate(standard.bannerTitle, names), profileText: standard.bannerProfileText, offlineTitle: standard.bannerOfflineTitle, offlineText: standard.bannerOfflineText,
+    title: fillTemplate(standard.bannerTitle, names), profileText: standard.bannerProfileText, offlineTitle: standard.bannerOfflineTitle, offlineText: standard.bannerOfflineText, lights,
   };
   const font = `800 24px "${standard.font}"`;
   const options = readStingerOptions(values);

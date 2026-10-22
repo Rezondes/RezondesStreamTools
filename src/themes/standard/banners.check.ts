@@ -1,4 +1,4 @@
-// Check for banners.ts of the standard theme: both banners draw title and text and look exactly the same after one
+// Check for banners.ts of the standard theme: both banners draw the light fields, title and text and look exactly the same after one
 // loop (seamless GIF). A mock canvas records the calls. Runs with npm test.
 import assert from "node:assert/strict";
 import { drawStandardOfflineBanner, drawStandardProfileBanner, type StandardBannerOptions } from "./banners.ts";
@@ -21,6 +21,7 @@ function recorder() {
 const options: StandardBannerOptions = {
   loop: 6, font: "Inter", background: "#0b0b12", accent: "#7c5cff", accent2: "#22d3ee", textColor: "#ffffff", mutedColor: "#a1a1b5",
   title: "REZONDES", profileText: "Coding", offlineTitle: "Offline right now", offlineText: "Follow the channel",
+  lights: { seed: 7, count: 4, loop: 24, accent: "#7c5cff", accent2: "#22d3ee", strength: 0.7, dust: 20 },
 };
 
 for (const draw of [drawStandardProfileBanner, drawStandardOfflineBanner]) {
@@ -32,6 +33,7 @@ for (const draw of [drawStandardProfileBanner, drawStandardOfflineBanner]) {
   assert.equal(round(end.calls), round(start.calls), `${draw.name}: loop not seamless`);
   const texts = start.calls.filter(call => call[0] === "fillText").map(call => call[1]);
   assert.ok(texts.includes("REZONDES"), draw.name);
+  assert.equal(start.calls.filter(call => call[0] === "radial").length, options.lights.count, `${draw.name}: the light fields`);
 }
 
 console.log("standard banners ok");
