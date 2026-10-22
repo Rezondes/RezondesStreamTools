@@ -1,6 +1,7 @@
 // Overview in the dashboard, in three tabs: Live (status of Twitch, Spotify and the theme, test alerts and triggers to
 // fire, the stream statistics), OBS einrichten (import all scenes first, then the single URLs with size, copy and test,
-// the overlay key last) and Chat-Befehle (the help command, ChatHelp.tsx). Every URL can be dragged onto the OBS window.
+// the overlay key last) and Chat-Befehle (the help command, ChatHelp.tsx) for streamers without the trigger section,
+// which has it otherwise. Every URL can be dragged onto the OBS window.
 import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
 import { OBS_SCENES, SCENE_SIZES } from "../core/theme.ts";
@@ -28,9 +29,10 @@ type TriggerInfo = { name: string; enabled: boolean };
 
 export default function Overview({ me, act }: { me: Me; act: Act }) {
   const [tab, setTab] = useState<Tab>("live");
+  const tabs = visibleSections(me).includes("triggers") ? TABS.filter(candidate => candidate.id !== "chat") : TABS;
   return (
     <section className="panel overview">
-      <SubTabs label={TEXT.tabsLabel} tabs={TABS} current={tab} onChange={setTab} />
+      <SubTabs label={TEXT.tabsLabel} tabs={tabs} current={tab} onChange={setTab} />
       <div className="section-area" {...subTabPanel(tab)}>
         {tab === "live" && <Live me={me} act={act} />}
         {tab === "obs" && <ObsSetup me={me} act={act} />}

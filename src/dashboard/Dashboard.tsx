@@ -104,7 +104,7 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
         {section === "overview" && <Overview me={account} act={act} />}
         {section === "connections" && <Connections me={account} act={act} />}
         {section === "theme" && <ThemeSettings me={account} />}
-        {section === "triggers" && <Triggers />}
+        {section === "triggers" && <Triggers me={account} />}
         {section === "media" && <Media login={account.login} />}
         {section === "render" && <Render me={account} />}
         {section === "panels" && <Panels me={account} />}

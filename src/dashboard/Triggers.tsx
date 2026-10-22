@@ -1,6 +1,9 @@
-// Trigger section in the dashboard: editor for the chat triggers of the logged-in streamer (triggers.json in the profile).
-// Saving checks the rules on the server; on errors the file stays unchanged. Needs the running
-// Twitch connection of the streamer (otherwise the error code not-connected comes back).
+// Trigger section in the dashboard, in two tabs: Trigger (the chat triggers of the logged-in streamer, triggers.json in
+// the profile) and Chat-Befehle (the help command, ChatHelp.tsx). The triggers are a list on the left and the chosen
+// one on the right, grouped into trigger, who and how often, actions (times and position folded away) and the commands
+// page. Saving checks the rules on the server; on errors the file stays unchanged. Needs the running Twitch connection
+// of the streamer (otherwise the error code not-connected comes back). Both tabs stay mounted, so switching keeps
+// unsaved changes.
 import { useEffect, useState } from "react";
 import type { ErrorCode } from "../core/errorCodes.ts";
 import type { Trigger } from "../generated/Trigger.ts";
@@ -9,6 +12,9 @@ import { isErrorCode } from "../core/errorCodes.ts";
 import { MEDIA_KIND } from "../core/settings.ts";
 import type { FxAction } from "../core/types.ts";
 import { loadMedia, post } from "./api.ts";
+import ChatHelp from "./ChatHelp.tsx";
+import type { Me } from "./navigation.ts";
+import { SubTabs, subTabPanel } from "./SubTabs.tsx";
 import { TEXTS } from "./texts.de.ts";
 import UploadButton from "./UploadButton.tsx";
 
@@ -16,29 +22,49 @@ const TRIGGER_TEXT = TEXTS.triggers;
 type WhenType = keyof typeof TRIGGER_TEXT.whenTypes;
 const WHEN_TYPES = Object.keys(TRIGGER_TEXT.whenTypes) as WhenType[];
 const ROLES = Object.keys(TRIGGER_TEXT.roles) as (keyof typeof TRIGGER_TEXT.roles)[];
+const TABS = (["triggers", "chat"] as const).map(id => ({ id, label: TRIGGER_TEXT.tabs[id] }));
+type Tab = (typeof TABS)[number]["id"];
 
 const newAction = (): FxAction => ({ type: "media", zone: "main", duration: 4, position: "center" });
 const newTrigger = (number: number): Trigger => ({ name: `trigger${number}`, when: { type: "word", match: "" }, who: ["everyone"], cooldown: 5, do: [newAction()] });
 
-export default function Triggers() {
+export default function Triggers({ me }: { me: Me }) {
+  const [tab, setTab] = useState<Tab>("triggers");
+  return (
+    <section className="panel triggers">
+      <SubTabs label={TRIGGER_TEXT.tabsLabel} tabs={TABS} current={tab} onChange={setTab} />
+      <div className="section-area editor" {...subTabPanel("triggers")} hidden={tab !== "triggers"}><TriggerEditor /></div>
+      <div className="section-area" {...subTabPanel("chat")} hidden={tab !== "chat"}>
+        <section className="settings-group section-card"><ChatHelp login={me.login} /></section>
+      </div>
+    </section>
+  );
+}
+
+// The errors of the server that name this trigger
+const errorsOf = (errors: string[], trigger: Trigger) => errors.filter(error => error.startsWith(`Trigger "${trigger.name || "?"}":`));
+
+function TriggerEditor() {
   const editor = useTriggerConfig();
   const { list, setList, saved, media, errors, note, dirty } = editor;
+  const [current, setCurrent] = useState(0);
   if (!list) {
     return (
-      <section className="panel editor">
+      <>
         {errors.map(error => <p key={error} className="error" role="alert">{error}</p>)}
         {errors.includes(TEXTS.errors["not-connected"]) && <a className="btn" href="#/connections">{TRIGGER_TEXT.toConnections}</a>}
-      </section>
+      </>
     );
   }
 
-  const replace = (index: number, trigger: Trigger) => setList(list.map((current, position) => (position === index ? trigger : current)));
+  const index = Math.max(0, Math.min(current, list.length - 1));
+  const trigger = list.at(index);
+  const add = () => { setList([...list, newTrigger(list.length + 1)]); setCurrent(list.length); };
   return (
-    <section className="panel editor">
+    <>
       <div className="editor-bar">
         <button className="btn primary" disabled={!dirty} onClick={editor.save}>{TRIGGER_TEXT.save}</button>
         <button className="btn" disabled={!dirty} onClick={() => setList(JSON.parse(saved) as Trigger[])}>{TRIGGER_TEXT.discard}</button>
-        <button className="btn" onClick={() => setList([...list, newTrigger(list.length + 1)])}>{TRIGGER_TEXT.add}</button>
         <span className={dirty ? "" : "muted"} role="status">{dirty ? TRIGGER_TEXT.unsaved : note}</span>
         <UploadButton label={TRIGGER_TEXT.upload} onDone={editor.refreshMedia} />
       </div>
@@ -48,19 +74,44 @@ export default function Triggers() {
       <datalist id="media-video">{media.filter(name => MEDIA_KIND.video.test(name)).map(name => <option key={name} value={name} />)}</datalist>
       <datalist id="media-audio">{media.filter(name => MEDIA_KIND.audio.test(name)).map(name => <option key={name} value={name} />)}</datalist>
 
-      {list.length === 0 && <p className="muted">{TRIGGER_TEXT.empty}</p>}
-      {list.map((trigger, index) => (
-        <TriggerCard
-          key={index}
-          trigger={trigger}
-          dirty={dirty}
-          errors={errors.filter(error => error.startsWith(`Trigger "${trigger.name || "?"}":`))}
-          onChange={next => replace(index, next)}
-          onCopy={() => setList([...list.slice(0, index + 1), { ...structuredClone(trigger), name: `${trigger.name}${TRIGGER_TEXT.copySuffix}` }, ...list.slice(index + 1)])}
-          onDelete={() => { if (confirm(TRIGGER_TEXT.confirmDelete(trigger.name))) setList(list.filter((_, position) => position !== index)); }}
-        />
-      ))}
-    </section>
+      <div className="trigger-layout">
+        <TriggerList list={list} current={index} errors={errors} onPick={setCurrent} onAdd={add} />
+        {trigger ? (
+          <TriggerCard
+            key={index}
+            trigger={trigger}
+            dirty={dirty}
+            errors={errorsOf(errors, trigger)}
+            onChange={next => setList(list.map((candidate, position) => (position === index ? next : candidate)))}
+            onCopy={() => { setList([...list.slice(0, index + 1), { ...structuredClone(trigger), name: `${trigger.name}${TRIGGER_TEXT.copySuffix}` }, ...list.slice(index + 1)]); setCurrent(index + 1); }}
+            onDelete={() => { if (confirm(TRIGGER_TEXT.confirmDelete(trigger.name))) { setList(list.filter((_, position) => position !== index)); setCurrent(index - 1); } }}
+          />
+        ) : <p className="muted">{TRIGGER_TEXT.empty}</p>}
+      </div>
+    </>
+  );
+}
+
+// All triggers to pick one: on or off (shape, not only color), name, what fires it, a mark when the server refused it
+function TriggerList({ list, current, errors, onPick, onAdd }: { list: Trigger[]; current: number; errors: string[]; onPick: (index: number) => void; onAdd: () => void }) {
+  return (
+    <nav className="trigger-list" aria-label={TRIGGER_TEXT.listLabel}>
+      <ul>
+        {list.map((trigger, index) => (
+          <li key={index}>
+            <button type="button" className="trigger-item" aria-current={index === current} onClick={() => onPick(index)}>
+              <span className="trigger-item-name">
+                <span aria-hidden="true">{trigger.enabled === false ? "○" : "●"}</span> {trigger.name || "?"}
+                {trigger.enabled === false && <span className="muted"> ({TRIGGER_TEXT.off})</span>}
+                {errorsOf(errors, trigger).length > 0 && <span className="trigger-item-error"> ! {TRIGGER_TEXT.hasErrors}</span>}
+              </span>
+              <span className="muted">{TRIGGER_TEXT.whenTypes[trigger.when.type as WhenType] ?? trigger.when.type}: {trigger.when.match || "…"}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <button className="btn" onClick={onAdd}>{TRIGGER_TEXT.add}</button>
+    </nav>
   );
 }
 
@@ -112,8 +163,8 @@ function useTriggerConfig() {
 
 type CardProps = { trigger: Trigger; dirty: boolean; errors: string[]; onChange: (trigger: Trigger) => void; onCopy: () => void; onDelete: () => void };
 
-// Who may, how often, and how the trigger appears on the commands page
-function AudienceRows({ trigger, onChange }: { trigger: Trigger; onChange: (trigger: Trigger) => void }) {
+// Who may and how often
+function Audience({ trigger, onChange }: { trigger: Trigger; onChange: (trigger: Trigger) => void }) {
   const who = trigger.who ?? ["everyone"];
   // "everyone" excludes the other roles and vice versa
   const toggleRole = (role: string) => {
@@ -122,7 +173,8 @@ function AudienceRows({ trigger, onChange }: { trigger: Trigger; onChange: (trig
     onChange({ ...trigger, who: next.length ? next : ["everyone"] });
   };
   return (
-    <>
+    <fieldset className="trigger-group">
+      <legend>{TRIGGER_TEXT.audienceTitle}</legend>
       <div className="row">
         <fieldset>
           <legend>{TRIGGER_TEXT.who}</legend>
@@ -133,11 +185,20 @@ function AudienceRows({ trigger, onChange }: { trigger: Trigger; onChange: (trig
         <NumberField label={TRIGGER_TEXT.cooldown} value={trigger.cooldown} onChange={value => onChange({ ...trigger, cooldown: value })} />
         <NumberField label={TRIGGER_TEXT.userCooldown} value={trigger.userCooldown} onChange={value => onChange({ ...trigger, userCooldown: value })} />
       </div>
+    </fieldset>
+  );
+}
+
+// How the trigger appears on the commands page, folded away: most triggers keep the default
+function PageEntry({ trigger, onChange }: { trigger: Trigger; onChange: (trigger: Trigger) => void }) {
+  return (
+    <details className="trigger-more">
+      <summary>{TRIGGER_TEXT.pageTitle}</summary>
       <div className="row">
         <label className="check"><input type="checkbox" checked={trigger.public !== false} onChange={event => onChange({ ...trigger, public: event.target.checked })} /> {TRIGGER_TEXT.public}</label>
         <label className="grow">{TRIGGER_TEXT.description} <input value={trigger.description ?? ""} maxLength={200} placeholder={TRIGGER_TEXT.descriptionExample} onChange={event => onChange({ ...trigger, description: event.target.value || undefined })} /></label>
       </div>
-    </>
+    </details>
   );
 }
 
@@ -151,7 +212,7 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
   const when = (patch: Partial<When>) => onChange({ ...trigger, when: { ...trigger.when, ...patch } });
 
   return (
-    <section className={`trigger-card${trigger.enabled === false ? " disabled" : ""}`}>
+    <section className={`settings-group section-card trigger-card${trigger.enabled === false ? " disabled" : ""}`}>
       <div className="row">
         <label className="grow">{TRIGGER_TEXT.name} <input value={trigger.name} onChange={event => onChange({ ...trigger, name: event.target.value })} /></label>
         <label className="check"><input type="checkbox" checked={trigger.enabled !== false} onChange={event => onChange({ ...trigger, enabled: event.target.checked })} /> {TRIGGER_TEXT.enabled}</label>
@@ -161,24 +222,27 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
       </div>
       {errors.length > 0 && <ul className="editor-errors" role="alert">{errors.map(error => <li key={error}>{error}</li>)}</ul>}
 
-      <div className="row">
-        <label>{TRIGGER_TEXT.when}
-          <select value={trigger.when.type} onChange={event => when({ type: event.target.value })}>
-            {WHEN_TYPES.map(type => <option key={type} value={type}>{TRIGGER_TEXT.whenTypes[type]}</option>)}
-          </select>
-        </label>
-        <label className="grow">{TRIGGER_TEXT.match} <input value={trigger.when.match} placeholder={TRIGGER_TEXT.matchExample} onChange={event => when({ match: event.target.value })} /></label>
-        <label className="check"><input type="checkbox" checked={Boolean(trigger.when.caseSensitive)} onChange={event => when({ caseSensitive: event.target.checked })} /> {TRIGGER_TEXT.caseSensitive}</label>
-      </div>
+      <fieldset className="trigger-group">
+        <legend>{TRIGGER_TEXT.whenTitle}</legend>
+        <div className="row">
+          <label>{TRIGGER_TEXT.when}
+            <select value={trigger.when.type} onChange={event => when({ type: event.target.value })}>
+              {WHEN_TYPES.map(type => <option key={type} value={type}>{TRIGGER_TEXT.whenTypes[type]}</option>)}
+            </select>
+          </label>
+          <label className="grow">{TRIGGER_TEXT.match} <input value={trigger.when.match} placeholder={TRIGGER_TEXT.matchExample} onChange={event => when({ match: event.target.value })} /></label>
+          <label className="check"><input type="checkbox" checked={Boolean(trigger.when.caseSensitive)} onChange={event => when({ caseSensitive: event.target.checked })} /> {TRIGGER_TEXT.caseSensitive}</label>
+        </div>
+      </fieldset>
 
-      <AudienceRows trigger={trigger} onChange={onChange} />
+      <Audience trigger={trigger} onChange={onChange} />
 
-      <h3 className="muted">{TRIGGER_TEXT.actions}</h3>
+      <h3>{TRIGGER_TEXT.actions}</h3>
       {trigger.do.map((action, index) => (
         <ActionRow
           key={index}
+          number={index + 1}
           action={action}
-          first={index === 0}
           onChange={next => setAction(index, next)}
           onUp={index > 0 ? () => move(index, -1) : undefined}
           onDown={index < trigger.do.length - 1 ? () => move(index, 1) : undefined}
@@ -186,6 +250,8 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
         />
       ))}
       <button className="btn" onClick={() => onChange({ ...trigger, do: [...trigger.do, newAction()] })}>{TRIGGER_TEXT.addAction}</button>
+
+      <PageEntry trigger={trigger} onChange={onChange} />
     </section>
   );
 }
@@ -203,9 +269,10 @@ function TestButton({ name, dirty }: { name: string; dirty: boolean }) {
   );
 }
 
-type RowProps = { action: FxAction; first: boolean; onChange: (action: FxAction) => void; onUp?: () => void; onDown?: () => void; onRemove?: () => void };
+type RowProps = { number: number; action: FxAction; onChange: (action: FxAction) => void; onUp?: () => void; onDown?: () => void; onRemove?: () => void };
 
-function ActionRow({ action, first, onChange, onUp, onDown, onRemove }: RowProps) {
+// One action: what it shows and plays in front, times, size and position folded away
+function ActionRow({ number, action, onChange, onUp, onDown, onRemove }: RowProps) {
   const set = (patch: Partial<FxAction>) => {
     const next: Record<string, unknown> = { ...action, ...patch };
     // Leave out empty fields so the JSON file stays readable
@@ -214,6 +281,14 @@ function ActionRow({ action, first, onChange, onUp, onDown, onRemove }: RowProps
   };
   return (
     <div className="action-row">
+      <div className="action-head">
+        <span className="muted">{TRIGGER_TEXT.actionNumber(number)}</span>
+        <span className="row-end">
+          <button className="btn" disabled={!onUp} onClick={onUp} aria-label={TRIGGER_TEXT.moveUp}>▲</button>
+          <button className="btn" disabled={!onDown} onClick={onDown} aria-label={TRIGGER_TEXT.moveDown}>▼</button>
+          <button className="btn" disabled={!onRemove} onClick={onRemove} aria-label={TRIGGER_TEXT.removeAction}>✕</button>
+        </span>
+      </div>
       <div className="row">
         <label>{TRIGGER_TEXT.kind}
           <select value={action.type} onChange={event => set({ type: event.target.value as FxAction["type"] })}>
@@ -228,14 +303,10 @@ function ActionRow({ action, first, onChange, onUp, onDown, onRemove }: RowProps
         <label className="grow">{TRIGGER_TEXT.text} {action.type === "media" && TRIGGER_TEXT.optional}<input value={action.text ?? ""} placeholder={TRIGGER_TEXT.textExample} onChange={event => set({ text: event.target.value })} /></label>
         <label className="grow">{TRIGGER_TEXT.sound} <input list="media-audio" value={action.sound ?? ""} onChange={event => set({ sound: event.target.value })} /></label>
       </div>
-      <ActionTiming action={action} first={first} set={set} />
-      <div className="row">
-        <span className="row-end">
-          <button className="btn" disabled={!onUp} onClick={onUp} aria-label={TRIGGER_TEXT.moveUp}>▲</button>
-          <button className="btn" disabled={!onDown} onClick={onDown} aria-label={TRIGGER_TEXT.moveDown}>▼</button>
-          <button className="btn" disabled={!onRemove} onClick={onRemove} aria-label={TRIGGER_TEXT.removeAction}>✕</button>
-        </span>
-      </div>
+      <details className="trigger-more">
+        <summary>{TRIGGER_TEXT.timing}</summary>
+        <ActionTiming action={action} first={number === 1} set={set} />
+      </details>
     </div>
   );
 }

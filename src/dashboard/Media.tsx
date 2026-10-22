@@ -1,13 +1,19 @@
-// Media section in the dashboard: files of the streamer with size, preview and the triggers that use them;
-// upload (the server rejects uploads above the storage limit) and delete with confirmation.
+// Media section in the dashboard: the storage used as a bar with the upload next to it (the server rejects uploads above
+// the limit), a filter by kind, the files as tiles with preview, size and the triggers that use them, delete with
+// confirmation.
 import { useCallback, useEffect, useState } from "react";
 import { MEDIA_KIND } from "../core/settings.ts";
 import * as streamerPath from "../core/streamerPath.ts";
 import { deleteMedia, loadMedia, type MediaList } from "./api.ts";
+import { Segmented } from "./PanelFields.tsx";
 import { TEXTS } from "./texts.de.ts";
 import UploadButton from "./UploadButton.tsx";
 
 const MEDIA_TEXT = TEXTS.media;
+type Kind = keyof typeof MEDIA_TEXT.kinds;
+const KINDS = (Object.keys(MEDIA_TEXT.kinds) as Kind[]).map(value => ({ value, label: MEDIA_TEXT.kinds[value] }));
+// fixed: from this share of the limit the storage bar warns
+const FULL = 0.9;
 const KILOBYTE = 1024;
 const MEGABYTE = KILOBYTE * KILOBYTE;
 // Small files in KB, otherwise MB with one decimal place
@@ -16,6 +22,7 @@ const megabytes = (bytes: number) => (bytes < MEGABYTE ? `${Math.ceil(bytes / KI
 export default function Media({ login }: { login: string }) {
   const [list, setList] = useState<MediaList | null>(null);
   const [note, setNote] = useState("");
+  const [kind, setKind] = useState<Kind>("all");
   const refresh = useCallback(() => { loadMedia().then(setList).catch(() => setNote(TEXTS.errors["server-error"])); }, []);
   useEffect(refresh, [refresh]);
 
@@ -28,29 +35,33 @@ export default function Media({ login }: { login: string }) {
 
   if (!list) return <p className="muted">{note || TEXTS.loading}</p>;
   const source = (name: string) => `${streamerPath.base(login)}/media/${encodeURIComponent(name)}`;
+  const shown = list.files.filter(file => kind === "all" || MEDIA_KIND[kind].test(file.name));
   return (
-    <section className="panel">
-      <div className="actions">
-        <span className="muted">{MEDIA_TEXT.usage(megabytes(list.usedBytes), megabytes(list.limitBytes))}</span>
-        <span role="status">{note}</span>
+    <section className="panel media">
+      <div className="media-bar">
+        <label className="media-usage">
+          <span className="muted">{MEDIA_TEXT.usage(megabytes(list.usedBytes), megabytes(list.limitBytes))}</span>
+          <meter min={0} max={list.limitBytes} high={list.limitBytes * FULL} value={list.usedBytes} aria-label={MEDIA_TEXT.usageLabel} />
+        </label>
         <UploadButton label={MEDIA_TEXT.upload} primary onDone={refresh} />
+        <span role="status">{note}</span>
       </div>
-      {list.files.length === 0 && <p className="muted">{MEDIA_TEXT.empty}</p>}
-      {list.files.length > 0 && (
-        <table>
-          <thead><tr><th>{MEDIA_TEXT.preview}</th><th>{MEDIA_TEXT.file}</th><th>{MEDIA_TEXT.size}</th><th>{MEDIA_TEXT.usedBy}</th><th /></tr></thead>
-          <tbody>
-            {list.files.map(file => (
-              <tr key={file.name}>
-                <td className="media-preview"><Preview name={file.name} src={source(file.name)} /></td>
-                <td><code>{file.name}</code></td>
-                <td>{megabytes(file.size)}</td>
-                <td className={file.usedBy.length ? "" : "muted"}>{file.usedBy.length ? file.usedBy.join(", ") : MEDIA_TEXT.unused}</td>
-                <td><button className="btn" onClick={() => remove(file.name, file.usedBy)}>{MEDIA_TEXT.remove}</button></td>
-              </tr>
+      {list.files.length === 0 ? <p className="muted">{MEDIA_TEXT.empty}</p> : (
+        <>
+          <Segmented label={MEDIA_TEXT.kind} value={kind} options={KINDS} onChange={setKind} />
+          {shown.length === 0 && <p className="muted">{MEDIA_TEXT.noneOfKind}</p>}
+          <ul className="media-tiles">
+            {shown.map(file => (
+              <li key={file.name} className="settings-group media-tile">
+                <div className="media-preview"><Preview name={file.name} src={source(file.name)} /></div>
+                <code>{file.name}</code>
+                <span className="muted">{megabytes(file.size)}</span>
+                <span className={file.usedBy.length ? "" : "muted"}>{MEDIA_TEXT.usedBy}: {file.usedBy.length ? file.usedBy.join(", ") : MEDIA_TEXT.unused}</span>
+                <button className="btn" onClick={() => remove(file.name, file.usedBy)}>{MEDIA_TEXT.remove}</button>
+              </li>
             ))}
-          </tbody>
-        </table>
+          </ul>
+        </>
       )}
     </section>
   );

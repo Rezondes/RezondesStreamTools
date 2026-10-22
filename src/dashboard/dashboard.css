@@ -68,7 +68,33 @@
 /* Hours and counts are short numbers: the field is as wide as they need */
 .admin input[type=number] { max-width: 10em; }
 
-/* Sections with tabs (overview, admin): the status line, then cards (planes of --surface-2 like the setting groups), side by side where there is
+/* Triggers: the list on the left (the chosen one marked like the areas of the theme page), the chosen trigger on the
+   right in groups; below 900px the list sits on top */
+.dashboard .section-area.editor { max-width: none; margin: 0; padding: var(--gap-tight, 8px) 0 0; }
+/* A tab kept mounted (triggers) is hidden with the attribute, which the grid of the area would otherwise override */
+.section-area[hidden] { display: none; }
+.trigger-layout { display: grid; gap: var(--gap-wide, 24px); grid-template-columns: minmax(var(--list-min, 190px), var(--list-max, 260px)) minmax(0, 1fr); align-items: start; }
+.trigger-list { display: grid; gap: var(--gap-tight, 8px); min-width: 0; }
+.trigger-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.trigger-list > .btn { justify-self: start; }
+.trigger-item { display: grid; gap: 2px; width: 100%; min-height: 44px; padding: 6px 10px; border: 0; border-radius: var(--radius-sm); background: none; color: var(--fg); font: inherit; text-align: left; cursor: pointer; }
+.trigger-item > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.trigger-item > .muted { font-size: 13px; }
+.trigger-item:hover { background: var(--surface-2); }
+.trigger-item[aria-current=true] { background: var(--surface-2); box-shadow: inset 3px 0 0 var(--accent); }
+.trigger-item:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.trigger-item-error { color: var(--error); font-weight: bold; }
+.dashboard .editor .trigger-group { display: grid; gap: var(--gap-tight, 8px); padding: 4px 12px 12px; }
+.dashboard .editor .trigger-group > legend { font-weight: var(--heading-weight); color: var(--fg); text-transform: var(--label-case); }
+.trigger-card h3 { margin: var(--gap-tight, 8px) 0 0; color: var(--fg); font-weight: var(--heading-weight); }
+.action-head { display: flex; align-items: center; gap: var(--gap-tight, 8px); }
+.trigger-more > summary { cursor: pointer; min-height: 32px; padding: 4px 0; color: var(--fg-dim); }
+.trigger-more[open] > summary { margin-bottom: var(--gap-tight, 8px); }
+@media (max-width: 899px) {
+  .trigger-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Sections with tabs (overview, admin, triggers): the status line, then cards (planes of --surface-2 like the setting groups), side by side where there is
    room; tight inside a card, wide between them */
 .section-area { display: grid; gap: var(--gap-wide, 24px); padding-top: var(--gap-tight, 8px); }
 .overview-status { display: flex; flex-wrap: wrap; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); margin: 0; }
@@ -95,8 +121,18 @@
 .render-save { position: sticky; bottom: 0; z-index: 1; display: grid; gap: 8px; padding: 10px 0 4px; border-top: var(--border-w) solid var(--line); background: var(--surface); }
 
 /* Media: small preview per file */
-.media-preview img, .media-preview video { display: block; max-width: 160px; max-height: 90px; }
-.media-preview audio { max-width: 220px; }
+/* Media: storage bar and upload on top, the files as tiles; pictures and videos fill a 16:9 frame on the checker, sound
+   gets its player across the frame */
+.media-bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); }
+.media-usage { display: grid; gap: 4px; min-width: min(100%, 260px); }
+.media-usage meter { width: 100%; height: 10px; accent-color: var(--accent); }
+.media-tiles { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--gap-tight, 8px); grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--tile-width, 200px)), 1fr)); }
+.media-tile { display: grid; gap: 4px; align-content: start; min-width: 0; padding: 8px; }
+.media-tile code { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; user-select: all; }
+.media-tile > .btn { justify-self: start; margin-top: 4px; }
+.media-preview { display: grid; place-items: center; aspect-ratio: 16 / 9; overflow: hidden; border-radius: var(--radius-sm); background: var(--checker); }
+.media-preview img, .media-preview video { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+.media-preview audio { width: 100%; }
 
 /* Theme settings: form on the left, preview on the right (below each other on narrow screens) */
 .settings-bar { padding: 8px 0; border-bottom: var(--border-w) solid var(--line); }
@@ -134,7 +170,7 @@
 .setting-error { background: var(--error); color: var(--on-error); border-radius: var(--radius-sm); padding: 2px 6px; justify-self: start; }
 .setting-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .setting-volume { display: flex; align-items: center; gap: 6px; }
-.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):not([type=radio]), .dashboard select, .dashboard textarea {
+.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):not([type=radio]):not([type=file]), .dashboard select, .dashboard textarea {
   min-height: 44px;
   padding: 6px 8px;
   background: var(--field);
@@ -156,7 +192,7 @@
   cursor: pointer;
 }
 .dashboard select:disabled, .dashboard input:disabled, .dashboard textarea:disabled { color: var(--fg-dim); cursor: default; }
-.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):not([type=radio]):hover:not(:disabled), .dashboard select:hover:not(:disabled), .dashboard textarea:hover:not(:disabled) { border-color: var(--fg-dim); }
+.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):not([type=radio]):not([type=file]):hover:not(:disabled), .dashboard select:hover:not(:disabled), .dashboard textarea:hover:not(:disabled) { border-color: var(--fg-dim); }
 /* Color swatch: the color fills the whole field, without the gray system frame */
 .dashboard input[type=color] { flex: none; width: 44px; height: 44px; padding: 0; border: var(--border-w) solid var(--border); border-radius: var(--radius-sm); background: var(--field); cursor: pointer; overflow: hidden; }
 .dashboard input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
@@ -199,7 +235,7 @@
 
 /* Phones: fields at 16px, below that iOS zooms the whole page when one gets the focus */
 @media (max-width: 639px) {
-  .dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):not([type=radio]), .dashboard select, .dashboard textarea { font-size: 16px; }
+  .dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):not([type=radio]):not([type=file]), .dashboard select, .dashboard textarea { font-size: 16px; }
 }
 
 /* Touch screens: every target at least 44px high (the mouse keeps the denser sizes) */
