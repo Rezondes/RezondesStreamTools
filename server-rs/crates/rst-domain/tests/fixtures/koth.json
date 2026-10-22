@@ -510,6 +510,55 @@
       "max": 8
     },
     {
+      "key": "campBagColor",
+      "type": "color",
+      "label": "Lager: Sandsäcke",
+      "group": "Lager",
+      "default": "#c2b280"
+    },
+    {
+      "key": "campBunkerColor",
+      "type": "color",
+      "label": "Lager: Bunker",
+      "group": "Lager",
+      "default": "#8f7f55"
+    },
+    {
+      "key": "campTentColor",
+      "type": "color",
+      "label": "Lager: Zelte",
+      "group": "Lager",
+      "default": "#4b5320"
+    },
+    {
+      "key": "campCrateColor",
+      "type": "color",
+      "label": "Lager: Kisten",
+      "group": "Lager",
+      "default": "#4b5320"
+    },
+    {
+      "key": "campCrateLidColor",
+      "type": "color",
+      "label": "Lager: Kistendeckel",
+      "group": "Lager",
+      "default": "#6b7a3a"
+    },
+    {
+      "key": "campJeepColor",
+      "type": "color",
+      "label": "Lager: Jeep",
+      "group": "Lager",
+      "default": "#4b5320"
+    },
+    {
+      "key": "campJeepCabColor",
+      "type": "color",
+      "label": "Lager: Jeep-Kabine",
+      "group": "Lager",
+      "default": "#2f3416"
+    },
+    {
       "key": "fenceOn",
       "type": "boolean",
       "label": "Stacheldrahtzaun",

@@ -121,6 +121,13 @@ const FIELDS = [
   flag("bunkerOn", "Bunker", CAMP, true),
   number("tents", "Zelte", CAMP, 2, 0, 6),
   number("crateStacks", "Kistenstapel", CAMP, 3, 0, 8),
+  color("campBagColor", "Lager: Sandsäcke", CAMP, "#c2b280"),
+  color("campBunkerColor", "Lager: Bunker", CAMP, "#8f7f55"),
+  color("campTentColor", "Lager: Zelte", CAMP, "#4b5320"),
+  color("campCrateColor", "Lager: Kisten", CAMP, "#4b5320"),
+  color("campCrateLidColor", "Lager: Kistendeckel", CAMP, "#6b7a3a"),
+  color("campJeepColor", "Lager: Jeep", CAMP, "#4b5320"),
+  color("campJeepCabColor", "Lager: Jeep-Kabine", CAMP, "#2f3416"),
   flag("fenceOn", "Stacheldrahtzaun", CAMP, true),
   // fixed: at most 200 pines and rocks, more costs too much on weak PCs
   number("trees", "Kiefern", CAMP, 46, 0, 200),

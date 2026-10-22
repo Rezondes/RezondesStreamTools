@@ -1,6 +1,7 @@
 // A minime figure in 3D (figure.ts): the parts of the theme as solid, lit bodies in the colors of its looks. Every frame
 // it follows its anchor element (moved by the core with CSS: walking, hops, towers) and takes the pose of its animation.
-// held hangs in the tool joint (a muzzle flash at the weapon), children follow the anchor without the pose (dust).
+// held hangs in the tool joint (a muzzle flash at the weapon), children follow the anchor without the pose (dust). The
+// figure fades with its anchor: the opacity the core and the theme give the anchor and its boxes goes into its materials.
 import { useFrame } from "@react-three/fiber";
 import { type ReactNode, type RefObject, useEffect, useMemo, useRef } from "react";
 import { BoxGeometry, type BufferGeometry, CapsuleGeometry, CylinderGeometry, DoubleSide, type Group, MeshLambertMaterial, SphereGeometry } from "three";
@@ -66,6 +67,28 @@ function Part({ part, looks }: { part: FigurePart; looks: Looks }) {
 
 type Joints = Partial<Record<Joint | "upper" | "helmet" | "eyes", Group | null>>;
 
+// The opacity an element shows: its own times that of every box around it, up to the stage
+function shownOpacity(element: HTMLElement, stage: HTMLElement | null): number {
+  let opacity = 1;
+  for (let box: HTMLElement | null = element; box && box !== stage; box = box.parentElement) opacity *= Number(getComputedStyle(box).opacity);
+  return opacity;
+}
+
+// Every frame: the materials take the opacity of the anchor (fading in and out with it)
+function useFade(looks: Looks, anchor: Box, stage: Box) {
+  const shown = useRef(1);
+  useFrame(() => {
+    if (!anchor.current) return;
+    const opacity = shownOpacity(anchor.current, stage.current);
+    if (opacity === shown.current) return;
+    shown.current = opacity;
+    for (const look of Object.values(looks)) {
+      look.transparent = opacity < 1;
+      look.opacity = opacity;
+    }
+  });
+}
+
 // Every frame: follow the anchor and set the joints to the pose of the running animation
 function usePose({ run, pose, anchor, stage, turn = 0.55, blinkEvery = 0, lying = [] }: Omit<Props, "parts" | "looks" | "held" | "children">) {
   const root = useRef<Group>(null);
@@ -98,6 +121,7 @@ function usePose({ run, pose, anchor, stage, turn = 0.55, blinkEvery = 0, lying 
 
 export default function PartFigure({ parts, looks: colors, held, children, ...motion }: Props) {
   const looks = useLooks(colors);
+  useFade(looks, motion.anchor, motion.stage);
   const { root, body, joints } = usePose(motion);
   const pivotOf = (joint: Joint) => parts.find(part => part.joint === joint)?.pivot ?? FEET;
   const hip = pivotOf("torso");

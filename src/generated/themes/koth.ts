@@ -65,6 +65,13 @@ export type KothValues = {
   readonly bunkerOn: boolean;
   readonly tents: number;
   readonly crateStacks: number;
+  readonly campBagColor: string;
+  readonly campBunkerColor: string;
+  readonly campTentColor: string;
+  readonly campCrateColor: string;
+  readonly campCrateLidColor: string;
+  readonly campJeepColor: string;
+  readonly campJeepCabColor: string;
   readonly fenceOn: boolean;
   readonly trees: number;
   readonly rocks: number;

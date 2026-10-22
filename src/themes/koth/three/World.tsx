@@ -117,8 +117,8 @@ function Mountains({ seed, color }: { seed: number; color: string }) {
 }
 
 const campColors = (values: KothValues): CampColors => ({
-  bag: values.sand, concrete: values.sandDark, tent: values.olive, crate: values.olive, crateLight: values.hillColor, edge: values.sand,
-  wood: darker(values.sandDark, 0.5), pine: values.hillDark, rock: values.mountainColor, jeep: values.olive, jeepCab: values.oliveDark,
+  bag: values.campBagColor, concrete: values.campBunkerColor, tent: values.campTentColor, crate: values.campCrateColor, crateLight: values.campCrateLidColor,
+  edge: values.sand, wood: darker(values.sandDark, 0.5), pine: values.hillDark, rock: values.mountainColor, jeep: values.campJeepColor, jeepCab: values.campJeepCabColor,
   steel: values.steel, dark: darker(values.oliveDark, 0.6),
 });
 
