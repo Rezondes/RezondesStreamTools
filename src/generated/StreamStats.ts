@@ -26,6 +26,10 @@ hypeLevel: number, chatMessages: number,
  */
 chatters: number, 
 /**
- * Start of the count in ms: the last reset, before the first reset the first counted event
+ * Start of the stream in ms (`stream.online`); null when no stream started since the last reset
  */
-startedAt: number | null, };
+startedAt: number | null, 
+/**
+ * End of the stream in ms (`stream.offline`); null while the stream is live
+ */
+endedAt: number | null, };

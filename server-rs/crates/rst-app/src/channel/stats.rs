@@ -71,13 +71,23 @@ where
     }
 
     pub fn record_alert(self: &Arc<Self>, alert: &Alert) {
-        let now = (self.now)();
-        self.change(|tally| tally.record_alert(alert, now));
+        self.change(|tally| tally.record_alert(alert));
     }
 
     pub fn record_chat(self: &Arc<Self>, login: &str) {
+        self.change(|tally| tally.record_chat(login));
+    }
+
+    /// The stream went live: the duration starts
+    pub fn online(self: &Arc<Self>) {
         let now = (self.now)();
-        self.change(|tally| tally.record_chat(login, now));
+        self.change(|tally| tally.online(now));
+    }
+
+    /// The stream ended: the duration stops
+    pub fn offline(self: &Arc<Self>) {
+        let now = (self.now)();
+        self.change(|tally| tally.offline(now));
     }
 
     /// Clears the count, stores and sends it at once
@@ -179,6 +189,8 @@ mod tests {
         again.record_chat("Smith");
         assert_eq!((again.current().chatters, again.current().chat_messages), (2, 3));
         // Reset clears, stores and sends at once
+        again.online();
+        assert_eq!(again.current().started_at, Some(1000), "the stream started");
         again.reset().await;
         assert_eq!(again.current(), StreamStats { started_at: Some(1000), ..StreamStats::default() });
         assert_eq!(profile.stats(&neo()).await.expect("stored").snapshot().follows, 0);

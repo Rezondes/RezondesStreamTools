@@ -331,12 +331,12 @@ mod tests {
         profile.vault.keys().create(&neo()).await.expect("key");
         assert_eq!(profile.stats(&neo()).await.expect("empty"), StreamTally::default());
         let mut tally = StreamTally::default();
-        tally.record_chat("smith", 3);
+        tally.record_chat("smith");
         profile.save_stats(&neo(), &tally, 4).await.expect("save");
         let mut again = profile.stats(&neo()).await.expect("stats");
         assert_eq!(again, tally);
         // The chatters survive the round trip: the same login does not count twice
-        again.record_chat("Smith", 5);
+        again.record_chat("Smith");
         assert_eq!(again.snapshot().chatters, 1);
     }
 

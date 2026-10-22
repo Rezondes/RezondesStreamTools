@@ -1,8 +1,9 @@
 // Stream stats for the scenes: which numbers a theme shows comes from a lines setting ("key|Text" per line), this file
-// reads it and formats the values (numbers with the locale, duration as h:mm since the start of the count).
+// reads it and formats the values (numbers with the locale, duration as h:mm of the stream: from its start to its end,
+// while live to now).
 import type { StreamStats } from "../types.ts";
 
-export type StatKey = Exclude<keyof StreamStats, "startedAt"> | "duration";
+export type StatKey = Exclude<keyof StreamStats, "startedAt" | "endedAt"> | "duration";
 export type StatLine = { key: StatKey; label: string };
 export type StatValue = StatLine & { value: string };
 
@@ -27,7 +28,7 @@ export function describeStats(stats: StreamStats, lines: readonly StatLine[], lo
   const number = new Intl.NumberFormat(locale);
   return lines.map(line => ({
     ...line,
-    value: line.key === "duration" ? duration(stats.startedAt === null ? 0 : now - stats.startedAt) : number.format(stats[line.key]),
+    value: line.key === "duration" ? duration(stats.startedAt === null ? 0 : (stats.endedAt ?? now) - stats.startedAt) : number.format(stats[line.key]),
   }));
 }
 

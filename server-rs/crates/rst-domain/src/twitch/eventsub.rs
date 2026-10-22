@@ -17,7 +17,9 @@ pub enum EventSubMessage {
         keepalive_seconds: u64,
     },
     Alert(Alert),
-    /// The stream ended (e.g. clear minimes)
+    /// The stream went live (stream stats start the duration)
+    Online,
+    /// The stream ended (e.g. clear minimes, stop the duration)
     Offline,
     /// Move to a new Twitch URL; the subscriptions stay
     Reconnect {
@@ -67,6 +69,7 @@ pub fn parse_message(raw: &str) -> Result<EventSubMessage, EventSubError> {
                 .unwrap_or(DEFAULT_KEEPALIVE_SECONDS),
         },
         "notification" => match text(&message, &["metadata", "subscription_type"]).unwrap_or_default() {
+            "stream.online" => EventSubMessage::Online,
             "stream.offline" => EventSubMessage::Offline,
             subscription_type => to_alert(subscription_type, payload.get("event").unwrap_or(&Value::Null))
                 .map_or(EventSubMessage::Ignored, EventSubMessage::Alert),
@@ -98,7 +101,8 @@ pub fn subscriptions(user_id: &str) -> Vec<Value> {
         entry("channel.channel_points_custom_reward_redemption.add", "1", &broadcaster),
         entry("channel.hype_train.begin", "2", &broadcaster),
         entry("channel.hype_train.end", "2", &broadcaster),
-        // Stream ended, needs no scope
+        // Stream started and ended, need no scope
+        entry("stream.online", "1", &broadcaster),
         entry("stream.offline", "1", &broadcaster),
     ]
 }
@@ -129,6 +133,8 @@ mod tests {
         assert_eq!(parse(&follow), Ok(EventSubMessage::Alert(Alert::new(AlertKind::Follow, "neo"))));
         let offline = json!({ "metadata": { "message_type": "notification", "subscription_type": "stream.offline" }, "payload": { "event": {} } });
         assert_eq!(parse(&offline), Ok(EventSubMessage::Offline));
+        let online = json!({ "metadata": { "message_type": "notification", "subscription_type": "stream.online" }, "payload": { "event": {} } });
+        assert_eq!(parse(&online), Ok(EventSubMessage::Online));
         let unknown = json!({ "metadata": { "message_type": "notification", "subscription_type": "channel.unknown" } });
         assert_eq!(parse(&unknown), Ok(EventSubMessage::Ignored));
         let revoked = json!({ "metadata": { "message_type": "revocation" }, "payload": { "subscription": { "type": "channel.cheer", "status": "authorization_revoked" } } });
@@ -177,10 +183,11 @@ mod tests {
     }
 
     #[test]
-    fn ten_subscriptions_with_stream_offline() {
+    fn eleven_subscriptions_with_stream_online_and_offline() {
         let all = subscriptions("42");
-        assert_eq!(all.len(), 10);
+        assert_eq!(all.len(), 11);
         assert_eq!(all[0]["condition"], json!({ "broadcaster_user_id": "42", "moderator_user_id": "42" }));
         assert!(all.iter().any(|entry| entry["type"] == "stream.offline"));
+        assert!(all.iter().any(|entry| entry["type"] == "stream.online"));
     }
 }

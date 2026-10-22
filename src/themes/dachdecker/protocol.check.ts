@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { parseStatLines } from "../../core/stats/stats.ts";
 import { NO_VALUE, protocolRows } from "./protocol.ts";
 
-const stats = { follows: 1284, subs: 37, giftedSubs: 25, raids: 2, raiders: 142, bits: 4200, redeems: 63, hypeLevel: 3, chatMessages: 2817, chatters: 211, startedAt: 0 };
+const stats = { follows: 1284, subs: 37, giftedSubs: 25, raids: 2, raiders: 142, bits: 4200, redeems: 63, hypeLevel: 3, chatMessages: 2817, chatters: 211, startedAt: 0, endedAt: null };
 const lines = parseStatLines("follows|Neue Dachdecker\nsubs|Abos\nchatMessages|Gelegte Ziegel");
 
 assert.deepEqual(protocolRows(stats, lines, "de-DE", 0), [

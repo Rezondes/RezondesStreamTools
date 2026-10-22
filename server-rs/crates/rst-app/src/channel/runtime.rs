@@ -149,7 +149,7 @@ where
         }
     }
 
-    /// `EventSub`: alerts to the overlays, the end of the stream to the minimes
+    /// `EventSub`: alerts to the overlays, start and end of the stream to the stats, the end also to the minimes
     async fn read_events<C: SocketConnector>(self: Arc<Self>, sockets: Arc<C>, url: String, cancel: CancellationToken) {
         let subscribe = |session_id: String| subscribe_all(&self.keeper, &self.twitch, session_id, self.now);
         alerts::listen(&*sockets, &url, &cancel, &self.events_live, subscribe, |message| match message {
@@ -157,7 +157,11 @@ where
                 self.stats.record_alert(&alert);
                 self.hubs.emit(&self.id, &ServerMessage::Alert { alert });
             }
-            EventSubMessage::Offline => self.minimes.iter().for_each(MinimeRunner::offline),
+            EventSubMessage::Online => self.stats.online(),
+            EventSubMessage::Offline => {
+                self.minimes.iter().for_each(MinimeRunner::offline);
+                self.stats.offline();
+            }
             _ => {}
         })
         .await;
@@ -512,8 +516,9 @@ mod tests {
         let alert = stream.next().await.expect("alert");
         assert!(alert.contains(r#""type":"alert""#) && alert.contains("Neo"), "{alert}");
         let subscribed = twitch.subscribed.lock().expect("subscribed").clone();
-        assert_eq!(subscribed.len(), 10);
+        assert_eq!(subscribed.len(), 11);
         assert!(subscribed.iter().any(|kind| kind == "stream.offline"));
+        assert!(subscribed.iter().any(|kind| kind == "stream.online"));
         assert!(runtime.events_live(), "live once subscribed");
         runtime.stop();
     }
