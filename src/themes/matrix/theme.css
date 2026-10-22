@@ -1,10 +1,19 @@
+/* The glyph font: katakana, half-width katakana and digits of Noto Sans JP (SIL OFL, fonts/OFL.txt), self-hosted so the
+   rain looks the same everywhere; it stands behind the font of the settings (glyphFont.ts) */
+@font-face {
+  font-family: "Matrix Katakana";
+  src: url("./fonts/matrix-katakana.woff2") format("woff2");
+  unicode-range: U+0030-0039, U+30A0-30FF, U+FF65-FF9F;
+  font-display: swap;
+}
+
 /* Matrix theme: look of all overlay scenes, encapsulated under .theme-matrix.
    Settings come as CSS variables (--accent, --alertWidth, ...) from core/themeRuntime.ts; switches are 1 or 0.
    Further sizes are defaults in var(--name, value) and can be overridden that way too.
    Keyframes are called matrix-*, so they do not collide with other themes. */
 
 .theme-matrix {
-  font-family: var(--font), monospace;
+  font-family: var(--font), "Matrix Katakana", monospace;
   font-size: var(--fontSize);
   line-height: 1.25;
   color: var(--accent);

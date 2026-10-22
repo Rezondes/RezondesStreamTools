@@ -9,7 +9,7 @@ import { type Area, curtainAt, dissolveAt, type Glyph } from "../curtain.ts";
 import { mix } from "../rain.ts";
 import type { MatrixValues } from "../settings.ts";
 import { useMatrix } from "../useMatrix.ts";
-import { glyphAtlas } from "./GlyphAtlas.ts";
+import { glyphAtlas, useGlyphFont } from "./GlyphAtlas.ts";
 
 export type CurtainClock = { time: number; leaveAt: number };
 
@@ -57,6 +57,8 @@ export default function Curtain({ area, clock }: { area: Area; clock: CurtainClo
   const values = useMatrix();
   const latest = useRef(values);
   latest.current = values;
+  const font = useGlyphFont();
+  if (!font) return null;
   return (
     <div className="alert-curtain" aria-hidden="true">
       <PixiStage background={null} size={{ width: Math.round(area.width), height: Math.round(area.height) + FALL_ROOM }} onReady={app => build(app, latest.current, area, clock)} />

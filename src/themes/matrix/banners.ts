@@ -3,6 +3,7 @@
 // so the GIF loops endlessly without a jump. Texts, colors, font, loop length and rain density
 // come from the settings via bannerOptions. The rain is the rain of the scenes (rain.ts, PLAN-MATRIX.md package 4) in
 // its depth layers at one moment, the far layer blurred, the heads glowing; only its glyphs change over the loop.
+import { fontStack } from "./glyphFont.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { MatrixValues } from "./settings.ts";
 import { hash } from "../../core/hash.ts";
@@ -97,7 +98,7 @@ function rain(context: CanvasRenderingContext2D, time: number, width: number, he
   context.shadowColor = options.accent;
   for (let layer = first; layer < LAYERS.length; layer++) {
     const size = Math.max(1, Math.round(options.sizes[layer] * scale));
-    context.font = `${size}px "${options.font}", monospace`;
+    context.font = `${size}px ${fontStack(options.font)}`;
     context.filter = layer === 0 && options.blurFar > 0 ? `blur(${options.blurFar}px)` : "none";
     for (const column of rainColumns(layer, size, { seed: options.seed, width, density: options.density })) {
       const at = headAt(column, size, height, RAIN_STILL);
@@ -125,7 +126,7 @@ function scanlines(context: CanvasRenderingContext2D, width: number, height: num
 }
 
 function text(context: CanvasRenderingContext2D, options: BannerOptions, content: string, x: number, y: number, size: number, color: string, glow = 0) {
-  context.font = `${size}px "${options.font}", monospace`;
+  context.font = `${size}px ${fontStack(options.font)}`;
   context.textBaseline = "top";
   context.fillStyle = color;
   context.shadowColor = options.accent;
@@ -137,7 +138,7 @@ function text(context: CanvasRenderingContext2D, options: BannerOptions, content
 // ASCII logo with an occasional line glitch (two short twitches per loop)
 function logo(context: CanvasRenderingContext2D, time: number, centerX: number, y: number, size: number, options: BannerOptions) {
   const lines = options.logo.split("\n");
-  context.font = `${size}px "${options.font}", monospace`;
+  context.font = `${size}px ${fontStack(options.font)}`;
   const charWidth = context.measureText("M").width;
   const left = centerX - (Math.max(...lines.map(line => line.length)) * charWidth) / 2;
   const glitching = within(time, options.loop, [[0.3, 0.33], [0.775, 0.795]]);
@@ -204,7 +205,7 @@ export function drawOfflineBanner(context: CanvasRenderingContext2D, time: numbe
 
   const placed = logo(context, time, width / 2, boxY + 120, 32, options);
   // Title with a short color offset glitch
-  context.font = `110px "${options.font}", monospace`;
+  context.font = `110px ${fontStack(options.font)}`;
   const titleX = width / 2 - context.measureText(options.offlineTitle).width / 2;
   const titleY = placed.bottom + 50;
   if (within(time, options.loop, [[0.5, 0.53], [0.9, 0.915]])) {
@@ -213,7 +214,7 @@ export function drawOfflineBanner(context: CanvasRenderingContext2D, time: numbe
   }
   text(context, options, options.offlineTitle, titleX, titleY, 110, options.accent, 30);
 
-  context.font = `30px "${options.font}", monospace`;
+  context.font = `30px ${fontStack(options.font)}`;
   text(context, options, options.offlineText, width / 2 - context.measureText(options.offlineText).width / 2, titleY + 150, 30, options.dim);
 
   // Terminal at the bottom, the last line with cursor
@@ -221,7 +222,7 @@ export function drawOfflineBanner(context: CanvasRenderingContext2D, time: numbe
   context.fillStyle = options.line;
   context.fillRect(boxX + 48, boxY + boxHeight - 180, boxWidth - 96, 2);
   lines.forEach((line, index) => text(context, options, `${options.prompt} ${line}`, boxX + 48, boxY + boxHeight - 160 + index * 40, 26, index === lines.length - 1 ? options.accent : options.dim));
-  context.font = `26px "${options.font}", monospace`;
+  context.font = `26px ${fontStack(options.font)}`;
   const lastWidth = context.measureText(`${options.prompt} ${lines.at(-1) ?? ""} `).width;
   if (blink(time) && lines.length) text(context, options, options.cursor, boxX + 48 + lastWidth, boxY + boxHeight - 160 + (lines.length - 1) * 40, 26, options.accent);
 

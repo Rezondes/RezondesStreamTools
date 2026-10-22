@@ -4,6 +4,7 @@
 // at the transition point (cut) the power-on line flashes, then the columns fall out at the bottom. The leading glyphs
 // glow like the heads of the rain (PLAN-MATRIX.md package 4).
 // Length, transition point, texts, colors and font come from the settings via stingerOptions.
+import { fontStack } from "./glyphFont.ts";
 import { hash } from "../../core/hash.ts";
 import { clamp01, easeIn } from "../../core/easing.ts";
 import type { MatrixValues } from "./settings.ts";
@@ -58,7 +59,7 @@ export function drawStinger(context: CanvasRenderingContext2D, time: number, opt
   const rows = Math.ceil(HEIGHT / column);
   context.clearRect(0, 0, WIDTH, HEIGHT);
   context.textBaseline = "top";
-  context.font = `${column}px "${options.font}", monospace`;
+  context.font = `${column}px ${fontStack(options.font)}`;
   context.shadowColor = options.flash;
   const tick = Math.floor(time * 18); // characters flicker 18 times per second
 
@@ -104,7 +105,7 @@ function drawLogo(context: CanvasRenderingContext2D, time: number, options: Stin
 
   const lines = options.logo.split("\n");
   const size = 44;
-  context.font = `${size}px "${options.font}", monospace`;
+  context.font = `${size}px ${fontStack(options.font)}`;
   const charWidth = context.measureText("M").width;
   const lineHeight = size * 1.05;
   const width = Math.max(...lines.map(line => line.length)) * charWidth;
@@ -139,7 +140,7 @@ function drawLogo(context: CanvasRenderingContext2D, time: number, options: Stin
   });
 
   context.shadowBlur = 0;
-  context.font = `28px "${options.font}", monospace`;
+  context.font = `28px ${fontStack(options.font)}`;
   context.fillStyle = options.dim;
   const typed = options.text.slice(0, Math.floor(clamp01((time - start - 0.15) / 0.25) * options.text.length));
   context.fillText(typed + (tick % 2 ? options.cursor : ""), left, topLine + lines.length * lineHeight + 24);

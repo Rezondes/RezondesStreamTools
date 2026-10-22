@@ -14,7 +14,7 @@ import { quality } from "../../../core/three/quality.ts";
 import { glyphAt, headAt, LAYERS, mix, type RainColumn, rainColumns } from "../rain.ts";
 import type { MatrixValues } from "../settings.ts";
 import { useMatrix } from "../useMatrix.ts";
-import { glyphAtlas } from "./GlyphAtlas.ts";
+import { glyphAtlas, useGlyphFont } from "./GlyphAtlas.ts";
 
 export type RainControl = { tempo: (seconds: number) => number; jitter: number; drain: number | null };
 
@@ -112,6 +112,8 @@ export default function Rain({ opacity, control, area }: Props) {
   const values = useMatrix();
   const latest = useRef(values);
   latest.current = values;
+  const font = useGlyphFont();
+  if (!font) return null;
   // A new stage when a setting of the rain changes (the build reads them once)
   const key = [values.glyphs, values.font, values.quality, values.rainSeed, values.rainLayers, values.rainSizeFar, values.rainSizeMid, values.rainSizeNear,
     values.rainDensity, values.rainSpeed, values.rainBlurFar, values.headGlow, values.glyphChange, values.glyphChangeTip, values.dim, values.accent, values.flash].join("|");

@@ -9,7 +9,7 @@ import PixiStage from "../../../core/pixi/PixiStage.tsx";
 import { glyphAt, headAt, type RainColumn, rainColumns } from "../rain.ts";
 import type { MatrixValues } from "../settings.ts";
 import { useMatrix } from "../useMatrix.ts";
-import { glyphAtlas } from "./GlyphAtlas.ts";
+import { glyphAtlas, useGlyphFont } from "./GlyphAtlas.ts";
 
 type Area = { width: number; height: number };
 type Column = RainColumn & { cells: Sprite[]; edge: number };
@@ -68,6 +68,8 @@ export default function EdgeRain({ area }: { area: Area }) {
   const values = useMatrix();
   const latest = useRef(values);
   latest.current = values;
+  const font = useGlyphFont();
+  if (!font) return null;
   // A new stage when a setting of the rain changes (the build reads them once)
   const key = [values.glyphs, values.font, values.rainSeed, values.rainSpeed, values.camRainSize, values.camRainWidth, values.glyphChange, values.glyphChangeTip, values.accent, values.flash].join("|");
   return <PixiStage key={key} className="cam-rain" background={null} size={area} onReady={app => build(app, latest.current, area)} />;
