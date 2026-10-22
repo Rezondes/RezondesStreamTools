@@ -156,6 +156,10 @@ export type MatrixValues = {
   readonly camClock: boolean;
   readonly cornerLength: number;
   readonly cornerWidth: number;
+  readonly camOnMs: number;
+  readonly camRain: boolean;
+  readonly camRainWidth: number;
+  readonly camRainSize: number;
   readonly musicArt: string;
   readonly musicHeadPlaying: string;
   readonly musicHeadPaused: string;
@@ -180,6 +184,7 @@ export type MatrixValues = {
   readonly fxMax: number;
   readonly fxIn: string;
   readonly fxOut: string;
+  readonly fxType: boolean;
   readonly stingerFps: number;
   readonly stingerHold: number;
   readonly stingerEase: string;
@@ -289,4 +294,5 @@ export type MatrixValues = {
   readonly infoCooldown: string;
   readonly infoUserCooldown: string;
   readonly infoRain: boolean;
+  readonly infoType: boolean;
 };

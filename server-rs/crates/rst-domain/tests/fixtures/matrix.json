@@ -1460,6 +1460,43 @@
       "unit": "px"
     },
     {
+      "key": "camOnMs",
+      "type": "number",
+      "label": "Rahmen einschalten (Dauer, 0 = sofort)",
+      "group": "Kamera-Rahmen",
+      "default": 700,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "camRain",
+      "type": "boolean",
+      "label": "Feiner Regen an den Kanten",
+      "group": "Kamera-Rahmen",
+      "default": true
+    },
+    {
+      "key": "camRainWidth",
+      "type": "number",
+      "label": "Regen: Breite der Kanten",
+      "group": "Kamera-Rahmen",
+      "default": 48,
+      "min": 8,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "camRainSize",
+      "type": "number",
+      "label": "Regen: Zeichengrösse",
+      "group": "Kamera-Rahmen",
+      "default": 12,
+      "min": 4,
+      "max": 60,
+      "unit": "px"
+    },
+    {
       "key": "musicArt",
       "type": "select",
       "label": "Darstellung",
@@ -1694,6 +1731,13 @@
         "none"
       ],
       "basic": true
+    },
+    {
+      "key": "fxType",
+      "type": "boolean",
+      "label": "Text tippt sich mit Glitch",
+      "group": "Effekte",
+      "default": true
     },
     {
       "key": "stingerFps",
@@ -2685,6 +2729,13 @@
       "key": "infoRain",
       "type": "boolean",
       "label": "Befehlsseite: Matrix-Regen im Hintergrund",
+      "group": "Befehlsseite",
+      "default": true
+    },
+    {
+      "key": "infoType",
+      "type": "boolean",
+      "label": "Befehlsseite: Zeilen tippen sich mit Glitch",
       "group": "Befehlsseite",
       "default": true
     }

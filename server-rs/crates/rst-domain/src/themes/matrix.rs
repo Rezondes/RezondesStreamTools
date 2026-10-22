@@ -187,6 +187,10 @@ fn fields() -> Vec<SettingField> {
         flag("camClock", "Uhr", CAM, true),
         number("cornerLength", "Eckenlänge", CAM, 36.0, 0.0, 400.0, PX, None),
         number("cornerWidth", "Eckendicke", CAM, 4.0, 0.0, 40.0, PX, None),
+        number("camOnMs", "Rahmen einschalten (Dauer, 0 = sofort)", CAM, 700.0, 0.0, 3000.0, MS, None),
+        flag("camRain", "Feiner Regen an den Kanten", CAM, true),
+        number("camRainWidth", "Regen: Breite der Kanten", CAM, 48.0, 8.0, 400.0, PX, None),
+        number("camRainSize", "Regen: Zeichengrösse", CAM, 12.0, 4.0, 60.0, PX, None),
         choice("musicArt", "Darstellung", MUSIC, "cover", &["cover", "record", "vinyl", "none"]),
         text("musicHeadPlaying", "Kopfzeile bei Wiedergabe", MUSIC, "> NOW PLAYING // SPOTIFY", None),
         text("musicHeadPaused", "Kopfzeile bei Pause", MUSIC, "> NOW PLAYING // PAUSE", None),
@@ -211,6 +215,7 @@ fn fields() -> Vec<SettingField> {
         number("fxMax", "Max. gleichzeitig", FX, 8.0, 1.0, 30.0, None, None),
         choice("fxIn", "Einblenden", FX, "glitch", &["glitch", "fade", "none"]),
         choice("fxOut", "Ausblenden", FX, "glitch", &["glitch", "fade", "none"]),
+        flag("fxType", "Text tippt sich mit Glitch", FX, true),
         number("stingerDuration", "Länge", STINGER, 1.6, 0.5, 5.0, S, Some(0.05)),
         number("stingerCut", "Übergangspunkt", STINGER, 0.75, 0.1, 5.0, S, Some(0.05)),
         number("stingerFall", "Fallzeit der Spalten", STINGER, 0.42, 0.05, 2.0, S, Some(0.01)),
@@ -267,6 +272,7 @@ fn fields() -> Vec<SettingField> {
     info_fields(),
     vec![
         flag("infoRain", "Befehlsseite: Matrix-Regen im Hintergrund", INFO_GROUP, true),
+        flag("infoType", "Befehlsseite: Zeilen tippen sich mit Glitch", INFO_GROUP, true),
     ],
     ]
     .concat()

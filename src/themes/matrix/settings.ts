@@ -230,6 +230,10 @@ const FIELDS = [
   flag("camClock", "Uhr", CAM, true),
   number("cornerLength", "Eckenlänge", CAM, 36, 0, 400, "px"),
   number("cornerWidth", "Eckendicke", CAM, 4, 0, 40, "px"),
+  number("camOnMs", "Rahmen einschalten (Dauer, 0 = sofort)", CAM, 700, 0, 3000, "ms"),
+  flag("camRain", "Feiner Regen an den Kanten", CAM, true),
+  number("camRainWidth", "Regen: Breite der Kanten", CAM, 48, 8, 400, "px"),
+  number("camRainSize", "Regen: Zeichengrösse", CAM, 12, 4, 60, "px"),
 
   // Musik
   choice("musicArt", "Darstellung", MUSIC, "cover", ["cover", "record", "vinyl", "none"]),
@@ -258,6 +262,7 @@ const FIELDS = [
   number("fxMax", "Max. gleichzeitig", FX, 8, 1, 30),
   choice("fxIn", "Einblenden", FX, "glitch", ANIMATIONS),
   choice("fxOut", "Ausblenden", FX, "glitch", ANIMATIONS),
+  flag("fxType", "Text tippt sich mit Glitch", FX, true),
 
   // Stinger
   number("stingerDuration", "Länge", STINGER, 1.6, 0.5, 5, "s", 0.05),
@@ -317,6 +322,7 @@ const FIELDS = [
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
   flag("infoRain", "Befehlsseite: Matrix-Regen im Hintergrund", INFO_GROUP, true),
+  flag("infoType", "Befehlsseite: Zeilen tippen sich mit Glitch", INFO_GROUP, true),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)

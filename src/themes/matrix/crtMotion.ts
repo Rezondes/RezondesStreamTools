@@ -15,6 +15,17 @@ export const glitchKeys = () => [
   { x: 0, clipPath: "inset(0% 0% 0% 0%)", filter: "brightness(1)" },
 ];
 
+// Typing of a terminal output: seconds per character (divided by the decode speed) and the longest a line may take (s)
+export const TYPING = { perChar: 0.028, longest: 1.2 }; // fixed: about the decode speed of the overlays
+
+// A line types itself at (s) and glitches once as it starts; speed is the decode speed of the settings
+export function typeIn(timeline: gsap.core.Timeline, line: Element, at: number, speed: number): void {
+  const text = line.textContent ?? "";
+  const seconds = Math.min(TYPING.longest, (Array.from(text).length * TYPING.perChar) / speed);
+  timeline.fromTo(line, { text: "" }, { text, duration: seconds, ease: "none" }, at)
+    .to(line, { keyframes: glitchKeys(), duration: GLITCH.length }, at);
+}
+
 // Switch the tube on at (s) over seconds; flash is the bright layer over it (optional)
 export function powerOn(timeline: gsap.core.Timeline, tube: Element, at: number, seconds: number, flash?: Element | null): void {
   timeline.fromTo(tube, { scaleX: 0, scaleY: POWER.thin, filter: `brightness(${POWER.bright})` }, { scaleX: 1, duration: seconds * POWER.line, ease: "power3.out" }, at)
