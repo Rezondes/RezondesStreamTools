@@ -2,7 +2,8 @@
 // transitions, independent of the matrix theme (own scenes, fonts, stinger and banners). Template for own themes
 // (THEMES.md). The only place of the theme with fixed colors, texts and numbers. StandardValues is the type of the
 // resolved values that the scenes read via useStandard.
-import { markBasic, choice, color, flag, font, inScene, number, sound, text } from "../../core/fields.ts";
+import { alertSoundFields } from "../../core/alerts/alerts.ts";
+import { markBasic, choice, color, flag, font, inScene, number, text } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
@@ -75,7 +76,8 @@ const FIELDS = [
   number("alertDuration", "Dauer", ALERTS, 6000, 2000, 60000, "ms"),
   number("alertTop", "Abstand oben", ALERTS, 48, 0, 1000, "px"),
   number("alertWidth", "Breite", ALERTS, 640, 200, 1900, "px"),
-  sound("alertSound", "Ton (leer = kein Ton)", ALERTS),
+  flag("alertSound", "Töne", ALERTS, true),
+  ...alertSoundFields(ALERTS),
 
   number("chatMax", "Max. Nachrichten", CHAT, 20, 1, 200),
   number("chatFade", "Ausblenden nach (0 = nie)", CHAT, 30, 0, 3600, "s"),

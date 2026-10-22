@@ -469,8 +469,95 @@
     },
     {
       "key": "alertSound",
+      "type": "boolean",
+      "label": "Töne",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "soundFollow",
       "type": "sound",
-      "label": "Ton (leer = kein Ton)",
+      "label": "Ton Follow (leer = eingebaut)",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundSub",
+      "type": "sound",
+      "label": "Ton Sub",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundResub",
+      "type": "sound",
+      "label": "Ton Resub",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundGift",
+      "type": "sound",
+      "label": "Ton Gift",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundRaid",
+      "type": "sound",
+      "label": "Ton Raid",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundCheer",
+      "type": "sound",
+      "label": "Ton Bits",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundRedeem",
+      "type": "sound",
+      "label": "Ton Kanalpunkte",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundHype",
+      "type": "sound",
+      "label": "Ton Hype Train",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundLeave",
+      "type": "sound",
+      "label": "Ton beim Ausblenden",
       "group": "Alerts",
       "default": {
         "file": "",

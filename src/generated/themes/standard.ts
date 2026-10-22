@@ -56,7 +56,16 @@ export type StandardValues = {
   readonly alertDuration: number;
   readonly alertTop: number;
   readonly alertWidth: number;
-  readonly alertSound: SoundValue;
+  readonly alertSound: boolean;
+  readonly soundFollow: SoundValue;
+  readonly soundSub: SoundValue;
+  readonly soundResub: SoundValue;
+  readonly soundGift: SoundValue;
+  readonly soundRaid: SoundValue;
+  readonly soundCheer: SoundValue;
+  readonly soundRedeem: SoundValue;
+  readonly soundHype: SoundValue;
+  readonly soundLeave: SoundValue;
   readonly chatMax: number;
   readonly chatFade: number;
   readonly chatGap: number;

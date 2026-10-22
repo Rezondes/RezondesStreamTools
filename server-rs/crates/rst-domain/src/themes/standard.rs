@@ -8,9 +8,9 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, mark_basic, number, sound,
-    text,
+    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, mark_basic, number, text,
 };
+use crate::themes::core_fields::alert_sound_fields;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
@@ -77,7 +77,7 @@ fn screens() -> Vec<SettingField> {
 
 /// Placeholders: {user}, {amount}, {detail}, {text}
 fn alerts() -> Vec<SettingField> {
-    vec![
+    let mut fields = vec![
         text("followLabel", "Follow: Kopfzeile", ALERTS, "Neuer Follower", None),
         text("followLine", "Follow: Zeile", ALERTS, "{user} folgt jetzt!", None),
         text("subLabel", "Sub: Kopfzeile", ALERTS, "Neues Abo", None),
@@ -100,8 +100,10 @@ fn alerts() -> Vec<SettingField> {
         number("alertDuration", "Dauer", ALERTS, 6000.0, 2000.0, 60000.0, MS, None),
         number("alertTop", "Abstand oben", ALERTS, 48.0, 0.0, 1000.0, PX, None),
         number("alertWidth", "Breite", ALERTS, 640.0, 200.0, 1900.0, PX, None),
-        sound("alertSound", "Ton (leer = kein Ton)", ALERTS),
-    ]
+        flag("alertSound", "Töne", ALERTS, true),
+    ];
+    fields.extend(alert_sound_fields(ALERTS));
+    fields
 }
 
 fn chat_cam_music() -> Vec<SettingField> {
