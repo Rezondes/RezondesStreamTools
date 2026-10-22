@@ -90,8 +90,21 @@ impl StreamTally {
         }
     }
 
-    fn live(&self) -> bool {
+    /// The stream is live as far as RST knows: started and not ended
+    #[must_use]
+    pub fn live(&self) -> bool {
         self.stats.started_at.is_some() && self.stats.ended_at.is_none()
+    }
+
+    /// Marks the stream live or ended by hand, when RST missed `stream.online` or `stream.offline` (e.g. while the
+    /// server was down); returns whether it is live now
+    pub fn toggle_live(&mut self, now: i64) -> bool {
+        if self.live() {
+            self.offline(now);
+        } else {
+            self.online(now);
+        }
+        self.live()
     }
 
     /// Clears the count; during a live stream the duration starts again now, otherwise with the next stream
@@ -207,5 +220,15 @@ mod tests {
         );
         tally.reset(1200);
         assert_eq!(tally.snapshot().started_at, Some(1200), "reset while live starts the duration now");
+    }
+
+    #[test]
+    fn toggle_live_by_hand() {
+        let mut tally = StreamTally::default();
+        assert!(!tally.live());
+        assert!(tally.toggle_live(100), "not live: goes live");
+        assert_eq!(tally.snapshot().started_at, Some(100));
+        assert!(!tally.toggle_live(400), "live: ends");
+        assert_eq!((tally.snapshot().started_at, tally.snapshot().ended_at), (Some(100), Some(400)));
     }
 }

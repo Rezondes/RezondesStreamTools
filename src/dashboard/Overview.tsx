@@ -134,7 +134,8 @@ function ObsSetup({ me, act }: { me: Me; act: Act }) {
 
 const STAT_LINES = (Object.keys(TEXT.statNames) as StatKey[]).map(key => ({ key, label: TEXT.statNames[key] }));
 
-// The count as tiles, with reload and reset; it loads again with every reload of the account (me changes, also after
+// The count as tiles, with reload, reset and the live state of the stream (as RST knows it, switchable by hand); it
+// loads again with every reload of the account (me changes, also after
 // the reset) and on the reload button
 function Stats({ me, act }: { me: Me; act: Act }) {
   const [stats, setStats] = useState<StreamStats | null>(null);
@@ -144,6 +145,8 @@ function Stats({ me, act }: { me: Me; act: Act }) {
     void getJson<StreamStats | null>("/api/stats", null).then(value => { if (active) setStats(value); });
     return () => { active = false; };
   }, [me, loads]);
+  // Live as far as RST knows (stream.online/offline or by hand)
+  const live = stats !== null && stats.startedAt !== null && stats.endedAt === null;
   return (
     <section className="settings-group section-card">
       <div className="section-card-head">
@@ -160,7 +163,10 @@ function Stats({ me, act }: { me: Me; act: Act }) {
       <p className="muted">{TEXT.statsHint}</p>
       <p className="actions">
         <button className="btn" onClick={() => { if (confirm(TEXT.statsResetConfirm)) act("/api/stats/reset", TEXT.statsResetDone); }}>{TEXT.statsReset}</button>
+        <span className={live ? "glow" : "muted"} role="status">{live ? TEXT.streamLive : TEXT.streamOffline}</span>
+        <button className="btn" onClick={() => act("/api/stats/live", live ? TEXT.markedOffline : TEXT.markedLive)}>{live ? TEXT.markOffline : TEXT.markLive}</button>
       </p>
+      <p className="muted">{TEXT.liveHint}</p>
     </section>
   );
 }

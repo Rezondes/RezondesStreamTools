@@ -43,6 +43,7 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::TestAlert => events::test_alert(&call),
         Route::Stats => events::stats(call).await,
         Route::StatsReset => events::reset_stats(call).await,
+        Route::StatsLive => events::toggle_live(call).await,
         Route::HelpConfig => commands::help(call).await,
         Route::SaveHelpConfig => commands::save(call).await,
         Route::TriggerConfig => triggers::config(call).await,

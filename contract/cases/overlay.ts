@@ -85,6 +85,14 @@ export const OVERLAY_CASES: Case[] = [
     },
   },
   {
+    name: "stats: live by hand needs a session and toggles",
+    async run(context) {
+      await expectCode(await request(context, "/api/stats/live", { method: "POST" }), 401, "unauthorized");
+      await expect(await request(context, "/api/stats/live", { method: "POST", session: STREAMER.login }), 200, { live: "boolean" });
+      await expect(await request(context, "/api/stats/live", { method: "POST", session: STREAMER.login }), 200, { live: "boolean" });
+    },
+  },
+  {
     name: "stats: the dashboard reads the count with a session",
     async run(context) {
       await expectCode(await request(context, "/api/stats"), 401, "unauthorized");

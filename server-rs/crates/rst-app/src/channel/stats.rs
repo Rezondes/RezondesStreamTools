@@ -90,6 +90,14 @@ where
         self.change(|tally| tally.offline(now));
     }
 
+    /// Live or ended by hand from the dashboard; returns whether the stream is live now
+    pub fn toggle_live(self: &Arc<Self>) -> bool {
+        let now = (self.now)();
+        let mut live = false;
+        self.change(|tally| live = tally.toggle_live(now));
+        live
+    }
+
     /// Clears the count, stores and sends it at once
     pub async fn reset(self: &Arc<Self>) {
         let now = (self.now)();
@@ -189,6 +197,8 @@ mod tests {
         again.record_chat("Smith");
         assert_eq!((again.current().chatters, again.current().chat_messages), (2, 3));
         // Reset clears, stores and sends at once
+        assert!(again.toggle_live(), "marked live by hand");
+        assert!(!again.toggle_live(), "and ended again");
         again.online();
         assert_eq!(again.current().started_at, Some(1000), "the stream started");
         again.reset().await;

@@ -96,6 +96,26 @@ pub async fn stats(call: Call<'_>) -> Response {
     }
 }
 
+/// Dashboard: marks the stream of the own streamer live or ended by hand (RST only, Twitch is not touched), when the
+/// server missed `stream.online` or `stream.offline`; the answer says whether it is live now. A running runtime sends the
+/// stats; without one the stored count changes directly.
+pub async fn toggle_live(call: Call<'_>) -> Response {
+    let app = call.app;
+    let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
+    if let Some(runtime) = app.runtimes.get(id) {
+        return json(&json!({ "live": runtime.stats.toggle_live() }), 200);
+    }
+    let mut tally = match app.stores.profile.stats(id).await {
+        Ok(tally) => tally,
+        Err(error) => return server_error(&error.to_string()),
+    };
+    let live = tally.toggle_live(now_ms());
+    match app.stores.profile.save_stats(id, &tally, now_ms()).await {
+        Ok(()) => json(&json!({ "live": live }), 200),
+        Err(error) => server_error(&error.to_string()),
+    }
+}
+
 /// Dashboard: clears the stream stats of the own streamer. A running runtime stores and sends them at once; without
 /// one the stored count is cleared directly.
 pub async fn reset_stats(call: Call<'_>) -> Response {

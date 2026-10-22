@@ -65,6 +65,7 @@ routes! {
     TestAlert => "POST" "/api/test", Guard::Session(&[Feature::Alerts]);
     Stats => "GET" "/api/stats", SESSION;
     StatsReset => "POST" "/api/stats/reset", SESSION;
+    StatsLive => "POST" "/api/stats/live", SESSION;
     TriggerConfig => "GET" "/api/triggers/config", TRIGGERS;
     SaveTriggerConfig => "POST" "/api/triggers/config", TRIGGERS;
     TriggerList => "GET" "/api/triggers", TRIGGERS;
