@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "server": "node --env-file=server.env scripts/rust.ts serve",
+    "demo": "node scripts/rust.ts build && node scripts/demo.ts",
     "check": "npm test",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",

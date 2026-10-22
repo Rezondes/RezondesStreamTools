@@ -12,8 +12,9 @@ export default defineConfig({
     port: 5173,
     strictPort: true,
     // If the overlay server runs (Docker), npm run dev also uses its login, APIs and overlay data (/s/<login>/...).
-    // "/s/" with a slash, otherwise /src/... would fall under the proxy too.
-    proxy: Object.fromEntries(["/s/", "/api", "/auth", "/spotify"].map(prefix => [prefix, "http://localhost:8089"])),
+    // "/s/" with a slash, otherwise /src/... would fall under the proxy too. RST_PROXY points it at the demo server
+    // (npm run demo), which has this dev server as its public URL, so the host stays as it is.
+    proxy: Object.fromEntries(["/s/", "/api", "/auth", "/spotify"].map(prefix => [prefix, process.env.RST_PROXY ? { target: process.env.RST_PROXY, changeOrigin: false } : "http://localhost:8089"])),
   },
   preview: { port: 4173, strictPort: true },
 });

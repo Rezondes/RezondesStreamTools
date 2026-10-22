@@ -11,6 +11,8 @@ data
 !server-rs/crates/rst-app/tests/fixtures/data/streamers/*/render
 server.env
 .env*
+# Data of the local demo server (npm run demo)
+.demo
 # Backups of scripts/migrate.sh: the old profiles with their tokens in plain text
 migration-backups
 

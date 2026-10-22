@@ -2,7 +2,7 @@
 // The fake runs on a free loopback port and answers like real Twitch and Spotify. Token values are placeholders.
 // Runs with npm test.
 import assert from "node:assert/strict";
-import { frame, parseFrame, startFakeProviders } from "./fakeProviders.ts";
+import { DEMO_USER, frame, parseFrame, startFakeProviders } from "./fakeProviders.ts";
 
 const fake = await startFakeProviders();
 const post = (path: string, body: string) => fetch(`${fake.url}${path}`, { method: "POST", body });
@@ -38,6 +38,14 @@ try {
   assert.equal((await fetch(`${fake.url}/oauth2/validate`, { headers: { Authorization: `OAuth ${tokens.access_token}` } })).status, 401);
   const renewed = (await (await form({ grant_type: "refresh_token", refresh_token: tokens.refresh_token })).json()) as Answer;
   assert.notEqual(renewed.access_token, tokens.access_token);
+
+  // Authorize: straight back to the redirect URI with the code of the demo user and the state
+  const authorize = await fetch(`${fake.url}/oauth2/authorize?${new URLSearchParams({ redirect_uri: "http://localhost:5173/auth/callback", state: "abc" })}`, { redirect: "manual" });
+  assert.equal(authorize.status, 302);
+  const back = new URL(authorize.headers.get("location") ?? "");
+  assert.equal(back.pathname, "/auth/callback");
+  assert.equal(back.searchParams.get("code"), `code-${DEMO_USER.login}-${DEMO_USER.id}`);
+  assert.equal(back.searchParams.get("state"), "abc");
   assert.equal((await fetch(`${fake.url}/helix/users`)).status, 401);
   assert.equal((await fetch(`${fake.url}/nowhere`)).status, 404);
 

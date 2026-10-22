@@ -1,6 +1,8 @@
 // Fake for Twitch and Spotify (RUST-PLAN.md package 3): a local HTTP server that the contract tests put in place of
 // the real services via the variables from env (providers.ts). No real account, no network to the outside.
 //   Twitch OAuth  /oauth2/token|validate|revoke   code "code-<login>-<id>" yields tokens for that user
+//                 /oauth2/authorize                sends the browser straight back to redirect_uri with the code of
+//                                                  DEMO_USER (the demo login of scripts/demo.ts)
 //   Helix         /helix/users|eventsub/subscriptions|chat/messages
 //   Spotify       /spotify-accounts/api/token, /spotify-api/me, /spotify-api/me/player/currently-playing
 //   WebSocket     /eventsub (sends session_welcome), /irc
@@ -34,6 +36,9 @@ type State = Omit<FakeProviders, "url" | "env" | "stop"> & {
   spotify: SpotifyState;
   sockets: { eventsub: Set<Socket>; irc: Set<Socket> };
 };
+
+// The account the authorize page logs in without asking (npm run demo)
+export const DEMO_USER: User = { login: "demo", id: "1000" };
 
 const WS_GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 const SPOTIFY_TOKEN = { access_token: "spotify-access", refresh_token: "spotify-refresh", expires_in: 3600 };
@@ -119,6 +124,14 @@ function twitchAuth(state: State, key: string, request: IncomingMessage, respons
     const user = bearer(state, request);
     if (!user) return send(response, 401, { message: "invalid access token" });
     return send(response, 200, { client_id: "fake", login: user.login, user_id: user.id, expires_in: 14_400, scopes: ["user:write:chat"] });
+  }
+  if (key === "GET /oauth2/authorize") {
+    const query = new URL(request.url ?? "/", "http://fake").searchParams;
+    const back = new URL(query.get("redirect_uri") ?? "");
+    back.searchParams.set("code", `code-${DEMO_USER.login}-${DEMO_USER.id}`);
+    back.searchParams.set("state", query.get("state") ?? "");
+    response.writeHead(302, { Location: back.toString() });
+    return response.end();
   }
   if (key === "POST /oauth2/revoke") {
     state.revoked.add(form.get("token") ?? "");
