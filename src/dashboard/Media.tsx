@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { MEDIA_KIND } from "../core/settings.ts";
 import * as streamerPath from "../core/streamerPath.ts";
 import { deleteMedia, loadMedia, type MediaList } from "./api.ts";
+import { reportError, toast } from "./notices.ts";
 import { Segmented } from "./PanelFields.tsx";
 import { TEXTS } from "./texts.de.ts";
 import UploadButton from "./UploadButton.tsx";
@@ -21,19 +22,24 @@ const megabytes = (bytes: number) => (bytes < MEGABYTE ? `${Math.ceil(bytes / KI
 
 export default function Media({ login }: { login: string }) {
   const [list, setList] = useState<MediaList | null>(null);
-  const [note, setNote] = useState("");
   const [kind, setKind] = useState<Kind>("all");
-  const refresh = useCallback(() => { loadMedia().then(setList).catch(() => setNote(TEXTS.errors["server-error"])); }, []);
+  const refresh = useCallback(() => {
+    loadMedia().then(setList).catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "Medien laden", Grund: String(failure) }));
+  }, []);
   useEffect(refresh, [refresh]);
 
   const remove = (name: string, usedBy: string[]) => {
     if (!confirm(usedBy.length ? MEDIA_TEXT.confirmUsed(name, usedBy.join(", ")) : MEDIA_TEXT.confirm(name))) return;
     deleteMedia(name)
-      .then(code => { setNote(code ? `${name}: ${TEXTS.errors[code]}` : `${MEDIA_TEXT.deleted} ${name}`); refresh(); })
-      .catch(() => setNote(TEXTS.errors["server-error"]));
+      .then(code => {
+        if (code) reportError(TEXTS.errors[code], { Aktion: "Datei löschen", Datei: name, Code: code });
+        else toast(`${MEDIA_TEXT.deleted} ${name}`);
+        refresh();
+      })
+      .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "Datei löschen", Datei: name, Grund: String(failure) }));
   };
 
-  if (!list) return <p className="muted">{note || TEXTS.loading}</p>;
+  if (!list) return <p className="muted">{TEXTS.loading}</p>;
   const source = (name: string) => `${streamerPath.base(login)}/media/${encodeURIComponent(name)}`;
   const shown = list.files.filter(file => kind === "all" || MEDIA_KIND[kind].test(file.name));
   return (
@@ -44,7 +50,6 @@ export default function Media({ login }: { login: string }) {
           <meter min={0} max={list.limitBytes} high={list.limitBytes * FULL} value={list.usedBytes} aria-label={MEDIA_TEXT.usageLabel} />
         </label>
         <UploadButton label={MEDIA_TEXT.upload} primary onDone={refresh} />
-        <span role="status">{note}</span>
       </div>
       {list.files.length === 0 ? <p className="muted">{MEDIA_TEXT.empty}</p> : (
         <>

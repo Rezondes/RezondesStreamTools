@@ -12,6 +12,7 @@ import type { SettingValues } from "../core/theme.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
 import { CLIP_NAMES, clipsFor } from "../themes/renderers.ts";
 import { getJson, postJson } from "./api.ts";
+import { reportError, toast } from "./notices.ts";
 import type { Me } from "./navigation.ts";
 import SettingInput from "./SettingInput.tsx";
 import { changedKeys, errorsByKey, resetField } from "./settingsForm.ts";
@@ -62,15 +63,14 @@ export default function Render({ me }: { me: Me }) {
   );
 }
 
-// Save and discard of the theme values, on top like on the theme page; with the number of changes or the error
+// Save and discard of the theme values, on top like on the theme page; with the number of changes
 function SaveBar({ settings }: { settings: ThemeDraft }) {
   const changed = settings.changed.length;
   return (
     <div className="actions">
       <button className="btn primary" disabled={changed === 0} onClick={settings.save}>{RENDER_TEXT.save}</button>
       <button className="btn" disabled={changed === 0} onClick={settings.discard}>{RENDER_TEXT.discard}</button>
-      <span className="muted" role="status">{changed > 0 ? `${RENDER_TEXT.unsaved} ${changed}` : settings.notice === "saved" ? RENDER_TEXT.saved : ""}</span>
-      {settings.notice && settings.notice !== "saved" && <span className="error" role="alert">{TEXTS.errors[settings.notice]}</span>}
+      {changed > 0 && <span className="muted" role="status">{`${RENDER_TEXT.unsaved} ${changed}`}</span>}
     </div>
   );
 }
@@ -165,7 +165,6 @@ function useThemeDraft() {
   const [theme, setTheme] = useState(DEFAULT_THEME);
   const [draft, setDraft] = useState<SettingValues>({});
   const [errors, setErrors] = useState<Record<string, SettingErrorCode>>({});
-  const [notice, setNotice] = useState<"saved" | ErrorCode | null>(null);
 
   const saved = useCallback((id: string, loaded: SettingsFile | null) => resolveSettings(findTheme(id) ?? findTheme(DEFAULT_THEME)!, loaded?.values[id]), []);
   useEffect(() => {
@@ -187,15 +186,19 @@ function useThemeDraft() {
         if (result.ok) {
           setFile(current => ({ theme: current?.theme ?? theme, values: { ...current?.values, [theme]: draft } }));
           setErrors({});
-          return setNotice("saved");
+          return toast(RENDER_TEXT.saved);
         }
-        if (Array.isArray(result.data)) return setErrors(errorsByKey(result.data as SettingError[]));
-        setNotice(typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error");
+        const details = { Aktion: "POST /api/settings", Theme: theme, Antwort: JSON.stringify(result.data) };
+        if (Array.isArray(result.data)) {
+          setErrors(errorsByKey(result.data as SettingError[]));
+          return reportError(TEXTS.theme.invalid, details);
+        }
+        reportError(TEXTS.errors[typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error"], details);
       })
-      .catch(() => setNotice("server-error"));
+      .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "POST /api/settings", Theme: theme, Grund: String(failure) }));
   };
   const discard = () => { setDraft(saved(theme, file)); setErrors({}); };
-  return { ready, theme, draft, errors, notice, changed: changedKeys(saved(theme, file), draft), set: setDraft, save, discard };
+  return { ready, theme, draft, errors, changed: changedKeys(saved(theme, file), draft), set: setDraft, save, discard };
 }
 
 // Preview: endless loop over the clip and drawing of the current point in time; a banner stands at its first frame
@@ -222,7 +225,8 @@ function usePreview(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement 
   return { time, setTime, playing, setPlaying };
 }
 
-// Rendering: start, all frames as PNG, finish; afterwards "render-done" reports the new file
+// Rendering: start, all frames as PNG, finish; afterwards "render-done" reports the new file. The progress stays in
+// the status, the end comes as a toast, an error as the error dialog
 function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElement | null>, setPlaying: (playing: boolean) => void) {
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
@@ -233,28 +237,34 @@ function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElemen
     const text = (await response.text()).trim();
     return isErrorCode(text) ? text : "server-error";
   };
+  const failed = async (step: string, response: Response) => {
+    const code = await codeOf(response);
+    setStatus("");
+    reportError(TEXTS.errors[code], { Aktion: `Rendern: ${step}`, Clip: clip.name, Code: code, Status: String(response.status) });
+  };
+  const finished = (text: string) => { setStatus(""); toast(text); };
   const run = async () => {
     await Promise.all([document.fonts.load(clip.font), clip.prepare?.()]);
     const start = await fetch(`/api/render/start?clip=${clip.name}`, { method: "POST" });
-    if (!start.ok) return setStatus(TEXTS.errors[await codeOf(start)]);
+    if (!start.ok) return failed("start", start);
     const context = canvas.current!.getContext("2d")!;
     const total = isStill(clip) ? 1 : Math.round(clip.duration * clip.fps);
     for (let index = 0; index < total; index++) {
       if (cancelled.current) {
         await fetch("/api/render/cancel", { method: "POST" });
-        return setStatus(RENDER_TEXT.cancelled);
+        return finished(RENDER_TEXT.cancelled);
       }
       clip.draw(context, index / clip.fps);
       const png = await new Promise<Blob>(done => canvas.current!.toBlob(blob => done(blob!), "image/png"));
       const sent = await fetch(`/api/render/frame?i=${index}`, { method: "POST", body: png });
-      if (!sent.ok) return setStatus(TEXTS.errors[await codeOf(sent)]);
+      if (!sent.ok) return failed(`Bild ${index + 1} von ${total}`, sent);
       setStatus(RENDER_TEXT.frame(index + 1, total));
     }
     setCanCancel(false);
     setStatus(RENDER_TEXT.encoding);
     const done = await fetch(`/api/render/done?fps=${clip.fps}`, { method: "POST" });
-    if (!done.ok) return setStatus(TEXTS.errors[await codeOf(done)]);
-    setStatus(RENDER_TEXT.done);
+    if (!done.ok) return failed("fertigstellen", done);
+    finished(RENDER_TEXT.done);
   };
   const render = () => {
     setPlaying(false);
@@ -262,7 +272,7 @@ function useRenderJob(clip: RenderClip, canvas: React.RefObject<HTMLCanvasElemen
     cancelled.current = false;
     setCanCancel(true);
     run()
-      .catch(() => setStatus(TEXTS.errors["server-error"]))
+      .catch((failure: unknown) => { setStatus(""); reportError(TEXTS.errors["server-error"], { Aktion: "Rendern", Clip: clip.name, Grund: String(failure) }); })
       .finally(() => { setBusy(false); setCanCancel(false); dispatchEvent(new Event("render-done")); });
   };
   const cancel = () => { cancelled.current = true; setCanCancel(false); };

@@ -1,11 +1,12 @@
 // Dashboard under /: without a session only the login with Twitch, afterwards the navigation over the sections that are
 // released for the streamer (navigation.ts), section in the hash (#/theme). Account from /api/me, refreshed every 5 seconds;
-// ?error=<code> after an aborted login and errors of actions show the text for the code.
+// results of actions come as toasts, errors (also ?error=<code> after an aborted login) as a dialog with details for
+// the admin (notices.ts).
 // The page never scrolls as a whole (terminal): title and navigation stay fixed, the section below scrolls inside;
 // theme and render split it into settings (scroll) and preview (fixed). The look follows the active theme
 // (skin.ts, skins.css).
 import { useEffect, useState } from "react";
-import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
+import { isErrorCode } from "../core/errorCodes.ts";
 import { params } from "../core/params.ts";
 import Admin from "./Admin.tsx";
 import { loadAccount, post, type Account } from "./api.ts";
@@ -19,12 +20,14 @@ import Scenery from "./Scenery.tsx";
 import { applySkin, rememberedSkin, skinOf } from "./skin.ts";
 import { TEXTS } from "./texts.de.ts";
 import ThemeSettings from "./ThemeSettings.tsx";
+import NoticeLayer from "./NoticeLayer.tsx";
+import { reportError, toast } from "./notices.ts";
 import Triggers from "./Triggers.tsx";
 import "./dashboard.css";
 import "./skins.css";
 
-// Action to the server; afterwards reload the account and show an error
-export type Act = (url: string) => void;
+// Action to the server; afterwards reload the account; the done text comes as a toast, an error as the error dialog
+export type Act = (url: string, done?: string) => void;
 
 const REFRESH_MS = 5000;
 
@@ -32,18 +35,19 @@ export default function Dashboard() {
   const [account, setAccount] = useState<Account>(undefined);
   const [version, setVersion] = useState(0);
   const [hash, setHash] = useState(location.hash);
-  const [error, setError] = useState<ErrorCode | null>(() => {
+
+  // An aborted login comes back with ?error=<code>
+  useEffect(() => {
     const code = params.get("error") ?? "";
-    return isErrorCode(code) ? code : null;
-  });
+    if (isErrorCode(code)) reportError(TEXTS.errors[code], { Aktion: "Anmeldung", Code: code });
+  }, []);
 
   // Skin of the active theme from the account (the remembered one is set since main.tsx)
   const theme = typeof account === "object" ? account.theme : null;
   useEffect(() => { if (theme) applySkin(theme); }, [theme]);
 
   useEffect(() => {
-    // New section: hide the old error message
-    const update = () => { setHash(location.hash); setError(null); };
+    const update = () => setHash(location.hash);
     addEventListener("hashchange", update);
     return () => removeEventListener("hashchange", update);
   }, []);
@@ -58,10 +62,14 @@ export default function Dashboard() {
     return () => { active = false; clearInterval(timer); };
   }, [version]);
 
-  const act: Act = url => {
+  const act: Act = (url, done) => {
     post(url)
-      .then(code => { setError(code); setVersion(value => value + 1); })
-      .catch((failure: unknown) => console.warn("Request failed:", failure));
+      .then(code => {
+        if (code) reportError(TEXTS.errors[code], { Aktion: `POST ${url}`, Code: code, Seite: location.hash || "#/" });
+        else if (done) toast(done);
+        setVersion(value => value + 1);
+      })
+      .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: `POST ${url}`, Grund: String(failure), Seite: location.hash || "#/" }));
   };
 
   return (
@@ -69,8 +77,8 @@ export default function Dashboard() {
       <Scenery skin={skinOf(theme ?? rememberedSkin())} />
       <main className="dashboard">
         <h1>{TEXTS.title}</h1>
-        {error && <p className="error" role="alert">{TEXTS.errors[error]}</p>}
         <Content account={account} hash={hash} act={act} />
+        <NoticeLayer />
       </main>
     </>
   );

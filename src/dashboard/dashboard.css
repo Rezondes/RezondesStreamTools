@@ -328,3 +328,16 @@
   .panel-empty { grid-column: auto; }
 }
 
+
+/* Messages (NoticeLayer.tsx): toasts at the bottom right in the skin of the active theme, errors as a modal dialog
+   with copyable details */
+.toasts { position: fixed; right: 16px; bottom: 16px; z-index: 50; display: grid; gap: 8px; justify-items: end; max-width: min(420px, calc(100vw - 32px)); }
+.toast { padding: 12px 16px; border: var(--border-w) solid var(--border); border-left: 4px solid var(--accent); border-radius: var(--radius-sm); background: var(--surface); color: var(--fg); box-shadow: var(--shadow); font: inherit; text-align: left; cursor: pointer; animation: toast-in 0.25s ease-out; }
+.toast:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.error-dialog { width: min(560px, calc(100vw - 32px)); color: var(--fg); border-color: var(--error); }
+.error-dialog::backdrop { background: rgb(0 0 0 / 0.55); }
+.error-dialog h2 { margin: 0; color: var(--error); }
+.error-dialog p { margin: 0; }
+.error-details { margin: 0; padding: 10px; max-height: 40vh; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; border: var(--border-w) solid var(--line); border-radius: var(--radius-sm); background: var(--field); font: 13px/1.4 ui-monospace, monospace; }
+@keyframes toast-in { from { opacity: 0; translate: 0 8px; } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none; } }

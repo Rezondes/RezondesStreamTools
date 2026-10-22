@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import type { HelpConfig } from "../core/commands.ts";
 import * as streamerPath from "../core/streamerPath.ts";
 import { getJson, postJson } from "./api.ts";
+import { reportError, toast } from "./notices.ts";
 import { TEXTS } from "./texts.de.ts";
 
 const TEXT = TEXTS.help;
@@ -13,17 +14,17 @@ type HelpState = HelpConfig & { canChat?: boolean | null };
 export default function ChatHelp({ login }: { login: string }) {
   const page = `${location.origin}${streamerPath.base(login)}/`;
   const [help, setHelp] = useState<HelpState | null>(null);
-  const [status, setStatus] = useState<"saved" | "invalid" | null>(null);
   useEffect(() => { getJson<HelpState | null>("/api/commands", null).then(setHelp).catch(() => {}); }, []);
   if (!help) return null;
-  const change = (patch: Partial<HelpState>) => { setHelp({ ...help, ...patch }); setStatus(null); };
+  const change = (patch: Partial<HelpState>) => setHelp({ ...help, ...patch });
   const save = () => {
     postJson("/api/commands", help)
       .then(result => {
-        if (result.ok) setHelp({ ...(result.data as HelpConfig), canChat: help.canChat });
-        setStatus(result.ok ? "saved" : "invalid");
+        if (!result.ok) return reportError(TEXT.invalid, { Aktion: "POST /api/commands", Antwort: JSON.stringify(result.data) });
+        setHelp({ ...(result.data as HelpConfig), canChat: help.canChat });
+        toast(TEXT.saved);
       })
-      .catch(() => setStatus("invalid"));
+      .catch((failure: unknown) => reportError(TEXT.invalid, { Aktion: "POST /api/commands", Grund: String(failure) }));
   };
   return (
     <>
@@ -52,8 +53,6 @@ export default function ChatHelp({ login }: { login: string }) {
       <p className="muted">{TEXT.replyHint}</p>
       <p className="actions">
         <button className="btn primary" onClick={save}>{TEXT.save}</button>
-        {status === "saved" && <span className="glow" role="status">{TEXT.saved}</span>}
-        {status === "invalid" && <span className="error" role="alert">{TEXT.invalid}</span>}
       </p>
     </>
   );

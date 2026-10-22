@@ -14,6 +14,7 @@ import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
 import { type Me, visibleSections } from "./navigation.ts";
 import ChatHelp from "./ChatHelp.tsx";
+import { reportError } from "./notices.ts";
 import EventFeed from "./EventFeed.tsx";
 import ObsImport from "./ObsImport.tsx";
 import { dragUrl, obsLayout } from "./obsSetup.ts";
@@ -68,7 +69,7 @@ function Live({ me, act }: { me: Me; act: Act }) {
               <>
                 <h3>{TEXT.alertsTitle}</h3>
                 <p className="actions">
-                  {TEST_ALERTS.map(kind => <button key={kind} className="btn" onClick={() => act(`/api/test?kind=${kind}`)}>{TEXT.alertNames[kind]}</button>)}
+                  {TEST_ALERTS.map(kind => <button key={kind} className="btn" onClick={() => act(`/api/test?kind=${kind}`, TEXT.testSent(TEXT.alertNames[kind]))}>{TEXT.alertNames[kind]}</button>)}
                 </p>
                 <p className="muted">{TEXT.testAlerts}</p>
               </>
@@ -124,7 +125,7 @@ function ObsSetup({ me, act }: { me: Me; act: Act }) {
         <h2>{TEXT.keyTitle}</h2>
         <p className="muted">{TEXT.keyHint}</p>
         <p className="actions">
-          <button className="btn" onClick={() => { if (confirm(TEXT.rotateConfirm)) act("/api/overlay-key"); }}>{TEXT.rotateKey}</button>
+          <button className="btn" onClick={() => { if (confirm(TEXT.rotateConfirm)) act("/api/overlay-key", TEXT.keyRotated); }}>{TEXT.rotateKey}</button>
         </p>
       </section>
     </>
@@ -158,7 +159,7 @@ function Stats({ me, act }: { me: Me; act: Act }) {
       )}
       <p className="muted">{TEXT.statsHint}</p>
       <p className="actions">
-        <button className="btn" onClick={() => { if (confirm(TEXT.statsResetConfirm)) act("/api/stats/reset"); }}>{TEXT.statsReset}</button>
+        <button className="btn" onClick={() => { if (confirm(TEXT.statsResetConfirm)) act("/api/stats/reset", TEXT.statsResetDone); }}>{TEXT.statsReset}</button>
       </p>
     </section>
   );
@@ -166,7 +167,6 @@ function Stats({ me, act }: { me: Me; act: Act }) {
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
-  const [failed, setFailed] = useState(false);
   useEffect(() => {
     if (!copied) return;
     const timer = setTimeout(() => setCopied(false), COPIED_MS);
@@ -175,15 +175,14 @@ function CopyButton({ text }: { text: string }) {
   const copy = (event: MouseEvent<HTMLButtonElement>) => {
     // Without clipboard access (http without localhost, permissions) select the URL, Ctrl+C still works
     const code = event.currentTarget.closest("tr")?.querySelector("code");
-    navigator.clipboard.writeText(text).then(() => { setFailed(false); setCopied(true); }).catch(() => {
+    navigator.clipboard.writeText(text).then(() => setCopied(true)).catch((failure: unknown) => {
       if (code) getSelection()?.selectAllChildren(code);
-      setFailed(true);
+      reportError(TEXT.copyFailed, { Aktion: "URL kopieren", Grund: String(failure) });
     });
   };
   return (
     <>
       <button className="btn" onClick={copy}>{copied ? TEXT.copied : TEXT.copy}</button>
-      {failed && <span role="status" className="muted">{TEXT.copyFailed}</span>}
     </>
   );
 }
@@ -203,7 +202,7 @@ function TriggerButtons({ act }: { act: Act }) {
       {triggers.length === 0 ? <p className="muted">{TEXT.noTriggers}</p> : (
         <p className="actions">
           {triggers.map(trigger => (
-            <button key={trigger.name} className="btn" disabled={!trigger.enabled} onClick={() => act(`/api/trigger?name=${encodeURIComponent(trigger.name)}`)}>
+            <button key={trigger.name} className="btn" disabled={!trigger.enabled} onClick={() => act(`/api/trigger?name=${encodeURIComponent(trigger.name)}`, TEXT.fired(trigger.name))}>
               {trigger.name}
             </button>
           ))}

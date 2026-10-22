@@ -13,6 +13,7 @@ import { sceneNames } from "../core/themeRuntime.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
 import { THEME_SCENES } from "../themes/scenes.tsx";
 import { getJson, loadMedia, postJson } from "./api.ts";
+import { reportError, toast } from "./notices.ts";
 import { visibleSections, type Me } from "./navigation.ts";
 import ScenePreview from "./ScenePreview.tsx";
 import SettingInput from "./SettingInput.tsx";
@@ -25,7 +26,8 @@ import { TEXTS } from "./texts.de.ts";
 
 // Answer of GET /api/settings: chosen theme, saved values per theme, available themes
 type SettingsFile = { theme: string; values: Record<string, Record<string, unknown>>; themes: { id: string; name: string }[] };
-type Notice = "saved" | "invalid" | ErrorCode | null;
+// Only a failed load stays on the page (with a retry); results of saving come as toast or error dialog
+type Notice = ErrorCode | null;
 type Draft = { values: SettingValues; set: (update: (values: SettingValues) => SettingValues) => void };
 
 const defaultSchema = findTheme(DEFAULT_THEME)!;
@@ -89,7 +91,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
         <ModeSwitch mode={mode} onChange={chooseMode} />
       </div>
       <SaveBar
-        changed={changed.length} hidden={hidden} notice={notice} onSave={() => save(false, reveal)} onShow={reveal}
+        changed={changed.length} hidden={hidden} onSave={() => save(false, reveal)} onShow={reveal}
         onDiscard={() => setDraft(() => saved)} onReset={() => { if (confirm(TEXTS.theme.confirmReset)) setDraft(() => resetAll(schema)); }}
       />
 
@@ -108,11 +110,11 @@ export default function ThemeSettings({ me }: { me: Me }) {
   );
 }
 
-// Save, discard and reset with the count of unsaved changes (and a link to those not visible) and the save errors
+// Save, discard and reset with the count of unsaved changes (and a link to those not visible)
 type SaveBarProps = {
-  changed: number; hidden: readonly string[]; notice: Notice; onSave: () => void; onDiscard: () => void; onReset: () => void; onShow: (key: string) => void;
+  changed: number; hidden: readonly string[]; onSave: () => void; onDiscard: () => void; onReset: () => void; onShow: (key: string) => void;
 };
-function SaveBar({ changed, hidden, notice, onSave, onDiscard, onReset, onShow }: SaveBarProps) {
+function SaveBar({ changed, hidden, onSave, onDiscard, onReset, onShow }: SaveBarProps) {
   return (
     <>
       <div className="actions settings-bar">
@@ -120,19 +122,17 @@ function SaveBar({ changed, hidden, notice, onSave, onDiscard, onReset, onShow }
         <button className="btn" disabled={changed === 0} onClick={onDiscard}>{TEXTS.theme.discard}</button>
         <button className="btn" onClick={onReset}>{TEXTS.theme.resetAll}</button>
         <span className="muted" role="status">
-          {changed > 0 ? `${TEXTS.theme.unsaved} ${changed}` : notice === "saved" ? TEXTS.theme.saved : ""}
+          {changed > 0 ? `${TEXTS.theme.unsaved} ${changed}` : ""}
           {hidden.length > 0 && <> ({TEXTS.theme.hiddenChanges(hidden.length)}, <button type="button" className="link" onClick={() => onShow(hidden[0])}>{TEXTS.theme.showHidden}</button>)</>}
         </span>
       </div>
-      {notice === "invalid" && <p className="error" role="alert">{TEXTS.theme.invalid}</p>}
-      {notice && notice !== "saved" && notice !== "invalid" && <p className="error" role="alert">{TEXTS.errors[notice]}</p>}
     </>
   );
 }
 
 // While the settings load, or the error with a retry
 function Loading({ notice, onRetry }: { notice: Notice; onRetry: () => void }) {
-  if (!notice || notice === "saved" || notice === "invalid") return <p className="muted">{TEXTS.loading}</p>;
+  if (!notice) return <p className="muted">{TEXTS.loading}</p>;
   return (
     <p className="actions">
       <span className="error" role="alert">{TEXTS.errors[notice]}</span>
@@ -306,17 +306,18 @@ function useSettingsFile(schemaOf: (id: string) => ThemeSchema) {
           await load(viewed);
           // Another theme active: the dashboard reloads and afterwards looks like the new theme
           if (activate) return location.reload();
-          return setNotice("saved");
+          return toast(TEXTS.theme.saved);
         }
+        const details = { Aktion: "POST /api/settings", Theme: viewed, Antwort: JSON.stringify(result.data) };
         if (Array.isArray(result.data)) {
           const refused = result.data as SettingError[];
           setErrors(errorsByKey(refused));
           if (refused.length > 0) onInvalid(refused[0].key);
-          return setNotice("invalid");
+          return reportError(TEXTS.theme.invalid, details);
         }
-        setNotice(typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error");
+        reportError(TEXTS.errors[typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error"], details);
       })
-      .catch((error: unknown) => console.warn("Saving settings failed:", error));
+      .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "POST /api/settings", Theme: viewed, Grund: String(failure) }));
   };
 
   return { file, viewed, showTheme, draft, setDraft, errors, notice, media, save, load };

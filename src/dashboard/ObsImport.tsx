@@ -2,6 +2,7 @@
 // The browser on this PC connects to ws://localhost, the overlay server is not
 // involved; the password is stored nowhere. Dragging single URLs is in the table (Overview.tsx).
 import { useState } from "react";
+import { reportError, toast } from "./notices.ts";
 import { obsAuth, obsRequests, sceneCollection, type ObsScene } from "./obsSetup.ts";
 import { TEXTS } from "./texts.de.ts";
 
@@ -36,9 +37,9 @@ export default function ObsImport({ login, layout }: { login: string; layout: Ob
     setBusy(true);
     setStatus(OBS_TEXT.connecting);
     importViaWebSocket(port, password, layout)
-      .then(count => setStatus(OBS_TEXT.done(count)))
-      .catch((error: unknown) => setStatus(error instanceof ObsError ? error.message : OBS_TEXT.unreachable))
-      .finally(() => setBusy(false));
+      .then(count => toast(OBS_TEXT.done(count)))
+      .catch((error: unknown) => reportError(error instanceof ObsError ? error.message : OBS_TEXT.unreachable, { Aktion: "OBS-Import über WebSocket", Port: String(port), Grund: String(error) }))
+      .finally(() => { setBusy(false); setStatus(""); });
   };
 
   return (

@@ -5,7 +5,6 @@
 // of the streamer (otherwise the error code not-connected comes back). Both tabs stay mounted, so switching keeps
 // unsaved changes.
 import { useEffect, useState } from "react";
-import type { ErrorCode } from "../core/errorCodes.ts";
 import type { Trigger } from "../generated/Trigger.ts";
 import type { When } from "../generated/When.ts";
 import { isErrorCode } from "../core/errorCodes.ts";
@@ -13,6 +12,7 @@ import { MEDIA_KIND } from "../core/settings.ts";
 import type { FxAction } from "../core/types.ts";
 import { loadMedia, post } from "./api.ts";
 import ChatHelp from "./ChatHelp.tsx";
+import { reportError, toast } from "./notices.ts";
 import type { Me } from "./navigation.ts";
 import { SubTabs, subTabPanel } from "./SubTabs.tsx";
 import { TEXTS } from "./texts.de.ts";
@@ -46,7 +46,7 @@ const errorsOf = (errors: string[], trigger: Trigger) => errors.filter(error => 
 
 function TriggerEditor() {
   const editor = useTriggerConfig();
-  const { list, setList, saved, media, errors, note, dirty } = editor;
+  const { list, setList, saved, media, errors, dirty } = editor;
   const [current, setCurrent] = useState(0);
   if (!list) {
     return (
@@ -65,10 +65,9 @@ function TriggerEditor() {
       <div className="editor-bar">
         <button className="btn primary" disabled={!dirty} onClick={editor.save}>{TRIGGER_TEXT.save}</button>
         <button className="btn" disabled={!dirty} onClick={() => setList(JSON.parse(saved) as Trigger[])}>{TRIGGER_TEXT.discard}</button>
-        <span className={dirty ? "" : "muted"} role="status">{dirty ? TRIGGER_TEXT.unsaved : note}</span>
+        {dirty && <span role="status">{TRIGGER_TEXT.unsaved}</span>}
         <UploadButton label={TRIGGER_TEXT.upload} onDone={editor.refreshMedia} />
       </div>
-      {errors.length > 0 && <ul className="editor-errors" role="alert">{errors.map(error => <li key={error}>{error}</li>)}</ul>}
 
       <datalist id="media-image">{media.filter(name => MEDIA_KIND.image.test(name)).map(name => <option key={name} value={name} />)}</datalist>
       <datalist id="media-video">{media.filter(name => MEDIA_KIND.video.test(name)).map(name => <option key={name} value={name} />)}</datalist>
@@ -121,7 +120,6 @@ function useTriggerConfig() {
   const [saved, setSaved] = useState("");
   const [media, setMedia] = useState<string[]>([]);
   const [errors, setErrors] = useState<string[]>([]);
-  const [note, setNote] = useState("");
   const dirty = list !== null && JSON.stringify(list) !== saved;
 
   // Without a media list the selection stays empty; typing still works
@@ -146,19 +144,23 @@ function useTriggerConfig() {
     return () => removeEventListener("beforeunload", warn);
   }, [dirty]);
 
+  // Saved: a toast; refused: the errors stay at their trigger and come as the error dialog
+  const refused = (found: string[]) => {
+    setErrors(found);
+    reportError(TRIGGER_TEXT.saveFailed, { Aktion: "POST /api/triggers/config", Meldungen: found.join(" | ") });
+  };
   const save = () => {
-    setNote("");
     fetch("/api/triggers/config", { method: "POST", body: JSON.stringify({ triggers: list }) })
       .then(async response => {
-        if (!response.ok) return setErrors(await response.json().catch(() => [TEXTS.errors["server-error"]]) as string[]);
+        if (!response.ok) return refused(await response.json().catch(() => [TEXTS.errors["server-error"]]) as string[]);
         setSaved(JSON.stringify(list));
         setErrors([]);
-        setNote(TRIGGER_TEXT.saved);
+        toast(TRIGGER_TEXT.saved);
       })
-      .catch(() => setErrors([TEXTS.errors["server-error"]]));
+      .catch((failure: unknown) => refused([TEXTS.errors["server-error"], String(failure)]));
   };
 
-  return { list, setList: (next: Trigger[]) => { setList(next); setErrors([]); }, saved, media, errors, note, dirty, save, refreshMedia };
+  return { list, setList: (next: Trigger[]) => { setList(next); setErrors([]); }, saved, media, errors, dirty, save, refreshMedia };
 }
 
 type CardProps = { trigger: Trigger; dirty: boolean; errors: string[]; onChange: (trigger: Trigger) => void; onCopy: () => void; onDelete: () => void };
@@ -220,7 +222,7 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
         <button className="btn" onClick={onCopy}>{TRIGGER_TEXT.copy}</button>
         <button className="btn" onClick={onDelete}>{TRIGGER_TEXT.remove}</button>
       </div>
-      {errors.length > 0 && <ul className="editor-errors" role="alert">{errors.map(error => <li key={error}>{error}</li>)}</ul>}
+      {errors.length > 0 && <ul className="editor-errors">{errors.map(error => <li key={error}>{error}</li>)}</ul>}
 
       <fieldset className="trigger-group">
         <legend>{TRIGGER_TEXT.whenTitle}</legend>
@@ -256,17 +258,15 @@ function TriggerCard({ trigger, dirty, errors, onChange, onCopy, onDelete }: Car
   );
 }
 
-// Test fires the saved trigger and reports whether it worked
+// Test fires the saved trigger: a toast when it fired, the error dialog when not
 function TestButton({ name, dirty }: { name: string; dirty: boolean }) {
-  // undefined = not tested yet, null = fired, otherwise the error code
-  const [tested, setTested] = useState<ErrorCode | null | undefined>(undefined);
-  return (
-    <>
-      <button className="btn" disabled={dirty} title={dirty ? TRIGGER_TEXT.saveFirst : TRIGGER_TEXT.testHint}
-        onClick={() => { post(`/api/trigger?name=${encodeURIComponent(name)}`).then(setTested).catch(() => setTested("server-error")); }}>{TRIGGER_TEXT.test}</button>
-      {tested !== undefined && <span className={tested ? "error" : "muted"} role="status">{tested ? TEXTS.errors[tested] : TRIGGER_TEXT.fired}</span>}
-    </>
-  );
+  const url = `/api/trigger?name=${encodeURIComponent(name)}`;
+  const test = () => {
+    post(url)
+      .then(code => (code ? reportError(TEXTS.errors[code], { Aktion: `POST ${url}`, Code: code }) : toast(TRIGGER_TEXT.fired)))
+      .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: `POST ${url}`, Grund: String(failure) }));
+  };
+  return <button className="btn" disabled={dirty} title={dirty ? TRIGGER_TEXT.saveFirst : TRIGGER_TEXT.testHint} onClick={test}>{TRIGGER_TEXT.test}</button>;
 }
 
 type RowProps = { number: number; action: FxAction; onChange: (action: FxAction) => void; onUp?: () => void; onDown?: () => void; onRemove?: () => void };

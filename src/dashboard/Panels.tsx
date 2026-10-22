@@ -9,6 +9,7 @@ import type { SettingValues } from "../core/theme.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
 import { panelFor } from "../themes/renderers.ts";
 import { getJson, postJson } from "./api.ts";
+import { reportError, toast } from "./notices.ts";
 import type { Me } from "./navigation.ts";
 import {
   addLayer, alignLayers, applyTemplate, changeLayer, duplicateLayers, duplicatePanel, type History, movePanel, PANEL_IMAGE_BYTES, panelFrom, record, redo,
@@ -46,13 +47,13 @@ export default function Panels({ me }: { me: Me }) {
     add: () => { store.commit([...panels, panelFrom(TEXT.newTitle, template(TEXT.newTitle))]); pick(panels.length); },
     duplicate: () => { if (panel) { store.commit([...panels.slice(0, current + 1), duplicatePanel(panel, TEXT.copyName(panel.name)), ...panels.slice(current + 1)]); pick(current + 1); } },
     move: (step: 1 | -1) => { store.commit(movePanel(panels, current, step)); setCurrent(Math.min(panels.length - 1, Math.max(0, current + step))); },
-    remove: () => { store.commit(panels.filter((_, index) => index !== current)); pick(Math.max(0, current - 1)); store.setNotice(TEXT.removed); },
+    remove: () => { store.commit(panels.filter((_, index) => index !== current)); pick(Math.max(0, current - 1)); toast(TEXT.removed); },
   };
   return (
     <section className="panel panel-designer">
       <div className="panel-designer-bar">
-        <SaveBar dirty={store.dirty} saving={store.saving} notice={store.notice} onSave={store.save} onDiscard={store.discard} />
-        {panel && <Export panels={panels} current={current} images={images} setNotice={store.setNotice} />}
+        <SaveBar dirty={store.dirty} saving={store.saving} onSave={store.save} onDiscard={store.discard} />
+        {panel && <Export panels={panels} current={current} images={images} />}
       </div>
       <div className="panel-designer-layout">
         <PanelGallery panels={panels} current={current} images={images} actions={gallery} />
@@ -84,7 +85,7 @@ function PanelEditor({ panel, images, selected, setSelected, view, setView, stor
   const actions: StageActions = {
     select, gestureStart: store.gestureStart, preview, commit, undo: store.undo, redo: store.redo,
     add: kind => added(addLayer(panel, kind)),
-    addImage: file => readImage(file, src => added(addLayer(panel, "image", src)), store.setNotice),
+    addImage: file => readImage(file, src => added(addLayer(panel, "image", src)), text => reportError(text, { Aktion: "Bild einfügen", Datei: file.name, Typ: file.type, Bytes: String(file.size) })),
     align: how => { if (selected.length > 0) commit(alignLayers(panel, selected, how)); },
     duplicate: () => { if (selected.length > 0) { const copied = duplicateLayers(panel, selected); commit(copied.panel); setSelected(copied.copies); } },
     remove: () => { if (selected.length > 0) { commit(removeLayers(panel, selected)); setSelected([]); } },
@@ -143,34 +144,37 @@ function Thumb({ panel, images }: { panel: Panel; images: ReadonlyMap<string, HT
 }
 
 // The saved panel list and the draft with its undo history: load, change (one undo step each, a drag only once),
-// save (with its state and a specific error), discard (undoable too)
+// save (a toast, or the error dialog with the answer of the server), discard (undoable too)
 function usePanelStore(onReset: () => void) {
   const [history, setHistory] = useState<History<Panel[]> | null>(null);
   const [saved, setSaved] = useState("[]");
   const [saving, setSaving] = useState(false);
-  const [notice, setNotice] = useState("");
   useEffect(() => {
     void getJson<{ panels: Panel[] }>("/api/panels", { panels: [] }).then(answer => { setHistory({ past: [], present: answer.panels, future: [] }); setSaved(JSON.stringify(answer.panels)); });
   }, []);
-  const change = (step: (history: History<Panel[]>) => History<Panel[]>) => { setHistory(now => (now ? step(now) : now)); setNotice(""); };
+  const change = (step: (history: History<Panel[]>) => History<Panel[]>) => setHistory(now => (now ? step(now) : now));
   const save = () => {
     const panels = history?.present ?? [];
     setSaving(true);
     void postJson("/api/panels", { panels }).then(result => {
-      if (result.ok) setSaved(JSON.stringify(panels));
-      setNotice(result.ok ? TEXT.saved : saveError(result.data));
+      if (result.ok) {
+        setSaved(JSON.stringify(panels));
+        toast(TEXT.saved);
+      } else {
+        reportError(saveError(result.data), { Aktion: "POST /api/panels", Panels: String(panels.length), Antwort: JSON.stringify(result.data) });
+      }
       setSaving(false);
     });
   };
   return {
-    history, saving, notice, setNotice, save,
+    history, saving, save,
     dirty: history !== null && JSON.stringify(history.present) !== saved,
     canUndo: (history?.past.length ?? 0) > 0, canRedo: (history?.future.length ?? 0) > 0,
     commit: (next: Panel[]) => change(now => record(now, next)),
     gestureStart: () => change(now => record(now, now.present)),
     preview: (next: Panel[]) => setHistory(now => (now ? { ...now, present: next } : now)),
     undo: () => change(undo), redo: () => change(redo),
-    discard: () => { change(now => record(now, JSON.parse(saved) as Panel[])); onReset(); setNotice(TEXT.discarded); },
+    discard: () => { change(now => record(now, JSON.parse(saved) as Panel[])); onReset(); toast(TEXT.discarded); },
   };
 }
 
@@ -189,12 +193,12 @@ function useImages(panels: readonly Panel[]): ReadonlyMap<string, HTMLImageEleme
 }
 
 // Saved: the button names what it saves and says when it runs; without changes it says so instead of just greying out
-function SaveBar({ dirty, saving, notice, onSave, onDiscard }: { dirty: boolean; saving: boolean; notice: string; onSave: () => void; onDiscard: () => void }) {
+function SaveBar({ dirty, saving, onSave, onDiscard }: { dirty: boolean; saving: boolean; onSave: () => void; onDiscard: () => void }) {
   return (
     <div className="actions">
       <button type="button" className="btn primary" disabled={!dirty || saving} onClick={onSave}>{saving ? TEXT.saving : TEXT.save}</button>
       <button type="button" className="btn" disabled={!dirty || saving} onClick={onDiscard}>{TEXT.discard}</button>
-      <span className="muted" role="status">{notice || (dirty ? TEXT.unsaved : TEXT.clean)}</span>
+      <span className="muted" role="status">{dirty ? TEXT.unsaved : TEXT.clean}</span>
     </div>
   );
 }
@@ -212,10 +216,10 @@ function readImage(file: File, done: (src: string) => void, refuse: (notice: str
 }
 
 // File format and the buttons that save the current or every panel
-function Export({ panels, current, images, setNotice }: { panels: readonly Panel[]; current: number; images: ReadonlyMap<string, HTMLImageElement>; setNotice: (notice: string) => void }) {
+function Export({ panels, current, images }: { panels: readonly Panel[]; current: number; images: ReadonlyMap<string, HTMLImageElement> }) {
   const [format, setFormat] = useState<PanelFormat>("png");
   const [busy, setBusy] = useState(false);
-  const run = (job: () => Promise<string>) => { setBusy(true); void job().then(notice => { setNotice(notice); setBusy(false); }); };
+  const run = (job: () => Promise<void>) => { setBusy(true); void job().then(() => setBusy(false)); };
   return (
     <div className="actions panel-export">
       <Segmented label={TEXT.format} value={format} options={PANEL_FORMATS.map(name => ({ value: name, label: name.toUpperCase() }))} onChange={setFormat} />
@@ -242,21 +246,20 @@ async function picture(panel: Panel, format: PanelFormat, images: ReadonlyMap<st
   return blob(QUALITY.lowest);
 }
 
-// Saves one panel; the answer is the notice for the page
-async function download(panel: Panel, index: number, format: PanelFormat, images: ReadonlyMap<string, HTMLImageElement>): Promise<string> {
+// Saves one panel: a toast with the file name, or the error dialog
+async function download(panel: Panel, index: number, format: PanelFormat, images: ReadonlyMap<string, HTMLImageElement>): Promise<void> {
   const blob = await picture(panel, format, images);
-  if (!blob) return TEXT.saveFailed;
-  if (blob.size > PANEL_MAX_BYTES) return TEXT.tooLarge(panel.name);
+  const details = { Aktion: "Panel herunterladen", Panel: panel.name, Format: format };
+  if (!blob) return reportError(TEXT.saveFailed, details);
+  if (blob.size > PANEL_MAX_BYTES) return reportError(TEXT.tooLarge(panel.name), { ...details, Bytes: String(blob.size) });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = panelFileName(panel.name, index, format);
   link.click();
   URL.revokeObjectURL(link.href);
-  return TEXT.downloaded(link.download);
+  toast(TEXT.downloaded(link.download));
 }
 
-async function downloadAll(panels: readonly Panel[], format: PanelFormat, images: ReadonlyMap<string, HTMLImageElement>): Promise<string> {
-  const notices: string[] = [];
-  for (const [index, panel] of panels.entries()) notices.push(await download(panel, index, format, images));
-  return notices.at(-1) ?? "";
+async function downloadAll(panels: readonly Panel[], format: PanelFormat, images: ReadonlyMap<string, HTMLImageElement>): Promise<void> {
+  for (const [index, panel] of panels.entries()) await download(panel, index, format, images);
 }

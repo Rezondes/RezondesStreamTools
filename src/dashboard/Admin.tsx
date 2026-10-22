@@ -8,6 +8,7 @@ import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
 import { createBackup, deleteBackup, deleteStreamer, getJson, postJson, restoreBackup, uploadBackup } from "./api.ts";
+import { reportError, toast } from "./notices.ts";
 import { Segmented } from "./PanelFields.tsx";
 import { SubTabs, subTabPanel } from "./SubTabs.tsx";
 import { TEXTS } from "./texts.de.ts";
@@ -43,27 +44,30 @@ export default function Admin() {
   const [access, setAccess] = useState<AccessDraft | null>(null);
   const [saved, setSaved] = useState<Access | null>(null);
   const [streamers, setStreamers] = useState<StreamerRow[]>([]);
-  const [notice, setNotice] = useState<"saved" | ErrorCode | null>(null);
+  // Only a failed load stays on the page; results of actions come as toast or error dialog
+  const [failed, setFailed] = useState(false);
   const [tab, setTab] = useState<Tab>("access");
 
   const load = useCallback(() => {
     getJson<Access | null>("/api/admin/access", null).then(loaded => {
-      if (!loaded) return setNotice("server-error");
+      if (!loaded) return setFailed(true);
       setSaved(loaded);
       setAccess(toDraft(loaded));
-    }).catch(() => setNotice("server-error"));
-    getJson<StreamerRow[]>("/api/admin/streamers", []).then(setStreamers).catch(() => setNotice("server-error"));
+    }).catch(() => setFailed(true));
+    getJson<StreamerRow[]>("/api/admin/streamers", []).then(setStreamers).catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "GET /api/admin/streamers", Grund: String(failure) }));
   }, []);
   useEffect(load, [load]);
 
-  if (!access) return <p className="muted">{notice && notice !== "saved" ? TEXTS.errors[notice] : TEXTS.loading}</p>;
+  if (!access) return <p className="muted">{failed ? TEXTS.errors["server-error"] : TEXTS.loading}</p>;
 
   const remove = (login: string) => {
     if (!confirm(ADMIN_TEXT.confirmDeleteStreamer(login))) return;
+    const details = { Aktion: "Profil löschen", Login: login };
     deleteStreamer(login).then(code => {
-      setNotice(code);
+      if (code) reportError(TEXTS.errors[code], { ...details, Code: code });
+      else toast(ADMIN_TEXT.streamerDeleted(login));
       load();
-    }).catch(() => setNotice("server-error"));
+    }).catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { ...details, Grund: String(failure) }));
   };
 
   const save = () => {
@@ -72,17 +76,16 @@ export default function Admin() {
     postJson("/api/admin/access", next)
       .then(result => {
         if (result.ok) {
-          setNotice("saved");
+          toast(ADMIN_TEXT.saved);
           return load();
         }
-        setNotice(typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error");
+        reportError(TEXTS.errors[typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error"], { Aktion: "POST /api/admin/access", Antwort: JSON.stringify(result.data) });
       })
-      .catch(() => setNotice("server-error"));
+      .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "POST /api/admin/access", Grund: String(failure) }));
   };
 
   // Access and features are one setting on the server: both tabs show the same save bar
-  const failed = notice !== null && notice !== "saved";
-  const saveBar = <SaveBar dirty={saved !== null && JSON.stringify(fromDraft(access)) !== JSON.stringify(saved)} notice={notice} onSave={save} />;
+  const saveBar = <SaveBar dirty={saved !== null && JSON.stringify(fromDraft(access)) !== JSON.stringify(saved)} onSave={save} />;
 
   return (
     <section className="panel admin">
@@ -92,7 +95,6 @@ export default function Admin() {
         {tab === "features" && <section className="settings-group section-card"><FeatureTable access={access} onChange={setAccess} />{saveBar}</section>}
         {tab === "streamers" && (
           <section className="settings-group section-card">
-            {failed && <p className="error" role="alert">{TEXTS.errors[notice]}</p>}
             <StreamerTable streamers={streamers} onDelete={remove} />
           </section>
         )}
@@ -120,15 +122,12 @@ function confirmLosses(saved: Access, next: Access) {
   return confirm([ADMIN_TEXT.confirmTitle, ...lines.map(line => `- ${line}`), "", ADMIN_TEXT.confirmEnd].join("\n"));
 }
 
-// Save with its state: unsaved changes, saved, or the error of the server
-function SaveBar({ dirty, notice, onSave }: { dirty: boolean; notice: "saved" | ErrorCode | null; onSave: () => void }) {
-  const failed = notice !== null && notice !== "saved";
+// Save with its state: unsaved changes or all saved
+function SaveBar({ dirty, onSave }: { dirty: boolean; onSave: () => void }) {
   return (
     <div className="actions">
       <button className="btn primary" disabled={!dirty} onClick={onSave}>{ADMIN_TEXT.save}</button>
-      <span role="status" className={failed ? "error" : "muted"}>
-        {failed ? TEXTS.errors[notice] : dirty ? ADMIN_TEXT.unsaved : notice === "saved" ? ADMIN_TEXT.saved : ADMIN_TEXT.clean}
-      </span>
+      <span role="status" className="muted">{dirty ? ADMIN_TEXT.unsaved : ADMIN_TEXT.clean}</span>
     </div>
   );
 }
@@ -202,8 +201,6 @@ function StreamerTable({ streamers, onDelete }: { streamers: StreamerRow[]; onDe
 // being written
 function Backups() {
   const [listing, setListing] = useState<BackupListing | null | undefined>(undefined);
-  const [error, setError] = useState<ErrorCode | null>(null);
-  const [done, setDone] = useState<string | null>(null);
   const load = useCallback(() => {
     getJson<BackupListing | null>("/api/admin/backups", null).then(setListing).catch(() => setListing(null));
   }, []);
@@ -217,40 +214,40 @@ function Backups() {
   if (listing === undefined) return <p className="muted">{TEXTS.loading}</p>;
   if (listing === null) return <p className="muted">{ADMIN_TEXT.backupUnavailable}</p>;
 
-  const act = (action: Promise<ErrorCode | null>) => {
-    setDone(null);
+  // An action on the backups: the done text as a toast, an error as the error dialog
+  const act = (action: Promise<ErrorCode | null>, done: string, what: string) => {
     action.then(code => {
-      setError(code);
+      if (code) reportError(TEXTS.errors[code], { Aktion: what, Code: code });
+      else toast(done);
       load();
-    }).catch(() => setError("server-error"));
+    }).catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: what, Grund: String(failure) }));
   };
   const upload = (file: File | undefined) => {
-    if (file) act(uploadBackup(file));
+    if (file) act(uploadBackup(file), ADMIN_TEXT.backupUploaded, `Backup hochladen (${file.name}, ${file.size} Bytes)`);
   };
   const restore = (backup: BackupRow) => {
     if (!confirm(ADMIN_TEXT.backupConfirmRestore(time(backup.createdAt)))) return;
-    setDone(null);
+    const what = `Backup wiederherstellen (${backup.id})`;
     restoreBackup(backup.id).then(result => {
-      if (typeof result === "string") return setError(result);
-      setError(null);
-      setDone(ADMIN_TEXT.backupRestored(result.restored, result.skipped.length));
+      if (typeof result === "string") return reportError(TEXTS.errors[result], { Aktion: what, Code: result });
+      toast(ADMIN_TEXT.backupRestored(result.restored, result.skipped.length));
       load();
-    }).catch(() => setError("server-error"));
+    }).catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: what, Grund: String(failure) }));
   };
   const remove = (backup: BackupRow) => {
-    if (confirm(ADMIN_TEXT.backupConfirmDelete(time(backup.createdAt)))) act(deleteBackup(backup.id));
+    if (confirm(ADMIN_TEXT.backupConfirmDelete(time(backup.createdAt)))) act(deleteBackup(backup.id), ADMIN_TEXT.backupDeleted, `Backup löschen (${backup.id})`);
   };
 
   return (
     <>
       <p className="muted">{ADMIN_TEXT.backupHint}</p>
       <div className="actions">
-        <button className="btn primary" disabled={listing.running} onClick={() => act(createBackup())}>{ADMIN_TEXT.backupCreate}</button>
+        <button className="btn primary" disabled={listing.running} onClick={() => act(createBackup(), ADMIN_TEXT.backupStarted, "Backup erstellen")}>{ADMIN_TEXT.backupCreate}</button>
         <label className="btn">
           {ADMIN_TEXT.backupUpload}
           <input type="file" accept=".zip,application/zip" hidden onChange={event => upload(event.target.files?.[0])} />
         </label>
-        <span role="status" className={error ? "error" : "muted"}>{error ? TEXTS.errors[error] : listing.running ? ADMIN_TEXT.backupRunning : done ?? ""}</span>
+        {listing.running && <span role="status" className="muted">{ADMIN_TEXT.backupRunning}</span>}
       </div>
       <BackupTable backups={listing.backups} running={listing.running} onRestore={restore} onDelete={remove} />
     </>
@@ -287,7 +284,6 @@ function BackupTable({ backups, running, onRestore, onDelete }: BackupTableProps
 // Schedule of the automatic backups; the server checks the limits
 function BackupScheduleForm() {
   const [schedule, setSchedule] = useState<BackupSchedule | null | undefined>(undefined);
-  const [notice, setNotice] = useState<"saved" | ErrorCode | null>(null);
   useEffect(() => {
     getJson<BackupSchedule | null>("/api/admin/backup-settings", null).then(setSchedule).catch(() => setSchedule(null));
   }, []);
@@ -297,8 +293,11 @@ function BackupScheduleForm() {
   const number = (value: string) => Math.trunc(Number(value));
   const save = () => {
     postJson("/api/admin/backup-settings", schedule)
-      .then(result => setNotice(result.ok ? "saved" : typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error"))
-      .catch(() => setNotice("server-error"));
+      .then(result => {
+        if (result.ok) return toast(ADMIN_TEXT.scheduleSaved);
+        reportError(TEXTS.errors[typeof result.data === "string" && isErrorCode(result.data) ? result.data : "server-error"], { Aktion: "POST /api/admin/backup-settings", Antwort: JSON.stringify(result.data) });
+      })
+      .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "POST /api/admin/backup-settings", Grund: String(failure) }));
   };
   return (
     <>
@@ -316,7 +315,6 @@ function BackupScheduleForm() {
       </label>
       <div className="actions">
         <button className="btn primary" onClick={save}>{ADMIN_TEXT.scheduleSave}</button>
-        <span role="status" className={notice === "saved" ? "" : "error"}>{notice === "saved" ? ADMIN_TEXT.scheduleSaved : notice ? TEXTS.errors[notice] : ""}</span>
       </div>
     </>
   );

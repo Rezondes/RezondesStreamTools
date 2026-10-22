@@ -80,7 +80,7 @@ function Connections({ me, act }: { me: Me; act: Act }) {
       </p>
       <p className="actions">
         <a className="btn" href="/auth/login">{texts.twitchReconnect}</a>
-        <button className="btn" onClick={() => { if (confirm(texts.confirmTwitch)) act("/api/twitch/disconnect"); }}>{texts.twitchDisconnect}</button>
+        <button className="btn" onClick={() => { if (confirm(texts.confirmTwitch)) act("/api/twitch/disconnect", texts.twitchDisconnected); }}>{texts.twitchDisconnect}</button>
       </p>
 
       <h3>{texts.spotify}</h3>
@@ -90,7 +90,7 @@ function Connections({ me, act }: { me: Me; act: Act }) {
           <SpotifyStatus />
           <p className="actions">
             <a className="btn" href="/spotify/login">{texts.spotifyReconnect}</a>
-            <button className="btn" onClick={() => { if (confirm(texts.confirmSpotify)) act("/spotify/logout"); }}>{texts.spotifyDisconnect}</button>
+            <button className="btn" onClick={() => { if (confirm(texts.confirmSpotify)) act("/spotify/logout", texts.spotifyLoggedOut); }}>{texts.spotifyDisconnect}</button>
           </p>
         </>
       )}
