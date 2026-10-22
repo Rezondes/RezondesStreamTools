@@ -60,6 +60,9 @@ const publicPage = scene !== undefined && PUBLIC_PAGES.includes(scene);
 if (!scene) applySkin(rememberedSkin());
 document.body.classList.toggle("overlay", Boolean(scene) && !publicPage);
 document.body.classList.toggle("public-page", publicPage);
-// Preview in its own tab: checkerboard instead of a white area behind the transparent overlay
-document.body.classList.toggle("preview-tab", Boolean(scene) && new URLSearchParams(location.search).has("preview") && parent === window);
+// Preview (in the dashboard frame and in its own tab): checkerboard instead of a white area behind the transparent
+// overlay; only its own tab may scroll
+const preview = Boolean(scene) && new URLSearchParams(location.search).has("preview");
+document.body.classList.toggle("preview", preview);
+document.body.classList.toggle("preview-tab", preview && parent === window);
 createRoot(document.getElementById("root")!).render(scene ? <ThemedScene scene={scene} /> : <Dashboard />);

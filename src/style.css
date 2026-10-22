@@ -14,7 +14,8 @@ body {
 body.overlay { background: transparent; overflow: hidden; }
 /* Public pages (commands page): the theme paints the background itself */
 body.public-page { background: transparent; }
-body.overlay.preview-tab { background: var(--checker, repeating-conic-gradient(#1a1a1a 0 25%, #101010 0 50%) 0 0 / 24px 24px); overflow: auto; }
+body.overlay.preview { background: var(--checker, repeating-conic-gradient(#1a1a1a 0 25%, #101010 0 50%) 0 0 / 24px 24px); }
+body.overlay.preview-tab { overflow: auto; }
 
 [data-skin] .muted { color: var(--fg-dim); }
 [data-skin] .glow { color: var(--emph); text-shadow: var(--glow); }

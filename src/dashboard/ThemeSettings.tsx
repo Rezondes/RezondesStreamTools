@@ -51,8 +51,8 @@ export default function ThemeSettings({ me }: { me: Me }) {
   const [mode, setMode] = useState<FormMode>(() => readMode());
   // The field to show after a jump (hidden change or server error): its kind opens, it scrolls into view
   const [focus, setFocus] = useState<string | null>(null);
-  // Preview: the last chosen scene, also while general is shown
-  const [scene, setScene] = useState<SceneName>("alerts");
+  // Preview: the scene of the chosen area; general (also on opening) shows the starting screen
+  const [scene, setScene] = useState<SceneName>("starting");
   useEffect(() => {
     if (focus) document.getElementById(`setting-${focus}`)?.scrollIntoView({ block: "center" });
   }, [focus]);
@@ -64,7 +64,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
   const chooseView = (next: FormView) => {
     setView(next);
     setFocus(null);
-    if (next !== "general") setScene(next);
+    setScene(next === "general" ? "starting" : next);
   };
   const chooseMode = (next: FormMode) => { setMode(next); storeMode(next); };
   // Show a field wherever it is: its area, the advanced mode if it is not basic, no search

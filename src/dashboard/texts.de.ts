@@ -83,6 +83,8 @@ export const TEXTS = {
     preview: "Vorschau",
     openTab: "Vorschau in neuem Tab",
     openTabHint: "Zeigt ungespeicherte Änderungen sofort, solange dieser Tab offen ist.",
+    maximize: "Vorschau maximieren",
+    closePreview: "Vorschau schliessen",
     // Modes, areas and kinds of the settings
     mode: "Ansicht", simple: "Einfach", advanced: "Erweitert", showAdvanced: "Erweitert zeigen",
     areas: "Bereiche", general: "Allgemein", missing: "nicht im Theme", areaChanged: "ungespeicherte Änderungen",
