@@ -7,7 +7,7 @@ import type { Feature } from "../generated/Feature.ts";
 import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
-import { createBackup, deleteBackup, deleteStreamer, getJson, postJson, restoreBackup, uploadBackup } from "./api.ts";
+import { createBackup, deleteBackup, deleteStreamer, getJson, postJson, restoreBackup, toggleStreamerLive, uploadBackup } from "./api.ts";
 import { reportError, toast } from "./notices.ts";
 import { Segmented } from "./PanelFields.tsx";
 import { SubTabs, subTabPanel } from "./SubTabs.tsx";
@@ -20,7 +20,7 @@ const FEATURES = Object.keys(ADMIN_TEXT.featureNames) as Feature[];
 const LEVELS = Object.keys(ADMIN_TEXT.levels) as Level[];
 
 // Answer of GET /api/admin/streamers
-type StreamerRow = { login: string; allowed: boolean; admin: boolean; connected: boolean; live: boolean; lastLogin: number | null };
+type StreamerRow = { login: string; allowed: boolean; admin: boolean; connected: boolean; live: boolean; streamLive: boolean; lastLogin: number | null };
 
 // GET and POST /api/admin/backup-settings
 type BackupSchedule = { enabled: boolean; intervalHours: number; keep: number };
@@ -60,16 +60,6 @@ export default function Admin() {
 
   if (!access) return <p className="muted">{failed ? TEXTS.errors["server-error"] : TEXTS.loading}</p>;
 
-  const remove = (login: string) => {
-    if (!confirm(ADMIN_TEXT.confirmDeleteStreamer(login))) return;
-    const details = { Aktion: "Profil löschen", Login: login };
-    deleteStreamer(login).then(code => {
-      if (code) reportError(TEXTS.errors[code], { ...details, Code: code });
-      else toast(ADMIN_TEXT.streamerDeleted(login));
-      load();
-    }).catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { ...details, Grund: String(failure) }));
-  };
-
   const save = () => {
     const next = fromDraft(access);
     if (saved && !confirmLosses(saved, next)) return;
@@ -95,7 +85,7 @@ export default function Admin() {
         {tab === "features" && <section className="settings-group section-card"><FeatureTable access={access} onChange={setAccess} />{saveBar}</section>}
         {tab === "streamers" && (
           <section className="settings-group section-card">
-            <StreamerTable streamers={streamers} onDelete={remove} />
+            <StreamerTable streamers={streamers} onChanged={load} />
           </section>
         )}
         {tab === "backups" && (
@@ -174,22 +164,49 @@ function FeatureTable({ access, onChange }: { access: AccessDraft; onChange: (ac
   );
 }
 
-function StreamerTable({ streamers, onDelete }: { streamers: StreamerRow[]; onDelete: (login: string) => void }) {
+// An action on one profile: the done text as a toast, an error as the error dialog; the list loads again either way
+function actOnStreamer(action: Promise<ErrorCode | null>, done: string, details: Record<string, string>, onChanged: () => void) {
+  action.then(code => {
+    if (code) reportError(TEXTS.errors[code], { ...details, Code: code });
+    else toast(done);
+    onChanged();
+  }).catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { ...details, Grund: String(failure) }));
+}
+
+// One row per profile; the name opens the Twitch channel, the actions sit together on the right
+function StreamerTable({ streamers, onChanged }: { streamers: StreamerRow[]; onChanged: () => void }) {
   const yesNo = (value: boolean) => (value ? ADMIN_TEXT.yes : ADMIN_TEXT.no);
+  const onToggleLive = (row: StreamerRow) => {
+    const done = row.streamLive ? ADMIN_TEXT.markedOffline(row.login) : ADMIN_TEXT.markedLive(row.login);
+    actOnStreamer(toggleStreamerLive(row.login), done, { Aktion: "Livestatus umschalten", Login: row.login }, onChanged);
+  };
+  const onDelete = (login: string) => {
+    if (confirm(ADMIN_TEXT.confirmDeleteStreamer(login))) actOnStreamer(deleteStreamer(login), ADMIN_TEXT.streamerDeleted(login), { Aktion: "Profil löschen", Login: login }, onChanged);
+  };
   return (
     <table>
       <thead>
-        <tr><th>{ADMIN_TEXT.login}</th><th>{ADMIN_TEXT.allowed}</th><th>{ADMIN_TEXT.connected}</th><th>{ADMIN_TEXT.live}</th><th>{ADMIN_TEXT.lastLogin}</th><th /></tr>
+        <tr>
+          <th>{ADMIN_TEXT.login}</th><th>{ADMIN_TEXT.allowed}</th><th>{ADMIN_TEXT.connected}</th><th>{ADMIN_TEXT.live}</th>
+          <th>{ADMIN_TEXT.streamLive}</th><th>{ADMIN_TEXT.lastLogin}</th><th>{ADMIN_TEXT.actions}</th>
+        </tr>
       </thead>
       <tbody>
         {streamers.map(row => (
           <tr key={row.login}>
-            <td>{row.login}{row.admin && <span className="muted"> {ADMIN_TEXT.adminMark}</span>}</td>
+            <td>
+              <a href={`https://www.twitch.tv/${encodeURIComponent(row.login)}`} target="_blank" rel="noopener noreferrer" aria-label={ADMIN_TEXT.openTwitch(row.login)}>{row.login}</a>
+              {row.admin && <span className="muted"> {ADMIN_TEXT.adminMark}</span>}
+            </td>
             <td className={row.allowed ? "" : "muted"}>{yesNo(row.allowed)}</td>
             <td className={row.connected ? "" : "muted"}>{yesNo(row.connected)}</td>
             <td className={row.live ? "glow" : "muted"}>{yesNo(row.live)}</td>
+            <td className={row.streamLive ? "glow" : "muted"}>{yesNo(row.streamLive)}</td>
             <td>{row.lastLogin ? new Date(row.lastLogin).toLocaleString("de-DE") : ADMIN_TEXT.never}</td>
-            <td>{!row.admin && <button className="btn" onClick={() => onDelete(row.login)}>{ADMIN_TEXT.deleteStreamer}</button>}</td>
+            <td>
+              <button className="btn" onClick={() => onToggleLive(row)}>{row.streamLive ? ADMIN_TEXT.markOffline : ADMIN_TEXT.markLive}</button>
+              {!row.admin && <>{" "}<button className="btn danger" onClick={() => onDelete(row.login)}>{ADMIN_TEXT.deleteStreamer}</button></>}
+            </td>
           </tr>
         ))}
       </tbody>

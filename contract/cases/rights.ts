@@ -57,9 +57,27 @@ export const RIGHTS_CASES: Case[] = [
   {
     name: "rights: admin lists the streamers",
     async run(context) {
-      const row = { login: "string", allowed: "boolean", admin: "boolean", connected: "boolean", live: "boolean", lastLogin: "number|null" };
+      const row = { login: "string", allowed: "boolean", admin: "boolean", connected: "boolean", live: "boolean", streamLive: "boolean", lastLogin: "number|null" };
       const rows = (await expect(await request(context, "/api/admin/streamers", { session: ADMIN.login }), 200, [row])) as unknown[];
       if (rows.length < 2) fail(`expected at least 2 profiles, got ${rows.length}`);
+    },
+  },
+  {
+    name: "rights: admin marks the stream of a streamer live and ended again",
+    async run(context) {
+      const toggle = (login: string, session = ADMIN.login) => request(context, `/api/admin/streamer/live?login=${login}`, { method: "POST", session });
+      await expectCode(await toggle(STREAMER.login, STREAMER.login), 403, "admin-only");
+      await expectCode(await toggle("bad!login"), 400, "invalid-login");
+      await expectCode(await toggle("nobodyhere"), 404, "not-found");
+      const streamLive = async () => {
+        const rows = (await expect(await request(context, "/api/admin/streamers", { session: ADMIN.login }), 200)) as string;
+        return (JSON.parse(rows) as { login: string; streamLive: boolean }[]).find(row => row.login === STREAMER.login)?.streamLive;
+      };
+      const before = await streamLive();
+      const first = (await expect(await toggle(STREAMER.login), 200, { live: "boolean" })) as { live: boolean };
+      if (first.live === before || (await streamLive()) !== first.live) fail(`toggle did not flip the stream: ${before} -> ${first.live}`);
+      const second = (await expect(await toggle(STREAMER.login), 200, { live: "boolean" })) as { live: boolean };
+      if (second.live !== before) fail(`second toggle did not flip back: ${second.live}`);
     },
   },
 ];

@@ -97,6 +97,8 @@ routes! {
     AdminAudit => "GET" "/api/admin/audit", Guard::Admin;
     // New: deletes a streamer for good, ?login=
     DeleteStreamer => "DELETE" "/api/admin/streamer", Guard::Admin;
+    // New: marks the stream of a streamer live or ended for RST, ?login=
+    StreamerLive => "POST" "/api/admin/streamer/live", Guard::Admin;
     // New: server-wide backups, one of them by ?id=
     AdminBackups => "GET" "/api/admin/backups", Guard::Admin;
     CreateBackup => "POST" "/api/admin/backups", Guard::Admin;

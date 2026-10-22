@@ -4,14 +4,16 @@
 use std::collections::HashMap;
 
 use axum::extract::Query;
+use axum::http::Uri;
 use axum::response::Response;
 use rst_domain::access::RawAccess;
-use rst_domain::identity::values::Login;
+use rst_domain::identity::values::{Login, StreamerId};
 use serde_json::Value;
 
+use crate::app::App;
 use crate::clock::now_ms;
 use crate::errors::{json, server_error, text};
-use crate::handlers::{Call, read_body};
+use crate::handlers::{Call, events, read_body};
 
 /// Larger bodies of the access form are refused
 const ACCESS_LIMIT: usize = 64 * 1024;
@@ -49,7 +51,9 @@ pub async fn save_access(call: Call<'_>) -> Response {
 }
 
 pub async fn streamers(call: Call<'_>) -> Response {
-    match call.app.access_admin().streamers(|id| call.app.events_live(id)).await {
+    let app = call.app;
+    let running_stream_live = |id: &StreamerId| app.runtimes.get(id).map(|runtime| runtime.stats.live());
+    match app.access_admin().streamers(|id| app.events_live(id), running_stream_live).await {
         Ok(rows) => json(&rows, 200),
         Err(error) => server_error(&error.to_string()),
     }
@@ -77,22 +81,37 @@ pub async fn audit(call: Call<'_>) -> Response {
     }
 }
 
+/// The streamer of `?login=<login>`, or the error answer (boxed, an answer is large)
+async fn streamer_of(app: &App, uri: &Uri) -> Result<(Login, StreamerId), Box<Response>> {
+    let query = Query::<HashMap<String, String>>::try_from_uri(uri).map(|query| query.0).unwrap_or_default();
+    let Some(login) = query.get("login").and_then(|login| Login::parse(login).ok()) else {
+        return Err(Box::new(text(400, "invalid-login")));
+    };
+    match app.stores.streamers.find_by_login(&login).await {
+        Ok(Some(id)) => Ok((login, id)),
+        Ok(None) => Err(Box::new(text(404, "not-found"))),
+        Err(error) => Err(Box::new(server_error(&error.to_string()))),
+    }
+}
+
+/// `?login=<login>`: marks the stream of that streamer live or ended for RST, like the streamer does in the dashboard
+pub async fn toggle_streamer_live(call: Call<'_>) -> Response {
+    match streamer_of(call.app, call.request.uri()).await {
+        Ok((_, id)) => events::toggle_live_of(call.app, &id).await,
+        Err(answer) => *answer,
+    }
+}
+
 /// `?login=<login>`: deletes the streamer for good; admins from `ADMINS` cannot be deleted
 pub async fn delete_streamer(call: Call<'_>) -> Response {
     let app = call.app;
-    let query =
-        Query::<HashMap<String, String>>::try_from_uri(call.request.uri()).map(|query| query.0).unwrap_or_default();
-    let Some(login) = query.get("login").and_then(|login| Login::parse(login).ok()) else {
-        return text(400, "invalid-login");
+    let (login, id) = match streamer_of(app, call.request.uri()).await {
+        Ok(found) => found,
+        Err(answer) => return *answer,
     };
     if app.config.admins.contains(&login) {
         return text(400, "admin-protected");
     }
-    let id = match app.stores.streamers.find_by_login(&login).await {
-        Ok(Some(id)) => id,
-        Ok(None) => return text(404, "not-found"),
-        Err(error) => return server_error(&error.to_string()),
-    };
     // Stop first and wait for a running token check, it may still save renewed tokens
     let runtime = app.runtimes.get(&id);
     app.stop_runtime(&id);

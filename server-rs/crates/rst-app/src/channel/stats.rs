@@ -70,6 +70,12 @@ where
         self.count().tally.snapshot()
     }
 
+    /// The stream is live as far as RST knows
+    #[must_use]
+    pub fn live(&self) -> bool {
+        self.count().tally.live()
+    }
+
     pub fn record_alert(self: &Arc<Self>, alert: &Alert) {
         self.change(|tally| tally.record_alert(alert));
     }

@@ -31,6 +31,9 @@ pub struct StreamerRow {
     /// Has Twitch tokens
     pub connected: bool,
     pub live: bool,
+    /// The stream is live as far as RST knows (started and not ended), what the streamer sees in the dashboard
+    #[serde(rename = "streamLive")]
+    pub stream_live: bool,
     #[serde(rename = "lastLogin")]
     pub last_login: Option<i64>,
 }
@@ -100,20 +103,31 @@ where
         Ok((after, revoked))
     }
 
-    /// Every streamer with access, connection, whether its alerts arrive right now (`live`) and last login
+    /// Every streamer with access, connection, whether its alerts arrive right now (`live`), whether its stream is live
+    /// for RST and last login. `running_stream_live` answers for a running runtime (its count is newer than the stored
+    /// one); `None` reads the stored count.
     ///
     /// # Errors
     /// When a store fails.
-    pub async fn streamers(&self, live: impl Fn(&StreamerId) -> bool) -> Result<Vec<StreamerRow>, VaultError> {
+    pub async fn streamers(
+        &self,
+        live: impl Fn(&StreamerId) -> bool,
+        running_stream_live: impl Fn(&StreamerId) -> Option<bool>,
+    ) -> Result<Vec<StreamerRow>, VaultError> {
         let policy = self.access.load(self.admins).await?;
         let mut rows = Vec::new();
         for streamer in self.streamers.list().await? {
             let Some(id) = &streamer.id else { continue };
+            let stream_live = match running_stream_live(id) {
+                Some(stream_live) => stream_live,
+                None => self.profile.stats(id).await?.live(),
+            };
             rows.push(StreamerRow {
                 allowed: policy.can_use(self.admins, &streamer.login),
                 admin: is_admin(self.admins, &streamer.login),
                 connected: self.profile.twitch_tokens(id).await?.is_some(),
                 live: live(id),
+                stream_live,
                 last_login: Some(streamer.last_login),
                 login: streamer.login.to_string(),
             });
@@ -267,17 +281,23 @@ mod tests {
             .register(&TwitchUserId::parse("1").expect("id"), &login("rezondes"), StreamerId::from_bytes([2; 16]), 6)
             .await
             .expect("admin");
-        // Only the runtime of neo has its alerts up
-        let rows = world.admin().streamers(|id| *id == neo).await.expect("rows");
+        // The admin's stream is live in the stored count
+        let admin_id = StreamerId::from_bytes([2; 16]);
+        let mut tally = world.profile.stats(&admin_id).await.expect("stats");
+        tally.online(7);
+        world.profile.save_stats(&admin_id, &tally, 7).await.expect("save stats");
+        // Only the runtime of neo has its alerts up, and its running count says live
+        let rows = world.admin().streamers(|id| *id == neo, |id| (*id == neo).then_some(true)).await.expect("rows");
         let neo_row = StreamerRow {
             login: "neo".to_owned(),
             allowed: false,
             admin: false,
             connected: false,
             live: true,
+            stream_live: true,
             last_login: Some(5),
         };
         assert_eq!(rows[0], neo_row);
-        assert!(rows[1].admin && rows[1].allowed && !rows[1].live);
+        assert!(rows[1].admin && rows[1].allowed && !rows[1].live && rows[1].stream_live);
     }
 }

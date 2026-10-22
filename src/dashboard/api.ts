@@ -32,6 +32,7 @@ export const deleteMedia = (name: string) => request(`/api/media?name=${encodeUR
 export const createBackup = () => request("/api/admin/backups", { method: "POST" });
 export const deleteBackup = (id: string) => request(`/api/admin/backup?id=${encodeURIComponent(id)}`, { method: "DELETE" });
 export const deleteStreamer = (login: string) => request(`/api/admin/streamer?login=${encodeURIComponent(login)}`, { method: "DELETE" });
+export const toggleStreamerLive = (login: string) => request(`/api/admin/streamer/live?login=${encodeURIComponent(login)}`, { method: "POST" });
 export const uploadBackup = (file: File) => request("/api/admin/backups/upload", { method: "POST", body: file });
 
 // Restore: the answer names how many profiles came back and which were left out (deleted, no key)

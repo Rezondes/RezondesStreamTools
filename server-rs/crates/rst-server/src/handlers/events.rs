@@ -100,8 +100,12 @@ pub async fn stats(call: Call<'_>) -> Response {
 /// server missed `stream.online` or `stream.offline`; the answer says whether it is live now. A running runtime sends the
 /// stats; without one the stored count changes directly.
 pub async fn toggle_live(call: Call<'_>) -> Response {
-    let app = call.app;
     let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
+    toggle_live_of(call.app, id).await
+}
+
+/// Live or ended by hand for one streamer; the dashboard of the streamer and the admin table both land here
+pub async fn toggle_live_of(app: &App, id: &StreamerId) -> Response {
     if let Some(runtime) = app.runtimes.get(id) {
         return json(&json!({ "live": runtime.stats.toggle_live() }), 200);
     }

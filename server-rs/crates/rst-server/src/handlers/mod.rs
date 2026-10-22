@@ -74,6 +74,7 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::AdminStreamers => admin::streamers(call).await,
         Route::AdminAudit => admin::audit(call).await,
         Route::DeleteStreamer => admin::delete_streamer(call).await,
+        Route::StreamerLive => admin::toggle_streamer_live(call).await,
         Route::AdminBackups => backups::list(call).await,
         Route::CreateBackup => backups::create(&call),
         Route::DownloadBackup => backups::download(call).await,
