@@ -16,7 +16,7 @@ use rst_domain::themes::schema::ThemeSchema;
 use rst_domain::triggers::Trigger;
 use ts_rs::{Config, ExportError, TS};
 
-use crate::events::ServerMessage;
+use crate::events::{DashboardChange, ServerMessage};
 use crate::media::MediaOverview;
 
 /// Export settings: imports with a `.ts` extension (like the frontend), large integers as `number` (JSON).
@@ -31,6 +31,7 @@ fn export_config(dir: &Path) -> Config {
 pub fn export_all(dir: &Path) -> Result<(), ExportError> {
     let cfg = export_config(dir);
     ServerMessage::export_all(&cfg)?;
+    DashboardChange::export_all(&cfg)?;
     ThemeSchema::export_all(&cfg)?;
     SettingError::export_all(&cfg)?;
     SettingValue::export_all(&cfg)?;

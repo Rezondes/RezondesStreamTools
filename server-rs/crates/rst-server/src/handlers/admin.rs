@@ -6,6 +6,7 @@ use std::collections::HashMap;
 use axum::extract::Query;
 use axum::http::Uri;
 use axum::response::Response;
+use rst_app::events::DashboardChange;
 use rst_domain::access::RawAccess;
 use rst_domain::identity::values::{Login, StreamerId};
 use serde_json::Value;
@@ -42,8 +43,9 @@ pub async fn save_access(call: Call<'_>) -> Response {
             for login in &revoked {
                 println!("Access revoked, sessions ended and runtime stopped: {login}");
             }
-            // Changed feature levels apply to every runtime
+            // Changed feature levels apply to every runtime and every open dashboard
             app.restart_all().await;
+            app.hubs.changed_everywhere(DashboardChange::Account);
             json(&policy, 200)
         }
         Err(error) => server_error(&error.to_string()),

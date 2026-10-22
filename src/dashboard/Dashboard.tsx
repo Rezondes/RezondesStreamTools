@@ -22,6 +22,7 @@ import Scenery from "./Scenery.tsx";
 import { applySkin, rememberedSkin, skinOf } from "./skin.ts";
 import { TEXTS } from "./texts.de.ts";
 import ThemeSettings from "./ThemeSettings.tsx";
+import { onChange } from "./dashboardEvents.ts";
 import NoticeLayer from "./NoticeLayer.tsx";
 import { reportError, toast } from "./notices.ts";
 import Triggers from "./Triggers.tsx";
@@ -30,8 +31,6 @@ import "./skins.css";
 
 // Action to the server; afterwards reload the account; the done text comes as a toast, an error as the error dialog
 export type Act = (url: string, done?: string) => void;
-
-const REFRESH_MS = 5000;
 
 export default function Dashboard() {
   const [account, setAccount] = useState<Account>(undefined);
@@ -54,15 +53,18 @@ export default function Dashboard() {
     return () => removeEventListener("hashchange", update);
   }, []);
 
+  // The account loads after every action and whenever the server says it changed (dashboardEvents.ts); the stream
+  // only runs while someone is logged in
+  const loggedIn = typeof account === "object";
   useEffect(() => {
     let active = true;
     const refresh = () => {
       loadAccount().then(next => { if (active) setAccount(next); }).catch((failure: unknown) => console.warn("Status request failed:", failure));
     };
     refresh();
-    const timer = setInterval(refresh, REFRESH_MS);
-    return () => { active = false; clearInterval(timer); };
-  }, [version]);
+    const stop = loggedIn ? onChange("account", refresh) : () => {};
+    return () => { active = false; stop(); };
+  }, [version, loggedIn]);
 
   const act: Act = (url, done) => {
     post(url)

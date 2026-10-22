@@ -2,7 +2,7 @@
 //! plus the schemas of all themes for the forms.
 
 use axum::response::Response;
-use rst_app::events::ServerMessage;
+use rst_app::events::{DashboardChange, ServerMessage};
 use rst_app::settings::SaveError;
 use rst_domain::identity::values::Login;
 use rst_domain::settings::file::minime_rules_of;
@@ -42,6 +42,8 @@ pub async fn save(call: Call<'_>) -> Response {
         Ok(public) => {
             // Open overlays take over the values right away, without reloading
             app.hubs.emit(&id, &ServerMessage::Settings { settings: public.clone() });
+            // The dashboard shows the chosen theme
+            app.hubs.changed(&id, DashboardChange::Account);
             // Changed minime rules take effect at once
             if let Some(minimes) = app.runtimes.get(&id).and_then(|runtime| runtime.minimes.clone()) {
                 match app.stores.profile.settings(&id).await {

@@ -12,10 +12,12 @@ use axum::http::Uri;
 use axum::response::sse::{Event, KeepAlive, Sse};
 use axum::response::{IntoResponse, Response};
 use futures_util::stream::{self, StreamExt};
-use rst_app::events::ServerMessage;
+use rst_app::events::{DashboardChange, ServerMessage};
 use rst_domain::identity::values::StreamerId;
 use rst_domain::twitch::alerts::{AlertKind, sample_alert};
 use serde_json::json;
+use tokio::sync::broadcast::error::RecvError;
+use tokio::sync::watch;
 
 use crate::app::App;
 use crate::clock::now_ms;
@@ -65,6 +67,40 @@ pub async fn stream(app: &App, id: &StreamerId, uri: &Uri, cookies: Option<&str>
     });
     let events = stream::iter(first).chain(live).map(Ok::<Event, Infallible>);
     Sse::new(events).keep_alive(KeepAlive::new().interval(PING).text("ping")).into_response()
+}
+
+/// `/api/dashboard/events`: what changed for the dashboard of the own streamer, one [`DashboardChange`] per message;
+/// admins also hear about the backups. The dashboard loads that part again instead of asking every few seconds. A
+/// dashboard that falls behind loses its stream and loads everything again when it reconnects.
+pub fn dashboard(call: &Call<'_>) -> Response {
+    let app = call.app;
+    let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
+    let Some(changes) = app.hubs.watch_dashboard(id) else { return text(503, "unavailable") };
+    let backups = call.visitor.admin.then(|| app.backups.changes());
+    let first = stream::iter([Event::default().comment("connected")]);
+    let next = stream::unfold((changes, backups), |(mut changes, mut backups)| async move {
+        let change = tokio::select! {
+            change = changes.recv() => match change {
+                Ok(change) => change,
+                Err(RecvError::Lagged(_) | RecvError::Closed) => return None,
+            },
+            () = backups_changed(&mut backups) => DashboardChange::Backups,
+        };
+        let event = Event::default().data(serde_json::to_string(&change).unwrap_or_default());
+        Some((event, (changes, backups)))
+    });
+    let events = first.chain(next).map(Ok::<Event, Infallible>);
+    Sse::new(events).keep_alive(KeepAlive::new().interval(PING).text("ping")).into_response()
+}
+
+/// Waits for the next change of the backups; without them (no admin) or once they are gone, forever
+async fn backups_changed(backups: &mut Option<watch::Receiver<u64>>) {
+    if let Some(receiver) = backups
+        && receiver.changed().await.is_ok()
+    {
+        return;
+    }
+    std::future::pending::<()>().await;
 }
 
 /// Test buttons of the dashboard: one sample alert per kind

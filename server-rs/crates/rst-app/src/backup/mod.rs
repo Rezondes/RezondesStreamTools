@@ -1,6 +1,7 @@
 //! Server-wide backups for admins: an archive of the data database (ciphertext stays ciphertext) and the encrypted
 //! files, never the key store. Creating and restoring run one at a time; an uploaded archive is checked before it
 //! counts. Streamers whose data key is gone (deleted) are left out of a restore. Every action lands in the audit log.
+//! Every change of the list or of the running state counts up [`Backups::changes`], the admin dashboard listens to it.
 
 pub mod keys;
 pub mod schedule;
@@ -8,6 +9,8 @@ pub mod schedule;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
+
+use tokio::sync::watch;
 
 use serde_json::{Value, json};
 
@@ -86,12 +89,20 @@ fn entry(actor: &str, action: &str, after: Value) -> AuditEntry {
 }
 
 /// When the creating task ends (also by a panic) the next backup may start
-struct Running(Arc<AtomicBool>);
+struct Running {
+    busy: Arc<AtomicBool>,
+    changes: Arc<watch::Sender<u64>>,
+}
 
 impl Drop for Running {
     fn drop(&mut self) {
-        self.0.store(false, Ordering::SeqCst);
+        self.busy.store(false, Ordering::SeqCst);
+        count_up(&self.changes);
     }
+}
+
+fn count_up(changes: &watch::Sender<u64>) {
+    changes.send_modify(|count| *count = count.wrapping_add(1));
 }
 
 pub struct Backups<B, A, K> {
@@ -99,6 +110,7 @@ pub struct Backups<B, A, K> {
     audit: AuditLog<A, K>,
     keys: K,
     busy: Arc<AtomicBool>,
+    changes: Arc<watch::Sender<u64>>,
 }
 
 impl<B, A, K> Backups<B, A, K>
@@ -108,7 +120,8 @@ where
     K: KeyStore + Clone + 'static,
 {
     pub fn new(store: B, audit: AuditLog<A, K>, keys: K) -> Self {
-        Self { store: Arc::new(store), audit, keys, busy: Arc::new(AtomicBool::new(false)) }
+        let changes = Arc::new(watch::channel(0).0);
+        Self { store: Arc::new(store), audit, keys, busy: Arc::new(AtomicBool::new(false)), changes }
     }
 
     /// Takes the one slot for creating or restoring
@@ -116,7 +129,14 @@ where
         if self.busy.swap(true, Ordering::SeqCst) {
             return Err(BackupError::Busy);
         }
-        Ok(Running(Arc::clone(&self.busy)))
+        count_up(&self.changes);
+        Ok(Running { busy: Arc::clone(&self.busy), changes: Arc::clone(&self.changes) })
+    }
+
+    /// Counts up on every change of the list or of the running state; a receiver sees that something changed
+    #[must_use]
+    pub fn changes(&self) -> watch::Receiver<u64> {
+        self.changes.subscribe()
     }
 
     /// Starts a backup in the background and returns its id; `random` makes the id unique
@@ -179,6 +199,7 @@ where
     /// `Invalid` for an archive that is not a backup of this server (it is deleted), otherwise when storing fails.
     pub async fn accept_upload(&self, actor: &str, id: &str, now: i64) -> Result<BackupInfo, BackupError> {
         let info = self.store.accept(id).await?;
+        count_up(&self.changes);
         self.audit.append(None, &entry(actor, "backup.upload", json!({ "id": id, "bytes": info.bytes })), now).await?;
         Ok(info)
     }
@@ -244,6 +265,7 @@ where
         if !is_backup_id(id) || !self.store.delete(id).await? {
             return Ok(false);
         }
+        count_up(&self.changes);
         self.audit.append(None, &entry(actor, "backup.delete", json!({ "id": id })), now).await?;
         Ok(true)
     }
@@ -346,19 +368,24 @@ mod tests {
     #[tokio::test]
     async fn one_backup_at_a_time_in_the_background_and_every_step_is_audited() {
         let (backups, audit, _keys) = backups();
+        let changes = backups.changes();
         let id = backups.start("rezondes", false, 5, [1, 2, 3, 4]).expect("start");
         assert_eq!(id, "manual-5-01020304");
         assert!(backups.running());
+        assert_eq!(*changes.borrow(), 1, "the start counts");
         assert_eq!(backups.start("rezondes", false, 6, [5; 4]), Err(BackupError::Busy));
+        assert_eq!(*changes.borrow(), 1, "a refused start does not");
         backups.store.release.notify_one();
         while backups.running() {
             tokio::time::sleep(Duration::from_millis(1)).await;
         }
+        assert_eq!(*changes.borrow(), 2, "the end counts");
         assert_eq!(backups.list().await.expect("list").len(), 1);
         assert_eq!(backups.download("rezondes", &id, 7).await.expect("download"), Some(PathBuf::from(&id)));
         assert_eq!(backups.download("rezondes", "../etc", 7).await.expect("download"), None);
         assert!(backups.delete("rezondes", &id, 8).await.expect("delete"));
         assert!(!backups.delete("rezondes", &id, 8).await.expect("delete again"));
+        assert_eq!(*changes.borrow(), 3, "only the real delete counts");
         let actions: Vec<String> =
             audit.list(None, 10).await.expect("audit").into_iter().map(|entry| entry.action).collect();
         assert!(actions.contains(&"backup.create".to_owned()), "{actions:?}");

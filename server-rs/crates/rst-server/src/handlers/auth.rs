@@ -8,6 +8,7 @@ use axum::http::header;
 use axum::response::Response;
 use rst_app::crypto::cipher::random_bytes;
 use rst_app::crypto::to_hex;
+use rst_app::events::DashboardChange;
 use rst_app::identity::login::LoginOutcome;
 use rst_domain::access::Feature;
 use rst_domain::account::DashboardPrefs;
@@ -142,7 +143,11 @@ pub async fn save_prefs(call: Call<'_>) -> Response {
     let Some(body) = read_body(call.request, PREFS_LIMIT).await else { return text(413, "too-large") };
     let Ok(prefs) = serde_json::from_slice::<DashboardPrefs>(&body) else { return text(400, "invalid-json") };
     match app.stores.profile.save_prefs(&id, &prefs, now_ms()).await {
-        Ok(()) => json(&prefs, 200),
+        Ok(()) => {
+            // Other open dashboards of the streamer take over the look and the language
+            app.hubs.changed(&id, DashboardChange::Account);
+            json(&prefs, 200)
+        }
         Err(error) => server_error(&error.to_string()),
     }
 }
@@ -155,6 +160,7 @@ pub async fn rotate_overlay_key(call: Call<'_>) -> Response {
         Ok(overlay_key) => {
             // Streams opened with the old key end; the overlays reconnect with the new one
             call.app.hubs.close(id);
+            call.app.hubs.changed(id, DashboardChange::Account);
             json(&json!({ "overlayKey": overlay_key }), 200)
         }
         Err(error) => server_error(&error.to_string()),

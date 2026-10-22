@@ -2,13 +2,14 @@
 // features), the connections to Twitch (EventSub status) and Spotify with connect and disconnect, and the settings of
 // RST itself: how the dashboard looks (standard or the active theme) and its language (German, English follows). Reconnecting Twitch is a new login; Spotify only appears when
 // music is released and set up. When connected, Spotify shows account, current track and whether it is polling right
-// now (reloaded every 5 s). The live event log is a tab of the overview (EventFeed).
+// now (loaded again when the server says it changed). The live event log is a tab of the overview (EventFeed).
 import { useEffect, useState } from "react";
 import type { SpotifyDetails } from "../core/types.ts";
 import type { Feature } from "../generated/Feature.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
 import type { DashboardPrefs } from "../generated/DashboardPrefs.ts";
 import { getJson, postJson } from "./api.ts";
+import { onChange } from "./dashboardEvents.ts";
 import { reportError, toast } from "./notices.ts";
 import type { Act } from "./Dashboard.tsx";
 import { type Me, visibleSections } from "./navigation.ts";
@@ -135,17 +136,15 @@ function Connections({ me, act }: { me: Me; act: Act }) {
   );
 }
 
-const REFRESH_MS = 5000;
-
-// Account, current track and polling status; null = not loaded yet or server unreachable
+// Account, current track and polling status; null = not loaded yet or server unreachable. Loads again when the server
+// says it changed (dashboardEvents.ts)
 function SpotifyStatus() {
   const texts = TEXTS.connections;
   const [details, setDetails] = useState<SpotifyDetails | null>(null);
   useEffect(() => {
     const load = () => { getJson<SpotifyDetails | null>("/api/spotify", null).then(setDetails).catch(() => {}); };
     load();
-    const timer = setInterval(load, REFRESH_MS);
-    return () => clearInterval(timer);
+    return onChange("spotify", load);
   }, []);
   const track = details?.track;
   return (

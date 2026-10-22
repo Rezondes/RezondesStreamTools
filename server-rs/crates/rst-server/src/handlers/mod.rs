@@ -38,6 +38,7 @@ pub async fn handle(route: Route, call: Call<'_>) -> Response {
         Route::AuthCallback => auth::callback(call).await,
         Route::AuthLogout => auth::logout(call).await,
         Route::Me => auth::me(call).await,
+        Route::DashboardEvents => events::dashboard(&call),
         Route::SavePrefs => auth::save_prefs(call).await,
         Route::OverlayKey => auth::rotate_overlay_key(call).await,
         Route::TwitchDisconnect => auth::disconnect(call).await,

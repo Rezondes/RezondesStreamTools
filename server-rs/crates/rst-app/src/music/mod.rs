@@ -11,7 +11,7 @@ use rst_domain::identity::values::StreamerId;
 use rst_domain::spotify::{POLL_MS, SpotifyDetails, SpotifyTokens, Track, changed, progressed, to_track};
 use tokio_util::sync::CancellationToken;
 
-use crate::events::{Hubs, ServerMessage};
+use crate::events::{DashboardChange, Hubs, ServerMessage};
 use crate::ports::keys::KeyStore;
 use crate::ports::records::RecordStore;
 use crate::ports::spotify::{Playing, SpotifyApi, TokenAnswer};
@@ -128,6 +128,8 @@ where
         if self.player().generation == generation {
             self.player().account = None;
             self.save(&answer, generation).await?;
+            self.hubs.changed(&self.id, DashboardChange::Account);
+            self.hubs.changed(&self.id, DashboardChange::Spotify);
         }
         Ok(true)
     }
@@ -145,6 +147,8 @@ where
             player.account = None;
         }
         self.hubs.emit(&self.id, &ServerMessage::Music { track: None });
+        self.hubs.changed(&self.id, DashboardChange::Account);
+        self.hubs.changed(&self.id, DashboardChange::Spotify);
         self.profile.delete_spotify_tokens(&self.id).await
     }
 
@@ -237,6 +241,7 @@ where
             player.sent_at = now;
         }
         self.hubs.emit(&self.id, &ServerMessage::Music { track: next });
+        self.hubs.changed(&self.id, DashboardChange::Spotify);
         Ok(())
     }
 

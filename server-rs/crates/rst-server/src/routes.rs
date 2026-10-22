@@ -61,6 +61,8 @@ routes! {
     // Spotify knows only one callback URL (locally via 127.0.0.1, where the cookie is missing)
     SpotifyCallback => "GET" "/spotify/callback", Guard::Public;
     Me => "GET" "/api/me", SESSION;
+    // New: what changed for the dashboard (server-sent events), instead of asking every few seconds
+    DashboardEvents => "GET" "/api/dashboard/events", SESSION;
     SavePrefs => "POST" "/api/account/prefs", SESSION;
     OverlayKey => "POST" "/api/overlay-key", SESSION;
     TestAlert => "POST" "/api/test", Guard::Session(&[Feature::Alerts]);

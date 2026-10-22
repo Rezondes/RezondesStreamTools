@@ -35,7 +35,7 @@ export default function Render({ me }: { me: Me }) {
   const files = useRenderedFiles();
   const [clipName, setClipName] = useState<ClipName | null>(null);
   const schema = findTheme(settings.theme) ?? findTheme(DEFAULT_THEME)!;
-  // New clip objects only when the draft changes: the account reload every 5 s must not restart the preview loop
+  // New clip objects only when the draft changes: an account reload must not restart the preview loop
   const allClips = useMemo(() => clipsFor(schema.id, resolveSettings(schema, settings.draft), me.login), [schema, settings.draft, me.login]);
   if (!settings.ready) return <p className="muted">{TEXTS.loading}</p>;
   const clips = allClips.filter(clip => me.features[clip.feature]);

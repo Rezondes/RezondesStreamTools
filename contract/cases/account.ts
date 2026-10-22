@@ -98,4 +98,18 @@ export const ACCOUNT_CASES: Case[] = [
       if (prefs?.look !== "theme") fail(`prefs not stored: ${JSON.stringify(prefs)}`);
     },
   },
+  {
+    name: "dashboard: changes arrive as server events, admins also hear about the backups",
+    async run(context) {
+      await expectCode(await request(context, "/api/dashboard/events"), 401, "unauthorized");
+      const events = () => request(context, "/api/dashboard/events", { session: ADMIN.login });
+      const prefs = { look: "standard", language: "de" };
+      await readStream(await events(), '"account"', async () => {
+        await expect(await request(context, "/api/account/prefs", { method: "POST", session: ADMIN.login, body: JSON.stringify(prefs) }), 200);
+      });
+      await readStream(await events(), '"backups"', async () => {
+        await expect(await request(context, "/api/admin/backups", { method: "POST", session: ADMIN.login }), 202);
+      });
+    },
+  },
 ];

@@ -18,7 +18,7 @@ use rst_app::channel::registry::Registry;
 use rst_app::channel::runtime::{RuntimeSetup, StreamerRuntime, start_all};
 use rst_app::commands::CommandService;
 use rst_app::crypto::cipher::random_bytes;
-use rst_app::events::Hubs;
+use rst_app::events::{DashboardChange, Hubs};
 use rst_app::identity::delete::StreamerDeletion;
 use rst_app::identity::login::LoginFlow;
 use rst_app::settings::SettingsService;
@@ -269,7 +269,9 @@ impl App {
         };
         let allowed =
             async { self.stores.access.load(admins).await.is_ok_and(|policy| policy.can_use(admins, &login)) };
-        Ok(self.runtimes.start(id, create, allowed).await.is_some())
+        let running = self.runtimes.start(id, create, allowed).await.is_some();
+        self.hubs.changed(id, DashboardChange::Account);
+        Ok(running)
     }
 
     /// Whether the running player of the streamer has a Spotify login
@@ -314,6 +316,7 @@ impl App {
     pub fn stop_runtime(&self, id: &StreamerId) {
         self.runtimes.stop(id);
         self.hubs.close(id);
+        self.hubs.changed(id, DashboardChange::Account);
     }
 
     /// After changed access or feature levels: every allowed streamer restarts, the others stop

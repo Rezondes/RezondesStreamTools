@@ -8,7 +8,6 @@
 use std::collections::BTreeMap;
 use std::future::Future;
 use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 
 use rst_domain::access::Feature;
@@ -20,7 +19,7 @@ use rst_domain::twitch::eventsub::{EventSubMessage, subscriptions};
 use serde_json::json;
 use tokio_util::sync::CancellationToken;
 
-use crate::channel::alerts;
+use crate::channel::alerts::{self, LiveFlag};
 use crate::channel::chat::{listen, relay};
 use crate::channel::help::HelpResponder;
 use crate::channel::minimes::MinimeRunner;
@@ -29,7 +28,7 @@ use crate::channel::stats::StatsRunner;
 use crate::channel::token_keeper::{CHECK_SECONDS, TokenKeeper, Validity};
 use crate::channel::triggers::TriggerRunner;
 use crate::commands::public_commands;
-use crate::events::{Hubs, ServerMessage};
+use crate::events::{DashboardChange, Hubs, ServerMessage};
 use crate::music::SpotifyPlayer;
 use crate::ports::keys::KeyStore;
 use crate::ports::records::RecordStore;
@@ -102,7 +101,7 @@ pub struct StreamerRuntime<T, S, K, P> {
     /// Stream stats, counted from the alerts and chat lines this runtime receives
     pub stats: Arc<StatsRunner<S, K>>,
     /// Whether the `EventSub` connection is subscribed right now (always false without the feature alerts)
-    events_live: Arc<AtomicBool>,
+    events_live: Arc<LiveFlag>,
     cancel: CancellationToken,
 }
 
@@ -120,7 +119,7 @@ struct Shared<T, S, K> {
     twitch: T,
     profile: Profile<S, K>,
     features: BTreeMap<Feature, bool>,
-    events_live: Arc<AtomicBool>,
+    events_live: Arc<LiveFlag>,
     now: fn() -> i64,
 }
 
@@ -238,7 +237,7 @@ impl<T, S, K, P> StreamerRuntime<T, S, K, P> {
     /// Whether alerts arrive right now: the `EventSub` connection is up and subscribed
     #[must_use]
     pub fn events_live(&self) -> bool {
-        self.events_live.load(Ordering::Relaxed)
+        self.events_live.get()
     }
 }
 
@@ -291,7 +290,10 @@ where
         };
         let keeper = Arc::new(TokenKeeper::new(id.clone(), tokens, twitch.clone(), profile.clone()));
         let cancel = CancellationToken::new();
-        let events_live = Arc::new(AtomicBool::new(false));
+        let events_live = {
+            let (hubs, id) = (Arc::clone(&hubs), id.clone());
+            Arc::new(LiveFlag::new(move || hubs.changed(&id, DashboardChange::Account)))
+        };
         {
             let (help, twitch, tokens) = (Arc::clone(&help), twitch.clone(), keeper.current());
             tokio::spawn(async move { help.set_can_chat(twitch.can_chat(&tokens).await) });

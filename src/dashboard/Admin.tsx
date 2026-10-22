@@ -8,6 +8,7 @@ import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { accessLosses, hasLosses } from "./accessChanges.ts";
 import { createBackup, deleteBackup, deleteStreamer, getJson, postJson, restoreBackup, toggleStreamerLive, uploadBackup } from "./api.ts";
+import { onChange } from "./dashboardEvents.ts";
 import { reportError, toast } from "./notices.ts";
 import { Segmented } from "./PanelFields.tsx";
 import { SubTabs, subTabPanel } from "./SubTabs.tsx";
@@ -29,8 +30,6 @@ type BackupSchedule = { enabled: boolean; intervalHours: number; keep: number };
 type BackupRow = { id: string; createdAt: number; bytes: number; automatic: boolean };
 type BackupListing = { running: boolean; backups: BackupRow[] };
 
-// How often the list is asked again while a backup is being written
-const BACKUP_POLL_MS = 2000;
 const MEGABYTE = 1024 * 1024;
 const time = (ms: number) => new Date(ms).toLocaleString("de-DE");
 
@@ -214,19 +213,17 @@ function StreamerTable({ streamers, onChanged }: { streamers: StreamerRow[]; onC
   );
 }
 
-// Backups: create in the background, download, delete, upload and restore; the list is asked again while one is
-// being written
+// Backups: create in the background, download, delete, upload and restore; the list loads again when the server says
+// it changed (dashboardEvents.ts)
 function Backups() {
   const [listing, setListing] = useState<BackupListing | null | undefined>(undefined);
   const load = useCallback(() => {
     getJson<BackupListing | null>("/api/admin/backups", null).then(setListing).catch(() => setListing(null));
   }, []);
-  useEffect(load, [load]);
   useEffect(() => {
-    if (!listing?.running) return;
-    const timer = setTimeout(load, BACKUP_POLL_MS);
-    return () => clearTimeout(timer);
-  }, [listing, load]);
+    load();
+    return onChange("backups", load);
+  }, [load]);
 
   if (listing === undefined) return <p className="muted">{TEXTS.loading}</p>;
   if (listing === null) return <p className="muted">{ADMIN_TEXT.backupUnavailable}</p>;
