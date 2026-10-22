@@ -1,7 +1,7 @@
-// Overview in the dashboard, in three tabs: Live (status of Twitch, Spotify and the theme, test alerts and triggers to
-// fire, the stream statistics), OBS einrichten (import all scenes first, then the single URLs with size, copy and test,
-// the overlay key last) and Chat-Befehle (the help command, ChatHelp.tsx) for streamers without the trigger section,
-// which has it otherwise. Every URL can be dragged onto the OBS window.
+// Overview in the dashboard, in tabs: Live (status of Twitch, Spotify and the theme, test alerts and triggers to fire,
+// the stream statistics), Ereignisse (the live event log, EventFeed.tsx), OBS einrichten (import all scenes first, then
+// the single URLs with size, copy and test, the overlay key last) and Chat-Befehle (the help command, ChatHelp.tsx) for
+// streamers without the trigger section, which has it otherwise. Every URL can be dragged onto the OBS window.
 import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
 import { OBS_SCENES, SCENE_SIZES } from "../core/theme.ts";
@@ -14,6 +14,7 @@ import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
 import { type Me, visibleSections } from "./navigation.ts";
 import ChatHelp from "./ChatHelp.tsx";
+import EventFeed from "./EventFeed.tsx";
 import ObsImport from "./ObsImport.tsx";
 import { dragUrl, obsLayout } from "./obsSetup.ts";
 import { SubTabs, subTabPanel } from "./SubTabs.tsx";
@@ -22,7 +23,7 @@ import { TEXTS } from "./texts.de.ts";
 const TEXT = TEXTS.overview;
 const TEST_ALERTS: readonly AlertKind[] = ["follow", "sub", "resub", "gift", "cheer", "raid", "redeem", "hype"];
 const COPIED_MS = 1500;
-const TABS = (["live", "obs", "chat"] as const).map(id => ({ id, label: TEXT.tabs[id] }));
+const TABS = (["live", "events", "obs", "chat"] as const).map(id => ({ id, label: TEXT.tabs[id] }));
 
 type Tab = (typeof TABS)[number]["id"];
 type TriggerInfo = { name: string; enabled: boolean };
@@ -35,6 +36,7 @@ export default function Overview({ me, act }: { me: Me; act: Act }) {
       <SubTabs label={TEXT.tabsLabel} tabs={tabs} current={tab} onChange={setTab} />
       <div className="section-area" {...subTabPanel(tab)}>
         {tab === "live" && <Live me={me} act={act} />}
+        {tab === "events" && <section className="settings-group section-card"><EventFeed login={me.login} /></section>}
         {tab === "obs" && <ObsSetup me={me} act={act} />}
         {tab === "chat" && <section className="settings-group section-card"><ChatHelp login={me.login} /></section>}
       </div>
@@ -54,7 +56,7 @@ function Live({ me, act }: { me: Me; act: Act }) {
         {me.features.alerts && <span className={me.live ? "glow" : "muted"}>{me.live ? connections.eventSubLive : connections.eventSubConnecting}</span>}
         {me.spotify === true && <span className="glow">{TEXT.spotifyConnected}</span>}
         {me.spotify === false && (
-          <span className="muted">{TEXT.spotifyNotConnected}{sections.includes("connections") && <> <a href="#/connections">{TEXT.connect}</a></>}</span>
+          <span className="muted">{TEXT.spotifyNotConnected}{sections.includes("account") && <> <a href="#/account">{TEXT.connect}</a></>}</span>
         )}
         <span>{TEXT.themeLabel} <b>{theme.name}</b>{sections.includes("theme") && <> <a href="#/theme">{TEXT.changeTheme}</a></>}</span>
       </p>

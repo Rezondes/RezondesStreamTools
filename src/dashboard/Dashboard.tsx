@@ -9,7 +9,7 @@ import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import { params } from "../core/params.ts";
 import Admin from "./Admin.tsx";
 import { loadAccount, post, type Account } from "./api.ts";
-import Connections from "./Connections.tsx";
+import AccountPage from "./Account.tsx";
 import Media from "./Media.tsx";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 import Overview from "./Overview.tsx";
@@ -102,7 +102,7 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
       </nav>
       <div className={`dashboard-content${split ? " split" : ""}`}>
         {section === "overview" && <Overview me={account} act={act} />}
-        {section === "connections" && <Connections me={account} act={act} />}
+        {section === "account" && <AccountPage me={account} act={act} />}
         {section === "theme" && <ThemeSettings me={account} />}
         {section === "triggers" && <Triggers me={account} />}
         {section === "media" && <Media login={account.login} />}

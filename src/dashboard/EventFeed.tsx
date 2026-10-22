@@ -1,4 +1,4 @@
-// Event log on the connections page: listens live to /s/<login>/events?log (the same messages as the
+// Event log in the overview (tab Ereignisse): listens live to /s/<login>/events?log (the same messages as the
 // overlays, but does not count as an overlay) and shows them as short sentences with time, filterable by kind. The texts
 // come from eventLog.ts. After a disconnect (e.g. 404 while the runtime is not running) a new attempt after 10 s.
 import { useEffect, useState } from "react";

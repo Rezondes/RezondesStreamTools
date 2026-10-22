@@ -71,6 +71,14 @@ impl StreamerRepository for SqliteStreamers {
         ids.iter().map(|id| StreamerId::parse(id).map_err(StoreError::new)).collect()
     }
 
+    async fn created_at(&self, id: &StreamerId) -> Result<Option<i64>, StoreError> {
+        sqlx::query_scalar("SELECT created_at FROM streamers WHERE id = ?")
+            .bind(id.as_str())
+            .fetch_optional(&self.pool)
+            .await
+            .map_err(StoreError::new)
+    }
+
     async fn delete(&self, id: &StreamerId) -> Result<(), StoreError> {
         sqlx::query("DELETE FROM streamers WHERE id = ?")
             .bind(id.as_str())

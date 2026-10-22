@@ -24,7 +24,7 @@
 /* Hints stay a readable line length instead of running across the whole panel */
 .dashboard .panel > p:not(.actions) { max-width: var(--prose-max, 75ch); }
 /* Links in text in the second color of the skin instead of the browser blue */
-.dashboard :is(p, span) > a:not(.btn) { color: var(--emph); }
+.dashboard :is(p, span, dd) > a:not(.btn) { color: var(--emph); }
 
 /* Login: title as the brand, message and a card with the Twitch button form one column in the middle of the window.
    :root[data-skin] so the skins' own title placement (align-self: flex-start) does not pull the title back left. */
@@ -93,6 +93,13 @@
 @media (max-width: 899px) {
   .trigger-layout { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* Account: facts as label over value in a grid, the released features as a checklist in columns */
+.account-facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); gap: var(--gap-tight, 8px) var(--gap-wide, 24px); margin: 0; }
+.account-facts dt { font-size: 13px; color: var(--fg-dim); }
+.account-facts dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+.account-features { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 4px var(--gap-wide, 24px); }
+.account-features > li > span[aria-hidden] { display: inline-block; width: 1.2em; }
 
 /* Sections with tabs (overview, admin, triggers): the status line, then cards (planes of --surface-2 like the setting groups), side by side where there is
    room; tight inside a card, wide between them */

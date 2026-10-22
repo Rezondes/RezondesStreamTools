@@ -2,20 +2,20 @@
 import assert from "node:assert/strict";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 
-const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo", admin, live: false, spotify: null, features, theme: "standard", overlayKey: "k1" });
+const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo", admin, live: false, spotify: null, features, theme: "standard", overlayKey: "k1", createdAt: null, lastLogin: null });
 
 // Only base sections when no feature is on
-assert.deepEqual(visibleSections(me({})), ["overview", "connections"]);
+assert.deepEqual(visibleSections(me({})), ["overview", "account"]);
 // Theme with themes, triggers and media only with triggers and fx together
-assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true })), ["overview", "theme", "media", "triggers", "connections"]);
-// Order with everything: overview, theme, render, panels, media, triggers, connections, admin
-assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true, stinger: true, banners: true }, true)), ["overview", "theme", "render", "panels", "media", "triggers", "connections", "admin"]);
+assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true })), ["overview", "theme", "media", "triggers", "account"]);
+// Order with everything: overview, theme, render, panels, media, triggers, account, admin
+assert.deepEqual(visibleSections(me({ themes: true, triggers: true, fx: true, stinger: true, banners: true }, true)), ["overview", "theme", "render", "panels", "media", "triggers", "account", "admin"]);
 // Render with stinger or banners
-assert.deepEqual(visibleSections(me({ banners: true })), ["overview", "render", "panels", "connections"]);
-assert.deepEqual(visibleSections(me({ stinger: true, banners: false })), ["overview", "render", "connections"]);
-assert.deepEqual(visibleSections(me({ triggers: true, fx: false })), ["overview", "connections"]);
+assert.deepEqual(visibleSections(me({ banners: true })), ["overview", "render", "panels", "account"]);
+assert.deepEqual(visibleSections(me({ stinger: true, banners: false })), ["overview", "render", "account"]);
+assert.deepEqual(visibleSections(me({ triggers: true, fx: false })), ["overview", "account"]);
 // Admin only for admins
-assert.deepEqual(visibleSections(me({}, true)), ["overview", "connections", "admin"]);
+assert.deepEqual(visibleSections(me({}, true)), ["overview", "account", "admin"]);
 
 // Hash to section: only visible sections, otherwise the overview
 const visible = visibleSections(me({ themes: true }));

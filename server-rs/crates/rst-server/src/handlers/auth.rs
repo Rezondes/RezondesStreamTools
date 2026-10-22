@@ -98,6 +98,15 @@ pub async fn me(call: Call<'_>) -> Response {
         Ok(key) => key,
         Err(error) => return server_error(&error.to_string()),
     };
+    // createdAt and lastLogin (ms) for the account page; null when unknown
+    let created_at = match app.stores.streamers.created_at(id).await {
+        Ok(at) => at,
+        Err(error) => return server_error(&error.to_string()),
+    };
+    let last_login = match app.stores.streamers.profile(id).await {
+        Ok(profile) => profile.map(|streamer| streamer.last_login),
+        Err(error) => return server_error(&error.to_string()),
+    };
     let music = call.visitor.features.get(&Feature::Music) == Some(&true);
     // spotify: null = not set up or feature off, otherwise whether it is connected
     let spotify = (app.spotify.is_some() && music).then(|| app.spotify_connected(id));
@@ -110,6 +119,8 @@ pub async fn me(call: Call<'_>) -> Response {
             "features": call.visitor.features,
             "theme": theme,
             "overlayKey": overlay_key,
+            "createdAt": created_at,
+            "lastLogin": last_login,
         }),
         200,
     )

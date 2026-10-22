@@ -52,7 +52,7 @@ function TriggerEditor() {
     return (
       <>
         {errors.map(error => <p key={error} className="error" role="alert">{error}</p>)}
-        {errors.includes(TEXTS.errors["not-connected"]) && <a className="btn" href="#/connections">{TRIGGER_TEXT.toConnections}</a>}
+        {errors.includes(TEXTS.errors["not-connected"]) && <a className="btn" href="#/account">{TRIGGER_TEXT.toConnections}</a>}
       </>
     );
   }

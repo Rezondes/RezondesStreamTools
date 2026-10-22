@@ -30,6 +30,8 @@ async fn sqlite_passes_the_contract() {
     store.set_login(&row(1).id, &[77; 32]).await.expect("rename");
     assert_eq!(store.find_by_login(&[77; 32]).await.expect("find").map(|found| found.id), Some(row(1).id));
     assert_eq!(store.ids().await.expect("ids"), [row(1).id, row(2).id]);
+    assert_eq!(store.created_at(&row(2).id).await.expect("created"), Some(20));
+    assert_eq!(store.created_at(&row(3).id).await.expect("created"), None);
     store.delete(&row(1).id).await.expect("delete");
     assert_eq!(store.ids().await.expect("ids"), [row(2).id]);
 }

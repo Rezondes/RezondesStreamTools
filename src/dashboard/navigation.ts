@@ -4,9 +4,13 @@
 // Answer of GET /api/me
 // theme: the streamer's active theme (decides the skin of the dashboard)
 // overlayKey: secret key for the OBS URLs (?key=), without it overlays get no live events
-export type Me = { login: string; admin: boolean; live: boolean; spotify: boolean | null; features: Record<string, boolean>; theme: string; overlayKey: string };
+// live: the EventSub connection is up (alerts arrive); createdAt, lastLogin: ms, null when unknown
+export type Me = {
+  login: string; admin: boolean; live: boolean; spotify: boolean | null; features: Record<string, boolean>; theme: string; overlayKey: string;
+  createdAt: number | null; lastLogin: number | null;
+};
 
-export type Section = "overview" | "theme" | "triggers" | "media" | "render" | "panels" | "connections" | "admin";
+export type Section = "overview" | "theme" | "triggers" | "media" | "render" | "panels" | "account" | "admin";
 
 // Order = order in the navigation. needs: list of alternatives, one of them must be fully on
 // (e.g. render with stinger or with banners), or "admin"
@@ -17,7 +21,7 @@ const SECTIONS: readonly { section: Section; needs: readonly (readonly string[])
   { section: "panels", needs: [["banners"]] },
   { section: "media", needs: [["triggers", "fx"]] },
   { section: "triggers", needs: [["triggers", "fx"]] },
-  { section: "connections", needs: [[]] },
+  { section: "account", needs: [[]] },
   { section: "admin", needs: "admin" },
 ];
 

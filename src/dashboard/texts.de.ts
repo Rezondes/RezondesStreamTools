@@ -2,6 +2,7 @@
 // errors translates the server's error codes (src/core/errorCodes.ts). Checked in texts.de.check.ts.
 import { PANEL_TEXTS } from "./texts.panels.de.ts";
 import { HELP_TEXTS, OBS_TEXTS, OVERVIEW_TEXTS } from "./texts.overview.de.ts";
+import { ACCOUNT_TEXTS } from "./texts.account.de.ts";
 import type { Feature } from "../generated/Feature.ts";
 import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
 import type { ErrorCode } from "../core/errorCodes.ts";
@@ -42,7 +43,7 @@ export const TEXTS = {
     triggers: "Trigger",
     media: "Medien",
     render: "Rendern", panels: "Panels",
-    connections: "Verbindungen",
+    account: "Konto",
     admin: "Admin",
   } satisfies Record<Section, string>,
   scenes: {
@@ -58,6 +59,7 @@ export const TEXTS = {
     info: "Befehlsseite (öffentlich)",
   } satisfies Record<SceneName, string>,
   overview: OVERVIEW_TEXTS,
+  account: ACCOUNT_TEXTS,
   help: HELP_TEXTS,
   obs: OBS_TEXTS,
   theme: {
@@ -117,7 +119,7 @@ export const TEXTS = {
     test: "Test",
     testHint: "Effekt jetzt auslösen",
     fired: "Ausgelöst: im Fx-Overlay sichtbar, wenn es in OBS offen ist.",
-    toConnections: "Zu den Verbindungen",
+    toConnections: "Zum Konto",
     saveFirst: "Erst speichern",
     copy: "Kopie",
     remove: "Löschen",

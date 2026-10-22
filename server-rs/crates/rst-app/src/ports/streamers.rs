@@ -32,5 +32,8 @@ pub trait StreamerRepository: Send + Sync {
     /// All IDs in the order of registration
     fn ids(&self) -> impl Future<Output = Result<Vec<StreamerId>, StoreError>> + Send;
 
+    /// When the streamer registered (ms since the epoch); `None` for an unknown ID
+    fn created_at(&self, id: &StreamerId) -> impl Future<Output = Result<Option<i64>, StoreError>> + Send;
+
     fn delete(&self, id: &StreamerId) -> impl Future<Output = Result<(), StoreError>> + Send;
 }

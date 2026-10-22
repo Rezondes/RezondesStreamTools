@@ -1,0 +1,22 @@
+// German texts of the account page (Account.tsx), part of TEXTS in texts.de.ts. The connection texts stay in
+// TEXTS.connections. Check: texts.account.de.check.ts.
+export const ACCOUNT_TEXTS = {
+  profile: "Profil",
+  login: "Twitch-Login",
+  role: "Rolle",
+  roles: { admin: "Admin", streamer: "Streamer" },
+  since: "Dabei seit",
+  lastLogin: "Letzte Anmeldung",
+  unknown: "unbekannt",
+  theme: "Aktives Theme",
+  changeTheme: "ändern",
+  features: "Freigeschaltete Funktionen",
+  featureOff: "nicht freigeschaltet",
+  featuresHint: "Freischalten kann nur ein Admin.",
+  connections: "Verbindungen",
+  settings: "Einstellungen",
+  look: "Aussehen des Dashboards",
+  lookValue: "folgt dem aktiven Theme",
+  settingsHint: "Weitere Einstellungen für RST kommen hierher.",
+  date: (ms: number) => new Date(ms).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" }),
+};

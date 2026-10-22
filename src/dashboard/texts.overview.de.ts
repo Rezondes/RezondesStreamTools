@@ -10,7 +10,7 @@ export const OVERVIEW_TEXTS = {
   copyFailed: "Kopieren nicht erlaubt: URL ist markiert, bitte mit Strg+C kopieren.",
   test: "Test",
   alertNames: { follow: "Follow", sub: "Sub", resub: "Resub", gift: "Geschenk-Abos", cheer: "Bits", raid: "Raid", redeem: "Kanalpunkte", hype: "Hype Train" },
-  tabs: { live: "Live", obs: "OBS einrichten", chat: "Chat-Befehle" },
+  tabs: { live: "Live", events: "Ereignisse", obs: "OBS einrichten", chat: "Chat-Befehle" },
   tabsLabel: "Bereiche der Übersicht",
   themeLabel: "Theme:",
   changeTheme: "ändern",

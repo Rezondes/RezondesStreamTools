@@ -100,11 +100,12 @@ impl RecordStore for MemoryRecords {
     }
 }
 
+/// The rows and, apart, when each one was inserted
 #[derive(Debug, Default, Clone)]
-pub struct MemoryStreamers(Arc<Mutex<Vec<StreamerRow>>>);
+pub struct MemoryStreamers(Arc<Mutex<Vec<StreamerRow>>>, Arc<Mutex<Vec<(StreamerId, i64)>>>);
 
 impl StreamerRepository for MemoryStreamers {
-    async fn insert(&self, row: &StreamerRow, _now: i64) -> Result<(), StoreError> {
+    async fn insert(&self, row: &StreamerRow, now: i64) -> Result<(), StoreError> {
         let mut rows = lock(&self.0);
         let taken = rows.iter().any(|known| {
             known.id == row.id || known.user_id_digest == row.user_id_digest || known.login_digest == row.login_digest
@@ -113,7 +114,12 @@ impl StreamerRepository for MemoryStreamers {
             return Err(StoreError::new("streamer taken"));
         }
         rows.push(row.clone());
+        lock(&self.1).push((row.id.clone(), now));
         Ok(())
+    }
+
+    async fn created_at(&self, id: &StreamerId) -> Result<Option<i64>, StoreError> {
+        Ok(lock(&self.1).iter().find(|(known, _)| known == id).map(|(_, at)| *at))
     }
 
     async fn find_by_user_id(&self, digest: &[u8; 32]) -> Result<Option<StreamerRow>, StoreError> {
@@ -137,6 +143,7 @@ impl StreamerRepository for MemoryStreamers {
 
     async fn delete(&self, id: &StreamerId) -> Result<(), StoreError> {
         lock(&self.0).retain(|row| row.id != *id);
+        lock(&self.1).retain(|(known, _)| known != id);
         Ok(())
     }
 }

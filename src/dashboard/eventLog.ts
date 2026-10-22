@@ -1,4 +1,4 @@
-// Event log of the connections page: turns the server's SSE messages (the same as for the overlays)
+// Event log of the overview (tab Ereignisse): turns the server's SSE messages (the same as for the overlays)
 // short sentences. Only what matters: alerts, effects, track changes, minimes joining and leaving; settings and
 // minime reactions drop out. Pure functions, tested in eventLog.check.ts.
 import type { Alert, Minime, ServerMessage, Track } from "../core/types.ts";

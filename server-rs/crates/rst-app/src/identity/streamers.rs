@@ -156,6 +156,14 @@ impl<R: StreamerRepository, S: RecordStore, K: KeyStore> Streamers<R, S, K> {
         Ok(found.map(|streamer| Streamer { id: Some(id.clone()), ..streamer }))
     }
 
+    /// When the streamer registered (ms since the epoch); `None` for an unknown ID
+    ///
+    /// # Errors
+    /// When the database fails.
+    pub async fn created_at(&self, id: &StreamerId) -> Result<Option<i64>, StoreError> {
+        self.repository.created_at(id).await
+    }
+
     /// # Errors
     /// As [`Self::profile`].
     pub async fn login_of(&self, id: &StreamerId) -> Result<Option<Login>, VaultError> {
@@ -214,6 +222,9 @@ mod tests {
         // A second login keeps the ID and updates the time
         let again = streamers.register(&user("123"), &login("neo"), id(9), 20).await.expect("again");
         assert_eq!((again.id, again.last_login), (Some(id(1)), 20));
+        // ... while the registration keeps its first time
+        assert_eq!(streamers.created_at(&id(1)).await.expect("created"), Some(10));
+        assert_eq!(streamers.created_at(&id(9)).await.expect("created"), None);
         assert_eq!(streamers.find_by_login(&login("trinity")).await.expect("find"), None);
     }
 
