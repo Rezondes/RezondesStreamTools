@@ -21,6 +21,12 @@ src/themes/<id>/
   scenes/*.tsx       die Szenen (starting, brb, ending, alerts, chat, cam, music, fx), beliebig viele davon
 ```
 
+Für PixiJS und GSAP zeigt `standard` das Muster am Starting-Screen: `aurora.ts` und `digits.ts` rechnen Lage, Farbe und
+Rollen als reine Funktionen von Startwert und Zeit (mit Check), `pixi/Aurora.tsx` und `pixi/Dust.tsx` zeichnen sie in
+eine `PixiStage` und setzen jede Lage im Ticker aus `clock()` (damit `?t=` Standbilder stimmen), `screen/Starting.tsx`
+bringt Texte, Countdown (`screen/Countdown.tsx`) und Balken mit `useTimeline` herein. Ein Theme mit PixiJS oder GSAP
+steht in `MODULE_THEMES` (`scripts/bundle.ts`).
+
 ## Schritt für Schritt
 
 1. **Ordner anlegen**: `src/themes/standard/` nach `src/themes/<id>/` kopieren. Die id besteht aus Kleinbuchstaben

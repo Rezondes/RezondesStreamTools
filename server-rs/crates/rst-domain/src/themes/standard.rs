@@ -11,6 +11,7 @@ use crate::settings::field::{
     SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, mark_basic, number, text,
 };
 use crate::themes::core_fields::alert_sound_fields;
+use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
@@ -21,6 +22,7 @@ const LOCALES: [&str; 8] = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR"
 
 const GENERAL: &str = "Allgemein";
 const SCREENS: &str = "Starting, BRB, Ending";
+const BACKGROUND: &str = "Hintergrund";
 const ALERTS: &str = "Alerts";
 const CHAT: &str = "Chat";
 const CAM: &str = "Kamera-Rahmen";
@@ -70,8 +72,31 @@ fn screens() -> Vec<SettingField> {
         starting(flag("progressBar", "Fortschrittsbalken", SCREENS, true)),
         flag("showClock", "Uhrzeit oben rechts", SCREENS, true),
         text("ticker", "Hinweis unten (leer = aus)", SCREENS, "", Some(300)),
-        flag("blobs", "Bewegter Farbhintergrund", SCREENS, true),
-        number("blobSpeed", "Tempo des Farbhintergrunds", SCREENS, 24.0, 4.0, 120.0, S, None),
+        starting(number("introMs", "Starting: Lichtfelder blenden auf", SCREENS, 1200.0, 0.0, 10000.0, MS, None)),
+        starting(number("titleRiseMs", "Starting: Titel steigt auf (Dauer)", SCREENS, 900.0, 0.0, 5000.0, MS, None)),
+        // fixed: at most 900 ms, a digit has to settle before the next second
+        starting(number("digitRollMs", "Countdown: Ziffern rollen (Dauer)", SCREENS, 350.0, 0.0, 900.0, MS, None)),
+        starting(flag("progressShine", "Glanzlicht auf dem Fortschrittsbalken", SCREENS, true)),
+        starting(number("shineEvery", "Glanzlicht: alle", SCREENS, 4.0, 2.0, 60.0, S, Some(0.5))),
+    ]
+}
+
+/// Light fields, light dust and grain in a `PixiJS` stage (PLAN-STANDARD.md package 1)
+fn background() -> Vec<SettingField> {
+    vec![
+        quality_field(BACKGROUND),
+        flag("blobs", "Lichtfelder", BACKGROUND, true),
+        number("blobSpeed", "Lichtfelder: Dauer einer Bahn", BACKGROUND, 24.0, 4.0, 120.0, S, None),
+        number("worldSeed", "Startwert der Lichtfelder", BACKGROUND, 7.0, 1.0, 9999.0, None, None),
+        // fixed: at most 8 fields, each one is a large blurred sprite
+        number("auroraFields", "Anzahl Lichtfelder", BACKGROUND, 4.0, 1.0, 8.0, None, None),
+        number("auroraBlur", "Lichtfelder: Unschärfe", BACKGROUND, 40.0, 0.0, 200.0, PX, None),
+        number("auroraStrength", "Lichtfelder: Helligkeit", BACKGROUND, 0.7, 0.0, 1.0, None, Some(0.01)),
+        flag("dustOn", "Lichtstaub", BACKGROUND, true),
+        // fixed: at most 400 motes, more costs too much on weak PCs
+        number("dustCount", "Anzahl Lichtstaub", BACKGROUND, 70.0, 0.0, 400.0, None, None),
+        flag("grainOn", "Feines Korn gegen Farbstufen", BACKGROUND, true),
+        number("grainStrength", "Korn: Stärke", BACKGROUND, 0.025, 0.0, 0.2, None, Some(0.005)),
     ]
 }
 
@@ -149,6 +174,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     use SceneName::{Alerts, Brb, Cam, Chat, Ending, Fx, Info, Music, Starting};
     [
         (SCREENS, vec![Starting, Brb, Ending]),
+        (BACKGROUND, vec![Starting, Brb, Ending]),
         (ALERTS, vec![Alerts]),
         (CHAT, vec![Chat]),
         (CAM, vec![Cam]),
@@ -205,7 +231,8 @@ const BASIC: &[&str] = &[
 
 #[must_use]
 pub fn standard() -> Theme {
-    let mut fields = [general(), screens(), alerts(), chat_cam_music(), fx_stinger_banner(), info_fields()].concat();
+    let mut fields =
+        [general(), screens(), background(), alerts(), chat_cam_music(), fx_stinger_banner(), info_fields()].concat();
     fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 860.0, 400.0, 1600.0, PX, None));
     let schema = ThemeSchema {
         id: "standard".to_owned(),

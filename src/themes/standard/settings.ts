@@ -4,6 +4,7 @@
 // resolved values that the scenes read via useStandard.
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { markBasic, choice, color, flag, font, inScene, number, text } from "../../core/fields.ts";
+import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
@@ -13,6 +14,7 @@ const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", 
 
 const GENERAL = "Allgemein";
 const SCREENS = "Starting, BRB, Ending";
+const BACKGROUND = "Hintergrund";
 const ALERTS = "Alerts";
 const CHAT = "Chat";
 const CAM = "Kamera-Rahmen";
@@ -50,8 +52,27 @@ const FIELDS = [
   inScene("starting", flag("progressBar", "Fortschrittsbalken", SCREENS, true)),
   flag("showClock", "Uhrzeit oben rechts", SCREENS, true),
   text("ticker", "Hinweis unten (leer = aus)", SCREENS, "", 300),
-  flag("blobs", "Bewegter Farbhintergrund", SCREENS, true),
-  number("blobSpeed", "Tempo des Farbhintergrunds", SCREENS, 24, 4, 120, "s"),
+  inScene("starting", number("introMs", "Starting: Lichtfelder blenden auf", SCREENS, 1200, 0, 10000, "ms")),
+  inScene("starting", number("titleRiseMs", "Starting: Titel steigt auf (Dauer)", SCREENS, 900, 0, 5000, "ms")),
+  // fixed: at most 900 ms, a digit has to settle before the next second
+  inScene("starting", number("digitRollMs", "Countdown: Ziffern rollen (Dauer)", SCREENS, 350, 0, 900, "ms")),
+  inScene("starting", flag("progressShine", "Glanzlicht auf dem Fortschrittsbalken", SCREENS, true)),
+  inScene("starting", number("shineEvery", "Glanzlicht: alle", SCREENS, 4, 2, 60, "s", 0.5)),
+
+  // Light fields, light dust and grain in a PixiJS stage (PLAN-STANDARD.md package 1)
+  qualityField(BACKGROUND),
+  flag("blobs", "Lichtfelder", BACKGROUND, true),
+  number("blobSpeed", "Lichtfelder: Dauer einer Bahn", BACKGROUND, 24, 4, 120, "s"),
+  number("worldSeed", "Startwert der Lichtfelder", BACKGROUND, 7, 1, 9999),
+  // fixed: at most 8 fields, each one is a large blurred sprite
+  number("auroraFields", "Anzahl Lichtfelder", BACKGROUND, 4, 1, 8),
+  number("auroraBlur", "Lichtfelder: Unschärfe", BACKGROUND, 40, 0, 200, "px"),
+  number("auroraStrength", "Lichtfelder: Helligkeit", BACKGROUND, 0.7, 0, 1, undefined, 0.01),
+  flag("dustOn", "Lichtstaub", BACKGROUND, true),
+  // fixed: at most 400 motes, more costs too much on weak PCs
+  number("dustCount", "Anzahl Lichtstaub", BACKGROUND, 70, 0, 400),
+  flag("grainOn", "Feines Korn gegen Farbstufen", BACKGROUND, true),
+  number("grainStrength", "Korn: Stärke", BACKGROUND, 0.025, 0, 0.2, undefined, 0.005),
 
   // Placeholders: {user}, {amount}, {detail}, {text}
   text("followLabel", "Follow: Kopfzeile", ALERTS, "Neuer Follower"),
@@ -123,6 +144,7 @@ export type { StandardValues } from "../../generated/themes/standard.ts";
 
 const GROUP_SCENES = {
   [SCREENS]: ["starting", "brb", "ending"],
+  [BACKGROUND]: ["starting", "brb", "ending"],
   [ALERTS]: ["alerts"],
   [CHAT]: ["chat"],
   [CAM]: ["cam"],

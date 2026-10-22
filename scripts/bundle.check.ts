@@ -31,9 +31,9 @@ assert.deepEqual(
   ["src/themes/chaos/scenes/Alerts.tsx: gsap (via gsap.js)"],
 );
 
-// Modules in modernized themes: allowed in the chunks of the six themes, still a finding in the entry chunk and in the
-// chunk of standard (default allow list)
-const modernized = ["koth", "plantage", "chaos", "bears", "urlaub", "matrix"];
+// Modules in modernized themes: allowed in the chunks of these themes, still a finding in the entry chunk and in the
+// chunk of a theme outside the default allow list
+const modernized = ["koth", "plantage", "chaos", "bears", "urlaub", "matrix", "standard"];
 assert.deepEqual(
   bundleViolations([
     chunk("index.js", "index.html", [], ["react"], true),
@@ -45,10 +45,10 @@ assert.deepEqual(
 assert.deepEqual(
   bundleViolations([
     chunk("index.js", "index.html", ["pixi.js"], [], true),
-    chunk("Starting.js", "src/themes/standard/scenes/Starting.tsx", ["pixi.js"], []),
+    chunk("Starting.js", "src/themes/probe/scenes/Starting.tsx", ["pixi.js"], []),
     chunk("pixi.js", null, [], ["pixi.js"]),
   ]),
-  ["index.html: pixi.js (via pixi.js)", "src/themes/standard/scenes/Starting.tsx: pixi.js (via pixi.js)"],
+  ["index.html: pixi.js (via pixi.js)", "src/themes/probe/scenes/Starting.tsx: pixi.js (via pixi.js)"],
 );
 
 // Chunks outside themes that are no entry (dashboard parts loaded lazily) are no roots
