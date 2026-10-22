@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { sectionFromHash, visibleSections } from "./navigation.ts";
 
-const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo", admin, live: false, spotify: null, features, theme: "standard", overlayKey: "k1", createdAt: null, lastLogin: null });
+const me = (features: Record<string, boolean>, admin = false) => ({ login: "neo", admin, live: false, spotify: null, features, theme: "standard", overlayKey: "k1", createdAt: null, lastLogin: null, prefs: { look: "standard" as const, language: "de" as const } });
 
 // Only base sections when no feature is on
 assert.deepEqual(visibleSections(me({})), ["overview", "account"]);

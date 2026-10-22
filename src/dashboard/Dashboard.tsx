@@ -4,10 +4,11 @@
 // the admin (notices.ts). The account page opens from the name at the top right, admin from the account page; both stay
 // out of the navigation.
 // The page never scrolls as a whole (terminal): title and navigation stay fixed, the section below scrolls inside;
-// theme and render split it into settings (scroll) and preview (fixed). The look follows the active theme
-// (skin.ts, skins.css).
+// theme and render split it into settings (scroll) and preview (fixed). The look is the standard skin or, when the
+// account page says so, the one of the active theme (skin.ts, skins.css).
 import { useEffect, useState } from "react";
 import { isErrorCode } from "../core/errorCodes.ts";
+import { DEFAULT_THEME } from "../themes/registry.ts";
 import { params } from "../core/params.ts";
 import Admin from "./Admin.tsx";
 import { loadAccount, post, type Account } from "./api.ts";
@@ -43,8 +44,8 @@ export default function Dashboard() {
     if (isErrorCode(code)) reportError(TEXTS.errors[code], { Aktion: "Anmeldung", Code: code });
   }, []);
 
-  // Skin of the active theme from the account (the remembered one is set since main.tsx)
-  const theme = typeof account === "object" ? account.theme : null;
+  // Skin from the account: standard or the active theme (the remembered one is set since main.tsx)
+  const theme = typeof account === "object" ? (account.prefs.look === "theme" ? account.theme : DEFAULT_THEME) : null;
   useEffect(() => { if (theme) applySkin(theme); }, [theme]);
 
   useEffect(() => {
@@ -78,14 +79,14 @@ export default function Dashboard() {
       <Scenery skin={skinOf(theme ?? rememberedSkin())} />
       <main className="dashboard">
         <h1>{TEXTS.title}</h1>
-        <Content account={account} hash={hash} act={act} />
+        <Content account={account} hash={hash} act={act} reload={() => setVersion(value => value + 1)} />
         <NoticeLayer />
       </main>
     </>
   );
 }
 
-function Content({ account, hash, act }: { account: Account; hash: string; act: Act }) {
+function Content({ account, hash, act, reload }: { account: Account; hash: string; act: Act; reload: () => void }) {
   if (account === undefined) return <p className="muted">{TEXTS.loading}</p>;
   if (account === "offline") return <p className="muted">{TEXTS.offline}</p>;
   if (account === "anonymous") return <p className="panel login">{TEXTS.anonymous} <a className="btn primary" href="/auth/login">{TEXTS.login}</a></p>;
@@ -117,7 +118,7 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
       </nav>
       <div className={`dashboard-content${split ? " split" : ""}`}>
         {section === "overview" && <Overview me={account} act={act} />}
-        {section === "account" && <AccountPage me={account} act={act} />}
+        {section === "account" && <AccountPage me={account} act={act} reload={reload} />}
         {section === "theme" && <ThemeSettings me={account} />}
         {section === "triggers" && <Triggers me={account} />}
         {section === "media" && <Media login={account.login} />}

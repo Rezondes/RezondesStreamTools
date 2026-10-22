@@ -10,6 +10,7 @@ use rst_app::crypto::cipher::random_bytes;
 use rst_app::crypto::to_hex;
 use rst_app::identity::login::LoginOutcome;
 use rst_domain::access::Feature;
+use rst_domain::account::DashboardPrefs;
 use rst_domain::identity::oauth::same_browser;
 use rst_domain::identity::session::{OAUTH_STATE_SECONDS, SESSION_DAYS, oauth_state_cookie, session_cookie};
 use rst_domain::themes::registry::DEFAULT_THEME;
@@ -18,7 +19,7 @@ use serde_json::json;
 use crate::clock::now_ms;
 use crate::errors::{json, redirect, server_error, text};
 use crate::guard::cookie;
-use crate::handlers::Call;
+use crate::handlers::{Call, read_body};
 
 /// Codes from the OAuth callback: `^[\w.~-]{1,1024}$`
 pub(crate) fn is_oauth_code(code: &str) -> bool {
@@ -85,12 +86,16 @@ pub async fn logout(call: Call<'_>) -> Response {
     with_cookie(json(&json!({ "ok": true }), 200), &session_cookie("", call.app.secure, 0))
 }
 
-/// The own account; `theme`: the dashboard looks like the active theme
+/// The own account; `theme`: the active theme, `prefs`: how the dashboard looks (standard or that theme) and its language
 pub async fn me(call: Call<'_>) -> Response {
     let app = call.app;
     let Some(id) = call.visitor.streamer.as_ref() else { return text(401, "unauthorized") };
     let theme = match app.stores.profile.settings(id).await {
         Ok(settings) => settings.map_or_else(|| DEFAULT_THEME.to_owned(), |settings| settings.theme),
+        Err(error) => return server_error(&error.to_string()),
+    };
+    let prefs = match app.stores.profile.prefs(id).await {
+        Ok(prefs) => prefs,
         Err(error) => return server_error(&error.to_string()),
     };
     let Ok(random) = random_bytes::<16>() else { return server_error("no random bytes for the overlay key") };
@@ -121,9 +126,25 @@ pub async fn me(call: Call<'_>) -> Response {
             "overlayKey": overlay_key,
             "createdAt": created_at,
             "lastLogin": last_login,
+            "prefs": prefs,
         }),
         200,
     )
+}
+
+/// Larger bodies are refused; the preferences are two short values
+const PREFS_LIMIT: usize = 1024;
+
+/// Account page: stores the preferences of the dashboard; unknown values are refused
+pub async fn save_prefs(call: Call<'_>) -> Response {
+    let app = call.app;
+    let Some(id) = call.visitor.streamer.clone() else { return text(401, "unauthorized") };
+    let Some(body) = read_body(call.request, PREFS_LIMIT).await else { return text(413, "too-large") };
+    let Ok(prefs) = serde_json::from_slice::<DashboardPrefs>(&body) else { return text(400, "invalid-json") };
+    match app.stores.profile.save_prefs(&id, &prefs, now_ms()).await {
+        Ok(()) => json(&prefs, 200),
+        Err(error) => server_error(&error.to_string()),
+    }
 }
 
 /// New overlay key, e.g. when an OBS URL got into the wrong hands

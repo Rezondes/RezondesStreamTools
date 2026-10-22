@@ -354,3 +354,7 @@
 .dashboard .btn.icon { min-width: 44px; justify-content: center; }
 .btn.danger { border-color: var(--danger, #e5383b); color: var(--danger, #e5383b); }
 .btn.danger:hover { border-color: var(--danger, #e5383b); background: var(--danger, #e5383b); color: #ffffff; }
+
+/* Account page: the preferences of the dashboard, one field per row on narrow screens */
+.account-prefs { display: flex; flex-wrap: wrap; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); }
+.account-prefs .setting { min-width: min(240px, 100%); }

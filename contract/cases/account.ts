@@ -86,4 +86,16 @@ export const ACCOUNT_CASES: Case[] = [
       await expect(await request(context, "/api/me", { session: ADMIN.login }), 200, { login: "string" });
     },
   },
+  {
+    name: "account: dashboard preferences need a session, refuse unknown values and come back with /api/me",
+    async run(context) {
+      const save = (body: unknown, session?: string) => request(context, "/api/account/prefs", { method: "POST", session, body: JSON.stringify(body) });
+      await expectCode(await save({ look: "theme" }), 401, "unauthorized");
+      await expectCode(await save({ language: "en" }, ADMIN.login), 400, "invalid-json");
+      await expect(await save({ look: "theme", language: "de" }, ADMIN.login), 200, { look: "string", language: "string" });
+      const me = await request(context, "/api/me", { session: ADMIN.login });
+      const prefs = ((await me.json()) as { prefs?: { look?: string } }).prefs;
+      if (prefs?.look !== "theme") fail(`prefs not stored: ${JSON.stringify(prefs)}`);
+    },
+  },
 ];

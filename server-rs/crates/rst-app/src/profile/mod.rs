@@ -4,6 +4,7 @@
 
 use std::fmt;
 
+use rst_domain::account::DashboardPrefs;
 use rst_domain::commands::{HelpConfig, default_help, to_help_config};
 use rst_domain::identity::values::{Login, StreamerId};
 use rst_domain::minimes::parse_minime_file;
@@ -27,6 +28,7 @@ const HELP: &str = "help";
 const MINIMES: &str = "minimes";
 const STATS: &str = "stats";
 const PANELS: &str = "panels";
+const PREFS: &str = "dashboard";
 /// At most this many panels; the dashboard draws them, the server only keeps them
 pub const MAX_PANELS: usize = 20;
 
@@ -229,6 +231,20 @@ impl<S: RecordStore, K: KeyStore> Profile<S, K> {
         check_panels(panels)?;
         Ok(self.vault.put_json(id, PANELS, "", panels, now).await?)
     }
+
+    /// Preferences of the dashboard (account page); the defaults before the first save
+    ///
+    /// # Errors
+    /// `Unreadable` after the streamer was shredded.
+    pub async fn prefs(&self, id: &StreamerId) -> Result<DashboardPrefs, VaultError> {
+        Ok(self.vault.get_json(id, PREFS, "").await?.unwrap_or_default())
+    }
+
+    /// # Errors
+    /// See [`Vault::put`].
+    pub async fn save_prefs(&self, id: &StreamerId, prefs: &DashboardPrefs, now: i64) -> Result<(), VaultError> {
+        self.vault.put_json(id, PREFS, "", prefs, now).await
+    }
 }
 
 #[cfg(test)]
@@ -239,6 +255,16 @@ mod tests {
 
     use super::*;
     use crate::testing::{MemoryKeys, MemoryRecords};
+
+    #[tokio::test]
+    async fn prefs_default_then_saved() {
+        let profile = profile();
+        profile.vault.keys().create(&neo()).await.expect("key");
+        assert_eq!(profile.prefs(&neo()).await.expect("default"), DashboardPrefs::default());
+        let theme = DashboardPrefs { look: rst_domain::account::DashboardLook::Theme, ..DashboardPrefs::default() };
+        profile.save_prefs(&neo(), &theme, 1).await.expect("save");
+        assert_eq!(profile.prefs(&neo()).await.expect("read"), theme);
+    }
 
     #[tokio::test]
     async fn panels_are_kept_as_a_list_of_objects() {

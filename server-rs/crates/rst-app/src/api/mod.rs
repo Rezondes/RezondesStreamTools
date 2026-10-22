@@ -7,6 +7,7 @@ pub mod theme_values;
 use std::path::Path;
 
 use rst_domain::access::AccessPolicy;
+use rst_domain::account::DashboardPrefs;
 use rst_domain::settings::field::SettingValue;
 use rst_domain::settings::validate::SettingError;
 use rst_domain::spotify::SpotifyDetails;
@@ -37,6 +38,7 @@ pub fn export_all(dir: &Path) -> Result<(), ExportError> {
     AccessPolicy::export_all(&cfg)?;
     Trigger::export_all(&cfg)?;
     MediaOverview::export_all(&cfg)?;
+    DashboardPrefs::export_all(&cfg)?;
     let folder = dir.join("themes");
     std::fs::create_dir_all(&folder)?;
     for theme in themes() {

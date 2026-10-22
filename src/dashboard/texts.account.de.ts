@@ -16,7 +16,10 @@ export const ACCOUNT_TEXTS = {
   connections: "Verbindungen",
   settings: "Einstellungen",
   look: "Aussehen des Dashboards",
-  lookValue: "folgt dem aktiven Theme",
+  looks: { standard: "Standard", theme: "Aktives Theme" },
+  language: "Sprache",
+  languages: { de: "Deutsch", en: "Englisch (noch nicht verfügbar)" },
+  prefsSaved: "Einstellung gespeichert.",
   settingsHint: "Weitere Einstellungen für RST kommen hierher.",
   date: (ms: number) => new Date(ms).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" }),
 };

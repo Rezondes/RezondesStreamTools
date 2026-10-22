@@ -1,13 +1,15 @@
 // Account page in the dashboard: the profile in RST (login, role, since when, last login, active theme, the released
 // features), the connections to Twitch (EventSub status) and Spotify with connect and disconnect, and the settings of
-// RST itself (for now only how the dashboard looks). Reconnecting Twitch is a new login; Spotify only appears when
+// RST itself: how the dashboard looks (standard or the active theme) and its language (German, English follows). Reconnecting Twitch is a new login; Spotify only appears when
 // music is released and set up. When connected, Spotify shows account, current track and whether it is polling right
 // now (reloaded every 5 s). The live event log is a tab of the overview (EventFeed).
 import { useEffect, useState } from "react";
 import type { SpotifyDetails } from "../core/types.ts";
 import type { Feature } from "../generated/Feature.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
-import { getJson } from "./api.ts";
+import type { DashboardPrefs } from "../generated/DashboardPrefs.ts";
+import { getJson, postJson } from "./api.ts";
+import { reportError, toast } from "./notices.ts";
 import type { Act } from "./Dashboard.tsx";
 import { type Me, visibleSections } from "./navigation.ts";
 import { TEXTS } from "./texts.de.ts";
@@ -15,7 +17,7 @@ import { TEXTS } from "./texts.de.ts";
 const TEXT = TEXTS.account;
 const FEATURES = Object.keys(TEXTS.adminArea.featureNames) as Feature[];
 
-export default function Account({ me, act }: { me: Me; act: Act }) {
+export default function Account({ me, act, reload }: { me: Me; act: Act; reload: () => void }) {
   return (
     <section className="panel account">
       <div className="section-cards">
@@ -27,13 +29,42 @@ export default function Account({ me, act }: { me: Me; act: Act }) {
       </div>
       <section className="settings-group section-card">
         <h2>{TEXT.settings}</h2>
-        <dl className="account-facts">
-          <div><dt>{TEXT.look}</dt><dd>{TEXT.lookValue}</dd></div>
-        </dl>
+        <Prefs prefs={me.prefs} onSaved={reload} />
         <p className="muted">{TEXT.settingsHint}</p>
         {me.admin && <p className="actions"><a className="btn" href="#/admin">{TEXTS.sections.admin}</a></p>}
       </section>
     </section>
+  );
+}
+
+// Look and language of the dashboard; every change is saved at once (a toast, or the error dialog)
+function Prefs({ prefs, onSaved }: { prefs: DashboardPrefs; onSaved: () => void }) {
+  const save = (next: DashboardPrefs) => {
+    postJson("/api/account/prefs", next)
+      .then(result => {
+        if (!result.ok) return reportError(TEXTS.errors["invalid-json"], { Aktion: "POST /api/account/prefs", Antwort: JSON.stringify(result.data) });
+        toast(TEXT.prefsSaved);
+        onSaved();
+      })
+      .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "POST /api/account/prefs", Grund: String(failure) }));
+  };
+  return (
+    <div className="account-prefs">
+      <label className="setting">
+        {TEXT.look}
+        <select value={prefs.look} onChange={event => save({ ...prefs, look: event.target.value as DashboardPrefs["look"] })}>
+          <option value="standard">{TEXT.looks.standard}</option>
+          <option value="theme">{TEXT.looks.theme}</option>
+        </select>
+      </label>
+      <label className="setting">
+        {TEXT.language}
+        <select value={prefs.language} onChange={event => save({ ...prefs, language: event.target.value as DashboardPrefs["language"] })}>
+          <option value="de">{TEXT.languages.de}</option>
+          <option value="en" disabled>{TEXT.languages.en}</option>
+        </select>
+      </label>
+    </div>
   );
 }
 
