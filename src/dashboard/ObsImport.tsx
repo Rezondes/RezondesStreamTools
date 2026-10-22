@@ -45,8 +45,10 @@ export default function ObsImport({ login, layout }: { login: string; layout: Ob
     <section className="obs-import">
       <h2>{OBS_TEXT.title}</h2>
       <p className="muted">{OBS_TEXT.intro}</p>
+      <h3>{OBS_TEXT.fileTitle}</h3>
       <p className="actions"><button className="btn" onClick={download}>{OBS_TEXT.file}</button></p>
       <p className="muted">{OBS_TEXT.fileHint}</p>
+      <h3>{OBS_TEXT.socketTitle}</h3>
       <form className="actions" onSubmit={event => { event.preventDefault(); connect(); }}>
         <label className="setting">{OBS_TEXT.port}
           <input type="number" min={1} max={65535} value={port} onChange={event => setPort(Number(event.target.value))} />

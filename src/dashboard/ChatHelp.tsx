@@ -40,8 +40,8 @@ export default function ChatHelp({ login }: { login: string }) {
           <a className="btn" href="/auth/login">{TEXTS.connections.twitchReconnect}</a>
         </p>
       )}
+      <label className="setting-row"><input type="checkbox" checked={help.enabled} onChange={event => change({ enabled: event.target.checked })} /> {TEXT.enabled}</label>
       <div className="actions">
-        <label className="setting-row"><input type="checkbox" checked={help.enabled} onChange={event => change({ enabled: event.target.checked })} /> {TEXT.enabled}</label>
         <label className="setting">{TEXT.command} <input value={help.command} maxLength={25} onChange={event => change({ command: event.target.value })} /></label>
         <label className="setting">{TEXT.cooldown} <input type="number" min={0} max={3600} value={help.cooldown} onChange={event => change({ cooldown: Number(event.target.value) })} /></label>
       </div>

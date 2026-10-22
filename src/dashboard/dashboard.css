@@ -17,7 +17,14 @@
 .event-kind { display: inline-block; min-width: 9ch; color: var(--fg-dim); }
 .render-files-box { display: grid; gap: 8px; max-height: var(--files-height, 160px); overflow-y: auto; padding-top: 8px; border-top: var(--border-w) solid var(--line); }
 .dashboard h1 { font: var(--title-weight) var(--title-size) / 1.15 var(--font-title); text-transform: var(--title-case); color: var(--title-color); letter-spacing: var(--title-tracking, normal); }
-.dashboard h2 { font: var(--heading-weight) 18px var(--font-title); color: var(--heading); text-transform: var(--label-case); }
+/* Section headings carry the hierarchy inside a panel: clearly above the 14-16px of labels and text, and a section
+   after the first one starts with wide space, so tight groups read as groups (compression inside, release between) */
+.dashboard h2 { font: var(--heading-weight) var(--h2-size, 22px) / 1.2 var(--font-title); color: var(--heading); text-transform: var(--label-case); }
+.dashboard .panel > h2:not(:first-child) { margin-top: var(--gap-wide, 24px); }
+/* Hints stay a readable line length instead of running across the whole panel */
+.dashboard .panel > p:not(.actions) { max-width: var(--prose-max, 75ch); }
+/* Links in text in the second color of the skin instead of the browser blue */
+.dashboard :is(p, span) > a:not(.btn) { color: var(--emph); }
 
 /* Login: title as the brand, message and a card with the Twitch button form one column in the middle of the window.
    :root[data-skin] so the skins' own title placement (align-self: flex-start) does not pull the title back left. */
@@ -30,16 +37,40 @@
 .dashboard-nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: var(--border-w) solid var(--line); }
 .dashboard-user { margin-left: auto; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 
-.dashboard .panel { display: grid; gap: 12px; padding: var(--panel-pad, 16px); border: var(--border-w) solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+.dashboard .panel { display: grid; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); padding: var(--panel-pad, 20px); border: var(--border-w) solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
 .dashboard .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 
 .dashboard table { width: 100%; border-collapse: collapse; }
 .dashboard th, .dashboard td { text-align: left; padding: 10px 8px; border-bottom: var(--border-w) solid var(--line); vertical-align: middle; }
 .dashboard th { color: var(--fg-dim); font-weight: normal; text-transform: var(--label-case); }
+/* The buttons of a row stay side by side instead of stacking in a narrow column */
+.dashboard td.actions { flex-wrap: nowrap; }
 .dashboard .obs-drag { color: inherit; text-decoration: none; cursor: grab; }
 /* Otherwise dragging selects the text instead of taking the link along */
 .dashboard .obs-drag code { user-select: none; }
-.dashboard .obs-import { display: grid; gap: 8px; padding-top: 12px; border-top: var(--border-w) solid var(--line); }
+.dashboard .obs-import { display: grid; gap: var(--gap-tight, 8px); }
+
+/* Tabs inside a section (SubTabs.tsx): a row on a line, the chosen tab underlined in the signature like the areas of
+   the theme page on narrow screens */
+.sub-tabs { display: flex; gap: 4px; overflow-x: auto; border-bottom: var(--border-w) solid var(--line); }
+.sub-tab { flex: none; min-height: 44px; padding: 6px 16px; border: 0; background: none; color: var(--fg-dim); font: inherit; font-weight: var(--heading-weight); text-transform: var(--label-case); cursor: pointer; }
+.sub-tab:hover { color: var(--fg); }
+.sub-tab[aria-selected=true] { color: var(--fg); box-shadow: inset 0 -3px 0 var(--accent); }
+.sub-tab:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+
+/* Overview: the status line, then cards (planes of --surface-2 like the setting groups), side by side where there is
+   room; tight inside a card, wide between them */
+.overview-area { display: grid; gap: var(--gap-wide, 24px); padding-top: var(--gap-tight, 8px); }
+.overview-status { display: flex; flex-wrap: wrap; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); margin: 0; }
+.overview-cards { display: grid; gap: var(--gap-wide, 24px); grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--card-min, 380px)), 1fr)); align-items: start; }
+.overview-card { display: grid; gap: var(--gap-tight, 8px); align-content: start; min-width: 0; padding: var(--card-pad, 16px); }
+.overview-card h3 { margin: var(--gap-tight, 8px) 0 0; font-size: 14px; font-weight: var(--heading-weight); color: var(--fg-dim); text-transform: var(--label-case); }
+.overview-card > p, .overview-card .obs-import > p { margin: 0; max-width: var(--prose-max, 75ch); }.overview-card-head { display: flex; align-items: center; justify-content: space-between; gap: var(--gap-tight, 8px); }
+/* Statistics: the number large, its name small below; numbers never break */
+.stat-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--tile-min, 110px), 1fr)); gap: var(--gap-tight, 8px); margin: 0; }
+.stat-tiles > div { display: flex; flex-direction: column-reverse; gap: 2px; padding: 8px 10px; border-radius: var(--radius-sm); background: var(--surface); }
+.stat-tiles dt { font-size: 13px; color: var(--fg-dim); }
+.stat-tiles dd { margin: 0; font: var(--heading-weight) var(--stat-size, 26px) / 1.1 var(--font-title); color: var(--fg); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .dashboard code { font-family: inherit; user-select: all; overflow-wrap: anywhere; }
 /* Render: preview with timeline; behind the stinger two test scenes, so one sees the cut */
 .render-view { position: relative; aspect-ratio: 16 / 9; border: var(--border-w) solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
@@ -70,7 +101,7 @@
 .settings-mode button { min-height: 44px; padding: 6px 18px; border: 0; background: var(--field); color: var(--fg-dim); font: inherit; cursor: pointer; }
 .settings-mode button[aria-pressed=true] { background: var(--accent); color: var(--on-accent); }
 .settings-mode button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
-.dashboard button.link { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; text-decoration: underline; cursor: pointer; }
+.dashboard button.link { padding: 0; border: 0; background: none; color: var(--emph); font: inherit; text-decoration: underline; cursor: pointer; }
 /* Areas: a column next to the fields, a row that scrolls sideways on narrow screens */
 .settings-nav { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .settings-nav-item { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; padding: 6px 10px; border: 0; border-radius: var(--radius-sm); background: none; color: var(--fg-dim); font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
@@ -115,7 +146,7 @@
   cursor: pointer;
 }
 .dashboard select:disabled, .dashboard input:disabled, .dashboard textarea:disabled { color: var(--fg-dim); cursor: default; }
-.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):hover:not(:disabled), .dashboard select:hover:not(:disabled), .dashboard textarea:hover:not(:disabled) { border-color: var(--accent); }
+.dashboard input:not([type=checkbox]):not([type=range]):not([type=color]):hover:not(:disabled), .dashboard select:hover:not(:disabled), .dashboard textarea:hover:not(:disabled) { border-color: var(--fg-dim); }
 /* Color swatch: the color fills the whole field, without the gray system frame */
 .dashboard input[type=color] { flex: none; width: 44px; height: 44px; padding: 0; border: var(--border-w) solid var(--border); border-radius: var(--radius-sm); background: var(--field); cursor: pointer; overflow: hidden; }
 .dashboard input[type=color]::-webkit-color-swatch-wrapper { padding: 0; }
@@ -170,6 +201,11 @@
 }
 
 @media (max-width: 719px) {
+  /* The scenery is gone here, so the room the skins keep free for it at the sides goes back to the content; panels and
+     cards pad less, so the fields keep their width */
+  .dashboard { max-width: none; padding: 12px; }
+  .dashboard .panel { padding: 12px; }
+  .overview-card { padding: 12px; }
   .dashboard thead { display: none; }
   .dashboard tr, .dashboard td { display: block; border: none; padding: 4px 0; }
   .dashboard tr { border-bottom: var(--border-w) solid var(--line); padding: 12px 0; }
