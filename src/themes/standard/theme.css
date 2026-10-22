@@ -54,62 +54,7 @@
 /* --- Full-screen scenes (starting, brb, ending) -------------------------------- */
 .theme-standard .standard-screen { position: fixed; inset: 0; overflow: hidden; background: var(--background); }
 
-/* Three soft color areas that move slowly */
-.theme-standard .standard-blobs i {
-  position: absolute;
-  width: 55vmax;
-  height: 55vmax;
-  border-radius: 50%;
-  opacity: 0.35;
-  filter: blur(var(--blob-blur, 90px));
-  animation: standard-drift var(--blobSpeed) ease-in-out infinite alternate;
-}
-.theme-standard .standard-blobs i:nth-child(1) { left: -10vmax; top: -15vmax; background: var(--accent); }
-.theme-standard .standard-blobs i:nth-child(2) { right: -15vmax; bottom: -20vmax; background: var(--accent2); animation-direction: alternate-reverse; }
-.theme-standard .standard-blobs i:nth-child(3) { left: 35%; top: 40%; width: 35vmax; height: 35vmax; background: var(--accent); opacity: 0.2; animation-duration: calc(var(--blobSpeed) * 1.5); }
-
-.theme-standard .standard-stage {
-  /* Position, size and scaling: stage-box from src/core/screens/stage.css */
-  display: flex;
-  flex-direction: column;
-  padding: var(--stage-padding, 72px 96px);
-}
-.theme-standard .standard-top { display: flex; justify-content: space-between; align-items: center; font-size: var(--top-size, 28px); }
-.theme-standard .standard-channel { font-weight: 700; letter-spacing: 0.08em; }
-.theme-standard .standard-center {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--center-gap, 24px);
-  max-width: var(--center-width, 1200px);
-}
-.theme-standard .standard-center .standard-eyebrow { font-size: var(--eyebrow-size, 32px); }
-.theme-standard .standard-title {
-  font-size: var(--title-size, 112px);
-  font-weight: 800;
-  line-height: 1.1;
-  /* Room for descenders, otherwise the gradient text (background-clip) cuts them off */
-  padding-bottom: 0.08em;
-  letter-spacing: -0.02em;
-  background: linear-gradient(90deg, var(--textColor), color-mix(in srgb, var(--textColor) 70%, var(--accent2)));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-.theme-standard .standard-big { font-size: var(--big-size, 96px); font-weight: 700; font-variant-numeric: tabular-nums; }
-.theme-standard .standard-center .standard-progress { width: var(--progress-width, 720px); height: var(--screen-progress-height, 10px); }
-.theme-standard .standard-center .standard-muted { font-size: var(--note-size, 32px); }
-.theme-standard .standard-ticker {
-  align-self: flex-start;
-  padding: var(--ticker-padding, 14px 24px);
-  border-radius: var(--radius);
-  background: var(--surface);
-  font-size: var(--ticker-size, 28px);
-  animation: standard-in var(--fadeDuration) ease-out both;
-}
-
-/* Starting with light fields (screen/Starting.tsx, prototype refs/starting.html): the PixiJS stage below, over it a
+/* Light fields (screen/LightScreen.tsx, prototype refs/starting.html): the PixiJS stage below, over it a
    vignette, the grain and the texts; GSAP brings everything in */
 .theme-standard .standard-st-stage { color: var(--textColor); }
 .theme-standard .standard-st-stage > * { position: absolute; }
@@ -145,6 +90,21 @@
 /* GSAP moves the shine from left of the bar to right of it */
 .theme-standard .standard-st-shine { position: absolute; top: 0; bottom: 0; left: 0; width: var(--st-shine-width, 120px); background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--textColor) 75%, transparent), transparent); mix-blend-mode: soft-light; }
 .theme-standard .standard-st-ticker { left: 0; right: 0; bottom: var(--st-bottom, 64px); text-align: center; font-size: var(--ticker-size, 24px); color: var(--mutedColor); }
+.theme-standard .standard-st-note { margin: 0; font-size: var(--note-size, 32px); color: var(--mutedColor); }
+/* Ending: the stream numbers as small cards side by side */
+.theme-standard .standard-st-stats { display: flex; gap: var(--stat-gap, 20px); margin-top: var(--st-count-gap, 18px); }
+.theme-standard .standard-st-stat {
+  display: grid;
+  justify-items: center;
+  gap: var(--stat-inner-gap, 6px);
+  min-width: var(--stat-width, 180px);
+  padding: var(--stat-padding, 20px 24px);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: inset 0 0 0 var(--stat-border, 1px) color-mix(in srgb, var(--accent2) 25%, transparent);
+}
+.theme-standard .standard-st-stat b { font-size: var(--stat-size, 56px); font-weight: 800; font-variant-numeric: tabular-nums; background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.theme-standard .standard-st-stat span { font-size: var(--stat-label-size, 20px); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mutedColor); }
 
 /* --- Alerts ------------------------------------------------------------------ */
 .theme-standard .standard-alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alertTop); }
@@ -243,7 +203,6 @@
 @keyframes standard-pop { from { opacity: 0; scale: 0.85; } to { opacity: 1; scale: 1; } }
 @keyframes standard-timer { from { width: 100%; } to { width: 0; } }
 @keyframes standard-pulse { 50% { opacity: 0.3; } }
-@keyframes standard-drift { from { translate: 0 0; } to { translate: 12vmax 8vmax; } }
 @keyframes standard-roll-in { from { translate: 0 110%; } to { translate: 0 0; } }
 @keyframes standard-roll-out { from { translate: 0 0; opacity: 1; } to { translate: 0 -110%; opacity: 0; } }
 

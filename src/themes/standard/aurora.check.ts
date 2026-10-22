@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import { hexNumber } from "../../core/color.ts";
 import { resolveSettings } from "../../core/settings.ts";
-import { auroraField, type AuroraOptions, auroraOptions, introShare, moteAt, MOTE_PERIOD } from "./aurora.ts";
+import { auroraField, type AuroraOptions, auroraOptions, breathLight, introShare, moteAt, MOTE_PERIOD, pacedTime, sceneLight, sinkAt } from "./aurora.ts";
 import { type StandardValues, standardSettings } from "./settings.ts";
 
 const OPTIONS: AuroraOptions = { seed: 7, count: 4, loop: 24, accent: "#7c5cff", accent2: "#22d3ee", strength: 0.55 };
@@ -52,6 +52,37 @@ assert.equal(introShare(0, 1200), 0);
 assert.equal(introShare(0.6, 1200), 0.5);
 assert.equal(introShare(9, 1200), 1);
 assert.equal(introShare(0, 0), 1);
+
+// Tempo ohne Sprung: the orbit time eases from full speed to the pace, it never jumps and never runs backwards
+const ramp = 1.2;
+assert.equal(pacedTime(0, 0.5, ramp), 0);
+assert.equal(pacedTime(5, 1, ramp), 5, "pace 1 is the plain time");
+assert.equal(pacedTime(5, 0.5, 0), 2.5, "without a ramp the pace holds at once");
+for (let step = 0; step < 300; step++) {
+  const [before, after] = [pacedTime(step / 50, 0.5, ramp), pacedTime((step + 1) / 50, 0.5, ramp)];
+  assert.ok(after >= before && after - before <= 1 / 50 + 1e-9, `no jump at ${step / 50}`);
+}
+assert.ok(Math.abs(pacedTime(ramp + 2, 0.5, ramp) - pacedTime(ramp, 0.5, ramp) - 1) < 1e-9, "after the ramp at the pace");
+
+// Atmen: brbDim 1 is as bright as Starting; otherwise between the dim and full, bright at the start
+assert.equal(breathLight(3.3, 1, 6), 1);
+assert.equal(breathLight(0, 0.6, 6), 1);
+assert.ok(Math.abs(breathLight(3, 0.6, 6) - 0.6) < 1e-9, "darkest at half a breath");
+assert.equal(breathLight(2, 0.6, 0), 0.6, "without breathing the dim holds");
+
+// Ausblenden: the Ending lets the fields sink and fade after endingFadeAt
+assert.deepEqual(sinkAt(5, 10, 4000), { drop: 0, alpha: 1 });
+assert.equal(sinkAt(20, 10, 4000).alpha, 0);
+assert.ok(sinkAt(20, 10, 4000).drop > 0);
+assert.equal(sinkAt(10, 10, 0).alpha, 0, "without a fade duration at once");
+
+// Szenen: Starting as before, BRB dimmed and slower, Ending sinking
+const scene = { introMs: 1200, brbPace: 0.5, brbDim: 0.6, brbBreatheSeconds: 6, endingFadeAt: 10, endingFadeMs: 4000 };
+assert.deepEqual(sceneLight("starting", 5, scene), { time: 5, alpha: 1, drop: 0 });
+assert.equal(sceneLight("brb", 5, scene).time, pacedTime(5, 0.5, 1.2));
+assert.equal(sceneLight("brb", 3, scene).alpha, breathLight(3, 0.6, 6));
+assert.deepEqual(sceneLight("ending", 20, scene), { time: 20, ...sinkAt(20, 10, 4000) });
+assert.equal(sceneLight("starting", 0.6, scene).alpha, 0.5, "every scene fades in");
 
 // Optionen: the settings feed the options
 const values = resolveSettings(standardSettings, {}) as StandardValues;

@@ -3,6 +3,7 @@
 // components only draw these values. Check: aurora.check.ts.
 import { mixHex } from "../../core/color.ts";
 import { hash } from "../../core/hash.ts";
+import type { ScreenKind } from "../../core/screens/screens.ts";
 import type { StandardValues } from "./settings.ts";
 
 export type AuroraOptions = { seed: number; count: number; loop: number; accent: string; accent2: string; strength: number };
@@ -48,6 +49,44 @@ export const auroraOptions = (values: StandardValues): AuroraOptions => ({
 
 // Share from 0 to 1 the fields and the dust have faded in after the scene opened
 export const introShare = (seconds: number, introMs: number) => (introMs > 0 ? Math.min(1, (seconds * 1000) / introMs) : 1);
+
+// Orbit time when the speed eases linearly from full to pace over ramp seconds: the integral of the speed, so a
+// change of the pace moves the fields on smoothly instead of letting them jump
+export function pacedTime(seconds: number, pace: number, ramp: number): number {
+  const time = Math.max(0, seconds);
+  const ramped = ramp > 0 ? Math.min(time, ramp) : 0;
+  return ramped + ((pace - 1) * ramped * ramped) / (2 * Math.max(ramp, Number.EPSILON)) + (time - ramped) * pace;
+}
+
+// Brightness of a breathing scene: from full down to dim and back once per breath, starting bright; dim 1 = steady
+export function breathLight(seconds: number, dim: number, breathe: number): number {
+  if (breathe <= 0) return dim;
+  return dim + (1 - dim) * (0.5 + 0.5 * Math.cos((seconds / breathe) * TURN));
+}
+
+// How far the fields have sunk in px when the Ending fades the world out
+const SINK = 240;
+
+// Drop and alpha of the fields after fadeAt seconds, eased over fadeMs; before that untouched
+export function sinkAt(seconds: number, fadeAt: number, fadeMs: number): { drop: number; alpha: number } {
+  const linear = fadeMs > 0 ? Math.min(1, Math.max(0, ((seconds - fadeAt) * 1000) / fadeMs)) : Number(seconds >= fadeAt);
+  const eased = linear * linear * (3 - 2 * linear);
+  return { drop: SINK * eased, alpha: 1 - eased };
+}
+
+export type SceneTiming = { introMs: number; brbPace: number; brbDim: number; brbBreatheSeconds: number; endingFadeAt: number; endingFadeMs: number };
+
+// Orbit time, alpha and drop of the light fields and the dust per screen: Starting plain, BRB slower and breathing,
+// Ending sinking away; every screen fades in over introMs
+export function sceneLight(kind: ScreenKind, seconds: number, timing: SceneTiming): { time: number; alpha: number; drop: number } {
+  const shown = introShare(seconds, timing.introMs);
+  if (kind === "brb") return { time: pacedTime(seconds, timing.brbPace, timing.introMs / 1000), alpha: shown * breathLight(seconds, timing.brbDim, timing.brbBreatheSeconds), drop: 0 };
+  if (kind === "ending") {
+    const sink = sinkAt(seconds, timing.endingFadeAt, timing.endingFadeMs);
+    return { time: seconds, alpha: shown * sink.alpha, drop: sink.drop };
+  }
+  return { time: seconds, alpha: shown, drop: 0 };
+}
 
 // Seconds after which every mote is back at its start: rise, sway and glow all run a whole number of times in it
 export const MOTE_PERIOD = 120;

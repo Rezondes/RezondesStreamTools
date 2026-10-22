@@ -1,21 +1,23 @@
 // Light fields of the standard screens (aurora.ts): large soft sprites in both accents on closed orbits, added on top
-// of each other and blurred unless the performance level is low; they fade in over introMs. Positions every frame
+// of each other and blurred unless the performance level is low; how fast, bright and low they are follows the screen
+// (sceneLight: they fade in, BRB breathes slower, Ending sinks them away). Positions every frame
 // from the clock alone, so ?t= stills match.
 import { type Application, BlurFilter, Container, Sprite } from "pixi.js";
 import { useEffect } from "react";
+import type { ScreenKind } from "../../../core/screens/screens.ts";
 import { quality } from "../../../core/three/quality.ts";
-import { auroraField, auroraOptions, introShare } from "../aurora.ts";
+import { auroraField, auroraOptions, sceneLight } from "../aurora.ts";
 import type { StandardValues } from "../settings.ts";
 import { softDot } from "./softDot.ts";
 
-type Props = { app: Application; clock: () => number; values: StandardValues };
+type Props = { app: Application; clock: () => number; values: StandardValues; kind: ScreenKind };
 
 // fixed: texture size in px and share of the bright core, like the prototype (refs/starting.html)
 const TEXTURE = { size: 512, core: 0.35 };
 // fixed: passes of the blur, like the prototype
 const BLUR_QUALITY = 4;
 
-export default function Aurora({ app, clock, values }: Props) {
+export default function Aurora({ app, clock, values, kind }: Props) {
   useEffect(() => {
     const texture = softDot(TEXTURE.size, TEXTURE.core);
     const box = new Container();
@@ -30,14 +32,13 @@ export default function Aurora({ app, clock, values }: Props) {
     });
     app.stage.addChild(box);
     const place = () => {
-      const seconds = clock();
-      const shown = introShare(seconds, values.introMs);
+      const light = sceneLight(kind, clock(), values);
       sprites.forEach((sprite, index) => {
-        const field = auroraField(options, index, seconds);
-        sprite.position.set(field.x, field.y);
+        const field = auroraField(options, index, light.time);
+        sprite.position.set(field.x, field.y + light.drop);
         sprite.width = sprite.height = field.radius * 2;
         sprite.tint = field.color;
-        sprite.alpha = field.alpha * shown;
+        sprite.alpha = field.alpha * light.alpha;
       });
     };
     place();
@@ -48,6 +49,6 @@ export default function Aurora({ app, clock, values }: Props) {
       box.destroy({ children: true });
       texture.destroy(true);
     };
-  }, [app, clock, values]);
+  }, [app, clock, values, kind]);
   return null;
 }

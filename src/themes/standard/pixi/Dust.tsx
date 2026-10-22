@@ -1,19 +1,20 @@
 // Light dust of the standard screens (moteAt in aurora.ts): small soft dots between the two accents rise slowly, sway
-// and glow up one by one; added on top of each other, fading in with the light fields. Their number follows the
+// and glow up one by one; added on top of each other, they follow the light fields of the screen. Their number follows the
 // performance level; positions every frame from the clock alone.
 import { type Application, Container, Sprite } from "pixi.js";
 import { useEffect } from "react";
+import type { ScreenKind } from "../../../core/screens/screens.ts";
 import { particleCount } from "../../../core/three/quality.ts";
-import { auroraOptions, introShare, moteAt } from "../aurora.ts";
+import { auroraOptions, moteAt, sceneLight } from "../aurora.ts";
 import type { StandardValues } from "../settings.ts";
 import { softDot } from "./softDot.ts";
 
-type Props = { app: Application; clock: () => number; values: StandardValues };
+type Props = { app: Application; clock: () => number; values: StandardValues; kind: ScreenKind };
 
 // fixed: texture size in px and share of the bright core, like the prototype (refs/starting.html)
 const TEXTURE = { size: 32, core: 0.25 };
 
-export default function Dust({ app, clock, values }: Props) {
+export default function Dust({ app, clock, values, kind }: Props) {
   useEffect(() => {
     const total = values.dustOn && values.dustCount > 0 ? particleCount(values.dustCount, values.quality) : 0;
     const texture = softDot(TEXTURE.size, TEXTURE.core);
@@ -29,13 +30,12 @@ export default function Dust({ app, clock, values }: Props) {
     });
     app.stage.addChild(box);
     const place = () => {
-      const seconds = clock();
-      const shown = introShare(seconds, values.introMs);
+      const light = sceneLight(kind, clock(), values);
       sprites.forEach((sprite, index) => {
-        const mote = moteAt(options, index, seconds);
-        sprite.position.set(mote.x, mote.y);
+        const mote = moteAt(options, index, light.time);
+        sprite.position.set(mote.x, mote.y + light.drop);
         sprite.width = sprite.height = mote.size;
-        sprite.alpha = mote.alpha * shown;
+        sprite.alpha = mote.alpha * light.alpha;
       });
     };
     place();
@@ -46,6 +46,6 @@ export default function Dust({ app, clock, values }: Props) {
       box.destroy({ children: true });
       texture.destroy(true);
     };
-  }, [app, clock, values]);
+  }, [app, clock, values, kind]);
   return null;
 }

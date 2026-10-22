@@ -8,7 +8,8 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, mark_basic, number, text,
+    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, lines, mark_basic, number,
+    text,
 };
 use crate::themes::core_fields::alert_sound_fields;
 use crate::themes::graphics_fields::quality_field;
@@ -72,12 +73,25 @@ fn screens() -> Vec<SettingField> {
         starting(flag("progressBar", "Fortschrittsbalken", SCREENS, true)),
         flag("showClock", "Uhrzeit oben rechts", SCREENS, true),
         text("ticker", "Hinweis unten (leer = aus)", SCREENS, "", Some(300)),
-        starting(number("introMs", "Starting: Lichtfelder blenden auf", SCREENS, 1200.0, 0.0, 10000.0, MS, None)),
-        starting(number("titleRiseMs", "Starting: Titel steigt auf (Dauer)", SCREENS, 900.0, 0.0, 5000.0, MS, None)),
+        number("introMs", "Lichtfelder blenden auf", SCREENS, 1200.0, 0.0, 10000.0, MS, None),
+        number("titleRiseMs", "Titel steigt auf (Dauer)", SCREENS, 900.0, 0.0, 5000.0, MS, None),
         // fixed: at most 900 ms, a digit has to settle before the next second
-        starting(number("digitRollMs", "Countdown: Ziffern rollen (Dauer)", SCREENS, 350.0, 0.0, 900.0, MS, None)),
+        number("digitRollMs", "Countdown und Pausenzeit: Ziffern rollen (Dauer)", SCREENS, 350.0, 0.0, 900.0, MS, None),
         starting(flag("progressShine", "Glanzlicht auf dem Fortschrittsbalken", SCREENS, true)),
         starting(number("shineEvery", "Glanzlicht: alle", SCREENS, 4.0, 2.0, 60.0, S, Some(0.5))),
+        brb(number("brbPace", "BRB: Tempo der Lichtfelder (Faktor)", SCREENS, 0.5, 0.1, 1.0, None, Some(0.05))),
+        brb(number("brbDim", "BRB: Helligkeit beim Atmen", SCREENS, 0.6, 0.0, 1.0, None, Some(0.05))),
+        brb(number("brbBreatheSeconds", "BRB: Dauer eines Atemzugs (0 = aus)", SCREENS, 6.0, 0.0, 60.0, S, Some(0.5))),
+        ending(lines(
+            "endingStats",
+            "Ending: Zahlen (Schlüssel|Text)",
+            SCREENS,
+            &["follows|Follows", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Nachrichten"],
+            None,
+        )),
+        ending(number("countUpMs", "Ending: Hochzählen (Dauer)", SCREENS, 1200.0, 0.0, 10_000.0, MS, None)),
+        ending(number("endingFadeAt", "Ending: Lichtfelder blenden aus nach", SCREENS, 10.0, 0.0, 600.0, S, None)),
+        ending(number("endingFadeMs", "Ending: Ausblenden (Dauer)", SCREENS, 4000.0, 0.0, 20_000.0, MS, None)),
     ]
 }
 

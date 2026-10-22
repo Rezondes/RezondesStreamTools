@@ -37,6 +37,13 @@ export type StandardValues = {
   readonly digitRollMs: number;
   readonly progressShine: boolean;
   readonly shineEvery: number;
+  readonly brbPace: number;
+  readonly brbDim: number;
+  readonly brbBreatheSeconds: number;
+  readonly endingStats: readonly string[];
+  readonly countUpMs: number;
+  readonly endingFadeAt: number;
+  readonly endingFadeMs: number;
   readonly quality: string;
   readonly blobs: boolean;
   readonly blobSpeed: number;

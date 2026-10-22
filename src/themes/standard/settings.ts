@@ -3,7 +3,7 @@
 // (THEMES.md). The only place of the theme with fixed colors, texts and numbers. StandardValues is the type of the
 // resolved values that the scenes read via useStandard.
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
-import { markBasic, choice, color, flag, font, inScene, number, text } from "../../core/fields.ts";
+import { markBasic, choice, color, flag, font, inScene, lines, number, text } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
@@ -52,12 +52,19 @@ const FIELDS = [
   inScene("starting", flag("progressBar", "Fortschrittsbalken", SCREENS, true)),
   flag("showClock", "Uhrzeit oben rechts", SCREENS, true),
   text("ticker", "Hinweis unten (leer = aus)", SCREENS, "", 300),
-  inScene("starting", number("introMs", "Starting: Lichtfelder blenden auf", SCREENS, 1200, 0, 10000, "ms")),
-  inScene("starting", number("titleRiseMs", "Starting: Titel steigt auf (Dauer)", SCREENS, 900, 0, 5000, "ms")),
+  number("introMs", "Lichtfelder blenden auf", SCREENS, 1200, 0, 10000, "ms"),
+  number("titleRiseMs", "Titel steigt auf (Dauer)", SCREENS, 900, 0, 5000, "ms"),
   // fixed: at most 900 ms, a digit has to settle before the next second
-  inScene("starting", number("digitRollMs", "Countdown: Ziffern rollen (Dauer)", SCREENS, 350, 0, 900, "ms")),
+  number("digitRollMs", "Countdown und Pausenzeit: Ziffern rollen (Dauer)", SCREENS, 350, 0, 900, "ms"),
   inScene("starting", flag("progressShine", "Glanzlicht auf dem Fortschrittsbalken", SCREENS, true)),
   inScene("starting", number("shineEvery", "Glanzlicht: alle", SCREENS, 4, 2, 60, "s", 0.5)),
+  inScene("brb", number("brbPace", "BRB: Tempo der Lichtfelder (Faktor)", SCREENS, 0.5, 0.1, 1, undefined, 0.05)),
+  inScene("brb", number("brbDim", "BRB: Helligkeit beim Atmen", SCREENS, 0.6, 0, 1, undefined, 0.05)),
+  inScene("brb", number("brbBreatheSeconds", "BRB: Dauer eines Atemzugs (0 = aus)", SCREENS, 6, 0, 60, "s", 0.5)),
+  inScene("ending", lines("endingStats", "Ending: Zahlen (Schlüssel|Text)", SCREENS, ["follows|Follows", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Nachrichten"])),
+  inScene("ending", number("countUpMs", "Ending: Hochzählen (Dauer)", SCREENS, 1200, 0, 10000, "ms")),
+  inScene("ending", number("endingFadeAt", "Ending: Lichtfelder blenden aus nach", SCREENS, 10, 0, 600, "s")),
+  inScene("ending", number("endingFadeMs", "Ending: Ausblenden (Dauer)", SCREENS, 4000, 0, 20000, "ms")),
 
   // Light fields, light dust and grain in a PixiJS stage (PLAN-STANDARD.md package 1)
   qualityField(BACKGROUND),

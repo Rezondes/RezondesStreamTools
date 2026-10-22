@@ -265,35 +265,32 @@
     {
       "key": "introMs",
       "type": "number",
-      "label": "Starting: Lichtfelder blenden auf",
+      "label": "Lichtfelder blenden auf",
       "group": "Starting, BRB, Ending",
       "default": 1200,
       "min": 0,
       "max": 10000,
-      "unit": "ms",
-      "scene": "starting"
+      "unit": "ms"
     },
     {
       "key": "titleRiseMs",
       "type": "number",
-      "label": "Starting: Titel steigt auf (Dauer)",
+      "label": "Titel steigt auf (Dauer)",
       "group": "Starting, BRB, Ending",
       "default": 900,
       "min": 0,
       "max": 5000,
-      "unit": "ms",
-      "scene": "starting"
+      "unit": "ms"
     },
     {
       "key": "digitRollMs",
       "type": "number",
-      "label": "Countdown: Ziffern rollen (Dauer)",
+      "label": "Countdown und Pausenzeit: Ziffern rollen (Dauer)",
       "group": "Starting, BRB, Ending",
       "default": 350,
       "min": 0,
       "max": 900,
-      "unit": "ms",
-      "scene": "starting"
+      "unit": "ms"
     },
     {
       "key": "progressShine",
@@ -314,6 +311,88 @@
       "unit": "s",
       "step": 0.5,
       "scene": "starting"
+    },
+    {
+      "key": "brbPace",
+      "type": "number",
+      "label": "BRB: Tempo der Lichtfelder (Faktor)",
+      "group": "Starting, BRB, Ending",
+      "default": 0.5,
+      "min": 0.1,
+      "max": 1,
+      "step": 0.05,
+      "scene": "brb"
+    },
+    {
+      "key": "brbDim",
+      "type": "number",
+      "label": "BRB: Helligkeit beim Atmen",
+      "group": "Starting, BRB, Ending",
+      "default": 0.6,
+      "min": 0,
+      "max": 1,
+      "step": 0.05,
+      "scene": "brb"
+    },
+    {
+      "key": "brbBreatheSeconds",
+      "type": "number",
+      "label": "BRB: Dauer eines Atemzugs (0 = aus)",
+      "group": "Starting, BRB, Ending",
+      "default": 6,
+      "min": 0,
+      "max": 60,
+      "unit": "s",
+      "step": 0.5,
+      "scene": "brb"
+    },
+    {
+      "key": "endingStats",
+      "type": "lines",
+      "label": "Ending: Zahlen (Schlüssel|Text)",
+      "group": "Starting, BRB, Ending",
+      "default": [
+        "follows|Follows",
+        "subs|Abos",
+        "raids|Raids",
+        "bits|Bits",
+        "chatMessages|Nachrichten"
+      ],
+      "maxLines": 100,
+      "scene": "ending"
+    },
+    {
+      "key": "countUpMs",
+      "type": "number",
+      "label": "Ending: Hochzählen (Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": 1200,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms",
+      "scene": "ending"
+    },
+    {
+      "key": "endingFadeAt",
+      "type": "number",
+      "label": "Ending: Lichtfelder blenden aus nach",
+      "group": "Starting, BRB, Ending",
+      "default": 10,
+      "min": 0,
+      "max": 600,
+      "unit": "s",
+      "scene": "ending"
+    },
+    {
+      "key": "endingFadeMs",
+      "type": "number",
+      "label": "Ending: Ausblenden (Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": 4000,
+      "min": 0,
+      "max": 20000,
+      "unit": "ms",
+      "scene": "ending"
     },
     {
       "key": "quality",
