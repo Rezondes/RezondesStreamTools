@@ -28,6 +28,21 @@ pub fn stinger_fields(group: &str, fps_default: f64, hold_default: f64) -> Vec<S
     ]
 }
 
+/// The fields of a theme with the four stinger fields at the top of its stinger group (appended when it has none)
+#[must_use]
+pub fn with_stinger_fields(
+    fields: Vec<SettingField>,
+    group: &str,
+    fps_default: f64,
+    hold_default: f64,
+) -> Vec<SettingField> {
+    let own = stinger_fields(group, fps_default, hold_default);
+    let mut fields = fields;
+    let at = fields.iter().position(|field| field.group == group).unwrap_or(fields.len());
+    fields.splice(at..at, own);
+    fields
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::BTreeMap;
@@ -35,6 +50,7 @@ mod tests {
     use serde_json::json;
 
     use super::*;
+    use crate::settings::field::text;
     use crate::settings::validate::validate_settings;
     use crate::themes::schema::ThemeSchema;
 
@@ -67,5 +83,19 @@ mod tests {
         let keys: Vec<&str> = fields.iter().map(|field| field.key.as_str()).collect();
         assert_eq!(keys, ["stingerFps", "stingerHold", "stingerEase", "stingerSize"]);
         assert!(fields.iter().all(|field| field.group == "Stinger"));
+    }
+
+    #[test]
+    fn core_fields_at_the_top_of_the_group() {
+        let own = vec![
+            text("a", "A", "Allgemein", "", None),
+            text("text", "Text", "Stinger", "", None),
+            text("b", "B", "Banner", "", None),
+        ];
+        let fields = with_stinger_fields(own, "Stinger", 60.0, 0.0);
+        let keys: Vec<&str> = fields.iter().map(|field| field.key.as_str()).collect();
+        assert_eq!(keys, ["a", "stingerFps", "stingerHold", "stingerEase", "stingerSize", "text", "b"]);
+        let alone = with_stinger_fields(vec![text("a", "A", "Allgemein", "", None)], "Stinger", 60.0, 0.0);
+        assert_eq!(alone.last().map(|field| field.key.as_str()), Some("stingerSize"));
     }
 }

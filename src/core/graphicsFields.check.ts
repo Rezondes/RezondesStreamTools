@@ -5,7 +5,7 @@ import { qualityField } from "./graphicsFields.ts";
 import { resolveSettings } from "./settings.ts";
 
 const field = qualityField("Allgemein");
-assert.deepEqual(field, { key: "quality", type: "select", label: "Leistungsstufe 3D", group: "Allgemein", default: "mittel", options: ["hoch", "mittel", "niedrig"] });
+assert.deepEqual(field, { key: "quality", type: "select", label: "Leistungsstufe Grafik", group: "Allgemein", default: "mittel", options: ["hoch", "mittel", "niedrig"] });
 
 const probe = { id: "probe", name: "Probe", fields: [field] };
 assert.equal(resolveSettings(probe, {}).quality, "mittel");

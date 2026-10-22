@@ -9,7 +9,7 @@ const QUALITIES: [&str; 3] = ["hoch", "mittel", "niedrig"];
 /// The performance level as a choice, default the middle level
 #[must_use]
 pub fn quality_field(group: &str) -> SettingField {
-    choice("quality", "Leistungsstufe 3D", group, "mittel", &QUALITIES)
+    choice("quality", "Leistungsstufe Grafik", group, "mittel", &QUALITIES)
 }
 
 #[cfg(test)]

@@ -226,6 +226,10 @@ export type BearsValues = {
   readonly fxMax: number;
   readonly fxIn: string;
   readonly fxOut: string;
+  readonly stingerFps: number;
+  readonly stingerHold: number;
+  readonly stingerEase: string;
+  readonly stingerSize: string;
   readonly stingerBear: string;
   readonly stingerDuration: number;
   readonly stingerCut: number;
@@ -350,8 +354,4 @@ export type BearsValues = {
   readonly minimeNames_eisbaer: string;
   readonly minimeNames_grizzly: string;
   readonly minimeNames_panda: string;
-  readonly stingerFps: number;
-  readonly stingerHold: number;
-  readonly stingerEase: string;
-  readonly stingerSize: string;
 };

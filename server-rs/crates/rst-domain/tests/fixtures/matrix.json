@@ -227,7 +227,7 @@
     {
       "key": "quality",
       "type": "select",
-      "label": "Leistungsstufe 3D",
+      "label": "Leistungsstufe Grafik",
       "group": "Matrix-Regen",
       "default": "mittel",
       "options": [
@@ -1696,6 +1696,50 @@
       "basic": true
     },
     {
+      "key": "stingerFps",
+      "type": "number",
+      "label": "Bildrate (Bilder pro Sekunde)",
+      "group": "Stinger",
+      "default": 60,
+      "min": 10,
+      "max": 60
+    },
+    {
+      "key": "stingerHold",
+      "type": "number",
+      "label": "Pause am Übergangspunkt (Anteil je Hälfte)",
+      "group": "Stinger",
+      "default": 0,
+      "min": 0,
+      "max": 80,
+      "unit": "%"
+    },
+    {
+      "key": "stingerEase",
+      "type": "select",
+      "label": "Bewegungskurve",
+      "group": "Stinger",
+      "default": "linear",
+      "options": [
+        "linear",
+        "nagel",
+        "federnd",
+        "weich",
+        "stempel"
+      ]
+    },
+    {
+      "key": "stingerSize",
+      "type": "select",
+      "label": "Ausgabegrösse",
+      "group": "Stinger",
+      "default": "1080p",
+      "options": [
+        "1080p",
+        "720p"
+      ]
+    },
+    {
       "key": "stingerDuration",
       "type": "number",
       "label": "Länge",
@@ -2643,50 +2687,6 @@
       "label": "Befehlsseite: Matrix-Regen im Hintergrund",
       "group": "Befehlsseite",
       "default": true
-    },
-    {
-      "key": "stingerFps",
-      "type": "number",
-      "label": "Bildrate (Bilder pro Sekunde)",
-      "group": "Stinger",
-      "default": 60,
-      "min": 10,
-      "max": 60
-    },
-    {
-      "key": "stingerHold",
-      "type": "number",
-      "label": "Pause am Übergangspunkt (Anteil je Hälfte)",
-      "group": "Stinger",
-      "default": 0,
-      "min": 0,
-      "max": 80,
-      "unit": "%"
-    },
-    {
-      "key": "stingerEase",
-      "type": "select",
-      "label": "Bewegungskurve",
-      "group": "Stinger",
-      "default": "linear",
-      "options": [
-        "linear",
-        "nagel",
-        "federnd",
-        "weich",
-        "stempel"
-      ]
-    },
-    {
-      "key": "stingerSize",
-      "type": "select",
-      "label": "Ausgabegrösse",
-      "group": "Stinger",
-      "default": "1080p",
-      "options": [
-        "1080p",
-        "720p"
-      ]
     }
   ],
   "groupScenes": {

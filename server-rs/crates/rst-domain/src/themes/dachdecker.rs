@@ -19,7 +19,7 @@ use crate::themes::minime_fields::{
 };
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
-use crate::themes::stinger_fields::stinger_fields;
+use crate::themes::stinger_fields::with_stinger_fields;
 
 const FONTS: [&str; 4] = ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"];
 const PROGRESS: [&str; 2] = ["masskette", "aus"];
@@ -542,7 +542,7 @@ pub fn dachdecker() -> Theme {
     let schema = ThemeSchema {
         id: "dachdecker".to_owned(),
         name: "Dachdecker".to_owned(),
-        fields: mark_basic([fields, stinger_fields(STINGER, 30.0, 20.0)].concat(), BASIC),
+        fields: mark_basic(with_stinger_fields(fields, STINGER, 30.0, 20.0), BASIC),
         group_scenes: group_scenes(),
         minime_variants: Some(variants()),
         minime_teams: None,

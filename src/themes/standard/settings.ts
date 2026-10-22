@@ -4,7 +4,7 @@
 // resolved values that the scenes read via useStandard.
 import { markBasic, choice, color, flag, font, inScene, number, sound, text } from "../../core/fields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
-import { stingerFields } from "../../core/stingerOptions.ts";
+import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
 const STANDARD_FONTS = ["Inter", "Manrope", "DM Sans", "Space Grotesk"] as const;
@@ -141,4 +141,4 @@ const BASIC = [
   "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatBadges", "camName", "camLive", "musicLabel", "musicIdle", "musicHide",
 ];
 
-export const standardSettings: ThemeSchema = { id: "standard", name: "Standard", fields: markBasic([...FIELDS, ...stingerFields(STINGER)], BASIC), groupScenes: GROUP_SCENES, personalize };
+export const standardSettings: ThemeSchema = { id: "standard", name: "Standard", fields: markBasic(withStingerFields([...FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };

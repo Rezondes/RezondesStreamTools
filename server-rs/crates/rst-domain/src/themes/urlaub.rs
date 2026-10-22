@@ -21,7 +21,7 @@ use crate::themes::minime_fields::{
 };
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
-use crate::themes::stinger_fields::stinger_fields;
+use crate::themes::stinger_fields::with_stinger_fields;
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -573,7 +573,7 @@ pub fn urlaub() -> Theme {
     let schema = ThemeSchema {
         id: "urlaub".to_owned(),
         name: "Urlaub".to_owned(),
-        fields: mark_basic([fields(), stinger_fields(STINGER, 60.0, 0.0)].concat(), BASIC),
+        fields: mark_basic(with_stinger_fields(fields(), STINGER, 60.0, 0.0), BASIC),
         group_scenes: group_scenes(),
         minime_variants: Some(variants()),
         minime_teams: None,

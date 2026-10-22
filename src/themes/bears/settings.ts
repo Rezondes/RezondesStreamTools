@@ -7,7 +7,7 @@ import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
-import { stingerFields } from "../../core/stingerOptions.ts";
+import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { BEAR_CHOICES, BEAR_IDS } from "./bears.ts";
 import { ICON_NAMES } from "./icons.ts";
@@ -359,7 +359,7 @@ const BASIC = [
 export const bearsSettings: ThemeSchema = {
   id: "bears",
   name: "Bärenbande",
-  fields: markBasic([...FIELDS, ...minimeVariantFields(BEAR_SET), ...stingerFields(STINGER)], BASIC),
+  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(BEAR_SET)], STINGER), BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: BEAR_SET,

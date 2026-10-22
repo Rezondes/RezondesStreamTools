@@ -3,4 +3,4 @@
 import { choice } from "./fields.ts";
 import { QUALITIES } from "./three/quality.ts";
 
-export const qualityField = (group: string) => choice("quality", "Leistungsstufe 3D", group, "mittel", QUALITIES);
+export const qualityField = (group: string) => choice("quality", "Leistungsstufe Grafik", group, "mittel", QUALITIES);

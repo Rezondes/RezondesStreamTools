@@ -207,6 +207,10 @@ export type PlantageValues = {
   readonly fxIn: string;
   readonly fxOut: string;
   readonly fxBubble: boolean;
+  readonly stingerFps: number;
+  readonly stingerHold: number;
+  readonly stingerEase: string;
+  readonly stingerSize: string;
   readonly stingerDuration: number;
   readonly stingerCut: number;
   readonly stingerText: string;
@@ -334,8 +338,4 @@ export type PlantageValues = {
   readonly minimeFireMs_sniper: number;
   readonly minimeAimMs_grenadier: number;
   readonly minimeFireMs_grenadier: number;
-  readonly stingerFps: number;
-  readonly stingerHold: number;
-  readonly stingerEase: string;
-  readonly stingerSize: string;
 };

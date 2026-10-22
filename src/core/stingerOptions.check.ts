@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import type { RenderClip } from "./renderClip.ts";
 import { resolveSettings } from "./settings.ts";
-import { readStingerOptions, stingerFields, warpTime, withStingerOptions } from "./stingerOptions.ts";
+import { readStingerOptions, stingerFields, warpTime, withStingerFields, withStingerOptions } from "./stingerOptions.ts";
 
 const near = (actual: number, expected: number, label: string) => assert.ok(Math.abs(actual - expected) < 1e-6, `${label}: ${actual} vs ${expected}`);
 
@@ -61,5 +61,10 @@ assert.equal(stingerFields("Stinger")[0].default, 60);
 assert.equal(stingerFields("Stinger")[1].default, 0);
 const values = resolveSettings({ id: "probe", name: "Probe", fields: stingerFields("Stinger") }, { stingerFps: 24, stingerHold: 25, stingerEase: "nagel", stingerSize: "720p" });
 assert.deepEqual(readStingerOptions(values), { fps: 24, hold: 0.25, ease: "nagel", size: "720p" });
+
+// The core fields stand at the top of the stinger group of a theme, or at the end when it has none
+const themeFields = [{ key: "a", group: "Allgemein" }, { key: "text", group: "Stinger" }, { key: "b", group: "Banner" }];
+assert.deepEqual(withStingerFields(themeFields, "Stinger").map(field => field.key), ["a", "stingerFps", "stingerHold", "stingerEase", "stingerSize", "text", "b"]);
+assert.deepEqual(withStingerFields(themeFields.slice(0, 1), "Stinger").map(field => field.key).at(-1), "stingerSize");
 
 console.log("stingerOptions ok");

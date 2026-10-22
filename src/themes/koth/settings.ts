@@ -11,7 +11,7 @@ import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
-import { stingerFields } from "../../core/stingerOptions.ts";
+import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { MinimeVariantSet, SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./hill.ts";
 import { ROLE_IDS, ROLE_SET } from "./soldiers3d.ts";
@@ -395,7 +395,7 @@ const BASIC = [
 export const kothSettings: ThemeSchema = {
   id: "koth",
   name: "King of the Hill",
-  fields: markBasic([...FIELDS, ...minimeVariantFields(ROLE_SET), ...minimeTeamFields(TEAM_SET), ...COMBAT_FIELDS, ...stingerFields(STINGER)], BASIC),
+  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(ROLE_SET), ...minimeTeamFields(TEAM_SET), ...COMBAT_FIELDS], STINGER), BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: ROLE_SET,

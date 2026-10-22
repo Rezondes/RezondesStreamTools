@@ -22,6 +22,13 @@ export const stingerFields = (group: string, defaults: StingerDefaults = {}) => 
   choice("stingerSize", "Ausgabegrösse", group, "1080p", STINGER_SIZES),
 ];
 
+// The fields of a theme with the four stinger fields at the top of its stinger group (appended when it has none)
+export function withStingerFields<T extends { group: string }>(fields: readonly T[], group: string, defaults: StingerDefaults = {}): (T | ReturnType<typeof stingerFields>[number])[] {
+  const at = fields.findIndex(field => field.group === group);
+  const own = stingerFields(group, defaults);
+  return at < 0 ? [...fields, ...own] : [...fields.slice(0, at), ...own, ...fields.slice(at)];
+}
+
 export type StingerOptions = { fps: number; hold: number; ease: EaseChoice; size: StingerSize };
 
 // Options from the resolved values of a theme (hold as a share 0..0.8)

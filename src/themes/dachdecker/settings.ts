@@ -8,7 +8,7 @@ import { choice, color, flag, font, lines, markBasic, number, text } from "../..
 import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
-import { stingerFields } from "../../core/stingerOptions.ts";
+import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { FIGURE_SET, FIGURE_TYPES } from "./figures.ts";
 
@@ -335,7 +335,7 @@ const BASIC = [
 export const dachdeckerSettings: ThemeSchema = {
   id: "dachdecker",
   name: "Dachdecker",
-  fields: markBasic([...FIELDS, ...minimeVariantFields(FIGURE_SET), ...stingerFields(STINGER, { stingerFps: 30, stingerHold: 20 })], BASIC),
+  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(FIGURE_SET)], STINGER, { stingerFps: 30, stingerHold: 20 }), BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: FIGURE_SET,
