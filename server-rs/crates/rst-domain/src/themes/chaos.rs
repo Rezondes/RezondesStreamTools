@@ -345,6 +345,7 @@ fn personalize(login: &Login) -> SettingValues {
 
 /// Simple view of the dashboard (template: `BASIC` in `src/themes/chaos/settings.ts`)
 const BASIC: &[&str] = &[
+    "quality",
     "channelName",
     "font",
     "titleFont",

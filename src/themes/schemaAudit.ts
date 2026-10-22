@@ -36,11 +36,13 @@ const CORE_PREFIXES = [minimeNamesKey(""), minimeTeamNamesKey(""), minimeTeamLab
 // scene 1 to 10; an area of numbers only shows the hint to the advanced view), and no number is basic except these,
 // which almost every streamer sets
 const BASIC_NUMBERS = new Set(["minimeMax"]);
+// The performance level is basic in every theme that has it and does not count against the limit of an area
+const ALWAYS_BASIC = new Set(["quality"]);
 export function auditBasic(schema: ThemeSchema): string[] {
   const numbers = schema.fields.filter(field => field.basic && field.type === "number" && !BASIC_NUMBERS.has(field.key)).map(field => `${field.key}: basic number`);
   const areas = (["general", ...SCENES] as const).flatMap(view => {
     const fields = groupsForView(schema, view).flatMap(group => group.fields);
-    const count = fields.filter(field => field.basic).length;
+    const count = fields.filter(field => field.basic && !ALWAYS_BASIC.has(field.key)).length;
     const [min, max] = view === "general" ? [3, 12] : [1, 10];
     const needed = fields.some(field => field.type !== "number") ? min : 0;
     return count < needed || count > max ? [`${view}: ${count} basic fields`] : [];

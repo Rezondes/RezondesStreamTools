@@ -404,7 +404,8 @@
         "hoch",
         "mittel",
         "niedrig"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "blobs",

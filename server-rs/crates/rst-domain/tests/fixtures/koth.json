@@ -332,7 +332,8 @@
         "hoch",
         "mittel",
         "niedrig"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "worldSeed",

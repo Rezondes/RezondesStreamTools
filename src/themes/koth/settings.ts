@@ -396,6 +396,7 @@ const personalize = (login: string) => ({ channelName: capital(login) });
 
 // Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
 const BASIC = [
+  "quality",
   "channelName", "font", "titleFont", "textColor", "accent", "accent2", "tower", "mountains", "smoke", "flagFaction",
   "startingEyebrow", "startingTitle", "ticker", "brbTitle", "searchlightOn", "endingTitle", "flaresOn", "endingNext", "alertStyle",
   "followLine", "subLine", "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatStyle", "chatBadges",

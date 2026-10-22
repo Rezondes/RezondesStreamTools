@@ -50,5 +50,8 @@ const simple: ThemeSchema = {
 };
 assert.deepEqual(auditBasic(simple), ["size: basic number", "chat: 11 basic fields"]);
 assert.deepEqual(auditBasic({ ...simple, fields: simple.fields.slice(0, 2) }), ["size: basic number", "general: 2 basic fields"]);
+// The performance level does not count against the limit: ten others plus quality are fine
+const quality = { key: "quality", type: "select" as const, label: "Q", group: "S", default: "mittel", options: ["hoch", "mittel", "niedrig"], basic: true };
+assert.ok(!auditBasic({ ...simple, fields: [simple.fields[0], ...many.slice(1), quality] }).some(finding => finding.startsWith("chat")));
 
 console.log("schemaAudit ok");

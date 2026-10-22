@@ -224,6 +224,7 @@ fn personalize(login: &Login) -> SettingValues {
 /// Simple view of the dashboard: per area the texts, main colors, figures and switches most streamers change
 /// (template: `BASIC` in `src/themes/standard/settings.ts`)
 const BASIC: &[&str] = &[
+    "quality",
     "accent",
     "accent2",
     "textColor",

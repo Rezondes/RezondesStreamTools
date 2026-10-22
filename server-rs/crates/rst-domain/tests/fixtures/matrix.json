@@ -234,7 +234,8 @@
         "hoch",
         "mittel",
         "niedrig"
-      ]
+      ],
+      "basic": true
     },
     {
       "key": "rainSeed",
