@@ -30,9 +30,10 @@ Kern-Feature und für jedes Theme. Regeln für die Pläne:
 | [src/themes/chaos/docs/PLAN-CHAOS.md](src/themes/chaos/docs/PLAN-CHAOS.md) | Theme Chaos |
 | [src/themes/dachdecker/docs/PLAN-DACHDECKER.md](src/themes/dachdecker/docs/PLAN-DACHDECKER.md) | Theme Dachdecker |
 | [src/themes/matrix/docs/PLAN-MATRIX.md](src/themes/matrix/docs/PLAN-MATRIX.md) | Theme Matrix: Modernisierung (geplant) |
+| [src/themes/standard/docs/PLAN-STANDARD.md](src/themes/standard/docs/PLAN-STANDARD.md) | Theme Standard: Modernisierung (geplant, Prototyp vor Package 1) |
 
 Modernisierung der Themes (entschieden 2026-10-21): KOTH, Plantage, Chaos, Bärenbande, Urlaub und Matrix bekommen je
-einen Abschnitt "Modernisierung" in ihrem Plan; die gemeinsamen Bausteine stehen in PLAN-GRAFIK Packages 6 bis 8 und
+einen Abschnitt "Modernisierung" in ihrem Plan, Standard folgt mit PLAN-STANDARD.md (2026-10-22); die gemeinsamen Bausteine stehen in PLAN-GRAFIK Packages 6 bis 8 und
 RUST-PLAN Packages 53 und 54. Reihenfolge: PLAN-GRAFIK 6 bis 8, dann je Theme die Stil-Probe mit Abnahme.
 
 Pläne eines Themes liegen im Ordner `docs` des Themes (`src/themes/<id>/docs/PLAN-<ID>.md`, daneben `DESIGN-<ID>.md`),
