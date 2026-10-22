@@ -108,6 +108,9 @@ function Content({ account, hash, act }: { account: Account; hash: string; act: 
           {TEXTS.signedInAs}{" "}
           <a className="glow dashboard-account" href="#/account" title={TEXTS.toAccount} aria-current={section === "account" || section === "admin" ? "page" : undefined}>{account.login}</a>
           {account.admin && <span className="muted"> {TEXTS.admin}</span>}
+          <button className="btn icon danger" aria-label={TEXTS.logout} title={TEXTS.logout} onClick={() => act("/auth/logout")}>
+            <span aria-hidden="true">⏻</span>
+          </button>
         </span>
       </nav>
       <div className={`dashboard-content${split ? " split" : ""}`}>

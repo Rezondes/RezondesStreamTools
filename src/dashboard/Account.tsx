@@ -31,12 +31,7 @@ export default function Account({ me, act }: { me: Me; act: Act }) {
           <div><dt>{TEXT.look}</dt><dd>{TEXT.lookValue}</dd></div>
         </dl>
         <p className="muted">{TEXT.settingsHint}</p>
-        <p className="actions">
-          {me.admin && <a className="btn" href="#/admin">{TEXTS.sections.admin}</a>}
-          <button className="btn icon danger" aria-label={TEXTS.logout} title={TEXTS.logout} onClick={() => act("/auth/logout")}>
-            <span aria-hidden="true">⏻</span>
-          </button>
-        </p>
+        {me.admin && <p className="actions"><a className="btn" href="#/admin">{TEXTS.sections.admin}</a></p>}
       </section>
     </section>
   );
