@@ -1,9 +1,9 @@
 // Minimes of the Kebab theme, transparent, recommended 1920x360 at the bottom edge of the picture: joined chatters as
 // small dishes (Döner, Dürüm, Lahmacun, Pommes, chosen with !typ) in red line art that hop along a counter line, with
 // the name on a small order note. Own animations: the dish's own move (spin, unroll, fold, throw a stick) and waving;
-// on chat they jump with a puff of steam and a plop. Towers of the core are a stack of plates. Who is in and what
+// on chat they jump with a puff of steam. Towers of the core are a stack of plates. Who is in and what
 // everyone does comes from useMinimes, the hopping from the core (minimeHops). Parameters: ?demo, ?demo=<n>
-import { type CSSProperties, useEffect, useMemo, useState } from "react";
+import { type CSSProperties, useMemo, useState } from "react";
 import { useMinimes, type MinimeStackScene } from "../../../core/hooks/useMinimes.ts";
 import { actorRun, actorStyle, shownVariant, type MinimeAction, type MinimeActor } from "../../../core/minimeBehavior.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
@@ -12,7 +12,7 @@ import { params } from "../../../core/params.ts";
 import { DISH_SET, DISH_TYPES, type DishType, MINIME_REACTION } from "../dishes.ts";
 import Dish from "../ink/Dish.tsx";
 import type { InkStyle } from "../ink/Ink.tsx";
-import { playPlop, plopTone } from "../tones.ts";
+import { plopTone } from "../tones.ts";
 import { useKebab } from "../useKebab.ts";
 import "../../../core/minimeHops.css";
 import "../minimes.css";
@@ -55,10 +55,6 @@ function Figure({ actor, type, style }: { actor: MinimeActor; type: DishType; st
   const values = useKebab();
   const level = actor.stack ? actor.stack.level - 1 : 0;
   const run = actorRun(actor);
-  const jumping = actor.action === MINIME_REACTION;
-  useEffect(() => {
-    if (jumping && values.minimeJumpSound) playPlop(values.minimeSoundJump);
-  }, [run, jumping, values.minimeJumpSound, values.minimeSoundJump]);
   const css = {
     ...actorStyle(actor), ...hopStyle(actor, values.hopMs),
     "--level-lift": `${(level * values.minimeSize * values.minimeLevelHeight) / PERCENT}px`, "--name-shift": level > 0 ? (-1) ** level : 0,

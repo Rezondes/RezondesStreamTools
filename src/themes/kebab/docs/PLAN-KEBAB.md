@@ -547,7 +547,7 @@ Aktionsnamen des Kerns nutzen (`COMBAT_ACTIONS`, `STACK_ACTIONS`).
 
 Wie DESIGN-KEBAB.md "Figuren": vier Typen in roter Linie auf Papierfüllung, Gesicht und Füsschen; eigene Animationen
 drehen und Soße spritzen (Döner), aufrollen (Dürüm), falten (Lahmacun), Stäbchen werfen (Pommes), winken; Reaktion auf
-Chat: Sprung mit Dampfwolke und Ton `plop`; Tellerstapel als Turm (Lahmacun unten, Dürüm Mitte, Pommes oben), die
+Chat: Sprung mit Dampfwolke (ohne Ton); Tellerstapel als Turm (Lahmacun unten, Dürüm Mitte, Pommes oben), die
 Höhe je Stufe ist eine Einstellung. Namensschilder als kleine Bestellzettel über der Figur. Die Figuren laufen auf
 einer Thekenlinie am unteren Rand.
 
@@ -556,7 +556,7 @@ einer Thekenlinie am unteren Rand.
 | Gruppe | Schlüssel (Standard) |
 |---|---|
 | Minimes: Aussehen | `minimeSize` (96 px), `minimeCounter` (an), `minimeLabels` (an), `minimeLabelSize` (16 px), `minimeLevelHeight` (70 %) |
-| Minimes: Animationen | je Animation Häufigkeit und Dauer: `minimeSpinWeight` (5), `minimeSpinMs` (1600 ms), `minimeRollWeight` (4), `minimeRollMs` (2000 ms), `minimeFoldWeight` (4), `minimeFoldMs` (1800 ms), `minimeFriesWeight` (4), `minimeFriesMs` (1400 ms), `minimeWaveWeight` (3), `minimeWaveMs` (1500 ms), `minimeJumpMs` (700 ms), `minimeJumpSound` (an) |
+| Minimes: Animationen | je Animation Häufigkeit und Dauer: `minimeSpinWeight` (5), `minimeSpinMs` (1600 ms), `minimeRollWeight` (4), `minimeRollMs` (2000 ms), `minimeFoldWeight` (4), `minimeFoldMs` (1800 ms), `minimeFriesWeight` (4), `minimeFriesMs` (1400 ms), `minimeWaveWeight` (3), `minimeWaveMs` (1500 ms), `minimeJumpMs` (700 ms) |
 | Minimes: Typen | aus `minimeVariantFields(set)`: Befehl `!typ`, je Typ Name und Chat-Namen (Döner, Dürüm, Lahmacun, Pommes) |
 | Minimes: Türme | aus `minimeStackFields(set, defaults)` mit Türmen an und den Stufen Lahmacun, Dürüm, Pommes; Ton beim Aufsteigen `plop` |
 | Kern-Gruppen | `MINIME_COMMANDS`, `MINIME_RULES`, `MINIME_MOTION`, `MINIME_HOP` |

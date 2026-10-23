@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 use crate::identity::values::Login;
 use crate::settings::field::{
     SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, lines, mark_basic, number,
-    sound, text, with_defaults,
+    text, with_defaults,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::graphics_fields::quality_field;
@@ -390,8 +390,6 @@ fn minimes() -> Vec<SettingField> {
             MS,
             None,
         ),
-        flag("minimeJumpSound", "Sprung: Ton", MINIME_MOVES, true),
-        sound("minimeSoundJump", "Ton: Sprung (leer = eingebaut)", MINIME_MOVES),
     ]);
     // Towers as a stack of plates: Lahmacun at the bottom, Dürüm in the middle, Pommes on top, plop on each climb
     let level = |id: &str| SettingValue::Text(id.to_owned());

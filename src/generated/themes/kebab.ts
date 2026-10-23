@@ -255,8 +255,6 @@ export type KebabValues = {
   readonly minimeWaveWeight: number;
   readonly minimeWaveMs: number;
   readonly minimeJumpMs: number;
-  readonly minimeJumpSound: boolean;
-  readonly minimeSoundJump: SoundValue;
   readonly minimeStack: boolean;
   readonly minimeStackMinS: number;
   readonly minimeStackMaxS: number;

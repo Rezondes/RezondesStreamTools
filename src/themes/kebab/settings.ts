@@ -3,7 +3,7 @@
 // scenes read via useKebab.
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
-import { choice, color, flag, font, inScene, lines, markBasic, number, sound, text, withDefaults } from "../../core/fields.ts";
+import { choice, color, flag, font, inScene, lines, markBasic, number, text, withDefaults } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
@@ -244,8 +244,6 @@ const FIELDS = [
   number("minimeWaveWeight", "Winken: Häufigkeit", MINIME_MOVES, 3, 0, 100),
   number("minimeWaveMs", "Winken: Dauer", MINIME_MOVES, 1500, 300, 10000, "ms"),
   number("minimeJumpMs", "Reaktion auf Chat (Sprung mit Dampf): Dauer", MINIME_MOVES, 700, 200, 5000, "ms"),
-  flag("minimeJumpSound", "Sprung: Ton", MINIME_MOVES, true),
-  sound("minimeSoundJump", "Ton: Sprung (leer = eingebaut)", MINIME_MOVES),
   // Towers as a stack of plates: Lahmacun at the bottom, Dürüm in the middle, Pommes on top, with the plop on each climb
   ...minimeStackFields(DISH_SET, { minimeStack: true, minimeStackLevel1: "lahmacun", minimeStackLevel2: "duerum", minimeStackLevel3: "pommes", minimeStackSound: true }),
 ] as const satisfies readonly SettingField[];

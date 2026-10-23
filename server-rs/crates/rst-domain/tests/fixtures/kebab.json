@@ -2288,23 +2288,6 @@
       "unit": "ms"
     },
     {
-      "key": "minimeJumpSound",
-      "type": "boolean",
-      "label": "Sprung: Ton",
-      "group": "Minimes: Animationen",
-      "default": true
-    },
-    {
-      "key": "minimeSoundJump",
-      "type": "sound",
-      "label": "Ton: Sprung (leer = eingebaut)",
-      "group": "Minimes: Animationen",
-      "default": {
-        "file": "",
-        "volume": 1
-      }
-    },
-    {
       "key": "minimeStack",
       "type": "boolean",
       "label": "Türme an",
