@@ -1,7 +1,7 @@
 // A scene as a single HTML file for OBS (browser source "local file"): the offline build of the page (vite build
 // --mode offline: one script, one stylesheet in dist/offline/) with the scene, its settings and its media files
-// inside (window.RST_OFFLINE, src/core/offline.ts). It needs no server and gets no live data; the fonts come from
-// Google Fonts like on the server. Pure; check: offlineHtml.check.ts.
+// inside (window.RST_OFFLINE, src/core/offline.ts). It needs no server, no internet and gets no live data: the fonts
+// it uses are inside as data URLs (neededFontFaces, inlineFonts). Pure; check: offlineHtml.check.ts.
 import type { OfflinePage } from "../core/offline.ts";
 import type { SettingField, SettingValues } from "../core/theme.ts";
 
@@ -21,7 +21,7 @@ export function offlineHtml({ page, script, style, fonts, title }: OfflineParts)
     "<head>",
     '<meta charset="utf-8">',
     `<title>${attribute(title)}</title>`,
-    fonts ? `<link href="${attribute(fonts)}" rel="stylesheet">` : "",
+    fonts ? `<style>${inStyle(fonts)}</style>` : "",
     `<style>${inStyle(style)}</style>`,
     `<script>window.RST_OFFLINE = ${data};</script>`,
     "</head>",
@@ -32,6 +32,26 @@ export function offlineHtml({ page, script, style, fonts, title }: OfflineParts)
     "</html>",
   ].filter(Boolean).join("\n");
 }
+
+// fixed: the subsets of a Google Fonts stylesheet a downloaded scene keeps (German text and names in latin letters)
+const FONT_SUBSETS = new Set(["latin", "latin-ext"]);
+const familyOf = (face: string) => /font-family:\s*['"]?([^;'"]+)/.exec(face)?.[1] ?? "";
+const FONT_URL = /url\(([^)]+)\)/g;
+
+// The @font-face rules of a Google Fonts stylesheet whose family the text names (the stylesheet of the page and the
+// values), only the kept subsets; Google writes the subset as a comment before each rule
+export function neededFontFaces(css: string, used: string): string[] {
+  return [...css.matchAll(/\/\*\s*([\w-]+)\s*\*\/\s*(@font-face\s*\{[^}]*\})/g)]
+    .filter(([, subset, face]) => FONT_SUBSETS.has(subset) && used.includes(familyOf(face)))
+    .map(([, , face]) => face);
+}
+
+// The font files of these rules, each once
+export const fontUrls = (faces: readonly string[]) => [...new Set(faces.flatMap(face => [...face.matchAll(FONT_URL)].map(match => match[1])))];
+
+// The rules with their files as data URLs (url -> data URL); a file without one keeps its URL
+export const inlineFonts = (faces: readonly string[], files: Record<string, string>) =>
+  faces.map(face => face.replace(FONT_URL, (all, url: string) => (files[url] ? `url(${files[url]})` : all))).join("\n");
 
 // The media files the values use: media fields (a file name) and sounds (an own file); full URLs stay outside
 export function usedMedia(fields: readonly SettingField[], values: SettingValues): string[] {

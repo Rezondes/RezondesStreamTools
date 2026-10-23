@@ -12,7 +12,7 @@ import { DEFAULT_THEME, findModule, findTheme } from "../themes/registry.ts";
 import { getJson } from "./api.ts";
 import type { Me } from "./navigation.ts";
 import { reportError, toast } from "./notices.ts";
-import { offlineFileName, offlineHtml, usedMedia } from "./offlineHtml.ts";
+import { fontUrls, inlineFonts, neededFontFaces, offlineFileName, offlineHtml, usedMedia } from "./offlineHtml.ts";
 import { TEXTS } from "./texts.de.ts";
 import { keyColorFor, keyHex, keyPixels, type Rgb, videoSeconds } from "./videoFrames.ts";
 
@@ -59,6 +59,14 @@ async function dataUrl(url: string) {
   });
 }
 
+// The fonts of the Google Fonts stylesheet of the page that the text names, with their files inside
+async function embeddedFonts(url: string, used: string) {
+  const faces = neededFontFaces(await text(url), used);
+  const urls = fontUrls(faces);
+  const files = await Promise.all(urls.map(dataUrl));
+  return inlineFonts(faces, Object.fromEntries(urls.map((font, index) => [font, files[index]])));
+}
+
 // The saved values of the active theme
 async function savedValues(themeId: string) {
   const schema = findTheme(themeId) ?? findTheme(DEFAULT_THEME)!;
@@ -72,7 +80,8 @@ async function downloadHtml(me: Me, scene: SceneName) {
   const names = usedMedia(schema.fields, values);
   const files = await Promise.all(names.map(name => dataUrl(`${streamerPath.base(me.login)}/media/${encodeURIComponent(name)}`)));
   const media = Object.fromEntries(names.map((name, index) => [name, files[index]]));
-  const fonts = document.querySelector<HTMLLinkElement>('link[href^="https://fonts.googleapis.com/css2"]')?.href ?? null;
+  const fontSheet = document.querySelector<HTMLLinkElement>('link[href^="https://fonts.googleapis.com/css2"]')?.href;
+  const fonts = fontSheet ? await embeddedFonts(fontSheet, style + JSON.stringify(values)) : null;
   const html = offlineHtml({ page: { scene, settings: { theme: schema.id, values }, media }, script, style, fonts, title: `${TEXTS.scenes[scene]} (${me.login})` });
   const name = offlineFileName(me.login, scene, "html");
   save(new Blob([html], { type: "text/html" }), name);
