@@ -8,7 +8,8 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, lines, mark_basic, number, text,
+    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, lines, mark_basic, number,
+    text,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::graphics_fields::quality_field;
@@ -127,7 +128,8 @@ fn starting() -> Vec<SettingField> {
             ],
             None,
         ),
-        number("countdown", "Countdown-Standard", STARTING, 300.0, 0.0, 86400.0, S, None),
+        number("countdown", "Countdown: Dauer", STARTING, 300.0, 0.0, 86400.0, S, None),
+        text("countdownAt", "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)", STARTING, "", Some(5)),
         text("countdownPrefix", "Text vor dem Countdown", STARTING, "", None),
         text("countdownDone", "Text nach dem Countdown", STARTING, "GLEICH GEHT'S LOS", None),
         flag("startingTiles", "Ziegel: Dach bis zum Ende des Countdowns decken", STARTING, true),
@@ -225,21 +227,24 @@ fn ending() -> Vec<SettingField> {
         number("fireworksSparks", "Feuerwerk: Funken je Rakete", ENDING, 110.0, 10.0, 400.0, None, None),
         flag("endingIntro", "Kamera startet am Richtkranz", ENDING, true),
         number("endingShift", "Haus nach rechts versetzt", ENDING, 230.0, 0.0, 600.0, PX, None),
-        flag("protocolOn", "Abnahmeprotokoll", ENDING, true),
-        text("protocolTitle", "Abnahmeprotokoll: Titel", ENDING, "ABNAHMEPROTOKOLL", None),
+        in_scene(SceneName::Stats, flag("protocolOn", "Abnahmeprotokoll", ENDING, true)),
+        in_scene(SceneName::Stats, text("protocolTitle", "Abnahmeprotokoll: Titel", ENDING, "ABNAHMEPROTOKOLL", None)),
         // Keys: follows, subs, giftedSubs, raids, raiders, bits, redeems, hypeLevel, chatMessages, chatters, duration
-        lines(
-            "protocolLines",
-            "Abnahmeprotokoll: Zeilen (Schlüssel|Text)",
-            ENDING,
-            &["follows|Neue Dachdecker", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Gelegte Ziegel"],
-            Some(12),
+        in_scene(
+            SceneName::Stats,
+            lines(
+                "protocolLines",
+                "Abnahmeprotokoll: Zeilen (Schlüssel|Text)",
+                ENDING,
+                &["follows|Neue Dachdecker", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Gelegte Ziegel"],
+                Some(12),
+            ),
         ),
-        number("countUpMs", "Hochzählen: Dauer", ENDING, 1000.0, 0.0, 5000.0, MS, None),
-        flag("stampOn", "Stempel", ENDING, true),
-        text("stampText", "Stempel: Text", ENDING, "ABGENOMMEN", Some(40)),
-        number("stampAt", "Stempel schlägt auf nach", ENDING, 6.0, 1.0, 60.0, S, Some(0.5)),
-        flag("stampSound", "Stempel: Ton", ENDING, true),
+        in_scene(SceneName::Stats, number("countUpMs", "Hochzählen: Dauer", ENDING, 1000.0, 0.0, 5000.0, MS, None)),
+        in_scene(SceneName::Stats, flag("stampOn", "Stempel", ENDING, true)),
+        in_scene(SceneName::Stats, text("stampText", "Stempel: Text", ENDING, "ABGENOMMEN", Some(40))),
+        in_scene(SceneName::Stats, number("stampAt", "Stempel schlägt auf nach", ENDING, 6.0, 1.0, 60.0, S, Some(0.5))),
+        in_scene(SceneName::Stats, flag("stampSound", "Stempel: Ton", ENDING, true)),
     ]
 }
 

@@ -34,7 +34,7 @@ assert.deepEqual(placeFx(undefined, () => 0.5), { x: 50, y: 50 });
 assert.deepEqual(placeFx("random", () => 0, 10), { x: 10, y: 10 });
 assert.deepEqual(placeFx("random", () => 1, 10), { x: 90, y: 90 });
 
-// Countdown end: ?at=HH:MM today (or tomorrow if already past), otherwise the seconds from now
+// Countdown end: countdownAt HH:MM today (or tomorrow if already past), otherwise the seconds from now
 const now = new Date(2026, 9, 15, 19, 30, 0);
 assert.equal(countdownEnd("20:00", 300, now), new Date(2026, 9, 15, 20, 0, 0).getTime());
 assert.equal(countdownEnd("19:00", 300, now), new Date(2026, 9, 16, 19, 0, 0).getTime());

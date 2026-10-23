@@ -183,24 +183,30 @@ fn world() -> Vec<SettingField> {
         number("flaresEvery", "Leuchtraketen: alle", DUSK, 2.2, 0.5, 10.0, S, Some(0.1)),
         number("flareSparks", "Leuchtraketen: Funken", DUSK, 80.0, 10.0, 400.0, None, None),
         flag("flareSound", "Leuchtraketen: Zischen", DUSK, false),
-        flag("reportOn", "Einsatzbericht", DUSK, true),
-        text("reportTitle", "Einsatzbericht: Titel", DUSK, "EINSATZBERICHT", None),
-        lines(
-            "reportLines",
-            "Einsatzbericht: Zeilen (Wert|Text)",
-            DUSK,
-            &[
-                "follows|Neue Rekruten",
-                "subs|Verstärkung",
-                "raids|Verbündete Trupps",
-                "bits|Munition",
-                "chatMessages|Funksprüche",
-            ],
-            Some(8),
+        in_scene(SceneName::Stats, flag("reportOn", "Einsatzbericht", DUSK, true)),
+        in_scene(SceneName::Stats, text("reportTitle", "Einsatzbericht: Titel", DUSK, "EINSATZBERICHT", None)),
+        in_scene(
+            SceneName::Stats,
+            lines(
+                "reportLines",
+                "Einsatzbericht: Zeilen (Wert|Text)",
+                DUSK,
+                &[
+                    "follows|Neue Rekruten",
+                    "subs|Verstärkung",
+                    "raids|Verbündete Trupps",
+                    "bits|Munition",
+                    "chatMessages|Funksprüche",
+                ],
+                Some(8),
+            ),
         ),
-        number("countUpMs", "Einsatzbericht: Hochzählen", DUSK, 1000.0, 0.0, 10000.0, MS, None),
-        text("stampText", "Stempel (leer = aus)", DUSK, "AUFTRAG ERFÜLLT", None),
-        number("stampAt", "Stempel nach", DUSK, 6.0, 0.0, 60.0, S, Some(0.5)),
+        in_scene(
+            SceneName::Stats,
+            number("countUpMs", "Einsatzbericht: Hochzählen", DUSK, 1000.0, 0.0, 10000.0, MS, None),
+        ),
+        in_scene(SceneName::Stats, text("stampText", "Stempel (leer = aus)", DUSK, "AUFTRAG ERFÜLLT", None)),
+        in_scene(SceneName::Stats, number("stampAt", "Stempel nach", DUSK, 6.0, 0.0, 60.0, S, Some(0.5))),
     ]
 }
 
@@ -217,7 +223,8 @@ fn screens() -> Vec<SettingField> {
         ending(text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet", None)),
         flag("mapGrid", "Lagekarte mit Raster", SCREENS, true),
         number("titleSize", "Titelgrösse", SCREENS, 104.0, 30.0, 240.0, PX, None),
-        starting(number("countdown", "Countdown-Standard", SCREENS, 300.0, 0.0, 86400.0, S, None)),
+        starting(number("countdown", "Countdown: Dauer", SCREENS, 300.0, 0.0, 86400.0, S, None)),
+        starting(text("countdownAt", "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)", SCREENS, "", Some(5))),
         starting(text("countdownPrefix", "Countdown-Präfix", SCREENS, "T-", None)),
         starting(text("countdownDone", "Text nach dem Countdown", SCREENS, "Einsatz läuft!", None)),
         starting(choice("progressStyle", "Fortschritt", SCREENS, "balken", &["balken", "funk", "aus"])),

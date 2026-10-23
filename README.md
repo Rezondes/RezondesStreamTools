@@ -32,21 +32,23 @@ kommen vom Server.
 
 | URL | Grösse | Optionen pro Quelle |
 |-----|--------|----------|
-| `/s/<login>/starting` | 1920x1080 | `?min=5` oder `?at=20:00`, `?ticker=Text` |
-| `/s/<login>/brb` | 1920x1080 | `?ticker=Text` |
-| `/s/<login>/ending` | 1920x1080 | `?next=Freitag 20 Uhr`, `?ticker=Text` |
-| `/s/<login>/alerts` | 1920x1080 | `?sound=0`, `?volume=0.5` |
-| `/s/<login>/chat` | 500x900 | |
+| `/s/<login>/starting` | 1920x1080 | |
+| `/s/<login>/brb` | 1920x1080 | |
+| `/s/<login>/ending` | 1920x1080 | |
+| `/s/<login>/alerts` | je nach Theme | |
+| `/s/<login>/chat` | je nach Theme | |
 | `/s/<login>/cam` | wie Kamera | |
-| `/s/<login>/music` | 900x240 | |
-| `/s/<login>/fx` | 1920x1080 | `?zone=main`, `?sound=0`, `?volume=0.5` |
-| `/s/<login>/minimes` | 1920x360 | `?demo=<n>` (so viele Demo-Minimes, Standard 5; in Themes mit Gefechten ist das erste der Medic) |
+| `/s/<login>/music` | je nach Theme | |
+| `/s/<login>/stats` | je nach Theme | |
+| `/s/<login>/fx` | 1920x1080 | `?zone=<name>` für weitere Effekt-Zonen (Standard `main`) |
+| `/s/<login>/minimes` | 1920x360 | |
 | `/s/<login>/` | Seite | öffentliche Befehlsseite für Zuschauer (Szene `info`) |
 
 Unter `npm run dev` geht dieselbe Szene als `http://localhost:5173/starting.html?s=<login>` (oder `#/starting?s=<login>`).
 
 Alles andere (Texte, Farben, Schrift, Dauer, Grösse, Position, Animationen, Töne, Darstellung der Musik, Ausblendzeit
-des Chats, Kamera-Label, Countdown-Standard, Ticker) stellt der Streamer im Theme ein, siehe "Themes und Einstellungen".
+des Chats, Kamera-Label, Countdown als Dauer oder bis zu einer Uhrzeit, Ticker, nächster Stream) stellt der Streamer im
+Theme ein, siehe "Themes und Einstellungen". In OBS steht in jeder URL nur der Overlay-Schlüssel.
 
 Jede Szene liegt unter `/s/<login>/<szene>` (z.B. `http://localhost:8089/s/rezondes/alerts`, mit `.html` geht es auch);
 die Übersicht zeigt die fertigen URLs des angemeldeten Streamers. Sie enthalten den geheimen Overlay-Schlüssel (`?key=`),

@@ -7,7 +7,7 @@ COPY index.html vite.config.ts tsconfig.json ./
 # vite.config.ts imports the bundle map helper
 COPY scripts/bundle.ts ./scripts/
 COPY src ./src
-RUN npx vite build
+RUN npx vite build && npx vite build --mode offline
 
 # 2. Build the server
 FROM rust:1.98-alpine AS server

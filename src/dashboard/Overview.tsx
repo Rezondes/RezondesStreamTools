@@ -19,6 +19,7 @@ import ChatHelp from "./ChatHelp.tsx";
 import { reportError } from "./notices.ts";
 import EventFeed from "./EventFeed.tsx";
 import ObsImport from "./ObsImport.tsx";
+import OfflineDownloads from "./OfflineDownloads.tsx";
 import { dragUrl, obsLayout } from "./obsSetup.ts";
 import { SubTabs, subTabPanel } from "./SubTabs.tsx";
 import { TEXTS } from "./texts.de.ts";
@@ -137,6 +138,10 @@ function ObsSetup({ me, act }: { me: Me; act: Act }) {
             })}
           </tbody>
         </table>
+      </section>
+      <section className="settings-group section-card">
+        <h2>{TEXTS.offlineScenes.title}</h2>
+        <OfflineDownloads me={me} />
       </section>
       <section className="settings-group section-card">
         <h2>{TEXT.keyTitle}</h2>

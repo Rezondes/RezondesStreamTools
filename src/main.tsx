@@ -10,6 +10,7 @@ import { SCENES, type SceneName } from "./core/theme.ts";
 import { resolveSettings } from "./core/settings.ts";
 import { cssVariables, resolveScene } from "./core/themeRuntime.ts";
 import { ThemeValues, useSettings } from "./core/hooks/useSettings.ts";
+import { offline } from "./core/offline.ts";
 import { areaOf, setSceneFrame } from "./core/sceneArea.ts";
 import { STAGE } from "./core/screens/screens.ts";
 import { DEFAULT_THEME, findModule, findTheme } from "./themes/registry.ts";
@@ -19,7 +20,8 @@ const file = location.pathname.split("/").pop()!.replace(/\.html$/, "");
 const pathOf = (hash: string) => hash.replace(/^#\/?/, "").split("?")[0];
 // /s/<login>/ is the public commands page (scene info)
 const streamerRoot = /^\/s\/[^/]+\/?$/.test(location.pathname);
-const path = pathOf(location.hash) || (streamerRoot ? "info" : file === "index" ? "" : file);
+// A downloaded scene names itself (offline.ts)
+const path = offline?.scene ?? (pathOf(location.hash) || (streamerRoot ? "info" : file === "index" ? "" : file));
 
 const isPage = (name: string) => (SCENES as readonly string[]).includes(name);
 
@@ -69,6 +71,9 @@ document.body.classList.toggle("public-page", publicPage);
 // Preview (in the dashboard frame and in its own tab): checkerboard instead of a white area behind the transparent
 // overlay; only its own tab may scroll
 const preview = Boolean(scene) && new URLSearchParams(location.search).has("preview");
+// The recorder of the dashboard draws a scene on a key color it takes out again (src/dashboard/videoFrames.ts)
+const keyColor = new URLSearchParams(location.search).get("bg");
+if (scene && keyColor && /^[0-9a-f]{6}$/i.test(keyColor)) document.body.style.background = `#${keyColor}`;
 document.body.classList.toggle("preview", preview);
 document.body.classList.toggle("preview-tab", preview && parent === window);
 createRoot(document.getElementById("root")!).render(scene ? <ThemedScene scene={scene} /> : <Dashboard />);

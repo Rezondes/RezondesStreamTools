@@ -1,25 +1,20 @@
 // Ending scene of the Dachdecker theme (DESIGN-DACHDECKER.md "Szenen"): the finished house with timber walls under the
 // covered roof, an evening sky, windows and door that light up one after the other, smoke from the chimney and the
 // topping-out wreath with waving ribbons; the camera starts at the wreath and rides back to the whole house (shifted to the
-// right). On the left the acceptance protocol counts up the real numbers of the stream (core stats), then the stamp hits;
-// title, subtitle, the next stream and the title block; fireworks again and again. Still image: ?t=<seconds>.
-// Parameters per source: ?next=...
-import { memo, useEffect, useMemo, useRef, useState } from "react";
-import { useStreamStats } from "../../../core/hooks/useStreamStats.ts";
+// right); the acceptance protocol with the numbers of the stream is an overlay of its own (scenes/Stats.tsx). Title,
+// subtitle, the next stream and the title block; fireworks again and again. Still image: ?t=<seconds>.
+// The next stream comes from the settings (useScreen).
+import { memo, useMemo, useState } from "react";
 import { useScreen } from "../../../core/screens/useScreen.ts";
 import { useStage } from "../../../core/screens/useStage.ts";
-import { parseStatLines } from "../../../core/stats/stats.ts";
 import { particleCount } from "../../../core/three/quality.ts";
 import Stage3D from "../../../core/three/Stage3D.tsx";
 import { fillTemplate } from "../../../core/template.ts";
 import { chimneyTop, house } from "../house.ts";
 import Headline from "../plan/Headline.tsx";
-import Protocol from "../plan/Protocol.tsx";
-import Stamp from "../plan/Stamp.tsx";
 import TitleBlock from "../plan/TitleBlock.tsx";
 import { useRevealTime } from "../plan/useRevealTime.ts";
-import { LOCALE, protocolRows } from "../protocol.ts";
-import { BUILT, type BuildClock, buildSchedule, endingPose, reached, type Schedule, shakeAt } from "../schedule.ts";
+import { BUILT, type BuildClock, buildSchedule, endingPose, reached, type Schedule } from "../schedule.ts";
 import type { DachdeckerValues } from "../settings.ts";
 import Blueprint from "../three/Blueprint.tsx";
 import DuskSky from "../three/DuskSky.tsx";
@@ -31,7 +26,6 @@ import Smoke from "../three/Smoke.tsx";
 import Tiles from "../three/Tiles.tsx";
 import Wreath from "../three/Wreath.tsx";
 import { FACE_ROWS, ridgeOf } from "../tiles.ts";
-import { playStamp } from "../tones.ts";
 import { dachdeckerNames, useDachdecker } from "../useDachdecker.ts";
 import { BOTH_FACES, endingLook, frameDims, orbitOf, tilesOf } from "../world.ts";
 
@@ -80,28 +74,15 @@ const World = memo(function World({ values, clock, schedule }: Parts) {
 
 function Plan({ values, clock, schedule }: Parts) {
   const stage = useStage();
-  const { now, next } = useScreen({ countdownSeconds: 0, ticker: "", next: values.endingNext });
+  const { now, next } = useScreen({ countdownSeconds: 0, countdownAt: "", ticker: "", next: values.endingNext });
   const time = useRevealTime(clock, schedule);
-  const stats = useStreamStats();
   const names = dachdeckerNames(values, now);
-  const lines = useMemo(() => parseStatLines(values.protocolLines.join("\n")), [values.protocolLines]);
-  const rows = protocolRows(stats, lines, LOCALE, now, lines.map((_, index) => reached({ ...schedule.rows, start: schedule.rows.start + index * schedule.rows.stagger }, time)));
-  const stamped = reached(schedule.stamp, time);
-  // The stamp sounds once when it hits
-  const thumped = useRef(false);
-  useEffect(() => {
-    if (!values.stampOn || !values.stampSound || stamped < 1 || thumped.current) return;
-    thumped.current = true;
-    playStamp();
-  }, [stamped, values.stampOn, values.stampSound]);
   return (
     <div className="dd-stage stage-box" ref={stage}>
       <Headline
         head={fillTemplate(values.endingHead, names)} title={fillTemplate(values.endingTitle, names)} subtitle={fillTemplate(values.endingSubtitle, names)}
         big={next} time={time} schedule={schedule} scramble={values.scramble} flicker={values.flicker}
       />
-      {values.protocolOn && <Protocol title={values.protocolTitle} rows={rows} shown={reached(schedule.card, time)} shake={values.stampOn ? shakeAt(schedule.stamp, time) : 0} />}
-      {values.protocolOn && values.stampOn && <Stamp text={values.stampText} share={stamped} />}
       {values.endingBlock && <TitleBlock lines={values.endingBlockLines.map(line => fillTemplate(line, names))} opacity={reached(schedule.block, time)} />}
     </div>
   );

@@ -7,7 +7,7 @@
 // strokes with neon glow and spray mist, the scribbles boil through three takes (slower at BRB), the title is sprayed on
 // (at the Ending with more drips), and after the build everything keeps moving.
 // Stage, countdown, break time and parameters come from the screens context of the core (src/core/screens).
-// Parameters per source: ?min=5, ?at=20:00, ?next=..., ?ticker=..., ?t=<s> (still)
+// Countdown, ticker and next stream come from the settings (useScreen). ?t=<s> shows a still.
 import gsap from "gsap";
 import { type RefObject, useEffect, useRef } from "react";
 import { seekFromQuery } from "../../../core/motion/seek.ts";
@@ -69,7 +69,7 @@ function useScreenEntry(scope: RefObject<HTMLDivElement | null>, values: ChaosVa
 export default function Screen({ kind }: { kind: ScreenKind }) {
   const values = useChaos();
   const stage = useStage();
-  const { now, start, left, progress, away, ticker, next } = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
+  const { now, start, left, progress, away, showAway, ticker, next } = useScreen({ countdownSeconds: values.countdown, countdownAt: values.countdownAt, ticker: values.ticker, next: values.endingNext });
   const scene = {
     starting: { eyebrow: values.startingEyebrow, title: values.startingTitle, lines: values.startingLines, gesture: values.gestureStarting, color: values.gestureColorStarting },
     brb: { eyebrow: values.brbEyebrow, title: values.brbTitle, lines: values.brbLines, gesture: values.gestureBrb, color: values.gestureColorBrb },
@@ -94,7 +94,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
               {values.progressStyle !== "aus" && <Progress share={progress} look={values.progressStyle === "balken" ? "balken" : "zickzack"} />}
             </>
           )}
-          {kind === "brb" && <b className="ch-big">{values.afkPrefix + shortClock(away)}</b>}
+          {kind === "brb" && showAway && <b className="ch-big">{values.afkPrefix + shortClock(away)}</b>}
           {kind === "ending" && next && <p className="ch-next">{`${values.endingNextLabel}: ${next}`}</p>}
           {saying && <p key={saying} className="ch-saying">{saying}</p>}
         </main>

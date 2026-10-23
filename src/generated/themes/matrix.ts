@@ -50,6 +50,7 @@ export type MatrixValues = {
   readonly liveText: string;
   readonly screenLogo: boolean;
   readonly countdown: number;
+  readonly countdownAt: string;
   readonly countdownPrefix: string;
   readonly countdownDone: string;
   readonly progressBar: boolean;

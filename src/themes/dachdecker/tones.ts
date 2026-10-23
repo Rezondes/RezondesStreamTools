@@ -1,7 +1,7 @@
 // Built-in sounds of the Dachdecker theme: a hammer knock when an alert appears and a tap when it leaves (unless own
 // files are chosen), a dull thump when the stamp hits the protocol and a soft rain noise in the BRB scene (filtered white
 // noise in a loop). ?sound=0 switches them off, ?volume=0..1 adjusts them like all sounds.
-import { numberParam, params } from "../../core/params.ts";
+import { params } from "../../core/params.ts";
 import { beep, playSound } from "../../core/sound.ts";
 import type { SoundValue } from "../../core/theme.ts";
 
@@ -39,7 +39,7 @@ export function startRain(volume: number): () => void {
   filter.type = "lowpass";
   filter.frequency.value = RAIN.cutoff;
   const gain = audio.createGain();
-  gain.gain.value = RAIN.level * volume * numberParam("volume", 1);
+  gain.gain.value = RAIN.level * volume;
   source.connect(filter).connect(gain).connect(audio.destination);
   source.start();
   return () => { source.stop(); void audio.close(); };

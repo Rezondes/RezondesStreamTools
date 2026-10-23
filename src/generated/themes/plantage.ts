@@ -91,6 +91,7 @@ export type PlantageValues = {
   readonly pickerShirt: string;
   readonly pickerSkin: string;
   readonly countdown: number;
+  readonly countdownAt: string;
   readonly countdownPrefix: string;
   readonly countdownDone: string;
   readonly progressStyle: string;

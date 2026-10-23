@@ -116,6 +116,7 @@ export type KothValues = {
   readonly mapGrid: boolean;
   readonly titleSize: number;
   readonly countdown: number;
+  readonly countdownAt: string;
   readonly countdownPrefix: string;
   readonly countdownDone: string;
   readonly progressStyle: string;

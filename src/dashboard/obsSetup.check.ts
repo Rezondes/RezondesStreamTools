@@ -10,9 +10,9 @@ import { TEXTS } from "./texts.de.ts";
 const areas = { ...SCENE_SIZES, alerts: { width: 1100, height: 500, offset: { x: 400, y: 30 } } };
 const layout = obsLayout("https://overlays.example/s/neo", "neo", "k1", { scenes: TEXTS.scenes, overlayScene: "Overlays" }, areas);
 
-// Three full-screen scenes with one source each, plus one scene with the other five overlays
+// Three full-screen scenes with one source each, plus one scene with the other six overlays
 assert.deepEqual(layout.map(scene => scene.name), [TEXTS.scenes.starting, TEXTS.scenes.brb, TEXTS.scenes.ending, "Overlays"]);
-assert.deepEqual(layout[3].sources.map(source => source.name), ["neo alerts", "neo chat", "neo cam", "neo music", "neo fx", "neo minimes"]);
+assert.deepEqual(layout[3].sources.map(source => source.name), ["neo alerts", "neo chat", "neo cam", "neo music", "neo stats", "neo fx", "neo minimes"]);
 const chat = layout[3].sources[1];
 assert.deepEqual(chat, { scene: "chat", name: "neo chat", url: "https://overlays.example/s/neo/chat?key=k1", width: 500, height: 900, x: 0, y: 0 });
 const alerts = layout[3].sources[0];
@@ -25,7 +25,7 @@ assert.equal(dragUrl(chat), "https://overlays.example/s/neo/chat?key=k1&layer-na
 let counter = 0;
 const collection = sceneCollection("Overlays neo", layout, () => `id-${++counter}`);
 assert.equal(collection.current_scene, TEXTS.scenes.starting);
-assert.equal(collection.sources.length, 9 + 4);
+assert.equal(collection.sources.length, 10 + 4);
 const input = collection.sources.find(source => source.name === "neo chat")!;
 assert.deepEqual(input.settings, { url: chat.url, width: 500, height: 900, reroute_audio: true });
 // Starting, BRB, Ending reload when the scene is activated (timer from the start), the others keep running
@@ -40,7 +40,7 @@ assert.deepEqual(items.find(item => item.name === "neo alerts")?.pos, { x: 400, 
 const requests = obsRequests(layout, ["Overlays"], ["neo chat"]);
 assert.deepEqual(requests.filter(request => request.requestType === "CreateScene").map(request => request.requestData.sceneName), [TEXTS.scenes.starting, TEXTS.scenes.brb, TEXTS.scenes.ending]);
 assert.deepEqual(requests.filter(request => request.requestType === "SetInputSettings").map(request => request.requestData.inputName), ["neo chat"]);
-assert.equal(requests.filter(request => request.requestType === "CreateInput").length, 8);
+assert.equal(requests.filter(request => request.requestType === "CreateInput").length, 9);
 // Only the alert says where its item belongs
 assert.deepEqual(requests.filter(request => request.place).map(request => [request.requestData.inputName, request.place]), [["neo alerts", { sceneName: "Overlays", x: 400, y: 30 }]]);
 

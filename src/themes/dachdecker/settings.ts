@@ -4,7 +4,7 @@
 // it. DachdeckerValues is the type of the resolved values that the scenes read via useDachdecker.
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
-import { choice, color, flag, font, lines, markBasic, number, text } from "../../core/fields.ts";
+import { choice, color, flag, font, inScene, lines, markBasic, number, text } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
@@ -83,7 +83,8 @@ const FIELDS = [
   text("startingTitle", "Titel", STARTING, "STREAM STARTET GLEICH"),
   text("startingSubtitle", "Unterzeile (leer = aus)", STARTING, ""),
   lines("startingLines", "Wechselnde Zeilen", STARTING, ["Sparren stehen, gleich wird gedeckt", "Kaffee ist durch, die Leiter steht", "Erst messen, dann sägen", "Der Polier zählt noch die Ziegel"]),
-  number("countdown", "Countdown-Standard", STARTING, 300, 0, 86400, "s"),
+  number("countdown", "Countdown: Dauer", STARTING, 300, 0, 86400, "s"),
+  text("countdownAt", "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)", STARTING, "", 5),
   text("countdownPrefix", "Text vor dem Countdown", STARTING, ""),
   text("countdownDone", "Text nach dem Countdown", STARTING, "GLEICH GEHT'S LOS"),
   flag("startingTiles", "Ziegel: Dach bis zum Ende des Countdowns decken", STARTING, true),
@@ -143,15 +144,15 @@ const FIELDS = [
   number("fireworksSparks", "Feuerwerk: Funken je Rakete", ENDING, 110, 10, 400),
   flag("endingIntro", "Kamera startet am Richtkranz", ENDING, true),
   number("endingShift", "Haus nach rechts versetzt", ENDING, 230, 0, 600, "px"),
-  flag("protocolOn", "Abnahmeprotokoll", ENDING, true),
-  text("protocolTitle", "Abnahmeprotokoll: Titel", ENDING, "ABNAHMEPROTOKOLL"),
+  inScene("stats", flag("protocolOn", "Abnahmeprotokoll", ENDING, true)),
+  inScene("stats", text("protocolTitle", "Abnahmeprotokoll: Titel", ENDING, "ABNAHMEPROTOKOLL")),
   // Keys: follows, subs, giftedSubs, raids, raiders, bits, redeems, hypeLevel, chatMessages, chatters, duration
-  lines("protocolLines", "Abnahmeprotokoll: Zeilen (Schlüssel|Text)", ENDING, ["follows|Neue Dachdecker", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Gelegte Ziegel"], 12),
-  number("countUpMs", "Hochzählen: Dauer", ENDING, 1000, 0, 5000, "ms"),
-  flag("stampOn", "Stempel", ENDING, true),
-  text("stampText", "Stempel: Text", ENDING, "ABGENOMMEN", 40),
-  number("stampAt", "Stempel schlägt auf nach", ENDING, 6, 1, 60, "s", 0.5),
-  flag("stampSound", "Stempel: Ton", ENDING, true),
+  inScene("stats", lines("protocolLines", "Abnahmeprotokoll: Zeilen (Schlüssel|Text)", ENDING, ["follows|Neue Dachdecker", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Gelegte Ziegel"], 12)),
+  inScene("stats", number("countUpMs", "Hochzählen: Dauer", ENDING, 1000, 0, 5000, "ms")),
+  inScene("stats", flag("stampOn", "Stempel", ENDING, true)),
+  inScene("stats", text("stampText", "Stempel: Text", ENDING, "ABGENOMMEN", 40)),
+  inScene("stats", number("stampAt", "Stempel schlägt auf nach", ENDING, 6, 1, 60, "s", 0.5)),
+  inScene("stats", flag("stampSound", "Stempel: Ton", ENDING, true)),
 
   // Placeholders: {user}, {amount}, {detail}, {text}
   text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOWER"),

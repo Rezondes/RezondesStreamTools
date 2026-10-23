@@ -6,6 +6,7 @@
 // - ?demo in the URL: creates fake events for testing without a stream
 import { splitWords } from "./chat/parts.ts";
 import { loadEmotes } from "./emotes.ts";
+import { offline } from "./offline.ts";
 import { params } from "./params.ts";
 import * as streamerPath from "./streamerPath.ts";
 import { demo } from "./demo.ts";
@@ -28,8 +29,12 @@ export type Handlers = {
 const loginFromQuery = (params.get("s") ?? "").toLowerCase();
 export const streamer = streamerPath.parse(location.pathname)?.login ?? (streamerPath.isLogin(loginFromQuery) ? loginFromQuery : null);
 
-// File from the streamer's media folder (/s/<login>/media/); full URLs and pages without a streamer unchanged
-export const mediaUrl = (name: string) => (/^https?:\/\//.test(name) || !streamer ? name : `${streamerPath.base(streamer)}/media/${encodeURIComponent(name)}`);
+// File from the streamer's media folder (/s/<login>/media/), in a downloaded scene from the file (offline.ts); full URLs
+// and pages without a streamer unchanged
+export const mediaUrl = (name: string) => {
+  if (offline) return offline.media[name] ?? name;
+  return /^https?:\/\//.test(name) || !streamer ? name : `${streamerPath.base(streamer)}/media/${encodeURIComponent(name)}`;
+};
 
 // null = no streamer, no server reachable or streamer unknown there; without a server there is no live data
 async function serverStatus(): Promise<ServerStatus | null> {

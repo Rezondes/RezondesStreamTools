@@ -7,7 +7,7 @@
 // (it bobs), the Panda looks at its phone (the head nods). Ending: the bears wave goodbye, the Panda takes a selfie with
 // a flash. Built for 1920x1080, scaled to any source size.
 // Stage, countdown, break time, quotes and parameters come from the screens context of the core (src/core/screens).
-// Parameter pro Quelle: ?min=5, ?at=20:00, ?next=..., ?ticker=...
+// Countdown, ticker and next stream come from the settings (useScreen).
 import { SplitText } from "gsap/SplitText";
 import { type CSSProperties, type RefObject, useRef } from "react";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
@@ -94,7 +94,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
   const values = useBears();
   const stage = useStage();
   const scope = useRef<HTMLDivElement>(null);
-  const { now, start, left, progress, away, ticker, next } = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
+  const { now, start, left, progress, away, showAway, ticker, next } = useScreen({ countdownSeconds: values.countdown, countdownAt: values.countdownAt, ticker: values.ticker, next: values.endingNext });
   const [eyebrow, title, note] = {
     starting: [values.startingEyebrow, values.startingTitle, values.startingNote],
     brb: [values.brbEyebrow, values.brbTitle, values.brbNote],
@@ -133,7 +133,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
               {values.progressStyle === "balken" && <div className="bb-progress-bar" style={{ "--part": progress } as CSSProperties}><span /></div>}
             </div>
           )}
-          {kind === "brb" && <div className="bb-count bb-card"><b className="bb-big">{values.afkPrefix + shortClock(away)}</b></div>}
+          {kind === "brb" && showAway && <div className="bb-count bb-card"><b className="bb-big">{values.afkPrefix + shortClock(away)}</b></div>}
           {kind === "ending" && next && <div className="bb-count bb-card"><b className="bb-next">{`${values.endingNextLabel}: ${next}`}</b></div>}
           {saying && <p key={saying} className="bb-saying bb-pill">{saying}</p>}
         </div>

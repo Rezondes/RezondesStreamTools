@@ -19,6 +19,7 @@ pub enum SceneName {
     Chat,
     Cam,
     Music,
+    Stats,
     Fx,
     Minimes,
     Info,
@@ -32,7 +33,7 @@ pub struct SceneSize {
 }
 
 impl SceneName {
-    pub const ALL: [Self; 10] = [
+    pub const ALL: [Self; 11] = [
         Self::Starting,
         Self::Brb,
         Self::Ending,
@@ -40,6 +41,7 @@ impl SceneName {
         Self::Chat,
         Self::Cam,
         Self::Music,
+        Self::Stats,
         Self::Fx,
         Self::Minimes,
         Self::Info,
@@ -55,6 +57,7 @@ impl SceneName {
             Self::Chat => "chat",
             Self::Cam => "cam",
             Self::Music => "music",
+            Self::Stats => "stats",
             Self::Fx => "fx",
             Self::Minimes => "minimes",
             Self::Info => "info",
@@ -74,6 +77,7 @@ impl SceneName {
             Self::Chat => (500, 900),
             Self::Cam => (640, 360),
             Self::Music => (900, 240),
+            Self::Stats => (960, 540),
             Self::Minimes => (1920, 360),
             Self::Info => (1280, 900),
         };
@@ -134,7 +138,8 @@ mod tests {
 
     #[test]
     fn every_scene_has_exactly_one_size() {
-        assert_eq!(SceneName::ALL.len(), 10);
+        assert_eq!(SceneName::ALL.len(), 11);
+        assert_eq!(SceneName::Stats.size(), SceneSize { width: 960, height: 540 });
         assert_eq!(SceneName::Chat.size(), SceneSize { width: 500, height: 900 });
         assert_eq!(SceneName::Info.size(), SceneSize { width: 1280, height: 900 });
         for scene in SceneName::ALL {

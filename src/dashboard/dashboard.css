@@ -358,3 +358,11 @@
 /* Account page: the preferences of the dashboard, one field per row on narrow screens */
 .account-prefs { display: flex; flex-wrap: wrap; gap: var(--gap-tight, 8px) var(--gap-wide, 24px); }
 .account-prefs .setting { min-width: min(240px, 100%); }
+
+/* Recorder of a scene video (OfflineDownloads.tsx): the whole window, the scene on black in its source size */
+.recorder { width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 12px 16px; border: 0; background: #000; color: #fff; box-sizing: border-box; }
+.recorder::backdrop { background: #000; }
+.recorder .muted { color: #c8c8c8; }
+.recorder-box { position: relative; overflow: hidden; }
+.recorder-frame { position: absolute; left: 0; top: 0; border: 0; transform-origin: top left; background: transparent; }
+

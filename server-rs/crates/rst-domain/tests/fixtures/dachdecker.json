@@ -436,12 +436,20 @@
     {
       "key": "countdown",
       "type": "number",
-      "label": "Countdown-Standard",
+      "label": "Countdown: Dauer",
       "group": "Starting",
       "default": 300,
       "min": 0,
       "max": 86400,
       "unit": "s"
+    },
+    {
+      "key": "countdownAt",
+      "type": "text",
+      "label": "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)",
+      "group": "Starting",
+      "default": "",
+      "maxLength": 5
     },
     {
       "key": "countdownPrefix",
@@ -949,7 +957,8 @@
       "type": "boolean",
       "label": "Abnahmeprotokoll",
       "group": "Ending",
-      "default": true
+      "default": true,
+      "scene": "stats"
     },
     {
       "key": "protocolTitle",
@@ -957,7 +966,8 @@
       "label": "Abnahmeprotokoll: Titel",
       "group": "Ending",
       "default": "ABNAHMEPROTOKOLL",
-      "maxLength": 200
+      "maxLength": 200,
+      "scene": "stats"
     },
     {
       "key": "protocolLines",
@@ -972,6 +982,7 @@
         "chatMessages|Gelegte Ziegel"
       ],
       "maxLines": 12,
+      "scene": "stats",
       "basic": true
     },
     {
@@ -982,14 +993,16 @@
       "default": 1000,
       "min": 0,
       "max": 5000,
-      "unit": "ms"
+      "unit": "ms",
+      "scene": "stats"
     },
     {
       "key": "stampOn",
       "type": "boolean",
       "label": "Stempel",
       "group": "Ending",
-      "default": true
+      "default": true,
+      "scene": "stats"
     },
     {
       "key": "stampText",
@@ -998,6 +1011,7 @@
       "group": "Ending",
       "default": "ABGENOMMEN",
       "maxLength": 40,
+      "scene": "stats",
       "basic": true
     },
     {
@@ -1009,14 +1023,16 @@
       "min": 1,
       "max": 60,
       "unit": "s",
-      "step": 0.5
+      "step": 0.5,
+      "scene": "stats"
     },
     {
       "key": "stampSound",
       "type": "boolean",
       "label": "Stempel: Ton",
       "group": "Ending",
-      "default": true
+      "default": true,
+      "scene": "stats"
     },
     {
       "key": "followTag",

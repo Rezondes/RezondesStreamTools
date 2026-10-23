@@ -8,7 +8,7 @@ import type { PanelDesign } from "./panels.ts";
 import type { RenderClip } from "./renderClip.ts";
 
 // info: public commands page for viewers (/s/<login>/), not a source for OBS
-export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "fx", "minimes", "info"] as const satisfies readonly SceneName[];
+export const SCENES = ["starting", "brb", "ending", "alerts", "chat", "cam", "music", "stats", "fx", "minimes", "info"] as const satisfies readonly SceneName[];
 export type { SceneName } from "../generated/SceneName.ts";
 export const OBS_SCENES = SCENES.filter(scene => scene !== "info");
 
@@ -21,6 +21,7 @@ export const SCENE_SIZES: Record<SceneName, { width: number; height: number }> =
   chat: { width: 500, height: 900 },
   cam: { width: 640, height: 360 },
   music: { width: 900, height: 240 },
+  stats: { width: 960, height: 540 },
   fx: { width: 1920, height: 1080 },
   minimes: { width: 1920, height: 360 },
   info: { width: 1280, height: 900 },

@@ -173,6 +173,10 @@
 .theme-dachdecker .dd-sheet::after { right: var(--dd-corner-out, -8px); bottom: var(--dd-corner-out, -8px); border-left: 0; border-top: 0; }
 
 /* --- Acceptance protocol and stamp ------------------------------------------------------------------------------- */
+/* Stats overlay (scenes/Stats.tsx): the sheet at the top left of its own source, the stamp where it hits on the sheet */
+.theme-dachdecker .dd-stats { position: fixed; inset: 0; }
+.theme-dachdecker .dd-stats .dd-protocol { left: var(--dd-stats-left, 48px); top: var(--dd-stats-top, 24px); }
+.theme-dachdecker .dd-stats .dd-stamp { left: var(--dd-stats-stamp-left, 218px); top: var(--dd-stats-stamp-top, 404px); }
 .theme-dachdecker .dd-protocol {
   left: var(--dd-margin, 80px);
   top: var(--dd-protocol-top, 180px);

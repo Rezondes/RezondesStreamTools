@@ -16,6 +16,7 @@ export const standardView: ThemeView = {
     chat: lazy(() => import("./scenes/Chat.tsx")),
     cam: lazy(() => import("./scenes/Cam.tsx")),
     music: lazy(() => import("./scenes/Music.tsx")),
+    stats: lazy(() => import("./scenes/Stats.tsx")),
     fx: lazy(() => import("./scenes/Fx.tsx")),
     info: lazy(() => import("./scenes/Info.tsx")),
   },

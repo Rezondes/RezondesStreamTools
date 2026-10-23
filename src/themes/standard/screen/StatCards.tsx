@@ -1,4 +1,4 @@
-// Stream numbers of the standard Ending (endingStats, "key|Text" per line) as small cards side by side; from start on
+// Stream numbers of the standard stats overlay (endingStats, "key|Text" per line) as small cards side by side; from start on
 // each one counts up over countUpMs, a little after the one before. Real numbers from the server, in ?demo the demo
 // values, without stats dashes (countedStats of the core).
 import { useMemo } from "react";

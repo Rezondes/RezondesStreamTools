@@ -804,7 +804,8 @@
       "type": "boolean",
       "label": "Einsatzbericht",
       "group": "Ending: Abend",
-      "default": true
+      "default": true,
+      "scene": "stats"
     },
     {
       "key": "reportTitle",
@@ -812,7 +813,8 @@
       "label": "Einsatzbericht: Titel",
       "group": "Ending: Abend",
       "default": "EINSATZBERICHT",
-      "maxLength": 200
+      "maxLength": 200,
+      "scene": "stats"
     },
     {
       "key": "reportLines",
@@ -826,7 +828,8 @@
         "bits|Munition",
         "chatMessages|Funksprüche"
       ],
-      "maxLines": 8
+      "maxLines": 8,
+      "scene": "stats"
     },
     {
       "key": "countUpMs",
@@ -836,7 +839,8 @@
       "default": 1000,
       "min": 0,
       "max": 10000,
-      "unit": "ms"
+      "unit": "ms",
+      "scene": "stats"
     },
     {
       "key": "stampText",
@@ -844,7 +848,8 @@
       "label": "Stempel (leer = aus)",
       "group": "Ending: Abend",
       "default": "AUFTRAG ERFÜLLT",
-      "maxLength": 200
+      "maxLength": 200,
+      "scene": "stats"
     },
     {
       "key": "stampAt",
@@ -855,7 +860,8 @@
       "min": 0,
       "max": 60,
       "unit": "s",
-      "step": 0.5
+      "step": 0.5,
+      "scene": "stats"
     },
     {
       "key": "startingEyebrow",
@@ -935,12 +941,21 @@
     {
       "key": "countdown",
       "type": "number",
-      "label": "Countdown-Standard",
+      "label": "Countdown: Dauer",
       "group": "Starting, BRB, Ending",
       "default": 300,
       "min": 0,
       "max": 86400,
       "unit": "s",
+      "scene": "starting"
+    },
+    {
+      "key": "countdownAt",
+      "type": "text",
+      "label": "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 5,
       "scene": "starting"
     },
     {

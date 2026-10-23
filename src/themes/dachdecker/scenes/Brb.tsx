@@ -61,7 +61,7 @@ const World = memo(function World({ values, clock, schedule }: Parts) {
 
 function Plan({ values, clock, schedule }: Parts) {
   const stage = useStage();
-  const { now, start, away } = useScreen({ countdownSeconds: 0, ticker: "", next: "" });
+  const { now, start, away, showAway } = useScreen({ countdownSeconds: 0, countdownAt: "", ticker: "", next: "" });
   const time = useRevealTime(clock, schedule);
   const names = dachdeckerNames(values, now);
   const saying = rotating(values.brbLines, values.linesEvery * SECOND_MS, now - start);
@@ -69,7 +69,7 @@ function Plan({ values, clock, schedule }: Parts) {
     <div className="dd-stage stage-box" ref={stage}>
       <Headline
         head={fillTemplate(values.brbHead, names)} title={fillTemplate(values.brbTitle, names)} subtitle={fillTemplate(values.brbSubtitle, names)}
-        big={values.brbTimerPrefix + shortClock(away)} time={time} schedule={schedule} scramble={values.scramble} flicker={values.flicker}
+        big={showAway ? values.brbTimerPrefix + shortClock(away) : ""} time={time} schedule={schedule} scramble={values.scramble} flicker={values.flicker}
       />
       {saying && <p key={saying} className="dd-saying" style={{ opacity: reached(schedule.head, time) }}>{saying}</p>}
       {values.brbBlock && <TitleBlock lines={values.brbBlockLines.map(line => fillTemplate(line, names))} opacity={reached(schedule.block, time)} />}

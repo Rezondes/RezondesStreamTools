@@ -4,4 +4,4 @@
 /**
  * Scenes of the overlays; `info` is the public commands page for viewers, not a source for OBS
  */
-export type SceneName = "starting" | "brb" | "ending" | "alerts" | "chat" | "cam" | "music" | "fx" | "minimes" | "info";
+export type SceneName = "starting" | "brb" | "ending" | "alerts" | "chat" | "cam" | "music" | "stats" | "fx" | "minimes" | "info";

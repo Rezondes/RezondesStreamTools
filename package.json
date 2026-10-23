@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "tsc --noEmit && vite build && vite build --mode offline",
     "preview": "vite preview",
     "server": "node --env-file=server.env scripts/rust.ts serve",
     "demo": "node scripts/rust.ts build && node scripts/demo.ts",
@@ -16,7 +16,7 @@
     "rust": "node scripts/rust.ts",
     "gen:types": "node scripts/rust.ts gen:types",
     "contract": "node scripts/rust.ts build && node contract/run.ts",
-    "verify": "npm run typecheck && npm run lint && npm test && vite build && node scripts/bundle.ts && npm run rust",
+    "verify": "npm run typecheck && npm run lint && npm test && vite build && node scripts/bundle.ts && vite build --mode offline && npm run rust",
     "prepare": "git config core.hooksPath .githooks"
   },
   "dependencies": {

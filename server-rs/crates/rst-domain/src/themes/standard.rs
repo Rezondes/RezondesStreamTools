@@ -70,7 +70,8 @@ fn screens() -> Vec<SettingField> {
         ending(text("endingTitle", "Ending: Titel", SCREENS, "Stream beendet", None)),
         ending(text("endingNextLabel", "Ending: Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream", None)),
         ending(text("endingNext", "Ending: Nächster Stream (leer = ausblenden)", SCREENS, "", None)),
-        starting(number("countdown", "Countdown-Standard", SCREENS, 300.0, 0.0, 86400.0, S, None)),
+        starting(number("countdown", "Countdown: Dauer", SCREENS, 300.0, 0.0, 86400.0, S, None)),
+        starting(text("countdownAt", "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)", SCREENS, "", Some(5))),
         starting(text("countdownDone", "Text nach dem Countdown", SCREENS, "Gleich live", None)),
         starting(flag("progressBar", "Fortschrittsbalken", SCREENS, true)),
         flag("showClock", "Uhrzeit oben rechts", SCREENS, true),
@@ -84,14 +85,20 @@ fn screens() -> Vec<SettingField> {
         brb(number("brbPace", "BRB: Tempo der Lichtfelder (Faktor)", SCREENS, 0.5, 0.1, 1.0, None, Some(0.05))),
         brb(number("brbDim", "BRB: Helligkeit beim Atmen", SCREENS, 0.6, 0.0, 1.0, None, Some(0.05))),
         brb(number("brbBreatheSeconds", "BRB: Dauer eines Atemzugs (0 = aus)", SCREENS, 6.0, 0.0, 60.0, S, Some(0.5))),
-        ending(lines(
-            "endingStats",
-            "Ending: Zahlen (Schlüssel|Text)",
-            SCREENS,
-            &["follows|Follows", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Nachrichten"],
-            None,
-        )),
-        ending(number("countUpMs", "Ending: Hochzählen (Dauer)", SCREENS, 1200.0, 0.0, 10_000.0, MS, None)),
+        in_scene(
+            SceneName::Stats,
+            lines(
+                "endingStats",
+                "Statistik: Zahlen (Schlüssel|Text)",
+                SCREENS,
+                &["follows|Follows", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Nachrichten"],
+                None,
+            ),
+        ),
+        in_scene(
+            SceneName::Stats,
+            number("countUpMs", "Statistik: Hochzählen (Dauer)", SCREENS, 1200.0, 0.0, 10_000.0, MS, None),
+        ),
         ending(number("endingFadeAt", "Ending: Lichtfelder blenden aus nach", SCREENS, 10.0, 0.0, 600.0, S, None)),
         ending(number("endingFadeMs", "Ending: Ausblenden (Dauer)", SCREENS, 4000.0, 0.0, 20_000.0, MS, None)),
     ]

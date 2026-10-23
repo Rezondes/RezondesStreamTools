@@ -1,7 +1,7 @@
 // Texts of the dashboard (German). The components take every visible text from here (rule 20);
 // errors translates the server's error codes (src/core/errorCodes.ts). Checked in texts.de.check.ts.
 import { PANEL_TEXTS } from "./texts.panels.de.ts";
-import { HELP_TEXTS, OBS_TEXTS, OVERVIEW_TEXTS } from "./texts.overview.de.ts";
+import { HELP_TEXTS, OBS_TEXTS, OFFLINE_TEXTS, OVERVIEW_TEXTS } from "./texts.overview.de.ts";
 import { ACCOUNT_TEXTS } from "./texts.account.de.ts";
 import type { Feature } from "../generated/Feature.ts";
 import type { FeatureLevel as Level } from "../generated/FeatureLevel.ts";
@@ -62,6 +62,7 @@ export const TEXTS = {
     chat: "Chat",
     cam: "Webcam-Rahmen",
     music: "Spotify Now Playing",
+    stats: "Stream-Statistik",
     fx: "Chat-Effekte (Trigger)",
     minimes: "Minimes (Chatter als Figuren)",
     info: "Befehlsseite (öffentlich)",
@@ -70,6 +71,7 @@ export const TEXTS = {
   account: ACCOUNT_TEXTS,
   help: HELP_TEXTS,
   obs: OBS_TEXTS,
+  offlineScenes: OFFLINE_TEXTS,
   theme: {
     choose: "Theme (ansehen und bearbeiten)",
     activeMark: "(aktiv)",

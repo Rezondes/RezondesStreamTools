@@ -5,13 +5,11 @@
 // reconnect attempt pulls it, types a line and glitches. Ending: the numbers of the stream count up, then the rain falls
 // out of the picture and the CRT switches off to a line and a dot, the next stream stays (package 2).
 // Stage, countdown, break time and parameters come from the screens context of the core (src/core/screens).
-// Parameters per source: ?min=5 or ?at=20:00 (countdown, starting only), ?next=Friday 8 pm (ending), ?ticker=text
+// Countdown, ticker and next stream come from the settings (useScreen).
 import gsap from "gsap";
 import { type RefObject, useMemo, useRef } from "react";
-import { useStreamStats } from "../../../core/hooks/useStreamStats.ts";
-import { type SceneClock, useClockValue } from "../../../core/motion/useClockValue.ts";
+import type { SceneClock } from "../../../core/motion/useClockValue.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
-import { countedStats, parseStatLines } from "../../../core/stats/stats.ts";
 import Rain, { type RainControl } from "../pixi/Rain.tsx";
 import { GLITCH, glitchKeys, POWER, powerOn } from "../crtMotion.ts";
 import { rainTime, type Tempo } from "../rain.ts";
@@ -34,7 +32,7 @@ const POWER_AT = 0.3; // fixed: when the CRT switches on (s)
 const RETRY = { pull: 0.8, type: 0.5, stay: 1.6 };
 // The Ending: when the numbers start counting after the power on (s) and how far apart (s), how long the rain falls out
 // before the CRT switches off (s), the switch off (line, dot, s)
-const LOGOUT = { after: 0.6, stagger: 0.25, fall: 1.6, line: 0.25, dot: 0.2 }; // fixed: timing of the logout
+const LOGOUT = { fall: 1.6, line: 0.25, dot: 0.2 }; // fixed: timing of the CRT switching off at the end
 const DAY = 86400; // fixed: how long the scene clock runs (s)
 
 // The speed of the rain over the time of a scene
@@ -91,21 +89,6 @@ function useRainControl(kind: ScreenKind, values: MatrixValues) {
   return control;
 }
 
-// The numbers of the stream for the Ending, each counting up after the power on
-function Logout({ values, sceneClock, now }: { values: MatrixValues; sceneClock: SceneClock; now: number }) {
-  const stats = useStreamStats();
-  const lines = useMemo(() => parseStatLines(values.logoutLines.join("\n")), [values.logoutLines]);
-  const start = POWER_AT + values.crtOnMs / SECOND_MS + LOGOUT.after;
-  const count = Math.max(values.countUpMs / SECOND_MS, Number.EPSILON);
-  const shares = useClockValue(sceneClock, time => lines.map((_, index) => Math.min(1, Math.max(0, (time - start - index * LOGOUT.stagger) / count))).join(","));
-  const rows = countedStats(stats, lines, values.locale, now, shares.split(",").map(Number));
-  return (
-    <div className="logout">
-      {rows.map(row => <div key={row.label} className="logout-row"><span className="muted">{row.label}</span><span className="glow">{row.value}</span></div>)}
-    </div>
-  );
-}
-
 export default function Screen({ kind }: { kind: ScreenKind }) {
   const values = useMatrix();
   const stage = useStage();
@@ -113,8 +96,8 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
   const control = useRainControl(kind, values);
   const sceneClock = useRef<SceneClock>({ time: 0 }).current;
   useCrtMotion(scope, kind, values, control, sceneClock);
-  const screen = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
-  const { now, left, away, ticker, next } = screen;
+  const screen = useScreen({ countdownSeconds: values.countdown, countdownAt: values.countdownAt, ticker: values.ticker, next: values.endingNext });
+  const { now, left, away, showAway, ticker, next } = screen;
   const title = useMatrixDecode({ starting: values.startingTitle, brb: values.brbTitle, ending: values.endingTitle }[kind], "screenTitle");
   const logo = useMatrixDecode(values.logo, "logo");
 
@@ -147,7 +130,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
           )}
           {kind === "brb" && (
             <div className="status">
-              <div className="big">{values.afkPrefix}{clock(away)}</div>
+              {showAway && <div className="big">{values.afkPrefix}{clock(away)}</div>}
               <div className="muted">{values.brbNote}</div>
               <div className="retry" />
             </div>
@@ -155,7 +138,6 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
           {kind === "ending" && (
             <div className="status">
               <div className="big">{values.endingThanks}</div>
-              <Logout values={values} sceneClock={sceneClock} now={now} />
               {next && <div className="muted">{values.endingNextLabel}{next}</div>}
             </div>
           )}

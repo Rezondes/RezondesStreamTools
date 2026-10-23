@@ -70,6 +70,7 @@ export type UrlaubValues = {
   readonly signWidth: number;
   readonly titleSize: number;
   readonly countdown: number;
+  readonly countdownAt: string;
   readonly countdownPrefix: string;
   readonly countdownDone: string;
   readonly progressStyle: string;

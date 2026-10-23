@@ -220,12 +220,21 @@
     {
       "key": "countdown",
       "type": "number",
-      "label": "Countdown-Standard",
+      "label": "Countdown: Dauer",
       "group": "Starting, BRB, Ending",
       "default": 300,
       "min": 0,
       "max": 86400,
       "unit": "s",
+      "scene": "starting"
+    },
+    {
+      "key": "countdownAt",
+      "type": "text",
+      "label": "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 5,
       "scene": "starting"
     },
     {
@@ -349,7 +358,7 @@
     {
       "key": "endingStats",
       "type": "lines",
-      "label": "Ending: Zahlen (Schlüssel|Text)",
+      "label": "Statistik: Zahlen (Schlüssel|Text)",
       "group": "Starting, BRB, Ending",
       "default": [
         "follows|Follows",
@@ -359,18 +368,18 @@
         "chatMessages|Nachrichten"
       ],
       "maxLines": 100,
-      "scene": "ending"
+      "scene": "stats"
     },
     {
       "key": "countUpMs",
       "type": "number",
-      "label": "Ending: Hochzählen (Dauer)",
+      "label": "Statistik: Hochzählen (Dauer)",
       "group": "Starting, BRB, Ending",
       "default": 1200,
       "min": 0,
       "max": 10000,
       "unit": "ms",
-      "scene": "ending"
+      "scene": "stats"
     },
     {
       "key": "endingFadeAt",

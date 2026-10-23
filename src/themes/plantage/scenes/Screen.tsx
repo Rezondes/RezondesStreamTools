@@ -4,7 +4,7 @@
 // Ending with the sunset, fireflies and the picker waving with a full basket. Over it frosted cards fall in like ripe
 // fruit and settle (GSAP): pill, title word by word, subtitle, the countdown with mangos plopping into the basket, the
 // break time or the next stream, rotating sayings and the clock. Built for 1920x1080, scaled to any source size.
-// ?t=<s> shows a still. Parameter per source: ?min=5, ?at=20:00, ?next=..., ?ticker=...
+// ?t=<s> shows a still. Countdown, ticker and next stream come from the settings (useScreen).
 import { SplitText } from "gsap/SplitText";
 import { type Application, Container } from "pixi.js";
 import { type CSSProperties, type RefObject, useCallback, useRef, useState } from "react";
@@ -44,7 +44,7 @@ const textsOf = (values: PlantageValues, kind: ScreenKind) => ({
 
 // The frosted cards and the timeline that lets them fall in
 function Cards({ kind, values, screen, stage }: { kind: ScreenKind; values: PlantageValues; screen: Screen; stage: RefObject<HTMLDivElement | null> }) {
-  const { now, start, left, away, progress, next } = screen;
+  const { now, start, left, away, showAway, progress, next } = screen;
   const texts = textsOf(values, kind);
   useTimeline(timeline => {
     const drop = values.cardDropMs / SECOND_MS;
@@ -71,7 +71,7 @@ function Cards({ kind, values, screen, stage }: { kind: ScreenKind; values: Plan
         {kind === "starting" && values.progressStyle === "ast" && (
           <div className="pl-progress-ast" style={{ "--part": progress } as CSSProperties}><span><ShapeIcon shape={ICONS.mango} /></span></div>
         )}
-        {kind === "brb" && <b>{values.afkPrefix + shortClock(away)}</b>}
+        {kind === "brb" && showAway && <b>{values.afkPrefix + shortClock(away)}</b>}
         {kind === "ending" && <b className="pl-st-next">{`${values.endingNextLabel}: ${next}`}</b>}
       </FrostCard>
       <FrostCard className={`pl-st-line${saying ? "" : " empty"}`}>{saying}</FrostCard>
@@ -82,7 +82,7 @@ function Cards({ kind, values, screen, stage }: { kind: ScreenKind; values: Plan
 export default function Screen({ kind }: { kind: ScreenKind }) {
   const values = usePlantage();
   const stage = useStage();
-  const screen = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
+  const screen = useScreen({ countdownSeconds: values.countdown, countdownAt: values.countdownAt, ticker: values.ticker, next: values.endingNext });
   const [scene, setScene] = useState<Scene | null>(null);
   const startedAt = useRef(performance.now());
   const clock = useCallback(() => SEEK ?? (performance.now() - startedAt.current) / SECOND_MS, []);

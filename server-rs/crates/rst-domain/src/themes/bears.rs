@@ -252,7 +252,11 @@ fn fields() -> Vec<SettingField> {
         in_scene(SceneName::Ending, text("endingNote", "Ending: Untertitel", SCREENS, "Bis zum nächsten Mal!", None)),
         number("signWidth", "Schild: Breite", SCREENS, 1000.0, 400.0, 1800.0, PX, None),
         number("titleSize", "Titelgrösse", SCREENS, 104.0, 30.0, 240.0, PX, None),
-        in_scene(SceneName::Starting, number("countdown", "Countdown-Standard", SCREENS, 300.0, 0.0, 86400.0, S, None)),
+        in_scene(SceneName::Starting, number("countdown", "Countdown: Dauer", SCREENS, 300.0, 0.0, 86400.0, S, None)),
+        in_scene(
+            SceneName::Starting,
+            text("countdownAt", "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)", SCREENS, "", Some(5)),
+        ),
         in_scene(SceneName::Starting, text("countdownPrefix", "Countdown-Präfix", SCREENS, "", None)),
         in_scene(SceneName::Starting, text("countdownDone", "Text nach dem Countdown", SCREENS, "Gleich live!", None)),
         in_scene(

@@ -9,5 +9,6 @@ const areas = (changes: Record<string, unknown>) => dachdeckerAreas(resolveSetti
 assert.deepEqual(areas({}).alerts, { width: 752, height: 342, offset: { x: 584, y: 604 } }, "the sign low on the stage");
 assert.deepEqual(areas({ chatWidth: 700 }).chat, { width: 700, height: 900 }, "the chat as wide as its setting");
 assert.deepEqual(areas({}).music, { width: 590, height: 410 }, "the music plan");
+assert.deepEqual(areas({}).stats, { width: 640, height: 600 }, "the protocol with its stamp");
 
 console.log("dachdecker areas ok");

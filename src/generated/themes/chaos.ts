@@ -75,6 +75,7 @@ export type ChaosValues = {
   readonly endingNext: string;
   readonly linesEvery: number;
   readonly countdown: number;
+  readonly countdownAt: string;
   readonly countdownPrefix: string;
   readonly countdownDone: string;
   readonly progressStyle: string;

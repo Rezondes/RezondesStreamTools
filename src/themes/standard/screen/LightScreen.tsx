@@ -19,7 +19,6 @@ import type { StandardValues } from "../settings.ts";
 import { useStandard } from "../useStandard.ts";
 import Countdown from "./Countdown.tsx";
 import Grain from "./Grain.tsx";
-import StatCards from "./StatCards.tsx";
 
 // fixed: seconds in ms
 const SECOND_MS = 1000;
@@ -54,25 +53,19 @@ function useEntrance(kind: ScreenKind, values: StandardValues, entrance: Entranc
   }, [kind, entrance.title, values.titleRiseMs, entrance.shine, values.shineEvery, entrance.ticker, entrance.next], stage);
 }
 
-// Below the title: countdown and bar (Starting), break time and note (BRB), stream numbers and next stream (Ending)
-function Below({ kind, values, screen, clock }: { kind: ScreenKind; values: StandardValues; screen: Screen; clock: () => number }) {
+// Below the title: countdown and bar (Starting), break time and note (BRB), next stream (Ending); the stream numbers
+// are an overlay of their own (scenes/Stats.tsx)
+function Below({ kind, values, screen }: { kind: ScreenKind; values: StandardValues; screen: Screen }) {
   const rollMs = SEEK === null ? values.digitRollMs : 0;
   if (kind === "brb") {
     return (
       <>
-        <div className="standard-st-count standard-st-rise"><Countdown text={shortClock(screen.away)} rollMs={rollMs} /></div>
+        {screen.showAway && <div className="standard-st-count standard-st-rise"><Countdown text={shortClock(screen.away)} rollMs={rollMs} /></div>}
         {values.brbNote && <p className="standard-st-note standard-st-rise">{values.brbNote}</p>}
       </>
     );
   }
-  if (kind === "ending") {
-    return (
-      <>
-        <StatCards values={values} clock={clock} start={ENTER.rest + TIME.rest} now={screen.now} />
-        {screen.next && <p className="standard-st-note standard-st-rise">{values.endingNextLabel}: {screen.next}</p>}
-      </>
-    );
-  }
+  if (kind === "ending") return screen.next ? <p className="standard-st-note standard-st-rise">{values.endingNextLabel}: {screen.next}</p> : null;
   return (
     <>
       <div className="standard-st-count standard-st-rise">
@@ -91,7 +84,7 @@ function Below({ kind, values, screen, clock }: { kind: ScreenKind; values: Stan
 export default function LightScreen({ kind }: { kind: ScreenKind }) {
   const values = useStandard();
   const stage = useStage();
-  const screen = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
+  const screen = useScreen({ countdownSeconds: values.countdown, countdownAt: values.countdownAt, ticker: values.ticker, next: values.endingNext });
   const [app, setApp] = useState<Application | null>(null);
   const startedAt = useRef(performance.now());
   const clock = useCallback(() => SEEK ?? (performance.now() - startedAt.current) / SECOND_MS, []);
@@ -122,7 +115,7 @@ export default function LightScreen({ kind }: { kind: ScreenKind }) {
         <main className="standard-st-center">
           <p className="standard-st-eyebrow">{eyebrow}</p>
           <h1 className="standard-st-title">{title}</h1>
-          <Below kind={kind} values={values} screen={screen} clock={clock} />
+          <Below kind={kind} values={values} screen={screen} />
         </main>
         {screen.ticker && <footer className="standard-st-ticker">{screen.ticker}</footer>}
       </div>

@@ -234,6 +234,9 @@
 .theme-koth .kh-radio-count.long { font-size: var(--count-size-long, 40px); letter-spacing: var(--count-spacing-long, 2px); }
 
 /* --- Ending in 3D (PLAN-KOTH.md package 3): the mission report on paper with rows that count up and the stamp ------ */
+/* Stats overlay (scenes/Stats.tsx): the report at the top left of its own source */
+.theme-koth .kh-stats { position: fixed; inset: 0; padding: var(--stats-padding, 24px 24px 24px 72px); }
+.theme-koth .kh-stats .kh-report { position: relative; left: 0; top: 0; }
 .theme-koth .kh-report { position: absolute; left: var(--edge); top: var(--report-top, 120px); width: var(--report-width, 480px); box-sizing: border-box; padding: var(--report-padding, 26px 30px 34px); background: var(--paper); color: var(--ink); font-family: var(--mono); box-shadow: 0 var(--map-shadow-y, 18px) var(--map-shadow-blur, 40px) color-mix(in srgb, black 45%, transparent); }
 .theme-koth .kh-report-title { margin: 0 0 var(--report-gap, 14px); font-family: var(--titleFont), sans-serif; font-weight: 400; font-size: var(--report-title-size, 30px); letter-spacing: var(--report-spacing, 3px); }
 .theme-koth .kh-report-row { display: flex; justify-content: space-between; gap: var(--report-gap, 14px); margin: 0; padding: var(--report-row-padding, 7px 0); border-bottom: var(--grid-line, 1px) dashed color-mix(in srgb, var(--ink) 35%, transparent); font-size: var(--report-size, 19px); text-transform: uppercase; }

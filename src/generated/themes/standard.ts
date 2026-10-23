@@ -28,6 +28,7 @@ export type StandardValues = {
   readonly endingNextLabel: string;
   readonly endingNext: string;
   readonly countdown: number;
+  readonly countdownAt: string;
   readonly countdownDone: string;
   readonly progressBar: boolean;
   readonly showClock: boolean;

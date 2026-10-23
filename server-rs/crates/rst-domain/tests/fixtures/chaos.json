@@ -664,12 +664,21 @@
     {
       "key": "countdown",
       "type": "number",
-      "label": "Countdown-Standard",
+      "label": "Countdown: Dauer",
       "group": "Starting, BRB, Ending",
       "default": 300,
       "min": 0,
       "max": 86400,
       "unit": "s",
+      "scene": "starting"
+    },
+    {
+      "key": "countdownAt",
+      "type": "text",
+      "label": "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)",
+      "group": "Starting, BRB, Ending",
+      "default": "",
+      "maxLength": 5,
       "scene": "starting"
     },
     {

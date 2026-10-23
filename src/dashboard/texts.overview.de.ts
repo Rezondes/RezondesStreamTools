@@ -82,3 +82,24 @@ export const OBS_TEXTS = {
   auth: "OBS hat das Passwort abgelehnt.",
   failed: (detail: string) => `OBS meldet: ${detail}`,
 };
+
+export const OFFLINE_TEXTS = {
+  title: "Ohne Server verwenden",
+  intro: "Szenen ohne Live-Daten kannst du herunterladen und in OBS ohne Verbindung zu RST nutzen. Die HTML-Datei sieht genauso aus und braucht in OBS genauso viel Leistung wie online (Browserquelle, \"Lokale Datei\"). Ein Video braucht in OBS am wenigsten (Medienquelle mit \"Wiederholen\"), zeigt aber keine Uhrzeit und keine Pausenzeit.",
+  scene: "Szene",
+  html: "HTML herunterladen",
+  video: "Video aufnehmen",
+  loop: "Länge eines Video-Loops (Sekunden, 10 bis 120)",
+  loopHint: "Starting läuft so lange wie sein Countdown. Die Pausenzeit von BRB bleibt im Video ausgeblendet.",
+  formats: "WebM behält die Transparenz (Webcam-Rahmen), MP4 hat einen schwarzen Hintergrund.",
+  building: "Datei wird gebaut ...",
+  saved: (name: string) => `${name} heruntergeladen.`,
+  recordTitle: (scene: string, seconds: number) => `Video: ${scene}, ${seconds} s`,
+  recordHint: "Am schärfsten im Vollbild (F11). Nach \"Aufnahme starten\" fragt der Browser, was er aufnehmen darf: diesen Tab wählen. Der Tab muss bis zum Ende sichtbar bleiben.",
+  recordStart: "Aufnahme starten",
+  recording: (left: number) => `Aufnahme läuft, noch ${left} s ...`,
+  recordCancel: "Abbrechen",
+  recorded: (files: string) => `Fertig: ${files}`,
+  noCapture: "Dieser Browser kann den Tab nicht aufnehmen. Bitte Chrome oder Edge in einer aktuellen Version verwenden.",
+};
+

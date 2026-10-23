@@ -3,7 +3,7 @@
 // camera rides out and circles; the other tiles follow over the countdown, so the roof is covered with its ridge at 0. On the plan layer the head line, the decoding title and countdown, the dimension chain as
 // progress, changing lines, the title block and the ticker. One clock drives everything: the GSAP timeline runs it, the
 // 3D parts read it every frame, the texts follow it until they are revealed. Still image: ?t=<seconds>.
-// Parameters per source: ?min=5, ?at=20:00, ?ticker=...
+// Countdown and ticker come from the settings (useScreen).
 import { memo, useMemo, useState } from "react";
 import { rotating, shortClock } from "../../../core/screens/screens.ts";
 import { useScreen } from "../../../core/screens/useScreen.ts";
@@ -93,7 +93,7 @@ export default function Starting() {
   const values = useDachdecker();
   const [clock] = useState<BuildClock>(() => ({ time: 0 }));
   const schedule = useMemo(() => buildSchedule({ buildSpeed: values.buildSpeed, scrambleMs: values.scrambleMs }), [values.buildSpeed, values.scrambleMs]);
-  const screen = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: "" });
+  const screen = useScreen({ countdownSeconds: values.countdown, countdownAt: values.countdownAt, ticker: values.ticker, next: "" });
   return (
     <div className="dd-screen dd-starting">
       <World values={values} clock={clock} schedule={schedule} until={screen.total} />

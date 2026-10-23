@@ -4,7 +4,7 @@
 // swings out, the post with countdown and buoy, break time or next stream rises out of the sand; rotating quotes and a
 // ticker on an airplane or as a wooden bar. One GSAP timeline drives it all (stills with ?t=). Built for 1920x1080,
 // scaled to any source size. Stage, countdown, break time, quotes and parameters come from the screens context of the
-// core (src/core/screens). Parameter pro Quelle: ?min=5, ?at=20:00, ?next=..., ?ticker=...
+// core (src/core/screens). Countdown, ticker and next stream come from the settings (useScreen).
 import { SplitText } from "gsap/SplitText";
 import { type RefObject, useRef, useState } from "react";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
@@ -58,7 +58,7 @@ function useScreenTimeline(scope: RefObject<HTMLDivElement | null>, clock: Beach
 export default function Screen({ kind }: { kind: ScreenKind }) {
   const values = useUrlaub();
   const stage = useStage();
-  const { now, start, left, progress, away, ticker, next } = useScreen({ countdownSeconds: values.countdown, ticker: values.ticker, next: values.endingNext });
+  const { now, start, left, progress, away, showAway, ticker, next } = useScreen({ countdownSeconds: values.countdown, countdownAt: values.countdownAt, ticker: values.ticker, next: values.endingNext });
   const [eyebrow, title, note] = {
     starting: [values.startingEyebrow, values.startingTitle, values.startingNote],
     brb: [values.brbEyebrow, values.brbTitle, values.brbNote],
@@ -76,7 +76,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
         {values.progressStyle !== "aus" && <BuoyRope progress={progress} />}
       </>
     ),
-    brb: <b className="ul-big">{values.afkPrefix + shortClock(away)}</b>,
+    brb: showAway ? <b className="ul-big">{values.afkPrefix + shortClock(away)}</b> : null,
     ending: next ? <b className="ul-next">{`${values.endingNextLabel}: ${next}`}</b> : null,
   }[kind];
 
