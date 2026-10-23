@@ -5,14 +5,14 @@ import { useLayoutEffect, useRef, useState } from "react";
 import { arcLayout, type ArcLetter } from "../arc.ts";
 
 // fixed: the arc of the logo in the grid (center below the scene) and the gap between letters as a share of their size
-const CENTER = { x: 300, y: 640 };
-const RADIUS = 470;
+const LOGO_ARC = { center: { x: 300, y: 640 }, radius: 470 };
 const GAP = 0.06;
 const SPACE = 0.35;
 
-type Props = { text: string; size: number; span: number; stroke: number; onReady: () => void };
+// arc: center and radius of another arc (the bag), else the arc of the logo
+type Props = { text: string; size: number; span: number; stroke: number; onReady: () => void; arc?: { center: { x: number; y: number }; radius: number } };
 
-export default function ArcTitle({ text, size, span, stroke, onReady }: Props) {
+export default function ArcTitle({ text, size, span, stroke, onReady, arc = LOGO_ARC }: Props) {
   const letters = [...text];
   const refs = useRef<(SVGTextElement | null)[]>([]);
   const [layout, setLayout] = useState<ArcLetter[] | null>(null);
@@ -23,12 +23,12 @@ export default function ArcTitle({ text, size, span, stroke, onReady }: Props) {
     const measure = () => {
       if (!alive) return;
       const widths = [...text].map((char, index) => (char === " " ? size * SPACE : (refs.current[index]?.getComputedTextLength() ?? 0) + size * GAP));
-      setLayout(arcLayout(widths, CENTER, RADIUS, span));
+      setLayout(arcLayout(widths, arc.center, arc.radius, span));
       ready.current();
     };
     void document.fonts.ready.then(measure);
     return () => { alive = false; };
-  }, [text, size, span]);
+  }, [text, size, span, arc]);
   return (
     <g className="kb-arc" style={{ visibility: layout ? "visible" : "hidden" }}>
       {letters.map((char, index) => {

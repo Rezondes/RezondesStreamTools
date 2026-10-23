@@ -5,6 +5,7 @@ import { lazy } from "react";
 import type { ThemeView } from "../../core/theme.ts";
 import { kebabSettings } from "./settings.ts";
 import "./theme.css";
+import "./overlays.css";
 
 export const kebabView: ThemeView = {
   id: kebabSettings.id,
@@ -13,5 +14,11 @@ export const kebabView: ThemeView = {
     brb: lazy(() => import("./scenes/Brb.tsx")),
     ending: lazy(() => import("./scenes/Ending.tsx")),
     stats: lazy(() => import("./scenes/Stats.tsx")),
+    alerts: lazy(() => import("./scenes/Alerts.tsx")),
+    chat: lazy(() => import("./scenes/Chat.tsx")),
+    cam: lazy(() => import("./scenes/Cam.tsx")),
+    music: lazy(() => import("./scenes/Music.tsx")),
+    fx: lazy(() => import("./scenes/Fx.tsx")),
+    info: lazy(() => import("./scenes/Info.tsx")),
   },
 };

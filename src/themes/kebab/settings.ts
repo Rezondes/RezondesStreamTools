@@ -1,8 +1,11 @@
 // Settings schema of the Kebab theme (DESIGN-KEBAB.md, PLAN-KEBAB.md): a kebab shop as red line art on paper. The only
 // place of the theme with fixed colors, texts and numbers. KebabValues is the type of the resolved values that the
 // scenes read via useKebab.
-import { color, flag, font, inScene, lines, markBasic, number, text } from "../../core/fields.ts";
+import { alertSoundFields } from "../../core/alerts/alerts.ts";
+import { badgeFields } from "../../core/chat/chat.ts";
+import { choice, color, flag, font, inScene, lines, markBasic, number, text, withDefaults } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
+import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 
@@ -15,7 +18,18 @@ const STARTING = "Starting";
 const BRB = "BRB";
 const ENDING = "Ending";
 const CLOSING = "Tagesabschluss";
+const ALERTS = "Alerts";
+const CHAT = "Chat";
+const CAM = "Kamera-Rahmen";
+const MUSIC = "Musik";
+const FX = "Effekte";
 const STINGER = "Stinger";
+
+const ALERT_STYLES = ["bon", "tuete"] as const;
+const CHAT_STYLES = ["zettel", "liste", "schlicht"] as const;
+const NAME_COLORS = ["rot", "chatter"] as const;
+const CAM_STYLES = ["fenster", "rahmen", "aus"] as const;
+const MUSIC_STYLES = ["bon", "schild", "schlicht"] as const;
 
 const FIELDS = [
   text("channelName", "Ladenname ({shop})", GENERAL, "Döner", 40),
@@ -97,6 +111,94 @@ const FIELDS = [
   inScene("stats", flag("stampOn", "Stempel", CLOSING, true)),
   inScene("stats", text("stampText", "Stempel: Text", CLOSING, "BEZAHLT", 20)),
   inScene("stats", number("stampAt", "Stempel knallt auf nach", CLOSING, 3, 0.5, 60, "s", 0.5)),
+
+  // Per kind: head line, dish, the line under the name (when the viewer wrote nothing) and the item at the bottom
+  // (Posten|Zusatz). Placeholders: {user}, {amount}, {detail}, {text}
+  choice("alertStyle", "Darstellung", ALERTS, "bon", ALERT_STYLES),
+  text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOW"),
+  text("followDish", "Follow: Gericht", ALERTS, "1x Döner"),
+  text("followLine", "Follow: Spruch", ALERTS, "Mit alles?"),
+  text("followItem", "Follow: Posten", ALERTS, "Follow|gratis"),
+  text("subTag", "Sub: Kopfzeile", ALERTS, "NEUES ABO"),
+  text("subDish", "Sub: Gericht", ALERTS, "1x Dürüm"),
+  text("subLine", "Sub: Spruch", ALERTS, "Ab jetzt Stammkunde!"),
+  text("subItem", "Sub: Posten", ALERTS, "Abo|Stammkunde"),
+  text("resubTag", "Resub: Kopfzeile", ALERTS, "ABO x{amount}"),
+  text("resubDish", "Resub: Gericht", ALERTS, "1x Dönerteller"),
+  text("resubLine", "Resub: Spruch", ALERTS, "Wie immer, {user}? Seit {amount} Monaten!"),
+  text("resubItem", "Resub: Posten", ALERTS, "{amount} Monate|treu"),
+  text("giftTag", "Gift: Kopfzeile", ALERTS, "ABOS VERSCHENKT"),
+  text("giftDish", "Gift: Gericht", ALERTS, "Runde für alle"),
+  text("giftLine", "Gift: Spruch", ALERTS, "{user} gibt {amount} Döner aus!"),
+  text("giftItem", "Gift: Posten", ALERTS, "{amount}x Döner|geschenkt"),
+  text("raidTag", "Raid: Kopfzeile", ALERTS, "RAID"),
+  text("raidDish", "Raid: Gericht", ALERTS, "Familienplatte"),
+  text("raidLine", "Raid: Spruch", ALERTS, "{user} kommt mit {amount} Leuten rein!"),
+  text("raidItem", "Raid: Posten", ALERTS, "{amount} Gäste|willkommen"),
+  text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} BITS"),
+  text("cheerDish", "Bits: Gericht", ALERTS, "Extra-Soße"),
+  text("cheerLine", "Bits: Spruch", ALERTS, "{amount} Bits auf die Theke!"),
+  text("cheerItem", "Bits: Posten", ALERTS, "{amount} Bits|danke"),
+  text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "KANALPUNKTE"),
+  text("redeemDish", "Kanalpunkte: Gericht", ALERTS, "1x Ayran"),
+  text("redeemLine", "Kanalpunkte: Spruch", ALERTS, "{detail} kommt sofort!"),
+  text("redeemItem", "Kanalpunkte: Posten", ALERTS, "Punkte|eingelöst"),
+  text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "HYPE TRAIN"),
+  text("hypeDish", "Hype Train: Gericht", ALERTS, "Grillparty"),
+  text("hypeBeginLine", "Hype Train: Start", ALERTS, "Alle an den Grill!"),
+  text("hypeEndLine", "Hype Train: Ende", ALERTS, "Grillparty Level {amount} geschafft!"),
+  text("hypeItem", "Hype Train: Posten", ALERTS, "Hype|Level {amount}"),
+  text("alertNumber", "Bestellnummer ({number})", ALERTS, "Bestellung Nr. {number}", 40),
+  text("alertFor", "Wort vor dem Namen", ALERTS, "für", 20),
+  flag("alertQuote", "Nachricht statt Spruch zeigen", ALERTS, true),
+  text("quoteFormat", "Nachricht ({text})", ALERTS, "„{text}“"),
+  number("alertDuration", "Dauer", ALERTS, 7000, 2000, 60000, "ms"),
+  flag("alertStamp", "Stempel", ALERTS, true),
+  text("alertStampText", "Stempel: Text", ALERTS, "MIT ALLES", 20),
+  number("alertStampAt", "Stempel knallt auf nach", ALERTS, 2000, 0, 10000, "ms"),
+  flag("alertCrumbs", "Zwiebelringe und Fleischstücke", ALERTS, true),
+  // fixed: at most 200 crumbs, every one is drawn every frame
+  number("alertCrumbCount", "Zwiebelringe: Anzahl", ALERTS, 34, 0, 200),
+  number("alertPrintSteps", "Drucker: Rucke", ALERTS, 16, 1, 40),
+  flag("alertSound", "Töne", ALERTS, true),
+  ...alertSoundFields(ALERTS),
+
+  choice("chatStyle", "Darstellung", CHAT, "zettel", CHAT_STYLES),
+  number("chatMax", "Max. Nachrichten", CHAT, 6, 1, 50),
+  number("chatLifetime", "Ausblenden nach (0 = nie)", CHAT, 30, 0, 3600, "s"),
+  number("chatWidth", "Breite", CHAT, 480, 200, 1900, "px"),
+  choice("chatNameColor", "Farbe der Namen", CHAT, "rot", NAME_COLORS),
+  number("chatPrintMs", "Zettel kommt heraus (Dauer)", CHAT, 400, 0, 3000, "ms"),
+  number("emoteSize", "Emote-Grösse", CHAT, 28, 8, 120, "px"),
+  flag("chatBadges", "Badges zeigen", CHAT, true),
+  ...badgeFields(CHAT),
+
+  choice("camStyle", "Darstellung", CAM, "fenster", CAM_STYLES),
+  text("camLabel", "Namensschild ({channel}, {shop})", CAM, "{shop}"),
+  flag("camAwning", "Markise", CAM, true),
+  number("camAwningStripes", "Markise: Streifen", CAM, 8, 2, 30),
+  flag("camCounter", "Theke unten", CAM, true),
+  number("camBorder", "Rahmenstärke", CAM, 6, 0, 30, "px"),
+
+  choice("musicStyle", "Darstellung", MUSIC, "bon", MUSIC_STYLES),
+  text("musicLabel", "Überzeile", MUSIC, "LÄUFT GERADE"),
+  text("musicIdle", "Text ohne Wiedergabe", MUSIC, "Gerade keine Musik"),
+  flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+  flag("musicCover", "Cover zeigen", MUSIC, true),
+  flag("musicProgress", "Fortschritt", MUSIC, true),
+  number("musicMarqueeSpeed", "Lange Zeilen: Lauftempo (px pro Sekunde)", MUSIC, 40, 5, 400),
+  number("coverSize", "Cover-Grösse", MUSIC, 96, 40, 300, "px"),
+
+  number("fxDuration", "Standarddauer", FX, 4, 0.5, 120, "s", 0.5),
+  number("fxSize", "Standardgrösse", FX, 360, 20, 1920, "px"),
+  flag("fxText", "Text zeigen", FX, true),
+  number("fxTextSize", "Textgrösse", FX, 96, 8, 300, "px"),
+  number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20, 0, 50, "%"),
+  number("fxMax", "Max. gleichzeitig", FX, 8, 1, 30),
+
+  // Commands page (public, /s/<login>/): shared texts from the core with the title of a menu, plus the look
+  ...withDefaults(INFO_FIELDS, { infoTitle: "Speisekarte" }),
+  number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -109,6 +211,12 @@ const GROUP_SCENES = {
   [BRB]: ["brb"],
   [ENDING]: ["ending"],
   [CLOSING]: ["stats"],
+  [ALERTS]: ["alerts"],
+  [CHAT]: ["chat"],
+  [CAM]: ["cam"],
+  [MUSIC]: ["music"],
+  [FX]: ["fx"],
+  [INFO_GROUP]: ["info"],
   [STINGER]: [],
 } as const;
 
@@ -120,6 +228,6 @@ export function shopOf(login: string) {
 const personalize = (login: string) => ({ channelName: shopOf(login) });
 
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
-const BASIC = ["quality", "channelName", "red", "redText", "sawOn", "shavingsOn", "startingItems", "countdownLabel", "countdownDone", "ticker", "brbTitle", "brbSign", "brbTicker", "endingTitle", "endingNext", "closingTitle", "closingLines", "stampText"];
+const BASIC = ["quality", "channelName", "red", "redText", "sawOn", "shavingsOn", "startingItems", "countdownLabel", "countdownDone", "ticker", "brbTitle", "brbSign", "brbTicker", "endingTitle", "endingNext", "closingTitle", "closingLines", "stampText", "alertStyle", "followLine", "subLine", "raidLine", "cheerLine", "alertStampText", "chatStyle", "chatBadges", "camStyle", "camLabel", "musicStyle", "musicLabel", "musicIdle", "fxText"];
 
 export const kebabSettings: ThemeSchema = { id: "kebab", name: "Kebab", fields: markBasic(withStingerFields([...FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };

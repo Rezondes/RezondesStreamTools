@@ -8,9 +8,12 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, Unit, color, flag, font, in_scene, lines, mark_basic, number, text,
+    SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, lines, mark_basic, number,
+    text, with_defaults,
 };
+use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::graphics_fields::quality_field;
+use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
@@ -24,9 +27,21 @@ const STARTING: &str = "Starting";
 const BRB: &str = "BRB";
 const ENDING: &str = "Ending";
 const CLOSING: &str = "Tagesabschluss";
+const ALERTS: &str = "Alerts";
+const CHAT: &str = "Chat";
+const CAM: &str = "Kamera-Rahmen";
+const MUSIC: &str = "Musik";
+const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
 
+const ALERT_STYLES: [&str; 2] = ["bon", "tuete"];
+const CHAT_STYLES: [&str; 3] = ["zettel", "liste", "schlicht"];
+const NAME_COLORS: [&str; 2] = ["rot", "chatter"];
+const CAM_STYLES: [&str; 3] = ["fenster", "rahmen", "aus"];
+const MUSIC_STYLES: [&str; 3] = ["bon", "schild", "schlicht"];
+
 const PX: Option<Unit> = Some(Unit::Px);
+const PERCENT: Option<Unit> = Some(Unit::Percent);
 const MS: Option<Unit> = Some(Unit::Ms);
 const S: Option<Unit> = Some(Unit::S);
 
@@ -204,6 +219,96 @@ fn closing() -> Vec<SettingField> {
     ]
 }
 
+fn alerts() -> Vec<SettingField> {
+    vec![
+        // Per kind: head line, dish, the line under the name and the item at the bottom (Posten|Zusatz)
+        choice("alertStyle", "Darstellung", ALERTS, "bon", &ALERT_STYLES),
+        text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOW", None),
+        text("followDish", "Follow: Gericht", ALERTS, "1x Döner", None),
+        text("followLine", "Follow: Spruch", ALERTS, "Mit alles?", None),
+        text("followItem", "Follow: Posten", ALERTS, "Follow|gratis", None),
+        text("subTag", "Sub: Kopfzeile", ALERTS, "NEUES ABO", None),
+        text("subDish", "Sub: Gericht", ALERTS, "1x Dürüm", None),
+        text("subLine", "Sub: Spruch", ALERTS, "Ab jetzt Stammkunde!", None),
+        text("subItem", "Sub: Posten", ALERTS, "Abo|Stammkunde", None),
+        text("resubTag", "Resub: Kopfzeile", ALERTS, "ABO x{amount}", None),
+        text("resubDish", "Resub: Gericht", ALERTS, "1x Dönerteller", None),
+        text("resubLine", "Resub: Spruch", ALERTS, "Wie immer, {user}? Seit {amount} Monaten!", None),
+        text("resubItem", "Resub: Posten", ALERTS, "{amount} Monate|treu", None),
+        text("giftTag", "Gift: Kopfzeile", ALERTS, "ABOS VERSCHENKT", None),
+        text("giftDish", "Gift: Gericht", ALERTS, "Runde für alle", None),
+        text("giftLine", "Gift: Spruch", ALERTS, "{user} gibt {amount} Döner aus!", None),
+        text("giftItem", "Gift: Posten", ALERTS, "{amount}x Döner|geschenkt", None),
+        text("raidTag", "Raid: Kopfzeile", ALERTS, "RAID", None),
+        text("raidDish", "Raid: Gericht", ALERTS, "Familienplatte", None),
+        text("raidLine", "Raid: Spruch", ALERTS, "{user} kommt mit {amount} Leuten rein!", None),
+        text("raidItem", "Raid: Posten", ALERTS, "{amount} Gäste|willkommen", None),
+        text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} BITS", None),
+        text("cheerDish", "Bits: Gericht", ALERTS, "Extra-Soße", None),
+        text("cheerLine", "Bits: Spruch", ALERTS, "{amount} Bits auf die Theke!", None),
+        text("cheerItem", "Bits: Posten", ALERTS, "{amount} Bits|danke", None),
+        text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "KANALPUNKTE", None),
+        text("redeemDish", "Kanalpunkte: Gericht", ALERTS, "1x Ayran", None),
+        text("redeemLine", "Kanalpunkte: Spruch", ALERTS, "{detail} kommt sofort!", None),
+        text("redeemItem", "Kanalpunkte: Posten", ALERTS, "Punkte|eingelöst", None),
+        text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "HYPE TRAIN", None),
+        text("hypeDish", "Hype Train: Gericht", ALERTS, "Grillparty", None),
+        text("hypeBeginLine", "Hype Train: Start", ALERTS, "Alle an den Grill!", None),
+        text("hypeEndLine", "Hype Train: Ende", ALERTS, "Grillparty Level {amount} geschafft!", None),
+        text("hypeItem", "Hype Train: Posten", ALERTS, "Hype|Level {amount}", None),
+        text("alertNumber", "Bestellnummer ({number})", ALERTS, "Bestellung Nr. {number}", Some(40)),
+        text("alertFor", "Wort vor dem Namen", ALERTS, "für", Some(20)),
+        flag("alertQuote", "Nachricht statt Spruch zeigen", ALERTS, true),
+        text("quoteFormat", "Nachricht ({text})", ALERTS, "„{text}“", None),
+        number("alertDuration", "Dauer", ALERTS, 7000.0, 2000.0, 60000.0, MS, None),
+        flag("alertStamp", "Stempel", ALERTS, true),
+        text("alertStampText", "Stempel: Text", ALERTS, "MIT ALLES", Some(20)),
+        number("alertStampAt", "Stempel knallt auf nach", ALERTS, 2000.0, 0.0, 10000.0, MS, None),
+        flag("alertCrumbs", "Zwiebelringe und Fleischstücke", ALERTS, true),
+        number("alertCrumbCount", "Zwiebelringe: Anzahl", ALERTS, 34.0, 0.0, 200.0, None, None),
+        number("alertPrintSteps", "Drucker: Rucke", ALERTS, 16.0, 1.0, 40.0, None, None),
+        flag("alertSound", "Töne", ALERTS, true),
+    ]
+}
+
+fn chat() -> Vec<SettingField> {
+    vec![
+        choice("chatStyle", "Darstellung", CHAT, "zettel", &CHAT_STYLES),
+        number("chatMax", "Max. Nachrichten", CHAT, 6.0, 1.0, 50.0, None, None),
+        number("chatLifetime", "Ausblenden nach (0 = nie)", CHAT, 30.0, 0.0, 3600.0, S, None),
+        number("chatWidth", "Breite", CHAT, 480.0, 200.0, 1900.0, PX, None),
+        choice("chatNameColor", "Farbe der Namen", CHAT, "rot", &NAME_COLORS),
+        number("chatPrintMs", "Zettel kommt heraus (Dauer)", CHAT, 400.0, 0.0, 3000.0, MS, None),
+        number("emoteSize", "Emote-Grösse", CHAT, 28.0, 8.0, 120.0, PX, None),
+        flag("chatBadges", "Badges zeigen", CHAT, true),
+    ]
+}
+
+fn cam_music_fx() -> Vec<SettingField> {
+    vec![
+        choice("camStyle", "Darstellung", CAM, "fenster", &CAM_STYLES),
+        text("camLabel", "Namensschild ({channel}, {shop})", CAM, "{shop}", None),
+        flag("camAwning", "Markise", CAM, true),
+        number("camAwningStripes", "Markise: Streifen", CAM, 8.0, 2.0, 30.0, None, None),
+        flag("camCounter", "Theke unten", CAM, true),
+        number("camBorder", "Rahmenstärke", CAM, 6.0, 0.0, 30.0, PX, None),
+        choice("musicStyle", "Darstellung", MUSIC, "bon", &MUSIC_STYLES),
+        text("musicLabel", "Überzeile", MUSIC, "LÄUFT GERADE", None),
+        text("musicIdle", "Text ohne Wiedergabe", MUSIC, "Gerade keine Musik", None),
+        flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+        flag("musicCover", "Cover zeigen", MUSIC, true),
+        flag("musicProgress", "Fortschritt", MUSIC, true),
+        number("musicMarqueeSpeed", "Lange Zeilen: Lauftempo (px pro Sekunde)", MUSIC, 40.0, 5.0, 400.0, None, None),
+        number("coverSize", "Cover-Grösse", MUSIC, 96.0, 40.0, 300.0, PX, None),
+        number("fxDuration", "Standarddauer", FX, 4.0, 0.5, 120.0, S, Some(0.5)),
+        number("fxSize", "Standardgrösse", FX, 360.0, 20.0, 1920.0, PX, None),
+        flag("fxText", "Text zeigen", FX, true),
+        number("fxTextSize", "Textgrösse", FX, 96.0, 8.0, 300.0, PX, None),
+        number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20.0, 0.0, 50.0, PERCENT, None),
+        number("fxMax", "Max. gleichzeitig", FX, 8.0, 1.0, 30.0, None, None),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     use SceneName::{Brb, Ending, Starting, Stats};
     BTreeMap::from([
@@ -213,6 +318,12 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (BRB.to_owned(), vec![Brb]),
         (ENDING.to_owned(), vec![Ending]),
         (CLOSING.to_owned(), vec![Stats]),
+        (ALERTS.to_owned(), vec![SceneName::Alerts]),
+        (CHAT.to_owned(), vec![SceneName::Chat]),
+        (CAM.to_owned(), vec![SceneName::Cam]),
+        (MUSIC.to_owned(), vec![SceneName::Music]),
+        (FX.to_owned(), vec![SceneName::Fx]),
+        (INFO_GROUP.to_owned(), vec![SceneName::Info]),
         (STINGER.to_owned(), vec![]),
     ])
 }
@@ -248,11 +359,41 @@ const BASIC: &[&str] = &[
     "closingTitle",
     "closingLines",
     "stampText",
+    "alertStyle",
+    "followLine",
+    "subLine",
+    "raidLine",
+    "cheerLine",
+    "alertStampText",
+    "chatStyle",
+    "chatBadges",
+    "camStyle",
+    "camLabel",
+    "musicStyle",
+    "musicLabel",
+    "musicIdle",
+    "fxText",
 ];
 
 #[must_use]
 pub fn kebab() -> Theme {
-    let fields = [general(), chef(), starting(), brb(), ending(), closing()].concat();
+    let info = with_defaults(info_fields(), &[("infoTitle", SettingValue::Text("Speisekarte".to_owned()))]);
+    let mut fields = [
+        general(),
+        chef(),
+        starting(),
+        brb(),
+        ending(),
+        closing(),
+        alerts(),
+        alert_sound_fields(ALERTS),
+        chat(),
+        badge_fields(CHAT),
+        cam_music_fx(),
+        info,
+    ]
+    .concat();
+    fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900.0, 400.0, 1600.0, PX, None));
     let schema = ThemeSchema {
         id: "kebab".to_owned(),
         name: "Kebab".to_owned(),
