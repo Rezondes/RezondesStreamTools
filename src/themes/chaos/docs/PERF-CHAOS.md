@@ -37,7 +37,10 @@ Die Bildrate bei "mittel" bleibt dadurch bei rund 23 fps, weil die Filter der En
 
 ## Vorschläge (noch nicht umgesetzt, brauchen eine Entscheidung)
 
-1. **Marken vorrendern (empfohlen):** jede Marke mit ihren drei Takes einmal samt Filter in ein Bild rendern und danach
+1. **Marken vorrendern (umgesetzt):** nach dem Einzeichnen wird jeder Take mit seinem Filter einmal zu einem Bild
+   (`useMarkSprites.ts`, `sprites.ts`), das Brodeln bewegt danach nur noch die Bilder auf einem Canvas. Gemessen bei
+   1920x1080: Starting 134 statt 16 bis 21 fps, die Bilder sind rund 8 s nach dem Laden fertig und belegen rund 37 MB.
+   Ursprünglicher Vorschlag: jede Marke mit ihren drei Takes einmal samt Filter in ein Bild rendern und danach
    nur noch die Bilder bewegen (Canvas oder Pixi). Der Filter wirkt im eigenen Koordinatensystem der Marke, das
    vorgerenderte Bild sieht beim Treiben deshalb gleich aus. Erwartung: Bildschirme wie bei "niedrig" (rund 90 fps), ohne
    die Optik zu ändern. Das Einzeichnen am Anfang bleibt SVG und wechselt danach auf die Bilder. Aufwand: mittel bis
