@@ -1738,6 +1738,125 @@
         "1080p",
         "720p"
       ]
+    },
+    {
+      "key": "stingerStyle",
+      "type": "select",
+      "label": "Darstellung",
+      "group": "Stinger",
+      "default": "papier",
+      "options": [
+        "papier",
+        "messer"
+      ]
+    },
+    {
+      "key": "stingerText",
+      "type": "text",
+      "label": "Bogenschrift",
+      "group": "Stinger",
+      "default": "DÖNER KEBAB",
+      "maxLength": 30
+    },
+    {
+      "key": "stingerDuration",
+      "type": "number",
+      "label": "Länge",
+      "group": "Stinger",
+      "default": 1.6,
+      "min": 0.5,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerCut",
+      "type": "number",
+      "label": "Übergangspunkt",
+      "group": "Stinger",
+      "default": 0.8,
+      "min": 0.1,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerTearJag",
+      "type": "number",
+      "label": "Papier: Zacken der Riss-Kante",
+      "group": "Stinger",
+      "default": 4,
+      "min": 0,
+      "max": 15,
+      "unit": "%",
+      "step": 0.5
+    },
+    {
+      "key": "stingerSlices",
+      "type": "number",
+      "label": "Messer: Fleischscheiben",
+      "group": "Stinger",
+      "default": 9,
+      "min": 3,
+      "max": 20
+    },
+    {
+      "key": "stingerShavings",
+      "type": "boolean",
+      "label": "Messer: Späne fliegen",
+      "group": "Stinger",
+      "default": true
+    },
+    {
+      "key": "stingerSeed",
+      "type": "number",
+      "label": "Startwert",
+      "group": "Stinger",
+      "default": 7,
+      "min": 1,
+      "max": 9999
+    },
+    {
+      "key": "profileTitle",
+      "type": "text",
+      "label": "Profil: Titel",
+      "group": "Banner",
+      "default": "{shop}",
+      "maxLength": 60
+    },
+    {
+      "key": "profileSubtitle",
+      "type": "text",
+      "label": "Profil: Zeile darunter",
+      "group": "Banner",
+      "default": "Frisch vom Spieß",
+      "maxLength": 80
+    },
+    {
+      "key": "offlineText",
+      "type": "text",
+      "label": "Offline: Text auf dem Rollladen",
+      "group": "Banner",
+      "default": "Heute geschlossen",
+      "maxLength": 60
+    },
+    {
+      "key": "bannerDuration",
+      "type": "number",
+      "label": "Länge der Schleife",
+      "group": "Banner",
+      "default": 4,
+      "min": 1,
+      "max": 30,
+      "unit": "s",
+      "step": 0.5
+    },
+    {
+      "key": "bannerSteam",
+      "type": "boolean",
+      "label": "Dampf",
+      "group": "Banner",
+      "default": true
     }
   ],
   "groupScenes": {
@@ -1782,7 +1901,8 @@
     "Befehlsseite": [
       "info"
     ],
-    "Stinger": []
+    "Stinger": [],
+    "Banner": []
   },
   "personalize": {
     "neo": {

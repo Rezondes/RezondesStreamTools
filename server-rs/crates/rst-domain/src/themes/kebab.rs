@@ -33,12 +33,14 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
+const BANNER: &str = "Banner";
 
 const ALERT_STYLES: [&str; 2] = ["bon", "tuete"];
 const CHAT_STYLES: [&str; 3] = ["zettel", "liste", "schlicht"];
 const NAME_COLORS: [&str; 2] = ["rot", "chatter"];
 const CAM_STYLES: [&str; 3] = ["fenster", "rahmen", "aus"];
 const MUSIC_STYLES: [&str; 3] = ["bon", "schild", "schlicht"];
+const STINGER_STYLES: [&str; 2] = ["papier", "messer"];
 
 const PX: Option<Unit> = Some(Unit::Px);
 const PERCENT: Option<Unit> = Some(Unit::Percent);
@@ -309,6 +311,25 @@ fn cam_music_fx() -> Vec<SettingField> {
     ]
 }
 
+/// Clips: the stinger (papier or messer) and the profile and offline banners
+fn clips() -> Vec<SettingField> {
+    vec![
+        choice("stingerStyle", "Darstellung", STINGER, "papier", &STINGER_STYLES),
+        text("stingerText", "Bogenschrift", STINGER, "DÖNER KEBAB", Some(30)),
+        number("stingerDuration", "Länge", STINGER, 1.6, 0.5, 5.0, S, Some(0.05)),
+        number("stingerCut", "Übergangspunkt", STINGER, 0.8, 0.1, 5.0, S, Some(0.05)),
+        number("stingerTearJag", "Papier: Zacken der Riss-Kante", STINGER, 4.0, 0.0, 15.0, PERCENT, Some(0.5)),
+        number("stingerSlices", "Messer: Fleischscheiben", STINGER, 9.0, 3.0, 20.0, None, None),
+        flag("stingerShavings", "Messer: Späne fliegen", STINGER, true),
+        number("stingerSeed", "Startwert", STINGER, 7.0, 1.0, 9999.0, None, None),
+        text("profileTitle", "Profil: Titel", BANNER, "{shop}", Some(60)),
+        text("profileSubtitle", "Profil: Zeile darunter", BANNER, "Frisch vom Spieß", Some(80)),
+        text("offlineText", "Offline: Text auf dem Rollladen", BANNER, "Heute geschlossen", Some(60)),
+        number("bannerDuration", "Länge der Schleife", BANNER, 4.0, 1.0, 30.0, S, Some(0.5)),
+        flag("bannerSteam", "Dampf", BANNER, true),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     use SceneName::{Brb, Ending, Starting, Stats};
     BTreeMap::from([
@@ -325,6 +346,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (FX.to_owned(), vec![SceneName::Fx]),
         (INFO_GROUP.to_owned(), vec![SceneName::Info]),
         (STINGER.to_owned(), vec![]),
+        (BANNER.to_owned(), vec![]),
     ])
 }
 
@@ -394,6 +416,7 @@ pub fn kebab() -> Theme {
     ]
     .concat();
     fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900.0, 400.0, 1600.0, PX, None));
+    fields.extend(clips());
     let schema = ThemeSchema {
         id: "kebab".to_owned(),
         name: "Kebab".to_owned(),

@@ -1,11 +1,90 @@
-// Renderable clips and the panel template of the Kebab theme. The clips (stinger, banners) follow in package 5 of
-// PLAN-KEBAB.md; until then the theme has none (the dashboard marks them as not available). Check: render.check.ts.
+// Renderable clips and the panel template of the Kebab theme: the stinger (group Stinger, papier or messer) and the
+// profile and offline banners (group Banner), drawn with the resolved settings. The drawing (stinger.ts, banners.ts)
+// loads only in prepare, so Rough.js stays out of the entry chunk; until then the clips draw plain paper.
+// Check: render.check.ts.
 import { centeredTop, type PanelDesign, PANEL_START_HEIGHT, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
+import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
+import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
+import type * as BannerModule from "./banners.ts";
+import type { BannerLook } from "./banners.ts";
 import type { KebabValues } from "./settings.ts";
+import type * as StingerModule from "./stinger.ts";
+import type { StingerLook, StingerStyle } from "./stinger.ts";
+import { PICTURE } from "./wrap.ts";
 
-export const kebabClips = (): RenderClip[] => [];
+export const PROFILE_SIZE = { width: 1200, height: 480 };
+// fixed: banners are one picture in the dashboard; the frame rate only fills the preview of the loop
+const BANNER_FPS = 30;
+
+type Draw = (context: CanvasRenderingContext2D, time: number) => void;
+type Parts = { stinger: typeof StingerModule; banners: typeof BannerModule };
+
+// The drawing modules, loaded once by prepare
+let parts: Parts | null = null;
+const prepare = async () => {
+  parts ??= { stinger: await import("./stinger.ts"), banners: await import("./banners.ts") };
+};
+// The picture once prepare has loaded the drawing (built on its first frame), the stand-in before
+function clipDraw(build: (loaded: Parts) => Draw, standIn: Draw): Draw {
+  let picture: Draw | null = null;
+  return (context, time) => {
+    if (!parts) {
+      standIn(context, time);
+      return;
+    }
+    picture ??= build(parts);
+    picture(context, time);
+  };
+}
+const plain = (size: { width: number; height: number }, color: string): Draw => context => {
+  context.fillStyle = color;
+  context.fillRect(0, 0, size.width, size.height);
+};
+// Stand-in of the stinger: paper covers the picture from the left, all of it at the cut, then leaves again
+function coverStandIn(look: StingerLook): Draw {
+  return (context, time) => {
+    const share = time <= look.cut ? time / Math.max(look.cut, 1e-3) : (look.duration - time) / Math.max(look.duration - look.cut, 1e-3);
+    context.clearRect(0, 0, PICTURE.width, PICTURE.height);
+    context.fillStyle = look.colors.paper;
+    context.fillRect(0, 0, PICTURE.width * Math.min(1, Math.max(0, share)), PICTURE.height);
+  };
+}
+
+export function kebabClips(settings: SettingValues, login: string): RenderClip[] {
+  const values = settings as unknown as KebabValues;
+  const names = { channel: values.channelName, shop: values.channelName, login };
+  const fill = (text: string) => fillTemplate(text, names);
+  const ink = { roughness: values.inkRoughness, bowing: values.inkBowing, width: values.inkWidth, seed: values.inkSeed };
+  const stinger: StingerLook = {
+    style: values.stingerStyle as StingerStyle, text: fill(values.stingerText), duration: values.stingerDuration, cut: values.stingerCut,
+    jag: values.stingerTearJag, slices: values.stingerSlices, shavings: values.stingerShavings, seed: values.stingerSeed, titleFont: values.titleFont, ink,
+    colors: { red: values.red, redText: values.redText, paper: values.paper, brown: values.brown },
+  };
+  const banner = (size: { width: number; height: number }): BannerLook => ({
+    ...size, loop: values.bannerDuration, steam: values.bannerSteam, ink, titleFont: values.titleFont, font: values.font,
+    colors: { red: values.red, redText: values.redText, paper: values.paper, brown: values.brown, muted: values.muted, steam: values.steam },
+    arc: { text: values.arcText, size: values.arcSize, span: values.arcSpan, stroke: values.arcStroke },
+    spitSpeed: values.spitSpeed, hatchRows: values.hatchRows, steamHeight: values.steamHeight,
+  });
+  const font = `24px "${values.titleFont}"`;
+  const banners = { feature: "banners", font, fps: BANNER_FPS, duration: values.bannerDuration, cut: null, prepare } as const;
+  return [
+    withStingerOptions({
+      name: "stinger", feature: "stinger", group: "Stinger", font, ...PICTURE, fps: values.stingerFps, duration: stinger.duration, cut: stinger.cut, prepare,
+      draw: clipDraw(loaded => loaded.stinger.makeStinger(stinger), coverStandIn(stinger)),
+    }, readStingerOptions(settings)),
+    {
+      ...banners, name: "profile", group: "Banner", ...PROFILE_SIZE,
+      draw: clipDraw(loaded => loaded.banners.makeProfile(banner(PROFILE_SIZE), { title: fill(values.profileTitle), line: fill(values.profileSubtitle) }), plain(PROFILE_SIZE, values.paper)),
+    },
+    {
+      ...banners, name: "offline", group: "Banner", ...PICTURE,
+      draw: clipDraw(loaded => loaded.banners.makeOffline(banner(PICTURE), fill(values.offlineText)), plain(PICTURE, values.brown)),
+    },
+  ];
+}
 
 // Panel template (panel designer): a bon on paper with a red line around it, a dashed rule and the title in the title font
 export function kebabPanel(values: SettingValues, title: string): PanelDesign {

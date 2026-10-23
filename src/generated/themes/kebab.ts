@@ -197,4 +197,17 @@ export type KebabValues = {
   readonly stingerHold: number;
   readonly stingerEase: string;
   readonly stingerSize: string;
+  readonly stingerStyle: string;
+  readonly stingerText: string;
+  readonly stingerDuration: number;
+  readonly stingerCut: number;
+  readonly stingerTearJag: number;
+  readonly stingerSlices: number;
+  readonly stingerShavings: boolean;
+  readonly stingerSeed: number;
+  readonly profileTitle: string;
+  readonly profileSubtitle: string;
+  readonly offlineText: string;
+  readonly bannerDuration: number;
+  readonly bannerSteam: boolean;
 };

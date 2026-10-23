@@ -24,12 +24,14 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
+const BANNER = "Banner";
 
 const ALERT_STYLES = ["bon", "tuete"] as const;
 const CHAT_STYLES = ["zettel", "liste", "schlicht"] as const;
 const NAME_COLORS = ["rot", "chatter"] as const;
 const CAM_STYLES = ["fenster", "rahmen", "aus"] as const;
 const MUSIC_STYLES = ["bon", "schild", "schlicht"] as const;
+const STINGER_STYLES = ["papier", "messer"] as const;
 
 const FIELDS = [
   text("channelName", "Ladenname ({shop})", GENERAL, "Döner", 40),
@@ -199,6 +201,21 @@ const FIELDS = [
   // Commands page (public, /s/<login>/): shared texts from the core with the title of a menu, plus the look
   ...withDefaults(INFO_FIELDS, { infoTitle: "Speisekarte" }),
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
+
+  // Clips: the stinger (papier or messer) and the profile and offline banners. Placeholders: {shop}, {channel}, {login}
+  choice("stingerStyle", "Darstellung", STINGER, "papier", STINGER_STYLES),
+  text("stingerText", "Bogenschrift", STINGER, "DÖNER KEBAB", 30),
+  number("stingerDuration", "Länge", STINGER, 1.6, 0.5, 5, "s", 0.05),
+  number("stingerCut", "Übergangspunkt", STINGER, 0.8, 0.1, 5, "s", 0.05),
+  number("stingerTearJag", "Papier: Zacken der Riss-Kante", STINGER, 4, 0, 15, "%", 0.5),
+  number("stingerSlices", "Messer: Fleischscheiben", STINGER, 9, 3, 20),
+  flag("stingerShavings", "Messer: Späne fliegen", STINGER, true),
+  number("stingerSeed", "Startwert", STINGER, 7, 1, 9999),
+  text("profileTitle", "Profil: Titel", BANNER, "{shop}", 60),
+  text("profileSubtitle", "Profil: Zeile darunter", BANNER, "Frisch vom Spieß", 80),
+  text("offlineText", "Offline: Text auf dem Rollladen", BANNER, "Heute geschlossen", 60),
+  number("bannerDuration", "Länge der Schleife", BANNER, 4, 1, 30, "s", 0.5),
+  flag("bannerSteam", "Dampf", BANNER, true),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -218,6 +235,7 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [INFO_GROUP]: ["info"],
   [STINGER]: [],
+  [BANNER]: [],
 } as const;
 
 // On first login: the shop of the streamer, "Rezondes' Döner" for a login ending in s, x or z, else "Neos Döner"
