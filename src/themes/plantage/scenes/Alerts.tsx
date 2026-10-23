@@ -42,7 +42,7 @@ export default function Alerts() {
   const values = usePlantage();
   const { current, leaving } = useAlerts(values.alertDuration);
   return (
-    <div className={`pl-alerts align-${values.alertAlign}`}>
+    <div className={`pl-alerts`}>
       {current && <Card key={current.key} alert={current} leaving={leaving} seed={seedOf(String(current.key))} />}
     </div>
   );

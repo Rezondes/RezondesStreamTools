@@ -9,9 +9,12 @@ import type { PlantageValues } from "./settings.ts";
 // fixed: the tallest card before scaling (px), room for its shadow on the right
 const ALERT = { height: 480, right: 24 };
 
+// fixed: where the alert sits on the stage (px); the OBS source shows only its part, the streamer places it in OBS
+// (same value as --alert-top in the CSS of the theme)
+const ALERT_TOP = 80;
 export function plantageAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const plantage = values as unknown as PlantageValues;
-  const { alertAlign: align, alertTop: top, alertScale: scale } = plantage;
+  const { alertScale: scale } = plantage;
   const { cardLeft } = alertLayout({ medal: MEDAL.size, ring: MEDAL.ring, overlap: MEDAL.overlap, gap: plantage.alertGap });
   const middle = MEDAL.size / 2;
   // The burst canvas reaches beyond the card on the left, above and below it
@@ -21,5 +24,5 @@ export function plantageAreas(values: SettingValues): Partial<Record<SceneName, 
     top: (BURST_CANVAS.y - middle) * scale,
     bottom: Math.max(0, middle + BURST_CANVAS.height - BURST_CANVAS.y - ALERT.height) * scale,
   };
-  return { alerts: alertArea({ align, top, width: cardLeft + plantage.alertWidth, height: ALERT.height, scale, room, centerOrigin: true }) };
+  return { alerts: alertArea({ top: ALERT_TOP, width: cardLeft + plantage.alertWidth, height: ALERT.height, scale, room, centerOrigin: true }) };
 }

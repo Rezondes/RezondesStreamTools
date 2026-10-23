@@ -7,7 +7,7 @@ import { matrixSettings } from "./settings.ts";
 const areas = (changes: Record<string, unknown>) => matrixAreas(resolveSettings(matrixSettings, changes));
 
 assert.deepEqual(areas({}).alerts, { width: 650, height: 489, offset: { x: 635, y: 40 } }, "box and curtain, scaled");
-assert.deepEqual(areas({ alertAlign: "right", alertScale: 1 }).alerts, { width: 884, height: 678, offset: { x: 1036, y: 40 } }, "right aligned at the edge of the stage");
+assert.deepEqual(areas({ alertScale: 1 }).alerts, { width: 908, height: 678, offset: { x: 506, y: 40 } }, "unscaled and centered on the stage");
 assert.deepEqual(areas({}).stats, { width: 720, height: 260 }, "the panel grows with its lines");
 
 console.log("matrix areas ok");

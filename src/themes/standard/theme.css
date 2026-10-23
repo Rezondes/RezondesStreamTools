@@ -111,7 +111,7 @@
 /* --- Alerts ------------------------------------------------------------------ */
 /* Card like the prototype refs/alert.html: GSAP brings it in, the SVG edge draws itself (scenes/Alerts.tsx), the glow
    pulses, the sparks fly in a PixiStage around it; the exit is a CSS animation per alertExit */
-.theme-standard .standard-alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alertTop); perspective: var(--alert-perspective, 900px); }
+.theme-standard .standard-alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alert-top, 48px); perspective: var(--alert-perspective, 900px); }
 .theme-standard .standard-alert-scope { position: relative; }
 .theme-standard .standard-alert {
   position: relative;

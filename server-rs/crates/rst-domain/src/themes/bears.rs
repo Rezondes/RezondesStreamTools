@@ -388,8 +388,6 @@ fn fields() -> Vec<SettingField> {
         text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\"", None),
         number("alertDuration", "Dauer", ALERTS, 7000.0, 2000.0, 60000.0, MS, None),
         number("alertScale", "Grösse", ALERTS, 1.0, 0.3, 2.0, None, Some(0.05)),
-        number("alertTop", "Abstand oben", ALERTS, 80.0, 0.0, 1000.0, PX, None),
-        choice("alertAlign", "Position", ALERTS, "center", &["left", "center", "right"]),
         number("alertWidth", "Breite", ALERTS, 760.0, 300.0, 1800.0, PX, None),
         choice("alertIn", "Einblenden", ALERTS, "plopp", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),
         choice("alertOut", "Ausblenden", ALERTS, "plopp", &["watscheln", "plopp", "gleiten", "blenden", "keins"]),

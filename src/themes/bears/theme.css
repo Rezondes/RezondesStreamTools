@@ -233,9 +233,7 @@
 @keyframes bears-shrink { from { scale: 1 1; } to { scale: 0 1; } }
 
 /* --- Alerts ------------------------------------------------------------------------------------------------------ */
-.theme-bears .bb-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
-.theme-bears .bb-alerts.align-left { justify-content: flex-start; }
-.theme-bears .bb-alerts.align-right { justify-content: flex-end; }
+.theme-bears .bb-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alert-top, 80px) var(--alert-side, 48px) 0; overflow: hidden; }
 .theme-bears .bb-alert { position: relative; display: flex; align-items: flex-end; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
 /* With plopp the card squashes, stretches and springs on its GSAP timeline (Alerts.tsx) instead of the CSS plop. Leaving,
    the card takes the out motion (plopp: it hops and vanishes) and the bear ducks away on its own timeline */

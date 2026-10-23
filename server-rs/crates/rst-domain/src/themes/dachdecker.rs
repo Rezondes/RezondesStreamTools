@@ -278,7 +278,6 @@ fn alerts() -> Vec<SettingField> {
         flag("alertQuote", "Nachricht zeigen", ALERTS, true),
         text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\"", None),
         number("alertDuration", "Dauer", ALERTS, 7000.0, 2000.0, 60000.0, MS, None),
-        number("alertTop", "Abstand oben", ALERTS, 620.0, 0.0, 1000.0, PX, None),
         number("alertWidth", "Breite", ALERTS, 720.0, 300.0, 1800.0, PX, None),
         flag("alertDim", "Masslinie mit Text", ALERTS, true),
         flag("alertCorners", "Eckmarken", ALERTS, true),

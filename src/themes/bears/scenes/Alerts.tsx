@@ -64,7 +64,7 @@ export default function Alerts() {
   // The tower has no bones to drive, it blinks with CSS
   const blinking = values.bearAlerts === TOWER && values.blinkEvery > 0;
   return (
-    <div className={`bb-alerts align-${values.alertAlign} bb-facing-${values.facing} ${blinking ? "bb-blinking" : ""}`}>
+    <div className={`bb-alerts bb-facing-${values.facing} ${blinking ? "bb-blinking" : ""}`}>
       {current && <Card key={current.key} alert={current} leaving={leaving} />}
       {current && values.confetti && <Confetti key={`confetti-${current.key}`} count={values.confettiCount} seed={seedOf(String(current.key))} />}
     </div>

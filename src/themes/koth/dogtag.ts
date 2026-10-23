@@ -83,6 +83,9 @@ export function swingAt(time: number, steps: AlertSteps, swing: number, leftFor:
 const RADIO_GAP = 140;
 const HANG = 354;
 const EDGE = 72;
+// fixed: top of the radio on the stage (px); the OBS source shows only the part of tag and radio, the streamer places it
+// in OBS (same value as --alert-top in theme.css for the card styles)
+export const ALERT_TOP = 80;
 
 // Where tag and radio sit: the pair is aligned left, in the middle or right; top of the radio, its width and the scale
 // from the settings. tag: center of the hanging tag, radio: its top left corner.

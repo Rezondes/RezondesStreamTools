@@ -9,13 +9,16 @@ import type { BearsValues } from "./settings.ts";
 const ALERT = { height: 400, top: 60, side: 24 };
 const CHAT_ROOM = 60;
 
+// fixed: where the alert sits on the stage (px); the OBS source shows only its part, the streamer places it in OBS
+// (same value as --alert-top in the CSS of the theme)
+const ALERT_TOP = 80;
 export function bearsAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const bears = values as unknown as BearsValues;
-  const { alertAlign: align, alertTop: top, alertWidth: width, alertScale: scale } = bears;
+  const { alertWidth: width, alertScale: scale } = bears;
   const height = Math.max(ALERT.height, bears.alertBearSize);
   const room = { left: ALERT.side, right: ALERT.side, top: ALERT.top, bottom: ALERT.side };
   return {
-    alerts: alertArea({ align, top, width, height, scale, room, centerOrigin: true }),
+    alerts: alertArea({ top: ALERT_TOP, width, height, scale, room, centerOrigin: true }),
     chat: { width: Math.max(SCENE_SIZES.chat.width, bears.chatPhoneWidth + CHAT_ROOM), height: SCENE_SIZES.chat.height },
   };
 }

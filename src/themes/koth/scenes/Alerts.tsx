@@ -12,7 +12,7 @@ import Stage3D from "../../../core/three/Stage3D.tsx";
 import { fillTemplate } from "../../../core/template.ts";
 import type { Alert, AlertKind } from "../../../core/types.ts";
 import type { KothClock } from "../build.ts";
-import { alertLayout, alertSteps, dogtagLines, swingAt } from "../dogtag.ts";
+import { ALERT_TOP, alertLayout, alertSteps, dogtagLines, swingAt } from "../dogtag.ts";
 import { ICONS, type IconName } from "../hill.ts";
 import RadioSet from "../radio/RadioSet.tsx";
 import type { KothValues } from "../settings.ts";
@@ -39,7 +39,7 @@ export default function Alerts() {
   const { current, leaving } = useAlerts(values.alertDuration);
   if (values.alertStyle === "marke") return <div className="kh-dogtag-alerts">{current && <DogtagAlert key={current.key} alert={current} leaving={leaving} />}</div>;
   return (
-    <div className={`kh-alerts align-${values.alertAlign}`}>
+    <div className={`kh-alerts`}>
       {current && <Card key={current.key} alert={current} leaving={leaving} />}
     </div>
   );
@@ -67,7 +67,7 @@ function DogtagAlert({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const closing = values.soundLeave;
   useAlertSounds(values.alertSound ? () => playChime(sound) : null, values.alertSound ? () => playLeave(closing) : null, leaving);
   const steps = useMemo(() => alertSteps(values.alertOpenMs, values.alertStaticMs), [values.alertOpenMs, values.alertStaticMs]);
-  const layout = alertLayout(values.alertAlign, values.alertTop, values.alertWidth, values.alertScale);
+  const layout = alertLayout("center", ALERT_TOP, values.alertWidth, values.alertScale);
   const stamped = useMemo(
     () => dogtagLines(values.dogtagLines, { ...kothNames(values), user: alert.user, amount: alert.amount === undefined ? "" : String(alert.amount) }),
     [values, alert],

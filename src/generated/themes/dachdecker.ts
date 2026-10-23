@@ -146,7 +146,6 @@ export type DachdeckerValues = {
   readonly alertQuote: boolean;
   readonly quoteFormat: string;
   readonly alertDuration: number;
-  readonly alertTop: number;
   readonly alertWidth: number;
   readonly alertDim: boolean;
   readonly alertCorners: boolean;

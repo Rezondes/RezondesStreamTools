@@ -15,13 +15,16 @@ const EXIT_RISE = 80;
 // fixed: one stats card with its gap, the room around the row and its height (px)
 const STATS = { card: 205, room: 48, height: 200 };
 
+// fixed: where the alert sits on the stage (px); the OBS source shows only its part, the streamer places it in OBS
+// (same value as --alert-top in the CSS of the theme)
+const ALERT_TOP = 48;
 export function standardAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const standard = values as unknown as StandardValues;
   const room = standard.alertSparksOn ? SPARK_ROOM : Math.max(EXIT_RISE, standard.alertGlow * 2);
   const height = CARD.height * Math.max(1, CARD.width / standard.alertWidth);
   const cards = parseStatLines(standard.endingStats.join("\n")).length;
   return {
-    alerts: alertArea({ top: standard.alertTop, width: standard.alertWidth, height, room }),
+    alerts: alertArea({ top: ALERT_TOP, width: standard.alertWidth, height, room }),
     stats: { width: Math.max(STATS.card, cards * STATS.card) + STATS.room, height: STATS.height },
   };
 }

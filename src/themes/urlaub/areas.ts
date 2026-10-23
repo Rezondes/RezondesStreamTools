@@ -7,9 +7,12 @@ import type { UrlaubValues } from "./settings.ts";
 // fixed: the tallest card before scaling (px), room for its tilt at the sides and above it
 const ALERT = { height: 500, side: 48, top: 40 };
 
+// fixed: where the alert sits on the stage (px); the OBS source shows only its part, the streamer places it in OBS
+// (same value as --alert-top in the CSS of the theme)
+const ALERT_TOP = 80;
 export function urlaubAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const urlaub = values as unknown as UrlaubValues;
-  const { alertAlign: align, alertTop: top, alertWidth: width, alertScale: scale } = urlaub;
+  const { alertWidth: width, alertScale: scale } = urlaub;
   const room = { left: ALERT.side, right: ALERT.side, top: ALERT.top, bottom: urlaub.alertSwellHeight * scale };
-  return { alerts: alertArea({ align, top, width, height: ALERT.height, scale, room, centerOrigin: true }) };
+  return { alerts: alertArea({ top: ALERT_TOP, width, height: ALERT.height, scale, room, centerOrigin: true }) };
 }

@@ -224,7 +224,7 @@
 
 .theme-chaos .ch-alert {
   position: absolute;
-  top: var(--alertTop);
+  top: var(--alert-top, 120px);
   left: 50%;
   width: var(--alertWidth);
   translate: -50% 0;

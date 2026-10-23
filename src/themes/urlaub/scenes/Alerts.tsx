@@ -61,7 +61,7 @@ export default function Alerts() {
   const values = useUrlaub();
   const { current, leaving } = useAlerts(values.alertDuration);
   return (
-    <div className={`ul-alerts ul-surfed align-${values.alertAlign}`}>
+    <div className={`ul-alerts ul-surfed`}>
       {current && <Card key={current.key} alert={current} leaving={leaving} />}
     </div>
   );

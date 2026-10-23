@@ -27,7 +27,7 @@ const KEYS = alertTextKeys("Tag", { giftOneLine: "giftOneLine", giftToLine: "gif
 export default function Alerts() {
   const values = useMatrix();
   const { current, leaving } = useAlerts(values.alertDuration);
-  return <div className={`alerts align-${values.alertAlign}`}>{current && <AlertBox key={current.key} alert={current} leaving={leaving} />}</div>;
+  return <div className={`alerts`}>{current && <AlertBox key={current.key} alert={current} leaving={leaving} />}</div>;
 }
 
 const SECOND_MS = 1000; // fixed: seconds in ms

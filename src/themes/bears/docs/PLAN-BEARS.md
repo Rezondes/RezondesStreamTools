@@ -236,7 +236,7 @@ Die Szenen nutzen nur die Kern-Bausteine aus THEMES.md: `useAlerts`, `describeAl
 
 | Gruppe | Schlüssel (Auswahl) |
 |---|---|
-| Alerts | `bearAlerts` (grizzly, mit turm), `alertIn`/`alertOut`, `alertDuration`, `alertScale`, `alertTop`, `alertAlign`, `alertWidth`, `alertTimer`, je Art Kopfzeile, Zeile, Symbol, Ton (`alertSoundFields`), `confetti`, `confettiCount`, `quoteFormat`, `alertQuote` |
+| Alerts | `bearAlerts` (grizzly, mit turm), `alertIn`/`alertOut`, `alertDuration`, `alertScale`, `alertWidth`, `alertTimer`, je Art Kopfzeile, Zeile, Symbol, Ton (`alertSoundFields`), `confetti`, `confettiCount`, `quoteFormat`, `alertQuote` |
 | Chat | `bearChat` (grizzly, ohne turm), `chatStyle` (handy, zettel, blasen), `chatNameColor`, Badge-Texte (`badgeFields`), `chatFontSize`, `emoteSize`, `chatFade`, `chatMax`, `chatAlign`, `chatIn`/`chatOut` |
 | Effekte | `bearFx` (grizzly, ohne turm), `fxStyle` (schild, blase), `fxDuration`, `fxSize`, `fxIn`/`fxOut`, `fxMargin` |
 | Kamera-Rahmen | `bearCam` (grizzly, mit turm), `camStyle` (papier, holz, polaroid), `camBearSpot` (links, rechts, oben), `camLabel` ("{channel}"), `camLive`, `camLiveText`, `camFrameWidth`, `camRadius` |

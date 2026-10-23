@@ -59,9 +59,7 @@
 .theme-koth .kh-ticker span { display: inline-block; padding-left: 100%; animation: koth-marquee var(--tickerSpeed) linear infinite; }
 
 /* --- Alerts ------------------------------------------------------------------------------------------------- */
-.theme-koth .kh-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
-.theme-koth .kh-alerts.align-left { justify-content: flex-start; }
-.theme-koth .kh-alerts.align-right { justify-content: flex-end; }
+.theme-koth .kh-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alert-top, 80px) var(--alert-side, 48px) 0; overflow: hidden; }
 .theme-koth .kh-alert { position: relative; display: flex; align-items: center; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
 .theme-koth .kh-alert.leaving { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
 .theme-koth .in-funk { --in: koth-static; --in-ease: steps(8, end); }

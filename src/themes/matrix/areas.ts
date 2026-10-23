@@ -12,12 +12,15 @@ const ALERT = { height: 630, room: 24, side: 0 };
 // fixed: the stats panel: its width with padding, one line and the room above and below the lines (px)
 const STATS = { width: 720, line: 32, room: 100 };
 
+// fixed: where the alert sits on the stage (px); the OBS source shows only its part, the streamer places it in OBS
+// (same value as --alert-top in the CSS of the theme)
+const ALERT_TOP = 64;
 export function matrixAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const matrix = values as unknown as MatrixValues;
-  const { alertAlign: align, alertTop: top, alertWidth: width, alertScale: scale } = matrix;
+  const { alertWidth: width, alertScale: scale } = matrix;
   const lines = parseStatLines(matrix.logoutLines.join("\n")).length;
   return {
-    alerts: alertArea({ align, top, width, height: ALERT.height, scale, room: ALERT.room, side: ALERT.side }),
+    alerts: alertArea({ top: ALERT_TOP, width, height: ALERT.height, scale, room: ALERT.room, side: ALERT.side }),
     stats: { width: STATS.width, height: STATS.room + lines * STATS.line },
   };
 }

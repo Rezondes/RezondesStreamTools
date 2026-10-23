@@ -135,9 +135,7 @@
 .theme-urlaub .ul-ticker span { display: inline-block; padding-left: 100%; animation: urlaub-marquee var(--tickerSpeed) linear infinite; }
 .theme-urlaub .power-sonnenaufgang .ul-stage, .theme-urlaub .power-blenden .ul-stage { animation: urlaub-fade var(--powerOnDuration) ease-out both; }
 /* --- Alerts ------------------------------------------------------------------------------------------------- */
-.theme-urlaub .ul-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
-.theme-urlaub .ul-alerts.align-left { justify-content: flex-start; }
-.theme-urlaub .ul-alerts.align-right { justify-content: flex-end; }
+.theme-urlaub .ul-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alert-top, 80px) var(--alert-side, 48px) 0; overflow: hidden; }
 .theme-urlaub .ul-alert { position: relative; display: flex; align-items: center; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; }
 /* The swell overlay (pixi/Swell.tsx) lies over the whole picture on the scaled stage, in front of the card riding on it */
 .theme-urlaub .ul-alert-scene { display: contents; }

@@ -114,8 +114,6 @@ export type MatrixValues = {
   readonly quoteFormat: string;
   readonly alertDuration: number;
   readonly alertScale: number;
-  readonly alertTop: number;
-  readonly alertAlign: string;
   readonly alertWidth: number;
   readonly alertIn: string;
   readonly alertOut: string;

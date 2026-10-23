@@ -76,7 +76,6 @@ export type StandardValues = {
   readonly alertMessage: boolean;
   readonly alertProgress: boolean;
   readonly alertDuration: number;
-  readonly alertTop: number;
   readonly alertWidth: number;
   readonly alertTraceOn: boolean;
   readonly alertTraceMs: number;

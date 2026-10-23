@@ -116,8 +116,6 @@ export type UrlaubValues = {
   readonly quoteFormat: string;
   readonly alertDuration: number;
   readonly alertScale: number;
-  readonly alertTop: number;
-  readonly alertAlign: string;
   readonly alertWidth: number;
   readonly alertTimer: boolean;
   readonly petals: boolean;

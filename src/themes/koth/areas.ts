@@ -4,7 +4,7 @@
 import { alertArea } from "../../core/sceneArea.ts";
 import { parseStatLines } from "../../core/stats/stats.ts";
 import type { SceneArea, SceneName, SettingValues } from "../../core/theme.ts";
-import { alertLayout, DOGTAG } from "./dogtag.ts";
+import { ALERT_TOP, alertLayout, DOGTAG } from "./dogtag.ts";
 import type { KothValues } from "./settings.ts";
 
 // fixed: the tallest radio and the tallest card before scaling (px); room for the swinging tag and its smoke, and
@@ -18,10 +18,11 @@ const STATS = { width: 600, base: 140, line: 42, stamp: 100 };
 
 export function kothAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const koth = values as unknown as KothValues;
-  const { alertAlign: align, alertTop: top, alertWidth: width, alertScale: scale } = koth;
+  const { alertWidth: width, alertScale: scale } = koth;
+  const top = ALERT_TOP;
   const stats = { width: STATS.width, height: STATS.base + parseStatLines(koth.reportLines.join("\n")).length * STATS.line + STATS.stamp };
-  if (koth.alertStyle !== "marke") return { alerts: alertArea({ align, top, width, height: CARD_HEIGHT, scale, room: ROOM.card, centerOrigin: true }), stats };
-  const { tag, radio } = alertLayout(align, top, width, scale);
+  if (koth.alertStyle !== "marke") return { alerts: alertArea({ top, width, height: CARD_HEIGHT, scale, room: ROOM.card, centerOrigin: true }), stats };
+  const { tag, radio } = alertLayout("center", top, width, scale);
   const left = tag.x - (DOGTAG.width / 2) * scale - ROOM.tag;
   const right = radio.left + width * scale + ROOM.card;
   const bottom = Math.max(tag.y + (DOGTAG.height / 2) * scale + ROOM.tag, top + RADIO_HEIGHT * scale + ROOM.card);

@@ -107,7 +107,6 @@ export type ChaosValues = {
   readonly alertQuote: boolean;
   readonly quoteFormat: string;
   readonly alertDuration: number;
-  readonly alertTop: number;
   readonly alertWidth: number;
   readonly alertTimer: boolean;
   readonly confetti: boolean;

@@ -11,10 +11,13 @@ const MUSIC = { width: 590, height: 410 };
 // fixed: the stats: sheet with the room for its slide, the stamp below it at the end (px)
 const STATS = { width: 640, height: 600 };
 
+// fixed: where the alert sits on the stage (px); the OBS source shows only its part, the streamer places it in OBS
+// (same value as --alert-top in the CSS of the theme)
+const ALERT_TOP = 620;
 export function dachdeckerAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const dachdecker = values as unknown as DachdeckerValues;
   return {
-    alerts: alertArea({ top: dachdecker.alertTop, width: dachdecker.alertWidth, height: ALERT.height, room: ALERT.room }),
+    alerts: alertArea({ top: ALERT_TOP, width: dachdecker.alertWidth, height: ALERT.height, room: ALERT.room }),
     chat: { width: dachdecker.chatWidth, height: SCENE_SIZES.chat.height },
     music: MUSIC,
     stats: STATS,

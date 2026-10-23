@@ -194,8 +194,6 @@ const FIELDS = [
   text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\""),
   number("alertDuration", "Dauer", ALERTS, 7000, 2000, 60000, "ms"),
   number("alertScale", "Grösse", ALERTS, 1, 0.3, 2, undefined, 0.05),
-  number("alertTop", "Abstand oben", ALERTS, 80, 0, 1000, "px"),
-  choice("alertAlign", "Position", ALERTS, "center", ["left", "center", "right"]),
   number("alertWidth", "Breite", ALERTS, 760, 300, 1800, "px"),
   choice("alertIn", "Einblenden", ALERTS, "plopp", MOTIONS),
   choice("alertOut", "Ausblenden", ALERTS, "plopp", MOTIONS),

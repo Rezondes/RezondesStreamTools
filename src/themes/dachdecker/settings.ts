@@ -183,7 +183,6 @@ const FIELDS = [
   flag("alertQuote", "Nachricht zeigen", ALERTS, true),
   text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\""),
   number("alertDuration", "Dauer", ALERTS, 7000, 2000, 60000, "ms"),
-  number("alertTop", "Abstand oben", ALERTS, 620, 0, 1000, "px"),
   number("alertWidth", "Breite", ALERTS, 720, 300, 1800, "px"),
   flag("alertDim", "Masslinie mit Text", ALERTS, true),
   flag("alertCorners", "Eckmarken", ALERTS, true),

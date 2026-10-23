@@ -308,9 +308,7 @@
 @keyframes plantage-twig-leaf { to { translate: 0 var(--twig-leaf-drop, 60px); rotate: 90deg; opacity: 0; } }
 @keyframes plantage-card-close { to { clip-path: inset(0 100% 0 0); } }
 @keyframes plantage-medal-out { to { scale: 0; } }
-.theme-plantage .pl-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertTop) var(--alert-side, 48px) 0; overflow: hidden; }
-.theme-plantage .pl-alerts.align-left { justify-content: flex-start; }
-.theme-plantage .pl-alerts.align-right { justify-content: flex-end; }
+.theme-plantage .pl-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alert-top, 80px) var(--alert-side, 48px) 0; overflow: hidden; }
 
 .theme-plantage .in-fallen { --in: plantage-fall-in; --in-ease: cubic-bezier(0.3, 1.4, 0.5, 1); }
 .theme-plantage .in-plopp { --in: plantage-pop-in; --in-ease: cubic-bezier(0.3, 1.6, 0.5, 1); }

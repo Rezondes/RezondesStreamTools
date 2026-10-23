@@ -12,6 +12,7 @@ import { roughPath } from "../../../core/rough/roughSvg.ts";
 import { sceneFrame } from "../../../core/sceneArea.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import type { Alert } from "../../../core/types.ts";
+import { ALERT_TOP } from "../areas.ts";
 import Confetti from "../Confetti.tsx";
 import Note from "../Note.tsx";
 import SprayBurst from "../pixi/SprayBurst.tsx";
@@ -41,8 +42,8 @@ export default function Alerts() {
 function Thrown({ alert, leaving }: { alert: Queued; leaving: boolean }) {
   const values = useChaos();
   const [start] = useState(() => performance.now());
-  const origin = useMemo(() => ({ x: sceneFrame().width * 0.5, y: values.alertTop + NOTE_HEIGHT * 0.5 }), [values.alertTop]);
-  const note = useMemo(() => ({ top: values.alertTop, width: values.alertWidth, height: NOTE_HEIGHT }), [values.alertTop, values.alertWidth]);
+  const origin = useMemo(() => ({ x: sceneFrame().width * 0.5, y: ALERT_TOP + NOTE_HEIGHT * 0.5 }), []);
+  const note = useMemo(() => ({ top: ALERT_TOP, width: values.alertWidth, height: NOTE_HEIGHT }), [values.alertWidth]);
   return (
     <>
       {values.alertSprayOn && <SprayBurst values={values} start={start} seed={alert.key} note={note} />}

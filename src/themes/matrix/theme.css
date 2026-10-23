@@ -209,14 +209,10 @@
 @keyframes matrix-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 /* --- Alerts ------------------------------------------------------------------ */
-.theme-matrix .alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alertTop); }
-.theme-matrix .alerts.align-left { justify-content: flex-start; }
-.theme-matrix .alerts.align-right { justify-content: flex-end; }
+.theme-matrix .alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alert-top, 64px); }
 
 /* Size (alertScale) acts in addition to the animations, anchored at the top of the chosen side */
 .theme-matrix .alert { position: relative; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--glitchInDuration) var(--in-ease) both; }
-.theme-matrix .align-left .alert { transform-origin: top left; }
-.theme-matrix .align-right .alert { transform-origin: top right; }
 .theme-matrix .alert.leaving { animation: var(--out) var(--glitchOutDuration) var(--out-ease) forwards; }
 
 .theme-matrix .alert-body {

@@ -673,16 +673,6 @@
       "unit": "ms"
     },
     {
-      "key": "alertTop",
-      "type": "number",
-      "label": "Abstand oben",
-      "group": "Alerts",
-      "default": 48,
-      "min": 0,
-      "max": 1000,
-      "unit": "px"
-    },
-    {
       "key": "alertWidth",
       "type": "number",
       "label": "Breite",
