@@ -10,5 +10,8 @@ export const kebabView: ThemeView = {
   id: kebabSettings.id,
   scenes: {
     starting: lazy(() => import("./scenes/Starting.tsx")),
+    brb: lazy(() => import("./scenes/Brb.tsx")),
+    ending: lazy(() => import("./scenes/Ending.tsx")),
+    stats: lazy(() => import("./scenes/Stats.tsx")),
   },
 };

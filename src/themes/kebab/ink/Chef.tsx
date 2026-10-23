@@ -1,42 +1,75 @@
 // The chef at the spit (chef.ts) as SVG groups inside the logo SVG: body with hat, face, eyes and moustache, the spit
-// with the meat cone whose strokes slide (the spit turns), the arm with the knife in front, counter and plate. Each
-// frame sets the pose of life.ts from the clock; before idleFrom only the spit turns. Classes kb-chef-* let the GSAP
-// timeline of the scene draw the lines in.
-import { useMemo, useRef } from "react";
+// with the meat cone whose strokes slide (the spit turns), in front either the arm with the knife (pose "saw") or the
+// tea break of BRB (pose "tea", pause.ts: glass in the hand, knife on the counter, a sign swinging from the spit bar),
+// counter and plate. Each frame sets the pose of life.ts from the clock; before idleFrom only the spit turns. Classes
+// kb-chef-* let the GSAP timeline of the scene draw the lines in.
+import { type RefObject, useMemo, useRef } from "react";
 import { CHEF_PARTS, chefParts, EYE_LINE, HAT_PIVOT, MEAT, SHOULDER, STACHE_PIVOT } from "../chef.ts";
 import { hatchOffset, meatHatch } from "../hatch.ts";
 import { chefPose } from "../life.ts";
+import { pauseParts, SIGN } from "../pause.ts";
 import type { KebabValues } from "../settings.ts";
 import { useFrame } from "../useFrame.ts";
 import Ink, { type InkStyle } from "./Ink.tsx";
 
-// fixed: the strokes of the meat repeat every 42 units and are 2 units wide, like the prototype
+// fixed: the strokes of the meat repeat every 42 units and are 2 units wide, like the prototype; the sign swings with
+// this rate per second
 const PERIOD = 42;
 const HATCH_WIDTH = 2;
 const SALT = 100;
+const SWING_RATE = 1.3;
 
-type Props = { values: KebabValues; clock: () => number; idleFrom: number };
+export type ChefPoseName = "saw" | "tea";
+type Props = { values: KebabValues; clock: () => number; idleFrom: number; pose: ChefPoseName; sign: string | null };
+type GroupRef = RefObject<SVGGElement | null>;
+type Refs = {
+  hat: GroupRef;
+  eyes: GroupRef;
+  stache: GroupRef;
+  arm: GroupRef;
+  sign: GroupRef;
+  hatch: RefObject<SVGPathElement | null>;
+};
 
-export default function Chef({ values, clock, idleFrom }: Props) {
+function TeaBreak({ style, sign, signRef }: { style: InkStyle; sign: string | null; signRef: GroupRef }) {
+  const parts = useMemo(() => pauseParts(), []);
+  return (
+    <>
+      <g className="kb-chef-arm">
+        <Ink part={parts.arm} style={style} salt={SALT * 20} />
+        <Ink part={parts.glass} style={style} salt={SALT * 21} />
+      </g>
+      <g className="kb-chef-table"><Ink part={parts.knife} style={style} salt={SALT * 22} /></g>
+      {sign !== null && (
+        <g className="kb-chef-sign" ref={signRef}>
+          <Ink part={parts.sign} style={style} salt={SALT * 23} />
+          <text className="kb-sign-text" x={SIGN.x + SIGN.width / 2} y={SIGN.y + SIGN.height / 2} textAnchor="middle" dominantBaseline="central">{sign}</text>
+        </g>
+      )}
+    </>
+  );
+}
+
+function useIdle(values: KebabValues, clock: () => number, idleFrom: number, pose: ChefPoseName, refs: Refs) {
+  useFrame(clock, time => {
+    refs.hatch.current?.setAttribute("transform", `translate(${hatchOffset(time, values.spitSpeed, PERIOD)} 0)`);
+    if (time < idleFrom) return;
+    const life = chefPose(time - idleFrom, { ...values, sawOn: values.sawOn && pose === "saw" });
+    refs.arm.current?.setAttribute("transform", `rotate(${life.armAngle} ${SHOULDER.x} ${SHOULDER.y}) translate(${life.armShift.x} ${life.armShift.y})`);
+    refs.hat.current?.setAttribute("transform", `rotate(${life.hatAngle} ${HAT_PIVOT.x} ${HAT_PIVOT.y})`);
+    refs.stache.current?.setAttribute("transform", `rotate(${life.stacheAngle} ${STACHE_PIVOT.x} ${STACHE_PIVOT.y})`);
+    refs.eyes.current?.setAttribute("transform", life.blink ? `translate(0 ${EYE_LINE}) scale(1 0.15) translate(0 ${-EYE_LINE})` : "");
+    refs.sign.current?.setAttribute("transform", `rotate(${Math.sin((time - idleFrom) * SWING_RATE) * values.brbSignSwing} ${SIGN.hook.x} ${SIGN.hook.y})`);
+  });
+}
+
+export default function Chef({ values, clock, idleFrom, pose, sign }: Props) {
   const parts = useMemo(() => chefParts(), []);
   const style: InkStyle = useMemo(() => ({ roughness: values.inkRoughness, bowing: values.inkBowing, width: values.inkWidth, seed: values.inkSeed }), [values.inkRoughness, values.inkBowing, values.inkWidth, values.inkSeed]);
   const hatch = useMemo(() => meatHatch(values.inkSeed, values.hatchRows, PERIOD), [values.inkSeed, values.hatchRows]);
   const salt = (name: (typeof CHEF_PARTS)[number]) => CHEF_PARTS.indexOf(name) * SALT;
-  const hat = useRef<SVGGElement>(null);
-  const eyes = useRef<SVGGElement>(null);
-  const stache = useRef<SVGGElement>(null);
-  const arm = useRef<SVGGElement>(null);
-  const turning = useRef<SVGPathElement>(null);
-  const refs = { hat, eyes, stache, arm, hatch: turning };
-  useFrame(clock, time => {
-    refs.hatch.current?.setAttribute("transform", `translate(${hatchOffset(time, values.spitSpeed, PERIOD)} 0)`);
-    if (time < idleFrom) return;
-    const pose = chefPose(time - idleFrom, values);
-    refs.arm.current?.setAttribute("transform", `rotate(${pose.armAngle} ${SHOULDER.x} ${SHOULDER.y}) translate(${pose.armShift.x} ${pose.armShift.y})`);
-    refs.hat.current?.setAttribute("transform", `rotate(${pose.hatAngle} ${HAT_PIVOT.x} ${HAT_PIVOT.y})`);
-    refs.stache.current?.setAttribute("transform", `rotate(${pose.stacheAngle} ${STACHE_PIVOT.x} ${STACHE_PIVOT.y})`);
-    refs.eyes.current?.setAttribute("transform", pose.blink ? `translate(0 ${EYE_LINE}) scale(1 0.15) translate(0 ${-EYE_LINE})` : "");
-  });
+  const refs: Refs = { hat: useRef(null), eyes: useRef(null), stache: useRef(null), arm: useRef(null), hatch: useRef(null), sign: useRef(null) };
+  useIdle(values, clock, idleFrom, pose, refs);
   return (
     <g className="kb-chef">
       <clipPath id="kb-meat"><path d={MEAT} /></clipPath>
@@ -54,10 +87,12 @@ export default function Chef({ values, clock, idleFrom }: Props) {
         <g clipPath="url(#kb-meat)"><path ref={refs.hatch} className="kb-ink kb-hatch" d={hatch} strokeWidth={HATCH_WIDTH * values.inkWidth} /></g>
         <Ink part={{ ...parts.meat, fills: [] }} style={style} salt={salt("meat")} />
       </g>
-      <g className="kb-chef-arm" ref={refs.arm}>
-        <Ink part={parts.arm} style={style} salt={salt("arm")} />
-        <Ink part={parts.knife} style={style} salt={salt("knife")} />
-      </g>
+      {pose === "saw" ? (
+        <g className="kb-chef-arm" ref={refs.arm}>
+          <Ink part={parts.arm} style={style} salt={salt("arm")} />
+          <Ink part={parts.knife} style={style} salt={salt("knife")} />
+        </g>
+      ) : <TeaBreak style={style} sign={sign} signRef={refs.sign} />}
       <g className="kb-chef-table">
         <Ink part={parts.counter} style={style} salt={salt("counter")} />
         <Ink part={parts.plate} style={style} salt={salt("plate")} />

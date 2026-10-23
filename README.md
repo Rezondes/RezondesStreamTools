@@ -1,7 +1,7 @@
 # RST - Rezondes Stream Tools
 
 Werkzeuge für Streamer: Browserquellen für OBS, ein Dashboard und eine Befehlsseite für Zuschauer, im Look des
-gewählten Themes (Standard, Matrix, Urlaub, Südfrucht-Plantage, King of the Hill, Bärenbande, Chaos, Dachdecker).
+gewählten Themes (Standard, Matrix, Urlaub, Südfrucht-Plantage, King of the Hill, Bärenbande, Chaos, Dachdecker, Kebab).
 Oberfläche mit React + Vite + TypeScript, dazu ein Server in Rust (`server-rs/`, Docker) für mehrere Streamer:
 Twitch-Anmeldung, alle Events, verschlüsselte Profile und Backups.
 

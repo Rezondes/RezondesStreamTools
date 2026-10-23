@@ -448,6 +448,252 @@
       "scene": "starting"
     },
     {
+      "key": "brbTitle",
+      "type": "text",
+      "label": "Bon: Titel",
+      "group": "BRB",
+      "default": "BIN GLEICH ZURÜCK",
+      "maxLength": 40,
+      "scene": "brb",
+      "basic": true
+    },
+    {
+      "key": "brbItems",
+      "type": "lines",
+      "label": "Bon: Posten (Posten|Zusatz)",
+      "group": "BRB",
+      "default": [
+        "1x Çay|heiß",
+        "1x Pause|kurz"
+      ],
+      "maxLines": 6,
+      "scene": "brb"
+    },
+    {
+      "key": "brbTimerLabel",
+      "type": "text",
+      "label": "Pausenzeit: Beschriftung",
+      "group": "BRB",
+      "default": "PAUSE SEIT",
+      "maxLength": 40,
+      "scene": "brb"
+    },
+    {
+      "key": "brbLines",
+      "type": "lines",
+      "label": "Bon: wechselnde Zeile unten",
+      "group": "BRB",
+      "default": [
+        "Gleich geht's weiter",
+        "Der Spieß dreht sich weiter"
+      ],
+      "maxLines": 12,
+      "scene": "brb"
+    },
+    {
+      "key": "brbTeaOn",
+      "type": "boolean",
+      "label": "Koch trinkt Tee",
+      "group": "BRB",
+      "default": true,
+      "scene": "brb"
+    },
+    {
+      "key": "brbSignOn",
+      "type": "boolean",
+      "label": "Schild am Spieß",
+      "group": "BRB",
+      "default": true,
+      "scene": "brb"
+    },
+    {
+      "key": "brbSign",
+      "type": "text",
+      "label": "Schild: Text",
+      "group": "BRB",
+      "default": "Kurz Tee trinken",
+      "maxLength": 30,
+      "scene": "brb",
+      "basic": true
+    },
+    {
+      "key": "brbSignSwing",
+      "type": "number",
+      "label": "Schild: Pendeln",
+      "group": "BRB",
+      "default": 3,
+      "min": 0,
+      "max": 20,
+      "scene": "brb"
+    },
+    {
+      "key": "brbTicker",
+      "type": "text",
+      "label": "Laufband (leer = aus)",
+      "group": "BRB",
+      "default": "Gleich geht's weiter • Der Spieß dreht sich weiter • Noch kurz ziehen lassen",
+      "maxLength": 300,
+      "scene": "brb",
+      "basic": true
+    },
+    {
+      "key": "endingTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "Ending",
+      "default": "Danke und bis morgen!",
+      "maxLength": 60,
+      "scene": "ending",
+      "basic": true
+    },
+    {
+      "key": "endingClosed",
+      "type": "text",
+      "label": "Bon: Titel",
+      "group": "Ending",
+      "default": "HEUTE GESCHLOSSEN",
+      "maxLength": 40,
+      "scene": "ending"
+    },
+    {
+      "key": "endingItems",
+      "type": "lines",
+      "label": "Bon: Posten (Posten|Zusatz)",
+      "group": "Ending",
+      "default": [
+        "1x Stream|aufgegessen",
+        "1x Chat|satt"
+      ],
+      "maxLines": 6,
+      "scene": "ending"
+    },
+    {
+      "key": "endingNextLabel",
+      "type": "text",
+      "label": "Nächster Stream: Beschriftung",
+      "group": "Ending",
+      "default": "NÄCHSTER STREAM",
+      "maxLength": 40,
+      "scene": "ending"
+    },
+    {
+      "key": "endingNext",
+      "type": "text",
+      "label": "Nächster Stream (leer = ausblenden)",
+      "group": "Ending",
+      "default": "",
+      "maxLength": 60,
+      "scene": "ending",
+      "basic": true
+    },
+    {
+      "key": "shutterOn",
+      "type": "boolean",
+      "label": "Rollladen",
+      "group": "Ending",
+      "default": true,
+      "scene": "ending"
+    },
+    {
+      "key": "shutterText",
+      "type": "text",
+      "label": "Rollladen: Schrift",
+      "group": "Ending",
+      "default": "DÖNER KEBAB",
+      "maxLength": 30,
+      "scene": "ending"
+    },
+    {
+      "key": "shutterStart",
+      "type": "number",
+      "label": "Rollladen fährt herunter nach",
+      "group": "Ending",
+      "default": 1,
+      "min": 0,
+      "max": 60,
+      "unit": "s",
+      "step": 0.5,
+      "scene": "ending"
+    },
+    {
+      "key": "shutterMs",
+      "type": "number",
+      "label": "Rollladen: Dauer",
+      "group": "Ending",
+      "default": 1600,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms",
+      "scene": "ending"
+    },
+    {
+      "key": "closingTitle",
+      "type": "text",
+      "label": "Bon: Titel",
+      "group": "Tagesabschluss",
+      "default": "TAGESABSCHLUSS",
+      "maxLength": 40,
+      "scene": "stats",
+      "basic": true
+    },
+    {
+      "key": "closingLines",
+      "type": "lines",
+      "label": "Zahlen (Schlüssel|Text)",
+      "group": "Tagesabschluss",
+      "default": [
+        "follows|Neue Stammkunden",
+        "subs|Abos",
+        "raids|Raids",
+        "bits|Bits",
+        "chatMessages|Bestellungen im Chat"
+      ],
+      "maxLines": 12,
+      "scene": "stats",
+      "basic": true
+    },
+    {
+      "key": "countUpMs",
+      "type": "number",
+      "label": "Hochzählen: Dauer",
+      "group": "Tagesabschluss",
+      "default": 1000,
+      "min": 0,
+      "max": 5000,
+      "unit": "ms",
+      "scene": "stats"
+    },
+    {
+      "key": "stampOn",
+      "type": "boolean",
+      "label": "Stempel",
+      "group": "Tagesabschluss",
+      "default": true,
+      "scene": "stats"
+    },
+    {
+      "key": "stampText",
+      "type": "text",
+      "label": "Stempel: Text",
+      "group": "Tagesabschluss",
+      "default": "BEZAHLT",
+      "maxLength": 20,
+      "scene": "stats",
+      "basic": true
+    },
+    {
+      "key": "stampAt",
+      "type": "number",
+      "label": "Stempel knallt auf nach",
+      "group": "Tagesabschluss",
+      "default": 3,
+      "min": 0.5,
+      "max": 60,
+      "unit": "s",
+      "step": 0.5,
+      "scene": "stats"
+    },
+    {
       "key": "stingerFps",
       "type": "number",
       "label": "Bildrate (Bilder pro Sekunde)",
@@ -494,13 +740,27 @@
   ],
   "groupScenes": {
     "Allgemein": [
-      "starting"
+      "starting",
+      "brb",
+      "ending",
+      "stats"
     ],
     "Koch und Spieß": [
-      "starting"
+      "starting",
+      "brb",
+      "ending"
     ],
     "Starting": [
       "starting"
+    ],
+    "BRB": [
+      "brb"
+    ],
+    "Ending": [
+      "ending"
+    ],
+    "Tagesabschluss": [
+      "stats"
     ],
     "Stinger": []
   },

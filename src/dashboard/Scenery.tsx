@@ -1,7 +1,8 @@
 // Scenery behind the dashboard in the themed skins, with the worlds and default colors of each theme: Urlaub with the
 // realistic 3D beach at noon and beach things, Plantage with the PixiJS plantage of its scenes and mango soldiers, KOTH with
 // the 3D hill of its scenes, Bärenbande with the watercolor world and the bear tower, Chaos with its painted wall,
-// Dachdecker with the roof frame as plan lines, a dimension chain and the title block. Only the scenery of the active skin
+// Dachdecker with the roof frame as plan lines, a dimension chain and the title block, Kebab with the chef at the spit
+// and the arc title as still red lines. Only the scenery of the active skin
 // is mounted (the worlds load in their own chunks and each needs its canvas). Pure decoration, hidden from screen readers.
 import { lazy, Suspense } from "react";
 import { ThemeValues } from "../core/hooks/useSettings.ts";
@@ -14,6 +15,7 @@ import TitleBlock from "../themes/dachdecker/plan/TitleBlock.tsx";
 import { dachdeckerSettings, type DachdeckerValues } from "../themes/dachdecker/settings.ts";
 import Sketch from "../themes/dachdecker/Sketch.tsx";
 import { frameDims } from "../themes/dachdecker/frame.ts";
+import { kebabSettings, type KebabValues } from "../themes/kebab/settings.ts";
 import { fillTemplate } from "../core/template.ts";
 import { bearsSettings } from "../themes/bears/settings.ts";
 import { kothSettings } from "../themes/koth/settings.ts";
@@ -30,6 +32,7 @@ import "../themes/plantage/theme.css";
 import "../themes/bears/theme.css";
 import "../themes/chaos/theme.css";
 import "../themes/dachdecker/theme.css";
+import "../themes/kebab/theme.css";
 
 // The painted Bärenbande world loads Rough.js, the other worlds three.js or PixiJS, so each comes in its own chunk
 const BearsWorld = lazy(() => import("../themes/bears/WorldCanvas.tsx"));
@@ -37,6 +40,7 @@ const UrlaubWorld = lazy(() => import("../themes/urlaub/three/BeachWorld.tsx"));
 const PlantageWorld = lazy(() => import("../themes/plantage/pixi/WorldBackdrop.tsx"));
 const KothWorld = lazy(() => import("../themes/koth/three/WorldBackdrop.tsx"));
 const ChaosWall = lazy(() => import("../themes/chaos/PaintedWall.tsx"));
+const KebabScenery = lazy(() => import("../themes/kebab/SkinScenery.tsx"));
 
 const URLAUB_VALUES = resolveSettings(urlaubSettings, {});
 const URLAUB = cssVariables(urlaubSettings, URLAUB_VALUES);
@@ -52,6 +56,8 @@ const CHAOS = cssVariables(chaosSettings, CHAOS_VALUES);
 const DACHDECKER_VALUES = resolveSettings(dachdeckerSettings, {}) as unknown as DachdeckerValues;
 const DACHDECKER = cssVariables(dachdeckerSettings, resolveSettings(dachdeckerSettings, {}));
 const DACHDECKER_BLOCK = DACHDECKER_VALUES.startingBlockLines.map(line => fillTemplate(line, { channel: DACHDECKER_VALUES.channelName, date: new Date().toLocaleDateString("sv-SE") }));
+const KEBAB_VALUES = resolveSettings(kebabSettings, {}) as unknown as KebabValues;
+const KEBAB = cssVariables(kebabSettings, resolveSettings(kebabSettings, {}));
 // Share of the dimension chain drawn in terracotta
 const CHAIN_SHARE = 0.62;
 const THINGS = ["rettungsring", "badeente", "wasserball", "eis", "seestern"];
@@ -105,6 +111,11 @@ export default function Scenery({ skin }: { skin: Skin }) {
       <Sketch dims={frameDims(DACHDECKER_VALUES)} className="skin-roof" />
       <div className="skin-chain"><Progress share={CHAIN_SHARE} /></div>
       <div className="skin-block"><TitleBlock lines={DACHDECKER_BLOCK} opacity={1} /></div>
+    </div>
+  );
+  if (skin === "kebab") return (
+    <div className="skin-scenery skin-scenery-kebab theme-kebab" style={KEBAB} aria-hidden="true">
+      <Suspense fallback={null}><KebabScenery values={KEBAB_VALUES} /></Suspense>
     </div>
   );
   return null;

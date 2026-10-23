@@ -21,6 +21,9 @@ const TEXT_FONTS: [&str; 3] = ["Nunito", "DM Sans", "Manrope"];
 const GENERAL: &str = "Allgemein";
 const CHEF: &str = "Koch und Spieß";
 const STARTING: &str = "Starting";
+const BRB: &str = "BRB";
+const ENDING: &str = "Ending";
+const CLOSING: &str = "Tagesabschluss";
 const STINGER: &str = "Stinger";
 
 const PX: Option<Unit> = Some(Unit::Px);
@@ -110,11 +113,108 @@ fn starting() -> Vec<SettingField> {
     ]
 }
 
+fn brb() -> Vec<SettingField> {
+    vec![
+        in_scene(SceneName::Brb, text("brbTitle", "Bon: Titel", BRB, "BIN GLEICH ZURÜCK", Some(40))),
+        in_scene(
+            SceneName::Brb,
+            lines("brbItems", "Bon: Posten (Posten|Zusatz)", BRB, &["1x Çay|heiß", "1x Pause|kurz"], Some(6)),
+        ),
+        in_scene(SceneName::Brb, text("brbTimerLabel", "Pausenzeit: Beschriftung", BRB, "PAUSE SEIT", Some(40))),
+        in_scene(
+            SceneName::Brb,
+            lines(
+                "brbLines",
+                "Bon: wechselnde Zeile unten",
+                BRB,
+                &["Gleich geht's weiter", "Der Spieß dreht sich weiter"],
+                Some(12),
+            ),
+        ),
+        in_scene(SceneName::Brb, flag("brbTeaOn", "Koch trinkt Tee", BRB, true)),
+        in_scene(SceneName::Brb, flag("brbSignOn", "Schild am Spieß", BRB, true)),
+        in_scene(SceneName::Brb, text("brbSign", "Schild: Text", BRB, "Kurz Tee trinken", Some(30))),
+        in_scene(SceneName::Brb, number("brbSignSwing", "Schild: Pendeln", BRB, 3.0, 0.0, 20.0, None, None)),
+        in_scene(
+            SceneName::Brb,
+            text(
+                "brbTicker",
+                "Laufband (leer = aus)",
+                BRB,
+                "Gleich geht's weiter • Der Spieß dreht sich weiter • Noch kurz ziehen lassen",
+                Some(300),
+            ),
+        ),
+    ]
+}
+
+fn ending() -> Vec<SettingField> {
+    vec![
+        in_scene(SceneName::Ending, text("endingTitle", "Titel", ENDING, "Danke und bis morgen!", Some(60))),
+        in_scene(SceneName::Ending, text("endingClosed", "Bon: Titel", ENDING, "HEUTE GESCHLOSSEN", Some(40))),
+        in_scene(
+            SceneName::Ending,
+            lines(
+                "endingItems",
+                "Bon: Posten (Posten|Zusatz)",
+                ENDING,
+                &["1x Stream|aufgegessen", "1x Chat|satt"],
+                Some(6),
+            ),
+        ),
+        in_scene(
+            SceneName::Ending,
+            text("endingNextLabel", "Nächster Stream: Beschriftung", ENDING, "NÄCHSTER STREAM", Some(40)),
+        ),
+        in_scene(SceneName::Ending, text("endingNext", "Nächster Stream (leer = ausblenden)", ENDING, "", Some(60))),
+        in_scene(SceneName::Ending, flag("shutterOn", "Rollladen", ENDING, true)),
+        in_scene(SceneName::Ending, text("shutterText", "Rollladen: Schrift", ENDING, "DÖNER KEBAB", Some(30))),
+        in_scene(
+            SceneName::Ending,
+            number("shutterStart", "Rollladen fährt herunter nach", ENDING, 1.0, 0.0, 60.0, S, Some(0.5)),
+        ),
+        in_scene(SceneName::Ending, number("shutterMs", "Rollladen: Dauer", ENDING, 1600.0, 0.0, 10000.0, MS, None)),
+    ]
+}
+
+fn closing() -> Vec<SettingField> {
+    vec![
+        // Keys: follows, subs, giftedSubs, raids, raiders, bits, redeems, hypeLevel, chatMessages, chatters, duration
+        in_scene(SceneName::Stats, text("closingTitle", "Bon: Titel", CLOSING, "TAGESABSCHLUSS", Some(40))),
+        in_scene(
+            SceneName::Stats,
+            lines(
+                "closingLines",
+                "Zahlen (Schlüssel|Text)",
+                CLOSING,
+                &[
+                    "follows|Neue Stammkunden",
+                    "subs|Abos",
+                    "raids|Raids",
+                    "bits|Bits",
+                    "chatMessages|Bestellungen im Chat",
+                ],
+                Some(12),
+            ),
+        ),
+        in_scene(SceneName::Stats, number("countUpMs", "Hochzählen: Dauer", CLOSING, 1000.0, 0.0, 5000.0, MS, None)),
+        in_scene(SceneName::Stats, flag("stampOn", "Stempel", CLOSING, true)),
+        in_scene(SceneName::Stats, text("stampText", "Stempel: Text", CLOSING, "BEZAHLT", Some(20))),
+        in_scene(SceneName::Stats, number("stampAt", "Stempel knallt auf nach", CLOSING, 3.0, 0.5, 60.0, S, Some(0.5))),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
-    let mut groups: BTreeMap<String, Vec<SceneName>> =
-        [GENERAL, CHEF, STARTING].into_iter().map(|group| (group.to_owned(), vec![SceneName::Starting])).collect();
-    groups.insert(STINGER.to_owned(), vec![]);
-    groups
+    use SceneName::{Brb, Ending, Starting, Stats};
+    BTreeMap::from([
+        (GENERAL.to_owned(), vec![Starting, Brb, Ending, Stats]),
+        (CHEF.to_owned(), vec![Starting, Brb, Ending]),
+        (STARTING.to_owned(), vec![Starting]),
+        (BRB.to_owned(), vec![Brb]),
+        (ENDING.to_owned(), vec![Ending]),
+        (CLOSING.to_owned(), vec![Stats]),
+        (STINGER.to_owned(), vec![]),
+    ])
 }
 
 /// The shop of the streamer: "Rezondes' Döner" for a login ending in s, x or z, else "Neos Döner"
@@ -140,11 +240,19 @@ const BASIC: &[&str] = &[
     "countdownLabel",
     "countdownDone",
     "ticker",
+    "brbTitle",
+    "brbSign",
+    "brbTicker",
+    "endingTitle",
+    "endingNext",
+    "closingTitle",
+    "closingLines",
+    "stampText",
 ];
 
 #[must_use]
 pub fn kebab() -> Theme {
-    let fields = [general(), chef(), starting()].concat();
+    let fields = [general(), chef(), starting(), brb(), ending(), closing()].concat();
     let schema = ThemeSchema {
         id: "kebab".to_owned(),
         name: "Kebab".to_owned(),

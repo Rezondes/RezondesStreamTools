@@ -5,18 +5,19 @@ import { type Application, Graphics } from "pixi.js";
 import { useEffect } from "react";
 import { hexNumber } from "../../../core/color.ts";
 import { particleCount } from "../../../core/three/quality.ts";
-import { CUT, PLATE, SPIT_TOP, toStage } from "../chef.ts";
-import { shavingsAt, steamAt } from "../food.ts";
+import { CUT, PLATE, toStage } from "../chef.ts";
+import { type Point, shavingsAt, steamAt } from "../food.ts";
 import type { KebabValues } from "../settings.ts";
 
 // fixed: line widths of steam and shavings in grid units, how far a shaving curls, like the prototype
 const WIDTH = { steam: 2.4, shaving: 2.6 };
 const CURL = 0.7;
 
-type Props = { app: Application; clock: () => number; values: KebabValues; shavingsFrom: number; steamFrom: number };
+// shavingsFrom: when the first shaving leaves the knife (null = no shavings); steam: where it rises in the grid and from when
+type Props = { app: Application; clock: () => number; values: KebabValues; shavingsFrom: number | null; steam: { from: Point; at: number } | null };
 
-function drawSteam(graphics: Graphics, time: number, values: KebabValues, color: number) {
-  for (const wisp of steamAt(time, { from: SPIT_TOP, height: values.steamHeight })) {
+function drawSteam(graphics: Graphics, time: number, from: Point, values: KebabValues, color: number) {
+  for (const wisp of steamAt(time, { from, height: values.steamHeight })) {
     const [first, ...rest] = wisp.points.map(point => toStage(point));
     graphics.moveTo(first.x, first.y);
     for (const point of rest) graphics.lineTo(point.x, point.y);
@@ -37,7 +38,7 @@ function drawShavings(graphics: Graphics, time: number, start: number, values: K
   }
 }
 
-export default function Food({ app, clock, values, shavingsFrom, steamFrom }: Props) {
+export default function Food({ app, clock, values, shavingsFrom, steam }: Props) {
   useEffect(() => {
     const graphics = new Graphics();
     const color = hexNumber(values.red);
@@ -45,8 +46,8 @@ export default function Food({ app, clock, values, shavingsFrom, steamFrom }: Pr
     const draw = () => {
       const time = clock();
       graphics.clear();
-      if (values.steamOn && time >= steamFrom) drawSteam(graphics, time - steamFrom, values, color);
-      if (values.shavingsOn) drawShavings(graphics, time, shavingsFrom, values, color);
+      if (values.steamOn && steam && time >= steam.at) drawSteam(graphics, time - steam.at, steam.from, values, color);
+      if (values.shavingsOn && shavingsFrom !== null) drawShavings(graphics, time, shavingsFrom, values, color);
     };
     draw();
     app.ticker.add(draw);
@@ -55,6 +56,6 @@ export default function Food({ app, clock, values, shavingsFrom, steamFrom }: Pr
       app.stage.removeChild(graphics);
       graphics.destroy();
     };
-  }, [app, clock, values, shavingsFrom, steamFrom]);
+  }, [app, clock, values, shavingsFrom, steam]);
   return null;
 }

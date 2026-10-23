@@ -528,6 +528,7 @@
   --shadow: 0 10px 24px rgba(58, 26, 18, 0.14);
   --font: "Nunito", system-ui, sans-serif;
   --font-title: "Titan One", "Nunito", sans-serif;
+  --dash-max: min(1440px, calc(100vw - 2 * clamp(60px, 9vw, 200px)));
   --title-size: 38px;
   --title-weight: 400;
   --heading-weight: 800;
@@ -550,8 +551,13 @@
 :root[data-skin="koth"] .skin-scenery-koth,
 :root[data-skin="bears"] .skin-scenery-bears,
 :root[data-skin="chaos"] .skin-scenery-chaos,
-:root[data-skin="dachdecker"] .skin-scenery-dachdecker { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+:root[data-skin="dachdecker"] .skin-scenery-dachdecker,
+:root[data-skin="kebab"] .skin-scenery-kebab { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 :root[data-skin="dachdecker"] .dashboard { position: relative; z-index: 1; }
+:root[data-skin="kebab"] .dashboard { position: relative; z-index: 1; }
+/* Kebab: the chef at the spit bottom right, the arc title top left, both as still red lines */
+.skin-scenery-kebab .skin-chef { position: absolute; right: 1vw; bottom: 2vh; width: clamp(300px, 30vw, 560px); opacity: 0.5; }
+.skin-scenery-kebab .skin-arc { position: absolute; left: 0.5vw; top: 1vh; width: clamp(280px, 26vw, 480px); opacity: 0.45; }
 /* Dachdecker: roof frame bottom right, dimension chain along the left edge, title block top right */
 .skin-scenery-dachdecker .skin-roof { position: absolute; right: 2vw; bottom: 3vh; width: clamp(320px, 34vw, 640px); opacity: 0.55; }
 .skin-scenery-dachdecker .dd-sketch-line { stroke: #ffffff; stroke-width: 0.03; opacity: 0.6; }
@@ -574,5 +580,5 @@
 .skin-scenery-bears .skin-bear-tower { position: absolute; right: 2vw; bottom: 3vh; height: clamp(180px, 24vh, 300px); }
 /* Chaos: the wall behind the dashboard; the brush X give way to the content on narrow screens */
 .skin-scenery-chaos .ch-backdrop { position: absolute; inset: 0; }
-@media (max-width: 719px) { .skin-scenery-chaos, .skin-scenery-dachdecker { display: none !important; } .skin-scenery .skin-palm, .skin-scenery .pl-field, .skin-scenery .bb-world, .skin-sun, .skin-figures { display: none; } }
-@media (max-width: 1099px) { .skin-figures, .skin-bear-tower, .skin-scenery-chaos .ch-gestures, .skin-scenery-dachdecker > * { display: none; } }
+@media (max-width: 719px) { .skin-scenery-chaos, .skin-scenery-dachdecker, .skin-scenery-kebab { display: none !important; } .skin-scenery .skin-palm, .skin-scenery .pl-field, .skin-scenery .bb-world, .skin-sun, .skin-figures { display: none; } }
+@media (max-width: 1099px) { .skin-figures, .skin-bear-tower, .skin-scenery-chaos .ch-gestures, .skin-scenery-dachdecker > *, .skin-scenery-kebab .skin-chef { display: none; } }

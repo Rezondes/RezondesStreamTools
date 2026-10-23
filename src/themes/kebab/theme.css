@@ -113,3 +113,62 @@
   from { opacity: 0; transform: translateY(var(--kb-in-rise, 6px)); }
   to { opacity: 1; transform: none; }
 }
+
+/* Bon parts of BRB, Ending and the stream numbers */
+.theme-kebab .kb-bon-title { font-family: var(--titleFont), sans-serif; font-size: 1.35em; line-height: 1.1; color: var(--redText); margin-top: var(--kb-title-gap, 10px); }
+.theme-kebab .kb-bon-big.small { font-size: var(--kb-big-small, 48px); }
+.theme-kebab .kb-bon-item b { font-family: var(--titleFont), sans-serif; font-weight: 400; color: var(--redText); }
+
+/* Stamp: part of its paper */
+.theme-kebab .kb-stamp {
+  position: absolute;
+  right: var(--kb-stamp-right, 10px);
+  top: var(--kb-stamp-top, 8px);
+  width: var(--kb-stamp-size, 120px);
+  height: var(--kb-stamp-size, 120px);
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border: var(--kb-stamp-ring, 5px) solid var(--redText);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 var(--kb-stamp-gap, 5px) var(--bon), inset 0 0 0 var(--kb-stamp-inner, 8px) var(--redText);
+  color: var(--redText);
+  font-family: var(--titleFont), sans-serif;
+  font-size: var(--kb-stamp-text, 22px);
+  line-height: 1;
+  text-align: center;
+  transform: rotate(var(--kb-stamp-turn, 12deg));
+  mix-blend-mode: multiply;
+  opacity: 0.9;
+}
+
+/* Sign at the spit in BRB */
+.theme-kebab .kb-sign-text { font-family: var(--titleFont), sans-serif; font-size: var(--kb-sign-size, 12px); fill: var(--redText); }
+
+/* Roller shutter of the Ending */
+.theme-kebab .kb-shutter { position: absolute; left: 0; top: 0; width: var(--kb-shutter-width, 1400px); height: var(--kb-shutter-height, 1080px); transform: translateY(-100%); }
+.theme-kebab .kb-shutter-box {
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 var(--kb-slat, 34px), color-mix(in srgb, var(--paper) 22%, transparent) var(--kb-slat, 34px) calc(var(--kb-slat, 34px) + var(--kb-slat-line, 3px))),
+    var(--brown);
+  border-bottom: var(--kb-shutter-rail, 14px) solid color-mix(in srgb, var(--brown), black 35%);
+}
+.theme-kebab .kb-shutter .kb-arc-letter { fill: var(--brown); stroke: var(--paper); }
+.theme-kebab .kb-shutter-title,
+.theme-kebab .kb-ending-title {
+  position: absolute;
+  left: 0;
+  width: var(--kb-shutter-width, 1400px);
+  top: var(--kb-ending-title-top, 760px);
+  text-align: center;
+  font-family: var(--titleFont), sans-serif;
+  font-size: var(--kb-ending-title-size, 84px);
+  color: var(--paper);
+}
+.theme-kebab .kb-ending-title { color: var(--redText); }
+
+/* Stream numbers: the closing bon alone, transparent around it */
+.theme-kebab .kb-stats { position: fixed; inset: 0; overflow: hidden; }
+.theme-kebab .kb-stats .kb-bon-box { left: 50%; top: var(--kb-stats-top, 8px); transform: translateX(-50%); }

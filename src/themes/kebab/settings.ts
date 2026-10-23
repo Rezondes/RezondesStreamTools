@@ -12,6 +12,9 @@ const TEXT_FONTS = ["Nunito", "DM Sans", "Manrope"] as const;
 const GENERAL = "Allgemein";
 const CHEF = "Koch und Spieß";
 const STARTING = "Starting";
+const BRB = "BRB";
+const ENDING = "Ending";
+const CLOSING = "Tagesabschluss";
 const STINGER = "Stinger";
 
 const FIELDS = [
@@ -66,15 +69,46 @@ const FIELDS = [
   inScene("starting", flag("bonOn", "Bestellbon zeigen", STARTING, true)),
   inScene("starting", text("ticker", "Laufband (leer = aus)", STARTING, "Frisch vom Spieß • Mit alles und scharf • Gleich geht's los • Zwiebeln? Klar!", 300)),
   inScene("starting", number("tickerSpeed", "Laufband: Tempo (px pro Sekunde)", STARTING, 90, 10, 400)),
+
+  inScene("brb", text("brbTitle", "Bon: Titel", BRB, "BIN GLEICH ZURÜCK", 40)),
+  inScene("brb", lines("brbItems", "Bon: Posten (Posten|Zusatz)", BRB, ["1x Çay|heiß", "1x Pause|kurz"], 6)),
+  inScene("brb", text("brbTimerLabel", "Pausenzeit: Beschriftung", BRB, "PAUSE SEIT", 40)),
+  inScene("brb", lines("brbLines", "Bon: wechselnde Zeile unten", BRB, ["Gleich geht's weiter", "Der Spieß dreht sich weiter"], 12)),
+  inScene("brb", flag("brbTeaOn", "Koch trinkt Tee", BRB, true)),
+  inScene("brb", flag("brbSignOn", "Schild am Spieß", BRB, true)),
+  inScene("brb", text("brbSign", "Schild: Text", BRB, "Kurz Tee trinken", 30)),
+  inScene("brb", number("brbSignSwing", "Schild: Pendeln", BRB, 3, 0, 20)),
+  inScene("brb", text("brbTicker", "Laufband (leer = aus)", BRB, "Gleich geht's weiter • Der Spieß dreht sich weiter • Noch kurz ziehen lassen", 300)),
+
+  inScene("ending", text("endingTitle", "Titel", ENDING, "Danke und bis morgen!", 60)),
+  inScene("ending", text("endingClosed", "Bon: Titel", ENDING, "HEUTE GESCHLOSSEN", 40)),
+  inScene("ending", lines("endingItems", "Bon: Posten (Posten|Zusatz)", ENDING, ["1x Stream|aufgegessen", "1x Chat|satt"], 6)),
+  inScene("ending", text("endingNextLabel", "Nächster Stream: Beschriftung", ENDING, "NÄCHSTER STREAM", 40)),
+  inScene("ending", text("endingNext", "Nächster Stream (leer = ausblenden)", ENDING, "", 60)),
+  inScene("ending", flag("shutterOn", "Rollladen", ENDING, true)),
+  inScene("ending", text("shutterText", "Rollladen: Schrift", ENDING, "DÖNER KEBAB", 30)),
+  inScene("ending", number("shutterStart", "Rollladen fährt herunter nach", ENDING, 1, 0, 60, "s", 0.5)),
+  inScene("ending", number("shutterMs", "Rollladen: Dauer", ENDING, 1600, 0, 10000, "ms")),
+
+  // Keys: follows, subs, giftedSubs, raids, raiders, bits, redeems, hypeLevel, chatMessages, chatters, duration
+  inScene("stats", text("closingTitle", "Bon: Titel", CLOSING, "TAGESABSCHLUSS", 40)),
+  inScene("stats", lines("closingLines", "Zahlen (Schlüssel|Text)", CLOSING, ["follows|Neue Stammkunden", "subs|Abos", "raids|Raids", "bits|Bits", "chatMessages|Bestellungen im Chat"], 12)),
+  inScene("stats", number("countUpMs", "Hochzählen: Dauer", CLOSING, 1000, 0, 5000, "ms")),
+  inScene("stats", flag("stampOn", "Stempel", CLOSING, true)),
+  inScene("stats", text("stampText", "Stempel: Text", CLOSING, "BEZAHLT", 20)),
+  inScene("stats", number("stampAt", "Stempel knallt auf nach", CLOSING, 3, 0.5, 60, "s", 0.5)),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
 export type { KebabValues } from "../../generated/themes/kebab.ts";
 
 const GROUP_SCENES = {
-  [GENERAL]: ["starting"],
-  [CHEF]: ["starting"],
+  [GENERAL]: ["starting", "brb", "ending", "stats"],
+  [CHEF]: ["starting", "brb", "ending"],
   [STARTING]: ["starting"],
+  [BRB]: ["brb"],
+  [ENDING]: ["ending"],
+  [CLOSING]: ["stats"],
   [STINGER]: [],
 } as const;
 
@@ -86,6 +120,6 @@ export function shopOf(login: string) {
 const personalize = (login: string) => ({ channelName: shopOf(login) });
 
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
-const BASIC = ["quality", "channelName", "red", "redText", "sawOn", "shavingsOn", "startingItems", "countdownLabel", "countdownDone", "ticker"];
+const BASIC = ["quality", "channelName", "red", "redText", "sawOn", "shavingsOn", "startingItems", "countdownLabel", "countdownDone", "ticker", "brbTitle", "brbSign", "brbTicker", "endingTitle", "endingNext", "closingTitle", "closingLines", "stampText"];
 
 export const kebabSettings: ThemeSchema = { id: "kebab", name: "Kebab", fields: markBasic(withStingerFields([...FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };

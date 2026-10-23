@@ -11,6 +11,7 @@ import { chaosSettings } from "./chaos/settings.ts";
 import { dachdeckerAreas } from "./dachdecker/areas.ts";
 import { dachdeckerClips, dachdeckerPanel } from "./dachdecker/render.ts";
 import { dachdeckerSettings } from "./dachdecker/settings.ts";
+import { kebabAreas } from "./kebab/areas.ts";
 import { kebabClips, kebabPanel } from "./kebab/render.ts";
 import { kebabSettings } from "./kebab/settings.ts";
 import { kothAreas } from "./koth/areas.ts";
@@ -38,7 +39,7 @@ export const THEME_MODULES: readonly ThemeModule[] = [
   { schema: bearsSettings, clips: bearsClips, panel: bearsPanel, areas: bearsAreas },
   { schema: chaosSettings, clips: chaosClips, panel: chaosPanel, areas: chaosAreas },
   { schema: dachdeckerSettings, clips: dachdeckerClips, panel: dachdeckerPanel, areas: dachdeckerAreas },
-  { schema: kebabSettings, clips: kebabClips, panel: kebabPanel },
+  { schema: kebabSettings, clips: kebabClips, panel: kebabPanel, areas: kebabAreas },
 ];
 
 export const THEMES: readonly ThemeSchema[] = THEME_MODULES.map(module => module.schema);
