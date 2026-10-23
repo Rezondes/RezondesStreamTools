@@ -1,0 +1,518 @@
+{
+  "id": "kebab",
+  "name": "Kebab",
+  "fields": [
+    {
+      "key": "channelName",
+      "type": "text",
+      "label": "Ladenname ({shop})",
+      "group": "Allgemein",
+      "default": "Döner",
+      "maxLength": 40,
+      "basic": true
+    },
+    {
+      "key": "titleFont",
+      "type": "font",
+      "label": "Schrift: Titel und Namen",
+      "group": "Allgemein",
+      "default": "Titan One",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ]
+    },
+    {
+      "key": "font",
+      "type": "font",
+      "label": "Schrift: Text",
+      "group": "Allgemein",
+      "default": "Nunito",
+      "options": [
+        "Nunito",
+        "DM Sans",
+        "Manrope"
+      ]
+    },
+    {
+      "key": "fontSize",
+      "type": "number",
+      "label": "Schriftgrösse",
+      "group": "Allgemein",
+      "default": 24,
+      "min": 10,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "red",
+      "type": "color",
+      "label": "Linien und Bogenschrift (Signatur)",
+      "group": "Allgemein",
+      "default": "#f85449",
+      "basic": true
+    },
+    {
+      "key": "redText",
+      "type": "color",
+      "label": "Rot für Schrift und Flächen",
+      "group": "Allgemein",
+      "default": "#c8261b",
+      "basic": true
+    },
+    {
+      "key": "paper",
+      "type": "color",
+      "label": "Papier",
+      "group": "Allgemein",
+      "default": "#fff8ec"
+    },
+    {
+      "key": "bon",
+      "type": "color",
+      "label": "Bon-Papier",
+      "group": "Allgemein",
+      "default": "#fffdf8"
+    },
+    {
+      "key": "kraft",
+      "type": "color",
+      "label": "Tütenpapier",
+      "group": "Allgemein",
+      "default": "#f9ebd6"
+    },
+    {
+      "key": "brown",
+      "type": "color",
+      "label": "Text dunkel",
+      "group": "Allgemein",
+      "default": "#3a1a12"
+    },
+    {
+      "key": "muted",
+      "type": "color",
+      "label": "Text gedämpft",
+      "group": "Allgemein",
+      "default": "#8a5a4a"
+    },
+    {
+      "key": "steam",
+      "type": "color",
+      "label": "Dampf über dem Spiel",
+      "group": "Allgemein",
+      "default": "#fff8ec"
+    },
+    {
+      "key": "quality",
+      "type": "select",
+      "label": "Leistungsstufe Grafik",
+      "group": "Allgemein",
+      "default": "mittel",
+      "options": [
+        "hoch",
+        "mittel",
+        "niedrig"
+      ],
+      "basic": true
+    },
+    {
+      "key": "inkRoughness",
+      "type": "number",
+      "label": "Linie: Rauheit",
+      "group": "Allgemein",
+      "default": 0.55,
+      "min": 0,
+      "max": 3,
+      "step": 0.05
+    },
+    {
+      "key": "inkBowing",
+      "type": "number",
+      "label": "Linie: Bogen",
+      "group": "Allgemein",
+      "default": 0.6,
+      "min": 0,
+      "max": 5,
+      "step": 0.05
+    },
+    {
+      "key": "inkWidth",
+      "type": "number",
+      "label": "Linie: Stärke (Faktor)",
+      "group": "Allgemein",
+      "default": 1,
+      "min": 0.3,
+      "max": 3,
+      "step": 0.05
+    },
+    {
+      "key": "inkSeed",
+      "type": "number",
+      "label": "Linie: Startwert",
+      "group": "Allgemein",
+      "default": 11,
+      "min": 1,
+      "max": 9999
+    },
+    {
+      "key": "introSpeed",
+      "type": "number",
+      "label": "Auftritt: Tempo (Faktor)",
+      "group": "Allgemein",
+      "default": 1,
+      "min": 0.25,
+      "max": 4,
+      "step": 0.05
+    },
+    {
+      "key": "lightsOn",
+      "type": "boolean",
+      "label": "Licht flackert beim Start an",
+      "group": "Allgemein",
+      "default": true
+    },
+    {
+      "key": "arcText",
+      "type": "text",
+      "label": "Bogenschrift",
+      "group": "Koch und Spieß",
+      "default": "DÖNER KEBAB",
+      "maxLength": 30
+    },
+    {
+      "key": "arcSize",
+      "type": "number",
+      "label": "Bogenschrift: Grösse",
+      "group": "Koch und Spieß",
+      "default": 72,
+      "min": 20,
+      "max": 140
+    },
+    {
+      "key": "arcSpan",
+      "type": "number",
+      "label": "Bogenschrift: Winkel",
+      "group": "Koch und Spieß",
+      "default": 66,
+      "min": 10,
+      "max": 180
+    },
+    {
+      "key": "arcStroke",
+      "type": "number",
+      "label": "Bogenschrift: Kontur",
+      "group": "Koch und Spieß",
+      "default": 4,
+      "min": 0,
+      "max": 12,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "spitSpeed",
+      "type": "number",
+      "label": "Spieß: Tempo",
+      "group": "Koch und Spieß",
+      "default": 18,
+      "min": 0,
+      "max": 120
+    },
+    {
+      "key": "hatchRows",
+      "type": "number",
+      "label": "Spieß: Reihen",
+      "group": "Koch und Spieß",
+      "default": 32,
+      "min": 8,
+      "max": 60
+    },
+    {
+      "key": "sawOn",
+      "type": "boolean",
+      "label": "Koch sägt",
+      "group": "Koch und Spieß",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "sawSpeed",
+      "type": "number",
+      "label": "Sägen: Tempo",
+      "group": "Koch und Spieß",
+      "default": 5.2,
+      "min": 0,
+      "max": 20,
+      "step": 0.1
+    },
+    {
+      "key": "sawAngle",
+      "type": "number",
+      "label": "Sägen: Ausschlag",
+      "group": "Koch und Spieß",
+      "default": 2.6,
+      "min": 0,
+      "max": 15,
+      "step": 0.1
+    },
+    {
+      "key": "hatOn",
+      "type": "boolean",
+      "label": "Mütze wippt",
+      "group": "Koch und Spieß",
+      "default": true
+    },
+    {
+      "key": "stacheOn",
+      "type": "boolean",
+      "label": "Schnurrbart zuckt",
+      "group": "Koch und Spieß",
+      "default": true
+    },
+    {
+      "key": "blinkEvery",
+      "type": "number",
+      "label": "Blinzeln: alle (0 = nie)",
+      "group": "Koch und Spieß",
+      "default": 4.2,
+      "min": 0,
+      "max": 30,
+      "unit": "s",
+      "step": 0.1
+    },
+    {
+      "key": "shavingsOn",
+      "type": "boolean",
+      "label": "Fleischspäne fallen",
+      "group": "Koch und Spieß",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "shavingsEvery",
+      "type": "number",
+      "label": "Späne: alle",
+      "group": "Koch und Spieß",
+      "default": 160,
+      "min": 40,
+      "max": 2000,
+      "unit": "ms"
+    },
+    {
+      "key": "shavingsFall",
+      "type": "number",
+      "label": "Späne: Fallzeit",
+      "group": "Koch und Spieß",
+      "default": 800,
+      "min": 100,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "shavingsMax",
+      "type": "number",
+      "label": "Späne: höchstens",
+      "group": "Koch und Spieß",
+      "default": 140,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "key": "steamOn",
+      "type": "boolean",
+      "label": "Dampf",
+      "group": "Koch und Spieß",
+      "default": true
+    },
+    {
+      "key": "steamHeight",
+      "type": "number",
+      "label": "Dampf: Höhe",
+      "group": "Koch und Spieß",
+      "default": 70,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "key": "startingNumber",
+      "type": "text",
+      "label": "Bon: Bestellnummer",
+      "group": "Starting",
+      "default": "Bestellung Nr. 042",
+      "maxLength": 40,
+      "scene": "starting"
+    },
+    {
+      "key": "startingItems",
+      "type": "lines",
+      "label": "Bon: Posten (Posten|Zusatz)",
+      "group": "Starting",
+      "default": [
+        "1x Stream|mit alles",
+        "1x Gute Laune|scharf",
+        "1x Chat|extra Soße"
+      ],
+      "maxLines": 6,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "countdownLabel",
+      "type": "text",
+      "label": "Countdown: Beschriftung",
+      "group": "Starting",
+      "default": "FERTIG IN",
+      "maxLength": 40,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "countdown",
+      "type": "number",
+      "label": "Countdown: Dauer",
+      "group": "Starting",
+      "default": 300,
+      "min": 0,
+      "max": 86400,
+      "unit": "s",
+      "scene": "starting"
+    },
+    {
+      "key": "countdownAt",
+      "type": "text",
+      "label": "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)",
+      "group": "Starting",
+      "default": "",
+      "maxLength": 5,
+      "scene": "starting"
+    },
+    {
+      "key": "countdownDone",
+      "type": "text",
+      "label": "Text nach dem Countdown",
+      "group": "Starting",
+      "default": "GUTEN APPETIT!",
+      "maxLength": 40,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "startingLines",
+      "type": "lines",
+      "label": "Bon: wechselnde Zeile unten",
+      "group": "Starting",
+      "default": [
+        "Danke und guten Appetit!",
+        "Zwiebeln? Scharf? Mit alles!"
+      ],
+      "maxLines": 12,
+      "scene": "starting"
+    },
+    {
+      "key": "linesEvery",
+      "type": "number",
+      "label": "Wechselnde Zeile: alle",
+      "group": "Starting",
+      "default": 8,
+      "min": 1,
+      "max": 120,
+      "unit": "s",
+      "scene": "starting"
+    },
+    {
+      "key": "bonOn",
+      "type": "boolean",
+      "label": "Bestellbon zeigen",
+      "group": "Starting",
+      "default": true,
+      "scene": "starting"
+    },
+    {
+      "key": "ticker",
+      "type": "text",
+      "label": "Laufband (leer = aus)",
+      "group": "Starting",
+      "default": "Frisch vom Spieß • Mit alles und scharf • Gleich geht's los • Zwiebeln? Klar!",
+      "maxLength": 300,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "tickerSpeed",
+      "type": "number",
+      "label": "Laufband: Tempo (px pro Sekunde)",
+      "group": "Starting",
+      "default": 90,
+      "min": 10,
+      "max": 400,
+      "scene": "starting"
+    },
+    {
+      "key": "stingerFps",
+      "type": "number",
+      "label": "Bildrate (Bilder pro Sekunde)",
+      "group": "Stinger",
+      "default": 60,
+      "min": 10,
+      "max": 60
+    },
+    {
+      "key": "stingerHold",
+      "type": "number",
+      "label": "Pause am Übergangspunkt (Anteil je Hälfte)",
+      "group": "Stinger",
+      "default": 0,
+      "min": 0,
+      "max": 80,
+      "unit": "%"
+    },
+    {
+      "key": "stingerEase",
+      "type": "select",
+      "label": "Bewegungskurve",
+      "group": "Stinger",
+      "default": "linear",
+      "options": [
+        "linear",
+        "nagel",
+        "federnd",
+        "weich",
+        "stempel"
+      ]
+    },
+    {
+      "key": "stingerSize",
+      "type": "select",
+      "label": "Ausgabegrösse",
+      "group": "Stinger",
+      "default": "1080p",
+      "options": [
+        "1080p",
+        "720p"
+      ]
+    }
+  ],
+  "groupScenes": {
+    "Allgemein": [
+      "starting"
+    ],
+    "Koch und Spieß": [
+      "starting"
+    ],
+    "Starting": [
+      "starting"
+    ],
+    "Stinger": []
+  },
+  "personalize": {
+    "neo": {
+      "channelName": "Neos Döner"
+    },
+    "rezondes": {
+      "channelName": "Rezondes' Döner"
+    },
+    "neo_42": {
+      "channelName": "Neo_42s Döner"
+    }
+  }
+}

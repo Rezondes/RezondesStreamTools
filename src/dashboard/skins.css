@@ -489,6 +489,60 @@
     var(--surface);
 }
 
+:root[data-skin="kebab"] {
+  color-scheme: light;
+  --bg: #fff8ec;
+  --page: radial-gradient(ellipse at 40% 30%, #fff8ec 55%, #f6ead8 100%);
+  --surface: #fffdf8;
+  --surface-2: #fff8ec;
+  --field: #ffffff;
+  --fg: #3a1a12;
+  --fg-dim: #8a5a4a;
+  --line: rgba(138, 90, 74, 0.35);
+  --border: rgba(138, 90, 74, 0.5);
+  --heading: #3a1a12;
+  --title-color: #c8261b;
+  --title-tracking: 1px;
+  --accent: #c8261b;
+  --accent-hover: #a81e15;
+  --on-accent: #fff8ec;
+  --emph: #f85449;
+  --glow: none;
+  --focus: #3a1a12;
+  --error: #1d5fa6;
+  --error-bg: #e6eef8;
+  --on-error: #ffffff;
+  --btn-bg: #fffdf8;
+  --btn-fg: #3a1a12;
+  --btn-border: rgba(138, 90, 74, 0.5);
+  --btn-shadow: 0 2px 0 rgba(58, 26, 18, 0.12);
+  --btn-weight: 800;
+  --hover-bg: #fff0dc;
+  --hover-fg: #3a1a12;
+  --press: translateY(1px);
+  --border-w: 1px;
+  --radius: 4px;
+  --radius-sm: 4px;
+  --radius-btn: 999px;
+  --radius-check: 4px;
+  --shadow: 0 10px 24px rgba(58, 26, 18, 0.14);
+  --font: "Nunito", system-ui, sans-serif;
+  --font-title: "Titan One", "Nunito", sans-serif;
+  --title-size: 38px;
+  --title-weight: 400;
+  --heading-weight: 800;
+  --title-case: none;
+  --label-case: none;
+  --btn-case: none;
+  --thumb-w: 10px;
+}
+/* Cards are bons: a zigzag bottom edge cut out with a mask */
+:root[data-skin="kebab"] .panel {
+  padding-bottom: calc(var(--panel-pad, 20px) + 10px);
+  -webkit-mask: linear-gradient(#000 0 0) top / 100% calc(100% - 9px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 18px 9px repeat-x;
+  mask: linear-gradient(#000 0 0) top / 100% calc(100% - 9px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 18px 9px repeat-x;
+}
+
 /* Scenery behind the dashboard: each themed skin shows its own, the others stay hidden */
 .skin-scenery { display: none; }
 :root[data-skin="urlaub"] .skin-scenery-urlaub,

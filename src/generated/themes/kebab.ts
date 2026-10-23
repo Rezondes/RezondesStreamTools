@@ -1,0 +1,58 @@
+// Generated from server-rs (rst-app/src/api), do not edit by hand: npm run gen:types
+/**
+ * Resolved settings of the theme "kebab", one value per field of its schema
+ */
+export type KebabValues = {
+  readonly channelName: string;
+  readonly titleFont: string;
+  readonly font: string;
+  readonly fontSize: number;
+  readonly red: string;
+  readonly redText: string;
+  readonly paper: string;
+  readonly bon: string;
+  readonly kraft: string;
+  readonly brown: string;
+  readonly muted: string;
+  readonly steam: string;
+  readonly quality: string;
+  readonly inkRoughness: number;
+  readonly inkBowing: number;
+  readonly inkWidth: number;
+  readonly inkSeed: number;
+  readonly introSpeed: number;
+  readonly lightsOn: boolean;
+  readonly arcText: string;
+  readonly arcSize: number;
+  readonly arcSpan: number;
+  readonly arcStroke: number;
+  readonly spitSpeed: number;
+  readonly hatchRows: number;
+  readonly sawOn: boolean;
+  readonly sawSpeed: number;
+  readonly sawAngle: number;
+  readonly hatOn: boolean;
+  readonly stacheOn: boolean;
+  readonly blinkEvery: number;
+  readonly shavingsOn: boolean;
+  readonly shavingsEvery: number;
+  readonly shavingsFall: number;
+  readonly shavingsMax: number;
+  readonly steamOn: boolean;
+  readonly steamHeight: number;
+  readonly startingNumber: string;
+  readonly startingItems: readonly string[];
+  readonly countdownLabel: string;
+  readonly countdown: number;
+  readonly countdownAt: string;
+  readonly countdownDone: string;
+  readonly startingLines: readonly string[];
+  readonly linesEvery: number;
+  readonly bonOn: boolean;
+  readonly ticker: string;
+  readonly tickerSpeed: number;
+  readonly stingerFps: number;
+  readonly stingerHold: number;
+  readonly stingerEase: string;
+  readonly stingerSize: string;
+};

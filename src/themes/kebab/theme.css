@@ -1,0 +1,115 @@
+/* Kebab theme: a kebab shop as red line art on paper (DESIGN-KEBAB.md). Encapsulated under .theme-kebab; colors,
+   sizes and times come as CSS variables from the settings, further sizes as var(--name, default). Classes kb-*,
+   keyframes kebab-*. */
+
+.theme-kebab {
+  font-family: var(--font), system-ui, sans-serif;
+  font-size: var(--fontSize);
+  line-height: 1.25;
+  color: var(--brown);
+  --kb-shadow: 0 var(--kb-shadow-y, 10px) var(--kb-shadow-blur, 24px) color-mix(in srgb, var(--brown) 18%, transparent);
+}
+
+/* --- Ink: the line drawing ----------------------------------------------------------------------------------------- */
+.theme-kebab .kb-ink { fill: none; stroke: var(--red); stroke-linecap: round; stroke-linejoin: round; }
+.theme-kebab .kb-fill { fill: var(--paper); stroke: none; }
+.theme-kebab .kb-dot { fill: none; stroke: var(--red); stroke-width: var(--kb-dot-width, 2.2px); }
+.theme-kebab .kb-dot.filled { fill: var(--red); stroke: none; }
+.theme-kebab .kb-arc-letter {
+  font-family: var(--titleFont), sans-serif;
+  fill: var(--paper);
+  stroke: var(--red);
+  paint-order: stroke;
+  letter-spacing: var(--kb-arc-tracking, 1px);
+}
+
+/* --- Full-screen scenes -------------------------------------------------------------------------------------------- */
+.theme-kebab .kb-screen {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 40% 45%, var(--paper) 55%, color-mix(in srgb, var(--paper) 88%, var(--kraft)) 100%);
+}
+.theme-kebab .kb-stage { pointer-events: none; }
+.theme-kebab .kb-food { pointer-events: none; }
+.theme-kebab .kb-logo {
+  position: absolute;
+  left: var(--kb-logo-left, 120px);
+  top: var(--kb-logo-top, 60px);
+  width: var(--kb-logo-width, 1238px);
+  height: var(--kb-logo-height, 940px);
+  overflow: visible;
+}
+.theme-kebab .kb-lights { position: absolute; inset: 0; background: color-mix(in srgb, var(--brown), black 60%); opacity: 0; }
+
+/* Bon under its printer */
+.theme-kebab .kb-bon-box { position: absolute; left: var(--kb-bon-left, 1430px); top: var(--kb-bon-top, 120px); width: var(--kb-printer-width, 420px); }
+.theme-kebab .kb-printer {
+  position: relative;
+  z-index: 1;
+  height: var(--kb-printer-height, 46px);
+  border-radius: var(--kb-printer-radius, 10px);
+  background: var(--brown);
+}
+.theme-kebab .kb-printer::after {
+  content: "";
+  position: absolute;
+  left: var(--kb-slot-inset, 22px);
+  right: var(--kb-slot-inset, 22px);
+  bottom: var(--kb-slot-bottom, 10px);
+  height: var(--kb-slot-height, 6px);
+  border-radius: var(--kb-slot-radius, 3px);
+  background: color-mix(in srgb, var(--brown), black 55%);
+}
+.theme-kebab .kb-bon {
+  position: relative;
+  margin: calc(-1 * var(--kb-bon-tuck, 10px)) var(--kb-bon-inset, 20px) 0;
+  padding: var(--kb-bon-padding, 30px 30px 40px);
+  background: var(--bon);
+  box-shadow: var(--kb-shadow);
+  text-align: center;
+}
+.theme-kebab .kb-bon hr { border: 0; border-top: var(--kb-rule, 2px) dashed var(--muted); margin: var(--kb-rule-gap, 18px) 0; }
+.theme-kebab .kb-bon-shop { font-weight: 900; font-size: 0.85em; letter-spacing: var(--kb-shop-tracking, 4px); text-transform: uppercase; }
+.theme-kebab .kb-bon-number { font-weight: 600; font-size: 0.75em; color: var(--muted); margin-top: var(--kb-number-gap, 4px); }
+.theme-kebab .kb-bon-item { display: flex; justify-content: space-between; gap: var(--kb-item-gap, 12px); font-weight: 800; margin: var(--kb-item-margin, 6px) 0; text-align: left; }
+.theme-kebab .kb-bon-item small { font-weight: 600; font-size: 0.85em; color: var(--muted); }
+.theme-kebab .kb-bon-label { font-weight: 800; font-size: 0.9em; letter-spacing: var(--kb-label-tracking, 3px); }
+.theme-kebab .kb-bon-big { font-family: var(--titleFont), sans-serif; font-size: var(--kb-big-size, 112px); line-height: 1.05; color: var(--redText); }
+.theme-kebab .kb-bon-line { font-weight: 600; font-style: italic; font-size: 0.85em; color: var(--muted); animation: kebab-in var(--kb-line-in, 400ms) ease-out both; }
+.theme-kebab .kb-zigzag {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-1 * var(--kb-zig, 14px));
+  height: var(--kb-zig, 14px);
+  background: var(--bon);
+  clip-path: polygon(0 0, 100% 0, 95% 100%, 90% 0, 85% 100%, 80% 0, 75% 100%, 70% 0, 65% 100%, 60% 0, 55% 100%, 50% 0, 45% 100%, 40% 0, 35% 100%, 30% 0, 25% 100%, 20% 0, 15% 100%, 10% 0, 5% 100%, 0 0);
+}
+
+/* Ticker band at the bottom */
+.theme-kebab .kb-ticker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--kb-ticker-height, 72px);
+  overflow: hidden;
+  background: var(--redText);
+  color: var(--paper);
+}
+.theme-kebab .kb-ticker-run {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+  font-weight: 900;
+  font-size: var(--kb-ticker-size, 30px);
+  line-height: var(--kb-ticker-height, 72px);
+  letter-spacing: var(--kb-ticker-tracking, 2px);
+}
+.theme-kebab .kb-ticker-run span { padding-right: var(--kb-ticker-gap, 48px); }
+
+@keyframes kebab-in {
+  from { opacity: 0; transform: translateY(var(--kb-in-rise, 6px)); }
+  to { opacity: 1; transform: none; }
+}

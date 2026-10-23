@@ -9,7 +9,8 @@ export type RoughShape =
   | { kind: "polygon"; points: [number, number][] }
   | { kind: "path"; d: string };
 
-export type RoughStyle = { roughness: number; bowing: number; strokeWidth: number; fill: "none" | "hachure" | "solid" | "zigzag" | "cross-hatch" | "dots" | "dashed" };
+// single: one stroke per line (a printed look) instead of the doubled sketch stroke of Rough.js
+export type RoughStyle = { roughness: number; bowing: number; strokeWidth: number; fill: "none" | "hachure" | "solid" | "zigzag" | "cross-hatch" | "dots" | "dashed"; single?: boolean };
 
 // One path per part: the outline and, if filled, the fill strokes
 export type RoughPart = { d: string; filled: boolean };
@@ -30,7 +31,7 @@ function drawableOf(shape: RoughShape, options: Options) {
 
 export function roughPath(shape: RoughShape, style: RoughStyle, seed: number): RoughPart[] {
   // Rough.js needs a seed from 1 up; 0 would mean "random"
-  const options = { seed: Math.max(1, Math.floor(seed)), roughness: style.roughness, bowing: style.bowing, strokeWidth: style.strokeWidth, ...(style.fill === "none" ? {} : { fill: "#000", fillStyle: style.fill }) };
+  const options = { seed: Math.max(1, Math.floor(seed)), roughness: style.roughness, bowing: style.bowing, strokeWidth: style.strokeWidth, disableMultiStroke: style.single === true, ...(style.fill === "none" ? {} : { fill: "#000", fillStyle: style.fill }) };
   const drawable = drawableOf(shape, options);
   // toPaths gives one path per set; the set type tells outline ("path") from fill ("fillSketch", "fillPath")
   return generator.toPaths(drawable).map((path, index) => ({ d: path.d, filled: drawable.sets[index]?.type !== "path" }));

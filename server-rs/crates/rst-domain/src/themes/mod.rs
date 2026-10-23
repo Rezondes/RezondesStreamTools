@@ -10,6 +10,7 @@ pub mod dachdecker;
 mod fixture;
 pub mod graphics_fields;
 pub mod info_fields;
+pub mod kebab;
 pub mod koth;
 pub mod matrix;
 pub mod minime_fields;

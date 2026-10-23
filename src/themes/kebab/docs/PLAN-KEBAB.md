@@ -69,7 +69,7 @@ die Fixture; wer später kommt, hängt seine Gruppen an). 4 und 6 brauchen die T
   Türmen aus dem Kern. Gefechte und Fraktionen bewusst nicht (kein Medic, keine Lager im Imbiss).
 - **Texte** (entschieden 2026-10-23): deutsch mit Imbiss-Sprüchen ("Mit alles?", "Scharf oder ohne?", "Einmal Döner
   für {user}!"); Platzhalter `{channel}`, `{shop}`, `{user}`, `{amount}`, `{detail}`, `{text}`, `{number}`.
-- **Persönliche Startwerte** (entschieden 2026-10-23): `personalize` setzt `shopName` aus dem Login: endet er auf s, x
+- **Persönliche Startwerte** (entschieden 2026-10-23): `personalize` setzt `channelName` aus dem Login: endet er auf s, x
   oder z, "<Login>' Döner", sonst "<Login>s Döner" (`rezondes` ergibt "Rezondes' Döner", `neo` ergibt "Neos Döner").
 - **Einfache Ansicht:** Jedes Package markiert seine wichtigsten Felder mit `markBasic` (Liste `BASIC` in `settings.ts`,
   `mark_basic` in Rust), wie in [plans/PLAN-SETTINGS.md](../../../../plans/PLAN-SETTINGS.md).
@@ -162,7 +162,7 @@ stehen dort in `drawChef` und werden nach `chef.ts` übernommen.
 
 | Gruppe | Schlüssel (Standard) |
 |---|---|
-| Allgemein | `shopName` ("Döner", `personalize` siehe Annahmen), `titleFont` (Titan One), `font` (Nunito), `fontSize` (24 px), `red` (`#f85449`), `redText` (`#c8261b`), `paper` (`#fff8ec`), `bon` (`#fffdf8`), `kraft` (`#f9ebd6`), `brown` (`#3a1a12`), `muted` (`#8a5a4a`), `steam` (`#fff8ec`), `quality` (mittel, `qualityField`), `inkRoughness` (0.55), `inkBowing` (0.6), `inkWidth` (Faktor 1), `inkSeed` (11), `introSpeed` (Faktor 1), `lightsOn` (an) |
+| Allgemein | `channelName` ("Döner", `personalize` siehe Annahmen), `titleFont` (Titan One), `font` (Nunito), `fontSize` (24 px), `red` (`#f85449`), `redText` (`#c8261b`), `paper` (`#fff8ec`), `bon` (`#fffdf8`), `kraft` (`#f9ebd6`), `brown` (`#3a1a12`), `muted` (`#8a5a4a`), `steam` (`#fff8ec`), `quality` (mittel, `qualityField`), `inkRoughness` (0.55), `inkBowing` (0.6), `inkWidth` (Faktor 1), `inkSeed` (11), `introSpeed` (Faktor 1), `lightsOn` (an) |
 | Koch und Spieß | `arcText` ("DÖNER KEBAB"), `arcSize` (72), `arcSpan` (66 Grad), `arcStroke` (4 px), `spitSpeed` (18), `hatchRows` (32), `sawOn` (an), `sawSpeed` (5.2), `sawAngle` (2.6 Grad), `hatOn` (an), `stacheOn` (an), `blinkEvery` (4.2 s), `shavingsOn` (an), `shavingsEvery` (160 ms), `shavingsFall` (800 ms), `shavingsMax` (140, Obergrenze 300 mit `fixed`), `steamOn` (an), `steamHeight` (70) |
 | Starting | `startingNumber` ("Bestellung Nr. 042"), `startingItems` (Liste `Posten\|Zusatz`: "1x Stream\|mit alles", "1x Gute Laune\|scharf", "1x Chat\|extra Soße"), `countdownLabel` ("FERTIG IN"), `countdown`, `countdownDone` ("GUTEN APPETIT!"), `startingThanks` ("Danke und guten Appetit!"), `startingLines` (Liste, wechselt mit der Dankeszeile), `linesEvery` (8 s), `bonOn` (an), `ticker` ("Frisch vom Spieß • Mit alles und scharf • Gleich geht's los • Zwiebeln? Klar!"), `tickerSpeed` (90 px/s), `tickerOn` (an) |
 
@@ -171,7 +171,7 @@ stehen dort in `drawChef` und werden nach `chef.ts` übernommen.
 - [ ] AC1: `kebab` steht in `THEME_MODULES`, `THEME_VIEWS`, `SKINS`, `MODULE_THEMES` und in Rust `THEMES`;
       `registry.check.ts`, `skin.check.ts`, `dumpSchema.check.ts` und `node scripts/bundle.ts` sind grün.
 - [ ] AC2: Das Rust-Schema gleicht dem TS-Schema (Fixture-Test in `kebab.rs`); `personalize("rezondes")` ergibt
-      `{ shopName: "Rezondes' Döner" }`, `personalize("neo")` ergibt `{ shopName: "Neos Döner" }`.
+      `{ channelName: "Rezondes' Döner" }`, `personalize("neo")` ergibt `{ channelName: "Neos Döner" }`.
 - [ ] AC3: `chefParts()` liefert alle zwölf Teile; alle Punkte liegen im Raster 0 bis 600 mal 0 bis 520; Mütze, Arm,
       Messer und Fleisch haben `cover`; das Messer kreuzt den Fleischkegel.
 - [ ] AC4: `meatHatch` ist deterministisch und periodisch: um `period` verschoben ergibt sie dieselben Striche im
