@@ -207,9 +207,9 @@ export type KebabValues = {
   readonly stingerSeed: number;
   readonly profileTitle: string;
   readonly profileSubtitle: string;
+  readonly profileSteam: boolean;
   readonly offlineText: string;
-  readonly bannerDuration: number;
-  readonly bannerSteam: boolean;
+  readonly offlineSteam: boolean;
   readonly minimeJoinCommand: string;
   readonly minimeLeaveCommand: string;
   readonly minimeJoinRole: string;

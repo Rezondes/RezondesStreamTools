@@ -132,8 +132,8 @@ sind ein **Tellerstapel**: Lahmacun unten, Dürüm in der Mitte, Pommes oben. Ge
   gezackt auf, beide Hälften fliegen zur Seite. Variante **Messer**: ein langes Messer schneidet diagonal, rote
   Fleischscheiben mit heller Schraffur schieben sich dahinter von links ins Bild, Späne fliegen; am Übergangspunkt ist
   alles rot mit der Bogenschrift in Papier; danach fallen die Scheiben herunter.
-- **Banner:** Profil: Koch und Spieß mit Bogenschrift und dem Ladennamen auf Papier, der Spieß dreht als Schleife.
-  Offline: Rollladen unten mit "Heute geschlossen", Dampf steigt als nahtlose Schleife.
+- **Banner** (Standbilder als PNG): Profil: Koch und Spieß mit Bogenschrift und dem Ladennamen auf Papier, Dampf über
+  dem Spieß. Offline: Rollladen unten mit "Heute geschlossen", Dampf steigt darunter hervor.
 - **Töne:** mit der earshot-Bibliothek erzeugte Klänge (Kasse klingelt, Stempel, Papier reisst, Messer schabt, Grill
   brutzelt, Plopp), ausgeliefert als Dateien des Themes, jeder Ton einzeln abschaltbar und durch eine eigene Datei
   ersetzbar.

@@ -1819,43 +1819,39 @@
     {
       "key": "profileTitle",
       "type": "text",
-      "label": "Profil: Titel",
-      "group": "Banner",
+      "label": "Titel",
+      "group": "Profilbanner",
       "default": "{shop}",
       "maxLength": 60
     },
     {
       "key": "profileSubtitle",
       "type": "text",
-      "label": "Profil: Zeile darunter",
-      "group": "Banner",
+      "label": "Zeile darunter",
+      "group": "Profilbanner",
       "default": "Frisch vom Spieß",
       "maxLength": 80
     },
     {
+      "key": "profileSteam",
+      "type": "boolean",
+      "label": "Dampf über dem Spieß",
+      "group": "Profilbanner",
+      "default": true
+    },
+    {
       "key": "offlineText",
       "type": "text",
-      "label": "Offline: Text auf dem Rollladen",
-      "group": "Banner",
+      "label": "Text auf dem Rollladen",
+      "group": "Offline-Banner",
       "default": "Heute geschlossen",
       "maxLength": 60
     },
     {
-      "key": "bannerDuration",
-      "type": "number",
-      "label": "Länge der Schleife",
-      "group": "Banner",
-      "default": 4,
-      "min": 1,
-      "max": 30,
-      "unit": "s",
-      "step": 0.5
-    },
-    {
-      "key": "bannerSteam",
+      "key": "offlineSteam",
       "type": "boolean",
-      "label": "Dampf",
-      "group": "Banner",
+      "label": "Dampf unter dem Rollladen",
+      "group": "Offline-Banner",
       "default": true
     },
     {
@@ -2563,7 +2559,8 @@
       "info"
     ],
     "Stinger": [],
-    "Banner": [],
+    "Profilbanner": [],
+    "Offline-Banner": [],
     "Minimes: Befehle": [
       "minimes"
     ],

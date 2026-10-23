@@ -26,7 +26,8 @@ const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 const MINIME_LOOK = "Minimes: Aussehen";
 const MINIME_MOVES = "Minimes: Animationen";
 
@@ -215,11 +216,11 @@ const FIELDS = [
   number("stingerSlices", "Messer: Fleischscheiben", STINGER, 9, 3, 20),
   flag("stingerShavings", "Messer: Späne fliegen", STINGER, true),
   number("stingerSeed", "Startwert", STINGER, 7, 1, 9999),
-  text("profileTitle", "Profil: Titel", BANNER, "{shop}", 60),
-  text("profileSubtitle", "Profil: Zeile darunter", BANNER, "Frisch vom Spieß", 80),
-  text("offlineText", "Offline: Text auf dem Rollladen", BANNER, "Heute geschlossen", 60),
-  number("bannerDuration", "Länge der Schleife", BANNER, 4, 1, 30, "s", 0.5),
-  flag("bannerSteam", "Dampf", BANNER, true),
+  text("profileTitle", "Titel", PROFILE_BANNER, "{shop}", 60),
+  text("profileSubtitle", "Zeile darunter", PROFILE_BANNER, "Frisch vom Spieß", 80),
+  flag("profileSteam", "Dampf über dem Spieß", PROFILE_BANNER, true),
+  text("offlineText", "Text auf dem Rollladen", OFFLINE_BANNER, "Heute geschlossen", 60),
+  flag("offlineSteam", "Dampf unter dem Rollladen", OFFLINE_BANNER, true),
 
   // Minimes (core fields plus the look and the own animations of the dishes, dishes.ts). Any of the four own moves
   // makes a dish do its own one (the döner spins, the dürüm unrolls, the lahmacun folds, the fries throw a stick)
@@ -266,7 +267,8 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [INFO_GROUP]: ["info"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],

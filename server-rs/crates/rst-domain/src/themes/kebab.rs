@@ -37,7 +37,8 @@ const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 const MINIME_LOOK: &str = "Minimes: Aussehen";
 const MINIME_MOVES: &str = "Minimes: Animationen";
 
@@ -329,11 +330,11 @@ fn clips() -> Vec<SettingField> {
         number("stingerSlices", "Messer: Fleischscheiben", STINGER, 9.0, 3.0, 20.0, None, None),
         flag("stingerShavings", "Messer: Späne fliegen", STINGER, true),
         number("stingerSeed", "Startwert", STINGER, 7.0, 1.0, 9999.0, None, None),
-        text("profileTitle", "Profil: Titel", BANNER, "{shop}", Some(60)),
-        text("profileSubtitle", "Profil: Zeile darunter", BANNER, "Frisch vom Spieß", Some(80)),
-        text("offlineText", "Offline: Text auf dem Rollladen", BANNER, "Heute geschlossen", Some(60)),
-        number("bannerDuration", "Länge der Schleife", BANNER, 4.0, 1.0, 30.0, S, Some(0.5)),
-        flag("bannerSteam", "Dampf", BANNER, true),
+        text("profileTitle", "Titel", PROFILE_BANNER, "{shop}", Some(60)),
+        text("profileSubtitle", "Zeile darunter", PROFILE_BANNER, "Frisch vom Spieß", Some(80)),
+        flag("profileSteam", "Dampf über dem Spieß", PROFILE_BANNER, true),
+        text("offlineText", "Text auf dem Rollladen", OFFLINE_BANNER, "Heute geschlossen", Some(60)),
+        flag("offlineSteam", "Dampf unter dem Rollladen", OFFLINE_BANNER, true),
     ]
 }
 
@@ -423,7 +424,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (FX.to_owned(), vec![SceneName::Fx]),
         (INFO_GROUP.to_owned(), vec![SceneName::Info]),
         (STINGER.to_owned(), vec![]),
-        (BANNER.to_owned(), vec![]),
+        (PROFILE_BANNER.to_owned(), vec![]),
+        (OFFLINE_BANNER.to_owned(), vec![]),
         (MINIME_COMMANDS.to_owned(), vec![SceneName::Minimes]),
         (MINIME_RULES.to_owned(), vec![SceneName::Minimes]),
         (MINIME_MOTION.to_owned(), vec![SceneName::Minimes]),

@@ -1,5 +1,5 @@
 // Renderable clips and the panel template of the Kebab theme: the stinger (group Stinger, papier or messer) and the
-// profile and offline banners (group Banner), drawn with the resolved settings. The drawing (stinger.ts, banners.ts)
+// profile banner (group Profilbanner) and offline banner (group Offline-Banner) as still pictures, drawn with the resolved settings. The drawing (stinger.ts, banners.ts)
 // loads only in prepare, so Rough.js stays out of the entry chunk; until then the clips draw plain paper.
 // Check: render.check.ts.
 import { centeredTop, type PanelDesign, PANEL_START_HEIGHT, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
@@ -15,8 +15,8 @@ import type { StingerLook, StingerStyle } from "./stinger.ts";
 import { PICTURE } from "./wrap.ts";
 
 export const PROFILE_SIZE = { width: 1200, height: 480 };
-// fixed: banners are one picture in the dashboard; the frame rate only fills the preview of the loop
-const BANNER_FPS = 30;
+// Banners are one picture (the dashboard saves their first frame as a PNG); duration and frame rate only fill the clip
+const STILL = 1;
 
 type Draw = (context: CanvasRenderingContext2D, time: number) => void;
 type Parts = { stinger: typeof StingerModule; banners: typeof BannerModule };
@@ -62,26 +62,26 @@ export function kebabClips(settings: SettingValues, login: string): RenderClip[]
     jag: values.stingerTearJag, slices: values.stingerSlices, shavings: values.stingerShavings, seed: values.stingerSeed, titleFont: values.titleFont, ink,
     colors: { red: values.red, redText: values.redText, paper: values.paper, brown: values.brown },
   };
-  const banner = (size: { width: number; height: number }): BannerLook => ({
-    ...size, loop: values.bannerDuration, steam: values.bannerSteam, ink, titleFont: values.titleFont, font: values.font,
+  const banner = (size: { width: number; height: number }, steam: boolean): BannerLook => ({
+    ...size, steam, ink, titleFont: values.titleFont, font: values.font,
     colors: { red: values.red, redText: values.redText, paper: values.paper, brown: values.brown, muted: values.muted, steam: values.steam },
     arc: { text: values.arcText, size: values.arcSize, span: values.arcSpan, stroke: values.arcStroke },
-    spitSpeed: values.spitSpeed, hatchRows: values.hatchRows, steamHeight: values.steamHeight,
+    hatchRows: values.hatchRows, steamHeight: values.steamHeight,
   });
   const font = `24px "${values.titleFont}"`;
-  const banners = { feature: "banners", font, fps: BANNER_FPS, duration: values.bannerDuration, cut: null, prepare } as const;
+  const banners = { feature: "banners", font, fps: STILL, duration: STILL, cut: null, prepare } as const;
   return [
     withStingerOptions({
       name: "stinger", feature: "stinger", group: "Stinger", font, ...PICTURE, fps: values.stingerFps, duration: stinger.duration, cut: stinger.cut, prepare,
       draw: clipDraw(loaded => loaded.stinger.makeStinger(stinger), coverStandIn(stinger)),
     }, readStingerOptions(settings)),
     {
-      ...banners, name: "profile", group: "Banner", ...PROFILE_SIZE,
-      draw: clipDraw(loaded => loaded.banners.makeProfile(banner(PROFILE_SIZE), { title: fill(values.profileTitle), line: fill(values.profileSubtitle) }), plain(PROFILE_SIZE, values.paper)),
+      ...banners, name: "profile", group: "Profilbanner", ...PROFILE_SIZE,
+      draw: clipDraw(loaded => loaded.banners.makeProfile(banner(PROFILE_SIZE, values.profileSteam), { title: fill(values.profileTitle), line: fill(values.profileSubtitle) }), plain(PROFILE_SIZE, values.paper)),
     },
     {
-      ...banners, name: "offline", group: "Banner", ...PICTURE,
-      draw: clipDraw(loaded => loaded.banners.makeOffline(banner(PICTURE), fill(values.offlineText)), plain(PICTURE, values.brown)),
+      ...banners, name: "offline", group: "Offline-Banner", ...PICTURE,
+      draw: clipDraw(loaded => loaded.banners.makeOffline(banner(PICTURE, values.offlineSteam), fill(values.offlineText)), plain(PICTURE, values.brown)),
     },
   ];
 }

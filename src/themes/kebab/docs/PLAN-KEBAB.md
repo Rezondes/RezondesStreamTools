@@ -479,16 +479,16 @@ Reissen ein Stück und der Schatten kommt erst mit dem Riss.
   gezackt in der Mitte und die Hälften fliegen mit Drehung zur Seite.
 - **Stinger Messer:** das Messer fährt in 0.75 s von links unten nach rechts oben, neun Fleischscheiben schieben sich
   von unten nach oben versetzt herein, Späne fliegen von der Klinge; ab 0.9 s fallen die Scheiben mit Drehung.
-- **Profil:** Koch und Spieß mit Bogenschrift, Ladenname darunter; der Spieß dreht, die Schleife schliesst über die
-  Periode der Schraffur.
-- **Offline:** Rollladen unten, darauf "Heute geschlossen", Dampf steigt als Schleife.
+- **Profil** (Standbild): Koch und Spieß mit Bogenschrift, Ladenname darunter, Dampf über dem Spieß.
+- **Offline** (Standbild): Rollladen unten, darauf "Heute geschlossen", Dampf darunter.
 
 ### Einstellungen (Gruppen dieses Packages)
 
 | Gruppe | Schlüssel (Standard) |
 |---|---|
 | Stinger | `stingerStyle` (papier: papier, messer), `stingerText` ("DÖNER KEBAB"), `stingerDuration` (1.6 s), `stingerCut` (0.8 s), `stingerTearJag` (4 %), `stingerSlices` (9), `stingerShavings` (an), `stingerSeed` (7), Kern-Felder aus `withStingerFields` |
-| Banner | `profileTitle` ("{shop}"), `profileSubtitle` ("Frisch vom Spieß"), `offlineText` ("Heute geschlossen"), `bannerDuration` (4 s), `bannerSteam` (an) |
+| Profilbanner | `profileTitle` ("{shop}"), `profileSubtitle` ("Frisch vom Spieß"), `profileSteam` (an) |
+| Offline-Banner | `offlineText` ("Heute geschlossen"), `offlineSteam` (an) |
 
 ### Acceptance Criteria
 
@@ -498,7 +498,7 @@ Reissen ein Stück und der Schatten kommt erst mit dem Riss.
       eine Fläche ohne Schatten.
 - [ ] AC3: `sliceAt(row, t)`: am Übergangspunkt liegen alle neun Scheiben ohne Lücke über dem Bild; die unterste kommt
       zuerst.
-- [ ] AC4: Profil- und Offline-Banner schliessen nahtlos (Bild bei `t = 0` gleich Bild bei `t = bannerDuration`).
+- [ ] AC4: Profil- und Offline-Banner sind Standbilder (jedes Zeichnen gibt dasselbe Bild).
 - [ ] AC5: Dieselben Einstellungen ergeben dieselben Bilder (zweimal rendern, gleiche Bytes eines Bildes).
 - [ ] AC6 (manuell): Rendern im Dashboard als WebM und GIF, neben `refs/stinger.html`; Abnahme durch den Nutzer.
 
@@ -506,7 +506,7 @@ Reissen ein Stück und der Schatten kommt erst mit dem Riss.
 
 1. `wrap.check.ts > "Klappen decken am Übergang"` (AC1) und `"Riss-Kante"` (AC2)
 2. `slices.check.ts > "Scheiben decken am Übergang"` (AC3)
-3. `banners.check.ts > "Schleife"` (AC4)
+3. `banners.check.ts > "Standbild"` (AC4)
 4. `render.check.ts > "Clips"` (AC5): Liste der Clips und ihre Felder (`group`, `cut`, Grösse), zwei Renders gleich
 
 ### Umsetzungsschritte

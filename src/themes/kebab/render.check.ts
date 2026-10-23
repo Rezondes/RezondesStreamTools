@@ -8,10 +8,10 @@ import { kebabSettings } from "./settings.ts";
 import { recorder } from "./stinger.check.ts";
 
 const values = resolveSettings(kebabSettings, {});
-const own = resolveSettings(kebabSettings, { stingerDuration: 2, stingerCut: 1, stingerFps: 48, bannerDuration: 6, stingerStyle: "messer" });
+const own = resolveSettings(kebabSettings, { stingerDuration: 2, stingerCut: 1, stingerFps: 48, stingerStyle: "messer" });
 const clips = kebabClips(own, "rezondes");
 assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.height, clip.duration, clip.cut]), [
-  ["stinger", "Stinger", 1920, 1080, 2, 1], ["profile", "Banner", 1200, 480, 6, null], ["offline", "Banner", 1920, 1080, 6, null],
+  ["stinger", "Stinger", 1920, 1080, 2, 1], ["profile", "Profilbanner", 1200, 480, 1, null], ["offline", "Offline-Banner", 1920, 1080, 1, null],
 ]);
 assert.equal(clips[0].fps, 48);
 assert.match(clips[0].font, /Titan One/);
