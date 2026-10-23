@@ -5,7 +5,7 @@ import { STAGE } from "../../core/screens/screens.ts";
 import { between, chance, weighted } from "./chance.ts";
 
 export type Blotch = { x: number; y: number; radiusX: number; radiusY: number; deep: boolean; opacity: number };
-export type DustColor = "color1" | "color2" | "lilac" | "white";
+type DustColor = "color1" | "color2" | "lilac" | "white";
 export type Dust = { x: number; y: number; radius: number; color: DustColor; opacity: number };
 
 // Large soft violet stains, a third of them deeper

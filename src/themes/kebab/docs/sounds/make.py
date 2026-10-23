@@ -11,7 +11,6 @@ import pathlib
 import numpy as np
 import pyloudnorm
 import soundfile as sf
-from scipy.signal import butter, lfilter
 
 from earshot.forge import bank, fx
 
@@ -19,7 +18,6 @@ SR = 48000
 HERE = pathlib.Path(__file__).parent
 OUT = HERE.parent.parent / "sounds"
 TARGET = -20.0  # LUFS of every sound
-rng = np.random.default_rng(7)
 
 
 def take(sid, pitch=None, dur=None, seed=None):
@@ -43,23 +41,6 @@ def L(at, sid, db=0.0, pitch=None, dur=None, seed=None):
     return (at, sid, db, pitch, dur, seed)
 
 
-def sizzle(seconds=2.0):
-    """grill: high hiss with fat crackles, crossfaded into a seamless loop"""
-    white = rng.standard_normal(int(seconds * SR))
-    b, a = butter(2, 2500 / (SR / 2), "high")
-    hiss = lfilter(b, a, white) * 0.12
-    crackle = np.zeros_like(hiss)
-    for _ in range(int(seconds * 40)):
-        pop = take("pro_typing_key/crackle", seed=int(rng.integers(1, 60)))
-        start = int(rng.uniform(0, seconds - 0.2) * SR)
-        crackle[start:start + len(pop)] += pop[: len(crackle) - start] * rng.uniform(0.05, 0.25)
-    y = hiss + crackle
-    lap = int(0.3 * SR)
-    ramp = np.linspace(0, 1, lap)
-    head = y[:lap] * ramp + y[-lap:] * (1 - ramp)
-    return np.concatenate([head, y[lap:-lap]])
-
-
 SOUNDS = {
     # cash register: the drawer clacks, then the bell rings
     "register": [L(0, "toggle/latch", -6), L(0.05, "knock/plastic", -8), L(0.12, "fit/bell/small_bell", -2), L(0.12, "pro_notify/ding_2045", -10)],
@@ -69,8 +50,6 @@ SOUNDS = {
     "printer": [L(0, "pro_typing_run/tick", -2, None, 1.0), L(0, "pro_typing_run/standard", -10, None, 1.0)],
     # paper tears
     "tear": [L(0, "swipe/paper", -1, None, 0.45), L(0.05, "glitch/crush", -18, None, 0.2)],
-    # the knife scrapes over the meat
-    "knife": [L(0, "swish/blade", -6), L(0.02, "swipe/cloth", -3)],
     # a soft plop
     "plop": [L(0, "fit/pop/mouth_plop", 0), L(0.02, "pro_pop/bloop", -10)],
     # a paper bag lands
@@ -104,8 +83,8 @@ def finish(y):
 
 OUT.mkdir(exist_ok=True)
 rows = []
-for name, layers in [*SOUNDS.items(), ("sizzle", None)]:
-    y = finish(sizzle() if layers is None else trim(mix(layers)))
+for name, layers in SOUNDS.items():
+    y = finish(trim(mix(layers)))
     seconds = len(y) / SR
     lufs = loudness(y)
     assert 0.05 < seconds < 3, f"{name}: {seconds:.2f} s"

@@ -3,16 +3,12 @@
 // reordered, height kept between 60 and 600, undo and redo. Runs with npm test.
 import assert from "node:assert/strict";
 import { rectLayer, textLayer } from "../core/panels.ts";
-import { addLayer, alignLayer, alignLayers, duplicateLayers, groupBox, guideSnap, moveGroup, removeLayers, toggleLayer, turnAt, applyTemplate, changeLayer, clampHeight, duplicateLayer, duplicatePanel, moveLayer, moveLayerSnapped, movePanel, panelFrom, record, redo, removeLayer, reorderLayer, resizeLayer, snap, undo } from "./panelEditor.ts";
+import { addLayer, alignLayer, alignLayers, duplicateLayers, groupBox, guideSnap, moveGroup, removeLayers, toggleLayer, turnAt, applyTemplate, changeLayer, clampHeight, duplicatePanel, movePanel, panelFrom, record, redo, removeLayer, reorderLayer, resizeLayer, snap, undo } from "./panelEditor.ts";
 
 const design = { height: 100, background: "#000000", layers: [rectLayer("card", 0, 0, 320, 100, "#111111"), textLayer("title", 10, 30, 300, "Regeln", "Sniglet", 30, "#ff0000")] };
 const panel = panelFrom("Regeln", design);
 assert.equal(panel.name, "Regeln");
 assert.equal(panel.layers.length, 2);
-
-const moved = moveLayer(panel, 1, 5.4, -3.6);
-assert.deepEqual([moved.layers[1].x, moved.layers[1].y], [15, 26]);
-assert.equal(panel.layers[1].x, 10, "the old panel stays");
 
 assert.deepEqual(reorderLayer(panel, 0, 1).layers.map(layer => layer.id), ["title", "card"]);
 assert.equal(reorderLayer(panel, 1, 1), panel);
@@ -32,10 +28,8 @@ assert.deepEqual([changed.name, changed.id, changed.layers.length], ["Neu", pane
 
 assert.deepEqual([clampHeight(20), clampHeight(250.4), clampHeight(900), clampHeight(Number.NaN)], [60, 250, 600, 60]);
 
-// Grid: snapped moves and sizes, a free grid (0) only rounds, never smaller than a step
+// Grid: snapped sizes, a free grid (0) only rounds, never smaller than a step
 assert.deepEqual([snap(13, 10), snap(16, 10), snap(13.4, 0)], [10, 20, 13]);
-const snapped = moveLayerSnapped(panel, 0, 23, 47, 10);
-assert.deepEqual([snapped.layers[0].x, snapped.layers[0].y], [20, 50]);
 const sized = resizeLayer(panel, 0, 2, 57, 10).layers[0];
 assert.ok(sized.kind === "rect" && sized.w === 10 && sized.h === 60);
 const textSized = resizeLayer(panel, 1, 155, 999, 0).layers[1];
@@ -48,10 +42,7 @@ assert.equal(alignLayer(panel, 1, "middle").layers[1].y, 32);
 assert.equal(alignLayer(panel, 1, "bottom").layers[1].y, 64);
 assert.equal(alignLayer(panel, 1, "top").layers[1].y, 0);
 
-// Copies get new ids, a layer copy lands right after the original, a little offset
-const copied = duplicateLayer(panel, 0);
-assert.deepEqual(copied.layers.map(layer => layer.id).slice(0, 1), ["card"]);
-assert.ok(copied.layers[1].id !== "card" && copied.layers[1].x === 8 && copied.layers[2].id === "title");
+// A panel copy gets new ids
 const twin = duplicatePanel(panel, "Kopie");
 assert.ok(twin.id !== panel.id && twin.name === "Kopie" && twin.layers.every((layer, index) => layer.id !== panel.layers[index].id));
 const list = [panel, twin];

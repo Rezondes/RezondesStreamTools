@@ -9,7 +9,7 @@ import { DEMO_USER, startFakeProviders } from "../contract/fakeProviders.ts";
 
 // The port of the demo server and of its Vite dev server (which proxies /api, /auth, /s/ and /spotify to it)
 export const DEMO_PORT = 8090;
-export const VITE_PORT = 5174;
+const VITE_PORT = 5174;
 export const DASHBOARD = `http://localhost:${VITE_PORT}`;
 const SERVER = "server-rs/target/debug/rst";
 

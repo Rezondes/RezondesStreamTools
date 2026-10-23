@@ -261,9 +261,9 @@ export const POSES = Object.fromEntries(POSE_NAMES.map(name => [name, buildPose(
 
 // A tower level as drawn: the bear in its pose, its box placed at (x, y) in the units of the box of the bottom level
 // (y up is negative), how far each leg reaches down to the back below (units of its own box) and where its feet stand
-export type TowerLevel = { bear: BearId; pose: PoseName };
+type TowerLevel = { bear: BearId; pose: PoseName };
 export type Drops = Readonly<Record<string, number>>;
-export type PlacedLevel = TowerLevel & { x: number; y: number; drops: Drops; feet: readonly Point[] };
+type PlacedLevel = TowerLevel & { x: number; y: number; drops: Drops; feet: readonly Point[] };
 
 // Height of the back line at x (bears.ts FOUR_BACK_LINE, straight between its points, flat past its ends)
 export function backAt(x: number): number {

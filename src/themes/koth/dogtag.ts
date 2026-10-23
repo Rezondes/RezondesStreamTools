@@ -6,7 +6,7 @@ import { STAGE } from "../../core/screens/screens.ts";
 import { fillTemplate } from "../../core/template.ts";
 import { type Step, stepShare } from "./build.ts";
 
-export type Point2 = readonly [number, number];
+type Point2 = readonly [number, number];
 
 // fixed: size of the tag in stage px, its rounded corners and the hole for the chain (from the prototype)
 export const DOGTAG = { width: 150, height: 240, corner: 46, holeY: 94, holeRadius: 10 };

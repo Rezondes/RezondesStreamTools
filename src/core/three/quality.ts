@@ -1,9 +1,9 @@
 // Performance levels of the 3D stage (plans/PLAN-GRAFIK.md, package 3): what a level means for the renderer and how many
 // particles a theme should show. Themes offer the level as a choice setting so weaker PCs can throttle.
 export const QUALITIES = ["hoch", "mittel", "niedrig"] as const;
-export type Quality = (typeof QUALITIES)[number];
+type Quality = (typeof QUALITIES)[number];
 
-export type QualitySettings = { pixelRatio: number; bloom: boolean; antialias: boolean; shadows: boolean; particles: number };
+type QualitySettings = { pixelRatio: number; bloom: boolean; antialias: boolean; shadows: boolean; particles: number };
 
 const LEVELS: Record<Quality, QualitySettings> = {
   hoch: { pixelRatio: 1, bloom: true, antialias: true, shadows: true, particles: 1 },

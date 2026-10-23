@@ -5,7 +5,7 @@
 import type { OfflinePage } from "../core/offline.ts";
 import type { SettingField, SettingValues } from "../core/theme.ts";
 
-export type OfflineParts = { page: OfflinePage; script: string; style: string; fonts: string | null; title: string };
+type OfflineParts = { page: OfflinePage; script: string; style: string; fonts: string | null; title: string };
 
 // Text inside <script> or <style> must not close the tag early
 const inScript = (text: string) => text.replaceAll("</script", "<\\/script");

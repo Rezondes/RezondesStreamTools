@@ -8,7 +8,7 @@ import type { ChaosValues } from "../settings.ts";
 
 type Props = { app: Application; world: Container; clock: () => number; values: ChaosValues; seed: number; idleFrom: number };
 
-export const DUST_Z = 40;
+const DUST_Z = 40;
 
 export default function Dust({ app, world, clock, values, seed, idleFrom }: Props) {
   useEffect(() => {

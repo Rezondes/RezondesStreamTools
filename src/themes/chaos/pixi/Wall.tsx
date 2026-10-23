@@ -46,7 +46,7 @@ function paint(values: ChaosValues, seed: number, grain: boolean): Texture {
 }
 
 // The grain lies over everything else of the world (zIndex)
-export const GRAIN_Z = 50;
+const GRAIN_Z = 50;
 
 export default function Wall({ world, values, seed }: Props) {
   useEffect(() => {

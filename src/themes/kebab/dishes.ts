@@ -29,7 +29,7 @@ export const MOVE_OF: Record<DishType, (typeof OWN_MOVES)[number]> = { doener: "
 
 // body: outline and fill; face, feet, arm; move: the part of the own move (the dürüm's outer layer, the lahmacun's right
 // half, the flying fries stick; the döner's sauce comes from sauceDrops)
-export type DishParts = { body: InkPart; face: InkPart; feet: InkPart; arm: InkPart; move: InkPart | null };
+type DishParts = { body: InkPart; face: InkPart; feet: InkPart; arm: InkPart; move: InkPart | null };
 export type Point = { x: number; y: number };
 
 const path = (outline: string, width = 3): InkLine => ({ shape: { kind: "path", d: outline }, width });
@@ -41,7 +41,7 @@ const FACE_Y: Record<DishType, number> = { doener: 60, duerum: 58, lahmacun: 50,
 // The pivot of the outer layer of the dürüm and the fold line of the lahmacun (x), where sauce leaves the döner
 export const FLAP_X = 30;
 export const FOLD_X = 50;
-export const SAUCE_FROM: Point = { x: 50, y: 24 };
+const SAUCE_FROM: Point = { x: 50, y: 24 };
 
 function face(y: number): InkPart {
   return part(
@@ -102,7 +102,7 @@ export function dishParts(type: DishType): DishParts {
 // has unrolled; fold: share the lahmacun has folded; stick: share of the flight of the fries stick; wiggle: shaking of
 // the fries (-1 to 1); wave: arm angle as a share (-1 to 1); sauce: progress of the flying sauce (0 = none); steam:
 // progress of the puff of steam (0 = none)
-export type DishPose = { turn: number; lift: number; flap: number; fold: number; stick: number; wiggle: number; wave: number; sauce: number; steam: number };
+type DishPose = { turn: number; lift: number; flap: number; fold: number; stick: number; wiggle: number; wave: number; sauce: number; steam: number };
 export const REST: DishPose = { turn: 1, lift: 0, flap: 0, fold: 0, stick: 0, wiggle: 0, wave: 0, sauce: 0, steam: 0 };
 
 // fixed: the döner turns twice, sauce flies in the middle half, the fries shake four times, the arm waves three times

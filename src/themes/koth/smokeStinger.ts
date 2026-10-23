@@ -4,7 +4,7 @@
 import { hash } from "../../core/hash.ts";
 import { burstAt } from "../../core/motion/burst.ts";
 
-export type SmokeTiming = { duration: number; cut: number };
+type SmokeTiming = { duration: number; cut: number };
 export type SmokePuff = { x: number; y: number; z: number; scale: number; opacity: number };
 
 // fixed: the grenade pops after a quarter of the way to the cut and rolls in from 9 m left; the smoke cloud in m and s

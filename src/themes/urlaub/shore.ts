@@ -22,7 +22,7 @@ export const wetness = (height: number) => Math.min(1, Math.max(0, 1 - (height -
 // drifts sideways this far
 const SURF = { from: SHORE - 7, run: 9.5, widen: 0.8, drift: 3 };
 
-export type SurfBand = { z: number; opacity: number; stretch: number; x: number; share: number };
+type SurfBand = { z: number; opacity: number; stretch: number; x: number; share: number };
 
 // Band index of bands at seconds; every band runs once per period seconds, the bands evenly out of step
 export function surfBand(index: number, bands: number, seconds: number, period: number): SurfBand {

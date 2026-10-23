@@ -4,7 +4,7 @@ import type { Graphics } from "pixi.js";
 import { hexNumber } from "../../../core/color.ts";
 import { burstAt } from "../../../core/motion/burst.ts";
 
-export type PetalColors = { flower: string; other: string; middle: string };
+type PetalColors = { flower: string; other: string; middle: string };
 
 // fixed: where the flowers fly from (px), how they fly, how big they are, petals per flower
 const THROW = { direction: -Math.PI / 2, spread: Math.PI * 0.9, speed: [150, 500] as const, gravity: 320, drag: 2.2, life: 2 };

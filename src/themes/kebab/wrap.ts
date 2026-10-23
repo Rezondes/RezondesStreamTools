@@ -9,7 +9,7 @@ export const PICTURE = { width: 1920, height: 1080 };
 // fixed: the flaps start one after another and fold in with power3.in; the paper is whole from "whole", tears at "tear"
 export const WRAP = { start: 0.05, stagger: 0.05, fold: 0.5, whole: 0.72, tear: 0.92, apart: 0.65, fly: 1150, turn: 7, overshoot: 0.08, steps: 20 };
 export const FLAPS = ["top", "right", "bottom", "left"] as const;
-export type Flap = (typeof FLAPS)[number];
+type Flap = (typeof FLAPS)[number];
 type Point = [number, number];
 
 const clamp01 = (value: number) => Math.min(1, Math.max(0, value));

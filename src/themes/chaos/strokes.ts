@@ -8,7 +8,7 @@ import { linePath, smoothPath, type Point } from "./paths.ts";
 
 export type Bristle = { d: string; width: number; opacity: number; light: boolean };
 export type Drop = { x: number; y: number; radiusX: number; radiusY: number; opacity: number };
-export type BrushStroke = { body: string; bristles: Bristle[]; tail: Bristle[]; drops: Drop[]; drips: string[] };
+type BrushStroke = { body: string; bristles: Bristle[]; tail: Bristle[]; drops: Drop[]; drips: string[] };
 
 const BODY_STEPS = 30;
 const BRISTLES = 140;
@@ -59,7 +59,7 @@ export function brushStroke(from: Point, to: Point, width: number, random: Chanc
 // Composition of a scene: two X (cyan left, magenta right, plus a loose stroke of the other color each), one X or one
 // stroke in the main color of the scene, or none
 export type GestureKind = "zweix" | "x" | "strich" | "keine";
-export type GestureColor = "cyan" | "magenta" | "main";
+type GestureColor = "cyan" | "magenta" | "main";
 export type GestureStroke = { from: Point; to: Point; width: number; color: GestureColor };
 
 // Stage pixels of each composition (the two X as approved with the style sample)
@@ -90,14 +90,14 @@ export function gestureLayout(kind: GestureKind, seed: number): GestureStroke[] 
 }
 
 // Drips under a title: where (share of its width), how thick and how long (pixels)
-export type TitleDrip = { at: number; thickness: number; length: number };
+type TitleDrip = { at: number; thickness: number; length: number };
 export const titleDrips = (seed: number, count: number): TitleDrip[] => {
   const random = chance(seed);
   return Array.from({ length: count }, () => ({ at: between(random, 0.04, 0.96), thickness: between(random, 5, 11), length: between(random, 25, 140) }));
 };
 
 // Spray speckles around a box of the given size (pixels, origin top left), a few of them in the hot color
-export type Speckle = { x: number; y: number; radius: number; opacity: number; hot: boolean };
+type Speckle = { x: number; y: number; radius: number; opacity: number; hot: boolean };
 const SPECKLE_REACH = 40;
 export const speckles = (seed: number, width: number, height: number, count: number): Speckle[] => {
   const random = chance(seed);

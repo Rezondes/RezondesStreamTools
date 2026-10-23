@@ -3,7 +3,7 @@
 // since the hit. Check: crumbs.check.ts.
 import { burstAt } from "../../core/motion/burst.ts";
 
-export type Crumb = { x: number; y: number; angle: number; opacity: number; ring: boolean; size: number };
+type Crumb = { x: number; y: number; angle: number; opacity: number; ring: boolean; size: number };
 
 // fixed: up with a wide spread, speeds in px/s, gravity, a little drag, life in s, sizes in px, like the prototype
 const BURST = { direction: -Math.PI / 2, spread: 3.2, speed: [260, 780] as const, gravity: 1400, drag: 0.4, life: 1.4 };

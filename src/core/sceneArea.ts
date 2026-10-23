@@ -30,7 +30,7 @@ type Room = number | { left: number; right: number; top: number; bottom: number 
 
 // Where an alert sits on the stage: aligned left, center or right at top, width x height before scaling, plus room for
 // effects. The scale grows from the top edge, from the corner of the alignment (or from the middle with centerOrigin).
-export type AlertPlacement = {
+type AlertPlacement = {
   align?: string;
   top: number;
   width: number;

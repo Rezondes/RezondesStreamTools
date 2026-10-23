@@ -11,7 +11,7 @@ export const EASES = {
   stempel: "M0,0 C0.05,0.9 0.1,1.08 0.2,1.04 0.4,0.98 0.6,1 1,1",
 } as const;
 
-export type EaseName = keyof typeof EASES;
+type EaseName = keyof typeof EASES;
 
 export const EASE_NAMES = Object.keys(EASES) as EaseName[];
 

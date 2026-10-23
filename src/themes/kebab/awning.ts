@@ -7,7 +7,7 @@ export const AWNING_BOX = { width: 1000, height: 150 };
 const BAND = 100;
 const SCALLOP = 22;
 
-export type Awning = { stripes: { x: number; width: number; red: boolean }[]; edge: string };
+type Awning = { stripes: { x: number; width: number; red: boolean }[]; edge: string };
 
 export function awning(stripes: number): Awning {
   const count = Math.max(1, Math.round(stripes));

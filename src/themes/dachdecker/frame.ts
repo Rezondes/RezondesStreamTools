@@ -70,7 +70,7 @@ function truss(dims: FrameDims, depth: number, index: number): Beam[] {
 // The frame as a flat drawing for the dashboard (no WebGL there): every beam as a line in an oblique view, the depth
 // going up and to the right; y grows downwards like in SVG
 const OBLIQUE = { right: 0.55, up: 0.3 };
-export type SketchLine = { from: readonly [number, number]; to: readonly [number, number]; kind: BeamKind };
+type SketchLine = { from: readonly [number, number]; to: readonly [number, number]; kind: BeamKind };
 export const sketchLines = (beams: readonly Beam[]): SketchLine[] => beams.map(beam => {
   const flat = ([x, y, depth]: Point3) => [x - depth * OBLIQUE.right, -y + depth * OBLIQUE.up] as const;
   return { from: flat(beam.from), to: flat(beam.to), kind: beam.kind };

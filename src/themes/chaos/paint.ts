@@ -144,7 +144,7 @@ export function paintMist(context: CanvasRenderingContext2D, particles: readonly
   context.restore();
 }
 
-export type SprayText = { text: string; x: number; y: number; size: number; font: string; color: string; glowColor: string; glow: number; seed: number; drips: boolean };
+type SprayText = { text: string; x: number; y: number; size: number; font: string; color: string; glowColor: string; glow: number; seed: number; drips: boolean };
 
 // Sprayed text centered at x on the baseline y: glow, speckles around it, drips below
 export function paintSpray(context: CanvasRenderingContext2D, spray: SprayText, makePath: MakePath = browserPath) {

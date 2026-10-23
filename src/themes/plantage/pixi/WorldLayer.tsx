@@ -46,7 +46,7 @@ function gradient(stops: readonly [number, string][], radial = false): Texture {
 }
 
 // The two skies of a screen (the light blends from the first to the second) and the color far things fade into
-export function skiesOf(values: PlantageValues, kind: LightKind) {
+function skiesOf(values: PlantageValues, kind: LightKind) {
   return {
     starting: { from: [values.skyDawnTop, values.skyDawnBottom], to: [values.skyMorningTop, values.skyMorningBottom], haze: values.skyMorningBottom },
     brb: { from: [values.skyDayTop, values.skyDayBottom], to: [values.skyDayTop, values.skyDayBottom], haze: values.skyDayBottom },
@@ -54,7 +54,7 @@ export function skiesOf(values: PlantageValues, kind: LightKind) {
   }[kind];
 }
 
-export const treeColors = (values: PlantageValues, sky: string): TreeColors => ({
+const treeColors = (values: PlantageValues, sky: string): TreeColors => ({
   sky, trunk: values.trunk, trunkDark: values.woodDark, leafDark: values.leafDark, leaf: values.leaf,
   leafLight: values.accent2, mango: values.mango, mangoBlush: values.mangoBlush, gloss: values.paper, shadow: values.textOnWood,
 });

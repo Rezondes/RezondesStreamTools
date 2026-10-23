@@ -2,7 +2,7 @@
 // is no swell; the water is 0 at both ends of the stretch; the card reaches its place when the crest reaches the middle.
 // Runs with npm test.
 import assert from "node:assert/strict";
-import { cardRide, MIDDLE, STRETCH, swellAt, waterHeight } from "./swell.ts";
+import { MIDDLE, STRETCH, swellAt, waterHeight } from "./swell.ts";
 
 const timing = { inSeconds: 1.3, leave: 5.9, outSeconds: 1.3, height: 300 };
 
@@ -24,11 +24,8 @@ const crest = waterHeight(later.crest, later);
 assert.ok(crest > waterHeight(later.crest + 150, later) && crest > waterHeight(later.crest - 150, later));
 assert.ok(waterHeight(later.crest + 150, later) < waterHeight(later.crest - 150, later));
 
-// Karte reitet mit: at its place when the crest reaches the middle, and not before
+// The crest reaches the middle of the stretch at its share of the way in
 const atMiddle = timing.inSeconds * ((MIDDLE - STRETCH.from) / (STRETCH.to - STRETCH.from));
-assert.equal(cardRide(atMiddle, timing), 1);
-assert.ok(cardRide(atMiddle * 0.5, timing) < 1);
 assert.ok(Math.abs(swellAt(atMiddle, timing)!.crest - MIDDLE) < 1e-9);
-assert.equal(cardRide(0, timing), 0);
 
 console.log("urlaub swell ok");

@@ -9,7 +9,7 @@ import { BONE_GROUPS, type BoneFrame, type BoneGroup } from "./boneMotion.ts";
 import { poseOf, POSES, towerLayout, type Drops, type PoseName, type RigLayer } from "./rig.ts";
 import { SCENE, SHAPES, WORLD } from "./world.ts";
 
-export type BearColors = { fur: string; shade: string; limb: string };
+type BearColors = { fur: string; shade: string; limb: string };
 export type Palette = {
   outline: string;
   outlineWidth: number;

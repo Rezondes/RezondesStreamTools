@@ -5,7 +5,7 @@ import { hash } from "../../core/hash.ts";
 
 export type Leaf = { x: number; y: number; rotation: number; color: 0 | 1 };
 export type Mote = { x: number; y: number; size: number; alpha: number };
-export type Firefly = Mote;
+type Firefly = Mote;
 
 // fixed: the leaves of the prototype (refs/starting.html) in stage px and px/s
 const STAGE_WIDTH = 1920;

@@ -2,7 +2,7 @@
 // time, the same time gives the same picture.
 // Check: waterMotion.check.ts.
 
-export type Bubble = { x: number; y: number; radius: number; alpha: number };
+type Bubble = { x: number; y: number; radius: number; alpha: number };
 
 // fixed: bubble size (px), sideways wobble (px, per s), spread of the rise speed, the top share where bubbles fade
 const RADIUS = { min: 4, by: 10 };

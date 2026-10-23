@@ -4,7 +4,7 @@ import type { Graphics } from "pixi.js";
 import { hexNumber } from "../../../core/color.ts";
 import { equalizerLevels } from "../../../core/music/equalizer.ts";
 
-export type EqLook = { bar: number; gap: number; height: number; sea: string; foam: string };
+type EqLook = { bar: number; gap: number; height: number; sea: string; foam: string };
 
 export function drawEqualizer(graphics: Graphics, seconds: number, bars: number, look: EqLook) {
   graphics.clear();

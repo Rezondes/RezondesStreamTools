@@ -18,7 +18,7 @@ const FULLSCREEN: readonly SceneName[] = ["starting", "brb", "ending"];
 const ALIGN_TOP_LEFT = 5;
 
 // OBS URL of a scene with the streamer's secret overlay key (without it there are no live events)
-export const sceneUrl = (base: string, scene: SceneName, key: string) => `${base}/${scene}?key=${encodeURIComponent(key)}`;
+const sceneUrl = (base: string, scene: SceneName, key: string) => `${base}/${scene}?key=${encodeURIComponent(key)}`;
 
 // fixed: the zone of the effects source every theme has; effects without a zone play there
 const MAIN_ZONE = "main";

@@ -5,7 +5,7 @@
 // fixed: where the sunrise starts (degrees, just below the horizon)
 export const SUNRISE_FROM = -2.5;
 
-export type SunOptions = { sunriseOn: boolean; sunriseSeconds: number; height: number };
+type SunOptions = { sunriseOn: boolean; sunriseSeconds: number; height: number };
 
 // Ease in and out (power1.inOut of GSAP)
 const easeInOut = (share: number) => (share < 0.5 ? 2 * share * share : 1 - 2 * (1 - share) * (1 - share));
@@ -31,7 +31,7 @@ export const skyLight = (height: number) => 0.25 + Math.min(1, Math.max(0, (heig
 // fixed: where the sunset ends (degrees, below the horizon)
 export const SUNSET_TO = -4;
 
-export type SceneSun = SunOptions & { noon: number; sunsetSeconds: number };
+type SceneSun = SunOptions & { noon: number; sunsetSeconds: number };
 export type SunScene = "starting" | "brb" | "ending" | "info";
 
 // The sun of a scene: the Starting rises, the BRB (and the commands page) stands at noon, the Ending sets from the set

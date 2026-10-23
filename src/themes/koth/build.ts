@@ -58,7 +58,7 @@ export function startingSteps(speed: number): Steps {
   return Object.fromEntries(Object.entries(STARTING).map(([name, value]) => [name, scaledBy(speed)(value)])) as Steps;
 }
 
-export type EndingTiming = { stampAt: number; countUpMs: number };
+type EndingTiming = { stampAt: number; countUpMs: number };
 const MS = 1000;
 
 // Steps of a screen: Starting builds the hill; BRB shows it built (the briefing still reveals itself); the Ending shows it

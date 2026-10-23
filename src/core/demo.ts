@@ -55,7 +55,7 @@ function demoMinimes(): Minime[] {
 }
 
 // Demo stats: a count that started 3 hours and 42 minutes ago
-export const demoStats = (): StreamStats => ({
+const demoStats = (): StreamStats => ({
   follows: 1284, subs: 37, giftedSubs: 25, raids: 2, raiders: 142, bits: 4200, redeems: 63, hypeLevel: 3,
   chatMessages: 2817, chatters: 211, startedAt: Date.now() - (3 * 60 + 42) * 60_000, endedAt: null,
 });

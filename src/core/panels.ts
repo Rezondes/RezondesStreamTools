@@ -13,14 +13,14 @@ export type PanelFormat = (typeof PANEL_FORMATS)[number];
 // hidden: not drawn (also not in the saved picture); locked: cannot be picked or dragged on the stage
 type Placed = { id: string; x: number; y: number; opacity: number; rotate: number; hidden?: boolean; locked?: boolean };
 // fill2: the color at the bottom of a vertical gradient, null for one color
-export type RectLayer = Placed & { kind: "rect"; w: number; h: number; fill: string; fill2: string | null; radius: number; stroke: string; strokeWidth: number };
+type RectLayer = Placed & { kind: "rect"; w: number; h: number; fill: string; fill2: string | null; radius: number; stroke: string; strokeWidth: number };
 // One line per "\n"; x/w is the box the text is aligned in, y its top; glow: blur radius in px
-export type TextLayer = Placed & {
+type TextLayer = Placed & {
   kind: "text"; w: number; text: string; font: string; size: number; weight: number; color: string; align: CanvasTextAlign; stroke: string; strokeWidth: number;
   glow: number; glowColor: string;
 };
 // src: the picture as a data URL (chosen in the browser, kept in the panel)
-export type ImageLayer = Placed & { kind: "image"; w: number; h: number; src: string };
+type ImageLayer = Placed & { kind: "image"; w: number; h: number; src: string };
 export type PanelLayer = RectLayer | TextLayer | ImageLayer;
 export type Panel = { id: string; name: string; height: number; background: string; layers: PanelLayer[] };
 // What a theme template gives for a title: everything of a panel but its id and name

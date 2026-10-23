@@ -184,7 +184,7 @@ bei Standard bleiben sie verboten.
 | Modul | wann | Kern-Baustein |
 |---|---|---|
 | GSAP | Abläufe mit vielen Schritten, Text Buchstabe für Buchstabe, Linien zeichnen, Bewegung auf Kurven | `useTimeline`, benannte Kurven (`src/core/motion`) |
-| Three.js mit react-three-fiber, drei, postprocessing | echte 3D-Welten, Bloom, viele Instanzen | `Stage3D`, `mergedEdges`, `beamTransform`, `chance` (`src/core/three`) |
+| Three.js mit react-three-fiber und postprocessing | echte 3D-Welten, Bloom, viele Instanzen | `Stage3D`, `mergedEdges`, `beamTransform`, `chance` (`src/core/three`) |
 | Vanilla-Three.js in Clips | Stinger und Banner in 3D | `glClip` (`src/core/three`) |
 | PixiJS | sehr viele 2D-Partikel oder Sprites über WebGL | `PixiStage`, `stepParticles` (`src/core/pixi`) |
 | Rough.js | Skizzen-Look, handgezeichnete Formen | `roughPath` (`src/core/rough`) |

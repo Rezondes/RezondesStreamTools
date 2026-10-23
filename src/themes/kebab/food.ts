@@ -5,9 +5,9 @@ import { hash } from "../../core/hash.ts";
 
 export type Point = { x: number; y: number };
 export type ShavingOptions = { start: number; gapMs: number; fallMs: number; max: number; seed: number; from: Point; plate: Point };
-export type Shaving = Point & { angle: number; size: number; landed: boolean };
-export type SteamOptions = { from: Point; height: number };
-export type Wisp = { points: Point[]; alpha: number };
+type Shaving = Point & { angle: number; size: number; landed: boolean };
+type SteamOptions = { from: Point; height: number };
+type Wisp = { points: Point[]; alpha: number };
 
 // fixed: how far shavings scatter at the knife and on the plate, how high the pile grows over how many shavings,
 // their size and spin, like the prototype

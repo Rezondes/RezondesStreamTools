@@ -12,7 +12,7 @@ const TIME = { flicker: 0.06, fade: 0.3, letter: 0.45, letterStagger: 0.06, body
 const FROM = { letterY: -30, printerY: -200, tickerY: 80 };
 const BON_STEPS = 14;
 
-export type IntroParts = { intro: Intro; lights: boolean; ready: boolean; drawIn: boolean; bon: boolean; ticker: boolean };
+type IntroParts = { intro: Intro; lights: boolean; ready: boolean; drawIn: boolean; bon: boolean; ticker: boolean };
 
 export function useShopIntro(parts: IntroParts, stage: RefObject<HTMLDivElement | null>) {
   const { intro, lights, ready, drawIn, bon, ticker } = parts;

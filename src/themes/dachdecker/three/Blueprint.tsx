@@ -5,7 +5,7 @@
 import { useEffect, useMemo } from "react";
 import { Color, GridHelper } from "three";
 
-export type Mood = "plan" | "rain" | "dusk";
+type Mood = "plan" | "rain" | "dusk";
 export type Palette = { line: string; muted: string; blueprint: string; page: string; accent: string; dusk: string };
 type Props = { grid: boolean; opacity: number; mood: Mood; palette: Palette };
 

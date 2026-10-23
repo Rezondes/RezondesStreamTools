@@ -3,7 +3,7 @@
 // goodbye (Ending) the arm is raised beside his head and waves. Angles in degrees, shifts in grid units. Check: life.check.ts.
 
 export type PoseOptions = { sawOn: boolean; sawSpeed: number; sawAngle: number; hatOn: boolean; stacheOn: boolean; blinkEvery: number };
-export type ChefPose = { armAngle: number; armShift: { x: number; y: number }; hatAngle: number; stacheAngle: number; blink: boolean };
+type ChefPose = { armAngle: number; armShift: { x: number; y: number }; hatAngle: number; stacheAngle: number; blink: boolean };
 
 // fixed: how far the arm pushes along the blade per unit of the saw wave, like the prototype
 const PUSH = { x: 5, y: -2 };

@@ -6,7 +6,7 @@ export const ICON_NAMES = ["pfote", "herz", "stern", "fisch", "honig", "handy", 
 export type IconName = (typeof ICON_NAMES)[number];
 
 // fill: the colored shape (outlined), detail: a second tone on top, line: open lines
-export type Icon = { fill: string; detail?: string; line?: string };
+type Icon = { fill: string; detail?: string; line?: string };
 
 export const ICONS: Record<IconName, Icon> = {
   pfote: {

@@ -6,7 +6,7 @@
 const BASE = {
   lights: 0, letters: 0.6, body: 1, fills: 1.4, spit: 1.5, arm: 2, hatch: 2.1, steam: 2.4, printer: 2.4, idle: 2.6, bon: 2.8, ticker: 3.2, shavings: 3.2,
 };
-export type IntroStep = keyof typeof BASE;
+type IntroStep = keyof typeof BASE;
 export type Intro = Record<IntroStep, number>;
 
 export function introAt(speed: number): Intro {

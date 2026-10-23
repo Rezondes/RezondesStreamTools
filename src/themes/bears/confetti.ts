@@ -4,7 +4,7 @@
 import { burstAt } from "../../core/motion/burst.ts";
 import type { IconName } from "./icons.ts";
 
-export type ConfettiPiece = { x: number; y: number; rotation: number; alpha: number; icon: IconName };
+type ConfettiPiece = { x: number; y: number; rotation: number; alpha: number; icon: IconName };
 
 // fixed: the throw of the prototype: up in a wide fan, speed px/s, gravity px/s², drag per second, life (s)
 const THROW = { direction: -Math.PI / 2, spread: Math.PI * 0.9, speed: [500, 1100] as const, gravity: 900, drag: 0.6, life: 2.6 };

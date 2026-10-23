@@ -13,7 +13,7 @@ import { LIGHT, type TimeOfDay, WORLD } from "./world.ts";
 
 // Paints the world in its 1920 x 1080 space at a time of day, the clouds at drift 0..1
 export type WorldPainter = (context: CanvasRenderingContext2D, colors: WorldColors, drift: number, time: TimeOfDay) => void;
-export const flatWorld: WorldPainter = (context, colors, drift, time) => drawWorld(context, colors, drift, LIGHT[time], time === "nacht");
+const flatWorld: WorldPainter = (context, colors, drift, time) => drawWorld(context, colors, drift, LIGHT[time], time === "nacht");
 
 export type BearsBannerOptions = {
   font: string;

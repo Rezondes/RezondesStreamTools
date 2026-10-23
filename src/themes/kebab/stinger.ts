@@ -10,7 +10,7 @@ import { designTime, FLAPS, flapPolygon, paperAt, PICTURE, tearEdge } from "./wr
 
 // The choices of stingerStyle in settings.ts
 export type StingerStyle = "papier" | "messer";
-export type StingerColors = { red: string; redText: string; paper: string; brown: string };
+type StingerColors = { red: string; redText: string; paper: string; brown: string };
 export type StingerLook = {
   style: StingerStyle; text: string; duration: number; cut: number; jag: number; slices: number; shavings: boolean; seed: number;
   titleFont: string; ink: InkStyle; colors: StingerColors;

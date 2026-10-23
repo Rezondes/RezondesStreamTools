@@ -18,7 +18,7 @@ export const browserPath: MakePath = data => (typeof Path2D === "function" ? new
 export type WashLook = { seed: number; layers: number; alpha: number; roughness: number; sketch: number; grain: number };
 export type WorldShow = { city: boolean; bridge: boolean; cave: boolean; flowers: boolean };
 
-export type Wash = { layers: { dx: number; dy: number; parts: RoughPart[] }[]; sketch: RoughPart[] };
+type Wash = { layers: { dx: number; dy: number; parts: RoughPart[] }[]; sketch: RoughPart[] };
 
 // fixed: how far a wash moves off its shape (px each way), the hand of the sketch line, its width and strength, the
 // strength of the paper grain at full grain
@@ -45,7 +45,7 @@ export function wash(shape: RoughShape, seed: number, layers: number, roughness:
   };
 }
 
-export type WashPaint = { color: string; alpha: number; sketch: number; outline: string };
+type WashPaint = { color: string; alpha: number; sketch: number; outline: string };
 
 export function paintWash(context: CanvasRenderingContext2D, washed: Wash, paint: WashPaint, makePath: MakePath = browserPath) {
   context.save();

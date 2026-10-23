@@ -9,10 +9,10 @@ import { chance } from "../../core/three/chance.ts";
 import { frameDepth, type FrameDims } from "./frame.ts";
 
 export type Roof = { half: number; rise: number; reach: number; front: number; back: number };
-export type RainBox = { x: number; zMin: number; zMax: number; top: number };
+type RainBox = { x: number; zMin: number; zMax: number; top: number };
 
 // Drops fall in this box around the roof (metres); new drops start a little above it
-export const RAIN_BOX: RainBox = { x: 13, zMin: -16, zMax: 7, top: 14 };
+const RAIN_BOX: RainBox = { x: 13, zMin: -16, zMax: 7, top: 14 };
 const SPAWN_ABOVE = 4;
 // Gables: the roof ends half a metre outside the first and last truss; drops hit the top of the tiles
 const GABLE = 0.5;

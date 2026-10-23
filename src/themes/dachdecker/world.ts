@@ -35,7 +35,7 @@ export const orbitOf = (values: OrbitValues): Orbit => ({
 });
 
 type LookValues = Pick<DachdeckerValues, "blueprint" | "fog" | "cameraRadius" | "bloom" | "bloomStrength">;
-export type StageLook = { fov: number; fog: StageFog | null; bloom: StageBloom | null; sky: string };
+type StageLook = { fov: number; fog: StageFog | null; bloom: StageBloom | null; sky: string };
 export function stageLook(values: LookValues): StageLook {
   return {
     fov: FOV,

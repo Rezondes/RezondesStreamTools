@@ -100,7 +100,7 @@ export function flashAt(seconds: number, every: number): number {
   return since > 0 ? 1 - since / FLASH : 0;
 }
 
-export type MoveSettings = { waveSpeed: number; headSway: number; flashEvery: number };
+type MoveSettings = { waveSpeed: number; headSway: number; flashEvery: number };
 type Pose = Pick<BoneFrame, "arm" | "farArm" | "lift" | "head" | "flash">;
 const STILL: Pose = { arm: 0, farArm: 0, lift: 0, head: 0, flash: 0 };
 
@@ -140,7 +140,7 @@ export function sceneMotion(seconds: number, move: Move, motion: SceneMotion, si
 // then reacts its way: cheer (hops and swings both arms), startle (one big jump, then cheers), nod (nods with its thumb
 // up); blinks and breathes all along
 export type Reaction = "cheer" | "startle" | "nod";
-export type AlertMotion = { blinkEvery: number; breathe: boolean; breathAmount: number; breathSeconds: number };
+type AlertMotion = { blinkEvery: number; breathe: boolean; breathAmount: number; breathSeconds: number };
 // fixed: the peek of the prototype: from (px), when (s), how long (s), the turn behind the card and the lean after it
 // (degrees); the reaction from (s): hop height (rig units) and loop (s), the arm swings (degrees) and their loop (s), the
 // startle jump (rig units) and its length (s), the nod (degrees) and its loop (s)

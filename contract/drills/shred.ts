@@ -12,7 +12,7 @@ const admin = ADMIN.login;
 const doomed = { login: "morpheus", id: "13" };
 
 // Every entry of a ZIP archive, unpacked (stored or deflated), read through the central directory
-export function zipEntries(archive: Buffer): Map<string, Buffer> {
+function zipEntries(archive: Buffer): Map<string, Buffer> {
   const end = archive.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
   if (end < 0) throw new Error("no ZIP archive");
   const count = archive.readUInt16LE(end + 10);

@@ -11,8 +11,8 @@ import { TEXTS } from "./texts.de.ts";
 const TEXT = TEXTS.panels;
 // fixed: the grid steps to choose (px of the panel), the zoom levels, how far the arrow keys nudge with shift (px), the
 // turn steps while snapping (degrees)
-export const GRID_STEPS = [5, 10, 20, 40] as const;
-export const ZOOMS = [1, 2, 3] as const;
+const GRID_STEPS = [5, 10, 20, 40] as const;
+const ZOOMS = [1, 2, 3] as const;
 const BIG_NUDGE = 10;
 const TURN_STEP = 15;
 const NO_GUIDES: Guides = { x: [], y: [] };

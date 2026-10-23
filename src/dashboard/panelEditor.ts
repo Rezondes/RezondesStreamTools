@@ -10,11 +10,11 @@ export const PANEL_FONT_GROUPS = [
   { kind: "stencil", fonts: ["Black Ops One", "Stardos Stencil"] },
   { kind: "mono", fonts: ["Share Tech Mono", "Roboto Mono", "Fira Mono", "IBM Plex Mono", "VT323"] },
 ] as const;
-export const PANEL_FONTS: readonly string[] = PANEL_FONT_GROUPS.flatMap(group => group.fonts);
+const PANEL_FONTS: readonly string[] = PANEL_FONT_GROUPS.flatMap(group => group.fonts);
 // fixed: the largest picture a layer takes (it is kept inside the panel)
 export const PANEL_IMAGE_BYTES = 400 * 1024;
 
-export const newId = () => crypto.randomUUID();
+const newId = () => crypto.randomUUID();
 
 // A panel named title in the look of the template
 export const panelFrom = (title: string, design: PanelDesign): Panel => ({ id: newId(), name: title, ...design });
@@ -27,9 +27,6 @@ export const clampHeight = (height: number) => Math.round(Math.min(PANEL_HEIGHT.
 export function changeLayer(panel: Panel, index: number, change: Partial<PanelLayer>): Panel {
   return { ...panel, layers: panel.layers.map((layer, at) => (at === index ? ({ ...layer, ...change } as PanelLayer) : layer)) };
 }
-
-export const moveLayer = (panel: Panel, index: number, dx: number, dy: number) =>
-  changeLayer(panel, index, { x: Math.round(panel.layers[index].x + dx), y: Math.round(panel.layers[index].y + dy) });
 
 // One step up (+1, drawn later, on top) or down (-1); at the end it stays
 export function reorderLayer(panel: Panel, index: number, step: 1 | -1): Panel {
@@ -60,11 +57,6 @@ export function addLayer(panel: Panel, kind: PanelLayer["kind"], src = ""): Pane
 const COPY_OFFSET = 8;
 
 export const snap = (value: number, grid: number) => (grid > 0 ? Math.round(value / grid) * grid : Math.round(value));
-
-// Moves a layer and snaps its top left corner to the grid (0 = free)
-export function moveLayerSnapped(panel: Panel, index: number, x: number, y: number, grid: number): Panel {
-  return changeLayer(panel, index, { x: snap(x, grid), y: snap(y, grid) });
-}
 
 // Resizes a layer by its bottom right corner (texts only in width), at least one grid step or 4 px
 export function resizeLayer(panel: Panel, index: number, width: number, height: number, grid: number): Panel {
@@ -102,7 +94,7 @@ export function alignLayers(panel: Panel, indices: readonly number[], how: Align
 
 export type Guides = { x: number[]; y: number[] };
 // fixed: how close (px of the panel) an edge or middle must come to snap to a guide
-export const GUIDE_REACH = 4;
+const GUIDE_REACH = 4;
 
 // Smart guides: the step that puts an edge or the middle of the box onto the nearest edge or middle of the panel or of
 // another visible layer within reach, per axis, and the lines to show for it
@@ -149,12 +141,6 @@ export function turnAt(cx: number, cy: number, x: number, y: number, step: numbe
 }
 
 
-export function duplicateLayer(panel: Panel, index: number): Panel {
-  const layer = panel.layers[index];
-  const copy = { ...layer, id: newId(), x: layer.x + COPY_OFFSET, y: layer.y + COPY_OFFSET };
-  return { ...panel, layers: [...panel.layers.slice(0, index + 1), copy, ...panel.layers.slice(index + 1)] };
-}
-
 export const duplicatePanel = (panel: Panel, name: string): Panel => ({ ...panel, id: newId(), name, layers: panel.layers.map(layer => ({ ...layer, id: newId() })) });
 
 // One place up (-1) or down (+1) in the panel list; at the end it stays
@@ -169,7 +155,7 @@ export function movePanel(panels: readonly Panel[], index: number, step: 1 | -1)
 // Undo history of the panel list: the newest state, what came before (newest last) and what was undone
 export type History<T> = { past: T[]; present: T; future: T[] };
 // fixed: how many steps can be undone
-export const HISTORY_DEPTH = 100;
+const HISTORY_DEPTH = 100;
 
 export const record = <T,>(history: History<T>, next: T): History<T> =>
   ({ past: [...history.past, history.present].slice(-HISTORY_DEPTH), present: next, future: [] });

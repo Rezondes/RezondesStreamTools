@@ -8,7 +8,7 @@ import { hash } from "../../core/hash.ts";
 
 export type BannerColors = { blueprint: string; page: string; accent: string; copper: string; line: string; rainColor: string };
 // dim: text over the dimension line, tag: head line, title: the name, line: the line under it
-export type BannerText = { dim: string; tag: string; title: string; line: string };
+type BannerText = { dim: string; tag: string; title: string; line: string };
 export type BannerOptions = {
   width: number; height: number; font: string; fontSize: number; alertWidth: number; grid: number; glow: number;
   rain: boolean; drops: number; seed: number; colors: BannerColors;

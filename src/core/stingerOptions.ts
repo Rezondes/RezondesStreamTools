@@ -6,8 +6,8 @@ import { choice, number } from "./fields.ts";
 import { EASE_CHOICES, easeAt, type EaseChoice } from "./motion/ease.ts";
 import type { RenderClip } from "./renderClip.ts";
 
-export const STINGER_SIZES = ["1080p", "720p"] as const;
-export type StingerSize = (typeof STINGER_SIZES)[number];
+const STINGER_SIZES = ["1080p", "720p"] as const;
+type StingerSize = (typeof STINGER_SIZES)[number];
 // Drawings are made for 1920x1080; 720p is the same drawing at two thirds
 const SIZE_SCALE: Record<StingerSize, number> = { "1080p": 1, "720p": 2 / 3 };
 const PERCENT = 100;
@@ -41,7 +41,7 @@ export function readStingerOptions(values: Readonly<Record<string, unknown>>): S
   };
 }
 
-export type StingerTiming = { duration: number; cut: number; hold: number; ease: EaseChoice };
+type StingerTiming = { duration: number; cut: number; hold: number; ease: EaseChoice };
 
 // Drawing time for a real time: the first half reaches the transition point after cut * (1 - hold) and stands there,
 // the second half starts after the same share of its length; the curve shapes each half. Hold 0 and linear give the

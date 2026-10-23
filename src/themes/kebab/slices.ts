@@ -6,7 +6,7 @@ import { hash } from "../../core/hash.ts";
 import { PICTURE } from "./wrap.ts";
 
 // fixed: the timing and the moves of the prototype
-export const KNIFE = { start: 0.02, cross: 0.75, from: { x: -1500, y: 1250 }, way: { x: 3800, y: -1500 }, angle: -21.5, length: 1500 };
+const KNIFE = { start: 0.02, cross: 0.75, from: { x: -1500, y: 1250 }, way: { x: 3800, y: -1500 }, angle: -21.5, length: 1500 };
 export const SLICE = { enter: 0.1, stagger: 0.04, slide: 0.34, fall: 0.9, fallSpread: 0.12, drop: 0.6, depth: 1300, turn: 24, from: -2000 };
 const SHAVINGS = { born: 0.06, every: 0.012, life: 0.9, along: { min: 300, spread: 1100 }, below: 80, drift: 500, sink: { min: 150, spread: 300 }, gravity: 1800 };
 

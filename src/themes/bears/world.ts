@@ -35,13 +35,13 @@ export function firPath(x: number, base: number, height: number, width: number):
 }
 
 // The shaded right half of a fir (light from the left)
-export function firShadePath(x: number, base: number, height: number, width: number): string {
+function firShadePath(x: number, base: number, height: number, width: number): string {
   const half = width / 2;
   return `M${x} ${base - height} C${x + half * 0.5} ${base - height * 0.5} ${x + half} ${base - 6} ${x + half} ${base} L${x + half * 0.2} ${base} C${x + half * 0.3} ${base - height * 0.4} ${x + half * 0.2} ${base - height * 0.7} ${x} ${base - height} Z`;
 }
 
 // City blocks [x, width, height], each standing on its own base (and reaching below it into the ground)
-export type Block = readonly [number, number, number];
+type Block = readonly [number, number, number];
 export const blocksPath = (blocks: readonly Block[], baseOf: (block: Block) => number, buried = 0) =>
   blocks.map(block => {
     const [x, width, height] = block;
@@ -65,13 +65,13 @@ export function windowsPath(blocks: readonly Block[], baseOf: (block: Block) => 
 }
 
 // A grass tuft of three blades at (x, base)
-export const tuftPath = (x: number, base: number, size: number) =>
+const tuftPath = (x: number, base: number, size: number) =>
   `M${x - size} ${base} Q${x - size * 0.8} ${base - size * 1.2} ${x - size * 1.1} ${base - size * 1.8} Q${x - size * 0.3} ${base - size} ${x - size * 0.2} ${base} ` +
   `M${x - size * 0.3} ${base} Q${x} ${base - size * 1.6} ${x + size * 0.2} ${base - size * 2.2} Q${x + size * 0.4} ${base - size * 1.2} ${x + size * 0.3} ${base} ` +
   `M${x + size * 0.2} ${base} Q${x + size * 0.9} ${base - size} ${x + size * 1.3} ${base - size * 1.5} Q${x + size} ${base - size * 0.6} ${x + size} ${base} Z`;
 
 // A small flower with four petals around (x, y)
-export const flowerPath = (x: number, y: number, size: number) =>
+const flowerPath = (x: number, y: number, size: number) =>
   [[0, -1], [1, 0], [0, 1], [-1, 0]]
     .map(([dx, dy]) => {
       const cx = x + dx * size;
@@ -84,7 +84,7 @@ export const flowerPath = (x: number, y: number, size: number) =>
 // --- Ground lines -------------------------------------------------------------------------------------------------
 // A ground line is a row of points from left to right; drawn smooth (quadratic curves through the middles of its
 // points), and groundAt gives the height of exactly that curve, so things set on it stand on the drawn edge.
-export type GroundLine = readonly Point[];
+type GroundLine = readonly Point[];
 const mid = (first: Point, second: Point): Point => [(first[0] + second[0]) / 2, (first[1] + second[1]) / 2];
 const round = (value: number) => Math.round(value * 10) / 10;
 
@@ -97,7 +97,7 @@ export function linePath(line: GroundLine): string {
 }
 
 // The surface under a ground line down to bottom, closed
-export const groundShape = (line: GroundLine, bottom: number) =>
+const groundShape = (line: GroundLine, bottom: number) =>
   `${linePath(line)} L${line[line.length - 1][0]} ${bottom} L${line[0][0]} ${bottom} Z`;
 
 // Height of the drawn ground line at x (flat past its ends)
@@ -157,7 +157,7 @@ export const CITY: readonly Block[] = [
   [1680, 40, 110], [1790, 58, 150], [1856, 54, 100],
 ];
 export const TREES: readonly (readonly [number, number])[] = [[860, 0.8], [1060, 0.6]];
-export const TUFTS: readonly (readonly [number, number, number])[] = [
+const TUFTS: readonly (readonly [number, number, number])[] = [
   [90, 1000, 22], [330, 960, 18], [610, 1040, 24], [760, 900, 14], [1180, 1020, 22], [1460, 930, 16], [1700, 1050, 24], [1860, 960, 18],
 ];
 export const FLOWERS: readonly (readonly [number, number, number])[] = [

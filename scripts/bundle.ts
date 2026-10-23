@@ -6,13 +6,13 @@ import { existsSync, readFileSync } from "node:fs";
 export const BUNDLE_MAP_FILE = "node_modules/.cache/bundle-map.json";
 
 // Modules that only themes load which use them on purpose
-export const OPTIONAL_PACKAGES = [
-  "three", "@react-three/fiber", "@react-three/drei", "@react-three/postprocessing", "postprocessing",
+const OPTIONAL_PACKAGES = [
+  "three", "@react-three/fiber", "@react-three/postprocessing", "postprocessing",
   "gsap", "@gsap/react", "pixi.js", "roughjs",
 ];
 
 // Themes that may load the modules above
-export const MODULE_THEMES = ["dachdecker", "kebab", "koth", "plantage", "chaos", "bears", "urlaub", "matrix", "standard"];
+const MODULE_THEMES = ["dachdecker", "kebab", "koth", "plantage", "chaos", "bears", "urlaub", "matrix", "standard"];
 
 export type BundleChunk = {
   file: string;

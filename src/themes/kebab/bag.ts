@@ -8,8 +8,6 @@ export const BAG_BOX = { width: 400, height: 480 };
 export const BAG_TEXT = { x: 200, dish: 352, name: 412, line: 448, nameWidth: 268 };
 // The arc title on the bag: center, radius and angle of its arc, letter size
 export const BAG_ARC = { center: { x: 200, y: 400 }, radius: 230, span: 64, size: 38 };
-// Where the steam leaves the bag
-export const BAG_TOP = { x: 200, y: 70 };
 
 const path = (outline: string, width = 3): InkLine => ({ shape: { kind: "path", d: outline }, width });
 const BODY = "M44 100 L356 100 L372 470 L28 470 Z";

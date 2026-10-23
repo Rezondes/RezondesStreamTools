@@ -17,7 +17,7 @@ const HEIGHT = STINGER_SIZE.height;
 
 export type StingerOptions = RollTiming & { fps: number; blueprint: string; line: string; copper: string; shadow: string };
 // The printed sheet: a canvas of the stinger size (sheet.ts); without one (checks) the sheet is plain blueprint
-export type SheetPicture = HTMLCanvasElement | OffscreenCanvas;
+type SheetPicture = HTMLCanvasElement | OffscreenCanvas;
 
 // The paper of the roll overlaps the picture top and bottom
 const OVERHANG = 1.06;

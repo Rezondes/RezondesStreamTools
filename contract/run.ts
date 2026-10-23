@@ -73,7 +73,7 @@ function report(results: CaseResult[], pending: string[], log: string) {
 export const DEFAULT_SERVER = "server-rs/target/debug/rst serve";
 
 /** A running server under test with the fake providers and an empty DATA folder; stop() ends and cleans up all of it */
-export type ServerUnderTest = { context: Context; pid: number | undefined; log: () => string; stop: () => Promise<void> };
+type ServerUnderTest = { context: Context; pid: number | undefined; log: () => string; stop: () => Promise<void> };
 
 export async function startServer(commandLine: string): Promise<ServerUnderTest> {
   const fake = await startFakeProviders();

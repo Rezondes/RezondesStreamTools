@@ -1,7 +1,7 @@
 // Check for commands.ts: list of chat commands from the help command, minimes (colors or variants) and public
 // triggers. Runs with npm test.
 import assert from "node:assert/strict";
-import { commandList, helpReply, MAX_CHAT, type TriggerInfo } from "./commands.ts";
+import { commandList, type TriggerInfo } from "./commands.ts";
 import { readMinimeOptions } from "./minimeFields.ts";
 
 const HELP = { enabled: true, command: "!befehle", reply: "x", cooldown: 30 };
@@ -35,20 +35,11 @@ assert.deepEqual(typed.find(item => item.kind === "look"), { kind: "look", comma
 assert.deepEqual(typed.find(item => item.kind === "join"), { kind: "join", command: "!join", who: ["everyone"], variants: [{ id: "mango", names: ["mango"] }] });
 assert.deepEqual(commandList("rezondes", { ...HELP, enabled: false }, null, []).items, []);
 
-// Chat reply: commands without duplicates (words and commands of the triggers, no substrings or patterns), placeholders
-// replaced, never longer than Twitch allows
-const list = commandList("rezondes", HELP, colors, [...TRIGGERS, { name: "zwei", when: { type: "word", match: "!lizard" } }, { name: "teil", when: { type: "contains", match: "lol" } }]);
-assert.equal(helpReply("Befehle: {commands} | {link}", list, "https://x/s/rezondes/"), "Befehle: !join, !color, !leave, !lizard | https://x/s/rezondes/");
-assert.equal(helpReply("{link}", commandList("rezondes", null, null, []), "L"), "L");
-assert.equal(helpReply("{commands}", commandList("rezondes", null, null, []), "L"), "");
-assert.equal(helpReply("x".repeat(600), list, "L").length, MAX_CHAT);
-
 // Factions: the team command comes before leave and is in the help reply
 const roles = { command: "!rolle", label: "Rolle", variants: [{ id: "medic", label: "Medic", names: ["medic"] }] };
 const teams = { command: "!team", label: "Fraktion", variants: [{ id: "blau", label: "Blau", names: ["blau"] }] };
 const army = commandList("rezondes", null, readMinimeOptions({}, roles, teams).rules, []);
 assert.deepEqual(army.items.map(item => item.kind), ["join", "look", "team", "leave"]);
 assert.deepEqual(army.items[2], { kind: "team", command: "!team", who: ["everyone"], teams: [{ id: "blau", names: ["blau"] }] });
-assert.equal(helpReply("{commands}", army, ""), "!join, !rolle, !team, !leave");
 
 console.log("commands ok");

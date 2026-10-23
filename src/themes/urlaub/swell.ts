@@ -39,9 +39,5 @@ export function crestShape(ahead: number, scale = 1): number {
   return Math.exp(-((ahead / width) ** 2));
 }
 
-// The share of the ride of the card: it reaches its place (1) when the incoming crest reaches the middle of the stretch
+// The middle of the stretch
 export const MIDDLE = (STRETCH.from + STRETCH.to) / 2;
-export function cardRide(seconds: number, timing: SwellTiming): number {
-  const reach = timing.inSeconds * ((MIDDLE - STRETCH.from) / (STRETCH.to - STRETCH.from));
-  return Math.min(1, Math.max(0, seconds / reach));
-}

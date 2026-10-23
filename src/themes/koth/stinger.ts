@@ -26,7 +26,7 @@ export type KothStingerOptions = {
   seed: number;
 };
 // The text in the smoke, drawn by the caller on a canvas (none in checks)
-export type TextPicture = HTMLCanvasElement | OffscreenCanvas;
+type TextPicture = HTMLCanvasElement | OffscreenCanvas;
 
 // fixed: camera, light and the parts in m (the camera stands 9 m before the grenade, the wall and the flag close to it)
 const CAMERA = { fov: 40, position: [0, 1.6, 9] as const, target: [0, 1.4, 0] as const };

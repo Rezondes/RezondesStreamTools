@@ -4,7 +4,7 @@
 
 export const TILE = 220;
 // fixed: where the two spits sit in a tile and how far they are turned (degrees), like the prototype
-export const TILE_SPITS = [{ x: 55, y: 60, turn: -12 }, { x: 165, y: 165, turn: 14 }];
+const TILE_SPITS = [{ x: 55, y: 60, turn: -12 }, { x: 165, y: 165, turn: 14 }];
 // The small spit around its middle: bar and rod, cone, the strokes of the meat
 export const SPIT_ICON = [
   "M-12 -34 L12 -34 M0 -34 L0 -26 M0 30 L0 38",

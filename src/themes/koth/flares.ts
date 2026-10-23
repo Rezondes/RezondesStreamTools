@@ -5,9 +5,9 @@ import { hash } from "../../core/hash.ts";
 import { burstAt } from "../../core/motion/burst.ts";
 import type { Point3 } from "../../core/three/beam.ts";
 
-export type FlareOptions = { every: number; sparks: number; colors: number };
+type FlareOptions = { every: number; sparks: number; colors: number };
 export type Spark = { position: Point3; opacity: number };
-export type Flare = { index: number; color: number; rocket: Point3 | null; sparks: Spark[] };
+type Flare = { index: number; color: number; rocket: Point3 | null; sparks: Spark[] };
 
 // fixed: flight of a flare in m and s, the burst of its sparks
 const RISE = { seconds: 1.4, from: 12, to: 17, spread: 22 };

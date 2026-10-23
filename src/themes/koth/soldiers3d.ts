@@ -144,7 +144,7 @@ export const pose = poser(MOVES);
 export const ANIMATIONS = Object.keys(MOVES);
 
 // Who holds the hill: the faction with the most soldiers; two or more with the same most: contested; nobody there: empty
-export type HillState = { kind: "held"; team: string } | { kind: "contested" } | { kind: "empty" };
+type HillState = { kind: "held"; team: string } | { kind: "contested" } | { kind: "empty" };
 
 export function hillState(counts: Readonly<Record<string, number>>): HillState {
   const most = Math.max(0, ...Object.values(counts));

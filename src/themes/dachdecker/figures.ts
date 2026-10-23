@@ -23,7 +23,7 @@ export const FIGURE_SET: MinimeVariantSet = {
 };
 // tone: solid colors of the settings (skin, shirt, pants, boots and belt, metal, helmet and stripe in the color of the
 // type, tool wood or copper, tile terracotta, paper); lifting parts rise when the figure tips its hat
-export type FigureTone = "skin" | "shirt" | "pants" | "boots" | "metal" | "helmet" | "tool" | "tile" | "paper";
+type FigureTone = "skin" | "shirt" | "pants" | "boots" | "metal" | "helmet" | "tool" | "tile" | "paper";
 type FigurePart = Part<FigureTone>;
 
 const HIP_L: Point3 = [-0.065, 0.36, 0];

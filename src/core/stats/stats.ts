@@ -4,8 +4,8 @@
 import type { StreamStats } from "../types.ts";
 
 export type StatKey = Exclude<keyof StreamStats, "startedAt" | "endedAt"> | "duration";
-export type StatLine = { key: StatKey; label: string };
-export type StatValue = StatLine & { value: string };
+type StatLine = { key: StatKey; label: string };
+type StatValue = StatLine & { value: string };
 
 const KEYS: readonly StatKey[] = ["follows", "subs", "giftedSubs", "raids", "raiders", "bits", "redeems", "hypeLevel", "chatMessages", "chatters", "duration"];
 const isKey = (key: string): key is StatKey => (KEYS as readonly string[]).includes(key);

@@ -7,7 +7,7 @@ import type { Alert, AlertKind } from "../../core/types.ts";
 
 export const ALERT_KEYS = alertTextKeys("Tag");
 // Text over the dimension line per kind
-export const DIM_KEYS: Record<AlertKind, string> = {
+const DIM_KEYS: Record<AlertKind, string> = {
   follow: "followDim", sub: "subDim", resub: "resubDim", gift: "giftDim", raid: "raidDim", cheer: "cheerDim", redeem: "redeemDim", hype: "hypeDim",
 };
 

@@ -3,7 +3,7 @@
 import { Quaternion, Vector3 } from "three";
 
 export type Point3 = readonly [number, number, number];
-export type BeamTransform = { position: Point3; quaternion: [number, number, number, number]; length: number };
+type BeamTransform = { position: Point3; quaternion: [number, number, number, number]; length: number };
 
 const FORWARD = new Vector3(0, 0, 1);
 

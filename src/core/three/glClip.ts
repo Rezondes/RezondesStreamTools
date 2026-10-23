@@ -9,7 +9,7 @@ export type GlSetup = { scene: Scene; camera: Camera; update: (time: number) => 
 // environment: a prefiltered environment map of the scene (PMREM), for reflections and light; the caller disposes it
 export type GlRenderer = { canvas: CanvasImageSource; render: (scene: Scene, camera: Camera) => void; dispose: () => void; environment?: (scene: Scene) => Texture };
 // exposure: filmic tone mapping like the scenes (Stage3D) with this exposure, for physical skies; none = flat colors
-export type ClipFrame = { width: number; height: number; duration: number; fps: number; exposure?: number };
+type ClipFrame = { width: number; height: number; duration: number; fps: number; exposure?: number };
 
 function webgl(width: number, height: number, exposure?: number): GlRenderer {
   const canvas = document.createElement("canvas");

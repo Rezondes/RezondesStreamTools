@@ -6,8 +6,8 @@
 import { mixHex } from "../../core/color.ts";
 import type { Shape } from "./tree.ts";
 
-export type PickerColors = { hat: string; band: string; shirt: string; skin: string; pants: string; eye: string; pole: string; basket: string; shadow: string };
-export type PickerParts = { body: Shape[]; arm: Shape[]; basket: Shape[]; shoulder: { x: number; y: number }; basketAt: { x: number; y: number } };
+type PickerColors = { hat: string; band: string; shirt: string; skin: string; pants: string; eye: string; pole: string; basket: string; shadow: string };
+type PickerParts = { body: Shape[]; arm: Shape[]; basket: Shape[]; shoulder: { x: number; y: number }; basketAt: { x: number; y: number } };
 
 // fixed: shapes of the prototype (refs/starting.html), feet at y = 0; shades mix the color this far towards the shadow
 const SHADE = 0.25;

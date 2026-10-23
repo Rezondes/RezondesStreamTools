@@ -7,7 +7,7 @@ import { TEXTS } from "./texts.de.ts";
 
 const TEXT = TEXTS.panels;
 
-export const layerName = (layer: PanelLayer) => (layer.kind === "text" ? `${TEXT.kinds.text}: ${layer.text.split("\n")[0].slice(0, 24)}` : TEXT.kinds[layer.kind]);
+const layerName = (layer: PanelLayer) => (layer.kind === "text" ? `${TEXT.kinds.text}: ${layer.text.split("\n")[0].slice(0, 24)}` : TEXT.kinds[layer.kind]);
 
 export function PanelFields({ panel, update, onTemplate }: { panel: Panel; update: (panel: Panel) => void; onTemplate: () => void }) {
   return (

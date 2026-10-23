@@ -22,12 +22,6 @@ export function spikes(x: number, y: number, radius: number, depth: number, coun
   return `M${points.join(" L")} Z`;
 }
 
-// Jagged mountain ridge: peaks at x (0 to 1 of width) with a height (0 to 1 of height), closed at the bottom
-export function ridgePath(width: number, height: number, peaks: readonly (readonly [number, number])[]) {
-  const points = peaks.map(([x, peak]) => `${round(x * width)} ${round(height - peak * height)}`);
-  return `M0 ${height} L${points.join(" L")} L${width} ${height} Z`;
-}
-
 // Backdrop (scenes and banners): the hill in the middle, its right slope in the shadow, a few trenches
 export const HILL: Shape = {
   viewBox: "0 0 1920 600",

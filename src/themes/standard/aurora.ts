@@ -7,7 +7,7 @@ import type { ScreenKind } from "../../core/screens/screens.ts";
 import type { StandardValues } from "./settings.ts";
 
 export type AuroraOptions = { seed: number; count: number; loop: number; accent: string; accent2: string; strength: number };
-export type AuroraField = { x: number; y: number; radius: number; alpha: number; color: string; share: number };
+type AuroraField = { x: number; y: number; radius: number; alpha: number; color: string; share: number };
 export type Mote = { x: number; y: number; size: number; alpha: number; color: string };
 
 const WIDTH = 1920;
@@ -74,7 +74,7 @@ export function sinkAt(seconds: number, fadeAt: number, fadeMs: number): { drop:
   return { drop: SINK * eased, alpha: 1 - eased };
 }
 
-export type SceneTiming = { introMs: number; brbPace: number; brbDim: number; brbBreatheSeconds: number; endingFadeAt: number; endingFadeMs: number };
+type SceneTiming = { introMs: number; brbPace: number; brbDim: number; brbBreatheSeconds: number; endingFadeAt: number; endingFadeMs: number };
 
 // Orbit time, alpha and drop of the light fields and the dust per screen: Starting plain, BRB slower and breathing,
 // Ending sinking away; every screen fades in over introMs

@@ -23,16 +23,6 @@ export function spikes(x: number, y: number, radius: number, depth: number, coun
   return `M${points.join(" L")} Z`;
 }
 
-// Rolling hill line: top edge as a sine around top (amplitude, wavelength), closed at the bottom down to bottom
-export function hillPath(width: number, amplitude: number, wavelength: number, top: number, bottom: number) {
-  const steps = Math.max(1, Math.round((width / wavelength) * 16));
-  const points = Array.from({ length: steps + 1 }, (_, index) => {
-    const x = (index / steps) * width;
-    return `${round(x)} ${round(top + amplitude * Math.sin((x / wavelength) * 2 * Math.PI))}`;
-  });
-  return `M0 ${bottom} L${points.join(" L")} L${width} ${bottom} Z`;
-}
-
 // A round blob of a cluster (leaf bunch of a tree crown, puff of a cloud)
 export type Blob = { x: number; y: number; radius: number };
 

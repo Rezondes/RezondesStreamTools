@@ -2,8 +2,8 @@
 // onto the paper medallion, squashes on impact and springs back to its shape without a jump; when the alert leaves it
 // rolls away. alertLayout places the frosted card so the text keeps its gap to the medallion. Check: mangoDrop.check.ts.
 
-export type DropOptions = { land: number; squash: number; height: number }; // land in s, squash 0 to 1, fall height in px
-export type DropState = { y: number; rotation: number; scaleX: number; scaleY: number };
+type DropOptions = { land: number; squash: number; height: number }; // land in s, squash 0 to 1, fall height in px
+type DropState = { y: number; rotation: number; scaleX: number; scaleY: number };
 
 // fixed: the motion of the prototype: start tilt and stretch, squash time, spring time and its swing
 const START = { tilt: -1.6, stretchX: 0.9, stretchY: 1.15 };

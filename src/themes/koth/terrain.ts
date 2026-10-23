@@ -17,7 +17,7 @@ export function hillHeight(x: number, depth: number, height: number): number {
   return height * hill + dunes * (1 - hill);
 }
 
-export type Mountain = { x: number; z: number; radius: number; height: number; sides: number; turn: number };
+type Mountain = { x: number; z: number; radius: number; height: number; sides: number; turn: number };
 
 // fixed: number of mountains in the ring
 const MOUNTAINS = 16;

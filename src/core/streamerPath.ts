@@ -16,7 +16,7 @@ export const isMediaName = (value: string) => MEDIA_NAME.test(value);
 export const base = (login: string) => `/s/${login}`;
 
 // Login and the individually decoded path parts after it (["media", "lizard.gif"])
-export type StreamerPath = { login: string; segments: string[] };
+type StreamerPath = { login: string; segments: string[] };
 
 // Splits /s/<login>/<rest>. null if the path does not look like that, the login is invalid
 // or a path part cannot be decoded. Decoding happens only after splitting, so %2F never becomes a separator.

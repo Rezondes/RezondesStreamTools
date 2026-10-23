@@ -4,7 +4,7 @@ import type { Graphics } from "pixi.js";
 import { hexNumber } from "../../../core/color.ts";
 import { equalizerLevels } from "../../../core/music/equalizer.ts";
 
-export type MangoEqLook = { bar: number; gap: number; height: number; leaf: string; leafDark: string; mango: string };
+type MangoEqLook = { bar: number; gap: number; height: number; leaf: string; leafDark: string; mango: string };
 
 // fixed: the mango over the bar width, how far it sits above the stem
 const MANGO = { size: 0.75, lift: 0.4 };

@@ -6,7 +6,7 @@ export const STINGER_SIZE = { width: 1920, height: 1080 };
 
 // duration and cut in s, hold as a share of each half, roll = full diameter of the roll in px
 export type RollTiming = { duration: number; cut: number; hold: number; roll: number };
-export type RollState = { x: number; radius: number; phase: "out" | "up" };
+type RollState = { x: number; radius: number; phase: "out" | "up" };
 
 // The roll keeps a core of this share of its full radius
 const CORE = 0.35;

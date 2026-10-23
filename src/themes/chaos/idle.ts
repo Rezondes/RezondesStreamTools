@@ -28,7 +28,7 @@ export function driftAt(index: number, seconds: number, amount: number, on: bool
 
 // fixed: a drop forms at the tip of a run drip in the first share of a loop, then falls this far and fades
 const DROP = { loop: 2.4, grow: 0.5, fall: 420 };
-export type DripState = { run: number; drop: { offset: number; size: number; alpha: number } | null };
+type DripState = { run: number; drop: { offset: number; size: number; alpha: number } | null };
 
 // A drip since seconds after the brush passed: it runs to its length; looping, a drop grows at its end, falls and a new
 // one grows, the run itself never jumps back
@@ -73,7 +73,7 @@ const GLITCH = [
   { at: 0.96, length: 0.01, shift: 1, clip: "inset(10% 0% 55% 0%)" },
   { at: 0.97, length: 0.01, shift: -0.6, clip: "inset(48% 0% 18% 0%)" },
 ] as const;
-export type GlitchSlice = { shift: number; clip: string };
+type GlitchSlice = { shift: number; clip: string };
 
 // The slice of the title glitch shown at seconds, null between the glitches
 export function glitchAt(seconds: number, every: number): GlitchSlice | null {

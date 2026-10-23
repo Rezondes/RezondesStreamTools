@@ -305,7 +305,7 @@ ist wie im Alert-Prototyp ein Kind des Papiers (`multiply`) und bewegt sich mit 
 **Betroffene Dateien:**
 - Neu: `src/themes/kebab/docs/sounds/make.py` (erzeugt alle Klänge mit earshot, gleiche Lautheit, schreibt OGG),
   `src/themes/kebab/docs/sounds/listen.html` (Hörseite mit allen Klängen, nicht im Build), `src/themes/kebab/sounds/`
-  (`register.ogg`, `stamp.ogg`, `printer.ogg`, `tear.ogg`, `knife.ogg`, `sizzle.ogg`, `plop.ogg`, `bag.ogg`),
+  (`register.ogg`, `stamp.ogg`, `printer.ogg`, `tear.ogg`, `plop.ogg`, `bag.ogg`),
   `tones.ts` (je Klang eine Funktion `(volume) => void`, die die Datei abspielt)
 - Ändern: `scripts/rules.check.ts` (`WITHOUT_CHECK` für `src/themes/kebab/tones.ts` wie die anderen `tones.ts`)
 
@@ -325,8 +325,6 @@ offline`) enthält die Dateien.
 - `stamp`: dumpfer Stempelschlag auf Papier mit kurzem Holzklang (Stempel in Alert und Ending).
 - `printer`: ratterndes Ausdrucken, etwa 1 s, passend zum Bon.
 - `tear`: Papier reisst (Vorschau des Stingers).
-- `knife`: Messer schabt über Fleisch (Starting, leise, optional).
-- `sizzle`: Grill brutzelt als kurze Schleife (Starting, BRB, leise, optional).
 - `plop`: weiches Plopp (Minimes, Chat-Reaktion, Aufsteigen im Tellerstapel).
 - `bag`: Papiertüte landet (Alert Tüte).
 

@@ -6,7 +6,7 @@ import type { Point3 } from "./beam.ts";
 export type Joint = "torso" | "head" | "armL" | "armR" | "legL" | "legR" | "tool";
 // Shapes and what size means for them: box [width, height, depth], sphere and dome [radius], capsule [radius, length],
 // cylinder [top radius, height, bottom radius], gutter = open half cylinder [radius, length]
-export type FigureShape = "box" | "sphere" | "dome" | "capsule" | "cylinder" | "gutter";
+type FigureShape = "box" | "sphere" | "dome" | "capsule" | "cylinder" | "gutter";
 // tone: a color of the theme's looks; turn: own rotation of the part; lifts: rises with the pose's lift (tipping the
 // hat); blinks: closes when the figure blinks or lies down (eyes)
 export type FigurePart<Tone extends string = string> = {

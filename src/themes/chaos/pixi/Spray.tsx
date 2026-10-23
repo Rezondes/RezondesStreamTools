@@ -14,7 +14,7 @@ const DOTS = 140;
 const LINGER = 1.15;
 const STROKE_DOT = { size: 1.6, alpha: 0.55, reach: 0.9 };
 const TITLE_DOT = { size: 2.4, alpha: 0.6, reach: 120, flat: 0.8 };
-export const SPRAY_Z = 30;
+const SPRAY_Z = 30;
 
 export default function Spray({ app, world, clock, values, gesture, mainColor, seed, titleAt, titleY }: Props) {
   useEffect(() => {

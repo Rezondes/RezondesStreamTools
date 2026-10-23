@@ -3,11 +3,11 @@
 // failed, code, time) to copy for the admin. Errors never come as a toast. Notices.tsx shows both in the look of the
 // active skin. A small store outside React, so plain api calls can report too. Check: notices.check.ts.
 
-export type Toast = { id: number; text: string };
-export type ErrorNotice = { id: number; text: string; details: string };
+type Toast = { id: number; text: string };
+type ErrorNotice = { id: number; text: string; details: string };
 
 // How long a toast stays in ms
-export const TOAST_MS = 4000;
+const TOAST_MS = 4000;
 
 let toasts: readonly Toast[] = [];
 let errors: readonly ErrorNotice[] = [];

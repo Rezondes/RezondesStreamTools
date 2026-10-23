@@ -36,7 +36,7 @@ export const toggleStreamerLive = (login: string) => request(`/api/admin/streame
 export const uploadBackup = (file: File) => request("/api/admin/backups/upload", { method: "POST", body: file });
 
 // Restore: the answer names how many profiles came back and which were left out (deleted, no key)
-export type RestoreReport = { restored: number; skipped: string[] };
+type RestoreReport = { restored: number; skipped: string[] };
 export async function restoreBackup(id: string): Promise<RestoreReport | ErrorCode> {
   try {
     const response = await fetch(`/api/admin/backup/restore?id=${encodeURIComponent(id)}`, { method: "POST" });

@@ -87,14 +87,14 @@ const KIND_WEIGHTS: readonly (readonly [ScribbleKind, number])[] = [
 export const scribbleShape = (kind: ScribbleKind, random: Chance): string[] => SHAPES[kind](random);
 
 // Color slot of a mark: the four scribble colors of the settings, white only when switched on
-export type ScribbleColor = "color1" | "color2" | "color3" | "color4" | "white";
+type ScribbleColor = "color1" | "color2" | "color3" | "color4" | "white";
 // Line: chalk (grainy, broken), marker (shaky) or neon (glowing)
-export type ScribbleLine = "chalk" | "marker" | "neon";
+type ScribbleLine = "chalk" | "marker" | "neon";
 export type Scribble = {
   kind: ScribbleKind; x: number; y: number; size: number; rotate: number; width: number; color: ScribbleColor; line: ScribbleLine; paths: string[];
 };
 // The free area in shares of the stage (an ellipse inside this box stays empty)
-export type FreeArea = { x: number; y: number; width: number; height: number };
+type FreeArea = { x: number; y: number; width: number; height: number };
 
 const insideFree = (free: FreeArea, x: number, y: number) => {
   const [radiusX, radiusY] = [(free.width * STAGE.width) / 2, (free.height * STAGE.height) / 2];

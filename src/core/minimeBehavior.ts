@@ -31,7 +31,7 @@ export type Tower = {
   dismountMs: number;
 };
 // Part of a minime in a tower: level 1 = bottom (the base)
-export type StackPart = { level: number; tower: Tower };
+type StackPart = { level: number; tower: Tower };
 
 // A minime with its running action. Position in px: fromX at the start, toX at the end (walk, approach, gather,
 // stackWalk and dismount move). facing: 1 = looks right, -1 = left. leaving: is disappearing (exit) and drops out afterwards.
@@ -51,7 +51,7 @@ export type MinimeActor = Minime & {
 
 // Fixed places (minimePlacement slots): count places per area; with factions one area per faction in their order from
 // left to right, teamOf gives the faction of a minime
-export type MinimeSlots = { count: number; teams: readonly string[]; teamOf: (minime: Minime) => string | null };
+type MinimeSlots = { count: number; teams: readonly string[]; teamOf: (minime: Minime) => string | null };
 
 // Actions that move the figure from fromX to toX
 const MOVING = new Set(["walk", "approach", "gather", "stackWalk", "dismount"]);
@@ -115,7 +115,7 @@ function freeSlot(stage: MinimeStage, team: string | null, others: readonly Mini
 }
 
 // The minime walks to x (with fixed places: back to its place)
-export function walkTo(actor: MinimeActor, stage: MinimeStage, now: number, x: number): MinimeActor {
+function walkTo(actor: MinimeActor, stage: MinimeStage, now: number, x: number): MinimeActor {
   const from = positionAt(actor, now);
   const durationMs = (Math.abs(x - from) / stage.motion.speedPxPerS) * 1000;
   return { ...at(actor, "walk", now, durationMs, from), toX: x, facing: x >= from ? 1 : -1 };

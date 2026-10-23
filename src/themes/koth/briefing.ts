@@ -20,8 +20,8 @@ export function scrambled(text: string, share: number, tick: number): string {
   return text.slice(0, shown) + rest.join("");
 }
 
-export type RadioTiming = { every: number; typing: number; noise: number };
-export type RadioLine = { text: string; noise: boolean };
+type RadioTiming = { every: number; typing: number; noise: number };
+type RadioLine = { text: string; noise: boolean };
 
 // Line at a time since the radio started: each line types in, stays, then static fills the end of its turn
 export function radioLine(lines: readonly string[], since: number, timing: RadioTiming, tick: number): RadioLine {

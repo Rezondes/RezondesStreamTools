@@ -4,8 +4,8 @@
 import { hash } from "../../core/hash.ts";
 import { ROUGH_KINDS, type RoughKind } from "./roughScribbles.ts";
 
-export type ConfettiColor = "color1" | "color2" | "color3" | "color4" | "white";
-export type Piece = { x: number; y: number; rotation: number; alpha: number; kind: RoughKind; color: ConfettiColor };
+type ConfettiColor = "color1" | "color2" | "color3" | "color4" | "white";
+type Piece = { x: number; y: number; rotation: number; alpha: number; kind: RoughKind; color: ConfettiColor };
 
 // fixed: the throw of the prototype: speed px/s, angle range in degrees (up is -90), gravity px/s², spin, life and fade
 const SPEED = { min: 700, by: 600 };

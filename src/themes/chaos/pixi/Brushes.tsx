@@ -15,7 +15,7 @@ type Props = { app: Application; world: Container; clock: () => number; values: 
 const BODY = { sharp: 0.42, glow: 0.35 };
 const GLOW_BRISTLE = { width: 2, alpha: 0.5 };
 const DROP = { width: 0.9, stretch: [0.7, 1.1] };
-export const BRUSH_Z = 20;
+const BRUSH_Z = 20;
 
 type Painted = { brush: ReturnType<typeof makeBrush>; color: string; drips: Graphics };
 

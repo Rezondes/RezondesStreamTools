@@ -3,7 +3,7 @@
 // windows, door, hatched ground and dimensions in metres from the roof frame settings, a section and a north marker,
 // notes, a title block and a stamp. All of it is printed on the paper, so it rolls in and out with it. Plain 2D canvas
 // drawing, the same for the same settings. Check: sheet.check.ts.
-export type SheetColors = { blueprint: string; line: string; accent: string; copper: string; muted: string; brick: string };
+type SheetColors = { blueprint: string; line: string; accent: string; copper: string; muted: string; brick: string };
 export type SheetOptions = {
   width: number; height: number; grid: number; font: string; colors: SheetColors;
   title: string; subtitle: string; block: readonly string[]; notes: readonly string[]; stamp: string;

@@ -6,7 +6,7 @@ import { type BannerWorldOptions, bannerSetup } from "./bannerWorld.ts";
 import { drawKothOfflineBanner, drawKothProfileBanner, type KothBannerOptions, OFFLINE_SIZE, PROFILE_SIZE } from "./banners.ts";
 import { HEIGHT, type KothStingerOptions, stingerSetup, WIDTH } from "./stinger.ts";
 
-export type StingerText = { text: string; font: string; color: string };
+type StingerText = { text: string; font: string; color: string };
 
 // fixed: the text canvas of the stinger and its type, a banner is one picture
 const TEXT_CANVAS = { width: 1400, height: 250, size: 150 };

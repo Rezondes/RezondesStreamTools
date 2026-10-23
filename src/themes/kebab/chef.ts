@@ -16,7 +16,7 @@ export const GRID = { width: 600, height: 520 };
 export const VIEW = { x: 30, y: 70, width: 540, height: 410 };
 // Where the logo SVG sits on the 1920 x 1080 stage of a full-screen scene (left, top, height in px), and a point of
 // the grid on that stage (PixiJS draws shavings and steam in stage pixels)
-export const LOGO_BOX = { left: 120, top: 60, height: 940 };
+const LOGO_BOX = { left: 120, top: 60, height: 940 };
 export function toStage(point: { x: number; y: number }, box = LOGO_BOX) {
   const scale = box.height / VIEW.height;
   return { x: box.left + (point.x - VIEW.x) * scale, y: box.top + (point.y - VIEW.y) * scale, scale };

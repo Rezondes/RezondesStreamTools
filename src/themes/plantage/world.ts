@@ -5,11 +5,11 @@
 import { chance } from "../../core/three/chance.ts";
 import { mango, type Shape } from "./tree.ts";
 
-export type LayerId = "clouds" | "hillsFar" | "hillsNear" | "treesFar" | "treesMid" | "field" | "treesNear" | "front";
-export type TreeSpot = { x: number; ground: number; scale: number; sway: number };
+type LayerId = "clouds" | "hillsFar" | "hillsNear" | "treesFar" | "treesMid" | "field" | "treesNear" | "front";
+type TreeSpot = { x: number; ground: number; scale: number; sway: number };
 // move: share of the camera swing the layer follows (far small, near 1); blur in px; haze: mix with the sky 0 to 1
 export type WorldLayer = { id: LayerId; move: number; blur: number; haze: number; trees: TreeSpot[] };
-export type WorldOptions = { seed: number; treeRowsFar: number; treeRowsMid: number; farBlur: number; hazeFar: number };
+type WorldOptions = { seed: number; treeRowsFar: number; treeRowsMid: number; farBlur: number; hazeFar: number };
 
 // fixed: the composition of the prototype (refs/starting.html) in stage px; per layer the share of the camera swing and
 // the factors of the blur and the haze of the far tree row
@@ -85,7 +85,7 @@ const CLOUD_ENTRY = 140;
 export const cloudX = (start: number, index: number, time: number) => ((start + time * (8 + index * 3)) % CLOUD_LOOP) - CLOUD_ENTRY;
 
 // A crate full of mangos (bottom middle at 0, 0): shadow, six mangos on top, dark box with three light slats
-export type CrateColors = { wood: string; woodDark: string; shadow: string; mango: string; mangoBlush: string; gloss: string };
+type CrateColors = { wood: string; woodDark: string; shadow: string; mango: string; mangoBlush: string; gloss: string };
 export function crate(colors: CrateColors): Shape[] {
   const slats = [-108, -72, -36];
   return [
@@ -121,7 +121,7 @@ export const skyOf = (values: { skyMorningBottom: string; skyDayBottom: string; 
 // The scene that shows a time of day (commands page, dashboard): morning the Starting, noon the BRB, evening and night the
 // Ending
 export const kindOfTime = (time: string): LightKind => ({ morgen: "starting", mittag: "brb" } as Record<string, LightKind>)[time] ?? "ending";
-export type LightOptions = { sunriseMs: number; sunriseOn: boolean; sunsetMs: number; sunsetOn: boolean };
+type LightOptions = { sunriseMs: number; sunriseOn: boolean; sunsetMs: number; sunsetOn: boolean };
 // fixed: brightness before the sunrise and at the end of the sunset; the sun stands higher at noon
 const DARK = { dawn: 0.55, dusk: 0.65 };
 const NOON_SUN = 1.25;

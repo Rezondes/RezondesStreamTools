@@ -392,7 +392,7 @@ nutzen:
 
 | Modul | Lizenz |
 |---|---|
-| three, @react-three/fiber, @react-three/drei, @react-three/postprocessing | MIT |
+| three, @react-three/fiber, @react-three/postprocessing | MIT |
 | postprocessing | Zlib |
 | pixi.js | MIT |
 | roughjs | MIT |

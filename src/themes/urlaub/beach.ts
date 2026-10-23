@@ -30,17 +30,6 @@ export function petals(x: number, y: number, distance: number, size: number, cou
   }).join(" ");
 }
 
-// Wave area: top edge as a sine around top (amplitude, wavelength), closed at the bottom down to bottom.
-// width should be a multiple of the wavelength, then the area can be shifted seamlessly.
-export function wavePath(width: number, amplitude: number, wavelength: number, top: number, bottom: number) {
-  const steps = Math.max(1, Math.round((width / wavelength) * 16));
-  const points = Array.from({ length: steps + 1 }, (_, index) => {
-    const x = (index / steps) * width;
-    return `${round(x)} ${round(top + amplitude * Math.sin((x / wavelength) * 2 * Math.PI))}`;
-  });
-  return `M0 ${bottom} L${points.join(" L")} L${width} ${bottom} Z`;
-}
-
 // Backdrop (scenes and banners)
 export const PALM: Shape = {
   viewBox: "-80 0 320 320",

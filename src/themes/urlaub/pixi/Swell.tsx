@@ -6,7 +6,7 @@ import { hexNumber } from "../../../core/color.ts";
 import { burstAt } from "../../../core/motion/burst.ts";
 import { STRETCH, swellAt, type SwellTiming, waterHeight } from "../swell.ts";
 
-export type SwellColors = { sea: string; deep: string; foam: string };
+type SwellColors = { sea: string; deep: string; foam: string };
 
 // fixed: the step of the crest line (px), how far the back sinks below the water line, the bands below the crest, the
 // foam curl (blobs, reach), the ripple of the crest

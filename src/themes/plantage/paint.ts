@@ -7,7 +7,7 @@ import { STAGE } from "../../core/screens/screens.ts";
 import { type Shape, tree, type TreeColors } from "./tree.ts";
 import { cloudSpots, crate, CRATES, FIELD, furrows, grassTufts, hillLine, HILLS, worldLayers, type WorldLayer } from "./world.ts";
 
-export type PaintColors = TreeColors & {
+type PaintColors = TreeColors & {
   skyTop: string; skyBottom: string; sun: string; hill: string; hillFar: string; soil: string; soilDark: string; grass: string; cloud: string; wood: string; woodDark: string;
 };
 export type PaintOptions = { colors: PaintColors; seed: number; treeRowsFar: number; treeRowsMid: number; farBlur: number; hazeFar: number; sway: number; label: string; labelFont: string };

@@ -16,7 +16,7 @@ import { seekFromQuery } from "./seek.ts";
 
 let registered = false;
 
-export function registerMotion(): void {
+function registerMotion(): void {
   if (registered) return;
   gsap.registerPlugin(useGSAP, CustomEase, DrawSVGPlugin, MotionPathPlugin, ScrambleTextPlugin, SplitText, TextPlugin);
   for (const name of EASE_NAMES) CustomEase.create(name, EASES[name]);

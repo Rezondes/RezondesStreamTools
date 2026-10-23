@@ -3,7 +3,7 @@
 // the display in the middle between them. The scene paints them in the colors of the settings. Check: radio.check.ts.
 export const HEIGHT = 0.62;
 export type Box = { x: number; y: number; width: number; height: number };
-export type RadioShapes = { body: string; bumpers: string[]; handle: string; grilles: [string, string]; display: Box };
+type RadioShapes = { body: string; bumpers: string[]; handle: string; grilles: [string, string]; display: Box };
 
 const BODY: Box = { x: 0.06, y: 0.14, width: 0.88, height: 0.44 };
 const ROUND = 0.04;

@@ -15,7 +15,7 @@ import { POSES, type PoseName } from "./rig.ts";
 export const WIDTH = 1920;
 export const HEIGHT = 1080;
 
-export type CurtainLook = { color: string; shade: string; pattern: boolean; folds: number };
+type CurtainLook = { color: string; shade: string; pattern: boolean; folds: number };
 export type BearsStingerOptions = {
   duration: number; // seconds
   cut: number; // seconds, enter in OBS as transition point
@@ -50,10 +50,10 @@ const SPRING = { kick: 0.25, settle: 3, swing: 9 };
 
 // The figure at a moment: where it stands (x of its middle on the ground), where it looks (1 = left, -1 = right, as for
 // drawBear), its pose, the turn of its head toward the camera and whether it walks
-export type StingerBear = { x: number; facing: 1 | -1; pose: PoseName; turn: number; walking: boolean };
+type StingerBear = { x: number; facing: 1 | -1; pose: PoseName; turn: number; walking: boolean };
 // The whole picture at a moment (for the side "links"; "rechts" is drawn mirrored): the figure, the curtain from the
 // left margin to edge and from the top margin down to bottom
-export type StingerState = { bear: StingerBear; edge: number; bottom: number };
+type StingerState = { bear: StingerBear; edge: number; bottom: number };
 
 const choiceOf = (bear: string) => (isBearChoice(bear) ? bear : "grizzly");
 export const figureHeight = (bear: string) => (choiceOf(bear) === TOWER ? TOWER_HEIGHT : BEAR_HEIGHT);

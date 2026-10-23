@@ -10,7 +10,7 @@ export type BearId = (typeof BEAR_IDS)[number];
 // The choice per scene: one bear or the tower of all three (bottom Eisbär, middle Panda, top Grizzly)
 export const TOWER = "turm";
 export const BEAR_CHOICES = [...BEAR_IDS, TOWER] as const;
-export type BearChoice = (typeof BEAR_CHOICES)[number];
+type BearChoice = (typeof BEAR_CHOICES)[number];
 
 // back: behind the body (ears, tail); limb: filled in the limb color (fur, black on the panda); line: open line in the
 // outline color; patch: black fur of the panda outside the body clip (eye patches); face parts; props
@@ -117,7 +117,7 @@ export const FOUR_HEAD: HeadShape = {
 // --- Props: drawn at the anchor they belong to (the paw for held things, the head for the headset) ------------------
 // Each prop is given at its place for a reference anchor; the rig moves it with the anchor of the pose.
 // behind: parts of a worn prop behind the head (drawn behind the body, only their edge above the head shows)
-export type Prop = { at: "nearPaw" | "head"; ref: Point; parts: readonly ShapePart[]; behind?: readonly ShapePart[] };
+type Prop = { at: "nearPaw" | "head"; ref: Point; parts: readonly ShapePart[]; behind?: readonly ShapePart[] };
 const PHONE = "M58 182 C58 178 61 175 65 175 L86 175 C90 175 93 178 93 182 L93 218 C93 222 90 225 86 225 L65 225 C61 225 58 222 58 218 Z";
 const SIGN_PAPER = "M22 112 L118 108 L120 170 L24 172 Z";
 const PHONE_HIGH = "M174 28 L196 24 L202 58 L180 62 Z";

@@ -122,7 +122,7 @@ export type CameraPose = { position: Point3; target: Point3 };
 export type View = { angle: number; look: number; radius: number; height: number; speed: number };
 
 // Starting looks at the frame a little below the ground line; BRB a little lower and farther, slower
-export const STARTING_VIEW: View = { angle: 0.35, look: -1.1, radius: 1, height: 1, speed: 1 };
+const STARTING_VIEW: View = { angle: 0.35, look: -1.1, radius: 1, height: 1, speed: 1 };
 export const BRB_VIEW: View = { angle: 0.5, look: -1.3, radius: 1.09, height: 0.94, speed: 0.71 };
 // The ride out starts at this share of the radius and of the height
 const INTRO_RADIUS = 0.44;

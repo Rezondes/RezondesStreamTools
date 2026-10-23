@@ -3,7 +3,7 @@
 // tabpanel that subTabPanel names.
 import type { KeyboardEvent } from "react";
 
-export type SubTab<T extends string> = { id: T; label: string };
+type SubTab<T extends string> = { id: T; label: string };
 
 // The attributes of the area below the tabs
 export const subTabPanel = (id: string) => ({ role: "tabpanel", id: `tabpanel-${id}`, "aria-labelledby": `tab-${id}` });
