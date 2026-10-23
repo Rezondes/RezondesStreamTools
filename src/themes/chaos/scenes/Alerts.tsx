@@ -63,7 +63,7 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const quote = said ? fillTemplate(values.quoteFormat, { text: said }) : "";
   const timer = useMemo(() => roughPath({ kind: "line", from: [0, TIMER.height * 0.5], to: [TIMER.width, TIMER.height * 0.4] }, { roughness: TIMER.roughness, bowing: 1, strokeWidth: TIMER.line, fill: "none" }, TIMER.seed), []);
   return (
-    <Note tape className={`ch-alert${leaving ? " leaving" : ""}`} style={{ "--slap": values.alertSlapScale } as CSSProperties}>
+    <Note tape className={`ch-alert${leaving ? " leaving" : ""}`} style={{ "--slap": values.alertSlapScale, "--name-chars": alert.user.length } as CSSProperties}>
       <span className="ch-chip">{tag}</span>
       <SprayTitle text={alert.user} seed={`alert-${alert.kind}`} className="ch-alert-name" />
       <b className="ch-alert-line">{line}</b>

@@ -233,10 +233,12 @@
   align-items: center;
   gap: var(--alert-gap, 10px);
   text-align: center;
+  container-type: inline-size;
   animation: chaos-slap var(--fadeDuration) cubic-bezier(0.2, 1.6, 0.4, 1) both;
 }
 .theme-chaos .ch-alert.leaving { animation: chaos-glitch-out var(--fadeDuration) steps(4, end) both; }
-.theme-chaos .ch-alert-name .ch-title { font-size: calc(var(--titleSize) * 0.55); }
+/* A long name shrinks until it fits the note: a marker letter is about 0.7em wide, --name-chars comes from Alerts.tsx */
+.theme-chaos .ch-alert-name .ch-title { font-size: min(calc(var(--titleSize) * 0.55), calc(100cqi / var(--name-chars, 1) * var(--name-fit, 1.4))); }
 .theme-chaos .ch-alert-line { font-size: 1.05em; }
 .theme-chaos .ch-quote { color: var(--mutedColor); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
 .theme-chaos .ch-timer { align-self: stretch; width: 100%; height: var(--timer-height, 22px); overflow: visible; }
