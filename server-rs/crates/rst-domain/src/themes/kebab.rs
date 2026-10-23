@@ -189,6 +189,7 @@ fn ending() -> Vec<SettingField> {
             text("endingNextLabel", "Nächster Stream: Beschriftung", ENDING, "NÄCHSTER STREAM", Some(40)),
         ),
         in_scene(SceneName::Ending, text("endingNext", "Nächster Stream (leer = ausblenden)", ENDING, "", Some(60))),
+        in_scene(SceneName::Ending, flag("endingWaveOn", "Koch winkt zum Abschied", ENDING, true)),
         in_scene(SceneName::Ending, flag("shutterOn", "Rollladen", ENDING, true)),
         in_scene(SceneName::Ending, text("shutterText", "Rollladen: Schrift", ENDING, "DÖNER KEBAB", Some(30))),
         in_scene(

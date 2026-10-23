@@ -64,6 +64,7 @@ export type KebabValues = {
   readonly endingItems: readonly string[];
   readonly endingNextLabel: string;
   readonly endingNext: string;
+  readonly endingWaveOn: boolean;
   readonly shutterOn: boolean;
   readonly shutterText: string;
   readonly shutterStart: number;

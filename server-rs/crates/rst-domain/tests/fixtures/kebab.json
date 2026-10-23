@@ -559,6 +559,14 @@
       "basic": true
     },
     {
+      "key": "endingWaveOn",
+      "type": "boolean",
+      "label": "Koch winkt zum Abschied",
+      "group": "Ending",
+      "default": true,
+      "scene": "ending"
+    },
+    {
       "key": "shutterOn",
       "type": "boolean",
       "label": "Rollladen",

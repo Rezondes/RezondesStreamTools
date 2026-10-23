@@ -103,6 +103,7 @@ const FIELDS = [
   inScene("ending", lines("endingItems", "Bon: Posten (Posten|Zusatz)", ENDING, ["1x Stream|aufgegessen", "1x Chat|satt"], 6)),
   inScene("ending", text("endingNextLabel", "Nächster Stream: Beschriftung", ENDING, "NÄCHSTER STREAM", 40)),
   inScene("ending", text("endingNext", "Nächster Stream (leer = ausblenden)", ENDING, "", 60)),
+  inScene("ending", flag("endingWaveOn", "Koch winkt zum Abschied", ENDING, true)),
   inScene("ending", flag("shutterOn", "Rollladen", ENDING, true)),
   inScene("ending", text("shutterText", "Rollladen: Schrift", ENDING, "DÖNER KEBAB", 30)),
   inScene("ending", number("shutterStart", "Rollladen fährt herunter nach", ENDING, 1, 0, 60, "s", 0.5)),

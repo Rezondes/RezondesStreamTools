@@ -1,7 +1,7 @@
 // Check for life.ts: the pose follows the time alone; blinking lasts 0.12 s per period; switched off parts stay still.
 // Runs with npm test.
 import assert from "node:assert/strict";
-import { chefPose, type PoseOptions } from "./life.ts";
+import { chefPose, type PoseOptions, waveAngle } from "./life.ts";
 
 const options: PoseOptions = { sawOn: true, sawSpeed: 5.2, sawAngle: 2.6, hatOn: true, stacheOn: true, blinkEvery: 4.2 };
 
@@ -28,5 +28,9 @@ assert.equal(still.stacheAngle, 0);
 // The moustache twitches only while the slow wave is high (around 1.7 s), not at 0.3 s
 assert.equal(chefPose(0.3, options).stacheAngle, 0);
 assert.notEqual(chefPose(1.75, options).stacheAngle, 0);
+
+// Waving: the arm stays raised and swings around it
+const waves = Array.from({ length: 100 }, (_, step) => waveAngle(step / 10));
+assert.ok(Math.max(...waves) <= -93 && Math.min(...waves) >= -117 && Math.max(...waves) - Math.min(...waves) > 20);
 
 console.log("kebab life ok");

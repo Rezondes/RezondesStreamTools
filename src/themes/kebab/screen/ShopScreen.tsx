@@ -16,12 +16,12 @@ import type { KebabValues } from "../settings.ts";
 import { useShopIntro } from "./useShopIntro.ts";
 
 type Props = {
-  values: KebabValues; clock: () => number; intro: Intro; pose: ChefPoseName;
+  values: KebabValues; clock: () => number; intro: Intro; pose: ChefPoseName; meat?: boolean;
   drawIn: boolean; lights: boolean; bon: boolean; ticker: boolean; shavings: boolean; steam: Point | null; children: ReactNode;
 };
 
 export default function ShopScreen(props: Props) {
-  const { values, clock, intro, pose, drawIn, lights, bon, ticker, shavings, steam, children } = props;
+  const { values, clock, intro, pose, meat, drawIn, lights, bon, ticker, shavings, steam, children } = props;
   const stage = useStage();
   const [app, setApp] = useState<Application | null>(null);
   const [lettered, setLettered] = useState(false);
@@ -38,7 +38,7 @@ export default function ShopScreen(props: Props) {
       <div className="kb-stage stage-box" ref={stage}>
         <svg className="kb-logo kb-shop" viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.width} ${VIEW.height}`}>
           <ArcTitle text={values.arcText} size={values.arcSize} span={values.arcSpan} stroke={values.arcStroke} onReady={onLettered} />
-          <Chef values={values} clock={clock} idleFrom={start(intro.idle)} pose={pose} />
+          <Chef values={values} clock={clock} idleFrom={start(intro.idle)} pose={pose} meat={meat} />
         </svg>
         {children}
         <div className="kb-lights" />

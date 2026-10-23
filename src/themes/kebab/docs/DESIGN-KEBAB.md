@@ -107,7 +107,8 @@ sind ein **Tellerstapel**: Lahmacun unten, Dürüm in der Mitte, Pommes oben. Ge
     Titan One, Dankeszeile. Unten ein Laufband in `redText` mit Sprüchen.
   - **BRB:** dieselbe Bude, der Koch macht Pause (Teeglas statt Messer, das Messer liegt auf der Theke), der Spieß dreht
     allein weiter, der Bon zeigt "BIN GLEICH ZURÜCK" und die Pausenzeit.
-  - **Ending:** "Laden zu": ein Rollladen in `brown` mit grosser Bogenschrift in `paper` fährt herunter, davor der Bon
+  - **Ending:** "Laden zu": der Spieß ist leer, kein Dampf, der Koch winkt zum Abschied (das Messer liegt auf der
+    Theke); ein Rollladen in `brown` mit grosser Bogenschrift in `paper` fährt herunter, davor der Bon
     "Tagesabschluss" mit den echten Zahlen des Streams (Kern-Statistik, zählt hoch), ein Stempel "BEZAHLT" knallt drauf,
     Titel "Danke und bis morgen!".
   - **Alerts** (Prototyp `alert.html`): Standard **Bon** ohne Koch: Drucker fällt herein, der Bon kommt ruckweise heraus

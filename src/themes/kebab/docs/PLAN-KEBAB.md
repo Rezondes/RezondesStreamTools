@@ -253,7 +253,7 @@ ist wie im Alert-Prototyp ein Kind des Papiers (`multiply`) und bewegt sich mit 
 
 - **BRB:** Koch und Spieß aus Package 1, Arm mit Teeglas (Dampf aus dem Glas), Messer liegt auf der Theke, keine Späne;
   der Spieß dreht weiter; der Bon zeigt "BIN GLEICH ZURÜCK" und die Pausenzeit; Laufband wie Starting.
-- **Ending:** Bude aus Package 1 im Hintergrund; ein Rollladen in `brown` fährt in 1.6 s herunter (Lamellen als Linien
+- **Ending:** Bude aus Package 1 im Hintergrund mit leerem Spieß und ohne Dampf, der Koch winkt; ein Rollladen in `brown` fährt in 1.6 s herunter (Lamellen als Linien
   in `paper`), auf ihm die Bogenschrift in `paper`; davor kommt der Bon "Tagesabschluss" aus dem Drucker, die Zeilen
   zählen hoch, dann knallt der Stempel "BEZAHLT" auf; Titel unten in Titan One.
 - **Skin:** Szenerie als statische Rough-Linien in den Farben des Skins, ohne Bewegung.
@@ -263,7 +263,7 @@ ist wie im Alert-Prototyp ein Kind des Papiers (`multiply`) und bewegt sich mit 
 | Gruppe | Schlüssel (Standard) |
 |---|---|
 | BRB | `brbTitle` ("BIN GLEICH ZURÜCK"), `brbTimerLabel` ("PAUSE SEIT"), `brbItems` (Liste: "1x Çay\|heiß", "1x Pause\|kurz"), `brbLines`, `brbTeaOn` (an), `brbTicker` ("Gleich geht's weiter • Der Spieß dreht sich weiter") |
-| Ending | `endingTitle` ("Danke und bis morgen!"), `endingNext`, `shutterOn` (an), `shutterMs` (1600 ms), `shutterText` ("DÖNER KEBAB"), `closingTitle` ("TAGESABSCHLUSS"), `closingLines` ("follows\|Neue Stammkunden", "subs\|Abos", "raids\|Raids", "bits\|Bits", "chatMessages\|Bestellungen im Chat"), `countUpMs` (1000 ms), `stampOn` (an), `stampText` ("BEZAHLT"), `stampAt` (4 s) |
+| Ending | `endingTitle` ("Danke und bis morgen!"), `endingNext`, `endingWaveOn` (an), `shutterOn` (an), `shutterMs` (1600 ms), `shutterText` ("DÖNER KEBAB"), `closingTitle` ("TAGESABSCHLUSS"), `closingLines` ("follows\|Neue Stammkunden", "subs\|Abos", "raids\|Raids", "bits\|Bits", "chatMessages\|Bestellungen im Chat"), `countUpMs` (1000 ms), `stampOn` (an), `stampText` ("BEZAHLT"), `stampAt` (4 s) |
 
 ### Acceptance Criteria
 
