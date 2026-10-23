@@ -106,7 +106,7 @@ sind ein **Tellerstapel**: Lahmacun unten, Dürüm in der Mitte, Pommes oben. Ge
     Rechts der Bestellbon unter einem Drucker: Ladenname, Bestellnummer, drei Posten, "FERTIG IN" mit Countdown in
     Titan One, Dankeszeile. Unten ein Laufband in `redText` mit Sprüchen.
   - **BRB:** dieselbe Bude, der Koch macht Pause (Teeglas statt Messer, das Messer liegt auf der Theke), der Spieß dreht
-    allein weiter. Ein Schild hängt am Spieß ("BIN GLEICH ZURÜCK"), der Bon zeigt die Pausenzeit.
+    allein weiter, der Bon zeigt "BIN GLEICH ZURÜCK" und die Pausenzeit.
   - **Ending:** "Laden zu": ein Rollladen in `brown` mit grosser Bogenschrift in `paper` fährt herunter, davor der Bon
     "Tagesabschluss" mit den echten Zahlen des Streams (Kern-Statistik, zählt hoch), ein Stempel "BEZAHLT" knallt drauf,
     Titel "Danke und bis morgen!".

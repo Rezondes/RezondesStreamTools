@@ -39,5 +39,5 @@ function drawShop(timeline: gsap.core.Timeline, intro: Intro) {
   timeline.from(".kb-chef-spit .kb-ink:not(.kb-hatch)", { drawSVG: "0%", duration: TIME.spit, ease: "power1.inOut", stagger: TIME.spitStagger }, intro.spit);
   timeline.from(".kb-hatch", { opacity: 0, duration: TIME.hatch }, intro.hatch);
   timeline.from(".kb-chef-arm .kb-ink, .kb-chef-table .kb-ink", { drawSVG: "0%", duration: TIME.arm, ease: "power1.inOut", stagger: TIME.armStagger }, intro.arm);
-  timeline.from(".kb-chef .kb-fill, .kb-sign-text", { opacity: 0, duration: TIME.fills }, intro.fills);
+  timeline.from(".kb-chef .kb-fill", { opacity: 0, duration: TIME.fills }, intro.fills);
 }

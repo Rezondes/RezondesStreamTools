@@ -233,7 +233,7 @@ Szenerie.
 **Abhängigkeiten:** Package 1 (mit Abnahme), Kern-Plan Statistik (erledigt)
 
 **Betroffene Dateien:**
-- Neu: `pause.ts`, `pause.check.ts` (Formen der Teepause: Arm mit Teeglas, Messer auf der Theke, Schild am Spieß),
+- Neu: `pause.ts`, `pause.check.ts` (Formen der Teepause: Arm mit Teeglas, Messer auf der Theke),
   `shutter.ts`, `shutter.check.ts` (Rollladen: Lamellen, Kasten, Lage aus der Zeit), `closing.ts`, `closing.check.ts`
   (Zeilen des Tagesabschlusses aus Statistik und Einstellung), `ink/Shutter.tsx`, `screen/ClosingBon.tsx` (mit
   Hochzählen), `screen/Stamp.tsx` (Stempel als Teil des Papiers), `scenes/Brb.tsx`, `scenes/Ending.tsx`
@@ -252,8 +252,7 @@ ist wie im Alert-Prototyp ein Kind des Papiers (`multiply`) und bewegt sich mit 
 ### Gestaltung
 
 - **BRB:** Koch und Spieß aus Package 1, Arm mit Teeglas (Dampf aus dem Glas), Messer liegt auf der Theke, keine Späne;
-  der Spieß dreht weiter; am T-Griff hängt ein Papierschild an einer Schnur und pendelt; der Bon zeigt "BIN GLEICH
-  ZURÜCK" und die Pausenzeit; Laufband wie Starting.
+  der Spieß dreht weiter; der Bon zeigt "BIN GLEICH ZURÜCK" und die Pausenzeit; Laufband wie Starting.
 - **Ending:** Bude aus Package 1 im Hintergrund; ein Rollladen in `brown` fährt in 1.6 s herunter (Lamellen als Linien
   in `paper`), auf ihm die Bogenschrift in `paper`; davor kommt der Bon "Tagesabschluss" aus dem Drucker, die Zeilen
   zählen hoch, dann knallt der Stempel "BEZAHLT" auf; Titel unten in Titan One.
@@ -263,7 +262,7 @@ ist wie im Alert-Prototyp ein Kind des Papiers (`multiply`) und bewegt sich mit 
 
 | Gruppe | Schlüssel (Standard) |
 |---|---|
-| BRB | `brbTitle` ("BIN GLEICH ZURÜCK"), `brbSign` ("Kurz Tee trinken"), `brbTimerLabel` ("PAUSE SEIT"), `brbItems` (Liste: "1x Çay\|heiß", "1x Pause\|kurz"), `brbLines`, `brbTeaOn` (an), `brbSignOn` (an), `brbSignSwing` (3 Grad), `brbTicker` ("Gleich geht's weiter • Der Spieß dreht sich weiter") |
+| BRB | `brbTitle` ("BIN GLEICH ZURÜCK"), `brbTimerLabel` ("PAUSE SEIT"), `brbItems` (Liste: "1x Çay\|heiß", "1x Pause\|kurz"), `brbLines`, `brbTeaOn` (an), `brbTicker` ("Gleich geht's weiter • Der Spieß dreht sich weiter") |
 | Ending | `endingTitle` ("Danke und bis morgen!"), `endingNext`, `shutterOn` (an), `shutterMs` (1600 ms), `shutterText` ("DÖNER KEBAB"), `closingTitle` ("TAGESABSCHLUSS"), `closingLines` ("follows\|Neue Stammkunden", "subs\|Abos", "raids\|Raids", "bits\|Bits", "chatMessages\|Bestellungen im Chat"), `countUpMs` (1000 ms), `stampOn` (an), `stampText` ("BEZAHLT"), `stampAt` (4 s) |
 
 ### Acceptance Criteria
@@ -325,7 +324,7 @@ offline`) enthält die Dateien.
 - `register`: Kassenklingel, hell und kurz (Alert Bon, Ankunft).
 - `stamp`: dumpfer Stempelschlag auf Papier mit kurzem Holzklang (Stempel in Alert und Ending).
 - `printer`: ratterndes Ausdrucken, etwa 1 s, passend zum Bon.
-- `tear`: Papier reisst (BRB-Schild, Vorschau des Stingers).
+- `tear`: Papier reisst (Vorschau des Stingers).
 - `knife`: Messer schabt über Fleisch (Starting, leise, optional).
 - `sizzle`: Grill brutzelt als kurze Schleife (Starting, BRB, leise, optional).
 - `plop`: weiches Plopp (Minimes, Chat-Reaktion, Aufsteigen im Tellerstapel).

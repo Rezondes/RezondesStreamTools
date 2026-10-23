@@ -22,7 +22,7 @@ export default function Ending() {
   const names = kebabNames(values);
   return (
     <ShopScreen
-      values={values} clock={clock} intro={intro} pose="saw" sign={null} drawIn={false} lights={false}
+      values={values} clock={clock} intro={intro} pose="saw" drawIn={false} lights={false}
       bon={values.bonOn} ticker={false} shavings={false} steam={SPIT_TOP}
     >
       {values.shutterOn && <Shutter values={values} clock={clock} title={fillTemplate(values.endingTitle, names)} />}

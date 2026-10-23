@@ -1,6 +1,5 @@
 // BRB scene of the Kebab theme (DESIGN-KEBAB.md "Szenen"): the same shop as Starting, but the chef takes a tea break:
-// the glass in his hand steams, the knife lies on the counter, the spit keeps turning and a paper sign swings from its
-// bar. The bon shows the title and the break time, the ticker runs. ?t=<seconds> shows a still; the break time and the
+// the glass in his hand steams, the knife lies on the counter and the spit keeps turning. The bon shows the title and the break time, the ticker runs. ?t=<seconds> shows a still; the break time and the
 // ticker come from the settings (useScreen).
 import { useMemo, useState } from "react";
 import { rotating, shortClock } from "../../../core/screens/screens.ts";
@@ -29,7 +28,7 @@ export default function Brb() {
   const tea = values.brbTeaOn;
   return (
     <ShopScreen
-      values={values} clock={clock} intro={intro} pose={tea ? "tea" : "saw"} sign={tea && values.brbSignOn ? fillTemplate(values.brbSign, names) : null}
+      values={values} clock={clock} intro={intro} pose={tea ? "tea" : "saw"}
       drawIn lights={values.lightsOn} bon={values.bonOn} ticker={Boolean(screen.ticker)} shavings={!tea} steam={tea ? GLASS_TOP : SPIT_TOP}
     >
       {values.bonOn && (

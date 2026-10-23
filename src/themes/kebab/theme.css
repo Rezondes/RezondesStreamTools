@@ -143,7 +143,6 @@
 }
 
 /* Sign at the spit in BRB */
-.theme-kebab .kb-sign-text { font-family: var(--titleFont), sans-serif; font-size: var(--kb-sign-size, 12px); fill: var(--redText); }
 
 /* Roller shutter of the Ending */
 .theme-kebab .kb-shutter { position: absolute; left: 0; top: 0; width: var(--kb-shutter-width, 1400px); height: var(--kb-shutter-height, 1080px); transform: translateY(-100%); }

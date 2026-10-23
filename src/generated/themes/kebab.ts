@@ -58,9 +58,6 @@ export type KebabValues = {
   readonly brbTimerLabel: string;
   readonly brbLines: readonly string[];
   readonly brbTeaOn: boolean;
-  readonly brbSignOn: boolean;
-  readonly brbSign: string;
-  readonly brbSignSwing: number;
   readonly brbTicker: string;
   readonly endingTitle: string;
   readonly endingClosed: string;

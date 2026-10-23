@@ -96,9 +96,6 @@ const FIELDS = [
   inScene("brb", text("brbTimerLabel", "Pausenzeit: Beschriftung", BRB, "PAUSE SEIT", 40)),
   inScene("brb", lines("brbLines", "Bon: wechselnde Zeile unten", BRB, ["Gleich geht's weiter", "Der Spieß dreht sich weiter"], 12)),
   inScene("brb", flag("brbTeaOn", "Koch trinkt Tee", BRB, true)),
-  inScene("brb", flag("brbSignOn", "Schild am Spieß", BRB, true)),
-  inScene("brb", text("brbSign", "Schild: Text", BRB, "Kurz Tee trinken", 30)),
-  inScene("brb", number("brbSignSwing", "Schild: Pendeln", BRB, 3, 0, 20)),
   inScene("brb", text("brbTicker", "Laufband (leer = aus)", BRB, "Gleich geht's weiter • Der Spieß dreht sich weiter • Noch kurz ziehen lassen", 300)),
 
   inScene("ending", text("endingTitle", "Titel", ENDING, "Danke und bis morgen!", 60)),
@@ -285,7 +282,7 @@ export function shopOf(login: string) {
 const personalize = (login: string) => ({ channelName: shopOf(login) });
 
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
-const BASIC = ["quality", "channelName", "red", "redText", "sawOn", "shavingsOn", "startingItems", "countdownLabel", "countdownDone", "ticker", "brbTitle", "brbSign", "brbTicker", "endingTitle", "endingNext", "closingTitle", "closingLines", "stampText", "alertStyle", "followLine", "subLine", "raidLine", "cheerLine", "alertStampText", "chatStyle", "chatBadges", "camStyle", "camLabel", "musicStyle", "musicLabel", "musicIdle", "fxText", "minimeDefault", "minimeLabels"];
+const BASIC = ["quality", "channelName", "red", "redText", "sawOn", "shavingsOn", "startingItems", "countdownLabel", "countdownDone", "ticker", "brbTitle", "brbTicker", "endingTitle", "endingNext", "closingTitle", "closingLines", "stampText", "alertStyle", "followLine", "subLine", "raidLine", "cheerLine", "alertStampText", "chatStyle", "chatBadges", "camStyle", "camLabel", "musicStyle", "musicLabel", "musicIdle", "fxText", "minimeDefault", "minimeLabels"];
 
 export const kebabSettings: ThemeSchema = { id: "kebab", name: "Kebab", fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(DISH_SET)], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize,
   minimeVariants: DISH_SET,

@@ -28,7 +28,7 @@ export default function Starting() {
   const line = rotating(values.startingLines, values.linesEvery * SECOND_MS, screen.now - screen.start);
   return (
     <ShopScreen
-      values={values} clock={clock} intro={intro} pose="saw" sign={null} drawIn lights={values.lightsOn}
+      values={values} clock={clock} intro={intro} pose="saw" drawIn lights={values.lightsOn}
       bon={values.bonOn} ticker={Boolean(screen.ticker)} shavings steam={SPIT_TOP}
     >
       {values.bonOn && (

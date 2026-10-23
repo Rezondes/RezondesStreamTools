@@ -499,34 +499,6 @@
       "scene": "brb"
     },
     {
-      "key": "brbSignOn",
-      "type": "boolean",
-      "label": "Schild am Spieß",
-      "group": "BRB",
-      "default": true,
-      "scene": "brb"
-    },
-    {
-      "key": "brbSign",
-      "type": "text",
-      "label": "Schild: Text",
-      "group": "BRB",
-      "default": "Kurz Tee trinken",
-      "maxLength": 30,
-      "scene": "brb",
-      "basic": true
-    },
-    {
-      "key": "brbSignSwing",
-      "type": "number",
-      "label": "Schild: Pendeln",
-      "group": "BRB",
-      "default": 3,
-      "min": 0,
-      "max": 20,
-      "scene": "brb"
-    },
-    {
       "key": "brbTicker",
       "type": "text",
       "label": "Laufband (leer = aus)",

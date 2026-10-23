@@ -1,37 +1,34 @@
 // The chef at the spit (chef.ts) as SVG groups inside the logo SVG: body with hat, face, eyes and moustache, the spit
 // with the meat cone whose strokes slide (the spit turns), in front either the arm with the knife (pose "saw") or the
-// tea break of BRB (pose "tea", pause.ts: glass in the hand, knife on the counter, a sign swinging from the spit bar),
+// tea break of BRB (pose "tea", pause.ts: glass in the hand, knife on the counter),
 // counter and plate. Each frame sets the pose of life.ts from the clock; before idleFrom only the spit turns. Classes
 // kb-chef-* let the GSAP timeline of the scene draw the lines in.
 import { type RefObject, useMemo, useRef } from "react";
 import { CHEF_PARTS, chefParts, EYE_LINE, HAT_PIVOT, MEAT, SHOULDER, STACHE_PIVOT } from "../chef.ts";
 import { hatchOffset, meatHatch } from "../hatch.ts";
 import { chefPose } from "../life.ts";
-import { pauseParts, SIGN } from "../pause.ts";
+import { pauseParts } from "../pause.ts";
 import type { KebabValues } from "../settings.ts";
 import { useFrame } from "../useFrame.ts";
 import Ink, { type InkStyle } from "./Ink.tsx";
 
-// fixed: the strokes of the meat repeat every 42 units and are 2 units wide, like the prototype; the sign swings with
-// this rate per second
+// fixed: the strokes of the meat repeat every 42 units and are 2 units wide, like the prototype
 const PERIOD = 42;
 const HATCH_WIDTH = 2;
 const SALT = 100;
-const SWING_RATE = 1.3;
 
 export type ChefPoseName = "saw" | "tea";
-type Props = { values: KebabValues; clock: () => number; idleFrom: number; pose: ChefPoseName; sign: string | null };
+type Props = { values: KebabValues; clock: () => number; idleFrom: number; pose: ChefPoseName };
 type GroupRef = RefObject<SVGGElement | null>;
 type Refs = {
   hat: GroupRef;
   eyes: GroupRef;
   stache: GroupRef;
   arm: GroupRef;
-  sign: GroupRef;
   hatch: RefObject<SVGPathElement | null>;
 };
 
-function TeaBreak({ style, sign, signRef }: { style: InkStyle; sign: string | null; signRef: GroupRef }) {
+function TeaBreak({ style }: { style: InkStyle }) {
   const parts = useMemo(() => pauseParts(), []);
   return (
     <>
@@ -40,12 +37,6 @@ function TeaBreak({ style, sign, signRef }: { style: InkStyle; sign: string | nu
         <Ink part={parts.glass} style={style} salt={SALT * 21} />
       </g>
       <g className="kb-chef-table"><Ink part={parts.knife} style={style} salt={SALT * 22} /></g>
-      {sign !== null && (
-        <g className="kb-chef-sign" ref={signRef}>
-          <Ink part={parts.sign} style={style} salt={SALT * 23} />
-          <text className="kb-sign-text" x={SIGN.x + SIGN.width / 2} y={SIGN.y + SIGN.height / 2} textAnchor="middle" dominantBaseline="central">{sign}</text>
-        </g>
-      )}
     </>
   );
 }
@@ -59,16 +50,15 @@ function useIdle(values: KebabValues, clock: () => number, idleFrom: number, pos
     refs.hat.current?.setAttribute("transform", `rotate(${life.hatAngle} ${HAT_PIVOT.x} ${HAT_PIVOT.y})`);
     refs.stache.current?.setAttribute("transform", `rotate(${life.stacheAngle} ${STACHE_PIVOT.x} ${STACHE_PIVOT.y})`);
     refs.eyes.current?.setAttribute("transform", life.blink ? `translate(0 ${EYE_LINE}) scale(1 0.15) translate(0 ${-EYE_LINE})` : "");
-    refs.sign.current?.setAttribute("transform", `rotate(${Math.sin((time - idleFrom) * SWING_RATE) * values.brbSignSwing} ${SIGN.hook.x} ${SIGN.hook.y})`);
   });
 }
 
-export default function Chef({ values, clock, idleFrom, pose, sign }: Props) {
+export default function Chef({ values, clock, idleFrom, pose }: Props) {
   const parts = useMemo(() => chefParts(), []);
   const style: InkStyle = useMemo(() => ({ roughness: values.inkRoughness, bowing: values.inkBowing, width: values.inkWidth, seed: values.inkSeed }), [values.inkRoughness, values.inkBowing, values.inkWidth, values.inkSeed]);
   const hatch = useMemo(() => meatHatch(values.inkSeed, values.hatchRows, PERIOD), [values.inkSeed, values.hatchRows]);
   const salt = (name: (typeof CHEF_PARTS)[number]) => CHEF_PARTS.indexOf(name) * SALT;
-  const refs: Refs = { hat: useRef(null), eyes: useRef(null), stache: useRef(null), arm: useRef(null), hatch: useRef(null), sign: useRef(null) };
+  const refs: Refs = { hat: useRef(null), eyes: useRef(null), stache: useRef(null), arm: useRef(null), hatch: useRef(null) };
   useIdle(values, clock, idleFrom, pose, refs);
   return (
     <g className="kb-chef">
@@ -92,7 +82,7 @@ export default function Chef({ values, clock, idleFrom, pose, sign }: Props) {
           <Ink part={parts.arm} style={style} salt={salt("arm")} />
           <Ink part={parts.knife} style={style} salt={salt("knife")} />
         </g>
-      ) : <TeaBreak style={style} sign={sign} signRef={refs.sign} />}
+      ) : <TeaBreak style={style} />}
       <g className="kb-chef-table">
         <Ink part={parts.counter} style={style} salt={salt("counter")} />
         <Ink part={parts.plate} style={style} salt={salt("plate")} />

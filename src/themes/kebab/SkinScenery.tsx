@@ -16,7 +16,7 @@ export default function SkinScenery({ values }: { values: KebabValues }) {
   return (
     <>
       <svg className="skin-chef" viewBox={`${VIEW.x} ${VIEW.y} ${VIEW.width} ${VIEW.height}`}>
-        <Chef values={values} clock={still} idleFrom={Infinity} pose="saw" sign={null} />
+        <Chef values={values} clock={still} idleFrom={Infinity} pose="saw" />
       </svg>
       <svg className="skin-arc" viewBox={ARC_VIEW}>
         <ArcTitle text={values.arcText} size={values.arcSize} span={values.arcSpan} stroke={values.arcStroke} onReady={noop} />

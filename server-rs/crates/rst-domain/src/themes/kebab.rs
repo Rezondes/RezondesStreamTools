@@ -157,9 +157,6 @@ fn brb() -> Vec<SettingField> {
             ),
         ),
         in_scene(SceneName::Brb, flag("brbTeaOn", "Koch trinkt Tee", BRB, true)),
-        in_scene(SceneName::Brb, flag("brbSignOn", "Schild am Spieß", BRB, true)),
-        in_scene(SceneName::Brb, text("brbSign", "Schild: Text", BRB, "Kurz Tee trinken", Some(30))),
-        in_scene(SceneName::Brb, number("brbSignSwing", "Schild: Pendeln", BRB, 3.0, 0.0, 20.0, None, None)),
         in_scene(
             SceneName::Brb,
             text(
@@ -459,7 +456,6 @@ const BASIC: &[&str] = &[
     "countdownDone",
     "ticker",
     "brbTitle",
-    "brbSign",
     "brbTicker",
     "endingTitle",
     "endingNext",
