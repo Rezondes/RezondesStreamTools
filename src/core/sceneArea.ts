@@ -9,6 +9,13 @@ type Size = { width: number; height: number };
 // fixed: distance of a left or right aligned alert to the edge of the stage in px (padding of the alert scenes)
 const ALERT_SIDE = 48;
 
+// fixed: room in px above the content of a source that fills it, so a shadow or a rounding never gets cut off
+const SAFETY = 8;
+
+// The music source of a theme whose card spans the width of the source and sits at its bottom: the default width,
+// as high as the tallest of its parts (cover, text, figure; each with the padding around it) plus the safety room
+export const musicArea = (...heights: number[]): SceneArea => ({ width: SCENE_SIZES.music.width, height: Math.ceil(Math.max(...heights)) + SAFETY });
+
 // The area of a scene for the values of a theme; without a theme or without an own area the default size
 export function areaOf(module: ThemeModule | null, values: SettingValues, scene: SceneName): SceneArea {
   return module?.areas?.(values)[scene] ?? SCENE_SIZES[scene];

@@ -14,6 +14,7 @@ const STATS = { width: 640, height: 600 };
 // fixed: where the alert sits on the stage (px); the OBS source shows only its part, the streamer places it in OBS
 // (same value as --alert-top in the CSS of the theme)
 const ALERT_TOP = 620;
+
 export function dachdeckerAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const dachdecker = values as unknown as DachdeckerValues;
   return {

@@ -10,4 +10,8 @@ assert.deepEqual(areas({}).alerts, { width: 650, height: 489, offset: { x: 635, 
 assert.deepEqual(areas({ alertScale: 1 }).alerts, { width: 908, height: 678, offset: { x: 506, y: 40 } }, "unscaled and centered on the stage");
 assert.deepEqual(areas({}).stats, { width: 720, height: 260 }, "the panel grows with its lines");
 
+assert.deepEqual(areas({}).music, { width: 900, height: 243 }, "the music box as high as its text");
+assert.equal(areas({ musicArt: "none" }).music?.height, 241, "without art only the text");
+assert.equal(areas({ musicArt: "vinyl", vinylSize: 40 }).music?.height, 402, "a big ASCII record");
+
 console.log("matrix areas ok");
