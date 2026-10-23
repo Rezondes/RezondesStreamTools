@@ -32,8 +32,9 @@ export default function PixiStage({ background, onReady, className = "", size }:
     return () => {
       alive = false;
       cleanup?.();
-      // init may still run; destroy after it finished, otherwise right away
-      if (app.renderer) app.destroy(true, true);
+      // init may still run; destroy after it finished, otherwise right away. When the whole tree goes away React cleans
+      // up this effect before the ones of the children that draw into the app, so destroy after them (a microtask)
+      queueMicrotask(() => { if (app.renderer) app.destroy(true, true); });
     };
   }, [background, width, height]);
   if (size) return <div className={className} ref={host} />;
