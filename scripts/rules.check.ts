@@ -37,6 +37,7 @@ const WITHOUT_CHECK: Record<string, string> = {
   "src/themes/bears/tones.ts": "Web Audio output",
   "src/themes/chaos/tones.ts": "Web Audio output",
   "src/themes/dachdecker/tones.ts": "Web Audio output",
+  "src/themes/kebab/tones.ts": "sound file output",
   "src/core/three/softTexture.ts": "draws on a browser canvas, no logic to check",
   "src/themes/matrix/pixi/GlyphAtlas.ts": "draws the glyphs on a browser canvas, no logic to check",
   "src/themes/standard/pixi/softDot.ts": "draws a soft dot on a browser canvas, no logic to check",
