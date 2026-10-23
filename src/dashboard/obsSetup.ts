@@ -3,10 +3,12 @@
 // 1. Dragging: link with layer-name/-width/-height, OBS creates the browser source on drop.
 // 2. File: scene collection (JSON) for Scene Collection > Import.
 // 3. obs-websocket 5: requests that create missing scenes and sources and update existing sources.
+// Every further effect zone the triggers name gets an effects source of its own in the overlay scene.
 import { OBS_SCENES, type SceneArea, type SceneName } from "../core/theme.ts";
 
-// x, y: where the source sits on the 1920x1080 canvas; an alert cut out of the stage lands where it was drawn
-type ObsSource = { scene: SceneName; name: string; url: string; width: number; height: number; x: number; y: number };
+// x, y: where the source sits on the 1920x1080 canvas; an alert cut out of the stage lands where it was drawn; zone:
+// the effect zone of a further effects source (?zone=)
+export type ObsSource = { scene: SceneName; name: string; url: string; width: number; height: number; x: number; y: number; zone?: string };
 export type ObsScene = { name: string; sources: ObsSource[] };
 // place: where the scene item of the source belongs on the canvas (only for sources that do not start at 0, 0)
 type ObsRequest = { requestType: string; requestData: Record<string, unknown>; place?: { sceneName: string; x: number; y: number } };
@@ -18,18 +20,26 @@ const ALIGN_TOP_LEFT = 5;
 // OBS URL of a scene with the streamer's secret overlay key (without it there are no live events)
 export const sceneUrl = (base: string, scene: SceneName, key: string) => `${base}/${scene}?key=${encodeURIComponent(key)}`;
 
+// fixed: the zone of the effects source every theme has; effects without a zone play there
+const MAIN_ZONE = "main";
+
+// The further effect zones the actions of the triggers name, each once and sorted
+export const fxZones = (triggers: readonly { do: readonly { zone?: string }[] }[]) =>
+  [...new Set(triggers.flatMap(trigger => trigger.do.map(action => action.zone ?? MAIN_ZONE)))].filter(zone => zone !== "" && zone !== MAIN_ZONE).sort();
+
 // base: full URL up to the login (https://.../s/<login>); sources are named "<login> <scene>"; key: overlay key;
-// areas: size of every source for the values of the active theme (sceneArea.ts)
+// areas: size of every source for the values of the active theme (sceneArea.ts); zones: further effect zones (fxZones)
 type Names = { scenes: Record<SceneName, string>; overlayScene: string };
-export function obsLayout(base: string, login: string, key: string, names: Names, areas: Record<SceneName, SceneArea>): ObsScene[] {
+export function obsLayout(base: string, login: string, key: string, names: Names, areas: Record<SceneName, SceneArea>, zones: readonly string[] = []): ObsScene[] {
   const source = (scene: SceneName): ObsSource => {
     const { width, height, offset } = areas[scene];
     return { scene, name: `${login} ${scene}`, url: sceneUrl(base, scene, key), width, height, x: offset?.x ?? 0, y: offset?.y ?? 0 };
   };
+  const zoneSource = (zone: string): ObsSource => ({ ...source("fx"), name: `${login} fx ${zone}`, url: `${sceneUrl(base, "fx", key)}&zone=${encodeURIComponent(zone)}`, zone });
   const { scenes: sceneNames, overlayScene } = names;
   return [
     ...FULLSCREEN.map(scene => ({ name: sceneNames[scene], sources: [source(scene)] })),
-    { name: overlayScene, sources: OBS_SCENES.filter(scene => !FULLSCREEN.includes(scene)).map(source) },
+    { name: overlayScene, sources: [...OBS_SCENES.filter(scene => !FULLSCREEN.includes(scene)).map(source), ...zones.map(zoneSource)] },
   ];
 }
 

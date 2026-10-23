@@ -16,6 +16,8 @@ export const OVERVIEW_TEXTS = {
   statsResetDone: "Statistik zurückgesetzt.",
   keyRotated: "Neuer Overlay-Schlüssel: die OBS-Quellen brauchen jetzt die neuen URLs.",
   test: "Test",
+  // An effects source for a further zone that a trigger names (Trigger, Aktion, Zone)
+  zoneScene: (zone: string) => `Effekte, Zone ${zone}`,
   alertNames: { follow: "Follow", sub: "Sub", resub: "Resub", gift: "Geschenk-Abos", cheer: "Bits", raid: "Raid", redeem: "Kanalpunkte", hype: "Hype Train" },
   tabs: { live: "Live", events: "Ereignisse", obs: "OBS einrichten", chat: "Chat-Befehle" },
   tabsLabel: "Bereiche der Übersicht",

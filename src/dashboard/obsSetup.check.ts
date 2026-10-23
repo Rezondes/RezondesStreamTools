@@ -2,7 +2,7 @@
 // authentication according to obs-websocket 5. Runs with npm test.
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { dragUrl, obsAuth, obsLayout, obsRequests, sceneCollection } from "./obsSetup.ts";
+import { dragUrl, fxZones, obsAuth, obsLayout, obsRequests, sceneCollection } from "./obsSetup.ts";
 import { SCENE_SIZES } from "../core/theme.ts";
 import { TEXTS } from "./texts.de.ts";
 
@@ -47,5 +47,14 @@ assert.deepEqual(requests.filter(request => request.place).map(request => [reque
 // Authentication as described in the protocol
 const sha = (text: string) => createHash("sha256").update(text).digest("base64");
 assert.equal(await obsAuth("geheim", "salt", "challenge"), sha(sha("geheimsalt") + "challenge"));
+
+// Further effect zones: each once, without main and empty ones; an effects source of their own in the overlay scene
+const triggers = [{ do: [{ zone: "top" }, {}, { zone: "main" }] }, { do: [{ zone: "" }, { zone: "links unten" }, { zone: "top" }] }];
+assert.deepEqual(fxZones(triggers), ["links unten", "top"]);
+const zoned = obsLayout("https://overlays.example/s/neo", "neo", "k1", { scenes: TEXTS.scenes, overlayScene: "Overlays" }, areas, fxZones(triggers));
+const top = zoned[3].sources.find(source => source.zone === "top");
+assert.deepEqual(top, { scene: "fx", name: "neo fx top", url: "https://overlays.example/s/neo/fx?key=k1&zone=top", width: 1920, height: 1080, x: 0, y: 0, zone: "top" });
+assert.equal(zoned[3].sources.find(source => source.zone === "links unten")?.url, "https://overlays.example/s/neo/fx?key=k1&zone=links%20unten");
+assert.equal(obsRequests(zoned, [], []).filter(request => request.requestData.inputName === "neo fx top").length, 1, "the websocket import creates it too");
 
 console.log("obsSetup ok");

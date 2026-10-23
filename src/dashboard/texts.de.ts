@@ -161,6 +161,7 @@ export const TEXTS = {
     size: "Breite (px)",
     volume: "Lautstärke 0-1",
     zone: "Zone",
+    zoneHint: "Leer oder main: die normale Effekte-Quelle. Ein eigener Name bekommt unter OBS einrichten eine eigene Effekte-Quelle.",
     position: "Position",
     x: "x %",
     y: "y %",

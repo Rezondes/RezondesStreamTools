@@ -1,17 +1,19 @@
 // Overview in the dashboard, in tabs: Live (status of Twitch, Spotify and the theme, test alerts and triggers to fire,
 // the stream statistics), Ereignisse (the live event log, EventFeed.tsx), OBS einrichten (import all scenes first, then
-// the single URLs with size, copy and test, the overlay key last) and Chat-Befehle (the help command, ChatHelp.tsx) for
+// the single URLs with size, copy and test, also one effects source per further zone of the triggers, the overlay key
+// last) and Chat-Befehle (the help command, ChatHelp.tsx) for
 // streamers without the trigger section, which has it otherwise. Every URL can be dragged onto the OBS window.
 import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
 import { areasOf } from "../core/sceneArea.ts";
 import { resolveSettings } from "../core/settings.ts";
-import { OBS_SCENES } from "../core/theme.ts";
+import { OBS_SCENES, type SceneArea } from "../core/theme.ts";
 import { sceneNames } from "../core/themeRuntime.ts";
 import { DEFAULT_THEME, findModule, findTheme } from "../themes/registry.ts";
 import { THEME_SCENES } from "../themes/scenes.tsx";
 import { describeStats, type StatKey } from "../core/stats/stats.ts";
 import type { AlertKind, StreamStats } from "../core/types.ts";
+import type { Trigger } from "../generated/Trigger.ts";
 import { getJson } from "./api.ts";
 import type { Act } from "./Dashboard.tsx";
 import { type Me, visibleSections } from "./navigation.ts";
@@ -20,7 +22,7 @@ import { reportError } from "./notices.ts";
 import EventFeed from "./EventFeed.tsx";
 import ObsImport from "./ObsImport.tsx";
 import OfflineDownloads from "./OfflineDownloads.tsx";
-import { dragUrl, obsLayout } from "./obsSetup.ts";
+import { dragUrl, fxZones, obsLayout, type ObsSource } from "./obsSetup.ts";
 import { SubTabs, subTabPanel } from "./SubTabs.tsx";
 import { TEXTS } from "./texts.de.ts";
 
@@ -100,12 +102,26 @@ function useAreas(themeId: string) {
   return areasOf(findModule(schema.id), values);
 }
 
+// The further effect zones of the saved triggers (none without the trigger section or before they are loaded)
+function useFxZones() {
+  const [zones, setZones] = useState<string[]>([]);
+  useEffect(() => {
+    let active = true;
+    getJson<{ triggers: Trigger[] } | null>("/api/triggers/config", null)
+      .then(config => { if (active) setZones(fxZones(config?.triggers ?? [])); })
+      .catch((error: unknown) => console.warn("Loading triggers failed:", error));
+    return () => { active = false; };
+  }, []);
+  return zones;
+}
+
 // Setting up OBS: everything at once first (the usual way), then single sources, the key that is in every URL last
 function ObsSetup({ me, act }: { me: Me; act: Act }) {
   const base = `${location.origin}${streamerPath.base(me.login)}`;
   const areas = useAreas(me.theme);
-  const layout = obsLayout(base, me.login, me.overlayKey, { scenes: TEXTS.scenes, overlayScene: TEXTS.obs.overlayScene }, areas);
-  const sources = new Map(layout.flatMap(scene => scene.sources).map(source => [source.scene, source]));
+  const layout = obsLayout(base, me.login, me.overlayKey, { scenes: TEXTS.scenes, overlayScene: TEXTS.obs.overlayScene }, areas, useFxZones());
+  const all = layout.flatMap(scene => scene.sources);
+  const sources = new Map(all.filter(source => !source.zone).map(source => [source.scene, source]));
   const available = sceneNames(THEME_SCENES, me.theme);
   return (
     <>
@@ -118,24 +134,15 @@ function ObsSetup({ me, act }: { me: Me; act: Act }) {
           <thead><tr><th>{TEXT.scene}</th><th>{TEXT.url}</th><th>{TEXT.size}</th><th /></tr></thead>
           <tbody>
             {OBS_SCENES.map(scene => {
-              const url = sources.get(scene)!.url;
               // The source stays in the OBS import (empty until a theme with the scene is active), here only the hint
               if (!available.includes(scene)) {
                 return <tr key={scene}><td>{TEXTS.scenes[scene]}</td><td colSpan={3} className="muted">{TEXTS.notInTheme}</td></tr>;
               }
-              return (
-                <tr key={scene}>
-                  <td>{TEXTS.scenes[scene]}</td>
-                  {/* A click opens nothing, dragging onto OBS creates the source */}
-                  <td><a className="obs-drag" href={dragUrl(sources.get(scene)!)} onClick={event => event.preventDefault()}><code>{url}</code></a></td>
-                  <td>{TEXT.sourceSize(areas[scene])}</td>
-                  <td className="actions">
-                    <CopyButton text={url} />
-                    <a className="btn" href={`${url}&demo`} target="_blank" rel="noreferrer">{TEXT.test}</a>
-                  </td>
-                </tr>
-              );
+              return <SourceRow key={scene} label={TEXTS.scenes[scene]} source={sources.get(scene)!} size={areas[scene]} />;
             })}
+            {available.includes("fx") && all.filter(source => source.zone).map(source => (
+              <SourceRow key={source.name} label={TEXT.zoneScene(source.zone!)} source={source} size={areas.fx} />
+            ))}
           </tbody>
         </table>
       </section>
@@ -190,6 +197,21 @@ function Stats({ me, act }: { me: Me; act: Act }) {
       </p>
       <p className="muted">{TEXT.liveHint}</p>
     </section>
+  );
+}
+
+// One source in the table: name, URL to drag onto OBS (a click opens nothing), size, copy and test
+function SourceRow({ label, source, size }: { label: string; source: ObsSource; size: SceneArea }) {
+  return (
+    <tr>
+      <td>{label}</td>
+      <td><a className="obs-drag" href={dragUrl(source)} onClick={event => event.preventDefault()}><code>{source.url}</code></a></td>
+      <td>{TEXT.sourceSize(size)}</td>
+      <td className="actions">
+        <CopyButton text={source.url} />
+        <a className="btn" href={`${source.url}&demo`} target="_blank" rel="noreferrer">{TEXT.test}</a>
+      </td>
+    </tr>
   );
 }
 

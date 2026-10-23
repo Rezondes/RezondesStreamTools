@@ -322,7 +322,7 @@ function ActionTiming({ action, first, set }: { action: FxAction; first: boolean
       <NumberField label={TRIGGER_TEXT.after} value={action.after} onChange={value => set({ after: value })} />
       <NumberField label={TRIGGER_TEXT.size} value={action.size} placeholder="360" step={10} onChange={value => set({ size: value })} />
       <NumberField label={TRIGGER_TEXT.volume} value={action.volume} step={0.1} placeholder="1" onChange={value => set({ volume: value })} />
-      <label>{TRIGGER_TEXT.zone} <input value={action.zone ?? ""} placeholder="main" size={6} onChange={event => set({ zone: event.target.value })} /></label>
+      <label title={TRIGGER_TEXT.zoneHint}>{TRIGGER_TEXT.zone} <input value={action.zone ?? ""} placeholder="main" size={6} onChange={event => set({ zone: event.target.value })} /></label>
       <label>{TRIGGER_TEXT.position}
         <select value={custom ? "custom" : position} onChange={event => set({ position: event.target.value === "custom" ? { x: 50, y: 50 } : (event.target.value as "center" | "random") })}>
           <option value="center">{TRIGGER_TEXT.positions.center}</option>
