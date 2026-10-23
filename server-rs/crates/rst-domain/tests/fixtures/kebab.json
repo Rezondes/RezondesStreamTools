@@ -1857,6 +1857,667 @@
       "label": "Dampf",
       "group": "Banner",
       "default": true
+    },
+    {
+      "key": "minimeJoinCommand",
+      "type": "text",
+      "label": "Befehl: einklinken (optional mit Farbe oder Typ)",
+      "group": "Minimes: Befehle",
+      "default": "!join",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeLeaveCommand",
+      "type": "text",
+      "label": "Befehl: verlassen (Mods: mit @name rauswerfen)",
+      "group": "Minimes: Befehle",
+      "default": "!leave",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeJoinRole",
+      "type": "select",
+      "label": "Einklinken ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "everyone",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeKickRole",
+      "type": "select",
+      "label": "Fremde rauswerfen ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "moderator",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeColorJoins",
+      "type": "boolean",
+      "label": "Befehl für Farbe oder Typ klinkt auch ein",
+      "group": "Minimes: Befehle",
+      "default": true
+    },
+    {
+      "key": "minimeMax",
+      "type": "number",
+      "label": "Höchstzahl gleichzeitig",
+      "group": "Minimes: Regeln",
+      "default": 30,
+      "min": 1,
+      "max": 100,
+      "basic": true
+    },
+    {
+      "key": "minimeWhenFull",
+      "type": "select",
+      "label": "Wenn voll: Inaktivsten ersetzen (replace) oder Neue abweisen (reject)",
+      "group": "Minimes: Regeln",
+      "default": "replace",
+      "options": [
+        "replace",
+        "reject"
+      ]
+    },
+    {
+      "key": "minimeIdleMinutes",
+      "type": "number",
+      "label": "Verschwindet nach Minuten ohne Nachricht (0 = nie)",
+      "group": "Minimes: Regeln",
+      "default": 20,
+      "min": 0,
+      "max": 240
+    },
+    {
+      "key": "minimeColorCooldown",
+      "type": "number",
+      "label": "Abklingzeit Farb- oder Typwechsel",
+      "group": "Minimes: Regeln",
+      "default": 10,
+      "min": 0,
+      "max": 300,
+      "unit": "s"
+    },
+    {
+      "key": "minimeChatKeepsAlive",
+      "type": "boolean",
+      "label": "Chatnachrichten halten das Minime im Bild",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeReactToChat",
+      "type": "boolean",
+      "label": "Minime reagiert auf Chatnachrichten",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeClearOffline",
+      "type": "boolean",
+      "label": "Alle entfernen, wenn der Stream endet",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeRemoveOnBan",
+      "type": "boolean",
+      "label": "Bei Ban oder Timeout entfernen",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeSpeed",
+      "type": "number",
+      "label": "Laufgeschwindigkeit (px pro Sekunde)",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeMargin",
+      "type": "number",
+      "label": "Abstand zum Rand",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 0,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMin",
+      "type": "number",
+      "label": "Kürzeste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 100,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMax",
+      "type": "number",
+      "label": "Längste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 600,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkWeight",
+      "type": "number",
+      "label": "Häufigkeit: wandern",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleWeight",
+      "type": "number",
+      "label": "Häufigkeit: auf der Stelle schweben",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleMinMs",
+      "type": "number",
+      "label": "Schweben mindestens",
+      "group": "Minimes: Bewegung",
+      "default": 2000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeIdleMaxMs",
+      "type": "number",
+      "label": "Schweben höchstens",
+      "group": "Minimes: Bewegung",
+      "default": 6000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeEnterMs",
+      "type": "number",
+      "label": "Dauer: erscheinen",
+      "group": "Minimes: Bewegung",
+      "default": 1200,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeExitMs",
+      "type": "number",
+      "label": "Dauer: verschwinden",
+      "group": "Minimes: Bewegung",
+      "default": 900,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimePlacement",
+      "type": "select",
+      "label": "Plätze: frei verteilt (random) oder feste Plätze (slots)",
+      "group": "Minimes: Bewegung",
+      "default": "random",
+      "options": [
+        "random",
+        "slots"
+      ]
+    },
+    {
+      "key": "hopHeight",
+      "type": "number",
+      "label": "Sprunghöhe",
+      "group": "Minimes: Hüpfen",
+      "default": 26,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "hopMs",
+      "type": "number",
+      "label": "Dauer eines Sprungs",
+      "group": "Minimes: Hüpfen",
+      "default": 420,
+      "min": 150,
+      "max": 3000,
+      "unit": "ms"
+    },
+    {
+      "key": "hopSquash",
+      "type": "number",
+      "label": "Stauchen beim Aufkommen",
+      "group": "Minimes: Hüpfen",
+      "default": 0.2,
+      "min": 0,
+      "max": 0.6,
+      "step": 0.05
+    },
+    {
+      "key": "minimeSize",
+      "type": "number",
+      "label": "Grösse (Höhe)",
+      "group": "Minimes: Aussehen",
+      "default": 96,
+      "min": 40,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "minimeGround",
+      "type": "number",
+      "label": "Abstand zum unteren Rand",
+      "group": "Minimes: Aussehen",
+      "default": 12,
+      "min": 0,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDefault",
+      "type": "select",
+      "label": "Typ ohne Wahl (alle aus)",
+      "group": "Minimes: Aussehen",
+      "default": "doener",
+      "options": [
+        "doener",
+        "duerum",
+        "lahmacun",
+        "pommes"
+      ],
+      "basic": true
+    },
+    {
+      "key": "minimeCounter",
+      "type": "boolean",
+      "label": "Thekenlinie unten",
+      "group": "Minimes: Aussehen",
+      "default": true
+    },
+    {
+      "key": "minimeLabels",
+      "type": "boolean",
+      "label": "Namensschilder als Bestellzettel",
+      "group": "Minimes: Aussehen",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "minimeLabelSize",
+      "type": "number",
+      "label": "Namensschild: Schriftgrösse",
+      "group": "Minimes: Aussehen",
+      "default": 16,
+      "min": 8,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "minimeLevelHeight",
+      "type": "number",
+      "label": "Tellerstapel: Höhe je Stufe",
+      "group": "Minimes: Aussehen",
+      "default": 70,
+      "min": 30,
+      "max": 120,
+      "unit": "%"
+    },
+    {
+      "key": "minimeSpinWeight",
+      "type": "number",
+      "label": "Drehen (Döner): Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 5,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeSpinMs",
+      "type": "number",
+      "label": "Drehen (Döner): Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1600,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeRollWeight",
+      "type": "number",
+      "label": "Aufrollen (Dürüm): Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 4,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeRollMs",
+      "type": "number",
+      "label": "Aufrollen (Dürüm): Dauer",
+      "group": "Minimes: Animationen",
+      "default": 2000,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeFoldWeight",
+      "type": "number",
+      "label": "Falten (Lahmacun): Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 4,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeFoldMs",
+      "type": "number",
+      "label": "Falten (Lahmacun): Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1800,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeFriesWeight",
+      "type": "number",
+      "label": "Stäbchen werfen (Pommes): Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 4,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeFriesMs",
+      "type": "number",
+      "label": "Stäbchen werfen (Pommes): Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1400,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeWaveWeight",
+      "type": "number",
+      "label": "Winken: Häufigkeit",
+      "group": "Minimes: Animationen",
+      "default": 3,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeWaveMs",
+      "type": "number",
+      "label": "Winken: Dauer",
+      "group": "Minimes: Animationen",
+      "default": 1500,
+      "min": 300,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeJumpMs",
+      "type": "number",
+      "label": "Reaktion auf Chat (Sprung mit Dampf): Dauer",
+      "group": "Minimes: Animationen",
+      "default": 700,
+      "min": 200,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeJumpSound",
+      "type": "boolean",
+      "label": "Sprung: Ton",
+      "group": "Minimes: Animationen",
+      "default": true
+    },
+    {
+      "key": "minimeSoundJump",
+      "type": "sound",
+      "label": "Ton: Sprung (leer = eingebaut)",
+      "group": "Minimes: Animationen",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "minimeStack",
+      "type": "boolean",
+      "label": "Türme an",
+      "group": "Minimes: Türme",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "minimeStackMinS",
+      "type": "number",
+      "label": "Abstand zwischen Türmen: mindestens",
+      "group": "Minimes: Türme",
+      "default": 30,
+      "min": 5,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "minimeStackMaxS",
+      "type": "number",
+      "label": "Abstand zwischen Türmen: höchstens",
+      "group": "Minimes: Türme",
+      "default": 90,
+      "min": 5,
+      "max": 600,
+      "unit": "s"
+    },
+    {
+      "key": "minimeStackMax",
+      "type": "number",
+      "label": "Gleichzeitige Türme",
+      "group": "Minimes: Türme",
+      "default": 1,
+      "min": 1,
+      "max": 5
+    },
+    {
+      "key": "minimeStackLevel1",
+      "type": "select",
+      "label": "Stufe 1 (unten)",
+      "group": "Minimes: Türme",
+      "default": "lahmacun",
+      "options": [
+        "doener",
+        "duerum",
+        "lahmacun",
+        "pommes"
+      ]
+    },
+    {
+      "key": "minimeStackLevel2",
+      "type": "select",
+      "label": "Stufe 2",
+      "group": "Minimes: Türme",
+      "default": "duerum",
+      "options": [
+        "doener",
+        "duerum",
+        "lahmacun",
+        "pommes"
+      ]
+    },
+    {
+      "key": "minimeStackLevel3",
+      "type": "select",
+      "label": "Stufe 3 (oben)",
+      "group": "Minimes: Türme",
+      "default": "pommes",
+      "options": [
+        "doener",
+        "duerum",
+        "lahmacun",
+        "pommes",
+        "keiner"
+      ]
+    },
+    {
+      "key": "minimeStackSpeed",
+      "type": "number",
+      "label": "Zusammenlaufen: Tempo (px pro Sekunde)",
+      "group": "Minimes: Türme",
+      "default": 90,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeClimbMs",
+      "type": "number",
+      "label": "Klettern: Dauer je Stufe",
+      "group": "Minimes: Türme",
+      "default": 900,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackedMs",
+      "type": "number",
+      "label": "Stehen als Turm: Dauer",
+      "group": "Minimes: Türme",
+      "default": 4000,
+      "min": 500,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackWalk",
+      "type": "boolean",
+      "label": "Turm läuft",
+      "group": "Minimes: Türme",
+      "default": true
+    },
+    {
+      "key": "minimeStackWalkMs",
+      "type": "number",
+      "label": "Laufen als Turm: Dauer",
+      "group": "Minimes: Türme",
+      "default": 5000,
+      "min": 500,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeStackWalkPx",
+      "type": "number",
+      "label": "Laufen als Turm: Strecke",
+      "group": "Minimes: Türme",
+      "default": 300,
+      "min": 0,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDismountMs",
+      "type": "number",
+      "label": "Absteigen: Dauer je Stufe",
+      "group": "Minimes: Türme",
+      "default": 700,
+      "min": 100,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeDismountGap",
+      "type": "number",
+      "label": "Absteigen: Abstand zur Seite",
+      "group": "Minimes: Türme",
+      "default": 60,
+      "min": 0,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "minimeStackSound",
+      "type": "boolean",
+      "label": "Ton beim Aufsteigen",
+      "group": "Minimes: Türme",
+      "default": true
+    },
+    {
+      "key": "minimeSoundClimb",
+      "type": "sound",
+      "label": "Ton: Aufsteigen",
+      "group": "Minimes: Türme",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "minimeVariantCommand",
+      "type": "text",
+      "label": "Befehl: Typ wählen",
+      "group": "Minimes: Typen",
+      "default": "!typ",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeNames_doener",
+      "type": "text",
+      "label": "Döner: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "doener, döner, kebab",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_duerum",
+      "type": "text",
+      "label": "Dürüm: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "duerum, dürüm, wrap",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_lahmacun",
+      "type": "text",
+      "label": "Lahmacun: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "lahmacun, pizza",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_pommes",
+      "type": "text",
+      "label": "Pommes: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "pommes, fries",
+      "maxLength": 200
     }
   ],
   "groupScenes": {
@@ -1902,7 +2563,71 @@
       "info"
     ],
     "Stinger": [],
-    "Banner": []
+    "Banner": [],
+    "Minimes: Befehle": [
+      "minimes"
+    ],
+    "Minimes: Regeln": [
+      "minimes"
+    ],
+    "Minimes: Bewegung": [
+      "minimes"
+    ],
+    "Minimes: Hüpfen": [
+      "minimes"
+    ],
+    "Minimes: Typen": [
+      "minimes"
+    ],
+    "Minimes: Türme": [
+      "minimes"
+    ],
+    "Minimes: Aussehen": [
+      "minimes"
+    ],
+    "Minimes: Animationen": [
+      "minimes"
+    ]
+  },
+  "minimeVariants": {
+    "command": "!typ",
+    "label": "Typ",
+    "variants": [
+      {
+        "id": "doener",
+        "label": "Döner",
+        "names": [
+          "doener",
+          "döner",
+          "kebab"
+        ]
+      },
+      {
+        "id": "duerum",
+        "label": "Dürüm",
+        "names": [
+          "duerum",
+          "dürüm",
+          "wrap"
+        ]
+      },
+      {
+        "id": "lahmacun",
+        "label": "Lahmacun",
+        "names": [
+          "lahmacun",
+          "pizza"
+        ]
+      },
+      {
+        "id": "pommes",
+        "label": "Pommes",
+        "names": [
+          "pommes",
+          "fries"
+        ]
+      }
+    ]
   },
   "personalize": {
     "neo": {

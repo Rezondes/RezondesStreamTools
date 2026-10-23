@@ -20,5 +20,6 @@ export const kebabView: ThemeView = {
     music: lazy(() => import("./scenes/Music.tsx")),
     fx: lazy(() => import("./scenes/Fx.tsx")),
     info: lazy(() => import("./scenes/Info.tsx")),
+    minimes: lazy(() => import("./scenes/Minimes.tsx")),
   },
 };

@@ -9,13 +9,17 @@ use std::collections::BTreeMap;
 use crate::identity::values::Login;
 use crate::settings::field::{
     SettingField, SettingValue, SettingValues, Unit, choice, color, flag, font, in_scene, lines, mark_basic, number,
-    text, with_defaults,
+    sound, text, with_defaults,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
+use crate::themes::minime_fields::{
+    MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minime_base_fields,
+    minime_hop_fields, minime_stack_fields, minime_variant_fields,
+};
 use crate::themes::registry::Theme;
-use crate::themes::schema::{SceneName, ThemeSchema};
+use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
 
 const TITLE_FONTS: [&str; 3] = ["Titan One", "Baloo 2", "Fredoka"];
@@ -34,6 +38,8 @@ const MUSIC: &str = "Musik";
 const FX: &str = "Effekte";
 const STINGER: &str = "Stinger";
 const BANNER: &str = "Banner";
+const MINIME_LOOK: &str = "Minimes: Aussehen";
+const MINIME_MOVES: &str = "Minimes: Animationen";
 
 const ALERT_STYLES: [&str; 2] = ["bon", "tuete"];
 const CHAT_STYLES: [&str; 3] = ["zettel", "liste", "schlicht"];
@@ -41,6 +47,7 @@ const NAME_COLORS: [&str; 2] = ["rot", "chatter"];
 const CAM_STYLES: [&str; 3] = ["fenster", "rahmen", "aus"];
 const MUSIC_STYLES: [&str; 3] = ["bon", "schild", "schlicht"];
 const STINGER_STYLES: [&str; 2] = ["papier", "messer"];
+const DISH_TYPES: [&str; 4] = ["doener", "duerum", "lahmacun", "pommes"];
 
 const PX: Option<Unit> = Some(Unit::Px);
 const PERCENT: Option<Unit> = Some(Unit::Percent);
@@ -330,6 +337,76 @@ fn clips() -> Vec<SettingField> {
     ]
 }
 
+/// The four dishes as minime variants (template: `DISH_SET` in `src/themes/kebab/dishes.ts`)
+fn variants() -> MinimeVariantSet {
+    let variant = |id: &str, label: &str, names: &[&str]| MinimeVariantInfo {
+        id: id.to_owned(),
+        label: label.to_owned(),
+        names: names.iter().map(|name| (*name).to_owned()).collect(),
+        color: None,
+    };
+    MinimeVariantSet {
+        command: "!typ".to_owned(),
+        label: "Typ".to_owned(),
+        variants: vec![
+            variant("doener", "Döner", &["doener", "döner", "kebab"]),
+            variant("duerum", "Dürüm", &["duerum", "dürüm", "wrap"]),
+            variant("lahmacun", "Lahmacun", &["lahmacun", "pizza"]),
+            variant("pommes", "Pommes", &["pommes", "fries"]),
+        ],
+    }
+}
+
+/// Minimes: core fields plus the look and the own animations of the dishes
+fn minimes() -> Vec<SettingField> {
+    let mut fields = minime_base_fields();
+    fields.extend(minime_hop_fields());
+    fields.extend(vec![
+        number("minimeSize", "Grösse (Höhe)", MINIME_LOOK, 96.0, 40.0, 400.0, PX, None),
+        number("minimeGround", "Abstand zum unteren Rand", MINIME_LOOK, 12.0, 0.0, 300.0, PX, None),
+        choice("minimeDefault", "Typ ohne Wahl (alle aus)", MINIME_LOOK, "doener", &DISH_TYPES),
+        flag("minimeCounter", "Thekenlinie unten", MINIME_LOOK, true),
+        flag("minimeLabels", "Namensschilder als Bestellzettel", MINIME_LOOK, true),
+        number("minimeLabelSize", "Namensschild: Schriftgrösse", MINIME_LOOK, 16.0, 8.0, 48.0, PX, None),
+        number("minimeLevelHeight", "Tellerstapel: Höhe je Stufe", MINIME_LOOK, 70.0, 30.0, 120.0, PERCENT, None),
+        number("minimeSpinWeight", "Drehen (Döner): Häufigkeit", MINIME_MOVES, 5.0, 0.0, 100.0, None, None),
+        number("minimeSpinMs", "Drehen (Döner): Dauer", MINIME_MOVES, 1600.0, 300.0, 10_000.0, MS, None),
+        number("minimeRollWeight", "Aufrollen (Dürüm): Häufigkeit", MINIME_MOVES, 4.0, 0.0, 100.0, None, None),
+        number("minimeRollMs", "Aufrollen (Dürüm): Dauer", MINIME_MOVES, 2000.0, 300.0, 10_000.0, MS, None),
+        number("minimeFoldWeight", "Falten (Lahmacun): Häufigkeit", MINIME_MOVES, 4.0, 0.0, 100.0, None, None),
+        number("minimeFoldMs", "Falten (Lahmacun): Dauer", MINIME_MOVES, 1800.0, 300.0, 10_000.0, MS, None),
+        number("minimeFriesWeight", "Stäbchen werfen (Pommes): Häufigkeit", MINIME_MOVES, 4.0, 0.0, 100.0, None, None),
+        number("minimeFriesMs", "Stäbchen werfen (Pommes): Dauer", MINIME_MOVES, 1400.0, 300.0, 10_000.0, MS, None),
+        number("minimeWaveWeight", "Winken: Häufigkeit", MINIME_MOVES, 3.0, 0.0, 100.0, None, None),
+        number("minimeWaveMs", "Winken: Dauer", MINIME_MOVES, 1500.0, 300.0, 10_000.0, MS, None),
+        number(
+            "minimeJumpMs",
+            "Reaktion auf Chat (Sprung mit Dampf): Dauer",
+            MINIME_MOVES,
+            700.0,
+            200.0,
+            5000.0,
+            MS,
+            None,
+        ),
+        flag("minimeJumpSound", "Sprung: Ton", MINIME_MOVES, true),
+        sound("minimeSoundJump", "Ton: Sprung (leer = eingebaut)", MINIME_MOVES),
+    ]);
+    // Towers as a stack of plates: Lahmacun at the bottom, Dürüm in the middle, Pommes on top, plop on each climb
+    let level = |id: &str| SettingValue::Text(id.to_owned());
+    fields.extend(minime_stack_fields(
+        &variants(),
+        &[
+            ("minimeStack", SettingValue::Flag(true)),
+            ("minimeStackLevel1", level("lahmacun")),
+            ("minimeStackLevel2", level("duerum")),
+            ("minimeStackLevel3", level("pommes")),
+            ("minimeStackSound", SettingValue::Flag(true)),
+        ],
+    ));
+    fields
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     use SceneName::{Brb, Ending, Starting, Stats};
     BTreeMap::from([
@@ -347,6 +424,14 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (INFO_GROUP.to_owned(), vec![SceneName::Info]),
         (STINGER.to_owned(), vec![]),
         (BANNER.to_owned(), vec![]),
+        (MINIME_COMMANDS.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_RULES.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_MOTION.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_HOP.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_VARIANTS.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_STACK.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_LOOK.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_MOVES.to_owned(), vec![SceneName::Minimes]),
     ])
 }
 
@@ -395,6 +480,8 @@ const BASIC: &[&str] = &[
     "musicLabel",
     "musicIdle",
     "fxText",
+    "minimeDefault",
+    "minimeLabels",
 ];
 
 #[must_use]
@@ -417,12 +504,14 @@ pub fn kebab() -> Theme {
     .concat();
     fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900.0, 400.0, 1600.0, PX, None));
     fields.extend(clips());
+    fields.extend(minimes());
+    fields.extend(minime_variant_fields(&variants()));
     let schema = ThemeSchema {
         id: "kebab".to_owned(),
         name: "Kebab".to_owned(),
         fields: mark_basic(with_stinger_fields(fields, STINGER, 60.0, 0.0), BASIC),
         group_scenes: group_scenes(),
-        minime_variants: None,
+        minime_variants: Some(variants()),
         minime_teams: None,
     };
     Theme { schema, personalize }

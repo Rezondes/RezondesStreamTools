@@ -3,11 +3,13 @@
 // scenes read via useKebab.
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
-import { choice, color, flag, font, inScene, lines, markBasic, number, text, withDefaults } from "../../core/fields.ts";
+import { choice, color, flag, font, inScene, lines, markBasic, number, sound, text, withDefaults } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
+import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
+import { DISH_SET, DISH_TYPES } from "./dishes.ts";
 
 const TITLE_FONTS = ["Titan One", "Baloo 2", "Fredoka"] as const;
 const TEXT_FONTS = ["Nunito", "DM Sans", "Manrope"] as const;
@@ -25,6 +27,8 @@ const MUSIC = "Musik";
 const FX = "Effekte";
 const STINGER = "Stinger";
 const BANNER = "Banner";
+const MINIME_LOOK = "Minimes: Aussehen";
+const MINIME_MOVES = "Minimes: Animationen";
 
 const ALERT_STYLES = ["bon", "tuete"] as const;
 const CHAT_STYLES = ["zettel", "liste", "schlicht"] as const;
@@ -216,6 +220,33 @@ const FIELDS = [
   text("offlineText", "Offline: Text auf dem Rollladen", BANNER, "Heute geschlossen", 60),
   number("bannerDuration", "Länge der Schleife", BANNER, 4, 1, 30, "s", 0.5),
   flag("bannerSteam", "Dampf", BANNER, true),
+
+  // Minimes (core fields plus the look and the own animations of the dishes, dishes.ts). Any of the four own moves
+  // makes a dish do its own one (the döner spins, the dürüm unrolls, the lahmacun folds, the fries throw a stick)
+  ...MINIME_BASE_FIELDS,
+  ...MINIME_HOP_FIELDS,
+  number("minimeSize", "Grösse (Höhe)", MINIME_LOOK, 96, 40, 400, "px"),
+  number("minimeGround", "Abstand zum unteren Rand", MINIME_LOOK, 12, 0, 300, "px"),
+  choice("minimeDefault", "Typ ohne Wahl (alle aus)", MINIME_LOOK, "doener", DISH_TYPES),
+  flag("minimeCounter", "Thekenlinie unten", MINIME_LOOK, true),
+  flag("minimeLabels", "Namensschilder als Bestellzettel", MINIME_LOOK, true),
+  number("minimeLabelSize", "Namensschild: Schriftgrösse", MINIME_LOOK, 16, 8, 48, "px"),
+  number("minimeLevelHeight", "Tellerstapel: Höhe je Stufe", MINIME_LOOK, 70, 30, 120, "%"),
+  number("minimeSpinWeight", "Drehen (Döner): Häufigkeit", MINIME_MOVES, 5, 0, 100),
+  number("minimeSpinMs", "Drehen (Döner): Dauer", MINIME_MOVES, 1600, 300, 10000, "ms"),
+  number("minimeRollWeight", "Aufrollen (Dürüm): Häufigkeit", MINIME_MOVES, 4, 0, 100),
+  number("minimeRollMs", "Aufrollen (Dürüm): Dauer", MINIME_MOVES, 2000, 300, 10000, "ms"),
+  number("minimeFoldWeight", "Falten (Lahmacun): Häufigkeit", MINIME_MOVES, 4, 0, 100),
+  number("minimeFoldMs", "Falten (Lahmacun): Dauer", MINIME_MOVES, 1800, 300, 10000, "ms"),
+  number("minimeFriesWeight", "Stäbchen werfen (Pommes): Häufigkeit", MINIME_MOVES, 4, 0, 100),
+  number("minimeFriesMs", "Stäbchen werfen (Pommes): Dauer", MINIME_MOVES, 1400, 300, 10000, "ms"),
+  number("minimeWaveWeight", "Winken: Häufigkeit", MINIME_MOVES, 3, 0, 100),
+  number("minimeWaveMs", "Winken: Dauer", MINIME_MOVES, 1500, 300, 10000, "ms"),
+  number("minimeJumpMs", "Reaktion auf Chat (Sprung mit Dampf): Dauer", MINIME_MOVES, 700, 200, 5000, "ms"),
+  flag("minimeJumpSound", "Sprung: Ton", MINIME_MOVES, true),
+  sound("minimeSoundJump", "Ton: Sprung (leer = eingebaut)", MINIME_MOVES),
+  // Towers as a stack of plates: Lahmacun at the bottom, Dürüm in the middle, Pommes on top, with the plop on each climb
+  ...minimeStackFields(DISH_SET, { minimeStack: true, minimeStackLevel1: "lahmacun", minimeStackLevel2: "duerum", minimeStackLevel3: "pommes", minimeStackSound: true }),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -236,6 +267,14 @@ const GROUP_SCENES = {
   [INFO_GROUP]: ["info"],
   [STINGER]: [],
   [BANNER]: [],
+  [MINIME_COMMANDS]: ["minimes"],
+  [MINIME_RULES]: ["minimes"],
+  [MINIME_MOTION]: ["minimes"],
+  [MINIME_HOP]: ["minimes"],
+  [MINIME_VARIANTS]: ["minimes"],
+  [MINIME_STACK]: ["minimes"],
+  [MINIME_LOOK]: ["minimes"],
+  [MINIME_MOVES]: ["minimes"],
 } as const;
 
 // On first login: the shop of the streamer, "Rezondes' Döner" for a login ending in s, x or z, else "Neos Döner"
@@ -246,6 +285,8 @@ export function shopOf(login: string) {
 const personalize = (login: string) => ({ channelName: shopOf(login) });
 
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
-const BASIC = ["quality", "channelName", "red", "redText", "sawOn", "shavingsOn", "startingItems", "countdownLabel", "countdownDone", "ticker", "brbTitle", "brbSign", "brbTicker", "endingTitle", "endingNext", "closingTitle", "closingLines", "stampText", "alertStyle", "followLine", "subLine", "raidLine", "cheerLine", "alertStampText", "chatStyle", "chatBadges", "camStyle", "camLabel", "musicStyle", "musicLabel", "musicIdle", "fxText"];
+const BASIC = ["quality", "channelName", "red", "redText", "sawOn", "shavingsOn", "startingItems", "countdownLabel", "countdownDone", "ticker", "brbTitle", "brbSign", "brbTicker", "endingTitle", "endingNext", "closingTitle", "closingLines", "stampText", "alertStyle", "followLine", "subLine", "raidLine", "cheerLine", "alertStampText", "chatStyle", "chatBadges", "camStyle", "camLabel", "musicStyle", "musicLabel", "musicIdle", "fxText", "minimeDefault", "minimeLabels"];
 
-export const kebabSettings: ThemeSchema = { id: "kebab", name: "Kebab", fields: markBasic(withStingerFields([...FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };
+export const kebabSettings: ThemeSchema = { id: "kebab", name: "Kebab", fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(DISH_SET)], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize,
+  minimeVariants: DISH_SET,
+};

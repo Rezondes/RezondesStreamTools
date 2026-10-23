@@ -12,11 +12,13 @@ import sizzle from "./sounds/sizzle.ogg";
 import stamp from "./sounds/stamp.ogg";
 import tear from "./sounds/tear.ogg";
 
-const play = (url: string) => (sound: SoundValue) => playSound(sound, volume => {
+// A sound file at a volume (the built-in sound the core calls, e.g. for the climb of a tower)
+const tone = (url: string) => (volume: number) => {
   const audio = new Audio(url);
   audio.volume = Math.min(1, Math.max(0, volume));
   audio.play().catch((error: unknown) => console.warn("Sound blocked:", error));
-});
+};
+const play = (url: string) => (sound: SoundValue) => playSound(sound, tone(url));
 
 export const playRegister = play(register);
 export const playStamp = play(stamp);
@@ -26,3 +28,4 @@ export const playKnife = play(knife);
 export const playSizzle = play(sizzle);
 export const playPlop = play(plop);
 export const playBag = play(bag);
+export const plopTone = tone(plop);
