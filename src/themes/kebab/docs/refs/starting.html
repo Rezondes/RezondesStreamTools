@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Kebab Starting</title>
+<!-- Reference prototype for the Kebab starting screen (not part of the build). ?t=<seconds> shows a still. -->
+<link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@8.22.0/dist/pixi.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/roughjs@4.6.6/bundled/rough.js"></script>
+<style>
+  :root { --red: #f85449; --red-text: #c8261b; --paper: #fff8ec; --bon: #fffdf8; --brown: #3a1a12; --muted: #8a5a4a; }
+  html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; font-family: "Nunito", sans-serif; color: var(--brown); }
+  body { background: radial-gradient(ellipse at 40% 45%, var(--paper) 55%, #f6ead8 100%); }
+  svg.logo { position: absolute; left: 120px; top: 60px; width: 1238px; height: 940px; overflow: visible; }
+  .arc-letter { font-family: "Titan One", sans-serif; fill: var(--paper); stroke: var(--red); stroke-width: 4px; paint-order: stroke; letter-spacing: 1px; }
+  canvas { position: absolute; inset: 0; pointer-events: none; }
+  .printer { position: absolute; left: 1430px; top: 120px; width: 420px; height: 46px; background: var(--brown); border-radius: 10px; }
+  .printer::after { content: ""; position: absolute; left: 22px; right: 22px; bottom: 10px; height: 6px; background: #120806; border-radius: 3px; }
+  .bon { position: absolute; left: 1450px; top: 156px; width: 380px; padding: 30px 30px 46px; box-sizing: border-box; background: var(--bon);
+         box-shadow: 0 10px 24px rgba(58,26,18,.18); transform-origin: 50% 0; }
+  .bon .shop { font: 900 20px "Nunito"; letter-spacing: 4px; text-align: center; }
+  .bon .number { font: 600 18px "Nunito"; text-align: center; color: var(--muted); margin-top: 4px; }
+  .bon hr { border: 0; border-top: 2px dashed var(--muted); margin: 18px 0; }
+  .bon .item { display: flex; justify-content: space-between; font: 800 24px "Nunito"; margin: 6px 0; }
+  .bon .item small { font-weight: 600; color: var(--muted); }
+  .bon .label { font: 800 22px "Nunito"; letter-spacing: 3px; text-align: center; }
+  .bon .count { font: 400 112px "Titan One"; color: var(--red-text); text-align: center; line-height: 1.05; }
+  .bon .thanks { font: 600 italic 20px "Nunito"; text-align: center; color: var(--muted); }
+  .bon .zig { position: absolute; left: 0; right: 0; bottom: -14px; height: 15px; background: var(--bon);
+              clip-path: polygon(0 0, 100% 0, 100% 0, 95% 100%, 90% 0, 85% 100%, 80% 0, 75% 100%, 70% 0, 65% 100%, 60% 0, 55% 100%, 50% 0, 45% 100%, 40% 0, 35% 100%, 30% 0, 25% 100%, 20% 0, 15% 100%, 10% 0, 5% 100%, 0 0); }
+  .ticker { position: absolute; left: 0; right: 0; bottom: 0; height: 72px; background: var(--red-text); color: var(--paper); overflow: hidden; }
+  .ticker .run { position: absolute; top: 0; white-space: nowrap; font: 900 30px/72px "Nunito"; letter-spacing: 2px; }
+  .lights { position: absolute; inset: 0; background: #120806; pointer-events: none; }
+</style>
+</head>
+<body>
+<svg class="logo" id="logo" viewBox="30 70 540 410"></svg>
+<div class="printer" id="printer"></div>
+<div class="bon" id="bon">
+  <div class="shop">REZONDES' DÖNER</div>
+  <div class="number">Bestellung Nr. 042</div>
+  <hr>
+  <div class="item"><span>1x Stream</span><small>mit alles</small></div>
+  <div class="item"><span>1x Gute Laune</span><small>scharf</small></div>
+  <div class="item"><span>1x Chat</span><small>extra Soße</small></div>
+  <hr>
+  <div class="label">FERTIG IN</div>
+  <div class="count" id="count">05:00</div>
+  <hr>
+  <div class="thanks">Danke und guten Appetit!</div>
+  <div class="zig"></div>
+</div>
+<div class="ticker" id="ticker"><div class="run" id="run"></div></div>
+<div class="lights" id="lights"></div>
+<script>
+// Shared drawing for the Kebab reference prototypes (not part of the build): seeded Rough.js ink lines, the chef at
+// the spit, the arc title, the clock (?t=<seconds> freezes a still) and seeded meat shavings and steam for PixiJS.
+// Coordinates of the chef live in a 600 x 520 box like the printed logo; pages map them with `place`.
+(function () {
+  const NS = "http://www.w3.org/2000/svg";
+  const css = getComputedStyle(document.documentElement);
+  const color = (name) => css.getPropertyValue(name).trim();
+  const params = new URLSearchParams(location.search);
+  const still = params.has("t") ? Number(params.get("t")) : null;
+  const started = performance.now();
+  const clock = () => still ?? (performance.now() - started) / 1000;
+  const hash = (n) => { const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+  const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
+
+  function node(tag, attrs, parent) {
+    const element = document.createElementNS(NS, tag);
+    for (const key in attrs) element.setAttribute(key, attrs[key]);
+    if (parent) parent.appendChild(element);
+    return element;
+  }
+
+  let seed = 11;
+  function ink(svg, parent, d, width = 3, stroke = color("--red")) {
+    const group = rough.svg(svg).path(d, { stroke, strokeWidth: width, roughness: 0.55, bowing: 0.6, disableMultiStroke: true, seed: seed++ });
+    group.querySelectorAll("path").forEach((path) => {
+      path.classList.add("ink");
+      path.setAttribute("stroke-linecap", "round");
+      path.setAttribute("stroke-linejoin", "round");
+    });
+    parent.appendChild(group);
+    return group;
+  }
+  function inkEllipse(svg, parent, cx, cy, w, h, width = 3) {
+    const group = rough.svg(svg).ellipse(cx, cy, w, h, { stroke: color("--red"), strokeWidth: width, roughness: 0.5, disableMultiStroke: true, seed: seed++ });
+    group.querySelectorAll("path").forEach((path) => path.classList.add("ink"));
+    parent.appendChild(group);
+    return group;
+  }
+  const fill = (parent, d) => node("path", { d, class: "fill", fill: color("--paper") }, parent);
+
+  // the meat on the spit: a cone of short wavy strokes that slides sideways, so the spit seems to turn
+  const MEAT = "M286 205 C300 199 340 199 354 205 C364 250 364 300 354 340 C348 370 344 395 340 412 L300 412 C296 395 292 370 286 340 C276 300 276 250 286 205 Z";
+  const PERIOD = 42;
+  function hatch() {
+    let d = "";
+    for (let row = 0; row < 32; row++) {
+      const y = 209 + row * 6.3;
+      const offset = hash(row) * PERIOD;
+      const length = 15 + hash(row + 40) * 12;
+      for (let k = -2; k < 8; k++) {
+        const x = 240 + offset + k * PERIOD;
+        const lift = 1.6 + hash(row + 80) * 1.4;
+        d += `M${x.toFixed(1)} ${y.toFixed(1)} q${(length / 4).toFixed(1)} ${-lift} ${(length / 2).toFixed(1)} 0 t${(length / 2).toFixed(1)} 0 `;
+      }
+    }
+    return d;
+  }
+
+  function drawChef(svg, root) {
+    const body = node("g", { class: "chef-body" }, root);
+    const hat = node("g", { class: "chef-hat" }, body);
+    fill(hat, "M178 250 C164 242 160 216 176 206 C170 184 196 170 211 183 C221 167 247 172 249 191 C267 193 270 220 252 230 L251 250 Z");
+    ink(svg, hat, "M178 250 C164 242 160 216 176 206 C170 184 196 170 211 183 C221 167 247 172 249 191 C267 193 270 220 252 230 L251 250");
+    ink(svg, hat, "M178 250 L251 250 M180 250 L182 264 M251 250 L249 264 M182 264 L249 264");
+    ink(svg, hat, "M200 214 C205 228 205 240 203 250 M226 208 C229 226 229 240 227 250", 2.4);
+    ink(svg, body, "M184 264 C178 286 181 305 193 318 C205 330 228 330 240 318 C251 305 252 286 247 264");
+    ink(svg, body, "M247 281 C257 279 259 297 246 299 M184 281 C175 280 174 297 186 299", 2.6);
+    const face = node("g", { class: "chef-face" }, body);
+    ink(svg, face, "M196 276 Q204 270 212 275 M220 275 Q228 270 236 276", 2.6);
+    const eyes = node("g", { class: "chef-eyes" }, face);
+    ink(svg, eyes, "M200 285 Q205 281 210 285 M222 285 Q227 281 232 285", 2.4);
+    node("circle", { cx: 205, cy: 286, r: 2.2, fill: color("--red"), class: "dot" }, eyes);
+    node("circle", { cx: 227, cy: 286, r: 2.2, fill: color("--red"), class: "dot" }, eyes);
+    ink(svg, face, "M215 286 C210 297 211 303 218 302", 2.6);
+    const stache = node("g", { class: "chef-stache" }, face);
+    fill(stache, "M186 313 C192 299 210 301 216 308 C222 301 240 299 246 313 C241 309 234 315 226 316 C221 317 211 317 206 316 C198 315 191 309 186 313 Z");
+    ink(svg, stache, "M186 313 C192 299 210 301 216 308 C222 301 240 299 246 313 C241 309 234 315 226 316 C221 317 211 317 206 316 C198 315 191 309 186 313 Z", 2.8);
+    ink(svg, face, "M207 321 Q216 327 225 321", 2.4);
+    ink(svg, body, "M201 334 L214 340 L201 347 Z M231 334 L218 340 L231 347 Z", 2.4);
+    ink(svg, body, "M196 330 C168 336 152 350 148 372 L142 432 M236 330 C252 336 262 344 268 356");
+    ink(svg, body, "M216 348 L222 432 M199 344 C203 380 205 406 204 432", 2.6);
+    for (const [cx, cy] of [[230, 362], [232, 384], [234, 406], [208, 364], [209, 386], [210, 408]])
+      node("circle", { cx, cy, r: 3.2, fill: "none", stroke: color("--red"), "stroke-width": 2.2, class: "ink" }, body);
+
+    const spit = node("g", { class: "spit" }, root);
+    ink(svg, spit, "M298 164 L342 164 M320 164 L320 204 M320 412 L320 448", 3.4);
+    ink(svg, body, "M268 356 C276 370 280 384 284 396", 2.8);
+    const meat = node("g", { class: "meat" }, root);
+    node("clipPath", { id: "meatClip" }, root).appendChild(node("path", { d: MEAT }));
+    fill(meat, MEAT);
+    const strokes = node("g", { "clip-path": "url(#meatClip)" }, meat);
+    const turning = node("path", { d: hatch(), fill: "none", stroke: color("--red"), "stroke-width": 2, "stroke-linecap": "round", class: "hatch" }, strokes);
+    ink(svg, meat, MEAT, 3.2);
+
+    const arm = node("g", { class: "chef-arm" }, root);
+    fill(arm, "M150 362 C137 384 141 404 160 410 L220 401 C236 405 248 397 245 387 C242 378 230 376 218 383 L174 391 C167 388 164 380 166 368 Z");
+    ink(svg, arm, "M150 362 C137 384 141 404 160 410 L220 401 M166 368 C164 380 167 388 174 391 L218 383");
+    ink(svg, arm, "M218 383 C230 376 242 378 245 387 C248 397 236 405 220 401", 2.8);
+    ink(svg, arm, "M200 386 L203 405", 2.4);
+    fill(arm, "M262 377 L424 309 L427 316 L266 388 Z");
+    ink(svg, arm, "M238 384 L262 377 L266 388 L242 395 Z", 2.8);
+    ink(svg, arm, "M262 377 L424 309 L427 316 L266 388", 2.8);
+
+    const counter = node("g", { class: "counter" }, root);
+    ink(svg, counter, "M132 432 L438 432", 3.6);
+    const plate = node("g", { class: "plate" }, root);
+    inkEllipse(svg, plate, 296, 458, 150, 24, 3);
+    inkEllipse(svg, plate, 296, 458, 100, 13, 2.2);
+    return { body, hat, eyes, stache, spit, meat, turning, arm, counter, plate };
+  }
+
+  // the spit turns: the strokes slide by `PERIOD` and wrap without a seam
+  function turn(parts, t, speed = 18) { parts.turning.setAttribute("transform", `translate(${-((t * speed) % PERIOD)} 0)`); }
+  // idle life of the chef as pure functions of t: sawing knife, bobbing hat, twitching moustache, blinking
+  function idle(parts, t) {
+    const saw = Math.sin(t * 5.2);
+    parts.arm.setAttribute("transform", `rotate(${(saw * 2.6).toFixed(2)} 150 362) translate(${(saw * 5).toFixed(2)} ${(-saw * 2).toFixed(2)})`);
+    parts.hat.setAttribute("transform", `rotate(${(Math.sin(t * 2.6) * 1.6).toFixed(2)} 215 262)`);
+    parts.stache.setAttribute("transform", `rotate(${(Math.sin(t * 9) * (Math.sin(t * 0.9) > 0.7 ? 3 : 0)).toFixed(2)} 216 310)`);
+    const blink = (t % 4.2) < 0.12;
+    parts.eyes.setAttribute("transform", blink ? "translate(0 285) scale(1 0.15) translate(0 -285)" : "");
+    turn(parts, t);
+  }
+
+  // letters of a word on an arc like the printed logo: wide letters take more of the angle
+  function arcTitle(parent, text, cx, cy, radius, spanDeg, size) {
+    const group = node("g", { class: "arc" }, parent);
+    const letters = [...text].map((char) => {
+      const holder = node("g", {}, group);
+      const letter = node("text", { "text-anchor": "middle", class: "arc-letter", "font-size": size }, holder);
+      letter.textContent = char;
+      return { char, holder, letter };
+    });
+    const widths = letters.map(({ char, letter }) => char === " " ? size * 0.35 : letter.getComputedTextLength() + size * 0.06);
+    const total = widths.reduce((sum, width) => sum + width, 0);
+    let run = 0;
+    letters.forEach(({ holder }, index) => {
+      const angle = (-spanDeg / 2 + spanDeg * (run + widths[index] / 2) / total);
+      run += widths[index];
+      const radians = angle * Math.PI / 180;
+      holder.setAttribute("transform", `translate(${(cx + radius * Math.sin(radians)).toFixed(1)} ${(cy - radius * Math.cos(radians)).toFixed(1)}) rotate(${angle.toFixed(1)})`);
+    });
+    return letters.filter(({ char }) => char !== " ").map(({ letter }) => letter);
+  }
+
+  // falling shavings: shaving i leaves the knife at start + i * gap, falls for `fall` seconds and stays on the pile
+  function shavings(t, { start, gap = 0.16, fall = 0.8, max = 140, fromX = 334, fromY = 356, plateX = 296, plateY = 452 }) {
+    const list = [];
+    const count = clamp(Math.floor((t - start) / gap) + 1, 0, max);
+    for (let index = 0; index < count; index++) {
+      const born = start + index * gap;
+      const progress = clamp((t - born) / fall, 0, 1);
+      const spread = (hash(index + 3) - 0.5) * 2;
+      const landX = plateX + spread * 48;
+      const pile = Math.min(index, 90) / 90 * 10;
+      const landY = plateY - 2 - pile * (1 - spread * spread) - hash(index + 9) * 3;
+      const sourceX = fromX + (hash(index) - 0.5) * 30;
+      const sourceY = fromY + (hash(index + 7) - 0.5) * 22;
+      list.push({
+        x: sourceX + (landX - sourceX) * progress + Math.sin(progress * Math.PI) * (hash(index + 11) - 0.5) * 30,
+        y: sourceY + (landY - sourceY) * progress * progress,
+        angle: (hash(index + 5) - 0.5) * 0.9 + (1 - progress) * (3 + hash(index + 13) * 5),
+        size: 10 + hash(index + 17) * 7,
+      });
+    }
+    return list;
+  }
+
+  // steam over the spit: three wisps rise and fade in a loop
+  function steam(t, { x = 320, y = 196, height = 120 } = {}) {
+    return [0, 1, 2].map((wisp) => {
+      const phase = (t * 0.32 + wisp / 3) % 1;
+      const baseX = x + (wisp - 1) * 22;
+      const points = [];
+      for (let step = 0; step <= 8; step++) {
+        const along = step / 8;
+        points.push({ x: baseX + Math.sin(along * 5 + t * 1.7 + wisp * 2) * 9 * along, y: y - phase * height * 0.5 - along * height * 0.5 });
+      }
+      return { points, alpha: Math.sin(phase * Math.PI) * 0.45 };
+    });
+  }
+
+  // draws shavings and steam into a PixiJS Graphics, mapped by `place` (box to page pixels)
+  function paintFood(graphics, place, t, shavingOptions, steamOptions) {
+    graphics.clear();
+    const red = parseInt(color("--red").slice(1), 16);
+    const steamColor = parseInt((color("--steam") || color("--red")).slice(1), 16);
+    if (steamOptions) for (const wisp of steam(t, steamOptions)) {
+      const [first, ...rest] = wisp.points.map(place.point);
+      graphics.moveTo(first.x, first.y);
+      for (const point of rest) graphics.lineTo(point.x, point.y);
+      graphics.stroke({ width: 2.4 * place.scale, color: steamColor, alpha: wisp.alpha, cap: "round", join: "round" });
+    }
+    if (shavingOptions) for (const shaving of shavings(t, shavingOptions)) {
+      const center = place.point(shaving);
+      const reach = shaving.size * place.scale / 2;
+      const cos = Math.cos(shaving.angle), sin = Math.sin(shaving.angle);
+      graphics.moveTo(center.x - cos * reach, center.y - sin * reach)
+        .quadraticCurveTo(center.x - sin * reach * 0.7, center.y + cos * reach * 0.7, center.x + cos * reach, center.y + sin * reach)
+        .stroke({ width: 2.6 * place.scale, color: red, cap: "round" });
+    }
+  }
+
+  // maps box coordinates to page pixels for an svg placed at left/top with a scale
+  function place(left, top, scale, boxX = 0, boxY = 0) {
+    return { scale, point: ({ x, y }) => ({ x: left + (x - boxX) * scale, y: top + (y - boxY) * scale }) };
+  }
+
+  window.KebabArt = { NS, node, ink, inkEllipse, fill, drawChef, idle, turn, arcTitle, paintFood, place, clock, still, hash, clamp, color };
+})();
+</script>
+<script type="module">
+const { drawChef, idle, turn, arcTitle, paintFood, place, clock, still } = window.KebabArt;
+gsap.registerPlugin(DrawSVGPlugin);
+await document.fonts.ready;
+
+const svg = document.getElementById("logo");
+const letters = arcTitle(svg, "DÖNER KEBAB", 300, 640, 470, 66, 72);
+const parts = drawChef(svg, svg);
+const SCALE = 940 / 410;
+const mapping = place(120, 60, SCALE, 30, 70);
+
+const ticker = "Frisch vom Spieß   •   Mit alles und scharf   •   Gleich geht's los   •   Zwiebeln? Klar!   •   ";
+document.getElementById("run").textContent = ticker.repeat(6);
+
+const app = new PIXI.Application();
+await app.init({ width: 1920, height: 1080, backgroundAlpha: 0, antialias: true, autoStart: false });
+document.body.insertBefore(app.canvas, document.getElementById("printer"));
+const food = new PIXI.Graphics();
+app.stage.addChild(food);
+
+const ink = (selector) => svg.querySelectorAll(selector);
+const master = gsap.timeline({ paused: true });
+master
+  .set("#lights", { opacity: 1 })
+  .to("#lights", { opacity: 0.55, duration: 0.06 }, 0.15).to("#lights", { opacity: 1, duration: 0.05 }, 0.24)
+  .to("#lights", { opacity: 0.25, duration: 0.06 }, 0.36).to("#lights", { opacity: 0.8, duration: 0.05 }, 0.44)
+  .to("#lights", { opacity: 0, duration: 0.3 }, 0.55)
+  .from(letters, { scale: 0, y: -30, transformOrigin: "50% 70%", duration: 0.45, ease: "back.out(2.6)", stagger: 0.06 }, 0.6)
+  .from(ink(".chef-body .ink"), { drawSVG: "0%", duration: 0.9, ease: "power1.inOut", stagger: 0.025 }, 1.0)
+  .from(ink(".chef-body .dot"), { opacity: 0, duration: 0.2 }, 1.8)
+  .from(ink(".spit .ink, .meat .ink"), { drawSVG: "0%", duration: 0.8, ease: "power1.inOut", stagger: 0.05 }, 1.5)
+  .from(ink(".hatch"), { opacity: 0, duration: 0.5 }, 2.1)
+  .from(ink(".chef-arm .ink, .counter .ink, .plate .ink"), { drawSVG: "0%", duration: 0.7, ease: "power1.inOut", stagger: 0.04 }, 2.0)
+  .from(ink(".fill"), { opacity: 0, duration: 0.4 }, 1.4)
+  .from("#printer", { y: -200, duration: 0.5, ease: "back.out(1.6)" }, 2.4)
+  .from("#bon", { clipPath: "inset(0 0 100% 0)", duration: 1.1, ease: "steps(14)" }, 2.8)
+  .from("#ticker", { y: 80, duration: 0.5, ease: "power3.out" }, 3.2);
+
+const COUNTDOWN = 300;
+const run = document.getElementById("run");
+const count = document.getElementById("count");
+function frame() {
+  const t = clock();
+  master.seek(Math.min(t, master.duration()), false);
+  if (t > 2.6) idle(parts, t - 2.6); else turn(parts, t);
+  const left = Math.max(0, Math.ceil(COUNTDOWN - Math.max(0, t - 3)));
+  count.textContent = `${String(Math.floor(left / 60)).padStart(2, "0")}:${String(left % 60).padStart(2, "0")}`;
+  run.style.transform = `translateX(${-((t * 90) % (run.scrollWidth / 6))}px)`;
+  paintFood(food, mapping, t, { start: 3.2 }, t > 2.4 ? { height: 70 } : null);
+  app.renderer.render(app.stage);
+  if (still === null) requestAnimationFrame(frame);
+}
+frame();
+document.body.dataset.ready = "1";
+</script>
+</body>
+</html>
