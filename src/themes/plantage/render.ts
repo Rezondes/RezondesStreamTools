@@ -10,9 +10,8 @@ import type { PaintOptions } from "./paint.ts";
 import type { PlantageValues } from "./settings.ts";
 import { drawPlantageStinger, HEIGHT, WIDTH, type PlantageStingerOptions } from "./stinger.ts";
 
-// Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
-const BANNER_LOOP = 6;
-const BANNER_FPS = 1;
+// Banners are one picture (the dashboard saves their first frame as a PNG); duration and frame rate only fill the clip
+const STILL = 1;
 
 // The world of the scenes for a banner: day or evening sky, the world settings, the channel name on the crate
 function paintOf(field: PlantageValues, sky: [string, string], label: string): PaintOptions {
@@ -23,7 +22,7 @@ function paintOf(field: PlantageValues, sky: [string, string], label: string): P
       leafDark: field.leafDark, leaf: field.leaf, leafLight: field.accent2, mango: field.mango, mangoBlush: field.mangoBlush, gloss: field.paper, shadow: field.textOnWood,
     },
     seed: field.worldSeed, treeRowsFar: field.treeRowsFar, treeRowsMid: field.treeRowsMid, farBlur: field.farBlur, hazeFar: field.hazeFar / 100,
-    sway: field.swayAmount, loop: BANNER_LOOP, label: field.crates && field.crateName ? label : "", labelFont: field.titleFont,
+    sway: field.swayAmount, label: field.crates && field.crateName ? label : "", labelFont: field.titleFont,
   };
 }
 
@@ -39,7 +38,7 @@ export function plantageClips(values: SettingValues, login: string): RenderClip[
   };
   const label = field.channelName.toUpperCase();
   const banner: PlantageBannerOptions = {
-    loop: BANNER_LOOP, font: field.font, titleFont: field.titleFont, textColor: field.textColor, textOnWood: field.textOnWood, paper: field.paper, shadow: field.soilDark,
+    font: field.font, titleFont: field.titleFont, textColor: field.textColor, textOnWood: field.textOnWood, paper: field.paper, shadow: field.soilDark,
     day: paintOf(field, [field.skyDayTop, field.skyDayBottom], label), evening: paintOf(field, [field.skyEveningTop, field.skyEveningBottom], label),
     title: fillTemplate(field.bannerTitle, names), profileText: field.bannerProfileText,
     offlineTitle: field.bannerOfflineTitle, offlineText: field.bannerOfflineText, offlineLines: field.bannerOfflineLines,
@@ -48,8 +47,8 @@ export function plantageClips(values: SettingValues, login: string): RenderClip[
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawPlantageStinger(context, time, stinger) }, options),
-    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageProfileBanner(context, time, banner) },
-    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, draw: (context, time) => drawPlantageOfflineBanner(context, time, { ...banner, title: fillTemplate(field.bannerOfflineName, names) }) },
+    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: STILL, duration: STILL, cut: null, draw: context => drawPlantageProfileBanner(context, banner) },
+    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: STILL, duration: STILL, cut: null, draw: context => drawPlantageOfflineBanner(context, { ...banner, title: fillTemplate(field.bannerOfflineName, names) }) },
   ];
 }
 

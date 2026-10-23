@@ -33,7 +33,7 @@ Grundsätze für alle Themes: [DESIGN.md](../../../../DESIGN.md).
   - Befehlsseite: Titel im Verlauf, je Abschnitt eine Karte mit den Befehlen als Chips.
 - **Minimes:** keine (die Szene bleibt leer, der Server ignoriert die Befehle).
 - **Stinger:** Streifen im Verlauf gleiten von links herein, decken am Übergangspunkt alles, zeigen kurz den Text.
-- **Banner:** dunkler Grund mit zwei Farbflächen, die einmal je Schleife kreisen, Titel und Text.
+- **Banner:** Standbild: dunkler Grund mit zwei Farbflächen, Titel und Text.
 
 ## Im Code
 

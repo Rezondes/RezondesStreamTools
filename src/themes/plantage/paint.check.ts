@@ -1,5 +1,5 @@
-// Check for paint.ts of the Plantage theme: the world covers any picture size, far layers blur, the picture at the loop
-// end equals the first one and the trees lean in between, the crate carries the label. A mock canvas records the calls.
+// Check for paint.ts of the Plantage theme: the world covers any picture size, far layers blur, the same options paint
+// the same picture, the trees lean with sway, the crate carries the label. A mock canvas records the calls.
 // Runs with npm test.
 import assert from "node:assert/strict";
 import { coverOf, paintShapes, paintWorld } from "./paint.ts";
@@ -20,7 +20,7 @@ const colors = {
   wood: "#c8935a", woodDark: "#7a4a24", sky: "#c8ecff", trunk: "#6d4c2f", trunkDark: "#7a4a24", leafDark: "#1d5e27", leaf: "#2f8f3a", leafLight: "#4caf50",
   mango: "#ffb02e", mangoBlush: "#ff5e3a", gloss: "#fff6df", shadow: "#3a2410",
 };
-const options = { colors, seed: 42, treeRowsFar: 11, treeRowsMid: 8, farBlur: 1.5, hazeFar: 0.55, sway: 1, loop: 6, label: "PLANTAGE", labelFont: "Fredoka" };
+const options = { colors, seed: 42, treeRowsFar: 11, treeRowsMid: 8, farBlur: 1.5, hazeFar: 0.55, sway: 1, label: "PLANTAGE", labelFont: "Fredoka" };
 
 // Cover: the scaled world is at least as large as the picture and centered
 for (const [width, height] of [[1200, 480], [1920, 1080], [800, 800]]) {
@@ -31,21 +31,19 @@ for (const [width, height] of [[1200, 480], [1920, 1080], [800, 800]]) {
 
 // Painted: blur in the distance, the label on the crate, the mango color in the trees
 const frame = recorder();
-paintWorld(frame.context, 1200, 480, options, 0);
+paintWorld(frame.context, 1200, 480, options);
 assert.ok(frame.calls.some(call => call[0] === "set filter" && String(call[1]).startsWith("blur(")));
 assert.ok(frame.calls.some(call => call[0] === "fillText" && call[1] === "PLANTAGE"));
 assert.ok(frame.calls.some(call => call[0] === "set fillStyle" && call[1] === colors.mango));
 
-// Seamless loop, the trees lean in between
-const end = recorder();
-paintWorld(end.context, 1200, 480, options, options.loop);
-assert.deepEqual(end.calls, frame.calls);
-const middle = recorder();
-paintWorld(middle.context, 1200, 480, options, options.loop / 4);
+// A still: the same picture again; the trees lean with sway, not without
+const again = recorder();
+paintWorld(again.context, 1200, 480, options);
+assert.deepEqual(again.calls, frame.calls);
 const turns = (calls: unknown[][]) => calls.filter(call => call[0] === "rotate").map(call => call[1]);
-assert.notDeepEqual(turns(middle.calls), turns(frame.calls));
+assert.ok(turns(frame.calls).some(turn => turn !== 0), "trees lean with sway");
 const still = recorder();
-paintWorld(still.context, 1200, 480, { ...options, sway: 0 }, options.loop / 4);
+paintWorld(still.context, 1200, 480, { ...options, sway: 0 });
 assert.ok(turns(still.calls).every(turn => turn === 0), "no sway without sway");
 
 // Shapes: every kind becomes a path

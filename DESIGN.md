@@ -62,7 +62,8 @@ gemacht oder ersetzt, nicht trotzdem benutzt.
   `<id>-*`. Warum: mehrere Themes laufen in einem Build, ohne sich zu stören.
 - **Formen statt Bilder:** Kulissen, Symbole und Figuren sind SVG-Pfade im Theme (nur Formen, keine Farben); gefärbt wird
   über CSS-Klassen (`part-main`, `part-detail`, `part-line`). So bleiben alle Farben einstellbar.
-- **Stinger und Banner** sind reine Funktionen der Zeit (deterministisch, Banner schliessen nach einer Schleife nahtlos).
+- **Stinger und Banner** sind deterministisch: der Stinger ist eine reine Funktion der Zeit, Banner sind Standbilder
+  (das Dashboard speichert ein PNG).
 - **Befehlsseite** (`/s/<login>/`): jedes Theme zeigt sie in seinem Look (`scenes/Info.tsx`). Sie ist eine normale,
   scrollbare Seite für Zuschauer, die Kulisse steht fest dahinter.
 

@@ -291,14 +291,14 @@ Musik als Zettel, Kassette oder schlicht (`musicStyle`); Effekte als Sprühschri
       danach ist der Rand frei.
 - [ ] AC2: Zweimal derselbe Zeitpunkt mit denselben Einstellungen ergibt dieselben Zeichenbefehle (aufzeichnender
       Canvas-Mock wie in den anderen `*.check.ts` der Clips).
-- [ ] AC3: Die Banner schliessen nach einer Schleife nahtlos (erstes und letztes Bild gleich).
+- [ ] AC3: Die Banner sind Standbilder (jedes Zeichnen gibt dasselbe Bild).
 - [ ] AC4 (manuell): Rendern im Dashboard, Stinger in OBS als Übergang.
 
 ### Tests (TDD)
 
 1. `stinger.check.ts > "deckt am Übergangspunkt"` (AC1)
 2. `stinger.check.ts > "deterministisch"` (AC2)
-3. `banners.check.ts > "Schleife nahtlos"` (AC3)
+3. `banners.check.ts > "Standbild"` (AC3)
 4. `paint.check.ts > "Kritzeleien auf dem Canvas"`: dieselben Pfade wie in SVG, Glow nur auf Magenta und Cyan
 
 ### Out of Scope

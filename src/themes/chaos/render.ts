@@ -12,9 +12,8 @@ import type { ChaosColors } from "./paint.ts";
 import type { ChaosValues } from "./settings.ts";
 import { HEIGHT, makeChaosStinger, type TakesOf, WIDTH, type ChaosStingerOptions } from "./stinger.ts";
 
-// Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
-const BANNER_LOOP = 4;
-const BANNER_FPS = 1;
+// Banners are one picture (the dashboard saves their first frame as a PNG); duration and frame rate only fill the clip
+const STILL = 1;
 
 type Draw = (context: CanvasRenderingContext2D, time: number) => void;
 
@@ -47,15 +46,15 @@ export function chaosClips(values: SettingValues, login: string): RenderClip[] {
     ...shared, boilFps: chaos.idleOn && chaos.boilOn ? chaos.boilFps : 0, duration: chaos.stingerDuration, cut: chaos.stingerCut, text: fillTemplate(chaos.stingerText, names), textSize: chaos.stingerTextSize,
   };
   const banner: ChaosBannerOptions = {
-    ...shared, loop: BANNER_LOOP, font: chaos.font, title: fillTemplate(chaos.bannerTitle, names), profileText: chaos.bannerProfileText,
+    ...shared, font: chaos.font, title: fillTemplate(chaos.bannerTitle, names), profileText: chaos.bannerProfileText,
     offlineTitle: chaos.bannerOfflineTitle, offlineText: chaos.bannerOfflineText, shimmer: chaos.idleOn ? chaos.bristleShimmer : 0,
   };
   const font = `24px "${chaos.titleFont}"`;
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, prepare, draw: clipDraw(takes => makeChaosStinger(stinger, undefined, takes)) }, options),
-    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(takes => makeChaosProfileBanner(banner, undefined, takes)) },
-    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(takes => makeChaosOfflineBanner({ ...banner, title: fillTemplate(chaos.bannerOfflineName, names) }, undefined, takes)) },
+    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(takes => makeChaosProfileBanner(banner, undefined, takes)) },
+    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(takes => makeChaosOfflineBanner({ ...banner, title: fillTemplate(chaos.bannerOfflineName, names) }, undefined, takes)) },
   ];
 }
 

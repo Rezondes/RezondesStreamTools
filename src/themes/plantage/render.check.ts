@@ -1,4 +1,4 @@
-// Check for render.ts of the Plantage theme: three clips with groups, length, transition point and loop from the
+// Check for render.ts of the Plantage theme: three clips with groups, length and transition point from the
 // settings; the same settings give the same pictures. Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
@@ -10,7 +10,7 @@ assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.heig
 assert.equal(clips[0].duration, 1.5);
 assert.equal(clips[0].cut, 0.8);
 assert.equal(clips[1].fps, 1);
-assert.equal(clips[2].duration, 6);
+assert.equal(clips[2].duration, 1);
 assert.match(clips[0].font, /Fredoka/);
 
 // Clips: the same settings give the same pictures (a mock canvas records every call)

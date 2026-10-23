@@ -1,5 +1,5 @@
-// Check for render.ts of the standard theme: three clips with groups, length, transition point and loop from the
-// settings. Runs with npm test.
+// Check for render.ts of the standard theme: three clips with groups, length and transition point from the settings,
+// the banners as stills. Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
 import { standardClips } from "./render.ts";
@@ -9,7 +9,7 @@ const clips = standardClips(resolveSettings(standardSettings, { stingerDuration:
 assert.deepEqual(clips.map(clip => [clip.name, clip.group]), [["stinger", "Stinger"], ["profile", "Profilbanner"], ["offline", "Offline-Banner"]]);
 assert.equal(clips[0].duration, 1.5);
 assert.equal(clips[0].cut, 0.7);
-assert.equal(clips[2].duration, 6);
+assert.equal(clips[2].duration, 1);
 
 // Clips: the same settings give the same frames; the light fields follow the settings (here switched off)
 function frame(values: Record<string, unknown>, time: number) {

@@ -2,15 +2,15 @@
 // (scenes/Alerts.tsx, overlays.css): a dimension line with its text above a blueprint sheet with millimetre grid, white
 // edge and terracotta corner marks; inside the spaced head line in copper, the name in terracotta with a glow, the line
 // in white and the timer bar. All sizes are those of the alert, scaled from its width to the width of the sign. The
-// offline banner adds rain behind the sign. Every moving part is a whole number of laps per loop, so the last frame meets
-// the first. Check: banners.check.ts.
+// offline banner adds rain behind the sign. Both are still pictures (the dashboard saves a PNG); the timer bar is full.
+// Check: banners.check.ts.
 import { hash } from "../../core/hash.ts";
 
 export type BannerColors = { blueprint: string; page: string; accent: string; copper: string; line: string; rainColor: string };
 // dim: text over the dimension line, tag: head line, title: the name, line: the line under it
 export type BannerText = { dim: string; tag: string; title: string; line: string };
 export type BannerOptions = {
-  width: number; height: number; loop: number; font: string; fontSize: number; alertWidth: number; grid: number; glow: number;
+  width: number; height: number; font: string; fontSize: number; alertWidth: number; grid: number; glow: number;
   rain: boolean; drops: number; seed: number; colors: BannerColors;
 };
 type Box = { x: number; y: number; w: number; h: number };
@@ -24,19 +24,11 @@ const SIGN = {
 const SIGN_WIDTH = { profile: 0.78, offline: 0.5 };
 const GRID = { major: 0.1, fine: 0.04, page: 0.04 };
 const SHEET_OPACITY = 0.9;
-// Rain: falls per loop between 2 and 4, streak length and slant as shares of the height
-const RAIN = { laps: [2, 3, 4], length: 0.035, slant: 0.006, opacity: 0.55 };
-const TAU = Math.PI * 2;
+// Rain: streak length and slant as shares of the height
+const RAIN = { length: 0.035, slant: 0.006, opacity: 0.55 };
 
-// Fallen share of drop index at time (0 at the top, 1 at the bottom): a whole number of falls per loop, so time 0 and
-// time loop are the same
-export function dropFall(index: number, time: number, loop: number, seed: number): number {
-  const laps = RAIN.laps[Math.floor(hash(seed * 31 + index) * RAIN.laps.length)];
-  return (hash(seed * 17 + index) + (laps * time) / loop) % 1;
-}
-
-// Length of the timer bar (0 to 1): it pulls back like the alert timer and runs out again, once per loop
-export const timerAt = (time: number, loop: number) => (1 + Math.cos((time / loop) * TAU)) / 2;
+// How far drop index has fallen (0 at the top, 1 at the bottom), spread over the height
+export const dropFall = (index: number, seed: number) => hash(seed * 17 + index);
 
 function grid(context: CanvasRenderingContext2D, box: Box, step: number, color: string, alpha: number) {
   context.save();
@@ -117,7 +109,7 @@ function sheet(context: CanvasRenderingContext2D, box: Box, scale: number, optio
   context.stroke();
 }
 
-function rain(context: CanvasRenderingContext2D, time: number, options: BannerOptions) {
+function rain(context: CanvasRenderingContext2D, options: BannerOptions) {
   const { width, height, colors } = options;
   const length = height * RAIN.length;
   context.save();
@@ -127,7 +119,7 @@ function rain(context: CanvasRenderingContext2D, time: number, options: BannerOp
   context.beginPath();
   for (let index = 0; index < options.drops; index++) {
     const x = hash(options.seed * 7 + index) * width;
-    const y = dropFall(index, time, options.loop, options.seed) * (height + length) - length;
+    const y = dropFall(index, options.seed) * (height + length) - length;
     context.moveTo(x, y);
     context.lineTo(x - height * RAIN.slant, y + length);
   }
@@ -136,13 +128,13 @@ function rain(context: CanvasRenderingContext2D, time: number, options: BannerOp
 }
 
 // The alert sign scaled to share of the banner width, centred: dimension line, sheet, head line, name, line, timer bar
-function banner(context: CanvasRenderingContext2D, time: number, options: BannerOptions, words: BannerText, share: number, wet: boolean) {
+function banner(context: CanvasRenderingContext2D, options: BannerOptions, words: BannerText, share: number, wet: boolean) {
   const { width, height, colors, fontSize, font } = options;
   context.clearRect(0, 0, width, height);
   context.fillStyle = colors.page;
   context.fillRect(0, 0, width, height);
   grid(context, { x: 0, y: 0, w: width, h: height }, options.grid, colors.line, GRID.page);
-  if (wet) rain(context, time, options);
+  if (wet) rain(context, options);
 
   const signWidth = width * share;
   const scale = signWidth / options.alertWidth;
@@ -172,11 +164,11 @@ function banner(context: CanvasRenderingContext2D, time: number, options: Banner
   y += SIGN.gap * scale;
   const barWidth = box.w - 2 * SIGN.padX * scale;
   context.fillStyle = colors.accent;
-  context.fillRect(box.x + SIGN.padX * scale, y, barWidth * timerAt(time, options.loop), sizes.timer);
+  context.fillRect(box.x + SIGN.padX * scale, y, barWidth, sizes.timer);
 }
 
-export const drawProfile = (context: CanvasRenderingContext2D, time: number, options: BannerOptions, words: BannerText) =>
-  banner(context, time, options, words, SIGN_WIDTH.profile, false);
+export const drawProfile = (context: CanvasRenderingContext2D, options: BannerOptions, words: BannerText) =>
+  banner(context, options, words, SIGN_WIDTH.profile, false);
 
-export const drawOffline = (context: CanvasRenderingContext2D, time: number, options: BannerOptions, words: BannerText) =>
-  banner(context, time, options, words, SIGN_WIDTH.offline, options.rain);
+export const drawOffline = (context: CanvasRenderingContext2D, options: BannerOptions, words: BannerText) =>
+  banner(context, options, words, SIGN_WIDTH.offline, options.rain);

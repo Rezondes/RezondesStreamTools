@@ -1,9 +1,9 @@
 // Banners of the Bärenbande theme, drawn from the character model and the world (paint.ts): the profile banner (1200 x 480)
 // shows the meadow at noon with forest edge, city and bridge, the channel name and a text on a paper sign and the chosen
 // bear (or the tower); the offline banner (1920 x 1080) the evening in front of the cave with a string of fairy lights, the
-// chosen bear asleep with rising z and a paper card with title, text and lines. Clouds, lights and z run in one seamless
-// loop (frame 0 = frame at the loop end). The world comes from a painter (the watercolor of clipWorld.ts once render.ts
-// has loaded it, the flat drawWorld before); the awake bear waves its arm with boneMotion.ts. Pure functions of time.
+// chosen bear asleep with z above it and a paper card with title, text and lines. Both are still pictures (the
+// dashboard saves a PNG). The world comes from a painter (the watercolor of clipWorld.ts once render.ts has loaded it,
+// the flat drawWorld before); the awake bear raises its arm to wave (boneMotion.ts).
 // Check: banners.check.ts.
 import { isBearChoice, TOWER, type BearId } from "./bears.ts";
 import { waveAt, waveLoop } from "./boneMotion.ts";
@@ -16,7 +16,6 @@ export type WorldPainter = (context: CanvasRenderingContext2D, colors: WorldColo
 export const flatWorld: WorldPainter = (context, colors, drift, time) => drawWorld(context, colors, drift, LIGHT[time], time === "nacht");
 
 export type BearsBannerOptions = {
-  loop: number; // seconds
   font: string;
   titleFont: string;
   palette: Palette;
@@ -42,6 +41,9 @@ const TURN = Math.PI * 2;
 // fixed: poses for awake and asleep
 const AWAKE: Record<BearId, PoseName> = { eisbaer: "wave", grizzly: "wave", panda: "wave" };
 const ASLEEP: Record<BearId, PoseName> = { eisbaer: "sleep", grizzly: "sleep", panda: "sleep" };
+// fixed: the moment of the still: the clouds at their start, the three z at a sixth, half and five sixths of their rise
+// (so all of them show)
+const STILL_PHASE = 1 / 6;
 // fixed: the offline card: its center, smallest width, room beside the title, how far right it may reach, title size
 const OFFLINE_CARD = { x: 1330, width: 860, padding: 70, right: 1880, titleSize: 92 };
 
@@ -85,32 +87,30 @@ function line(context: CanvasRenderingContext2D, text: string, x: number, y: num
   context.fillText(text, x - width / 2, y);
 }
 
-// The awake bear of the profile banner waves, a whole number of waves per loop so the loop stays seamless; the tower stands
-function awake(context: CanvasRenderingContext2D, time: number, options: BearsBannerOptions) {
+// The awake bear of the profile banner with its arm raised to wave; the tower stands
+function awake(context: CanvasRenderingContext2D, options: BearsBannerOptions) {
   const [x, baseY, height] = [230, 462, 330];
   const bear = isBearChoice(options.profileBear) && options.profileBear !== TOWER ? options.profileBear : null;
   if (!bear) return drawHero(context, options.profileBear, AWAKE, x, baseY, height, options.palette);
-  const speed = (Math.max(1, Math.round(options.loop / waveLoop(1))) * waveLoop(1)) / options.loop;
-  drawBear(context, bear, AWAKE[bear], x, baseY, height, options.palette, 1, 0, {}, { arm: waveAt(time, speed) });
+  drawBear(context, bear, AWAKE[bear], x, baseY, height, options.palette, 1, 0, {}, { arm: waveAt(waveLoop(1) / 2, 1) });
 }
 
-export function drawBearsProfileBanner(context: CanvasRenderingContext2D, time: number, options: BearsBannerOptions) {
+export function drawBearsProfileBanner(context: CanvasRenderingContext2D, options: BearsBannerOptions) {
   const width = 1200;
   const height = 480;
-  const phase = (time / options.loop) % 1;
   const scale = width / WORLD.width;
   context.save();
   context.translate(0, height - WORLD.height * scale);
   context.scale(scale, scale);
-  (options.world ?? flatWorld)(context, options.day, phase, "mittag");
+  (options.world ?? flatWorld)(context, options.day, 0, "mittag");
   context.restore();
-  awake(context, time, options);
+  awake(context, options);
   card(context, 520, 120, 600, 230, options);
   title(context, options.title, 820, 205, 76, options);
   line(context, options.profileText, 820, 290, 30, options.textDark, options);
 }
 
-// A string of lights along the cave mouth, twinkling once per loop
+// A string of lights along the cave mouth, each bulb at its own brightness
 function fairyLights(context: CanvasRenderingContext2D, phase: number, options: BearsBannerOptions) {
   const bulbs = 11;
   context.strokeStyle = options.palette.outline;
@@ -132,7 +132,7 @@ function fairyLights(context: CanvasRenderingContext2D, phase: number, options: 
   context.globalAlpha = 1;
 }
 
-// Three z rise above the sleeping bear, one after another, once per loop
+// Three z above the sleeping bear, one after another on their way up
 function sleep(context: CanvasRenderingContext2D, phase: number, options: BearsBannerOptions) {
   context.font = `800 54px "${options.titleFont}", sans-serif`;
   context.fillStyle = options.palette.paper;
@@ -147,12 +147,11 @@ function sleep(context: CanvasRenderingContext2D, phase: number, options: BearsB
   context.globalAlpha = 1;
 }
 
-export function drawBearsOfflineBanner(context: CanvasRenderingContext2D, time: number, options: BearsBannerOptions) {
-  const phase = (time / options.loop) % 1;
-  (options.world ?? flatWorld)(context, options.evening, phase, "abend");
-  if (options.lights) fairyLights(context, phase, options);
+export function drawBearsOfflineBanner(context: CanvasRenderingContext2D, options: BearsBannerOptions) {
+  (options.world ?? flatWorld)(context, options.evening, 0, "abend");
+  if (options.lights) fairyLights(context, STILL_PHASE, options);
   drawHero(context, options.offlineBear, ASLEEP, 340, 900, 420, options.palette);
-  sleep(context, phase, options);
+  sleep(context, STILL_PHASE, options);
   // The card grows with a long title up to the right edge, beyond that the title gets smaller
   context.font = `800 ${OFFLINE_CARD.titleSize}px "${options.titleFont}", sans-serif`;
   const words = context.measureText(options.offlineTitle).width;

@@ -351,7 +351,7 @@ Alert-Prototyp `refs/alert.html` gilt nur das Schild mit Masslinie.
 
 **Betroffene Dateien:**
 - Neu: `stinger.ts`, `stinger.check.ts` (Plattenfeld über das Bild: Klappwinkel je Platte aus der Zeit),
-  `banners.ts`, `banners.check.ts` (Profil: Haus im Abendlicht, Offline: Dach im Regen als Schleife), beide mit
+  `banners.ts`, `banners.check.ts` (Profil: Haus im Abendlicht, Offline: Dach im Regen, beide als Standbild), beide mit
   `glClip` und den Modulen aus Package 1 und 2, `render.check.ts`
 - Ändern: `render.ts` (`dachdeckerClips` liefert `stinger`, `profile`, `offline`), `settings.ts`, `dachdecker.rs`,
   Fixture, erzeugte Typen
@@ -376,20 +376,20 @@ nicht aus einem fortlaufenden Zustand: Für jedes Bild wird die Lage jedes Tropf
 | Gruppe | Schlüssel (Standard) |
 |---|---|
 | Stinger | `stingerText` ("{channel}"), `stingerDuration` (2.4 s), `stingerCut` (1.2 s), `stingerRows` (9), `stingerShine` (an), `stingerCopperShare` (15 %) |
-| Banner | `profileTitle` ("{channel}"), `profileSubtitle` ("BAUPLAN // RICHTFEST"), `offlineText` ("OFFLINE // DACH DICHT"), `bannerDuration` (4 s), `bannerRain` (an), `bannerRainCount` (1200) |
+| Banner | `profileTitle` ("{channel}"), `profileSubtitle` ("BAUPLAN // RICHTFEST"), `offlineText` ("OFFLINE // DACH DICHT"), `bannerRain` (an), `bannerRainCount` (1200) |
 
 ### Acceptance Criteria
 
 - [ ] AC1: `tileAngle(row, col, t)` ist am Übergangspunkt für jede Platte 0 (flach, Bild gedeckt), vorher und nachher
       grösser; Reihen weiter unten klappen früher ein und später aus.
-- [ ] AC2: Die Lage eines Tropfens im Offline-Banner ist bei `t = 0` und `t = bannerDuration` gleich (nahtlose Schleife).
+- [ ] AC2: Die Banner sind Standbilder; die Tropfen im Offline-Banner liegen verteilt über die Höhe.
 - [ ] AC3: Dieselben Einstellungen ergeben dieselben Bilder (zweimal rendern, gleiche Bytes eines Bildes).
 - [ ] AC4 (manuell): Rendern im Dashboard als WebM und GIF; Abnahme durch den Nutzer.
 
 ### Tests (TDD)
 
 1. `stinger.check.ts > "gedeckt am Übergang"` (AC1)
-2. `banners.check.ts > "Schleife"` (AC2)
+2. `banners.check.ts > "Standbild"` (AC2)
 3. `render.check.ts > "Clips"` (AC3): Liste der Clips und ihre Felder (`group`, `cut`, Grösse)
 
 ### Umsetzungsschritte

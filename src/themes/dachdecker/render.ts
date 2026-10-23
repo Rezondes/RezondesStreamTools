@@ -56,7 +56,7 @@ export function dachdeckerClips(settings: SettingValues, login: string): RenderC
     stamp: fill(values.stingerStamp), span: values.span, rise: values.rise,
   };
   const banner = (size: { width: number; height: number }): BannerOptions => ({
-    width: size.width, height: size.height, loop: STILL, font: values.font, fontSize: values.fontSize, alertWidth: values.alertWidth,
+    width: size.width, height: size.height, font: values.font, fontSize: values.fontSize, alertWidth: values.alertWidth,
     grid: values.bannerGrid, glow: values.glow, rain: values.bannerRain, drops: values.bannerRainCount, seed: values.seed,
     colors: { blueprint: values.blueprint, page: values.page, accent: values.accent, copper: values.copper, line: values.line, rainColor: values.rain },
   });
@@ -75,13 +75,13 @@ export function dachdeckerClips(settings: SettingValues, login: string): RenderC
     }, { ...readStingerOptions(settings), ownHold: true }),
     {
       name: "profile", feature: "banners", group: "Profilbanner", font, ...PROFILE_SIZE, duration: STILL, cut: null,
-      draw: (context, time) => drawProfile(context, time, profile, {
+      draw: context => drawProfile(context, profile, {
         dim: fill(values.profileOverline), tag: fill(values.profileTag), title: fill(values.profileTitle), line: fill(values.profileSubtitle),
       }),
     },
     {
       name: "offline", feature: "banners", group: "Offline-Banner", font, ...OFFLINE_SIZE, duration: STILL, cut: null,
-      draw: (context, time) => drawOffline(context, time, offline, {
+      draw: context => drawOffline(context, offline, {
         dim: fill(values.offlineOverline), tag: fill(values.offlineTag), title: fill(values.offlineText), line: fill(values.offlineSubtitle),
       }),
     },

@@ -14,9 +14,8 @@ import type { BearsValues } from "./settings.ts";
 import { drawBearsStinger, HEIGHT, WIDTH, type BearsStingerOptions } from "./stinger.ts";
 import type { TimeOfDay } from "./world.ts";
 
-// Banners are stills (the dashboard renders their first frame); the loop only scales the time inside the drawing
-const BANNER_LOOP = 6;
-const BANNER_FPS = 1;
+// Banners are one picture (the dashboard saves their first frame as a PNG); duration and frame rate only fill the clip
+const STILL = 1;
 
 type Draw = (context: CanvasRenderingContext2D, time: number) => void;
 
@@ -84,7 +83,7 @@ export function bearsClips(values: SettingValues, login: string): RenderClip[] {
     curtain: { color: field.stingerCurtain, shade: field.stingerCurtainShade, pattern: field.stingerCurtainPattern, folds: field.stingerFolds },
   };
   const banner: BearsBannerOptions = {
-    loop: BANNER_LOOP, font: field.font, titleFont: field.titleFont, palette,
+    font: field.font, titleFont: field.titleFont, palette,
     day: worldAt(field, "mittag"),
     evening: worldAt(field, "abend"),
     profileBear: field.bannerProfileBear, offlineBear: field.bannerOfflineBear, title: fillTemplate(field.bannerTitle, names),
@@ -99,8 +98,8 @@ export function bearsClips(values: SettingValues, login: string): RenderClip[] {
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawBearsStinger(context, time, stinger) }, options),
-    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsProfileBanner(context, time, { ...banner, world }), painter) },
-    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: BANNER_FPS, duration: banner.loop, cut: null, prepare, draw: clipDraw(world => (context, time) => drawBearsOfflineBanner(context, time, { ...banner, title: fillTemplate(field.bannerOfflineName, names), world }), painter) },
+    { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(world => context => drawBearsProfileBanner(context, { ...banner, world }), painter) },
+    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(world => context => drawBearsOfflineBanner(context, { ...banner, title: fillTemplate(field.bannerOfflineName, names), world }), painter) },
   ];
 }
 

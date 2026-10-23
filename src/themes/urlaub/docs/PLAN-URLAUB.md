@@ -329,7 +329,7 @@ Farben als `color`, Zahlen mit Grenzen und Einheit, Schalter als `flag`, Auswahl
 | Musik | `musicStyle` (radio, muschel, schlicht), Kopfzeilen, `musicIdleTitle`, `musicIdleArtist`, `musicAlbum`, `musicProgress`, `equalizer`, `equalizerBars`, `coverShape` (rund, eckig), `coverSize`, `musicTitleSize`, `musicHide`, `musicMarquee` |
 | Effekte | `fxDuration`, `fxSize`, `fxIn`/`fxOut`, `fxBubble`, `fxMargin` |
 | Stinger | `stingerDuration`, `stingerCut`, `stingerText` ("{channel}"), `stingerWaves`, `stingerFoam`, `stingerPalm` |
-| Banner | `bannerProfileText`, `bannerOfflineTitle`, `bannerOfflineText`, `bannerOfflineLines`, `bannerLoop`, `bannerProfileFps`, `bannerOfflineFps` |
+| Banner | `bannerProfileText`, `bannerOfflineTitle`, `bannerOfflineText`, `bannerOfflineLines` |
 | Minimes: Befehle, Regeln, Bewegung | aus `MINIME_BASE_FIELDS` (Kern) |
 | Minimes: Typen | aus `minimeVariantFields(FRUITS, { command: "!frucht", label: "Frucht" })`: `minimeVariantCommand`, `minimeNames_<id>` je Frucht |
 | Minimes: Aussehen | `fruitSize`, `fruitGround`, `fruitShadow`, `fruitFaces`, `fruitEye`, `fruitCheek`, `fruitMouth`, `fruitOutline`, `fruitOutlineWidth`, `fruitLeaf`, `fruitDefault` (Standardfrucht), `fruitNames` (an/aus), `fruitNameStyle` (schild, band), `fruitNameSize`, `fruitBlinkEvery`, `fruitEnter` (fallen, blenden), `fruitExit` (wegspringen, versinken) |
@@ -374,7 +374,7 @@ Farben als `color`, Zahlen mit Grenzen und Einheit, Schalter als `flag`, Auswahl
       Dauer / Anzahl (die Frucht landet genau am Ziel).
 - [ ] AC6: Der Stinger ist bei t = 0 und t = Dauer leer, deckt am Übergangspunkt das ganze Bild und zeichnet bei gleichem
       t immer gleich (kein `Math.random`, nur `hash`).
-- [ ] AC7: Beide Banner zeichnen Titel und Text und sehen bei t = 0 und t = Schleifenlänge gleich aus.
+- [ ] AC7: Beide Banner zeichnen Titel und Text und sind Standbilder.
 - [ ] AC8: `render.ts` liefert die drei Clips mit Gruppen, Länge, Übergangspunkt und Schleife aus den Einstellungen.
 - [ ] AC9: `registry.check.ts`: `hasMinimes(suedfrucht)` ist wahr, `minimeVariants` hat 16 Einträge, `personalize("neo_42")`
       ergibt `{ channelName: "Neo_42" }` und besteht das Schema; `minimeRules` mit gewähltem Südfrucht-Theme liefert

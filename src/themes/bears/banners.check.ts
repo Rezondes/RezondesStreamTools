@@ -1,6 +1,6 @@
 // Check for banners.ts of the Bärenbande theme (through the clips of render.ts, so the options come from the settings):
-// both banners draw title and texts, look exactly the same after one loop (seamless GIF) and move in between; without
-// fairy lights the offline banner draws fewer lights. A mock canvas records the calls. Runs with npm test.
+// both banners draw title and texts and are stills (the same picture at every time); without fairy lights the offline
+// banner draws fewer lights. A mock canvas records the calls. Runs with npm test.
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
 import { bearsClips } from "./render.ts";
@@ -30,13 +30,10 @@ for (const [clip, expected] of [
   const frame = recorder();
   clip.draw(frame.context, 0);
   assert.deepEqual(texts(frame.calls), expected, clip.name);
-  // Seamless: frame 0 and the frame at the loop end are equal, something moves in between
-  const end = recorder();
-  clip.draw(end.context, clip.duration);
-  assert.deepEqual(end.calls, frame.calls, `${clip.name}: seamless`);
-  const middle = recorder();
-  clip.draw(middle.context, clip.duration / 2);
-  assert.notDeepEqual(middle.calls, frame.calls, `${clip.name}: moves`);
+  // A still: the same picture at every time
+  const later = recorder();
+  clip.draw(later.context, clip.duration / 2);
+  assert.deepEqual(later.calls, frame.calls, `${clip.name}: a still`);
 }
 
 // Without fairy lights fewer arcs on the offline banner

@@ -291,7 +291,7 @@ Testbefehl: `npm test`, Abschluss `npm run verify`
 ### Kontext
 
 Clips sind reine Funktionen der Zeit auf einem Canvas (`RenderClip` mit Gruppe, Länge, Bildrate, Übergangspunkt beim
-Stinger, Schleife bei Bannern); Zufall nur über `hash` aus `src/core/hash.ts`. Die Formen aus `bears.ts` und
+Stinger; Banner sind Standbilder); Zufall nur über `hash` aus `src/core/hash.ts`. Die Formen aus `bears.ts` und
 `world.ts` werden als `Path2D` gezeichnet, Farben aus den Werten.
 
 ### Gestaltung
@@ -308,13 +308,13 @@ Stinger, Schleife bei Bannern); Zufall nur über `hash` aus `src/core/hash.ts`. 
 | Gruppe | Schlüssel (Auswahl) |
 |---|---|
 | Stinger | `stingerBear` (grizzly, mit turm), `stingerDuration`, `stingerCut`, `stingerText` ("{channel}"), `stingerWaddle` (Stärke) |
-| Banner | `bannerProfileBear`, `bannerOfflineBear` (je mit turm), `bannerProfileText`, `bannerOfflineTitle`, `bannerOfflineText`, `bannerOfflineLines`, `bannerLoop`, `bannerProfileFps`, `bannerOfflineFps`, `fairyLights` |
+| Banner | `bannerProfileBear`, `bannerOfflineBear` (je mit turm), `bannerProfileText`, `bannerOfflineTitle`, `bannerOfflineText`, `bannerOfflineLines`, `fairyLights` |
 
 ### Acceptance Criteria
 
 - [ ] AC1: Der Stinger ist bei t = 0 und t = Dauer leer, deckt am Übergangspunkt das ganze Bild und zeichnet bei
   gleichem t immer gleich (kein `Math.random`).
-- [ ] AC2: Beide Banner zeichnen Titel und Text, Bild 0 gleicht dem Bild am Schleifenende.
+- [ ] AC2: Beide Banner zeichnen Titel und Text und sind Standbilder (jedes Zeichnen gibt dasselbe Bild).
 - [ ] AC3: `render.ts` liefert `stinger`, `profile`, `offline` mit Gruppen, Länge, Übergangspunkt und Schleife aus den
   Einstellungen; jeder Bär und der Turm sind wählbar.
 - [ ] AC4: Schema in Rust und TS gleich (Fixture).
@@ -323,7 +323,7 @@ Stinger, Schleife bei Bannern); Zufall nur über `hash` aus `src/core/hash.ts`. 
 
 1. `stinger.check.ts` (AC1): aufzeichnender Canvas-Mock; t = 0 und t = Dauer ohne Füllung, am Übergangspunkt eine
    Fläche über das ganze Bild; zweimal t = 0.37 gleiche Aufrufe; je Wert von `stingerBear`.
-2. `banners.check.ts` (AC2): Titel und Text in den Aufrufen; Aufrufe bei t = 0 und t = Schleifenlänge gleich.
+2. `banners.check.ts` (AC2): Titel und Text in den Aufrufen; zweimal zeichnen gibt dieselben Aufrufe.
 3. `render.check.ts` (AC3): drei Clips mit Gruppen und Werten.
 4. `src/themes/renderers.check.ts` (vorhanden): `bears` liefert jetzt alle drei Clips.
 5. Rust: Fixture-Vergleich (AC4). Manuell: Rendern im Dashboard, Clip ansehen.

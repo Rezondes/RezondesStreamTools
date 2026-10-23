@@ -1,11 +1,10 @@
-// Twitch banners of the Plantage theme (PLAN-PLANTAGE.md package 5): the world of the scenes (paint.ts) as a still with
-// a gentle sway that loops seamlessly. Profile banner (1200x480) by day with channel name and text over the field,
-// offline banner (1920x1080) in the evening with a frosted card for title, text and lines. Pure functions of time.
+// Twitch banners of the Plantage theme (PLAN-PLANTAGE.md package 5): the world of the scenes (paint.ts) as a still.
+// Profile banner (1200x480) by day with channel name and text over the field, offline banner (1920x1080) in the evening
+// with a frosted card for title, text and lines. Both are still pictures (the dashboard saves a PNG).
 // Check: banners.check.ts.
 import { paintWorld, type PaintOptions } from "./paint.ts";
 
 export type PlantageBannerOptions = {
-  loop: number; // seconds
   font: string;
   titleFont: string;
   textColor: string;
@@ -46,8 +45,8 @@ function lifted(context: CanvasRenderingContext2D, color: string, shadow: string
   context.shadowOffsetY = blur / 4;
 }
 
-export function drawPlantageProfileBanner(context: CanvasRenderingContext2D, time: number, options: PlantageBannerOptions) {
-  paintWorld(context, PROFILE.width, PROFILE.height, options.day, time);
+export function drawPlantageProfileBanner(context: CanvasRenderingContext2D, options: PlantageBannerOptions) {
+  paintWorld(context, PROFILE.width, PROFILE.height, options.day);
   context.save();
   lifted(context, options.textColor, options.shadow, PROFILE.glow);
   context.textBaseline = "middle";
@@ -72,8 +71,8 @@ function frostCard(context: CanvasRenderingContext2D, options: PlantageBannerOpt
   context.restore();
 }
 
-export function drawPlantageOfflineBanner(context: CanvasRenderingContext2D, time: number, options: PlantageBannerOptions) {
-  paintWorld(context, OFFLINE.width, OFFLINE.height, options.evening, time);
+export function drawPlantageOfflineBanner(context: CanvasRenderingContext2D, options: PlantageBannerOptions) {
+  paintWorld(context, OFFLINE.width, OFFLINE.height, options.evening);
   frostCard(context, options);
   context.save();
   context.fillStyle = options.textOnWood;

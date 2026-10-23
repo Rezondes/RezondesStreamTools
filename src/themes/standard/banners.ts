@@ -1,10 +1,9 @@
 // Twitch banners of the standard theme: profile banner (1200x480) and offline banner (1920x1080) on a dark ground with the
-// light fields and the light dust of the screens as a still (PLAN-STANDARD.md package 4), plus title and text. The
-// time stays in the signature for the clips; the still loops seamlessly. Check: banners.check.ts.
+// light fields and the light dust of the screens as a still (PLAN-STANDARD.md package 4), plus title and text. Both are
+// still pictures (the dashboard saves a PNG). Check: banners.check.ts.
 import { type LightsOptions, paintLights } from "./lights.ts";
 
 export type StandardBannerOptions = {
-  loop: number; // seconds
   font: string;
   background: string;
   accent: string;
@@ -43,7 +42,7 @@ function bar(context: CanvasRenderingContext2D, x: number, y: number, width: num
 }
 
 // Profile banner 1200x480; at the bottom left Twitch puts the profile picture over it, so everything is top right of center
-export function drawStandardProfileBanner(context: CanvasRenderingContext2D, _time: number, options: StandardBannerOptions) {
+export function drawStandardProfileBanner(context: CanvasRenderingContext2D, options: StandardBannerOptions) {
   const width = 1200, height = 480;
   base(context, options, width, height);
   const left = 360;
@@ -53,7 +52,7 @@ export function drawStandardProfileBanner(context: CanvasRenderingContext2D, _ti
 }
 
 // Offline banner 1920x1080
-export function drawStandardOfflineBanner(context: CanvasRenderingContext2D, _time: number, options: StandardBannerOptions) {
+export function drawStandardOfflineBanner(context: CanvasRenderingContext2D, options: StandardBannerOptions) {
   const width = 1920, height = 1080;
   base(context, options, width, height);
   const left = 180;

@@ -30,7 +30,7 @@ Grundsätze für alle Themes: [DESIGN.md](../../../../DESIGN.md).
   (`!color`), Gesicht `#000000` im Kapuzeninneren. Animationen: Backflip, Glitch, Umschauen, Drehen, Schlafen, Boost bei Chat.
 - **Stinger:** Matrix-Spalten fallen herein und decken alles, das Logo entschlüsselt sich, am Übergangspunkt blitzt die
   Einschaltzeile, dann fallen die Spalten unten heraus.
-- **Banner:** Matrix-Regen mit Texten, Dichte einstellbar, Schleife ohne Sprung.
+- **Banner:** Standbild: Matrix-Regen mit Texten, Dichte einstellbar.
 
 ## Modernisierung (entschieden 2026-10-21)
 

@@ -1,7 +1,7 @@
 // The Plantage world painted on a 2D canvas for the banners (world.ts, tree.ts): the same depth layers as the PixiJS
 // scenes, scaled to cover the picture: sky, sun with glow, clouds, hills and tree rows that fade into the sky and blur
-// with the distance, the field with furrows, near trees, crates and grass. Trees and grass sway once per loop, so a GIF
-// loops seamlessly. Pure function of the time. Check: paint.check.ts.
+// with the distance, the field with furrows, near trees, crates and grass. Trees and grass lean a little, each in its
+// own direction (sway). A still picture. Check: paint.check.ts.
 import { mixHex } from "../../core/color.ts";
 import { STAGE } from "../../core/screens/screens.ts";
 import { type Shape, tree, type TreeColors } from "./tree.ts";
@@ -10,7 +10,7 @@ import { cloudSpots, crate, CRATES, FIELD, furrows, grassTufts, hillLine, HILLS,
 export type PaintColors = TreeColors & {
   skyTop: string; skyBottom: string; sun: string; hill: string; hillFar: string; soil: string; soilDark: string; grass: string; cloud: string; wood: string; woodDark: string;
 };
-export type PaintOptions = { colors: PaintColors; seed: number; treeRowsFar: number; treeRowsMid: number; farBlur: number; hazeFar: number; sway: number; loop: number; label: string; labelFont: string };
+export type PaintOptions = { colors: PaintColors; seed: number; treeRowsFar: number; treeRowsMid: number; farBlur: number; hazeFar: number; sway: number; label: string; labelFont: string };
 
 const TURN = Math.PI * 2;
 // fixed: sun of the banners (stage px), cloud puffs, grass tufts, how far trees and grass lean at most (radians)
@@ -18,7 +18,7 @@ const SUN = { x: 520, y: 300, size: 70, glow: 310 };
 const CLOUD_PUFFS: readonly [number, number, number][] = [[0, 0, 60], [55, -18, 50], [105, 2, 54], [40, 18, 52], [85, 22, 44]];
 const GRASS_TUFTS = 16;
 const LEAN = { tree: 0.02, grass: 0.08 };
-// Rounded to three places, so frame 0 and the frame at the loop end are drawn exactly the same
+// Rounded to three places, so the same picture gives the same numbers
 const round = (value: number) => Math.round(value * 1000) / 1000 + 0;
 
 // Shapes of tree.ts and world.ts onto the canvas
@@ -42,8 +42,8 @@ export function coverOf(width: number, height: number) {
   return { scale, x: (width - STAGE.width * scale) / 2, y: (height - STAGE.height * scale) / 2 };
 }
 
-// Lean once around per loop: the same at the start and the end of the loop
-const leanAt = (seconds: number, loop: number, phase: number, size: number, amount: number) => round(Math.sin((seconds / loop) * TURN + phase) * size * amount);
+// How far a tree or tuft leans: its own phase gives the direction
+const leanAt = (phase: number, size: number, amount: number) => round(Math.sin(phase) * size * amount);
 
 function sky(context: CanvasRenderingContext2D, colors: PaintColors) {
   const fill = context.createLinearGradient(0, 0, 0, FIELD.horizon);
@@ -59,7 +59,7 @@ function sky(context: CanvasRenderingContext2D, colors: PaintColors) {
   paintShapes(context, [{ kind: "circle", x: SUN.x, y: SUN.y, r: SUN.size, color: colors.sun }]);
 }
 
-function layer(context: CanvasRenderingContext2D, entry: WorldLayer, options: PaintOptions, seconds: number) {
+function layer(context: CanvasRenderingContext2D, entry: WorldLayer, options: PaintOptions) {
   const { colors } = options;
   const haze = (color: string) => mixHex(color, colors.skyBottom, entry.haze);
   context.filter = entry.blur > 0 ? `blur(${entry.blur}px)` : "none";
@@ -89,15 +89,15 @@ function layer(context: CanvasRenderingContext2D, entry: WorldLayer, options: Pa
   for (const spot of entry.trees) {
     context.save();
     context.translate(spot.x, spot.ground);
-    context.rotate(leanAt(seconds, options.loop, spot.sway, LEAN.tree, options.sway));
+    context.rotate(leanAt(spot.sway, LEAN.tree, options.sway));
     paintShapes(context, tree(spot.scale, entry.haze, { ...colors, sky: colors.skyBottom }));
     context.restore();
   }
   context.filter = "none";
-  if (entry.id === "front") front(context, options, seconds);
+  if (entry.id === "front") front(context, options);
 }
 
-function front(context: CanvasRenderingContext2D, options: PaintOptions, seconds: number) {
+function front(context: CanvasRenderingContext2D, options: PaintOptions) {
   const { colors } = options;
   for (const spot of CRATES) {
     context.save();
@@ -115,7 +115,7 @@ function front(context: CanvasRenderingContext2D, options: PaintOptions, seconds
   grassTufts(options.seed, GRASS_TUFTS).forEach((tuft, index) => {
     context.save();
     context.translate(tuft.x, STAGE.height + 5);
-    context.rotate(leanAt(seconds, options.loop, index, LEAN.grass, options.sway));
+    context.rotate(leanAt(index, LEAN.grass, options.sway));
     tuft.blades.forEach((height, blade) => {
       context.fillStyle = blade % 2 ? colors.leaf : colors.grass;
       context.beginPath();
@@ -128,13 +128,13 @@ function front(context: CanvasRenderingContext2D, options: PaintOptions, seconds
   });
 }
 
-// The world covering a picture of width x height at seconds into the loop
-export function paintWorld(context: CanvasRenderingContext2D, width: number, height: number, options: PaintOptions, seconds: number) {
+// The world covering a picture of width x height
+export function paintWorld(context: CanvasRenderingContext2D, width: number, height: number, options: PaintOptions) {
   const cover = coverOf(width, height);
   context.save();
   context.translate(cover.x, cover.y);
   context.scale(cover.scale, cover.scale);
   sky(context, options.colors);
-  for (const entry of worldLayers(options)) layer(context, entry, options, seconds);
+  for (const entry of worldLayers(options)) layer(context, entry, options);
   context.restore();
 }

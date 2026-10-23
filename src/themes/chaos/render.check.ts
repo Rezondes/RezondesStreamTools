@@ -16,7 +16,7 @@ assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.heig
   ["offline", "Offline-Banner", 1920, 1080],
 ]);
 assert.equal(clips[0].cut, values.stingerCut);
-assert.equal(clips[1].duration, 4);
+assert.equal(clips[1].duration, 1);
 assert.ok(clips.every(clip => typeof clip.draw === "function" && clip.font.includes("Permanent Marker")));
 
 // Clips: the stinger options come from the core, every clip can prepare

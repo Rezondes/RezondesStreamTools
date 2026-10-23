@@ -1,4 +1,4 @@
-// Check for render.ts of the Bärenbande theme: stinger, profile and offline banner with their groups, sizes, loop and
+// Check for render.ts of the Bärenbande theme: stinger, profile and offline banner with their groups, sizes and the
 // transition point from the settings, the channel name in the texts; the stinger options of the core, the same pictures
 // for the same settings, the watercolor world once prepare has loaded it. Runs with npm test.
 import assert from "node:assert/strict";
@@ -13,7 +13,7 @@ assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.heig
   ["profile", "Profilbanner", 1200, 480],
   ["offline", "Offline-Banner", 1920, 1080],
 ]);
-assert.deepEqual(clips.map(clip => [clip.duration, clip.cut]), [[2, 0.9], [6, null], [6, null]]);
+assert.deepEqual(clips.map(clip => [clip.duration, clip.cut]), [[2, 0.9], [1, null], [1, null]]);
 assert.deepEqual(clips.map(clip => clip.feature), ["stinger", "banners", "banners"]);
 
 // Clips: the stinger options come from the core, the banners can prepare their world
