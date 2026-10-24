@@ -10,6 +10,7 @@
 // Own module, so Rough.js stays out of the dashboard that shows Backdrop.tsx.
 import { type CSSProperties, type RefObject, useEffect, useId, useMemo, useRef, useState } from "react";
 import { seedOf } from "../../core/hash.ts";
+import { useViewport } from "../../core/hooks/useViewport.ts";
 import { useTimeline } from "../../core/motion/useTimeline.ts";
 import { quality } from "../../core/three/quality.ts";
 import { Filters, FREE, LAYER, VIEW_BOX } from "./Backdrop.tsx";
@@ -27,6 +28,9 @@ const SECOND_MS = 1000; // fixed: seconds in ms
 const DRAW = { from: 1.3, step: 0.08 };
 const FLICKER_CYCLE = 7;
 const HIDDEN: CSSProperties = { display: "none" };
+// fixed: how long the size of the source has to stand still before the bitmaps are drawn again (drawing 340 marks
+// with their filters takes a moment, so not on every step of a resize)
+const SETTLE_MS = 300;
 
 export default function BoilingScribbles({ seed, clock, idleFrom, fps }: Boiling) {
   const values = useChaos();
@@ -42,7 +46,8 @@ export default function BoilingScribbles({ seed, clock, idleFrom, fps }: Boiling
   // three quarters of the frame time); the lowest performance level draws the marks without them
   const filtered = quality(values.quality).bloom;
   const drawn = useDrawn(DRAW.from + (marks.length - 1) * (values.scribbleStagger / SECOND_MS) * DRAW.step + values.drawMs / SECOND_MS, marks);
-  const sprites = useMarkSprites(layer, filtered && drawn, values);
+  const viewport = useViewport(SETTLE_MS);
+  const sprites = useMarkSprites(layer, filtered && drawn, values, viewport);
   useBoil(groups, marks, { seed, clock, idleFrom, fps }, sprites ? { canvas, sprites } : null);
   useTimeline(timeline => {
     groups.current.forEach((group, index) => {

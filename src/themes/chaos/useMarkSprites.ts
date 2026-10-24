@@ -3,9 +3,9 @@
 // place in the viewBox with the filter of its mark: the noise of the filters lies in the coordinates of the mark and
 // moves with its drift anyway, so the bitmap looks like the live mark. The styles of the paths come from the page and
 // are written onto the copy, a bitmap knows no CSS. Starts once start is true (after the scribbles drew themselves);
-// null while drawing and when a filter is missing.
-// ponytail: drawn once for the canvas size at that moment; a source resized in OBS later keeps the old sharpness.
-import { type RefObject, useEffect, useState } from "react";
+// null while drawing and when a filter is missing. The bitmaps fit the size of the layer at that moment: a new size
+// draws them again and keeps the old ones until the new ones are ready, a new version (other marks) drops them at once.
+import { type RefObject, useEffect, useRef, useState } from "react";
 import { type Box, filterReach, sliceFit, spriteBox } from "./sprites.ts";
 
 export type Sprite = { image: ImageBitmap; box: Box };
@@ -14,16 +14,22 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 // The styles of a path that decide its look in the bitmap
 const STYLES = ["stroke", "stroke-width", "fill", "stroke-linecap", "stroke-linejoin", "opacity"] as const;
 
-export function useMarkSprites(layer: RefObject<SVGSVGElement | null>, start: boolean, version: unknown): Sprite[][] | null {
+export function useMarkSprites(layer: RefObject<SVGSVGElement | null>, start: boolean, version: unknown, size: unknown): Sprite[][] | null {
   const [sprites, setSprites] = useState<Sprite[][] | null>(null);
+  // The version the shown bitmaps were drawn for
+  const drawnFor = useRef<unknown>(null);
   useEffect(() => {
-    setSprites(null);
     const svg = layer.current;
+    if (!start || !svg || drawnFor.current !== version) setSprites(null);
     if (!start || !svg) return undefined;
     let alive = true;
-    void drawSprites(svg, () => alive).then(drawn => { if (alive) setSprites(drawn); });
+    void drawSprites(svg, () => alive).then(drawn => {
+      if (!alive) return;
+      drawnFor.current = version;
+      setSprites(drawn);
+    });
     return () => { alive = false; };
-  }, [layer, start, version]);
+  }, [layer, start, version, size]);
   return sprites;
 }
 
