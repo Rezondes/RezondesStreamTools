@@ -148,6 +148,8 @@
 .settings-bar { padding: 8px 0; border-bottom: var(--border-w) solid var(--line); }
 .settings-layout { display: grid; gap: 16px; align-items: start; }
 .settings-groups { display: grid; gap: 8px; min-width: 0; }
+/* The search stays at the top of the settings column while the groups scroll below it */
+.settings-search { position: sticky; top: 0; z-index: 2; background: var(--surface); padding-bottom: var(--gap-tight, 8px); }
 .settings-group { border: var(--border-w) solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); padding: 8px 12px; }
 .settings-group summary { cursor: pointer; padding: 4px 0; color: var(--fg); font-weight: var(--heading-weight); }
 .settings-group[open] > summary { margin-bottom: 8px; border-bottom: var(--border-w) solid var(--line); }

@@ -98,7 +98,7 @@ export default function ThemeSettings({ me }: { me: Me }) {
       <div className="settings-layout">
         <AreaNav schema={schema} view={view} changed={new Set(changed.map(key => viewOfField(schema, key)))} render={visibleSections(me).includes("render")} onChoose={chooseView} />
         <div className="settings-groups">
-          <label className="setting">
+          <label className="setting settings-search">
             {TEXTS.theme.search}
             <input type="search" value={search} onChange={event => setSearch(event.target.value)} />
           </label>
