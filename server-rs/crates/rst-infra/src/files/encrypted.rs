@@ -4,7 +4,7 @@
 //! detected. Writing goes to a temporary file that is renamed at the end. Decrypted files are cached up to a size
 //! limit (`RST_FILE_CACHE_MB`, default 64).
 
-use std::collections::VecDeque;
+use std::collections::{BTreeMap, HashMap};
 use std::fs::{self, File};
 use std::io::{ErrorKind, Read, Write};
 use std::path::{Path, PathBuf};
@@ -56,21 +56,26 @@ fn lock<T>(mutex: &Mutex<T>) -> MutexGuard<'_, T> {
 
 type CacheKey = (String, [u8; 32]);
 
-/// Decrypted files, the oldest used drops out first
-// ponytail: linear scan over the entries, a map when the cache holds many small files
+/// Decrypted files, the least recently used drops out first: the files by key with the number of their last use, the
+/// keys by that number
 #[derive(Debug, Default)]
 struct Cache {
     capacity: usize,
     used: usize,
-    entries: VecDeque<(CacheKey, Arc<Vec<u8>>)>,
+    entries: HashMap<CacheKey, (u64, Arc<Vec<u8>>)>,
+    order: BTreeMap<u64, CacheKey>,
+    next: u64,
 }
 
 impl Cache {
     fn get(&mut self, key: &CacheKey) -> Option<Arc<Vec<u8>>> {
-        let index = self.entries.iter().position(|(known, _)| known == key)?;
-        let entry = self.entries.remove(index)?;
-        let data = Arc::clone(&entry.1);
-        self.entries.push_back(entry);
+        let use_number = self.next;
+        let (last, data) = self.entries.get_mut(key)?;
+        self.order.remove(last);
+        *last = use_number;
+        let data = Arc::clone(data);
+        self.order.insert(use_number, key.clone());
+        self.next += 1;
         Some(data)
     }
 
@@ -80,19 +85,31 @@ impl Cache {
         }
         self.forget(|known| *known == key.0);
         while self.used + data.len() > self.capacity {
-            let Some((_, oldest)) = self.entries.pop_front() else { break };
-            self.used -= oldest.len();
+            let Some((_, oldest)) = self.order.pop_first() else { break };
+            if let Some((_, dropped)) = self.entries.remove(&oldest) {
+                self.used -= dropped.len();
+            }
         }
         self.used += data.len();
-        self.entries.push_back((key, data));
+        self.order.insert(self.next, key.clone());
+        self.entries.insert(key, (self.next, data));
+        self.next += 1;
     }
 
+    /// Whether a file whose path ends with `end` is cached (for the tests)
+    #[cfg(test)]
+    fn holds(&self, end: &str) -> bool {
+        self.entries.keys().any(|(path, _)| path.ends_with(end))
+    }
+
+    /// Drops every cached version of the matching paths (only on writing and deleting, so a pass over all is fine)
     fn forget(&mut self, matches: impl Fn(&str) -> bool) {
-        let mut used = self.used;
-        self.entries.retain(|((path, _), data)| {
+        let (mut used, order) = (self.used, &mut self.order);
+        self.entries.retain(|(path, _), (last, data)| {
             let keep = !matches(path);
             if !keep {
                 used -= data.len();
+                order.remove(last);
             }
             keep
         });
@@ -443,6 +460,35 @@ mod tests {
         assert_eq!(cache_bytes(None), 64 * 1024 * 1024);
         assert_eq!(cache_bytes(Some("2")), 2 * 1024 * 1024);
         assert_eq!(cache_bytes(Some("lots")), 64 * 1024 * 1024);
+    }
+
+    #[test]
+    fn the_least_recently_read_drops_out_first() {
+        let folder = tempfile::tempdir().expect("temp folder");
+        let files = store(&folder, 3 * BLOCK);
+        for name in ["a", "b", "c"] {
+            write(&files, name, &pattern(BLOCK));
+            files.read(&key(), &neo(), name).expect("read");
+        }
+        files.read(&key(), &neo(), "a").expect("read again");
+        write(&files, "d", &pattern(BLOCK));
+        files.read(&key(), &neo(), "d").expect("read");
+        let cache = lock(&files.cache);
+        assert!(!cache.holds("b"), "b was read longest ago");
+        assert!(cache.holds("a") && cache.holds("c") && cache.holds("d"));
+        assert_eq!(cache.used, 3 * BLOCK);
+    }
+
+    #[test]
+    fn forget_drops_a_path_and_its_bytes() {
+        let mut cache = Cache { capacity: 100, ..Cache::default() };
+        cache.insert(("one".to_owned(), [1; 32]), Arc::new(vec![0; 30]));
+        cache.insert(("two".to_owned(), [2; 32]), Arc::new(vec![0; 20]));
+        cache.forget(|path| path == "one");
+        assert!(!cache.holds("one") && cache.holds("two"));
+        assert_eq!(cache.used, 20);
+        assert!(cache.get(&("one".to_owned(), [1; 32])).is_none());
+        assert_eq!(cache.get(&("two".to_owned(), [2; 32])).map(|data| data.len()), Some(20));
     }
 
     #[test]
