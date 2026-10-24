@@ -52,7 +52,10 @@ steht in `MODULE_THEMES` (`scripts/bundle.ts`).
    | Statistik | `useStreamStats` (Stand vom Server, `?demo`: Demo-Werte); `core/stats`: `parseStatLines` (Einstellung `schlüssel\|Text` je Zeile), `describeStats` (Zahlen und Dauer formatiert) |
 
    Platzhalter `{channel}` und `{login}` liefert `channelNames`, Texte füllt `fillTemplate` (beides
-   `src/core/template.ts`), eigene Töne spielt `playSound` aus `src/core/sound.ts`. Ein Theme importiert nur aus seinem
+   `src/core/template.ts`), eigene Töne spielt `playSound` aus `src/core/sound.ts`. Eingebauter Ton als Datei: das
+   Theme importiert seine OGG-Dateien (`src/themes/<id>/sounds/`), lädt sie beim Start der Szene mit `preloadClips(urls)`
+   vor und gibt `playSound` als eingebauten Ton `volume => playClip(url, volume, { voices })`; `voices` ist die Grenze
+   gleichzeitiger Stimmen aus den Einstellungen (älteste weicht, Kern-Grenze 32). Ein Theme importiert nur aus seinem
    Ordner und aus `src/core` (geprüft).
 5. **CSS** in `theme.css`, jede Regel unter `.theme-<id>`, Keyframes mit Präfix `<id>-`. Farben, Zahlen, Schalter (1/0)
    und Schriften aus dem Schema kommen automatisch als CSS-Variablen an (`var(--accent)`, `var(--alertWidth)`).
