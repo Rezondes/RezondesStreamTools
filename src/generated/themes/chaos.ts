@@ -83,6 +83,7 @@ export type ChaosValues = {
   readonly strokeMs: number;
   readonly scribbleStagger: number;
   readonly sprayTitleMs: number;
+  readonly titleDripMs: number;
   readonly endingDrips: number;
   readonly ticker: string;
   readonly tickerSpeed: number;

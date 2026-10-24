@@ -89,6 +89,45 @@ export function gestureLayout(kind: GestureKind, seed: number): GestureStroke[] 
   return COMPOSITIONS[kind].map(stroke => ({ ...stroke, from: shift(stroke.from), to: shift(stroke.to), width: stroke.width * between(random, 1 - WIDEN, 1 + WIDEN) }));
 }
 
+// When the spray of a title reaches a place: the share of the spray time at which its front gets to share of the width
+// of the title (below 0 or over 1 for speckles beside it). The title is sprayed by a mask three times its width that
+// slides from right to left with "ease-in-out" (theme.css chaos-spray-title), its edge in the middle of the mask, so the
+// front runs from half a width before the title to half a width after it; the easing is inverted by halving.
+export function sprayPassAt(share: number): number {
+  const progress = (share + 0.5) / 2;
+  if (progress <= 0) return 0;
+  if (progress >= 1) return 1;
+  // cubic-bezier(0.42, 0, 0.58, 1): x (control points 0.42, 0.58) or y (0, 1) of the curve at a point along it
+  const curve = (along: number, one: number, two: number) => 3 * (1 - along) ** 2 * along * one + 3 * (1 - along) * along ** 2 * two + along ** 3;
+  let low = 0;
+  let high = 1;
+  for (let step = 0; step < 30; step++) {
+    const middle = (low + high) / 2;
+    if (curve(middle, 0, 1) < progress) low = middle;
+    else high = middle;
+  }
+  return curve((low + high) / 2, 0.42, 0.58);
+}
+
+// Where a drip of a title hangs from the letters: bottoms is the lowest painted pixel of the title per pixel column (null
+// where no letter is). From its place (share of the width) the drip moves to the nearest spot where the letters reach
+// down to the lowest line (within reach pixels) over its whole thickness, so it never hangs between words or under a
+// letter that ends higher; it starts a thickness inside the letter. Null when no spot is wide enough.
+export function dripAnchor(at: number, thickness: number, bottoms: (number | null)[], reach: number): { x: number; y: number } | null {
+  const lowest = Math.max(...bottoms.map(bottom => bottom ?? -Infinity));
+  const half = Math.ceil(thickness / 2);
+  const deep = (column: number) => (bottoms[column] ?? -Infinity) >= lowest - reach;
+  const start = Math.round(at * bottoms.length);
+  for (let distance = 0; distance < bottoms.length; distance++) {
+    for (const center of [start - distance, start + distance]) {
+      const window = Array.from({ length: half * 2 + 1 }, (_, step) => center - half + step);
+      if (window[0] < 0 || window[window.length - 1] >= bottoms.length || !window.every(deep)) continue;
+      return { x: center + 0.5, y: Math.min(...window.map(column => bottoms[column] ?? lowest)) - thickness };
+    }
+  }
+  return null;
+}
+
 // Drips under a title: where (share of its width), how thick and how long (pixels)
 type TitleDrip = { at: number; thickness: number; length: number };
 export const titleDrips = (seed: number, count: number): TitleDrip[] => {

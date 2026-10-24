@@ -395,6 +395,12 @@
 .theme-chaos .ch-painted .ch-title::before { --on: var(--ga-on, 0); --x: var(--ga-x, 0); --clip: var(--ga-clip, none); }
 .theme-chaos .ch-painted .ch-title::after { --on: var(--gb-on, 0); --x: var(--gb-x, 0); --clip: var(--gb-clip, none); }
 .theme-chaos .ch-painted .ch-title { animation: chaos-spray-title var(--sprayTitleMs) ease-in-out var(--title-from, 2s) backwards; }
+/* Speckles and drips of the title wait for the spray to reach them (--spray-at, SprayTitle.tsx): the speckles show,
+   the drips run down from the letters; the clip leaves room for their glow at the sides */
+.theme-chaos .ch-painted .ch-title-spray circle { animation: chaos-unsprayed var(--speckle-pop, 0s) calc(var(--title-from, 2s) + var(--sprayTitleMs) * var(--spray-at, 0)) backwards; }
+.theme-chaos .ch-painted .ch-title-drip { animation: chaos-drip-run var(--run) ease-in calc(var(--title-from, 2s) + var(--sprayTitleMs) * var(--spray-at, 0)) backwards; }
+@keyframes chaos-unsprayed { from, to { opacity: 0; } }
+@keyframes chaos-drip-run { from { clip-path: inset(0 calc(var(--drip-room, 30px) * -1) 100% calc(var(--drip-room, 30px) * -1)) fill-box; } to { clip-path: inset(calc(var(--drip-room, 30px) * -1)) fill-box; } }
 @keyframes chaos-spray-title {
   from { -webkit-mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0; }
   to { -webkit-mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 0 0; mask-position: 0 0; }

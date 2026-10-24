@@ -757,6 +757,16 @@
       "scene": "starting"
     },
     {
+      "key": "titleDripMs",
+      "type": "number",
+      "label": "Titel: Laufnasen laufen (Dauer je 100 px)",
+      "group": "Starting, BRB, Ending",
+      "default": 700,
+      "min": 0,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
       "key": "endingDrips",
       "type": "number",
       "label": "Ending: zusätzliche Laufnasen am Titel",

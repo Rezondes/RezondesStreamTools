@@ -181,6 +181,7 @@ fn screens() -> Vec<SettingField> {
             None,
         )),
         starting(number("sprayTitleMs", "Starting: Titel aufsprühen (Dauer)", SCREENS, 1200.0, 0.0, 5000.0, MS, None)),
+        number("titleDripMs", "Titel: Laufnasen laufen (Dauer je 100 px)", SCREENS, 700.0, 0.0, 5000.0, MS, None),
         in_scene(
             SceneName::Ending,
             number("endingDrips", "Ending: zusätzliche Laufnasen am Titel", SCREENS, 6.0, 0.0, 30.0, None, None),

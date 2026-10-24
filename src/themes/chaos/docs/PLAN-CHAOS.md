@@ -412,7 +412,7 @@ selbst, der Titel wird aufgesprüht, danach bewegt sich alles weiter (abschaltba
 |---|---|
 | Allgemein | `quality` (`qualityField`), `glowStrength` (22), `glowAlpha` (0.75), `roughShare` (35 % der Kritzeleien aus Rough), `roughFill` (an) |
 | Bewegung | `idleOn` (an), `idleEaseMs` (1500 ms, Übergang in die Bewegung: Treiben, Schimmern und Staub wachsen weich hinein, das Kochen setzt gestaffelt ein, die ersten Tropfen beginnen klein), `boilOn` (an), `boilFps` (8), `driftAmount` (2.5 px), `bristleShimmer` (Faktor 1), `dripLoop` (an), `dustOn` (an), `dustCount` (90, Obergrenze 600 mit `fixed`); bestehend `flicker`, `glitch`, `glitchEvery` gelten auch nach dem Aufbau |
-| Starting | bestehende Texte bleiben; neu `strokeMs` (550 ms), `scribbleStagger` (45 ms), `sprayTitleMs` (1200 ms) |
+| Starting | bestehende Texte bleiben; neu `strokeMs` (550 ms), `scribbleStagger` (45 ms), `sprayTitleMs` (1200 ms); `titleDripMs` (700 ms je 100 px, alle Bildschirme): Sprühpunkte und Laufnasen des Titels warten, bis das Aufsprühen sie erreicht, die Laufnasen laufen dann von den Buchstaben herab; sie hängen an der gemessenen Unterkante der Buchstaben (nie zwischen Wörtern oder unter einem höher endenden Strich) |
 
 ### Acceptance Criteria
 

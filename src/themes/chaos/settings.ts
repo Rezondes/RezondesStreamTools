@@ -115,6 +115,7 @@ const FIELDS = [
   inScene("starting", number("strokeMs", "Starting: Pinselstrich (Dauer)", SCREENS, 550, 100, 3000, "ms")),
   inScene("starting", number("scribbleStagger", "Starting: Kritzeleien nacheinander (Abstand)", SCREENS, 45, 0, 500, "ms")),
   inScene("starting", number("sprayTitleMs", "Starting: Titel aufsprühen (Dauer)", SCREENS, 1200, 0, 5000, "ms")),
+  number("titleDripMs", "Titel: Laufnasen laufen (Dauer je 100 px)", SCREENS, 700, 0, 5000, "ms"),
   inScene("ending", number("endingDrips", "Ending: zusätzliche Laufnasen am Titel", SCREENS, 6, 0, 30)),
   text("ticker", "Klebeband unten (leer = aus)", SCREENS, "", 300),
   number("tickerSpeed", "Klebeband: Dauer eines Durchlaufs", SCREENS, 25, 5, 200, "s"),
