@@ -44,7 +44,7 @@ steht in `MODULE_THEMES` (`scripts/bundle.ts`).
    |---|---|
    | Musik | `core/music`: `useNowPlaying` (was der Player zeigt), `useTrackProgress` (Anteil, Uhrzeit), `useCover`, `<Marquee>` (Lauftext) |
    | Starting, BRB, Ending | `core/screens`: `useStage` (1920x1080 skalieren), `useScreen` (Countdown als Dauer oder bis `countdownAt`, Pausenzeit, Ticker, nächster Stream), `shortClock`, `rotating` |
-   | Alerts | `useAlerts`; `core/alerts`: `describeAlert` (Texte je Art mit den eigenen Schlüsseln), `alertQuote`, `useAlertSounds` |
+   | Alerts | `useAlerts(dauer)` (Dauer als Zahl oder je Alert: `alert => ms`, `alertDurationMs` klemmt auf 1 ms bis 30 Minuten); `core/alerts`: `describeAlert` (Texte je Art mit den eigenen Schlüsseln), `alertQuote`, `useAlertSounds` |
    | Chat | `useChat`; `core/chat`: `<MessageParts>` (Text und Emotes), `badgeLabel` |
    | Effekte | `core/fx`: `useFxScene`, `useFxItem` (Phase, Text, Lage), `<FxMedia>` |
    | Befehlsseite | `core/info`: `useInfoPage` |

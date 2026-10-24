@@ -1,7 +1,7 @@
 // Check for overlayTiming.ts: time display, music progress, effect phases and position, alert times,
 // decode effect. Runs with npm test.
 import assert from "node:assert/strict";
-import { alertTiming, clock, countdownEnd, currentProgress, decodeFrame, fxLifetime, fxPhase, placeFx } from "./overlayTiming.ts";
+import { alertDurationMs, alertTiming, clock, countdownEnd, currentProgress, decodeFrame, fxLifetime, fxPhase, placeFx } from "./overlayTiming.ts";
 
 // Clock: hours:minutes:seconds, never negative
 assert.equal(clock(3725), "01:02:05");
@@ -43,6 +43,14 @@ assert.equal(countdownEnd("kaputt", 60, now), now.getTime() + 60_000);
 
 // Alert: fading out starts 600 ms before the end, the next one comes 400 ms after the end
 assert.deepEqual(alertTiming(7000), { leaveAtMs: 6400, nextAtMs: 7400 });
+
+// Dauer je Alert: a fixed number or a function of the alert, clamped to 1 ms up to 30 minutes, NaN gives 1
+const raid = { kind: "raid" as const, user: "neo", amount: 42 };
+assert.equal(alertDurationMs(5000, raid), 5000);
+assert.equal(alertDurationMs(alert => (alert.amount ?? 0) * 100, raid), 4200);
+for (const wrong of [0, -5, Number.NaN]) assert.equal(alertDurationMs(wrong, raid), 1, String(wrong));
+assert.equal(alertDurationMs(3_600_000, raid), 1_800_000);
+assert.equal(alertDurationMs(() => Number.POSITIVE_INFINITY, raid), 1_800_000);
 
 // Decode: empty before the start, then character by character with up to 6 random characters before it, spaces stay
 const scrambled = () => "?";

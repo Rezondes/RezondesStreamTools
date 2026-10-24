@@ -1,7 +1,7 @@
 // When and where overlay parts appear: time display, music progress, phases and position of the chat effects,
 // times of the alerts and the single frame of the decode effect. Pure functions (time and randomness
 // are passed in), tested in overlayTiming.check.ts.
-import type { FxAction, FxPosition, Track } from "./types.ts";
+import type { Alert, FxAction, FxPosition, Track } from "./types.ts";
 
 const pad = (value: number) => String(Math.max(0, Math.floor(value))).padStart(2, "0");
 
@@ -51,6 +51,18 @@ export function countdownEnd(at: string | null, seconds: number, now: Date) {
   end.setHours(Number(time[1]), Number(time[2]), 0, 0);
   if (end.getTime() < now.getTime()) end.setDate(end.getDate() + 1);
   return end.getTime();
+}
+
+// fixed: queue must keep moving, no alert stands longer than 30 minutes
+const MAX_ALERT_MS = 30 * 60 * 1000;
+
+// Duration of alerts: one number for all, or a function that gives the duration of each alert (e.g. a raid by amount)
+export type AlertDuration = number | ((alert: Alert) => number);
+
+// The duration of this alert in ms, clamped to 1 ms up to 30 minutes; NaN gives 1
+export function alertDurationMs(duration: AlertDuration, alert: Alert): number {
+  const value = typeof duration === "function" ? duration(alert) : duration;
+  return Number.isNaN(value) ? 1 : Math.min(MAX_ALERT_MS, Math.max(1, value));
 }
 
 // An alert starts fading out 600 ms before it expires; the next one comes 400 ms after it expires
