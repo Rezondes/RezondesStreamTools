@@ -105,7 +105,7 @@ const FIELDS = [
   flag("alertMessage", "Nachricht zeigen", ALERTS, true),
   flag("alertProgress", "Restzeit-Balken", ALERTS, true),
   number("alertDuration", "Dauer", ALERTS, 6000, 2000, 60000, "ms"),
-  number("alertWidth", "Breite", ALERTS, 640, 200, 1900, "px"),
+  number("alertWidth", "Breite", ALERTS, 900, 200, 1900, "px"),
   flag("alertTraceOn", "Rand zeichnet sich ein", ALERTS, true),
   number("alertTraceMs", "Rand: Dauer", ALERTS, 700, 0, 3000, "ms"),
   number("alertGlow", "Schein um die Karte", ALERTS, 24, 0, 80, "px"),

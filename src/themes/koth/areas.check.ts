@@ -6,8 +6,8 @@ import { kothSettings } from "./settings.ts";
 
 const areas = (changes: Record<string, unknown>) => kothAreas(resolveSettings(kothSettings, changes));
 
-assert.deepEqual(areas({}).alerts, { width: 1080, height: 578, offset: { x: 392, y: 56 } }, "dog tag and radio");
-assert.deepEqual(areas({ alertStyle: "funk" }).alerts, { width: 808, height: 348, offset: { x: 556, y: 56 } }, "a card style");
+assert.deepEqual(areas({}).alerts, { width: 1270, height: 578, offset: { x: 297, y: 56 } }, "dog tag and radio");
+assert.deepEqual(areas({ alertStyle: "funk" }).alerts, { width: 998, height: 348, offset: { x: 461, y: 56 } }, "a card style");
 assert.deepEqual(areas({}).stats, { width: 600, height: 450 }, "the report with its stamp");
 
 assert.deepEqual(areas({}).music, { width: 900, height: 223 }, "the radio as high as its text");

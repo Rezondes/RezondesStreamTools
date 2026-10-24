@@ -40,6 +40,31 @@ export function dogtagShape(): { outline: Point2[]; hole: Point2[] } {
 export const dogtagLines = (templates: readonly string[], names: Readonly<Record<string, string>>) =>
   templates.map(line => fillTemplate(line, names).trim().toUpperCase()).filter(line => line.length > 0);
 
+// The rows stamped on the plate: a line at full size, or a line too wide for room split in two at the separator nearest
+// its middle (a space, _, - or .) and made only as small as both halves need, like a long name on a real tag. widthOf
+// measures a text at a size; rows follow each other at line apart, scaled with their size.
+type StampRow = { text: string; size: number; y: number };
+export function stampRows(lines: readonly string[], widthOf: (text: string, size: number) => number, room: number, stamp: { size: number; first: number; line: number }): StampRow[] {
+  const rows: StampRow[] = [];
+  let y = stamp.first;
+  for (const text of lines) {
+    const parts = widthOf(text, stamp.size) <= room ? [text] : splitInHalf(text);
+    const size = Math.min(stamp.size, ...parts.map(part => Math.floor((stamp.size * room) / Math.max(1, widthOf(part, stamp.size)))));
+    for (const part of parts) {
+      rows.push({ text: part, size, y });
+      y += (stamp.line * size) / stamp.size;
+    }
+  }
+  return rows;
+}
+
+function splitInHalf(text: string): [string, string] {
+  const middle = text.length / 2;
+  const breaks = [...text].flatMap((char, index) => (/[\s_.-]/.test(char) && index > 0 && index < text.length - 1 ? [index + 1] : []));
+  const at = breaks.length ? breaks.reduce((best, index) => (Math.abs(index - middle) < Math.abs(best - middle) ? index : best)) : Math.ceil(middle);
+  return [text.slice(0, at).trim(), text.slice(at).trim()];
+}
+
 const MS = 1000;
 const step = (start: number, duration: number): Step => ({ start, duration, stagger: 0 });
 

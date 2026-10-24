@@ -5,6 +5,7 @@
 // spray flying where each swell breaks. Styles: postcard, surfboard or message in a bottle. All on one GSAP timeline
 // (stills with ?t=). Texts, quote rule and sounds come from the alerts context of the core (src/core/alerts), here keys,
 // symbols and the beach look. Parameters: ?sound=0, ?volume=0.5
+import { useOneLine } from "../../../core/hooks/useOneLine.ts";
 import { SplitText } from "gsap/SplitText";
 import type { Application } from "pixi.js";
 import { Graphics } from "pixi.js";
@@ -112,6 +113,8 @@ function swellPainter(clock: { time: number }, timing: SwellTiming, values: Urla
 }
 
 function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
+  // The name stays on one line on the card
+  const nameLine = useOneLine<HTMLElement>(alert.user);
   const values = useUrlaub();
   const scope = useRef<HTMLDivElement>(null);
   const { tag, line, icon, sound } = describe(alert, values);
@@ -134,7 +137,7 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
       <div className="ul-stamp"><ShapeIcon shape={ICONS[icon]} /></div>
       <div className="ul-alert-text">
         <span className="ul-tag">{tag}</span>
-        {postcard && <b className="ul-alert-name">{alert.user}</b>}
+        {postcard && <b ref={nameLine} className="ul-alert-name">{alert.user}</b>}
         <b className="ul-alert-line">{line}</b>
         {quote && <i className="ul-quote">{quote}</i>}
       </div>

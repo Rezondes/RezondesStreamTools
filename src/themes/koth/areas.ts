@@ -8,9 +8,9 @@ import type { SceneArea, SceneName, SettingValues } from "../../core/theme.ts";
 import { ALERT_TOP, alertLayout, DOGTAG } from "./dogtag.ts";
 import type { KothValues } from "./settings.ts";
 
-// fixed: the tallest radio and the tallest card before scaling (px); room for the swinging tag and its smoke, and
-// around the card
-const RADIO_HEIGHT = 260;
+// fixed: the tallest radio and the tallest card before scaling (px): the radio as measured with the longest name, a line
+// and a message of three lines, plus one more line; room for the swinging tag and its smoke, and around the card
+const RADIO_HEIGHT = 340;
 const CARD_HEIGHT = 300;
 const ROOM = { tag: 80, card: 24 };
 // fixed: the stats report: width with the room for its slide and shadow, its height without lines, one line, room for

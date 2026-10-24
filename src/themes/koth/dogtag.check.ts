@@ -1,7 +1,7 @@
 // Check for dogtag.ts: a closed outline with a hole inside, stamped lines with filled placeholders, the alert steps in
 // order and the pendulum that drops in, settles and is pulled away. Runs with npm test.
 import assert from "node:assert/strict";
-import { alertLayout, alertSteps, DOGTAG, dogtagLines, dogtagShape, elasticOut, swingAt } from "./dogtag.ts";
+import { alertLayout, alertSteps, DOGTAG, dogtagLines, dogtagShape, elasticOut, stampRows, swingAt } from "./dogtag.ts";
 
 // Outline and hole
 const { outline, hole } = dogtagShape();
@@ -48,5 +48,17 @@ assert.equal(alertLayout("right", 80, 760, 1).radio.left + 760, 1920 - 72);
 const big = alertLayout("left", 80, 760, 2);
 assert.equal(big.radio.left - big.tag.x, 2 * (middle.radio.left - middle.tag.x));
 assert.ok(big.tag.y > middle.tag.y, "a bigger tag hangs lower");
+
+// Stamped rows: a short line at full size, a long one in two halves at the separator nearest the middle, shrunk as
+// little as possible; the rows below move down by the extra row
+const half = (text: string, size: number) => text.length * size * 0.5;
+const stamp = { size: 40, first: 170, line: 54 };
+assert.deepEqual(stampRows(["KOTH", "120"], half, 236, stamp), [{ text: "KOTH", size: 40, y: 170 }, { text: "120", size: 40, y: 224 }]);
+const long = stampRows(["KOTH", "DER_LAENGSTE_NAME_MOEGLIC", "120"], half, 236, stamp);
+assert.deepEqual(long.map(row => row.text), ["KOTH", "DER_LAENGSTE_", "NAME_MOEGLIC", "120"]);
+assert.equal(long[1].size, 36, "13 letters fit at 36");
+assert.equal(long[1].size, long[2].size, "both halves the same size");
+assert.ok(Math.abs(long[3].y - long[2].y - (54 * 36) / 40) < 1e-9, "the next line follows the smaller row");
+assert.deepEqual(stampRows(["ABCDEFGHIJKL"], half, 100, stamp).map(row => row.text), ["ABCDEF", "GHIJKL"], "without a separator in the middle");
 
 console.log("koth dogtag ok");

@@ -16,7 +16,7 @@
 .theme-kebab .kb-alert-burst { position: absolute; left: var(--kb-burst-left, -36px); top: var(--kb-burst-top, -246px); pointer-events: none; }
 .theme-kebab .kb-alert.leaving .kb-bon { animation: kebab-fall var(--kb-leave, 600ms) ease-in forwards; }
 .theme-kebab .kb-alert.leaving .kb-printer { animation: kebab-rise var(--kb-leave, 600ms) ease-in var(--kb-leave-later, 300ms) forwards; }
-.theme-kebab .kb-alert-bag { position: relative; width: var(--kb-bag-width, 440px); height: var(--kb-bag-height, 528px); margin-top: var(--kb-bag-top, 110px); }
+.theme-kebab .kb-alert-bag { position: relative; width: var(--kb-bag-width, 440px); height: var(--kb-bag-height, 528px); margin-top: var(--kb-bag-top, 110px); scale: var(--kb-bag-scale, 1); transform-origin: top center; }
 .theme-kebab .kb-bag { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 var(--kb-shadow-y, 10px) var(--kb-shadow-blur, 24px) color-mix(in srgb, var(--brown) 30%, transparent)); }
 .theme-kebab .kb-bag .kb-fill { fill: var(--kraft); }
 .theme-kebab .kb-bag .kb-ink { stroke: var(--redText); }

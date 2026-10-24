@@ -9,14 +9,16 @@ import {
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { STAGE } from "../../../core/screens/screens.ts";
 import type { KothClock } from "../build.ts";
-import { DOGTAG, dogtagShape } from "../dogtag.ts";
+import { DOGTAG, dogtagShape, stampRows } from "../dogtag.ts";
 
 type Pose = { drop: number; angle: number };
 type Props = { clock: KothClock; pose: (time: number) => Pose; at: { x: number; y: number }; scale: number; lines: readonly string[]; metal: string };
 
-// fixed: plate, stamp and chain of the prototype (refs/alert.html), in stage px
+// fixed: plate, stamp and chain of the prototype (refs/alert.html), in stage px; room is the width inside the rim, a
+// wider line goes onto two rows (stampRows in dogtag.ts)
 const EXTRUDE = { depth: 8, bevelEnabled: true, bevelThickness: 4, bevelSize: 5, bevelSegments: 4, curveSegments: 18 };
-const STAMP = { width: 300, height: 480, font: '400 40px "Share Tech Mono"', first: 170, line: 54, shift: 2, bump: 4 };
+const STAMP = { width: 300, height: 480, size: 40, family: '"Share Tech Mono"', first: 170, line: 54, shift: 2, bump: 4, room: 236 };
+const fontOf = (size: number) => `400 ${size}px ${STAMP.family}`;
 // fixed: the stamp is a gray card with light edges and dark letters, read as pressed into the metal
 const STAMP_COLORS = { base: "#8a8f94", light: "#e6e9ec", dark: "#2a2d30" };
 const CHAIN = { beads: 46, step: 13, radius: 5 };
@@ -49,10 +51,13 @@ function stamp(lines: readonly string[]) {
   const paint = canvas.getContext("2d")!;
   paint.fillStyle = STAMP_COLORS.base;
   paint.fillRect(0, 0, STAMP.width, STAMP.height);
-  paint.font = STAMP.font;
   paint.textAlign = "center";
-  lines.forEach((text, index) => {
-    const y = STAMP.first + index * STAMP.line;
+  const widthOf = (text: string, size: number) => {
+    paint.font = fontOf(size);
+    return paint.measureText(text).width;
+  };
+  stampRows(lines, widthOf, STAMP.room, STAMP).forEach(({ text, size, y }) => {
+    paint.font = fontOf(size);
     paint.fillStyle = STAMP_COLORS.light;
     paint.fillText(text, STAMP.width / 2 + STAMP.shift, y + STAMP.shift);
     paint.fillStyle = STAMP_COLORS.dark;
@@ -82,7 +87,7 @@ export default function DogTag({ clock, pose, at, scale, lines, metal }: Props) 
   useEffect(() => {
     let made: CanvasTexture | null = null;
     // the stamp waits for its font, so the letters are not drawn in a fallback font
-    void document.fonts.load(STAMP.font).then(() => { made = stamp(lines); setTexture(made); });
+    void document.fonts.load(fontOf(STAMP.size)).then(() => { made = stamp(lines); setTexture(made); });
     return () => made?.dispose();
   }, [lines]);
   useEffect(() => () => geometry.dispose(), [geometry]);

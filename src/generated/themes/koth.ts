@@ -175,6 +175,7 @@ export type KothValues = {
   readonly alertDuration: number;
   readonly alertScale: number;
   readonly alertWidth: number;
+  readonly alertNameSize: number;
   readonly alertIn: string;
   readonly alertOut: string;
   readonly alertTimer: boolean;

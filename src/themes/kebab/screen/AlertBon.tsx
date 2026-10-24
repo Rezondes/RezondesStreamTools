@@ -2,6 +2,7 @@
 // the bon is printed step by step (shop, order number, kind, dish, "für", the name in the title font letter by letter,
 // the line or the viewer's message, the item), then the stamp hits the paper top right with onion rings and meat curls
 // and the bon shakes. The stamp is part of the paper, so it falls and fades with the bon when the alert leaves.
+import { useOneLine } from "../../../core/hooks/useOneLine.ts";
 import { useMemo, useRef, useState } from "react";
 import { seedOf } from "../../../core/hash.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
@@ -23,6 +24,8 @@ const BURST = { size: { width: 800, height: 700 }, origin: { x: 400, y: 350 } };
 type Props = { texts: AlertTexts; user: string; shop: string; values: KebabValues; sound: SoundValue | null };
 
 export default function AlertBon({ texts, user, shop, values, sound }: Props) {
+  // The name stays on one line on the paper
+  const nameLine = useOneLine<HTMLDivElement>(user);
   const box = useRef<HTMLDivElement>(null);
   const [clock] = useState(sceneClock);
   const stampAt = values.alertStampAt / SECOND_MS;
@@ -51,7 +54,7 @@ export default function AlertBon({ texts, user, shop, values, sound }: Props) {
         <div className="kb-alert-kind">{texts.tag}</div>
         <div className="kb-alert-dish">{texts.dish}</div>
         <div className="kb-alert-for">{values.alertFor}</div>
-        <div className="kb-alert-name">{[...user].map((char, index) => <span key={index}>{char}</span>)}</div>
+        <div ref={nameLine} className="kb-alert-name">{[...user].map((char, index) => <span key={index}>{char}</span>)}</div>
         {texts.line && <div className="kb-alert-line">{texts.line}</div>}
         {texts.item && <><hr /><div className="kb-bon-item"><span>{texts.item.label}</span><small>{texts.item.note}</small></div></>}
         {values.alertStamp && <Stamp text={values.alertStampText} />}

@@ -146,7 +146,7 @@ fn alerts() -> Vec<SettingField> {
         flag("alertMessage", "Nachricht zeigen", ALERTS, true),
         flag("alertProgress", "Restzeit-Balken", ALERTS, true),
         number("alertDuration", "Dauer", ALERTS, 6000.0, 2000.0, 60000.0, MS, None),
-        number("alertWidth", "Breite", ALERTS, 640.0, 200.0, 1900.0, PX, None),
+        number("alertWidth", "Breite", ALERTS, 900.0, 200.0, 1900.0, PX, None),
         flag("alertTraceOn", "Rand zeichnet sich ein", ALERTS, true),
         number("alertTraceMs", "Rand: Dauer", ALERTS, 700.0, 0.0, 3000.0, MS, None),
         number("alertGlow", "Schein um die Karte", ALERTS, 24.0, 0.0, 80.0, PX, None),

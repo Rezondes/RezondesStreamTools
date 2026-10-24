@@ -143,7 +143,7 @@ const FIELDS = [
   flag("alertQuote", "Nachricht zeigen", ALERTS, true),
   text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\""),
   number("alertDuration", "Dauer", ALERTS, 7000, 2000, 60000, "ms"),
-  number("alertWidth", "Breite", ALERTS, 820, 300, 1800, "px"),
+  number("alertWidth", "Breite", ALERTS, 950, 300, 1800, "px"),
   flag("alertTimer", "Restzeit als Markerstrich", ALERTS, true),
   flag("confetti", "Konfetti aus Kritzeleien", ALERTS, true),
   number("confettiCount", "Anzahl Konfetti", ALERTS, 34, 0, 60),

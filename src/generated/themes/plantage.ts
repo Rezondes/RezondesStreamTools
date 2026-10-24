@@ -141,6 +141,7 @@ export type PlantageValues = {
   readonly alertDuration: number;
   readonly alertScale: number;
   readonly alertWidth: number;
+  readonly alertNameSize: number;
   readonly alertTimer: boolean;
   readonly leafConfetti: boolean;
   readonly leafCount: number;

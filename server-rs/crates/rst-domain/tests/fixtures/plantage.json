@@ -1281,9 +1281,19 @@
       "type": "number",
       "label": "Breite",
       "group": "Alerts",
-      "default": 760,
+      "default": 900,
       "min": 300,
       "max": 1800,
+      "unit": "px"
+    },
+    {
+      "key": "alertNameSize",
+      "type": "number",
+      "label": "Grösse des Namens",
+      "group": "Alerts",
+      "default": 44,
+      "min": 20,
+      "max": 160,
       "unit": "px"
     },
     {

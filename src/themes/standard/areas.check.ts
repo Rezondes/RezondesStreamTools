@@ -6,8 +6,8 @@ import { standardSettings } from "./settings.ts";
 
 const areas = (changes: Record<string, unknown>) => standardAreas(resolveSettings(standardSettings, changes));
 
-assert.deepEqual(areas({}).alerts, { width: 1360, height: 788, offset: { x: 280, y: 0 } }, "the card with the room of its sparks");
-assert.deepEqual(areas({ alertSparksOn: false }).alerts, { width: 800, height: 508, offset: { x: 560, y: 0 } }, "without sparks only the glow and the exit");
+assert.deepEqual(areas({}).alerts, { width: 1620, height: 788, offset: { x: 150, y: 0 } }, "the card with the room of its sparks");
+assert.deepEqual(areas({ alertSparksOn: false }).alerts, { width: 1060, height: 508, offset: { x: 430, y: 0 } }, "without sparks only the glow and the exit");
 assert.deepEqual(areas({}).stats, { width: 1073, height: 200 }, "five stats cards side by side");
 assert.deepEqual(areas({ endingStats: ["follows|Follows"] }).stats, { width: 253, height: 200 }, "one card");
 

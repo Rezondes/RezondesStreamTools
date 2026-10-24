@@ -231,6 +231,7 @@ fn alerts() -> Vec<SettingField> {
     vec![
         // Per kind: head line, dish, the line under the name and the item at the bottom (Posten|Zusatz)
         choice("alertStyle", "Darstellung", ALERTS, "bon", &ALERT_STYLES),
+        number("alertWidth", "Breite", ALERTS, 460.0, 300.0, 1800.0, PX, None),
         text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOW", None),
         text("followDish", "Follow: Gericht", ALERTS, "1x Döner", None),
         text("followLine", "Follow: Spruch", ALERTS, "Mit alles?", None),

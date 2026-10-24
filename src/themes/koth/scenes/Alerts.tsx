@@ -74,7 +74,7 @@ function DogtagAlert({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   );
   const pose = useCallback((now: number) => swingAt(now, steps, values.dogtagSwing, leftAt === null ? null : now - leftAt, values.alertCloseMs), [steps, values.dogtagSwing, leftAt, values.alertCloseMs]);
   const said = values.alertQuote ? alertQuote(alert) : null;
-  const text = said ? `${line}  //  ${fillTemplate(values.quoteFormat, { text: said })}` : line;
+  const quote = said ? fillTemplate(values.quoteFormat, { text: said }) : "";
   const timer = values.alertTimer ? { start: steps.line.start, duration: Math.max(steps.line.duration, values.alertDuration / MS - steps.line.start), stagger: 0 } : null;
   return (
     <>
@@ -87,7 +87,7 @@ function DogtagAlert({ alert, leaving }: { alert: Alert; leaving: boolean }) {
       <div className="kh-dogtag-radio stage-box" ref={stage}>
         <RadioSet
           time={time} steps={steps} leftFor={leftAt === null ? null : time - leftAt} closeMs={values.alertCloseMs} timer={timer}
-          channel={values.radioChannel} tag={`${fillTemplate(values.alertCallsign, kothNames(values))}  //  ${tag}`} name={alert.user} line={text} at={layout.radio} width={values.alertWidth} scale={values.alertScale}
+          channel={values.radioChannel} tag={`${fillTemplate(values.alertCallsign, kothNames(values))}  //  ${tag}`} name={alert.user} line={line} quote={quote} at={layout.radio} width={values.alertWidth} scale={values.alertScale} nameSize={values.alertNameSize}
         />
       </div>
     </>

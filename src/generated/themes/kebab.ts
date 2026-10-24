@@ -76,6 +76,7 @@ export type KebabValues = {
   readonly stampText: string;
   readonly stampAt: number;
   readonly alertStyle: string;
+  readonly alertWidth: number;
   readonly followTag: string;
   readonly followDish: string;
   readonly followLine: string;

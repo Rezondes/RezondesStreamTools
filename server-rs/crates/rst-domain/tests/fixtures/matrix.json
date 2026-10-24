@@ -1068,7 +1068,7 @@
       "type": "number",
       "label": "Breite",
       "group": "Alerts",
-      "default": 860,
+      "default": 900,
       "min": 300,
       "max": 1900,
       "unit": "px"

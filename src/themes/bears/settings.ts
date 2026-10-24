@@ -194,7 +194,7 @@ const FIELDS = [
   text("quoteFormat", "Nachricht ({text})", ALERTS, "\"{text}\""),
   number("alertDuration", "Dauer", ALERTS, 7000, 2000, 60000, "ms"),
   number("alertScale", "Grösse", ALERTS, 1, 0.3, 2, undefined, 0.05),
-  number("alertWidth", "Breite", ALERTS, 760, 300, 1800, "px"),
+  number("alertWidth", "Breite", ALERTS, 900, 300, 1800, "px"),
   choice("alertIn", "Einblenden", ALERTS, "plopp", MOTIONS),
   choice("alertOut", "Ausblenden", ALERTS, "plopp", MOTIONS),
   flag("alertTimer", "Restzeit als Balken", ALERTS, true),

@@ -120,6 +120,7 @@ const FIELDS = [
   // Per kind: head line, dish, the line under the name (when the viewer wrote nothing) and the item at the bottom
   // (Posten|Zusatz). Placeholders: {user}, {amount}, {detail}, {text}
   choice("alertStyle", "Darstellung", ALERTS, "bon", ALERT_STYLES),
+  number("alertWidth", "Breite", ALERTS, 460, 300, 1800, "px"),
   text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOW"),
   text("followDish", "Follow: Gericht", ALERTS, "1x Döner"),
   text("followLine", "Follow: Spruch", ALERTS, "Mit alles?"),

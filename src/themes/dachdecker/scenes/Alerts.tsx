@@ -3,6 +3,7 @@
 // quote appear, the remaining time as a dimension chain that pulls back; leaving runs the other way. Built-in hammer
 // knocks unless own files are chosen. Texts, quote rule and sounds come from the alerts context of the core.
 // Parameters: ?sound=0, ?volume=0.5
+import { useOneLine } from "../../../core/hooks/useOneLine.ts";
 import { useState } from "react";
 import { ALERT_SOUND_KEYS, alertQuote } from "../../../core/alerts/alerts.ts";
 import { useAlertSounds } from "../../../core/alerts/useAlertSounds.ts";
@@ -35,12 +36,14 @@ function Sign({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const tick = Math.floor((now - start) / SCRAMBLE_TICK_MS);
   const said = values.alertQuote ? alertQuote(alert) : null;
   const quote = said ? fillTemplate(values.quoteFormat, { text: said }) : "";
+  // The name stays on one line on the sign, measured on the whole name while it decodes
+  const nameLine = useOneLine<HTMLElement>(alert.user);
   return (
     <div className={`dd-alert${leaving ? " leaving" : ""}`}>
       {values.alertDim && <DimensionLine text={dim} />}
       <PlanSign corners={values.alertCorners} className="dd-alert-sign">
         <p className="dd-alert-tag">{scrambled(tag, share, tick)}</p>
-        <b className="dd-alert-name">{scrambled(alert.user, share, tick)}</b>
+        <b ref={nameLine} className="dd-alert-name">{scrambled(alert.user, share, tick)}</b>
         {line && <p className="dd-alert-line">{line}</p>}
         {quote && <i className="dd-quote">{quote}</i>}
         {values.alertTimer && <i className="dd-alert-timer" aria-hidden="true" />}

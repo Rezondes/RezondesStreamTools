@@ -4,6 +4,7 @@
 // the box switches on there like a tube, glitches once in the middle and at the end falls apart into glyphs
 // (PLAN-MATRIX.md package 3, pixi/Curtain.tsx), all on one GSAP timeline (stills with ?t=).
 // Parameters: ?sound=0, ?volume=0.5, ?demo
+import { useOneLine } from "../../../core/hooks/useOneLine.ts";
 import { type RefObject, useLayoutEffect, useRef, useState } from "react";
 import { alertTiming } from "../../../core/overlayTiming.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
@@ -66,6 +67,8 @@ function AlertBox({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const title = alert.kind === "hype" ? values.hypeTitle : alert.user;
   const header = useMatrixDecode(fillTemplate(values.alertHeader, { tag }), "alertHeader");
   const name = useMatrixDecode(title.toUpperCase(), "alertName");
+  // The name stays on one line, measured on the whole decoded text
+  const nameLine = useOneLine<HTMLDivElement>(title.toUpperCase());
   const sub = useMatrixDecode(line, "alertLine");
   const said = values.alertQuote ? alertQuote(alert) : null;
   const quote = useMatrixDecode(said ? fillTemplate(values.quoteFormat, { text: said }) : "", "alertQuote");
@@ -84,7 +87,7 @@ function AlertBox({ alert, leaving }: { alert: Alert; leaving: boolean }) {
       <div className="alert-body">
         {values.rainAlerts && area && <Rain opacity={values.rainOpacityAlerts} area={area} />}
         <div className="alert-head">{header}</div>
-        <div className="alert-name glow glitch" data-text={name}>{name}</div>
+        <div ref={nameLine} className="alert-name glow glitch" data-text={name}>{name}</div>
         <div className="alert-line">{sub}</div>
         {quote && <div className="alert-quote muted">{quote}</div>}
         {values.alertTimer && <div className="alert-timer" />}

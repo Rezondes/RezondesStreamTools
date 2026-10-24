@@ -1,7 +1,9 @@
 // Radio set of the KOTH alert (refs/alert.html): a steel device with LED, channel and grille slams open from the dog tag,
 // its display shows static, then the head line types, the name decodes and the line types in; the remaining time runs
-// as warning stripes. Leaving: static again and the radio closes. Everything follows the time of the alert.
-import { type CSSProperties, useEffect, useRef } from "react";
+// as warning stripes. Leaving: static again and the radio closes. Everything follows the time of the alert. The name
+// stays on one line and shrinks when it would not fit; the line and the viewer's message wrap and keep the room of their
+// whole text while they type, so the radio does not grow letter by letter.
+import { type CSSProperties, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { hash } from "../../../core/hash.ts";
 import { type Step, stepShare } from "../build.ts";
 import { scrambled, typed } from "../briefing.ts";
@@ -9,7 +11,7 @@ import { type AlertSteps, leaveSteps } from "../dogtag.ts";
 
 type Props = {
   time: number; steps: AlertSteps; leftFor: number | null; closeMs: number; timer: Step | null;
-  channel: string; tag: string; name: string; line: string; at: { left: number; top: number }; width: number; scale: number;
+  channel: string; tag: string; name: string; line: string; quote: string; at: { left: number; top: number }; width: number; scale: number; nameSize: number;
 };
 
 // fixed: blink of the LED, the steps of the static, its frame rate and its grain
@@ -40,7 +42,30 @@ function noiseOf(time: number, steps: AlertSteps, leftFor: number | null, closeM
   return 1 - Math.floor(stepShare(steps.noise, time) * NOISE_STEPS) / NOISE_STEPS;
 }
 
-export default function RadioSet({ time, steps, leftFor, closeMs, timer, channel, tag, name, line, at, width, scale }: Props) {
+// A text that types in: the whole text keeps its room unseen, the typed part lies on top of it
+function Typed({ className, text, count }: { className: string; text: string; count: number }) {
+  return <p className={className}><span className="kh-radio-room">{text}</span><span className="kh-radio-typed">{text.slice(0, Math.max(0, count))}</span></p>;
+}
+
+// How much of the set name size the name gets: all of it, or less when the name would be wider than the panel
+function useNameFit(name: string, size: number) {
+  const measure = useRef<HTMLElement>(null);
+  const [fit, setFit] = useState(1);
+  useLayoutEffect(() => {
+    const element = measure.current;
+    const room = element?.parentElement;
+    if (!element || !room) return;
+    const style = getComputedStyle(room);
+    const inner = room.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+    setFit(Math.min(1, inner / element.scrollWidth));
+  }, [name, size]);
+  return { measure, fit };
+}
+
+export default function RadioSet({ time, steps, leftFor, closeMs, timer, channel, tag, name, line, quote, at, width, scale, nameSize }: Props) {
+  const { measure, fit } = useNameFit(name, nameSize);
+  // The line and then the message type in one run
+  const shown = Math.round(stepShare(steps.line, time) * (line.length + quote.length));
   const open = stepShare(steps.radio, time);
   const closed = leftFor === null ? 0 : stepShare(leaveSteps(closeMs).radio, leftFor);
   const clip = closed > 0 ? `inset(0 0 0 ${closed * 100}%)` : `inset(-20px ${(1 - open) * 100}% -60px -20px)`;
@@ -53,8 +78,10 @@ export default function RadioSet({ time, steps, leftFor, closeMs, timer, channel
       <div className="kh-radio-panel">
         <Noise tick={Math.floor(time * TICKS)} opacity={noiseOf(time, steps, leftFor, closeMs)} />
         <p className="kh-radio-tag">{typed(tag, stepShare(steps.tag, time))}</p>
-        <b className="kh-radio-name">{stepShare(steps.name, time) > 0 ? scrambled(name, stepShare(steps.name, time), Math.floor(time * TICKS)) : ""}</b>
-        <p className="kh-radio-text">{typed(line, stepShare(steps.line, time))}</p>
+        <b className="kh-radio-name" style={{ fontSize: nameSize * fit }}>{stepShare(steps.name, time) > 0 ? scrambled(name, stepShare(steps.name, time), Math.floor(time * TICKS)) : " "}</b>
+        <b ref={measure} className="kh-radio-name kh-radio-measure" style={{ fontSize: nameSize }} aria-hidden="true">{name}</b>
+        <Typed className="kh-radio-text" text={line} count={shown} />
+        {quote && <Typed className="kh-radio-text kh-radio-quote" text={quote} count={shown - line.length} />}
       </div>
       {timer && <i className="kh-radio-timer" style={{ transform: `scaleX(${1 - stepShare(timer, time)})` }} />}
     </div>

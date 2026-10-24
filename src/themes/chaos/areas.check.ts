@@ -6,7 +6,7 @@ import { chaosSettings } from "./settings.ts";
 
 const areas = (changes: Record<string, unknown>) => chaosAreas(resolveSettings(chaosSettings, changes));
 
-assert.deepEqual(areas({}).alerts, { width: 1508, height: 849, offset: { x: 206, y: 0 } }, "the slapping note with its spray");
+assert.deepEqual(areas({}).alerts, { width: 1684, height: 849, offset: { x: 118, y: 0 } }, "the slapping note with its spray");
 assert.deepEqual(areas({}).music, { width: 680, height: 340 }, "the music card");
 
 console.log("chaos areas ok");

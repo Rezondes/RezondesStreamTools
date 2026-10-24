@@ -9,7 +9,9 @@ type QueuedAlert = Alert & { key: number };
 
 export function useAlerts(durationMs: number) {
   const [queue, setQueue] = useState<QueuedAlert[]>([]);
-  const [leaving, setLeaving] = useState(false);
+  // The key of the alert that is fading out: a plain flag stayed true into the first frame of the next alert, which
+  // then began as leaving (the Plantage mango rolled away at once)
+  const [leavingKey, setLeavingKey] = useState<number | null>(null);
 
   useEffect(() => {
     let key = 0;
@@ -20,11 +22,10 @@ export function useAlerts(durationMs: number) {
   useEffect(() => {
     if (!current) return;
     const timing = alertTiming(durationMs);
-    setLeaving(false);
-    const leave = setTimeout(() => setLeaving(true), timing.leaveAtMs);
+    const leave = setTimeout(() => setLeavingKey(current.key), timing.leaveAtMs);
     const next = setTimeout(() => setQueue(list => list.slice(1)), timing.nextAtMs);
     return () => { clearTimeout(leave); clearTimeout(next); };
   }, [current, durationMs]);
 
-  return { current, leaving };
+  return { current, leaving: current !== null && leavingKey === current.key };
 }
