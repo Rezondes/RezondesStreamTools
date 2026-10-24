@@ -60,6 +60,7 @@ Jedes Package endet mit grünem `npm run verify` und ist einzeln committbar. Reg
 | 11 | Starter-Theme | Ein schlichtes Starter-Theme mit Anleitung zeigt, wie man ein eigenes Theme baut. | 4 |
 | 12 | Deployment | Der Server läuft öffentlich hinter Caddy mit automatischem HTTPS. | 1 |
 | 13 | Aufräumen | Altlasten aus der Einzel-Version sind entfernt, ESLint-Ausnahmen abgebaut, Coverage-Grenzen angehoben. | 2 bis 12 |
+| 14 | Ton-Dateien im Kern (wartet auf Auslöser) | Themes spielen eingebaute Ton-Dateien über einen Kern-Baustein statt über eigenen Abspiel-Code. | - |
 
 Parallel möglich: 2 und 3 nach 1; 6, 8, 9, 12 nach 1; 11 nach 4.
 
@@ -581,3 +582,61 @@ Heute stecken Farben in `src/style.css`, Texte in den Szenen (`Screen.tsx > LOG/
 ### Out of Scope
 
 - Neue Funktionen.
+
+---
+
+## Package 14: Ton-Dateien im Kern (offen, wartet auf Auslöser)
+
+**Ziel:** Themes spielen eingebaute Ton-Dateien über einen Kern-Baustein statt über eigenen Abspiel-Code.
+
+**Auslöser:** ein zweites Theme bringt eigene Ton-Dateien mit (heute nur `kebab`). Vorher nicht umsetzen: mit einem
+einzigen Nutzer ist der Baustein eine Schicht ohne Gewinn. Herkunft: `ponytail:`-Marker in `src/themes/kebab/tones.ts`
+(Bestandsaufnahme 2026-10-24).
+
+**Abhängigkeiten:** keine (Rust braucht nichts: Vite liefert die Dateien mit dem Bundle aus, der Server sieht sie nie)
+
+**Betroffene Dateien:**
+- `src/core/sound.ts` (ändern: Baustein für eine Ton-Datei)
+- `src/themes/kebab/tones.ts` (ändern: nutzt den Baustein, `ponytail:`-Kommentar fällt weg)
+- `src/themes/<id>/tones.ts` des zweiten Themes (neu oder ändern)
+- `scripts/rules.check.ts` (`WITHOUT_CHECK`: Eintrag für `src/themes/kebab/tones.ts` prüfen, ob er noch nötig ist)
+- `THEMES.md` (Abschnitt Töne: eingebaute Ton-Dateien)
+
+### Kontext
+
+`playSound(sound, builtIn)` in `src/core/sound.ts` spielt die eigene Datei des Streamers aus dem Medienordner oder ruft
+den eingebauten Ton des Themes mit der Lautstärke auf; `?sound=0` schaltet alles stumm. Die meisten Themes erzeugen
+ihre eingebauten Töne mit `beep` (Web Audio). `kebab` liefert stattdessen OGG-Dateien mit (`src/themes/kebab/sounds/`,
+Import über Vite) und spielt sie in `tones.ts` selbst: `tone(url)` gibt `(volume) => void` zurück, `play(url)` hängt
+das an `playSound`. Für die Türme der Minimes reicht der Kern `MinimeStackScene.sound` eine solche `(volume) => void`
+durch (`plopTone`).
+
+### Acceptance Criteria
+
+- [ ] AC1: `src/core/sound.ts` bietet `fileTone(url)`: eine Funktion `(volume) => void`, die die Datei mit der auf 0 bis 1
+      begrenzten Lautstärke abspielt, mit `?sound=0` still bleibt und einen geblockten Start nur als Warnung meldet.
+- [ ] AC2: `src/themes/kebab/tones.ts` enthält keinen eigenen `Audio`-Code mehr, nur noch die Datei-Importe und
+      `playSound(sound, fileTone(url))` je Ton; alle Kebab-Töne klingen wie vorher.
+- [ ] AC3: Das zweite Theme mit Ton-Dateien nutzt `fileTone` ebenso.
+- [ ] AC4: `THEMES.md` beschreibt eingebaute Ton-Dateien (Ablage `src/themes/<id>/sounds/`, Import, `fileTone`).
+
+### Tests (TDD)
+
+1. Kein automatischer Test für das Abspielen (`sound.ts` steht als Ausgabe-Modul in `WITHOUT_CHECK`). Manueller Check
+   für AC1 bis AC3: Kebab Alerts mit `?demo&preview` (ohne `sound=0`) im Browser: Kasse, Drucker, Stempel und Tüte sind
+   zu hören; mit `?sound=0` nichts; mit einer eigenen Datei des Streamers im Sound-Feld deren Ton.
+2. Bestehende Checks und `scripts/rules.check.ts` bleiben grün.
+
+Testbefehl: `npm test`, Abschluss: `npm run verify`
+
+### Umsetzungsschritte
+
+1. `fileTone(url)` in `src/core/sound.ts` (der heutige `tone` aus `kebab/tones.ts` wandert in den Kern).
+2. `kebab/tones.ts` auf `fileTone` umstellen, `ponytail:`-Kommentar entfernen.
+3. Das zweite Theme anbinden, `THEMES.md` ergänzen, `WITHOUT_CHECK` prüfen.
+4. Manueller Check, `npm run verify`, Commit.
+
+### Out of Scope
+
+- Ton-Dateien für Clips (Stinger und Banner sind stumm).
+- Ein gemeinsames Paket von Ton-Dateien für alle Themes.
