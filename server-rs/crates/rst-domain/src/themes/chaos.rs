@@ -80,6 +80,7 @@ fn general() -> Vec<SettingField> {
         number("roughShare", "Kritzeleien mit Füllung (Anteil)", GENERAL, 35.0, 0.0, 100.0, PERCENT, None),
         flag("roughFill", "Kritzeleien gefüllt", GENERAL, true),
         flag("idleOn", "Bewegung nach dem Aufbau", MOTION, true),
+        number("idleEaseMs", "Bewegung: Übergang nach dem Aufbau", MOTION, 1500.0, 0.0, 5000.0, MS, None),
         flag("boilOn", "Kritzeleien kochen", MOTION, true),
         number("boilFps", "Kochen: Bilder pro Sekunde", MOTION, 8.0, 1.0, 24.0, None, None),
         in_scene(

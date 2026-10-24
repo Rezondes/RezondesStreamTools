@@ -5,7 +5,7 @@ import { type Application, BlurFilter, Container, Graphics } from "pixi.js";
 import { useEffect } from "react";
 import { quality } from "../../../core/three/quality.ts";
 import { brushAt, brushPoint, brushSchedule, type makeBrush } from "../brush.ts";
-import { dripAt } from "../idle.ts";
+import { dripAt, idleShare } from "../idle.ts";
 import type { ChaosValues } from "../settings.ts";
 import type { GestureKind } from "../strokes.ts";
 
@@ -19,11 +19,13 @@ const BRUSH_Z = 20;
 
 type Painted = { brush: ReturnType<typeof makeBrush>; color: string; drips: Graphics };
 
-// The drips of a stroke: they run down once the brush has passed them, looping they drop off
-function paintDrips(stroke: Painted, since: number, progress: number, strokeSeconds: number, loop: boolean) {
+// The drips of a stroke: they run down once the brush has passed them, looping (from loopFrom seconds after the start of
+// the stroke on, null without) they drop off
+function paintDrips(stroke: Painted, since: number, progress: number, strokeSeconds: number, loopFrom: number | null) {
   for (const drip of stroke.brush.drips) {
     if (progress < drip.at) continue;
-    const state = dripAt(drip, since - strokeSeconds * drip.at, loop);
+    const passed = strokeSeconds * drip.at;
+    const state = dripAt(drip, since - passed, loopFrom === null ? null : loopFrom - passed);
     const top = brushPoint(stroke.brush, drip.at, drip.offset);
     stroke.drips.moveTo(top.x, top.y).lineTo(top.x, top.y + state.run).stroke({ width: drip.width, color: stroke.color, cap: "round" });
     stroke.drips.circle(top.x, top.y + state.run, drip.width * DROP.width).fill(stroke.color);
@@ -53,10 +55,12 @@ export default function Brushes({ app, world, clock, values, gesture, mainColor,
     const strokeSeconds = values.strokeMs / 1000;
     const place = () => {
       const seconds = clock();
-      const idle = values.idleOn && seconds >= idleFrom;
+      // The shimmer counts from the start of the movement and grows in with it, so the bristles do not jump
+      const since = Math.max(0, seconds - idleFrom);
+      const shimmer = values.idleOn ? idleShare(seconds - idleFrom, values.idleEaseMs / 1000) * values.bristleShimmer : 0;
       for (const stroke of strokes) {
         const progress = (seconds - stroke.start) / strokeSeconds;
-        const frame = brushAt(stroke.brush, progress, seconds, idle ? values.bristleShimmer : 0);
+        const frame = brushAt(stroke.brush, progress, since, shimmer);
         stroke.sharp.clear();
         stroke.soft.clear();
         stroke.drips.clear();
@@ -68,7 +72,7 @@ export default function Brushes({ app, world, clock, values, gesture, mainColor,
           stroke.sharp.poly(bristle.points, false).stroke({ width: bristle.width, color: bristle.light ? values.textColor : stroke.color, alpha: bristle.alpha, cap: "round" });
           stroke.soft.poly(bristle.points, false).stroke({ width: bristle.width * GLOW_BRISTLE.width, color: stroke.color, alpha: GLOW_BRISTLE.alpha });
         }
-        if (values.drips) paintDrips(stroke, seconds - stroke.start, progress, strokeSeconds, idle && values.dripLoop);
+        if (values.drips) paintDrips(stroke, seconds - stroke.start, progress, strokeSeconds, values.idleOn && values.dripLoop ? idleFrom - stroke.start : null);
       }
     };
     place();

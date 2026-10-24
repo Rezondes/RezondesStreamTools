@@ -65,6 +65,7 @@ const FIELDS = [
   flag("roughFill", "Kritzeleien gefüllt", GENERAL, true),
 
   flag("idleOn", "Bewegung nach dem Aufbau", MOTION, true),
+  number("idleEaseMs", "Bewegung: Übergang nach dem Aufbau", MOTION, 1500, 0, 5000, "ms"),
   flag("boilOn", "Kritzeleien kochen", MOTION, true),
   number("boilFps", "Kochen: Bilder pro Sekunde", MOTION, 8, 1, 24),
   inScene("brb", number("brbBoilFps", "BRB: Kochen (Bilder pro Sekunde)", MOTION, 5, 1, 24)),

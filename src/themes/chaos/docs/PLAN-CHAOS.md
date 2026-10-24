@@ -411,7 +411,7 @@ selbst, der Titel wird aufgesprüht, danach bewegt sich alles weiter (abschaltba
 | Gruppe | Schlüssel (Standard) |
 |---|---|
 | Allgemein | `quality` (`qualityField`), `glowStrength` (22), `glowAlpha` (0.75), `roughShare` (35 % der Kritzeleien aus Rough), `roughFill` (an) |
-| Bewegung | `idleOn` (an), `boilOn` (an), `boilFps` (8), `driftAmount` (2.5 px), `bristleShimmer` (Faktor 1), `dripLoop` (an), `dustOn` (an), `dustCount` (90, Obergrenze 600 mit `fixed`); bestehend `flicker`, `glitch`, `glitchEvery` gelten auch nach dem Aufbau |
+| Bewegung | `idleOn` (an), `idleEaseMs` (1500 ms, Übergang in die Bewegung: Treiben, Schimmern und Staub wachsen weich hinein, das Kochen setzt gestaffelt ein, die ersten Tropfen beginnen klein), `boilOn` (an), `boilFps` (8), `driftAmount` (2.5 px), `bristleShimmer` (Faktor 1), `dripLoop` (an), `dustOn` (an), `dustCount` (90, Obergrenze 600 mit `fixed`); bestehend `flicker`, `glitch`, `glitchEvery` gelten auch nach dem Aufbau |
 | Starting | bestehende Texte bleiben; neu `strokeMs` (550 ms), `scribbleStagger` (45 ms), `sprayTitleMs` (1200 ms) |
 
 ### Acceptance Criteria

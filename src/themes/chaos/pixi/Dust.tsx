@@ -3,7 +3,7 @@
 import { type Application, type Container, Graphics } from "pixi.js";
 import { useEffect } from "react";
 import { particleCount } from "../../../core/three/quality.ts";
-import { dustAt } from "../idle.ts";
+import { dustAt, idleShare } from "../idle.ts";
 import type { ChaosValues } from "../settings.ts";
 
 type Props = { app: Application; world: Container; clock: () => number; values: ChaosValues; seed: number; idleFrom: number };
@@ -20,10 +20,12 @@ export default function Dust({ app, world, clock, values, seed, idleFrom }: Prop
     const place = () => {
       const seconds = clock();
       dust.clear();
-      if (!values.idleOn || seconds < idleFrom) return;
+      // The dust fades in with the start of the movement
+      const share = values.idleOn ? idleShare(seconds - idleFrom, values.idleEaseMs / 1000) : 0;
+      if (share === 0) return;
       for (let index = 0; index < total; index++) {
         const grain = dustAt(seed, index, seconds);
-        dust.circle(grain.x, grain.y, grain.size).fill({ color: grain.hot ? values.accent : values.accent2, alpha: grain.alpha });
+        dust.circle(grain.x, grain.y, grain.size).fill({ color: grain.hot ? values.accent : values.accent2, alpha: grain.alpha * share });
       }
     };
     place();

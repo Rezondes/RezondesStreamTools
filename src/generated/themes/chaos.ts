@@ -36,6 +36,7 @@ export type ChaosValues = {
   readonly roughShare: number;
   readonly roughFill: boolean;
   readonly idleOn: boolean;
+  readonly idleEaseMs: number;
   readonly boilOn: boolean;
   readonly boilFps: number;
   readonly brbBoilFps: number;

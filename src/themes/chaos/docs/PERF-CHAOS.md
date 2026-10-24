@@ -40,6 +40,28 @@ Die Bildrate bei "mittel" bleibt dadurch bei rund 23 fps, weil die Filter der En
 1. **Marken vorrendern (umgesetzt):** nach dem Einzeichnen wird jeder Take mit seinem Filter einmal zu einem Bild
    (`useMarkSprites.ts`, `sprites.ts`), das Brodeln bewegt danach nur noch die Bilder auf einem Canvas. Gemessen bei
    1920x1080: Starting 134 statt 16 bis 21 fps, die Bilder sind rund 8 s nach dem Laden fertig und belegen rund 37 MB.
+   Nachtrag 2026-10-24: die Bilder entstanden nacheinander, gemessen dauerte das 84 s, in denen "mittel" und "hoch" mit
+   den Live-Filtern bei rund 12 fps liefen. Jetzt entstehen alle Bilder gleichzeitig in rund 3 s; Starting läuft bei
+   "mittel" und "hoch" ab rund 7 s nach dem Laden mit 110 bis 137 fps (vorher bei "niedrig" rund 85 fps). Optik
+   unverändert, es sind dieselben Bilder.
+   Nachtrag 2 (2026-10-24), der Aufbau: gemessen in 0,5-s-Schritten ab dem Laden lief das Einzeichnen (1,5 bis 4,5 s)
+   bei "mittel" mit 18 bis 44 fps, danach hielt das gleichzeitige Erzeugen der Bilder die Seite rund 6 s bei 0 bis 8 fps
+   an. Der GPU-Prozess war mit den 340 Filtern ausgelastet, beim Erzeugen der Hauptthread mit 1020 eigenen
+   SVG-Dokumenten. Jetzt:
+   - Die Marken einer Linienart teilen sich eine Gruppe mit dem Filter (Vorschlag 4, nur für die SVG-Phase). Das Rauschen
+     liegt in den Koordinaten der viewBox, die bis zum Treiben die jeder Marke sind; der Bildvergleich zeigt 0,1 % der
+     Pixel deutlich anders, nur wo sich Marken verschiedener Linienarten kreuzen (andere Reihenfolge).
+   - Die Bilder entstehen in wenigen Atlanten (1024 px, je Take eine Zelle mit verschachteltem SVG, damit der Filter in
+     den Koordinaten des Takes läuft), das Kopieren und Messen läuft in Portionen von 20 Marken je Bild, die Atlanten
+     einer je Bild. Bildvergleich mit den Live-Marken: 0,08 % der Pixel deutlich anders (Kanten).
+   Ergebnis Starting bei "mittel" und "hoch": Einzeichnen 44 bis 72 fps wie bei "niedrig", kein Einbruch beim Erzeugen,
+   ab 5,5 s die Bilder mit 100 bis 124 fps (das Messskript zählt selbst mit, die Werte liegen darum unter denen oben).
+   BRB und Ending gleich. Die erste Sekunde nach dem Laden liegt bei allen Stufen bei 20 bis 35 fps (Laden der Seite).
+   Wechsel von SVG auf die Bilder ohne Sprung: der Canvas malt im selben Bild, in dem das SVG verschwindet (vorher ein
+   leeres Bild), in derselben Reihenfolge (nach Linienart), und das Treiben setzt erst mit den Bildern ein (das Rauschen
+   der gemeinsamen Filter steht, sonst änderte jede Marke beim Wechsel ihre Körnung). Bei stehender Uhr (`?t=5`)
+   ändert der Wechsel 0,10 % der Pixel. Die Bilder während des Einzeichnens zu erzeugen kostete dort ein Sechstel der
+   Bilder und ist darum verworfen.
    Ursprünglicher Vorschlag: jede Marke mit ihren drei Takes einmal samt Filter in ein Bild rendern und danach
    nur noch die Bilder bewegen (Canvas oder Pixi). Der Filter wirkt im eigenen Koordinatensystem der Marke, das
    vorgerenderte Bild sieht beim Treiben deshalb gleich aus. Erwartung: Bildschirme wie bei "niedrig" (rund 90 fps), ohne

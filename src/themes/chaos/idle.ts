@@ -8,10 +8,22 @@ import { hash } from "../../core/hash.ts";
 const PHASE = 0.37;
 export const TAKES = 3;
 
-// Take (0, 1, 2) of scribble index at seconds, fps takes per second; off = always the first take
+// Take (0, 1, 2) of scribble index at seconds, fps takes per second; off = always the first take. At 0 every scribble
+// shows the first take and leaves it at its own moment within the first step, so a boil that starts never switches
+// many at once
 export function boilTake(index: number, seconds: number, fps: number, on: boolean): number {
   if (!on || fps <= 0) return 0;
-  return Math.floor(seconds * fps + index * PHASE) % TAKES;
+  const phase = (index * PHASE) % 1;
+  return Math.floor(Math.max(0, seconds) * fps + phase) % TAKES;
+}
+
+// How far the movement after the build has come in, since seconds after it started: 0 before, smoothly up to 1 after
+// ease seconds, so drift, shimmer and dust grow in instead of jumping on in one frame
+export function idleShare(since: number, ease: number): number {
+  if (since <= 0) return 0;
+  if (since >= ease) return 1;
+  const share = since / ease;
+  return share * share * (3 - 2 * share);
 }
 
 // fixed: drift speeds of a scribble (x, y, turn) per second
@@ -30,13 +42,15 @@ export function driftAt(index: number, seconds: number, amount: number, on: bool
 const DROP = { loop: 2.4, grow: 0.5, fall: 420 };
 type DripState = { run: number; drop: { offset: number; size: number; alpha: number } | null };
 
-// A drip since seconds after the brush passed: it runs to its length; looping, a drop grows at its end, falls and a new
-// one grows, the run itself never jumps back
-export function dripAt(drip: { length: number; speed: number }, since: number, loop: boolean): DripState {
+// A drip since seconds after the brush passed: it runs to its length; looping from loopFrom on (seconds since the brush
+// passed, null without the loop), a drop grows at its end, falls and a new one grows; the first drop starts small even
+// when the loop starts late, the run itself never jumps back
+export function dripAt(drip: { length: number; speed: number }, since: number, loopFrom: number | null): DripState {
   if (since <= 0) return { run: 0, drop: null };
   const run = Math.min(drip.length, since * drip.speed);
-  if (!loop || run < drip.length) return { run, drop: null };
-  const phase = ((since - drip.length / drip.speed) % DROP.loop) / DROP.loop;
+  const start = Math.max(drip.length / drip.speed, loopFrom ?? Infinity);
+  if (since < start) return { run, drop: null };
+  const phase = ((since - start) % DROP.loop) / DROP.loop;
   if (phase < DROP.grow) return { run, drop: { offset: 0, size: phase / DROP.grow, alpha: 1 } };
   const fall = (phase - DROP.grow) / (1 - DROP.grow);
   return { run, drop: { offset: fall * fall * DROP.fall, size: 1, alpha: 1 - fall } };

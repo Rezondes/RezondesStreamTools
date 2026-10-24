@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { seedOf } from "../../core/hash.ts";
 import { brushSchedule } from "./brush.ts";
-import { boilTake, dripAt, driftAt, dustAt, TAKES, flickerAt, glitchAt } from "./idle.ts";
+import { boilTake, dripAt, driftAt, dustAt, TAKES, flickerAt, glitchAt, idleShare } from "./idle.ts";
 
 // Kochen: three takes at fps, neighbours switch at other moments, off means take 0
 const takes = new Set(Array.from({ length: 40 }, (_, step) => boilTake(0, step / 16, 8, true)));
@@ -14,17 +14,32 @@ const switchesOf = (index: number) => Array.from({ length: 80 }, (_, step) => st
 assert.notDeepEqual(switchesOf(0), switchesOf(1), "neighbours switch at different moments");
 assert.equal(boilTake(5, 3.3, 8, false), 0);
 assert.equal(boilTake(5, 3.3, 0, true), 0);
+// A boil that starts: every scribble on the first take, then they leave it one after the other, never most at once
+assert.ok(Array.from({ length: 300 }, (_, index) => boilTake(index, 0, 8, true)).every(take => take === 0), "all on the first take at the start");
+assert.equal(boilTake(4, -2, 8, true), 0, "before the start the first take");
+const leftAt = (seconds: number) => Array.from({ length: 300 }, (_, index) => boilTake(index, seconds, 8, true)).filter(take => take !== 0).length;
+assert.ok(leftAt(1 / 32) > 30 && leftAt(1 / 32) < 120, "a quarter of a step in, about a quarter left the first take");
+
+// The movement after the build grows in smoothly
+assert.equal(idleShare(-1, 1.5), 0);
+assert.equal(idleShare(0, 1.5), 0);
+assert.equal(idleShare(0.75, 1.5), 0.5);
+assert.equal(idleShare(2, 1.5), 1);
+assert.equal(idleShare(0.1, 0), 1, "no easing: on at once");
+for (let step = 1; step <= 150; step++) assert.ok(idleShare(step / 100, 1.5) - idleShare((step - 1) / 100, 1.5) < 0.02, `no jump at ${step}`);
 
 // Laufnasen als Schleife: runs to its length, then a drop grows, falls and fades; the next one starts invisible
 const drip = { length: 100, speed: 50 };
-assert.deepEqual(dripAt(drip, 0, true), { run: 0, drop: null });
-assert.equal(dripAt(drip, 1, true).run, 50);
-assert.equal(dripAt(drip, 1, true).drop, null);
-assert.equal(dripAt(drip, 2, true).drop?.size, 0, "the first drop starts small");
-assert.deepEqual(dripAt(drip, 5, false), { run: 100, drop: null }, "without the loop the drip only runs");
+assert.deepEqual(dripAt(drip, 0, 0), { run: 0, drop: null });
+assert.equal(dripAt(drip, 1, 0).run, 50);
+assert.equal(dripAt(drip, 1, 0).drop, null);
+assert.equal(dripAt(drip, 2, 0).drop?.size, 0, "the first drop starts small");
+assert.deepEqual(dripAt(drip, 5, null), { run: 100, drop: null }, "without the loop the drip only runs");
+assert.deepEqual(dripAt(drip, 4.9, 5), { run: 100, drop: null }, "a loop that starts later: no drop before it");
+assert.equal(dripAt(drip, 5, 5).drop?.size, 0, "a loop that starts later begins with a small drop, not in the middle of a fall");
 const steps = 960;
 for (let step = 1; step <= steps; step++) {
-  const [before, now] = [dripAt(drip, 2 + ((step - 1) / steps) * 4.8, true), dripAt(drip, 2 + (step / steps) * 4.8, true)];
+  const [before, now] = [dripAt(drip, 2 + ((step - 1) / steps) * 4.8, 0), dripAt(drip, 2 + (step / steps) * 4.8, 0)];
   assert.equal(now.run, 100, "the run never jumps back");
   const visible = (state: typeof now) => (state.drop ? state.drop.size * state.drop.alpha : 0);
   assert.ok(Math.abs(visible(now) - visible(before)) < 0.05, `no jump at ${step}`);

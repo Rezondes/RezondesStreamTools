@@ -281,6 +281,16 @@
       "default": true
     },
     {
+      "key": "idleEaseMs",
+      "type": "number",
+      "label": "Bewegung: Übergang nach dem Aufbau",
+      "group": "Bewegung",
+      "default": 1500,
+      "min": 0,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
       "key": "boilOn",
       "type": "boolean",
       "label": "Kritzeleien kochen",

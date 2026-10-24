@@ -124,7 +124,7 @@ export function paintBrushDrips(context: CanvasRenderingContext2D, brush: Brush,
   context.save();
   context.fillStyle = ink;
   for (const drip of brush.drips) {
-    const { run } = dripAt(drip, since, false);
+    const { run } = dripAt(drip, since, null);
     if (run <= 0) continue;
     const top = brushPoint(brush, drip.at, drip.offset);
     context.fill(makePath(dripPath(top.x, top.y, run, drip.width)));
