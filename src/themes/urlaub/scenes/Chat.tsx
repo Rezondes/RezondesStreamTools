@@ -7,6 +7,7 @@ import { useRef } from "react";
 import { badgeLabel } from "../../../core/chat/chat.ts";
 import MessageParts from "../../../core/chat/MessageParts.tsx";
 import { useChat } from "../../../core/hooks/useChat.ts";
+import { useViewport } from "../../../core/hooks/useViewport.ts";
 import PixiStage from "../../../core/pixi/PixiStage.tsx";
 import type { ChatMessage } from "../../../core/types.ts";
 import { drawBubbles } from "../pixi/Bubbles.tsx";
@@ -38,12 +39,12 @@ function Row({ message }: { message: ChatMessage }) {
 }
 
 const SECOND_MS = 1000; // fixed: seconds in ms
-// The air bubbles behind the messages, in the size of the source when it opens; the settings are read every frame
-// ponytail: size taken once at mount, a resized source keeps the old area until it reloads
+// The air bubbles behind the messages, in the size of the source (a resized source gets a new area); the settings are
+// read every frame
 function Bubbles({ values }: { values: UrlaubValues }) {
   const latest = useRef(values);
   latest.current = values;
-  const area = useRef({ width: window.innerWidth, height: window.innerHeight }).current;
+  const area = useViewport();
   const draw = (app: Application) => {
     const bubbles = app.stage.addChild(new Graphics());
     let seconds = 0;
