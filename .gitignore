@@ -32,3 +32,6 @@ server-rs/target
 
 # Reference pictures of themes (third-party art, only for local comparison, never committed)
 .claude/refs/
+
+# Working output of the sound recipes (scripts/sounds/README.md); only the finished OGG files are committed
+src/themes/*/docs/sounds/out/

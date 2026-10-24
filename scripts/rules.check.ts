@@ -4,7 +4,7 @@
 // Runs automatically with npm test (like every *.check.ts).
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { posix } from "node:path";
 
 // All files in the repo, new ones too, but without what .gitignore excludes and without the knowledge graph in
@@ -225,6 +225,22 @@ for (const file of files.filter(file => /^src\/.*\.tsx?$/.test(file) && !file.en
     if (socket || /irc-ws\.chat\.twitch\.tv/.test(line)) failures.push(`${file}:${index + 1}: chat connection in the browser`);
   });
 }
+
+// Sounds (plans/PLAN-TOENE.md package 2): under src/themes/<id>/sounds/ only .ogg files, each at most 64 KB; the
+// recipes that make them live in docs/ of the theme
+const SOUND_FILE = /^src\/themes\/[^/]+\/sounds\//;
+// fixed: keep the overlay light
+const SOUND_LIMIT = 64 * 1024;
+function soundViolations(file: string, bytes: number): string[] {
+  if (!SOUND_FILE.test(file)) return [];
+  if (!file.endsWith(".ogg")) return [`${file}: only .ogg files under sounds/ (sounds)`];
+  return bytes > SOUND_LIMIT ? [`${file}: ${bytes} bytes, at most ${SOUND_LIMIT} (sounds)`] : [];
+}
+// Self test: another kind and a large file are reported, a small OGG and the recipes in docs/ are not
+assert.deepEqual(soundViolations("src/themes/probe/sounds/a.wav", 10), ["src/themes/probe/sounds/a.wav: only .ogg files under sounds/ (sounds)"]);
+assert.deepEqual(soundViolations("src/themes/probe/sounds/a.ogg", SOUND_LIMIT + 1), [`src/themes/probe/sounds/a.ogg: ${SOUND_LIMIT + 1} bytes, at most ${SOUND_LIMIT} (sounds)`]);
+assert.deepEqual([...soundViolations("src/themes/probe/sounds/a.ogg", SOUND_LIMIT), ...soundViolations("src/themes/probe/docs/sounds/kit.py", 1)], []);
+for (const file of files) failures.push(...soundViolations(file, statSync(file).size));
 
 // Test files are called *.check.ts so npm test finds them
 for (const file of files.filter(file => /\.(test|spec)\.tsx?$/.test(file))) failures.push(`${file}: name checks <module>.check.ts`);
