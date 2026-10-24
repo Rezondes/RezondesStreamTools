@@ -1,0 +1,220 @@
+/* Look of the Dogs theme (DESIGN-DOGS.md "Schild-Ebene"): the pixel box with a stepped ink edge of one world pixel
+   (--pixelScale), light inside at the top, the edge color at the bottom and a hard shadow below; red pills with a paw,
+   the title in cream with an ink outline. Colors, sizes and the font come from the settings as custom properties. */
+.theme-dogs {
+  --dg-px: var(--pixelScale, 5px);
+  --dg-shadow: color-mix(in srgb, var(--ink) var(--boxShadow), transparent);
+  font-family: var(--font), monospace;
+  color: var(--textColor);
+}
+
+.theme-dogs .dg-screen {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.theme-dogs .dg-world canvas {
+  image-rendering: pixelated;
+}
+
+.theme-dogs .dg-stage > * {
+  position: absolute;
+}
+
+.theme-dogs .dg-box {
+  background: var(--cream);
+  box-shadow:
+    0 calc(-1 * var(--dg-px)) 0 0 var(--ink), 0 var(--dg-px) 0 0 var(--ink),
+    calc(-1 * var(--dg-px)) 0 0 0 var(--ink), var(--dg-px) 0 0 0 var(--ink),
+    inset 0 calc(-1 * var(--dg-px)) 0 0 var(--edge), inset 0 var(--dg-px) 0 0 var(--light),
+    0 calc(3 * var(--dg-px)) 0 0 var(--dg-shadow);
+}
+
+.theme-dogs .dg-box-red {
+  background: var(--accent);
+  color: var(--onAccent);
+  box-shadow:
+    0 calc(-1 * var(--dg-px)) 0 0 var(--ink), 0 var(--dg-px) 0 0 var(--ink),
+    calc(-1 * var(--dg-px)) 0 0 0 var(--ink), var(--dg-px) 0 0 0 var(--ink),
+    inset 0 calc(-1 * var(--dg-px)) 0 0 color-mix(in srgb, var(--accent) 75%, var(--ink)),
+    inset 0 var(--dg-px) 0 0 color-mix(in srgb, var(--accent) 70%, var(--light)),
+    0 calc(3 * var(--dg-px)) 0 0 var(--dg-shadow);
+}
+
+.theme-dogs .dg-paw {
+  display: inline-block;
+  width: calc(5 * var(--dg-px));
+  height: calc(5 * var(--dg-px));
+  background: currentColor;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M1 0h1v1H1zM3 0h1v1H3zM0 1h1v1H0zM4 1h1v1H4zM1 3h3v2H1zM2 2h1v1H2z"/></svg>') center / contain no-repeat;
+  mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M1 0h1v1H1zM3 0h1v1H3zM0 1h1v1H0zM4 1h1v1H4zM1 3h3v2H1zM2 2h1v1H2z"/></svg>') center / contain no-repeat;
+}
+
+.theme-dogs .dg-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dg-pill-gap, 12px);
+  padding: var(--dg-pill-pad, 8px 20px 10px);
+  font-size: var(--fontSize);
+  font-weight: 600;
+  letter-spacing: var(--dg-spacing, 3px);
+  white-space: nowrap;
+}
+
+.theme-dogs .dg-start-pill {
+  top: var(--dg-pill-top, 30px);
+  left: 0;
+  right: 0;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.theme-dogs .dg-title {
+  top: var(--dg-title-top, 80px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: var(--titleSize);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cream);
+  text-shadow:
+    var(--dg-px) 0 var(--ink), calc(-1 * var(--dg-px)) 0 var(--ink), 0 var(--dg-px) var(--ink), 0 calc(-1 * var(--dg-px)) var(--ink),
+    var(--dg-px) var(--dg-px) var(--ink), calc(-1 * var(--dg-px)) var(--dg-px) var(--ink),
+    var(--dg-px) calc(-1 * var(--dg-px)) var(--ink), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--ink),
+    0 calc(3 * var(--dg-px)) var(--dg-shadow);
+}
+
+.theme-dogs .dg-subtitle {
+  top: var(--dg-subtitle-top, 200px);
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: calc(var(--fontSize) * 1.3);
+  font-weight: 600;
+}
+
+.theme-dogs .dg-caption {
+  font-size: calc(var(--fontSize) * 0.85);
+  font-weight: 600;
+  letter-spacing: var(--dg-spacing, 3px);
+  color: var(--muted);
+}
+
+.theme-dogs .dg-label {
+  padding: var(--dg-label-pad, 2px 12px 5px);
+  text-align: center;
+  font-size: calc(var(--fontSize) * 0.85);
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  transform-origin: 50% 0;
+}
+
+.theme-dogs .dg-label small {
+  display: block;
+  font-size: calc(var(--fontSize) * 0.62);
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.theme-dogs .dg-label.dg-near {
+  background: color-mix(in srgb, var(--ball) 45%, var(--cream));
+}
+
+.theme-dogs .dg-countdown {
+  left: var(--dg-corner-x, 90px);
+  bottom: var(--dg-corner-y, 70px);
+  padding: var(--dg-countdown-pad, 16px 28px 22px);
+}
+
+.theme-dogs .dg-clock {
+  margin-top: var(--dg-clock-gap, 8px);
+  padding: var(--dg-clock-pad, 8px 22px 12px);
+  font-size: calc(var(--fontSize) * 2.75);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.theme-dogs .dg-card {
+  right: var(--dg-corner-x, 90px);
+  bottom: var(--dg-corner-y, 70px);
+  display: flex;
+  align-items: center;
+  gap: var(--dg-card-gap, 22px);
+  padding: var(--dg-card-pad, 18px 30px 22px 22px);
+}
+
+.theme-dogs .dg-badge {
+  display: grid;
+  place-items: center;
+  width: calc(18 * var(--dg-px));
+  height: calc(18 * var(--dg-px));
+  background: var(--ball);
+  color: var(--textColor);
+}
+
+.theme-dogs .dg-badge .dg-paw {
+  width: calc(10 * var(--dg-px));
+  height: calc(10 * var(--dg-px));
+}
+
+.theme-dogs .dg-card-name {
+  font-size: calc(var(--fontSize) * 2.55);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--accent);
+}
+
+.theme-dogs .dg-card-breed {
+  font-size: var(--fontSize);
+  font-weight: 600;
+}
+
+.theme-dogs .dg-bubble {
+  transform-origin: 0 100%;
+  transform: scale(0);
+  padding: var(--dg-bubble-pad, 6px 22px 10px);
+  font-size: calc(var(--fontSize) * 1.75);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.theme-dogs .dg-bubble::after {
+  content: "";
+  position: absolute;
+  left: calc(4 * var(--dg-px));
+  bottom: calc(-4 * var(--dg-px));
+  width: calc(3 * var(--dg-px));
+  height: calc(3 * var(--dg-px));
+  background: var(--cream);
+  box-shadow: 0 var(--dg-px) 0 0 var(--ink), calc(-1 * var(--dg-px)) 0 0 0 var(--ink), var(--dg-px) 0 0 0 var(--ink);
+}
+
+.theme-dogs .dg-ticker {
+  left: var(--dg-ticker-side, 520px);
+  right: var(--dg-ticker-side, 520px);
+  bottom: var(--dg-ticker-bottom, 24px);
+  padding: var(--dg-ticker-pad, 6px 18px 10px);
+  overflow: hidden;
+  font-size: var(--fontSize);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.theme-dogs .dg-sheet-name {
+  left: var(--dg-sheet-left, 40px);
+  transform: translateY(-50%);
+  font-size: calc(var(--fontSize) * 1.3);
+  font-weight: 700;
+}
+
+.theme-dogs .dg-sheet-coat {
+  transform: translateX(-50%);
+  font-size: calc(var(--fontSize) * 0.7);
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}

@@ -15,7 +15,7 @@ Entscheidungen je Theme stehen im Ordner `docs` des Themes, neben seinem Plan (`
 | `chaos` | [DESIGN-CHAOS.md](src/themes/chaos/docs/DESIGN-CHAOS.md) | Neon-Graffiti in der Nacht: Magenta und Cyan kritzeln, sprühen und leuchten auf fast Schwarz |
 | `dachdecker` | [DESIGN-DACHDECKER.md](src/themes/dachdecker/docs/DESIGN-DACHDECKER.md) | Bauplan in 3D: ein Dachstuhl aus leuchtenden Plan-Linien auf Blaupause, gedeckt mit Schiefer und Kupfer |
 | `kebab` | [DESIGN-KEBAB.md](src/themes/kebab/docs/DESIGN-KEBAB.md) | Dönerbude als rote Strichzeichnung auf Papier: Koch, Spieß und Bogenschrift zeichnen sich selbst |
-| `dogs` | [DESIGN-DOGS.md](src/themes/dogs/docs/DESIGN-DOGS.md) | Pixel-Art-Hunde: sechs Rassen auf einer sonnigen Wiese und im Wohnzimmer, Creme-Schilder mit gestuftem Pixelrand (geplant) |
+| `dogs` | [DESIGN-DOGS.md](src/themes/dogs/docs/DESIGN-DOGS.md) | Pixel-Art-Hunde: sechs Rassen auf einer sonnigen Wiese und im Wohnzimmer, Creme-Schilder mit gestuftem Pixelrand (im Aufbau: Starting) |
 
 Ein neues Theme bekommt seine eigene `DESIGN-<ID>.md` im selben Commit wie das Theme.
 

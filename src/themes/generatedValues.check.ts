@@ -4,12 +4,14 @@
 import assert from "node:assert/strict";
 import type { ChaosValues as GeneratedChaos } from "../generated/themes/chaos.ts";
 import type { DachdeckerValues as GeneratedDachdecker } from "../generated/themes/dachdecker.ts";
+import type { DogsValues as GeneratedDogs } from "../generated/themes/dogs.ts";
 import type { KebabValues as GeneratedKebab } from "../generated/themes/kebab.ts";
 import type { MatrixValues as GeneratedMatrix } from "../generated/themes/matrix.ts";
 import type { StandardValues as GeneratedStandard } from "../generated/themes/standard.ts";
 import type { UrlaubValues as GeneratedUrlaub } from "../generated/themes/urlaub.ts";
 import type { ChaosValues } from "./chaos/settings.ts";
 import type { DachdeckerValues } from "./dachdecker/settings.ts";
+import type { DogsValues } from "./dogs/settings.ts";
 import type { KebabValues } from "./kebab/settings.ts";
 import type { MatrixValues } from "./matrix/settings.ts";
 import type { StandardValues } from "./standard/settings.ts";
@@ -25,6 +27,8 @@ const dachdeckerFromRust = (values: GeneratedDachdecker): DachdeckerValues => va
 const dachdeckerToRust = (values: DachdeckerValues): GeneratedDachdecker => values;
 const kebabFromRust = (values: GeneratedKebab): KebabValues => values;
 const kebabToRust = (values: KebabValues): GeneratedKebab => values;
+const dogsFromRust = (values: GeneratedDogs): DogsValues => values;
+const dogsToRust = (values: DogsValues): GeneratedDogs => values;
 // Urlaub: only this direction, the TypeScript type leaves out the fruit and fruit color fields that the schema adds
 // after FIELDS, the generated type has every field
 const urlaubFromRust = (values: GeneratedUrlaub): UrlaubValues => values;
@@ -40,5 +44,7 @@ assert.equal(typeof dachdeckerFromRust, "function");
 assert.equal(typeof dachdeckerToRust, "function");
 assert.equal(typeof kebabFromRust, "function");
 assert.equal(typeof kebabToRust, "function");
+assert.equal(typeof dogsFromRust, "function");
+assert.equal(typeof dogsToRust, "function");
 
 console.log("generatedValues ok");

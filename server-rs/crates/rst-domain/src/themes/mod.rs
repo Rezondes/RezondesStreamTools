@@ -6,6 +6,7 @@ pub mod bears;
 pub mod chaos;
 pub mod core_fields;
 pub mod dachdecker;
+pub mod dogs;
 #[cfg(test)]
 mod fixture;
 pub mod graphics_fields;

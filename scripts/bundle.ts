@@ -12,7 +12,7 @@ const OPTIONAL_PACKAGES = [
 ];
 
 // Themes that may load the modules above
-const MODULE_THEMES = ["dachdecker", "kebab", "koth", "plantage", "chaos", "bears", "urlaub", "matrix", "standard"];
+const MODULE_THEMES = ["dachdecker", "dogs", "kebab", "koth", "plantage", "chaos", "bears", "urlaub", "matrix", "standard"];
 
 export type BundleChunk = {
   file: string;

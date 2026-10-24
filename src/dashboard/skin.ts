@@ -5,7 +5,7 @@
 // pure, check: skin.check.ts.
 import { DEFAULT_THEME } from "../themes/registry.ts";
 
-const SKINS = ["standard", "matrix", "urlaub", "plantage", "koth", "bears", "chaos", "dachdecker", "kebab"] as const;
+const SKINS = ["standard", "matrix", "urlaub", "plantage", "koth", "bears", "chaos", "dachdecker", "kebab", "dogs"] as const;
 export type Skin = (typeof SKINS)[number];
 
 const STORAGE_KEY = "rezondes-skin";

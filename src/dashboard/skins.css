@@ -544,6 +544,56 @@
   mask: linear-gradient(#000 0 0) top / 100% calc(100% - 9px) no-repeat, conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / 18px 9px repeat-x;
 }
 
+/* Dogs (DESIGN-DOGS.md "Dashboard-Skin"): pixel boxes in cream with a stepped ink edge and a hard shadow, Pixelify Sans */
+:root[data-skin="dogs"] {
+  color-scheme: light;
+  --bg: #f6ead4;
+  --page: #f6ead4;
+  --surface: #fff6e6;
+  --surface-2: #f6ead4;
+  --field: #ffffff;
+  --fg: #4a3426;
+  --fg-dim: #7a5a46;
+  --line: rgba(46, 29, 20, 0.25);
+  --border: #2e1d14;
+  --heading: #4a3426;
+  --title-color: #c24535;
+  --title-tracking: 2px;
+  --accent: #c24535;
+  --accent-hover: #a83a2c;
+  --on-accent: #fff6e6;
+  --emph: #3f7a2a;
+  --glow: none;
+  --focus: #2e6fb5;
+  --error: #8e2a7a;
+  --error-bg: #f3e4ef;
+  --on-error: #fff6e6;
+  --btn-bg: #fff6e6;
+  --btn-fg: #4a3426;
+  --btn-border: #2e1d14;
+  --btn-shadow: 0 3px 0 #2e1d14;
+  --btn-weight: 600;
+  --hover-bg: #f6ead4;
+  --hover-fg: #4a3426;
+  --press: translateY(3px);
+  --border-w: 3px;
+  --radius: 0;
+  --radius-sm: 0;
+  --radius-btn: 0;
+  --radius-check: 0;
+  --shadow: 0 9px 0 rgba(46, 29, 20, 0.28);
+  --font: "Pixelify Sans", monospace;
+  --font-title: "Pixelify Sans", monospace;
+  --dash-max: min(1440px, calc(100vw - 2 * clamp(40px, 6vw, 140px)));
+  --title-size: 40px;
+  --title-weight: 700;
+  --heading-weight: 700;
+  --title-case: none;
+  --label-case: uppercase;
+  --btn-case: none;
+  --thumb-w: 12px;
+}
+
 /* Scenery behind the dashboard: each themed skin shows its own, the others stay hidden */
 .skin-scenery { display: none; }
 :root[data-skin="urlaub"] .skin-scenery-urlaub,

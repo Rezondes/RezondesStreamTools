@@ -1,0 +1,1350 @@
+{
+  "id": "dogs",
+  "name": "Dogs",
+  "fields": [
+    {
+      "key": "channelName",
+      "type": "text",
+      "label": "Kanalname ({channel})",
+      "group": "Allgemein",
+      "default": "RUDEL-STREAM",
+      "maxLength": 40,
+      "basic": true
+    },
+    {
+      "key": "font",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Allgemein",
+      "default": "Pixelify Sans",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ]
+    },
+    {
+      "key": "fontSize",
+      "type": "number",
+      "label": "Schriftgrösse",
+      "group": "Allgemein",
+      "default": 26,
+      "min": 10,
+      "max": 60,
+      "unit": "px"
+    },
+    {
+      "key": "titleSize",
+      "type": "number",
+      "label": "Titel: Grösse",
+      "group": "Allgemein",
+      "default": 100,
+      "min": 40,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "cream",
+      "type": "color",
+      "label": "Schild",
+      "group": "Allgemein",
+      "default": "#fff6e6",
+      "basic": true
+    },
+    {
+      "key": "edge",
+      "type": "color",
+      "label": "Schild: Kante unten",
+      "group": "Allgemein",
+      "default": "#e9d2bd"
+    },
+    {
+      "key": "ink",
+      "type": "color",
+      "label": "Tinte (Kontur)",
+      "group": "Allgemein",
+      "default": "#2e1d14"
+    },
+    {
+      "key": "textColor",
+      "type": "color",
+      "label": "Text",
+      "group": "Allgemein",
+      "default": "#4a3426"
+    },
+    {
+      "key": "muted",
+      "type": "color",
+      "label": "Text gedämpft",
+      "group": "Allgemein",
+      "default": "#7a5a46"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "label": "Signatur (Halsband-Rot)",
+      "group": "Allgemein",
+      "default": "#c24535",
+      "basic": true
+    },
+    {
+      "key": "onAccent",
+      "type": "color",
+      "label": "Schrift auf der Signatur",
+      "group": "Allgemein",
+      "default": "#fff6e6"
+    },
+    {
+      "key": "ball",
+      "type": "color",
+      "label": "Ball-Gelb",
+      "group": "Allgemein",
+      "default": "#ffd23f"
+    },
+    {
+      "key": "light",
+      "type": "color",
+      "label": "Licht (Augen, Wolken, Zaun)",
+      "group": "Allgemein",
+      "default": "#ffffff"
+    },
+    {
+      "key": "boxShadow",
+      "type": "number",
+      "label": "Schatten der Schilder",
+      "group": "Allgemein",
+      "default": 28,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "quality",
+      "type": "select",
+      "label": "Leistungsstufe Grafik",
+      "group": "Allgemein",
+      "default": "mittel",
+      "options": [
+        "hoch",
+        "mittel",
+        "niedrig"
+      ],
+      "basic": true
+    },
+    {
+      "key": "pixelScale",
+      "type": "number",
+      "label": "Pixelgrösse",
+      "group": "Allgemein",
+      "default": 5,
+      "min": 3,
+      "max": 8,
+      "unit": "px"
+    },
+    {
+      "key": "dog",
+      "type": "select",
+      "label": "Hund des Streamers: Rasse",
+      "group": "Hund",
+      "default": "corgi",
+      "options": [
+        "corgi",
+        "shiba",
+        "labrador",
+        "dalmatiner",
+        "dackel",
+        "mops"
+      ],
+      "basic": true
+    },
+    {
+      "key": "coat",
+      "type": "select",
+      "label": "Hund des Streamers: Fell (passend zur Rasse)",
+      "group": "Hund",
+      "default": "rotweiss",
+      "options": [
+        "rotweiss",
+        "zobel",
+        "tricolor",
+        "rot",
+        "sesam",
+        "schwarzloh",
+        "creme",
+        "gelb",
+        "schwarz",
+        "braun",
+        "leber",
+        "schwarzrot",
+        "schokorot",
+        "beige",
+        "apricot"
+      ],
+      "basic": true
+    },
+    {
+      "key": "dogName",
+      "type": "text",
+      "label": "Name des Hundes ({dog})",
+      "group": "Hund",
+      "default": "Bello",
+      "maxLength": 30,
+      "basic": true
+    },
+    {
+      "key": "dogEye",
+      "type": "color",
+      "label": "Augen",
+      "group": "Hund",
+      "default": "#1d1412"
+    },
+    {
+      "key": "dogTongue",
+      "type": "color",
+      "label": "Zunge und Ohren innen",
+      "group": "Hund",
+      "default": "#e98a95"
+    },
+    {
+      "key": "blinkEvery",
+      "type": "number",
+      "label": "Blinzeln: alle (0 = nie)",
+      "group": "Hund",
+      "default": 3.3,
+      "min": 0,
+      "max": 30,
+      "unit": "s",
+      "step": 0.1
+    },
+    {
+      "key": "wagSpeed",
+      "type": "number",
+      "label": "Wedeln: Tempo",
+      "group": "Hund",
+      "default": 10,
+      "min": 0,
+      "max": 30,
+      "step": 0.5
+    },
+    {
+      "key": "walkFps",
+      "type": "number",
+      "label": "Laufen: Bilder pro Sekunde",
+      "group": "Hund",
+      "default": 9,
+      "min": 2,
+      "max": 30
+    },
+    {
+      "key": "pant",
+      "type": "boolean",
+      "label": "Hecheln",
+      "group": "Hund",
+      "default": true
+    },
+    {
+      "key": "barkVoice_corgi",
+      "type": "select",
+      "label": "Bellstimme: Corgi",
+      "group": "Hund",
+      "default": "klein",
+      "options": [
+        "klein",
+        "mittel",
+        "gross"
+      ]
+    },
+    {
+      "key": "barkVoice_shiba",
+      "type": "select",
+      "label": "Bellstimme: Shiba",
+      "group": "Hund",
+      "default": "mittel",
+      "options": [
+        "klein",
+        "mittel",
+        "gross"
+      ]
+    },
+    {
+      "key": "barkVoice_labrador",
+      "type": "select",
+      "label": "Bellstimme: Labrador",
+      "group": "Hund",
+      "default": "gross",
+      "options": [
+        "klein",
+        "mittel",
+        "gross"
+      ]
+    },
+    {
+      "key": "barkVoice_dalmatiner",
+      "type": "select",
+      "label": "Bellstimme: Dalmatiner",
+      "group": "Hund",
+      "default": "gross",
+      "options": [
+        "klein",
+        "mittel",
+        "gross"
+      ]
+    },
+    {
+      "key": "barkVoice_dackel",
+      "type": "select",
+      "label": "Bellstimme: Dackel",
+      "group": "Hund",
+      "default": "klein",
+      "options": [
+        "klein",
+        "mittel",
+        "gross"
+      ]
+    },
+    {
+      "key": "barkVoice_mops",
+      "type": "select",
+      "label": "Bellstimme: Mops",
+      "group": "Hund",
+      "default": "klein",
+      "options": [
+        "klein",
+        "mittel",
+        "gross"
+      ]
+    },
+    {
+      "key": "soundMaxVoices",
+      "type": "number",
+      "label": "Töne gleichzeitig höchstens",
+      "group": "Töne",
+      "default": 8,
+      "min": 1,
+      "max": 32
+    },
+    {
+      "key": "soundStartingLand",
+      "type": "sound",
+      "label": "Starting: Hund landet",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0.4
+      }
+    },
+    {
+      "key": "soundStartingHop",
+      "type": "sound",
+      "label": "Starting: Marker hüpft",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0.4
+      }
+    },
+    {
+      "key": "soundStartingChosen",
+      "type": "sound",
+      "label": "Starting: Hund gewählt",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0.6
+      }
+    },
+    {
+      "key": "soundStartingCard",
+      "type": "sound",
+      "label": "Starting: Karte",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0.5
+      }
+    },
+    {
+      "key": "soundBark",
+      "type": "sound",
+      "label": "Bellen",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0.7
+      }
+    },
+    {
+      "key": "startingBarkSound",
+      "type": "boolean",
+      "label": "Starting: Hunde bellen hörbar",
+      "group": "Töne",
+      "default": true
+    },
+    {
+      "key": "corgiRotweissBase",
+      "type": "color",
+      "label": "Rot-Weiss: Grundfarbe",
+      "group": "Fell: Corgi",
+      "default": "#cc7633"
+    },
+    {
+      "key": "corgiRotweissMark",
+      "type": "color",
+      "label": "Rot-Weiss: Abzeichen",
+      "group": "Fell: Corgi",
+      "default": "#fbf6ee"
+    },
+    {
+      "key": "corgiRotweissDark",
+      "type": "color",
+      "label": "Rot-Weiss: dunkel",
+      "group": "Fell: Corgi",
+      "default": "#a85a22"
+    },
+    {
+      "key": "corgiRotweissNose",
+      "type": "color",
+      "label": "Rot-Weiss: Nase",
+      "group": "Fell: Corgi",
+      "default": "#1d1715"
+    },
+    {
+      "key": "corgiZobelBase",
+      "type": "color",
+      "label": "Zobel-Weiss: Grundfarbe",
+      "group": "Fell: Corgi",
+      "default": "#bd7a3c"
+    },
+    {
+      "key": "corgiZobelMark",
+      "type": "color",
+      "label": "Zobel-Weiss: Abzeichen",
+      "group": "Fell: Corgi",
+      "default": "#fbf6ee"
+    },
+    {
+      "key": "corgiZobelDark",
+      "type": "color",
+      "label": "Zobel-Weiss: dunkel",
+      "group": "Fell: Corgi",
+      "default": "#4e3322"
+    },
+    {
+      "key": "corgiZobelNose",
+      "type": "color",
+      "label": "Zobel-Weiss: Nase",
+      "group": "Fell: Corgi",
+      "default": "#1d1715"
+    },
+    {
+      "key": "corgiTricolorBase",
+      "type": "color",
+      "label": "Tricolor: Grundfarbe",
+      "group": "Fell: Corgi",
+      "default": "#c27c40"
+    },
+    {
+      "key": "corgiTricolorMark",
+      "type": "color",
+      "label": "Tricolor: Abzeichen",
+      "group": "Fell: Corgi",
+      "default": "#fbf6ee"
+    },
+    {
+      "key": "corgiTricolorDark",
+      "type": "color",
+      "label": "Tricolor: dunkel",
+      "group": "Fell: Corgi",
+      "default": "#1f1b1a"
+    },
+    {
+      "key": "corgiTricolorNose",
+      "type": "color",
+      "label": "Tricolor: Nase",
+      "group": "Fell: Corgi",
+      "default": "#111111"
+    },
+    {
+      "key": "shibaRotBase",
+      "type": "color",
+      "label": "Rot: Grundfarbe",
+      "group": "Fell: Shiba",
+      "default": "#c9763a"
+    },
+    {
+      "key": "shibaRotMark",
+      "type": "color",
+      "label": "Rot: Abzeichen",
+      "group": "Fell: Shiba",
+      "default": "#f6e8d2"
+    },
+    {
+      "key": "shibaRotDark",
+      "type": "color",
+      "label": "Rot: dunkel",
+      "group": "Fell: Shiba",
+      "default": "#a85c27"
+    },
+    {
+      "key": "shibaRotNose",
+      "type": "color",
+      "label": "Rot: Nase",
+      "group": "Fell: Shiba",
+      "default": "#1d1715"
+    },
+    {
+      "key": "shibaSesamBase",
+      "type": "color",
+      "label": "Sesam: Grundfarbe",
+      "group": "Fell: Shiba",
+      "default": "#c27a42"
+    },
+    {
+      "key": "shibaSesamMark",
+      "type": "color",
+      "label": "Sesam: Abzeichen",
+      "group": "Fell: Shiba",
+      "default": "#f4e5cf"
+    },
+    {
+      "key": "shibaSesamDark",
+      "type": "color",
+      "label": "Sesam: dunkel",
+      "group": "Fell: Shiba",
+      "default": "#3a2a20"
+    },
+    {
+      "key": "shibaSesamNose",
+      "type": "color",
+      "label": "Sesam: Nase",
+      "group": "Fell: Shiba",
+      "default": "#1d1715"
+    },
+    {
+      "key": "shibaSchwarzlohBase",
+      "type": "color",
+      "label": "Schwarz-Loh: Grundfarbe",
+      "group": "Fell: Shiba",
+      "default": "#231d1a"
+    },
+    {
+      "key": "shibaSchwarzlohMark",
+      "type": "color",
+      "label": "Schwarz-Loh: Abzeichen",
+      "group": "Fell: Shiba",
+      "default": "#f3e3cc"
+    },
+    {
+      "key": "shibaSchwarzlohDark",
+      "type": "color",
+      "label": "Schwarz-Loh: dunkel",
+      "group": "Fell: Shiba",
+      "default": "#c18750"
+    },
+    {
+      "key": "shibaSchwarzlohNose",
+      "type": "color",
+      "label": "Schwarz-Loh: Nase",
+      "group": "Fell: Shiba",
+      "default": "#111111"
+    },
+    {
+      "key": "shibaCremeBase",
+      "type": "color",
+      "label": "Creme: Grundfarbe",
+      "group": "Fell: Shiba",
+      "default": "#ead6b4"
+    },
+    {
+      "key": "shibaCremeMark",
+      "type": "color",
+      "label": "Creme: Abzeichen",
+      "group": "Fell: Shiba",
+      "default": "#fbf3e5"
+    },
+    {
+      "key": "shibaCremeDark",
+      "type": "color",
+      "label": "Creme: dunkel",
+      "group": "Fell: Shiba",
+      "default": "#d7bd94"
+    },
+    {
+      "key": "shibaCremeNose",
+      "type": "color",
+      "label": "Creme: Nase",
+      "group": "Fell: Shiba",
+      "default": "#2a1d18"
+    },
+    {
+      "key": "labradorGelbBase",
+      "type": "color",
+      "label": "Gelb: Grundfarbe",
+      "group": "Fell: Labrador",
+      "default": "#e3bf86"
+    },
+    {
+      "key": "labradorGelbMark",
+      "type": "color",
+      "label": "Gelb: Abzeichen",
+      "group": "Fell: Labrador",
+      "default": "#f2dcb4"
+    },
+    {
+      "key": "labradorGelbDark",
+      "type": "color",
+      "label": "Gelb: dunkel",
+      "group": "Fell: Labrador",
+      "default": "#c99a5e"
+    },
+    {
+      "key": "labradorGelbNose",
+      "type": "color",
+      "label": "Gelb: Nase",
+      "group": "Fell: Labrador",
+      "default": "#2a1d18"
+    },
+    {
+      "key": "labradorSchwarzBase",
+      "type": "color",
+      "label": "Schwarz: Grundfarbe",
+      "group": "Fell: Labrador",
+      "default": "#1e1b1a"
+    },
+    {
+      "key": "labradorSchwarzMark",
+      "type": "color",
+      "label": "Schwarz: Abzeichen",
+      "group": "Fell: Labrador",
+      "default": "#2a2523"
+    },
+    {
+      "key": "labradorSchwarzDark",
+      "type": "color",
+      "label": "Schwarz: dunkel",
+      "group": "Fell: Labrador",
+      "default": "#141212"
+    },
+    {
+      "key": "labradorSchwarzNose",
+      "type": "color",
+      "label": "Schwarz: Nase",
+      "group": "Fell: Labrador",
+      "default": "#111111"
+    },
+    {
+      "key": "labradorBraunBase",
+      "type": "color",
+      "label": "Schokobraun: Grundfarbe",
+      "group": "Fell: Labrador",
+      "default": "#6a3f27"
+    },
+    {
+      "key": "labradorBraunMark",
+      "type": "color",
+      "label": "Schokobraun: Abzeichen",
+      "group": "Fell: Labrador",
+      "default": "#7a4b31"
+    },
+    {
+      "key": "labradorBraunDark",
+      "type": "color",
+      "label": "Schokobraun: dunkel",
+      "group": "Fell: Labrador",
+      "default": "#4a2a19"
+    },
+    {
+      "key": "labradorBraunNose",
+      "type": "color",
+      "label": "Schokobraun: Nase",
+      "group": "Fell: Labrador",
+      "default": "#3d2419"
+    },
+    {
+      "key": "dalmatinerSchwarzBase",
+      "type": "color",
+      "label": "Schwarz getupft: Grundfarbe",
+      "group": "Fell: Dalmatiner",
+      "default": "#f8f4ee"
+    },
+    {
+      "key": "dalmatinerSchwarzMark",
+      "type": "color",
+      "label": "Schwarz getupft: Abzeichen",
+      "group": "Fell: Dalmatiner",
+      "default": "#ffffff"
+    },
+    {
+      "key": "dalmatinerSchwarzDark",
+      "type": "color",
+      "label": "Schwarz getupft: dunkel",
+      "group": "Fell: Dalmatiner",
+      "default": "#1e1b1a"
+    },
+    {
+      "key": "dalmatinerSchwarzNose",
+      "type": "color",
+      "label": "Schwarz getupft: Nase",
+      "group": "Fell: Dalmatiner",
+      "default": "#111111"
+    },
+    {
+      "key": "dalmatinerLeberBase",
+      "type": "color",
+      "label": "Leberbraun getupft: Grundfarbe",
+      "group": "Fell: Dalmatiner",
+      "default": "#f8f4ee"
+    },
+    {
+      "key": "dalmatinerLeberMark",
+      "type": "color",
+      "label": "Leberbraun getupft: Abzeichen",
+      "group": "Fell: Dalmatiner",
+      "default": "#ffffff"
+    },
+    {
+      "key": "dalmatinerLeberDark",
+      "type": "color",
+      "label": "Leberbraun getupft: dunkel",
+      "group": "Fell: Dalmatiner",
+      "default": "#6b3a22"
+    },
+    {
+      "key": "dalmatinerLeberNose",
+      "type": "color",
+      "label": "Leberbraun getupft: Nase",
+      "group": "Fell: Dalmatiner",
+      "default": "#5a3020"
+    },
+    {
+      "key": "dackelRotBase",
+      "type": "color",
+      "label": "Rot: Grundfarbe",
+      "group": "Fell: Dackel",
+      "default": "#b4602f"
+    },
+    {
+      "key": "dackelRotMark",
+      "type": "color",
+      "label": "Rot: Abzeichen",
+      "group": "Fell: Dackel",
+      "default": "#c2743f"
+    },
+    {
+      "key": "dackelRotDark",
+      "type": "color",
+      "label": "Rot: dunkel",
+      "group": "Fell: Dackel",
+      "default": "#7f3e1c"
+    },
+    {
+      "key": "dackelRotNose",
+      "type": "color",
+      "label": "Rot: Nase",
+      "group": "Fell: Dackel",
+      "default": "#1d1715"
+    },
+    {
+      "key": "dackelSchwarzrotBase",
+      "type": "color",
+      "label": "Schwarz-Rot: Grundfarbe",
+      "group": "Fell: Dackel",
+      "default": "#1f1917"
+    },
+    {
+      "key": "dackelSchwarzrotMark",
+      "type": "color",
+      "label": "Schwarz-Rot: Abzeichen",
+      "group": "Fell: Dackel",
+      "default": "#b5683a"
+    },
+    {
+      "key": "dackelSchwarzrotDark",
+      "type": "color",
+      "label": "Schwarz-Rot: dunkel",
+      "group": "Fell: Dackel",
+      "default": "#141110"
+    },
+    {
+      "key": "dackelSchwarzrotNose",
+      "type": "color",
+      "label": "Schwarz-Rot: Nase",
+      "group": "Fell: Dackel",
+      "default": "#111111"
+    },
+    {
+      "key": "dackelSchokorotBase",
+      "type": "color",
+      "label": "Schoko-Rot: Grundfarbe",
+      "group": "Fell: Dackel",
+      "default": "#55301f"
+    },
+    {
+      "key": "dackelSchokorotMark",
+      "type": "color",
+      "label": "Schoko-Rot: Abzeichen",
+      "group": "Fell: Dackel",
+      "default": "#c07a45"
+    },
+    {
+      "key": "dackelSchokorotDark",
+      "type": "color",
+      "label": "Schoko-Rot: dunkel",
+      "group": "Fell: Dackel",
+      "default": "#3a2015"
+    },
+    {
+      "key": "dackelSchokorotNose",
+      "type": "color",
+      "label": "Schoko-Rot: Nase",
+      "group": "Fell: Dackel",
+      "default": "#3a2218"
+    },
+    {
+      "key": "mopsBeigeBase",
+      "type": "color",
+      "label": "Beige: Grundfarbe",
+      "group": "Fell: Mops",
+      "default": "#d9bb8b"
+    },
+    {
+      "key": "mopsBeigeMark",
+      "type": "color",
+      "label": "Beige: Abzeichen",
+      "group": "Fell: Mops",
+      "default": "#e6cda2"
+    },
+    {
+      "key": "mopsBeigeDark",
+      "type": "color",
+      "label": "Beige: dunkel",
+      "group": "Fell: Mops",
+      "default": "#231c19"
+    },
+    {
+      "key": "mopsBeigeNose",
+      "type": "color",
+      "label": "Beige: Nase",
+      "group": "Fell: Mops",
+      "default": "#111111"
+    },
+    {
+      "key": "mopsApricotBase",
+      "type": "color",
+      "label": "Apricot: Grundfarbe",
+      "group": "Fell: Mops",
+      "default": "#d49b5d"
+    },
+    {
+      "key": "mopsApricotMark",
+      "type": "color",
+      "label": "Apricot: Abzeichen",
+      "group": "Fell: Mops",
+      "default": "#e0b07a"
+    },
+    {
+      "key": "mopsApricotDark",
+      "type": "color",
+      "label": "Apricot: dunkel",
+      "group": "Fell: Mops",
+      "default": "#251c16"
+    },
+    {
+      "key": "mopsApricotNose",
+      "type": "color",
+      "label": "Apricot: Nase",
+      "group": "Fell: Mops",
+      "default": "#111111"
+    },
+    {
+      "key": "mopsSchwarzBase",
+      "type": "color",
+      "label": "Schwarz: Grundfarbe",
+      "group": "Fell: Mops",
+      "default": "#1e1b1a"
+    },
+    {
+      "key": "mopsSchwarzMark",
+      "type": "color",
+      "label": "Schwarz: Abzeichen",
+      "group": "Fell: Mops",
+      "default": "#4a423d"
+    },
+    {
+      "key": "mopsSchwarzDark",
+      "type": "color",
+      "label": "Schwarz: dunkel",
+      "group": "Fell: Mops",
+      "default": "#141212"
+    },
+    {
+      "key": "mopsSchwarzNose",
+      "type": "color",
+      "label": "Schwarz: Nase",
+      "group": "Fell: Mops",
+      "default": "#0a0a0a"
+    },
+    {
+      "key": "dalmatinerSpots",
+      "type": "number",
+      "label": "Dalmatiner: Anteil der Flecken",
+      "group": "Fell: Dalmatiner",
+      "default": 42,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "spotSeed",
+      "type": "number",
+      "label": "Dalmatiner: Startwert der Flecken",
+      "group": "Fell: Dalmatiner",
+      "default": 1,
+      "min": 1,
+      "max": 9999
+    },
+    {
+      "key": "sky",
+      "type": "color",
+      "label": "Himmel oben",
+      "group": "Welt",
+      "default": "#9fd6ff"
+    },
+    {
+      "key": "skyLow",
+      "type": "color",
+      "label": "Himmel unten",
+      "group": "Welt",
+      "default": "#e3f5ff"
+    },
+    {
+      "key": "grass",
+      "type": "color",
+      "label": "Wiese",
+      "group": "Welt",
+      "default": "#86c45f"
+    },
+    {
+      "key": "grassLight",
+      "type": "color",
+      "label": "Wiese: Oberkante",
+      "group": "Welt",
+      "default": "#a3d97a"
+    },
+    {
+      "key": "hillColor1",
+      "type": "color",
+      "label": "Hügel links",
+      "group": "Welt",
+      "default": "#93d26e"
+    },
+    {
+      "key": "hillColor2",
+      "type": "color",
+      "label": "Hügel rechts",
+      "group": "Welt",
+      "default": "#86c862"
+    },
+    {
+      "key": "hillColor3",
+      "type": "color",
+      "label": "Hügel Mitte",
+      "group": "Welt",
+      "default": "#7cbf5a"
+    },
+    {
+      "key": "treeTrunk",
+      "type": "color",
+      "label": "Baumstamm",
+      "group": "Welt",
+      "default": "#a8754a"
+    },
+    {
+      "key": "treeLeaf",
+      "type": "color",
+      "label": "Baumkrone",
+      "group": "Welt",
+      "default": "#6fbf5a"
+    },
+    {
+      "key": "appleColor",
+      "type": "color",
+      "label": "Äpfel",
+      "group": "Welt",
+      "default": "#f25c54"
+    },
+    {
+      "key": "fence",
+      "type": "boolean",
+      "label": "Zaun",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "clouds",
+      "type": "number",
+      "label": "Wolken",
+      "group": "Welt",
+      "default": 6,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "key": "cloudSpeed",
+      "type": "number",
+      "label": "Wolken: Tempo",
+      "group": "Welt",
+      "default": 4,
+      "min": 0,
+      "max": 60,
+      "step": 0.5
+    },
+    {
+      "key": "trees",
+      "type": "boolean",
+      "label": "Bäume",
+      "group": "Welt",
+      "default": true
+    },
+    {
+      "key": "flowers",
+      "type": "number",
+      "label": "Blumen und Grasbüschel",
+      "group": "Welt",
+      "default": 56,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "key": "flowerColor1",
+      "type": "color",
+      "label": "Blumen: Farbe 1",
+      "group": "Welt",
+      "default": "#ffffff"
+    },
+    {
+      "key": "flowerColor2",
+      "type": "color",
+      "label": "Blumen: Farbe 2",
+      "group": "Welt",
+      "default": "#ffd23f"
+    },
+    {
+      "key": "flowerColor3",
+      "type": "color",
+      "label": "Blumen: Farbe 3",
+      "group": "Welt",
+      "default": "#f7a6c1"
+    },
+    {
+      "key": "flowerColor4",
+      "type": "color",
+      "label": "Blumen: Farbe 4",
+      "group": "Welt",
+      "default": "#c9b6ff"
+    },
+    {
+      "key": "startingPill",
+      "type": "text",
+      "label": "Pille oben ({channel})",
+      "group": "Starting",
+      "default": "{channel}",
+      "maxLength": 40,
+      "scene": "starting"
+    },
+    {
+      "key": "startingTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "Starting",
+      "default": "Gleich geht's los!",
+      "maxLength": 60,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "startingSubtitle",
+      "type": "text",
+      "label": "Unterzeile",
+      "group": "Starting",
+      "default": "Wer begleitet uns heute?",
+      "maxLength": 80,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "countdown",
+      "type": "number",
+      "label": "Countdown: Dauer",
+      "group": "Starting",
+      "default": 300,
+      "min": 0,
+      "max": 86400,
+      "unit": "s",
+      "scene": "starting"
+    },
+    {
+      "key": "countdownAt",
+      "type": "text",
+      "label": "Countdown: bis Uhrzeit (z.B. 20:00, leer = Dauer)",
+      "group": "Starting",
+      "default": "",
+      "maxLength": 5,
+      "scene": "starting"
+    },
+    {
+      "key": "countdownLabel",
+      "type": "text",
+      "label": "Countdown: Beschriftung",
+      "group": "Starting",
+      "default": "LOS GEHT'S IN",
+      "maxLength": 40,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "cardLabel",
+      "type": "text",
+      "label": "Karte: Überzeile",
+      "group": "Starting",
+      "default": "HEUTE AN MEINER SEITE",
+      "maxLength": 40,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "cardBreed",
+      "type": "text",
+      "label": "Karte: Rasse ({breed}, {coat})",
+      "group": "Starting",
+      "default": "{breed} · {coat}",
+      "maxLength": 60,
+      "scene": "starting"
+    },
+    {
+      "key": "bark",
+      "type": "text",
+      "label": "Sprechblase",
+      "group": "Starting",
+      "default": "Wuff!",
+      "maxLength": 20,
+      "scene": "starting"
+    },
+    {
+      "key": "cushionColor1",
+      "type": "color",
+      "label": "Kissen 1",
+      "group": "Starting",
+      "default": "#bfe8d4",
+      "scene": "starting"
+    },
+    {
+      "key": "cushionColor2",
+      "type": "color",
+      "label": "Kissen 2",
+      "group": "Starting",
+      "default": "#d8ccff",
+      "scene": "starting"
+    },
+    {
+      "key": "cushionColor3",
+      "type": "color",
+      "label": "Kissen 3",
+      "group": "Starting",
+      "default": "#ffd2b8",
+      "scene": "starting"
+    },
+    {
+      "key": "cushionColor4",
+      "type": "color",
+      "label": "Kissen 4",
+      "group": "Starting",
+      "default": "#bfe0ff",
+      "scene": "starting"
+    },
+    {
+      "key": "cushionColor5",
+      "type": "color",
+      "label": "Kissen 5",
+      "group": "Starting",
+      "default": "#fff0a8",
+      "scene": "starting"
+    },
+    {
+      "key": "cushionColor6",
+      "type": "color",
+      "label": "Kissen 6",
+      "group": "Starting",
+      "default": "#ffc9d9",
+      "scene": "starting"
+    },
+    {
+      "key": "rugColor",
+      "type": "color",
+      "label": "Teppich",
+      "group": "Starting",
+      "default": "#c24535",
+      "scene": "starting"
+    },
+    {
+      "key": "dropEvery",
+      "type": "number",
+      "label": "Hunde fallen: Abstand",
+      "group": "Starting",
+      "default": 0.2,
+      "min": 0,
+      "max": 2,
+      "unit": "s",
+      "step": 0.05,
+      "scene": "starting"
+    },
+    {
+      "key": "markerStart",
+      "type": "number",
+      "label": "Marker startet nach",
+      "group": "Starting",
+      "default": 2.6,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.1,
+      "scene": "starting"
+    },
+    {
+      "key": "markerHop",
+      "type": "number",
+      "label": "Marker: Dauer je Sprung",
+      "group": "Starting",
+      "default": 0.45,
+      "min": 0.1,
+      "max": 3,
+      "unit": "s",
+      "step": 0.05,
+      "scene": "starting"
+    },
+    {
+      "key": "hearts",
+      "type": "number",
+      "label": "Herzen",
+      "group": "Starting",
+      "default": 7,
+      "min": 0,
+      "max": 30,
+      "scene": "starting"
+    },
+    {
+      "key": "walkSpeed",
+      "type": "number",
+      "label": "Lauf zum Teppich: Tempo",
+      "group": "Starting",
+      "default": 48,
+      "min": 5,
+      "max": 300,
+      "scene": "starting"
+    },
+    {
+      "key": "barkEvery",
+      "type": "number",
+      "label": "Bellen: alle",
+      "group": "Starting",
+      "default": 7,
+      "min": 1,
+      "max": 120,
+      "unit": "s",
+      "step": 0.5,
+      "scene": "starting"
+    },
+    {
+      "key": "labels",
+      "type": "boolean",
+      "label": "Etiketten unter den Kissen",
+      "group": "Starting",
+      "default": true,
+      "scene": "starting"
+    },
+    {
+      "key": "ticker",
+      "type": "text",
+      "label": "Laufband (leer = aus)",
+      "group": "Starting",
+      "default": "",
+      "maxLength": 300,
+      "scene": "starting",
+      "basic": true
+    },
+    {
+      "key": "tickerSpeed",
+      "type": "number",
+      "label": "Laufband: Tempo (px pro Sekunde)",
+      "group": "Starting",
+      "default": 90,
+      "min": 10,
+      "max": 400,
+      "scene": "starting"
+    },
+    {
+      "key": "stingerFps",
+      "type": "number",
+      "label": "Bildrate (Bilder pro Sekunde)",
+      "group": "Stinger",
+      "default": 60,
+      "min": 10,
+      "max": 60
+    },
+    {
+      "key": "stingerHold",
+      "type": "number",
+      "label": "Pause am Übergangspunkt (Anteil je Hälfte)",
+      "group": "Stinger",
+      "default": 0,
+      "min": 0,
+      "max": 80,
+      "unit": "%"
+    },
+    {
+      "key": "stingerEase",
+      "type": "select",
+      "label": "Bewegungskurve",
+      "group": "Stinger",
+      "default": "linear",
+      "options": [
+        "linear",
+        "nagel",
+        "federnd",
+        "weich",
+        "stempel"
+      ]
+    },
+    {
+      "key": "stingerSize",
+      "type": "select",
+      "label": "Ausgabegrösse",
+      "group": "Stinger",
+      "default": "1080p",
+      "options": [
+        "1080p",
+        "720p"
+      ]
+    }
+  ],
+  "groupScenes": {
+    "Welt": [
+      "starting"
+    ],
+    "Starting": [
+      "starting"
+    ],
+    "Stinger": []
+  },
+  "personalize": {
+    "neo": {
+      "channelName": "NEO"
+    },
+    "rezondes": {
+      "channelName": "REZONDES"
+    },
+    "neo_42": {
+      "channelName": "NEO_42"
+    }
+  }
+}

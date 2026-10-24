@@ -7,6 +7,7 @@ use crate::settings::field::SettingValues;
 use crate::themes::bears::bears;
 use crate::themes::chaos::chaos;
 use crate::themes::dachdecker::dachdecker;
+use crate::themes::dogs::dogs;
 use crate::themes::kebab::kebab;
 use crate::themes::koth::koth;
 use crate::themes::matrix::matrix;
@@ -40,8 +41,9 @@ impl Theme {
 
 pub const DEFAULT_THEME: &str = "standard";
 
-static THEMES: LazyLock<Vec<Theme>> =
-    LazyLock::new(|| vec![standard(), matrix(), urlaub(), plantage(), koth(), bears(), chaos(), dachdecker(), kebab()]);
+static THEMES: LazyLock<Vec<Theme>> = LazyLock::new(|| {
+    vec![standard(), matrix(), urlaub(), plantage(), koth(), bears(), chaos(), dachdecker(), kebab(), dogs()]
+});
 
 #[must_use]
 pub fn themes() -> &'static [Theme] {
