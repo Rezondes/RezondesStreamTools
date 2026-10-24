@@ -8,7 +8,7 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, SoundValue, Unit, choice, color, flag, font, in_scene, lines,
+    SettingField, SettingValue, SettingValues, SoundValue, Unit, choice, choice_by, color, flag, font, in_scene, lines,
     mark_basic, number, sound, text, with_defaults,
 };
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
@@ -110,14 +110,12 @@ fn coat_fields() -> Vec<SettingField> {
 }
 
 /// The coat ids of all breeds, each once, in table order
-fn coat_ids() -> Vec<&'static str> {
-    let mut ids: Vec<&str> = Vec::new();
-    for (_, id, _, _) in COATS {
-        if !ids.contains(&id) {
-            ids.push(id);
-        }
-    }
-    ids
+/// The coat ids per breed in the order of the table (the coat choice offers only those of the chosen breed)
+fn coats_by_breed() -> Vec<(&'static str, Vec<&'static str>)> {
+    BREEDS
+        .iter()
+        .map(|(breed, _)| (*breed, COATS.iter().filter(|coat| coat.0 == *breed).map(|coat| coat.1).collect()))
+        .collect()
 }
 
 fn general() -> Vec<SettingField> {
@@ -153,7 +151,11 @@ fn dog() -> Vec<SettingField> {
     let breeds: Vec<&str> = BREEDS.iter().map(|(id, _)| *id).collect();
     let mut fields = vec![
         choice("dog", "Hund des Streamers: Rasse", DOG, "corgi", &breeds),
-        choice("coat", "Hund des Streamers: Fell (passend zur Rasse)", DOG, "rotweiss", &coat_ids()),
+        {
+            let by = coats_by_breed();
+            let by: Vec<(&str, &[&str])> = by.iter().map(|(breed, coats)| (*breed, coats.as_slice())).collect();
+            choice_by("coat", "Hund des Streamers: Fell (passend zur Rasse)", DOG, "rotweiss", "dog", &by)
+        },
         text("dogName", "Name des Hundes ({dog})", DOG, "Bello", Some(30)),
         color("dogEye", "Augen", DOG, "#1d1412"),
         color("dogTongue", "Zunge und Ohren innen", DOG, "#e98a95"),

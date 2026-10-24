@@ -15,7 +15,7 @@ import { getJson, postJson } from "./api.ts";
 import { reportError, toast } from "./notices.ts";
 import type { Me } from "./navigation.ts";
 import SettingInput from "./SettingInput.tsx";
-import { changedKeys, errorsByKey, resetField } from "./settingsForm.ts";
+import { changedKeys, errorsByKey, resetField, shownField } from "./settingsForm.ts";
 import { SubTabs, subTabPanel } from "./SubTabs.tsx";
 import { TEXTS } from "./texts.de.ts";
 
@@ -86,7 +86,7 @@ function ClipSettings({ clip, settings, canSave }: { clip: RenderClip; settings:
         {fields.map(field => (
           <SettingInput
             key={field.key}
-            field={field}
+            field={shownField(schema, field, settings.draft)}
             value={settings.draft[field.key]}
             error={settings.errors[field.key]}
             media={[]}

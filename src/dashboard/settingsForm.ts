@@ -79,6 +79,16 @@ export function resetField(schema: ThemeSchema, values: SettingValues, key: stri
   return field ? { ...values, [key]: field.default } : values;
 }
 
+// A select with optionsBy offers only the options for the value of its other field (its default while unset); an
+// unknown value offers all
+export function shownField(schema: ThemeSchema, field: SettingField, values: SettingValues): SettingField {
+  if (field.type !== "select" || !field.optionsBy) return field;
+  const other = field.optionsBy.field;
+  const value = values[other] ?? schema.fields.find(candidate => candidate.key === other)?.default;
+  const options = typeof value === "string" ? field.optionsBy.options[value] : undefined;
+  return options ? { ...field, options } : field;
+}
+
 export const isDefault = (field: SettingField, value: SettingValue | undefined) => same(field.default, value);
 
 export const changedKeys = (saved: SettingValues, draft: SettingValues) => Object.keys(draft).filter(key => !same(saved[key], draft[key]));

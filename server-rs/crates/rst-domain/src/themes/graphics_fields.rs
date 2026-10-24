@@ -21,7 +21,7 @@ mod tests {
     fn quality_choices() {
         let field = quality_field("Allgemein");
         assert_eq!((field.key.as_str(), field.group.as_str()), ("quality", "Allgemein"));
-        let FieldKind::Select { default, options } = field.kind else { panic!("select field") };
+        let FieldKind::Select { default, options, .. } = field.kind else { panic!("select field") };
         assert_eq!(default, "mittel");
         assert_eq!(options, ["hoch", "mittel", "niedrig"]);
     }

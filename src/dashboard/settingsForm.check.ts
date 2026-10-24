@@ -1,9 +1,10 @@
 // Check for settingsForm.ts: groups in schema order, reset, changes and errors per field. Runs with npm test.
 import assert from "node:assert/strict";
+import { choice, choiceBy } from "../core/fields.ts";
 import type { SettingField, ThemeSchema } from "../core/theme.ts";
 import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
 import {
-  changedKeys, errorsByKey, fieldsByKind, groupFields, groupsForMode, groupsForView, groupsWithoutScene, hiddenKeys, isDefault, pickSchema, resetAll, resetField, viewOfField,
+  changedKeys, errorsByKey, fieldsByKind, groupFields, groupsForMode, groupsForView, groupsWithoutScene, hiddenKeys, isDefault, pickSchema, resetAll, resetField, shownField, viewOfField,
 } from "./settingsForm.ts";
 
 const schema: ThemeSchema = {
@@ -53,6 +54,17 @@ assert.deepEqual(groupsWithoutScene(schema), []);
 const values = { accent: "#ff0000", title: "BYE", size: 20, lines: ["x"] };
 assert.deepEqual(resetField(schema, values, "title"), { ...values, title: "HELLO" });
 assert.deepEqual(resetAll(schema), { accent: "#39ff14", title: "HELLO", size: 10, lines: ["a", "b"] });
+
+// Options by another field: only those for its value (its default while unset), all for an unknown value
+const breeds = choice("dog", "Dog", "A", "corgi", ["corgi", "mops"]);
+const coats = choiceBy("coat", "Coat", "A", "red", "dog", { corgi: ["red", "sable"], mops: ["beige"] });
+const dogs: ThemeSchema = { id: "dogs", name: "Dogs", fields: [breeds, coats] };
+const offered = (values: Record<string, string>) => { const field = shownField(dogs, coats, values); return field.type === "select" ? field.options : []; };
+assert.deepEqual(coats.options, ["red", "sable", "beige"]);
+assert.deepEqual(offered({}), ["red", "sable"]);
+assert.deepEqual(offered({ dog: "mops" }), ["beige"]);
+assert.deepEqual(offered({ dog: "wolf" }), ["red", "sable", "beige"]);
+assert.equal(shownField(dogs, breeds, {}), breeds);
 
 // Default detected, also for lists
 assert.equal(isDefault(schema.fields[3], ["a", "b"]), true);

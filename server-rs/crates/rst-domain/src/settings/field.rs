@@ -94,9 +94,14 @@ pub enum FieldKind {
     Boolean {
         default: bool,
     },
+    /// `optionsBy`: the dashboard offers only the options for the value of another field (a coat for a breed);
+    /// options holds all of them, so every one of them stays valid
     Select {
         default: String,
         options: Vec<String>,
+        #[serde(rename = "optionsBy", default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        options_by: Option<OptionsBy>,
     },
     Font {
         default: String,
@@ -109,6 +114,13 @@ pub enum FieldKind {
     Sound {
         default: SoundValue,
     },
+}
+
+/// The options of a select field per value of another field (`field`)
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, TS)]
+pub struct OptionsBy {
+    pub field: String,
+    pub options: BTreeMap<String, Vec<String>>,
 }
 
 /// A field of a theme schema: key, label and group (section in the form), optionally the one scene it affects
@@ -231,7 +243,36 @@ pub fn sound(key: &str, label: &str, group: &str) -> SettingField {
 
 #[must_use]
 pub fn choice(key: &str, label: &str, group: &str, value: &str, options: &[&str]) -> SettingField {
-    field(key, label, group, FieldKind::Select { default: value.to_owned(), options: strings(options) })
+    field(
+        key,
+        label,
+        group,
+        FieldKind::Select { default: value.to_owned(), options: strings(options), options_by: None },
+    )
+}
+
+/// Select whose offered options depend on the value of another field (by: that value and its options); its options
+/// are all of them in order of first appearance
+#[must_use]
+pub fn choice_by(
+    key: &str,
+    label: &str,
+    group: &str,
+    value: &str,
+    other: &str,
+    by: &[(&str, &[&str])],
+) -> SettingField {
+    let mut options: Vec<String> = Vec::new();
+    for option in by.iter().flat_map(|(_, list)| list.iter()) {
+        if !options.iter().any(|known| known == option) {
+            options.push((*option).to_owned());
+        }
+    }
+    let options_by = OptionsBy {
+        field: other.to_owned(),
+        options: by.iter().map(|(value, list)| ((*value).to_owned(), strings(list))).collect(),
+    };
+    field(key, label, group, FieldKind::Select { default: value.to_owned(), options, options_by: Some(options_by) })
 }
 
 #[must_use]

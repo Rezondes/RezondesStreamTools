@@ -4,19 +4,18 @@
 // DogsValues is the type of the resolved values that the scenes read via useDogs.
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
-import { choice, color, flag, font, inScene, lines, markBasic, number, sound, text, withDefaults } from "../../core/fields.ts";
+import { choice, choiceBy, color, flag, font, inScene, lines, markBasic, number, sound, text, withDefaults } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { BREED_IDS, BREEDS } from "./breeds.ts";
-import { COATS, coatKey, type Coat } from "./coats.ts";
+import { COATS, coatKey, coatsOf, type Coat } from "./coats.ts";
 import { DOG_SET } from "./minimes.ts";
 
 const FONTS = ["Pixelify Sans", "VT323", "Silkscreen"] as const;
 const BARK_VOICES = ["klein", "mittel", "gross"] as const;
-const COAT_IDS = [...new Set(COATS.map(variant => variant.id))];
 
 const GENERAL = "Allgemein";
 const DOG = "Hund";
@@ -82,7 +81,7 @@ const FIELDS = [
   number("pixelScale", "Pixelgrösse", GENERAL, 5, 3, 8, "px"),
 
   choice("dog", "Hund des Streamers: Rasse", DOG, "corgi", BREED_IDS),
-  choice("coat", "Hund des Streamers: Fell (passend zur Rasse)", DOG, "rotweiss", COAT_IDS),
+  choiceBy("coat", "Hund des Streamers: Fell (passend zur Rasse)", DOG, "rotweiss", "dog", Object.fromEntries(BREED_IDS.map(id => [id, coatsOf(id).map(coat => coat.id)]))),
   text("dogName", "Name des Hundes ({dog})", DOG, "Bello", 30),
   color("dogEye", "Augen", DOG, "#1d1412"),
   color("dogTongue", "Zunge und Ohren innen", DOG, "#e98a95"),

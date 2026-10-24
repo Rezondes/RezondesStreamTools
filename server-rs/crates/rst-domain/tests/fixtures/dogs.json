@@ -180,6 +180,41 @@
         "beige",
         "apricot"
       ],
+      "optionsBy": {
+        "field": "dog",
+        "options": {
+          "corgi": [
+            "rotweiss",
+            "zobel",
+            "tricolor"
+          ],
+          "shiba": [
+            "rot",
+            "sesam",
+            "schwarzloh",
+            "creme"
+          ],
+          "labrador": [
+            "gelb",
+            "schwarz",
+            "braun"
+          ],
+          "dalmatiner": [
+            "schwarz",
+            "leber"
+          ],
+          "dackel": [
+            "rot",
+            "schwarzrot",
+            "schokorot"
+          ],
+          "mops": [
+            "beige",
+            "apricot",
+            "schwarz"
+          ]
+        }
+      },
       "basic": true
     },
     {

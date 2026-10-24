@@ -32,6 +32,11 @@ export const sound = <K extends string>(key: K, label: string, group: string) =>
 export const choice = <K extends string>(key: K, label: string, group: string, value: string, options: readonly string[]) =>
   ({ key, type: "select" as const, label, group, default: value, options });
 
+// Select whose offered options depend on the value of the field other (by: that value and its options); its options
+// are all of them in order of first appearance
+export const choiceBy = <K extends string>(key: K, label: string, group: string, value: string, other: string, by: Record<string, string[]>) =>
+  ({ key, type: "select" as const, label, group, default: value, options: [...new Set(Object.values(by).flat())], optionsBy: { field: other, options: by } });
+
 export const font = <K extends string>(key: K, label: string, group: string, value: string, options: readonly string[]) =>
   ({ key, type: "font" as const, label, group, default: value, options });
 

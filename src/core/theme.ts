@@ -1,6 +1,7 @@
 // Theme interface: which scenes exist, how a theme describes its settings and what a theme has to
 // provide (ThemeModule without React for server and dashboard, ThemeView with the scenes for the overlays).
 import type { ComponentType } from "react";
+import type { OptionsBy } from "../generated/OptionsBy.ts";
 import type { SceneName } from "../generated/SceneName.ts";
 import type { SettingValue } from "../generated/SettingValue.ts";
 import type { SoundValue } from "../generated/SoundValue.ts";
@@ -47,7 +48,9 @@ export type SettingField =
   | (FieldBase & { type: "lines"; default: readonly string[]; maxLines?: number })
   | (FieldBase & { type: "number"; default: number; min: number; max: number; step?: number; unit?: "px" | "ms" | "s" | "%" })
   | (FieldBase & { type: "boolean"; default: boolean })
-  | (FieldBase & { type: "select" | "font"; default: string; options: readonly string[] })
+  // optionsBy: the dashboard offers only the options for the value of another field (a coat for a breed); options
+  // holds all of them, so every one stays valid
+  | (FieldBase & { type: "select" | "font"; default: string; options: readonly string[]; optionsBy?: OptionsBy })
   | (FieldBase & { type: "media"; default: string; accept: "image" | "video" | "audio" })
   | (FieldBase & { type: "sound"; default: SoundValue });
 
