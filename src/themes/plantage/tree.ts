@@ -14,6 +14,8 @@ export type TreeColors = { sky: string; trunk: string; trunkDark: string; leafDa
 const BLOBS: readonly [number, number, number][] = [[-70, -220, 78], [60, -230, 82], [0, -290, 88], [-30, -170, 66], [55, -165, 64]];
 const MANGOS: readonly [number, number][] = [[-60, -170], [-20, -150], [40, -160], [80, -190], [-90, -200], [10, -200]];
 const MANGO_SIZE = 14;
+// fixed: the crown as one circle for the picker's pole, a little inside its blobs (for a tree of scale 1)
+export const CROWN = { x: 0, y: -240, r: 95 } as const;
 const SHADOW = 0.22;
 // Trees hazier than this carry no mangos
 export const MANGO_HAZE = 0.5;

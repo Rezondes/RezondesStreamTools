@@ -6,13 +6,15 @@ import { cameraAt, cloudSpots, daylight, cloudX, crate, furrows, grassTufts, hil
 
 const OPTIONS = { seed: 42, treeRowsFar: 11, treeRowsMid: 8, farBlur: 1.5, hazeFar: 0.55 };
 
-// Ebenen: far to near, more camera movement, less blur and less haze; same seed, same world
+// Ebenen: far to near, more camera movement, less blur and less haze; the field is the ground under all of them (the
+// middle row stands on it) and lies before that row; same seed, same world
 const layers = worldLayers(OPTIONS);
-assert.deepEqual(layers.map(layer => layer.id), ["clouds", "hillsFar", "hillsNear", "treesFar", "treesMid", "field", "treesNear", "front"]);
-for (let index = 1; index < layers.length; index++) {
-  assert.ok(layers[index].move > layers[index - 1].move, `${layers[index].id} moves more`);
-  assert.ok(layers[index].blur <= layers[index - 1].blur, `${layers[index].id} sharper`);
-  assert.ok(layers[index].haze <= layers[index - 1].haze, `${layers[index].id} clearer`);
+assert.deepEqual(layers.map(layer => layer.id), ["clouds", "hillsFar", "hillsNear", "treesFar", "field", "treesMid", "treesNear", "front"]);
+const depth = layers.filter(layer => layer.id !== "field");
+for (let index = 1; index < depth.length; index++) {
+  assert.ok(depth[index].move > depth[index - 1].move, `${depth[index].id} moves more`);
+  assert.ok(depth[index].blur <= depth[index - 1].blur, `${depth[index].id} sharper`);
+  assert.ok(depth[index].haze <= depth[index - 1].haze, `${depth[index].id} clearer`);
 }
 assert.equal(layers[layers.length - 1].haze, 0);
 assert.deepEqual(worldLayers(OPTIONS), layers);

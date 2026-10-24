@@ -18,8 +18,10 @@ const LAYERS: readonly { id: LayerId; move: number; blur: number; haze: number }
   { id: "hillsFar", move: 0.12, blur: 2, haze: 1.13 },
   { id: "hillsNear", move: 0.2, blur: 1.33, haze: 1.05 },
   { id: "treesFar", move: 0.3, blur: 1, haze: 1 },
-  { id: "treesMid", move: 0.5, blur: 0.4, haze: 0.55 },
+  // The field lies before the middle row: that row stands on the field below the horizon, drawn behind it the field
+  // hid its trunks and it looked pushed back
   { id: "field", move: 0.6, blur: 0, haze: 0 },
+  { id: "treesMid", move: 0.5, blur: 0.4, haze: 0.55 },
   { id: "treesNear", move: 0.85, blur: 0, haze: 0 },
   { id: "front", move: 1, blur: 0, haze: 0 },
 ];
@@ -27,7 +29,7 @@ const ROWS = {
   treesFar: { from: -80, width: 2250, ground: 640, scale: 0.38, jitter: 40 },
   treesMid: { from: -60, width: 2320, ground: 690, scale: 0.6, jitter: 50 },
 } as const;
-const NEAR_TREES: readonly TreeSpot[] = [{ x: 150, ground: 860, scale: 1.05, sway: 0 }, { x: 1760, ground: 880, scale: 1.1, sway: 2 }];
+export const NEAR_TREES: readonly TreeSpot[] = [{ x: 150, ground: 860, scale: 1.05, sway: 0 }, { x: 1760, ground: 880, scale: 1.1, sway: 2 }];
 const SWAY_PHASE = 6;
 
 function row(id: keyof typeof ROWS, count: number, random: () => number): TreeSpot[] {
