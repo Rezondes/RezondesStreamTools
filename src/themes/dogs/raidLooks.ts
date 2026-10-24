@@ -7,13 +7,16 @@ import { coatsOf } from "./coats.ts";
 // fixed: the coat comes from the fraction of the pick times a large prime, independent of the breed
 const COAT_SPREAD = 7919;
 
-// The breeds of the pack from the settings (raidBreed_<breed>); none switched on gives all
-export function raidBreeds(values: Readonly<Record<string, unknown>>): BreedId[] {
-  const on = BREED_IDS.filter(id => values[`raidBreed_${id}`] !== false);
+// The breeds switched on in the settings under prefix<breed> (raidBreed_, chatBreed_); none switched on gives all
+export function breedsOn(values: Readonly<Record<string, unknown>>, prefix: string): BreedId[] {
+  const on = BREED_IDS.filter(id => values[`${prefix}${id}`] !== false);
   return on.length ? on : [...BREED_IDS];
 }
 
-// The look of a runner: breed and coat id from its pick
+// The breeds of the pack from the settings (raidBreed_<breed>)
+export const raidBreeds = (values: Readonly<Record<string, unknown>>) => breedsOn(values, "raidBreed_");
+
+// The look of a runner (or a chatter): breed and coat id from its pick
 export function raidLookOf(pick: number, breeds: readonly BreedId[]): { breed: BreedId; coat: string } {
   const breed = breeds[Math.min(breeds.length - 1, Math.floor(pick * breeds.length))];
   const coats = coatsOf(breed);

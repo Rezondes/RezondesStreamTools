@@ -8,9 +8,9 @@ import { BREED_IDS } from "./breeds.ts";
 import { COAT_PARTS, COATS, coatKey, coatPalette } from "./coats.ts";
 import { dogsSettings } from "./settings.ts";
 
-// Schema: no errors, every key used; coat colors, bark voices and raid breeds are built keys (coatPalette, barkVoiceOf, raidBreeds read them)
+// Schema: no errors, every key used; coat colors, bark voices and raid breeds are built keys (coatPalette, barkVoiceOf, raidBreeds, chatBreeds read them)
 const coatKeys = COATS.flatMap(variant => COAT_PARTS.map(part => coatKey(variant, part)));
-const builtKeys = [...coatKeys, ...BREED_IDS.flatMap(breed => [`barkVoice_${breed}`, `raidBreed_${breed}`])];
+const builtKeys = [...coatKeys, ...BREED_IDS.flatMap(breed => [`barkVoice_${breed}`, `raidBreed_${breed}`, `chatBreed_${breed}`])];
 const audit = auditTheme(dogsSettings, import.meta.dirname);
 assert.deepEqual(audit.errors, []);
 assert.deepEqual(audit.unused.filter(key => !builtKeys.includes(key)), [], `unused keys: ${audit.unused.join(", ")}`);

@@ -3,8 +3,10 @@
 // keys like corgiRotweissBase, coats.ts); server-rs/.../themes/dogs.rs builds the same fields from the same table.
 // DogsValues is the type of the resolved values that the scenes read via useDogs.
 import { alertSoundFields } from "../../core/alerts/alerts.ts";
+import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, inScene, lines, markBasic, number, sound, text, withDefaults } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
+import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { BREED_IDS, BREEDS } from "./breeds.ts";
@@ -25,6 +27,13 @@ const ALERTS = "Alerts";
 const RAID = "Raid";
 const TOYS = ["ball", "knochen", "frisbee", "leckerli"] as const;
 const STINGER = "Stinger";
+const CHAT = "Chat";
+const CAM = "Kamera-Rahmen";
+const MUSIC = "Musik";
+const FX = "Effekte";
+const CHAT_STYLES = ["hund", "schilder", "schlicht"] as const;
+const MUSIC_STYLES = ["hund", "schild", "schlicht"] as const;
+const INFO_BACKGROUNDS = ["wiese", "creme"] as const;
 
 // Per variant: base, mark, dark, nose (defaults of the prototypes, refs/dog.js)
 const COAT_COLORS: Readonly<Record<string, readonly [string, string, string, string]>> = {
@@ -242,6 +251,43 @@ const FIELDS = [
   number("raidSeed", "Startwert", RAID, 1, 1, 9999),
   number("raidBarkShare", "Anteil der Läufe, die beim Erscheinen bellen", RAID, 25, 0, 100, "%"),
   ...BREED_IDS.map(id => flag(`raidBreed_${id}`, `Rudel: ${BREEDS[id].name}`, RAID, true)),
+
+  choice("chatStyle", "Darstellung", CHAT, "hund", CHAT_STYLES),
+  number("chatMax", "Max. Nachrichten", CHAT, 6, 1, 50),
+  number("chatLifetime", "Ausblenden nach (0 = nie)", CHAT, 30, 0, 3600, "s"),
+  number("chatWidth", "Breite", CHAT, 480, 200, 1900, "px"),
+  color("chatNameColor", "Farbe der Namen", CHAT, "#c24535"),
+  number("emoteSize", "Emote-Grösse", CHAT, 28, 8, 120, "px"),
+  flag("chatBadges", "Badges zeigen", CHAT, true),
+  ...badgeFields(CHAT),
+  ...BREED_IDS.map(id => flag(`chatBreed_${id}`, `Hunde im Chat: ${BREEDS[id].name}`, CHAT, true)),
+
+  flag("camRoof", "Hundehütten-Dach", CAM, true),
+  color("camRoofColor", "Dach: Farbe", CAM, "#c24535"),
+  flag("camDog", "Hund an der Ecke", CAM, true),
+  text("camLabel", "Namensschild ({channel}, {dog})", CAM, "{channel}"),
+  number("camBorder", "Rahmenstärke", CAM, 5, 0, 30, "px"),
+
+  choice("musicStyle", "Darstellung", MUSIC, "hund", MUSIC_STYLES),
+  text("musicLabel", "Überzeile", MUSIC, "JETZT LÄUFT"),
+  text("musicIdle", "Text ohne Wiedergabe", MUSIC, "Gerade keine Musik"),
+  flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+  flag("musicCover", "Cover zeigen", MUSIC, true),
+  flag("musicPaws", "Fortschritt als Pfotenspur", MUSIC, true),
+  number("musicBob", "Hund wippt (pro Sekunde, 0 = still)", MUSIC, 2, 0, 6, undefined, 0.5),
+  number("musicMarqueeSpeed", "Lange Zeilen: Lauftempo (px pro Sekunde)", MUSIC, 40, 5, 400),
+  number("coverSize", "Cover-Grösse", MUSIC, 96, 40, 300, "px"),
+
+  number("fxDuration", "Standarddauer", FX, 4, 0.5, 120, "s", 0.5),
+  number("fxSize", "Standardgrösse", FX, 360, 20, 1920, "px"),
+  flag("fxText", "Text zeigen", FX, true),
+  number("fxTextSize", "Textgrösse", FX, 96, 8, 300, "px"),
+  number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20, 0, 50, "%"),
+  number("fxMax", "Max. gleichzeitig", FX, 8, 1, 30),
+
+  ...withDefaults(INFO_FIELDS, { infoTitle: "Befehle im Rudel" }),
+  choice("infoBackground", "Befehlsseite: Hintergrund", INFO_GROUP, "wiese", INFO_BACKGROUNDS),
+  number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -251,15 +297,20 @@ const GROUP_SCENES = {
   [WORLD]: ["starting", "brb"],
   [STARTING]: ["starting"],
   [BRB]: ["brb"],
-  [ENDING]: ["ending"],
+  [ENDING]: ["ending", "stats"],
   [ALERTS]: ["alerts"],
   [RAID]: ["alerts"],
+  [CHAT]: ["chat"],
+  [CAM]: ["cam"],
+  [MUSIC]: ["music"],
+  [FX]: ["fx"],
+  [INFO_GROUP]: ["info"],
   [STINGER]: [],
 } as const;
 
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
-const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "endingStats", "followLine", "subLine", "raidLine", "cheerLine", "alertBark"];
+const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "endingStats", "followLine", "subLine", "raidLine", "cheerLine", "alertBark", "chatStyle", "chatBadges", "camLabel", "musicStyle", "musicLabel", "fxText"];
 
 export const dogsSettings: ThemeSchema = { id: "dogs", name: "Dogs", fields: markBasic(withStingerFields(FIELDS, STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };

@@ -11,8 +11,9 @@ use crate::settings::field::{
     SettingField, SettingValue, SettingValues, SoundValue, Unit, choice, color, flag, font, in_scene, lines,
     mark_basic, number, sound, text, with_defaults,
 };
-use crate::themes::core_fields::alert_sound_fields;
+use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::graphics_fields::quality_field;
+use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
@@ -31,6 +32,13 @@ const ALERTS: &str = "Alerts";
 const RAID: &str = "Raid";
 const TOYS: [&str; 4] = ["ball", "knochen", "frisbee", "leckerli"];
 const STINGER: &str = "Stinger";
+const CHAT: &str = "Chat";
+const CAM: &str = "Kamera-Rahmen";
+const MUSIC: &str = "Musik";
+const FX: &str = "Effekte";
+const CHAT_STYLES: [&str; 3] = ["hund", "schilder", "schlicht"];
+const MUSIC_STYLES: [&str; 3] = ["hund", "schild", "schlicht"];
+const INFO_BACKGROUNDS: [&str; 2] = ["wiese", "creme"];
 
 const PX: Option<Unit> = Some(Unit::Px);
 const PERCENT: Option<Unit> = Some(Unit::Percent);
@@ -406,14 +414,68 @@ fn raid() -> Vec<SettingField> {
     fields
 }
 
+fn chat() -> Vec<SettingField> {
+    let mut fields = vec![
+        choice("chatStyle", "Darstellung", CHAT, "hund", &CHAT_STYLES),
+        number("chatMax", "Max. Nachrichten", CHAT, 6.0, 1.0, 50.0, None, None),
+        number("chatLifetime", "Ausblenden nach (0 = nie)", CHAT, 30.0, 0.0, 3600.0, S, None),
+        number("chatWidth", "Breite", CHAT, 480.0, 200.0, 1900.0, PX, None),
+        color("chatNameColor", "Farbe der Namen", CHAT, "#c24535"),
+        number("emoteSize", "Emote-Grösse", CHAT, 28.0, 8.0, 120.0, PX, None),
+        flag("chatBadges", "Badges zeigen", CHAT, true),
+    ];
+    fields.extend(badge_fields(CHAT));
+    for (id, name) in BREEDS {
+        fields.push(flag(&format!("chatBreed_{id}"), &format!("Hunde im Chat: {name}"), CHAT, true));
+    }
+    fields
+}
+
+fn cam_music_fx() -> Vec<SettingField> {
+    vec![
+        flag("camRoof", "Hundehütten-Dach", CAM, true),
+        color("camRoofColor", "Dach: Farbe", CAM, "#c24535"),
+        flag("camDog", "Hund an der Ecke", CAM, true),
+        text("camLabel", "Namensschild ({channel}, {dog})", CAM, "{channel}", None),
+        number("camBorder", "Rahmenstärke", CAM, 5.0, 0.0, 30.0, PX, None),
+        choice("musicStyle", "Darstellung", MUSIC, "hund", &MUSIC_STYLES),
+        text("musicLabel", "Überzeile", MUSIC, "JETZT LÄUFT", None),
+        text("musicIdle", "Text ohne Wiedergabe", MUSIC, "Gerade keine Musik", None),
+        flag("musicHide", "Bei Pause ausblenden", MUSIC, true),
+        flag("musicCover", "Cover zeigen", MUSIC, true),
+        flag("musicPaws", "Fortschritt als Pfotenspur", MUSIC, true),
+        number("musicBob", "Hund wippt (pro Sekunde, 0 = still)", MUSIC, 2.0, 0.0, 6.0, None, Some(0.5)),
+        number("musicMarqueeSpeed", "Lange Zeilen: Lauftempo (px pro Sekunde)", MUSIC, 40.0, 5.0, 400.0, None, None),
+        number("coverSize", "Cover-Grösse", MUSIC, 96.0, 40.0, 300.0, PX, None),
+        number("fxDuration", "Standarddauer", FX, 4.0, 0.5, 120.0, S, Some(0.5)),
+        number("fxSize", "Standardgrösse", FX, 360.0, 20.0, 1920.0, PX, None),
+        flag("fxText", "Text zeigen", FX, true),
+        number("fxTextSize", "Textgrösse", FX, 96.0, 8.0, 300.0, PX, None),
+        number("fxMargin", "Zufallsposition: Abstand zum Rand", FX, 20.0, 0.0, 50.0, PERCENT, None),
+        number("fxMax", "Max. gleichzeitig", FX, 8.0, 1.0, 30.0, None, None),
+    ]
+}
+
+fn info() -> Vec<SettingField> {
+    let mut fields = with_defaults(info_fields(), &[("infoTitle", SettingValue::Text("Befehle im Rudel".to_owned()))]);
+    fields.push(choice("infoBackground", "Befehlsseite: Hintergrund", INFO_GROUP, "wiese", &INFO_BACKGROUNDS));
+    fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900.0, 400.0, 1600.0, PX, None));
+    fields
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     BTreeMap::from([
         (WORLD.to_owned(), vec![SceneName::Starting, SceneName::Brb]),
         (STARTING.to_owned(), vec![SceneName::Starting]),
         (BRB.to_owned(), vec![SceneName::Brb]),
-        (ENDING.to_owned(), vec![SceneName::Ending]),
+        (ENDING.to_owned(), vec![SceneName::Ending, SceneName::Stats]),
         (ALERTS.to_owned(), vec![SceneName::Alerts]),
         (RAID.to_owned(), vec![SceneName::Alerts]),
+        (CHAT.to_owned(), vec![SceneName::Chat]),
+        (CAM.to_owned(), vec![SceneName::Cam]),
+        (MUSIC.to_owned(), vec![SceneName::Music]),
+        (FX.to_owned(), vec![SceneName::Fx]),
+        (INFO_GROUP.to_owned(), vec![SceneName::Info]),
         (STINGER.to_owned(), vec![]),
     ])
 }
@@ -446,11 +508,32 @@ const BASIC: &[&str] = &[
     "raidLine",
     "cheerLine",
     "alertBark",
+    "chatStyle",
+    "chatBadges",
+    "camLabel",
+    "musicStyle",
+    "musicLabel",
+    "fxText",
 ];
 
 #[must_use]
 pub fn dogs() -> Theme {
-    let fields = [general(), dog(), sounds(), coats(), world(), starting(), brb(), ending(), alerts(), raid()].concat();
+    let fields = [
+        general(),
+        dog(),
+        sounds(),
+        coats(),
+        world(),
+        starting(),
+        brb(),
+        ending(),
+        alerts(),
+        raid(),
+        chat(),
+        cam_music_fx(),
+        info(),
+    ]
+    .concat();
     let schema = ThemeSchema {
         id: "dogs".to_owned(),
         name: "Dogs".to_owned(),

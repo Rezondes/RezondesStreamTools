@@ -1,0 +1,77 @@
+/* Overlays of the Dogs theme (DESIGN-DOGS.md "Chat", "Kamera", "Musik", "Effekte", "Befehlsseite", "Ending"): pixel
+   signs with the small dogs of the kit next to them (SVG, ui/Pixels.tsx). Under .theme-dogs like theme.css; sizes as
+   var(--name, default), keyframes dogs-*. */
+
+/* --- Chat: the dog peeks out from behind the left edge of its sign, looking out --------------------------------------- */
+.theme-dogs .dg-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--dg-chat-gap, 22px); padding: var(--dg-chat-pad, 12px 16px 24px); width: var(--chatWidth); box-sizing: border-box; }
+.theme-dogs .dg-chat-row { display: flex; align-items: flex-end; animation: dogs-pop var(--dg-pop, 300ms) steps(var(--dg-pop-steps, 4)) both; }
+.theme-dogs .dg-chat-row.fades { animation: dogs-pop var(--dg-pop, 300ms) steps(var(--dg-pop-steps, 4)) both, dogs-fade var(--dg-fade, 600ms) steps(var(--dg-pop-steps, 4)) var(--chatLifetime) forwards; }
+.theme-dogs .dg-chat-dog { flex: none; transform: scaleX(-1); margin-right: calc(-2 * var(--dg-px)); }
+.theme-dogs .dg-chat-sign { position: relative; flex: 1; min-width: 0; padding: var(--dg-chat-sign-pad, 8px 16px 12px); }
+.theme-dogs .dg-chat-line { flex: 1; min-width: 0; color: var(--cream); text-shadow: var(--dg-outline); }
+.theme-dogs .dg-chat-name { display: block; font-weight: 700; color: var(--chatNameColor); }
+.theme-dogs .dg-chat-schlicht .dg-chat-name { color: var(--cream); }
+.theme-dogs .dg-chat-text { font-weight: 500; overflow-wrap: anywhere; }
+.theme-dogs .dg-chat-row.action .dg-chat-text { font-style: italic; }
+.theme-dogs .dg-chat-badge { display: inline-block; margin-right: var(--dg-badge-gap, 8px); padding: var(--dg-badge-pad, 0 6px 2px); background: var(--accent); color: var(--onAccent); font-size: 0.7em; vertical-align: middle; }
+.theme-dogs .dg-emote { height: var(--emoteSize); vertical-align: middle; }
+
+@keyframes dogs-pop { from { transform: translateY(var(--dg-pop-y, 20px)); opacity: 0; } }
+@keyframes dogs-fade { to { opacity: 0; } }
+
+/* --- Camera: a doghouse; the frame in cream with the ink edge, the roof on top, the dog at the lower right ------------ */
+.theme-dogs .dg-cam { position: fixed; inset: 0; }
+.theme-dogs .dg-cam-frame { position: absolute; inset: var(--dg-cam-inset, 8px); top: var(--dg-cam-top, 8px); border: var(--camBorder) solid var(--cream); box-shadow: 0 0 0 var(--dg-px) var(--ink), inset 0 0 0 var(--dg-px) var(--ink); }
+.theme-dogs .dg-cam:has(.dg-cam-roof) { --dg-cam-top: var(--dg-roof, 9%); }
+.theme-dogs .dg-cam-roof { position: absolute; left: 0; right: 0; top: 0; height: calc(var(--dg-roof, 9%) + var(--dg-px)); background: var(--camRoofColor); clip-path: polygon(0 100%, 50% 0, 100% 100%); filter: drop-shadow(0 calc(-1 * var(--dg-px)) 0 var(--ink)); }
+.theme-dogs .dg-cam-dog { position: absolute; right: var(--dg-cam-dog-right, 4%); bottom: var(--dg-cam-inset, 8px); }
+.theme-dogs .dg-cam-label { position: absolute; left: 50%; bottom: calc(var(--dg-cam-inset, 8px) - var(--dg-px)); transform: translateX(-50%); }
+
+/* --- Music: the dog with headphones bobs next to the sign ------------------------------------------------------------- */
+.theme-dogs .dg-music { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; gap: var(--dg-music-gap, 14px); padding: var(--dg-music-pad, 8px 16px 24px); animation: dogs-pop var(--dg-pop, 300ms) steps(var(--dg-pop-steps, 4)) both; }
+.theme-dogs .dg-music.leaving { animation: dogs-fade var(--dg-fade, 600ms) steps(var(--dg-pop-steps, 4)) forwards; }
+.theme-dogs .dg-music-dog { flex: none; }
+.theme-dogs .dg-music-dog.bobbing { animation: dogs-bob var(--dg-bob) steps(1) infinite; }
+.theme-dogs .dg-music-sign { position: relative; flex: 1; min-width: 0; padding: var(--dg-music-sign-pad, 12px 18px 14px); }
+.theme-dogs .dg-music-schlicht .dg-music-sign { color: var(--cream); text-shadow: var(--dg-outline); }
+.theme-dogs .dg-track { display: flex; align-items: center; gap: var(--dg-track-gap, 16px); }
+.theme-dogs .dg-cover { width: var(--coverSize); height: var(--coverSize); object-fit: cover; flex: none; image-rendering: pixelated; box-shadow: 0 0 0 var(--dg-px) var(--ink); }
+.theme-dogs .dg-track-text { display: grid; min-width: 0; }
+.theme-dogs .dg-track-title { font-size: 1.25em; font-weight: 700; color: var(--accent); }
+.theme-dogs .dg-track-artist { font-weight: 500; }
+.theme-dogs .dg-music-idle { margin: 0; font-weight: 600; color: var(--muted); }
+.theme-dogs .dg-music-paws { display: flex; gap: var(--dg-paw-gap, 6px); margin-top: var(--dg-progress-gap, 10px); color: var(--edge); }
+.theme-dogs .dg-music-paws .dg-paw { width: calc(4 * var(--dg-px)); height: calc(4 * var(--dg-px)); }
+.theme-dogs .dg-music-paws .dg-paw.on { color: var(--accent); }
+.theme-dogs .dg-music-bar { position: relative; margin-top: var(--dg-progress-gap, 10px); height: var(--dg-px); background: var(--edge); }
+.theme-dogs .dg-music-bar span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); }
+
+@keyframes dogs-bob { 50% { transform: translateY(var(--dg-px)); } }
+
+/* --- Effects ---------------------------------------------------------------------------------------------------------- */
+.theme-dogs .dg-fx { position: fixed; inset: 0; overflow: hidden; }
+.theme-dogs .dg-fx-item { position: absolute; display: grid; place-items: center; }
+.theme-dogs .dg-fx-text { font-size: var(--fxTextSize); font-weight: 700; color: var(--cream); text-shadow: var(--dg-outline); }
+
+/* --- Stream numbers: the caption pill over a column of small signs ---------------------------------------------------- */
+.theme-dogs .dg-stats { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: stretch; gap: var(--dg-stats-gap, 18px); padding: var(--dg-stats-pad, 16px 16px 24px); box-sizing: border-box; }
+.theme-dogs .dg-stats-caption { align-self: center; }
+.theme-dogs .dg-stats-row { display: flex; align-items: baseline; gap: var(--dg-stats-row-gap, 14px); padding: var(--dg-stats-row-pad, 8px 18px 12px); }
+.theme-dogs .dg-stats-number { font-size: 1.6em; color: var(--accent); }
+.theme-dogs .dg-stats-label { font-weight: 600; }
+
+/* --- Commands page: the meadow (or cream) behind pixel signs ---------------------------------------------------------- */
+.theme-dogs.theme-root:has(.dg-info-wiese) { min-height: 100vh; background: linear-gradient(var(--sky), var(--skyLow) 55%, var(--grassLight) 55%, var(--grass) 57%) fixed; }
+.theme-dogs.theme-root:has(.dg-info-creme) { min-height: 100vh; background: var(--cream); }
+.theme-dogs .dg-info { padding: var(--dg-info-pad, 48px 16px); }
+.theme-dogs .dg-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--dg-info-gap, 30px); }
+.theme-dogs .dg-info-head { display: flex; align-items: flex-end; justify-content: center; gap: var(--dg-info-head-gap, 20px); }
+.theme-dogs .dg-info-dog { flex: none; }
+.theme-dogs .dg-info-title { margin: 0; font-size: calc(var(--titleSize) * 0.65); font-weight: 700; line-height: 1; color: var(--cream); text-shadow: var(--dg-outline); }
+.theme-dogs .dg-info-intro { margin: 0; text-align: center; font-weight: 600; }
+.theme-dogs .dg-info-card { position: relative; padding: var(--dg-info-card-pad, 34px 26px 22px); }
+.theme-dogs .dg-info-heading { position: absolute; left: var(--dg-info-heading-left, 20px); top: var(--dg-info-heading-top, -24px); }
+.theme-dogs .dg-info-entry { margin: var(--dg-info-entry, 10px) 0; }
+.theme-dogs .dg-info-line { display: flex; align-items: baseline; justify-content: space-between; gap: var(--dg-info-line-gap, 16px); margin: 0; font-weight: 600; }
+.theme-dogs .dg-info-command { color: var(--accent); white-space: nowrap; }
+.theme-dogs .dg-info-detail { margin: var(--dg-info-detail, 2px) 0 0; font-size: 0.85em; color: var(--muted); }

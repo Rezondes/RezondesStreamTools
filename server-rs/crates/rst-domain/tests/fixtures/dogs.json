@@ -2270,6 +2270,572 @@
       "default": true
     },
     {
+      "key": "chatStyle",
+      "type": "select",
+      "label": "Darstellung",
+      "group": "Chat",
+      "default": "hund",
+      "options": [
+        "hund",
+        "schilder",
+        "schlicht"
+      ],
+      "basic": true
+    },
+    {
+      "key": "chatMax",
+      "type": "number",
+      "label": "Max. Nachrichten",
+      "group": "Chat",
+      "default": 6,
+      "min": 1,
+      "max": 50
+    },
+    {
+      "key": "chatLifetime",
+      "type": "number",
+      "label": "Ausblenden nach (0 = nie)",
+      "group": "Chat",
+      "default": 30,
+      "min": 0,
+      "max": 3600,
+      "unit": "s"
+    },
+    {
+      "key": "chatWidth",
+      "type": "number",
+      "label": "Breite",
+      "group": "Chat",
+      "default": 480,
+      "min": 200,
+      "max": 1900,
+      "unit": "px"
+    },
+    {
+      "key": "chatNameColor",
+      "type": "color",
+      "label": "Farbe der Namen",
+      "group": "Chat",
+      "default": "#c24535"
+    },
+    {
+      "key": "emoteSize",
+      "type": "number",
+      "label": "Emote-Grösse",
+      "group": "Chat",
+      "default": 28,
+      "min": 8,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "chatBadges",
+      "type": "boolean",
+      "label": "Badges zeigen",
+      "group": "Chat",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "badgeHost",
+      "type": "text",
+      "label": "Badge Streamer",
+      "group": "Chat",
+      "default": "HOST",
+      "maxLength": 20
+    },
+    {
+      "key": "badgeMod",
+      "type": "text",
+      "label": "Badge Moderator",
+      "group": "Chat",
+      "default": "MOD",
+      "maxLength": 20
+    },
+    {
+      "key": "badgeVip",
+      "type": "text",
+      "label": "Badge VIP",
+      "group": "Chat",
+      "default": "VIP",
+      "maxLength": 20
+    },
+    {
+      "key": "badgeSub",
+      "type": "text",
+      "label": "Badge Abonnent",
+      "group": "Chat",
+      "default": "SUB",
+      "maxLength": 20
+    },
+    {
+      "key": "chatBreed_corgi",
+      "type": "boolean",
+      "label": "Hunde im Chat: Corgi",
+      "group": "Chat",
+      "default": true
+    },
+    {
+      "key": "chatBreed_shiba",
+      "type": "boolean",
+      "label": "Hunde im Chat: Shiba",
+      "group": "Chat",
+      "default": true
+    },
+    {
+      "key": "chatBreed_labrador",
+      "type": "boolean",
+      "label": "Hunde im Chat: Labrador",
+      "group": "Chat",
+      "default": true
+    },
+    {
+      "key": "chatBreed_dalmatiner",
+      "type": "boolean",
+      "label": "Hunde im Chat: Dalmatiner",
+      "group": "Chat",
+      "default": true
+    },
+    {
+      "key": "chatBreed_dackel",
+      "type": "boolean",
+      "label": "Hunde im Chat: Dackel",
+      "group": "Chat",
+      "default": true
+    },
+    {
+      "key": "chatBreed_mops",
+      "type": "boolean",
+      "label": "Hunde im Chat: Mops",
+      "group": "Chat",
+      "default": true
+    },
+    {
+      "key": "camRoof",
+      "type": "boolean",
+      "label": "Hundehütten-Dach",
+      "group": "Kamera-Rahmen",
+      "default": true
+    },
+    {
+      "key": "camRoofColor",
+      "type": "color",
+      "label": "Dach: Farbe",
+      "group": "Kamera-Rahmen",
+      "default": "#c24535"
+    },
+    {
+      "key": "camDog",
+      "type": "boolean",
+      "label": "Hund an der Ecke",
+      "group": "Kamera-Rahmen",
+      "default": true
+    },
+    {
+      "key": "camLabel",
+      "type": "text",
+      "label": "Namensschild ({channel}, {dog})",
+      "group": "Kamera-Rahmen",
+      "default": "{channel}",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "camBorder",
+      "type": "number",
+      "label": "Rahmenstärke",
+      "group": "Kamera-Rahmen",
+      "default": 5,
+      "min": 0,
+      "max": 30,
+      "unit": "px"
+    },
+    {
+      "key": "musicStyle",
+      "type": "select",
+      "label": "Darstellung",
+      "group": "Musik",
+      "default": "hund",
+      "options": [
+        "hund",
+        "schild",
+        "schlicht"
+      ],
+      "basic": true
+    },
+    {
+      "key": "musicLabel",
+      "type": "text",
+      "label": "Überzeile",
+      "group": "Musik",
+      "default": "JETZT LÄUFT",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "musicIdle",
+      "type": "text",
+      "label": "Text ohne Wiedergabe",
+      "group": "Musik",
+      "default": "Gerade keine Musik",
+      "maxLength": 200
+    },
+    {
+      "key": "musicHide",
+      "type": "boolean",
+      "label": "Bei Pause ausblenden",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "musicCover",
+      "type": "boolean",
+      "label": "Cover zeigen",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "musicPaws",
+      "type": "boolean",
+      "label": "Fortschritt als Pfotenspur",
+      "group": "Musik",
+      "default": true
+    },
+    {
+      "key": "musicBob",
+      "type": "number",
+      "label": "Hund wippt (pro Sekunde, 0 = still)",
+      "group": "Musik",
+      "default": 2,
+      "min": 0,
+      "max": 6,
+      "step": 0.5
+    },
+    {
+      "key": "musicMarqueeSpeed",
+      "type": "number",
+      "label": "Lange Zeilen: Lauftempo (px pro Sekunde)",
+      "group": "Musik",
+      "default": 40,
+      "min": 5,
+      "max": 400
+    },
+    {
+      "key": "coverSize",
+      "type": "number",
+      "label": "Cover-Grösse",
+      "group": "Musik",
+      "default": 96,
+      "min": 40,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "fxDuration",
+      "type": "number",
+      "label": "Standarddauer",
+      "group": "Effekte",
+      "default": 4,
+      "min": 0.5,
+      "max": 120,
+      "unit": "s",
+      "step": 0.5
+    },
+    {
+      "key": "fxSize",
+      "type": "number",
+      "label": "Standardgrösse",
+      "group": "Effekte",
+      "default": 360,
+      "min": 20,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "fxText",
+      "type": "boolean",
+      "label": "Text zeigen",
+      "group": "Effekte",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "fxTextSize",
+      "type": "number",
+      "label": "Textgrösse",
+      "group": "Effekte",
+      "default": 96,
+      "min": 8,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "fxMargin",
+      "type": "number",
+      "label": "Zufallsposition: Abstand zum Rand",
+      "group": "Effekte",
+      "default": 20,
+      "min": 0,
+      "max": 50,
+      "unit": "%"
+    },
+    {
+      "key": "fxMax",
+      "type": "number",
+      "label": "Max. gleichzeitig",
+      "group": "Effekte",
+      "default": 8,
+      "min": 1,
+      "max": 30
+    },
+    {
+      "key": "infoTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "Befehlsseite",
+      "default": "Befehle im Rudel",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "infoIntro",
+      "type": "textarea",
+      "label": "Einleitung ({channel})",
+      "group": "Befehlsseite",
+      "default": "Das kannst du im Chat von {channel} tippen.",
+      "maxLength": 500,
+      "basic": true
+    },
+    {
+      "key": "infoEmpty",
+      "type": "text",
+      "label": "Text, wenn es keine Befehle gibt",
+      "group": "Befehlsseite",
+      "default": "Gerade gibt es hier keine Befehle.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoHelpHeading",
+      "type": "text",
+      "label": "Überschrift: Hilfe",
+      "group": "Befehlsseite",
+      "default": "Hilfe",
+      "maxLength": 200
+    },
+    {
+      "key": "infoMinimesHeading",
+      "type": "text",
+      "label": "Überschrift: Minimes",
+      "group": "Befehlsseite",
+      "default": "Minimes",
+      "maxLength": 200
+    },
+    {
+      "key": "infoTriggersHeading",
+      "type": "text",
+      "label": "Überschrift: Trigger",
+      "group": "Befehlsseite",
+      "default": "Effekte",
+      "maxLength": 200
+    },
+    {
+      "key": "infoHelpText",
+      "type": "text",
+      "label": "Hilfe-Befehl: Erklärung",
+      "group": "Befehlsseite",
+      "default": "Zeigt die Befehle im Chat.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoJoinText",
+      "type": "text",
+      "label": "Minimes einklinken: Erklärung",
+      "group": "Befehlsseite",
+      "default": "Mit deiner Figur in die Szene einsteigen.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoJoinColor",
+      "type": "text",
+      "label": "Einklinken mit Farbe ({command})",
+      "group": "Befehlsseite",
+      "default": "Mit Farbe: {command} #ff00aa oder {command} 255 0 170",
+      "maxLength": 200
+    },
+    {
+      "key": "infoJoinVariant",
+      "type": "text",
+      "label": "Einklinken mit Typ ({command}, {example})",
+      "group": "Befehlsseite",
+      "default": "Mit Typ: {command} {example}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoLookColor",
+      "type": "text",
+      "label": "Farbe ändern: Erklärung ({command})",
+      "group": "Befehlsseite",
+      "default": "Farbe deiner Figur ändern, z.B. {command} #00ffaa",
+      "maxLength": 200
+    },
+    {
+      "key": "infoLookVariant",
+      "type": "text",
+      "label": "Typ wählen: Erklärung ({command})",
+      "group": "Befehlsseite",
+      "default": "Typ deiner Figur wählen: {command} <Name>",
+      "maxLength": 200
+    },
+    {
+      "key": "infoVariants",
+      "type": "text",
+      "label": "Liste der Typen ({names})",
+      "group": "Befehlsseite",
+      "default": "Zur Wahl: {names}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoLeaveText",
+      "type": "text",
+      "label": "Verlassen: Erklärung",
+      "group": "Befehlsseite",
+      "default": "Deine Figur verlässt die Szene.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoKick",
+      "type": "text",
+      "label": "Rauswerfen ({roles}, {command})",
+      "group": "Befehlsseite",
+      "default": "{roles}: {command} @name wirft eine Figur raus.",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenCommand",
+      "type": "text",
+      "label": "Trigger als Befehl ({match})",
+      "group": "Befehlsseite",
+      "default": "Tippe {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenWord",
+      "type": "text",
+      "label": "Trigger als Wort ({match})",
+      "group": "Befehlsseite",
+      "default": "Schreib das Wort {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenExact",
+      "type": "text",
+      "label": "Trigger als ganze Nachricht ({match})",
+      "group": "Befehlsseite",
+      "default": "Schreib genau {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenContains",
+      "type": "text",
+      "label": "Trigger als Textteil ({match})",
+      "group": "Befehlsseite",
+      "default": "Schreib etwas mit {match}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWhenRegex",
+      "type": "text",
+      "label": "Trigger mit Muster",
+      "group": "Befehlsseite",
+      "default": "Eine besondere Nachricht",
+      "maxLength": 200
+    },
+    {
+      "key": "infoWho",
+      "type": "text",
+      "label": "Wer darf ({roles})",
+      "group": "Befehlsseite",
+      "default": "Für: {roles}",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleEveryone",
+      "type": "text",
+      "label": "Rolle: alle",
+      "group": "Befehlsseite",
+      "default": "alle",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleSubscriber",
+      "type": "text",
+      "label": "Rolle: Subs",
+      "group": "Befehlsseite",
+      "default": "Subs",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleVip",
+      "type": "text",
+      "label": "Rolle: VIPs",
+      "group": "Befehlsseite",
+      "default": "VIPs",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleModerator",
+      "type": "text",
+      "label": "Rolle: Mods",
+      "group": "Befehlsseite",
+      "default": "Mods",
+      "maxLength": 200
+    },
+    {
+      "key": "infoRoleBroadcaster",
+      "type": "text",
+      "label": "Rolle: Streamer",
+      "group": "Befehlsseite",
+      "default": "Streamer",
+      "maxLength": 200
+    },
+    {
+      "key": "infoCooldown",
+      "type": "text",
+      "label": "Abklingzeit für alle ({seconds})",
+      "group": "Befehlsseite",
+      "default": "Pause danach: {seconds} s",
+      "maxLength": 200
+    },
+    {
+      "key": "infoUserCooldown",
+      "type": "text",
+      "label": "Abklingzeit pro Person ({seconds})",
+      "group": "Befehlsseite",
+      "default": "Pro Person: {seconds} s",
+      "maxLength": 200
+    },
+    {
+      "key": "infoBackground",
+      "type": "select",
+      "label": "Befehlsseite: Hintergrund",
+      "group": "Befehlsseite",
+      "default": "wiese",
+      "options": [
+        "wiese",
+        "creme"
+      ]
+    },
+    {
+      "key": "infoWidth",
+      "type": "number",
+      "label": "Befehlsseite: Breite der Spalte",
+      "group": "Befehlsseite",
+      "default": 900,
+      "min": 400,
+      "max": 1600,
+      "unit": "px"
+    },
+    {
       "key": "stingerFps",
       "type": "number",
       "label": "Bildrate (Bilder pro Sekunde)",
@@ -2326,13 +2892,29 @@
       "brb"
     ],
     "Ending": [
-      "ending"
+      "ending",
+      "stats"
     ],
     "Alerts": [
       "alerts"
     ],
     "Raid": [
       "alerts"
+    ],
+    "Chat": [
+      "chat"
+    ],
+    "Kamera-Rahmen": [
+      "cam"
+    ],
+    "Musik": [
+      "music"
+    ],
+    "Effekte": [
+      "fx"
+    ],
+    "Befehlsseite": [
+      "info"
     ],
     "Stinger": []
   },
