@@ -32,6 +32,7 @@ const ALERTS: &str = "Alerts";
 const RAID: &str = "Raid";
 const TOYS: [&str; 4] = ["ball", "knochen", "frisbee", "leckerli"];
 const STINGER: &str = "Stinger";
+const BANNER: &str = "Banner";
 const CHAT: &str = "Chat";
 const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
@@ -463,6 +464,25 @@ fn info() -> Vec<SettingField> {
     fields
 }
 
+fn clips() -> Vec<SettingField> {
+    vec![
+        number("stingerDuration", "Länge", STINGER, 2.4, 0.5, 5.0, S, Some(0.05)),
+        number("stingerCut", "Übergangspunkt", STINGER, 1.2, 0.1, 5.0, S, Some(0.05)),
+        number("stingerSweep", "Wischen: Dauer", STINGER, 0.82, 0.2, 3.0, S, Some(0.01)),
+        number("stingerPawSpacing", "Pfoten: Abstand (Pixel)", STINGER, 30.0, 12.0, 80.0, None, None),
+        number("stingerSlant", "Kante: Neigung", STINGER, 0.45, 0.0, 1.5, None, Some(0.05)),
+        number("stingerStep", "Kante: Stufenhöhe (Pixel)", STINGER, 6.0, 1.0, 30.0, None, None),
+        flag("stingerDog", "Hund läuft mit", STINGER, true),
+        flag("stingerBadge", "Plakette am Übergang", STINGER, true),
+        text("stingerText", "Name auf der Plakette ({dog}, {channel})", STINGER, "{dog}", Some(30)),
+        color("stingerCover", "Fläche", STINGER, "#fff6e6"),
+        text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", Some(40)),
+        text("bannerProfileText", "Profilbanner: Zeile", BANNER, "Willkommen im Rudel!", Some(80)),
+        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "OFFLINE", Some(40)),
+        text("bannerOfflineText", "Offline-Banner: Zeile ({dog})", BANNER, "{dog} schläft. Bis bald!", Some(80)),
+    ]
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     BTreeMap::from([
         (WORLD.to_owned(), vec![SceneName::Starting, SceneName::Brb]),
@@ -477,6 +497,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (FX.to_owned(), vec![SceneName::Fx]),
         (INFO_GROUP.to_owned(), vec![SceneName::Info]),
         (STINGER.to_owned(), vec![]),
+        (BANNER.to_owned(), vec![]),
     ])
 }
 
@@ -532,6 +553,7 @@ pub fn dogs() -> Theme {
         chat(),
         cam_music_fx(),
         info(),
+        clips(),
     ]
     .concat();
     let schema = ThemeSchema {

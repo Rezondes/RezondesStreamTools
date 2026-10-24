@@ -1,12 +1,68 @@
-// Render section of the Dogs theme: the clips (stinger and banners follow in PLAN-DOGS.md package 5, until then none)
-// and the panel template: a cream pixel box with an ink edge, the red pill with a paw and the title in the font.
-// Check: render.check.ts.
+// Render section of the Dogs theme: the clips (stinger, profile and offline banner as still pictures, drawn from the
+// pixel kit with the resolved settings) and the panel template: a cream pixel box with an ink edge, the red pill with a
+// paw and the title in the font. The drawing (stinger.ts, banners.ts) loads only in prepare, so the kit stays out of
+// the entry chunk; until then the clips draw plain cream. Check: render.check.ts.
 import { centeredTop, type PanelDesign, PANEL_START_HEIGHT, PANEL_WIDTH, rectLayer, textLayer } from "../../core/panels.ts";
 import type { RenderClip } from "../../core/renderClip.ts";
+import { STAGE } from "../../core/screens/screens.ts";
+import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
+import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
+import type * as BannerModule from "./banners.ts";
 import type { DogsValues } from "./settings.ts";
+import type * as StingerModule from "./stinger.ts";
 
-export const dogsClips = (): RenderClip[] => [];
+// fixed: the profile banner in canvas pixels (banners.ts PROFILE_SIZE); banners are one picture (the dashboard saves
+// their first frame as a PNG), duration and frame rate only fill the clip
+const PROFILE = { width: 1200, height: 480 };
+const STILL = 1;
+
+type Draw = (context: CanvasRenderingContext2D, time: number) => void;
+type Parts = { stinger: typeof StingerModule; banners: typeof BannerModule };
+
+// The drawing modules, loaded once by prepare
+let parts: Parts | null = null;
+const prepare = async () => {
+  parts ??= { stinger: await import("./stinger.ts"), banners: await import("./banners.ts") };
+};
+// The picture once prepare has loaded the drawing (built on its first frame), the stand-in before
+function clipDraw(build: (loaded: Parts) => Draw, standIn: Draw): Draw {
+  let picture: Draw | null = null;
+  return (context, time) => {
+    if (!parts) {
+      standIn(context, time);
+      return;
+    }
+    picture ??= build(parts);
+    picture(context, time);
+  };
+}
+const plain = (size: { width: number; height: number }, color: string): Draw => context => {
+  context.fillStyle = color;
+  context.fillRect(0, 0, size.width, size.height);
+};
+
+export function dogsClips(settings: SettingValues, login: string): RenderClip[] {
+  const values = settings as unknown as DogsValues;
+  const fill = (text: string) => fillTemplate(text, { channel: values.channelName, dog: values.dogName, login });
+  const font = `24px "${values.font}"`;
+  const banners = { feature: "banners", font, fps: STILL, duration: STILL, cut: null, prepare } as const;
+  const title = fill(values.bannerTitle);
+  return [
+    withStingerOptions({
+      name: "stinger", feature: "stinger", group: "Stinger", font, ...STAGE, fps: values.stingerFps, duration: values.stingerDuration, cut: values.stingerCut, prepare,
+      draw: clipDraw(loaded => loaded.stinger.makeStinger(loaded.stinger.stingerLookOf(values, fill(values.stingerText))), plain(STAGE, values.stingerCover)),
+    }, readStingerOptions(settings)),
+    {
+      ...banners, name: "profile", group: "Banner", ...PROFILE,
+      draw: clipDraw(loaded => loaded.banners.makeProfile(loaded.banners.bannerLookOf(values), { title, line: fill(values.bannerProfileText) }), plain(PROFILE, values.cream)),
+    },
+    {
+      ...banners, name: "offline", group: "Banner", ...STAGE,
+      draw: clipDraw(loaded => loaded.banners.makeOffline(loaded.banners.bannerLookOf(values), { title: fill(values.bannerOfflineTitle), line: fill(values.bannerOfflineText) }), plain(STAGE, values.night)),
+    },
+  ];
+}
 
 // fixed: the panel in panel pixels: edge 4 px, shadow 6 px below, the pill as a square on the left with a 3 x 3 paw
 const EDGE = 4;

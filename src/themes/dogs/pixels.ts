@@ -155,6 +155,30 @@ export function paintImage(grid: PixelGrid, palette: Palette): PixelImage {
   return image;
 }
 
+// Paints the painted pixels of image into target at (x, y), mirrored when flip (a dog facing left)
+export function pasteImage(target: PixelImage, image: PixelImage, x: number, y: number, flip = false) {
+  for (let row = 0; row < image.height; row++) {
+    for (let column = 0; column < image.width; column++) {
+      const color = image.colors[row * image.width + column];
+      if (color) setPixel(target, x + (flip ? image.width - 1 - column : column), y + row, color);
+    }
+  }
+}
+
+// Mixes the painted pixels of image into target at (x, y) by alpha (glow, darkness, a fading letter in a still);
+// an empty target pixel takes the color itself
+export function blendImage(target: PixelImage, image: PixelImage, x: number, y: number, alpha: number) {
+  for (let row = 0; row < image.height; row++) {
+    for (let column = 0; column < image.width; column++) {
+      const color = image.colors[row * image.width + column];
+      const [left, top] = [x + column, y + row];
+      if (!color || left < 0 || top < 0 || left >= target.width || top >= target.height) continue;
+      const below = target.colors[top * target.width + left];
+      setPixel(target, left, top, below ? mixHex(below, color, alpha) : color);
+    }
+  }
+}
+
 export type PixelRun = { x: number; y: number; width: number; color: string };
 
 // The image as runs of equal color per row (for SVG rects: one rect per run instead of one per pixel)

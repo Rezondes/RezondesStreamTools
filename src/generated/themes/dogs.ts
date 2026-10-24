@@ -338,4 +338,18 @@ export type DogsValues = {
   readonly stingerHold: number;
   readonly stingerEase: string;
   readonly stingerSize: string;
+  readonly stingerDuration: number;
+  readonly stingerCut: number;
+  readonly stingerSweep: number;
+  readonly stingerPawSpacing: number;
+  readonly stingerSlant: number;
+  readonly stingerStep: number;
+  readonly stingerDog: boolean;
+  readonly stingerBadge: boolean;
+  readonly stingerText: string;
+  readonly stingerCover: string;
+  readonly bannerTitle: string;
+  readonly bannerProfileText: string;
+  readonly bannerOfflineTitle: string;
+  readonly bannerOfflineText: string;
 };

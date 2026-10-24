@@ -27,6 +27,7 @@ const ALERTS = "Alerts";
 const RAID = "Raid";
 const TOYS = ["ball", "knochen", "frisbee", "leckerli"] as const;
 const STINGER = "Stinger";
+const BANNER = "Banner";
 const CHAT = "Chat";
 const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
@@ -288,6 +289,22 @@ const FIELDS = [
   ...withDefaults(INFO_FIELDS, { infoTitle: "Befehle im Rudel" }),
   choice("infoBackground", "Befehlsseite: Hintergrund", INFO_GROUP, "wiese", INFO_BACKGROUNDS),
   number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900, 400, 1600, "px"),
+
+  number("stingerDuration", "Länge", STINGER, 2.4, 0.5, 5, "s", 0.05),
+  number("stingerCut", "Übergangspunkt", STINGER, 1.2, 0.1, 5, "s", 0.05),
+  number("stingerSweep", "Wischen: Dauer", STINGER, 0.82, 0.2, 3, "s", 0.01),
+  number("stingerPawSpacing", "Pfoten: Abstand (Pixel)", STINGER, 30, 12, 80),
+  number("stingerSlant", "Kante: Neigung", STINGER, 0.45, 0, 1.5, undefined, 0.05),
+  number("stingerStep", "Kante: Stufenhöhe (Pixel)", STINGER, 6, 1, 30),
+  flag("stingerDog", "Hund läuft mit", STINGER, true),
+  flag("stingerBadge", "Plakette am Übergang", STINGER, true),
+  text("stingerText", "Name auf der Plakette ({dog}, {channel})", STINGER, "{dog}", 30),
+  color("stingerCover", "Fläche", STINGER, "#fff6e6"),
+
+  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", 40),
+  text("bannerProfileText", "Profilbanner: Zeile", BANNER, "Willkommen im Rudel!", 80),
+  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "OFFLINE", 40),
+  text("bannerOfflineText", "Offline-Banner: Zeile ({dog})", BANNER, "{dog} schläft. Bis bald!", 80),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -306,6 +323,7 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [INFO_GROUP]: ["info"],
   [STINGER]: [],
+  [BANNER]: [],
 } as const;
 
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });

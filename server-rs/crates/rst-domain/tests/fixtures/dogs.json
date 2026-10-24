@@ -2878,6 +2878,128 @@
         "1080p",
         "720p"
       ]
+    },
+    {
+      "key": "stingerDuration",
+      "type": "number",
+      "label": "Länge",
+      "group": "Stinger",
+      "default": 2.4,
+      "min": 0.5,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerCut",
+      "type": "number",
+      "label": "Übergangspunkt",
+      "group": "Stinger",
+      "default": 1.2,
+      "min": 0.1,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerSweep",
+      "type": "number",
+      "label": "Wischen: Dauer",
+      "group": "Stinger",
+      "default": 0.82,
+      "min": 0.2,
+      "max": 3,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "stingerPawSpacing",
+      "type": "number",
+      "label": "Pfoten: Abstand (Pixel)",
+      "group": "Stinger",
+      "default": 30,
+      "min": 12,
+      "max": 80
+    },
+    {
+      "key": "stingerSlant",
+      "type": "number",
+      "label": "Kante: Neigung",
+      "group": "Stinger",
+      "default": 0.45,
+      "min": 0,
+      "max": 1.5,
+      "step": 0.05
+    },
+    {
+      "key": "stingerStep",
+      "type": "number",
+      "label": "Kante: Stufenhöhe (Pixel)",
+      "group": "Stinger",
+      "default": 6,
+      "min": 1,
+      "max": 30
+    },
+    {
+      "key": "stingerDog",
+      "type": "boolean",
+      "label": "Hund läuft mit",
+      "group": "Stinger",
+      "default": true
+    },
+    {
+      "key": "stingerBadge",
+      "type": "boolean",
+      "label": "Plakette am Übergang",
+      "group": "Stinger",
+      "default": true
+    },
+    {
+      "key": "stingerText",
+      "type": "text",
+      "label": "Name auf der Plakette ({dog}, {channel})",
+      "group": "Stinger",
+      "default": "{dog}",
+      "maxLength": 30
+    },
+    {
+      "key": "stingerCover",
+      "type": "color",
+      "label": "Fläche",
+      "group": "Stinger",
+      "default": "#fff6e6"
+    },
+    {
+      "key": "bannerTitle",
+      "type": "text",
+      "label": "Titel ({channel})",
+      "group": "Banner",
+      "default": "{channel}",
+      "maxLength": 40
+    },
+    {
+      "key": "bannerProfileText",
+      "type": "text",
+      "label": "Profilbanner: Zeile",
+      "group": "Banner",
+      "default": "Willkommen im Rudel!",
+      "maxLength": 80
+    },
+    {
+      "key": "bannerOfflineTitle",
+      "type": "text",
+      "label": "Offline-Banner: Titel",
+      "group": "Banner",
+      "default": "OFFLINE",
+      "maxLength": 40
+    },
+    {
+      "key": "bannerOfflineText",
+      "type": "text",
+      "label": "Offline-Banner: Zeile ({dog})",
+      "group": "Banner",
+      "default": "{dog} schläft. Bis bald!",
+      "maxLength": 80
     }
   ],
   "groupScenes": {
@@ -2916,7 +3038,8 @@
     "Befehlsseite": [
       "info"
     ],
-    "Stinger": []
+    "Stinger": [],
+    "Banner": []
   },
   "personalize": {
     "neo": {

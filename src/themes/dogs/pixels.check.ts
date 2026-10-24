@@ -2,7 +2,7 @@
 // the top and right, shadow only at the bottom and left, only on coat areas; painting with a palette.
 // Run: node src/themes/dogs/pixels.check.ts
 import assert from "node:assert/strict";
-import { blankImage, covers, drawLine, EMPTY, fillShape, finish, keyAt, OUTLINE, paintGrid, paintImage, pixelGrid, RIM, rowRuns, setPixel, toneOf } from "./pixels.ts";
+import { blankImage, blendImage, covers, drawLine, EMPTY, fillShape, finish, keyAt, OUTLINE, paintGrid, paintImage, pasteImage, pixelGrid, RIM, rowRuns, setPixel, toneOf } from "./pixels.ts";
 
 // Kontur und Schattierung: an ellipse in an 8 x 8 grid gets a closed outline and rims only where they belong
 const grid = pixelGrid(8, 8);
@@ -65,5 +65,19 @@ for (const x of [0, 1, 3]) setPixel(striped, x, 0, "#111111");
 setPixel(striped, 4, 0, "#222222");
 setPixel(striped, 2, 1, "#111111");
 assert.deepEqual(rowRuns(striped), [{ x: 0, y: 0, width: 2, color: "#111111" }, { x: 3, y: 0, width: 1, color: "#111111" }, { x: 4, y: 0, width: 1, color: "#222222" }, { x: 2, y: 1, width: 1, color: "#111111" }]);
+
+// Paste and blend: a mirrored paste puts the left pixel on the right, empty pixels stay out; blending mixes by alpha
+const source = blankImage(2, 1);
+setPixel(source, 0, 0, "#000000");
+const pasted = blankImage(3, 1);
+pasteImage(pasted, source, 1, 0, true);
+assert.deepEqual(pasted.colors, [null, null, "#000000"]);
+const blended = blankImage(2, 1);
+setPixel(blended, 0, 0, "#ffffff");
+const white = blankImage(2, 1);
+white.colors.fill("#000000");
+blendImage(blended, white, 0, 0, 0.5);
+assert.deepEqual(blended.colors, ["#808080", "#000000"]);
+blendImage(blended, white, 5, 5, 1);
 
 console.log("dogs pixels ok");
