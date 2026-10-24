@@ -1,0 +1,122 @@
+[
+ {
+  "score": 1.746,
+  "z": 1.74,
+  "p": 0.002,
+  "verdict": "no match",
+  "closest": [
+   "a record scratch",
+   "a snare roll",
+   "a fast whoosh"
+  ],
+  "params": {
+   "count": 8.473868744056709,
+   "burst_len": 0.07,
+   "gap": 0.015,
+   "low": 756.7559377866677,
+   "high": 2500.0,
+   "shape": 0.5,
+   "nose": 1512.4249993593337,
+   "nose_bw": 258.4056638855637,
+   "nose_mix": 0.7745028671305041,
+   "room": 0.4,
+   "room_size": 0.05770949534136579
+  }
+ },
+ {
+  "score": 1.593,
+  "z": 1.59,
+  "p": 0.001,
+  "verdict": "no match",
+  "closest": [
+   "a record scratch",
+   "a snare roll",
+   "an uplifter sweep"
+  ],
+  "params": {
+   "count": 8.223469289736528,
+   "burst_len": 0.07,
+   "gap": 0.018272576476974008,
+   "low": 835.316087488339,
+   "high": 2500.0,
+   "shape": 0.5,
+   "nose": 1586.3337663776629,
+   "nose_bw": 275.9374053700656,
+   "nose_mix": 0.637957398732139,
+   "room": 0.3554149897585449,
+   "room_size": 0.05
+  }
+ },
+ {
+  "score": 1.58,
+  "z": 1.58,
+  "p": 0.0,
+  "verdict": "no match",
+  "closest": [
+   "a snare roll",
+   "a record scratch",
+   "crisp hi-hats"
+  ],
+  "params": {
+   "count": 8.797045107880159,
+   "burst_len": 0.07,
+   "gap": 0.015,
+   "low": 539.2151233979913,
+   "high": 5191.853622716236,
+   "shape": 0.5,
+   "nose": 1600.0,
+   "nose_bw": 539.435658757796,
+   "nose_mix": 0.9367736806304945,
+   "room": 0.3416492469573499,
+   "room_size": 0.14014770875718652
+  }
+ },
+ {
+  "score": 1.58,
+  "z": 1.58,
+  "p": 0.0,
+  "verdict": "no match",
+  "closest": [
+   "a record scratch",
+   "a snare roll",
+   "crisp hi-hats"
+  ],
+  "params": {
+   "count": 8.663321908806765,
+   "burst_len": 0.07,
+   "gap": 0.015771449488769237,
+   "low": 829.1648540860951,
+   "high": 2500.0,
+   "shape": 0.5,
+   "nose": 1440.9685538024862,
+   "nose_bw": 219.0816272353409,
+   "nose_mix": 0.6525997945919229,
+   "room": 0.3828062406253741,
+   "room_size": 0.05
+  }
+ },
+ {
+  "score": 1.51,
+  "z": 1.51,
+  "p": 0.0,
+  "verdict": "no match",
+  "closest": [
+   "a snare roll",
+   "a record scratch",
+   "crisp hi-hats"
+  ],
+  "params": {
+   "count": 8.780928676919421,
+   "burst_len": 0.07,
+   "gap": 0.015,
+   "low": 560.2507862971473,
+   "high": 5401.959843613685,
+   "shape": 0.5,
+   "nose": 1586.4051233659354,
+   "nose_bw": 534.373521425326,
+   "nose_mix": 0.8727543800883254,
+   "room": 0.313216827260716,
+   "room_size": 0.14376891963958946
+  }
+ }
+]

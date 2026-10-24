@@ -1,0 +1,391 @@
+[
+ {
+  "event": "starting/land",
+  "label": "Hund landet auf dem Kissen (je Rasse höher oder tiefer)",
+  "file": "starting-land.ogg",
+  "kb": 6.2,
+  "seconds": 0.26,
+  "heard": "0.26 s short transient (attack 15 ms, decays in 133 ms). Sounds most like: an error buzz (z +2.8), a wooden block hit (z +2.8), a snare hit (z +2.6) [plausible reading]. AudioSet: Sound effect 0.34, Clang 0.19, Music 0.08. peak -3.5 dBFS, brightness 780 Hz, bandwidth 6.5 kHz, mono.",
+  "layers": [
+   "ui_pop/soft",
+   "pro_tap/soft"
+  ]
+ },
+ {
+  "event": "starting/hop",
+  "label": "Marker hüpft zum nächsten Hund",
+  "file": "starting-hop.ogg",
+  "kb": 6.1,
+  "seconds": 0.23,
+  "heard": "0.23 s short transient (attack 0 ms, decays in 144 ms). Sounds most like: a snare hit (z +3.0), a wooden block hit (z +3.0), a punchy impact hit (z +2.4) [clear reading]. AudioSet tagger unsure (Zipper (clothing) 0.10, Speech 0.10, Sound effect 0.08). peak -1.0 dBFS, brightness 2.6 kHz, bandwidth 20.5 kHz, mono.",
+  "layers": [
+   "pro_pop/boop E5",
+   "swish/flick"
+  ]
+ },
+ {
+  "event": "starting/chosen",
+  "label": "Marker landet auf dem Hund, Herzen platzen",
+  "file": "starting-chosen.ogg",
+  "kb": 7.9,
+  "seconds": 0.43,
+  "heard": "0.43 s short one-shot, tonal, pitch ~206 Hz (Ab3) (attack 48 ms, decays in 246 ms). Sounds most like: a wooden block hit (z +3.1), a snare hit (z +2.9), a success chime (z +2.8) [clear reading]. Unvalidated hint: a snare roll (z +3.2). AudioSet tagger unsure (Ding 0.13, Sound effect 0.08, Coin (dropping) 0.07). peak -6.1 dBFS, -16.2 LUFS, brightness 1.3 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "mallet/flourish",
+   "drip/plink",
+   "drip/plink",
+   "drip/tiny"
+  ]
+ },
+ {
+  "event": "starting/card",
+  "label": "Karte 'Heute an meiner Seite' fährt ein",
+  "file": "starting-card.ogg",
+  "kb": 8.4,
+  "seconds": 0.41,
+  "heard": "0.41 s short one-shot (attack 99 ms, decays in 147 ms). Sounds most like: a success chime (z +3.0), a box lid closing (z +2.7), an enter key press (z +2.6) [clear reading]. AudioSet: Clang 0.25, Ding 0.19, Sound effect 0.09. peak -4.0 dBFS, -18.8 LUFS, brightness 1.9 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "swish/soft",
+   "ui_pop/wide",
+   "mallet/celesta G5"
+  ]
+ },
+ {
+  "event": "alert/run",
+  "label": "Hund rennt herein (Pfoten)",
+  "file": "alert-run.ogg",
+  "kb": 11.6,
+  "seconds": 0.76,
+  "heard": "0.76 s busy, 9.2 onsets/s, tonal, pitch ~129 Hz (C3) (attack 11 ms, decays in 258 ms). Sounds most like: a snare hit (z +3.2), a kick drum (z +2.7), a motorcycle revving (z +2.6) [clear reading]. Unvalidated hint: a snare roll (z +3.5). AudioSet: Percussion 0.35, Drum 0.25, Music 0.20. peak -6.2 dBFS, -16.8 LUFS, brightness 567 Hz, bandwidth 6.5 kHz, mono.",
+  "layers": [
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft"
+  ]
+ },
+ {
+  "event": "alert/toy-ball",
+  "label": "Ball fällt und hüpft",
+  "file": "alert-toy-ball.ogg",
+  "kb": 10.4,
+  "seconds": 0.71,
+  "heard": "0.71 s busy, 5.7 onsets/s (attack 15 ms, decays in 170 ms). Sounds most like: a snare hit (z +2.8), a fast whoosh (z +2.7), a balloon squeak (z +2.6) [plausible reading]. Unvalidated hint: a snare roll (z +3.5). AudioSet: Sound effect 0.33, Music 0.05, Snicker 0.05. peak -2.0 dBFS, -17.6 LUFS, brightness 1.6 kHz, bandwidth 10.2 kHz, mono.",
+  "layers": [
+   "drip/bloop",
+   "drip/bloop",
+   "drip/bloop",
+   "drip/bloop"
+  ]
+ },
+ {
+  "event": "alert/toy-bone",
+  "label": "Knochen fällt und hüpft",
+  "file": "alert-toy-bone.ogg",
+  "kb": 9.0,
+  "seconds": 0.51,
+  "heard": "0.51 s short transient (attack 4 ms, decays in 81 ms). Sounds most like: a wooden block hit (z +4.8), a punchy impact hit (z +3.0), a wooden knock (z +2.9) [clear reading]. Character: dry close. AudioSet tagger unsure (Chopping (food) 0.17, Knock 0.07). peak -1.0 dBFS, -20.7 LUFS, brightness 1.1 kHz, bandwidth 12.9 kHz, mono.",
+  "layers": [
+   "knock/wood",
+   "knock/wood",
+   "knock/wood"
+  ]
+ },
+ {
+  "event": "alert/toy-frisbee",
+  "label": "Frisbee landet",
+  "file": "alert-toy-frisbee.ogg",
+  "kb": 8.4,
+  "seconds": 0.44,
+  "heard": "0.44 s short swell (attack 195 ms, decays in 241 ms). Sounds most like: a fast whoosh (z +2.8), a wooden block hit (z +2.4), a punchy impact hit (z +2.3) [plausible reading]. AudioSet tagger unsure (Tap 0.11, Sound effect 0.09, Crack 0.06). peak -1.0 dBFS, -19.4 LUFS, brightness 1.9 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "swish/zing",
+   "knock/plastic",
+   "knock/plastic"
+  ]
+ },
+ {
+  "event": "alert/toy-treat",
+  "label": "Leckerli fällt",
+  "file": "alert-toy-treat.ogg",
+  "kb": 8.2,
+  "seconds": 0.49,
+  "heard": "0.49 s short transient (attack 8 ms, decays in 108 ms). Sounds most like: a snare hit (z +2.9), a wooden block hit (z +2.9), a punchy impact hit (z +2.4) [plausible reading]. AudioSet: Sound effect 0.31, Knock 0.07, Music 0.07. peak -1.0 dBFS, -16.4 LUFS, brightness 1.2 kHz, bandwidth 8.1 kHz, mono.",
+  "layers": [
+   "knock/desk",
+   "knock/desk"
+  ]
+ },
+ {
+  "event": "alert/bark-small",
+  "label": "Wuff! klein (Mops, Dackel, Corgi)",
+  "file": "alert-bark-small.ogg",
+  "kb": 10.5,
+  "seconds": 0.73,
+  "heard": "0.73 s short one-shot (attack 40 ms, decays in 243 ms). Sounds most like: a dog barking (z +4.1), a phone vibration buzz (z +2.5), a cow mooing (z +2.5) [clear reading]. AudioSet tagger unsure (Sound effect 0.11, Zipper (clothing) 0.11, Caw 0.10). peak -6.3 dBFS, -17.4 LUFS, brightness 1.9 kHz, bandwidth 12.9 kHz, mono.",
+  "layers": [
+   "voice:bark-small",
+   "voice:bark-small 1.05"
+  ]
+ },
+ {
+  "event": "alert/bark-medium",
+  "label": "Wuff! mittel (Shiba)",
+  "file": "alert-bark-medium.ogg",
+  "kb": 11.0,
+  "seconds": 0.76,
+  "heard": "0.76 s short one-shot (attack 37 ms, decays in 131 ms). Sounds most like: a dog barking (z +4.0), a cow mooing (z +2.5), a record scratch (z +2.1) [clear reading]. AudioSet tagger unsure (Animal 0.15, Bark 0.13, Dog 0.12). peak -9.7 dBFS, -19.0 LUFS, brightness 2.4 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "voice:bark-medium",
+   "voice:bark-big"
+  ]
+ },
+ {
+  "event": "alert/bark-big",
+  "label": "Wuff! gross (Labrador, Dalmatiner)",
+  "file": "alert-bark-big.ogg",
+  "kb": 11.1,
+  "seconds": 0.79,
+  "heard": "0.79 s short one-shot (attack 46 ms, decays in 142 ms). Sounds most like: a dog barking (z +3.5), a cow mooing (z +2.6), a record scratch (z +2.5) [clear reading]. AudioSet tagger unsure (Sound effect 0.12, Zipper (clothing) 0.10). peak -10.1 dBFS, -19.1 LUFS, brightness 2.3 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "voice:bark-big",
+   "voice:bark-big 1.04"
+  ]
+ },
+ {
+  "event": "alert/card",
+  "label": "Karte springt ein",
+  "file": "alert-card.ogg",
+  "kb": 7.3,
+  "seconds": 0.39,
+  "heard": "0.39 s short one-shot (attack 38 ms, decays in 249 ms). Sounds most like: a success chime (z +3.4), a doorbell (z +2.8), a triangle hit (z +2.5) [clear reading]. AudioSet: Clang 0.22, Ding 0.18, Music 0.05. peak -2.4 dBFS, brightness 1.9 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "ui_pop/wide",
+   "mallet/glock C6",
+   "mallet/glock G6"
+  ]
+ },
+ {
+  "event": "alert/leave",
+  "label": "Spielzeug aufheben, hinausrennen",
+  "file": "alert-leave.ogg",
+  "kb": 10.6,
+  "seconds": 0.68,
+  "heard": "0.68 s busy, 8.9 onsets/s (attack 7 ms, decays in 124 ms). Sounds most like: a fast whoosh (z +3.3), a snare hit (z +3.2), a whip pan transition (z +2.8) [clear reading]. Unvalidated hint: a snare roll (z +3.9). AudioSet: Sound effect 0.28, Bang 0.09, Music 0.08. peak -3.6 dBFS, -16.3 LUFS, brightness 1.3 kHz, bandwidth 12.9 kHz, mono.",
+  "layers": [
+   "drip/tiny",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "whoosh_fast/tight"
+  ]
+ },
+ {
+  "event": "alert/raid",
+  "label": "Raid: Rudel trappelt vorbei, Bellen im Chor",
+  "file": "alert-raid.ogg",
+  "kb": 17.5,
+  "seconds": 1.38,
+  "heard": "1.38 s busy, 2.9 onsets/s (attack 159 ms, decays in 674 ms). Sounds most like: a dog barking (z +5.6), a cow mooing (z +3.6), a motorcycle revving (z +2.6) [clear reading]. AudioSet: Zipper (clothing) 0.56. peak -7.6 dBFS, -16.7 LUFS, brightness 1.2 kHz, bandwidth 16.3 kHz, noise floor -36 dBFS, mono.",
+  "layers": [
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "voice:bark-small",
+   "voice:bark-big",
+   "voice:bark-medium",
+   "voice:bark-small 1.08"
+  ]
+ },
+ {
+  "event": "brb/sniff",
+  "label": "Schnüffeln beim Gassi",
+  "file": "brb-sniff.ogg",
+  "kb": 11.3,
+  "seconds": 0.83,
+  "heard": "0.83 s busy, 9.6 onsets/s (attack 104 ms, decays in 92 ms). Sounds most like: a record scratch (z +3.6), a fast whoosh (z +2.7), a stick swung fast through the air (z +2.4) [clear reading]. Unvalidated hint: a snare roll (z +3.5). AudioSet tagger unsure (Quack 0.16, Scratch 0.13, Sound effect 0.08). peak -6.5 dBFS, -16.8 LUFS, brightness 2.2 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "voice:sniff"
+  ]
+ },
+ {
+  "event": "brb/steps",
+  "label": "Leise Schritte (optional)",
+  "file": "brb-steps.ogg",
+  "kb": 13.2,
+  "seconds": 1.04,
+  "heard": "1.04 s busy, 5.8 onsets/s, tonal, pitch ~130 Hz (C3) (attack 11 ms, decays in 89 ms). Sounds most like: a kick drum (z +3.6), a wooden block hit (z +3.5), a punchy impact hit (z +3.2) [clear reading]. Unvalidated hint: a punchy kick drum pattern (z +3.1). AudioSet: Knock 0.47, Music 0.13, Wood block 0.09. peak -3.1 dBFS, -16.7 LUFS, brightness 550 Hz, bandwidth 6.5 kHz, noise floor -45 dBFS, mono.",
+  "layers": [
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft",
+   "pro_tap/soft"
+  ]
+ },
+ {
+  "event": "ending/lie",
+  "label": "Hund legt sich ins Körbchen",
+  "file": "ending-lie.ogg",
+  "kb": 12.1,
+  "seconds": 0.74,
+  "heard": "0.74 s busy, 6.8 onsets/s (attack 172 ms, decays in 187 ms). Sounds most like: a punchy impact hit (z +3.7), a fast whoosh (z +3.0), a heavy thud (z +2.8) [clear reading]. Character: punchy. AudioSet tagger unsure (Breaking 0.08, Sound effect 0.05). peak -2.9 dBFS, -18.1 LUFS, brightness 2.2 kHz, bandwidth 12.9 kHz, mono.",
+  "layers": [
+   "swipe/velvet",
+   "knock/desk",
+   "pro_tap/soft"
+  ]
+ },
+ {
+  "event": "ending/lamp",
+  "label": "Lampe wird gedimmt",
+  "file": "ending-lamp.ogg",
+  "kb": 5.7,
+  "seconds": 0.17,
+  "heard": "0.17 s short transient (attack 0 ms, decays in 83 ms). Sounds most like: lego bricks clicking (z +3.3), a can opening (z +2.8), dominoes falling (z +2.7) [clear reading]. AudioSet tagger unsure (Crack 0.09, Finger snapping 0.08). peak -1.0 dBFS, brightness 5.1 kHz, bandwidth 20.5 kHz, mono.",
+  "layers": [
+   "toggle/off"
+  ]
+ },
+ {
+  "event": "ending/snore",
+  "label": "Schnarchen (leise, als Schleife)",
+  "file": "ending-snore.ogg",
+  "kb": 16.0,
+  "seconds": 1.85,
+  "heard": "1.85 s short swell, tonal, pitch ~302 Hz (D4) (attack 277 ms, decays in 535 ms). Sounds most like: a fast whoosh (z +3.2), a deep cinematic whoosh (z +2.9), a swoosh passing by (z +2.7) [clear reading]. AudioSet: Whoosh, swoosh, swish 0.50, Sound effect 0.32. peak -2.7 dBFS, -16.9 LUFS, brightness 212 Hz, bandwidth 1.3 kHz, noise floor -52 dBFS, mono.",
+  "layers": [
+   "voice:snore"
+  ]
+ },
+ {
+  "event": "stinger/in",
+  "label": "Fläche wischt herein, Pfoten ploppen",
+  "file": "stinger-in.ogg",
+  "kb": 11.8,
+  "seconds": 0.75,
+  "heard": "0.75 s busy, 10.6 onsets/s (attack 154 ms, decays in 228 ms). Sounds most like: a fast whoosh (z +3.0), a punchy impact hit (z +2.6), a balloon squeak (z +2.5) [clear reading]. Unvalidated hint: a snare roll (z +3.2). AudioSet tagger unsure (Sound effect 0.09, Percussion 0.06, Drum 0.05). peak -3.2 dBFS, -16.7 LUFS, brightness 1.9 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "swipe/glide",
+   "pro_pop/thup",
+   "pro_pop/thup",
+   "pro_pop/thup",
+   "pro_pop/thup",
+   "pro_pop/thup",
+   "pro_pop/thup",
+   "pro_pop/thup",
+   "pro_pop/thup"
+  ]
+ },
+ {
+  "event": "stinger/badge",
+  "label": "Plakette mit Namen am Schnitt",
+  "file": "stinger-badge.ogg",
+  "kb": 9.3,
+  "seconds": 0.74,
+  "heard": "0.74 s busy, 5.4 onsets/s, tonal, pitch ~590 Hz (D5) (attack 116 ms, decays in 537 ms). Sounds most like: a success chime (z +4.4), a magic sparkle chime (z +3.1), a notification ding (z +2.5) [clear reading]. AudioSet: Throat clearing 0.25, Music 0.15. peak -9.6 dBFS, -16.7 LUFS, brightness 2.6 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "mallet/up4",
+   "voice:whine"
+  ]
+ },
+ {
+  "event": "stinger/out",
+  "label": "Fläche rollt weg",
+  "file": "stinger-out.ogg",
+  "kb": 10.3,
+  "seconds": 0.65,
+  "heard": "0.65 s busy, 9.2 onsets/s (attack 104 ms, decays in 389 ms). Sounds most like: an error buzz (z +2.5), a record scratch (z +2.3), a tape stop slowing down (z +2.3) [plausible reading]. Unvalidated hint: a snare roll (z +3.8). AudioSet: Sound effect 0.22. peak -2.5 dBFS, -17.9 LUFS, brightness 3.2 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "whoosh_fast/whip",
+   "ui_pop/fall"
+  ]
+ },
+ {
+  "event": "minimes/bark",
+  "label": "Minime bellt",
+  "file": "minimes-bark.ogg",
+  "kb": 7.8,
+  "seconds": 0.45,
+  "heard": "0.45 s short one-shot (attack 40 ms, decays in 243 ms). Sounds most like: a dog barking (z +4.5), a snare hit (z +2.7), a cow mooing (z +2.7) [clear reading]. AudioSet tagger unsure (Zipper (clothing) 0.16, Caw 0.08, Animal 0.08). peak -7.2 dBFS, -17.6 LUFS, brightness 1.9 kHz, bandwidth 12.9 kHz, mono.",
+  "layers": [
+   "voice:bark-small"
+  ]
+ },
+ {
+  "event": "minimes/sniff",
+  "label": "Minime schnüffelt",
+  "file": "minimes-sniff.ogg",
+  "kb": 11.3,
+  "seconds": 0.83,
+  "heard": "0.83 s busy, 9.6 onsets/s (attack 104 ms, decays in 92 ms). Sounds most like: a record scratch (z +3.6), a fast whoosh (z +2.7), a stick swung fast through the air (z +2.4) [clear reading]. Unvalidated hint: a snare roll (z +3.5). AudioSet tagger unsure (Quack 0.16, Scratch 0.13, Sound effect 0.08). peak -6.5 dBFS, -16.8 LUFS, brightness 2.2 kHz, bandwidth 16.3 kHz, mono.",
+  "layers": [
+   "voice:sniff"
+  ]
+ },
+ {
+  "event": "minimes/wag",
+  "label": "Minime wedelt (Chat)",
+  "file": "minimes-wag.ogg",
+  "kb": 10.0,
+  "seconds": 0.55,
+  "heard": "0.55 s short one-shot (attack 85 ms, decays in 331 ms). Sounds most like: cloth whipping through the air (z +3.9), a fast whoosh (z +3.8), a stick swung fast through the air (z +3.1) [clear reading]. AudioSet tagger unsure (Thunk 0.06, Slam 0.05). peak -2.3 dBFS, -17.9 LUFS, brightness 1.8 kHz, bandwidth 20.5 kHz, mono.",
+  "layers": [
+   "swish/soft",
+   "swish/soft"
+  ]
+ }
+]

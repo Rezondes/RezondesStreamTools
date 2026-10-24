@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Dogs: Pixel BRB</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Shared look of the pixel scenes: hard pixel canvas, stepped pixel boxes, pixel font. */
+:root { --ink: #2e1d14; --cream: #fff6e6; --brown: #4a3426; --muted: #7a5a46; --collar: #c94a3a; --ball: #ffd23f; --shade: rgba(46,29,20,.28); }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; overflow: hidden; }
+canvas.px { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; image-rendering: pixelated; }
+.ui { position: absolute; font-family: 'Pixelify Sans', monospace; color: var(--brown); }
+/* stepped pixel border, 5px = one canvas pixel */
+.box { background: var(--cream);
+  box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #e9d2bd, inset 0 5px 0 0 #ffffff, 0 15px 0 0 var(--shade); }
+.box.red { background: var(--collar); color: #fff; box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #9e3528, inset 0 5px 0 0 #e2735f, 0 15px 0 0 var(--shade); }
+.pill { display: inline-flex; gap: 12px; align-items: center; font: 600 26px 'Pixelify Sans'; letter-spacing: 3px; padding: 8px 20px 10px; }
+.pill i { width: 25px; height: 25px; display: inline-block; background: currentColor;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M1 0h1v1H1zM3 0h1v1H3zM0 1h1v1H0zM4 1h1v1H4zM1 3h3v2H1zM2 2h1v1H2z"/></svg>') center / contain no-repeat; }
+.title { font: 700 100px/1 'Pixelify Sans'; color: var(--cream); text-shadow: 5px 0 var(--ink), -5px 0 var(--ink), 0 5px var(--ink), 0 -5px var(--ink), 5px 5px var(--ink), -5px 5px var(--ink), 5px -5px var(--ink), -5px -5px var(--ink), 0 15px var(--shade); }
+.sub { font: 600 34px 'Pixelify Sans'; color: var(--brown); }
+.lbl { font: 600 22px 'Pixelify Sans'; letter-spacing: 3px; color: var(--muted); }
+.val { font: 700 72px/1 'Pixelify Sans'; font-variant-numeric: tabular-nums; }
+.bubble { position: absolute; transform-origin: 0 100%; font: 700 46px 'Pixelify Sans'; padding: 6px 22px 10px; white-space: nowrap; }
+.bubble::after { content: ''; position: absolute; left: 20px; bottom: -20px; width: 15px; height: 15px; background: var(--cream); box-shadow: 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink); }
+.tagp { position: absolute; transform: translate(-50%, 0); padding: 2px 12px 5px; text-align: center; font: 600 22px 'Pixelify Sans'; white-space: nowrap; }
+.tagp small { display: block; font: 500 16px 'Pixelify Sans'; color: var(--muted); }
+</style>
+<style>
+  .card { left: 85px; top: 70px; padding: 24px 40px 30px 30px; }
+  .card .title { font-size: 84px; margin-top: 18px; }
+  .card .sub { margin-top: 10px; color: var(--muted); }
+  .stats { right: 85px; top: 70px; display: flex; gap: 30px; }
+  .stat { padding: 16px 26px 22px; }
+  .stat .val { margin-top: 8px; color: var(--collar); }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<div id="stage" style="background:#bfe6ff">
+  <div class="ui card box"><div class="pill box red"><i></i>GASSI-PAUSE</div>
+    <div class="title">Bin gleich zurück!</div><div class="sub" id="sub">Bello und ich drehen eine Runde.</div></div>
+  <div class="ui stats">
+    <div class="stat box"><div class="lbl">PAUSE SEIT</div><div class="val" id="pause">00:00</div></div>
+    <div class="stat box"><div class="lbl">SCHRITTE</div><div class="val" id="steps">0</div></div>
+  </div>
+  <div class="ui bubble box" id="bubble">Schnüff!</div>
+</div>
+<script type="module">
+import { fitStage, Q, clock, seg, smooth, elasticOut, hash } from './common.js';
+import { BREED_IDS, BREEDS, makeDog } from './pixeldogs.js';
+import { pixelCanvas, place, PW, PH, rect, sprite, SPR, PAL, sky, cloud, hill, tree, fence, meadow, INK } from './pxworld.js';
+
+const stage = document.getElementById('stage');
+fitStage(stage);
+const $ = (id) => document.getElementById(id);
+const ctx = pixelCanvas(stage);
+
+const dogId = BREED_IDS.includes(Q.get('dog')) ? Q.get('dog') : 'corgi';
+const coatId = Q.get('coat') ?? Object.keys(BREEDS[dogId].coats)[0];
+$('sub').textContent = `${Q.get('name') ?? 'Bello'} und ich drehen eine Runde.`;
+const dog = makeDog(dogId, coatId);
+const GROUND = 198, X = 200;
+const yDog = GROUND - dog.h + 2;
+
+// walking with stops: distance as a closed-form function of time (period P: walk, slow down, sniff, start again)
+const P = 9, SPEED = 24, PER = 6.5;
+function dist(t) {
+  const n = Math.floor(t / P), p = t - n * P;
+  let d;
+  if (p < 6) d = p;
+  else if (p < 6.5) { const u = p - 6; d = 6 + u - u * u; }
+  else if (p < 8.5) d = 6.25;
+  else { const u = p - 8.5; d = 6.25 + u * u; }
+  return (n * PER + d) * SPEED;
+}
+const sniffing = (t) => { const p = t % P; return p > 6.4 && p < 8.6; };
+// wrap a scrolling x over a span
+const wrap = (x, span) => ((x % span) + span) % span;
+
+function leash(x0, y0, x1, y1, sag) {
+  const n = Math.ceil(Math.hypot(x1 - x0, y1 - y0));
+  const at = (i) => { const k = i / n; return [x0 + (x1 - x0) * k, y0 + (y1 - y0) * k + Math.sin(k * Math.PI) * sag]; };
+  for (let i = 0; i <= n; i++) { const [x, y] = at(i); rect(ctx, x, y - 1, 1, 3, INK); }
+  for (let i = 0; i <= n; i++) { const [x, y] = at(i); rect(ctx, x, y, 1, 1, '#c94a3a'); }
+}
+
+const now = clock();
+function frame() {
+  const t = now();
+  const off = dist(t), moving = !sniffing(t);
+  // world, far to near
+  sky(ctx, '#9fd6ff', '#e3f5ff', 150, 7);
+  for (let i = 0; i < 6; i++) cloud(ctx, wrap(i * 80 - off * 0.05 + t * 3, PW + 80) - 50, 66 + (i % 3) * 14, i % 2 ? 1 : 0.8);
+  for (let i = 0; i < 4; i++) hill(ctx, wrap(i * 130 - off * 0.15, PW + 200) - 100, 151, 90 + (i % 2) * 30, 22 + (i % 3) * 6, ['#93d26e', '#86c862', '#8fcf6a'][i % 3]);
+  for (let i = 0; i < 5; i++) tree(ctx, wrap(i * 96 + hash(i, 3) * 30 - off * 0.45, PW + 100) - 50, 150, 0.8 + hash(i, 4) * 0.3, i);
+  meadow(ctx, 150, off * 0.8, 50);
+  fence(ctx, 140, off * 0.8);
+  // path
+  rect(ctx, 0, 186, PW, 20, '#e3c49a'); rect(ctx, 0, 186, PW, 1, '#c9a678'); rect(ctx, 0, 205, PW, 1, '#c9a678');
+  for (let i = 0; i < 24; i++) rect(ctx, wrap(i * 23 + hash(i, 6) * 12 - off, PW + 20) - 10, 189 + hash(i, 7) * 14, 2, 1, '#c9a678');
+  rect(ctx, 0, 206, PW, PH - 206, '#86c45f');
+
+  // leash from the collar to the walker outside the frame, behind the dog
+  leash(X + dog.tag[0] - 2, yDog + dog.tag[1] - 4, PW + 2, 112 + Math.sin(t * 2) * 1.5, moving ? 8 : 16);
+  dog.draw(ctx, X, yDog, { t, mode: moving ? 'walk' : 'stand', wagSpeed: moving ? 12 : 6 });
+
+  // butterfly circling the head
+  const [hx, hy] = [X + dog.head[0], yDog + dog.head[1]];
+  sprite(ctx, hx + 18 + Math.sin(t * 0.9) * 26, hy - 18 + Math.sin(t * 1.7) * 8, Math.floor(t * 8) % 2 ? SPR.fly1 : SPR.fly2, PAL);
+
+  $('pause').textContent = `${String(Math.floor(t / 60)).padStart(2, '0')}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+  $('steps').textContent = Math.floor(off / 3);
+  place($('bubble'), hx + 10, hy - 2);
+  const p = t % P;
+  $('bubble').style.transform = `translateY(-100%) scale(${elasticOut(seg(p, 6.6, 7.1)) * (1 - smooth(seg(p, 8.2, 8.5)))})`;
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

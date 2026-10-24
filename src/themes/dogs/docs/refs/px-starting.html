@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Dogs: Pixel Starting</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Shared look of the pixel scenes: hard pixel canvas, stepped pixel boxes, pixel font. */
+:root { --ink: #2e1d14; --cream: #fff6e6; --brown: #4a3426; --muted: #7a5a46; --collar: #c94a3a; --ball: #ffd23f; --shade: rgba(46,29,20,.28); }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; overflow: hidden; }
+canvas.px { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; image-rendering: pixelated; }
+.ui { position: absolute; font-family: 'Pixelify Sans', monospace; color: var(--brown); }
+/* stepped pixel border, 5px = one canvas pixel */
+.box { background: var(--cream);
+  box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #e9d2bd, inset 0 5px 0 0 #ffffff, 0 15px 0 0 var(--shade); }
+.box.red { background: var(--collar); color: #fff; box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #9e3528, inset 0 5px 0 0 #e2735f, 0 15px 0 0 var(--shade); }
+.pill { display: inline-flex; gap: 12px; align-items: center; font: 600 26px 'Pixelify Sans'; letter-spacing: 3px; padding: 8px 20px 10px; }
+.pill i { width: 25px; height: 25px; display: inline-block; background: currentColor;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M1 0h1v1H1zM3 0h1v1H3zM0 1h1v1H0zM4 1h1v1H4zM1 3h3v2H1zM2 2h1v1H2z"/></svg>') center / contain no-repeat; }
+.title { font: 700 100px/1 'Pixelify Sans'; color: var(--cream); text-shadow: 5px 0 var(--ink), -5px 0 var(--ink), 0 5px var(--ink), 0 -5px var(--ink), 5px 5px var(--ink), -5px 5px var(--ink), 5px -5px var(--ink), -5px -5px var(--ink), 0 15px var(--shade); }
+.sub { font: 600 34px 'Pixelify Sans'; color: var(--brown); }
+.lbl { font: 600 22px 'Pixelify Sans'; letter-spacing: 3px; color: var(--muted); }
+.val { font: 700 72px/1 'Pixelify Sans'; font-variant-numeric: tabular-nums; }
+.bubble { position: absolute; transform-origin: 0 100%; font: 700 46px 'Pixelify Sans'; padding: 6px 22px 10px; white-space: nowrap; }
+.bubble::after { content: ''; position: absolute; left: 20px; bottom: -20px; width: 15px; height: 15px; background: var(--cream); box-shadow: 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink); }
+.tagp { position: absolute; transform: translate(-50%, 0); padding: 2px 12px 5px; text-align: center; font: 600 22px 'Pixelify Sans'; white-space: nowrap; }
+.tagp small { display: block; font: 500 16px 'Pixelify Sans'; color: var(--muted); }
+</style>
+<style>
+  .over { left: 50%; top: 30px; transform: translateX(-50%); }
+  .title { left: 0; right: 0; top: 80px; text-align: center; }
+  .sub { left: 0; right: 0; top: 200px; text-align: center; }
+  .count { left: 90px; bottom: 70px; padding: 16px 28px 22px; }
+  .count .val { margin-top: 8px; padding: 8px 22px 12px; }
+  .card { right: 90px; bottom: 70px; padding: 18px 30px 22px 22px; display: flex; gap: 22px; align-items: center; }
+  .card .badge { width: 90px; height: 90px; display: grid; place-items: center; background: var(--ball); }
+  .card .badge i { width: 50px; height: 50px; color: var(--brown); }
+  .card .name { font: 700 66px/1.05 'Pixelify Sans'; color: var(--collar); }
+  .card .breed { font: 600 26px 'Pixelify Sans'; }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<div id="stage" style="background:#bfe6ff">
+  <div class="ui over box red pill" id="over"><i></i>RUDEL-STREAM</div>
+  <div class="ui title" id="title">Gleich geht's los!</div>
+  <div class="ui sub" id="sub">Wer begleitet uns heute?</div>
+  <div class="ui count box" id="count"><div class="lbl">LOS GEHT'S IN</div><div class="val box red" id="cval">05:00</div></div>
+  <div class="ui card box" id="card"><div class="badge box pill"><i></i></div>
+    <div><div class="lbl">HEUTE AN MEINER SEITE</div><div class="name" id="cname">Bello</div><div class="breed" id="cbreed">Corgi</div></div></div>
+  <div class="ui bubble box" id="bubble">Wuff!</div>
+</div>
+<script type="module">
+import { fitStage, Q, clock, seg, lerp, smooth, easeOut, easeInOut, backOut, elasticOut, clamp } from './common.js';
+import { BREED_IDS, BREEDS, makeDog, coatOf } from './pixeldogs.js';
+import { pixelCanvas, place, PW, PX, rect, odisc, sprite, SPR, PAL, sky, cloud, hill, tree, fence, meadow, cushion, INK } from './pxworld.js';
+
+const stage = document.getElementById('stage');
+fitStage(stage);
+const $ = (id) => document.getElementById(id);
+const ctx = pixelCanvas(stage);
+
+const chosenId = BREED_IDS.includes(Q.get('dog')) ? Q.get('dog') : 'corgi';
+const chosenCoat = Q.get('coat') ?? Object.keys(BREEDS[chosenId].coats)[0];
+const chosen = BREED_IDS.indexOf(chosenId);
+$('cname').textContent = Q.get('name') ?? 'Bello';
+$('cbreed').textContent = `${BREEDS[chosenId].name} · ${coatOf(chosenId, chosenCoat).name}`;
+
+// --- dogs in a row on cushions, the chosen one walks to the rug in front ---
+const ROW = 150, FRONT = 202, MARGIN = 12;
+const dogs = BREED_IDS.map((id, i) => makeDog(id, i === chosen ? chosenCoat : Object.keys(BREEDS[id].coats)[0]));
+const gap = (PW - 2 * MARGIN - dogs.reduce((s, d) => s + d.w, 0)) / (dogs.length - 1);
+let cursor = MARGIN;
+const xs = dogs.map((d) => { const x = Math.round(cursor); cursor += d.w + gap; return x; });
+const yOn = (d, ground) => ground - d.h + 2;
+const cushionCols = ['#bfe8d4', '#d8ccff', '#ffd2b8', '#bfe0ff', '#fff0a8', '#ffc9d9'];
+const tags = dogs.map((d, i) => {
+  const el = document.createElement('div');
+  el.className = 'ui tagp box';
+  el.innerHTML = `${BREEDS[BREED_IDS[i]].name}<small>${d.coat.name}</small>`;
+  stage.appendChild(el);
+  place(el, xs[i] + d.w / 2, ROW + 6);
+  return el;
+});
+
+// --- timeline ---
+const HOP = 0.45, T_MARK = 2.6;
+const order = [0, 1, 2, 3, 4, 5];
+for (let k = 4; k >= chosen; k--) order.push(k);
+if (chosen === 5) order.push(5);
+const T_LAND = T_MARK + (order.length - 1) * HOP;
+const T_UP = T_LAND + 0.4, T_WALK = T_UP + 0.3;
+const cd = dogs[chosen];
+const FX = Math.round(PW / 2 - cd.w / 2);
+const T_ARRIVE = T_WALK + Math.max(1.2, Math.hypot(FX - xs[chosen], FRONT - ROW) / 48);
+const T_BARK = T_ARRIVE + 0.5;
+
+function nearness(i, t) {
+  if (t < T_MARK || t > T_LAND + 0.4) return 0;
+  let best = 0;
+  order.forEach((o, k) => { if (o === i) best = Math.max(best, 1 - clamp(Math.abs(t - (T_MARK + k * HOP)) / (HOP * 0.9))); });
+  return smooth(best);
+}
+// where each dog stands at time t, and how
+function pose(i, t) {
+  const d = dogs[i];
+  const drop = (1 - backOut(seg(t, 0.4 + i * 0.2, 0.9 + i * 0.2), 2.2)) * 60;
+  let x = xs[i], y = yOn(d, ROW) - drop, mode = 'stand', flip = false, wagSpeed = 9;
+  const near = nearness(i, t);
+  if (near > 0.7) { mode = 'bark'; wagSpeed = 18; }
+  if (i === chosen && t >= T_LAND) {
+    wagSpeed = 16;
+    if (t < T_UP) y -= Math.round(Math.sin(seg(t, T_LAND, T_UP) * Math.PI) * 8);
+    const k = easeInOut(seg(t, T_WALK, T_ARRIVE));
+    x = lerp(xs[i], FX, k);
+    y = lerp(yOn(d, ROW), yOn(d, FRONT), k);
+    if (t > T_WALK && t < T_ARRIVE) { mode = 'walk'; flip = FX < xs[i]; }
+    const loopK = Math.floor((t - T_BARK) / 7);
+    const barking = (b0) => t > b0 && t < b0 + 0.7;
+    if (barking(T_BARK) || (t > T_BARK && barking(T_BARK + 7 * loopK + 6.3))) mode = 'bark';
+  }
+  return { x: Math.round(x), y: Math.round(y), mode, flip, wagSpeed, near };
+}
+const headOf = (i, p) => [p.x + (p.flip ? dogs[i].w - 1 - dogs[i].head[0] : dogs[i].head[0]), p.y + dogs[i].head[1]];
+
+function marker(x, y, s) {
+  if (s <= 0.05) return;
+  const r = Math.max(1, Math.round(6 * s));
+  for (let i = 0; i < 4; i++) { rect(ctx, x - (4 - i), y + r + i, 2 * (4 - i) + 1, 1, INK); rect(ctx, x - (3 - i), y + r + i, 2 * (3 - i) + 1, 1, '#c94a3a'); }
+  odisc(ctx, x, y, r, r, '#c94a3a');
+  if (s > 0.8) sprite(ctx, x - 2, y - 2, ['W.W.W', '.....', '.WWW.', 'WWWWW', '.WWW.'], PAL);
+}
+
+const now = clock();
+function frame() {
+  const t = now();
+  // world
+  sky(ctx, '#9fd6ff', '#e3f5ff', 120, 7);
+  for (let i = 0; i < 6; i++) cloud(ctx, ((i * 75 + t * 4) % (PW + 80)) - 50, 16 + (i % 3) * 22, i % 2 ? 1 : 0.8);
+  hill(ctx, 60, 121, 90, 26, '#93d26e'); hill(ctx, 300, 121, 120, 32, '#86c862'); hill(ctx, 190, 121, 70, 18, '#7cbf5a');
+  tree(ctx, 26, 120, 1, 1); tree(ctx, 58, 118, 0.8, 2); tree(ctx, 330, 120, 1, 3); tree(ctx, 362, 118, 0.8, 4);
+  meadow(ctx, 120, 0, 56);
+  fence(ctx, 107);
+  dogs.forEach((d, i) => cushion(ctx, xs[i] + d.w / 2, ROW + 1, Math.round(d.w / 2) - 6, cushionCols[i]));
+  cushion(ctx, PW / 2, FRONT + 1, 34, '#c94a3a');
+
+  // dogs: row first, the walking one last so it passes in front
+  const poses = dogs.map((_, i) => pose(i, t));
+  const drawOrder = [...dogs.keys()].filter((i) => i !== chosen).concat(chosen);
+  for (const i of drawOrder) {
+    const p = poses[i];
+    dogs[i].draw(ctx, p.x, p.y, { t: t + i * 0.77, mode: p.mode, flip: p.flip, wagSpeed: p.wagSpeed });
+  }
+
+  // marker hops along the heads and lands on the chosen dog
+  if (t >= T_MARK - 0.3 && t < T_WALK + 0.4) {
+    const f = (t - T_MARK) / HOP;
+    const k0 = clamp(Math.floor(f), 0, order.length - 1), k1 = Math.min(order.length - 1, k0 + 1);
+    const u = t < T_MARK ? 0 : clamp(f - k0);
+    const top = (i) => { const [hx, hy] = headOf(i, poses[i]); return [hx, hy - 12]; };
+    const a = top(order[k0]), b = top(order[k1]), e = easeInOut(clamp(u / 0.75));
+    const appear = backOut(seg(t, T_MARK - 0.3, T_MARK), 2) * (1 - easeOut(seg(t, T_UP, T_WALK + 0.4)));
+    marker(Math.round(lerp(a[0], b[0], e)), Math.round(lerp(a[1], b[1], e) - Math.sin(e * Math.PI) * 12 * (k0 !== k1) + Math.sin(t * 6) * 1.5), appear);
+  }
+  // hearts burst from the chosen head on landing
+  const [hx, hy] = headOf(chosen, poses[chosen]);
+  for (let k = 0; k < 7; k++) {
+    const hp = seg(t, T_LAND + k * 0.04, T_LAND + 1.2 + k * 0.04);
+    if (hp <= 0 || hp >= 1 || (k + Math.floor(hp * 8)) % 5 === 0 && hp > 0.75) continue;
+    const a = (k / 6) * Math.PI - Math.PI;
+    sprite(ctx, hx - 3 + Math.cos(a) * 26 * easeOut(hp), hy - 6 + Math.sin(a) * 18 * easeOut(hp) - hp * 10, SPR.heart, PAL);
+  }
+
+  // tags under the row
+  const labelsOut = smooth(seg(t, T_ARRIVE, T_ARRIVE + 0.8));
+  tags.forEach((el, i) => {
+    el.style.opacity = smooth(seg(t, 0.6 + i * 0.2, 1.0 + i * 0.2)) * (1 - labelsOut * (i === chosen ? 1 : 0.6)) * (i === chosen && t > T_WALK ? 0 : 1);
+    el.style.transform = `translate(-50%, 0) scale(${1 + Math.round(poses[i].near * 2) * 0.06})`;
+    el.style.background = poses[i].near > 0.5 ? '#fff0a8' : '';
+  });
+
+  // UI
+  const bIn = t > T_BARK ? elasticOut(seg(t, T_BARK, T_BARK + 0.6)) : 0;
+  const bOut = 1 - smooth(seg(t, T_BARK + 2.2, T_BARK + 2.6));
+  place($('bubble'), hx + 16, hy + 2);
+  $('bubble').style.transform = `translateY(-100%) scale(${bIn * bOut})`;
+  $('over').style.transform = `translateX(-50%) translateY(${Math.round((1 - backOut(seg(t, 0, 0.5))) * -16) * PX}px)`;
+  const ti = elasticOut(seg(t, 0.15, 1.2));
+  $('title').style.transform = `translateY(${Math.round((1 - ti) * -8) * PX}px) scale(${0.6 + 0.4 * ti})`;
+  $('title').style.opacity = clamp(seg(t, 0.15, 0.4));
+  $('sub').style.opacity = smooth(seg(t, 0.8, 1.3));
+  $('count').style.transform = `translateY(${Math.round((1 - backOut(seg(t, 1.0, 1.6))) * 52) * PX}px)`;
+  const left = Math.max(0, 300 - Math.floor(t));
+  $('cval').textContent = `${String(Math.floor(left / 60)).padStart(2, '0')}:${String(left % 60).padStart(2, '0')}`;
+  $('card').style.transform = `translateY(${Math.round((1 - backOut(seg(t, T_BARK + 0.2, T_BARK + 0.8), 2)) * 60) * PX}px)`;
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

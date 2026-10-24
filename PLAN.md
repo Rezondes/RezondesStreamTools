@@ -23,6 +23,8 @@ Kern-Feature und für jedes Theme. Regeln für die Pläne:
 | [plans/PLAN-SETTINGS.md](plans/PLAN-SETTINGS.md) | Kern: Theme-Seite im Dashboard mit Einfach und Erweitert, Bereichs-Navigation, Merkmal "einfach" am Feld |
 | [plans/PLAN-GRAFIK.md](plans/PLAN-GRAFIK.md) | Kern: Grafik- und Animationsmodule (GSAP, Three.js mit react-three-fiber, PixiJS, Rough.js) als Erweiterung, 3D-Bühne und 3D-Clips; Stinger-Optionen für alle Themes und Bausteine für die Modernisierung (geplant) |
 | [plans/PLAN-STATS.md](plans/PLAN-STATS.md) | Kern: Stream-Statistik (Server zählt je Stream, Overlays lesen den Stand) |
+| [plans/PLAN-ALERTDAUER.md](plans/PLAN-ALERTDAUER.md) | Kern: Dauer je Alert und Raid-Rudel (geplant) |
+| [plans/PLAN-TOENE.md](plans/PLAN-TOENE.md) | Kern: eingebaute Töne als Dateien, gemacht mit earshot (geplant) |
 | [src/themes/urlaub/docs/PLAN-URLAUB.md](src/themes/urlaub/docs/PLAN-URLAUB.md) | Theme Urlaub (früher Südfrucht) |
 | [src/themes/plantage/docs/PLAN-PLANTAGE.md](src/themes/plantage/docs/PLAN-PLANTAGE.md) | Theme Südfrucht-Plantage |
 | [src/themes/koth/docs/PLAN-KOTH.md](src/themes/koth/docs/PLAN-KOTH.md) | Theme King of the Hill |
@@ -32,6 +34,7 @@ Kern-Feature und für jedes Theme. Regeln für die Pläne:
 | [src/themes/matrix/docs/PLAN-MATRIX.md](src/themes/matrix/docs/PLAN-MATRIX.md) | Theme Matrix: Modernisierung (geplant) |
 | [src/themes/standard/docs/PLAN-STANDARD.md](src/themes/standard/docs/PLAN-STANDARD.md) | Theme Standard: Modernisierung (geplant, Prototyp vor Package 1) |
 | [src/themes/kebab/docs/PLAN-KEBAB.md](src/themes/kebab/docs/PLAN-KEBAB.md) | Theme Kebab |
+| [src/themes/dogs/docs/PLAN-DOGS.md](src/themes/dogs/docs/PLAN-DOGS.md) | Theme Dogs |
 
 Modernisierung der Themes (entschieden 2026-10-21): KOTH, Plantage, Chaos, Bärenbande, Urlaub und Matrix bekommen je
 einen Abschnitt "Modernisierung" in ihrem Plan, Standard folgt mit PLAN-STANDARD.md (2026-10-22); die gemeinsamen Bausteine stehen in PLAN-GRAFIK Packages 6 bis 8 und

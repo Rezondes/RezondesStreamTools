@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Dogs: Pixel Ending</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Shared look of the pixel scenes: hard pixel canvas, stepped pixel boxes, pixel font. */
+:root { --ink: #2e1d14; --cream: #fff6e6; --brown: #4a3426; --muted: #7a5a46; --collar: #c94a3a; --ball: #ffd23f; --shade: rgba(46,29,20,.28); }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; overflow: hidden; }
+canvas.px { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; image-rendering: pixelated; }
+.ui { position: absolute; font-family: 'Pixelify Sans', monospace; color: var(--brown); }
+/* stepped pixel border, 5px = one canvas pixel */
+.box { background: var(--cream);
+  box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #e9d2bd, inset 0 5px 0 0 #ffffff, 0 15px 0 0 var(--shade); }
+.box.red { background: var(--collar); color: #fff; box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #9e3528, inset 0 5px 0 0 #e2735f, 0 15px 0 0 var(--shade); }
+.pill { display: inline-flex; gap: 12px; align-items: center; font: 600 26px 'Pixelify Sans'; letter-spacing: 3px; padding: 8px 20px 10px; }
+.pill i { width: 25px; height: 25px; display: inline-block; background: currentColor;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M1 0h1v1H1zM3 0h1v1H3zM0 1h1v1H0zM4 1h1v1H4zM1 3h3v2H1zM2 2h1v1H2z"/></svg>') center / contain no-repeat; }
+.title { font: 700 100px/1 'Pixelify Sans'; color: var(--cream); text-shadow: 5px 0 var(--ink), -5px 0 var(--ink), 0 5px var(--ink), 0 -5px var(--ink), 5px 5px var(--ink), -5px 5px var(--ink), 5px -5px var(--ink), -5px -5px var(--ink), 0 15px var(--shade); }
+.sub { font: 600 34px 'Pixelify Sans'; color: var(--brown); }
+.lbl { font: 600 22px 'Pixelify Sans'; letter-spacing: 3px; color: var(--muted); }
+.val { font: 700 72px/1 'Pixelify Sans'; font-variant-numeric: tabular-nums; }
+.bubble { position: absolute; transform-origin: 0 100%; font: 700 46px 'Pixelify Sans'; padding: 6px 22px 10px; white-space: nowrap; }
+.bubble::after { content: ''; position: absolute; left: 20px; bottom: -20px; width: 15px; height: 15px; background: var(--cream); box-shadow: 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink); }
+.tagp { position: absolute; transform: translate(-50%, 0); padding: 2px 12px 5px; text-align: center; font: 600 22px 'Pixelify Sans'; white-space: nowrap; }
+.tagp small { display: block; font: 500 16px 'Pixelify Sans'; color: var(--muted); }
+</style>
+<style>
+  .title { left: 0; right: 0; top: 60px; text-align: center; font-size: 116px; }
+  .sub { left: 0; right: 0; top: 196px; text-align: center; color: #f1dcc0; text-shadow: 0 5px 0 rgba(0,0,0,.35); }
+  .bye { left: 50%; top: 268px; transform: translateX(-50%); font-size: 30px; white-space: nowrap; }
+  .card { right: 85px; bottom: 75px; padding: 18px 30px 22px; }
+  .card .row { display: flex; gap: 30px; margin-top: 10px; }
+  .card .num { font: 700 52px/1 'Pixelify Sans'; color: var(--collar); }
+  .card .cap { font: 500 20px 'Pixelify Sans'; color: var(--muted); }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<div id="stage" style="background:#3b3a63">
+  <div class="ui title" id="title">Gute Nacht!</div>
+  <div class="ui sub" id="sub">Danke fürs Zuschauen. Bello schläft schon.</div>
+  <div class="ui bye box red pill" id="bye"><i></i>Bis zum nächsten Mal!</div>
+  <div class="ui card box" id="card"><div class="lbl">HEUTE IM RUDEL</div>
+    <div class="row"><div><div class="num">42</div><div class="cap">neue Follower</div></div><div><div class="num">12</div><div class="cap">Abos</div></div><div><div class="num">3</div><div class="cap">Raids</div></div></div></div>
+</div>
+<script type="module">
+import { fitStage, Q, clock, seg, lerp, smooth, easeInOut, backOut, hash } from './common.js';
+import { BREED_IDS, BREEDS, makeDog } from './pixeldogs.js';
+import { pixelCanvas, PW, PH, PX, rect, disc, odisc, sprite, SPR, INK } from './pxworld.js';
+
+const stage = document.getElementById('stage');
+fitStage(stage);
+const $ = (id) => document.getElementById(id);
+const ctx = pixelCanvas(stage);
+
+const dogId = BREED_IDS.includes(Q.get('dog')) ? Q.get('dog') : 'corgi';
+const coatId = Q.get('coat') ?? Object.keys(BREEDS[dogId].coats)[0];
+$('sub').textContent = `Danke fürs Zuschauen. ${Q.get('name') ?? 'Bello'} schläft schon.`;
+const dog = makeDog(dogId, coatId);
+
+const FLOOR = 168, BX = 196, BY = 198;
+const yDog = BY - dog.h;
+const X_IN = PW + 8, X_BED = Math.round(BX - dog.w / 2);
+const T_WALK = 2.2, T_LIE = 2.8, T_SLEEP = 4.0;
+
+function room(t, light) {
+  rect(ctx, 0, 0, PW, FLOOR, '#3b3a63');
+  for (let x = 6; x < PW; x += 24) rect(ctx, x, 0, 2, FLOOR, '#44436f');
+  rect(ctx, 0, FLOOR - 6, PW, 6, '#2c2b4c'); rect(ctx, 0, FLOOR - 6, PW, 1, '#55548a');
+  rect(ctx, 0, FLOOR, PW, PH - FLOOR, '#7d5233');
+  for (let y = FLOOR + 6; y < PH; y += 8) rect(ctx, 0, y, PW, 1, '#6a4329');
+  for (let y = FLOOR; y < PH; y += 8) for (let x = (y / 8) % 2 ? 0 : 30; x < PW; x += 60) rect(ctx, x, y, 1, 7, '#6a4329');
+  // window with night sky, moon and twinkling stars
+  const wx = 282, wy = 34, ww = 78, wh = 74;
+  rect(ctx, wx - 6, wy - 6, ww + 12, wh + 12, INK); rect(ctx, wx - 5, wy - 5, ww + 10, wh + 10, '#fff6e6');
+  rect(ctx, wx, wy, ww, wh, '#1b2547'); rect(ctx, wx, wy + wh * 0.6, ww, wh * 0.4, '#24305a');
+  for (let i = 0; i < 16; i++) {
+    const sx = wx + 2 + hash(i, 1) * (ww - 4), sy = wy + 2 + hash(i, 2) * (wh - 6);
+    rect(ctx, sx, sy, 1, 1, '#fff6e6');
+    if (Math.sin(t * (1.5 + hash(i, 3) * 2) + i) > 0.6) { rect(ctx, sx - 1, sy, 3, 1, '#fff6e6'); rect(ctx, sx, sy - 1, 1, 3, '#fff6e6'); }
+  }
+  disc(ctx, wx + 54, wy + 20, 10, 10, '#fff3c4'); disc(ctx, wx + 50, wy + 17, 2, 2, '#efe0a6'); disc(ctx, wx + 57, wy + 25, 3, 2, '#efe0a6');
+  rect(ctx, wx + ww / 2 - 2, wy, 4, wh, '#fff6e6'); rect(ctx, wx, wy + wh / 2 - 2, ww, 4, '#fff6e6');
+  rect(ctx, wx - 10, wy + wh + 6, ww + 20, 4, INK); rect(ctx, wx - 9, wy + wh + 6, ww + 18, 3, '#e9d2bd');
+  // picture with a paw on the wall
+  rect(ctx, 46, 66, 34, 28, INK); rect(ctx, 47, 67, 32, 26, '#a8754a'); rect(ctx, 50, 70, 26, 20, '#ffd2b8');
+  sprite(ctx, 58, 75, ['o.o.o', '.....', '.ooo.', 'ooooo', '.ooo.'], { o: '#c94a3a' });
+  // side table with lamp
+  const tx = 100;
+  rect(ctx, tx - 1, 150, 32, 5, INK); rect(ctx, tx, 151, 30, 3, '#a8754a');
+  for (const lx of [tx + 2, tx + 25]) { rect(ctx, lx - 1, 154, 5, 30, INK); rect(ctx, lx, 154, 3, 29, '#8a5d38'); }
+  rect(ctx, tx + 12, 138, 6, 13, INK); rect(ctx, tx + 13, 139, 4, 12, '#c9b6ff');
+  const shade = light > 0.5 ? '#ffe9a8' : '#c9a86a';
+  for (let i = 0; i < 12; i++) { rect(ctx, tx + 7 - i / 2.5 - 1, 126 + i, 18 + (i / 2.5) * 2 + 2, 1, INK); rect(ctx, tx + 7 - i / 2.5, 126 + i, 18 + (i / 2.5) * 2, 1, shade); }
+  // warm glow, dimming with the light
+  ctx.globalAlpha = 0.18 * light; disc(ctx, tx + 15, 132, 46, 40, '#ffd27a');
+  ctx.globalAlpha = 0.22 * light; disc(ctx, tx + 15, 132, 26, 22, '#ffe2a0');
+  ctx.globalAlpha = 1;
+  // rug
+  odisc(ctx, BX, BY + 4, 70, 10, '#8f6fc7'); disc(ctx, BX, BY + 4, 64, 8, '#a585dd'); disc(ctx, BX, BY + 4, 60, 7, '#8f6fc7');
+}
+// basket: back rim and cushion behind the dog, woven front rim in front of it
+function basketBack() {
+  odisc(ctx, BX, BY - 4, 44, 12, '#c48a4f', true);
+  disc(ctx, BX, BY - 4, 40, 9, '#9e6a37', true);
+  odisc(ctx, BX, BY - 1, 38, 7, '#ffc9d9');
+}
+function basketFront() {
+  for (let y = 0; y < 9; y++) {
+    const w = Math.round(44 * Math.sqrt(1 - (y / 11) ** 2));
+    rect(ctx, BX - w - 1, BY - 1 + y, 2 * w + 3, 1, INK);
+    rect(ctx, BX - w, BY - 1 + y, 2 * w + 1, 1, y % 3 === 1 ? '#a8723e' : '#c48a4f');
+  }
+  rect(ctx, BX - 30, BY + 9, 61, 1, INK);
+}
+
+const now = clock();
+function frame() {
+  const t = now();
+  const light = 1 - 0.65 * smooth(seg(t, 5, 7.5));
+  room(t, light);
+  basketBack();
+  let x = X_BED, mode = 'stand';
+  if (t < T_WALK) { x = Math.round(lerp(X_IN, X_BED, easeInOut(seg(t, 0, T_WALK)))); mode = 'walk'; }
+  else if (t >= T_LIE) mode = 'lie';
+  dog.draw(ctx, x, yDog + (mode === 'lie' ? 5 : 0), { t, mode, flip: true, wagSpeed: t < T_LIE ? 10 : 2 });
+  basketFront();
+  // Z letters rising from the sleeping head, one after another
+  if (t > T_SLEEP) {
+    const hx = x + dog.w - 1 - dog.head[0], hy = yDog + dog.head[1] + 8;
+    for (let k = 0; k < 3; k++) {
+      let p = (t - T_SLEEP) / 1.8 - k / 3;
+      if (p < 0) continue;
+      p %= 1;
+      ctx.globalAlpha = Math.min(1, (1 - p) * 2.5);
+      sprite(ctx, hx - 6 - p * 16 + Math.sin(p * 9) * 2, hy - 8 - p * 34, SPR.zz, { o: '#fff6e6' });
+      ctx.globalAlpha = 1;
+    }
+  }
+  // the room darkens as the lamp dims
+  ctx.globalAlpha = 0.35 * (1 - light);
+  rect(ctx, 0, 0, PW, PH, '#0d0b24');
+  ctx.globalAlpha = 1;
+
+  const ti = backOut(seg(t, 0.2, 0.9));
+  $('title').style.transform = `translateY(${Math.round((1 - ti) * -12) * PX}px)`;
+  $('title').style.opacity = smooth(seg(t, 0.2, 0.5));
+  $('sub').style.opacity = smooth(seg(t, 0.8, 1.3));
+  $('bye').style.transform = `translateX(-50%) scale(${backOut(seg(t, 1.2, 1.7), 2)})`;
+  $('card').style.transform = `translateY(${Math.round((1 - backOut(seg(t, 1.6, 2.2))) * 50) * PX}px)`;
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

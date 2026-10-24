@@ -1,0 +1,8 @@
+{
+ "bark-small": "earshot: strong (z +4.52, 76 % gegen die Alternativen), hört zuerst: a dog barking, a snare hit",
+ "bark-medium": "earshot: strong (z +3.93, 71 % gegen die Alternativen), hört zuerst: a dog barking, a record scratch",
+ "bark-big": "earshot: strong (z +4.17, 52 % gegen die Alternativen), hört zuerst: a dog barking, a snare hit",
+ "whine": "earshot: plausible (z +2.70, 64 % gegen die Alternativen), hört zuerst: a dog barking, a man shouting",
+ "sniff": "earshot: no match (z +1.74, 0 % gegen die Alternativen), hört zuerst: a record scratch, a snare roll",
+ "snore": "earshot: strong (z +3.24, 76 % gegen die Alternativen), hört zuerst: a small animal running through grass, a sub bass drop"
+}

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Dogs: Pixel-Rassen</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #fff6e6; }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; background: #fff6e6; }
+  h1 { position: absolute; left: 50px; top: 24px; margin: 0; font: 700 48px Fredoka; color: #4a3426; }
+  #grid { position: absolute; left: 50px; top: 96px; right: 50px; display: grid; grid-template-columns: 220px repeat(4, 1fr); gap: 2px 14px; align-items: center; }
+  .name { font: 700 34px Fredoka; color: #4a3426; }
+  .cell { text-align: center; font: 800 18px Nunito; color: #7a5a46; }
+  canvas { height: 128px; margin: 0 auto; image-rendering: pixelated; background: #f1e7d6; border-radius: 14px; display: block; }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<div id="stage"><h1>Pixel-Art: alle sechs Rassen</h1><div id="grid"></div></div>
+<script type="module">
+import { fitStage, Q, clock } from './common.js';
+import { BREED_IDS, BREEDS, makeDog } from './pixeldogs.js';
+fitStage(document.getElementById('stage'));
+const grid = document.getElementById('grid');
+const mode = Q.get('mode') ?? 'stand';
+const CW = 80, CH = 60;
+const items = [];
+for (const id of BREED_IDS) {
+  const n = document.createElement('div'); n.className = 'name'; n.textContent = BREEDS[id].name; grid.appendChild(n);
+  const coats = Object.keys(BREEDS[id].coats);
+  for (let i = 0; i < 4; i++) {
+    const cell = document.createElement('div'); cell.className = 'cell'; grid.appendChild(cell);
+    if (!coats[i]) continue;
+    const c = document.createElement('canvas'); c.width = CW; c.height = CH; cell.appendChild(c);
+    cell.append(BREEDS[id].coats[coats[i]].name);
+    items.push({ ctx: c.getContext('2d'), dog: makeDog(id, coats[i]), m: mode });
+  }
+}
+const now = clock();
+function frame() {
+  const t = now();
+  for (const { ctx, dog, m } of items) {
+    ctx.clearRect(0, 0, CW, CH);
+    ctx.fillStyle = '#86c45f'; ctx.fillRect(0, CH - 6, CW, 6);
+    dog.draw(ctx, Math.round((CW - dog.w) / 2), CH - 5 - dog.h, { t, mode: m });
+  }
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

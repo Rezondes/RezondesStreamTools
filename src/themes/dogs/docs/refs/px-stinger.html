@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Dogs: Pixel Stinger</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@600;700&display=swap" rel="stylesheet">
+<style>
+/* Shared look of the pixel scenes: hard pixel canvas, stepped pixel boxes, pixel font. */
+:root { --ink: #2e1d14; --cream: #fff6e6; --brown: #4a3426; --muted: #7a5a46; --collar: #c94a3a; --ball: #ffd23f; --shade: rgba(46,29,20,.28); }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; overflow: hidden; }
+canvas.px { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; image-rendering: pixelated; }
+.ui { position: absolute; font-family: 'Pixelify Sans', monospace; color: var(--brown); }
+/* stepped pixel border, 5px = one canvas pixel */
+.box { background: var(--cream);
+  box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #e9d2bd, inset 0 5px 0 0 #ffffff, 0 15px 0 0 var(--shade); }
+.box.red { background: var(--collar); color: #fff; box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #9e3528, inset 0 5px 0 0 #e2735f, 0 15px 0 0 var(--shade); }
+.pill { display: inline-flex; gap: 12px; align-items: center; font: 600 26px 'Pixelify Sans'; letter-spacing: 3px; padding: 8px 20px 10px; }
+.pill i { width: 25px; height: 25px; display: inline-block; background: currentColor;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M1 0h1v1H1zM3 0h1v1H3zM0 1h1v1H0zM4 1h1v1H4zM1 3h3v2H1zM2 2h1v1H2z"/></svg>') center / contain no-repeat; }
+.title { font: 700 100px/1 'Pixelify Sans'; color: var(--cream); text-shadow: 5px 0 var(--ink), -5px 0 var(--ink), 0 5px var(--ink), 0 -5px var(--ink), 5px 5px var(--ink), -5px 5px var(--ink), 5px -5px var(--ink), -5px -5px var(--ink), 0 15px var(--shade); }
+.sub { font: 600 34px 'Pixelify Sans'; color: var(--brown); }
+.lbl { font: 600 22px 'Pixelify Sans'; letter-spacing: 3px; color: var(--muted); }
+.val { font: 700 72px/1 'Pixelify Sans'; font-variant-numeric: tabular-nums; }
+.bubble { position: absolute; transform-origin: 0 100%; font: 700 46px 'Pixelify Sans'; padding: 6px 22px 10px; white-space: nowrap; }
+.bubble::after { content: ''; position: absolute; left: 20px; bottom: -20px; width: 15px; height: 15px; background: var(--cream); box-shadow: 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink); }
+.tagp { position: absolute; transform: translate(-50%, 0); padding: 2px 12px 5px; text-align: center; font: 600 22px 'Pixelify Sans'; white-space: nowrap; }
+.tagp small { display: block; font: 500 16px 'Pixelify Sans'; color: var(--muted); }
+</style>
+<style>
+  .scene { position: absolute; inset: 0; display: grid; place-items: center; font: 700 120px 'Pixelify Sans'; color: rgba(255,255,255,.85); }
+  #sceneA { background: linear-gradient(#a9dcff, #e6f6ff 70%, #9ad672 70%); color: #4a3426; }
+  #sceneB { background: radial-gradient(1200px 700px at 30% 30%, #4a6b8a, #1d2a3a 70%); }
+  #name { left: 0; right: 0; top: 590px; text-align: center; font: 700 60px 'Pixelify Sans'; color: var(--cream); transform-origin: 50% -50px; }
+  #bar { position: fixed; left: 12px; right: 12px; bottom: 12px; z-index: 9; display: flex; gap: 10px; align-items: center; font: 600 14px 'Pixelify Sans'; color: #fff; }
+  #bar input { flex: 1; }
+  #bar button { font: 600 14px 'Pixelify Sans'; border: 0; padding: 6px 12px; background: #fff; color: #4a3426; }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+</head>
+<body>
+<div id="stage">
+  <div class="scene" id="sceneA">Szene A</div>
+  <div class="scene" id="sceneB">Szene B</div>
+  <div class="ui" id="name">Bello</div>
+</div>
+<div id="bar"><button id="play">Pause</button><input id="scrub" type="range" min="0" max="2400" value="0"><span id="tl">0.00 s</span></div>
+<script type="module">
+import { fitStage, Q, FIXED_T, seg, easeOut, easeIn, backOut, clamp, hash } from './common.js';
+import { BREED_IDS, BREEDS, makeDog, COLLAR } from './pixeldogs.js';
+import { pixelCanvas, PW, PH, rect, disc, odisc, INK } from './pxworld.js';
+
+const stage = document.getElementById('stage');
+fitStage(stage);
+if (Q.has('clean')) document.getElementById('bar').style.display = 'none';
+const dogId = BREED_IDS.includes(Q.get('dog')) ? Q.get('dog') : 'corgi';
+const dog = makeDog(dogId, Q.get('coat') ?? Object.keys(BREEDS[dogId].coats)[0]);
+const nameEl = document.getElementById('name');
+nameEl.textContent = Q.get('name') ?? 'Bello';
+const ctx = pixelCanvas(stage);
+stage.insertBefore(ctx.canvas, nameEl); // above the scene stand-ins
+
+// ---- the clip: draw(t) is a pure function of t, in canvas pixels ----
+const DURATION = 2.4, CUT = 1.2, SWEEP = 0.82, SPACING = 30, SLANT = 0.45, BAND = 6;
+const SPAN = PW + SLANT * PH + 12;
+// colours of the chosen dog plus collar and ball; colours too close to the cream cover are left out
+const light = (hex) => { const n = parseInt(hex.slice(1), 16); return (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255; };
+const palette = [[dog.coat.base, 0.3], [dog.coat.dark, 0.14], [COLLAR, 0.24], ['#ffd23f', 0.18], ['#7a5a46', 0.14]].filter(([c]) => light(c) < 0.85);
+const total = palette.reduce((s, [, w]) => s + w, 0);
+const pick = (h) => { let acc = 0; for (const [c, w] of palette) { acc += w / total; if (h < acc) return c; } return palette[0][0]; };
+
+const paws = [];
+for (let row = -1; row * SPACING * 0.866 < PH + SPACING; row++) {
+  for (let col = -1; col * SPACING < PW + SPACING; col++) {
+    const x = Math.round(col * SPACING + (row % 2 ? SPACING / 2 : 0) + (hash(row, col, 1) - 0.5) * 6);
+    const y = Math.round(row * SPACING * 0.866 + (hash(row, col, 2) - 0.5) * 6);
+    const u = clamp((x + SLANT * (PH - y)) / SPAN);
+    paws.push({ x, y, color: pick(hash(row, col, 6)),
+      tIn: 0.04 + u * SWEEP + (hash(row, col, 3) - 0.5) * 0.12,
+      tOut: CUT + 0.1 + u * SWEEP + (hash(row, col, 4) - 0.5) * 0.12 });
+  }
+}
+paws.sort((a, b) => a.tIn - b.tIn);
+
+// paw from pixel discs: pad shadow, four toes, pad on top
+const TOES = [[-7, -7], [-2.5, -11], [2.5, -11], [7, -7]];
+function paw(x, y, s, c) {
+  const R = (v) => Math.max(1, Math.round(v * s));
+  disc(ctx, x, y + 2, R(5) + 1, R(4) + 1, 'rgba(74,52,38,0.28)');
+  for (const [tx, ty] of TOES) odisc(ctx, x + tx * s, y + ty * s, R(2), R(2.5), c);
+  odisc(ctx, x, y, R(5), R(4), c);
+}
+// stepped, notched diagonal edge: x of the edge at row y for sweep position c
+const edgeX = (c, y) => { const b = Math.floor(y / BAND); return Math.round(c * SPAN - SLANT * (PH - b * BAND)) + (b % 2) * 3; };
+function cover(cOut, cIn) {
+  if (cIn <= cOut) return;
+  for (let y = 0; y < PH; y++) {
+    const a = cOut < 0 ? -10 : edgeX(cOut, y), b = edgeX(cIn, y);
+    if (b <= a) continue;
+    rect(ctx, a, y, b - a, 1, '#fff6e6');
+    rect(ctx, b, y, 3, 1, INK); rect(ctx, b - 2, y, 2, 1, '#e9d2bd');
+    if (cOut >= 0) { rect(ctx, a - 3, y, 3, 1, INK); rect(ctx, a, y, 2, 1, '#e9d2bd'); }
+  }
+}
+// the dog runs at double size just ahead of the leading edge
+const big = Object.assign(document.createElement('canvas'), { width: dog.w, height: dog.h + 2 });
+const bctx = big.getContext('2d');
+const GROUND = 176;
+function runner(c, t) {
+  const x = edgeX(c, GROUND - dog.h) + 4, y = GROUND - dog.h * 2;
+  if (x > PW || x + dog.w * 2 < 0) return;
+  bctx.clearRect(0, 0, big.width, big.height);
+  dog.draw(bctx, 0, 0, { t, mode: 'walk', fps: 20, wagSpeed: 20 });
+  ctx.imageSmoothingEnabled = false;
+  ctx.drawImage(big, x, y, big.width * 2, big.height * 2);
+}
+function medallion(s) {
+  if (s <= 0.02) return;
+  const cx = PW / 2, cy = PH / 2 - 4, r = Math.round(38 * s);
+  disc(ctx, cx, cy + 3, r + 1, r + 1, 'rgba(74,52,38,0.28)');
+  odisc(ctx, cx, cy, r, r, COLLAR);
+  if (s < 0.6) return;
+  odisc(ctx, cx, cy, r - 5, r - 5, '#fff6e6'); disc(ctx, cx, cy, r - 7, r - 7, COLLAR);
+  disc(ctx, cx, cy - 4 * s, Math.round(7 * s), Math.round(6 * s), '#fff6e6');
+  for (const [tx, ty] of [[-10, -13], [-4, -19], [4, -19], [10, -13]]) disc(ctx, cx + tx * s, cy + ty * s, Math.round(2.5 * s), Math.round(3 * s), '#fff6e6');
+}
+function draw(t) {
+  ctx.clearRect(0, 0, PW, PH);
+  const cIn = (t - 0.1) / SWEEP;
+  const cOut = t < CUT ? -1 : (t - CUT - 0.2) / SWEEP;
+  cover(cOut, cIn);
+  for (const p of paws) {
+    if (t < p.tIn) continue;
+    let s = 1.35 - 0.35 * easeOut(seg(t, p.tIn, p.tIn + 0.12));
+    if (t > p.tOut) { const k = seg(t, p.tOut, p.tOut + 0.24); if (k >= 1) continue; s *= 1 - easeIn(k); }
+    if (s > 0.15) paw(p.x, p.y, s, p.color);
+  }
+  runner(t < CUT ? cIn : cOut, t);
+  const m = seg(t, CUT - 0.42, CUT - 0.1), mo = seg(t, CUT + 0.12, CUT + 0.36);
+  const s = m > 0 && mo < 1 ? backOut(m, 2.2) * (1 - easeIn(mo)) : 0;
+  medallion(s);
+  nameEl.style.opacity = s > 0.6 ? 1 : 0;
+  nameEl.style.transform = `scale(${Math.round(s * 10) / 10})`;
+}
+
+// ---- player (prototype only) ----
+const scrub = document.getElementById('scrub'), tl = document.getElementById('tl'), playBtn = document.getElementById('play');
+let playing = FIXED_T === null, t0 = performance.now(), tFixed = FIXED_T ?? 0;
+playBtn.onclick = () => { playing = !playing; playBtn.textContent = playing ? 'Pause' : 'Play'; t0 = performance.now() - tFixed * 1000; };
+scrub.oninput = () => { playing = false; playBtn.textContent = 'Play'; tFixed = scrub.value / 1000; };
+function frame() {
+  if (playing) tFixed = ((performance.now() - t0) / 1000) % (DURATION + 0.6);
+  const t = Math.min(tFixed, DURATION);
+  scrub.value = t * 1000;
+  tl.textContent = `${t.toFixed(2)} s`;
+  document.getElementById('sceneB').style.visibility = t >= CUT ? 'visible' : 'hidden';
+  draw(t);
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

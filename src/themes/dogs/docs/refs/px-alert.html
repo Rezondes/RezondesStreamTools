@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Dogs: Pixel Alert</title>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Shared look of the pixel scenes: hard pixel canvas, stepped pixel boxes, pixel font. */
+:root { --ink: #2e1d14; --cream: #fff6e6; --brown: #4a3426; --muted: #7a5a46; --collar: #c94a3a; --ball: #ffd23f; --shade: rgba(46,29,20,.28); }
+html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+#stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; overflow: hidden; }
+canvas.px { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; image-rendering: pixelated; }
+.ui { position: absolute; font-family: 'Pixelify Sans', monospace; color: var(--brown); }
+/* stepped pixel border, 5px = one canvas pixel */
+.box { background: var(--cream);
+  box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #e9d2bd, inset 0 5px 0 0 #ffffff, 0 15px 0 0 var(--shade); }
+.box.red { background: var(--collar); color: #fff; box-shadow: 0 -5px 0 0 var(--ink), 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink),
+    inset 0 -5px 0 0 #9e3528, inset 0 5px 0 0 #e2735f, 0 15px 0 0 var(--shade); }
+.pill { display: inline-flex; gap: 12px; align-items: center; font: 600 26px 'Pixelify Sans'; letter-spacing: 3px; padding: 8px 20px 10px; }
+.pill i { width: 25px; height: 25px; display: inline-block; background: currentColor;
+  -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M1 0h1v1H1zM3 0h1v1H3zM0 1h1v1H0zM4 1h1v1H4zM1 3h3v2H1zM2 2h1v1H2z"/></svg>') center / contain no-repeat; }
+.title { font: 700 100px/1 'Pixelify Sans'; color: var(--cream); text-shadow: 5px 0 var(--ink), -5px 0 var(--ink), 0 5px var(--ink), 0 -5px var(--ink), 5px 5px var(--ink), -5px 5px var(--ink), 5px -5px var(--ink), -5px -5px var(--ink), 0 15px var(--shade); }
+.sub { font: 600 34px 'Pixelify Sans'; color: var(--brown); }
+.lbl { font: 600 22px 'Pixelify Sans'; letter-spacing: 3px; color: var(--muted); }
+.val { font: 700 72px/1 'Pixelify Sans'; font-variant-numeric: tabular-nums; }
+.bubble { position: absolute; transform-origin: 0 100%; font: 700 46px 'Pixelify Sans'; padding: 6px 22px 10px; white-space: nowrap; }
+.bubble::after { content: ''; position: absolute; left: 20px; bottom: -20px; width: 15px; height: 15px; background: var(--cream); box-shadow: 0 5px 0 0 var(--ink), -5px 0 0 0 var(--ink), 5px 0 0 0 var(--ink); }
+.tagp { position: absolute; transform: translate(-50%, 0); padding: 2px 12px 5px; text-align: center; font: 600 22px 'Pixelify Sans'; white-space: nowrap; }
+.tagp small { display: block; font: 500 16px 'Pixelify Sans'; color: var(--muted); }
+</style>
+<style>
+  /* prototype only: a stand-in for the game behind the transparent overlay */
+  #stage.game { background: radial-gradient(1200px 700px at 30% 30%, #4a6b8a, #1d2a3a 70%), #1d2a3a; }
+  #stage.checker { background: repeating-conic-gradient(#d9d9d9 0 25%, #f2f2f2 0 50%) 0 0 / 40px 40px; }
+  #panel { position: fixed; left: 10px; top: 10px; z-index: 9; display: flex; gap: 6px; font: 600 14px 'Pixelify Sans'; }
+  #panel a { background: #fff; color: #4a3426; padding: 6px 10px; text-decoration: none; }
+  .tagc { left: 860px; top: 440px; width: 860px; padding: 26px 40px 32px; text-align: center; transform-origin: 20% 100%; }
+  .tagc .pill { position: absolute; left: 50%; top: -30px; transform: translateX(-50%); white-space: nowrap; }
+  .tagc .name { font: 700 84px/1.05 'Pixelify Sans'; color: var(--collar); margin-top: 18px; }
+  .tagc .line { font: 600 34px 'Pixelify Sans'; }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<div id="panel"></div>
+<div id="stage" class="game">
+  <div class="ui tagc box" id="tag">
+    <div class="pill box red" id="pill"><i></i><span id="ptxt">NEUER FOLLOWER</span></div>
+    <div class="name" id="name">Pfotenfreund42</div>
+    <div class="line" id="line">gehört jetzt zum Rudel!</div>
+  </div>
+  <div class="ui bubble box" id="bubble">Wuff!</div>
+</div>
+<script type="module">
+import { fitStage, Q, clock, seg, lerp, smooth, easeIn, backOut, elasticOut, hash } from './common.js';
+import { BREED_IDS, BREEDS, makeDog } from './pixeldogs.js';
+import { pixelCanvas, place, PW, PH, PX, sprite, SPR, PAL } from './pxworld.js';
+
+const stage = document.getElementById('stage');
+fitStage(stage);
+const $ = (id) => document.getElementById(id);
+if (Q.get('bg') === 'checker') stage.className = 'checker';
+if (Q.get('bg') === 'none') stage.className = '';
+const ctx = pixelCanvas(stage);
+
+const dogId = BREED_IDS.includes(Q.get('dog')) ? Q.get('dog') : 'corgi';
+const coatId = Q.get('coat') ?? Object.keys(BREEDS[dogId].coats)[0];
+const type = Q.get('type') ?? 'follow';
+const TYPES = {
+  follow: { pill: 'NEUER FOLLOWER', name: 'Pfotenfreund42', line: 'gehört jetzt zum Rudel!', toy: 'ball' },
+  sub: { pill: 'NEUES ABO', name: 'Knochenkönigin', line: 'seit 6 Monaten dabei: Knochen für alle!', toy: 'bone' },
+  bits: { pill: '500 BITS', name: 'Frisbeeprofi', line: 'Danke für die Frisbee-Runde!', toy: 'frisbee' },
+  donation: { pill: '5,00 € LECKERLI', name: 'Gassigeher', line: '„Für einen extra Keks!“', toy: 'treat' },
+  raid: { pill: 'RAID', name: 'Hundeschule_TV', line: 'kommt mit 42 Hunden vorbei!', toy: 'ball' },
+};
+const T = TYPES[type] ?? TYPES.follow;
+$('ptxt').textContent = T.pill;
+$('name').textContent = T.name;
+$('line').textContent = T.line;
+if (!Q.has('clean')) {
+  $('panel').innerHTML = Object.keys(TYPES).map((k) => `<a href="?type=${k}&dog=${dogId}&coat=${coatId}">${k}</a>`).join('')
+    + `<a href="?type=${type}&dog=${dogId}&coat=${coatId}&bg=checker">transparent</a>`;
+}
+
+const dog = makeDog(dogId, coatId);
+const toy = SPR[T.toy];
+const GROUND = 200;
+const yDog = GROUND - dog.h + 2;
+const X_START = -dog.w - 4, X_STOP = 92, X_OUT = PW + 10;
+const T_STOP = 1.25, T_DROP = 1.3, T_TAG = 1.4, T_BARK = 2.0;
+const mouthAt = (x) => [x + dog.mouth[0] + 1, yDog + dog.mouth[1] - 1];
+const DROP_X = mouthAt(X_STOP)[0] + 4;
+
+// raid: one dog per raider runs past behind the chosen one. At most MAX_PACK are on screen at once, so a big raid
+// takes longer instead of getting crowded: spawns are CROSS / MAX_PACK apart and every run is shorter than CROSS.
+const raiders = type === 'raid' ? Math.max(0, Math.floor(Number(Q.get('raiders') ?? 42)) || 0) : 0;
+if (type === 'raid') $('line').textContent = `kommt mit ${raiders} ${raiders === 1 ? 'Hund' : 'Hunden'} vorbei!`;
+const MAX_PACK = Math.max(1, Math.floor(Number(Q.get('max') ?? 12)) || 12);
+const CROSS = 2.4, GAP = CROSS / MAX_PACK, T_PACK = T_TAG + 0.3;
+const looks = new Map();
+const lookOf = (id, coat) => { const k = `${id}/${coat}`; if (!looks.has(k)) looks.set(k, makeDog(id, coat)); return looks.get(k); };
+const pack = Array.from({ length: raiders }, (_, i) => {
+  const id = BREED_IDS[Math.floor(hash(i, 1) * BREED_IDS.length)], coats = Object.keys(BREEDS[id].coats);
+  return { dog: lookOf(id, coats[Math.floor(hash(i, 2) * coats.length)]), t0: T_PACK + i * GAP, dur: CROSS * (0.8 + 0.19 * hash(i, 3)), lane: Math.floor(hash(i, 4) * 4) * 3 };
+});
+const PACK_END = raiders ? T_PACK + (raiders - 1) * GAP + CROSS : 0;
+// the chosen dog waits with the tag until the pack has passed
+const SHIFT = Math.max(0, PACK_END + 0.3 - 5.6);
+const T_STAND = 5.6 + SHIFT, T_PICK = 5.85 + SHIFT, T_RUN = 6.2 + SHIFT, T_GONE = 7.4 + SHIFT, CYCLE = 8.2 + SHIFT;
+// barks: a double bark first, then one every 5 s while waiting
+const BARKS = [T_BARK, T_BARK + 1.4];
+for (let b = T_BARK + 5; b < T_STAND - 1; b += 5) BARKS.push(b);
+window.raid = { raiders, MAX_PACK, GAP, CYCLE, pack }; // prototype only: read by the raid test
+
+// bouncing toy height in pixels after the drop
+function toyHeight(dt) {
+  const g = 220, h0 = 14;
+  const t1 = Math.sqrt((2 * h0) / g);
+  if (dt < t1) return h0 - 0.5 * g * dt * dt;
+  let bt = dt - t1;
+  const v1 = g * t1 * 0.45, t2 = (2 * v1) / g;
+  if (bt < t2) return v1 * bt - 0.5 * g * bt * bt;
+  bt -= t2;
+  const v2 = v1 * 0.4, t3 = (2 * v2) / g;
+  return bt < t3 ? v2 * bt - 0.5 * g * bt * bt : 0;
+}
+
+const now = clock();
+function frame() {
+  const t = now() % CYCLE;
+  ctx.clearRect(0, 0, PW, PH);
+  let x, mode = 'stand';
+  if (t < T_STOP) { x = lerp(X_START, X_STOP, 1 - Math.pow(1 - seg(t, 0, T_STOP), 2.2)); mode = 'walk'; }
+  else if (t < T_RUN) {
+    x = X_STOP;
+    if (BARKS.some((b0) => t > b0 && t < b0 + 0.55)) mode = 'bark';
+  } else { const k = seg(t, T_RUN, T_GONE); x = lerp(X_STOP, X_OUT, easeIn(k) * 0.6 + k * 0.4); mode = 'walk'; }
+  x = Math.round(x);
+
+  // pack: only the dogs on screen right now, the farther lanes first; spawn order gives the index window
+  const first = Math.max(0, Math.ceil((t - T_PACK - CROSS) / GAP)), last = Math.min(raiders - 1, Math.floor((t - T_PACK) / GAP));
+  const running = [];
+  for (let i = first; i <= last; i++) { const k = (t - pack[i].t0) / pack[i].dur; if (k > 0 && k < 1) running.push([i, k]); }
+  running.sort((a, b) => pack[b[0]].lane - pack[a[0]].lane);
+  window.raid.onScreen = running.length;
+  for (const [i, k] of running) {
+    const { dog: d, lane } = pack[i];
+    d.draw(ctx, Math.round(lerp(-d.w, PW, k)), GROUND - lane - d.h + 2, { t: t + i * 0.37, mode: 'walk', fps: 14, wagSpeed: 16 });
+  }
+  dog.draw(ctx, x, yDog, { t, mode, fps: mode === 'walk' ? 13 : 9, wagSpeed: 15 });
+  // toy: in the mouth while running, dropped with a bounce, picked up again
+  if (t < T_GONE) {
+    const [mx, my] = mouthAt(x);
+    const held = [mx - 2, my - Math.floor(toy.length / 2)];
+    if (t < T_DROP || t > T_PICK) sprite(ctx, held[0], held[1], toy, PAL);
+    else {
+      const dt = t - T_DROP;
+      const tx = lerp(DROP_X, DROP_X + 14, Math.min(1, dt / 0.6)), ty = GROUND - toy.length + 1 - Math.max(0, toyHeight(dt));
+      const back = seg(t, T_PICK - 0.15, T_PICK);
+      sprite(ctx, lerp(tx, held[0], back), lerp(ty, held[1], back), toy, PAL);
+    }
+  }
+
+  const tagIn = backOut(seg(t, T_TAG, T_TAG + 0.5), 1.6), tagOut = smooth(seg(t, T_RUN + 0.2, T_RUN + 0.6));
+  $('tag').style.transform = `translateY(${Math.round((1 - tagIn) * 30 + tagOut * 40) * PX}px)`;
+  $('tag').style.opacity = Math.min(1, tagIn * 2) * (1 - tagOut);
+  const [hx, hy] = [x + dog.head[0], yDog + dog.head[1]];
+  place($('bubble'), hx + 6, hy - 6);
+  // bubble pops with the first bark and with every later one, gone 2.5 s after it
+  const b0 = BARKS.filter((b) => b <= t && b !== T_BARK + 1.4).pop();
+  const bub = b0 === undefined || t > T_STAND - 0.2 ? 0 : elasticOut(seg(t, b0, b0 + 0.6)) * (1 - smooth(seg(t, b0 + (b0 === T_BARK ? 3.2 : 2.1), b0 + (b0 === T_BARK ? 3.6 : 2.5))));
+  $('bubble').style.transform = `translateY(-100%) scale(${bub})`;
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>

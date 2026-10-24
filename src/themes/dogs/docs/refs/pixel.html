@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Dogs: Pixel-Art-Probe Corgi</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #fff6e6; }
+  #stage { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; background: #fff6e6; }
+  h1 { position: absolute; left: 50px; top: 30px; margin: 0; font: 700 56px Fredoka; color: #4a3426; }
+  canvas { position: absolute; image-rendering: pixelated; border-radius: 24px; }
+  #walk { left: 50px; top: 120px; width: 900px; height: 600px; }
+  #idle { left: 970px; top: 120px; width: 420px; height: 360px; }
+  #photo { position: absolute; left: 970px; top: 520px; width: 420px; height: 200px; border-radius: 24px; background: #f1e7d6; display: grid; place-items: center;
+    font: 800 20px Nunito; color: #7a5a46; text-align: center; overflow: hidden; }
+  #photo img { width: 100%; height: 100%; object-fit: cover; }
+  #pal { position: absolute; left: 1420px; top: 120px; width: 450px; font: 800 22px Nunito; color: #4a3426; }
+  #pal label { display: flex; justify-content: space-between; align-items: center; margin: 8px 0; }
+  #pal input { width: 80px; height: 40px; border: 0; background: none; }
+  #pal .presets { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  #pal button { font: 800 18px Nunito; border: 0; border-radius: 999px; padding: 8px 16px; background: #c94a3a; color: #fff; }
+  .cap { position: absolute; font: 800 24px Nunito; color: #7a5a46; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <h1>Pixel-Art-Probe: Corgi</h1>
+  <canvas id="walk" width="96" height="64"></canvas>
+  <canvas id="idle" width="56" height="48"></canvas>
+  <div id="photo"><img id="img" alt="" src="refs/corgi.jpg"></div>
+  <div id="pal"><div class="presets" id="presets"></div><div id="pickers"></div></div>
+  <div class="cap" style="left:50px; top:740px">Laufen (Farben aus der Palette rechts)</div>
+  <div class="cap" style="left:970px; top:485px">Stehen: Wedeln, Blinzeln, Hecheln</div>
+</div>
+<script type="module">
+import { fitStage, Q, FIXED_T, clock } from './common.js';
+fitStage(document.getElementById('stage'));
+const img = document.getElementById('img');
+img.onerror = () => { img.replaceWith(Object.assign(document.createElement('div'), { textContent: 'Foto hier ablegen: proto/refs/corgi.jpg' })); };
+
+// ---- palette: every colour is a setting ----
+const PRESETS = {
+  'Rot-Weiss': { O: '#d9782f', D: '#a9531f', L: '#efa15c', W: '#fbf6ee', w: '#d9cfbf' },
+  'Zobel-Weiss': { O: '#b8763a', D: '#6b4328', L: '#d6955a', W: '#fbf6ee', w: '#d9cfbf' },
+  'Hell': { O: '#e8a35e', D: '#c07a3c', L: '#f6c58c', W: '#fffaf2', w: '#e2d8c8' },
+};
+const pal = {
+  '.': null, o: '#3a2418', O: '#d9782f', D: '#a9531f', L: '#efa15c', W: '#fbf6ee', w: '#d9cfbf',
+  K: '#1d1412', E: '#ffffff', P: '#e98a95', R: '#c94a3a', Y: '#ffd23f',
+};
+const LABELS = { O: 'Fell', D: 'Fell Schatten', L: 'Fell Glanz', W: 'Weiss', w: 'Weiss Schatten', o: 'Kontur', R: 'Halsband', P: 'Ohr innen und Zunge' };
+const presets = document.getElementById('presets'), pickers = document.getElementById('pickers');
+for (const [name, p] of Object.entries(PRESETS)) {
+  const b = document.createElement('button'); b.textContent = name;
+  b.onclick = () => { Object.assign(pal, p); syncPickers(); };
+  presets.appendChild(b);
+}
+const inputs = {};
+for (const [k, label] of Object.entries(LABELS)) {
+  const l = document.createElement('label'); l.textContent = label;
+  const i = document.createElement('input'); i.type = 'color'; i.value = pal[k];
+  i.oninput = () => { pal[k] = i.value; };
+  l.appendChild(i); pickers.appendChild(l); inputs[k] = i;
+}
+const syncPickers = () => { for (const k in inputs) inputs[k].value = pal[k]; };
+if (Q.has('coat')) { Object.assign(pal, PRESETS[Q.get('coat')] ?? {}); syncPickers(); }
+
+// ---- sprite: 48 x 30, side view facing right; paint(y, x, chars) ----
+const W = 48, H = 30;
+function base() {
+  const g = Array.from({ length: H }, () => Array(W).fill('.'));
+  const paint = (y, x, s) => { for (let i = 0; i < s.length; i++) if (s[i] !== ' ') g[y][x + i] = s[i]; };
+  // body (deep, long), drawn before the head
+  paint(11, 8, 'o'.repeat(19));
+  paint(12, 6, 'o' + 'OOO' + 'L'.repeat(14) + 'OOOO');
+  paint(13, 5, 'oD' + 'O'.repeat(22));
+  paint(14, 5, 'oD' + 'O'.repeat(23) + 'W'.repeat(8) + 'o');
+  paint(15, 5, 'oD' + 'O'.repeat(23) + 'W'.repeat(8) + 'o');
+  paint(16, 5, 'oD' + 'O'.repeat(23) + 'W'.repeat(8) + 'o');
+  paint(17, 5, 'oDD' + 'O'.repeat(21) + 'W'.repeat(8) + 'o');
+  paint(18, 5, 'oDD' + 'O'.repeat(21) + 'W'.repeat(7) + 'o');
+  paint(19, 6, 'oDD' + 'O'.repeat(19) + 'W'.repeat(7) + 'o');
+  paint(20, 6, 'oDD' + 'O'.repeat(18) + 'W'.repeat(6) + 'o');
+  paint(21, 7, 'oDD' + 'OOOO' + 'w'.repeat(17) + 'o');
+  paint(22, 8, 'o'.repeat(23));
+  // ears (far one darker)
+  paint(0, 30, 'o'); paint(1, 29, 'oDo'); paint(2, 29, 'oDDo'); paint(3, 28, 'oDDDo'); paint(4, 28, 'oDDDo');
+  paint(0, 35, 'o'); paint(1, 34, 'oOo'); paint(2, 34, 'oPOo'); paint(3, 33, 'oOPOo'); paint(4, 33, 'oOPPOo');
+  // head: round skull, orange cheeks, white blaze and muzzle, black nose
+  paint(5, 28, 'o' + 'O'.repeat(9) + 'W' + 'OO' + 'o');
+  paint(6, 27, 'o' + 'O'.repeat(10) + 'W' + 'OOO' + 'o');
+  paint(7, 27, 'o' + 'O'.repeat(7) + 'KEK' + 'WW' + 'OO' + 'o');
+  paint(8, 27, 'o' + 'O'.repeat(7) + 'KKK' + 'WWW' + 'OO' + 'o');
+  paint(9, 27, 'o' + 'O'.repeat(8) + 'K' + 'W'.repeat(7) + 'KK' + 'o');
+  paint(10, 27, 'o' + 'O'.repeat(8) + 'W'.repeat(8) + 'KK' + 'o');
+  paint(11, 27, 'o' + 'O'.repeat(7) + 'W'.repeat(8) + 'ooo');
+  paint(12, 29, 'O'.repeat(5) + 'W'.repeat(5) + 'oPPo');
+  paint(13, 29, 'OO' + 'W'.repeat(8) + 'oPPo');
+  paint(14, 35, 'oooo');
+  // collar across the neck, tag below
+  paint(12, 28, 'R'); paint(13, 28, 'RR'); paint(14, 29, 'R'); paint(15, 29, 'RR'); paint(16, 30, 'Y');
+  return { g, paint };
+}
+// tail: rows bend with the wag (-1, 0, 1), top rows move most
+const TAIL = ['...oo....', '..oLLo...', '.oLOOOo..', '.oOOOOo..', '.oOOOOo..', '..oOOOOo.', '..oOOOOo.', '...oOOOOo', '....oOOOo', '.....oOOo', '......oo.'];
+function drawTail(g, wag) {
+  TAIL.forEach((row, r) => {
+    const dx = Math.round(wag * 2 * (1 - r / 10));
+    for (let i = 0; i < row.length; i++) if (row[i] !== '.') { const x = i + dx, y = 1 + r; if (x >= 0 && x < W) g[y][x] = row[i]; }
+  });
+}
+// legs from hip to foot: coat on top, white sock, wider paw, outline around
+function drawLeg(g, hx, dx, lift, far) {
+  const coat = far ? 'D' : 'O', white = far ? 'w' : 'W', top = 22, foot = 27 - lift;
+  for (let y = top; y <= foot; y++) {
+    const k = (y - top) / Math.max(1, foot - top);
+    const cx = Math.round(hx + dx * k);
+    const fill = y - top < 2 ? coat : white;
+    if (y === foot) {
+      for (let x = cx - 2; x <= cx + 3; x++) g[y][x] = x === cx - 2 || x === cx + 3 ? 'o' : white;
+      for (let x = cx - 1; x <= cx + 2; x++) g[y + 1][x] = 'o';
+    } else {
+      g[y][cx - 2] = 'o'; g[y][cx + 2] = 'o';
+      for (let x = cx - 1; x <= cx + 1; x++) g[y][x] = fill;
+    }
+  }
+}
+const CYCLE = [[2, 0], [1, 0], [0, 0], [-1, 0], [-2, 0], [0, 2]]; // foot offset and lift per frame
+function sprite(t, walking) {
+  const fps = 9;
+  const f = Math.floor(t * fps);
+  const { g, paint } = base();
+  const tg = Array.from({ length: H }, () => Array(W).fill('.'));
+  const wagFrames = [-1, 0, 1, 0];
+  drawTail(tg, wagFrames[Math.floor(t * 10) % 4]);
+  // far legs behind the body, near legs in front
+  const legs = [{ hx: 13, ph: 0, far: true }, { hx: 30, ph: 3, far: true }, { hx: 10, ph: 3, far: false }, { hx: 27, ph: 0, far: false }];
+  const back = Array.from({ length: H }, () => Array(W).fill('.'));
+  const front = Array.from({ length: H }, () => Array(W).fill('.'));
+  for (const L of legs) {
+    const [dx, lift] = walking ? CYCLE[(f + L.ph) % 6] : [0, 0];
+    drawLeg(L.far ? back : front, L.hx, dx, lift, L.far);
+  }
+  // blink and pant
+  const bt = t % 3.3;
+  if (bt < 0.15) paint(7, 35, 'OOO'), paint(8, 35, 'ooo'), paint(9, 36, 'O');
+  if (Math.floor(t * 4) % 2 === 0 || walking) paint(14, 39, 'oPPo'), paint(15, 40, 'oo');
+  const bob = walking && f % 3 === 2 ? 1 : 0;
+  // compose: tail, far legs, body, near legs
+  const out = Array.from({ length: H }, () => Array(W).fill('.'));
+  const put = (src, oy) => src.forEach((row, y) => row.forEach((c, x) => { if (c !== '.' && y + oy >= 0 && y + oy < H) out[y + oy][x] = c; }));
+  put(tg, bob); put(back, 0); put(g, bob); put(front, 0);
+  return out;
+}
+function draw(ctx, spr, ox, oy) {
+  spr.forEach((row, y) => row.forEach((c, x) => { if (pal[c]) { ctx.fillStyle = pal[c]; ctx.fillRect(ox + x, oy + y, 1, 1); } }));
+}
+// scene backgrounds in pixels
+function scene(ctx, w, h, scroll) {
+  ctx.fillStyle = '#bfe6ff'; ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = '#d9f1ff'; ctx.fillRect(0, h * 0.35, w, h * 0.3);
+  ctx.fillStyle = '#86c45f'; ctx.fillRect(0, h - 17, w, 17);
+  ctx.fillStyle = '#9bd36f'; ctx.fillRect(0, h - 17, w, 2);
+  ctx.fillStyle = '#6fae4c';
+  for (let i = 0; i < 14; i++) { const x = ((i * 23 - scroll) % (w + 20) + w + 20) % (w + 20) - 10; ctx.fillRect(x, h - 12 + (i % 3) * 4, 3, 1); ctx.fillRect(x + 1, h - 13 + (i % 3) * 4, 1, 1); }
+}
+const walkC = document.getElementById('walk').getContext('2d');
+const idleC = document.getElementById('idle').getContext('2d');
+const now = clock();
+function frame() {
+  const t = now();
+  const f = Math.floor(t * 9);
+  scene(walkC, 96, 64, f);
+  draw(walkC, sprite(t, true), 24, 64 - 17 - 29);
+  scene(idleC, 56, 48, 0);
+  draw(idleC, sprite(t, false), 4, 48 - 17 - 29);
+  requestAnimationFrame(frame);
+}
+frame();
+</script>
+</body>
+</html>
