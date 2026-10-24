@@ -2,7 +2,7 @@
 //! `server/loginStates.ts`). The callback redeems the state exactly once, so no foreign page can slip in a login.
 //! State and time come from outside.
 
-use std::collections::VecDeque;
+use std::collections::{BTreeMap, HashMap};
 
 use subtle::ConstantTimeEq;
 
@@ -17,39 +17,48 @@ pub fn same_browser(cookie_state: Option<&str>, query_state: &str) -> bool {
 
 #[derive(Debug)]
 struct Pending<V> {
-    state: String,
+    /// Place in the order of adding
+    order: u64,
     value: V,
     expires_at: i64,
 }
 
-/// At most `limit` pending logins, the oldest drop out first
-// ponytail: linear search over at most `limit` entries, a map when the limit grows large
+/// At most `limit` pending logins, the oldest drop out first: the states by name, their order of adding by number
 #[derive(Debug)]
 pub struct LoginStates<V> {
     ttl_ms: i64,
     limit: usize,
-    open: VecDeque<Pending<V>>,
+    open: HashMap<String, Pending<V>>,
+    order: BTreeMap<u64, String>,
+    next: u64,
 }
 
 impl<V> LoginStates<V> {
     #[must_use]
-    pub const fn new(ttl_ms: i64, limit: usize) -> Self {
-        Self { ttl_ms, limit, open: VecDeque::new() }
+    pub fn new(ttl_ms: i64, limit: usize) -> Self {
+        Self { ttl_ms, limit, open: HashMap::new(), order: BTreeMap::new(), next: 0 }
     }
 
+    /// A state added again counts as new
     pub fn add(&mut self, state: &str, value: V, now: i64) {
-        self.open.retain(|pending| pending.state != state);
-        self.open.push_back(Pending { state: state.to_owned(), value, expires_at: now + self.ttl_ms });
+        if let Some(old) = self.open.remove(state) {
+            self.order.remove(&old.order);
+        }
+        let order = self.next;
+        self.next += 1;
+        self.order.insert(order, state.to_owned());
+        self.open.insert(state.to_owned(), Pending { order, value, expires_at: now + self.ttl_ms });
         // Many login clicks never fill up the memory this way
         while self.open.len() > self.limit {
-            self.open.pop_front();
+            let Some((_, oldest)) = self.order.pop_first() else { break };
+            self.open.remove(&oldest);
         }
     }
 
     /// Value for the state; `None` if unknown, already redeemed or expired
     pub fn take(&mut self, state: &str, now: i64) -> Option<V> {
-        let index = self.open.iter().position(|pending| pending.state == state)?;
-        let pending = self.open.remove(index)?;
+        let pending = self.open.remove(state)?;
+        self.order.remove(&pending.order);
         (pending.expires_at > now).then_some(pending.value)
     }
 }
@@ -81,6 +90,29 @@ mod tests {
         assert_eq!(states.take("c", NOW), None);
         assert_eq!(states.take("f", NOW), Some("f"));
         assert_eq!(states.take("d", NOW), Some("d"));
+    }
+
+    #[test]
+    fn a_re_added_state_counts_as_new() {
+        let mut states = LoginStates::new(600_000, 2);
+        states.add("a", "first", NOW);
+        states.add("b", "b", NOW);
+        states.add("a", "again", NOW);
+        states.add("c", "c", NOW);
+        assert_eq!(states.take("b", NOW), None);
+        assert_eq!(states.take("a", NOW), Some("again"));
+        assert_eq!(states.take("c", NOW), Some("c"));
+    }
+
+    #[test]
+    fn many_states_stay_within_the_limit() {
+        let mut states = LoginStates::new(600_000, 1000);
+        let names: Vec<String> = (0..5000).map(|index| format!("s{index}")).collect();
+        for name in &names {
+            states.add(name, name.clone(), NOW);
+        }
+        assert!(names[..4000].iter().all(|name| states.take(name, NOW).is_none()));
+        assert!(names[4000..].iter().all(|name| states.take(name, NOW).as_deref() == Some(name.as_str())));
     }
 
     #[test]
