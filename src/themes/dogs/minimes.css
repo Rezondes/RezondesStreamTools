@@ -1,0 +1,68 @@
+/* Minimes of the Dogs theme (scenes/Minimes.tsx), encapsulated under .theme-dogs, loaded only with the scene. Per minime
+   the core sets --x, --move, --action-ms and --facing; the running action is the class action-<name>. The dog itself
+   is a pixel image (ui/Pixels.tsx); dust and the "Z" are drawn here. Keyframes are dogs-minime-*. */
+
+.theme-dogs .dg-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; --dg-floor: var(--dg-grass-height, 14px); }
+
+/* The strip of grass along the bottom: a light top edge over the grass */
+.theme-dogs .dg-minime-grass {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--dg-grass-height, 14px);
+  background: var(--grass);
+  box-shadow: inset 0 var(--dg-grass-edge, 4px) 0 0 var(--grassLight), 0 calc(-1 * var(--dg-grass-ink, 2px)) 0 0 var(--ink);
+}
+
+.theme-dogs .dg-minime {
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--dg-floor) - var(--dg-minime-sink, 6px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateX(calc(var(--x) - 50%));
+  transition: transform var(--move) linear;
+}
+.theme-dogs .dg-minime-flip { position: relative; scale: var(--facing) 1; }
+.theme-dogs .dg-minime-dog { display: block; }
+
+/* Name on a small red pill above the dog */
+.theme-dogs .dg-minime-name {
+  margin-bottom: var(--dg-minime-name-gap, 4px);
+  padding: var(--dg-minime-name-pad, 1px 8px 3px);
+  background: var(--accent);
+  color: var(--onAccent);
+  box-shadow: 0 0 0 var(--dg-minime-name-ink, 2px) var(--ink);
+  font-family: var(--font), monospace;
+  font-weight: 600;
+  font-size: calc(var(--fontSize) * 0.6);
+  white-space: nowrap;
+}
+
+/* Sniffing: three dust pixels puff up at the nose */
+.theme-dogs .dg-minime-dust {
+  position: absolute;
+  right: var(--dg-dust-right, -4px);
+  bottom: var(--dg-dust-bottom, 6px);
+  width: var(--dg-dust, 4px);
+  height: var(--dg-dust, 4px);
+  background: var(--edge);
+  box-shadow: var(--dg-dust-gap, 8px) calc(-1 * var(--dg-dust-gap, 8px)) 0 0 var(--edge), calc(-1 * var(--dg-dust-gap, 8px)) calc(-1 * var(--dg-dust, 4px)) 0 0 var(--edge);
+  animation: dogs-minime-dust var(--dg-dust-ms, 600ms) steps(var(--dg-dust-steps, 3)) infinite;
+}
+
+/* Sleeping: the "Z" rises above the head and fades */
+.theme-dogs .dg-minime-zzz { position: absolute; right: var(--dg-zzz-right, 10%); top: var(--dg-zzz-top, -6px); animation: dogs-minime-zzz var(--dg-zzz-ms, 1800ms) steps(var(--dg-zzz-steps, 6)) infinite; }
+
+/* Appearing: the dog pops up from the grass; disappearing: it sinks away, the name fades */
+.theme-dogs .action-enter .dg-minime-flip { animation: dogs-minime-pop var(--action-ms) steps(var(--dg-pop-steps, 6)) both; }
+.theme-dogs .action-enter .dg-minime-name { animation: dogs-minime-fade var(--action-ms) ease-out both; }
+.theme-dogs .action-exit .dg-minime-flip { animation: dogs-minime-pop var(--action-ms) steps(var(--dg-pop-steps, 6)) reverse forwards; }
+.theme-dogs .action-exit .dg-minime-name { animation: dogs-minime-fade var(--action-ms) ease-in reverse forwards; }
+
+@keyframes dogs-minime-pop { from { translate: 0 100%; opacity: 0; } to { translate: 0 0; opacity: 1; } }
+@keyframes dogs-minime-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dogs-minime-dust { to { translate: var(--dg-dust-drift, 6px) calc(-1 * var(--dg-dust-rise, 10px)); opacity: 0; } }
+@keyframes dogs-minime-zzz { from { translate: 0 var(--dg-zzz-rise, 12px); opacity: 0; } 30% { opacity: 1; } to { translate: calc(-1 * var(--dg-zzz-drift, 8px)) calc(-1 * var(--dg-zzz-rise, 12px)); opacity: 0; } }

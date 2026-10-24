@@ -7,10 +7,12 @@ import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, inScene, lines, markBasic, number, sound, text, withDefaults } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
+import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { BREED_IDS, BREEDS } from "./breeds.ts";
 import { COATS, coatKey, type Coat } from "./coats.ts";
+import { DOG_SET } from "./minimes.ts";
 
 const FONTS = ["Pixelify Sans", "VT323", "Silkscreen"] as const;
 const BARK_VOICES = ["klein", "mittel", "gross"] as const;
@@ -28,6 +30,8 @@ const RAID = "Raid";
 const TOYS = ["ball", "knochen", "frisbee", "leckerli"] as const;
 const STINGER = "Stinger";
 const BANNER = "Banner";
+const MINIME_DOGS = "Minimes: Hunde";
+const MINIME_SOUNDS = "Minimes: Töne";
 const CHAT = "Chat";
 const CAM = "Kamera-Rahmen";
 const MUSIC = "Musik";
@@ -305,6 +309,26 @@ const FIELDS = [
   text("bannerProfileText", "Profilbanner: Zeile", BANNER, "Willkommen im Rudel!", 80),
   text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "OFFLINE", 40),
   text("bannerOfflineText", "Offline-Banner: Zeile ({dog})", BANNER, "{dog} schläft. Bis bald!", 80),
+
+  // Minimes: core fields plus the look and the own actions of the dogs (minimes.ts); the type is the breed
+  ...MINIME_BASE_FIELDS,
+  number("minimeScale", "Grösse (Bildschirmpixel je Pixel)", MINIME_DOGS, 3, 2, 8),
+  flag("minimeGrass", "Grasstreifen unten", MINIME_DOGS, true),
+  flag("minimeNameTag", "Namensschild", MINIME_DOGS, true),
+  number("minimeBarkWeight", "Bellen: Häufigkeit", MINIME_DOGS, 3, 0, 100),
+  number("minimeBarkMs", "Bellen: Dauer", MINIME_DOGS, 900, 200, 10000, "ms"),
+  number("minimeSniffWeight", "Schnüffeln: Häufigkeit", MINIME_DOGS, 3, 0, 100),
+  number("minimeSniffMs", "Schnüffeln: Dauer", MINIME_DOGS, 2000, 200, 10000, "ms"),
+  number("minimeLieWeight", "Liegen: Häufigkeit", MINIME_DOGS, 2, 0, 100),
+  number("minimeLieMs", "Liegen: Dauer", MINIME_DOGS, 4000, 200, 30000, "ms"),
+  number("minimeSleepWeight", "Schlafen: Häufigkeit", MINIME_DOGS, 1, 0, 100),
+  number("minimeSleepMs", "Schlafen: Dauer", MINIME_DOGS, 6000, 200, 60000, "ms"),
+  number("minimeWagMs", "Reaktion auf Chat (schnelles Wedeln): Dauer", MINIME_DOGS, 1200, 200, 5000, "ms"),
+  ...withDefaults([
+    sound("soundMinimeBark", "Bellen", MINIME_SOUNDS),
+    sound("soundMinimeSniff", "Schnüffeln", MINIME_SOUNDS),
+    sound("soundMinimeWag", "Wedeln bei Chat", MINIME_SOUNDS),
+  ], { soundMinimeBark: volume(0.3), soundMinimeSniff: volume(0), soundMinimeWag: volume(0.2) }),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -324,11 +348,18 @@ const GROUP_SCENES = {
   [INFO_GROUP]: ["info"],
   [STINGER]: [],
   [BANNER]: [],
+  [MINIME_COMMANDS]: ["minimes"],
+  [MINIME_RULES]: ["minimes"],
+  [MINIME_MOTION]: ["minimes"],
+  [MINIME_VARIANTS]: ["minimes"],
+  [MINIME_DOGS]: ["minimes"],
+  [MINIME_SOUNDS]: ["minimes"],
 } as const;
 
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
-const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "endingStats", "followLine", "subLine", "raidLine", "cheerLine", "alertBark", "chatStyle", "chatBadges", "camLabel", "musicStyle", "musicLabel", "fxText"];
+const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "endingStats", "followLine", "subLine", "raidLine", "cheerLine", "alertBark", "chatStyle", "chatBadges", "camLabel", "musicStyle", "musicLabel", "fxText", "minimeNameTag"];
 
-export const dogsSettings: ThemeSchema = { id: "dogs", name: "Dogs", fields: markBasic(withStingerFields(FIELDS, STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };
+export const dogsSettings: ThemeSchema = { id: "dogs", name: "Dogs", fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(DOG_SET)], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize,
+  minimeVariants: DOG_SET };

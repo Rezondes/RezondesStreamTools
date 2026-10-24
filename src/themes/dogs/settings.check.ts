@@ -6,11 +6,14 @@ import { resolveSettings } from "../../core/settings.ts";
 import { auditTheme } from "../schemaAudit.ts";
 import { BREED_IDS } from "./breeds.ts";
 import { COAT_PARTS, COATS, coatKey, coatPalette } from "./coats.ts";
+import { DOG_ACTIONS } from "./minimes.ts";
 import { dogsSettings } from "./settings.ts";
 
-// Schema: no errors, every key used; coat colors, bark voices and raid breeds are built keys (coatPalette, barkVoiceOf, raidBreeds, chatBreeds read them)
+// Schema: no errors, every key used; coat colors, bark voices, raid and chat breeds and the minime actions are built
+// keys (coatPalette, barkVoiceOf, raidBreeds, chatBreeds, minimeCatalog read them)
 const coatKeys = COATS.flatMap(variant => COAT_PARTS.map(part => coatKey(variant, part)));
-const builtKeys = [...coatKeys, ...BREED_IDS.flatMap(breed => [`barkVoice_${breed}`, `raidBreed_${breed}`, `chatBreed_${breed}`])];
+const actionKeys = DOG_ACTIONS.flatMap(action => ["Ms", "Weight"].map(part => `minime${action.charAt(0).toUpperCase()}${action.slice(1)}${part}`));
+const builtKeys = [...coatKeys, ...actionKeys, ...BREED_IDS.flatMap(breed => [`barkVoice_${breed}`, `raidBreed_${breed}`, `chatBreed_${breed}`])];
 const audit = auditTheme(dogsSettings, import.meta.dirname);
 assert.deepEqual(audit.errors, []);
 assert.deepEqual(audit.unused.filter(key => !builtKeys.includes(key)), [], `unused keys: ${audit.unused.join(", ")}`);

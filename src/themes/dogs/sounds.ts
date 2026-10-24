@@ -25,6 +25,9 @@ export const DOG_SOUNDS = {
   alertCard: { file: "alert-card", field: "soundAlertCard" },
   alertLeave: { file: "alert-leave", field: "soundAlertLeave" },
   alertRaid: { file: "alert-raid", field: "soundRaid" },
+  minimeBark: { file: "minimes-bark", field: "soundMinimeBark" },
+  minimeSniff: { file: "minimes-sniff", field: "soundMinimeSniff" },
+  minimeWag: { file: "minimes-wag", field: "soundMinimeWag" },
 } as const;
 export type DogSound = keyof typeof DOG_SOUNDS;
 export type SoundFile = (typeof DOG_SOUNDS)[DogSound]["file"] | (typeof BARK_FILES)[BarkVoice];

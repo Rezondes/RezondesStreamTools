@@ -3000,6 +3000,432 @@
       "group": "Banner",
       "default": "{dog} schläft. Bis bald!",
       "maxLength": 80
+    },
+    {
+      "key": "minimeJoinCommand",
+      "type": "text",
+      "label": "Befehl: einklinken (optional mit Farbe oder Typ)",
+      "group": "Minimes: Befehle",
+      "default": "!join",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeLeaveCommand",
+      "type": "text",
+      "label": "Befehl: verlassen (Mods: mit @name rauswerfen)",
+      "group": "Minimes: Befehle",
+      "default": "!leave",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeJoinRole",
+      "type": "select",
+      "label": "Einklinken ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "everyone",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeKickRole",
+      "type": "select",
+      "label": "Fremde rauswerfen ab Rolle",
+      "group": "Minimes: Befehle",
+      "default": "moderator",
+      "options": [
+        "everyone",
+        "subscriber",
+        "vip",
+        "moderator",
+        "broadcaster"
+      ]
+    },
+    {
+      "key": "minimeColorJoins",
+      "type": "boolean",
+      "label": "Befehl für Farbe oder Typ klinkt auch ein",
+      "group": "Minimes: Befehle",
+      "default": true
+    },
+    {
+      "key": "minimeMax",
+      "type": "number",
+      "label": "Höchstzahl gleichzeitig",
+      "group": "Minimes: Regeln",
+      "default": 30,
+      "min": 1,
+      "max": 100,
+      "basic": true
+    },
+    {
+      "key": "minimeWhenFull",
+      "type": "select",
+      "label": "Wenn voll: Inaktivsten ersetzen (replace) oder Neue abweisen (reject)",
+      "group": "Minimes: Regeln",
+      "default": "replace",
+      "options": [
+        "replace",
+        "reject"
+      ]
+    },
+    {
+      "key": "minimeIdleMinutes",
+      "type": "number",
+      "label": "Verschwindet nach Minuten ohne Nachricht (0 = nie)",
+      "group": "Minimes: Regeln",
+      "default": 20,
+      "min": 0,
+      "max": 240
+    },
+    {
+      "key": "minimeColorCooldown",
+      "type": "number",
+      "label": "Abklingzeit Farb- oder Typwechsel",
+      "group": "Minimes: Regeln",
+      "default": 10,
+      "min": 0,
+      "max": 300,
+      "unit": "s"
+    },
+    {
+      "key": "minimeChatKeepsAlive",
+      "type": "boolean",
+      "label": "Chatnachrichten halten das Minime im Bild",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeReactToChat",
+      "type": "boolean",
+      "label": "Minime reagiert auf Chatnachrichten",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeClearOffline",
+      "type": "boolean",
+      "label": "Alle entfernen, wenn der Stream endet",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeRemoveOnBan",
+      "type": "boolean",
+      "label": "Bei Ban oder Timeout entfernen",
+      "group": "Minimes: Regeln",
+      "default": true
+    },
+    {
+      "key": "minimeSpeed",
+      "type": "number",
+      "label": "Laufgeschwindigkeit (px pro Sekunde)",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 5,
+      "max": 600
+    },
+    {
+      "key": "minimeMargin",
+      "type": "number",
+      "label": "Abstand zum Rand",
+      "group": "Minimes: Bewegung",
+      "default": 60,
+      "min": 0,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMin",
+      "type": "number",
+      "label": "Kürzeste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 100,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkMax",
+      "type": "number",
+      "label": "Längste Laufstrecke",
+      "group": "Minimes: Bewegung",
+      "default": 600,
+      "min": 10,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWalkWeight",
+      "type": "number",
+      "label": "Häufigkeit: wandern",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleWeight",
+      "type": "number",
+      "label": "Häufigkeit: auf der Stelle schweben",
+      "group": "Minimes: Bewegung",
+      "default": 40,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeIdleMinMs",
+      "type": "number",
+      "label": "Schweben mindestens",
+      "group": "Minimes: Bewegung",
+      "default": 2000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeIdleMaxMs",
+      "type": "number",
+      "label": "Schweben höchstens",
+      "group": "Minimes: Bewegung",
+      "default": 6000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeEnterMs",
+      "type": "number",
+      "label": "Dauer: erscheinen",
+      "group": "Minimes: Bewegung",
+      "default": 1200,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeExitMs",
+      "type": "number",
+      "label": "Dauer: verschwinden",
+      "group": "Minimes: Bewegung",
+      "default": 900,
+      "min": 0,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimePlacement",
+      "type": "select",
+      "label": "Plätze: frei verteilt (random) oder feste Plätze (slots)",
+      "group": "Minimes: Bewegung",
+      "default": "random",
+      "options": [
+        "random",
+        "slots"
+      ]
+    },
+    {
+      "key": "minimeScale",
+      "type": "number",
+      "label": "Grösse (Bildschirmpixel je Pixel)",
+      "group": "Minimes: Hunde",
+      "default": 3,
+      "min": 2,
+      "max": 8
+    },
+    {
+      "key": "minimeGrass",
+      "type": "boolean",
+      "label": "Grasstreifen unten",
+      "group": "Minimes: Hunde",
+      "default": true
+    },
+    {
+      "key": "minimeNameTag",
+      "type": "boolean",
+      "label": "Namensschild",
+      "group": "Minimes: Hunde",
+      "default": true,
+      "basic": true
+    },
+    {
+      "key": "minimeBarkWeight",
+      "type": "number",
+      "label": "Bellen: Häufigkeit",
+      "group": "Minimes: Hunde",
+      "default": 3,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeBarkMs",
+      "type": "number",
+      "label": "Bellen: Dauer",
+      "group": "Minimes: Hunde",
+      "default": 900,
+      "min": 200,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeSniffWeight",
+      "type": "number",
+      "label": "Schnüffeln: Häufigkeit",
+      "group": "Minimes: Hunde",
+      "default": 3,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeSniffMs",
+      "type": "number",
+      "label": "Schnüffeln: Dauer",
+      "group": "Minimes: Hunde",
+      "default": 2000,
+      "min": 200,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeLieWeight",
+      "type": "number",
+      "label": "Liegen: Häufigkeit",
+      "group": "Minimes: Hunde",
+      "default": 2,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeLieMs",
+      "type": "number",
+      "label": "Liegen: Dauer",
+      "group": "Minimes: Hunde",
+      "default": 4000,
+      "min": 200,
+      "max": 30000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeSleepWeight",
+      "type": "number",
+      "label": "Schlafen: Häufigkeit",
+      "group": "Minimes: Hunde",
+      "default": 1,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "minimeSleepMs",
+      "type": "number",
+      "label": "Schlafen: Dauer",
+      "group": "Minimes: Hunde",
+      "default": 6000,
+      "min": 200,
+      "max": 60000,
+      "unit": "ms"
+    },
+    {
+      "key": "minimeWagMs",
+      "type": "number",
+      "label": "Reaktion auf Chat (schnelles Wedeln): Dauer",
+      "group": "Minimes: Hunde",
+      "default": 1200,
+      "min": 200,
+      "max": 5000,
+      "unit": "ms"
+    },
+    {
+      "key": "soundMinimeBark",
+      "type": "sound",
+      "label": "Bellen",
+      "group": "Minimes: Töne",
+      "default": {
+        "file": "",
+        "volume": 0.3
+      }
+    },
+    {
+      "key": "soundMinimeSniff",
+      "type": "sound",
+      "label": "Schnüffeln",
+      "group": "Minimes: Töne",
+      "default": {
+        "file": "",
+        "volume": 0
+      }
+    },
+    {
+      "key": "soundMinimeWag",
+      "type": "sound",
+      "label": "Wedeln bei Chat",
+      "group": "Minimes: Töne",
+      "default": {
+        "file": "",
+        "volume": 0.2
+      }
+    },
+    {
+      "key": "minimeVariantCommand",
+      "type": "text",
+      "label": "Befehl: Rasse wählen",
+      "group": "Minimes: Typen",
+      "default": "!rasse",
+      "maxLength": 25,
+      "basic": true
+    },
+    {
+      "key": "minimeNames_corgi",
+      "type": "text",
+      "label": "Corgi: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "corgi, welsh",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_shiba",
+      "type": "text",
+      "label": "Shiba: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "shiba, inu",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_labrador",
+      "type": "text",
+      "label": "Labrador: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "labrador, lab",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_dalmatiner",
+      "type": "text",
+      "label": "Dalmatiner: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "dalmatiner, dalmi",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_dackel",
+      "type": "text",
+      "label": "Dackel: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "dackel, dachshund",
+      "maxLength": 200
+    },
+    {
+      "key": "minimeNames_mops",
+      "type": "text",
+      "label": "Mops: Namen im Chat (leer = aus)",
+      "group": "Minimes: Typen",
+      "default": "mops, pug",
+      "maxLength": 200
     }
   ],
   "groupScenes": {
@@ -3039,7 +3465,79 @@
       "info"
     ],
     "Stinger": [],
-    "Banner": []
+    "Banner": [],
+    "Minimes: Befehle": [
+      "minimes"
+    ],
+    "Minimes: Regeln": [
+      "minimes"
+    ],
+    "Minimes: Bewegung": [
+      "minimes"
+    ],
+    "Minimes: Typen": [
+      "minimes"
+    ],
+    "Minimes: Hunde": [
+      "minimes"
+    ],
+    "Minimes: Töne": [
+      "minimes"
+    ]
+  },
+  "minimeVariants": {
+    "command": "!rasse",
+    "label": "Rasse",
+    "variants": [
+      {
+        "id": "corgi",
+        "label": "Corgi",
+        "names": [
+          "corgi",
+          "welsh"
+        ]
+      },
+      {
+        "id": "shiba",
+        "label": "Shiba",
+        "names": [
+          "shiba",
+          "inu"
+        ]
+      },
+      {
+        "id": "labrador",
+        "label": "Labrador",
+        "names": [
+          "labrador",
+          "lab"
+        ]
+      },
+      {
+        "id": "dalmatiner",
+        "label": "Dalmatiner",
+        "names": [
+          "dalmatiner",
+          "dalmi"
+        ]
+      },
+      {
+        "id": "dackel",
+        "label": "Dackel",
+        "names": [
+          "dackel",
+          "dachshund"
+        ]
+      },
+      {
+        "id": "mops",
+        "label": "Mops",
+        "names": [
+          "mops",
+          "pug"
+        ]
+      }
+    ]
   },
   "personalize": {
     "neo": {

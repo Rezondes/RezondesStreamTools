@@ -14,8 +14,11 @@ use crate::settings::field::{
 use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
+use crate::themes::minime_fields::{
+    MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minime_base_fields, minime_variant_fields,
+};
 use crate::themes::registry::Theme;
-use crate::themes::schema::{SceneName, ThemeSchema};
+use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
 
 const FONTS: [&str; 3] = ["Pixelify Sans", "VT323", "Silkscreen"];
@@ -33,6 +36,8 @@ const RAID: &str = "Raid";
 const TOYS: [&str; 4] = ["ball", "knochen", "frisbee", "leckerli"];
 const STINGER: &str = "Stinger";
 const BANNER: &str = "Banner";
+const MINIME_DOGS: &str = "Minimes: Hunde";
+const MINIME_SOUNDS: &str = "Minimes: Töne";
 const CHAT: &str = "Chat";
 const CAM: &str = "Kamera-Rahmen";
 const MUSIC: &str = "Musik";
@@ -483,6 +488,68 @@ fn clips() -> Vec<SettingField> {
     ]
 }
 
+/// The six breeds as minime variants (template: `DOG_SET` in `src/themes/dogs/minimes.ts`)
+fn variants() -> MinimeVariantSet {
+    let names: [(&str, &[&str]); 6] = [
+        ("corgi", &["corgi", "welsh"]),
+        ("shiba", &["shiba", "inu"]),
+        ("labrador", &["labrador", "lab"]),
+        ("dalmatiner", &["dalmatiner", "dalmi"]),
+        ("dackel", &["dackel", "dachshund"]),
+        ("mops", &["mops", "pug"]),
+    ];
+    MinimeVariantSet {
+        command: "!rasse".to_owned(),
+        label: "Rasse".to_owned(),
+        variants: names
+            .iter()
+            .map(|(id, chat)| MinimeVariantInfo {
+                id: (*id).to_owned(),
+                label: breed_name(id).to_owned(),
+                names: chat.iter().map(|name| (*name).to_owned()).collect(),
+                color: None,
+            })
+            .collect(),
+    }
+}
+
+/// Minimes: core fields plus the look and the own actions of the dogs, and their sounds
+fn minimes() -> Vec<SettingField> {
+    let mut fields = minime_base_fields();
+    fields.extend(vec![
+        number("minimeScale", "Grösse (Bildschirmpixel je Pixel)", MINIME_DOGS, 3.0, 2.0, 8.0, None, None),
+        flag("minimeGrass", "Grasstreifen unten", MINIME_DOGS, true),
+        flag("minimeNameTag", "Namensschild", MINIME_DOGS, true),
+        number("minimeBarkWeight", "Bellen: Häufigkeit", MINIME_DOGS, 3.0, 0.0, 100.0, None, None),
+        number("minimeBarkMs", "Bellen: Dauer", MINIME_DOGS, 900.0, 200.0, 10_000.0, MS, None),
+        number("minimeSniffWeight", "Schnüffeln: Häufigkeit", MINIME_DOGS, 3.0, 0.0, 100.0, None, None),
+        number("minimeSniffMs", "Schnüffeln: Dauer", MINIME_DOGS, 2000.0, 200.0, 10_000.0, MS, None),
+        number("minimeLieWeight", "Liegen: Häufigkeit", MINIME_DOGS, 2.0, 0.0, 100.0, None, None),
+        number("minimeLieMs", "Liegen: Dauer", MINIME_DOGS, 4000.0, 200.0, 30_000.0, MS, None),
+        number("minimeSleepWeight", "Schlafen: Häufigkeit", MINIME_DOGS, 1.0, 0.0, 100.0, None, None),
+        number("minimeSleepMs", "Schlafen: Dauer", MINIME_DOGS, 6000.0, 200.0, 60_000.0, MS, None),
+        number(
+            "minimeWagMs",
+            "Reaktion auf Chat (schnelles Wedeln): Dauer",
+            MINIME_DOGS,
+            1200.0,
+            200.0,
+            5000.0,
+            MS,
+            None,
+        ),
+    ]);
+    fields.extend(with_defaults(
+        vec![
+            sound("soundMinimeBark", "Bellen", MINIME_SOUNDS),
+            sound("soundMinimeSniff", "Schnüffeln", MINIME_SOUNDS),
+            sound("soundMinimeWag", "Wedeln bei Chat", MINIME_SOUNDS),
+        ],
+        &[("soundMinimeBark", volume(0.3)), ("soundMinimeSniff", volume(0.0)), ("soundMinimeWag", volume(0.2))],
+    ));
+    fields
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     BTreeMap::from([
         (WORLD.to_owned(), vec![SceneName::Starting, SceneName::Brb]),
@@ -498,6 +565,12 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (INFO_GROUP.to_owned(), vec![SceneName::Info]),
         (STINGER.to_owned(), vec![]),
         (BANNER.to_owned(), vec![]),
+        (MINIME_COMMANDS.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_RULES.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_MOTION.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_VARIANTS.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_DOGS.to_owned(), vec![SceneName::Minimes]),
+        (MINIME_SOUNDS.to_owned(), vec![SceneName::Minimes]),
     ])
 }
 
@@ -535,6 +608,7 @@ const BASIC: &[&str] = &[
     "musicStyle",
     "musicLabel",
     "fxText",
+    "minimeNameTag",
 ];
 
 #[must_use]
@@ -554,6 +628,8 @@ pub fn dogs() -> Theme {
         cam_music_fx(),
         info(),
         clips(),
+        minimes(),
+        minime_variant_fields(&variants()),
     ]
     .concat();
     let schema = ThemeSchema {
@@ -561,7 +637,7 @@ pub fn dogs() -> Theme {
         name: "Dogs".to_owned(),
         fields: mark_basic(with_stinger_fields(fields, STINGER, 60.0, 0.0), BASIC),
         group_scenes: group_scenes(),
-        minime_variants: None,
+        minime_variants: Some(variants()),
         minime_teams: None,
     };
     Theme { schema, personalize }

@@ -20,6 +20,9 @@ import brbSteps from "./sounds/brb-steps.ogg";
 import endingLamp from "./sounds/ending-lamp.ogg";
 import endingLie from "./sounds/ending-lie.ogg";
 import endingSnore from "./sounds/ending-snore.ogg";
+import minimeBark from "./sounds/minimes-bark.ogg";
+import minimeSniff from "./sounds/minimes-sniff.ogg";
+import minimeWag from "./sounds/minimes-wag.ogg";
 import startingCard from "./sounds/starting-card.ogg";
 import startingChosen from "./sounds/starting-chosen.ogg";
 import startingHop from "./sounds/starting-hop.ogg";
@@ -31,6 +34,7 @@ const URLS: Record<SoundFile, string> = {
   "alert-run": alertRun, "alert-toy-ball": toyBall, "alert-toy-bone": toyBone, "alert-toy-frisbee": toyFrisbee, "alert-toy-treat": toyTreat,
   "alert-card": alertCard, "alert-leave": alertLeave, "alert-raid": alertRaid,
   "brb-sniff": brbSniff, "brb-steps": brbSteps, "ending-lie": endingLie, "ending-lamp": endingLamp, "ending-snore": endingSnore,
+  "minimes-bark": minimeBark, "minimes-sniff": minimeSniff, "minimes-wag": minimeWag,
 };
 
 type SoundValues = Readonly<Record<string, unknown>> & { soundMaxVoices: number };
