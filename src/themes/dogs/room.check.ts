@@ -25,6 +25,12 @@ for (const breed of BREED_IDS) {
   assert.ok(lowest >= basket.frontTop && lowest <= basket.frontTop + basket.front.height, `${breed}: lower edge ${lowest} behind the front rim from ${basket.frontTop}`);
 }
 assert.ok(basket.backTop < basket.frontTop, "the back rim is above the front rim");
+// No gap at the sides: from the outer edge of the back rim down to the front rim every row is painted
+for (const x of [1, basket.back.width - 2]) {
+  const painted = (image: typeof basket.back, top: number, y: number) => y >= top && y < top + image.height && image.colors[(y - top) * image.width + x] !== null;
+  const first = basket.backTop + basket.back.colors.findIndex((color, index) => color !== null && index % basket.back.width === x) / basket.back.width;
+  for (let y = Math.floor(first); y <= basket.frontTop; y++) assert.ok(painted(basket.back, basket.backTop, y) || painted(basket.front, basket.frontTop, y), `basket side at ${x}, ${y}`);
+}
 assert.deepEqual(starsOf(16, 1), starsOf(16, 1));
 assert.notDeepEqual(starsOf(16, 1), starsOf(16, 2));
 assert.equal(starsOf(16, 1).length, 16);

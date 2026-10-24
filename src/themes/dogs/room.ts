@@ -140,6 +140,12 @@ export function basketImages(colors: RoomColors, height: number): Basket {
   disc(back, middle, centerY, BASKET.radiusX + 1, BASKET.radiusY + 1, colors.ink, true);
   disc(back, middle, centerY, BASKET.radiusX, BASKET.radiusY, colors.basket, true);
   disc(back, middle, centerY, BASKET.radiusX - 4, BASKET.radiusY - 3, mixHex(colors.basket, colors.ink, MIX.basketInner), true);
+  // The sides go straight down from the widest row to the front rim, so no floor shows between the rims
+  for (let row = centerY + 1; row < centerY + BASKET.rim; row++) {
+    fillRect(back, middle - BASKET.radiusX - 1, row, 2 * BASKET.radiusX + 3, 1, colors.ink);
+    fillRect(back, middle - BASKET.radiusX, row, 2 * BASKET.radiusX + 1, 1, colors.basket);
+    fillRect(back, middle - BASKET.radiusX + 4, row, 2 * BASKET.radiusX - 7, 1, mixHex(colors.basket, colors.ink, MIX.basketInner));
+  }
   outlinedDisc(back, middle, centerY + 3, BASKET.cushion[0], BASKET.cushion[1], colors.pillow, colors.ink);
   const front = blankImage(width, BASKET.rows + 2);
   for (let row = 0; row < BASKET.rows; row++) {
