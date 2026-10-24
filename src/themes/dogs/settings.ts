@@ -2,6 +2,7 @@
 // the theme with fixed colors, texts and numbers. The coat colors of the 18 variants come from one table (COAT_COLORS,
 // keys like corgiRotweissBase, coats.ts); server-rs/.../themes/dogs.rs builds the same fields from the same table.
 // DogsValues is the type of the resolved values that the scenes read via useDogs.
+import { alertSoundFields } from "../../core/alerts/alerts.ts";
 import { choice, color, flag, font, inScene, lines, markBasic, number, sound, text, withDefaults } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
@@ -20,6 +21,9 @@ const WORLD = "Welt";
 const STARTING = "Starting";
 const BRB = "BRB";
 const ENDING = "Ending";
+const ALERTS = "Alerts";
+const RAID = "Raid";
+const TOYS = ["ball", "knochen", "frisbee", "leckerli"] as const;
 const STINGER = "Stinger";
 
 // Per variant: base, mark, dark, nose (defaults of the prototypes, refs/dog.js)
@@ -182,6 +186,62 @@ const FIELDS = [
   inScene("ending", number("lampDimTo", "Lampe: gedimmt bei", ENDING, 7.5, 0, 120, "s", 0.5)),
   inScene("ending", flag("zzz", "Z beim Schlafen", ENDING, true)),
   inScene("ending", number("zzzEvery", "Z: Dauer je Aufstieg", ENDING, 1.8, 0.5, 10, "s", 0.1)),
+
+  // Per kind: head line ({amount}) and line under the name (placeholders {user}, {amount}, {detail}, {text})
+  text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOWER"),
+  text("followLine", "Follow: Zeile", ALERTS, "gehört jetzt zum Rudel!"),
+  text("subTag", "Sub: Kopfzeile", ALERTS, "NEUES ABO"),
+  text("subLine", "Sub: Zeile", ALERTS, "ist jetzt Teil des Rudels!"),
+  text("resubTag", "Resub: Kopfzeile", ALERTS, "ABO x{amount}"),
+  text("resubLine", "Resub: Zeile", ALERTS, "seit {amount} Monaten im Rudel!"),
+  text("giftTag", "Gift: Kopfzeile", ALERTS, "ABOS VERSCHENKT"),
+  text("giftLine", "Gift: Zeile", ALERTS, "verschenkt {amount} Abos ans Rudel!"),
+  text("raidTag", "Raid: Kopfzeile", ALERTS, "RAID"),
+  text("raidLine", "Raid: Zeile", ALERTS, "kommt mit {amount} Hunden vorbei!"),
+  text("raidLineOne", "Raid: Zeile bei einem Hund", ALERTS, "kommt mit einem Hund vorbei!"),
+  text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} BITS"),
+  text("cheerLine", "Bits: Zeile", ALERTS, "Danke für die Frisbee-Runde!"),
+  text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "KANALPUNKTE"),
+  text("redeemLine", "Kanalpunkte: Zeile", ALERTS, "löst {detail} ein!"),
+  text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "HYPE TRAIN"),
+  text("hypeBeginLine", "Hype Train: Start", ALERTS, "Das ganze Rudel rennt los!"),
+  text("hypeEndLine", "Hype Train: Ende", ALERTS, "Hype Train Level {amount} geschafft!"),
+  flag("alertQuote", "Nachricht statt Zeile zeigen", ALERTS, true),
+  text("quoteFormat", "Nachricht ({text})", ALERTS, "„{text}“"),
+  number("alertDuration", "Dauer (ohne Raid)", ALERTS, 8.2, 6, 60, "s", 0.1),
+  text("alertBark", "Sprechblase", ALERTS, "Wuff!", 20),
+  choice("toyFollow", "Spielzeug: Follow", ALERTS, "ball", TOYS),
+  choice("toySub", "Spielzeug: Sub und Resub", ALERTS, "knochen", TOYS),
+  choice("toyGift", "Spielzeug: Gift", ALERTS, "knochen", TOYS),
+  choice("toyRaid", "Spielzeug: Raid", ALERTS, "ball", TOYS),
+  choice("toyCheer", "Spielzeug: Bits", ALERTS, "frisbee", TOYS),
+  choice("toyRedeem", "Spielzeug: Kanalpunkte", ALERTS, "leckerli", TOYS),
+  choice("toyHype", "Spielzeug: Hype Train", ALERTS, "frisbee", TOYS),
+  color("toyBoneColor", "Knochen: Farbe", ALERTS, "#fff6e6"),
+  color("toyFrisbeeColor", "Frisbee: Farbe", ALERTS, "#c24535"),
+  color("toyTreatColor", "Leckerli: Farbe", ALERTS, "#a8754a"),
+  number("dropBounce", "Spielzeug: Sprunghöhe", ALERTS, 14, 0, 60),
+  number("cardTop", "Karte: Abstand von oben", ALERTS, 440, 0, 900, "px"),
+  ...withDefaults([
+    sound("soundAlertRun", "Eingebaut: Hereinrennen", ALERTS),
+    sound("soundAlertToy", "Eingebaut: Spielzeug", ALERTS),
+    sound("soundAlertCard", "Eingebaut: Karte", ALERTS),
+    sound("soundAlertLeave", "Eingebaut: Hinausrennen", ALERTS),
+  ], { soundAlertRun: volume(0.5), soundAlertToy: volume(0.5), soundAlertCard: volume(0.5), soundAlertLeave: volume(0.4) }),
+  ...withDefaults([...alertSoundFields(ALERTS)], { soundRaid: volume(0.5) }),
+
+  flag("raidPack", "Ein Hund je Raider", RAID, true),
+  number("raidMaxOnScreen", "Hunde gleichzeitig höchstens", RAID, 12, 1, 40),
+  // fixed: at most 1000 dogs in all, every one is planned up front
+  number("raidMaxDogs", "Hunde insgesamt höchstens", RAID, 300, 0, 1000),
+  number("raidCrossMs", "Lauf durchs Bild: Dauer", RAID, 2400, 800, 10000, "ms"),
+  number("raidSpeedSpread", "Tempo: Streuung", RAID, 20, 0, 60, "%"),
+  number("raidLanes", "Spuren", RAID, 4, 1, 8),
+  number("raidLaneGap", "Abstand der Spuren", RAID, 3, 0, 10),
+  number("raidBarkEvery", "Bellen beim Warten: alle", RAID, 5, 1, 60, "s", 0.5),
+  number("raidSeed", "Startwert", RAID, 1, 1, 9999),
+  number("raidBarkShare", "Anteil der Läufe, die beim Erscheinen bellen", RAID, 25, 0, 100, "%"),
+  ...BREED_IDS.map(id => flag(`raidBreed_${id}`, `Rudel: ${BREEDS[id].name}`, RAID, true)),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -192,12 +252,14 @@ const GROUP_SCENES = {
   [STARTING]: ["starting"],
   [BRB]: ["brb"],
   [ENDING]: ["ending"],
+  [ALERTS]: ["alerts"],
+  [RAID]: ["alerts"],
   [STINGER]: [],
 } as const;
 
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
-const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "endingStats"];
+const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "endingStats", "followLine", "subLine", "raidLine", "cheerLine", "alertBark"];
 
 export const dogsSettings: ThemeSchema = { id: "dogs", name: "Dogs", fields: markBasic(withStingerFields(FIELDS, STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };

@@ -1691,6 +1691,585 @@
       "scene": "ending"
     },
     {
+      "key": "followTag",
+      "type": "text",
+      "label": "Follow: Kopfzeile",
+      "group": "Alerts",
+      "default": "NEUER FOLLOWER",
+      "maxLength": 200
+    },
+    {
+      "key": "followLine",
+      "type": "text",
+      "label": "Follow: Zeile",
+      "group": "Alerts",
+      "default": "gehört jetzt zum Rudel!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "subTag",
+      "type": "text",
+      "label": "Sub: Kopfzeile",
+      "group": "Alerts",
+      "default": "NEUES ABO",
+      "maxLength": 200
+    },
+    {
+      "key": "subLine",
+      "type": "text",
+      "label": "Sub: Zeile",
+      "group": "Alerts",
+      "default": "ist jetzt Teil des Rudels!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "resubTag",
+      "type": "text",
+      "label": "Resub: Kopfzeile",
+      "group": "Alerts",
+      "default": "ABO x{amount}",
+      "maxLength": 200
+    },
+    {
+      "key": "resubLine",
+      "type": "text",
+      "label": "Resub: Zeile",
+      "group": "Alerts",
+      "default": "seit {amount} Monaten im Rudel!",
+      "maxLength": 200
+    },
+    {
+      "key": "giftTag",
+      "type": "text",
+      "label": "Gift: Kopfzeile",
+      "group": "Alerts",
+      "default": "ABOS VERSCHENKT",
+      "maxLength": 200
+    },
+    {
+      "key": "giftLine",
+      "type": "text",
+      "label": "Gift: Zeile",
+      "group": "Alerts",
+      "default": "verschenkt {amount} Abos ans Rudel!",
+      "maxLength": 200
+    },
+    {
+      "key": "raidTag",
+      "type": "text",
+      "label": "Raid: Kopfzeile",
+      "group": "Alerts",
+      "default": "RAID",
+      "maxLength": 200
+    },
+    {
+      "key": "raidLine",
+      "type": "text",
+      "label": "Raid: Zeile",
+      "group": "Alerts",
+      "default": "kommt mit {amount} Hunden vorbei!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "raidLineOne",
+      "type": "text",
+      "label": "Raid: Zeile bei einem Hund",
+      "group": "Alerts",
+      "default": "kommt mit einem Hund vorbei!",
+      "maxLength": 200
+    },
+    {
+      "key": "cheerTag",
+      "type": "text",
+      "label": "Bits: Kopfzeile",
+      "group": "Alerts",
+      "default": "{amount} BITS",
+      "maxLength": 200
+    },
+    {
+      "key": "cheerLine",
+      "type": "text",
+      "label": "Bits: Zeile",
+      "group": "Alerts",
+      "default": "Danke für die Frisbee-Runde!",
+      "maxLength": 200,
+      "basic": true
+    },
+    {
+      "key": "redeemTag",
+      "type": "text",
+      "label": "Kanalpunkte: Kopfzeile",
+      "group": "Alerts",
+      "default": "KANALPUNKTE",
+      "maxLength": 200
+    },
+    {
+      "key": "redeemLine",
+      "type": "text",
+      "label": "Kanalpunkte: Zeile",
+      "group": "Alerts",
+      "default": "löst {detail} ein!",
+      "maxLength": 200
+    },
+    {
+      "key": "hypeTag",
+      "type": "text",
+      "label": "Hype Train: Kopfzeile",
+      "group": "Alerts",
+      "default": "HYPE TRAIN",
+      "maxLength": 200
+    },
+    {
+      "key": "hypeBeginLine",
+      "type": "text",
+      "label": "Hype Train: Start",
+      "group": "Alerts",
+      "default": "Das ganze Rudel rennt los!",
+      "maxLength": 200
+    },
+    {
+      "key": "hypeEndLine",
+      "type": "text",
+      "label": "Hype Train: Ende",
+      "group": "Alerts",
+      "default": "Hype Train Level {amount} geschafft!",
+      "maxLength": 200
+    },
+    {
+      "key": "alertQuote",
+      "type": "boolean",
+      "label": "Nachricht statt Zeile zeigen",
+      "group": "Alerts",
+      "default": true
+    },
+    {
+      "key": "quoteFormat",
+      "type": "text",
+      "label": "Nachricht ({text})",
+      "group": "Alerts",
+      "default": "„{text}“",
+      "maxLength": 200
+    },
+    {
+      "key": "alertDuration",
+      "type": "number",
+      "label": "Dauer (ohne Raid)",
+      "group": "Alerts",
+      "default": 8.2,
+      "min": 6,
+      "max": 60,
+      "unit": "s",
+      "step": 0.1
+    },
+    {
+      "key": "alertBark",
+      "type": "text",
+      "label": "Sprechblase",
+      "group": "Alerts",
+      "default": "Wuff!",
+      "maxLength": 20,
+      "basic": true
+    },
+    {
+      "key": "toyFollow",
+      "type": "select",
+      "label": "Spielzeug: Follow",
+      "group": "Alerts",
+      "default": "ball",
+      "options": [
+        "ball",
+        "knochen",
+        "frisbee",
+        "leckerli"
+      ]
+    },
+    {
+      "key": "toySub",
+      "type": "select",
+      "label": "Spielzeug: Sub und Resub",
+      "group": "Alerts",
+      "default": "knochen",
+      "options": [
+        "ball",
+        "knochen",
+        "frisbee",
+        "leckerli"
+      ]
+    },
+    {
+      "key": "toyGift",
+      "type": "select",
+      "label": "Spielzeug: Gift",
+      "group": "Alerts",
+      "default": "knochen",
+      "options": [
+        "ball",
+        "knochen",
+        "frisbee",
+        "leckerli"
+      ]
+    },
+    {
+      "key": "toyRaid",
+      "type": "select",
+      "label": "Spielzeug: Raid",
+      "group": "Alerts",
+      "default": "ball",
+      "options": [
+        "ball",
+        "knochen",
+        "frisbee",
+        "leckerli"
+      ]
+    },
+    {
+      "key": "toyCheer",
+      "type": "select",
+      "label": "Spielzeug: Bits",
+      "group": "Alerts",
+      "default": "frisbee",
+      "options": [
+        "ball",
+        "knochen",
+        "frisbee",
+        "leckerli"
+      ]
+    },
+    {
+      "key": "toyRedeem",
+      "type": "select",
+      "label": "Spielzeug: Kanalpunkte",
+      "group": "Alerts",
+      "default": "leckerli",
+      "options": [
+        "ball",
+        "knochen",
+        "frisbee",
+        "leckerli"
+      ]
+    },
+    {
+      "key": "toyHype",
+      "type": "select",
+      "label": "Spielzeug: Hype Train",
+      "group": "Alerts",
+      "default": "frisbee",
+      "options": [
+        "ball",
+        "knochen",
+        "frisbee",
+        "leckerli"
+      ]
+    },
+    {
+      "key": "toyBoneColor",
+      "type": "color",
+      "label": "Knochen: Farbe",
+      "group": "Alerts",
+      "default": "#fff6e6"
+    },
+    {
+      "key": "toyFrisbeeColor",
+      "type": "color",
+      "label": "Frisbee: Farbe",
+      "group": "Alerts",
+      "default": "#c24535"
+    },
+    {
+      "key": "toyTreatColor",
+      "type": "color",
+      "label": "Leckerli: Farbe",
+      "group": "Alerts",
+      "default": "#a8754a"
+    },
+    {
+      "key": "dropBounce",
+      "type": "number",
+      "label": "Spielzeug: Sprunghöhe",
+      "group": "Alerts",
+      "default": 14,
+      "min": 0,
+      "max": 60
+    },
+    {
+      "key": "cardTop",
+      "type": "number",
+      "label": "Karte: Abstand von oben",
+      "group": "Alerts",
+      "default": 440,
+      "min": 0,
+      "max": 900,
+      "unit": "px"
+    },
+    {
+      "key": "soundAlertRun",
+      "type": "sound",
+      "label": "Eingebaut: Hereinrennen",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 0.5
+      }
+    },
+    {
+      "key": "soundAlertToy",
+      "type": "sound",
+      "label": "Eingebaut: Spielzeug",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 0.5
+      }
+    },
+    {
+      "key": "soundAlertCard",
+      "type": "sound",
+      "label": "Eingebaut: Karte",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 0.5
+      }
+    },
+    {
+      "key": "soundAlertLeave",
+      "type": "sound",
+      "label": "Eingebaut: Hinausrennen",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 0.4
+      }
+    },
+    {
+      "key": "soundFollow",
+      "type": "sound",
+      "label": "Ton Follow (leer = eingebaut)",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundSub",
+      "type": "sound",
+      "label": "Ton Sub",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundResub",
+      "type": "sound",
+      "label": "Ton Resub",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundGift",
+      "type": "sound",
+      "label": "Ton Gift",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundRaid",
+      "type": "sound",
+      "label": "Ton Raid",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 0.5
+      }
+    },
+    {
+      "key": "soundCheer",
+      "type": "sound",
+      "label": "Ton Bits",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundRedeem",
+      "type": "sound",
+      "label": "Ton Kanalpunkte",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundHype",
+      "type": "sound",
+      "label": "Ton Hype Train",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "soundLeave",
+      "type": "sound",
+      "label": "Ton beim Ausblenden",
+      "group": "Alerts",
+      "default": {
+        "file": "",
+        "volume": 1
+      }
+    },
+    {
+      "key": "raidPack",
+      "type": "boolean",
+      "label": "Ein Hund je Raider",
+      "group": "Raid",
+      "default": true
+    },
+    {
+      "key": "raidMaxOnScreen",
+      "type": "number",
+      "label": "Hunde gleichzeitig höchstens",
+      "group": "Raid",
+      "default": 12,
+      "min": 1,
+      "max": 40
+    },
+    {
+      "key": "raidMaxDogs",
+      "type": "number",
+      "label": "Hunde insgesamt höchstens",
+      "group": "Raid",
+      "default": 300,
+      "min": 0,
+      "max": 1000
+    },
+    {
+      "key": "raidCrossMs",
+      "type": "number",
+      "label": "Lauf durchs Bild: Dauer",
+      "group": "Raid",
+      "default": 2400,
+      "min": 800,
+      "max": 10000,
+      "unit": "ms"
+    },
+    {
+      "key": "raidSpeedSpread",
+      "type": "number",
+      "label": "Tempo: Streuung",
+      "group": "Raid",
+      "default": 20,
+      "min": 0,
+      "max": 60,
+      "unit": "%"
+    },
+    {
+      "key": "raidLanes",
+      "type": "number",
+      "label": "Spuren",
+      "group": "Raid",
+      "default": 4,
+      "min": 1,
+      "max": 8
+    },
+    {
+      "key": "raidLaneGap",
+      "type": "number",
+      "label": "Abstand der Spuren",
+      "group": "Raid",
+      "default": 3,
+      "min": 0,
+      "max": 10
+    },
+    {
+      "key": "raidBarkEvery",
+      "type": "number",
+      "label": "Bellen beim Warten: alle",
+      "group": "Raid",
+      "default": 5,
+      "min": 1,
+      "max": 60,
+      "unit": "s",
+      "step": 0.5
+    },
+    {
+      "key": "raidSeed",
+      "type": "number",
+      "label": "Startwert",
+      "group": "Raid",
+      "default": 1,
+      "min": 1,
+      "max": 9999
+    },
+    {
+      "key": "raidBarkShare",
+      "type": "number",
+      "label": "Anteil der Läufe, die beim Erscheinen bellen",
+      "group": "Raid",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "raidBreed_corgi",
+      "type": "boolean",
+      "label": "Rudel: Corgi",
+      "group": "Raid",
+      "default": true
+    },
+    {
+      "key": "raidBreed_shiba",
+      "type": "boolean",
+      "label": "Rudel: Shiba",
+      "group": "Raid",
+      "default": true
+    },
+    {
+      "key": "raidBreed_labrador",
+      "type": "boolean",
+      "label": "Rudel: Labrador",
+      "group": "Raid",
+      "default": true
+    },
+    {
+      "key": "raidBreed_dalmatiner",
+      "type": "boolean",
+      "label": "Rudel: Dalmatiner",
+      "group": "Raid",
+      "default": true
+    },
+    {
+      "key": "raidBreed_dackel",
+      "type": "boolean",
+      "label": "Rudel: Dackel",
+      "group": "Raid",
+      "default": true
+    },
+    {
+      "key": "raidBreed_mops",
+      "type": "boolean",
+      "label": "Rudel: Mops",
+      "group": "Raid",
+      "default": true
+    },
+    {
       "key": "stingerFps",
       "type": "number",
       "label": "Bildrate (Bilder pro Sekunde)",
@@ -1748,6 +2327,12 @@
     ],
     "Ending": [
       "ending"
+    ],
+    "Alerts": [
+      "alerts"
+    ],
+    "Raid": [
+      "alerts"
     ],
     "Stinger": []
   },

@@ -11,6 +11,7 @@ use crate::settings::field::{
     SettingField, SettingValue, SettingValues, SoundValue, Unit, choice, color, flag, font, in_scene, lines,
     mark_basic, number, sound, text, with_defaults,
 };
+use crate::themes::core_fields::alert_sound_fields;
 use crate::themes::graphics_fields::quality_field;
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
@@ -26,11 +27,15 @@ const WORLD: &str = "Welt";
 const STARTING: &str = "Starting";
 const BRB: &str = "BRB";
 const ENDING: &str = "Ending";
+const ALERTS: &str = "Alerts";
+const RAID: &str = "Raid";
+const TOYS: [&str; 4] = ["ball", "knochen", "frisbee", "leckerli"];
 const STINGER: &str = "Stinger";
 
 const PX: Option<Unit> = Some(Unit::Px);
 const PERCENT: Option<Unit> = Some(Unit::Percent);
 const S: Option<Unit> = Some(Unit::S);
+const MS: Option<Unit> = Some(Unit::Ms);
 
 /// The breeds with their names, in the order of the row in the Starting scene (template: `BREEDS` in `breeds.ts`)
 const BREEDS: [(&str, &str); 6] = [
@@ -327,12 +332,88 @@ fn ending() -> Vec<SettingField> {
     fields.into_iter().map(|field| in_scene(SceneName::Ending, field)).collect()
 }
 
+fn alerts() -> Vec<SettingField> {
+    let mut fields = vec![
+        text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOWER", None),
+        text("followLine", "Follow: Zeile", ALERTS, "gehört jetzt zum Rudel!", None),
+        text("subTag", "Sub: Kopfzeile", ALERTS, "NEUES ABO", None),
+        text("subLine", "Sub: Zeile", ALERTS, "ist jetzt Teil des Rudels!", None),
+        text("resubTag", "Resub: Kopfzeile", ALERTS, "ABO x{amount}", None),
+        text("resubLine", "Resub: Zeile", ALERTS, "seit {amount} Monaten im Rudel!", None),
+        text("giftTag", "Gift: Kopfzeile", ALERTS, "ABOS VERSCHENKT", None),
+        text("giftLine", "Gift: Zeile", ALERTS, "verschenkt {amount} Abos ans Rudel!", None),
+        text("raidTag", "Raid: Kopfzeile", ALERTS, "RAID", None),
+        text("raidLine", "Raid: Zeile", ALERTS, "kommt mit {amount} Hunden vorbei!", None),
+        text("raidLineOne", "Raid: Zeile bei einem Hund", ALERTS, "kommt mit einem Hund vorbei!", None),
+        text("cheerTag", "Bits: Kopfzeile", ALERTS, "{amount} BITS", None),
+        text("cheerLine", "Bits: Zeile", ALERTS, "Danke für die Frisbee-Runde!", None),
+        text("redeemTag", "Kanalpunkte: Kopfzeile", ALERTS, "KANALPUNKTE", None),
+        text("redeemLine", "Kanalpunkte: Zeile", ALERTS, "löst {detail} ein!", None),
+        text("hypeTag", "Hype Train: Kopfzeile", ALERTS, "HYPE TRAIN", None),
+        text("hypeBeginLine", "Hype Train: Start", ALERTS, "Das ganze Rudel rennt los!", None),
+        text("hypeEndLine", "Hype Train: Ende", ALERTS, "Hype Train Level {amount} geschafft!", None),
+        flag("alertQuote", "Nachricht statt Zeile zeigen", ALERTS, true),
+        text("quoteFormat", "Nachricht ({text})", ALERTS, "„{text}“", None),
+        number("alertDuration", "Dauer (ohne Raid)", ALERTS, 8.2, 6.0, 60.0, S, Some(0.1)),
+        text("alertBark", "Sprechblase", ALERTS, "Wuff!", Some(20)),
+        choice("toyFollow", "Spielzeug: Follow", ALERTS, "ball", &TOYS),
+        choice("toySub", "Spielzeug: Sub und Resub", ALERTS, "knochen", &TOYS),
+        choice("toyGift", "Spielzeug: Gift", ALERTS, "knochen", &TOYS),
+        choice("toyRaid", "Spielzeug: Raid", ALERTS, "ball", &TOYS),
+        choice("toyCheer", "Spielzeug: Bits", ALERTS, "frisbee", &TOYS),
+        choice("toyRedeem", "Spielzeug: Kanalpunkte", ALERTS, "leckerli", &TOYS),
+        choice("toyHype", "Spielzeug: Hype Train", ALERTS, "frisbee", &TOYS),
+        color("toyBoneColor", "Knochen: Farbe", ALERTS, "#fff6e6"),
+        color("toyFrisbeeColor", "Frisbee: Farbe", ALERTS, "#c24535"),
+        color("toyTreatColor", "Leckerli: Farbe", ALERTS, "#a8754a"),
+        number("dropBounce", "Spielzeug: Sprunghöhe", ALERTS, 14.0, 0.0, 60.0, None, None),
+        number("cardTop", "Karte: Abstand von oben", ALERTS, 440.0, 0.0, 900.0, PX, None),
+    ];
+    fields.extend(with_defaults(
+        vec![
+            sound("soundAlertRun", "Eingebaut: Hereinrennen", ALERTS),
+            sound("soundAlertToy", "Eingebaut: Spielzeug", ALERTS),
+            sound("soundAlertCard", "Eingebaut: Karte", ALERTS),
+            sound("soundAlertLeave", "Eingebaut: Hinausrennen", ALERTS),
+        ],
+        &[
+            ("soundAlertRun", volume(0.5)),
+            ("soundAlertToy", volume(0.5)),
+            ("soundAlertCard", volume(0.5)),
+            ("soundAlertLeave", volume(0.4)),
+        ],
+    ));
+    fields.extend(with_defaults(alert_sound_fields(ALERTS), &[("soundRaid", volume(0.5))]));
+    fields
+}
+
+fn raid() -> Vec<SettingField> {
+    let mut fields = vec![
+        flag("raidPack", "Ein Hund je Raider", RAID, true),
+        number("raidMaxOnScreen", "Hunde gleichzeitig höchstens", RAID, 12.0, 1.0, 40.0, None, None),
+        number("raidMaxDogs", "Hunde insgesamt höchstens", RAID, 300.0, 0.0, 1000.0, None, None),
+        number("raidCrossMs", "Lauf durchs Bild: Dauer", RAID, 2400.0, 800.0, 10_000.0, MS, None),
+        number("raidSpeedSpread", "Tempo: Streuung", RAID, 20.0, 0.0, 60.0, PERCENT, None),
+        number("raidLanes", "Spuren", RAID, 4.0, 1.0, 8.0, None, None),
+        number("raidLaneGap", "Abstand der Spuren", RAID, 3.0, 0.0, 10.0, None, None),
+        number("raidBarkEvery", "Bellen beim Warten: alle", RAID, 5.0, 1.0, 60.0, S, Some(0.5)),
+        number("raidSeed", "Startwert", RAID, 1.0, 1.0, 9999.0, None, None),
+        number("raidBarkShare", "Anteil der Läufe, die beim Erscheinen bellen", RAID, 25.0, 0.0, 100.0, PERCENT, None),
+    ];
+    for (id, name) in BREEDS {
+        fields.push(flag(&format!("raidBreed_{id}"), &format!("Rudel: {name}"), RAID, true));
+    }
+    fields
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     BTreeMap::from([
         (WORLD.to_owned(), vec![SceneName::Starting, SceneName::Brb]),
         (STARTING.to_owned(), vec![SceneName::Starting]),
         (BRB.to_owned(), vec![SceneName::Brb]),
         (ENDING.to_owned(), vec![SceneName::Ending]),
+        (ALERTS.to_owned(), vec![SceneName::Alerts]),
+        (RAID.to_owned(), vec![SceneName::Alerts]),
         (STINGER.to_owned(), vec![]),
     ])
 }
@@ -360,11 +441,16 @@ const BASIC: &[&str] = &[
     "endingTitle",
     "endingSubtitle",
     "endingStats",
+    "followLine",
+    "subLine",
+    "raidLine",
+    "cheerLine",
+    "alertBark",
 ];
 
 #[must_use]
 pub fn dogs() -> Theme {
-    let fields = [general(), dog(), sounds(), coats(), world(), starting(), brb(), ending()].concat();
+    let fields = [general(), dog(), sounds(), coats(), world(), starting(), brb(), ending(), alerts(), raid()].concat();
     let schema = ThemeSchema {
         id: "dogs".to_owned(),
         name: "Dogs".to_owned(),

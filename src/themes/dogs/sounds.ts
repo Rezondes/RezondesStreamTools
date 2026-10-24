@@ -17,6 +17,14 @@ export const DOG_SOUNDS = {
   endingLie: { file: "ending-lie", field: "soundEndingLie" },
   endingLamp: { file: "ending-lamp", field: "soundEndingLamp" },
   endingSnore: { file: "ending-snore", field: "soundEndingSnore" },
+  alertRun: { file: "alert-run", field: "soundAlertRun" },
+  toyBall: { file: "alert-toy-ball", field: "soundAlertToy" },
+  toyKnochen: { file: "alert-toy-bone", field: "soundAlertToy" },
+  toyFrisbee: { file: "alert-toy-frisbee", field: "soundAlertToy" },
+  toyLeckerli: { file: "alert-toy-treat", field: "soundAlertToy" },
+  alertCard: { file: "alert-card", field: "soundAlertCard" },
+  alertLeave: { file: "alert-leave", field: "soundAlertLeave" },
+  alertRaid: { file: "alert-raid", field: "soundRaid" },
 } as const;
 export type DogSound = keyof typeof DOG_SOUNDS;
 export type SoundFile = (typeof DOG_SOUNDS)[DogSound]["file"] | (typeof BARK_FILES)[BarkVoice];

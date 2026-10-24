@@ -4,6 +4,14 @@
 import { playClip, playSound, preloadClips } from "../../core/sound.ts";
 import type { SoundValue } from "../../core/theme.ts";
 import { DOG_SOUNDS, filesOf, soundFile, type DogSound, type SoundFile } from "./sounds.ts";
+import alertCard from "./sounds/alert-card.ogg";
+import alertLeave from "./sounds/alert-leave.ogg";
+import alertRaid from "./sounds/alert-raid.ogg";
+import alertRun from "./sounds/alert-run.ogg";
+import toyBall from "./sounds/alert-toy-ball.ogg";
+import toyBone from "./sounds/alert-toy-bone.ogg";
+import toyFrisbee from "./sounds/alert-toy-frisbee.ogg";
+import toyTreat from "./sounds/alert-toy-treat.ogg";
 import barkBig from "./sounds/alert-bark-big.ogg";
 import barkMedium from "./sounds/alert-bark-medium.ogg";
 import barkSmall from "./sounds/alert-bark-small.ogg";
@@ -20,6 +28,8 @@ import startingLand from "./sounds/starting-land.ogg";
 const URLS: Record<SoundFile, string> = {
   "alert-bark-small": barkSmall, "alert-bark-medium": barkMedium, "alert-bark-big": barkBig,
   "starting-land": startingLand, "starting-hop": startingHop, "starting-chosen": startingChosen, "starting-card": startingCard,
+  "alert-run": alertRun, "alert-toy-ball": toyBall, "alert-toy-bone": toyBone, "alert-toy-frisbee": toyFrisbee, "alert-toy-treat": toyTreat,
+  "alert-card": alertCard, "alert-leave": alertLeave, "alert-raid": alertRaid,
   "brb-sniff": brbSniff, "brb-steps": brbSteps, "ending-lie": endingLie, "ending-lamp": endingLamp, "ending-snore": endingSnore,
 };
 

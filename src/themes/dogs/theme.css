@@ -311,3 +311,33 @@
   font-weight: 500;
   color: var(--muted);
 }
+
+/* Alerts: the card stands above the running track (cardTop), its pill sits on its top edge; the name in red */
+.theme-dogs .dg-alert-card {
+  left: var(--dg-alert-left, 860px);
+  top: var(--cardTop, 440px);
+  width: var(--dg-alert-width, 940px);
+  padding: var(--dg-alert-pad, 26px 40px 32px);
+  text-align: center;
+  transform-origin: 20% 100%;
+}
+
+.theme-dogs .dg-alert-card .dg-pill {
+  position: absolute;
+  left: 50%;
+  top: var(--dg-alert-pill-top, -30px);
+  transform: translateX(-50%);
+}
+
+.theme-dogs .dg-alert-name {
+  margin-top: var(--dg-alert-name-gap, 18px);
+  font-size: calc(var(--fontSize) * 3.25);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--accent);
+}
+
+.theme-dogs .dg-alert-line {
+  font-size: calc(var(--fontSize) * 1.3);
+  font-weight: 600;
+}

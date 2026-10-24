@@ -1,6 +1,6 @@
 // Scenes of the Dogs theme for the theme list (src/themes/scenes.tsx) with its CSS: pixel art dogs on a sunny meadow
 // (DESIGN-DOGS.md). Every scene is loaded via React.lazy as its own chunk, so PixiJS and GSAP only load where a scene
-// needs them. Packages 1 and 2 of PLAN-DOGS.md bring Starting, BRB and Ending.
+// needs them. Packages 1 to 3 of PLAN-DOGS.md bring Starting, BRB, Ending and Alerts.
 import { lazy } from "react";
 import type { ThemeView } from "../../core/theme.ts";
 import { dogsSettings } from "./settings.ts";
@@ -12,5 +12,6 @@ export const dogsView: ThemeView = {
     starting: lazy(() => import("./scenes/Starting.tsx")),
     brb: lazy(() => import("./scenes/Brb.tsx")),
     ending: lazy(() => import("./scenes/Ending.tsx")),
+    alerts: lazy(() => import("./scenes/Alerts.tsx")),
   },
 };
