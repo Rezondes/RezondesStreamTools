@@ -374,11 +374,72 @@
       }
     },
     {
+      "key": "soundBrbSniff",
+      "type": "sound",
+      "label": "BRB: Schnüffeln",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0
+      }
+    },
+    {
+      "key": "soundBrbSteps",
+      "type": "sound",
+      "label": "BRB: Schritte",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0
+      }
+    },
+    {
+      "key": "soundEndingLie",
+      "type": "sound",
+      "label": "Ending: Hinlegen",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0.5
+      }
+    },
+    {
+      "key": "soundEndingLamp",
+      "type": "sound",
+      "label": "Ending: Lampe",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0.4
+      }
+    },
+    {
+      "key": "soundEndingSnore",
+      "type": "sound",
+      "label": "Ending: Schnarchen",
+      "group": "Töne",
+      "default": {
+        "file": "",
+        "volume": 0.3
+      }
+    },
+    {
       "key": "startingBarkSound",
       "type": "boolean",
       "label": "Starting: Hunde bellen hörbar",
       "group": "Töne",
       "default": true
+    },
+    {
+      "key": "snoreEvery",
+      "type": "number",
+      "label": "Ending: Schnarchen alle",
+      "group": "Töne",
+      "default": 4,
+      "min": 1,
+      "max": 60,
+      "unit": "s",
+      "step": 0.5
     },
     {
       "key": "corgiRotweissBase",
@@ -1283,6 +1344,353 @@
       "scene": "starting"
     },
     {
+      "key": "brbPill",
+      "type": "text",
+      "label": "Pille",
+      "group": "BRB",
+      "default": "GASSI-PAUSE",
+      "maxLength": 40,
+      "scene": "brb"
+    },
+    {
+      "key": "brbTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "BRB",
+      "default": "Bin gleich zurück!",
+      "maxLength": 60,
+      "scene": "brb",
+      "basic": true
+    },
+    {
+      "key": "brbSubtitle",
+      "type": "text",
+      "label": "Unterzeile ({dog})",
+      "group": "BRB",
+      "default": "{dog} und ich drehen eine Runde.",
+      "maxLength": 80,
+      "scene": "brb",
+      "basic": true
+    },
+    {
+      "key": "brbPauseLabel",
+      "type": "text",
+      "label": "Pausenzeit: Beschriftung",
+      "group": "BRB",
+      "default": "PAUSE SEIT",
+      "maxLength": 40,
+      "scene": "brb"
+    },
+    {
+      "key": "brbStepsLabel",
+      "type": "text",
+      "label": "Schritte: Beschriftung",
+      "group": "BRB",
+      "default": "SCHRITTE",
+      "maxLength": 40,
+      "scene": "brb"
+    },
+    {
+      "key": "brbSniff",
+      "type": "text",
+      "label": "Sprechblase beim Schnüffeln",
+      "group": "BRB",
+      "default": "Schnüff!",
+      "maxLength": 20,
+      "scene": "brb"
+    },
+    {
+      "key": "walkPxPerSecond",
+      "type": "number",
+      "label": "Gehen: Tempo",
+      "group": "BRB",
+      "default": 24,
+      "min": 1,
+      "max": 200,
+      "scene": "brb"
+    },
+    {
+      "key": "walkPeriod",
+      "type": "number",
+      "label": "Runde: Dauer bis zum nächsten Schnüffeln",
+      "group": "BRB",
+      "default": 9,
+      "min": 3,
+      "max": 120,
+      "unit": "s",
+      "step": 0.5,
+      "scene": "brb"
+    },
+    {
+      "key": "sniffSeconds",
+      "type": "number",
+      "label": "Schnüffeln: Dauer",
+      "group": "BRB",
+      "default": 2,
+      "min": 0,
+      "max": 30,
+      "unit": "s",
+      "step": 0.5,
+      "scene": "brb"
+    },
+    {
+      "key": "stepPx",
+      "type": "number",
+      "label": "Schritt: Länge (Pixel)",
+      "group": "BRB",
+      "default": 3,
+      "min": 1,
+      "max": 50,
+      "scene": "brb"
+    },
+    {
+      "key": "leash",
+      "type": "boolean",
+      "label": "Leine",
+      "group": "BRB",
+      "default": true,
+      "scene": "brb"
+    },
+    {
+      "key": "leashColor",
+      "type": "color",
+      "label": "Leine: Farbe",
+      "group": "BRB",
+      "default": "#c24535",
+      "scene": "brb"
+    },
+    {
+      "key": "leashSag",
+      "type": "number",
+      "label": "Leine: Durchhang beim Gehen (stehend doppelt)",
+      "group": "BRB",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "scene": "brb"
+    },
+    {
+      "key": "butterfly",
+      "type": "boolean",
+      "label": "Schmetterling",
+      "group": "BRB",
+      "default": true,
+      "scene": "brb"
+    },
+    {
+      "key": "butterflyColor",
+      "type": "color",
+      "label": "Schmetterling: Farbe",
+      "group": "BRB",
+      "default": "#f7a6c1",
+      "scene": "brb"
+    },
+    {
+      "key": "pathColor",
+      "type": "color",
+      "label": "Weg",
+      "group": "BRB",
+      "default": "#e3c49a",
+      "scene": "brb"
+    },
+    {
+      "key": "parallax",
+      "type": "boolean",
+      "label": "Parallaxe (ferne Ebenen langsamer)",
+      "group": "BRB",
+      "default": true,
+      "scene": "brb"
+    },
+    {
+      "key": "endingTitle",
+      "type": "text",
+      "label": "Titel",
+      "group": "Ending",
+      "default": "Gute Nacht!",
+      "maxLength": 60,
+      "scene": "ending",
+      "basic": true
+    },
+    {
+      "key": "endingSubtitle",
+      "type": "text",
+      "label": "Unterzeile ({dog})",
+      "group": "Ending",
+      "default": "Danke fürs Zuschauen. {dog} schläft schon.",
+      "maxLength": 80,
+      "scene": "ending",
+      "basic": true
+    },
+    {
+      "key": "endingBye",
+      "type": "text",
+      "label": "Pille",
+      "group": "Ending",
+      "default": "Bis zum nächsten Mal!",
+      "maxLength": 40,
+      "scene": "ending"
+    },
+    {
+      "key": "endingCardLabel",
+      "type": "text",
+      "label": "Karte: Überzeile",
+      "group": "Ending",
+      "default": "HEUTE IM RUDEL",
+      "maxLength": 40,
+      "scene": "ending"
+    },
+    {
+      "key": "endingStats",
+      "type": "lines",
+      "label": "Zahlen (Schlüssel|Text)",
+      "group": "Ending",
+      "default": [
+        "follows|neue Follower",
+        "subs|Abos",
+        "raids|Raids"
+      ],
+      "maxLines": 6,
+      "scene": "ending",
+      "basic": true
+    },
+    {
+      "key": "night",
+      "type": "color",
+      "label": "Wand bei Nacht",
+      "group": "Ending",
+      "default": "#3b3a63",
+      "scene": "ending"
+    },
+    {
+      "key": "nightSub",
+      "type": "color",
+      "label": "Unterzeile auf der Wand",
+      "group": "Ending",
+      "default": "#f1dcc0",
+      "scene": "ending"
+    },
+    {
+      "key": "windowSky",
+      "type": "color",
+      "label": "Nachthimmel im Fenster",
+      "group": "Ending",
+      "default": "#1b2547",
+      "scene": "ending"
+    },
+    {
+      "key": "floor",
+      "type": "color",
+      "label": "Dielen",
+      "group": "Ending",
+      "default": "#7d5233",
+      "scene": "ending"
+    },
+    {
+      "key": "rug",
+      "type": "color",
+      "label": "Teppich",
+      "group": "Ending",
+      "default": "#8f6fc7",
+      "scene": "ending"
+    },
+    {
+      "key": "lamp",
+      "type": "color",
+      "label": "Lampe und Mond",
+      "group": "Ending",
+      "default": "#ffe9a8",
+      "scene": "ending"
+    },
+    {
+      "key": "basket",
+      "type": "color",
+      "label": "Körbchen",
+      "group": "Ending",
+      "default": "#c48a4f",
+      "scene": "ending"
+    },
+    {
+      "key": "pillow",
+      "type": "color",
+      "label": "Kissen im Körbchen",
+      "group": "Ending",
+      "default": "#ffc9d9",
+      "scene": "ending"
+    },
+    {
+      "key": "stars",
+      "type": "number",
+      "label": "Sterne im Fenster",
+      "group": "Ending",
+      "default": 16,
+      "min": 0,
+      "max": 60,
+      "scene": "ending"
+    },
+    {
+      "key": "moon",
+      "type": "boolean",
+      "label": "Mond",
+      "group": "Ending",
+      "default": true,
+      "scene": "ending"
+    },
+    {
+      "key": "lampDim",
+      "type": "number",
+      "label": "Lampe: Helligkeit am Ende",
+      "group": "Ending",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%",
+      "scene": "ending"
+    },
+    {
+      "key": "lampDimFrom",
+      "type": "number",
+      "label": "Lampe: dimmt ab",
+      "group": "Ending",
+      "default": 5,
+      "min": 0,
+      "max": 120,
+      "unit": "s",
+      "step": 0.5,
+      "scene": "ending"
+    },
+    {
+      "key": "lampDimTo",
+      "type": "number",
+      "label": "Lampe: gedimmt bei",
+      "group": "Ending",
+      "default": 7.5,
+      "min": 0,
+      "max": 120,
+      "unit": "s",
+      "step": 0.5,
+      "scene": "ending"
+    },
+    {
+      "key": "zzz",
+      "type": "boolean",
+      "label": "Z beim Schlafen",
+      "group": "Ending",
+      "default": true,
+      "scene": "ending"
+    },
+    {
+      "key": "zzzEvery",
+      "type": "number",
+      "label": "Z: Dauer je Aufstieg",
+      "group": "Ending",
+      "default": 1.8,
+      "min": 0.5,
+      "max": 10,
+      "unit": "s",
+      "step": 0.1,
+      "scene": "ending"
+    },
+    {
       "key": "stingerFps",
       "type": "number",
       "label": "Bildrate (Bilder pro Sekunde)",
@@ -1329,10 +1737,17 @@
   ],
   "groupScenes": {
     "Welt": [
-      "starting"
+      "starting",
+      "brb"
     ],
     "Starting": [
       "starting"
+    ],
+    "BRB": [
+      "brb"
+    ],
+    "Ending": [
+      "ending"
     ],
     "Stinger": []
   },

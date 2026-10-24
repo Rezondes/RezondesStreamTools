@@ -2,7 +2,7 @@
 // the top and right, shadow only at the bottom and left, only on coat areas; painting with a palette.
 // Run: node src/themes/dogs/pixels.check.ts
 import assert from "node:assert/strict";
-import { blankImage, covers, drawLine, EMPTY, fillShape, finish, keyAt, OUTLINE, paintGrid, paintImage, pixelGrid, RIM, setPixel, toneOf } from "./pixels.ts";
+import { blankImage, covers, drawLine, EMPTY, fillShape, finish, keyAt, OUTLINE, paintGrid, paintImage, pixelGrid, RIM, rowRuns, setPixel, toneOf } from "./pixels.ts";
 
 // Kontur und Schattierung: an ellipse in an 8 x 8 grid gets a closed outline and rims only where they belong
 const grid = pixelGrid(8, 8);
@@ -58,5 +58,12 @@ paintGrid(offset, masked, { W: "#ffffff" }, 2, 1);
 assert.deepEqual(offset.colors.filter(Boolean), ["#ffffff"]);
 setPixel(offset, -1, 9, "#000000");
 assert.equal(offset.colors.filter(Boolean).length, 1);
+
+// Runs: equal colors in a row become one run, empty pixels none
+const striped = blankImage(5, 2);
+for (const x of [0, 1, 3]) setPixel(striped, x, 0, "#111111");
+setPixel(striped, 4, 0, "#222222");
+setPixel(striped, 2, 1, "#111111");
+assert.deepEqual(rowRuns(striped), [{ x: 0, y: 0, width: 2, color: "#111111" }, { x: 3, y: 0, width: 1, color: "#111111" }, { x: 4, y: 0, width: 1, color: "#222222" }, { x: 2, y: 1, width: 1, color: "#111111" }]);
 
 console.log("dogs pixels ok");

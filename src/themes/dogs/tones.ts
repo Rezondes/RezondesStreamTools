@@ -7,6 +7,11 @@ import { DOG_SOUNDS, filesOf, soundFile, type DogSound, type SoundFile } from ".
 import barkBig from "./sounds/alert-bark-big.ogg";
 import barkMedium from "./sounds/alert-bark-medium.ogg";
 import barkSmall from "./sounds/alert-bark-small.ogg";
+import brbSniff from "./sounds/brb-sniff.ogg";
+import brbSteps from "./sounds/brb-steps.ogg";
+import endingLamp from "./sounds/ending-lamp.ogg";
+import endingLie from "./sounds/ending-lie.ogg";
+import endingSnore from "./sounds/ending-snore.ogg";
 import startingCard from "./sounds/starting-card.ogg";
 import startingChosen from "./sounds/starting-chosen.ogg";
 import startingHop from "./sounds/starting-hop.ogg";
@@ -15,6 +20,7 @@ import startingLand from "./sounds/starting-land.ogg";
 const URLS: Record<SoundFile, string> = {
   "alert-bark-small": barkSmall, "alert-bark-medium": barkMedium, "alert-bark-big": barkBig,
   "starting-land": startingLand, "starting-hop": startingHop, "starting-chosen": startingChosen, "starting-card": startingCard,
+  "brb-sniff": brbSniff, "brb-steps": brbSteps, "ending-lie": endingLie, "ending-lamp": endingLamp, "ending-snore": endingSnore,
 };
 
 type SoundValues = Readonly<Record<string, unknown>> & { soundMaxVoices: number };

@@ -16,6 +16,7 @@ import { dachdeckerSettings, type DachdeckerValues } from "../themes/dachdecker/
 import Sketch from "../themes/dachdecker/Sketch.tsx";
 import { frameDims } from "../themes/dachdecker/frame.ts";
 import { kebabSettings, type KebabValues } from "../themes/kebab/settings.ts";
+import { dogsSettings, type DogsValues } from "../themes/dogs/settings.ts";
 import { fillTemplate } from "../core/template.ts";
 import { bearsSettings } from "../themes/bears/settings.ts";
 import { kothSettings } from "../themes/koth/settings.ts";
@@ -41,6 +42,7 @@ const PlantageWorld = lazy(() => import("../themes/plantage/pixi/WorldBackdrop.t
 const KothWorld = lazy(() => import("../themes/koth/three/WorldBackdrop.tsx"));
 const ChaosWall = lazy(() => import("../themes/chaos/PaintedWall.tsx"));
 const KebabScenery = lazy(() => import("../themes/kebab/SkinScenery.tsx"));
+const DogsScenery = lazy(() => import("../themes/dogs/SkinScenery.tsx"));
 
 const URLAUB_VALUES = resolveSettings(urlaubSettings, {});
 const URLAUB = cssVariables(urlaubSettings, URLAUB_VALUES);
@@ -58,6 +60,12 @@ const DACHDECKER = cssVariables(dachdeckerSettings, resolveSettings(dachdeckerSe
 const DACHDECKER_BLOCK = DACHDECKER_VALUES.startingBlockLines.map(line => fillTemplate(line, { channel: DACHDECKER_VALUES.channelName, date: new Date().toLocaleDateString("sv-SE") }));
 const KEBAB_VALUES = resolveSettings(kebabSettings, {}) as unknown as KebabValues;
 const KEBAB = cssVariables(kebabSettings, resolveSettings(kebabSettings, {}));
+const DOGS_VALUES = resolveSettings(dogsSettings, {}) as unknown as DogsValues;
+const DOGS_SCENERY = (
+  <div className="skin-scenery skin-scenery-dogs" aria-hidden="true">
+    <Suspense fallback={null}><DogsScenery values={DOGS_VALUES} /></Suspense>
+  </div>
+);
 // Share of the dimension chain drawn in terracotta
 const CHAIN_SHARE = 0.62;
 const THINGS = ["rettungsring", "badeente", "wasserball", "eis", "seestern"];
@@ -118,5 +126,6 @@ export default function Scenery({ skin }: { skin: Skin }) {
       <Suspense fallback={null}><KebabScenery values={KEBAB_VALUES} /></Suspense>
     </div>
   );
+  if (skin === "dogs") return DOGS_SCENERY;
   return null;
 }

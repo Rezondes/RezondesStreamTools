@@ -2,7 +2,7 @@
 // default coat; the share of spots is a fraction. Run: node src/themes/dogs/looks.check.ts
 import assert from "node:assert/strict";
 import { resolveSettings } from "../../core/settings.ts";
-import { dogLookOf, propColorsOf, worldColorsOf } from "./looks.ts";
+import { dogLookOf, propColorsOf, roomColorsOf, worldColorsOf } from "./looks.ts";
 import { dogsSettings, type DogsValues } from "./settings.ts";
 
 const values = resolveSettings(dogsSettings, { sky: "#010203", accent: "#040506", hillColor2: "#070809" }) as unknown as DogsValues;
@@ -17,5 +17,8 @@ assert.equal(corgi.colors.pattern, "tri");
 assert.equal(corgi.shared.collar, "#040506");
 assert.equal(corgi.spots.share, 0.42);
 assert.equal(dogLookOf(values, "mops", "tricolor").colors.base, "#d9bb8b", "the default coat of the mops");
+
+assert.equal(roomColorsOf(values).night, "#3b3a63");
+assert.equal(roomColorsOf(values).accent, "#040506");
 
 console.log("dogs looks ok");

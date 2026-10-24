@@ -4,6 +4,11 @@
 .theme-dogs {
   --dg-px: var(--pixelScale, 5px);
   --dg-shadow: color-mix(in srgb, var(--ink) var(--boxShadow), transparent);
+  --dg-outline:
+    var(--dg-px) 0 var(--ink), calc(-1 * var(--dg-px)) 0 var(--ink), 0 var(--dg-px) var(--ink), 0 calc(-1 * var(--dg-px)) var(--ink),
+    var(--dg-px) var(--dg-px) var(--ink), calc(-1 * var(--dg-px)) var(--dg-px) var(--ink),
+    var(--dg-px) calc(-1 * var(--dg-px)) var(--ink), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--ink),
+    0 calc(3 * var(--dg-px)) var(--dg-shadow);
   font-family: var(--font), monospace;
   color: var(--textColor);
 }
@@ -79,11 +84,7 @@
   font-weight: 700;
   line-height: 1;
   color: var(--cream);
-  text-shadow:
-    var(--dg-px) 0 var(--ink), calc(-1 * var(--dg-px)) 0 var(--ink), 0 var(--dg-px) var(--ink), 0 calc(-1 * var(--dg-px)) var(--ink),
-    var(--dg-px) var(--dg-px) var(--ink), calc(-1 * var(--dg-px)) var(--dg-px) var(--ink),
-    var(--dg-px) calc(-1 * var(--dg-px)) var(--ink), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--ink),
-    0 calc(3 * var(--dg-px)) var(--dg-shadow);
+  text-shadow: var(--dg-outline);
 }
 
 .theme-dogs .dg-subtitle {
@@ -217,4 +218,96 @@
   font-weight: 600;
   color: var(--muted);
   white-space: nowrap;
+}
+
+/* BRB: the card at the top left, break time and steps at the top right */
+.theme-dogs .dg-brb-card {
+  left: var(--dg-brb-x, 85px);
+  top: var(--dg-brb-y, 70px);
+  padding: var(--dg-brb-pad, 24px 40px 30px 30px);
+}
+
+.theme-dogs .dg-brb-title {
+  margin-top: var(--dg-brb-gap, 18px);
+  font-size: calc(var(--titleSize) * 0.84);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cream);
+  text-shadow: var(--dg-outline);
+}
+
+.theme-dogs .dg-brb-sub {
+  margin-top: var(--dg-brb-sub-gap, 10px);
+  font-size: calc(var(--fontSize) * 1.3);
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.theme-dogs .dg-brb-stats {
+  right: var(--dg-brb-x, 85px);
+  top: var(--dg-brb-y, 70px);
+  display: flex;
+  gap: var(--dg-stats-gap, 30px);
+}
+
+.theme-dogs .dg-stat {
+  padding: var(--dg-stat-pad, 16px 26px 22px);
+}
+
+.theme-dogs .dg-stat-value {
+  margin-top: var(--dg-clock-gap, 8px);
+  font-size: calc(var(--fontSize) * 2.75);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+/* Ending: title and subtitle on the wall, the pill below, the card with the numbers at the bottom right */
+.theme-dogs .dg-end-title {
+  top: var(--dg-end-title-top, 60px);
+  font-size: calc(var(--titleSize) * 1.16);
+}
+
+.theme-dogs .dg-end-sub {
+  top: var(--dg-end-sub-top, 196px);
+  color: var(--nightSub);
+  text-shadow: 0 var(--dg-px) 0 color-mix(in srgb, var(--ink) 35%, transparent);
+}
+
+.theme-dogs .dg-end-bye {
+  top: var(--dg-end-bye-top, 268px);
+  left: 0;
+  right: 0;
+  width: fit-content;
+  margin: 0 auto;
+}
+
+.theme-dogs .dg-end-bye .dg-pill {
+  font-size: calc(var(--fontSize) * 1.15);
+}
+
+.theme-dogs .dg-end-card {
+  right: var(--dg-brb-x, 85px);
+  bottom: var(--dg-end-card-bottom, 75px);
+  padding: var(--dg-end-card-pad, 18px 30px 22px);
+}
+
+.theme-dogs .dg-end-rows {
+  display: flex;
+  gap: var(--dg-stats-gap, 30px);
+  margin-top: var(--dg-brb-sub-gap, 10px);
+}
+
+.theme-dogs .dg-end-number {
+  font-size: calc(var(--fontSize) * 2);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
+}
+
+.theme-dogs .dg-end-label {
+  font-size: calc(var(--fontSize) * 0.77);
+  font-weight: 500;
+  color: var(--muted);
 }

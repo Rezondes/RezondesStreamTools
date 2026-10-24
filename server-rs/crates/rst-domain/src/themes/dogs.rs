@@ -8,8 +8,8 @@ use std::collections::BTreeMap;
 
 use crate::identity::values::Login;
 use crate::settings::field::{
-    SettingField, SettingValue, SettingValues, SoundValue, Unit, choice, color, flag, font, in_scene, mark_basic,
-    number, sound, text, with_defaults,
+    SettingField, SettingValue, SettingValues, SoundValue, Unit, choice, color, flag, font, in_scene, lines,
+    mark_basic, number, sound, text, with_defaults,
 };
 use crate::themes::graphics_fields::quality_field;
 use crate::themes::registry::Theme;
@@ -24,6 +24,8 @@ const DOG: &str = "Hund";
 const SOUNDS: &str = "Töne";
 const WORLD: &str = "Welt";
 const STARTING: &str = "Starting";
+const BRB: &str = "BRB";
+const ENDING: &str = "Ending";
 const STINGER: &str = "Stinger";
 
 const PX: Option<Unit> = Some(Unit::Px);
@@ -166,6 +168,11 @@ fn sounds() -> Vec<SettingField> {
             sound("soundStartingChosen", "Starting: Hund gewählt", SOUNDS),
             sound("soundStartingCard", "Starting: Karte", SOUNDS),
             sound("soundBark", "Bellen", SOUNDS),
+            sound("soundBrbSniff", "BRB: Schnüffeln", SOUNDS),
+            sound("soundBrbSteps", "BRB: Schritte", SOUNDS),
+            sound("soundEndingLie", "Ending: Hinlegen", SOUNDS),
+            sound("soundEndingLamp", "Ending: Lampe", SOUNDS),
+            sound("soundEndingSnore", "Ending: Schnarchen", SOUNDS),
         ],
         &[
             ("soundStartingLand", volume(0.4)),
@@ -173,9 +180,15 @@ fn sounds() -> Vec<SettingField> {
             ("soundStartingChosen", volume(0.6)),
             ("soundStartingCard", volume(0.5)),
             ("soundBark", volume(0.7)),
+            ("soundBrbSniff", volume(0.0)),
+            ("soundBrbSteps", volume(0.0)),
+            ("soundEndingLie", volume(0.5)),
+            ("soundEndingLamp", volume(0.4)),
+            ("soundEndingSnore", volume(0.3)),
         ],
     ));
     fields.push(flag("startingBarkSound", "Starting: Hunde bellen hörbar", SOUNDS, true));
+    fields.push(number("snoreEvery", "Ending: Schnarchen alle", SOUNDS, 4.0, 1.0, 60.0, S, Some(0.5)));
     fields
 }
 
@@ -259,10 +272,67 @@ fn starting() -> Vec<SettingField> {
     fields.into_iter().map(|field| in_scene(SceneName::Starting, field)).collect()
 }
 
+fn brb() -> Vec<SettingField> {
+    let fields = vec![
+        text("brbPill", "Pille", BRB, "GASSI-PAUSE", Some(40)),
+        text("brbTitle", "Titel", BRB, "Bin gleich zurück!", Some(60)),
+        text("brbSubtitle", "Unterzeile ({dog})", BRB, "{dog} und ich drehen eine Runde.", Some(80)),
+        text("brbPauseLabel", "Pausenzeit: Beschriftung", BRB, "PAUSE SEIT", Some(40)),
+        text("brbStepsLabel", "Schritte: Beschriftung", BRB, "SCHRITTE", Some(40)),
+        text("brbSniff", "Sprechblase beim Schnüffeln", BRB, "Schnüff!", Some(20)),
+        number("walkPxPerSecond", "Gehen: Tempo", BRB, 24.0, 1.0, 200.0, None, None),
+        number("walkPeriod", "Runde: Dauer bis zum nächsten Schnüffeln", BRB, 9.0, 3.0, 120.0, S, Some(0.5)),
+        number("sniffSeconds", "Schnüffeln: Dauer", BRB, 2.0, 0.0, 30.0, S, Some(0.5)),
+        number("stepPx", "Schritt: Länge (Pixel)", BRB, 3.0, 1.0, 50.0, None, None),
+        flag("leash", "Leine", BRB, true),
+        color("leashColor", "Leine: Farbe", BRB, "#c24535"),
+        number("leashSag", "Leine: Durchhang beim Gehen (stehend doppelt)", BRB, 8.0, 0.0, 40.0, None, None),
+        flag("butterfly", "Schmetterling", BRB, true),
+        color("butterflyColor", "Schmetterling: Farbe", BRB, "#f7a6c1"),
+        color("pathColor", "Weg", BRB, "#e3c49a"),
+        flag("parallax", "Parallaxe (ferne Ebenen langsamer)", BRB, true),
+    ];
+    fields.into_iter().map(|field| in_scene(SceneName::Brb, field)).collect()
+}
+
+fn ending() -> Vec<SettingField> {
+    let fields = vec![
+        text("endingTitle", "Titel", ENDING, "Gute Nacht!", Some(60)),
+        text("endingSubtitle", "Unterzeile ({dog})", ENDING, "Danke fürs Zuschauen. {dog} schläft schon.", Some(80)),
+        text("endingBye", "Pille", ENDING, "Bis zum nächsten Mal!", Some(40)),
+        text("endingCardLabel", "Karte: Überzeile", ENDING, "HEUTE IM RUDEL", Some(40)),
+        lines(
+            "endingStats",
+            "Zahlen (Schlüssel|Text)",
+            ENDING,
+            &["follows|neue Follower", "subs|Abos", "raids|Raids"],
+            Some(6),
+        ),
+        color("night", "Wand bei Nacht", ENDING, "#3b3a63"),
+        color("nightSub", "Unterzeile auf der Wand", ENDING, "#f1dcc0"),
+        color("windowSky", "Nachthimmel im Fenster", ENDING, "#1b2547"),
+        color("floor", "Dielen", ENDING, "#7d5233"),
+        color("rug", "Teppich", ENDING, "#8f6fc7"),
+        color("lamp", "Lampe und Mond", ENDING, "#ffe9a8"),
+        color("basket", "Körbchen", ENDING, "#c48a4f"),
+        color("pillow", "Kissen im Körbchen", ENDING, "#ffc9d9"),
+        number("stars", "Sterne im Fenster", ENDING, 16.0, 0.0, 60.0, None, None),
+        flag("moon", "Mond", ENDING, true),
+        number("lampDim", "Lampe: Helligkeit am Ende", ENDING, 35.0, 0.0, 100.0, PERCENT, None),
+        number("lampDimFrom", "Lampe: dimmt ab", ENDING, 5.0, 0.0, 120.0, S, Some(0.5)),
+        number("lampDimTo", "Lampe: gedimmt bei", ENDING, 7.5, 0.0, 120.0, S, Some(0.5)),
+        flag("zzz", "Z beim Schlafen", ENDING, true),
+        number("zzzEvery", "Z: Dauer je Aufstieg", ENDING, 1.8, 0.5, 10.0, S, Some(0.1)),
+    ];
+    fields.into_iter().map(|field| in_scene(SceneName::Ending, field)).collect()
+}
+
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     BTreeMap::from([
-        (WORLD.to_owned(), vec![SceneName::Starting]),
+        (WORLD.to_owned(), vec![SceneName::Starting, SceneName::Brb]),
         (STARTING.to_owned(), vec![SceneName::Starting]),
+        (BRB.to_owned(), vec![SceneName::Brb]),
+        (ENDING.to_owned(), vec![SceneName::Ending]),
         (STINGER.to_owned(), vec![]),
     ])
 }
@@ -285,11 +355,16 @@ const BASIC: &[&str] = &[
     "countdownLabel",
     "cardLabel",
     "ticker",
+    "brbTitle",
+    "brbSubtitle",
+    "endingTitle",
+    "endingSubtitle",
+    "endingStats",
 ];
 
 #[must_use]
 pub fn dogs() -> Theme {
-    let fields = [general(), dog(), sounds(), coats(), world(), starting()].concat();
+    let fields = [general(), dog(), sounds(), coats(), world(), starting(), brb(), ending()].concat();
     let schema = ThemeSchema {
         id: "dogs".to_owned(),
         name: "Dogs".to_owned(),

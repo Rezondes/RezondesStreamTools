@@ -154,3 +154,21 @@ export function paintImage(grid: PixelGrid, palette: Palette): PixelImage {
   paintGrid(image, grid, palette);
   return image;
 }
+
+export type PixelRun = { x: number; y: number; width: number; color: string };
+
+// The image as runs of equal color per row (for SVG rects: one rect per run instead of one per pixel)
+export function rowRuns(image: PixelImage): PixelRun[] {
+  const runs: PixelRun[] = [];
+  for (let y = 0; y < image.height; y++) {
+    let x = 0;
+    while (x < image.width) {
+      const color = image.colors[y * image.width + x];
+      let end = x + 1;
+      while (end < image.width && image.colors[y * image.width + end] === color) end++;
+      if (color) runs.push({ x, y, width: end - x, color });
+      x = end;
+    }
+  }
+  return runs;
+}

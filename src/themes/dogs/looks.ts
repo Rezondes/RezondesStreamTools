@@ -5,6 +5,7 @@ import type { BreedId } from "./breeds.ts";
 import { coatOf, coatPalette } from "./coats.ts";
 import type { DogLook } from "./dog.ts";
 import type { PropColors } from "./props.ts";
+import type { RoomColors } from "./room.ts";
 import type { DogsValues } from "./settings.ts";
 import type { WorldColors } from "./world.ts";
 
@@ -20,6 +21,12 @@ export const worldColorsOf = (values: DogsValues): WorldColors => ({
 export const propColorsOf = (values: DogsValues): PropColors => ({
   ink: values.ink, accent: values.accent, light: values.light, ball: values.ball, cream: values.cream, edge: values.edge,
   brown: values.treeTrunk, pink: values.dogTongue,
+});
+
+export const roomColorsOf = (values: DogsValues): RoomColors => ({
+  night: values.night, windowSky: values.windowSky, floor: values.floor, rug: values.rug, lamp: values.lamp, basket: values.basket, pillow: values.pillow,
+  cream: values.cream, edge: values.edge, ink: values.ink, light: values.light, trunk: values.treeTrunk, accent: values.accent,
+  lilac: values.flowerColor4, picture: values.cushionColor3,
 });
 
 // How a dog of breed and coat looks; a coat the breed does not have gives its default coat

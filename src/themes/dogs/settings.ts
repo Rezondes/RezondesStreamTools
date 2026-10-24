@@ -2,7 +2,7 @@
 // the theme with fixed colors, texts and numbers. The coat colors of the 18 variants come from one table (COAT_COLORS,
 // keys like corgiRotweissBase, coats.ts); server-rs/.../themes/dogs.rs builds the same fields from the same table.
 // DogsValues is the type of the resolved values that the scenes read via useDogs.
-import { choice, color, flag, font, inScene, markBasic, number, sound, text, withDefaults } from "../../core/fields.ts";
+import { choice, color, flag, font, inScene, lines, markBasic, number, sound, text, withDefaults } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
@@ -18,6 +18,8 @@ const DOG = "Hund";
 const SOUNDS = "Töne";
 const WORLD = "Welt";
 const STARTING = "Starting";
+const BRB = "BRB";
+const ENDING = "Ending";
 const STINGER = "Stinger";
 
 // Per variant: base, mark, dark, nose (defaults of the prototypes, refs/dog.js)
@@ -79,8 +81,17 @@ const FIELDS = [
     sound("soundStartingChosen", "Starting: Hund gewählt", SOUNDS),
     sound("soundStartingCard", "Starting: Karte", SOUNDS),
     sound("soundBark", "Bellen", SOUNDS),
-  ], { soundStartingLand: volume(0.4), soundStartingHop: volume(0.4), soundStartingChosen: volume(0.6), soundStartingCard: volume(0.5), soundBark: volume(0.7) }),
+    sound("soundBrbSniff", "BRB: Schnüffeln", SOUNDS),
+    sound("soundBrbSteps", "BRB: Schritte", SOUNDS),
+    sound("soundEndingLie", "Ending: Hinlegen", SOUNDS),
+    sound("soundEndingLamp", "Ending: Lampe", SOUNDS),
+    sound("soundEndingSnore", "Ending: Schnarchen", SOUNDS),
+  ], {
+    soundStartingLand: volume(0.4), soundStartingHop: volume(0.4), soundStartingChosen: volume(0.6), soundStartingCard: volume(0.5), soundBark: volume(0.7),
+    soundBrbSniff: volume(0), soundBrbSteps: volume(0), soundEndingLie: volume(0.5), soundEndingLamp: volume(0.4), soundEndingSnore: volume(0.3),
+  }),
   flag("startingBarkSound", "Starting: Hunde bellen hörbar", SOUNDS, true),
+  number("snoreEvery", "Ending: Schnarchen alle", SOUNDS, 4, 1, 60, "s", 0.5),
 
   ...coatFields(),
   number("dalmatinerSpots", "Dalmatiner: Anteil der Flecken", "Fell: Dalmatiner", 42, 0, 100, "%"),
@@ -131,20 +142,62 @@ const FIELDS = [
   inScene("starting", flag("labels", "Etiketten unter den Kissen", STARTING, true)),
   inScene("starting", text("ticker", "Laufband (leer = aus)", STARTING, "", 300)),
   inScene("starting", number("tickerSpeed", "Laufband: Tempo (px pro Sekunde)", STARTING, 90, 10, 400)),
+
+  inScene("brb", text("brbPill", "Pille", BRB, "GASSI-PAUSE", 40)),
+  inScene("brb", text("brbTitle", "Titel", BRB, "Bin gleich zurück!", 60)),
+  inScene("brb", text("brbSubtitle", "Unterzeile ({dog})", BRB, "{dog} und ich drehen eine Runde.", 80)),
+  inScene("brb", text("brbPauseLabel", "Pausenzeit: Beschriftung", BRB, "PAUSE SEIT", 40)),
+  inScene("brb", text("brbStepsLabel", "Schritte: Beschriftung", BRB, "SCHRITTE", 40)),
+  inScene("brb", text("brbSniff", "Sprechblase beim Schnüffeln", BRB, "Schnüff!", 20)),
+  inScene("brb", number("walkPxPerSecond", "Gehen: Tempo", BRB, 24, 1, 200)),
+  inScene("brb", number("walkPeriod", "Runde: Dauer bis zum nächsten Schnüffeln", BRB, 9, 3, 120, "s", 0.5)),
+  inScene("brb", number("sniffSeconds", "Schnüffeln: Dauer", BRB, 2, 0, 30, "s", 0.5)),
+  inScene("brb", number("stepPx", "Schritt: Länge (Pixel)", BRB, 3, 1, 50)),
+  inScene("brb", flag("leash", "Leine", BRB, true)),
+  inScene("brb", color("leashColor", "Leine: Farbe", BRB, "#c24535")),
+  inScene("brb", number("leashSag", "Leine: Durchhang beim Gehen (stehend doppelt)", BRB, 8, 0, 40)),
+  inScene("brb", flag("butterfly", "Schmetterling", BRB, true)),
+  inScene("brb", color("butterflyColor", "Schmetterling: Farbe", BRB, "#f7a6c1")),
+  inScene("brb", color("pathColor", "Weg", BRB, "#e3c49a")),
+  inScene("brb", flag("parallax", "Parallaxe (ferne Ebenen langsamer)", BRB, true)),
+
+  // Keys: follows, subs, giftedSubs, raids, raiders, bits, redeems, hypeLevel, chatMessages, chatters, duration
+  inScene("ending", text("endingTitle", "Titel", ENDING, "Gute Nacht!", 60)),
+  inScene("ending", text("endingSubtitle", "Unterzeile ({dog})", ENDING, "Danke fürs Zuschauen. {dog} schläft schon.", 80)),
+  inScene("ending", text("endingBye", "Pille", ENDING, "Bis zum nächsten Mal!", 40)),
+  inScene("ending", text("endingCardLabel", "Karte: Überzeile", ENDING, "HEUTE IM RUDEL", 40)),
+  inScene("ending", lines("endingStats", "Zahlen (Schlüssel|Text)", ENDING, ["follows|neue Follower", "subs|Abos", "raids|Raids"], 6)),
+  inScene("ending", color("night", "Wand bei Nacht", ENDING, "#3b3a63")),
+  inScene("ending", color("nightSub", "Unterzeile auf der Wand", ENDING, "#f1dcc0")),
+  inScene("ending", color("windowSky", "Nachthimmel im Fenster", ENDING, "#1b2547")),
+  inScene("ending", color("floor", "Dielen", ENDING, "#7d5233")),
+  inScene("ending", color("rug", "Teppich", ENDING, "#8f6fc7")),
+  inScene("ending", color("lamp", "Lampe und Mond", ENDING, "#ffe9a8")),
+  inScene("ending", color("basket", "Körbchen", ENDING, "#c48a4f")),
+  inScene("ending", color("pillow", "Kissen im Körbchen", ENDING, "#ffc9d9")),
+  inScene("ending", number("stars", "Sterne im Fenster", ENDING, 16, 0, 60)),
+  inScene("ending", flag("moon", "Mond", ENDING, true)),
+  inScene("ending", number("lampDim", "Lampe: Helligkeit am Ende", ENDING, 35, 0, 100, "%")),
+  inScene("ending", number("lampDimFrom", "Lampe: dimmt ab", ENDING, 5, 0, 120, "s", 0.5)),
+  inScene("ending", number("lampDimTo", "Lampe: gedimmt bei", ENDING, 7.5, 0, 120, "s", 0.5)),
+  inScene("ending", flag("zzz", "Z beim Schlafen", ENDING, true)),
+  inScene("ending", number("zzzEvery", "Z: Dauer je Aufstieg", ENDING, 1.8, 0.5, 10, "s", 0.1)),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
 export type { DogsValues } from "../../generated/themes/dogs.ts";
 
 const GROUP_SCENES = {
-  [WORLD]: ["starting"],
+  [WORLD]: ["starting", "brb"],
   [STARTING]: ["starting"],
+  [BRB]: ["brb"],
+  [ENDING]: ["ending"],
   [STINGER]: [],
 } as const;
 
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
-const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker"];
+const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "endingStats"];
 
 export const dogsSettings: ThemeSchema = { id: "dogs", name: "Dogs", fields: markBasic(withStingerFields(FIELDS, STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };

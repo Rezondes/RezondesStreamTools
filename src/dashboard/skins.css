@@ -602,9 +602,11 @@
 :root[data-skin="bears"] .skin-scenery-bears,
 :root[data-skin="chaos"] .skin-scenery-chaos,
 :root[data-skin="dachdecker"] .skin-scenery-dachdecker,
-:root[data-skin="kebab"] .skin-scenery-kebab { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+:root[data-skin="kebab"] .skin-scenery-kebab,
+:root[data-skin="dogs"] .skin-scenery-dogs { display: block; position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
 :root[data-skin="dachdecker"] .dashboard { position: relative; z-index: 1; }
 :root[data-skin="kebab"] .dashboard { position: relative; z-index: 1; }
+:root[data-skin="dogs"] .dashboard { position: relative; z-index: 1; }
 /* Kebab: the chef at the spit bottom right, the arc title top left, both as still red lines */
 .skin-scenery-kebab .skin-chef { position: absolute; right: 1vw; bottom: 2vh; width: clamp(300px, 30vw, 560px); opacity: 0.5; }
 .skin-scenery-kebab .skin-arc { position: absolute; left: 0.5vw; top: 1vh; width: clamp(280px, 26vw, 480px); opacity: 0.45; }
@@ -632,3 +634,15 @@
 .skin-scenery-chaos .ch-backdrop { position: absolute; inset: 0; }
 @media (max-width: 719px) { .skin-scenery-chaos, .skin-scenery-dachdecker, .skin-scenery-kebab { display: none !important; } .skin-scenery .skin-palm, .skin-scenery .pl-field, .skin-scenery .bb-world, .skin-sun, .skin-figures { display: none; } }
 @media (max-width: 1099px) { .skin-figures, .skin-bear-tower, .skin-scenery-chaos .ch-gestures, .skin-scenery-dachdecker > *, .skin-scenery-kebab .skin-chef { display: none; } }
+
+/* Dogs: a pixel meadow with fence along the bottom, clouds above it, the streamer's dog asleep on the right; below
+   1100 px only meadow and fence, below 720 px no scenery */
+.skin-scenery-dogs svg { position: absolute; image-rendering: pixelated; }
+.skin-scenery-dogs .skin-meadow { left: 0; right: 0; bottom: 0; width: 100%; height: clamp(120px, 14vh, 200px); opacity: 0.85; }
+.skin-scenery-dogs .skin-dog { right: 4vw; bottom: clamp(8px, 1.5vh, 24px); width: clamp(160px, 14vw, 280px); }
+.skin-scenery-dogs .skin-cloud { width: clamp(90px, 8vw, 160px); opacity: 0.9; }
+.skin-scenery-dogs .skin-cloud-1 { left: 6vw; bottom: 19vh; }
+.skin-scenery-dogs .skin-cloud-2 { left: 46vw; bottom: 22vh; }
+.skin-scenery-dogs .skin-cloud-3 { right: 18vw; bottom: 17vh; }
+@media (max-width: 1100px) { .skin-scenery-dogs .skin-dog, .skin-scenery-dogs .skin-cloud { display: none; } }
+@media (max-width: 720px) { :root[data-skin="dogs"] .skin-scenery-dogs { display: none; } }
