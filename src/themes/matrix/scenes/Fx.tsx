@@ -9,7 +9,7 @@ import FxMedia from "../../../core/FxMedia.tsx";
 import { useFxItem, useFxScene } from "../../../core/fx/useFxScene.ts";
 import type { ShownFx } from "../../../core/hooks/useFx.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
-import { typeIn } from "../crtMotion.ts";
+import { tubeLookOf, typeIn } from "../crtMotion.ts";
 import { useMatrix } from "../useMatrix.ts";
 
 export default function Fx() {
@@ -23,8 +23,8 @@ function Item({ item }: { item: ShownFx }) {
   const scope = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
     const line = scope.current?.querySelector(".fx-text");
-    if (line && values.fxType) typeIn(timeline, line, 0, values.decodeSpeed);
-  }, [text, values.fxType, values.decodeSpeed], scope);
+    if (line && values.fxType) typeIn(timeline, line, 0, values.decodeSpeed, tubeLookOf(values));
+  }, [text, values], scope);
   return (
     <div ref={scope} className={`fx-item in-${values.fxIn} out-${values.fxOut}`} style={style}>
       <FxMedia item={item} phase={phase} />

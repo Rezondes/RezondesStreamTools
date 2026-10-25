@@ -19,6 +19,7 @@ use crate::themes::minime_fields::{MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES,
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
+use crate::themes::tuning;
 
 /// Character set of rain, decoding and stinger (`GLYPHS` in `src/core/glyphs.ts`)
 const GLYPHS: &str = "アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789{}<>=;#ABCDEF";
@@ -301,6 +302,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (INFO_GROUP, vec![SceneName::Info]),
     ]
     .into_iter()
+    .chain(tuning::matrix::group_scenes())
     .map(|(group, scenes)| (group.to_owned(), scenes))
     .collect()
 }
@@ -361,7 +363,10 @@ pub fn matrix() -> Theme {
     let schema = ThemeSchema {
         id: "matrix".to_owned(),
         name: "Matrix".to_owned(),
-        fields: mark_basic(with_stinger_fields(fields(), STINGER, 60.0, 0.0), BASIC),
+        fields: mark_basic(
+            with_stinger_fields([fields(), tuning::matrix::fields()].concat(), STINGER, 60.0, 0.0),
+            BASIC,
+        ),
         group_scenes: group_scenes(),
         minime_variants: None,
         minime_teams: None,

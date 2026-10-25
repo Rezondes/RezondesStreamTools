@@ -11,7 +11,7 @@ import { type RefObject, useMemo, useRef } from "react";
 import type { SceneClock } from "../../../core/motion/useClockValue.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import Rain, { type RainControl } from "../pixi/Rain.tsx";
-import { GLITCH, glitchKeys, POWER, powerOn } from "../crtMotion.ts";
+import { glitchKeys, powerOn, tubeLookOf } from "../crtMotion.ts";
 import { rainTime, type Tempo } from "../rain.ts";
 import type { MatrixValues } from "../settings.ts";
 import { clock } from "../../../core/overlayTiming.ts";
@@ -27,18 +27,12 @@ import { placeholders, useMatrix } from "../useMatrix.ts";
 // fixed: percentage display and repetitions of the ticker text (the animation runs over half the width)
 const SHOW = { percent: 100, tickerRepeat: 6 };
 const SECOND_MS = 1000; // fixed: seconds in ms
-const POWER_AT = 0.3; // fixed: when the CRT switches on (s)
-// fixed: a reconnect attempt: how long the rain pulls (s), how long the line types (s) and stays (s)
-const RETRY = { pull: 0.8, type: 0.5, stay: 1.6 };
-// The Ending: when the numbers start counting after the power on (s) and how far apart (s), how long the rain falls out
-// before the CRT switches off (s), the switch off (line, dot, s)
-const LOGOUT = { fall: 1.6, line: 0.25, dot: 0.2 }; // fixed: timing of the CRT switching off at the end
 const DAY = 86400; // fixed: how long the scene clock runs (s)
 
 // The speed of the rain over the time of a scene
 function tempoOf(kind: ScreenKind, values: MatrixValues): Tempo {
   if (kind !== "brb") return { base: values.rainSpeed };
-  return { base: values.rainSpeed * values.brbRainSpeed, pulls: { every: values.brbRetryEvery, length: RETRY.pull, boost: values.rainSpeed } };
+  return { base: values.rainSpeed * values.brbRainSpeed, pulls: { every: values.brbRetryEvery, length: values.retryPull, boost: values.rainSpeed } };
 }
 
 // The power on of the CRT and its glitches (the rain shakes during a glitch), the reconnect attempts of the BRB and the
@@ -53,32 +47,33 @@ function useCrtMotion(scope: RefObject<HTMLDivElement | null>, kind: ScreenKind,
     control.current.drain = null;
     timeline.to(sceneClock, { time: DAY, duration: DAY, ease: "none" }, 0);
     const on = values.crtOnMs / SECOND_MS;
-    if (values.powerOn === "crt") powerOn(timeline, crt, POWER_AT, on, flash);
+    const tube = tubeLookOf(values);
+    if (values.powerOn === "crt") powerOn(timeline, crt, values.screenPowerAt, on, tube, flash);
     const retry = root.querySelector(".retry");
     if (kind === "brb" && retry) {
       const attempt = gsap.timeline({ repeat: -1, repeatDelay: values.brbRetryEvery });
-      attempt.fromTo(retry, { text: "", opacity: 1 }, { text: values.brbRetryText, duration: RETRY.type, ease: "none" }, 0)
-        .to(crt, { keyframes: glitchKeys(), duration: GLITCH.length, ease: "steps(3)" }, 0)
+      attempt.fromTo(retry, { text: "", opacity: 1 }, { text: values.brbRetryText, duration: values.retryType, ease: "none" }, 0)
+        .to(crt, { keyframes: glitchKeys(tube), duration: tube.glitch.length, ease: "steps(3)" }, 0)
         .set(control.current, { jitter: 1 }, 0)
-        .set(control.current, { jitter: 0 }, GLITCH.length)
-        .to(retry, { opacity: 0, duration: RETRY.type }, RETRY.stay);
+        .set(control.current, { jitter: 0 }, tube.glitch.length)
+        .to(retry, { opacity: 0, duration: values.retryType }, values.retryStay);
       timeline.add(attempt, values.brbRetryEvery);
     }
     const after = root.querySelector(".after-off");
     if (kind === "ending" && after && values.crtOffAt > 0) {
       const off = values.crtOffAt;
       timeline.set(control.current, { drain: rainTime(off, tempoOf(kind, values)) }, off)
-        .to(crt, { scaleY: POWER.thin, filter: `brightness(${POWER.bright})`, duration: LOGOUT.line, ease: "power2.in" }, off + LOGOUT.fall)
-        .to(crt, { scaleX: 0, duration: LOGOUT.dot, ease: "power2.in" }, off + LOGOUT.fall + LOGOUT.line)
-        .fromTo(after, { opacity: 0 }, { opacity: 1, duration: on }, off + LOGOUT.fall + LOGOUT.line + LOGOUT.dot);
+        .to(crt, { scaleY: tube.power.thin, filter: `brightness(${tube.power.bright})`, duration: values.logoutLine, ease: "power2.in" }, off + values.logoutFall)
+        .to(crt, { scaleX: 0, duration: values.logoutDot, ease: "power2.in" }, off + values.logoutFall + values.logoutLine)
+        .fromTo(after, { opacity: 0 }, { opacity: 1, duration: on }, off + values.logoutFall + values.logoutLine + values.logoutDot);
     }
     if (!values.glitchOn) return;
     const glitch = gsap.timeline({ repeat: -1, repeatDelay: values.glitchEvery });
-    glitch.to(crt, { keyframes: glitchKeys(), duration: GLITCH.length, ease: "steps(3)" })
+    glitch.to(crt, { keyframes: glitchKeys(tube), duration: tube.glitch.length, ease: "steps(3)" })
       .set(control.current, { jitter: 1 }, 0)
-      .set(control.current, { jitter: 0 }, GLITCH.length);
-    timeline.add(glitch, POWER_AT + on + values.glitchEvery);
-  }, [kind, values.powerOn, values.crtOnMs, values.glitchOn, values.glitchEvery, values.brbRetryEvery, values.brbRetryText, values.crtOffAt, values.rainSpeed, values.brbRainSpeed], scope);
+      .set(control.current, { jitter: 0 }, tube.glitch.length);
+    timeline.add(glitch, values.screenPowerAt + on + values.glitchEvery);
+  }, [kind, values], scope);
 }
 
 // What the rain reads every frame: its speed over the scene time, the glitch shake and the end of the rain

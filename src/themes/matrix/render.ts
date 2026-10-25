@@ -16,10 +16,10 @@ const STILL = 1;
 export function matrixClips(values: SettingValues, login: string): RenderClip[] {
   const matrix = values as unknown as MatrixValues;
   const stinger = stingerOptions(matrix);
-  const banner = bannerOptions(matrix, login);
-  // The offline banner has its own rain density (percent)
-  const offlineBanner = { ...banner, density: matrix.bannerOfflineRainDensity / 100 };
-  const font = `24px "${matrix.font}"`;
+  const banner = bannerOptions(matrix, login, "profile");
+  // The offline banner has its own colors, font and rain density
+  const offlineBanner = bannerOptions(matrix, login, "offline");
+  const font = `24px "${matrix.stingerFont}"`;
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, prepare: loadGlyphFont, draw: (context, time) => drawStinger(context, time, stinger) }, options),

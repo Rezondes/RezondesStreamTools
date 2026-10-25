@@ -13,8 +13,7 @@ import { vinyl } from "../../../core/vinyl.ts";
 import { useMatrixDecode } from "../useMatrixDecode.ts";
 import { useMatrix } from "../useMatrix.ts";
 
-// fixed: record at 12 frames per second (looks like a terminal, spares the CPU), equalizer every 130 ms
-const PACE = { vinylFrameMs: 1000 / 12, equalizerMs: 130 };
+const SECOND_MS = 1000; // fixed: seconds in ms
 // fixed: one full turn of the record in radians
 const TURN = Math.PI * 2;
 
@@ -58,9 +57,9 @@ function Vinyl({ playing, cover, onBroken }: { playing: boolean; cover: string |
   const [angle, setAngle] = useState(0);
   useEffect(() => {
     if (!playing) return;
-    const id = setInterval(() => setAngle(previous => (previous + values.vinylSpeed) % TURN), PACE.vinylFrameMs);
+    const id = setInterval(() => setAngle(previous => (previous + values.vinylSpeed) % TURN), SECOND_MS / Math.max(1, values.musicVinylFps));
     return () => clearInterval(id);
-  }, [playing, values.vinylSpeed]);
+  }, [playing, values.vinylSpeed, values.musicVinylFps]);
   return (
     <div className="music-record">
       {cover && (
@@ -100,14 +99,14 @@ function Info({ track, at }: { track: Track; at: number }) {
 
 // Spotify no longer provides audio data, so a random equalizer that only dances while playing
 function Equalizer({ playing }: { playing: boolean }) {
-  const { equalizerBars, equalizerChars } = useMatrix();
+  const { equalizerBars, equalizerChars, musicEqualizerMs } = useMatrix();
   const [bars, setBars] = useState("");
   useEffect(() => {
     const chars = Array.from(equalizerChars);
     setBars((chars[0] ?? "").repeat(equalizerBars));
     if (!playing) return;
-    const id = setInterval(() => setBars(Array.from({ length: equalizerBars }, () => chars[(Math.random() * chars.length) | 0]).join("")), PACE.equalizerMs);
+    const id = setInterval(() => setBars(Array.from({ length: equalizerBars }, () => chars[(Math.random() * chars.length) | 0]).join("")), musicEqualizerMs);
     return () => clearInterval(id);
-  }, [playing, equalizerBars, equalizerChars]);
+  }, [playing, equalizerBars, equalizerChars, musicEqualizerMs]);
   return <span className="music-eq">{bars}</span>;
 }

@@ -2,7 +2,7 @@
 // no rain.
 // A mock canvas records the calls. Runs with npm test.
 import assert from "node:assert/strict";
-import { resolveSettings } from "../../core/settings.ts";
+import { effectiveSettings } from "../../core/settings.ts";
 import { bannerOptions, drawOfflineBanner, drawProfileBanner, type BannerOptions } from "./banners.ts";
 import { matrixSettings, type MatrixValues } from "./settings.ts";
 
@@ -19,7 +19,7 @@ function recorder() {
 }
 
 
-const values = resolveSettings(matrixSettings, {}) as unknown as MatrixValues;
+const values = effectiveSettings(matrixSettings, {}) as unknown as MatrixValues;
 const options = bannerOptions(values, "rezondes");
 
 for (const draw of [drawProfileBanner, drawOfflineBanner]) {
@@ -44,5 +44,11 @@ assert.ok(empty.calls.filter(call => call.method === "fillRect").length < full.c
 // Placeholders in header and prompt are filled
 assert.equal(options.offlineHeader, "STREAM://stream/offline");
 assert.equal(options.prompt, "root@rezondes:~$");
+
+// Each banner has its own colors: the offline banner takes its own background, the profile banner keeps the theme one
+const offline = bannerOptions(effectiveSettings(matrixSettings, { bannerOfflineBackground: "#123456" }) as unknown as MatrixValues, "rezondes", "offline");
+assert.equal(offline.background, "#123456");
+assert.equal(bannerOptions(values, "rezondes", "profile").background, values.background);
+assert.equal(offline.density, values.bannerOfflineRainDensity / 100);
 
 console.log("banners ok");

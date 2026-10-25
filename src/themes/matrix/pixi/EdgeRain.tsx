@@ -6,7 +6,7 @@ import { useRef } from "react";
 import { hexNumber } from "../../../core/color.ts";
 import { seekFromQuery } from "../../../core/motion/seek.ts";
 import PixiStage from "../../../core/pixi/PixiStage.tsx";
-import { glyphAt, headAt, type RainColumn, rainColumns } from "../rain.ts";
+import { glyphAt, headAt, type RainColumn, rainColumns, rainLookOf } from "../rain.ts";
 import type { MatrixValues } from "../settings.ts";
 import { useMatrix } from "../useMatrix.ts";
 import { glyphAtlas, useGlyphFont } from "./GlyphAtlas.ts";
@@ -16,9 +16,8 @@ type Column = RainColumn & { cells: Sprite[]; edge: number };
 
 const SECOND_MS = 1000; // fixed: seconds in ms
 const SEEK = seekFromQuery(location.search);
-// fixed: the middle layer of rain.ts, glyph size over the cell, how the trail fades, how much fainter the innermost
-// column is than the outermost
-const LOOK = { layer: 1, glyph: 1.05, fade: 1.6, inward: 0.6 };
+// fixed: the strips use the middle layer of rain.ts
+const LAYER = 1;
 
 function build(app: Application, values: MatrixValues, area: Area) {
   const atlas = glyphAtlas(values.glyphs, values.font);
@@ -27,26 +26,26 @@ function build(app: Application, values: MatrixValues, area: Area) {
   const plane = new Container();
   app.stage.addChild(plane);
   // The right strip gets another seed, so the edges do not mirror each other; edge is the distance to the outer edge
-  const columns: Column[] = [0, 1].flatMap(side => rainColumns(LOOK.layer, size, { seed: values.rainSeed + side, width: strip, density: 1 }).map(column => ({
+  const columns: Column[] = [0, 1].flatMap(side => rainColumns(LAYER, size, { seed: values.rainSeed + side, width: strip, density: 1, look: rainLookOf(values) }).map(column => ({
     ...column,
     x: side === 0 ? column.x : area.width - column.x,
     edge: column.x,
     cells: Array.from({ length: column.trail }, () => {
       const sprite = new Sprite(atlas[0]);
       sprite.anchor.set(0.5);
-      sprite.width = sprite.height = size * LOOK.glyph;
+      sprite.width = sprite.height = size * values.camRainGlyphScale;
       plane.addChild(sprite);
       return sprite;
     }),
   })));
-  const [tint, head] = [hexNumber(values.accent), hexNumber(values.flash)];
-  const change = { tip: values.glyphChangeTip, trail: values.glyphChange };
+  const [tint, head] = [hexNumber(values.camRainColor), hexNumber(values.camRainHeadColor)];
+  const change = { tip: values.glyphChangeTip, trail: values.glyphChange, tipCells: values.rainTip };
   const started = performance.now();
   const paint = () => {
     const seconds = SEEK ?? (performance.now() - started) / SECOND_MS;
     for (const column of columns) {
       const at = headAt(column, size, area.height, seconds * values.rainSpeed);
-      const inward = 1 - (LOOK.inward * column.edge) / strip;
+      const inward = 1 - (values.camRainInward * column.edge) / strip;
       column.cells.forEach((cell, behind) => {
         const row = (at?.row ?? 0) - behind;
         const y = row * size + size / 2;
@@ -54,7 +53,7 @@ function build(app: Application, values: MatrixValues, area: Area) {
         if (!at || !cell.visible) return;
         cell.texture = atlas[glyphAt(values.rainSeed + at.run, column, row, behind, seconds, atlas.length, change)];
         cell.position.set(column.x, y);
-        cell.alpha = (1 - behind / column.trail) ** LOOK.fade * inward;
+        cell.alpha = (1 - behind / column.trail) ** values.camRainFade * inward;
         cell.tint = behind === 0 ? head : tint;
       });
     }
@@ -71,6 +70,7 @@ export default function EdgeRain({ area }: { area: Area }) {
   const font = useGlyphFont();
   if (!font) return null;
   // A new stage when a setting of the rain changes (the build reads them once)
-  const key = [values.glyphs, values.font, values.rainSeed, values.rainSpeed, values.camRainSize, values.camRainWidth, values.glyphChange, values.glyphChangeTip, values.accent, values.flash].join("|");
+  const key = [values.glyphs, values.font, values.rainSeed, values.rainSpeed, values.camRainSize, values.camRainWidth, values.glyphChange, values.glyphChangeTip, values.camRainColor, values.camRainHeadColor,
+    values.camRainGlyphScale, values.camRainFade, values.camRainInward, values.rainTip, JSON.stringify(rainLookOf(values))].join("|");
   return <PixiStage key={key} className="cam-rain" background={null} size={area} onReady={app => build(app, latest.current, area)} />;
 }

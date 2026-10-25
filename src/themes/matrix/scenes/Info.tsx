@@ -6,12 +6,9 @@ import { useRef } from "react";
 import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
-import { GLITCH, glitchKeys, typeIn } from "../crtMotion.ts";
+import { glitchKeys, tubeLookOf, typeIn } from "../crtMotion.ts";
 import Rain from "../pixi/Rain.tsx";
 import { placeholders, useMatrix } from "../useMatrix.ts";
-
-// fixed: how much later each line starts typing (s)
-const INFO_STAGGER = 0.05;
 
 export default function Info() {
   const values = useMatrix();
@@ -20,9 +17,10 @@ export default function Info() {
   useTimeline(timeline => {
     const column = scope.current;
     if (!column || !values.infoType) return;
-    timeline.to(column, { keyframes: glitchKeys(), duration: GLITCH.length }, 0);
-    column.querySelectorAll("h1, h2, p, code").forEach((line, index) => typeIn(timeline, line, index * INFO_STAGGER, values.decodeSpeed));
-  }, [page, values.infoType, values.decodeSpeed], scope);
+    const tube = tubeLookOf(values);
+    timeline.to(column, { keyframes: glitchKeys(tube), duration: tube.glitch.length }, 0);
+    column.querySelectorAll("h1, h2, p, code").forEach((line, index) => typeIn(timeline, line, index * values.infoTypeStagger, values.decodeSpeed, tube));
+  }, [page, values], scope);
   if (!page) return null;
   return (
     <div className="matrix-info">

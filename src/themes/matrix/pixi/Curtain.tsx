@@ -5,7 +5,7 @@ import { type Application, Container, Sprite } from "pixi.js";
 import { useRef } from "react";
 import { hexNumber } from "../../../core/color.ts";
 import PixiStage from "../../../core/pixi/PixiStage.tsx";
-import { type Area, curtainAt, dissolveAt, type Glyph } from "../curtain.ts";
+import { type Area, curtainAt, curtainLookOf, dissolveAt, type Glyph } from "../curtain.ts";
 import { mix } from "../rain.ts";
 import type { MatrixValues } from "../settings.ts";
 import { useMatrix } from "../useMatrix.ts";
@@ -13,10 +13,6 @@ import { glyphAtlas, useGlyphFont } from "./GlyphAtlas.ts";
 
 export type CurtainClock = { time: number; leaveAt: number };
 
-// fixed: room below the box for the falling glyphs (px), glyph size over the cell, how often a glyph changes (per s)
-const FALL_ROOM = 420;
-const GLYPH = 1.05;
-const CHANGE = 10;
 const SECOND_MS = 1000; // fixed: seconds in ms
 
 function build(app: Application, values: MatrixValues, area: Area, clock: CurtainClock) {
@@ -24,17 +20,18 @@ function build(app: Application, values: MatrixValues, area: Area, clock: Curtai
   const layer = new Container();
   app.stage.addChild(layer);
   const pool: Sprite[] = [];
-  const [tint, head] = [hexNumber(values.accent), hexNumber(values.flash)];
+  const [tint, head] = [hexNumber(values.alertCurtainColor), hexNumber(values.alertCurtainHeadColor)];
   const cell = values.alertCurtainSize;
+  const look = curtainLookOf(values);
   const paint = () => {
     const glyphs: Glyph[] = [
-      ...(values.alertCurtainOn ? curtainAt(area, cell, clock.time, values.alertCurtainSpeed, values.rainSeed) : []),
-      ...(values.alertDissolveOn ? dissolveAt(area, cell, clock.time - clock.leaveAt, values.alertDissolveMs / SECOND_MS, values.rainSeed) : []),
+      ...(values.alertCurtainOn ? curtainAt(area, cell, clock.time, values.alertCurtainSpeed, values.rainSeed, look) : []),
+      ...(values.alertDissolveOn ? dissolveAt(area, cell, clock.time - clock.leaveAt, values.alertDissolveMs / SECOND_MS, values.rainSeed, look) : []),
     ];
     while (pool.length < glyphs.length) {
       const sprite = new Sprite(atlas[0]);
       sprite.anchor.set(0.5);
-      sprite.width = sprite.height = cell * GLYPH;
+      sprite.width = sprite.height = cell * values.alertCurtainGlyphScale;
       layer.addChild(sprite);
       pool.push(sprite);
     }
@@ -45,7 +42,7 @@ function build(app: Application, values: MatrixValues, area: Area, clock: Curtai
       sprite.position.set(glyph.x, glyph.y);
       sprite.alpha = glyph.alpha;
       sprite.tint = glyph.head ? head : tint;
-      sprite.texture = atlas[Math.floor(mix(values.rainSeed, glyph.key, Math.floor(clock.time * CHANGE)) * atlas.length)];
+      sprite.texture = atlas[Math.floor(mix(values.rainSeed, glyph.key, Math.floor(clock.time * values.alertCurtainChange)) * atlas.length)];
     });
   };
   paint();
@@ -61,7 +58,7 @@ export default function Curtain({ area, clock }: { area: Area; clock: CurtainClo
   if (!font) return null;
   return (
     <div className="alert-curtain" aria-hidden="true">
-      <PixiStage background={null} size={{ width: Math.round(area.width), height: Math.round(area.height) + FALL_ROOM }} onReady={app => build(app, latest.current, area, clock)} />
+      <PixiStage background={null} size={{ width: Math.round(area.width), height: Math.round(area.height) + values.alertCurtainRoom }} onReady={app => build(app, latest.current, area, clock)} />
     </div>
   );
 }

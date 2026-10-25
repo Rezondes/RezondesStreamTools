@@ -8,8 +8,8 @@ import { useOneLine } from "../../../core/hooks/useOneLine.ts";
 import { type RefObject, useLayoutEffect, useRef, useState } from "react";
 import { alertTiming } from "../../../core/overlayTiming.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
-import { glitchKeys, GLITCH, powerOn } from "../crtMotion.ts";
-import { type Area, curtainLength } from "../curtain.ts";
+import { glitchKeys, powerOn, tubeLookOf } from "../crtMotion.ts";
+import { type Area, curtainLength, curtainLookOf } from "../curtain.ts";
 import Curtain, { type CurtainClock } from "../pixi/Curtain.tsx";
 import Rain from "../pixi/Rain.tsx";
 import type { MatrixValues } from "../settings.ts";
@@ -33,7 +33,6 @@ export default function Alerts() {
 
 const SECOND_MS = 1000; // fixed: seconds in ms
 const DAY = 86400; // fixed: how long the clock of an alert runs (s)
-const MIDDLE = 0.5; // fixed: the glitch comes halfway to the leaving
 
 // The clock of the curtain, the power on of the box after it, the glitch in the middle and the box vanishing when it
 // dissolves
@@ -44,10 +43,11 @@ function useAlertMotion(scope: RefObject<HTMLDivElement | null>, values: MatrixV
     clock.time = 0;
     clock.leaveAt = alertTiming(values.alertDuration).leaveAtMs / SECOND_MS;
     timeline.to(clock, { time: DAY, duration: DAY, ease: "none" }, 0);
-    if (values.alertCurtainOn) powerOn(timeline, body, curtainLength(values.alertCurtainSpeed), values.alertCrtOnMs / SECOND_MS);
-    if (values.alertGlitchOn) timeline.to(body, { keyframes: glitchKeys(), duration: GLITCH.length, ease: "steps(3)" }, clock.leaveAt * MIDDLE);
+    const tube = tubeLookOf(values);
+    if (values.alertCurtainOn) powerOn(timeline, body, curtainLength(values.alertCurtainSpeed, curtainLookOf(values)), values.alertCrtOnMs / SECOND_MS, tube);
+    if (values.alertGlitchOn) timeline.to(body, { keyframes: glitchKeys(tube), duration: tube.glitch.length, ease: "steps(3)" }, clock.leaveAt * values.alertGlitchAt);
     if (values.alertDissolveOn) timeline.set(body, { opacity: 0 }, clock.leaveAt);
-  }, [values.alertDuration, values.alertCurtainOn, values.alertCurtainSpeed, values.alertCrtOnMs, values.alertGlitchOn, values.alertDissolveOn], scope);
+  }, [values], scope);
 }
 
 // The size of the box once it is laid out (the curtain and its rain are drawn in it)

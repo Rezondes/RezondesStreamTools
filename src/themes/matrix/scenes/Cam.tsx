@@ -5,7 +5,7 @@ import { useRef } from "react";
 import { fillTemplate } from "../../../core/template.ts";
 import { useNow } from "../../../core/hooks/useNow.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
-import { powerOn } from "../crtMotion.ts";
+import { powerOn, tubeLookOf } from "../crtMotion.ts";
 import EdgeRain from "../pixi/EdgeRain.tsx";
 import { useMatrixDecode } from "../useMatrixDecode.ts";
 import { placeholders, useMatrix } from "../useMatrix.ts";
@@ -19,8 +19,8 @@ export default function Cam() {
   const scope = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
     const tube = scope.current;
-    if (tube && values.camOnMs > 0) powerOn(timeline, tube, 0, values.camOnMs / SECOND_MS, tube.querySelector(".cam-flash"));
-  }, [values.camOnMs], scope);
+    if (tube && values.camOnMs > 0) powerOn(timeline, tube, 0, values.camOnMs / SECOND_MS, tubeLookOf(values), tube.querySelector(".cam-flash"));
+  }, [values], scope);
   return (
     <div ref={scope} className="cam">
       {values.camRain && <EdgeRain area={{ width: innerWidth, height: innerHeight }} />}

@@ -15,16 +15,13 @@ const STATS = { width: 720, line: 32, room: 100 };
 // title; one line of the ASCII record
 const MUSIC = { art: 58, text: 195, vinylLine: 8.4 };
 
-// fixed: where the alert sits on the stage (px); the OBS source shows only its part, the streamer places it in OBS
-// (same value as --alert-top in the CSS of the theme)
-const ALERT_TOP = 64;
-
 export function matrixAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const matrix = values as unknown as MatrixValues;
   const { alertWidth: width, alertScale: scale } = matrix;
   const lines = parseStatLines(matrix.logoutLines.join("\n")).length;
   return {
-    alerts: alertArea({ top: ALERT_TOP, width, height: ALERT.height, scale, room: ALERT.room, side: ALERT.side }),
+    // the alert sits alertsPaddingTop below the top of the stage; the OBS source shows only its part
+    alerts: alertArea({ top: matrix.alertsPaddingTop, width, height: ALERT.height, scale, room: ALERT.room, side: ALERT.side }),
     stats: { width: STATS.width, height: STATS.room + lines * STATS.line },
     music: musicArea(musicArt(matrix) + MUSIC.art, matrix.musicTitleSize + MUSIC.text),
   };

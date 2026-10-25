@@ -14,15 +14,17 @@
   flex-direction: column;
   align-items: center;
   color: var(--minime);
-  transform: translateX(calc(var(--x) - 50%));
+  transform: translateX(calc(var(--x) - var(--minimeTransform)));
   transition: transform var(--move) linear;
 }
 
 .theme-matrix .minime-name {
-  font-size: var(--minimeNameSize);
+  font-size: calc(var(--minimeNameSize) * var(--minimeNameFontSize) / 100);
   margin-bottom: var(--minimeNameGap);
   white-space: nowrap;
-  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minime-glow-near, 4px)) var(--minime);
+  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minimeNameTextShadow)) var(--minime);
+  color: var(--minimeNameColor);
+  font-family: var(--minimeNameFont), "Matrix Katakana", monospace;
 }
 
 /* Floating: constantly a bit up and down, independent of the action */
@@ -30,8 +32,8 @@
 @keyframes matrix-minime-float { from { translate: 0 0; } to { translate: 0 calc(-1 * var(--minimeFloatHeight)); } }
 
 /* Facing (mirrored) and tilt in the walking direction while walking */
-.theme-matrix .minime-flip { transform: scaleX(var(--facing)); transition: rotate var(--minime-tilt-time, 0.3s) ease-out; }
-.theme-matrix .action-walk .minime-flip { rotate: calc(var(--facing) * var(--minimeTilt) * 1deg); }
+.theme-matrix .minime-flip { transform: scaleX(var(--facing)); transition: rotate var(--minimeFlipTransition) ease-out; }
+.theme-matrix .action-walk .minime-flip { rotate: calc(var(--facing) * var(--minimeTilt) * calc(var(--actionWalkMinimeFlipRotate) * 1deg)); }
 
 .theme-matrix .minime-action { position: relative; }
 .theme-matrix .minime-shape {
@@ -39,52 +41,56 @@
   width: 100%;
   height: auto;
   overflow: visible;
-  filter: drop-shadow(0 0 calc(var(--minimeGlow) * var(--minime-glow-near, 4px)) var(--minime));
+  filter: drop-shadow(0 0 calc(var(--minimeGlow) * var(--minimeShapeFilter)) var(--minime));
 }
-.theme-matrix .minime-shape .outline { fill: none; stroke: var(--minime); stroke-width: var(--minimeStroke); stroke-linecap: round; stroke-linejoin: round; }
-.theme-matrix .minime-shape .face { fill: var(--minimeFace); }
-.theme-matrix .minime-shape .hollow { fill: var(--minimeFace); stroke: color-mix(in srgb, var(--minime) 45%, transparent); stroke-width: var(--minimeStroke); }
+.theme-matrix .minime-shape .outline { fill: none; stroke: var(--minime); stroke-width: calc(var(--minimeStroke) * var(--minimeShapeOutlineStrokeWidth) / 100); stroke-linecap: round; stroke-linejoin: round; }
+.theme-matrix .minime-shape .face { fill: var(--minimeShapeFaceFill); }
+.theme-matrix .minime-shape .hollow { fill: var(--minimeShapeHollowFill); stroke: color-mix(in srgb, var(--minime) var(--minimeShapeHollowStroke), transparent); stroke-width: calc(var(--minimeStroke) * var(--minimeShapeHollowStrokeWidth) / 100); }
 .theme-matrix .minime-shape .eye { fill: var(--minime); transform-box: fill-box; transform-origin: center; }
 
 /* Jet: columns of falling glyphs below the ghost, faded out downwards */
 .theme-matrix .minime-jet {
   display: flex;
   justify-content: center;
-  gap: var(--minime-jet-gap, 2px);
-  height: calc(var(--minimeJetLength) * var(--minimeJetSize));
-  margin-top: calc(-1 * var(--minime-jet-overlap, 6px));
+  gap: var(--minimeJetGap);
+  height: calc(var(--minimeJetLength) * calc(var(--minimeJetSize) * var(--minimeJetHeight) / 100));
+  margin-top: calc(-1 * var(--minimeJetMarginTop));
   overflow: hidden;
-  font-size: var(--minimeJetSize);
-  line-height: 1;
+  font-size: calc(var(--minimeJetSize) * var(--minimeJetFontSize) / 100);
+  line-height: var(--minimeJetLineHeight);
   mask-image: linear-gradient(to bottom, black, transparent);
+  color: var(--minimeJetColor);
+  font-family: var(--minimeJetFont), "Matrix Katakana", monospace;
 }
 .theme-matrix .minime-column {
   display: block;
-  width: 1ch;
+  width: calc(var(--minimeColumnWidth) * 1ch);
   word-break: break-all;
-  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minime-glow-near, 4px)) var(--minime);
-  animation: matrix-minime-fall var(--minimeJetSpeed) linear infinite;
-  animation-delay: calc(var(--column) * var(--minimeJetSpeed) / -3);
+  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minimeColumnTextShadow)) var(--minime);
+  animation: matrix-minime-fall calc(var(--minimeJetSpeed) * var(--minimeColumnAnimation) / 100) linear infinite;
+  animation-delay: calc(var(--column) * calc(var(--minimeJetSpeed) * var(--minimeColumnAnimationDelay) / 100) / var(--minimeColumnAnimationDelay2));
 }
-@keyframes matrix-minime-fall { from { translate: 0 -50%; } to { translate: 0 0; } }
+@keyframes matrix-minime-fall { from { translate: 0 var(--kfMinimeFallFromTranslate); } to { translate: 0 0; } }
 
 /* Appearing: built from top to bottom, glyphs fall over it; name and jet fade in */
 .theme-matrix .action-enter .minime-shape { animation: matrix-minime-enter var(--action-ms) linear both; }
 @keyframes matrix-minime-enter {
-  from { clip-path: inset(0 0 100% 0); opacity: 0.4; }
-  60%  { opacity: 0.7; }
-  70%  { opacity: 0.3; }
-  to   { clip-path: inset(0); opacity: 1; }
+  from { clip-path: inset(0 0 100% 0); opacity: var(--kfMinimeEnterFromOpacity); }
+  60%  { opacity: var(--kfMinimeEnter60pOpacity); }
+  70%  { opacity: var(--kfMinimeEnter70pOpacity); }
+  to   { clip-path: inset(0); opacity: var(--kfMinimeEnterToOpacity); }
 }
-.theme-matrix .action-enter .minime-name, .theme-matrix .action-enter .minime-jet { animation: matrix-fade-in var(--action-ms) ease-out both; }
+.theme-matrix .action-enter .minime-name { animation: matrix-fade-in var(--action-ms) ease-out both; }
+.theme-matrix .action-enter .minime-jet { animation: matrix-fade-in var(--action-ms) ease-out both; }
 
 /* Disappearing: crumbles downwards, name and jet fade out */
 .theme-matrix .action-exit .minime-shape { animation: matrix-minime-exit var(--action-ms) ease-in forwards; }
 @keyframes matrix-minime-exit {
-  from { clip-path: inset(0); opacity: 1; }
-  to   { clip-path: inset(100% 0 0 0); opacity: 0; translate: 0 var(--minime-exit-drop, 20px); }
+  from { clip-path: inset(0); opacity: var(--kfMinimeExitFromOpacity); }
+  to   { clip-path: inset(100% 0 0 0); opacity: 0; translate: 0 var(--kfMinimeExitToTranslate); }
 }
-.theme-matrix .action-exit .minime-name, .theme-matrix .action-exit .minime-jet { animation: matrix-fade-out var(--action-ms) ease-in forwards; }
+.theme-matrix .action-exit .minime-name { animation: matrix-fade-out var(--action-ms) ease-in forwards; }
+.theme-matrix .action-exit .minime-jet { animation: matrix-fade-out var(--action-ms) ease-in forwards; }
 
 /* Glyphs above the ghost when appearing and disappearing */
 .theme-matrix .minime-decode {
@@ -93,78 +99,80 @@
   display: flex;
   justify-content: space-around;
   overflow: hidden;
-  font-size: var(--minimeJetSize);
-  line-height: 1;
+  font-size: calc(var(--minimeJetSize) * var(--minimeDecodeFontSize) / 100);
+  line-height: var(--minimeDecodeLineHeight);
   animation: matrix-fade-out var(--action-ms) ease-in forwards;
+  color: var(--minimeDecodeColor);
+  font-family: var(--minimeDecodeFont), "Matrix Katakana", monospace;
 }
 
 /* Eyes: blink independent of the action (minimeBlinkEvery, 0 = never) */
-.theme-matrix .minime-shape .eye { animation: matrix-minime-blink var(--minimeBlinkEvery) linear infinite; }
-@keyframes matrix-minime-blink { 0%, 95%, 100% { scale: 1 1; } 97.5% { scale: 1 0.1; } }
+.theme-matrix .minime-shape .eye { animation: matrix-minime-blink calc(var(--minimeBlinkEvery) * var(--minimeShapeEyeAnimation) / 100) linear infinite; }
+@keyframes matrix-minime-blink { 0%, 95%, 100% { scale: var(--kfMinimeBlink0p95p100pScale) var(--kfMinimeBlink0p95p100pScale2); } 97.5% { scale: var(--kfMinimeBlink975pScale) var(--kfMinimeBlink975pScale2); } }
 
 /* Backflip: into a crouch, up with a full backward turn (the mirroring turns the direction along), the jet flares up */
-.theme-matrix .action-backflip .minime-action { animation: matrix-minime-backflip var(--action-ms) ease-in-out both; transform-origin: 50% 60%; }
+.theme-matrix .action-backflip .minime-action { animation: matrix-minime-backflip var(--action-ms) ease-in-out both; transform-origin: var(--actionBackflipMinimeActionTransformOrigin) var(--actionBackflipMinimeActionTransformOrigin2); }
 @keyframes matrix-minime-backflip {
   0%   { translate: 0 0; rotate: 0deg; }
-  15%  { translate: 0 calc(0.15 * var(--minimeBackflipHeight)); rotate: 0deg; }
-  55%  { translate: 0 calc(-1 * var(--minimeBackflipHeight)); rotate: -200deg; }
+  15%  { translate: 0 calc(var(--kfMinimeBackflip15pTranslate2) * calc(var(--minimeBackflipHeight) * var(--kfMinimeBackflip15pTranslate) / 100)); rotate: 0deg; }
+  55%  { translate: 0 calc(-1 * calc(var(--minimeBackflipHeight) * var(--kfMinimeBackflip55pTranslate) / 100)); rotate: calc(var(--kfMinimeBackflip55pRotate) * 1deg); }
   90%  { translate: 0 0; rotate: -360deg; }
   100% { translate: 0 0; rotate: -360deg; }
 }
-.theme-matrix .action-backflip .minime-jet,
+.theme-matrix .action-backflip .minime-jet { transform-origin: top; animation: matrix-minime-flare var(--action-ms) ease-out both; }
 .theme-matrix .action-boost .minime-jet { transform-origin: top; animation: matrix-minime-flare var(--action-ms) ease-out both; }
-@keyframes matrix-minime-flare { 0%, 100% { scale: 1 1; filter: none; } 20% { scale: 1 var(--minimeBoostJet); filter: brightness(1.6); } }
+@keyframes matrix-minime-flare { 0%, 100% { scale: var(--kfMinimeFlare0p100pScale) var(--kfMinimeFlare0p100pScale2); filter: none; } 20% { scale: var(--kfMinimeFlare20pScale) var(--minimeBoostJet); filter: brightness(var(--kfMinimeFlare20pFilter)); } }
 
 /* Glitch: stripes offset, color fringe in the glitch color, the name flickers */
-.theme-matrix .action-glitch .minime-action { animation: matrix-minime-glitch var(--action-ms) steps(1, end) both; }
+.theme-matrix .action-glitch .minime-action { animation: matrix-minime-glitch var(--action-ms) steps(var(--actionGlitchMinimeActionAnimation), end) both; }
 @keyframes matrix-minime-glitch {
-  0%   { translate: var(--minimeGlitchShift) 0; clip-path: inset(10% 0 55% 0); filter: drop-shadow(var(--minimeGlitchShift) 0 0 var(--highlight)); }
-  20%  { translate: calc(-1 * var(--minimeGlitchShift)) 0; clip-path: inset(45% 0 20% 0); }
-  40%  { translate: 0 0; clip-path: inset(0); filter: drop-shadow(calc(-1 * var(--minimeGlitchShift)) 0 0 var(--highlight)); }
-  60%  { translate: calc(0.5 * var(--minimeGlitchShift)) 0; clip-path: inset(70% 0 0 0); }
+  0%   { translate: calc(var(--minimeGlitchShift) * var(--kfMinimeGlitch0pTranslate) / 100) 0; clip-path: inset(var(--kfMinimeGlitch0pClipPath) 0 var(--kfMinimeGlitch0pClipPath2) 0); filter: drop-shadow(calc(var(--minimeGlitchShift) * var(--kfMinimeGlitch0pFilter2) / 100) 0 0 var(--kfMinimeGlitch0pFilter)); }
+  20%  { translate: calc(-1 * calc(var(--minimeGlitchShift) * var(--kfMinimeGlitch20pTranslate) / 100)) 0; clip-path: inset(var(--kfMinimeGlitch20pClipPath) 0 var(--kfMinimeGlitch20pClipPath2) 0); }
+  40%  { translate: 0 0; clip-path: inset(0); filter: drop-shadow(calc(-1 * calc(var(--minimeGlitchShift) * var(--kfMinimeGlitch40pFilter2) / 100)) 0 0 var(--kfMinimeGlitch40pFilter)); }
+  60%  { translate: calc(var(--kfMinimeGlitch60pTranslate2) * calc(var(--minimeGlitchShift) * var(--kfMinimeGlitch60pTranslate) / 100)) 0; clip-path: inset(var(--kfMinimeGlitch60pClipPath) 0 0 0); }
   80%  { translate: 0 0; clip-path: inset(0); filter: none; }
   100% { translate: 0 0; clip-path: inset(0); filter: none; }
 }
-.theme-matrix .action-glitch .minime-name { animation: matrix-minime-flicker var(--action-ms) steps(1, end) both; }
-@keyframes matrix-minime-flicker { 0%, 40%, 80% { opacity: 1; } 20%, 60% { opacity: 0.2; } 100% { opacity: 1; } }
+.theme-matrix .action-glitch .minime-name { animation: matrix-minime-flicker var(--action-ms) steps(var(--actionGlitchMinimeNameAnimation), end) both; }
+@keyframes matrix-minime-flicker { 0%, 40%, 80% { opacity: var(--kfMinimeFlicker0p40p80pOpacity); } 20%, 60% { opacity: var(--kfMinimeFlicker20p60pOpacity); } 100% { opacity: var(--kfMinimeFlicker100pOpacity); } }
 
 /* Looking around: eyes to the left, to the right, back (blinking continues) */
 .theme-matrix .action-look .minime-shape .eye {
-  animation: matrix-minime-blink var(--minimeBlinkEvery) linear infinite, matrix-minime-look var(--action-ms) ease-in-out both;
+  animation: matrix-minime-blink calc(var(--minimeBlinkEvery) * var(--actionLookMinimeShapeEyeAnimation) / 100) linear infinite, matrix-minime-look var(--action-ms) ease-in-out both;
 }
 @keyframes matrix-minime-look {
   0%, 100% { translate: 0 0; }
-  20%, 40% { translate: calc(-1 * var(--minimeLookShift)) 0; }
-  60%, 80% { translate: var(--minimeLookShift) 0; }
+  20%, 40% { translate: calc(-1 * calc(var(--minimeLookShift) * var(--kfMinimeLook20p40pTranslate) / 100)) 0; }
+  60%, 80% { translate: calc(var(--minimeLookShift) * var(--kfMinimeLook60p80pTranslate) / 100) 0; }
 }
 
 /* Spin: pirouette around its own axis, as often as configured */
 .theme-matrix .action-spin .minime-action {
-  animation: matrix-minime-spin calc(var(--action-ms) / var(--minimeSpinTurns)) linear var(--minimeSpinTurns);
+  animation: matrix-minime-spin calc(var(--action-ms) / calc(var(--minimeSpinTurns) * var(--actionSpinMinimeActionAnimation) / 100)) linear calc(var(--minimeSpinTurns) * var(--actionSpinMinimeActionAnimation2) / 100);
 }
-@keyframes matrix-minime-spin { 0%, 100% { scale: 1 1; } 25%, 75% { scale: 0.05 1; } 50% { scale: -1 1; } }
+@keyframes matrix-minime-spin { 0%, 100% { scale: var(--kfMinimeSpin0p100pScale) var(--kfMinimeSpin0p100pScale2); } 25%, 75% { scale: var(--kfMinimeSpin25p75pScale) var(--kfMinimeSpin25p75pScale2); } 50% { scale: var(--kfMinimeSpin50pScale) var(--kfMinimeSpin50pScale2); } }
 
 /* Sleeping: sinks down, eyes closed, jet dimmed, characters rise */
 .theme-matrix .action-sleep .minime-action { animation: matrix-minime-sleep var(--action-ms) ease-in-out both; }
 @keyframes matrix-minime-sleep { 0%, 100% { translate: 0 0; } 15%, 85% { translate: 0 var(--minimeSleepDrop); } }
-.theme-matrix .action-sleep .minime-shape .eye { animation: none; scale: 1 0.15; }
-.theme-matrix .action-sleep .minime-jet { opacity: var(--minime-sleep-jet, 0.35); }
-.theme-matrix .minime-sleep { position: absolute; top: 0; right: 0; font-size: var(--minimeNameSize); }
+.theme-matrix .action-sleep .minime-shape .eye { animation: none; scale: var(--actionSleepMinimeShapeEyeScale) var(--actionSleepMinimeShapeEyeScale2); }
+.theme-matrix .action-sleep .minime-jet { opacity: var(--actionSleepMinimeJetOpacity); }
+.theme-matrix .minime-sleep { position: absolute; top: 0; right: 0; font-size: calc(var(--minimeNameSize) * var(--minimeSleepFontSize) / 100); color: var(--minimeSleepColor); font-family: var(--minimeSleepFont), "Matrix Katakana", monospace; }
 .theme-matrix .minime-sleep span {
   position: absolute;
   opacity: 0;
-  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minime-glow-near, 4px)) var(--minime);
-  animation: matrix-minime-rise var(--minime-rise-time, 2s) ease-out infinite;
-  animation-delay: calc(var(--index) * var(--minime-rise-time, 2s) / 2);
+  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minimeSleepSpanTextShadow)) var(--minime);
+  animation: matrix-minime-rise var(--minimeSleepSpanAnimation) ease-out infinite;
+  animation-delay: calc(var(--index) * var(--minimeSleepSpanAnimationDelay) / var(--minimeSleepSpanAnimationDelay2));
 }
 @keyframes matrix-minime-rise {
   from { opacity: 0; translate: 0 0; }
-  30%  { opacity: 1; }
-  to   { opacity: 0; translate: var(--minime-rise-x, 12px) calc(-1 * var(--minime-rise-y, 36px)); }
+  30%  { opacity: var(--kfMinimeRise30pOpacity); }
+  to   { opacity: 0; translate: var(--kfMinimeRiseToTranslate) calc(-1 * var(--kfMinimeRiseToTranslate2)); }
 }
 
 /* Reaction to chat: a hop, the jet longer and brighter, the eyes light up */
 .theme-matrix .action-boost .minime-action { animation: matrix-minime-hop var(--action-ms) ease-out both; }
 @keyframes matrix-minime-hop { 0%, 100% { translate: 0 0; } 30% { translate: 0 calc(-1 * var(--minimeBoostHeight)); } }
 .theme-matrix .action-boost .minime-shape .eye { animation: matrix-minime-shine var(--action-ms) ease-out both; }
-@keyframes matrix-minime-shine { 0%, 100% { scale: 1 1; filter: none; } 30% { scale: 1.3 1.3; filter: brightness(1.8); } }
+@keyframes matrix-minime-shine { 0%, 100% { scale: var(--kfMinimeShine0p100pScale) var(--kfMinimeShine0p100pScale2); filter: none; } 30% { scale: var(--kfMinimeShine30pScale) var(--kfMinimeShine30pScale2); filter: brightness(var(--kfMinimeShine30pFilter)); } }

@@ -1,0 +1,35 @@
+// Fine-tuning fields of the Matrix theme, group "Feinschliff: Befehlsseite" (tuning.ts puts the groups together).
+import { color, font, inherits, number } from "../../../core/fields.ts";
+import type { SettingField } from "../../../core/theme.ts";
+
+export const INFO_TUNING = [
+  number("infoPadding", "Befehlsseite: Innenabstand oben/unten", "Feinschliff: Befehlsseite", 48, 0, 192, "px"),
+  number("infoPadding2", "Befehlsseite: Innenabstand links/rechts", "Feinschliff: Befehlsseite", 16, 0, 64, "px"),
+  number("infoColumnMaxWidth", "Befehlsseite Spalte: Höchstbreite", "Feinschliff: Befehlsseite", 880, 0, 3520, "px"),
+  number("infoColumnPadding", "Befehlsseite Spalte: Innenabstand", "Feinschliff: Befehlsseite", 32, 0, 128, "px"),
+  number("infoColumnGap", "Befehlsseite Spalte: Abstand", "Feinschliff: Befehlsseite", 24, 0, 96, "px"),
+  inherits(color("infoColumnBorder", "Befehlsseite Spalte: Rand Farbe (Linienfarbe)", "Feinschliff: Befehlsseite", ""), "line"),
+  number("infoColumnBorder2", "Befehlsseite Spalte: Rand Wert 1", "Feinschliff: Befehlsseite", 1, 0, 40, "px"),
+  inherits(color("infoColumnBackground", "Befehlsseite Spalte: Hintergrund Farbe (Hintergrund)", "Feinschliff: Befehlsseite", ""), "background"),
+  number("infoColumnBackground2", "Befehlsseite Spalte: Hintergrund Farbanteil", "Feinschliff: Befehlsseite", 88, 0, 100, "%"),
+  number("infoColumnH1FontSize", "Befehlsseite Spalte Titel: Schriftgrösse (em)", "Feinschliff: Befehlsseite", 2, 0, 8, undefined, 0.01),
+  number("infoColumnH1LetterSpacing", "Befehlsseite Spalte Titel: Zeichenabstand (em)", "Feinschliff: Befehlsseite", 0.08, -2, 2, undefined, 0.01),
+  inherits(color("infoColumnH1Color", "Befehlsseite Spalte Titel: Textfarbe", "Feinschliff: Befehlsseite", ""), "accent"),
+  inherits(font("infoColumnH1Font", "Befehlsseite Spalte Titel: Schrift", "Feinschliff: Befehlsseite", "", ["Share Tech Mono", "VT323", "Fira Mono", "IBM Plex Mono", "Courier New"]), "font"),
+  number("infoSectionGap", "Befehlsseite Abschnitt: Abstand", "Feinschliff: Befehlsseite", 12, 0, 48, "px"),
+  number("infoSectionH2FontSize", "Befehlsseite Abschnitt Überschrift: Schriftgrösse (em)", "Feinschliff: Befehlsseite", 1.2, 0, 4.8, undefined, 0.01),
+  inherits(color("infoSectionH2BorderBottom", "Befehlsseite Abschnitt Überschrift: Rand unten Farbe (Linienfarbe)", "Feinschliff: Befehlsseite", ""), "line"),
+  number("infoSectionH2BorderBottom2", "Befehlsseite Abschnitt Überschrift: Rand unten Wert 1", "Feinschliff: Befehlsseite", 1, 0, 40, "px"),
+  number("infoSectionH2PaddingBottom", "Befehlsseite Abschnitt Überschrift: Innenabstand unten", "Feinschliff: Befehlsseite", 6, 0, 40, "px"),
+  inherits(color("infoSectionH2Color", "Befehlsseite Abschnitt Überschrift: Textfarbe", "Feinschliff: Befehlsseite", ""), "accent"),
+  inherits(font("infoSectionH2Font", "Befehlsseite Abschnitt Überschrift: Schrift", "Feinschliff: Befehlsseite", "", ["Share Tech Mono", "VT323", "Fira Mono", "IBM Plex Mono", "Courier New"]), "font"),
+  inherits(color("infoSectionH2BeforeColor", "Befehlsseite Abschnitt Überschrift (Ebene 1): Textfarbe", "Feinschliff: Befehlsseite", ""), "dim"),
+  number("infoEntryGap", "Befehlsseite Eintrag: Abstand", "Feinschliff: Befehlsseite", 2, 0, 40, "px"),
+  number("infoEntryPaddingLeft", "Befehlsseite Eintrag: Innenabstand links", "Feinschliff: Befehlsseite", 16, 0, 64, "px"),
+  inherits(color("infoEntryBorderLeft", "Befehlsseite Eintrag: Rand links Farbe (Linienfarbe)", "Feinschliff: Befehlsseite", ""), "line"),
+  number("infoEntryBorderLeft2", "Befehlsseite Eintrag: Rand links Wert 1", "Feinschliff: Befehlsseite", 1, 0, 40, "px"),
+  number("infoEntryCodeFontSize", "Befehlsseite Eintrag Befehl: Schriftgrösse (em)", "Feinschliff: Befehlsseite", 1.15, 0, 4.6, undefined, 0.01),
+  inherits(color("infoEntryCodeColor", "Befehlsseite Eintrag Befehl: Textfarbe", "Feinschliff: Befehlsseite", ""), "accent"),
+  inherits(font("infoEntryCodeFont", "Befehlsseite Eintrag Befehl: Schrift", "Feinschliff: Befehlsseite", "", ["Share Tech Mono", "VT323", "Fira Mono", "IBM Plex Mono", "Courier New"]), "font"),
+  number("infoTypeStagger", "Befehlsseite: jede Zeile tippt später um", "Feinschliff: Befehlsseite", 0.05, 0, 2, "s", 0.05),
+] as const satisfies readonly SettingField[];

@@ -9,59 +9,81 @@
 
 /* Matrix theme: look of all overlay scenes, encapsulated under .theme-matrix.
    Settings come as CSS variables (--accent, --alertWidth, ...) from core/themeRuntime.ts; switches are 1 or 0.
-   Further sizes are defaults in var(--name, value) and can be overridden that way too.
+   Every further size, time and color is a fine-tuning field of its own (tuning.ts).
    Keyframes are called matrix-*, so they do not collide with other themes. */
 
 .theme-matrix {
   font-family: var(--font), "Matrix Katakana", monospace;
   font-size: var(--fontSize);
-  line-height: 1.25;
+  line-height: var(--rootLineHeight);
   color: var(--accent);
 }
 
-.theme-matrix .muted { color: var(--dim); }
+.theme-matrix .muted { color: var(--mutedColor); }
 .theme-matrix .glow {
   text-shadow:
-    0 0 calc(var(--glowStrength) * var(--glow-near, 6px)) color-mix(in srgb, var(--glow) 80%, transparent),
-    0 0 calc(var(--glowStrength) * var(--glow-far, 18px)) color-mix(in srgb, var(--glow) 45%, transparent);
+    0 0 calc(var(--glowStrength) * var(--glowTextShadow3)) color-mix(in srgb, var(--glowTextShadow) var(--glowTextShadow4), transparent),
+    0 0 calc(var(--glowStrength) * var(--glowTextShadow5)) color-mix(in srgb, var(--glowTextShadow2) var(--glowTextShadow6), transparent);
 }
-.theme-matrix .cursor, .theme-matrix .blink { animation: matrix-blink var(--blink, 1s) steps(1) infinite; }
+.theme-matrix .cursor { animation: matrix-blink var(--cursorAnimation) steps(var(--cursorAnimation2)) infinite; }
+.theme-matrix .blink { animation: matrix-blink var(--blinkAnimation) steps(var(--blinkAnimation2)) infinite; }
 @keyframes matrix-blink { 50% { opacity: 0; } }
 
 .theme-matrix .rain { position: absolute; inset: 0; width: 100%; height: 100%; display: block; pointer-events: none; }
 
 /* Scanlines (strength from the settings, 0 when off) and vignette like in the CRT mode of the portfolio */
-.theme-matrix .crt::after, .theme-matrix .alert-body::after {
+.theme-matrix .crt::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: 3;
   pointer-events: none;
   background:
-    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--background) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * 100%)), transparent) 0 var(--scanline, 1px), transparent var(--scanline, 1px) var(--scanline-pitch, 3px)),
-    radial-gradient(ellipse at center, transparent 55%, color-mix(in srgb, var(--background) 55%, transparent) 100%);
+    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--crtAfterBackground) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * 100%)), transparent) 0 var(--crtAfterBackground3), transparent var(--crtAfterBackground4) var(--crtAfterBackground5)),
+    radial-gradient(ellipse at center, transparent var(--crtAfterBackground6), color-mix(in srgb, var(--crtAfterBackground2) var(--crtAfterBackground7), transparent) 100%);
+}
+.theme-matrix .alert-body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, color-mix(in srgb, var(--alertBodyAfterBackground) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * 100%)), transparent) 0 var(--alertBodyAfterBackground3), transparent var(--alertBodyAfterBackground4) var(--alertBodyAfterBackground5)),
+    radial-gradient(ellipse at center, transparent var(--alertBodyAfterBackground6), color-mix(in srgb, var(--alertBodyAfterBackground2) var(--alertBodyAfterBackground7), transparent) 100%);
 }
 /* Slowly moving bright bar like on an old tube */
-.theme-matrix .crt::before, .theme-matrix .cam::before {
+.theme-matrix .crt::before {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
-  height: 25%;
+  height: var(--crtBeforeHeight);
   z-index: 3;
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--glow) 6%, transparent), transparent);
-  animation: matrix-roll var(--roll, 7s) linear infinite;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--crtBeforeBackground) var(--crtBeforeBackground2), transparent), transparent);
+  animation: matrix-roll var(--crtBeforeAnimation) linear infinite;
 }
-@keyframes matrix-roll { from { top: -25%; } to { top: 100%; } }
+.theme-matrix .cam::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--camBeforeHeight);
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--camBeforeBackground) var(--camBeforeBackground2), transparent), transparent);
+  animation: matrix-roll var(--camBeforeAnimation) linear infinite;
+}
+@keyframes matrix-roll { from { top: var(--kfRollFromTop); } to { top: 100%; } }
 
 /* Fade in and out: the classes in-<kind> and out-<kind> (settings) set keyframes and easing */
-.theme-matrix .in-glitch { --in: matrix-glitch-in; --in-ease: steps(1, end); }
+.theme-matrix .in-glitch { --in: matrix-glitch-in; --in-ease: steps(var(--inGlitchInEase), end); }
 .theme-matrix .in-fade { --in: matrix-fade-in; --in-ease: ease-out; }
 .theme-matrix .in-none { --in: none; --in-ease: linear; }
-.theme-matrix .out-glitch { --out: matrix-glitch-out; --out-ease: steps(1, end); }
+.theme-matrix .out-glitch { --out: matrix-glitch-out; --out-ease: steps(var(--outGlitchOutEase), end); }
 .theme-matrix .out-fade { --out: matrix-fade-out; --out-ease: ease-in; }
-.theme-matrix .out-none { --out: matrix-fade-out; --out-ease: steps(1, start); }
+.theme-matrix .out-none { --out: matrix-fade-out; --out-ease: steps(var(--outNoneOutEase), start); }
 /* The box switches on after the rain curtain (GSAP), without the CSS jolt */
 .theme-matrix .in-curtain { --in: none; --in-ease: linear; }
 .theme-matrix .in-curtain .alert-body { animation: none; }
@@ -73,50 +95,57 @@
 /* Glitch: stripes of the element flash offset, color and brightness twitch. The strength scales all
    offsets. Uses the property "translate", so an existing transform is kept. */
 @keyframes matrix-glitch-in {
-  0%   { opacity: 0; clip-path: inset(48% 0 48% 0); translate: calc(var(--glitchStrength) * -24) 0; }
-  12%  { opacity: 1; clip-path: inset(8% 0 72% 0); translate: calc(var(--glitchStrength) * 18) 0; filter: hue-rotate(60deg) brightness(1.6); text-shadow: calc(var(--glitchStrength) * -3) 0 var(--highlight), calc(var(--glitchStrength) * 3) 0 var(--line); }
-  24%  { clip-path: inset(62% 0 6% 0); translate: calc(var(--glitchStrength) * -12) 0; }
-  36%  { clip-path: inset(0 0 84% 0); translate: calc(var(--glitchStrength) * 9) 0; filter: none; }
-  48%  { clip-path: inset(30% 0 35% 0); translate: calc(var(--glitchStrength) * -5) 0; text-shadow: calc(var(--glitchStrength) * 2) 0 var(--highlight), calc(var(--glitchStrength) * -2) 0 var(--line); }
-  62%  { clip-path: inset(0); translate: calc(var(--glitchStrength) * 4) 0; filter: brightness(1.4); }
-  78%  { clip-path: inset(0 0 12% 0); translate: calc(var(--glitchStrength) * -2) 0; }
-  100% { opacity: 1; clip-path: inset(0); translate: 0 0; filter: none; text-shadow: none; }
+  0%   { opacity: 0; clip-path: inset(var(--kfGlitchIn0pClipPath) 0 var(--kfGlitchIn0pClipPath2) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchIn0pTranslate)) 0; }
+  12%  { opacity: var(--kfGlitchIn12pOpacity); clip-path: inset(var(--kfGlitchIn12pClipPath) 0 var(--kfGlitchIn12pClipPath2) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchIn12pTranslate)) 0; filter: hue-rotate(calc(var(--kfGlitchIn12pFilter) * 1deg)) brightness(var(--kfGlitchIn12pFilter2)); text-shadow: calc(var(--glitchStrength) * var(--kfGlitchIn12pTextShadow3)) 0 var(--kfGlitchIn12pTextShadow), calc(var(--glitchStrength) * var(--kfGlitchIn12pTextShadow4)) 0 var(--kfGlitchIn12pTextShadow2); }
+  24%  { clip-path: inset(var(--kfGlitchIn24pClipPath) 0 var(--kfGlitchIn24pClipPath2) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchIn24pTranslate)) 0; }
+  36%  { clip-path: inset(0 0 var(--kfGlitchIn36pClipPath) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchIn36pTranslate)) 0; filter: none; }
+  48%  { clip-path: inset(var(--kfGlitchIn48pClipPath) 0 var(--kfGlitchIn48pClipPath2) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchIn48pTranslate)) 0; text-shadow: calc(var(--glitchStrength) * var(--kfGlitchIn48pTextShadow3)) 0 var(--kfGlitchIn48pTextShadow), calc(var(--glitchStrength) * var(--kfGlitchIn48pTextShadow4)) 0 var(--kfGlitchIn48pTextShadow2); }
+  62%  { clip-path: inset(0); translate: calc(var(--glitchStrength) * var(--kfGlitchIn62pTranslate)) 0; filter: brightness(var(--kfGlitchIn62pFilter)); }
+  78%  { clip-path: inset(0 0 var(--kfGlitchIn78pClipPath) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchIn78pTranslate)) 0; }
+  100% { opacity: var(--kfGlitchIn100pOpacity); clip-path: inset(0); translate: 0 0; filter: none; text-shadow: none; }
 }
 @keyframes matrix-glitch-out {
-  0%   { opacity: 1; clip-path: inset(0); translate: 0 0; }
-  15%  { clip-path: inset(0 0 20% 0); translate: calc(var(--glitchStrength) * 6) 0; filter: brightness(1.5); text-shadow: calc(var(--glitchStrength) * -3) 0 var(--highlight), calc(var(--glitchStrength) * 3) 0 var(--line); }
-  30%  { clip-path: inset(40% 0 25% 0); translate: calc(var(--glitchStrength) * -10) 0; filter: hue-rotate(60deg); }
-  45%  { clip-path: inset(5% 0 78% 0); translate: calc(var(--glitchStrength) * 16) 0; }
-  60%  { clip-path: inset(70% 0 8% 0); translate: calc(var(--glitchStrength) * -20) 0; filter: none; }
-  80%  { clip-path: inset(47% 0 47% 0); translate: 0 0; }
-  100% { opacity: 0; clip-path: inset(50% 0 50% 0); translate: 0 0; }
+  0%   { opacity: var(--kfGlitchOut0pOpacity); clip-path: inset(0); translate: 0 0; }
+  15%  { clip-path: inset(0 0 var(--kfGlitchOut15pClipPath) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchOut15pTranslate)) 0; filter: brightness(var(--kfGlitchOut15pFilter)); text-shadow: calc(var(--glitchStrength) * var(--kfGlitchOut15pTextShadow3)) 0 var(--kfGlitchOut15pTextShadow), calc(var(--glitchStrength) * var(--kfGlitchOut15pTextShadow4)) 0 var(--kfGlitchOut15pTextShadow2); }
+  30%  { clip-path: inset(var(--kfGlitchOut30pClipPath) 0 var(--kfGlitchOut30pClipPath2) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchOut30pTranslate)) 0; filter: hue-rotate(calc(var(--kfGlitchOut30pFilter) * 1deg)); }
+  45%  { clip-path: inset(var(--kfGlitchOut45pClipPath) 0 var(--kfGlitchOut45pClipPath2) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchOut45pTranslate)) 0; }
+  60%  { clip-path: inset(var(--kfGlitchOut60pClipPath) 0 var(--kfGlitchOut60pClipPath2) 0); translate: calc(var(--glitchStrength) * var(--kfGlitchOut60pTranslate)) 0; filter: none; }
+  80%  { clip-path: inset(var(--kfGlitchOut80pClipPath) 0 var(--kfGlitchOut80pClipPath2) 0); translate: 0 0; }
+  100% { opacity: 0; clip-path: inset(var(--kfGlitchOut100pClipPath) 0 var(--kfGlitchOut100pClipPath2) 0); translate: 0 0; }
 }
-@keyframes matrix-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes matrix-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes matrix-fade-in { from { opacity: 0; } to { opacity: var(--kfFadeInToOpacity); } }
+@keyframes matrix-fade-out { from { opacity: var(--kfFadeOutFromOpacity); } to { opacity: 0; } }
 
 /* Glitch on the name: two offset copies that flicker briefly */
-.theme-matrix .glitch::before, .theme-matrix .glitch::after {
+.theme-matrix .glitch::before {
   content: attr(data-text);
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0;
 }
-.theme-matrix .glitch::before { color: var(--highlight); animation: matrix-glitch-a var(--glitchCycle) var(--glitch-start, 1.6s) steps(1) infinite; }
-.theme-matrix .glitch::after { color: var(--dim); animation: matrix-glitch-b var(--glitchCycle) var(--glitch-start, 1.6s) steps(1) infinite; }
+.theme-matrix .glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+}
+.theme-matrix .glitch::before { color: var(--glitchBeforeColor); animation: matrix-glitch-a calc(var(--glitchCycle) * var(--glitchBeforeAnimation) / 100) var(--glitchBeforeAnimation2) steps(var(--glitchBeforeAnimation3)) infinite; }
+.theme-matrix .glitch::after { color: var(--glitchAfterColor); animation: matrix-glitch-b calc(var(--glitchCycle) * var(--glitchAfterAnimation) / 100) var(--glitchAfterAnimation2) steps(var(--glitchAfterAnimation3)) infinite; }
 @keyframes matrix-glitch-a {
   0%, 88%, 100% { opacity: 0; }
-  90% { opacity: 0.8; transform: translate(calc(var(--glitchStrength) * -4), var(--glitchStrength)); clip-path: inset(10% 0 55% 0); }
-  94% { opacity: 0.8; transform: translate(calc(var(--glitchStrength) * 3), calc(var(--glitchStrength) * -1)); clip-path: inset(60% 0 8% 0); }
+  90% { opacity: var(--kfGlitchA90pOpacity); transform: translate(calc(var(--glitchStrength) * var(--kfGlitchA90pTransform2)), calc(var(--glitchStrength) * var(--kfGlitchA90pTransform) / 100)); clip-path: inset(var(--kfGlitchA90pClipPath) 0 var(--kfGlitchA90pClipPath2) 0); }
+  94% { opacity: var(--kfGlitchA94pOpacity); transform: translate(calc(var(--glitchStrength) * var(--kfGlitchA94pTransform)), calc(var(--glitchStrength) * -1)); clip-path: inset(var(--kfGlitchA94pClipPath) 0 var(--kfGlitchA94pClipPath2) 0); }
 }
 @keyframes matrix-glitch-b {
   0%, 89%, 100% { opacity: 0; }
-  91% { opacity: 0.8; transform: translate(calc(var(--glitchStrength) * 4), 0); clip-path: inset(40% 0 30% 0); }
-  95% { opacity: 0.8; transform: translate(calc(var(--glitchStrength) * -3), var(--glitchStrength)); clip-path: inset(0 0 75% 0); }
+  91% { opacity: var(--kfGlitchB91pOpacity); transform: translate(calc(var(--glitchStrength) * var(--kfGlitchB91pTransform)), 0); clip-path: inset(var(--kfGlitchB91pClipPath) 0 var(--kfGlitchB91pClipPath2) 0); }
+  95% { opacity: var(--kfGlitchB95pOpacity); transform: translate(calc(var(--glitchStrength) * var(--kfGlitchB95pTransform2)), calc(var(--glitchStrength) * var(--kfGlitchB95pTransform) / 100)); clip-path: inset(0 0 var(--kfGlitchB95pClipPath) 0); }
 }
 
 /* --- Full-screen scenes (starting, brb, ending) -------------------------------- */
-.theme-matrix .screen-scene { position: fixed; inset: 0; background: var(--background); overflow: hidden; }
+.theme-matrix .screen-scene { position: fixed; inset: 0; background: var(--screenSceneBackground); overflow: hidden; }
 
 .theme-matrix .stage {
   /* Position, size and scaling: stage-box from src/core/screens/stage.css */
@@ -128,124 +157,132 @@
 
 .theme-matrix .crt {
   position: relative;
-  width: var(--frameWidth);
+  width: calc(var(--frameWidth) * var(--crtWidth) / 100);
   height: var(--frameHeight);
   display: flex;
   flex-direction: column;
-  padding: var(--crt-padding, 0 48px 32px);
-  background: color-mix(in srgb, var(--background) 82%, transparent);
-  border: var(--border, 1px) solid var(--dim);
-  outline: var(--border, 1px) solid var(--line);
-  outline-offset: var(--crt-outline-offset, 14px);
+  padding: 0 var(--crtPadding) var(--crtPadding2);
+  background: color-mix(in srgb, var(--crtBackground) var(--crtBackground2), transparent);
+  border: var(--crtBorder2) solid var(--crtBorder);
+  outline: var(--crtOutline2) solid var(--crtOutline);
+  outline-offset: var(--crtOutlineOffset);
   box-shadow:
-    0 0 var(--crt-glow, 80px) color-mix(in srgb, var(--glow) 15%, transparent),
-    inset 0 0 var(--crt-shade, 120px) color-mix(in srgb, var(--background) 90%, transparent);
-  text-shadow: 0 0 calc(var(--glowStrength) * var(--crt-text-glow, 4px)) color-mix(in srgb, var(--glow) 55%, transparent);
+    0 0 var(--crtBoxShadow3) color-mix(in srgb, var(--crtBoxShadow) var(--crtBoxShadow4), transparent),
+    inset 0 0 var(--crtBoxShadow5) color-mix(in srgb, var(--crtBoxShadow2) var(--crtBoxShadow6), transparent);
+  text-shadow: 0 0 calc(var(--glowStrength) * var(--crtTextShadow2)) color-mix(in srgb, var(--crtTextShadow) var(--crtTextShadow3), transparent);
   overflow: hidden;
 }
 /* Power on: flies in from the depth like the monitor in the portfolio, or fades in */
-.theme-matrix .power-zoom .crt { animation: matrix-zoom-in var(--powerOnDuration) cubic-bezier(0.45, 0, 0.2, 1) both; }
-.theme-matrix .power-fade .crt { animation: matrix-fade-in var(--powerOnDuration) ease-out both; }
-@keyframes matrix-zoom-in { from { transform: scale(0.06); opacity: 0; } 30% { opacity: 1; } to { transform: none; opacity: 1; } }
+.theme-matrix .power-zoom .crt { animation: matrix-zoom-in calc(var(--powerOnDuration) * var(--powerZoomCrtAnimation) / 100) cubic-bezier(0.45, 0, 0.2, 1) both; }
+.theme-matrix .power-fade .crt { animation: matrix-fade-in calc(var(--powerOnDuration) * var(--powerFadeCrtAnimation) / 100) ease-out both; }
+@keyframes matrix-zoom-in { from { transform: scale(var(--kfZoomInFromTransform)); opacity: 0; } 30% { opacity: var(--kfZoomIn30pOpacity); } to { transform: none; opacity: var(--kfZoomInToOpacity); } }
 
 /* At the end of powering on a line in the middle that opens and fades */
-.theme-matrix .crt-flash { position: absolute; inset: 0; z-index: 4; background: var(--accent); opacity: 0; pointer-events: none; }
-.theme-matrix .power-zoom .crt-flash, .theme-matrix .power-fade .crt-flash {
-  animation: matrix-power var(--flash-duration, 0.7s) calc(var(--powerOnDuration) * 0.9375) ease-out both;
+.theme-matrix .crt-flash { position: absolute; inset: 0; z-index: 4; background: var(--crtFlashBackground); opacity: 0; pointer-events: none; }
+.theme-matrix .power-zoom .crt-flash {
+  animation: matrix-power var(--powerZoomCrtFlashAnimation) calc(var(--powerOnDuration) * var(--powerZoomCrtFlashAnimation2)) ease-out both;
+}
+.theme-matrix .power-fade .crt-flash {
+  animation: matrix-power var(--powerFadeCrtFlashAnimation) calc(var(--powerOnDuration) * var(--powerFadeCrtFlashAnimation2)) ease-out both;
 }
 @keyframes matrix-power {
-  0%   { opacity: 1; transform: scale(0, 0.004); }
-  40%  { opacity: 1; transform: scale(1, 0.004); }
-  70%  { opacity: 0.6; transform: scale(1, 1); }
-  100% { opacity: 0; transform: scale(1, 1); }
+  0%   { opacity: var(--kfPower0pOpacity); transform: scale(0, var(--kfPower0pTransform)); }
+  40%  { opacity: var(--kfPower40pOpacity); transform: scale(var(--kfPower40pTransform), var(--kfPower40pTransform2)); }
+  70%  { opacity: var(--kfPower70pOpacity); transform: scale(var(--kfPower70pTransform), var(--kfPower70pTransform2)); }
+  100% { opacity: 0; transform: scale(var(--kfPower100pTransform), var(--kfPower100pTransform2)); }
 }
 
 .theme-matrix .crt-bar {
   display: flex;
   justify-content: space-between;
-  padding: var(--crt-bar-padding, 18px 0);
-  border-bottom: var(--border, 1px) solid var(--line);
-  font-size: var(--crt-bar-size, 20px);
-  color: var(--dim);
+  padding: var(--crtBarPadding) 0;
+  border-bottom: var(--crtBarBorderBottom2) solid var(--crtBarBorderBottom);
+  font-size: var(--crtBarFontSize);
+  color: var(--crtBarColor);
+  font-family: var(--crtBarFont), "Matrix Katakana", monospace;
 }
-.theme-matrix .crt-bar .blink { color: var(--accent); }
+.theme-matrix .crt-bar .blink { color: var(--crtBarBlinkColor); }
 
-.theme-matrix .logo { font-family: inherit; font-size: var(--logo-size, 26px); line-height: var(--logo-line, 30px); margin: var(--logo-margin, 44px 0 28px); white-space: pre; min-height: var(--logo-min-height, 120px); }
-.theme-matrix .title { font-size: var(--title-size, 84px); font-weight: normal; letter-spacing: var(--title-spacing, 4px); margin-bottom: var(--title-gap, 20px); min-height: var(--title-min-height, 105px); }
-.theme-matrix .title .cursor { font-size: 0.7em; margin-left: var(--cursor-gap, 8px); }
-.theme-matrix .status { display: grid; gap: var(--status-gap, 12px); font-size: var(--status-size, 26px); }
+.theme-matrix .logo { font-family: inherit; font-size: var(--logoFontSize); line-height: var(--logoLineHeight); margin: var(--logoMargin) 0 var(--logoMargin2); white-space: pre; min-height: var(--logoMinHeight); color: var(--logoColor); }
+.theme-matrix .title { font-size: var(--titleFontSize); font-weight: normal; letter-spacing: var(--titleLetterSpacing); margin-bottom: var(--titleMarginBottom); min-height: var(--titleMinHeight); color: var(--titleColor); font-family: var(--titleFont), "Matrix Katakana", monospace; }
+.theme-matrix .title .cursor { font-size: calc(var(--titleCursorFontSize) * 1em); margin-left: var(--titleCursorMarginLeft); color: var(--titleCursorColor); font-family: var(--titleCursorFont), "Matrix Katakana", monospace; }
+.theme-matrix .status { display: grid; gap: var(--statusGap); font-size: var(--statusFontSize); color: var(--statusColor); font-family: var(--statusFont), "Matrix Katakana", monospace; }
 /* BRB: the reconnect attempt typed under the note; Ending: the numbers of the stream, and what stays after the CRT is off */
-.theme-matrix .retry { min-height: 1.2em; color: var(--highlight); }
+.theme-matrix .retry { min-height: calc(var(--retryMinHeight) * 1em); color: var(--retryColor); }
 /* Stats overlay (scenes/Stats.tsx): the logout lines on a dark panel in their own source */
-.theme-matrix .matrix-stats { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--stats-padding, 16px); }
-.theme-matrix .matrix-stats .logout { padding: var(--stats-panel-padding, 18px 24px); background: color-mix(in srgb, var(--background) 85%, transparent); border: var(--border, 1px) solid var(--line); }
-.theme-matrix .logout { display: grid; gap: var(--logout-gap, 4px); width: var(--logout-width, 640px); font-size: var(--logout-size, 22px); }
-.theme-matrix .logout-row { display: flex; justify-content: space-between; border-bottom: var(--border, 1px) dashed var(--line); }
-.theme-matrix .after-off { position: absolute; inset: 0; display: grid; place-items: center; font-size: var(--after-off-size, 48px); letter-spacing: var(--title-spacing, 4px); opacity: 0; pointer-events: none; }
-.theme-matrix .status .big { font-size: var(--status-big-size, 56px); }
+.theme-matrix .matrix-stats { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--statsPadding); }
+.theme-matrix .matrix-stats .logout { padding: var(--statsLogoutPadding) var(--statsLogoutPadding2); background: color-mix(in srgb, var(--statsLogoutBackground) var(--statsLogoutBackground2), transparent); border: var(--statsLogoutBorder2) solid var(--statsLogoutBorder); }
+.theme-matrix .logout { display: grid; gap: var(--logoutGap); width: var(--logoutWidth); font-size: var(--logoutFontSize); color: var(--logoutColor); font-family: var(--logoutFont), "Matrix Katakana", monospace; }
+.theme-matrix .logout-row { display: flex; justify-content: space-between; border-bottom: var(--logoutRowBorderBottom2) dashed var(--logoutRowBorderBottom); }
+.theme-matrix .after-off { position: absolute; inset: 0; display: grid; place-items: center; font-size: var(--afterOffFontSize); letter-spacing: var(--afterOffLetterSpacing); opacity: 0; pointer-events: none; color: var(--afterOffColor); font-family: var(--afterOffFont), "Matrix Katakana", monospace; }
+.theme-matrix .status .big { font-size: var(--statusBigFontSize); color: var(--statusBigColor); font-family: var(--statusBigFont), "Matrix Katakana", monospace; }
 
 /* Terminal: height for the visible lines plus the line being written right now */
 .theme-matrix .term {
   margin-top: auto;
-  padding-top: var(--term-gap, 16px);
-  border-top: var(--border, 1px) solid var(--line);
-  font-size: var(--term-size, 22px);
-  line-height: 1.4;
-  min-height: calc((var(--terminalVisible) + 1) * 1.4em + var(--term-gap, 16px));
+  padding-top: var(--termPaddingTop);
+  border-top: var(--termBorderTop2) solid var(--termBorderTop);
+  font-size: var(--termFontSize);
+  line-height: var(--termLineHeight);
+  min-height: calc((var(--terminalVisible) + var(--termMinHeight)) * calc(var(--termMinHeight2) * 1em) + var(--termMinHeight3));
   white-space: pre;
+  color: var(--termColor);
+  font-family: var(--termFont), "Matrix Katakana", monospace;
 }
 
 .theme-matrix .ticker {
-  width: var(--frameWidth);
-  margin-top: var(--ticker-gap, 28px);
+  width: calc(var(--frameWidth) * var(--tickerWidth) / 100);
+  margin-top: var(--tickerMarginTop);
   overflow: hidden;
   white-space: pre;
-  border: var(--border, 1px) solid var(--line);
-  background: var(--background);
-  padding: var(--ticker-padding, 10px 0);
-  font-size: var(--ticker-size, 24px);
+  border: var(--tickerBorder2) solid var(--tickerBorder);
+  background: var(--tickerBackground);
+  padding: var(--tickerPadding) 0;
+  font-size: var(--tickerFontSize);
+  color: var(--tickerColor);
+  font-family: var(--tickerFont), "Matrix Katakana", monospace;
 }
 .theme-matrix .ticker span { display: inline-block; animation: matrix-marquee var(--tickerSpeed) linear infinite; }
-@keyframes matrix-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes matrix-marquee { from { transform: translateX(0); } to { transform: translateX(var(--kfMarqueeToTransform)); } }
 
 /* --- Alerts ------------------------------------------------------------------ */
-.theme-matrix .alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alert-top, 64px); }
+.theme-matrix .alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alertsPaddingTop); }
 
 /* Size (alertScale) acts in addition to the animations, anchored at the top of the chosen side */
-.theme-matrix .alert { position: relative; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--glitchInDuration) var(--in-ease) both; }
-.theme-matrix .alert.leaving { animation: var(--out) var(--glitchOutDuration) var(--out-ease) forwards; }
+.theme-matrix .alert { position: relative; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) calc(var(--glitchInDuration) * var(--alertAnimation) / 100) var(--in-ease) both; }
+.theme-matrix .alert.leaving { animation: var(--out) calc(var(--glitchOutDuration) * var(--alertLeavingAnimation) / 100) var(--out-ease) forwards; }
 
 .theme-matrix .alert-body {
   position: relative;
   overflow: hidden;
-  padding: var(--alert-padding, 22px 36px 32px);
-  background: color-mix(in srgb, var(--background) 88%, transparent);
-  border: var(--border, 1px) solid var(--accent);
+  padding: var(--alertBodyPadding) var(--alertBodyPadding2) var(--alertBodyPadding3);
+  background: color-mix(in srgb, var(--alertBodyBackground) var(--alertBodyBackground2), transparent);
+  border: var(--alertBodyBorder2) solid var(--alertBodyBorder);
   box-shadow:
-    0 0 var(--alert-glow, 30px) color-mix(in srgb, var(--glow) 40%, transparent),
-    inset 0 0 var(--alert-inner-glow, 50px) color-mix(in srgb, var(--glow) 8%, transparent);
-  animation: matrix-jolt var(--jolt, 0.35s) var(--glitchInDuration) steps(2) both;
+    0 0 var(--alertBodyBoxShadow3) color-mix(in srgb, var(--alertBodyBoxShadow) var(--alertBodyBoxShadow4), transparent),
+    inset 0 0 var(--alertBodyBoxShadow5) color-mix(in srgb, var(--alertBodyBoxShadow2) var(--alertBodyBoxShadow6), transparent);
+  animation: matrix-jolt var(--alertBodyAnimation2) calc(var(--glitchInDuration) * var(--alertBodyAnimation) / 100) steps(var(--alertBodyAnimation3)) both;
 }
 /* Short image glitch right after opening */
 @keyframes matrix-jolt {
-  0%   { transform: translate(calc(var(--glitchStrength) * 6), calc(var(--glitchStrength) * -2)); filter: hue-rotate(40deg); }
-  50%  { transform: translate(calc(var(--glitchStrength) * -5), calc(var(--glitchStrength) * 2)); }
+  0%   { transform: translate(calc(var(--glitchStrength) * var(--kfJolt0pTransform)), calc(var(--glitchStrength) * var(--kfJolt0pTransform2))); filter: hue-rotate(calc(var(--kfJolt0pFilter) * 1deg)); }
+  50%  { transform: translate(calc(var(--glitchStrength) * var(--kfJolt50pTransform)), calc(var(--glitchStrength) * var(--kfJolt50pTransform2))); }
   100% { transform: none; filter: none; }
 }
 
-.theme-matrix .alert-head { position: relative; font-size: var(--alert-head-size, 20px); color: var(--dim); min-height: 1.25em; letter-spacing: var(--alert-head-spacing, 1px); }
-.theme-matrix .alert-name { position: relative; font-size: var(--alert-name-size, 68px); line-height: 1.1; margin: var(--alert-name-margin, 10px 0 6px); min-height: 1.1em; overflow-wrap: anywhere; }
-.theme-matrix .alert-line { position: relative; font-size: var(--alert-line-size, 30px); min-height: 1.25em; }
-.theme-matrix .alert-quote { position: relative; font-size: var(--alert-quote-size, 22px); margin-top: var(--alert-quote-gap, 10px); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
+.theme-matrix .alert-head { position: relative; font-size: var(--alertHeadFontSize); color: var(--alertHeadColor); min-height: calc(var(--alertHeadMinHeight) * 1em); letter-spacing: var(--alertHeadLetterSpacing); font-family: var(--alertHeadFont), "Matrix Katakana", monospace; }
+.theme-matrix .alert-name { position: relative; font-size: var(--alertNameFontSize); line-height: var(--alertNameLineHeight); margin: var(--alertNameMargin) 0 var(--alertNameMargin2); min-height: calc(var(--alertNameMinHeight) * 1em); overflow-wrap: anywhere; color: var(--alertNameColor); font-family: var(--alertNameFont), "Matrix Katakana", monospace; }
+.theme-matrix .alert-line { position: relative; font-size: var(--alertLineFontSize); min-height: calc(var(--alertLineMinHeight) * 1em); color: var(--alertLineColor); font-family: var(--alertLineFont), "Matrix Katakana", monospace; }
+.theme-matrix .alert-quote { position: relative; font-size: var(--alertQuoteFontSize); margin-top: var(--alertQuoteMarginTop); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alertQuoteWebkitLineClamp); overflow: hidden; color: var(--alertQuoteColor); font-family: var(--alertQuoteFont), "Matrix Katakana", monospace; }
 .theme-matrix .alert-timer {
   position: absolute;
   left: 0;
   bottom: 0;
-  height: var(--alert-timer-height, 6px);
-  background: var(--accent);
-  box-shadow: 0 0 var(--alert-timer-glow, 10px) var(--accent);
+  height: var(--alertTimerHeight);
+  background: var(--alertTimerBackground);
+  box-shadow: 0 0 var(--alertTimerBoxShadow2) var(--alertTimerBoxShadow);
   /* Segments like a terminal bar */
-  mask: repeating-linear-gradient(90deg, black 0 var(--timer-segment, 18px), transparent var(--timer-segment, 18px) calc(var(--timer-segment, 18px) + var(--timer-gap, 4px)));
+  mask: repeating-linear-gradient(calc(var(--alertTimerMask) * 1deg), black 0 var(--alertTimerMask2), transparent var(--alertTimerMask3) calc(var(--alertTimerMask4) + var(--alertTimerMask5)));
   animation: matrix-timer var(--alertDuration) linear forwards;
 }
 @keyframes matrix-timer { from { width: 100%; } to { width: 0; } }
@@ -257,152 +294,167 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: var(--chat-gap, 8px);
-  padding: var(--chat-padding, 12px);
+  gap: var(--chatGap);
+  padding: var(--chatPadding);
   overflow: hidden;
   font-size: var(--chatFontSize);
+  color: var(--chatColor);
+  font-family: var(--chatFont), "Matrix Katakana", monospace;
 }
 .theme-matrix .chat-top { justify-content: flex-start; }
 
 .theme-matrix .msg {
   flex: none;
-  max-height: var(--msg-max-height, 600px);
-  padding: var(--msg-padding, 8px 12px);
-  background: color-mix(in srgb, var(--background) calc(var(--chatOpacity) * 100%), transparent);
-  border-left: var(--msg-border, 3px) solid var(--accent);
-  box-shadow: 0 0 var(--msg-glow, 12px) color-mix(in srgb, var(--glow) 12%, transparent);
+  max-height: var(--msgMaxHeight);
+  padding: var(--msgPadding) var(--msgPadding2);
+  background: color-mix(in srgb, var(--msgBackground) calc(var(--chatOpacity) * 100%), transparent);
+  border-left: var(--msgBorderLeft2) solid var(--msgBorderLeft);
+  box-shadow: 0 0 var(--msgBoxShadow2) color-mix(in srgb, var(--msgBoxShadow) var(--msgBoxShadow3), transparent);
   overflow: hidden;
   overflow-wrap: anywhere;
-  animation: var(--in) var(--glitchInDuration) var(--in-ease) both;
+  animation: var(--in) calc(var(--glitchInDuration) * var(--msgAnimation) / 100) var(--in-ease) both;
 }
 /* Appear, disappear after chatFade, then collapse so no gap stays */
 .theme-matrix .msg.fades {
   animation:
-    var(--in) var(--glitchInDuration) var(--in-ease) both,
-    var(--out) var(--glitchOutDuration) var(--out-ease) var(--chatFade) forwards,
-    matrix-collapse var(--collapse, 0.3s) ease-in calc(var(--chatFade) + var(--glitchOutDuration)) forwards;
+    var(--in) calc(var(--glitchInDuration) * var(--msgFadesAnimation) / 100) var(--in-ease) both,
+    var(--out) calc(var(--glitchOutDuration) * var(--msgFadesAnimation2) / 100) var(--out-ease) calc(var(--chatFade) * var(--msgFadesAnimation3) / 100) forwards,
+    matrix-collapse var(--msgFadesAnimation6) ease-in calc(calc(var(--chatFade) * var(--msgFadesAnimation4) / 100) + calc(var(--glitchOutDuration) * var(--msgFadesAnimation5) / 100)) forwards;
 }
-@keyframes matrix-collapse { to { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; margin-top: calc(-1 * var(--chat-gap, 8px)); } }
+@keyframes matrix-collapse { to { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; margin-top: calc(-1 * var(--kfCollapseToMarginTop)); } }
 
-.theme-matrix .msg-head { display: flex; align-items: baseline; gap: var(--msg-head-gap, 6px); font-size: 0.85em; }
-.theme-matrix .badge { background: var(--accent); color: var(--background); padding: var(--badge-padding, 0 5px); font-size: 0.8em; }
-.theme-matrix .msg-body { margin-top: var(--msg-body-gap, 2px); }
-.theme-matrix .msg.action .msg-body { font-style: italic; color: var(--dim); }
+.theme-matrix .msg-head { display: flex; align-items: baseline; gap: var(--msgHeadGap); font-size: calc(var(--msgHeadFontSize) * 1em); color: var(--msgHeadColor); font-family: var(--msgHeadFont), "Matrix Katakana", monospace; }
+.theme-matrix .badge { background: var(--badgeBackground); color: var(--badgeColor); padding: 0 var(--badgePadding); font-size: calc(var(--badgeFontSize) * 1em); font-family: var(--badgeFont), "Matrix Katakana", monospace; }
+.theme-matrix .msg-body { margin-top: var(--msgBodyMarginTop); }
+.theme-matrix .msg.action .msg-body { font-style: italic; color: var(--msgActionMsgBodyColor); }
 .theme-matrix .emote { height: var(--emoteSize); vertical-align: middle; }
 
 /* --- Effects (chat triggers) ------------------------------------------------------------- */
 .theme-matrix .fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
 .theme-matrix .fx-item {
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(var(--fxItemTransform), var(--fxItemTransform2));
   animation:
-    var(--in) var(--glitchInDuration) var(--in-ease) both,
-    var(--out) var(--glitchOutDuration) var(--out-ease) calc(var(--life) - var(--glitchOutDuration)) forwards;
+    var(--in) calc(var(--glitchInDuration) * var(--fxItemAnimation) / 100) var(--in-ease) both,
+    var(--out) calc(var(--glitchOutDuration) * var(--fxItemAnimation2) / 100) var(--out-ease) calc(var(--life) - calc(var(--glitchOutDuration) * var(--fxItemAnimation3) / 100)) forwards;
 }
-.theme-matrix .fx-item img, .theme-matrix .fx-item video, .theme-matrix .fx-item canvas {
+.theme-matrix .fx-item img {
   display: block;
   width: 100%;
-  filter: drop-shadow(0 0 var(--fx-glow, 14px) color-mix(in srgb, var(--glow) 55%, transparent));
+  filter: drop-shadow(0 0 var(--fxItemImgFilter2) color-mix(in srgb, var(--fxItemImgFilter) var(--fxItemImgFilter3), transparent));
 }
-.theme-matrix .fx-text { position: relative; margin-top: var(--fx-text-gap, 8px); font-size: var(--fxTextSize); text-align: center; overflow-wrap: anywhere; }
+.theme-matrix .fx-item video {
+  display: block;
+  width: 100%;
+  filter: drop-shadow(0 0 var(--fxItemVideoFilter2) color-mix(in srgb, var(--fxItemVideoFilter) var(--fxItemVideoFilter3), transparent));
+}
+.theme-matrix .fx-item canvas {
+  display: block;
+  width: 100%;
+  filter: drop-shadow(0 0 var(--fxItemCanvasFilter2) color-mix(in srgb, var(--fxItemCanvasFilter) var(--fxItemCanvasFilter3), transparent));
+}
+.theme-matrix .fx-text { position: relative; margin-top: var(--fxTextMarginTop); font-size: var(--fxTextSize); text-align: center; overflow-wrap: anywhere; color: var(--fxTextColor); font-family: var(--fxTextFont), "Matrix Katakana", monospace; }
 
 /* --- Webcam frame ---------------------------------------------------------------- */
 .theme-matrix .cam {
   position: fixed;
   inset: 0;
   overflow: hidden;
-  border: var(--cam-border, 2px) solid var(--dim);
-  box-shadow: inset 0 0 var(--cam-glow, 22px) color-mix(in srgb, var(--glow) 30%, transparent);
+  border: var(--camBorder2) solid var(--camBorder);
+  box-shadow: inset 0 0 var(--camBoxShadow2) color-mix(in srgb, var(--camBoxShadow) var(--camBoxShadow3), transparent);
 }
 /* The frame switches on like the tube on its GSAP timeline (Cam.tsx), with a flash; fine rain runs at the edges */
-.theme-matrix .cam-flash { position: absolute; inset: 0; z-index: 6; background: var(--accent); opacity: 0; pointer-events: none; }
+.theme-matrix .cam-flash { position: absolute; inset: 0; z-index: 6; background: var(--camFlashBackground); opacity: 0; pointer-events: none; }
 .theme-matrix .cam-rain { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
 .theme-matrix .cam-scan {
   position: absolute;
   inset: 0;
   z-index: 3;
   pointer-events: none;
-  opacity: 0.35;
-  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--background) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * 125%)), transparent) 0 var(--scanline, 1px), transparent var(--scanline, 1px) var(--scanline-pitch, 3px));
+  opacity: var(--camScanOpacity);
+  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--camScanBackground) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * var(--camScanBackground2))), transparent) 0 var(--camScanBackground3), transparent var(--camScanBackground4) var(--camScanBackground5));
 }
 
 .theme-matrix .corner {
   position: absolute;
-  width: var(--cornerLength);
-  height: var(--cornerLength);
-  border: 0 solid var(--accent);
-  filter: drop-shadow(0 0 var(--corner-glow, 6px) var(--accent));
+  width: calc(var(--cornerLength) * var(--cornerWidth2) / 100);
+  height: calc(var(--cornerLength) * var(--cornerHeight) / 100);
+  border: 0 solid var(--cornerBorder);
+  filter: drop-shadow(0 0 var(--cornerFilter2) var(--cornerFilter));
   z-index: 4;
 }
-.theme-matrix .corner.tl { top: 0; left: 0; border-width: var(--cornerWidth) 0 0 var(--cornerWidth); }
-.theme-matrix .corner.tr { top: 0; right: 0; border-width: var(--cornerWidth) var(--cornerWidth) 0 0; }
-.theme-matrix .corner.bl { bottom: 0; left: 0; border-width: 0 0 var(--cornerWidth) var(--cornerWidth); }
-.theme-matrix .corner.br { bottom: 0; right: 0; border-width: 0 var(--cornerWidth) var(--cornerWidth) 0; }
+.theme-matrix .corner.tl { top: 0; left: 0; border-width: calc(var(--cornerWidth) * var(--cornerTlBorderWidth) / 100) 0 0 calc(var(--cornerWidth) * var(--cornerTlBorderWidth2) / 100); }
+.theme-matrix .corner.tr { top: 0; right: 0; border-width: calc(var(--cornerWidth) * var(--cornerTrBorderWidth) / 100) calc(var(--cornerWidth) * var(--cornerTrBorderWidth2) / 100) 0 0; }
+.theme-matrix .corner.bl { bottom: 0; left: 0; border-width: 0 0 calc(var(--cornerWidth) * var(--cornerBlBorderWidth) / 100) calc(var(--cornerWidth) * var(--cornerBlBorderWidth2) / 100); }
+.theme-matrix .corner.br { bottom: 0; right: 0; border-width: 0 calc(var(--cornerWidth) * var(--cornerBrBorderWidth) / 100) calc(var(--cornerWidth) * var(--cornerBrBorderWidth2) / 100) 0; }
 
 .theme-matrix .cam-label {
   position: absolute;
   left: 0;
   bottom: 0;
   z-index: 5;
-  min-height: 1.4em;
-  padding: var(--cam-label-padding, 2px 12px 2px 44px);
-  background: var(--accent);
-  color: var(--background);
-  font-size: var(--cam-label-size, 18px);
+  min-height: calc(var(--camLabelMinHeight) * 1em);
+  padding: var(--camLabelPadding) var(--camLabelPadding2) var(--camLabelPadding3) var(--camLabelPadding4);
+  background: var(--camLabelBackground);
+  color: var(--camLabelColor);
+  font-size: var(--camLabelFontSize);
+  font-family: var(--camLabelFont), "Matrix Katakana", monospace;
 }
 .theme-matrix .cam-rec {
   position: absolute;
-  top: var(--cam-rec-top, 10px);
-  right: var(--cam-rec-right, 48px);
+  top: var(--camRecTop);
+  right: var(--camRecRight);
   z-index: 5;
-  padding: var(--cam-rec-padding, 2px 8px);
-  background: color-mix(in srgb, var(--background) 60%, transparent);
-  font-size: var(--cam-rec-size, 16px);
+  padding: var(--camRecPadding) var(--camRecPadding2);
+  background: color-mix(in srgb, var(--camRecBackground) var(--camRecBackground2), transparent);
+  font-size: var(--camRecFontSize);
+  color: var(--camRecColor);
+  font-family: var(--camRecFont), "Matrix Katakana", monospace;
 }
 
 /* --- Spotify Now Playing --------------------------------------------------------------- */
-.theme-matrix .music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 12px); }
+.theme-matrix .music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--musicPadding); }
 .theme-matrix .music-box {
   position: relative;
   width: 100%;
   display: flex;
   align-items: center;
-  gap: var(--music-gap, 22px);
-  padding: var(--music-box-padding, 16px 22px);
+  gap: var(--musicBoxGap);
+  padding: var(--musicBoxPadding) var(--musicBoxPadding2);
   overflow: hidden;
-  background: color-mix(in srgb, var(--background) 86%, transparent);
-  border: var(--border, 1px) solid var(--accent);
+  background: color-mix(in srgb, var(--musicBoxBackground) var(--musicBoxBackground2), transparent);
+  border: var(--musicBoxBorder2) solid var(--musicBoxBorder);
   box-shadow:
-    0 0 var(--music-glow, 24px) color-mix(in srgb, var(--glow) 30%, transparent),
-    inset 0 0 var(--music-inner-glow, 40px) color-mix(in srgb, var(--glow) 6%, transparent);
+    0 0 var(--musicBoxBoxShadow3) color-mix(in srgb, var(--musicBoxBoxShadow) var(--musicBoxBoxShadow4), transparent),
+    inset 0 0 var(--musicBoxBoxShadow5) color-mix(in srgb, var(--musicBoxBoxShadow2) var(--musicBoxBoxShadow6), transparent);
   /* Appearing and track change (the box is rebuilt per track) with in-, pause/stop with out- animation */
-  animation: var(--in) var(--glitchInDuration) var(--in-ease) both;
+  animation: var(--in) calc(var(--glitchInDuration) * var(--musicBoxAnimation) / 100) var(--in-ease) both;
 }
-.theme-matrix .music-box.off { animation: var(--out) var(--glitchOutDuration) var(--out-ease) forwards; }
+.theme-matrix .music-box.off { animation: var(--out) calc(var(--glitchOutDuration) * var(--musicBoxOffAnimation) / 100) var(--out-ease) forwards; }
 .theme-matrix .music-box::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--background) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * 89%)), transparent) 0 var(--scanline, 1px), transparent var(--scanline, 1px) var(--scanline-pitch, 3px));
+  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--musicBoxAfterBackground) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * var(--musicBoxAfterBackground2))), transparent) 0 var(--musicBoxAfterBackground3), transparent var(--musicBoxAfterBackground4) var(--musicBoxAfterBackground5));
 }
 
 /* Cover in the main color: grayscale multiplied with a colored ground */
 .theme-matrix .music-cover {
   position: relative;
   flex: none;
-  width: var(--coverSize);
-  height: var(--coverSize);
-  background: var(--accent);
-  box-shadow: 0 0 var(--cover-glow, 16px) color-mix(in srgb, var(--glow) 45%, transparent);
-  animation: matrix-cover-in var(--cover-in, 0.6s) var(--cover-in-delay, 0.2s) steps(8) both;
+  width: calc(var(--coverSize) * var(--musicCoverWidth) / 100);
+  height: calc(var(--coverSize) * var(--musicCoverHeight) / 100);
+  background: var(--musicCoverBackground);
+  box-shadow: 0 0 var(--musicCoverBoxShadow2) color-mix(in srgb, var(--musicCoverBoxShadow) var(--musicCoverBoxShadow3), transparent);
+  animation: matrix-cover-in var(--musicCoverAnimation) var(--musicCoverAnimation2) steps(var(--musicCoverAnimation3)) both;
 }
-.theme-matrix .music-cover img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.25) brightness(0.95); mix-blend-mode: multiply; }
+.theme-matrix .music-cover img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(var(--musicCoverImgFilter)) contrast(var(--musicCoverImgFilter2)) brightness(var(--musicCoverImgFilter3)); mix-blend-mode: multiply; }
 .theme-matrix .music-cover::after {
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--background) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * 125%)), transparent) 0 var(--scanline, 1px), transparent var(--scanline, 1px) var(--scanline-pitch, 3px));
+  background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--musicCoverAfterBackground) min(100%, calc(var(--scanlines) * var(--scanlineStrength) * var(--musicCoverAfterBackground2))), transparent) 0 var(--musicCoverAfterBackground3), transparent var(--musicCoverAfterBackground4) var(--musicCoverAfterBackground5));
 }
 @keyframes matrix-cover-in { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0); } }
 
@@ -415,52 +467,52 @@
   inset: 0;
   border-radius: 50%;
   overflow: hidden;
-  background: var(--accent);
-  box-shadow: 0 0 var(--record-glow, 14px) color-mix(in srgb, var(--glow) 45%, transparent);
+  background: var(--recordCoverBackground);
+  box-shadow: 0 0 var(--recordCoverBoxShadow2) color-mix(in srgb, var(--recordCoverBoxShadow) var(--recordCoverBoxShadow3), transparent);
 }
-.theme-matrix .record-cover img { position: absolute; left: 50%; top: 50%; width: 110%; aspect-ratio: 1; object-fit: cover; filter: grayscale(1) contrast(1.25) brightness(0.8); mix-blend-mode: multiply; }
+.theme-matrix .record-cover img { position: absolute; left: var(--recordCoverImgLeft); top: var(--recordCoverImgTop); width: var(--recordCoverImgWidth); aspect-ratio: var(--recordCoverImgAspectRatio); object-fit: cover; filter: grayscale(var(--recordCoverImgFilter)) contrast(var(--recordCoverImgFilter2)) brightness(var(--recordCoverImgFilter3)); mix-blend-mode: multiply; }
 /* Center hole */
 .theme-matrix .record-cover::after {
   content: "";
   position: absolute;
-  left: 50%;
-  top: 50%;
-  width: 9%;
-  height: 9%;
-  translate: -50% -50%;
+  left: var(--recordCoverAfterLeft);
+  top: var(--recordCoverAfterTop);
+  width: var(--recordCoverAfterWidth);
+  height: var(--recordCoverAfterHeight);
+  translate: var(--recordCoverAfterTranslate) var(--recordCoverAfterTranslate2);
   border-radius: 50%;
-  background: var(--background);
-  box-shadow: 0 0 0 var(--record-ring, 2px) var(--accent);
+  background: var(--recordCoverAfterBackground);
+  box-shadow: 0 0 0 var(--recordCoverAfterBoxShadow2) var(--recordCoverAfterBoxShadow);
 }
 
-.theme-matrix .music-vinyl { flex: none; margin: 0; font-family: inherit; font-size: var(--vinyl-char, 8.4px); line-height: var(--vinyl-char, 8.4px); letter-spacing: 0; color: var(--accent); }
+.theme-matrix .music-vinyl { flex: none; margin: 0; font-family: inherit; font-size: var(--musicVinylFontSize); line-height: var(--musicVinylLineHeight); letter-spacing: 0; color: var(--musicVinylColor); }
 
-.theme-matrix .music-info { flex: 1; min-width: 0; display: grid; gap: var(--music-info-gap, 4px); }
-.theme-matrix .music-head { display: flex; justify-content: space-between; gap: var(--music-head-gap, 12px); font-size: var(--music-head-size, 18px); }
-.theme-matrix .music-eq { color: var(--accent); letter-spacing: var(--equalizer-spacing, 1px); }
-.theme-matrix .music-title { font-size: var(--musicTitleSize); line-height: 1.15; min-height: 1.15em; }
-.theme-matrix .music-artist { font-size: var(--music-artist-size, 26px); min-height: 1.25em; }
-.theme-matrix .music-album { font-size: var(--music-album-size, 18px); }
-.theme-matrix .music-progress { margin-top: var(--music-progress-gap, 6px); font-size: var(--music-progress-size, 18px); white-space: pre; overflow: hidden; }
+.theme-matrix .music-info { flex: 1; min-width: 0; display: grid; gap: var(--musicInfoGap); }
+.theme-matrix .music-head { display: flex; justify-content: space-between; gap: var(--musicHeadGap); font-size: var(--musicHeadFontSize); color: var(--musicHeadColor); font-family: var(--musicHeadFont), "Matrix Katakana", monospace; }
+.theme-matrix .music-eq { color: var(--musicEqColor); letter-spacing: var(--musicEqLetterSpacing); font-family: var(--musicEqFont), "Matrix Katakana", monospace; }
+.theme-matrix .music-title { font-size: var(--musicTitleSize); line-height: var(--musicTitleLineHeight); min-height: calc(var(--musicTitleMinHeight) * 1em); color: var(--musicTitleColor); font-family: var(--musicTitleFont), "Matrix Katakana", monospace; }
+.theme-matrix .music-artist { font-size: var(--musicArtistFontSize); min-height: calc(var(--musicArtistMinHeight) * 1em); color: var(--musicArtistColor); font-family: var(--musicArtistFont), "Matrix Katakana", monospace; }
+.theme-matrix .music-album { font-size: var(--musicAlbumFontSize); color: var(--musicAlbumColor); font-family: var(--musicAlbumFont), "Matrix Katakana", monospace; }
+.theme-matrix .music-progress { margin-top: var(--musicProgressMarginTop); font-size: var(--musicProgressFontSize); white-space: pre; overflow: hidden; color: var(--musicProgressColor); font-family: var(--musicProgressFont), "Matrix Katakana", monospace; }
 
 
 /* --- Commands page (public): terminal column over the rain, scrolls as a normal page --------------------------- */
-.theme-matrix.theme-root:has(.matrix-info) { min-height: 100dvh; background: var(--background); }
-.theme-matrix .matrix-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-matrix.theme-root:has(.matrix-info) { min-height: 100dvh; background: var(--themeRootBackground); }
+.theme-matrix .matrix-info { position: relative; min-height: 100dvh; padding: var(--infoPadding) var(--infoPadding2); }
 .theme-matrix .matrix-info-rain { position: fixed; inset: 0; pointer-events: none; }
 .theme-matrix .matrix-info-column {
   position: relative;
-  max-width: var(--info-width, 880px);
+  max-width: var(--infoColumnMaxWidth);
   margin: 0 auto;
-  padding: var(--info-inner, 32px);
+  padding: var(--infoColumnPadding);
   display: grid;
-  gap: var(--info-gap, 24px);
-  border: var(--info-border, 1px) solid var(--line);
-  background: color-mix(in srgb, var(--background) 88%, transparent);
+  gap: var(--infoColumnGap);
+  border: var(--infoColumnBorder2) solid var(--infoColumnBorder);
+  background: color-mix(in srgb, var(--infoColumnBackground) var(--infoColumnBackground2), transparent);
 }
-.theme-matrix .matrix-info-column h1 { font-size: 2em; letter-spacing: 0.08em; text-transform: uppercase; }
-.theme-matrix .matrix-info-section { display: grid; gap: var(--info-entry-gap, 12px); }
-.theme-matrix .matrix-info-section h2 { font-size: 1.2em; text-transform: uppercase; border-bottom: var(--info-border, 1px) solid var(--line); padding-bottom: var(--info-rule, 6px); }
-.theme-matrix .matrix-info-section h2::before { content: "> "; color: var(--dim); }
-.theme-matrix .matrix-info-entry { display: grid; gap: var(--info-line-gap, 2px); padding-left: var(--info-indent, 16px); border-left: var(--info-border, 1px) solid var(--line); }
-.theme-matrix .matrix-info-entry code { font: inherit; font-size: 1.15em; }
+.theme-matrix .matrix-info-column h1 { font-size: calc(var(--infoColumnH1FontSize) * 1em); letter-spacing: calc(var(--infoColumnH1LetterSpacing) * 1em); text-transform: uppercase; color: var(--infoColumnH1Color); font-family: var(--infoColumnH1Font), "Matrix Katakana", monospace; }
+.theme-matrix .matrix-info-section { display: grid; gap: var(--infoSectionGap); }
+.theme-matrix .matrix-info-section h2 { font-size: calc(var(--infoSectionH2FontSize) * 1em); text-transform: uppercase; border-bottom: var(--infoSectionH2BorderBottom2) solid var(--infoSectionH2BorderBottom); padding-bottom: var(--infoSectionH2PaddingBottom); color: var(--infoSectionH2Color); font-family: var(--infoSectionH2Font), "Matrix Katakana", monospace; }
+.theme-matrix .matrix-info-section h2::before { content: "> "; color: var(--infoSectionH2BeforeColor); }
+.theme-matrix .matrix-info-entry { display: grid; gap: var(--infoEntryGap); padding-left: var(--infoEntryPaddingLeft); border-left: var(--infoEntryBorderLeft2) solid var(--infoEntryBorderLeft); }
+.theme-matrix .matrix-info-entry code { font: inherit; font-size: calc(var(--infoEntryCodeFontSize) * 1em); color: var(--infoEntryCodeColor); font-family: var(--infoEntryCodeFont), "Matrix Katakana", monospace; }

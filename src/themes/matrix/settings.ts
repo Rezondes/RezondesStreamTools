@@ -11,6 +11,7 @@ import { qualityField } from "../../core/graphicsFields.ts";
 import { badgeFields } from "../../core/chat/chat.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 
 // Sample logo; on first login personalize creates the logo from the Twitch login
 const LOGO = asciiText("STREAM");
@@ -348,6 +349,7 @@ const GROUP_SCENES = {
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],
   [INFO_GROUP]: ["info"],
+  ...TUNING_GROUPS,
 } as const;
 
 // On first login: channel name and ASCII logo from the Twitch login instead of the samples
@@ -362,4 +364,4 @@ const BASIC = [
   "musicIdleTitle", "musicHide", "fxIn", "fxOut", "minimeNames", "minimeDefaultColor",
 ];
 
-export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: markBasic(withStingerFields([...FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };
+export const matrixSettings: ThemeSchema = { id: "matrix", name: "Matrix", fields: markBasic(withStingerFields([...FIELDS, ...TUNING_FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };

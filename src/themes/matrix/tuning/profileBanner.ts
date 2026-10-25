@@ -1,0 +1,35 @@
+// Fine-tuning fields of the Matrix theme, group "Profilbanner" (tuning.ts puts the groups together).
+import { color, font, inherits, number } from "../../../core/fields.ts";
+import type { SettingField } from "../../../core/theme.ts";
+
+export const PROFILE_BANNER_TUNING = [
+  inherits(color("bannerProfileBackground", "Hintergrund", "Profilbanner", ""), "background"),
+  inherits(color("bannerProfileAccent", "Helle Farbe (Logo, Rahmenecken, Leuchten)", "Profilbanner", ""), "accent"),
+  inherits(color("bannerProfileDim", "Gedämpfte Farbe (Texte, Rahmen)", "Profilbanner", ""), "dim"),
+  inherits(color("bannerProfileLine", "Linienfarbe", "Profilbanner", ""), "line"),
+  inherits(color("bannerProfileFlash", "Regen: Farbe des Kopfs", "Profilbanner", ""), "flash"),
+  inherits(font("bannerProfileFont", "Schrift", "Profilbanner", "", ["Share Tech Mono", "VT323", "Fira Mono", "IBM Plex Mono", "Courier New"]), "font"),
+  number("bannerProfileRainAlpha", "Regen: Deckkraft", "Profilbanner", 0.55, 0, 1, undefined, 0.01),
+  number("bannerProfileFrameAlpha", "Rahmen: Deckkraft der Füllung", "Profilbanner", 0.82, 0, 1, undefined, 0.01),
+  number("bannerProfileFrameBorder", "Rahmen: Randstärke", "Profilbanner", 2, 0, 40, "px"),
+  number("bannerProfileCornerStroke", "Rahmenecken: Stärke", "Profilbanner", 5, 0, 40, "px"),
+  number("bannerProfileCornerGlow", "Rahmenecken: Leuchten", "Profilbanner", 12, 0, 200, "px"),
+  number("bannerProfileLogoLine", "Logo: Zeilenhöhe", "Profilbanner", 1.05, 0, 3, undefined, 0.01),
+  number("bannerProfileLogoGlow", "Logo: Leuchten (Anteil der Schriftgrösse)", "Profilbanner", 0.5, 0, 4, undefined, 0.01),
+  number("bannerProfileRainScale", "Regen: Grösse (Anteil)", "Profilbanner", 0.6, 0, 3, undefined, 0.01),
+  number("bannerProfileFrameX", "Rahmen: links", "Profilbanner", 170, 0, 1200, "px"),
+  number("bannerProfileFrameY", "Rahmen: oben", "Profilbanner", 70, 0, 480, "px"),
+  number("bannerProfileFrameWidth", "Rahmen: Breite", "Profilbanner", 860, 0, 1200, "px"),
+  number("bannerProfileFrameHeight", "Rahmen: Höhe", "Profilbanner", 300, 0, 480, "px"),
+  number("bannerProfileCorner", "Rahmenecken: Länge", "Profilbanner", 28, 0, 400, "px"),
+  number("bannerProfileLogoY", "Logo: oben", "Profilbanner", 110, 0, 480, "px"),
+  number("bannerProfileLogoSize", "Logo: Schriftgrösse", "Profilbanner", 26, 4, 200, "px"),
+  number("bannerProfileTextGap", "Text: Abstand unter dem Logo", "Profilbanner", 30, -200, 480, "px"),
+  number("bannerProfileTextSize", "Text: Schriftgrösse", "Profilbanner", 26, 4, 200, "px"),
+  number("bannerProfileTextGlow", "Text: Leuchten", "Profilbanner", 8, 0, 200, "px"),
+  number("bannerProfileSubGap", "Unterzeile: Abstand unter dem Logo", "Profilbanner", 72, -200, 480, "px"),
+  number("bannerProfileSubSize", "Unterzeile: Schriftgrösse", "Profilbanner", 20, 4, 200, "px"),
+  number("bannerRainStill", "Regen: Moment der Banner", "Profilbanner", 6, 0, 60, "s", 0.05),
+  number("bannerRainFade", "Regen: Spur blendet aus (Stärke)", "Profilbanner", 1.6, 0, 6, undefined, 0.05),
+  number("bannerScanlinePitch", "Scanlinien: Abstand", "Profilbanner", 3, 1, 40, "px"),
+] as const satisfies readonly SettingField[];

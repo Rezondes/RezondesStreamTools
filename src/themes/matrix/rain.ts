@@ -4,20 +4,30 @@
 // the head more often. Everything from seed and time (rule 21), so stills, stinger and banners match. Check:
 // rain.check.ts.
 import { hash } from "../../core/hash.ts";
+import type { MatrixValues } from "./settings.ts";
 
 export type RainColumn = { key: number; x: number; speed: number; start: number; trail: number };
-export type RainOptions = { seed: number; width: number; density: number };
+// One depth layer (settings): alpha, speed range (px/s), trail range (cells), share of empty columns
+export type RainLayer = { alpha: number; speed: readonly [number, number]; trail: readonly [number, number]; empty: number };
+// The layers far, mid, near; how spread the starts are and how much later each nearer layer starts (s)
+export type RainLook = { layers: readonly [RainLayer, RainLayer, RainLayer]; spread: number; layerDelay: number };
+export type RainOptions = { seed: number; width: number; density: number; look: RainLook };
 
-// fixed: the three layers of the prototype: alpha, speed range (px/s), trail range (cells), share of empty columns,
-// how much later each layer starts (s) and how spread the starts are (s)
-export const LAYERS = [
-  { alpha: 0.32, speed: [70, 140], trail: [10, 26], empty: 0.15 },
-  { alpha: 0.65, speed: [130, 240], trail: [12, 28], empty: 0.15 },
-  { alpha: 1, speed: [240, 420], trail: [10, 22], empty: 0.55 },
-] as const;
-const START = { spread: 2.2, layer: 0.25 };
-// fixed: cells behind the head that still count as its tip (they change faster)
-const TIP = 3;
+// fixed: the rain has three depth layers (far, mid, near)
+export const LAYER_COUNT = 3;
+
+export const rainLookOf = (values: MatrixValues): RainLook => ({
+  layers: [
+    { alpha: values.rainFarAlpha, speed: [values.rainFarSpeedMin, values.rainFarSpeedMax], trail: [values.rainFarTrailMin, values.rainFarTrailMax], empty: values.rainFarEmpty },
+    { alpha: values.rainMidAlpha, speed: [values.rainMidSpeedMin, values.rainMidSpeedMax], trail: [values.rainMidTrailMin, values.rainMidTrailMax], empty: values.rainMidEmpty },
+    { alpha: values.rainNearAlpha, speed: [values.rainNearSpeedMin, values.rainNearSpeedMax], trail: [values.rainNearTrailMin, values.rainNearTrailMax], empty: values.rainNearEmpty },
+  ],
+  spread: values.rainStartSpread,
+  layerDelay: values.rainLayerDelay,
+});
+
+// How often glyphs change per second at the tip and in the trail, and how many cells behind the head count as the tip
+export type GlyphChange = { tip: number; trail: number; tipCells: number };
 
 // A stable number in [0, 1) from several integers
 export function mix(...parts: number[]): number {
@@ -28,7 +38,7 @@ export function mix(...parts: number[]): number {
 
 // The columns of a layer (0 far, 1 mid, 2 near) with glyphs of size px over width; density 0 to 1 empties columns
 export function rainColumns(layer: number, size: number, options: RainOptions): RainColumn[] {
-  const look = LAYERS[Math.min(LAYERS.length - 1, Math.max(0, layer))];
+  const look = options.look.layers[Math.min(LAYER_COUNT - 1, Math.max(0, layer))];
   const columns: RainColumn[] = [];
   for (let index = 0, x = size / 2; x < options.width; index++, x += size) {
     const random = (salt: number) => mix(options.seed, layer, index, salt);
@@ -36,7 +46,7 @@ export function rainColumns(layer: number, size: number, options: RainOptions): 
     columns.push({
       key: layer * 1000 + index, x,
       speed: look.speed[0] + random(2) * (look.speed[1] - look.speed[0]),
-      start: random(3) * START.spread + layer * START.layer,
+      start: random(3) * options.look.spread + layer * options.look.layerDelay,
       trail: Math.round(look.trail[0] + random(1) * (look.trail[1] - look.trail[0])),
     });
   }
@@ -52,10 +62,10 @@ export function headAt(column: RainColumn, size: number, height: number, rainSec
   return { row: Math.floor((travelled % span) / size), run: Math.floor(travelled / span) };
 }
 
-// Glyph index (of count) for a cell behind cells behind the head; it changes change.tip times per second at the tip,
-// change.trail times in the trail
-export function glyphAt(seed: number, column: RainColumn, row: number, behind: number, seconds: number, count: number, change: { tip: number; trail: number }): number {
-  const rate = behind < TIP ? change.tip : change.trail;
+// Glyph index (of count) for a cell behind cells behind the head; it changes change.tip times per second at the tip
+// (the first change.tipCells cells), change.trail times in the trail
+export function glyphAt(seed: number, column: RainColumn, row: number, behind: number, seconds: number, count: number, change: GlyphChange): number {
+  const rate = behind < change.tipCells ? change.tip : change.trail;
   return Math.floor(mix(seed, column.key, row, Math.floor(seconds * rate + behind * 0.3)) * count);
 }
 
