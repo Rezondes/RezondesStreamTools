@@ -293,7 +293,10 @@
   right: 0;
   margin: 0 auto;
   top: var(--cardTop, 440px);
-  width: var(--dg-alert-width, 940px);
+  /* at least this wide, wider for a long name (up to the stage minus the margins); the line never widens it */
+  width: max-content;
+  min-width: var(--dg-alert-width, 940px);
+  max-width: calc(100% - 2 * var(--dg-alert-margin, 48px));
   padding: var(--dg-alert-pad, 26px 40px 32px);
   text-align: center;
   transform-origin: 50% 100%;
@@ -307,6 +310,7 @@
 }
 
 .theme-dogs .dg-alert-name {
+  white-space: nowrap;
   margin-top: var(--dg-alert-name-gap, 18px);
   font-size: calc(var(--fontSize) * 3.25);
   font-weight: 700;
@@ -315,6 +319,8 @@
 }
 
 .theme-dogs .dg-alert-line {
+  width: 0;
+  min-width: 100%;
   font-size: calc(var(--fontSize) * 1.3);
   font-weight: 600;
 }
