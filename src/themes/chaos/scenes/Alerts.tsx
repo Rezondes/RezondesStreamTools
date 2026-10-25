@@ -48,7 +48,7 @@ function Thrown({ alert, leaving }: { alert: Queued; leaving: boolean }) {
     <>
       {values.alertSprayOn && <SprayBurst values={values} start={start} seed={alert.key} note={note} />}
       <Card alert={alert} leaving={leaving} />
-      {values.confetti && <Confetti count={values.confettiCount} seed={alert.key} origin={origin} start={start} />}
+      {values.confetti && <Confetti count={values.confettiCount} seed={alert.key} origin={origin} start={start} piece={{ size: values.confettiSize, line: values.confettiLine }} />}
     </>
   );
 }

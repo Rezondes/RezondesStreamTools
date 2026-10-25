@@ -7,7 +7,7 @@ import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
-import { makeChaosOfflineBanner, makeChaosProfileBanner, type ChaosBannerOptions } from "./banners.ts";
+import { type ChaosBannerLayout, makeChaosOfflineBanner, makeChaosProfileBanner, type ChaosBannerOptions } from "./banners.ts";
 import type { ChaosColors } from "./paint.ts";
 import type { ChaosValues } from "./settings.ts";
 import { HEIGHT, makeChaosStinger, type TakesOf, WIDTH, type ChaosStingerOptions } from "./stinger.ts";
@@ -29,6 +29,21 @@ function clipDraw(build: (takes?: TakesOf) => Draw): Draw {
   };
 }
 
+// Colors, places and sizes of the banners (settings)
+export const chaosBannerLayout = (chaos: ChaosValues): ChaosBannerLayout => ({
+  profile: {
+    titleColor: chaos.profileTitleColor, glowColor: chaos.profileGlowColor, textColor: chaos.profileTextColor, titleX: chaos.profileTitleX,
+    titleY: chaos.profileTitleY, titleSize: chaos.profileTitleSize, textY: chaos.profileTextY, textSize: chaos.profileTextSize,
+  },
+  offline: {
+    titleColor: chaos.offlineTitleColor, glowColor: chaos.offlineGlowColor, textColor: chaos.offlineTextColor, nameColor: chaos.offlineNameColor,
+    monsterColor: chaos.offlineMonsterColor, sleepColor: chaos.offlineSleepColor, nameY: chaos.offlineNameY, nameSize: chaos.offlineNameSize,
+    titleY: chaos.offlineTitleY, titleSize: chaos.offlineTitleSize, textY: chaos.offlineTextY, textSize: chaos.offlineTextSize,
+    monsterX: chaos.offlineMonsterX, monsterY: chaos.offlineMonsterY, monsterSize: chaos.offlineMonsterSize,
+    sleepX: chaos.offlineSleepX, sleepY: chaos.offlineSleepY, sleepSize: chaos.offlineSleepSize,
+  },
+});
+
 // values: resolved against the Chaos schema; login for {login} in the texts
 export function chaosClips(values: SettingValues, login: string): RenderClip[] {
   const chaos = values as unknown as ChaosValues;
@@ -42,19 +57,26 @@ export function chaosClips(values: SettingValues, login: string): RenderClip[] {
     titleFont: chaos.titleFont, colors, glow: chaos.glow, drips: chaos.drips, scribbleCount: chaos.scribbleCount, scribbleWidth: chaos.scribbleWidth,
     rough: { share: chaos.roughShare / 100, fill: chaos.roughFill },
   };
+  // The stinger has its own colors and title font
+  const stingerColors: ChaosColors = {
+    ...colors, accent: chaos.stingerAccent, accent2: chaos.stingerAccent2, accentText: chaos.stingerAccentText, textColor: chaos.stingerTextColor,
+  };
   const stinger: ChaosStingerOptions = {
-    ...shared, boilFps: chaos.idleOn && chaos.boilOn ? chaos.boilFps : 0, duration: chaos.stingerDuration, cut: chaos.stingerCut, text: fillTemplate(chaos.stingerText, names), textSize: chaos.stingerTextSize,
+    ...shared, titleFont: chaos.stingerFont, colors: stingerColors, boilFps: chaos.idleOn && chaos.boilOn ? chaos.boilFps : 0, duration: chaos.stingerDuration, cut: chaos.stingerCut, text: fillTemplate(chaos.stingerText, names), textSize: chaos.stingerTextSize,
   };
   const banner: ChaosBannerOptions = {
-    ...shared, font: chaos.font, title: fillTemplate(chaos.bannerTitle, names), profileText: chaos.bannerProfileText,
+    ...shared, font: chaos.profileFont, titleFont: chaos.profileTitleFont, title: fillTemplate(chaos.bannerTitle, names), profileText: chaos.bannerProfileText,
     offlineTitle: chaos.bannerOfflineTitle, offlineText: chaos.bannerOfflineText, shimmer: chaos.idleOn ? chaos.bristleShimmer : 0,
+    layout: chaosBannerLayout(chaos),
   };
+  // The offline banner has its own fonts
+  const offline: ChaosBannerOptions = { ...banner, font: chaos.offlineFont, titleFont: chaos.offlineTitleFont };
   const font = `24px "${chaos.titleFont}"`;
   const options = readStingerOptions(values);
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, prepare, draw: clipDraw(takes => makeChaosStinger(stinger, undefined, takes)) }, options),
     { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(takes => makeChaosProfileBanner(banner, undefined, takes)) },
-    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(takes => makeChaosOfflineBanner({ ...banner, title: fillTemplate(chaos.bannerOfflineName, names) }, undefined, takes)) },
+    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(takes => makeChaosOfflineBanner({ ...offline, title: fillTemplate(chaos.bannerOfflineName, names) }, undefined, takes)) },
   ];
 }
 

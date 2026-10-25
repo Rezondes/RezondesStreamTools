@@ -21,8 +21,8 @@ export default function Chat() {
   );
 }
 
-// fixed: a new row slaps on: how big it starts, how far it may be turned (deg), how long (s), how it lands
-const SLAP = { scale: 1.5, turn: 7, length: 0.35, ease: "back.out(3)" };
+// fixed: how a new row lands; how big it starts, how far it may be turned (deg) and how long (s) are settings
+const SLAP_EASE = "back.out(3)";
 
 function Row({ message, ink }: { message: ChatMessage; ink: "magenta" | "cyan" }) {
   const values = useChaos();
@@ -31,7 +31,7 @@ function Row({ message, ink }: { message: ChatMessage; ink: "magenta" | "cyan" }
   useTimeline(timeline => {
     const row = mark.current?.closest(".ch-row");
     // fixed: the hash of the id (0 to 1) turned into -1 to 1
-    if (row) timeline.from(row, { opacity: 0, scale: SLAP.scale, rotate: (hash(seedOf(String(message.id))) - 0.5) * 2 * SLAP.turn, duration: SLAP.length, ease: SLAP.ease });
+    if (row) timeline.from(row, { opacity: 0, scale: values.chatSlapScale, rotate: (hash(seedOf(String(message.id))) - 0.5) * 2 * values.chatSlapTurn, duration: values.chatSlapLength, ease: SLAP_EASE });
   }, []);
   const content = (
     <>

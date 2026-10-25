@@ -26,22 +26,20 @@ import { useChaos } from "../useChaos.ts";
 // fixed: seconds in ms for the rhythm of the quotes
 const SECOND_MS = 1000;
 const SEEK = seekFromQuery(location.search);
-// fixed: the second copy of the title glitches this much later (s)
-const GLITCH_LAG = 0.08;
-// fixed: the eyebrow scrambles in before the title (s, how long, with which glyphs)
-const EYEBROW = { at: 1.4, length: 0.6, chars: "!?#@*%&$" };
-// fixed: the number slaps on after the title (s, how big and turned it starts, how long, the shake)
-const SLAP = { at: 2.8, scale: 2.6, turn: -10, length: 0.32, shake: [-8, 6, -3, 0] };
+// fixed: the glyphs the eyebrow scrambles through; when and how the eyebrow and the number come in are settings
+const EYEBROW_CHARS = "!?#@*%&$";
+// fixed: the shake of the number after its slap (px)
+const SLAP_SHAKE = [-8, 6, -3, 0];
 
 // The glitch of the title (two shifted copies) from the time, glitchEvery apart (idle.ts)
-function useTitleGlitch(scope: RefObject<HTMLDivElement | null>, every: number) {
+function useTitleGlitch(scope: RefObject<HTMLDivElement | null>, every: number, lag: number) {
   useEffect(() => {
     const started = performance.now();
     const tick = () => {
       const title = scope.current?.querySelector<HTMLElement>(".ch-title");
       if (!title) return;
       const seconds = SEEK ?? (performance.now() - started) / SECOND_MS;
-      for (const [name, at] of [["a", seconds], ["b", seconds - GLITCH_LAG]] as const) {
+      for (const [name, at] of [["a", seconds], ["b", seconds - lag]] as const) {
         const slice = glitchAt(at, every);
         title.style.setProperty(`--g${name}-on`, slice ? "1" : "0");
         title.style.setProperty(`--g${name}-x`, String(slice?.shift ?? 0));
@@ -50,20 +48,20 @@ function useTitleGlitch(scope: RefObject<HTMLDivElement | null>, every: number) 
     };
     gsap.ticker.add(tick);
     return () => gsap.ticker.remove(tick);
-  }, [scope, every]);
+  }, [scope, every, lag]);
 }
 
 // The eyebrow scrambles in, the big number slaps on and shakes
 function useScreenEntry(scope: RefObject<HTMLDivElement | null>, values: ChaosValues, kind: ScreenKind) {
   useTimeline(timeline => {
     const eyebrow = scope.current?.querySelector(".ch-eyebrow");
-    if (eyebrow?.textContent) timeline.from(eyebrow, { duration: EYEBROW.length, scrambleText: { text: eyebrow.textContent, chars: EYEBROW.chars } }, EYEBROW.at);
+    if (eyebrow?.textContent) timeline.from(eyebrow, { duration: values.eyebrowLength, scrambleText: { text: eyebrow.textContent, chars: EYEBROW_CHARS } }, values.eyebrowAt);
     const big = scope.current?.querySelector(".ch-big");
     if (big) {
-      timeline.from(big, { opacity: 0, scale: SLAP.scale, rotate: SLAP.turn, duration: SLAP.length, ease: "power4.in" }, SLAP.at)
-        .to(big, { keyframes: SLAP.shake.map(x => ({ x })), duration: SLAP.length, ease: "none" }, SLAP.at + SLAP.length);
+      timeline.from(big, { opacity: 0, scale: values.slapScale, rotate: values.slapTurn, duration: values.slapLength, ease: "power4.in" }, values.slapAt)
+        .to(big, { keyframes: SLAP_SHAKE.map(x => ({ x })), duration: values.slapLength, ease: "none" }, values.slapAt + values.slapLength);
     }
-  }, [kind, values.powerOn], scope);
+  }, [kind, values.powerOn, values.eyebrowAt, values.eyebrowLength, values.slapAt, values.slapScale, values.slapTurn, values.slapLength], scope);
 }
 
 export default function Screen({ kind }: { kind: ScreenKind }) {
@@ -77,7 +75,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
   }[kind];
   const saying = rotating(scene.lines, values.linesEvery * SECOND_MS, now - start);
   const scope = useRef<HTMLDivElement>(null);
-  useTitleGlitch(scope, values.glitchEvery);
+  useTitleGlitch(scope, values.glitchEvery, values.glitchLag);
   useScreenEntry(scope, values, kind);
 
   return (

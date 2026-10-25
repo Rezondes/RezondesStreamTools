@@ -20,6 +20,7 @@ use crate::themes::minime_fields::{
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
+use crate::themes::tuning;
 
 const FONTS: [&str; 4] = ["Space Grotesk", "Inter", "Manrope", "DM Sans"];
 const TITLE_FONTS: [&str; 4] = ["Permanent Marker", "Black Ops One", "Sniglet", "Pacifico"];
@@ -336,6 +337,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()
+    .chain(tuning::chaos::group_scenes())
     .map(|(group, scenes)| (group.to_owned(), scenes))
     .collect()
 }
@@ -407,6 +409,7 @@ pub fn chaos() -> Theme {
     ]
     .concat();
     fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900.0, 400.0, 1600.0, PX, None));
+    fields.extend(tuning::chaos::fields());
     let schema = ThemeSchema {
         id: "chaos".to_owned(),
         name: "Chaos".to_owned(),

@@ -26,9 +26,6 @@ export default function Music() {
   );
 }
 
-// fixed: how long the zigzag draws itself on a new track (s)
-const ZIGZAG_DRAW = 0.9;
-
 function Playing({ track, at }: { track: Track; at: number }) {
   const values = useChaos();
   const { part, elapsed, total } = useTrackProgress(track, at);
@@ -36,7 +33,7 @@ function Playing({ track, at }: { track: Track; at: number }) {
   const scope = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
     const zigzag = scope.current?.querySelector(".ch-progress-track");
-    if (zigzag) timeline.from(zigzag, { drawSVG: "0%", duration: ZIGZAG_DRAW, ease: "power2.out" });
+    if (zigzag) timeline.from(zigzag, { drawSVG: "0%", duration: values.zigzagDraw, ease: "power2.out" });
   }, [track.id], scope);
   const line = (text: string, className: string) => <Marquee text={text} speed={values.musicMarqueeSpeed} enabled={values.musicMarquee} className={className} />;
   return (

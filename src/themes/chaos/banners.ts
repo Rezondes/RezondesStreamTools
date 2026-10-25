@@ -28,6 +28,17 @@ export type ChaosBannerOptions = {
   profileText: string;
   offlineTitle: string;
   offlineText: string;
+  layout: ChaosBannerLayout;
+};
+// Colors, places and sizes of the settings in px: the title and line of the profile banner, the channel line, title, text,
+// sleeping monster and its z of the offline banner; titleX is a share of the width
+export type ChaosBannerLayout = {
+  profile: { titleColor: string; glowColor: string; textColor: string; titleX: number; titleY: number; titleSize: number; textY: number; textSize: number };
+  offline: {
+    titleColor: string; glowColor: string; textColor: string; nameColor: string; monsterColor: string; sleepColor: string;
+    nameY: number; nameSize: number; titleY: number; titleSize: number; textY: number; textSize: number;
+    monsterX: number; monsterY: number; monsterSize: number; sleepX: number; sleepY: number; sleepSize: number;
+  };
 };
 
 const STAGE_WIDTH = 1920;
@@ -70,9 +81,10 @@ export function makeChaosProfileBanner(options: ChaosBannerOptions, makePath: Ma
   const wall = bannerWall(options, 2203, width, "zweix", makePath, takesOf);
   return function draw(context: CanvasRenderingContext2D) {
     const { glow } = options;
+    const look = options.layout.profile;
     wall(context, height, glow);
-    paintSpray(context, { text: options.title, x: width * 0.58, y: 250, size: 120, font: options.titleFont, color: options.colors.accentText, glowColor: options.colors.accent, glow, seed: 2210, drips: options.drips }, makePath);
-    write(context, options.profileText, width * 0.58, 340, 34, options.colors.textColor, options.font);
+    paintSpray(context, { text: options.title, x: width * look.titleX, y: look.titleY, size: look.titleSize, font: options.titleFont, color: look.titleColor, glowColor: look.glowColor, glow, seed: 2210, drips: options.drips }, makePath);
+    write(context, options.profileText, width * look.titleX, look.textY, look.textSize, look.textColor, options.font);
   };
 }
 
@@ -84,23 +96,24 @@ export function makeChaosOfflineBanner(options: ChaosBannerOptions, makePath: Ma
   const sleep = scribbleShape("scrawl", chance(3311));
   return function draw(context: CanvasRenderingContext2D) {
     const { glow } = options;
+    const look = options.layout.offline;
     wall(context, height, glow);
-    write(context, options.title, width / 2, 330, 46, options.colors.mutedColor, options.font);
-    paintSpray(context, { text: options.offlineTitle, x: width / 2, y: 540, size: 200, font: options.titleFont, color: options.colors.accentText, glowColor: options.colors.accent, glow, seed: 3312, drips: options.drips }, makePath);
-    write(context, options.offlineText, width / 2, 700, 46, options.colors.textColor, options.font);
+    write(context, options.title, width / 2, look.nameY, look.nameSize, look.nameColor, options.font);
+    paintSpray(context, { text: options.offlineTitle, x: width / 2, y: look.titleY, size: look.titleSize, font: options.titleFont, color: look.titleColor, glowColor: look.glowColor, glow, seed: 3312, drips: options.drips }, makePath);
+    write(context, options.offlineText, width / 2, look.textY, look.textSize, look.textColor, options.font);
     // The monster sleeps, a "z" above it
     context.save();
-    context.translate(1700, 930);
-    context.scale(170, 170);
-    context.strokeStyle = options.colors.scribbles[1];
+    context.translate(look.monsterX, look.monsterY);
+    context.scale(look.monsterSize, look.monsterSize);
+    context.strokeStyle = look.monsterColor;
     context.lineWidth = 0.035;
     context.lineCap = "round";
     for (const path of monster) context.stroke(makePath(path));
     context.restore();
     context.save();
-    context.translate(1760, 800);
-    context.scale(70, 70);
-    context.strokeStyle = options.colors.lilac;
+    context.translate(look.sleepX, look.sleepY);
+    context.scale(look.sleepSize, look.sleepSize);
+    context.strokeStyle = look.sleepColor;
     context.lineWidth = 0.05;
     for (const path of sleep) context.stroke(makePath(path));
     context.restore();

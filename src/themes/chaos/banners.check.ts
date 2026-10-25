@@ -1,11 +1,16 @@
 // Check for banners.ts: both banners draw their texts and are stills (the same picture every time).
 // A recording mock canvas stands in for the browser. Runs with npm test.
 import assert from "node:assert/strict";
+import { effectiveSettings } from "../../core/settings.ts";
 import { makeChaosOfflineBanner, makeChaosProfileBanner, type ChaosBannerOptions } from "./banners.ts";
 import { COLORS, fakePath, recorder } from "./paint.check.ts";
+import { chaosBannerLayout } from "./render.ts";
+import { type ChaosValues, chaosSettings } from "./settings.ts";
 import { scribbleTakes } from "./roughScribbles.ts";
 
+const defaults = effectiveSettings(chaosSettings, {}) as unknown as ChaosValues;
 const options: ChaosBannerOptions = {
+  layout: chaosBannerLayout(defaults),
   font: "Space Grotesk", titleFont: "Permanent Marker", colors: COLORS, glow: 0.6, drips: true, shimmer: 1, scribbleCount: 120, scribbleWidth: 1, rough: { share: 0.35, fill: true },
   title: "CHAOS", profileText: "Kritzeleien", offlineTitle: "Offline", offlineText: "Bis bald",
 };

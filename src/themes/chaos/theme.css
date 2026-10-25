@@ -1,187 +1,204 @@
 /* Chaos theme: neon graffiti at night. An almost black wall full of scribbles, brush strokes and sprayed titles in
    magenta and cyan with glow, grain over everything. Encapsulated under .theme-chaos; colors, sizes and times come as CSS
-   variables from the settings, further sizes as var(--name, default). Classes ch-*, keyframes chaos-*.
+   variables from the settings, every further size, time and color is a fine-tuning field of its own (tuning.ts).
+   Classes ch-*, keyframes chaos-*.
    Design: docs/DESIGN-CHAOS.md. */
 
 .theme-chaos {
   font-family: var(--font), system-ui, sans-serif;
   font-size: var(--fontSize);
-  line-height: 1.25;
+  line-height: var(--rootLineHeight);
   color: var(--textColor);
-  --deep: color-mix(in srgb, var(--ground), black 40%);
 }
 
 /* --- Wall: stacked layers on the stage, cut to fill the source ------------------------------------------------- */
-.theme-chaos .ch-screen { position: fixed; inset: 0; overflow: hidden; background: var(--ground); }
+.theme-chaos .ch-screen { position: fixed; inset: 0; overflow: hidden; background: var(--screenBackground); }
 .theme-chaos .ch-backdrop { position: absolute; inset: 0; }
 .theme-chaos .ch-layer { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .theme-chaos .ch-defs { width: 0; height: 0; position: absolute; }
-.theme-chaos .ch-stop-wall { stop-color: var(--wall); }
-.theme-chaos .ch-stop-mid { stop-color: color-mix(in srgb, var(--wall), var(--ground) 55%); }
-.theme-chaos .ch-stop-ground { stop-color: var(--ground); }
-.theme-chaos .ch-mottle { opacity: 0.55; }
-.theme-chaos .ch-flood-violet { flood-color: var(--violet); }
-.theme-chaos .ch-blotch { fill: var(--violet); }
-.theme-chaos .ch-blotch-deep { fill: color-mix(in srgb, var(--violet), var(--ground) 45%); }
+.theme-chaos .ch-stop-wall { stop-color: var(--stopWallStopColor); }
+.theme-chaos .ch-stop-mid { stop-color: color-mix(in srgb, var(--stopMidStopColor), var(--stopMidStopColor2) var(--stopMidStopColor3)); }
+.theme-chaos .ch-stop-ground { stop-color: var(--stopGroundStopColor); }
+.theme-chaos .ch-mottle { opacity: var(--mottleOpacity); }
+.theme-chaos .ch-flood-violet { flood-color: var(--floodVioletFloodColor); }
+.theme-chaos .ch-blotch { fill: var(--blotchFill); }
+.theme-chaos .ch-blotch-deep { fill: color-mix(in srgb, var(--blotDeepFill), var(--blotDeepFill2) var(--blotDeepFill3)); }
 .theme-chaos .ch-grain { mix-blend-mode: overlay; opacity: var(--grain); pointer-events: none; }
-.theme-chaos .ch-dust-color1 { fill: var(--scribbleColor1); }
-.theme-chaos .ch-dust-color2 { fill: var(--scribbleColor2); }
-.theme-chaos .ch-dust-lilac { fill: var(--lilac); }
-.theme-chaos .ch-dust-white { fill: var(--textColor); }
+.theme-chaos .ch-dust-color1 { fill: var(--dustColor1Fill); }
+.theme-chaos .ch-dust-color2 { fill: var(--dustColor2Fill); }
+.theme-chaos .ch-dust-lilac { fill: var(--dustLilacFill); }
+.theme-chaos .ch-dust-white { fill: var(--dustWhiteFill); }
 
 /* --- Scribbles: open lines, stroke width relative to the mark, one color slot each ----------------------------- */
 .theme-chaos .ch-mark path {
   fill: none;
-  stroke-width: calc(var(--w) * var(--scribbleWidth));
+  stroke-width: calc(var(--w) * calc(var(--scribbleWidth) * var(--markPathStrokeWidth) / 100));
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.theme-chaos .ch-mark-color1 path { stroke: var(--scribbleColor1); }
-.theme-chaos .ch-mark-color2 path { stroke: var(--scribbleColor2); }
-.theme-chaos .ch-mark-color3 path { stroke: var(--scribbleColor3); }
-.theme-chaos .ch-mark-color4 path { stroke: var(--scribbleColor4); }
-.theme-chaos .ch-mark-white path { stroke: var(--textColor); }
+.theme-chaos .ch-mark-color1 path { stroke: var(--markColor1PathStroke); }
+.theme-chaos .ch-mark-color2 path { stroke: var(--markColor2PathStroke); }
+.theme-chaos .ch-mark-color3 path { stroke: var(--markColor3PathStroke); }
+.theme-chaos .ch-mark-color4 path { stroke: var(--markColor4PathStroke); }
+.theme-chaos .ch-mark-white path { stroke: var(--markWhitePathStroke); }
 /* Neon scribbles on their own layer: the flicker is only opacity of that layer */
-.theme-chaos .ch-neon { animation: chaos-flicker var(--flicker-cycle, 7s) steps(1, end) infinite; }
+.theme-chaos .ch-neon { animation: chaos-flicker var(--neonAnimation) steps(var(--neonAnimation2), end) infinite; }
 
 /* --- Brush strokes: body, lighter and darker bristles, splatter, drips; the ink per stroke ---------------------- */
-.theme-chaos .ch-ink-cyan { --ink: var(--accent2); }
-.theme-chaos .ch-ink-magenta { --ink: var(--accent); }
-.theme-chaos .ch-gesture { opacity: 0.9; }
-.theme-chaos .ch-brush-body, .theme-chaos .ch-brush-drop { fill: var(--ink); }
-.theme-chaos .ch-bristle-light, .theme-chaos .ch-bristle-dark, .theme-chaos .ch-brush-tail { fill: none; stroke-linecap: round; }
-.theme-chaos .ch-bristle-light { stroke: color-mix(in srgb, var(--ink), white 60%); }
-.theme-chaos .ch-bristle-dark { stroke: color-mix(in srgb, var(--ink), black 35%); }
+.theme-chaos .ch-ink-cyan { --ink: var(--inkCyanInk); }
+.theme-chaos .ch-ink-magenta { --ink: var(--inkMagentaInk); }
+.theme-chaos .ch-gesture { opacity: var(--gestureOpacity); }
+.theme-chaos .ch-brush-body { fill: var(--ink); }
+.theme-chaos .ch-brush-drop { fill: var(--ink); }
+.theme-chaos .ch-bristle-light { fill: none; stroke-linecap: round; }
+.theme-chaos .ch-bristle-dark { fill: none; stroke-linecap: round; }
+.theme-chaos .ch-brush-tail { fill: none; stroke-linecap: round; }
+.theme-chaos .ch-bristle-light { stroke: color-mix(in srgb, var(--ink), white var(--bristleLightStroke)); }
+.theme-chaos .ch-bristle-dark { stroke: color-mix(in srgb, var(--ink), black var(--bristleDarkStroke)); }
 .theme-chaos .ch-brush-tail { stroke: var(--ink); }
-.theme-chaos .ch-haze { fill: var(--deep); opacity: var(--haze); }
+.theme-chaos .ch-haze { fill: color-mix(in srgb, var(--hazeFill), black var(--hazeFill2)); opacity: calc(var(--haze) * var(--hazeOpacity) / 100); }
 
 /* --- Content in the middle of the stage --------------------------------------------------------------------- */
 .theme-chaos .ch-stage { position: absolute; display: grid; place-items: center; }
-.theme-chaos .ch-center { display: flex; flex-direction: column; align-items: center; gap: var(--center-gap, 18px); text-align: center; max-width: var(--center-width, 1800px); }
+.theme-chaos .ch-center { display: flex; flex-direction: column; align-items: center; gap: var(--centerGap); text-align: center; max-width: var(--centerMaxWidth); }
 .theme-chaos .ch-tag {
   position: absolute;
-  left: var(--tag-left, 70px);
-  top: var(--tag-top, 46px);
-  rotate: var(--tag-tilt, -6deg);
-  font-family: var(--titleFont), var(--font), sans-serif;
-  font-size: calc(var(--titleSize) * 0.32);
-  color: var(--accent2);
-  text-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--accent2);
+  left: var(--tagLeft);
+  top: var(--tagTop);
+  rotate: calc(var(--tagRotate) * 1deg);
+  font-family: var(--tagFont), var(--tagFont2), sans-serif;
+  font-size: calc(var(--titleSize) * var(--tagFontSize));
+  color: var(--tagColor);
+  text-shadow: 0 0 calc(var(--glow) * var(--tagTextShadow2)) var(--tagTextShadow);
 }
-.theme-chaos .ch-eyebrow { margin: 0; font-weight: 700; letter-spacing: 0.35em; text-transform: uppercase; font-size: 1.1em; }
+.theme-chaos .ch-eyebrow { margin: 0; font-weight: var(--eyebrowFontWeight); letter-spacing: calc(var(--eyebrowLetterSpacing) * 1em); text-transform: uppercase; font-size: calc(var(--eyebrowFontSize) * 1em); color: var(--eyebrowColor); font-family: var(--eyebrowFont), system-ui, sans-serif; }
 .theme-chaos .ch-title-wrap { position: relative; }
 .theme-chaos .ch-title {
   position: relative;
   margin: 0;
-  font-family: var(--titleFont), var(--font), sans-serif;
-  font-weight: 400;
-  font-size: var(--titleSize);
-  line-height: 1.05;
+  font-family: var(--titleFont2), var(--titleFont3), sans-serif;
+  font-weight: var(--titleFontWeight);
+  font-size: calc(var(--titleSize) * var(--titleFontSize) / 100);
+  line-height: var(--titleLineHeight);
   text-transform: uppercase;
-  color: var(--accentText);
+  color: var(--titleColor);
   text-shadow:
-    0 0 calc(var(--glow) * var(--glow-wide, 44px)) var(--accent),
-    0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--accentText);
+    0 0 calc(var(--glow) * var(--titleTextShadow3)) var(--titleTextShadow),
+    0 0 calc(var(--glow) * var(--titleTextShadow4)) var(--titleTextShadow2);
 }
 /* Glitch: two shifted copies in magenta and cyan show up for a moment every glitchEvery */
-.theme-chaos .ch-title::before, .theme-chaos .ch-title::after {
+.theme-chaos .ch-title::before {
   content: attr(data-text);
   position: absolute;
   inset: 0;
   opacity: 0;
   text-shadow: none;
-  animation: chaos-glitch var(--glitchEvery) steps(1, end) infinite;
+  animation: chaos-glitch calc(var(--glitchEvery) * var(--titleBeforeAnimation) / 100) steps(var(--titleBeforeAnimation2), end) infinite;
 }
-.theme-chaos .ch-title::before { color: var(--accent2); --shift: -1; }
-.theme-chaos .ch-title::after { color: var(--accent); --shift: 1; animation-delay: var(--glitch-lag, 0.08s); }
+.theme-chaos .ch-title::after {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  text-shadow: none;
+  animation: chaos-glitch calc(var(--glitchEvery) * var(--titleAfterAnimation) / 100) steps(var(--titleAfterAnimation2), end) infinite;
+}
+.theme-chaos .ch-title::before { color: var(--titleBeforeColor); --shift: var(--titleBeforeShift); }
+.theme-chaos .ch-title::after { color: var(--titleAfterColor); --shift: var(--titleAfterShift); animation-delay: var(--titleAfterAnimationDelay); }
 .theme-chaos .ch-title-spray { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
-.theme-chaos .ch-speckle { fill: var(--accent); }
-.theme-chaos .ch-speckle-hot { fill: var(--accentText); }
-.theme-chaos .ch-title-drip { fill: var(--accent); filter: drop-shadow(0 0 calc(var(--glow) * var(--drip-glow, 10px)) var(--accent)); }
+.theme-chaos .ch-speckle { fill: var(--speckleFill); }
+.theme-chaos .ch-speckle-hot { fill: var(--speckleHotFill); }
+.theme-chaos .ch-title-drip { fill: var(--titleDripFill); filter: drop-shadow(0 0 calc(var(--glow) * var(--titleDripFilter2)) var(--titleDripFilter)); }
 .theme-chaos .ch-big {
-  font-family: var(--titleFont), var(--font), sans-serif;
-  font-weight: 400;
-  font-size: calc(var(--titleSize) * 0.74);
-  line-height: 1;
-  color: color-mix(in srgb, var(--accent2), white 90%);
-  -webkit-text-stroke: var(--big-stroke, 3px) var(--accent2);
+  font-family: var(--bigFont), var(--bigFont2), sans-serif;
+  font-weight: var(--bigFontWeight);
+  font-size: calc(var(--titleSize) * var(--bigFontSize));
+  line-height: var(--bigLineHeight);
+  color: color-mix(in srgb, var(--bigColor), white var(--bigColor2));
+  -webkit-text-stroke: var(--bigWebkitTextStroke2) var(--bigWebkitTextStroke);
   paint-order: stroke fill;
-  text-shadow: 0 0 calc(var(--glow) * var(--glow-wide, 44px)) var(--accent2), 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--accent2);
+  text-shadow: 0 0 calc(var(--glow) * var(--bigTextShadow3)) var(--bigTextShadow), 0 0 calc(var(--glow) * var(--bigTextShadow4)) var(--bigTextShadow2);
 }
 .theme-chaos .ch-next {
   margin: 0;
-  padding: var(--tape-padding, 10px 28px);
-  rotate: var(--next-tilt, 1.5deg);
-  background: var(--lilac);
-  color: var(--onAccent2);
-  font-weight: 700;
+  padding: var(--nextPadding) var(--nextPadding2);
+  rotate: calc(var(--nextRotate) * 1deg);
+  background: var(--nextBackground);
+  color: var(--nextColor);
+  font-weight: var(--nextFontWeight);
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: calc(var(--nextLetterSpacing) * 1em);
+  font-family: var(--nextFont), system-ui, sans-serif;
 }
-.theme-chaos .ch-saying { margin: 0; color: var(--mutedColor); font-weight: 600; animation: chaos-fade var(--saying-fade, 0.6s) ease-out both; }
-.theme-chaos .ch-progress-zigzag { width: var(--progress-width, 640px); height: var(--progress-height, 36px); overflow: visible; }
-.theme-chaos .ch-progress-zigzag path { fill: none; stroke-width: var(--progress-line, 6px); stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
-.theme-chaos .ch-progress-track { stroke: color-mix(in srgb, var(--violetLight), transparent 55%); }
-.theme-chaos .ch-progress-done { stroke: var(--accent); stroke-dasharray: 1; filter: drop-shadow(0 0 calc(var(--glow) * var(--drip-glow, 10px)) var(--accent)); }
-.theme-chaos .ch-progress-bar { width: var(--progress-width, 640px); height: var(--progress-height, 14px); background: color-mix(in srgb, var(--violetLight), transparent 55%); border-radius: var(--bar-radius, 3px 9px 4px 7px); overflow: hidden; }
-.theme-chaos .ch-progress-bar span { display: block; height: 100%; width: calc(var(--part) * 100%); background: var(--accent); box-shadow: 0 0 calc(var(--glow) * var(--drip-glow, 10px)) var(--accent); }
+.theme-chaos .ch-saying { margin: 0; color: var(--sayingColor); font-weight: var(--sayingFontWeight); animation: chaos-fade var(--sayingAnimation) ease-out both; font-family: var(--sayingFont), system-ui, sans-serif; }
+.theme-chaos .ch-progress-zigzag { width: var(--progressZigzagWidth); height: var(--progressZigzagHeight); overflow: visible; }
+.theme-chaos .ch-progress-zigzag path { fill: none; stroke-width: var(--progressZigzagPathStrokeWidth); stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.theme-chaos .ch-progress-track { stroke: color-mix(in srgb, var(--progressTrackStroke), transparent var(--progressTrackStroke2)); }
+.theme-chaos .ch-progress-done { stroke: var(--progressDoneStroke); stroke-dasharray: var(--progressDoneStrokeDasharray); filter: drop-shadow(0 0 calc(var(--glow) * var(--progressDoneFilter2)) var(--progressDoneFilter)); }
+.theme-chaos .ch-progress-bar { width: var(--progressBarWidth); height: var(--progressBarHeight); background: color-mix(in srgb, var(--progressBarBackground), transparent var(--progressBarBackground2)); border-radius: var(--progressBarBorderRadius) var(--progressBarBorderRadius2) var(--progressBarBorderRadius3) var(--progressBarBorderRadius4); overflow: hidden; }
+.theme-chaos .ch-progress-bar span { display: block; height: 100%; width: calc(var(--part) * 100%); background: var(--progressBarSpanBackground); box-shadow: 0 0 calc(var(--glow) * var(--progressBarSpanBoxShadow2)) var(--progressBarSpanBoxShadow); }
 
 /* Ticker on tape, a little crooked, at the bottom */
 .theme-chaos .ch-ticker {
   position: absolute;
-  left: var(--tape-bleed, -20px);
-  right: var(--tape-bleed, -20px);
-  bottom: var(--tape-bottom, 34px);
-  rotate: var(--tape-tilt, -1.2deg);
+  left: var(--tickerLeft);
+  right: var(--tickerRight);
+  bottom: var(--tickerBottom);
+  rotate: calc(var(--tickerRotate) * 1deg);
   overflow: hidden;
   white-space: nowrap;
-  background: repeating-linear-gradient(90deg, transparent 0 var(--tape-rib, 11px), color-mix(in srgb, var(--lilac), white 18%) var(--tape-rib, 11px) var(--tape-rib-end, 13px)), var(--lilac);
-  color: var(--onAccent2);
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  background: repeating-linear-gradient(calc(var(--tickerBackground3) * 1deg), transparent 0 var(--tickerBackground4), color-mix(in srgb, var(--tickerBackground), white var(--tickerBackground5)) var(--tickerBackground6) var(--tickerBackground7)), var(--tickerBackground2);
+  color: var(--tickerColor);
+  font-weight: var(--tickerFontWeight);
+  letter-spacing: calc(var(--tickerLetterSpacing) * 1em);
   text-transform: uppercase;
-  padding: var(--tape-padding, 10px 0);
+  padding: var(--tickerPadding) 0;
+  font-family: var(--tickerFont), system-ui, sans-serif;
 }
 .theme-chaos .ch-ticker span { display: inline-block; padding-left: 100%; animation: chaos-ticker var(--tickerSpeed) linear infinite; }
 
 /* --- Power on: strokes sprayed in from the left, scribbles draw themselves, the title lights up last ------------- */
-.theme-chaos .power-spray .ch-gestures { animation: chaos-spray calc(var(--powerOnDuration) * 0.5) ease-out both; }
+.theme-chaos .power-spray .ch-gestures { animation: chaos-spray calc(var(--powerOnDuration) * var(--powerSprayGesturesAnimation)) ease-out both; }
 .theme-chaos .power-spray .ch-mark path {
-  stroke-dasharray: 1;
+  stroke-dasharray: var(--powerSprayMarkPathStrokeDasharray);
   animation: chaos-draw var(--drawMs) ease-out both;
-  animation-delay: calc(var(--powerOnDuration) * 0.3 + var(--i) * var(--drawGapMs));
+  animation-delay: calc(var(--powerOnDuration) * var(--powerSprayMarkPathAnimationDelay) + var(--i) * var(--drawGapMs));
 }
-.theme-chaos .power-spray .ch-stage { animation: chaos-light calc(var(--powerOnDuration) * 0.4) ease-out calc(var(--powerOnDuration) * 0.5) both; }
-.theme-chaos .power-blende .ch-screen, .theme-chaos .power-blende.ch-screen { animation: chaos-fade var(--powerOnDuration) ease-out both; }
+.theme-chaos .power-spray .ch-stage { animation: chaos-light calc(var(--powerOnDuration) * var(--powerSprayStageAnimation)) ease-out calc(var(--powerOnDuration) * var(--powerSprayStageAnimation2)) both; }
+.theme-chaos .power-blende .ch-screen { animation: chaos-fade calc(var(--powerOnDuration) * var(--powerBlendeScreenAnimation) / 100) ease-out both; }
+.theme-chaos .power-blende.ch-screen { animation: chaos-fade calc(var(--powerOnDuration) * var(--powerBlendeScreenAnimation2) / 100) ease-out both; }
 
-@keyframes chaos-spray { from { clip-path: inset(0 100% 0 0); opacity: 0.3; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
-@keyframes chaos-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes chaos-light { 0% { opacity: 0; filter: brightness(2.2); } 60% { opacity: 1; } 100% { opacity: 1; filter: none; } }
-@keyframes chaos-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes chaos-ticker { to { translate: -100% 0; } }
+@keyframes chaos-spray { from { clip-path: inset(0 100% 0 0); opacity: var(--kfSprayFromOpacity); } to { clip-path: inset(0 0 0 0); opacity: var(--kfSprayToOpacity); } }
+@keyframes chaos-draw { from { stroke-dashoffset: var(--kfDrawFromStrokeDashoffset); } to { stroke-dashoffset: 0; } }
+@keyframes chaos-light { 0% { opacity: 0; filter: brightness(var(--kfLight0pFilter)); } 60% { opacity: var(--kfLight60pOpacity); } 100% { opacity: var(--kfLight100pOpacity); filter: none; } }
+@keyframes chaos-fade { from { opacity: 0; } to { opacity: var(--kfFadeToOpacity); } }
+@keyframes chaos-ticker { to { translate: var(--kfTickerToTranslate) 0; } }
 @keyframes chaos-flicker {
-  0%, 100% { opacity: 1; }
-  41% { opacity: calc(1 - var(--flicker) * 0.7); }
-  43% { opacity: 1; }
-  71% { opacity: calc(1 - var(--flicker) * 0.5); }
-  72% { opacity: 1; }
+  0%, 100% { opacity: var(--kfFlicker0p100pOpacity); }
+  41% { opacity: calc(var(--kfFlicker41pOpacity) - var(--flicker) * var(--kfFlicker41pOpacity2)); }
+  43% { opacity: var(--kfFlicker43pOpacity); }
+  71% { opacity: calc(var(--kfFlicker71pOpacity) - var(--flicker) * var(--kfFlicker71pOpacity2)); }
+  72% { opacity: var(--kfFlicker72pOpacity); }
 }
 @keyframes chaos-glitch {
   0%, 95% { opacity: 0; translate: 0 0; clip-path: inset(0 0 0 0); }
-  96% { opacity: var(--glitch); translate: calc(var(--shift) * var(--glitch) * var(--glitch-reach, 14px)) 0; clip-path: inset(10% 0 55% 0); }
-  97% { opacity: var(--glitch); translate: calc(var(--shift) * var(--glitch) * var(--glitch-reach, 14px) * -0.6) 0; clip-path: inset(48% 0 18% 0); }
+  96% { opacity: calc(var(--glitch) * var(--kfGlitch96pOpacity) / 100); translate: calc(var(--shift) * var(--glitch) * var(--kfGlitch96pTranslate)) 0; clip-path: inset(var(--kfGlitch96pClipPath) 0 var(--kfGlitch96pClipPath2) 0); }
+  97% { opacity: calc(var(--glitch) * var(--kfGlitch97pOpacity) / 100); translate: calc(var(--shift) * var(--glitch) * var(--kfGlitch97pTranslate) * var(--kfGlitch97pTranslate2)) 0; clip-path: inset(var(--kfGlitch97pClipPath) 0 var(--kfGlitch97pClipPath2) 0); }
   98% { opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .theme-chaos .ch-neon, .theme-chaos .ch-title::before, .theme-chaos .ch-title::after, .theme-chaos .ch-ticker span { animation: none; }
+  .theme-chaos .ch-neon { animation: none; }
+  .theme-chaos .ch-title::before { animation: none; }
+  .theme-chaos .ch-title::after { animation: none; }
+  .theme-chaos .ch-ticker span { animation: none; }
 }
 
 /* --- Notes: violet surface, rough marker edge in the note's ink, a little crooked, tape on top ------------------- */
 .theme-chaos .ch-note {
   position: relative;
-  padding: var(--note-padding, 22px 28px);
-  color: var(--textColor);
-  rotate: var(--note-tilt, -0.8deg);
+  padding: var(--notePadding) var(--notePadding2);
+  color: var(--noteColor);
+  rotate: var(--note-tilt, calc(var(--noteRotate) * 1deg));
   isolation: isolate;
 }
 .theme-chaos .ch-note::before {
@@ -189,60 +206,63 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: color-mix(in srgb, var(--surface), transparent 6%);
-  border: var(--note-edge, 4px) solid transparent;
-  border-radius: var(--note-radius, 4px 14px 6px 11px);
-  box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--ink, var(--accent));
+  background: color-mix(in srgb, var(--noteBeforeBackground), transparent var(--noteBeforeBackground2));
+  border: var(--noteBeforeBorder) solid transparent;
+  border-radius: var(--noteBeforeBorderRadius) var(--noteBeforeBorderRadius2) var(--noteBeforeBorderRadius3) var(--noteBeforeBorderRadius4);
+  box-shadow: 0 0 calc(var(--glow) * var(--noteBeforeBoxShadow2)) var(--ink, var(--noteBeforeBoxShadow));
   filter: var(--rough);
 }
 .theme-chaos .ch-tape {
   position: absolute;
-  top: var(--tape-top, -16px);
-  left: 50%;
-  width: var(--tape-width, 120px);
-  height: var(--tape-height, 30px);
-  translate: -50% 0;
-  rotate: var(--tape-angle, 3deg);
-  background: repeating-linear-gradient(90deg, transparent 0 var(--tape-rib, 11px), color-mix(in srgb, var(--lilac), white 18%) var(--tape-rib, 11px) var(--tape-rib-end, 13px)), color-mix(in srgb, var(--lilac), transparent 15%);
+  top: var(--tapeTop);
+  left: var(--tapeLeft);
+  width: var(--tapeWidth);
+  height: var(--tapeHeight);
+  translate: var(--tapeTranslate) 0;
+  rotate: calc(var(--tapeRotate) * 1deg);
+  background: repeating-linear-gradient(calc(var(--tapeBackground3) * 1deg), transparent 0 var(--tapeBackground4), color-mix(in srgb, var(--tapeBackground), white var(--tapeBackground5)) var(--tapeBackground6) var(--tapeBackground7)), color-mix(in srgb, var(--tapeBackground2), transparent var(--tapeBackground8));
 }
 .theme-chaos .ch-chip {
   display: inline-block;
-  padding: var(--chip-padding, 4px 14px);
-  background: var(--lilac);
-  color: var(--onAccent2);
-  font-weight: 700;
-  letter-spacing: 0.06em;
+  padding: var(--chipPadding) var(--chipPadding2);
+  background: var(--chipBackground);
+  color: var(--chipColor);
+  font-weight: var(--chipFontWeight);
+  letter-spacing: calc(var(--chipLetterSpacing) * 1em);
   text-transform: uppercase;
-  rotate: var(--chip-tilt, -2deg);
+  rotate: calc(var(--chipRotate) * 1deg);
+  font-family: var(--chipFont), system-ui, sans-serif;
 }
-.theme-chaos .ch-muted { color: var(--mutedColor); margin: 0; }
-.theme-chaos .ch-row.ch-ink-magenta, .theme-chaos .ch-note.ch-ink-magenta { --ink: var(--accent); }
-.theme-chaos .ch-row.ch-ink-cyan, .theme-chaos .ch-note.ch-ink-cyan { --ink: var(--accent2); }
+.theme-chaos .ch-muted { color: var(--mutedColor2); margin: 0; }
+.theme-chaos .ch-row.ch-ink-magenta { --ink: var(--rowInkMagentaInk); }
+.theme-chaos .ch-note.ch-ink-magenta { --ink: var(--noteInkMagentaInk); }
+.theme-chaos .ch-row.ch-ink-cyan { --ink: var(--rowInkCyanInk); }
+.theme-chaos .ch-note.ch-ink-cyan { --ink: var(--noteInkCyanInk); }
 
 /* --- Alerts: the note in the middle, spray, confetti, the marker line of the remaining time ------------- */
 .theme-chaos .ch-alerts { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
 
 .theme-chaos .ch-alert {
   position: absolute;
-  top: var(--alert-top, 120px);
-  left: 50%;
+  top: var(--alertTop);
+  left: var(--alertLeft);
   width: var(--alertWidth);
-  translate: -50% 0;
+  translate: var(--alertTranslate) 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--alert-gap, 10px);
+  gap: var(--alertGap);
   text-align: center;
   container-type: inline-size;
-  animation: chaos-slap var(--fadeDuration) cubic-bezier(0.2, 1.6, 0.4, 1) both;
+  animation: chaos-slap calc(var(--fadeDuration) * var(--alertAnimation) / 100) cubic-bezier(0.2, 1.6, 0.4, 1) both;
 }
-.theme-chaos .ch-alert.leaving { animation: chaos-glitch-out var(--fadeDuration) steps(4, end) both; }
+.theme-chaos .ch-alert.leaving { animation: chaos-glitch-out calc(var(--fadeDuration) * var(--alertLeavingAnimation) / 100) steps(var(--alertLeavingAnimation2), end) both; }
 /* A long name shrinks until it fits the note: a marker letter is about 0.7em wide, --name-chars comes from Alerts.tsx */
-.theme-chaos .ch-alert-name .ch-title { font-size: min(calc(var(--titleSize) * 0.55), calc(100cqi / var(--name-chars, 1) * var(--name-fit, 1.4))); }
-.theme-chaos .ch-alert-line { font-size: 1.05em; }
-.theme-chaos .ch-quote { color: var(--mutedColor); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
-.theme-chaos .ch-timer { align-self: stretch; width: 100%; height: var(--timer-height, 22px); overflow: visible; }
-.theme-chaos .ch-timer path { fill: none; stroke: var(--accent2); stroke-linecap: round; filter: drop-shadow(0 0 calc(var(--glow) * var(--drip-glow, 6px)) var(--accent2)); stroke-dasharray: 1; animation: chaos-retract var(--alertDuration) linear both; }
+.theme-chaos .ch-alert-name .ch-title { font-size: min(calc(var(--titleSize) * var(--alertNameTitleFontSize)), calc(100cqi / var(--name-chars, var(--alertNameTitleFontSize2)) * var(--alertNameTitleFontSize3))); }
+.theme-chaos .ch-alert-line { font-size: calc(var(--alertLineFontSize) * 1em); color: var(--alertLineColor); font-family: var(--alertLineFont), system-ui, sans-serif; }
+.theme-chaos .ch-quote { color: var(--quoteColor); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--quoteWebkitLineClamp); overflow: hidden; }
+.theme-chaos .ch-timer { align-self: stretch; width: 100%; height: var(--timerHeight); overflow: visible; }
+.theme-chaos .ch-timer path { fill: none; stroke: var(--timerPathStroke); stroke-linecap: round; filter: drop-shadow(0 0 calc(var(--glow) * var(--timerPathFilter2)) var(--timerPathFilter)); stroke-dasharray: var(--timerPathStrokeDasharray); animation: chaos-retract var(--alertDuration) linear both; }
 .theme-chaos .ch-confetti { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
 
 /* --- Chat ------------------------------------------------------------------------------------------------------- */
@@ -253,162 +273,170 @@
   flex-direction: column;
   justify-content: flex-end;
   gap: var(--chatGap);
-  padding: var(--chat-padding, 28px);
+  padding: var(--chatPadding);
   font-size: var(--chatFontSize);
   overflow: hidden;
+  color: var(--chatColor);
+  font-family: var(--chatFont), system-ui, sans-serif;
 }
 .theme-chaos .ch-chat-top { justify-content: flex-start; }
-.theme-chaos .ch-row.fades { animation: chaos-fade var(--fadeDuration) ease-in var(--chatFade) reverse forwards; }
-.theme-chaos .ch-chat-zettel .ch-row:nth-child(even) { --note-tilt: 0.9deg; }
+.theme-chaos .ch-row.fades { animation: chaos-fade calc(var(--fadeDuration) * var(--rowFadesAnimation) / 100) ease-in var(--chatFade) reverse forwards; }
+.theme-chaos .ch-chat-zettel .ch-row:nth-child(even) { --note-tilt: calc(var(--chatZettelRowNoteTilt) * 1deg); }
 .theme-chaos .ch-chat-blasen .ch-row {
   align-self: flex-start;
-  padding: var(--bubble-padding, 10px 18px);
-  background: color-mix(in srgb, var(--surfaceLight), transparent 10%);
-  border: var(--note-edge, 3px) solid var(--ink);
-  border-radius: var(--bubble-radius, 18px 22px 20px 4px);
-  box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--ink);
+  padding: var(--chatBlasenRowPadding) var(--chatBlasenRowPadding2);
+  background: color-mix(in srgb, var(--chatBlasenRowBackground), transparent var(--chatBlasenRowBackground2));
+  border: var(--chatBlasenRowBorder) solid var(--ink);
+  border-radius: var(--chatBlasenRowBorderRadius) var(--chatBlasenRowBorderRadius2) var(--chatBlasenRowBorderRadius3) var(--chatBlasenRowBorderRadius4);
+  box-shadow: 0 0 calc(var(--glow) * var(--chatBlasenRowBoxShadow)) var(--ink);
 }
-.theme-chaos .ch-chat-schlicht .ch-row { text-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--ground), 0 var(--shadow-drop, 2px) 0 var(--ground); }
-.theme-chaos .ch-user { font-family: var(--titleFont), var(--font), sans-serif; font-weight: 400; color: var(--ink, var(--accent2)); margin-right: 0.4em; }
-.theme-chaos .ch-row.action .ch-message { font-style: italic; color: var(--accentText); }
+.theme-chaos .ch-chat-schlicht .ch-row { text-shadow: 0 0 calc(var(--glow) * var(--chatSchlichtRowTextShadow3)) var(--chatSchlichtRowTextShadow), 0 var(--chatSchlichtRowTextShadow4) 0 var(--chatSchlichtRowTextShadow2); }
+.theme-chaos .ch-user { font-family: var(--userFont), var(--userFont2), sans-serif; font-weight: var(--userFontWeight); color: var(--ink, var(--userColor)); margin-right: calc(var(--userMarginRight) * 1em); }
+.theme-chaos .ch-row.action .ch-message { font-style: italic; color: var(--rowActionMessageColor); }
 .theme-chaos .ch-badge {
   display: inline-block;
-  margin-right: 0.35em;
-  padding: var(--badge-padding, 0 8px);
-  background: var(--lilac);
-  color: var(--onAccent2);
-  font-size: 0.7em;
-  font-weight: 700;
-  rotate: var(--chip-tilt, -2deg);
+  margin-right: calc(var(--badgeMarginRight) * 1em);
+  padding: 0 var(--badgePadding);
+  background: var(--badgeBackground);
+  color: var(--badgeColor);
+  font-size: calc(var(--badgeFontSize) * 1em);
+  font-weight: var(--badgeFontWeight);
+  rotate: calc(var(--badgeRotate) * 1deg);
+  font-family: var(--badgeFont), system-ui, sans-serif;
 }
 .theme-chaos .ch-emote { height: var(--emoteSize); vertical-align: middle; }
 
 /* --- Cam frame: four rough marker strokes with overhang, corner scribbles, name tape, live pill ----------------- */
-.theme-chaos .ch-cam { position: fixed; inset: var(--cam-inset, 34px); }
+.theme-chaos .ch-cam { position: fixed; inset: var(--camInset); }
 .theme-chaos .ch-cam-edge {
   position: absolute;
-  --edge: var(--accent);
+  --edge: var(--camEdgeEdge);
   background: var(--edge);
-  box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--edge);
+  box-shadow: 0 0 calc(var(--glow) * var(--camEdgeBoxShadow)) var(--edge);
   filter: var(--rough);
-  border-radius: var(--edge-radius, 6px);
+  border-radius: var(--camEdgeBorderRadius);
 }
-.theme-chaos .ch-cam-top { top: 0; left: calc(-1 * var(--overhang, 22px)); right: var(--overhang, 22px); height: var(--camFrameWidth); --edge: var(--accent2); rotate: var(--edge-tilt, -0.6deg); }
-.theme-chaos .ch-cam-bottom { bottom: 0; left: var(--overhang, 22px); right: calc(-1 * var(--overhang, 22px)); height: var(--camFrameWidth); rotate: var(--edge-tilt-bottom, 0.5deg); }
-.theme-chaos .ch-cam-left { left: 0; top: var(--overhang, 22px); bottom: calc(-1 * var(--overhang, 22px)); width: var(--camFrameWidth); }
-.theme-chaos .ch-cam-right { right: 0; top: calc(-1 * var(--overhang, 22px)); bottom: var(--overhang, 22px); width: var(--camFrameWidth); --edge: var(--accent2); }
+.theme-chaos .ch-cam-top { top: 0; left: calc(-1 * var(--camTopLeft)); right: var(--camTopRight); height: calc(var(--camFrameWidth) * var(--camTopHeight) / 100); --edge: var(--camTopEdge); rotate: calc(var(--camTopRotate) * 1deg); }
+.theme-chaos .ch-cam-bottom { bottom: 0; left: var(--camBottomLeft); right: calc(-1 * var(--camBottomRight)); height: calc(var(--camFrameWidth) * var(--camBottomHeight) / 100); rotate: calc(var(--camBottomRotate) * 1deg); }
+.theme-chaos .ch-cam-left { left: 0; top: var(--camLeftTop); bottom: calc(-1 * var(--camLeftBottom)); width: calc(var(--camFrameWidth) * var(--camLeftWidth) / 100); }
+.theme-chaos .ch-cam-right { right: 0; top: calc(-1 * var(--camRightTop)); bottom: var(--camRightBottom); width: calc(var(--camFrameWidth) * var(--camRightWidth) / 100); --edge: var(--camRightEdge); }
 .theme-chaos .ch-cam-schlicht .ch-cam-edge { filter: none; box-shadow: none; }
-.theme-chaos .ch-cam-neon .ch-cam-edge { filter: none; box-shadow: 0 0 calc(var(--glow) * var(--glow-wide, 44px)) var(--edge), 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--textColor); }
-.theme-chaos .ch-cam-corner { position: absolute; width: var(--corner-size, 70px); height: var(--corner-size, 70px); overflow: visible; }
-.theme-chaos .ch-top-left { top: calc(var(--corner-size, 70px) / -3); left: calc(var(--corner-size, 70px) / -3); }
-.theme-chaos .ch-top-right { top: calc(var(--corner-size, 70px) / -3); right: calc(var(--corner-size, 70px) / -3); }
-.theme-chaos .ch-bottom-right { bottom: calc(var(--corner-size, 70px) / -3); right: calc(var(--corner-size, 70px) / -3); }
-.theme-chaos .ch-bottom-left { bottom: calc(var(--corner-size, 70px) / -3); left: calc(var(--corner-size, 70px) / -3); }
+.theme-chaos .ch-cam-neon .ch-cam-edge { filter: none; box-shadow: 0 0 calc(var(--glow) * var(--camNeonCamEdgeBoxShadow2)) var(--edge), 0 0 calc(var(--glow) * var(--camNeonCamEdgeBoxShadow3)) var(--camNeonCamEdgeBoxShadow); }
+.theme-chaos .ch-cam-corner { position: absolute; width: var(--camCornerWidth); height: var(--camCornerHeight); overflow: visible; }
+.theme-chaos .ch-top-left { top: calc(var(--topLeftTop) / var(--topLeftTop2)); left: calc(var(--topLeftLeft) / var(--topLeftLeft2)); }
+.theme-chaos .ch-top-right { top: calc(var(--topRightTop) / var(--topRightTop2)); right: calc(var(--topRightRight) / var(--topRightRight2)); }
+.theme-chaos .ch-bottom-right { bottom: calc(var(--bottomRightBottom) / var(--bottomRightBottom2)); right: calc(var(--bottomRightRight) / var(--bottomRightRight2)); }
+.theme-chaos .ch-bottom-left { bottom: calc(var(--bottomLeftBottom) / var(--bottomLeftBottom2)); left: calc(var(--bottomLeftLeft) / var(--bottomLeftLeft2)); }
 .theme-chaos .ch-cam-name {
   position: absolute;
-  left: var(--name-left, 30px);
-  bottom: var(--name-bottom, 26px);
-  padding: var(--chip-padding, 4px 18px);
-  background: var(--lilac);
-  color: var(--onAccent2);
-  font-family: var(--titleFont), var(--font), sans-serif;
-  font-size: 1.1em;
-  rotate: var(--chip-tilt, -2deg);
+  left: var(--camNameLeft);
+  bottom: var(--camNameBottom);
+  padding: var(--camNamePadding) var(--camNamePadding2);
+  background: var(--camNameBackground);
+  color: var(--camNameColor);
+  font-family: var(--camNameFont), var(--camNameFont2), sans-serif;
+  font-size: calc(var(--camNameFontSize) * 1em);
+  rotate: calc(var(--camNameRotate) * 1deg);
 }
 .theme-chaos .ch-cam-live {
   position: absolute;
-  right: var(--live-right, 30px);
-  top: var(--live-top, 26px);
-  padding: var(--chip-padding, 4px 18px);
-  background: var(--accent);
-  color: var(--textColor);
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--accent);
-  animation: chaos-flicker var(--flicker-cycle, 7s) steps(1, end) infinite;
+  right: var(--camLiveRight);
+  top: var(--camLiveTop);
+  padding: var(--camLivePadding) var(--camLivePadding2);
+  background: var(--camLiveBackground);
+  color: var(--camLiveColor);
+  font-weight: var(--camLiveFontWeight);
+  letter-spacing: calc(var(--camLiveLetterSpacing) * 1em);
+  box-shadow: 0 0 calc(var(--glow) * var(--camLiveBoxShadow2)) var(--camLiveBoxShadow);
+  animation: chaos-flicker var(--camLiveAnimation) steps(var(--camLiveAnimation2), end) infinite;
+  font-family: var(--camLiveFont), system-ui, sans-serif;
 }
 
 /* --- Music ----------------------------------------------------------------------------------------------------- */
-.theme-chaos .ch-music { position: fixed; left: var(--music-left, 30px); bottom: var(--music-bottom, 30px); }
-.theme-chaos .ch-player { display: flex; align-items: center; gap: var(--player-gap, 22px); min-width: var(--player-width, 560px); animation: chaos-slap var(--fadeDuration) cubic-bezier(0.2, 1.6, 0.4, 1) both; }
-.theme-chaos .ch-player.leaving { animation: chaos-fade var(--fadeDuration) ease-in reverse both; }
-.theme-chaos .ch-cover { width: var(--coverSize); height: var(--coverSize); object-fit: cover; border: var(--note-edge, 4px) solid var(--accent); box-shadow: 0 0 calc(var(--glow) * var(--glow-near, 12px)) var(--accent); }
-.theme-chaos .ch-track { display: flex; flex-direction: column; align-items: flex-start; gap: var(--track-gap, 6px); min-width: 0; max-width: var(--track-width, 460px); }
-.theme-chaos .ch-track-title { font-family: var(--titleFont), var(--font), sans-serif; font-size: 1.3em; color: var(--accentText); }
-.theme-chaos .ch-time { display: flex; align-items: center; gap: var(--time-gap, 10px); font-size: 0.75em; color: var(--mutedColor); }
-.theme-chaos .ch-time .ch-progress-zigzag { width: var(--music-progress, 260px); height: var(--music-progress-height, 18px); }
-.theme-chaos .ch-equalizer { display: flex; align-items: flex-end; gap: var(--eq-gap, 5px); height: var(--eq-height, 26px); }
+.theme-chaos .ch-music { position: fixed; left: var(--musicLeft); bottom: var(--musicBottom); }
+.theme-chaos .ch-player { display: flex; align-items: center; gap: var(--playerGap); min-width: var(--playerMinWidth); animation: chaos-slap calc(var(--fadeDuration) * var(--playerAnimation) / 100) cubic-bezier(0.2, 1.6, 0.4, 1) both; }
+.theme-chaos .ch-player.leaving { animation: chaos-fade calc(var(--fadeDuration) * var(--playerLeavingAnimation) / 100) ease-in reverse both; }
+.theme-chaos .ch-cover { width: calc(var(--coverSize) * var(--coverWidth) / 100); height: calc(var(--coverSize) * var(--coverHeight) / 100); object-fit: cover; border: var(--coverBorder2) solid var(--coverBorder); box-shadow: 0 0 calc(var(--glow) * var(--coverBoxShadow2)) var(--coverBoxShadow); }
+.theme-chaos .ch-track { display: flex; flex-direction: column; align-items: flex-start; gap: var(--trackGap); min-width: 0; max-width: var(--trackMaxWidth); }
+.theme-chaos .ch-track-title { font-family: var(--trackTitleFont), var(--trackTitleFont2), sans-serif; font-size: calc(var(--trackTitleFontSize) * 1em); color: var(--trackTitleColor); }
+.theme-chaos .ch-time { display: flex; align-items: center; gap: var(--timeGap); font-size: calc(var(--timeFontSize) * 1em); color: var(--timeColor); font-family: var(--timeFont), system-ui, sans-serif; }
+.theme-chaos .ch-time .ch-progress-zigzag { width: var(--timeProgressZigzagWidth); height: var(--timeProgressZigzagHeight); }
+.theme-chaos .ch-equalizer { display: flex; align-items: flex-end; gap: var(--equalizerGap); height: var(--equalizerHeight); }
 .theme-chaos .ch-equalizer i {
-  width: var(--eq-width, 5px);
+  width: var(--equalizerIWidth);
   height: 100%;
-  background: var(--accent2);
-  box-shadow: 0 0 calc(var(--glow) * var(--drip-glow, 10px)) var(--accent2);
+  background: var(--equalizerIBackground);
+  box-shadow: 0 0 calc(var(--glow) * var(--equalizerIBoxShadow2)) var(--equalizerIBoxShadow);
   transform-origin: bottom;
-  animation: chaos-eq var(--eq-speed, 0.7s) ease-in-out infinite alternate;
-  animation-delay: calc(var(--i) * var(--eq-lag, -0.13s));
+  animation: chaos-eq var(--equalizerIAnimation) ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * var(--equalizerIAnimationDelay));
 }
-.theme-chaos .ch-reels { display: flex; gap: var(--reel-gap, 16px); }
-.theme-chaos .ch-reels i { width: var(--reel-size, 40px); height: var(--reel-size, 40px); border-radius: 50%; border: var(--note-edge, 4px) dashed var(--accent2); animation: chaos-spin var(--reel-speed, 3s) linear infinite; }
+.theme-chaos .ch-reels { display: flex; gap: var(--reelsGap); }
+.theme-chaos .ch-reels i { width: var(--reelsIWidth); height: var(--reelsIHeight); border-radius: 50%; border: var(--reelsIBorder2) dashed var(--reelsIBorder); animation: chaos-spin var(--reelsIAnimation) linear infinite; }
 
 /* --- Effects --------------------------------------------------------------------------------------------------- */
 .theme-chaos .ch-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-chaos .ch-fx-item { position: absolute; translate: -50% -50%; display: grid; place-items: center; }
+.theme-chaos .ch-fx-item { position: absolute; translate: var(--fxItemTranslate) var(--fxItemTranslate2); display: grid; place-items: center; }
 .theme-chaos .ch-fx-text .ch-title { font-size: var(--fxTextSize); white-space: nowrap; }
 
 /* --- Commands page: the wall stands behind, notes scroll in front of it ---------------------------------------- */
-.theme-chaos.theme-root:has(.ch-info) { min-height: 100vh; background: var(--ground); }
+.theme-chaos.theme-root:has(.ch-info) { min-height: calc(var(--themeRootMinHeight) * 1vh); background: var(--themeRootBackground); }
 .theme-chaos .ch-info-wall { position: fixed; inset: 0; z-index: 0; }
 .theme-chaos .ch-info-column {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--info-gap, 34px);
-  width: min(var(--infoWidth), calc(100vw - 2 * var(--info-margin, 24px)));
+  gap: var(--infoColumnGap);
+  width: min(var(--infoWidth), calc(calc(var(--infoColumnWidth) * 1vw) - var(--infoColumnWidth2) * var(--infoColumnWidth3)));
   margin: 0 auto;
-  padding: var(--info-padding, 60px 0 80px);
+  padding: var(--infoColumnPadding) 0 var(--infoColumnPadding2);
 }
-.theme-chaos .ch-info-title .ch-title { font-size: calc(var(--titleSize) * 0.6); }
-.theme-chaos .ch-info-entry { display: flex; flex-direction: column; align-items: flex-start; gap: var(--entry-gap, 6px); margin-top: var(--entry-space, 16px); }
+.theme-chaos .ch-info-title .ch-title { font-size: calc(var(--titleSize) * var(--infoTitleTitleFontSize)); }
+.theme-chaos .ch-info-entry { display: flex; flex-direction: column; align-items: flex-start; gap: var(--infoEntryGap); margin-top: var(--infoEntryMarginTop); }
 .theme-chaos .ch-info-text { margin: 0; }
 
-@keyframes chaos-slap { 0% { opacity: 0; scale: var(--slap, 1.25); } 60% { opacity: 1; scale: 0.97; } 100% { scale: 1; } }
+@keyframes chaos-slap { 0% { opacity: 0; scale: var(--slap, var(--kfSlap0pScale)); } 60% { opacity: var(--kfSlap60pOpacity); scale: var(--kfSlap60pScale); } 100% { scale: var(--kfSlap100pScale); } }
 @keyframes chaos-glitch-out {
-  0% { opacity: 1; }
-  30% { translate: calc(-50% + var(--glitch-reach, 14px)) 0; clip-path: inset(20% 0 40% 0); }
-  60% { translate: calc(-50% - var(--glitch-reach, 14px)) 0; clip-path: inset(50% 0 10% 0); }
+  0% { opacity: var(--kfGlitchOut0pOpacity); }
+  30% { translate: calc(var(--kfGlitchOut30pTranslate) + var(--kfGlitchOut30pTranslate2)) 0; clip-path: inset(var(--kfGlitchOut30pClipPath) 0 var(--kfGlitchOut30pClipPath2) 0); }
+  60% { translate: calc(var(--kfGlitchOut60pTranslate) - var(--kfGlitchOut60pTranslate2)) 0; clip-path: inset(var(--kfGlitchOut60pClipPath) 0 var(--kfGlitchOut60pClipPath2) 0); }
   100% { opacity: 0; }
 }
-@keyframes chaos-eq { from { scale: 1 0.25; } to { scale: 1 1; } }
+@keyframes chaos-eq { from { scale: var(--kfEqFromScale) var(--kfEqFromScale2); } to { scale: var(--kfEqToScale) var(--kfEqToScale2); } }
 @keyframes chaos-spin { to { rotate: 1turn; } }
 @media (prefers-reduced-motion: reduce) {
-  .theme-chaos .ch-equalizer i, .theme-chaos .ch-reels i, .theme-chaos .ch-cam-live, .theme-chaos .ch-piece { animation: none; }
+  .theme-chaos .ch-equalizer i { animation: none; }
+  .theme-chaos .ch-reels i { animation: none; }
+  .theme-chaos .ch-cam-live { animation: none; }
+  .theme-chaos .ch-piece { animation: none; }
 }
 
 /* --- Painted screens (scenes/Screen.tsx, PLAN-CHAOS.md package 6): the PixiJS wall under the boiling scribbles, a dark
    haze behind the content; the scribbles draw themselves one after the other from 1.3 s on, the title is sprayed on
    from the left and loses its mask afterwards (the mask would cut its glow) -------------------------------------- */
-.theme-chaos .ch-world-haze { position: absolute; left: 50%; top: 56%; width: 64%; height: 46%; translate: -50% -50%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--ground) 85%, transparent), transparent); opacity: var(--haze); pointer-events: none; }
-.theme-chaos .ch-boil .ch-rough-fill { stroke-width: calc(var(--w) * var(--scribbleWidth) * 0.6); }
+.theme-chaos .ch-world-haze { position: absolute; left: var(--worldHazeLeft); top: var(--worldHazeTop); width: var(--worldHazeWidth); height: var(--worldHazeHeight); translate: var(--worldHazeTranslate) var(--worldHazeTranslate2); border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--worldHazeBackground) var(--worldHazeBackground2), transparent), transparent); opacity: calc(var(--haze) * var(--worldHazeOpacity) / 100); pointer-events: none; }
+.theme-chaos .ch-boil .ch-rough-fill { stroke-width: calc(var(--w) * var(--scribbleWidth) * var(--boilRoughFillStrokeWidth)); }
 /* The painted screen draws its scribbles with GSAP drawSVG and drives the title glitch from idle.ts */
-.theme-chaos .ch-painted .ch-title::before, .theme-chaos .ch-painted .ch-title::after { animation: none; clip-path: var(--clip); translate: calc(var(--shift) * var(--glitch) * var(--glitch-reach, 14px) * var(--x)) 0; opacity: calc(var(--on) * var(--glitch)); }
-.theme-chaos .ch-painted .ch-title::before { --on: var(--ga-on, 0); --x: var(--ga-x, 0); --clip: var(--ga-clip, none); }
-.theme-chaos .ch-painted .ch-title::after { --on: var(--gb-on, 0); --x: var(--gb-x, 0); --clip: var(--gb-clip, none); }
-.theme-chaos .ch-painted .ch-title { animation: chaos-spray-title var(--sprayTitleMs) ease-in-out var(--title-from, 2s) backwards; }
+.theme-chaos .ch-painted .ch-title::before { animation: none; clip-path: var(--clip); translate: calc(var(--shift) * var(--glitch) * var(--paintedTitleBeforeTranslate) * var(--x)) 0; opacity: calc(var(--on) * calc(var(--glitch) * var(--paintedTitleBeforeOpacity) / 100)); }
+.theme-chaos .ch-painted .ch-title::after { animation: none; clip-path: var(--clip); translate: calc(var(--shift) * var(--glitch) * var(--paintedTitleAfterTranslate) * var(--x)) 0; opacity: calc(var(--on) * calc(var(--glitch) * var(--paintedTitleAfterOpacity) / 100)); }
+.theme-chaos .ch-painted .ch-title::before { --on: 0; --x: 0; --clip: none; }
+.theme-chaos .ch-painted .ch-title::after { --on: 0; --x: 0; --clip: none; }
+.theme-chaos .ch-painted .ch-title { animation: chaos-spray-title calc(var(--sprayTitleMs) * var(--paintedTitleAnimation) / 100) ease-in-out var(--paintedTitleAnimation2) backwards; }
 /* Speckles and drips of the title wait for the spray to reach them (--spray-at, SprayTitle.tsx): the speckles show,
    the drips run down from the letters; the clip leaves room for their glow at the sides */
-.theme-chaos .ch-painted .ch-title-spray circle { animation: chaos-unsprayed var(--speckle-pop, 0s) calc(var(--title-from, 2s) + var(--sprayTitleMs) * var(--spray-at, 0)) backwards; }
-.theme-chaos .ch-painted .ch-title-drip { animation: chaos-drip-run var(--run) ease-in calc(var(--title-from, 2s) + var(--sprayTitleMs) * var(--spray-at, 0)) backwards; }
+.theme-chaos .ch-painted .ch-title-spray circle { animation: chaos-unsprayed var(--speckle-pop, 0s) calc(var(--paintedTitleSprayCircleAnimation2) + calc(var(--sprayTitleMs) * var(--paintedTitleSprayCircleAnimation) / 100) * var(--spray-at, 0)) backwards; }
+.theme-chaos .ch-painted .ch-title-drip { animation: chaos-drip-run var(--run) ease-in calc(var(--paintedTitleDripAnimation2) + calc(var(--sprayTitleMs) * var(--paintedTitleDripAnimation) / 100) * var(--spray-at, 0)) backwards; }
 @keyframes chaos-unsprayed { from, to { opacity: 0; } }
-@keyframes chaos-drip-run { from { clip-path: inset(0 calc(var(--drip-room, 30px) * -1) 100% calc(var(--drip-room, 30px) * -1)) fill-box; } to { clip-path: inset(calc(var(--drip-room, 30px) * -1)) fill-box; } }
+@keyframes chaos-drip-run { from { clip-path: inset(0 calc(var(--kfDripRunFromClipPath) * -1) 100% calc(var(--kfDripRunFromClipPath2) * -1)) fill-box; } to { clip-path: inset(calc(var(--kfDripRunToClipPath) * -1)) fill-box; } }
 @keyframes chaos-spray-title {
-  from { -webkit-mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0; }
-  to { -webkit-mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); mask-image: linear-gradient(90deg, black 0 45%, transparent 55%); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 0 0; mask-position: 0 0; }
+  from { -webkit-mask-image: linear-gradient(calc(var(--kfSprayTitleFromWebkitMaskImage) * 1deg), black 0 var(--kfSprayTitleFromWebkitMaskImage2), transparent var(--kfSprayTitleFromWebkitMaskImage3)); mask-image: linear-gradient(calc(var(--kfSprayTitleFromMaskImage) * 1deg), black 0 var(--kfSprayTitleFromMaskImage2), transparent var(--kfSprayTitleFromMaskImage3)); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 100% 0; mask-position: 100% 0; }
+  to { -webkit-mask-image: linear-gradient(calc(var(--kfSprayTitleToWebkitMaskImage) * 1deg), black 0 var(--kfSprayTitleToWebkitMaskImage2), transparent var(--kfSprayTitleToWebkitMaskImage3)); mask-image: linear-gradient(calc(var(--kfSprayTitleToMaskImage) * 1deg), black 0 var(--kfSprayTitleToMaskImage2), transparent var(--kfSprayTitleToMaskImage3)); -webkit-mask-size: 300% 100%; mask-size: 300% 100%; -webkit-mask-position: 0 0; mask-position: 0 0; }
 }
 
 /* --- Notes and the alert (PLAN-CHAOS.md package 8): the rough marker edge draws itself, the alert slaps on with the set
    size, its name is sprayed on like the screen titles, the timer stroke pulls back ---------------------------------- */
-.theme-chaos .ch-note-edge { position: absolute; inset: calc(-1 * var(--note-edge-out, 6px)); width: calc(100% + 2 * var(--note-edge-out, 6px)); height: calc(100% + 2 * var(--note-edge-out, 6px)); overflow: visible; pointer-events: none; }
-.theme-chaos .ch-note-edge path { fill: none; stroke: var(--ink, var(--accent)); stroke-width: var(--note-edge, 4px); stroke-linecap: round; filter: drop-shadow(0 0 calc(var(--glow) * var(--glow-near, 6px)) var(--ink, var(--accent))); stroke-dasharray: 1; animation: chaos-draw var(--note-draw, 500ms) ease-in-out var(--note-draw-at, 100ms) both; }
-.theme-chaos .ch-alert .ch-title { animation: chaos-spray-title var(--alert-spray, 800ms) ease-in-out var(--alert-spray-at, 600ms) backwards; }
-@keyframes chaos-retract { from { stroke-dashoffset: 0; } to { stroke-dashoffset: 1; } }
+.theme-chaos .ch-note-edge { position: absolute; inset: calc(-1 * var(--noteEdgeInset)); width: calc(100% + var(--noteEdgeWidth) * var(--noteEdgeWidth2)); height: calc(100% + var(--noteEdgeHeight) * var(--noteEdgeHeight2)); overflow: visible; pointer-events: none; }
+.theme-chaos .ch-note-edge path { fill: none; stroke: var(--ink, var(--noteEdgePathStroke)); stroke-width: var(--noteEdgePathStrokeWidth); stroke-linecap: round; filter: drop-shadow(0 0 calc(var(--glow) * var(--noteEdgePathFilter2)) var(--ink, var(--noteEdgePathFilter))); stroke-dasharray: var(--noteEdgePathStrokeDasharray); animation: chaos-draw var(--noteEdgePathAnimation) ease-in-out var(--noteEdgePathAnimation2) both; }
+.theme-chaos .ch-alert .ch-title { animation: chaos-spray-title var(--alertTitleAnimation) ease-in-out var(--alertTitleAnimation2) backwards; }
+@keyframes chaos-retract { from { stroke-dashoffset: 0; } to { stroke-dashoffset: var(--kfRetractToStrokeDashoffset); } }

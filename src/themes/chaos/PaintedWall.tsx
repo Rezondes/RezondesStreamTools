@@ -15,11 +15,6 @@ import type { GestureKind } from "./strokes.ts";
 import { useChaos } from "./useChaos.ts";
 
 const SECOND_MS = 1000; // fixed: seconds in ms
-// The build of the prototype (refs/starting.html)
-// fixed: the title is sprayed from 2 s on at this height
-const TITLE = { at: 2, y: 436 };
-// fixed: the movement after the build starts at 4.6 s
-const IDLE_FROM = 4.6;
 const SEEK = seekFromQuery(location.search);
 
 type Painted = { app: Application; world: Container };
@@ -36,18 +31,20 @@ export default function PaintedWall({ seed, gesture, mainColor, boilFps }: { see
     return () => setPainted(null);
   }, []);
   const base = seedOf(seed);
+  // The build of the prototype (refs/starting.html): when and at which height the title is sprayed, when the movement starts
+  const idleFrom = values.paintIdleFrom;
   return (
     <div className="ch-backdrop" aria-hidden="true">
       <PixiStage background={values.ground} onReady={onReady} />
       {painted && (
         <>
           <Wall world={painted.world} values={values} seed={base} />
-          <Brushes app={painted.app} world={painted.world} clock={clock} values={values} gesture={gesture} mainColor={mainColor} seed={base} idleFrom={IDLE_FROM} />
-          <Spray app={painted.app} world={painted.world} clock={clock} values={values} gesture={gesture} mainColor={mainColor} seed={base} titleAt={TITLE.at} titleY={TITLE.y} />
-          <Dust app={painted.app} world={painted.world} clock={clock} values={values} seed={base} idleFrom={IDLE_FROM} />
+          <Brushes app={painted.app} world={painted.world} clock={clock} values={values} gesture={gesture} mainColor={mainColor} seed={base} idleFrom={idleFrom} />
+          <Spray app={painted.app} world={painted.world} clock={clock} values={values} gesture={gesture} mainColor={mainColor} seed={base} titleAt={values.paintTitleAt} titleY={values.paintTitleY} />
+          <Dust app={painted.app} world={painted.world} clock={clock} values={values} seed={base} idleFrom={idleFrom} />
         </>
       )}
-      <BoilingScribbles seed={seed} clock={clock} idleFrom={IDLE_FROM} fps={boilFps} />
+      <BoilingScribbles seed={seed} clock={clock} idleFrom={idleFrom} fps={boilFps} />
       <div className="ch-world-haze" />
     </div>
   );

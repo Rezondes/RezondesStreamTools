@@ -6,17 +6,16 @@ import { seekFromQuery } from "../../core/motion/seek.ts";
 import { confettiAt } from "./confetti.ts";
 import { roughScribble } from "./roughScribbles.ts";
 
-type Props = { count: number; seed: number; origin: { x: number; y: number }; start: number };
+// piece: size and line of a piece in px (settings)
+type Props = { count: number; seed: number; origin: { x: number; y: number }; start: number; piece: { size: number; line: number } };
 
-// fixed: size and line of a piece in px
-const PIECE = { size: 32, line: 3 };
 const SEEK = seekFromQuery(location.search);
 
-export default function Confetti({ count, seed, origin, start }: Props) {
+export default function Confetti({ count, seed, origin, start, piece: size }: Props) {
   const pieces = useMemo(() => Array.from({ length: count }, (_, index) => {
     const first = confettiAt(seed, index, 0, origin);
-    return { color: first.color, parts: roughScribble(first.kind, PIECE.size, seed * 41 + index, PIECE.line, true) };
-  }), [count, seed, origin]);
+    return { color: first.color, parts: roughScribble(first.kind, size.size, seed * 41 + index, size.line, true) };
+  }), [count, seed, origin, size.size, size.line]);
   const nodes = useRef<(SVGGElement | null)[]>([]);
   useEffect(() => {
     let frame = 0;
@@ -35,7 +34,7 @@ export default function Confetti({ count, seed, origin, start }: Props) {
   return (
     <svg className="ch-confetti" aria-hidden="true">
       {pieces.map((piece, index) => (
-        <g key={index} ref={node => { nodes.current[index] = node; }} opacity={0} className={`ch-mark ch-mark-${piece.color}`} style={{ "--w": PIECE.line } as CSSProperties}>
+        <g key={index} ref={node => { nodes.current[index] = node; }} opacity={0} className={`ch-mark ch-mark-${piece.color}`} style={{ "--w": size.line } as CSSProperties}>
           {piece.parts.map((part, line) => <path key={line} d={part.d} />)}
         </g>
       ))}

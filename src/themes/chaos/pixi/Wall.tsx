@@ -9,10 +9,6 @@ import { blotches } from "../wall.ts";
 
 type Props = { world: Container; values: ChaosValues; seed: number };
 
-// fixed: blotches on the wall and the strength of the grain (alpha of each grain, 0 to 255)
-const BLOTCHES = 26;
-const GRAIN = 26;
-
 function paint(values: ChaosValues, seed: number, grain: boolean): Texture {
   const canvas = document.createElement("canvas");
   [canvas.width, canvas.height] = [STAGE.width, STAGE.height];
@@ -23,7 +19,7 @@ function paint(values: ChaosValues, seed: number, grain: boolean): Texture {
     const image = context.createImageData(STAGE.width, STAGE.height);
     for (let index = 0; index < image.data.length; index += 4) {
       const value = random() * 255;
-      image.data.set([value, value, value, GRAIN], index);
+      image.data.set([value, value, value, values.wallGrain], index);
     }
     context.putImageData(image, 0, 0);
     return Texture.from(canvas);
@@ -33,7 +29,7 @@ function paint(values: ChaosValues, seed: number, grain: boolean): Texture {
   light.addColorStop(1, values.ground);
   context.fillStyle = light;
   context.fillRect(0, 0, STAGE.width, STAGE.height);
-  for (const stain of blotches(seed, BLOTCHES)) {
+  for (const stain of blotches(seed, values.wallBlotches)) {
     const radius = Math.max(stain.radiusX, stain.radiusY);
     const fill = context.createRadialGradient(stain.x, stain.y, 0, stain.x, stain.y, radius);
     fill.addColorStop(0, values.violet);

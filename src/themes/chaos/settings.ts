@@ -10,6 +10,7 @@ import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_COMMANDS, MINIME_FIELDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES } from "../../core/minimeFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 
 const FONTS = ["Space Grotesk", "Inter", "Manrope", "DM Sans"] as const;
 const TITLE_FONTS = ["Permanent Marker", "Black Ops One", "Sniglet", "Pacifico"] as const;
@@ -250,6 +251,7 @@ const GROUP_SCENES = {
   [MINIME_MOTION]: ["minimes"],
   [MINIME_HOP]: ["minimes"],
   [INFO_GROUP]: ["info"],
+  ...TUNING_GROUPS,
 } as const;
 
 // On first login: channel name from the Twitch login instead of the sample
@@ -265,4 +267,4 @@ const BASIC = [
   "minimeDefaultColor", "minimeNames",
 ];
 
-export const chaosSettings: ThemeSchema = { id: "chaos", name: "Chaos", fields: markBasic(withStingerFields([...FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };
+export const chaosSettings: ThemeSchema = { id: "chaos", name: "Chaos", fields: markBasic(withStingerFields([...FIELDS, ...TUNING_FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };

@@ -13,22 +13,22 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateX(calc(var(--x) - 50%));
+  transform: translateX(calc(var(--x) - var(--minimeTransform)));
   transition: transform var(--move) linear;
 }
 
 .theme-chaos .ch-minime-name {
   margin-bottom: var(--minimeNameGap);
-  font-family: var(--titleFont), var(--font), sans-serif;
+  font-family: var(--minimeNameFont), var(--minimeNameFont2), sans-serif;
   font-size: var(--minimeNameSize);
   color: var(--minime);
   white-space: nowrap;
-  text-shadow: 0 0 calc(var(--minimeGlow) * var(--name-glow, 6px)) var(--minime), 0 var(--name-drop, 2px) 0 var(--ground);
+  text-shadow: 0 0 calc(var(--minimeGlow) * var(--minimeNameTextShadow2)) var(--minime), 0 var(--minimeNameTextShadow3) 0 var(--minimeNameTextShadow);
 }
 
 .theme-chaos .ch-minime-figure { position: relative; width: 100%; }
-.theme-chaos .ch-minime-flip { scale: var(--facing) 1; }
-.theme-chaos .ch-minime-action { transform-origin: 50% 100%; }
+.theme-chaos .ch-minime-flip { scale: var(--facing) var(--minimeFlipScale); }
+.theme-chaos .ch-minime-action { transform-origin: var(--minimeActionTransformOrigin) 100%; }
 
 /* The monster: shaky lines in the color of the chatter with glow; the stroke keeps its width at every size */
 .theme-chaos .ch-monster {
@@ -36,7 +36,7 @@
   width: 100%;
   height: auto;
   overflow: visible;
-  filter: drop-shadow(0 0 calc(var(--minimeGlow) * var(--monster-glow, 5px)) var(--minime));
+  filter: drop-shadow(0 0 calc(var(--minimeGlow) * var(--monsterFilter)) var(--minime));
 }
 .theme-chaos .ch-monster path {
   fill: none;
@@ -46,35 +46,45 @@
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-.theme-chaos .ch-monster .ch-monster-body { fill: color-mix(in srgb, var(--minime) var(--body-tint, 14%), var(--ground)); }
-.theme-chaos .ch-monster .ch-monster-pupil { stroke: var(--textColor); stroke-width: calc(var(--minimeStroke) * var(--pupil, 2.4px)); }
+.theme-chaos .ch-monster .ch-monster-body { fill: color-mix(in srgb, var(--minime) var(--monsterMonsterBodyFill2), var(--monsterMonsterBodyFill)); }
+.theme-chaos .ch-monster .ch-monster-pupil { stroke: var(--monsterMonsterPupilStroke); stroke-width: calc(var(--minimeStroke) * var(--monsterMonsterPupilStrokeWidth)); }
 .theme-chaos .ch-monster-arm { transform-box: fill-box; }
 .theme-chaos .ch-monster-arm:first-of-type { transform-origin: 100% 100%; }
 .theme-chaos .ch-monster-arm:last-of-type { transform-origin: 0 100%; }
 
 .theme-chaos .ch-minime-shadow {
-  width: var(--shadow-width, 60%);
-  height: var(--shadow-height, 8px);
-  margin-top: calc(-1 * var(--shadow-overlap, 4px));
+  width: var(--minimeShadowWidth);
+  height: var(--minimeShadowHeight);
+  margin-top: calc(-1 * var(--minimeShadowMarginTop));
   border-radius: 50%;
-  background: color-mix(in srgb, var(--minime) calc(var(--minimeShadow) * 60%), transparent);
-  filter: blur(var(--shadow-blur, 3px));
+  background: color-mix(in srgb, var(--minime) calc(var(--minimeShadow) * var(--minimeShadowBackground)), transparent);
+  filter: blur(var(--minimeShadowFilter));
 }
 
 /* Standing still: a slow sway, so the monster never looks frozen */
-.theme-chaos .action-idle .ch-minime-action { animation: chaos-minime-sway var(--sway-ms, 1600ms) ease-in-out infinite alternate; }
+.theme-chaos .action-idle .ch-minime-action { animation: chaos-minime-sway var(--actionIdleMinimeActionAnimation) ease-in-out infinite alternate; }
 
 /* Own animations */
-.theme-chaos .action-wiggle .ch-minime-action { animation: chaos-minime-wiggle calc(var(--action-ms) / 6) ease-in-out 6; }
-.theme-chaos .action-wiggle .ch-monster-arm { animation: chaos-minime-flap calc(var(--action-ms) / 8) ease-in-out 8; }
+.theme-chaos .action-wiggle .ch-minime-action { animation: chaos-minime-wiggle calc(var(--action-ms) / var(--actionWiggleMinimeActionAnimation)) ease-in-out var(--actionWiggleMinimeActionAnimation2); }
+.theme-chaos .action-wiggle .ch-monster-arm { animation: chaos-minime-flap calc(var(--action-ms) / var(--actionWiggleMonsterArmAnimation)) ease-in-out var(--actionWiggleMonsterArmAnimation2); }
 .theme-chaos .action-grin .ch-minime-action { animation: chaos-minime-grin var(--action-ms) ease-in-out both; }
 .theme-chaos .action-tumble .ch-minime-action { animation: chaos-minime-tumble var(--action-ms) ease-in-out both; }
 .theme-chaos .action-sleep .ch-minime-action { animation: chaos-minime-doze var(--action-ms) ease-in-out both; }
 .theme-chaos .action-splat .ch-minime-action { animation: chaos-minime-squash var(--action-ms) ease-out both; }
 
 /* Marks around the head: scribble star, rising scrawls, the splat on the wall behind */
-.theme-chaos .ch-minime-star, .theme-chaos .ch-minime-scrawl, .theme-chaos .ch-minime-splat { position: absolute; overflow: visible; }
-.theme-chaos .ch-minime-star path, .theme-chaos .ch-minime-scrawl path {
+.theme-chaos .ch-minime-star { position: absolute; overflow: visible; }
+.theme-chaos .ch-minime-scrawl { position: absolute; overflow: visible; }
+.theme-chaos .ch-minime-splat { position: absolute; overflow: visible; }
+.theme-chaos .ch-minime-star path {
+  fill: none;
+  stroke: var(--minime);
+  stroke-width: calc(var(--minimeStroke) * var(--stroke-unit, 1px));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.theme-chaos .ch-minime-scrawl path {
   fill: none;
   stroke: var(--minime);
   stroke-width: calc(var(--minimeStroke) * var(--stroke-unit, 1px));
@@ -83,62 +93,64 @@
   vector-effect: non-scaling-stroke;
 }
 .theme-chaos .ch-minime-star {
-  left: 50%;
+  left: var(--minimeStarLeft);
   bottom: 100%;
-  width: var(--star-size, 45%);
-  margin-left: calc(var(--star-size, 45%) / -2);
-  filter: drop-shadow(0 0 calc(var(--minimeGlow) * var(--monster-glow, 5px)) var(--minime));
+  width: var(--minimeStarWidth);
+  margin-left: calc(var(--minimeStarMarginLeft) / var(--minimeStarMarginLeft2));
+  filter: drop-shadow(0 0 calc(var(--minimeGlow) * var(--minimeStarFilter)) var(--minime));
   animation: chaos-minime-star var(--action-ms) ease-out both;
 }
 .theme-chaos .ch-minime-scrawl {
   right: 0;
-  bottom: 60%;
-  width: var(--scrawl-size, 35%);
+  bottom: var(--minimeScrawlBottom);
+  width: var(--minimeScrawlWidth);
   opacity: 0;
-  animation: chaos-minime-rise calc(var(--action-ms) / 3) ease-out calc(var(--index) * var(--action-ms) / 4) 2;
+  animation: chaos-minime-rise calc(var(--action-ms) / var(--minimeScrawlAnimation)) ease-out calc(var(--index) * var(--action-ms) / var(--minimeScrawlAnimation2)) var(--minimeScrawlAnimation3);
 }
 .theme-chaos .ch-minime-splat {
-  left: 50%;
-  top: 50%;
+  left: var(--minimeSplatLeft);
+  top: var(--minimeSplatTop);
   width: calc(100% * var(--minimeSplatSize));
-  translate: -50% -50%;
+  translate: var(--minimeSplatTranslate) var(--minimeSplatTranslate2);
   animation: chaos-minime-splat var(--action-ms) ease-out both;
 }
 .theme-chaos .ch-minime-splat path { fill: var(--minime); stroke: none; }
 
 /* Appearing and disappearing: sprayed onto the wall and fading away */
 .theme-chaos .action-enter .ch-minime-action { animation: chaos-minime-spray-in var(--action-ms) cubic-bezier(0.3, 1.5, 0.6, 1) both; }
-.theme-chaos .action-enter .ch-minime-name, .theme-chaos .action-enter .ch-minime-shadow { animation: chaos-minime-fade-in var(--action-ms) ease-out both; }
+.theme-chaos .action-enter .ch-minime-name { animation: chaos-minime-fade-in var(--action-ms) ease-out both; }
+.theme-chaos .action-enter .ch-minime-shadow { animation: chaos-minime-fade-in var(--action-ms) ease-out both; }
 .theme-chaos .action-exit .ch-minime-action { animation: chaos-minime-spray-out var(--action-ms) ease-in forwards; }
-.theme-chaos .action-exit .ch-minime-name, .theme-chaos .action-exit .ch-minime-shadow { animation: chaos-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-chaos .action-exit .ch-minime-name { animation: chaos-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-chaos .action-exit .ch-minime-shadow { animation: chaos-minime-fade-out var(--action-ms) ease-in forwards; }
 
-@keyframes chaos-minime-sway { from { rotate: calc(-1 * var(--sway, 2deg)); } to { rotate: var(--sway, 2deg); } }
+@keyframes chaos-minime-sway { from { rotate: calc(-1 * calc(var(--kfMinimeSwayFromRotate) * 1deg)); } to { rotate: calc(var(--kfMinimeSwayToRotate) * 1deg); } }
 @keyframes chaos-minime-wiggle {
   0%, 100% { rotate: 0deg; translate: 0 0; }
-  25% { rotate: calc(-1 * var(--wiggle, 9deg)); translate: calc(-1 * var(--wiggle-shift, 3px)) 0; }
-  75% { rotate: var(--wiggle, 9deg); translate: var(--wiggle-shift, 3px) 0; }
+  25% { rotate: calc(-1 * calc(var(--kfMinimeWiggle25pRotate) * 1deg)); translate: calc(-1 * var(--kfMinimeWiggle25pTranslate)) 0; }
+  75% { rotate: calc(var(--kfMinimeWiggle75pRotate) * 1deg); translate: var(--kfMinimeWiggle75pTranslate) 0; }
 }
-@keyframes chaos-minime-flap { 0%, 100% { rotate: 0deg; } 50% { rotate: var(--flap, -35deg); } }
-@keyframes chaos-minime-grin { 0%, 100% { scale: 1 1; } 15%, 85% { scale: var(--grin-scale, 1.06) var(--grin-scale, 1.06); } }
+@keyframes chaos-minime-flap { 0%, 100% { rotate: 0deg; } 50% { rotate: calc(var(--kfMinimeFlap50pRotate) * 1deg); } }
+@keyframes chaos-minime-grin { 0%, 100% { scale: var(--kfMinimeGrin0p100pScale) var(--kfMinimeGrin0p100pScale2); } 15%, 85% { scale: var(--kfMinimeGrin15p85pScale) var(--kfMinimeGrin15p85pScale2); } }
 @keyframes chaos-minime-tumble {
   0% { rotate: 0deg; translate: 0 0; }
-  18% { rotate: calc(var(--facing) * var(--tumble, 100deg)); translate: calc(var(--facing) * var(--tumble-shift, 18px)) 0; }
-  24%, 66% { rotate: calc(var(--facing) * (var(--tumble, 100deg) - 10deg)); translate: calc(var(--facing) * var(--tumble-shift, 18px)) 0; }
-  84% { rotate: calc(var(--facing) * -8deg); translate: 0 calc(-1 * var(--tumble-hop, 10px)); }
+  18% { rotate: calc(var(--facing) * calc(var(--kfMinimeTumble18pRotate) * 1deg)); translate: calc(var(--facing) * var(--kfMinimeTumble18pTranslate)) 0; }
+  24%, 66% { rotate: calc(var(--facing) * (calc(var(--kfMinimeTumble24p66pRotate) * 1deg) - calc(var(--kfMinimeTumble24p66pRotate2) * 1deg))); translate: calc(var(--facing) * var(--kfMinimeTumble24p66pTranslate)) 0; }
+  84% { rotate: calc(var(--facing) * calc(var(--kfMinimeTumble84pRotate) * 1deg)); translate: 0 calc(-1 * var(--kfMinimeTumble84pTranslate)); }
   100% { rotate: 0deg; translate: 0 0; }
 }
-@keyframes chaos-minime-doze { 0%, 100% { scale: 1 1; } 10%, 90% { scale: 1.05 0.9; } 50% { scale: 1.02 0.94; } }
-@keyframes chaos-minime-squash { 0% { scale: 1 1; } 20% { scale: 1.12 0.86; } 45% { scale: 0.96 1.06; } 100% { scale: 1 1; } }
+@keyframes chaos-minime-doze { 0%, 100% { scale: var(--kfMinimeDoze0p100pScale) var(--kfMinimeDoze0p100pScale2); } 10%, 90% { scale: var(--kfMinimeDoze10p90pScale) var(--kfMinimeDoze10p90pScale2); } 50% { scale: var(--kfMinimeDoze50pScale) var(--kfMinimeDoze50pScale2); } }
+@keyframes chaos-minime-squash { 0% { scale: var(--kfMinimeSquash0pScale) var(--kfMinimeSquash0pScale2); } 20% { scale: var(--kfMinimeSquash20pScale) var(--kfMinimeSquash20pScale2); } 45% { scale: var(--kfMinimeSquash45pScale) var(--kfMinimeSquash45pScale2); } 100% { scale: var(--kfMinimeSquash100pScale) var(--kfMinimeSquash100pScale2); } }
 @keyframes chaos-minime-star {
-  0% { scale: 0; rotate: -90deg; opacity: 0; }
-  20% { scale: 1.25; rotate: 10deg; opacity: 1; }
-  30% { scale: 1; rotate: 0deg; }
-  80% { opacity: 1; translate: 0 calc(-1 * var(--star-rise, 10px)); }
-  100% { opacity: 0; translate: 0 calc(-1 * var(--star-rise, 10px)); }
+  0% { scale: 0; rotate: calc(var(--kfMinimeStar0pRotate) * 1deg); opacity: 0; }
+  20% { scale: var(--kfMinimeStar20pScale); rotate: calc(var(--kfMinimeStar20pRotate) * 1deg); opacity: var(--kfMinimeStar20pOpacity); }
+  30% { scale: var(--kfMinimeStar30pScale); rotate: 0deg; }
+  80% { opacity: var(--kfMinimeStar80pOpacity); translate: 0 calc(-1 * var(--kfMinimeStar80pTranslate)); }
+  100% { opacity: 0; translate: 0 calc(-1 * var(--kfMinimeStar100pTranslate)); }
 }
-@keyframes chaos-minime-rise { 0% { opacity: 0; translate: 0 0; scale: 0.6; } 30% { opacity: 1; } 100% { opacity: 0; translate: var(--rise-x, 14px) calc(-1 * var(--rise-y, 50px)); scale: 1; } }
-@keyframes chaos-minime-splat { 0% { scale: 0; opacity: 0.95; } 15% { scale: 1; opacity: 0.95; } 60% { opacity: 0.8; } 100% { scale: 1.05; opacity: 0; } }
-@keyframes chaos-minime-spray-in { 0% { scale: 0.2; opacity: 0; filter: blur(var(--spray-blur, 6px)); } 60% { opacity: 1; filter: blur(0); } 100% { scale: 1; opacity: 1; } }
-@keyframes chaos-minime-spray-out { 0% { scale: 1; opacity: 1; } 100% { scale: 0.6 0.2; opacity: 0; filter: blur(var(--spray-blur, 6px)); } }
-@keyframes chaos-minime-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes chaos-minime-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes chaos-minime-rise { 0% { opacity: 0; translate: 0 0; scale: var(--kfMinimeRise0pScale); } 30% { opacity: var(--kfMinimeRise30pOpacity); } 100% { opacity: 0; translate: var(--kfMinimeRise100pTranslate) calc(-1 * var(--kfMinimeRise100pTranslate2)); scale: var(--kfMinimeRise100pScale); } }
+@keyframes chaos-minime-splat { 0% { scale: 0; opacity: var(--kfMinimeSplat0pOpacity); } 15% { scale: var(--kfMinimeSplat15pScale); opacity: var(--kfMinimeSplat15pOpacity); } 60% { opacity: var(--kfMinimeSplat60pOpacity); } 100% { scale: var(--kfMinimeSplat100pScale); opacity: 0; } }
+@keyframes chaos-minime-spray-in { 0% { scale: var(--kfMinimeSprayIn0pScale); opacity: 0; filter: blur(var(--kfMinimeSprayIn0pFilter)); } 60% { opacity: var(--kfMinimeSprayIn60pOpacity); filter: blur(0); } 100% { scale: var(--kfMinimeSprayIn100pScale); opacity: var(--kfMinimeSprayIn100pOpacity); } }
+@keyframes chaos-minime-spray-out { 0% { scale: var(--kfMinimeSprayOut0pScale); opacity: var(--kfMinimeSprayOut0pOpacity); } 100% { scale: var(--kfMinimeSprayOut100pScale) var(--kfMinimeSprayOut100pScale2); opacity: 0; filter: blur(var(--kfMinimeSprayOut100pFilter)); } }
+@keyframes chaos-minime-fade-in { from { opacity: 0; } to { opacity: var(--kfMinimeFadeInToOpacity); } }
+@keyframes chaos-minime-fade-out { from { opacity: var(--kfMinimeFadeOutFromOpacity); } to { opacity: 0; } }

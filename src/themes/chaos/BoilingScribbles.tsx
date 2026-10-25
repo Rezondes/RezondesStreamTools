@@ -28,9 +28,6 @@ import { useChaos } from "./useChaos.ts";
 type Boiling = { seed: string; clock: () => number; idleFrom: number; fps: number };
 
 const SECOND_MS = 1000; // fixed: seconds in ms
-// fixed: when the scribbles start drawing (s), the factor on scribbleStagger per scribble, the flicker cycle of the neon (s)
-const DRAW = { from: 1.3, step: 0.08 };
-const FLICKER_CYCLE = 7;
 const HIDDEN: CSSProperties = { display: "none" };
 // fixed: the line types, each a group with its filter (Backdrop.tsx)
 const LINES = ["chalk", "marker", "neon"] as const;
@@ -51,7 +48,7 @@ export default function BoilingScribbles({ seed, clock, idleFrom, fps }: Boiling
   // The rough edges and the neon glow are the most expensive part of the screens (measured: about three quarters of the
   // frame time); the lowest performance level draws the marks without them
   const filtered = quality(values.quality).bloom;
-  const drawn = useDrawn(DRAW.from + (marks.length - 1) * (values.scribbleStagger / SECOND_MS) * DRAW.step + values.drawMs / SECOND_MS, marks);
+  const drawn = useDrawn(values.scribbleDrawFrom + (marks.length - 1) * (values.scribbleStagger / SECOND_MS) * values.scribbleDrawStep + values.drawMs / SECOND_MS, marks);
   const viewport = useViewport(SETTLE_MS);
   const sprites = useMarkSprites(layer, filtered && drawn, values, viewport);
   // The drift waits for the bitmaps: without it the shared filters and the bitmaps show the same, so the switch does
@@ -64,9 +61,9 @@ export default function BoilingScribbles({ seed, clock, idleFrom, fps }: Boiling
       const paths = group?.querySelectorAll(".ch-mark path");
       if (!paths?.length) return;
       timeline.set(paths, { strokeDasharray: 1 }, 0);
-      timeline.from(paths, { strokeDashoffset: 1, duration: values.drawMs / SECOND_MS, ease: "power2.out" }, DRAW.from + index * (values.scribbleStagger / SECOND_MS) * DRAW.step);
+      timeline.from(paths, { strokeDashoffset: 1, duration: values.drawMs / SECOND_MS, ease: "power2.out" }, values.scribbleDrawFrom + index * (values.scribbleStagger / SECOND_MS) * values.scribbleDrawStep);
     });
-  }, [marks, values.drawMs, values.scribbleStagger], layer);
+  }, [marks, values.drawMs, values.scribbleStagger, values.scribbleDrawFrom, values.scribbleDrawStep], layer);
   const url = (name: string) => `url(#${id}-${name})`;
   return (
     <>
@@ -139,7 +136,7 @@ function useBoil(groups: RefObject<(SVGGElement | null)[]>, marks: Marks, { cloc
         paint(index => ({
           take: boilTake(index, since, fps, boil),
           drift: driftAt(index, seconds, values.driftAmount * share, share > 0),
-          opacity: marks[index].mark.line === "neon" ? flickerAt(seconds, FLICKER_CYCLE, values.flicker) : 1,
+          opacity: marks[index].mark.line === "neon" ? flickerAt(seconds, values.flickerCycle, values.flicker) : 1,
         }));
         frame = requestAnimationFrame(tick);
         return;
@@ -158,14 +155,14 @@ function useBoil(groups: RefObject<(SVGGElement | null)[]>, marks: Marks, { cloc
         const transform = `translate(${(drift.x).toFixed(2)} ${(drift.y).toFixed(2)}) rotate(${(drift.rotate).toFixed(2)} ${x.toFixed(0)} ${y.toFixed(0)})`;
         if (transform !== last.transform) group.setAttribute("transform", (last.transform = transform));
         if (marks[index].mark.line !== "neon") return;
-        const opacity = flickerAt(seconds, FLICKER_CYCLE, values.flicker).toFixed(2);
+        const opacity = flickerAt(seconds, values.flickerCycle, values.flicker).toFixed(2);
         if (opacity !== last.opacity) group.setAttribute("opacity", (last.opacity = opacity));
       });
       frame = requestAnimationFrame(tick);
     };
     tick();
     return () => cancelAnimationFrame(frame);
-  }, [groups, clock, idleFrom, driftFrom, marks, fps, values.idleOn, values.boilOn, values.driftAmount, values.idleEaseMs, values.flicker, painted]);
+  }, [groups, clock, idleFrom, driftFrom, marks, fps, values.idleOn, values.boilOn, values.driftAmount, values.idleEaseMs, values.flicker, values.flickerCycle, painted]);
 }
 
 type MarkState = { take: number; drift: ReturnType<typeof driftAt>; opacity: number };

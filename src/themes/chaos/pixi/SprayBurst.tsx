@@ -12,10 +12,9 @@ import type { ChaosValues } from "../settings.ts";
 
 type Props = { values: ChaosValues; start: number; seed: number; note: { top: number; width: number; height: number } };
 
-// fixed: the burst of the prototype: when the note hits, dot speed, drag, sink and life, dot sizes
-const HIT = 0.2;
-const BURST = { direction: 0, spread: Math.PI * 2, speed: [60, 260] as const, gravity: 80, drag: 1, life: 1.2 };
-const DOT = { min: 1, by: 2.2, alpha: 0.8 };
+// fixed: the dots fly all around from each of the four edges; when the note hits, their speed, drag, sink, life and
+// size are settings
+const SPREAD = { direction: 0, spread: Math.PI * 2 };
 const EDGES = 4;
 const SEEK = seekFromQuery(location.search);
 
@@ -27,16 +26,17 @@ export default function SprayBurst({ values, start, seed, note }: Props) {
     const colors = [values.accent, values.accent2, values.lilac];
     const total = particleCount(values.alertSprayDots, values.quality);
     const left = (STAGE.width - note.width) / 2;
+    const burst = { ...SPREAD, speed: [values.burstSpeedMin, values.burstSpeedMax] as const, gravity: values.burstGravity, drag: values.burstDrag, life: values.burstLife };
     const place = () => {
-      const since = (SEEK ?? (performance.now() - start) / 1000) - HIT;
+      const since = (SEEK ?? (performance.now() - start) / 1000) - values.burstHit;
       mist.clear();
-      if (since <= 0 || since > BURST.life) return;
+      if (since <= 0 || since > burst.life) return;
       for (let edge = 0; edge < EDGES; edge++) {
         const count = Math.ceil(total / EDGES);
-        burstAt(seed + edge, count, since, { ...BURST, origin: { x: 0, y: 0 } }).forEach((dot, index) => {
+        burstAt(seed + edge, count, since, { ...burst, origin: { x: 0, y: 0 } }).forEach((dot, index) => {
           const along = ((index * 37) % count) / count;
           const [x, y] = edge < 2 ? [left + along * note.width, note.top + (edge === 0 ? 0 : note.height)] : [edge === 2 ? left : left + note.width, note.top + along * note.height];
-          mist.circle(x + dot.x, y + dot.y, DOT.min + ((index * 13) % 10) / 10 * DOT.by).fill({ color: colors[index % colors.length], alpha: DOT.alpha * dot.opacity });
+          mist.circle(x + dot.x, y + dot.y, values.burstDot + ((index * 13) % 10) / 10 * values.burstDotRange).fill({ color: colors[index % colors.length], alpha: values.burstDotAlpha * dot.opacity });
         });
       }
     };
