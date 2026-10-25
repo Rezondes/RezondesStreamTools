@@ -238,6 +238,7 @@ export type DogsValues = {
   readonly toyTreatColor: string;
   readonly dropBounce: number;
   readonly cardTop: number;
+  readonly alertSize: number;
   readonly soundAlertRun: SoundValue;
   readonly soundAlertToy: SoundValue;
   readonly soundAlertCard: SoundValue;

@@ -239,6 +239,7 @@ const FIELDS = [
   color("toyTreatColor", "Leckerli: Farbe", ALERTS, "#a8754a"),
   number("dropBounce", "Spielzeug: Sprunghöhe", ALERTS, 14, 0, 60),
   number("cardTop", "Karte: Abstand von oben", ALERTS, 440, 0, 900, "px"),
+  number("alertSize", "Grösse von Karte und Hunden", ALERTS, 60, 20, 100, "%"),
   ...withDefaults([
     sound("soundAlertRun", "Eingebaut: Hereinrennen", ALERTS),
     sound("soundAlertToy", "Eingebaut: Spielzeug", ALERTS),

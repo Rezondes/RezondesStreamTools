@@ -2038,6 +2038,16 @@
       "unit": "px"
     },
     {
+      "key": "alertSize",
+      "type": "number",
+      "label": "Grösse von Karte und Hunden",
+      "group": "Alerts",
+      "default": 60,
+      "min": 20,
+      "max": 100,
+      "unit": "%"
+    },
+    {
       "key": "soundAlertRun",
       "type": "sound",
       "label": "Eingebaut: Hereinrennen",

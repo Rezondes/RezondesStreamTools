@@ -3,7 +3,7 @@
 // Run: node src/themes/dogs/alert.check.ts
 import assert from "node:assert/strict";
 import { raidPack } from "../../core/alerts/raidPack.ts";
-import { ALERT_TIMES, alertBubbleAt, alertDogAt, alertSchedule, alertSoundsBetween, cardAt, toyAt } from "./alert.ts";
+import { ALERT_FEET, ALERT_TIMES, alertBubbleAt, alertDogAt, alertScaleOf, alertSchedule, alertSoundsBetween, cardAt, toyAt } from "./alert.ts";
 
 const track = { start: -56, stop: 92, out: 394 };
 const plain = alertSchedule(8.2, 0, 5);
@@ -43,5 +43,13 @@ assert.ok(big.barks.every(bark => bark < ALERT_TIMES.stand + big.shift - 1));
 
 // Höchstzahl: 1000 raiders with raidMaxDogs 300 run 300 dogs (the text keeps the amount of the alert)
 assert.equal(raidPack({ raiders: 1000, maxDogs: 300, maxOnScreen: 12, crossMs: 2400, speedSpread: 0.2, lanes: 4, seed: 1 }).runners.length, 300);
+
+
+// Size: 60 % of pixel size 5 draws with 3 screen pixels per pixel, the card at 0.6, the world lifted down so the feet
+// stay on the screen row of the full size; 100 % changes nothing, at least 1 screen pixel per pixel
+assert.deepEqual(alertScaleOf(5, 60), { pixel: 3, ratio: 0.6, lift: ALERT_FEET * 2 });
+assert.equal(ALERT_FEET * 3 + alertScaleOf(5, 60).lift, ALERT_FEET * 5);
+assert.deepEqual(alertScaleOf(5, 100), { pixel: 5, ratio: 1, lift: 0 });
+assert.equal(alertScaleOf(3, 10).pixel, 1);
 
 console.log("dogs alert ok");

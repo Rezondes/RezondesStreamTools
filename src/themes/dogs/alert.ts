@@ -3,8 +3,17 @@
 // the dog waits with the card until the pack has passed (raidPack in the core) and barks every raidBarkEvery; the alert
 // lasts as long as that. Pure functions of the time since the alert started. Check: alert.check.ts.
 
-// fixed: the ground of the prototype at pixel row 200, where the dogs and the toy stand
+// fixed: the ground of the prototype at pixel row 200, where the dogs and the toy stand; the feet end two rows lower
 export const ALERT_GROUND = 200;
+export const ALERT_FEET = ALERT_GROUND + 2;
+const PERCENT = 100;
+
+// The size of the alert (alertSize % of the pixel size): whole screen pixels per pixel, the share for the card and the
+// bubble, and how far the smaller world moves down so the feet stay where they end at the full pixel size (the source)
+export function alertScaleOf(pixelScale: number, alertSize: number): { pixel: number; ratio: number; lift: number } {
+  const pixel = Math.max(1, Math.round((pixelScale * alertSize) / PERCENT));
+  return { pixel, ratio: pixel / pixelScale, lift: ALERT_FEET * (pixelScale - pixel) };
+}
 // fixed: the times of the prototype in s: stop, drop, card, first bark (a double bark 1.4 s apart), the dog stands
 // still, picks up, runs out and is gone; the pack starts 0.3 s after the card, the dog waits 0.3 s after the last runner
 export const ALERT_TIMES = { stop: 1.25, drop: 1.3, card: 1.4, bark: 2, doubleBark: 1.4, stand: 5.6, pick: 5.85, run: 6.2, gone: 7.4, packAfterCard: 0.3, waitAfterPack: 0.3 };

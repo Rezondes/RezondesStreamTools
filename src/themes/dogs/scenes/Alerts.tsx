@@ -13,6 +13,7 @@ import { STAGE } from "../../../core/screens/screens.ts";
 import { useStage } from "../../../core/screens/useStage.ts";
 import { playSound } from "../../../core/sound.ts";
 import type { Alert } from "../../../core/types.ts";
+import { alertScaleOf } from "../alert.ts";
 import { alertLengthMs, planAlert } from "../alertPlan.ts";
 import { BREED_IDS, isBreed } from "../breeds.ts";
 import { dogCache } from "../dog.ts";
@@ -40,7 +41,7 @@ function DogAlert({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   useAlertSounds(own.file ? () => playSound(own, () => undefined) : null, leave.file ? () => playSound(leave, () => undefined) : null, leaving);
   const breed = isBreed(values.dog) ? values.dog : BREED_IDS[0];
   const dog = useMemo(() => dogCache(dogLookOf(values, breed, values.coat)), [values, breed]);
-  const width = Math.ceil(STAGE.width / values.pixelScale);
+  const width = Math.ceil(STAGE.width / alertScaleOf(values.pixelScale, values.alertSize).pixel);
   const stage = useStage();
   const onReady = useCallback((ready: Application) => {
     setApp(ready);

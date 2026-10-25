@@ -8,11 +8,13 @@ import { textureCache, type TextureCache } from "./textures.ts";
 
 export type DogStage = { world: Container; dogs: Container; effects: Container; textures: TextureCache };
 
-export function useDogStage(app: Application, scale: number, setup: (stage: DogStage) => () => void) {
+// lift: screen pixels the layers move down (a smaller alert keeps its ground row)
+export function useDogStage(app: Application, scale: number, setup: (stage: DogStage) => () => void, lift = 0) {
   useEffect(() => {
     const layers = { world: new Container(), dogs: new Container(), effects: new Container() };
     for (const layer of Object.values(layers)) {
       layer.scale.set(scale);
+      layer.position.y = lift;
       app.stage.addChild(layer);
     }
     const textures = textureCache();
@@ -27,5 +29,5 @@ export function useDogStage(app: Application, scale: number, setup: (stage: DogS
       }
       textures.destroy();
     };
-  }, [app, scale, setup]);
+  }, [app, scale, setup, lift]);
 }

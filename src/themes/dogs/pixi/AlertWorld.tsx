@@ -7,7 +7,7 @@ import { Sprite } from "pixi.js";
 import { useCallback, useMemo } from "react";
 import { type RaidPack, runnersAt } from "../../../core/alerts/raidPack.ts";
 import { hash } from "../../../core/hash.ts";
-import { ALERT_GROUND, alertDogAt, alertSoundsBetween, toyAt, type AlertSchedule } from "../alert.ts";
+import { ALERT_GROUND, alertDogAt, alertScaleOf, alertSoundsBetween, toyAt, type AlertSchedule } from "../alert.ts";
 import { BREEDS, type BreedId } from "../breeds.ts";
 import { dogCache, type DogCache } from "../dog.ts";
 import { dogLookOf, propColorsOf } from "../looks.ts";
@@ -105,7 +105,8 @@ export default function AlertWorld({ app, clock, values, breed, dog, toy, schedu
       last = time;
     };
   }, [clock, values, breed, dog, toy, schedule, pack, builtIn, width, lookOf]);
-  useDogStage(app, values.pixelScale, setup);
+  const { pixel, lift } = alertScaleOf(values.pixelScale, values.alertSize);
+  useDogStage(app, pixel, setup, lift);
   return null;
 }
 

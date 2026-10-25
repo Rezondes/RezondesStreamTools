@@ -392,6 +392,7 @@ fn alerts() -> Vec<SettingField> {
         color("toyTreatColor", "Leckerli: Farbe", ALERTS, "#a8754a"),
         number("dropBounce", "Spielzeug: Sprunghöhe", ALERTS, 14.0, 0.0, 60.0, None, None),
         number("cardTop", "Karte: Abstand von oben", ALERTS, 440.0, 0.0, 900.0, PX, None),
+        number("alertSize", "Grösse von Karte und Hunden", ALERTS, 60.0, 20.0, 100.0, PERCENT, None),
     ];
     fields.extend(with_defaults(
         vec![

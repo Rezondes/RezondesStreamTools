@@ -7,7 +7,7 @@ import { alertArea, musicArea } from "../../core/sceneArea.ts";
 import { STAGE } from "../../core/screens/screens.ts";
 import { parseStatLines } from "../../core/stats/stats.ts";
 import { SCENE_SIZES, type SceneArea, type SceneName, type SettingValues } from "../../core/theme.ts";
-import { ALERT_GROUND } from "./alert.ts";
+import { ALERT_FEET } from "./alert.ts";
 import { BREEDS } from "./breeds.ts";
 import type { DogsValues } from "./settings.ts";
 
@@ -23,8 +23,8 @@ const tallestDog = Math.max(...Object.values(BREEDS).map(breed => breed.height))
 export function dogsAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const dogs = values as unknown as DogsValues;
   const top = Math.max(0, dogs.cardTop - ABOVE_CARD);
-  // one pixel row below the ground, where the feet end
-  const bottom = Math.min(STAGE.height, (ALERT_GROUND + 2) * dogs.pixelScale);
+  // where the feet end at the full pixel size (a smaller alert keeps that row, alertScaleOf)
+  const bottom = Math.min(STAGE.height, ALERT_FEET * dogs.pixelScale);
   const dog = dogs.musicStyle === "hund" ? (tallestDog + MUSIC.dogRows) * dogs.pixelScale * MUSIC.dogScale + MUSIC.below : 0;
   const rows = parseStatLines(dogs.statsLines.join("\n")).length;
   return {
