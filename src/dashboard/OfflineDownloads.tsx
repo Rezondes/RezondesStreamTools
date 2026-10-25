@@ -5,7 +5,7 @@
 // videoFrames.ts) and MP4 (black background). Nothing of this runs on the server.
 import { useEffect, useRef, useState } from "react";
 import { areaOf } from "../core/sceneArea.ts";
-import { resolveSettings } from "../core/settings.ts";
+import { effectiveSettings } from "../core/settings.ts";
 import * as streamerPath from "../core/streamerPath.ts";
 import type { SceneName, SettingValues } from "../core/theme.ts";
 import { DEFAULT_THEME, findModule, findTheme } from "../themes/registry.ts";
@@ -71,7 +71,7 @@ async function embeddedFonts(url: string, used: string) {
 async function savedValues(themeId: string) {
   const schema = findTheme(themeId) ?? findTheme(DEFAULT_THEME)!;
   const file = await getJson<SettingsFile | null>("/api/settings", null);
-  return { schema, values: resolveSettings(schema, file?.values[schema.id]) };
+  return { schema, values: effectiveSettings(schema, file?.values[schema.id]) };
 }
 
 async function downloadHtml(me: Me, scene: SceneName) {

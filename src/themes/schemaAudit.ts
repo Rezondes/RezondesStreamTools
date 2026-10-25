@@ -50,11 +50,31 @@ export function auditBasic(schema: ThemeSchema): string[] {
   return [...numbers, ...areas];
 }
 
-// folder: folder of the theme; settings.ts and checks do not count as use
+// Inheritance: the parent exists, has the same type, and no chain runs in a circle
+export function auditInherit(schema: ThemeSchema): string[] {
+  const byKey = new Map(schema.fields.map(field => [field.key, field]));
+  return schema.fields.flatMap(field => {
+    if (field.inherit === undefined) return [];
+    const parent = byKey.get(field.inherit);
+    if (!parent) return [`${field.key}: unknown parent ${field.inherit}`];
+    if (parent.type !== field.type) return [`${field.key}: parent ${field.inherit} is ${parent.type}`];
+    const seen = new Set([field.key]);
+    for (let next = parent; next.inherit !== undefined; next = byKey.get(next.inherit) ?? next) {
+      if (seen.has(next.key) || !byKey.has(next.inherit)) return seen.has(next.key) ? [`${field.key}: inherits in a circle`] : [];
+      seen.add(next.key);
+    }
+    return [];
+  });
+}
+
+// folder: folder of the theme; settings.ts, the tuning table (tuning.ts) and checks do not count as use; broken
+// inheritance throws, like a basic key without a field
 export function auditTheme(schema: ThemeSchema, folder: string) {
+  const inherit = auditInherit(schema);
+  if (inherit.length > 0) throw new Error(`inherit: ${inherit.join("; ")}`);
   const defaults = Object.fromEntries(schema.fields.map(field => [field.key, field.default]));
   const files = readdirSync(folder, { recursive: true, encoding: "utf8" })
-    .filter(file => /\.(ts|tsx|css)$/.test(file) && !/settings\.ts$|\.check\.ts$/.test(file));
+    .filter(file => /\.(ts|tsx|css)$/.test(file) && !/settings\.ts$|tuning\.ts$|\.check\.ts$/.test(file));
   const source = files.map(file => readFileSync(join(folder, file), "utf8")).join("\n");
   const used = (key: string) => CORE_KEYS.has(key) || CORE_PREFIXES.some(prefix => key.startsWith(prefix)) || new RegExp(`\\.${key}\\b|[{,]\\s*${key}\\s*[,}]|"${key}"|var\\(--${key}\\)`).test(source);
   return { errors: validateSettings(schema, defaults).errors, unused: schema.fields.map(field => field.key).filter(key => !used(key)), basic: auditBasic(schema) };

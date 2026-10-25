@@ -1,5 +1,6 @@
 // One input field per field type of the theme schema, with a visible label (rule 23), error text for the server's code
-// and reset to the default as soon as the value differs from it. Media and sounds choose from the media folder.
+// and reset to the default as soon as the value differs from it. Media and sounds choose from the media folder. A
+// field that inherits and is empty shows the value it takes from its parent and offers an own value instead.
 // Fields with ascii offer the ASCII logo generator (own chunk, loads only when opened).
 import { lazy, Suspense, useState } from "react";
 import { MEDIA_KIND, type SettingErrorCode } from "../core/settings.ts";
@@ -14,6 +15,7 @@ type Props = {
   media: readonly string[];
   onChange: (value: SettingValue) => void;
   onReset: () => void;
+  inherited: { label: string; value: string } | null;
 };
 
 const COLOR = /^#[0-9a-f]{6}/i;
@@ -22,7 +24,7 @@ const isSound = (value: unknown): value is SoundValue => typeof value === "objec
 
 const AsciiGenerator = lazy(() => import("./AsciiGenerator.tsx"));
 
-export default function SettingInput({ field, value, error, media, onChange, onReset }: Props) {
+export default function SettingInput({ field, value, error, media, onChange, onReset, inherited }: Props) {
   const id = `setting-${field.key}`;
   const [generator, setGenerator] = useState(false);
   const ascii = field.type === "textarea" && field.ascii === true;
@@ -30,7 +32,12 @@ export default function SettingInput({ field, value, error, media, onChange, onR
   return (
     <div className={`setting${error ? " invalid" : ""}`}>
       <label htmlFor={id}>{field.label}{field.type === "number" ? numberHint(field.unit, TEXTS.theme.range(field.min, field.max)) : ""}</label>
-      <Input id={id} field={field} value={value} media={media} onChange={onChange} invalid={Boolean(error)} />
+      {inherited ? (
+        <span className="setting-row">
+          <span id={id} className="muted">{TEXTS.theme.inherits(inherited.label, inherited.value)}</span>
+          <button type="button" className="btn" onClick={() => onChange(inherited.value)}>{TEXTS.theme.ownValue}</button>
+        </span>
+      ) : <Input id={id} field={field} value={value} media={media} onChange={onChange} invalid={Boolean(error)} />}
       {statKeys && <span className="muted">{TEXTS.theme.statKeys(statKeys)}</span>}
       {ascii && !generator && <button type="button" className="btn" onClick={() => setGenerator(true)}>{TEXTS.ascii.open}</button>}
       {ascii && generator && (

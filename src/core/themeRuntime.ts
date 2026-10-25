@@ -1,6 +1,7 @@
 // Applies a theme at runtime: which scene component applies (only the theme's own, nothing is inherited from another
 // theme) and which settings end up as CSS variables on the root element of the scene. Pure functions, tested in
 // themeRuntime.check.ts.
+import { effectiveValues } from "./settings.ts";
 import { SCENES, type SceneName, type SettingValues, type ThemeSchema } from "./theme.ts";
 
 const isScene = (name: string): name is SceneName => (SCENES as readonly string[]).includes(name);
@@ -19,8 +20,9 @@ export function sceneNames<Component>(scenes: SceneTable<Component>, themeId: st
 }
 
 // Colors, numbers (with unit according to the schema), switches (1/0, for computing in calc) and fonts as --<key>.
-// The scene reads texts, choices and media directly.
-export function cssVariables(schema: ThemeSchema, values: SettingValues): Record<string, string> {
+// The scene reads texts, choices and media directly. Empty fields that inherit take the value of their parent.
+export function cssVariables(schema: ThemeSchema, stored: SettingValues): Record<string, string> {
+  const values = effectiveValues(schema, stored);
   const variables: Record<string, string> = {};
   for (const field of schema.fields) {
     const value = values[field.key];

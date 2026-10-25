@@ -10,7 +10,9 @@ use ts_rs::TS;
 use crate::identity::values::Login;
 use crate::minimes::rules::{MinimeRules, minime_rules};
 use crate::settings::field::SettingValues;
-use crate::settings::validate::{SettingError, SettingErrorCode, resolve_settings, validate_settings};
+use crate::settings::validate::{
+    SettingError, SettingErrorCode, effective_values, resolve_settings, validate_settings,
+};
 use crate::themes::minime_fields::has_minimes;
 use crate::themes::registry::{DEFAULT_THEME, Theme, find, themes};
 
@@ -88,7 +90,10 @@ pub fn public_settings(file: &SettingsFile) -> PublicSettings {
     let theme = find(&file.theme).unwrap_or_else(default_theme);
     PublicSettings {
         theme: theme.schema.id.clone(),
-        values: resolve_settings(&theme.schema, &stored_values(file, &theme.schema.id)),
+        values: effective_values(
+            &theme.schema,
+            &resolve_settings(&theme.schema, &stored_values(file, &theme.schema.id)),
+        ),
     }
 }
 

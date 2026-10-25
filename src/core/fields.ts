@@ -50,6 +50,10 @@ export const withDefaults = <F extends SettingField>(fields: readonly F[], defau
 // Field that only affects one scene: the dashboard shows it only there (e.g. title or terminal lines of BRB)
 export const inScene = <F extends SettingField>(scene: SceneName, field: F): F & { scene: SceneName } => ({ ...field, scene });
 
+// Field that takes the value of the field parent while it is empty: the theme value by default, its own once set
+type TextField = Extract<SettingField, { default: string }>;
+export const inherits = <F extends TextField>(field: F, parent: string): F & { inherit: string } => ({ ...field, default: "", inherit: parent }) as F & { inherit: string };
+
 // Field of the simple view in the dashboard: the few settings most streamers change (texts, main colors, switches)
 export const basic = <F extends SettingField>(field: F): F & { basic: true } => ({ ...field, basic: true });
 

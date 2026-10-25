@@ -136,6 +136,10 @@ pub struct SettingField {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub basic: bool,
+    /// Key of the field whose value applies while this one is empty, e.g. a text color of the accent
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub inherit: Option<String>,
     #[serde(flatten)]
     pub kind: FieldKind,
 }
@@ -186,6 +190,7 @@ fn field(key: &str, label: &str, group: &str, kind: FieldKind) -> SettingField {
         group: group.to_owned(),
         scene: None,
         basic: false,
+        inherit: None,
         kind,
     }
 }
@@ -352,6 +357,13 @@ pub fn mark_basic(fields: Vec<SettingField>, keys: &[&str]) -> Vec<SettingField>
     fields.into_iter().map(|field| if keys.contains(&field.key.as_str()) { basic(field) } else { field }).collect()
 }
 
+/// Field that takes the value of the field `parent` while it is empty (template: `inherits` in `src/core/fields.ts`):
+/// the theme value by default, its own once set
+#[must_use]
+pub fn inherits(field: SettingField, parent: &str) -> SettingField {
+    SettingField { inherit: Some(parent.to_owned()), ..field }.with_default(&SettingValue::Text(String::new()))
+}
+
 /// Field of the simple view in the dashboard (template: `basic` in `src/core/fields.ts`)
 #[must_use]
 pub fn basic(field: SettingField) -> SettingField {
@@ -401,6 +413,11 @@ mod tests {
     fn basic_only_adds_the_flag() {
         let title = text("title", "Title", "A", "Hello", None);
         assert_eq!(basic(title.clone()), SettingField { basic: true, ..title });
+        let name = inherits(color("nameColor", "Name", "Texte", "#ffffff"), "accent");
+        assert_eq!(
+            (name.inherit.as_deref(), name.default_value()),
+            (Some("accent"), SettingValue::Text(String::new()))
+        );
     }
 
     #[test]

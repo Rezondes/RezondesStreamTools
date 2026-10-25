@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { isErrorCode, type ErrorCode } from "../core/errorCodes.ts";
 import type { ClipName, RenderClip } from "../core/renderClip.ts";
-import { resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
+import { effectiveSettings, resolveSettings, type SettingError, type SettingErrorCode } from "../core/settings.ts";
 import type { SettingValues } from "../core/theme.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
 import { CLIP_NAMES, clipsFor } from "../themes/renderers.ts";
@@ -15,7 +15,7 @@ import { getJson, postJson } from "./api.ts";
 import { reportError, toast } from "./notices.ts";
 import type { Me } from "./navigation.ts";
 import SettingInput from "./SettingInput.tsx";
-import { changedKeys, errorsByKey, resetField, shownField } from "./settingsForm.ts";
+import { changedKeys, errorsByKey, inheritedOf, resetField, shownField } from "./settingsForm.ts";
 import { SubTabs, subTabPanel } from "./SubTabs.tsx";
 import { TEXTS } from "./texts.de.ts";
 
@@ -36,7 +36,7 @@ export default function Render({ me }: { me: Me }) {
   const [clipName, setClipName] = useState<ClipName | null>(null);
   const schema = findTheme(settings.theme) ?? findTheme(DEFAULT_THEME)!;
   // New clip objects only when the draft changes: an account reload must not restart the preview loop
-  const allClips = useMemo(() => clipsFor(schema.id, resolveSettings(schema, settings.draft), me.login), [schema, settings.draft, me.login]);
+  const allClips = useMemo(() => clipsFor(schema.id, effectiveSettings(schema, settings.draft), me.login), [schema, settings.draft, me.login]);
   if (!settings.ready) return <p className="muted">{TEXTS.loading}</p>;
   const clips = allClips.filter(clip => me.features[clip.feature]);
   const clip = clips.find(candidate => candidate.name === clipName) ?? clips.at(0);
@@ -92,6 +92,7 @@ function ClipSettings({ clip, settings, canSave }: { clip: RenderClip; settings:
             media={[]}
             onChange={value => settings.set(current => ({ ...current, [field.key]: value }))}
             onReset={() => settings.set(current => resetField(schema, current, field.key))}
+            inherited={inheritedOf(schema, field, settings.draft)}
           />
         ))}
       </fieldset>

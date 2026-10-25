@@ -39,6 +39,7 @@ type FieldBase = {
   group: string; // section in the form
   scene?: SceneName; // for the preview in the dashboard
   basic?: boolean; // shown in the simple view of the dashboard
+  inherit?: string; // key of the field whose value applies while this one is empty (""), e.g. a text color of the accent
 };
 
 export type SettingField =

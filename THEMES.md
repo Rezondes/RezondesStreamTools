@@ -59,7 +59,13 @@ steht in `MODULE_THEMES` (`scripts/bundle.ts`).
    Ordner und aus `src/core` (geprüft).
 5. **CSS** in `theme.css`, jede Regel unter `.theme-<id>`, Keyframes mit Präfix `<id>-`. Farben, Zahlen, Schalter (1/0)
    und Schriften aus dem Schema kommen automatisch als CSS-Variablen an (`var(--accent)`, `var(--alertWidth)`).
-   Feste Masse nur als Standardwert einer Variable: `padding: var(--card-padding, 16px 20px)`.
+   Jeder sichtbare Wert ist ein eigenes Feld, auch Abstände, Faktoren, Winkel und die Farbe einzelner Texte; im CSS
+   steht dann nur `var(--feld)`. Diese Feinschliff-Felder stehen als Tabelle in `src/themes/<id>/tuning.ts`
+   (`TUNING_FIELDS`, `TUNING_GROUPS`, Gruppen "Feinschliff: ..."); `node scripts/tuning.ts` schreibt daraus die
+   Rust-Seite (`server-rs/.../themes/tuning/<id>.rs`), das Theme hängt `tuning::<id>::fields()` an derselben Stelle an
+   wie `TUNING_FIELDS` in `settings.ts`. Ein geteilter Wert (Akzentfarbe, Schrift) bekommt je Stelle ein Feld mit
+   `inherits(feld, "accent")`: leer übernimmt es den Theme-Wert (`effectiveValues` in `src/core/settings.ts`, das
+   Dashboard zeigt "wie ..."), gesetzt gilt der eigene Wert. Das gilt auch für Stinger und Banner.
 6. **Registrieren**: ein Theme erfüllt den Vertrag aus `src/core/theme.ts` an zwei Stellen (ohne Klassen, nur Typen):
    - `ThemeModule` (Daten, ohne React, auch für den Server): in `src/themes/registry.ts` in `THEME_MODULES` als
      `{ schema: <id>Settings, clips: <id>Clips, panel: <id>Panel, areas: <id>Areas }` eintragen. `clips` liefert

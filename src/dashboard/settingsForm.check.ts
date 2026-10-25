@@ -4,7 +4,7 @@ import { choice, choiceBy, lines } from "../core/fields.ts";
 import type { SettingField, ThemeSchema } from "../core/theme.ts";
 import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
 import {
-  changedKeys, errorsByKey, fieldsByKind, groupFields, groupsForMode, groupsForView, groupsWithoutScene, hiddenKeys, isDefault, pickSchema, resetAll, resetField, shownField, statKeysHint, viewOfField,
+  changedKeys, errorsByKey, fieldsByKind, groupFields, groupsForMode, groupsForView, groupsWithoutScene, hiddenKeys, inheritedOf, isDefault, pickSchema, resetAll, resetField, shownField, statKeysHint, viewOfField,
 } from "./settingsForm.ts";
 
 const schema: ThemeSchema = {
@@ -126,6 +126,22 @@ assert.deepEqual(hiddenKeys(modes, "general", "erweitert", ["a", "d"]), ["d"]);
 assert.equal(viewOfField(modes, "b"), "general");
 assert.equal(viewOfField(modes, "d"), "brb");
 assert.equal(viewOfField(modes, "e"), "render");
+
+// Inherit: an empty field shows the label and the effective value of its parent (over a chain); a set one shows none
+const family: ThemeSchema = {
+  id: "family",
+  name: "Family",
+  fields: [
+    { key: "accent", type: "color", label: "Akzent", group: "A", default: "#39ff14" },
+    { key: "title", type: "color", label: "Titel", group: "A", default: "", inherit: "accent" },
+    { key: "name", type: "color", label: "Name", group: "A", default: "", inherit: "title" },
+  ],
+};
+const [accent, title, name] = family.fields;
+assert.deepEqual(inheritedOf(family, name, { accent: "#ff0000", title: "", name: "" }), { label: "Titel", value: "#ff0000" });
+assert.equal(inheritedOf(family, name, { accent: "#ff0000", title: "", name: "#000000" }), null);
+assert.equal(inheritedOf(family, accent, { accent: "#ff0000" }), null);
+assert.deepEqual(inheritedOf(family, title, { accent: "#ff0000", title: "" }), { label: "Akzent", value: "#ff0000" });
 
 console.log("settingsForm ok");
 

@@ -4,7 +4,7 @@
 // the active theme (panelFor). Every change can be undone (panelEditor.ts keeps the history), so deleting asks nothing.
 import { useEffect, useRef, useState } from "react";
 import { drawPanel, type Panel, PANEL_FORMATS, PANEL_MAX_BYTES, PANEL_WIDTH, type PanelFormat, panelFileName } from "../core/panels.ts";
-import { resolveSettings } from "../core/settings.ts";
+import { effectiveSettings, resolveSettings } from "../core/settings.ts";
 import type { SettingValues } from "../core/theme.ts";
 import { DEFAULT_THEME, findTheme } from "../themes/registry.ts";
 import { panelFor } from "../themes/renderers.ts";
@@ -39,7 +39,7 @@ export default function Panels({ me }: { me: Me }) {
   }, [schema]);
   if (!panels) return <p className="muted">{TEXTS.loading}</p>;
   const panel = panels.at(current);
-  const template = (title: string) => panelFor(schema.id, resolveSettings(schema, values), title);
+  const template = (title: string) => panelFor(schema.id, effectiveSettings(schema, values), title);
   const withPanel = (next: Panel) => panels.map((candidate, index) => (index === current ? next : candidate));
   const pick = (index: number) => { setCurrent(index); setSelected([]); };
   const gallery = {

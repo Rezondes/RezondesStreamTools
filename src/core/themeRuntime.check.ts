@@ -34,4 +34,8 @@ assert.deepEqual(cssVariables(schema, { accent: "#ff0000", size: 12, fade: 5, sc
   "--accent": "#ff0000", "--size": "12px", "--fade": "5s", "--scale": "0.5", "--glow": "0", "--font": "\"Share Tech Mono\"",
 });
 
+// An empty field that inherits gets the value of its parent as its variable
+const family: ThemeSchema = { ...schema, fields: [{ key: "accent", type: "color", label: "A", group: "G", default: "#000000" }, { key: "nameColor", type: "color", label: "N", group: "G", default: "", inherit: "accent" }] };
+assert.deepEqual(cssVariables(family, { accent: "#ff0000", nameColor: "" }), { "--accent": "#ff0000", "--nameColor": "#ff0000" });
+
 console.log("themeRuntime ok");

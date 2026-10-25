@@ -7,7 +7,7 @@ import "./style.css";
 import Dashboard from "./dashboard/Dashboard.tsx";
 import { applySkin, rememberedSkin } from "./dashboard/skin.ts";
 import { SCENES, type SceneName } from "./core/theme.ts";
-import { resolveSettings } from "./core/settings.ts";
+import { effectiveSettings, resolveSettings } from "./core/settings.ts";
 import { cssVariables, resolveScene } from "./core/themeRuntime.ts";
 import { ThemeValues, useSettings } from "./core/hooks/useSettings.ts";
 import { offline } from "./core/offline.ts";
@@ -45,7 +45,7 @@ function ThemedScene({ scene }: { scene: SceneName }) {
   const Scene = resolveScene(THEME_SCENES, chosen.id, scene);
   if (!Scene) return null;
   // Values are always resolved, so values from the dashboard preview also end up complete and valid in the scene
-  const values = resolveSettings(chosen, settings.values);
+  const values = effectiveSettings(chosen, settings.values);
   // A scene with offset (alerts) is drawn on the stage, the source shows only its part (sceneArea.ts)
   const { offset } = areaOf(findModule(chosen.id), values, scene);
   setSceneFrame(offset ? STAGE : null);

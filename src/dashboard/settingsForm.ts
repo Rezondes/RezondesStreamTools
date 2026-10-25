@@ -1,7 +1,7 @@
 // Logic of the settings form: the schema from the server, fields by group in schema order, reset to the default,
 // changed fields compared to the saved state and errors per field. Pure functions, tested in settingsForm.check.ts.
 import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
-import type { SettingError, SettingErrorCode } from "../core/settings.ts";
+import { effectiveValues, type SettingError, type SettingErrorCode } from "../core/settings.ts";
 import { STAT_KEYS } from "../core/stats/stats.ts";
 import type { SceneName, SettingField, SettingValue, SettingValues, ThemeSchema } from "../core/theme.ts";
 
@@ -78,6 +78,14 @@ export const resetAll = (schema: ThemeSchema): SettingValues => Object.fromEntri
 export function resetField(schema: ThemeSchema, values: SettingValues, key: string): SettingValues {
   const field = schema.fields.find(candidate => candidate.key === key);
   return field ? { ...values, [key]: field.default } : values;
+}
+
+// An empty field that inherits: the label of its parent and the value it takes from there; null for an own value
+export function inheritedOf(schema: ThemeSchema, field: SettingField, values: SettingValues): { label: string; value: string } | null {
+  if (field.inherit === undefined || values[field.key] !== "") return null;
+  const parent = schema.fields.find(candidate => candidate.key === field.inherit);
+  const value = effectiveValues(schema, values)[field.key];
+  return parent && typeof value === "string" ? { label: parent.label, value } : null;
 }
 
 // A select with optionsBy offers only the options for the value of its other field (its default while unset); an

@@ -1,6 +1,6 @@
 // Check for settings.ts: resolve and validate the settings of a theme. Runs with npm test.
 import assert from "node:assert/strict";
-import { resolveSettings, validateSettings } from "./settings.ts";
+import { effectiveSettings, effectiveValues, resolveSettings, validateSettings } from "./settings.ts";
 import type { ThemeSchema } from "./theme.ts";
 
 const schema: ThemeSchema = {
@@ -52,5 +52,27 @@ assert.deepEqual(validateSettings(schema, { logo: "clip.mp4" }).errors, [{ key: 
 assert.deepEqual(validateSettings(schema, { logo: "" }).errors, []);
 // Not an object: one error for the whole
 assert.deepEqual(validateSettings(schema, [1, 2]).errors, [{ key: "", code: "invalid_type" }]);
+
+// Inherit: an empty value takes the value of the parent field (also over a chain), a set value stays its own; the
+// draft keeps the empty value, only effectiveValues fills it
+const family: ThemeSchema = {
+  id: "family",
+  name: "Family",
+  fields: [
+    { key: "accent", type: "color", label: "Color", group: "General", default: "#39ff14" },
+    { key: "title", type: "color", label: "Title", group: "Texts", default: "", inherit: "accent" },
+    { key: "name", type: "color", label: "Name", group: "Texts", default: "", inherit: "title" },
+    { key: "font", type: "font", label: "Font", group: "General", default: "A", options: ["A", "B"] },
+    { key: "nameFont", type: "font", label: "Name font", group: "Texts", default: "", options: ["A", "B"], inherit: "font" },
+  ],
+};
+assert.deepEqual(validateSettings(family, { title: "", nameFont: "" }).errors, []);
+assert.deepEqual(validateSettings(family, { accent: "" }).errors, [{ key: "accent", code: "invalid_color" }]);
+assert.equal(resolveSettings(family, {}).name, "");
+assert.deepEqual(effectiveValues(family, resolveSettings(family, { accent: "#ff0000", font: "B" })), { accent: "#ff0000", title: "#ff0000", name: "#ff0000", font: "B", nameFont: "B" });
+assert.equal(effectiveSettings(family, { title: "#0000ff" }).name, "#0000ff");
+// A cycle (only possible in a broken schema, the audit reports it) ends at the empty value instead of looping
+const loop: ThemeSchema = { ...family, fields: [{ key: "a", type: "color", label: "A", group: "G", default: "", inherit: "b" }, { key: "b", type: "color", label: "B", group: "G", default: "", inherit: "a" }] };
+assert.deepEqual(effectiveValues(loop, { a: "", b: "" }), { a: "", b: "" });
 
 console.log("settings ok");

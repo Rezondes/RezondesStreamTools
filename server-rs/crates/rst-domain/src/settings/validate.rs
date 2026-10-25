@@ -2,6 +2,8 @@
 //! `src/core/settings.ts`). Input is arbitrary JSON from the dashboard or an old file; text lengths count UTF-16
 //! code units like the browser.
 
+use std::collections::BTreeMap;
+
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use ts_rs::TS;
@@ -103,8 +105,11 @@ fn limit(value: Option<u32>, fallback: usize) -> usize {
     value.map_or(fallback, |limit| usize::try_from(limit).unwrap_or(usize::MAX))
 }
 
-/// Error code for a value, `None` if it is valid
+/// Error code for a value, `None` if it is valid; empty is valid for a field that inherits
 fn check_value(field: &SettingField, value: &Value) -> Option<SettingErrorCode> {
+    if field.inherit.is_some() && value.as_str() == Some("") {
+        return None;
+    }
     match &field.kind {
         FieldKind::Color { .. } => match value {
             Value::String(color) => (!is_color(color)).then_some(SettingErrorCode::InvalidColor),
@@ -160,6 +165,31 @@ pub fn resolve_settings(schema: &ThemeSchema, stored: &Value) -> SettingValues {
         .collect()
 }
 
+/// The values as the overlays use them (template: `effectiveValues` in `src/core/settings.ts`): an empty field that
+/// inherits takes the value of its parent, over a chain; a cycle, which the audit reports, stays empty
+#[must_use]
+pub fn effective_values(schema: &ThemeSchema, values: &SettingValues) -> SettingValues {
+    let empty = SettingValue::Text(String::new());
+    let parents: BTreeMap<&str, &str> =
+        schema.fields.iter().filter_map(|field| Some((field.key.as_str(), field.inherit.as_deref()?))).collect();
+    let mut effective = values.clone();
+    for key in parents.keys() {
+        let mut source = *key;
+        let mut steps = 0;
+        while values.get(source) == Some(&empty) && steps < parents.len() {
+            let Some(parent) = parents.get(source) else { break };
+            source = parent;
+            steps += 1;
+        }
+        if let (Some(own), Some(value)) = (values.get(*key), values.get(source))
+            && *own == empty
+        {
+            effective.insert((*key).to_owned(), value.clone());
+        }
+    }
+    effective
+}
+
 /// Validates input: errors per invalid field (only for present keys), values = resolved without the invalid ones
 #[must_use]
 pub fn validate_settings(schema: &ThemeSchema, input: &Value) -> Validated {
@@ -185,7 +215,7 @@ mod tests {
     use serde_json::json;
 
     use super::*;
-    use crate::settings::field::{Unit, choice, color, flag, font, lines, media, number, sound, text};
+    use crate::settings::field::{Unit, choice, color, flag, font, inherits, lines, media, number, sound, text};
 
     fn probe() -> ThemeSchema {
         ThemeSchema {
@@ -296,5 +326,27 @@ mod tests {
             .map(|field| (field.key.clone(), serde_json::to_value(field.default_value()).expect("default")))
             .collect();
         assert!(validate_settings(&schema, &Value::Object(defaults)).errors.is_empty());
+    }
+
+    #[test]
+    fn empty_inheriting_field_takes_parent_value() {
+        let family = ThemeSchema {
+            fields: vec![
+                color("accent", "Color", "General", "#39ff14"),
+                inherits(color("title", "Title", "Texts", "#ffffff"), "accent"),
+                inherits(color("name", "Name", "Texts", "#ffffff"), "title"),
+                inherits(color("a", "A", "Loop", "#ffffff"), "b"),
+                inherits(color("b", "B", "Loop", "#ffffff"), "a"),
+            ],
+            ..probe()
+        };
+        assert!(validate_settings(&family, &json!({ "title": "", "name": "" })).errors.is_empty());
+        assert_eq!(validate_settings(&family, &json!({ "accent": "" })).errors.len(), 1);
+        let resolved = resolve_settings(&family, &json!({ "accent": "#ff0000" }));
+        assert_eq!(resolved["name"], SettingValue::Text(String::new()));
+        let effective = effective_values(&family, &resolved);
+        assert_eq!(effective["title"], SettingValue::Text("#ff0000".to_owned()));
+        assert_eq!(effective["name"], SettingValue::Text("#ff0000".to_owned()));
+        assert_eq!(effective["a"], SettingValue::Text(String::new()));
     }
 }

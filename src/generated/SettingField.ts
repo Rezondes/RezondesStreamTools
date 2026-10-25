@@ -13,4 +13,8 @@ export type SettingField = { key: string, label: string, group: string, scene?: 
 /**
  * Shown in the simple view of the dashboard (the few settings most streamers change); only the form reads it
  */
-basic?: boolean, } & ({ "type": "color", default: string, } | { "type": "text", default: string, maxLength?: number, } | { "type": "textarea", default: string, maxLength?: number, ascii?: boolean, } | { "type": "lines", default: Array<string>, maxLines?: number, } | { "type": "number", default: number, min: number, max: number, step?: number, unit?: Unit, } | { "type": "boolean", default: boolean, } | { "type": "select", default: string, options: Array<string>, optionsBy?: OptionsBy, } | { "type": "font", default: string, options: Array<string>, } | { "type": "media", default: string, accept: MediaKind, } | { "type": "sound", default: SoundValue, });
+basic?: boolean, 
+/**
+ * Key of the field whose value applies while this one is empty, e.g. a text color of the accent
+ */
+inherit?: string, } & ({ "type": "color", default: string, } | { "type": "text", default: string, maxLength?: number, } | { "type": "textarea", default: string, maxLength?: number, ascii?: boolean, } | { "type": "lines", default: Array<string>, maxLines?: number, } | { "type": "number", default: number, min: number, max: number, step?: number, unit?: Unit, } | { "type": "boolean", default: boolean, } | { "type": "select", default: string, options: Array<string>, optionsBy?: OptionsBy, } | { "type": "font", default: string, options: Array<string>, } | { "type": "media", default: string, accept: MediaKind, } | { "type": "sound", default: SoundValue, });

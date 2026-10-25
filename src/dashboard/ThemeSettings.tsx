@@ -18,7 +18,7 @@ import { visibleSections, type Me } from "./navigation.ts";
 import ScenePreview from "./ScenePreview.tsx";
 import SettingInput from "./SettingInput.tsx";
 import {
-  changedKeys, errorsByKey, fieldsByKind, groupFields, groupsForMode, groupsWithoutScene, hiddenKeys, pickSchema, resetAll, resetField, shownField, viewOfField,
+  changedKeys, errorsByKey, fieldsByKind, groupFields, groupsForMode, groupsWithoutScene, hiddenKeys, inheritedOf, pickSchema, resetAll, resetField, shownField, viewOfField,
   type FormMode, type FormView,
 } from "./settingsForm.ts";
 import { readMode, storeMode } from "./settingsMode.ts";
@@ -217,6 +217,7 @@ function SettingsGroups({ schema, view, mode, search, focus, draft, errors, medi
       media={media}
       onChange={value => draft.set(current => ({ ...current, [field.key]: value }))}
       onReset={() => draft.set(current => resetField(schema, current, field.key))}
+      inherited={inheritedOf(schema, field, draft.values)}
     />
   );
   if (query) {

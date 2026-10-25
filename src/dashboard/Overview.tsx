@@ -6,7 +6,7 @@
 import { type MouseEvent, useEffect, useState } from "react";
 import * as streamerPath from "../core/streamerPath.ts";
 import { areasOf } from "../core/sceneArea.ts";
-import { resolveSettings } from "../core/settings.ts";
+import { effectiveSettings } from "../core/settings.ts";
 import { OBS_SCENES, type SceneArea } from "../core/theme.ts";
 import { sceneNames } from "../core/themeRuntime.ts";
 import { DEFAULT_THEME, findModule, findTheme } from "../themes/registry.ts";
@@ -93,10 +93,10 @@ type SettingsFile = { values: Record<string, Record<string, unknown>> };
 // The size of every OBS source for the saved values of the active theme; the defaults until they are loaded
 function useAreas(themeId: string) {
   const schema = findTheme(themeId) ?? findTheme(DEFAULT_THEME)!;
-  const [values, setValues] = useState(() => resolveSettings(schema, {}));
+  const [values, setValues] = useState(() => effectiveSettings(schema, {}));
   useEffect(() => {
     getJson<SettingsFile | null>("/api/settings", null)
-      .then(file => setValues(resolveSettings(schema, file?.values[schema.id])))
+      .then(file => setValues(effectiveSettings(schema, file?.values[schema.id])))
       .catch((failure: unknown) => reportError(TEXTS.errors["server-error"], { Aktion: "GET /api/settings", Grund: String(failure) }));
   }, [schema]);
   return areasOf(findModule(schema.id), values);

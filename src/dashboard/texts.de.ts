@@ -89,7 +89,7 @@ export const TEXTS = {
     search: "Einstellung suchen",
     noMatch: "Keine Einstellung passt zur Suche.",
     range: (min: number, max: number) => `${min} bis ${max}`,
-    resetField: "Standard", statKeys: (keys: readonly string[]) => `Mögliche Schlüssel: ${keys.join(", ")}`,
+    resetField: "Standard", inherits: (label: string, value: string) => `wie „${label}“ (${value})`, ownValue: "Eigener Wert", statKeys: (keys: readonly string[]) => `Mögliche Schlüssel: ${keys.join(", ")}`,
     preview: "Vorschau",
     openTab: "Vorschau in neuem Tab",
     openTabHint: "Zeigt ungespeicherte Änderungen sofort, solange dieser Tab offen ist.",

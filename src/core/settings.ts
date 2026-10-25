@@ -17,8 +17,9 @@ export const MEDIA_KIND = { image: /\.(gif|png|jpe?g|webp|svg)$/i, video: /\.(mp
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 const isText = (value: unknown, limit: number): SettingErrorCode | null => (typeof value !== "string" ? "invalid_type" : value.length > limit ? "too_long" : null);
 
-// Error code for a value, null if it is valid
+// Error code for a value, null if it is valid; empty is valid for a field that inherits
 function checkValue(field: SettingField, value: unknown): SettingErrorCode | null {
+  if (field.inherit !== undefined && value === "") return null;
   switch (field.type) {
     case "color": return typeof value !== "string" ? "invalid_type" : COLOR.test(value) ? null : "invalid_color";
     case "text":
@@ -58,6 +59,22 @@ export function resolveSettings(schema: ThemeSchema, stored: unknown): SettingVa
   }
   return values;
 }
+
+// The values as the overlays use them: an empty field that inherits takes the value of its parent (over a chain; a
+// cycle, which the audit reports, stays empty). The dashboard draft keeps the empty value.
+export function effectiveValues(schema: ThemeSchema, values: SettingValues): SettingValues {
+  const parents = new Map(schema.fields.flatMap(field => (field.inherit === undefined ? [] : [[field.key, field.inherit] as const])));
+  const effective: SettingValues = { ...values };
+  for (const [key] of parents) {
+    let source = key;
+    for (let step = 0; values[source] === "" && parents.has(source) && step < parents.size; step++) source = parents.get(source)!;
+    if (values[key] === "" && source in values) effective[key] = values[source];
+  }
+  return effective;
+}
+
+// Saved values resolved and inherited, as the overlays, clips and panels use them
+export const effectiveSettings = (schema: ThemeSchema, stored: unknown): SettingValues => effectiveValues(schema, resolveSettings(schema, stored));
 
 // Validates input: errors per invalid field (only for present keys), values = resolved without the invalid ones
 export function validateSettings(schema: ThemeSchema, input: unknown): { values: SettingValues; errors: SettingError[] } {

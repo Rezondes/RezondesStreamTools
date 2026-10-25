@@ -6,7 +6,7 @@
 // is mounted (the worlds load in their own chunks and each needs its canvas). Pure decoration, hidden from screen readers.
 import { lazy, Suspense } from "react";
 import { ThemeValues } from "../core/hooks/useSettings.ts";
-import { resolveSettings } from "../core/settings.ts";
+import { effectiveSettings } from "../core/settings.ts";
 import { cssVariables } from "../core/themeRuntime.ts";
 import BearTower from "../themes/bears/BearTower.tsx";
 import { chaosSettings } from "../themes/chaos/settings.ts";
@@ -44,23 +44,23 @@ const ChaosWall = lazy(() => import("../themes/chaos/PaintedWall.tsx"));
 const KebabScenery = lazy(() => import("../themes/kebab/SkinScenery.tsx"));
 const DogsScenery = lazy(() => import("../themes/dogs/SkinScenery.tsx"));
 
-const URLAUB_VALUES = resolveSettings(urlaubSettings, {});
+const URLAUB_VALUES = effectiveSettings(urlaubSettings, {});
 const URLAUB = cssVariables(urlaubSettings, URLAUB_VALUES);
 const URLAUB_CLOCK = { time: 0 }; // the beach stands still at noon
-const PLANTAGE_VALUES = resolveSettings(plantageSettings, {});
+const PLANTAGE_VALUES = effectiveSettings(plantageSettings, {});
 const PLANTAGE = cssVariables(plantageSettings, PLANTAGE_VALUES);
-const KOTH_VALUES = resolveSettings(kothSettings, {});
+const KOTH_VALUES = effectiveSettings(kothSettings, {});
 const KOTH = cssVariables(kothSettings, KOTH_VALUES);
-const BEARS_VALUES = resolveSettings(bearsSettings, {});
+const BEARS_VALUES = effectiveSettings(bearsSettings, {});
 const BEARS = cssVariables(bearsSettings, BEARS_VALUES);
-const CHAOS_VALUES = resolveSettings(chaosSettings, {});
+const CHAOS_VALUES = effectiveSettings(chaosSettings, {});
 const CHAOS = cssVariables(chaosSettings, CHAOS_VALUES);
-const DACHDECKER_VALUES = resolveSettings(dachdeckerSettings, {}) as unknown as DachdeckerValues;
-const DACHDECKER = cssVariables(dachdeckerSettings, resolveSettings(dachdeckerSettings, {}));
+const DACHDECKER_VALUES = effectiveSettings(dachdeckerSettings, {}) as unknown as DachdeckerValues;
+const DACHDECKER = cssVariables(dachdeckerSettings, effectiveSettings(dachdeckerSettings, {}));
 const DACHDECKER_BLOCK = DACHDECKER_VALUES.startingBlockLines.map(line => fillTemplate(line, { channel: DACHDECKER_VALUES.channelName, date: new Date().toLocaleDateString("sv-SE") }));
-const KEBAB_VALUES = resolveSettings(kebabSettings, {}) as unknown as KebabValues;
-const KEBAB = cssVariables(kebabSettings, resolveSettings(kebabSettings, {}));
-const DOGS_VALUES = resolveSettings(dogsSettings, {}) as unknown as DogsValues;
+const KEBAB_VALUES = effectiveSettings(kebabSettings, {}) as unknown as KebabValues;
+const KEBAB = cssVariables(kebabSettings, effectiveSettings(kebabSettings, {}));
+const DOGS_VALUES = effectiveSettings(dogsSettings, {}) as unknown as DogsValues;
 const DOGS_SCENERY = (
   <div className="skin-scenery skin-scenery-dogs" aria-hidden="true">
     <Suspense fallback={null}><DogsScenery values={DOGS_VALUES} /></Suspense>

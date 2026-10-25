@@ -3,15 +3,16 @@
 //! pass the schema, and the core keys of the effects and the commands page for a theme that brings these scenes. Dead
 //! keys are found by the TypeScript audit as long as the scenes live there.
 
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use serde_json::{Map, Value};
 
 use crate::identity::values::Login;
+use crate::settings::field::SettingField;
 use crate::settings::validate::validate_settings;
 use crate::themes::info_fields::info_fields;
 use crate::themes::registry::Theme;
-use crate::themes::schema::SceneName;
+use crate::themes::schema::{SceneName, ThemeSchema};
 
 /// Keys the core reads for every theme with effects (`FX_KEYS` in `src/core/fx/fx.ts`)
 const FX_KEYS: [&str; 4] = ["fxMax", "fxDuration", "fxSize", "fxMargin"];
@@ -20,6 +21,35 @@ fn values_object<T: serde::Serialize>(pairs: impl Iterator<Item = (String, T)>) 
     Value::Object(
         pairs.map(|(key, value)| (key, serde_json::to_value(value).unwrap_or(Value::Null))).collect::<Map<_, _>>(),
     )
+}
+
+/// Inheritance (template: `auditInherit` in `src/themes/schemaAudit.ts`): the parent exists, has the same type, and no
+/// chain runs in a circle
+fn inherit_problems(schema: &ThemeSchema) -> Vec<String> {
+    let by_key: BTreeMap<&str, &SettingField> = schema.fields.iter().map(|field| (field.key.as_str(), field)).collect();
+    let kind = |field: &SettingField| std::mem::discriminant(&field.kind);
+    schema
+        .fields
+        .iter()
+        .filter_map(|field| {
+            let parent_key = field.inherit.as_deref()?;
+            let Some(parent) = by_key.get(parent_key) else {
+                return Some(format!("{}: unknown parent {parent_key}", field.key));
+            };
+            if kind(parent) != kind(field) {
+                return Some(format!("{}: parent {parent_key} has another type", field.key));
+            }
+            let mut seen = BTreeSet::from([field.key.as_str()]);
+            let mut next = *parent;
+            while let Some(after) = next.inherit.as_deref() {
+                if !seen.insert(next.key.as_str()) {
+                    return Some(format!("{}: inherits in a circle", field.key));
+                }
+                next = by_key.get(after)?;
+            }
+            None
+        })
+        .collect()
 }
 
 /// Problems of a theme as readable lines; empty = the theme is fine
@@ -36,6 +66,7 @@ pub fn audit(theme: &Theme) -> Vec<String> {
             problems.push(format!("field {} without label or group", field.key));
         }
     }
+    problems.extend(inherit_problems(schema));
     let defaults = values_object(schema.fields.iter().map(|field| (field.key.clone(), field.default_value())));
     for error in validate_settings(schema, &defaults).errors {
         problems.push(format!("invalid default {}: {:?}", error.key, error.code));
@@ -69,9 +100,8 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::settings::field::{SettingValue, SettingValues, color, text};
+    use crate::settings::field::{SettingValue, SettingValues, color, font, inherits, text};
     use crate::themes::registry::themes;
-    use crate::themes::schema::ThemeSchema;
 
     fn personalize(_: &Login) -> SettingValues {
         BTreeMap::from([("title".to_owned(), SettingValue::Text("x".repeat(50)))])
@@ -93,6 +123,10 @@ mod tests {
                 color("accent", "Color", "A", "not-hex"),
                 text("title", "", "A", "x", Some(10)),
                 text("title", "Title", "A", "y", Some(10)),
+                inherits(color("name", "Name", "A", "#000000"), "nothing"),
+                inherits(font("face", "Face", "A", "A", &["A"]), "title"),
+                inherits(color("a", "A", "A", "#000000"), "b"),
+                inherits(color("b", "B", "A", "#000000"), "a"),
             ],
             group_scenes: BTreeMap::from([
                 ("Nothing".to_owned(), vec![]),
@@ -110,6 +144,9 @@ mod tests {
             "invalid personalization title: TooLong",
             "missing core key fxMax",
             "missing core key infoTitle",
+            "name: unknown parent nothing",
+            "face: parent title has another type",
+            "a: inherits in a circle",
         ] {
             assert!(problems.iter().any(|problem| problem == expected), "{expected} not in {problems:?}");
         }

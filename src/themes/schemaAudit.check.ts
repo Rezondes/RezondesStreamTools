@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { minimeVariantFields } from "../core/minimeFields.ts";
 import type { ThemeSchema } from "../core/theme.ts";
-import { auditBasic, auditTheme } from "./schemaAudit.ts";
+import { auditBasic, auditInherit, auditTheme } from "./schemaAudit.ts";
 
 const schema: ThemeSchema = {
   id: "probe",
@@ -18,6 +18,14 @@ const schema: ThemeSchema = {
     { key: "unused", type: "boolean", label: "Tot", group: "A", default: true },
   ],
 };
+
+// Inheritance: unknown parent, other type, a circle; a valid chain passes
+const color = (key: string, inherit?: string) => ({ key, type: "color" as const, label: key, group: "A", default: inherit ? "" : "#000000", ...(inherit ? { inherit } : {}) });
+const family = (fields: ThemeSchema["fields"]): ThemeSchema => ({ id: "probe", name: "Probe", fields });
+assert.deepEqual(auditInherit(family([color("accent"), color("title", "accent"), color("name", "title")])), []);
+assert.deepEqual(auditInherit(family([color("title", "nothing")])), ["title: unknown parent nothing"]);
+assert.deepEqual(auditInherit(family([{ key: "font", type: "font", label: "F", group: "A", default: "A", options: ["A"] }, color("title", "font")])), ["title: parent font is font"]);
+assert.deepEqual(auditInherit(family([color("a", "b"), color("b", "a")])), ["a: inherits in a circle", "b: inherits in a circle"]);
 
 const folder = await mkdtemp(join(tmpdir(), "rz-audit-"));
 try {
