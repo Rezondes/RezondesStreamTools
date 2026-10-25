@@ -7,7 +7,7 @@ import { Sprite } from "pixi.js";
 import { useCallback, useMemo } from "react";
 import { type RaidPack, runnersAt } from "../../../core/alerts/raidPack.ts";
 import { hash } from "../../../core/hash.ts";
-import { alertDogAt, alertSoundsBetween, toyAt, type AlertSchedule } from "../alert.ts";
+import { ALERT_GROUND, alertDogAt, alertSoundsBetween, toyAt, type AlertSchedule } from "../alert.ts";
 import { BREEDS, type BreedId } from "../breeds.ts";
 import { dogCache, type DogCache } from "../dog.ts";
 import { dogLookOf, propColorsOf } from "../looks.ts";
@@ -21,9 +21,8 @@ import { toyHeight } from "../toy.ts";
 import { SEEK } from "../useFrame.ts";
 import { type DogStage, useDogStage } from "./useDogStage.ts";
 
-// fixed: the ground of the prototype at row 200, the stop at x 92; the dog runs at 13 frames and wags 15 times per s,
+// fixed: the stop at x 92; the dog runs at 13 frames and wags 15 times per s,
 // runners at 14 and 16, each a bit later than the one before (0.37 s); the toy sits 4 pixels before the mouth
-export const ALERT_GROUND = 200;
 const STOP = 92;
 const POSE = { fps: 13, standFps: 9, wag: 15, runnerFps: 14, runnerWag: 16, runnerPhase: 0.37, outside: 4, beyond: 10 };
 const TOY = { before: 2, dropAhead: 4 };

@@ -287,14 +287,16 @@
   font-size: calc(var(--fontSize) * 1.15);
 }
 
-/* Alerts: the card stands above the running track (cardTop), its pill sits on its top edge; the name in red */
+/* Alerts: the card stands centered above the running track (cardTop), its pill sits on its top edge; the name in red */
 .theme-dogs .dg-alert-card {
-  left: var(--dg-alert-left, 860px);
+  left: 0;
+  right: 0;
+  margin: 0 auto;
   top: var(--cardTop, 440px);
   width: var(--dg-alert-width, 940px);
   padding: var(--dg-alert-pad, 26px 40px 32px);
   text-align: center;
-  transform-origin: 20% 100%;
+  transform-origin: 50% 100%;
 }
 
 .theme-dogs .dg-alert-card .dg-pill {

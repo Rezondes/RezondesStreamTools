@@ -2,9 +2,9 @@
 // kind, the name in red and the line (or the viewer's message), and the "Wuff!" bubble next to the dog's head. Both
 // follow the clock of the alert (cardAt, alertBubbleAt), so stills with ?t= match.
 import { useRef } from "react";
-import { alertBubbleAt, cardAt, type AlertSchedule } from "../alert.ts";
+import { ALERT_GROUND, alertBubbleAt, cardAt, type AlertSchedule } from "../alert.ts";
 import type { DogCache } from "../dog.ts";
-import { ALERT_GROUND, ALERT_STOP } from "../pixi/AlertWorld.tsx";
+import { ALERT_STOP } from "../pixi/AlertWorld.tsx";
 import type { DogsValues } from "../settings.ts";
 import Bubble from "../ui/Bubble.tsx";
 import Pill from "../ui/Pill.tsx";

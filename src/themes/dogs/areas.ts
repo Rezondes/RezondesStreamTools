@@ -1,11 +1,13 @@
 // OBS sources of the Dogs theme (ThemeModule.areas): the alert spans the whole width (the dog and the raid pack run
-// through the picture) from above the card down to the bottom; the chat as wide as its setting, the music as high as
+// in from outside and out again) from above the card down to the ground of the dogs, so placed at the bottom of the
+// picture they walk on its lower edge; the chat as wide as its setting, the music as high as
 // its dog, its cover or its text, the stream numbers as high as their rows. The camera fills its source.
 // Check: areas.check.ts.
 import { alertArea, musicArea } from "../../core/sceneArea.ts";
 import { STAGE } from "../../core/screens/screens.ts";
 import { parseStatLines } from "../../core/stats/stats.ts";
 import { SCENE_SIZES, type SceneArea, type SceneName, type SettingValues } from "../../core/theme.ts";
+import { ALERT_GROUND } from "./alert.ts";
 import { BREEDS } from "./breeds.ts";
 import type { DogsValues } from "./settings.ts";
 
@@ -21,10 +23,12 @@ const tallestDog = Math.max(...Object.values(BREEDS).map(breed => breed.height))
 export function dogsAreas(values: SettingValues): Partial<Record<SceneName, SceneArea>> {
   const dogs = values as unknown as DogsValues;
   const top = Math.max(0, dogs.cardTop - ABOVE_CARD);
+  // one pixel row below the ground, where the feet end
+  const bottom = Math.min(STAGE.height, (ALERT_GROUND + 2) * dogs.pixelScale);
   const dog = dogs.musicStyle === "hund" ? (tallestDog + MUSIC.dogRows) * dogs.pixelScale * MUSIC.dogScale + MUSIC.below : 0;
   const rows = parseStatLines(dogs.statsLines.join("\n")).length;
   return {
-    alerts: alertArea({ top, width: STAGE.width, height: STAGE.height - top, room: 0 }),
+    alerts: alertArea({ top, width: STAGE.width, height: Math.max(1, bottom - top), room: 0 }),
     chat: { width: dogs.chatWidth, height: SCENE_SIZES.chat.height },
     music: musicArea(dog, dogs.musicCover ? dogs.coverSize + MUSIC.cover : 0, dogs.fontSize * MUSIC.perFont + MUSIC.text),
     stats: { width: STATS.width, height: Math.ceil(STATS.head + rows * dogs.fontSize * STATS.perFont) },

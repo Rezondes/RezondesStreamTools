@@ -3,6 +3,8 @@
 // the dog waits with the card until the pack has passed (raidPack in the core) and barks every raidBarkEvery; the alert
 // lasts as long as that. Pure functions of the time since the alert started. Check: alert.check.ts.
 
+// fixed: the ground of the prototype at pixel row 200, where the dogs and the toy stand
+export const ALERT_GROUND = 200;
 // fixed: the times of the prototype in s: stop, drop, card, first bark (a double bark 1.4 s apart), the dog stands
 // still, picks up, runs out and is gone; the pack starts 0.3 s after the card, the dog waits 0.3 s after the last runner
 export const ALERT_TIMES = { stop: 1.25, drop: 1.3, card: 1.4, bark: 2, doubleBark: 1.4, stand: 5.6, pick: 5.85, run: 6.2, gone: 7.4, packAfterCard: 0.3, waitAfterPack: 0.3 };
