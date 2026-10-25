@@ -4,9 +4,11 @@
 import assert from "node:assert/strict";
 import { BREED_IDS } from "./breeds.ts";
 import { dogCache } from "./dog.ts";
-import { ENDING } from "./ending.ts";
 import { poseAt } from "./poses.ts";
 import { basketImages, darknessOf, glowImages, ROOM, roomImage, shadeImage, starsOf, twinkleImage, twinkles, zImage, type RoomColors } from "./room.ts";
+
+// fixed: a lying dog sinks 5 pixels into the basket (the default of the settings)
+const ENDING_SINK = 5;
 
 const colors: RoomColors = {
   night: "#3b3a63", windowSky: "#1b2547", floor: "#7d5233", rug: "#8f6fc7", lamp: "#ffe9a8", basket: "#c48a4f", pillow: "#ffc9d9", cream: "#fff6e6", edge: "#e9d2bd",
@@ -20,7 +22,7 @@ const basket = basketImages(colors, 216);
 for (const breed of BREED_IDS) {
   const cache = dogCache({ breed, colors: coat, shared, spots: { share: 0, seed: 1 } });
   const lying = cache.pose(poseAt({ time: 5, mode: "lie", fps: 9, wagSpeed: 2, blinkEvery: 0, pant: false }));
-  const top = ROOM.basketY - cache.height + 3 + ENDING.sink;
+  const top = ROOM.basketY - cache.height + 3 + ENDING_SINK;
   const lowest = Math.max(...lying.colors.map((color, index) => (color ? Math.floor(index / lying.width) : -1))) + top;
   assert.ok(lowest >= basket.frontTop && lowest <= basket.frontTop + basket.front.height, `${breed}: lower edge ${lowest} behind the front rim from ${basket.frontTop}`);
 }

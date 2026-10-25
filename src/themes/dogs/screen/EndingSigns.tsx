@@ -4,7 +4,6 @@
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { useStage } from "../../../core/screens/useStage.ts";
 import { fillTemplate } from "../../../core/template.ts";
-import { ENDING_INTRO } from "../ending.ts";
 import type { DogsValues } from "../settings.ts";
 import Pill from "../ui/Pill.tsx";
 import { dogsNames } from "../useDogs.ts";
@@ -12,13 +11,12 @@ import { dogsNames } from "../useDogs.ts";
 export default function EndingSigns({ values }: { values: DogsValues }) {
   const stage = useStage();
   useTimeline(timeline => {
-    const { title, subtitle, bye } = ENDING_INTRO;
     const snap = { y: values.pixelScale };
-    timeline.from(".dg-end-title", { y: title.y, duration: title.duration, ease: title.ease, snap }, title.at);
-    timeline.from(".dg-end-title", { opacity: 0, duration: title.fade }, title.at);
-    timeline.from(".dg-end-sub", { opacity: 0, duration: subtitle.duration }, subtitle.at);
-    timeline.from(".dg-end-bye", { scale: 0, duration: bye.duration, ease: bye.ease }, bye.at);
-  }, [values.pixelScale], stage);
+    timeline.from(".dg-end-title", { y: values.endTitleFrom, duration: values.endTitleTime, ease: "back.out(1.7)", snap }, values.endTitleAt);
+    timeline.from(".dg-end-title", { opacity: 0, duration: values.endTitleFade }, values.endTitleAt);
+    timeline.from(".dg-end-sub", { opacity: 0, duration: values.endSubtitleTime }, values.endSubtitleAt);
+    timeline.from(".dg-end-bye", { scale: 0, duration: values.endByeTime, ease: "back.out(2)" }, values.endByeAt);
+  }, [values], stage);
   const names = dogsNames(values);
   return (
     <div className="dg-stage stage-box" ref={stage}>

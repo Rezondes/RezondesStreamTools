@@ -2,7 +2,7 @@
    the core sets --x, --move, --action-ms and --facing; the running action is the class action-<name>. The dog itself
    is a pixel image (ui/Pixels.tsx); dust and the "Z" are drawn here. Keyframes are dogs-minime-*. */
 
-.theme-dogs .dg-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; --dg-floor: var(--dg-grass-height, 14px); }
+.theme-dogs .dg-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; --dg-floor: var(--minimesDgFloor); }
 
 /* The strip of grass along the bottom: a light top edge over the grass */
 .theme-dogs .dg-minime-grass {
@@ -10,59 +10,59 @@
   left: 0;
   right: 0;
   bottom: 0;
-  height: var(--dg-grass-height, 14px);
-  background: var(--grass);
-  box-shadow: inset 0 var(--dg-grass-edge, 4px) 0 0 var(--grassLight), 0 calc(-1 * var(--dg-grass-ink, 2px)) 0 0 var(--ink);
+  height: var(--minimeGrassHeight);
+  background: var(--minimeGrassBackground);
+  box-shadow: inset 0 var(--minimeGrassBoxShadow3) 0 0 var(--minimeGrassBoxShadow), 0 calc(-1 * var(--minimeGrassBoxShadow4)) 0 0 var(--minimeGrassBoxShadow2);
 }
 
 .theme-dogs .dg-minime {
   position: absolute;
   left: 0;
-  bottom: calc(var(--dg-floor) - var(--dg-minime-sink, 6px));
+  bottom: calc(var(--dg-floor) - var(--minimeBottom));
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateX(calc(var(--x) - 50%));
+  transform: translateX(calc(var(--x) - var(--minimeTransform)));
   transition: transform var(--move) linear;
 }
-.theme-dogs .dg-minime-flip { position: relative; scale: var(--facing) 1; }
+.theme-dogs .dg-minime-flip { position: relative; scale: var(--facing) var(--minimeFlipScale); }
 .theme-dogs .dg-minime-dog { display: block; }
 
 /* Name on a small red pill above the dog */
 .theme-dogs .dg-minime-name {
-  margin-bottom: var(--dg-minime-name-gap, 4px);
-  padding: var(--dg-minime-name-pad, 1px 8px 3px);
-  background: var(--accent);
-  color: var(--onAccent);
-  box-shadow: 0 0 0 var(--dg-minime-name-ink, 2px) var(--ink);
-  font-family: var(--font), monospace;
-  font-weight: 600;
-  font-size: calc(var(--fontSize) * 0.6);
+  margin-bottom: var(--minimeNameMarginBottom);
+  padding: var(--minimeNamePadding) var(--minimeNamePadding2) var(--minimeNamePadding3);
+  background: var(--minimeNameBackground);
+  color: var(--minimeNameColor);
+  box-shadow: 0 0 0 var(--minimeNameBoxShadow2) var(--minimeNameBoxShadow);
+  font-family: var(--minimeNameFont), monospace;
+  font-weight: var(--minimeNameFontWeight);
+  font-size: calc(var(--fontSize) * var(--minimeNameFontSize));
   white-space: nowrap;
 }
 
 /* Sniffing: three dust pixels puff up at the nose */
 .theme-dogs .dg-minime-dust {
   position: absolute;
-  right: var(--dg-dust-right, -4px);
-  bottom: var(--dg-dust-bottom, 6px);
-  width: var(--dg-dust, 4px);
-  height: var(--dg-dust, 4px);
-  background: var(--edge);
-  box-shadow: var(--dg-dust-gap, 8px) calc(-1 * var(--dg-dust-gap, 8px)) 0 0 var(--edge), calc(-1 * var(--dg-dust-gap, 8px)) calc(-1 * var(--dg-dust, 4px)) 0 0 var(--edge);
-  animation: dogs-minime-dust var(--dg-dust-ms, 600ms) steps(var(--dg-dust-steps, 3)) infinite;
+  right: var(--minimeDustRight);
+  bottom: var(--minimeDustBottom);
+  width: var(--minimeDustWidth);
+  height: var(--minimeDustHeight);
+  background: var(--minimeDustBackground);
+  box-shadow: var(--minimeDustBoxShadow3) calc(-1 * var(--minimeDustBoxShadow4)) 0 0 var(--minimeDustBoxShadow), calc(-1 * var(--minimeDustBoxShadow5)) calc(-1 * var(--minimeDustBoxShadow6)) 0 0 var(--minimeDustBoxShadow2);
+  animation: dogs-minime-dust var(--minimeDustAnimation) steps(var(--minimeDustAnimation2)) infinite;
 }
 
 /* Sleeping: the "Z" rises above the head and fades */
-.theme-dogs .dg-minime-zzz { position: absolute; right: var(--dg-zzz-right, 10%); top: var(--dg-zzz-top, -6px); animation: dogs-minime-zzz var(--dg-zzz-ms, 1800ms) steps(var(--dg-zzz-steps, 6)) infinite; }
+.theme-dogs .dg-minime-zzz { position: absolute; right: var(--minimeZzzRight); top: var(--minimeZzzTop); animation: dogs-minime-zzz var(--minimeZzzAnimation) steps(var(--minimeZzzAnimation2)) infinite; }
 
 /* Appearing: the dog pops up from the grass; disappearing: it sinks away, the name fades */
-.theme-dogs .action-enter .dg-minime-flip { animation: dogs-minime-pop var(--action-ms) steps(var(--dg-pop-steps, 6)) both; }
+.theme-dogs .action-enter .dg-minime-flip { animation: dogs-minime-pop var(--action-ms) steps(var(--actionEnterMinimeFlipAnimation)) both; }
 .theme-dogs .action-enter .dg-minime-name { animation: dogs-minime-fade var(--action-ms) ease-out both; }
-.theme-dogs .action-exit .dg-minime-flip { animation: dogs-minime-pop var(--action-ms) steps(var(--dg-pop-steps, 6)) reverse forwards; }
+.theme-dogs .action-exit .dg-minime-flip { animation: dogs-minime-pop var(--action-ms) steps(var(--actionExitMinimeFlipAnimation)) reverse forwards; }
 .theme-dogs .action-exit .dg-minime-name { animation: dogs-minime-fade var(--action-ms) ease-in reverse forwards; }
 
-@keyframes dogs-minime-pop { from { translate: 0 100%; opacity: 0; } to { translate: 0 0; opacity: 1; } }
-@keyframes dogs-minime-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes dogs-minime-dust { to { translate: var(--dg-dust-drift, 6px) calc(-1 * var(--dg-dust-rise, 10px)); opacity: 0; } }
-@keyframes dogs-minime-zzz { from { translate: 0 var(--dg-zzz-rise, 12px); opacity: 0; } 30% { opacity: 1; } to { translate: calc(-1 * var(--dg-zzz-drift, 8px)) calc(-1 * var(--dg-zzz-rise, 12px)); opacity: 0; } }
+@keyframes dogs-minime-pop { from { translate: 0 100%; opacity: 0; } to { translate: 0 0; opacity: var(--kfMinimePopToOpacity); } }
+@keyframes dogs-minime-fade { from { opacity: 0; } to { opacity: var(--kfMinimeFadeToOpacity); } }
+@keyframes dogs-minime-dust { to { translate: var(--kfMinimeDustToTranslate) calc(-1 * var(--kfMinimeDustToTranslate2)); opacity: 0; } }
+@keyframes dogs-minime-zzz { from { translate: 0 var(--kfMinimeZzzFromTranslate); opacity: 0; } 30% { opacity: var(--kfMinimeZzz30pOpacity); } to { translate: calc(-1 * var(--kfMinimeZzzToTranslate)) calc(-1 * var(--kfMinimeZzzToTranslate2)); opacity: 0; } }

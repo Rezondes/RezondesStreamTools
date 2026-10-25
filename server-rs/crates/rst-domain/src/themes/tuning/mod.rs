@@ -3,6 +3,7 @@
 pub mod bears;
 pub mod chaos;
 pub mod dachdecker;
+pub mod dogs;
 pub mod kebab;
 pub mod koth;
 pub mod matrix;

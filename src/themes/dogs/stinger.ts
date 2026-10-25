@@ -18,7 +18,7 @@ import { chanceOf, disc, fillRect, outlinedDisc } from "./world.ts";
 export type StingerColors = { cover: string; edge: string; ink: string; accent: string; ball: string; muted: string; base: string; dark: string };
 export type StingerLook = {
   duration: number; cut: number; sweep: number; spacing: number; slant: number; step: number; pixelScale: number;
-  dog: DogCache | null; badge: boolean; text: string; font: string; colors: StingerColors;
+  dog: DogCache | null; badge: boolean; text: string; font: string; colors: StingerColors; name: { size: number; below: number };
 };
 
 // The look of the stinger from the settings, with the name on the badge already filled in
@@ -27,8 +27,12 @@ export function stingerLookOf(values: DogsValues, text: string): StingerLook {
   const look = dogLookOf(values, breed, values.coat);
   return {
     duration: values.stingerDuration, cut: values.stingerCut, sweep: values.stingerSweep, spacing: values.stingerPawSpacing, slant: values.stingerSlant,
-    step: values.stingerStep, pixelScale: values.pixelScale, dog: values.stingerDog ? dogCache(look) : null, badge: values.stingerBadge, text, font: values.font,
-    colors: { cover: values.stingerCover, edge: values.edge, ink: values.ink, accent: values.accent, ball: values.ball, muted: values.muted, base: look.colors.base, dark: look.colors.dark },
+    step: values.stingerStep, pixelScale: values.pixelScale, dog: values.stingerDog ? dogCache(look) : null, badge: values.stingerBadge, text, font: values.stingerFont,
+    name: { size: values.stingerNameSize, below: values.stingerNameBelow },
+    colors: {
+      cover: values.stingerCover, edge: values.stingerEdge, ink: values.stingerInk, accent: values.stingerAccent, ball: values.stingerBall, muted: values.stingerMuted,
+      base: look.colors.base, dark: look.colors.dark,
+    },
   };
 }
 
@@ -50,8 +54,8 @@ const RUNNER = { ground: 176, ahead: 4, size: 2, fps: 20, wag: 20, enter: 0.3 };
 // fixed: the badge: radius 38 at full size, 4 above the middle, a ring 5 inside, the paw on it; it grows from 0.42 s
 // before the cut (to 0.1 s before) with an overshoot of 2.2 and shrinks from 0.12 s to 0.36 s after the cut
 const BADGE = { radius: 38, above: 4, shadowDown: 3, ring: 5, inner: 7, grow: [0.42, 0.1], shrink: [0.12, 0.36], overshoot: 2.2, pad: [7, 6, 4], toes: [[-10, -13], [-4, -19], [4, -19], [10, -13]], toe: [2.5, 3], shown: 0.6, gone: 0.02 } as const;
-// fixed: the name on the badge in canvas pixels: 60 px bold, 80 below the middle of the stage, scale in tenths
-const NAME = { size: 60, below: 80, tenths: 10 };
+// fixed: the name on the badge scales in tenths; its size and place are settings
+const NAME = { tenths: 10 };
 
 type Paw = { x: number; y: number; color: string; in: number; out: number };
 
@@ -212,11 +216,11 @@ export function makeStinger(look: StingerLook) {
     context.translate(STAGE.width / 2, STAGE.height / 2);
     const scale = Math.round(size * NAME.tenths) / NAME.tenths;
     context.scale(scale, scale);
-    context.font = `700 ${NAME.size}px "${look.font}"`;
+    context.font = `700 ${look.name.size}px "${look.font}"`;
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillStyle = look.colors.cover;
-    context.fillText(look.text, 0, NAME.below);
+    context.fillText(look.text, 0, look.name.below);
     context.restore();
   };
 }

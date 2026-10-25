@@ -3,7 +3,12 @@
 // Run: node src/themes/dogs/alert.check.ts
 import assert from "node:assert/strict";
 import { raidPack } from "../../core/alerts/raidPack.ts";
-import { ALERT_FEET, ALERT_TIMES, alertBubbleAt, alertDogAt, alertScaleOf, alertSchedule, alertSoundsBetween, cardAt, toyAt } from "./alert.ts";
+import { effectiveSettings } from "../../core/settings.ts";
+import { ALERT_FEET, alertBubbleAt, alertDogAt, alertScaleOf, alertSchedule as scheduleWith, alertSoundsBetween, alertTimesOf, cardAt, toyAt } from "./alert.ts";
+import { type DogsValues, dogsSettings } from "./settings.ts";
+
+const ALERT_TIMES = alertTimesOf(effectiveSettings(dogsSettings, {}) as unknown as DogsValues);
+const alertSchedule = (duration: number, packEndMs: number, barkEvery: number) => scheduleWith(duration, packEndMs, barkEvery, ALERT_TIMES);
 
 const track = { start: -56, stop: 92, out: 394 };
 const plain = alertSchedule(8.2, 0, 5);

@@ -4,11 +4,6 @@
 .theme-dogs {
   --dg-px: var(--pixelScale, 5px);
   --dg-shadow: color-mix(in srgb, var(--ink) var(--boxShadow), transparent);
-  --dg-outline:
-    var(--dg-px) 0 var(--ink), calc(-1 * var(--dg-px)) 0 var(--ink), 0 var(--dg-px) var(--ink), 0 calc(-1 * var(--dg-px)) var(--ink),
-    var(--dg-px) var(--dg-px) var(--ink), calc(-1 * var(--dg-px)) var(--dg-px) var(--ink),
-    var(--dg-px) calc(-1 * var(--dg-px)) var(--ink), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--ink),
-    0 calc(3 * var(--dg-px)) var(--dg-shadow);
   font-family: var(--font), monospace;
   color: var(--textColor);
 }
@@ -28,29 +23,29 @@
 }
 
 .theme-dogs .dg-box {
-  background: var(--cream);
+  background: var(--boxBackground);
   box-shadow:
-    0 calc(-1 * var(--dg-px)) 0 0 var(--ink), 0 var(--dg-px) 0 0 var(--ink),
-    calc(-1 * var(--dg-px)) 0 0 0 var(--ink), var(--dg-px) 0 0 0 var(--ink),
-    inset 0 calc(-1 * var(--dg-px)) 0 0 var(--edge), inset 0 var(--dg-px) 0 0 var(--light),
-    0 calc(3 * var(--dg-px)) 0 0 var(--dg-shadow);
+    0 calc(-1 * var(--pixelScale, var(--boxBoxShadow8))) 0 0 var(--boxBoxShadow), 0 var(--pixelScale, var(--boxBoxShadow9)) 0 0 var(--boxBoxShadow2),
+    calc(-1 * var(--pixelScale, var(--boxBoxShadow10))) 0 0 0 var(--boxBoxShadow3), var(--pixelScale, var(--boxBoxShadow11)) 0 0 0 var(--boxBoxShadow4),
+    inset 0 calc(-1 * var(--pixelScale, var(--boxBoxShadow12))) 0 0 var(--boxBoxShadow5), inset 0 var(--pixelScale, var(--boxBoxShadow13)) 0 0 var(--boxBoxShadow6),
+    0 calc(var(--boxBoxShadow14) * var(--pixelScale, var(--boxBoxShadow15))) 0 0 color-mix(in srgb, var(--boxBoxShadow7) var(--boxShadow), transparent);
 }
 
 .theme-dogs .dg-box-red {
-  background: var(--accent);
-  color: var(--onAccent);
+  background: var(--boxRedBackground);
+  color: var(--boxRedColor);
   box-shadow:
-    0 calc(-1 * var(--dg-px)) 0 0 var(--ink), 0 var(--dg-px) 0 0 var(--ink),
-    calc(-1 * var(--dg-px)) 0 0 0 var(--ink), var(--dg-px) 0 0 0 var(--ink),
-    inset 0 calc(-1 * var(--dg-px)) 0 0 color-mix(in srgb, var(--accent) 75%, var(--ink)),
-    inset 0 var(--dg-px) 0 0 color-mix(in srgb, var(--accent) 70%, var(--light)),
-    0 calc(3 * var(--dg-px)) 0 0 var(--dg-shadow);
+    0 calc(-1 * var(--pixelScale, var(--boxRedBoxShadow10))) 0 0 var(--boxRedBoxShadow), 0 var(--pixelScale, var(--boxRedBoxShadow11)) 0 0 var(--boxRedBoxShadow2),
+    calc(-1 * var(--pixelScale, var(--boxRedBoxShadow12))) 0 0 0 var(--boxRedBoxShadow3), var(--pixelScale, var(--boxRedBoxShadow13)) 0 0 0 var(--boxRedBoxShadow4),
+    inset 0 calc(-1 * var(--pixelScale, var(--boxRedBoxShadow14))) 0 0 color-mix(in srgb, var(--boxRedBoxShadow5) var(--boxRedBoxShadow15), var(--boxRedBoxShadow6)),
+    inset 0 var(--pixelScale, var(--boxRedBoxShadow16)) 0 0 color-mix(in srgb, var(--boxRedBoxShadow7) var(--boxRedBoxShadow17), var(--boxRedBoxShadow8)),
+    0 calc(var(--boxRedBoxShadow18) * var(--pixelScale, var(--boxRedBoxShadow19))) 0 0 color-mix(in srgb, var(--boxRedBoxShadow9) var(--boxShadow), transparent);
 }
 
 .theme-dogs .dg-paw {
   display: inline-block;
-  width: calc(5 * var(--dg-px));
-  height: calc(5 * var(--dg-px));
+  width: calc(var(--pawWidth) * var(--pixelScale, var(--pawWidth2)));
+  height: calc(var(--pawHeight) * var(--pixelScale, var(--pawHeight2)));
   background: currentColor;
   -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M1 0h1v1H1zM3 0h1v1H3zM0 1h1v1H0zM4 1h1v1H4zM1 3h3v2H1zM2 2h1v1H2z"/></svg>') center / contain no-repeat;
   mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 5 5" shape-rendering="crispEdges"><path d="M1 0h1v1H1zM3 0h1v1H3zM0 1h1v1H0zM4 1h1v1H4zM1 3h3v2H1zM2 2h1v1H2z"/></svg>') center / contain no-repeat;
@@ -59,16 +54,18 @@
 .theme-dogs .dg-pill {
   display: inline-flex;
   align-items: center;
-  gap: var(--dg-pill-gap, 12px);
-  padding: var(--dg-pill-pad, 8px 20px 10px);
-  font-size: var(--fontSize);
-  font-weight: 600;
-  letter-spacing: var(--dg-spacing, 3px);
+  gap: var(--pillGap);
+  padding: var(--pillPadding) var(--pillPadding2) var(--pillPadding3);
+  font-size: calc(var(--fontSize) * var(--pillFontSize) / 100);
+  font-weight: var(--pillFontWeight);
+  letter-spacing: var(--pillLetterSpacing);
   white-space: nowrap;
+  color: var(--pillColor);
+  font-family: var(--pillFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-start-pill {
-  top: var(--dg-pill-top, 30px);
+  top: var(--startPillTop);
   left: 0;
   right: 0;
   width: fit-content;
@@ -76,207 +73,237 @@
 }
 
 .theme-dogs .dg-title {
-  top: var(--dg-title-top, 80px);
+  top: var(--titleTop);
   left: 0;
   right: 0;
   text-align: center;
-  font-size: var(--titleSize);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--cream);
-  text-shadow: var(--dg-outline);
+  font-size: calc(var(--titleSize) * var(--titleFontSize) / 100);
+  font-weight: var(--titleFontWeight);
+  line-height: var(--titleLineHeight);
+  color: var(--titleColor);
+  text-shadow: var(--dg-px) 0 var(--titleTextShadow), calc(-1 * var(--dg-px)) 0 var(--titleTextShadow2), 0 var(--dg-px) var(--titleTextShadow3), 0 calc(-1 * var(--dg-px)) var(--titleTextShadow4),
+    var(--dg-px) var(--dg-px) var(--titleTextShadow5), calc(-1 * var(--dg-px)) var(--dg-px) var(--titleTextShadow6),
+    var(--dg-px) calc(-1 * var(--dg-px)) var(--titleTextShadow7), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--titleTextShadow8),
+    0 calc(var(--titleTextShadow9) * var(--dg-px)) var(--dg-shadow);
+  font-family: var(--titleFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-subtitle {
-  top: var(--dg-subtitle-top, 200px);
+  top: var(--subtitleTop);
   left: 0;
   right: 0;
   text-align: center;
-  font-size: calc(var(--fontSize) * 1.3);
-  font-weight: 600;
+  font-size: calc(var(--fontSize) * var(--subtitleFontSize));
+  font-weight: var(--subtitleFontWeight);
+  color: var(--subtitleColor);
+  font-family: var(--subtitleFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-caption {
-  font-size: calc(var(--fontSize) * 0.85);
-  font-weight: 600;
-  letter-spacing: var(--dg-spacing, 3px);
-  color: var(--muted);
+  font-size: calc(var(--fontSize) * var(--captionFontSize));
+  font-weight: var(--captionFontWeight);
+  letter-spacing: var(--captionLetterSpacing);
+  color: var(--captionColor);
+  font-family: var(--captionFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-label {
-  padding: var(--dg-label-pad, 2px 12px 5px);
+  padding: var(--labelPadding) var(--labelPadding2) var(--labelPadding3);
   text-align: center;
-  font-size: calc(var(--fontSize) * 0.85);
-  font-weight: 600;
+  font-size: calc(var(--fontSize) * var(--labelFontSize));
+  font-weight: var(--labelFontWeight);
   white-space: nowrap;
   opacity: 0;
-  transform-origin: 50% 0;
+  transform-origin: var(--labelTransformOrigin) 0;
+  color: var(--labelColor);
+  font-family: var(--labelFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-label small {
   display: block;
-  font-size: calc(var(--fontSize) * 0.62);
-  font-weight: 500;
-  color: var(--muted);
+  font-size: calc(var(--fontSize) * var(--labelSmallFontSize));
+  font-weight: var(--labelSmallFontWeight);
+  color: var(--labelSmallColor);
+  font-family: var(--labelSmallFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-label.dg-near {
-  background: color-mix(in srgb, var(--ball) 45%, var(--cream));
+  background: color-mix(in srgb, var(--labelNearBackground) var(--labelNearBackground3), var(--labelNearBackground2));
 }
 
 .theme-dogs .dg-countdown {
-  left: var(--dg-corner-x, 90px);
-  bottom: var(--dg-corner-y, 70px);
-  padding: var(--dg-countdown-pad, 16px 28px 22px);
+  left: var(--countdownLeft);
+  bottom: var(--countdownBottom);
+  padding: var(--countdownPadding) var(--countdownPadding2) var(--countdownPadding3);
 }
 
 .theme-dogs .dg-clock {
-  margin-top: var(--dg-clock-gap, 8px);
-  padding: var(--dg-clock-pad, 8px 22px 12px);
-  font-size: calc(var(--fontSize) * 2.75);
-  font-weight: 700;
-  line-height: 1;
+  margin-top: var(--clockMarginTop);
+  padding: var(--clockPadding) var(--clockPadding2) var(--clockPadding3);
+  font-size: calc(var(--fontSize) * var(--clockFontSize));
+  font-weight: var(--clockFontWeight);
+  line-height: var(--clockLineHeight);
   font-variant-numeric: tabular-nums;
+  color: var(--clockColor);
+  font-family: var(--clockFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-card {
-  right: var(--dg-corner-x, 90px);
-  bottom: var(--dg-corner-y, 70px);
+  right: var(--cardRight);
+  bottom: var(--cardBottom);
   display: flex;
   align-items: center;
-  gap: var(--dg-card-gap, 22px);
-  padding: var(--dg-card-pad, 18px 30px 22px 22px);
+  gap: var(--cardGap);
+  padding: var(--cardPadding) var(--cardPadding2) var(--cardPadding3) var(--cardPadding4);
 }
 
 .theme-dogs .dg-badge {
   display: grid;
   place-items: center;
-  width: calc(18 * var(--dg-px));
-  height: calc(18 * var(--dg-px));
-  background: var(--ball);
-  color: var(--textColor);
+  width: calc(var(--badgeWidth) * var(--pixelScale, var(--badgeWidth2)));
+  height: calc(var(--badgeHeight) * var(--pixelScale, var(--badgeHeight2)));
+  background: var(--badgeBackground);
+  color: var(--badgeColor);
 }
 
 .theme-dogs .dg-badge .dg-paw {
-  width: calc(10 * var(--dg-px));
-  height: calc(10 * var(--dg-px));
+  width: calc(var(--badgePawWidth) * var(--pixelScale, var(--badgePawWidth2)));
+  height: calc(var(--badgePawHeight) * var(--pixelScale, var(--badgePawHeight2)));
 }
 
 .theme-dogs .dg-card-name {
-  font-size: calc(var(--fontSize) * 2.55);
-  font-weight: 700;
-  line-height: 1.05;
-  color: var(--accent);
+  font-size: calc(var(--fontSize) * var(--cardNameFontSize));
+  font-weight: var(--cardNameFontWeight);
+  line-height: var(--cardNameLineHeight);
+  color: var(--cardNameColor);
+  font-family: var(--cardNameFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-card-breed {
-  font-size: var(--fontSize);
-  font-weight: 600;
+  font-size: calc(var(--fontSize) * var(--cardBreedFontSize) / 100);
+  font-weight: var(--cardBreedFontWeight);
+  color: var(--cardBreedColor);
+  font-family: var(--cardBreedFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-bubble {
   transform-origin: 0 100%;
   transform: scale(0);
-  padding: var(--dg-bubble-pad, 6px 22px 10px);
-  font-size: calc(var(--fontSize) * 1.75);
-  font-weight: 700;
+  padding: var(--bubblePadding) var(--bubblePadding2) var(--bubblePadding3);
+  font-size: calc(var(--fontSize) * var(--bubbleFontSize));
+  font-weight: var(--bubbleFontWeight);
   white-space: nowrap;
+  color: var(--bubbleColor);
+  font-family: var(--bubbleFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-bubble::after {
   content: "";
   position: absolute;
-  left: calc(4 * var(--dg-px));
-  bottom: calc(-4 * var(--dg-px));
-  width: calc(3 * var(--dg-px));
-  height: calc(3 * var(--dg-px));
-  background: var(--cream);
-  box-shadow: 0 var(--dg-px) 0 0 var(--ink), calc(-1 * var(--dg-px)) 0 0 0 var(--ink), var(--dg-px) 0 0 0 var(--ink);
+  left: calc(var(--bubbleAfterLeft) * var(--pixelScale, var(--bubbleAfterLeft2)));
+  bottom: calc(var(--bubbleAfterBottom) * var(--pixelScale, var(--bubbleAfterBottom2)));
+  width: calc(var(--bubbleAfterWidth) * var(--pixelScale, var(--bubbleAfterWidth2)));
+  height: calc(var(--bubbleAfterHeight) * var(--pixelScale, var(--bubbleAfterHeight2)));
+  background: var(--bubbleAfterBackground);
+  box-shadow: 0 var(--pixelScale, var(--bubbleAfterBoxShadow4)) 0 0 var(--bubbleAfterBoxShadow), calc(-1 * var(--pixelScale, var(--bubbleAfterBoxShadow5))) 0 0 0 var(--bubbleAfterBoxShadow2), var(--pixelScale, var(--bubbleAfterBoxShadow6)) 0 0 0 var(--bubbleAfterBoxShadow3);
 }
 
 .theme-dogs .dg-ticker {
-  left: var(--dg-ticker-side, 520px);
-  right: var(--dg-ticker-side, 520px);
-  bottom: var(--dg-ticker-bottom, 24px);
-  padding: var(--dg-ticker-pad, 6px 18px 10px);
+  left: var(--tickerLeft);
+  right: var(--tickerRight);
+  bottom: var(--tickerBottom);
+  padding: var(--tickerPadding) var(--tickerPadding2) var(--tickerPadding3);
   overflow: hidden;
-  font-size: var(--fontSize);
-  font-weight: 600;
+  font-size: calc(var(--fontSize) * var(--tickerFontSize) / 100);
+  font-weight: var(--tickerFontWeight);
   white-space: nowrap;
+  color: var(--tickerColor);
+  font-family: var(--tickerFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-sheet-name {
-  left: var(--dg-sheet-left, 40px);
-  transform: translateY(-50%);
-  font-size: calc(var(--fontSize) * 1.3);
-  font-weight: 700;
+  left: var(--sheetNameLeft);
+  transform: translateY(var(--sheetNameTransform));
+  font-size: calc(var(--fontSize) * var(--sheetNameFontSize));
+  font-weight: var(--sheetNameFontWeight);
+  color: var(--sheetNameColor);
+  font-family: var(--sheetNameFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-sheet-coat {
-  transform: translateX(-50%);
-  font-size: calc(var(--fontSize) * 0.7);
-  font-weight: 600;
-  color: var(--muted);
+  transform: translateX(var(--sheetCoatTransform));
+  font-size: calc(var(--fontSize) * var(--sheetCoatFontSize));
+  font-weight: var(--sheetCoatFontWeight);
+  color: var(--sheetCoatColor);
   white-space: nowrap;
+  font-family: var(--sheetCoatFont), system-ui, sans-serif;
 }
 
 /* BRB: the card at the top left, break time and steps at the top right */
 .theme-dogs .dg-brb-card {
-  left: var(--dg-brb-x, 85px);
-  top: var(--dg-brb-y, 70px);
-  padding: var(--dg-brb-pad, 24px 40px 30px 30px);
+  left: var(--brbCardLeft);
+  top: var(--brbCardTop);
+  padding: var(--brbCardPadding) var(--brbCardPadding2) var(--brbCardPadding3) var(--brbCardPadding4);
 }
 
 .theme-dogs .dg-brb-title {
-  margin-top: var(--dg-brb-gap, 18px);
-  font-size: calc(var(--titleSize) * 0.84);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--cream);
-  text-shadow: var(--dg-outline);
+  margin-top: var(--brbTitleMarginTop);
+  font-size: calc(var(--titleSize) * var(--brbTitleFontSize));
+  font-weight: var(--brbTitleFontWeight);
+  line-height: var(--brbTitleLineHeight);
+  color: var(--brbTitleColor);
+  text-shadow: var(--dg-px) 0 var(--brbTitleTextShadow), calc(-1 * var(--dg-px)) 0 var(--brbTitleTextShadow2), 0 var(--dg-px) var(--brbTitleTextShadow3), 0 calc(-1 * var(--dg-px)) var(--brbTitleTextShadow4),
+    var(--dg-px) var(--dg-px) var(--brbTitleTextShadow5), calc(-1 * var(--dg-px)) var(--dg-px) var(--brbTitleTextShadow6),
+    var(--dg-px) calc(-1 * var(--dg-px)) var(--brbTitleTextShadow7), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--brbTitleTextShadow8),
+    0 calc(var(--brbTitleTextShadow9) * var(--dg-px)) var(--dg-shadow);
+  font-family: var(--brbTitleFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-brb-sub {
-  margin-top: var(--dg-brb-sub-gap, 10px);
-  font-size: calc(var(--fontSize) * 1.3);
-  font-weight: 600;
-  color: var(--muted);
+  margin-top: var(--brbSubMarginTop);
+  font-size: calc(var(--fontSize) * var(--brbSubFontSize));
+  font-weight: var(--brbSubFontWeight);
+  color: var(--brbSubColor);
+  font-family: var(--brbSubFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-brb-stats {
-  right: var(--dg-brb-x, 85px);
-  top: var(--dg-brb-y, 70px);
+  right: var(--brbStatsRight);
+  top: var(--brbStatsTop);
   display: flex;
-  gap: var(--dg-stats-gap, 30px);
+  gap: var(--brbStatsGap);
 }
 
 .theme-dogs .dg-stat {
-  padding: var(--dg-stat-pad, 16px 26px 22px);
+  padding: var(--statPadding) var(--statPadding2) var(--statPadding3);
 }
 
 .theme-dogs .dg-stat-value {
-  margin-top: var(--dg-clock-gap, 8px);
-  font-size: calc(var(--fontSize) * 2.75);
-  font-weight: 700;
-  line-height: 1;
+  margin-top: var(--statValueMarginTop);
+  font-size: calc(var(--fontSize) * var(--statValueFontSize));
+  font-weight: var(--statValueFontWeight);
+  line-height: var(--statValueLineHeight);
   font-variant-numeric: tabular-nums;
-  color: var(--accent);
+  color: var(--statValueColor);
+  font-family: var(--statValueFont), system-ui, sans-serif;
 }
 
 /* Ending: title and subtitle on the wall, the pill below, the card with the numbers at the bottom right */
 .theme-dogs .dg-end-title {
-  top: var(--dg-end-title-top, 60px);
-  font-size: calc(var(--titleSize) * 1.16);
+  top: var(--endTitleTop);
+  font-size: calc(var(--titleSize) * var(--endTitleFontSize));
+  color: var(--endTitleColor);
+  font-family: var(--endTitleFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-end-sub {
-  top: var(--dg-end-sub-top, 196px);
-  color: var(--nightSub);
-  text-shadow: 0 var(--dg-px) 0 color-mix(in srgb, var(--ink) 35%, transparent);
+  top: var(--endSubTop);
+  color: var(--endSubColor);
+  text-shadow: 0 var(--pixelScale, var(--endSubTextShadow2)) 0 color-mix(in srgb, var(--endSubTextShadow) var(--endSubTextShadow3), transparent);
 }
 
 .theme-dogs .dg-end-bye {
-  top: var(--dg-end-bye-top, 268px);
+  top: var(--endByeTop);
   left: 0;
   right: 0;
   width: fit-content;
@@ -284,7 +311,7 @@
 }
 
 .theme-dogs .dg-end-bye .dg-pill {
-  font-size: calc(var(--fontSize) * 1.15);
+  font-size: calc(var(--fontSize) * var(--endByePillFontSize)); color: var(--endByePillColor); font-family: var(--endByePillFont), system-ui, sans-serif;
 }
 
 /* Alerts: the card stands centered above the running track (cardTop), its pill sits on its top edge; the name in red */
@@ -292,35 +319,38 @@
   left: 0;
   right: 0;
   margin: 0 auto;
-  top: var(--cardTop, 440px);
+  top: var(--cardTop, var(--alertCardTop));
   /* at least this wide, wider for a long name (up to the stage minus the margins); the line never widens it */
   width: max-content;
-  min-width: var(--dg-alert-width, 940px);
-  max-width: calc(100% - 2 * var(--dg-alert-margin, 48px));
-  padding: var(--dg-alert-pad, 26px 40px 32px);
+  min-width: var(--alertCardMinWidth);
+  max-width: calc(100% - var(--alertCardMaxWidth) * var(--alertCardMaxWidth2));
+  padding: var(--alertCardPadding) var(--alertCardPadding2) var(--alertCardPadding3);
   text-align: center;
-  transform-origin: 50% 100%;
+  transform-origin: var(--alertCardTransformOrigin) 100%;
 }
 
 .theme-dogs .dg-alert-card .dg-pill {
   position: absolute;
-  left: 50%;
-  top: var(--dg-alert-pill-top, -30px);
-  transform: translateX(-50%);
+  left: var(--alertCardPillLeft);
+  top: var(--alertCardPillTop);
+  transform: translateX(var(--alertCardPillTransform));
 }
 
 .theme-dogs .dg-alert-name {
   white-space: nowrap;
-  margin-top: var(--dg-alert-name-gap, 18px);
-  font-size: calc(var(--fontSize) * 3.25);
-  font-weight: 700;
-  line-height: 1.05;
-  color: var(--accent);
+  margin-top: var(--alertNameMarginTop);
+  font-size: calc(var(--fontSize) * var(--alertNameFontSize));
+  font-weight: var(--alertNameFontWeight);
+  line-height: var(--alertNameLineHeight);
+  color: var(--alertNameColor);
+  font-family: var(--alertNameFont), system-ui, sans-serif;
 }
 
 .theme-dogs .dg-alert-line {
   width: 0;
   min-width: 100%;
-  font-size: calc(var(--fontSize) * 1.3);
-  font-weight: 600;
+  font-size: calc(var(--fontSize) * var(--alertLineFontSize));
+  font-weight: var(--alertLineFontWeight);
+  color: var(--alertLineColor);
+  font-family: var(--alertLineFont), system-ui, sans-serif;
 }

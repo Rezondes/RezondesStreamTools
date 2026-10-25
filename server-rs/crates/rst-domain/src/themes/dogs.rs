@@ -20,6 +20,7 @@ use crate::themes::minime_fields::{
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
+use crate::themes::tuning;
 
 const FONTS: [&str; 3] = ["Pixelify Sans", "VT323", "Silkscreen"];
 const BARK_VOICES: [&str; 3] = ["klein", "mittel", "gross"];
@@ -562,7 +563,7 @@ fn minimes() -> Vec<SettingField> {
 }
 
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
-    BTreeMap::from([
+    let mut groups = BTreeMap::from([
         (WORLD.to_owned(), vec![SceneName::Starting, SceneName::Brb]),
         (STARTING.to_owned(), vec![SceneName::Starting]),
         (BRB.to_owned(), vec![SceneName::Brb]),
@@ -584,7 +585,9 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MINIME_VARIANTS.to_owned(), vec![SceneName::Minimes]),
         (MINIME_DOGS.to_owned(), vec![SceneName::Minimes]),
         (MINIME_SOUNDS.to_owned(), vec![SceneName::Minimes]),
-    ])
+    ]);
+    groups.extend(tuning::dogs::group_scenes().into_iter().map(|(group, scenes)| (group.to_owned(), scenes)));
+    groups
 }
 
 fn personalize(login: &Login) -> SettingValues {
@@ -644,6 +647,7 @@ pub fn dogs() -> Theme {
         clips(),
         minimes(),
         minime_variant_fields(&variants()),
+        tuning::dogs::fields(),
     ]
     .concat();
     let schema = ThemeSchema {

@@ -2,9 +2,11 @@
 // 4 s, "Z" every 1.8 s), the light goes from 1 to lampDim between lampDimFrom and lampDimTo, the sounds come once and
 // the snoring repeats, the card counts up. Run: node src/themes/dogs/ending.check.ts
 import assert from "node:assert/strict";
-import { countShare, ENDING, endingDogAt, endingSoundsBetween, lightAt, zzzAt, type EndingTiming } from "./ending.ts";
+import { effectiveSettings } from "../../core/settings.ts";
+import { countShare, endingDogAt, endingSoundsBetween, endingTimingOf, lightAt, zzzAt } from "./ending.ts";
+import { type DogsValues, dogsSettings } from "./settings.ts";
 
-const timing: EndingTiming = { width: 384, dogWidth: 52, basketX: 196, lampDim: 0.35, lampDimFrom: 5, lampDimTo: 7.5, zzzEvery: 1.8, snoreEvery: 4 };
+const timing = endingTimingOf(effectiveSettings(dogsSettings, {}) as unknown as DogsValues, 384, 52, 196);
 
 // Ablauf: from the right edge to the basket, standing, then lying
 assert.deepEqual(endingDogAt(timing, 0), { x: 392, mode: "walk", wagSpeed: 10, sink: 0 });
@@ -12,7 +14,7 @@ assert.equal(endingDogAt(timing, 1.1).mode, "walk");
 assert.ok(endingDogAt(timing, 1.1).x < 392 && endingDogAt(timing, 1.1).x > 170);
 assert.deepEqual(endingDogAt(timing, 2.5), { x: 170, mode: "stand", wagSpeed: 10, sink: 0 });
 assert.deepEqual(endingDogAt(timing, 3), { x: 170, mode: "lie", wagSpeed: 2, sink: 5 });
-assert.equal(ENDING.sleep, 4);
+assert.equal(timing.sleep, 4);
 
 // Light: full until 5 s, then down to 35 % at 7.5 s
 assert.equal(lightAt(timing, 4), 1);

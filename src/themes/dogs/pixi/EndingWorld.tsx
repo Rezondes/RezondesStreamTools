@@ -6,7 +6,7 @@ import { Graphics, Sprite } from "pixi.js";
 import { useCallback } from "react";
 import { hexNumber } from "../../../core/color.ts";
 import type { DogCache } from "../dog.ts";
-import { DARKNESS, endingDogAt, endingSoundsBetween, lightAt, zzzAt, type EndingTiming } from "../ending.ts";
+import { endingDogAt, endingSoundsBetween, lightAt, zzzAt, type EndingTiming } from "../ending.ts";
 import { poseAt } from "../poses.ts";
 import { basketImages, darknessOf, glowImages, roomImage, type RoomColors, shadeImage, starsOf, twinkleImage, twinkles, zImage } from "../room.ts";
 import type { DogsValues } from "../settings.ts";
@@ -65,7 +65,7 @@ export default function EndingWorld({ app, clock, values, colors, dog, timing, s
       const time = clock();
       const light = lightAt(timing, time);
       lamp(light);
-      darkness.alpha = DARKNESS * (1 - light);
+      darkness.alpha = timing.darkness * (1 - light);
       stars.forEach((star, index) => { sparks[index].visible = twinkles(star, index, time); });
       const place = endingDogAt(timing, time);
       sprite.texture = stage.textures.of(dog.pose(poseAt({ time, mode: place.mode, fps: values.walkFps, wagSpeed: place.wagSpeed, blinkEvery: values.blinkEvery, pant: values.pant })));

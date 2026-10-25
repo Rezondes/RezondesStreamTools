@@ -9,14 +9,13 @@ import { BREED_IDS, isBreed } from "../breeds.ts";
 import { dogCache } from "../dog.ts";
 import { dogLookOf, roomColorsOf } from "../looks.ts";
 import EndingWorld from "../pixi/EndingWorld.tsx";
+import { endingTimingOf } from "../ending.ts";
 import { ROOM } from "../room.ts";
 import EndingSigns from "../screen/EndingSigns.tsx";
 import { preloadDogSounds } from "../tones.ts";
 import { useDogs } from "../useDogs.ts";
 import { sceneClock } from "../useFrame.ts";
 
-// fixed: the lamp setting is in percent
-const PERCENT = 100;
 
 export default function Ending() {
   const values = useDogs();
@@ -26,10 +25,7 @@ export default function Ending() {
   const dog = useMemo(() => dogCache(dogLookOf(values, breed, values.coat)), [values, breed]);
   const colors = useMemo(() => roomColorsOf(values), [values]);
   const size = useMemo(() => ({ width: Math.ceil(STAGE.width / values.pixelScale), height: Math.ceil(STAGE.height / values.pixelScale) }), [values.pixelScale]);
-  const timing = useMemo(() => ({
-    width: size.width, dogWidth: dog.width, basketX: ROOM.basketX, lampDim: values.lampDim / PERCENT, lampDimFrom: values.lampDimFrom,
-    lampDimTo: values.lampDimTo, zzzEvery: values.zzzEvery, snoreEvery: values.snoreEvery,
-  }), [size.width, dog.width, values.lampDim, values.lampDimFrom, values.lampDimTo, values.zzzEvery, values.snoreEvery]);
+  const timing = useMemo(() => endingTimingOf(values, size.width, dog.width, ROOM.basketX), [values, size.width, dog.width]);
   const onReady = useCallback((ready: Application) => {
     setApp(ready);
     return () => setApp(null);

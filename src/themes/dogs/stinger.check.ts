@@ -12,7 +12,7 @@ import { badgeAt, makeStinger, stingerImage, stingerPaws, type StingerLook } fro
 const values = resolveSettings(dogsSettings, {}) as unknown as DogsValues;
 const look: StingerLook = {
   duration: 2.4, cut: 1.2, sweep: 0.82, spacing: 30, slant: 0.45, step: 6, pixelScale: 5, dog: dogCache(dogLookOf(values, "corgi", "rotweiss")),
-  badge: true, text: "Bello", font: "Pixelify Sans",
+  badge: true, text: "Bello", font: "Pixelify Sans", name: { size: 60, below: 80 },
   colors: { cover: "#fff6e6", edge: "#e9d2bd", ink: "#2e1d14", accent: "#c24535", ball: "#ffd23f", muted: "#7a5a46", base: "#cc7633", dark: "#a85a22" },
 };
 

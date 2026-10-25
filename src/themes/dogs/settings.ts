@@ -10,6 +10,7 @@ import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 import { BREED_IDS, BREEDS } from "./breeds.ts";
 import { COATS, coatKey, coatsOf, type Coat } from "./coats.ts";
 import { DOG_SET } from "./minimes.ts";
@@ -360,6 +361,7 @@ const GROUP_SCENES = {
   [MINIME_VARIANTS]: ["minimes"],
   [MINIME_DOGS]: ["minimes"],
   [MINIME_SOUNDS]: ["minimes"],
+  ...TUNING_GROUPS,
 } as const;
 
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });
@@ -367,5 +369,5 @@ const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
 const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "statsLines", "followLine", "subLine", "raidLine", "cheerLine", "alertBark", "chatStyle", "chatBadges", "camLabel", "musicStyle", "musicLabel", "fxText", "minimeNameTag"];
 
-export const dogsSettings: ThemeSchema = { id: "dogs", name: "Dogs", fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(DOG_SET)], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize,
+export const dogsSettings: ThemeSchema = { id: "dogs", name: "Dogs", fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(DOG_SET), ...TUNING_FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize,
   minimeVariants: DOG_SET };

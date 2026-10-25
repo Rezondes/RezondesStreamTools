@@ -5,7 +5,7 @@ import { alertQuote, alertTextKeys, describeAlert } from "../../core/alerts/aler
 import { raidPack, type RaidPack } from "../../core/alerts/raidPack.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { Alert, AlertKind } from "../../core/types.ts";
-import { alertSchedule, type AlertSchedule } from "./alert.ts";
+import { alertSchedule, type AlertSchedule, alertTimesOf } from "./alert.ts";
 import type { DogsValues } from "./settings.ts";
 
 export type AlertToy = "ball" | "knochen" | "frisbee" | "leckerli";
@@ -30,7 +30,7 @@ export function planAlert(alert: Alert, values: DogsValues): AlertPlan {
   const pack = packOf(alert, values);
   return {
     tag: texts.tag, line: quote ? fillTemplate(values.quoteFormat, { text: quote }) : one,
-    toy: values[TOY_KEYS[alert.kind]] as AlertToy, pack, schedule: alertSchedule(values.alertDuration, pack?.endMs ?? 0, values.raidBarkEvery),
+    toy: values[TOY_KEYS[alert.kind]] as AlertToy, pack, schedule: alertSchedule(values.alertDuration, pack?.endMs ?? 0, values.raidBarkEvery, alertTimesOf(values)),
   };
 }
 

@@ -1,77 +1,89 @@
 /* Overlays of the Dogs theme (DESIGN-DOGS.md "Chat", "Kamera", "Musik", "Effekte", "Befehlsseite", "Ending"): pixel
-   signs with the small dogs of the kit next to them (SVG, ui/Pixels.tsx). Under .theme-dogs like theme.css; sizes as
-   var(--name, default), keyframes dogs-*. */
+   signs with the small dogs of the kit next to them (SVG, ui/Pixels.tsx). Under .theme-dogs like theme.css; every
+   further size, time and color is a fine-tuning field of its own (tuning.ts), keyframes dogs-*. */
 
 /* --- Chat: the dog peeks out from behind the left edge of its sign, looking out --------------------------------------- */
-.theme-dogs .dg-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--dg-chat-gap, 22px); padding: var(--dg-chat-pad, 12px 16px 24px); width: var(--chatWidth); box-sizing: border-box; }
-.theme-dogs .dg-chat-row { display: flex; align-items: flex-end; animation: dogs-pop var(--dg-pop, 300ms) steps(var(--dg-pop-steps, 4)) both; }
-.theme-dogs .dg-chat-row.fades { animation: dogs-pop var(--dg-pop, 300ms) steps(var(--dg-pop-steps, 4)) both, dogs-fade var(--dg-fade, 600ms) steps(var(--dg-pop-steps, 4)) var(--chatLifetime) forwards; }
-.theme-dogs .dg-chat-dog { flex: none; transform: scaleX(-1); margin-right: calc(-2 * var(--dg-px)); }
-.theme-dogs .dg-chat-sign { position: relative; flex: 1; min-width: 0; padding: var(--dg-chat-sign-pad, 8px 16px 12px); }
-.theme-dogs .dg-chat-line { flex: 1; min-width: 0; color: var(--cream); text-shadow: var(--dg-outline); }
-.theme-dogs .dg-chat-name { display: block; font-weight: 700; color: var(--chatNameColor); }
-.theme-dogs .dg-chat-schlicht .dg-chat-name { color: var(--cream); }
-.theme-dogs .dg-chat-text { font-weight: 500; overflow-wrap: anywhere; }
+.theme-dogs .dg-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chatPadding) var(--chatPadding2) var(--chatPadding3); width: var(--chatWidth); box-sizing: border-box; }
+.theme-dogs .dg-chat-row { display: flex; align-items: flex-end; animation: dogs-pop var(--chatRowAnimation) steps(var(--chatRowAnimation2)) both; }
+.theme-dogs .dg-chat-row.fades { animation: dogs-pop var(--chatRowFadesAnimation) steps(var(--chatRowFadesAnimation2)) both, dogs-fade var(--chatRowFadesAnimation3) steps(var(--chatRowFadesAnimation4)) var(--chatLifetime) forwards; }
+.theme-dogs .dg-chat-dog { flex: none; transform: scaleX(var(--chatDogTransform)); margin-right: calc(var(--chatDogMarginRight) * var(--pixelScale, var(--chatDogMarginRight2))); }
+.theme-dogs .dg-chat-sign { position: relative; flex: 1; min-width: 0; padding: var(--chatSignPadding) var(--chatSignPadding2) var(--chatSignPadding3); }
+.theme-dogs .dg-chat-line { flex: 1; min-width: 0; color: var(--chatLineColor); text-shadow: var(--dg-px) 0 var(--chatLineTextShadow), calc(-1 * var(--dg-px)) 0 var(--chatLineTextShadow2), 0 var(--dg-px) var(--chatLineTextShadow3), 0 calc(-1 * var(--dg-px)) var(--chatLineTextShadow4),
+    var(--dg-px) var(--dg-px) var(--chatLineTextShadow5), calc(-1 * var(--dg-px)) var(--dg-px) var(--chatLineTextShadow6),
+    var(--dg-px) calc(-1 * var(--dg-px)) var(--chatLineTextShadow7), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--chatLineTextShadow8),
+    0 calc(var(--chatLineTextShadow9) * var(--dg-px)) var(--dg-shadow); }
+.theme-dogs .dg-chat-name { display: block; font-weight: var(--chatNameFontWeight); color: var(--chatNameColor2); font-family: var(--chatNameFont), system-ui, sans-serif; }
+.theme-dogs .dg-chat-schlicht .dg-chat-name { color: var(--chatSchlichtChatNameColor); }
+.theme-dogs .dg-chat-text { font-weight: var(--chatTextFontWeight); overflow-wrap: anywhere; color: var(--chatTextColor); font-family: var(--chatTextFont), system-ui, sans-serif; }
 .theme-dogs .dg-chat-row.action .dg-chat-text { font-style: italic; }
-.theme-dogs .dg-chat-badge { display: inline-block; margin-right: var(--dg-badge-gap, 8px); padding: var(--dg-badge-pad, 0 6px 2px); background: var(--accent); color: var(--onAccent); font-size: 0.7em; vertical-align: middle; }
+.theme-dogs .dg-chat-badge { display: inline-block; margin-right: var(--chatBadgeMarginRight); padding: 0 var(--chatBadgePadding) var(--chatBadgePadding2); background: var(--chatBadgeBackground); color: var(--chatBadgeColor); font-size: calc(var(--chatBadgeFontSize) * 1em); vertical-align: middle; font-family: var(--chatBadgeFont), system-ui, sans-serif; }
 .theme-dogs .dg-emote { height: var(--emoteSize); vertical-align: middle; }
 
-@keyframes dogs-pop { from { transform: translateY(var(--dg-pop-y, 20px)); opacity: 0; } }
+@keyframes dogs-pop { from { transform: translateY(var(--kfPopFromTransform)); opacity: 0; } }
 @keyframes dogs-fade { to { opacity: 0; } }
 
 /* --- Camera: a doghouse; the frame in cream with the ink edge, the roof on top, the dog at the lower right ------------ */
 .theme-dogs .dg-cam { position: fixed; inset: 0; }
-.theme-dogs .dg-cam-frame { position: absolute; inset: var(--dg-cam-inset, 8px); top: var(--dg-cam-top, 8px); border: var(--camBorder) solid var(--cream); box-shadow: 0 0 0 var(--dg-px) var(--ink), inset 0 0 0 var(--dg-px) var(--ink); }
-.theme-dogs .dg-cam:has(.dg-cam-roof) { --dg-cam-top: var(--dg-roof, 9%); }
-.theme-dogs .dg-cam-roof { position: absolute; left: 0; right: 0; top: 0; height: calc(var(--dg-roof, 9%) + var(--dg-px)); background: var(--camRoofColor); clip-path: polygon(0 100%, 50% 0, 100% 100%); filter: drop-shadow(0 calc(-1 * var(--dg-px)) 0 var(--ink)); }
-.theme-dogs .dg-cam-dog { position: absolute; right: var(--dg-cam-dog-right, 4%); bottom: var(--dg-cam-inset, 8px); }
-.theme-dogs .dg-cam-label { position: absolute; left: 50%; bottom: calc(var(--dg-cam-inset, 8px) - var(--dg-px)); transform: translateX(-50%); }
+.theme-dogs .dg-cam-frame { position: absolute; inset: var(--camFrameInset); top: var(--dg-cam-top, var(--camFrameTop)); border: var(--camBorder) solid var(--camFrameBorder); box-shadow: 0 0 0 var(--pixelScale, var(--camFrameBoxShadow3)) var(--camFrameBoxShadow), inset 0 0 0 var(--pixelScale, var(--camFrameBoxShadow4)) var(--camFrameBoxShadow2); }
+.theme-dogs .dg-cam:has(.dg-cam-roof) { --dg-cam-top: var(--camDgCamTop); }
+.theme-dogs .dg-cam-roof { position: absolute; left: 0; right: 0; top: 0; height: calc(var(--camRoofHeight) + var(--pixelScale, var(--camRoofHeight2))); background: var(--camRoofBackground); clip-path: polygon(0 100%, var(--camRoofClipPath) 0, 100% 100%); filter: drop-shadow(0 calc(-1 * var(--pixelScale, var(--camRoofFilter2))) 0 var(--camRoofFilter)); }
+.theme-dogs .dg-cam-dog { position: absolute; right: var(--camDogRight); bottom: var(--camDogBottom); }
+.theme-dogs .dg-cam-label { position: absolute; left: var(--camLabelLeft); bottom: calc(var(--camLabelBottom) - var(--pixelScale, var(--camLabelBottom2))); transform: translateX(var(--camLabelTransform)); }
 
 /* --- Music: the dog with headphones bobs next to the sign ------------------------------------------------------------- */
-.theme-dogs .dg-music { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; gap: var(--dg-music-gap, 14px); padding: var(--dg-music-pad, 8px 16px 24px); animation: dogs-pop var(--dg-pop, 300ms) steps(var(--dg-pop-steps, 4)) both; }
-.theme-dogs .dg-music.leaving { animation: dogs-fade var(--dg-fade, 600ms) steps(var(--dg-pop-steps, 4)) forwards; }
+.theme-dogs .dg-music { position: fixed; left: 0; right: 0; bottom: 0; display: flex; align-items: flex-end; gap: var(--musicGap); padding: var(--musicPadding) var(--musicPadding2) var(--musicPadding3); animation: dogs-pop var(--musicAnimation) steps(var(--musicAnimation2)) both; }
+.theme-dogs .dg-music.leaving { animation: dogs-fade var(--musicLeavingAnimation) steps(var(--musicLeavingAnimation2)) forwards; }
 .theme-dogs .dg-music-dog { flex: none; }
-.theme-dogs .dg-music-dog.bobbing { animation: dogs-bob var(--dg-bob) steps(1) infinite; }
-.theme-dogs .dg-music-sign { position: relative; flex: 1; min-width: 0; padding: var(--dg-music-sign-pad, 12px 18px 14px); }
-.theme-dogs .dg-music-schlicht .dg-music-sign { color: var(--cream); text-shadow: var(--dg-outline); }
-.theme-dogs .dg-track { display: flex; align-items: center; gap: var(--dg-track-gap, 16px); }
-.theme-dogs .dg-cover { width: var(--coverSize); height: var(--coverSize); object-fit: cover; flex: none; image-rendering: pixelated; box-shadow: 0 0 0 var(--dg-px) var(--ink); }
+.theme-dogs .dg-music-dog.bobbing { animation: dogs-bob var(--dg-bob) steps(var(--musicDogBobbingAnimation)) infinite; }
+.theme-dogs .dg-music-sign { position: relative; flex: 1; min-width: 0; padding: var(--musicSignPadding) var(--musicSignPadding2) var(--musicSignPadding3); }
+.theme-dogs .dg-music-schlicht .dg-music-sign { color: var(--musicSchlichtMusicSignColor); text-shadow: var(--dg-px) 0 var(--musicSchlichtMusicSignTextShadow), calc(-1 * var(--dg-px)) 0 var(--musicSchlichtMusicSignTextShadow2), 0 var(--dg-px) var(--musicSchlichtMusicSignTextShadow3), 0 calc(-1 * var(--dg-px)) var(--musicSchlichtMusicSignTextShadow4),
+    var(--dg-px) var(--dg-px) var(--musicSchlichtMusicSignTextShadow5), calc(-1 * var(--dg-px)) var(--dg-px) var(--musicSchlichtMusicSignTextShadow6),
+    var(--dg-px) calc(-1 * var(--dg-px)) var(--musicSchlichtMusicSignTextShadow7), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--musicSchlichtMusicSignTextShadow8),
+    0 calc(var(--musicSchlichtMusicSignTextShadow9) * var(--dg-px)) var(--dg-shadow); }
+.theme-dogs .dg-track { display: flex; align-items: center; gap: var(--trackGap); }
+.theme-dogs .dg-cover { width: calc(var(--coverSize) * var(--coverWidth) / 100); height: calc(var(--coverSize) * var(--coverHeight) / 100); object-fit: cover; flex: none; image-rendering: pixelated; box-shadow: 0 0 0 var(--pixelScale, var(--coverBoxShadow2)) var(--coverBoxShadow); }
 .theme-dogs .dg-track-text { display: grid; min-width: 0; }
-.theme-dogs .dg-track-title { font-size: 1.25em; font-weight: 700; color: var(--accent); }
-.theme-dogs .dg-track-artist { font-weight: 500; }
-.theme-dogs .dg-music-idle { margin: 0; font-weight: 600; color: var(--muted); }
-.theme-dogs .dg-music-paws { display: flex; gap: var(--dg-paw-gap, 6px); margin-top: var(--dg-progress-gap, 10px); color: var(--edge); }
-.theme-dogs .dg-music-paws .dg-paw { width: calc(4 * var(--dg-px)); height: calc(4 * var(--dg-px)); }
-.theme-dogs .dg-music-paws .dg-paw.on { color: var(--accent); }
-.theme-dogs .dg-music-bar { position: relative; margin-top: var(--dg-progress-gap, 10px); height: var(--dg-px); background: var(--edge); }
-.theme-dogs .dg-music-bar span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent); }
+.theme-dogs .dg-track-title { font-size: calc(var(--trackTitleFontSize) * 1em); font-weight: var(--trackTitleFontWeight); color: var(--trackTitleColor); font-family: var(--trackTitleFont), system-ui, sans-serif; }
+.theme-dogs .dg-track-artist { font-weight: var(--trackArtistFontWeight); color: var(--trackArtistColor); font-family: var(--trackArtistFont), system-ui, sans-serif; }
+.theme-dogs .dg-music-idle { margin: 0; font-weight: var(--musicIdleFontWeight); color: var(--musicIdleColor); font-family: var(--musicIdleFont), system-ui, sans-serif; }
+.theme-dogs .dg-music-paws { display: flex; gap: var(--musicPawsGap); margin-top: var(--musicPawsMarginTop); color: var(--musicPawsColor); }
+.theme-dogs .dg-music-paws .dg-paw { width: calc(var(--musicPawsPawWidth) * var(--pixelScale, var(--musicPawsPawWidth2))); height: calc(var(--musicPawsPawHeight) * var(--pixelScale, var(--musicPawsPawHeight2))); }
+.theme-dogs .dg-music-paws .dg-paw.on { color: var(--musicPawsPawOnColor); }
+.theme-dogs .dg-music-bar { position: relative; margin-top: var(--musicBarMarginTop); height: var(--pixelScale, var(--musicBarHeight)); background: var(--musicBarBackground); }
+.theme-dogs .dg-music-bar span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--musicBarSpanBackground); }
 
-@keyframes dogs-bob { 50% { transform: translateY(var(--dg-px)); } }
+@keyframes dogs-bob { 50% { transform: translateY(var(--pixelScale, var(--kfBob50pTransform))); } }
 
 /* --- Effects ---------------------------------------------------------------------------------------------------------- */
 .theme-dogs .dg-fx { position: fixed; inset: 0; overflow: hidden; }
 .theme-dogs .dg-fx-item { position: absolute; display: grid; place-items: center; }
-.theme-dogs .dg-fx-text { font-size: var(--fxTextSize); font-weight: 700; color: var(--cream); text-shadow: var(--dg-outline); }
+.theme-dogs .dg-fx-text { font-size: var(--fxTextSize); font-weight: var(--fxTextFontWeight); color: var(--fxTextColor); text-shadow: var(--dg-px) 0 var(--fxTextTextShadow), calc(-1 * var(--dg-px)) 0 var(--fxTextTextShadow2), 0 var(--dg-px) var(--fxTextTextShadow3), 0 calc(-1 * var(--dg-px)) var(--fxTextTextShadow4),
+    var(--dg-px) var(--dg-px) var(--fxTextTextShadow5), calc(-1 * var(--dg-px)) var(--dg-px) var(--fxTextTextShadow6),
+    var(--dg-px) calc(-1 * var(--dg-px)) var(--fxTextTextShadow7), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--fxTextTextShadow8),
+    0 calc(var(--fxTextTextShadow9) * var(--dg-px)) var(--dg-shadow); font-family: var(--fxTextFont), system-ui, sans-serif; }
 
 /* --- Stream numbers: the caption pill over a column of small signs ---------------------------------------------------- */
-.theme-dogs .dg-stats { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: stretch; gap: var(--dg-stats-gap, 18px); padding: var(--dg-stats-pad, 16px 16px 24px); box-sizing: border-box; }
+.theme-dogs .dg-stats { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: stretch; gap: var(--statsGap); padding: var(--statsPadding) var(--statsPadding2) var(--statsPadding3); box-sizing: border-box; }
 .theme-dogs .dg-stats-caption { align-self: center; }
-.theme-dogs .dg-stats-row { display: flex; align-items: baseline; gap: var(--dg-stats-row-gap, 14px); padding: var(--dg-stats-row-pad, 8px 18px 12px); }
-.theme-dogs .dg-stats-number { font-size: 1.6em; color: var(--accent); }
-.theme-dogs .dg-stats-label { font-weight: 600; }
+.theme-dogs .dg-stats-row { display: flex; align-items: baseline; gap: var(--statsRowGap); padding: var(--statsRowPadding) var(--statsRowPadding2) var(--statsRowPadding3); }
+.theme-dogs .dg-stats-number { font-size: calc(var(--statsNumberFontSize) * 1em); color: var(--statsNumberColor); font-family: var(--statsNumberFont), system-ui, sans-serif; }
+.theme-dogs .dg-stats-label { font-weight: var(--statsLabelFontWeight); color: var(--statsLabelColor); font-family: var(--statsLabelFont), system-ui, sans-serif; }
 
 /* --- Commands page: the meadow (or cream) behind pixel signs ---------------------------------------------------------- */
-.theme-dogs.theme-root:has(.dg-info-wiese) { min-height: 100vh; background: linear-gradient(var(--sky), var(--skyLow) 55%, var(--grassLight) 55%, var(--grass) 57%) fixed; }
-.theme-dogs.theme-root:has(.dg-info-creme) { min-height: 100vh; background: var(--cream); }
-.theme-dogs .dg-info { padding: var(--dg-info-pad, 48px 16px); }
-.theme-dogs .dg-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--dg-info-gap, 30px); }
-.theme-dogs .dg-info-head { display: flex; align-items: flex-end; justify-content: center; gap: var(--dg-info-head-gap, 20px); }
+.theme-dogs.theme-root:has(.dg-info-wiese) { min-height: calc(var(--themeRootMinHeight) * 1vh); background: linear-gradient(var(--themeRootBackground), var(--themeRootBackground2) var(--themeRootBackground5), var(--themeRootBackground3) var(--themeRootBackground6), var(--themeRootBackground4) var(--themeRootBackground7)) fixed; }
+.theme-dogs.theme-root:has(.dg-info-creme) { min-height: calc(var(--themeRootMinHeight2) * 1vh); background: var(--themeRootBackground8); }
+.theme-dogs .dg-info { padding: var(--infoPadding) var(--infoPadding2); }
+.theme-dogs .dg-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--infoColumnGap); }
+.theme-dogs .dg-info-head { display: flex; align-items: flex-end; justify-content: center; gap: var(--infoHeadGap); }
 .theme-dogs .dg-info-dog { flex: none; }
-.theme-dogs .dg-info-title { margin: 0; font-size: calc(var(--titleSize) * 0.65); font-weight: 700; line-height: 1; color: var(--cream); text-shadow: var(--dg-outline); }
-.theme-dogs .dg-info-intro { margin: 0; text-align: center; font-weight: 600; }
-.theme-dogs .dg-info-card { position: relative; padding: var(--dg-info-card-pad, 34px 26px 22px); }
-.theme-dogs .dg-info-heading { position: absolute; left: var(--dg-info-heading-left, 20px); top: var(--dg-info-heading-top, -24px); }
-.theme-dogs .dg-info-entry { margin: var(--dg-info-entry, 10px) 0; }
-.theme-dogs .dg-info-line { display: flex; align-items: baseline; justify-content: space-between; gap: var(--dg-info-line-gap, 16px); margin: 0; font-weight: 600; }
-.theme-dogs .dg-info-command { color: var(--accent); white-space: nowrap; }
-.theme-dogs .dg-info-detail { margin: var(--dg-info-detail, 2px) 0 0; font-size: 0.85em; color: var(--muted); }
+.theme-dogs .dg-info-title { margin: 0; font-size: calc(var(--titleSize) * var(--infoTitleFontSize)); font-weight: var(--infoTitleFontWeight); line-height: var(--infoTitleLineHeight); color: var(--infoTitleColor); text-shadow: var(--dg-px) 0 var(--infoTitleTextShadow), calc(-1 * var(--dg-px)) 0 var(--infoTitleTextShadow2), 0 var(--dg-px) var(--infoTitleTextShadow3), 0 calc(-1 * var(--dg-px)) var(--infoTitleTextShadow4),
+    var(--dg-px) var(--dg-px) var(--infoTitleTextShadow5), calc(-1 * var(--dg-px)) var(--dg-px) var(--infoTitleTextShadow6),
+    var(--dg-px) calc(-1 * var(--dg-px)) var(--infoTitleTextShadow7), calc(-1 * var(--dg-px)) calc(-1 * var(--dg-px)) var(--infoTitleTextShadow8),
+    0 calc(var(--infoTitleTextShadow9) * var(--dg-px)) var(--dg-shadow); font-family: var(--infoTitleFont), system-ui, sans-serif; }
+.theme-dogs .dg-info-intro { margin: 0; text-align: center; font-weight: var(--infoIntroFontWeight); color: var(--infoIntroColor); font-family: var(--infoIntroFont), system-ui, sans-serif; }
+.theme-dogs .dg-info-card { position: relative; padding: var(--infoCardPadding) var(--infoCardPadding2) var(--infoCardPadding3); }
+.theme-dogs .dg-info-heading { position: absolute; left: var(--infoHeadingLeft); top: var(--infoHeadingTop); }
+.theme-dogs .dg-info-entry { margin: var(--infoEntryMargin) 0; }
+.theme-dogs .dg-info-line { display: flex; align-items: baseline; justify-content: space-between; gap: var(--infoLineGap); margin: 0; font-weight: var(--infoLineFontWeight); color: var(--infoLineColor); font-family: var(--infoLineFont), system-ui, sans-serif; }
+.theme-dogs .dg-info-command { color: var(--infoCommandColor); white-space: nowrap; }
+.theme-dogs .dg-info-detail { margin: var(--infoDetailMargin) 0 0; font-size: calc(var(--infoDetailFontSize) * 1em); color: var(--infoDetailColor); font-family: var(--infoDetailFont), system-ui, sans-serif; }

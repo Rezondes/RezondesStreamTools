@@ -6,7 +6,7 @@ import { STAGE } from "../../core/screens/screens.ts";
 import { drawPixels } from "./canvasImage.ts";
 import { BREED_IDS, isBreed } from "./breeds.ts";
 import { dogCache, type DogCache } from "./dog.ts";
-import { DARKNESS, endingDogAt, lightAt, zzzAt, type EndingTiming } from "./ending.ts";
+import { endingDogAt, endingTimingOf, lightAt, zzzAt, type EndingTiming } from "./ending.ts";
 import { dogLookOf, roomColorsOf, worldColorsOf } from "./looks.ts";
 import { blankImage, blendImage, pasteImage, type PixelImage } from "./pixels.ts";
 import { poseAt } from "./poses.ts";
@@ -20,25 +20,35 @@ export type BannerTexts = { title: string; line: string };
 export type BannerLook = {
   world: WorldColors; room: RoomColors; dogs: readonly DogCache[]; sleeper: DogCache; timing: EndingTiming;
   pixelScale: number; stars: number; moon: boolean; pant: boolean;
-  text: { font: string; titleSize: number; fontSize: number; cream: string; ink: string; textColor: string; nightSub: string };
+  text: { titleSize: number; fontSize: number; profile: BannerTextLook; offline: BannerTextLook };
+  offline: { time: number; lit: number };
 };
+// The texts of one banner (settings): font, title color and outline, line color, where title and line sit (canvas
+// pixels), the line size as a factor of the font size, the title size as a share of the title size of the theme
+export type BannerTextLook = { font: string; title: string; outline: string; line: string; titleY: number; lineY: number; lineScale: number; titleShare: number };
 
-// fixed: the lamp setting is in percent
-const PERCENT = 100;
 
 // The look of both banners from the settings: the six dogs in their default coats, the streamer's dog as the sleeper
 // with the timing of the Ending
 export function bannerLookOf(values: DogsValues): BannerLook {
   const breed = isBreed(values.dog) ? values.dog : BREED_IDS[0];
   const sleeper = dogCache(dogLookOf(values, breed, values.coat));
-  const timing: EndingTiming = {
-    width: Math.ceil(STAGE.width / values.pixelScale), dogWidth: sleeper.width, basketX: ROOM.basketX, lampDim: values.lampDim / PERCENT,
-    lampDimFrom: values.lampDimFrom, lampDimTo: values.lampDimTo, zzzEvery: values.zzzEvery, snoreEvery: values.snoreEvery,
-  };
+  const timing: EndingTiming = endingTimingOf(values, Math.ceil(STAGE.width / values.pixelScale), sleeper.width, ROOM.basketX);
   return {
     world: worldColorsOf(values), room: roomColorsOf(values), dogs: BREED_IDS.map(id => dogCache(dogLookOf(values, id, id === breed ? values.coat : ""))), sleeper, timing,
     pixelScale: values.pixelScale, stars: values.stars, moon: values.moon, pant: values.pant,
-    text: { font: values.font, titleSize: values.titleSize, fontSize: values.fontSize, cream: values.cream, ink: values.ink, textColor: values.textColor, nightSub: values.nightSub },
+    text: {
+      titleSize: values.titleSize, fontSize: values.fontSize,
+      profile: {
+        font: values.profileFont, title: values.profileTitleColor, outline: values.profileOutlineColor, line: values.profileLineColor, titleY: values.profileTitleY,
+        lineY: values.profileLineY, lineScale: values.profileLineScale, titleShare: values.profileTitleShare,
+      },
+      offline: {
+        font: values.offlineFont, title: values.offlineTitleColor, outline: values.offlineOutlineColor, line: values.offlineLineColor, titleY: values.offlineTitleY,
+        lineY: values.offlineLineY, lineScale: values.offlineLineScale, titleShare: 1,
+      },
+    },
+    offline: { time: values.offlineTime, lit: values.offlineLit },
   };
 }
 
@@ -46,33 +56,30 @@ export function bannerLookOf(values: DogsValues): BannerLook {
 // dogs stand on row 150 with even gaps, five sky bands, three hills (x, radius x, radius y), 40 flowers
 const PROFILE = { scale: 3, horizon: 100, fence: 92, ground: 150, bands: 5, flowers: 40, seed: 2, feet: 5 };
 const PROFILE_HILLS = [[70, 90, 20], [330, 110, 26], [200, 60, 14]] as const;
-// fixed: the texts in canvas pixels: the profile title centered at 80 and its line at 150; the offline title at 130
-// and its line at 230; the outline one world pixel wide like the scenes; the line at 1.3 times the font size
-const TEXT = { profileTitle: 80, profileLine: 150, offlineTitle: 130, offlineLine: 230, line: 1.3, titleShare: 0.72 };
-// fixed: the offline still shows the room 30 s after the dog came in (asleep, lamp dimmed); stars from seed 1, the
-// lamp shade looks lit above half the light, the "Z" start 8 pixels below the head
-const OFFLINE = { time: 30, starSeed: 1, lit: 0.5, zzzBelow: 8, dogTop: 3 };
+// fixed: the offline still has its stars from seed 1 and the "Z" start 8 pixels below the head; the moment it shows and
+// when the lamp shade looks lit are settings; the outline of the titles is one world pixel wide like the scenes
+const OFFLINE = { starSeed: 1, zzzBelow: 8, dogTop: 3 };
 const OUTLINE = [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1]] as const;
 
 type Draw = (context: CanvasRenderingContext2D) => void;
 
 // A text centered at (x, y) in the cream with an ink outline of width pixels, like the titles of the scenes
-function outlinedText(context: CanvasRenderingContext2D, text: string, x: number, y: number, size: number, look: BannerLook, width: number) {
-  context.font = `700 ${size}px "${look.text.font}"`;
+function outlinedText(context: CanvasRenderingContext2D, text: string, x: number, y: number, size: number, own: BannerTextLook, width: number) {
+  context.font = `700 ${size}px "${own.font}"`;
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.fillStyle = look.text.ink;
+  context.fillStyle = own.outline;
   for (const [across, down] of OUTLINE) context.fillText(text, x + across * width, y + down * width);
-  context.fillStyle = look.text.cream;
+  context.fillStyle = own.title;
   context.fillText(text, x, y);
 }
 
-function line(context: CanvasRenderingContext2D, text: string, y: number, color: string, look: BannerLook, width: number) {
-  context.font = `600 ${Math.round(look.text.fontSize * TEXT.line)}px "${look.text.font}"`;
+function line(context: CanvasRenderingContext2D, text: string, own: BannerTextLook, look: BannerLook, width: number) {
+  context.font = `600 ${Math.round(look.text.fontSize * own.lineScale)}px "${own.font}"`;
   context.textAlign = "center";
   context.textBaseline = "middle";
-  context.fillStyle = color;
-  context.fillText(text, width / 2, y);
+  context.fillStyle = own.line;
+  context.fillText(text, width / 2, own.lineY);
 }
 
 // The meadow with the six dogs in a row
@@ -98,13 +105,13 @@ export function offlineImage(look: BannerLook): PixelImage {
   const width = Math.ceil(STAGE.width / look.pixelScale);
   const height = Math.ceil(STAGE.height / look.pixelScale);
   const { room, timing, sleeper } = look;
-  const time = OFFLINE.time;
+  const time = look.offline.time;
   const stars = starsOf(look.stars, OFFLINE.starSeed);
   const image = roomImage(width, height, room, stars, look.moon);
   const twinkle = twinkleImage(room);
   stars.forEach((star, index) => { if (twinkles(star, index, time)) pasteImage(image, twinkle, star.x - 1, star.y - 1); });
   const light = lightAt(timing, time);
-  const shade = shadeImage(room, light > OFFLINE.lit);
+  const shade = shadeImage(room, light > look.offline.lit);
   pasteImage(image, shade.image, ...shade.at);
   for (const glow of glowImages(room)) blendImage(image, glow.image, ...glow.at, glow.alpha * light);
   const basket = basketImages(room, height);
@@ -118,7 +125,7 @@ export function offlineImage(look: BannerLook): PixelImage {
   for (const rising of zzzAt(timing, time, head)) blendImage(image, letter, rising.x, rising.y, rising.alpha);
   const dark = blankImage(width, height);
   dark.colors.fill(darknessOf(room));
-  blendImage(image, dark, 0, 0, DARKNESS * (1 - light));
+  blendImage(image, dark, 0, 0, timing.darkness * (1 - light));
   return image;
 }
 
@@ -126,8 +133,9 @@ export function makeProfile(look: BannerLook, texts: BannerTexts): Draw {
   const image = profileImage(look);
   return context => {
     drawPixels(context, image, PROFILE.scale);
-    outlinedText(context, texts.title, PROFILE_SIZE.width / 2, TEXT.profileTitle, Math.round(look.text.titleSize * TEXT.titleShare), look, PROFILE.scale);
-    line(context, texts.line, TEXT.profileLine, look.text.textColor, look, PROFILE_SIZE.width);
+    const own = look.text.profile;
+    outlinedText(context, texts.title, PROFILE_SIZE.width / 2, own.titleY, Math.round(look.text.titleSize * own.titleShare), own, PROFILE.scale);
+    line(context, texts.line, own, look, PROFILE_SIZE.width);
   };
 }
 
@@ -135,7 +143,8 @@ export function makeOffline(look: BannerLook, texts: BannerTexts): Draw {
   const image = offlineImage(look);
   return context => {
     drawPixels(context, image, look.pixelScale);
-    outlinedText(context, texts.title, STAGE.width / 2, TEXT.offlineTitle, look.text.titleSize, look, look.pixelScale);
-    line(context, texts.line, TEXT.offlineLine, look.text.nightSub, look, STAGE.width);
+    const own = look.text.offline;
+    outlinedText(context, texts.title, STAGE.width / 2, own.titleY, Math.round(look.text.titleSize * own.titleShare), own, look.pixelScale);
+    line(context, texts.line, own, look, STAGE.width);
   };
 }
