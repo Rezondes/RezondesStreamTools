@@ -1,7 +1,9 @@
 // Check for food.ts: shavings follow the time and the seed alone, never more than max, landed ones lie still on the
 // plate; the steam loops. Runs with npm test.
 import assert from "node:assert/strict";
-import { shavingsAt, STEAM, steamAt, type ShavingOptions } from "./food.ts";
+import { effectiveSettings } from "../../core/settings.ts";
+import { shavingsAt, steamAt, steamLookOf, type ShavingOptions } from "./food.ts";
+import { type KebabValues, kebabSettings } from "./settings.ts";
 
 const options: ShavingOptions = { start: 3, gapMs: 160, fallMs: 800, max: 140, seed: 11, from: { x: 334, y: 356 }, plate: { x: 296, y: 452 } };
 
@@ -28,8 +30,9 @@ const falling = first(3.4);
 assert.ok(falling.y > 330 && falling.y < 452);
 
 // The steam loops: the same after one period, three wisps that fade at the ends of their way
-const period = 1 / STEAM.rate;
-const steam = { from: { x: 320, y: 196 }, height: 70 };
+const look = steamLookOf(effectiveSettings(kebabSettings, {}) as unknown as KebabValues);
+const period = 1 / look.rate;
+const steam = { from: { x: 320, y: 196 }, height: 70, ...look };
 const wisps = steamAt(1.2, steam);
 assert.equal(wisps.length, 3);
 wisps.forEach((wisp, index) => {

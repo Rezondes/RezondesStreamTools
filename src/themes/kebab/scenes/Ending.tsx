@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { useScreen } from "../../../core/screens/useScreen.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import { bonItems } from "../bon.ts";
-import { introAt } from "../intro.ts";
+import { introAt, introOf } from "../intro.ts";
 import Bon from "../screen/Bon.tsx";
 import ShopScreen from "../screen/ShopScreen.tsx";
 import Shutter from "../screen/Shutter.tsx";
@@ -16,7 +16,7 @@ import { kebabNames, useKebab } from "../useKebab.ts";
 export default function Ending() {
   const values = useKebab();
   const [clock] = useState(sceneClock);
-  const intro = useMemo(() => introAt(values.introSpeed), [values.introSpeed]);
+  const intro = useMemo(() => introAt(values.introSpeed, introOf(values)), [values]);
   const screen = useScreen({ countdownSeconds: 0, countdownAt: "", ticker: "", next: values.endingNext });
   const names = kebabNames(values);
   return (

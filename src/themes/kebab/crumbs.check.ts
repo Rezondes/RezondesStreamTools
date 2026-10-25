@@ -1,14 +1,18 @@
 // Check for crumbs.ts: the burst follows the time alone, every third piece is a ring, nothing is left after its life.
 // Runs with npm test.
 import assert from "node:assert/strict";
-import { CRUMB_LIFE, crumbsAt } from "./crumbs.ts";
+import { effectiveSettings } from "../../core/settings.ts";
+import { crumbLookOf, crumbsAt as crumbsWith } from "./crumbs.ts";
+import { type KebabValues, kebabSettings } from "./settings.ts";
 
+const look = crumbLookOf(effectiveSettings(kebabSettings, {}) as unknown as KebabValues);
+const crumbsAt = (seed: number, count: number, time: number, at: { x: number; y: number }) => crumbsWith(seed, count, time, at, look);
 const origin = { x: 300, y: 300 };
 assert.deepEqual(crumbsAt(4, 30, 0.3, origin), crumbsAt(4, 30, 0.3, origin));
 assert.equal(crumbsAt(4, 30, 0.3, origin).length, 30);
 assert.deepEqual(crumbsAt(4, 30, 0.3, origin).map(crumb => crumb.ring).slice(0, 4), [true, false, false, true]);
 assert.deepEqual(crumbsAt(4, 30, -0.1, origin), [], "not before the hit");
-assert.deepEqual(crumbsAt(4, 30, CRUMB_LIFE, origin), [], "gone after their life");
+assert.deepEqual(crumbsAt(4, 30, look.life, origin), [], "gone after their life");
 
 // At the start they sit at the origin, later they flew away from it
 const start = crumbsAt(4, 30, 0, origin);

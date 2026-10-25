@@ -1,52 +1,52 @@
 /* Overlays of the Kebab theme (DESIGN-KEBAB.md "Overlays"): alerts as bon or bag, chat notes, the shop window of the
-   camera, the music bon, effects and the menu of the commands page. Under .theme-kebab like theme.css; sizes as
-   var(--name, default), keyframes kebab-*. */
+   camera, the music bon, effects and the menu of the commands page. Under .theme-kebab like theme.css; every
+   further size, time and color is a fine-tuning field of its own (tuning.ts), keyframes kebab-*. */
 
 /* --- Alerts: drawn on the stage, the source shows its part ---------------------------------------------------------- */
 .theme-kebab .kb-alerts { position: fixed; inset: 0; overflow: hidden; }
-.theme-kebab .kb-alert { position: absolute; left: 50%; top: var(--kb-alert-top, 48px); transform: translateX(-50%); }
-.theme-kebab .kb-alert-bon { position: relative; left: auto; top: auto; width: var(--kb-alert-printer, 460px); }
-.theme-kebab .kb-alert-bon .kb-bon { margin: calc(-1 * var(--kb-bon-tuck, 10px)) var(--kb-alert-inset, 30px) 0; padding: var(--kb-alert-padding, 28px 30px 40px); }
-.theme-kebab .kb-alert-kind { font-weight: 900; font-size: 0.85em; letter-spacing: var(--kb-kind-tracking, 5px); color: var(--redText); }
-.theme-kebab .kb-alert-dish { font-family: var(--titleFont), sans-serif; font-size: var(--kb-dish-size, 46px); line-height: 1.1; margin-top: var(--kb-dish-gap, 4px); }
-.theme-kebab .kb-alert-for { font-weight: 800; font-size: 0.85em; color: var(--muted); }
-.theme-kebab .kb-alert-name { font-family: var(--titleFont), sans-serif; font-size: var(--kb-name-size, 70px); line-height: 1.05; color: var(--redText); white-space: nowrap; }
+.theme-kebab .kb-alert { position: absolute; left: var(--alertLeft); top: var(--alertTop); transform: translateX(var(--alertTransform)); }
+.theme-kebab .kb-alert-bon { position: relative; left: auto; top: auto; width: var(--kb-alert-printer, var(--alertBonWidth)); }
+.theme-kebab .kb-alert-bon .kb-bon { margin: calc(-1 * var(--alertBonBonMargin)) var(--alertBonBonMargin2) 0; padding: var(--alertBonBonPadding) var(--alertBonBonPadding2) var(--alertBonBonPadding3); }
+.theme-kebab .kb-alert-kind { font-weight: var(--alertKindFontWeight); font-size: calc(var(--alertKindFontSize) * 1em); letter-spacing: var(--alertKindLetterSpacing); color: var(--alertKindColor); font-family: var(--alertKindFont), system-ui, sans-serif; }
+.theme-kebab .kb-alert-dish { font-family: var(--alertDishFont), sans-serif; font-size: var(--alertDishFontSize); line-height: var(--alertDishLineHeight); margin-top: var(--alertDishMarginTop); color: var(--alertDishColor); }
+.theme-kebab .kb-alert-for { font-weight: var(--alertForFontWeight); font-size: calc(var(--alertForFontSize) * 1em); color: var(--alertForColor); font-family: var(--alertForFont), system-ui, sans-serif; }
+.theme-kebab .kb-alert-name { font-family: var(--alertNameFont), sans-serif; font-size: var(--alertNameFontSize); line-height: var(--alertNameLineHeight); color: var(--alertNameColor); white-space: nowrap; }
 .theme-kebab .kb-alert-name span { display: inline-block; white-space: pre; }
-.theme-kebab .kb-alert-line { font-weight: 600; font-style: italic; margin-top: var(--kb-line-gap, 6px); }
-.theme-kebab .kb-alert-burst { position: absolute; left: var(--kb-burst-left, -36px); top: var(--kb-burst-top, -246px); pointer-events: none; }
-.theme-kebab .kb-alert.leaving .kb-bon { animation: kebab-fall var(--kb-leave, 600ms) ease-in forwards; }
-.theme-kebab .kb-alert.leaving .kb-printer { animation: kebab-rise var(--kb-leave, 600ms) ease-in var(--kb-leave-later, 300ms) forwards; }
-.theme-kebab .kb-alert-bag { position: relative; width: var(--kb-bag-width, 440px); height: var(--kb-bag-height, 528px); margin-top: var(--kb-bag-top, 110px); scale: var(--kb-bag-scale, 1); transform-origin: top center; }
-.theme-kebab .kb-bag { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 var(--kb-shadow-y, 10px) var(--kb-shadow-blur, 24px) color-mix(in srgb, var(--brown) 30%, transparent)); }
-.theme-kebab .kb-bag .kb-fill { fill: var(--kraft); }
-.theme-kebab .kb-bag .kb-ink { stroke: var(--redText); }
-.theme-kebab .kb-bag .kb-arc-letter { fill: var(--kraft); stroke: var(--redText); }
-.theme-kebab .kb-bag-dish { font-weight: 800; font-size: var(--kb-bag-dish, 22px); letter-spacing: var(--kb-bag-tracking, 3px); text-transform: uppercase; fill: var(--brown); }
-.theme-kebab .kb-bag-name { font-family: var(--titleFont), sans-serif; font-size: var(--kb-bag-name, 64px); fill: var(--redText); }
-.theme-kebab .kb-bag-line { font-weight: 600; font-style: italic; font-size: var(--kb-bag-line, 22px); fill: var(--brown); }
-.theme-kebab .kb-bag-burst { left: var(--kb-bag-burst-left, -80px); top: var(--kb-bag-burst-top, -160px); }
-.theme-kebab .kb-alert.leaving .kb-alert-bag { animation: kebab-away var(--kb-leave, 600ms) ease-in forwards; }
+.theme-kebab .kb-alert-line { font-weight: var(--alertLineFontWeight); font-style: italic; margin-top: var(--alertLineMarginTop); color: var(--alertLineColor); font-family: var(--alertLineFont), system-ui, sans-serif; }
+.theme-kebab .kb-alert-burst { position: absolute; left: var(--alertBurstLeft); top: var(--alertBurstTop); pointer-events: none; }
+.theme-kebab .kb-alert.leaving .kb-bon { animation: kebab-fall var(--alertLeavingBonAnimation) ease-in forwards; }
+.theme-kebab .kb-alert.leaving .kb-printer { animation: kebab-rise var(--alertLeavingPrinterAnimation) ease-in var(--alertLeavingPrinterAnimation2) forwards; }
+.theme-kebab .kb-alert-bag { position: relative; width: var(--alertBagWidth); height: var(--alertBagHeight); margin-top: var(--alertBagMarginTop); scale: var(--kb-bag-scale, var(--alertBagScale)); transform-origin: top center; }
+.theme-kebab .kb-bag { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 var(--bagFilter2) var(--bagFilter3) color-mix(in srgb, var(--bagFilter) var(--bagFilter4), transparent)); }
+.theme-kebab .kb-bag .kb-fill { fill: var(--bagFillFill); }
+.theme-kebab .kb-bag .kb-ink { stroke: var(--bagInkStroke); }
+.theme-kebab .kb-bag .kb-arc-letter { fill: var(--bagArcLetterFill); stroke: var(--bagArcLetterStroke); }
+.theme-kebab .kb-bag-dish { font-weight: var(--bagDishFontWeight); font-size: var(--bagDishFontSize); letter-spacing: var(--bagDishLetterSpacing); text-transform: uppercase; fill: var(--bagDishFill); color: var(--bagDishColor); font-family: var(--bagDishFont), system-ui, sans-serif; }
+.theme-kebab .kb-bag-name { font-family: var(--bagNameFont), sans-serif; font-size: var(--bagNameFontSize); fill: var(--bagNameFill); color: var(--bagNameColor); }
+.theme-kebab .kb-bag-line { font-weight: var(--bagLineFontWeight); font-style: italic; font-size: var(--bagLineFontSize); fill: var(--bagLineFill); color: var(--bagLineColor); font-family: var(--bagLineFont), system-ui, sans-serif; }
+.theme-kebab .kb-bag-burst { left: var(--bagBurstLeft); top: var(--bagBurstTop); }
+.theme-kebab .kb-alert.leaving .kb-alert-bag { animation: kebab-away var(--alertLeavingAlertBagAnimation) ease-in forwards; }
 
-@keyframes kebab-fall { to { transform: translateY(var(--kb-fall, 380px)) rotate(var(--kb-fall-turn, 7deg)); opacity: 0; } }
-@keyframes kebab-rise { to { transform: translateY(var(--kb-rise, -220px)); } }
-@keyframes kebab-away { to { transform: translateX(var(--kb-away, 1300px)) rotate(var(--kb-away-turn, 18deg)); } }
+@keyframes kebab-fall { to { transform: translateY(var(--kfFallToTransform)) rotate(calc(var(--kfFallToTransform2) * 1deg)); opacity: 0; } }
+@keyframes kebab-rise { to { transform: translateY(var(--kfRiseToTransform)); } }
+@keyframes kebab-away { to { transform: translateX(var(--kfAwayToTransform)) rotate(calc(var(--kfAwayToTransform2) * 1deg)); } }
 
 /* --- Chat ---------------------------------------------------------------------------------------------------------- */
-.theme-kebab .kb-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--kb-chat-gap, 14px); padding: var(--kb-chat-padding, 12px 12px 22px); width: var(--chatWidth); box-sizing: border-box; }
-.theme-kebab .kb-chat-row { position: relative; animation: kebab-print var(--chatPrintMs) steps(var(--kb-chat-steps, 6)) both; }
-.theme-kebab .kb-chat-row.fades { animation: kebab-print var(--chatPrintMs) steps(var(--kb-chat-steps, 6)) both, kebab-fade var(--kb-fade, 600ms) ease-in var(--chatLifetime) forwards; }
-.theme-kebab .kb-chat-zettel .kb-chat-row { padding: var(--kb-note-padding, 10px 14px 14px); background: var(--bon); box-shadow: var(--kb-shadow); }
-.theme-kebab .kb-chat-liste { gap: 0; background: color-mix(in srgb, var(--bon) 94%, transparent); }
-.theme-kebab .kb-chat-liste .kb-chat-row { padding: var(--kb-list-padding, 8px 14px); border-bottom: var(--kb-rule, 2px) dashed var(--muted); }
-.theme-kebab .kb-chat-schlicht .kb-chat-row { color: var(--paper); text-shadow: 0 var(--kb-text-shadow, 2px) var(--kb-text-blur, 6px) color-mix(in srgb, var(--brown) 90%, transparent); }
-.theme-kebab .kb-chat-name { display: block; font-family: var(--titleFont), sans-serif; font-size: 0.95em; }
-.theme-kebab .kb-tone-redText { color: var(--redText); }
-.theme-kebab .kb-tone-brown { color: var(--brown); }
-.theme-kebab .kb-tone-muted { color: var(--muted); }
-.theme-kebab .kb-chat-schlicht .kb-chat-name { color: var(--paper); }
-.theme-kebab .kb-chat-text { font-weight: 600; overflow-wrap: anywhere; }
+.theme-kebab .kb-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chatPadding) var(--chatPadding2) var(--chatPadding3); width: var(--chatWidth); box-sizing: border-box; }
+.theme-kebab .kb-chat-row { position: relative; animation: kebab-print calc(var(--chatPrintMs) * var(--chatRowAnimation) / 100) steps(var(--chatRowAnimation2)) both; }
+.theme-kebab .kb-chat-row.fades { animation: kebab-print calc(var(--chatPrintMs) * var(--chatRowFadesAnimation) / 100) steps(var(--chatRowFadesAnimation2)) both, kebab-fade var(--chatRowFadesAnimation3) ease-in var(--chatLifetime) forwards; }
+.theme-kebab .kb-chat-zettel .kb-chat-row { padding: var(--chatZettelChatRowPadding) var(--chatZettelChatRowPadding2) var(--chatZettelChatRowPadding3); background: var(--chatZettelChatRowBackground); box-shadow: 0 var(--chatZettelChatRowBoxShadow2) var(--chatZettelChatRowBoxShadow3) color-mix(in srgb, var(--chatZettelChatRowBoxShadow) var(--chatZettelChatRowBoxShadow4), transparent); }
+.theme-kebab .kb-chat-liste { gap: 0; background: color-mix(in srgb, var(--chatListeBackground) var(--chatListeBackground2), transparent); }
+.theme-kebab .kb-chat-liste .kb-chat-row { padding: var(--chatListeChatRowPadding) var(--chatListeChatRowPadding2); border-bottom: var(--chatListeChatRowBorderBottom2) dashed var(--chatListeChatRowBorderBottom); }
+.theme-kebab .kb-chat-schlicht .kb-chat-row { color: var(--chatSchlichtChatRowColor); text-shadow: 0 var(--chatSchlichtChatRowTextShadow2) var(--chatSchlichtChatRowTextShadow3) color-mix(in srgb, var(--chatSchlichtChatRowTextShadow) var(--chatSchlichtChatRowTextShadow4), transparent); }
+.theme-kebab .kb-chat-name { display: block; font-family: var(--chatNameFont), sans-serif; font-size: calc(var(--chatNameFontSize) * 1em); }
+.theme-kebab .kb-tone-redText { color: var(--toneRedTextColor); }
+.theme-kebab .kb-tone-brown { color: var(--toneBrownColor); }
+.theme-kebab .kb-tone-muted { color: var(--toneMutedColor); }
+.theme-kebab .kb-chat-schlicht .kb-chat-name { color: var(--chatSchlichtChatNameColor); }
+.theme-kebab .kb-chat-text { font-weight: var(--chatTextFontWeight); overflow-wrap: anywhere; color: var(--chatTextColor); font-family: var(--chatTextFont), system-ui, sans-serif; }
 .theme-kebab .kb-chat-row.action .kb-chat-text { font-style: italic; }
-.theme-kebab .kb-badge { display: inline-block; margin-right: var(--kb-badge-gap, 6px); padding: var(--kb-badge-padding, 0 6px); border-radius: var(--kb-badge-radius, 4px); background: var(--redText); color: var(--paper); font: 800 0.6em var(--font), sans-serif; vertical-align: middle; }
+.theme-kebab .kb-badge { display: inline-block; margin-right: var(--badgeMarginRight); padding: 0 var(--badgePadding); border-radius: var(--badgeBorderRadius); background: var(--badgeBackground); color: var(--badgeColor); font: var(--badgeFont) calc(var(--badgeFont2) * 1em) var(--font), sans-serif; vertical-align: middle; }
 .theme-kebab .kb-emote { height: var(--emoteSize); vertical-align: middle; }
 
 @keyframes kebab-print { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 0 0); } }
@@ -54,58 +54,58 @@
 
 /* --- Camera: the shop window -------------------------------------------------------------------------------------- */
 .theme-kebab .kb-cam { position: fixed; inset: 0; }
-.theme-kebab .kb-cam-frame { position: absolute; inset: var(--kb-cam-inset, 6px); border: var(--camBorder) solid var(--red); border-radius: var(--kb-cam-radius, 6px); }
-.theme-kebab .kb-cam-awning { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: var(--kb-awning-height, 16%); }
-.theme-kebab .kb-awning-red { fill: var(--red); }
-.theme-kebab .kb-awning-paper { fill: var(--paper); }
-.theme-kebab .kb-awning-edge { fill: none; stroke: var(--redText); stroke-width: var(--kb-awning-line, 4px); vector-effect: non-scaling-stroke; }
-.theme-kebab .kb-cam-counter { position: absolute; left: 0; right: 0; bottom: 0; height: var(--kb-counter-height, 7%); background: var(--brown); border-top: var(--kb-counter-line, 4px) solid var(--red); }
+.theme-kebab .kb-cam-frame { position: absolute; inset: var(--camFrameInset); border: var(--camBorder) solid var(--camFrameBorder); border-radius: var(--camFrameBorderRadius); }
+.theme-kebab .kb-cam-awning { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: var(--camAwningHeight); }
+.theme-kebab .kb-awning-red { fill: var(--awningRedFill); }
+.theme-kebab .kb-awning-paper { fill: var(--awningPaperFill); }
+.theme-kebab .kb-awning-edge { fill: none; stroke: var(--awningEdgeStroke); stroke-width: var(--awningEdgeStrokeWidth); vector-effect: non-scaling-stroke; }
+.theme-kebab .kb-cam-counter { position: absolute; left: 0; right: 0; bottom: 0; height: var(--camCounterHeight); background: var(--camCounterBackground); border-top: var(--camCounterBorderTop2) solid var(--camCounterBorderTop); }
 .theme-kebab .kb-cam-name {
   position: absolute;
-  left: 50%;
-  bottom: var(--kb-cam-name-bottom, 2%);
-  transform: translateX(-50%);
-  padding: var(--kb-cam-name-padding, 6px 22px);
-  background: var(--bon);
-  color: var(--redText);
-  font-family: var(--titleFont), sans-serif;
-  font-size: 1.1em;
-  box-shadow: var(--kb-shadow);
+  left: var(--camNameLeft);
+  bottom: var(--camNameBottom);
+  transform: translateX(var(--camNameTransform));
+  padding: var(--camNamePadding) var(--camNamePadding2);
+  background: var(--camNameBackground);
+  color: var(--camNameColor);
+  font-family: var(--camNameFont), sans-serif;
+  font-size: calc(var(--camNameFontSize) * 1em);
+  box-shadow: 0 var(--camNameBoxShadow2) var(--camNameBoxShadow3) color-mix(in srgb, var(--camNameBoxShadow) var(--camNameBoxShadow4), transparent);
 }
-.theme-kebab .kb-cam-rahmen .kb-cam-name { bottom: var(--kb-cam-inset, 6px); }
+.theme-kebab .kb-cam-rahmen .kb-cam-name { bottom: var(--camRahmenCamNameBottom); }
 
 /* --- Music -------------------------------------------------------------------------------------------------------- */
-.theme-kebab .kb-music { position: fixed; left: 0; right: 0; bottom: 0; padding: var(--kb-music-padding, 8px 12px 20px); animation: kebab-in var(--kb-music-in, 400ms) ease-out both; }
-.theme-kebab .kb-music.leaving { animation: kebab-fade var(--kb-music-out, 400ms) ease-in forwards; }
-.theme-kebab .kb-music-paper { position: relative; padding: var(--kb-music-inner, 14px 18px); background: var(--bon); box-shadow: var(--kb-shadow); }
-.theme-kebab .kb-music-schild .kb-music-paper { border: var(--kb-sign-border, 3px) solid var(--red); border-radius: var(--kb-sign-radius, 6px); }
-.theme-kebab .kb-music-schlicht .kb-music-paper { background: transparent; box-shadow: none; color: var(--paper); text-shadow: 0 var(--kb-text-shadow, 2px) var(--kb-text-blur, 6px) color-mix(in srgb, var(--brown) 90%, transparent); }
-.theme-kebab .kb-track { display: flex; align-items: center; gap: var(--kb-track-gap, 16px); }
-.theme-kebab .kb-cover { width: var(--coverSize); height: var(--coverSize); object-fit: cover; flex: none; filter: sepia(0.25); }
+.theme-kebab .kb-music { position: fixed; left: 0; right: 0; bottom: 0; padding: var(--musicPadding) var(--musicPadding2) var(--musicPadding3); animation: kebab-in var(--musicAnimation) ease-out both; }
+.theme-kebab .kb-music.leaving { animation: kebab-fade var(--musicLeavingAnimation) ease-in forwards; }
+.theme-kebab .kb-music-paper { position: relative; padding: var(--musicPaperPadding) var(--musicPaperPadding2); background: var(--musicPaperBackground); box-shadow: 0 var(--musicPaperBoxShadow2) var(--musicPaperBoxShadow3) color-mix(in srgb, var(--musicPaperBoxShadow) var(--musicPaperBoxShadow4), transparent); }
+.theme-kebab .kb-music-schild .kb-music-paper { border: var(--musicSchildMusicPaperBorder2) solid var(--musicSchildMusicPaperBorder); border-radius: var(--musicSchildMusicPaperBorderRadius); }
+.theme-kebab .kb-music-schlicht .kb-music-paper { background: transparent; box-shadow: none; color: var(--musicSchlichtMusicPaperColor); text-shadow: 0 var(--musicSchlichtMusicPaperTextShadow2) var(--musicSchlichtMusicPaperTextShadow3) color-mix(in srgb, var(--musicSchlichtMusicPaperTextShadow) var(--musicSchlichtMusicPaperTextShadow4), transparent); }
+.theme-kebab .kb-track { display: flex; align-items: center; gap: var(--trackGap); }
+.theme-kebab .kb-cover { width: calc(var(--coverSize) * var(--coverWidth) / 100); height: calc(var(--coverSize) * var(--coverHeight) / 100); object-fit: cover; flex: none; filter: sepia(var(--coverFilter)); }
 .theme-kebab .kb-track-text { display: grid; min-width: 0; }
-.theme-kebab .kb-music-label { font-weight: 900; font-size: 0.7em; letter-spacing: var(--kb-label-tracking, 3px); color: var(--redText); }
-.theme-kebab .kb-track-title { font-family: var(--titleFont), sans-serif; font-size: 1.15em; }
-.theme-kebab .kb-track-artist { font-weight: 600; color: var(--muted); }
-.theme-kebab .kb-music-schlicht .kb-track-artist { color: var(--paper); }
-.theme-kebab .kb-music-idle { margin: 0; font-weight: 700; color: var(--muted); }
-.theme-kebab .kb-music-progress { position: relative; margin-top: var(--kb-progress-gap, 10px); height: var(--kb-progress, 4px); background: repeating-linear-gradient(90deg, var(--muted) 0 var(--kb-dash, 8px), transparent var(--kb-dash, 8px) calc(2 * var(--kb-dash, 8px))); }
-.theme-kebab .kb-music-progress span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--redText); }
+.theme-kebab .kb-music-label { font-weight: var(--musicLabelFontWeight); font-size: calc(var(--musicLabelFontSize) * 1em); letter-spacing: var(--musicLabelLetterSpacing); color: var(--musicLabelColor); font-family: var(--musicLabelFont), system-ui, sans-serif; }
+.theme-kebab .kb-track-title { font-family: var(--trackTitleFont), sans-serif; font-size: calc(var(--trackTitleFontSize) * 1em); color: var(--trackTitleColor); }
+.theme-kebab .kb-track-artist { font-weight: var(--trackArtistFontWeight); color: var(--trackArtistColor); font-family: var(--trackArtistFont), system-ui, sans-serif; }
+.theme-kebab .kb-music-schlicht .kb-track-artist { color: var(--musicSchlichtTrackArtistColor); }
+.theme-kebab .kb-music-idle { margin: 0; font-weight: var(--musicIdleFontWeight); color: var(--musicIdleColor); font-family: var(--musicIdleFont), system-ui, sans-serif; }
+.theme-kebab .kb-music-progress { position: relative; margin-top: var(--musicProgressMarginTop); height: var(--musicProgressHeight); background: repeating-linear-gradient(calc(var(--musicProgressBackground2) * 1deg), var(--musicProgressBackground) 0 var(--musicProgressBackground3), transparent var(--musicProgressBackground4) calc(var(--musicProgressBackground5) * var(--musicProgressBackground6))); }
+.theme-kebab .kb-music-progress span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--musicProgressSpanBackground); }
 
 /* --- Effects ------------------------------------------------------------------------------------------------------ */
 .theme-kebab .kb-fx { position: fixed; inset: 0; overflow: hidden; }
 .theme-kebab .kb-fx-item { position: absolute; display: grid; place-items: center; }
-.theme-kebab .kb-fx-text { font-family: var(--titleFont), sans-serif; font-weight: 400; font-size: var(--fxTextSize); color: var(--paper); -webkit-text-stroke: var(--kb-fx-stroke, 4px) var(--red); paint-order: stroke fill; }
+.theme-kebab .kb-fx-text { font-family: var(--fxTextFont), sans-serif; font-weight: var(--fxTextFontWeight); font-size: var(--fxTextSize); color: var(--fxTextColor); -webkit-text-stroke: var(--fxTextWebkitTextStroke2) var(--fxTextWebkitTextStroke); paint-order: stroke fill; }
 
 /* --- Commands page: a menu ---------------------------------------------------------------------------------------- */
-.theme-kebab.theme-root:has(.kb-info) { min-height: 100vh; background: radial-gradient(ellipse at 40% 20%, var(--paper) 55%, color-mix(in srgb, var(--paper) 88%, var(--kraft)) 100%); }
-.theme-kebab .kb-info { padding: var(--kb-info-padding, 48px 16px); }
-.theme-kebab .kb-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--kb-info-gap, 24px); }
-.theme-kebab .kb-info-title { margin: 0; text-align: center; font-family: var(--titleFont), sans-serif; font-weight: 400; font-size: var(--kb-info-title, 64px); color: var(--redText); }
-.theme-kebab .kb-info-intro { margin: 0; text-align: center; font-weight: 600; }
-.theme-kebab .kb-info-card { position: relative; padding: var(--kb-info-card, 22px 28px 30px); background: var(--bon); box-shadow: var(--kb-shadow); }
-.theme-kebab .kb-info-heading { margin: 0 0 var(--kb-info-heading-gap, 12px); font-family: var(--titleFont), sans-serif; font-weight: 400; color: var(--redText); }
-.theme-kebab .kb-info-entry { margin: var(--kb-info-entry, 10px) 0; }
-.theme-kebab .kb-info-dish { display: flex; align-items: baseline; gap: var(--kb-info-dots-gap, 8px); margin: 0; font-weight: 700; }
-.theme-kebab .kb-info-dots { flex: 1; border-bottom: var(--kb-rule, 2px) dotted var(--muted); }
-.theme-kebab .kb-info-command { font-family: var(--titleFont), sans-serif; font-weight: 400; color: var(--redText); white-space: nowrap; }
-.theme-kebab .kb-info-detail { margin: var(--kb-info-detail, 2px) 0 0; font-size: 0.85em; color: var(--muted); }
+.theme-kebab.theme-root:has(.kb-info) { min-height: calc(var(--themeRootMinHeight) * 1vh); background: radial-gradient(ellipse at var(--themeRootBackground4) var(--themeRootBackground5), var(--themeRootBackground) var(--themeRootBackground6), color-mix(in srgb, var(--themeRootBackground2) var(--themeRootBackground7), var(--themeRootBackground3)) 100%); }
+.theme-kebab .kb-info { padding: var(--infoPadding) var(--infoPadding2); }
+.theme-kebab .kb-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--infoColumnGap); }
+.theme-kebab .kb-info-title { margin: 0; text-align: center; font-family: var(--infoTitleFont), sans-serif; font-weight: var(--infoTitleFontWeight); font-size: var(--infoTitleFontSize); color: var(--infoTitleColor); }
+.theme-kebab .kb-info-intro { margin: 0; text-align: center; font-weight: var(--infoIntroFontWeight); color: var(--infoIntroColor); font-family: var(--infoIntroFont), system-ui, sans-serif; }
+.theme-kebab .kb-info-card { position: relative; padding: var(--infoCardPadding) var(--infoCardPadding2) var(--infoCardPadding3); background: var(--infoCardBackground); box-shadow: 0 var(--infoCardBoxShadow2) var(--infoCardBoxShadow3) color-mix(in srgb, var(--infoCardBoxShadow) var(--infoCardBoxShadow4), transparent); }
+.theme-kebab .kb-info-heading { margin: 0 0 var(--infoHeadingMargin); font-family: var(--infoHeadingFont), sans-serif; font-weight: var(--infoHeadingFontWeight); color: var(--infoHeadingColor); }
+.theme-kebab .kb-info-entry { margin: var(--infoEntryMargin) 0; }
+.theme-kebab .kb-info-dish { display: flex; align-items: baseline; gap: var(--infoDishGap); margin: 0; font-weight: var(--infoDishFontWeight); color: var(--infoDishColor); font-family: var(--infoDishFont), system-ui, sans-serif; }
+.theme-kebab .kb-info-dots { flex: 1; border-bottom: var(--infoDotsBorderBottom2) dotted var(--infoDotsBorderBottom); }
+.theme-kebab .kb-info-command { font-family: var(--infoCommandFont), sans-serif; font-weight: var(--infoCommandFontWeight); color: var(--infoCommandColor); white-space: nowrap; }
+.theme-kebab .kb-info-detail { margin: var(--infoDetailMargin) 0 0; font-size: calc(var(--infoDetailFontSize) * 1em); color: var(--infoDetailColor); font-family: var(--infoDetailFont), system-ui, sans-serif; }

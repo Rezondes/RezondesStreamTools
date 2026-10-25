@@ -7,7 +7,7 @@ import { useScreen } from "../../../core/screens/useScreen.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import { bonItems } from "../bon.ts";
 import { SPIT_TOP } from "../chef.ts";
-import { introAt } from "../intro.ts";
+import { introAt, introOf } from "../intro.ts";
 import { GLASS_TOP } from "../pause.ts";
 import Bon from "../screen/Bon.tsx";
 import ShopScreen from "../screen/ShopScreen.tsx";
@@ -21,7 +21,7 @@ const SECOND_MS = 1000;
 export default function Brb() {
   const values = useKebab();
   const [clock] = useState(sceneClock);
-  const intro = useMemo(() => introAt(values.introSpeed), [values.introSpeed]);
+  const intro = useMemo(() => introAt(values.introSpeed, introOf(values)), [values]);
   const screen = useScreen({ countdownSeconds: 0, countdownAt: "", ticker: values.brbTicker, next: "" });
   const names = kebabNames(values);
   const line = rotating(values.brbLines, values.linesEvery * SECOND_MS, screen.now - screen.start);

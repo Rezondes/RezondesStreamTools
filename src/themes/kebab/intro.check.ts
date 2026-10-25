@@ -1,6 +1,11 @@
 // Check for intro.ts: the entrance keeps the order of the prototype and scales with the speed. Runs with npm test.
 import assert from "node:assert/strict";
-import { introAt } from "./intro.ts";
+import { effectiveSettings } from "../../core/settings.ts";
+import { introAt as introWith, introOf } from "./intro.ts";
+import { type KebabValues, kebabSettings } from "./settings.ts";
+
+const base = introOf(effectiveSettings(kebabSettings, {}) as unknown as KebabValues);
+const introAt = (speed: number) => introWith(speed, base);
 
 const normal = introAt(1);
 assert.equal(normal.letters, 0.6);

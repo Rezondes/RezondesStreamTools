@@ -21,6 +21,7 @@ use crate::themes::minime_fields::{
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
+use crate::themes::tuning;
 
 const TITLE_FONTS: [&str; 3] = ["Titan One", "Baloo 2", "Fredoka"];
 const TEXT_FONTS: [&str; 3] = ["Nunito", "DM Sans", "Manrope"];
@@ -394,7 +395,7 @@ fn minimes() -> Vec<SettingField> {
 
 fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     use SceneName::{Brb, Ending, Starting, Stats};
-    BTreeMap::from([
+    let mut groups = BTreeMap::from([
         (GENERAL.to_owned(), vec![Starting, Brb, Ending, Stats]),
         (CHEF.to_owned(), vec![Starting, Brb, Ending]),
         (STARTING.to_owned(), vec![Starting]),
@@ -417,7 +418,9 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MINIME_VARIANTS.to_owned(), vec![SceneName::Minimes]),
         (MINIME_LOOK.to_owned(), vec![SceneName::Minimes]),
         (MINIME_MOVES.to_owned(), vec![SceneName::Minimes]),
-    ])
+    ]);
+    groups.extend(tuning::kebab::group_scenes().into_iter().map(|(group, scenes)| (group.to_owned(), scenes)));
+    groups
 }
 
 /// The shop of the streamer: "Rezondes' Döner" for a login ending in s, x or z, else "Neos Döner"
@@ -490,6 +493,7 @@ pub fn kebab() -> Theme {
     fields.extend(clips());
     fields.extend(minimes());
     fields.extend(minime_variant_fields(&variants()));
+    fields.extend(tuning::kebab::fields());
     let schema = ThemeSchema {
         id: "kebab".to_owned(),
         name: "Kebab".to_owned(),

@@ -1,0 +1,38 @@
+// Fine-tuning fields of the Kebab theme, group "Feinschliff: Minimes" (tuning.ts puts the groups together).
+import { color, font, inherits, number } from "../../../core/fields.ts";
+import type { SettingField } from "../../../core/theme.ts";
+
+export const MINIMES_TUNING = [
+  number("minimesKbFloor", "Minimes: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100, 0, 400),
+  number("onCounterKbFloor", "auf Theke: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100, 0, 400),
+  number("onCounterKbFloor2", "auf Theke: Abstand zum Boden", "Feinschliff: Minimes", 4, 0, 40, "px"),
+  number("minimeCounterBottom", "Minime Theke: Lage unten Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100, 0, 400),
+  inherits(color("minimeCounterBorderTop", "Minime Theke: Rand oben Farbe (Linien und Bogenschrift (Signatur))", "Feinschliff: Minimes", ""), "red"),
+  number("minimeCounterBorderTop2", "Minime Theke: Rand oben Stärke", "Feinschliff: Minimes", 4, 0, 40, "px"),
+  number("minimeCounterBorderRadius", "Minime Theke: Eckenradius", "Feinschliff: Minimes", 2, 0, 40, "px"),
+  number("minimeWidth", "Minime: Breite Anteil von „Grösse (Höhe)“ (%)", "Feinschliff: Minimes", 100, 0, 400),
+  number("minimeTransform", "Minime: Verformung Verschiebung x", "Feinschliff: Minimes", 50, -150, 150, "%"),
+  number("minimeFlipScale", "Minime Wende: Grösse y", "Feinschliff: Minimes", 1, 0, 4, undefined, 0.01),
+  number("dishWidth", "Gericht: Breite Anteil von „Grösse (Höhe)“ (%)", "Feinschliff: Minimes", 100, 0, 400),
+  number("dishHeight", "Gericht: Höhe Anteil von „Grösse (Höhe)“ (%)", "Feinschliff: Minimes", 100, 0, 400),
+  inherits(color("dishSauceCircleFill", "Gericht Sosse Kreis: Füllfarbe Farbe (Rot für Schrift und Flächen)", "Feinschliff: Minimes", ""), "redText"),
+  inherits(color("dishSteamCircleFill", "Gericht Dampf Kreis: Füllfarbe Farbe (Papier)", "Feinschliff: Minimes", ""), "paper"),
+  inherits(color("dishSteamCircleStroke", "Gericht Dampf Kreis: Linienfarbe Farbe (Linien und Bogenschrift (Signatur))", "Feinschliff: Minimes", ""), "red"),
+  number("dishSteamCircleStrokeWidth", "Gericht Dampf Kreis: Linienstärke", "Feinschliff: Minimes", 1.6, 0, 40, "px", 0.5),
+  number("minimeNameMarginBottom", "Minime Name: Abstand unten", "Feinschliff: Minimes", 4, -40, 40, "px"),
+  number("minimeNamePadding", "Minime Name: Innenabstand oben", "Feinschliff: Minimes", 1, 0, 40, "px"),
+  number("minimeNamePadding2", "Minime Name: Innenabstand links/rechts", "Feinschliff: Minimes", 8, 0, 40, "px"),
+  number("minimeNamePadding3", "Minime Name: Innenabstand unten", "Feinschliff: Minimes", 3, 0, 40, "px"),
+  inherits(color("minimeNameBackground", "Minime Name: Hintergrund Farbe (Bon-Papier)", "Feinschliff: Minimes", ""), "bon"),
+  inherits(color("minimeNameBorderBottom", "Minime Name: Rand unten Farbe (Text gedämpft)", "Feinschliff: Minimes", ""), "muted"),
+  number("minimeNameBorderBottom2", "Minime Name: Rand unten Stärke", "Feinschliff: Minimes", 2, 0, 40, "px"),
+  inherits(color("minimeNameBoxShadow", "Minime Name: Schatten Farbe (Text dunkel)", "Feinschliff: Minimes", ""), "brown"),
+  number("minimeNameBoxShadow2", "Minime Name: Schatten y", "Feinschliff: Minimes", 2, -40, 40, "px"),
+  number("minimeNameBoxShadow3", "Minime Name: Schatten Unschärfe", "Feinschliff: Minimes", 4, 0, 40, "px"),
+  number("minimeNameBoxShadow4", "Minime Name: Schatten Farbanteil", "Feinschliff: Minimes", 25, 0, 100, "%"),
+  inherits(color("minimeNameColor", "Minime Name: Textfarbe", "Feinschliff: Minimes", ""), "brown"),
+  inherits(font("minimeNameFont", "Minime Name: Schrift", "Feinschliff: Minimes", "", ["Nunito", "DM Sans", "Manrope"]), "font"),
+  number("minimeNameFontWeight", "Minime Name: Schriftstärke", "Feinschliff: Minimes", 800, 100, 900, undefined, 100),
+  number("kfMinimePopToScale", "Minime ploppt (Ende): Grösse y", "Feinschliff: Minimes", 1, 0, 4, undefined, 0.01),
+  number("kfMinimeFadeToOpacity", "Minime blendet (Ende): Deckkraft", "Feinschliff: Minimes", 1, 0, 1, undefined, 0.01),
+] as const satisfies readonly SettingField[];

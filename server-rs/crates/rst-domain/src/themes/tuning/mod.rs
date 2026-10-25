@@ -2,6 +2,7 @@
 
 pub mod bears;
 pub mod chaos;
+pub mod kebab;
 pub mod koth;
 pub mod matrix;
 pub mod plantage;

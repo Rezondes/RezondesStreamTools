@@ -8,7 +8,7 @@ import { useStreamStats } from "../../../core/hooks/useStreamStats.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { countedStats, parseStatLines } from "../../../core/stats/stats.ts";
 import { fillTemplate } from "../../../core/template.ts";
-import { CLOSING, HIT, LOCALE, PRINT, rowShares } from "../closing.ts";
+import { LOCALE, rowShares } from "../closing.ts";
 import Stamp from "../screen/Stamp.tsx";
 import { sceneClock, useFrame } from "../useFrame.ts";
 import { kebabNames, useKebab } from "../useKebab.ts";
@@ -23,15 +23,15 @@ export default function Stats() {
   const lines = useMemo(() => parseStatLines(values.closingLines.join("\n")), [values.closingLines]);
   useFrame(clock, setTime);
   useTimeline(timeline => {
-    timeline.from(".kb-printer", { y: PRINT.dropY, duration: PRINT.drop, ease: "back.out(1.7)" }, CLOSING.printer);
-    timeline.from(".kb-bon", { clipPath: "inset(0% 0% 100% 0%)", duration: PRINT.feed, ease: `steps(${PRINT.steps})` }, CLOSING.bon);
-    timeline.set(".kb-bon", { clipPath: "none" }, CLOSING.printed);
+    timeline.from(".kb-printer", { y: values.closingDropFrom, duration: values.closingDropTime, ease: "back.out(1.7)" }, values.closingPrinterAt);
+    timeline.from(".kb-bon", { clipPath: "inset(0% 0% 100% 0%)", duration: values.closingFeedTime, ease: `steps(${values.closingSteps})` }, values.closingBonAt);
+    timeline.set(".kb-bon", { clipPath: "none" }, values.closingPrintedAt);
     if (!values.stampOn) return;
-    timeline.from(".kb-stamp", { scale: HIT.scale, opacity: 0, duration: HIT.duration, ease: "power4.in" }, values.stampAt);
-    timeline.to(".kb-bon", { x: HIT.shake, duration: HIT.shakeTime, yoyo: true, repeat: HIT.shakes }, values.stampAt + HIT.duration);
-  }, [values.stampOn, values.stampAt], box);
+    timeline.from(".kb-stamp", { scale: values.closingHitScale, opacity: 0, duration: values.closingHitTime, ease: "power4.in" }, values.stampAt);
+    timeline.to(".kb-bon", { x: values.closingShake, duration: values.closingShakeTime, yoyo: true, repeat: values.closingShakes }, values.stampAt + values.closingHitTime);
+  }, [values], box);
   const names = kebabNames(values);
-  const rows = countedStats(stats, lines, LOCALE, now, rowShares(time, lines.length, values.countUpMs));
+  const rows = countedStats(stats, lines, LOCALE, now, rowShares(time, lines.length, values.countUpMs, values.closingPrintedAt, values.closingRowGap));
   return (
     <div className="kb-stats" ref={box}>
       <div className="kb-bon-box">

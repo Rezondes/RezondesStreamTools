@@ -2,14 +2,19 @@
 // part starts in seconds, divided by the speed of the settings, so the scene builds its GSAP timeline from it and the
 // chef, the shavings and the steam know when they begin. Check: intro.check.ts.
 
-// fixed: the order of the prototype in seconds
-const BASE = {
-  lights: 0, letters: 0.6, body: 1, fills: 1.4, spit: 1.5, arm: 2, hatch: 2.1, steam: 2.4, printer: 2.4, idle: 2.6, bon: 2.8, ticker: 3.2, shavings: 3.2,
-};
-type IntroStep = keyof typeof BASE;
+import type { KebabValues } from "./settings.ts";
+
+type IntroStep = "lights" | "letters" | "body" | "fills" | "spit" | "arm" | "hatch" | "steam" | "printer" | "idle" | "bon" | "ticker" | "shavings";
 export type Intro = Record<IntroStep, number>;
 
-export function introAt(speed: number): Intro {
+// The order of the settings in seconds (the prototype as default)
+export const introOf = (values: KebabValues): Intro => ({
+  lights: values.introLights, letters: values.introLetters, body: values.introBody, fills: values.introFills, spit: values.introSpit,
+  arm: values.introArm, hatch: values.introHatch, steam: values.introSteam, printer: values.introPrinter, idle: values.introIdle,
+  bon: values.introBon, ticker: values.introTicker, shavings: values.introShavings,
+});
+
+export function introAt(speed: number, base: Intro): Intro {
   const factor = speed > 0 ? 1 / speed : 1;
-  return Object.fromEntries(Object.entries(BASE).map(([step, at]) => [step, at * factor])) as Intro;
+  return Object.fromEntries(Object.entries(base).map(([step, at]) => [step, at * factor])) as Intro;
 }

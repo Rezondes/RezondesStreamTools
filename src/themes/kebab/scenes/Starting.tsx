@@ -9,7 +9,7 @@ import { useScreen } from "../../../core/screens/useScreen.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import { bonItems } from "../bon.ts";
 import { SPIT_TOP } from "../chef.ts";
-import { introAt } from "../intro.ts";
+import { introAt, introOf } from "../intro.ts";
 import Bon from "../screen/Bon.tsx";
 import ShopScreen from "../screen/ShopScreen.tsx";
 import Ticker from "../screen/Ticker.tsx";
@@ -22,7 +22,7 @@ const SECOND_MS = 1000;
 export default function Starting() {
   const values = useKebab();
   const [clock] = useState(sceneClock);
-  const intro = useMemo(() => introAt(values.introSpeed), [values.introSpeed]);
+  const intro = useMemo(() => introAt(values.introSpeed, introOf(values)), [values]);
   const screen = useScreen({ countdownSeconds: values.countdown, countdownAt: values.countdownAt, ticker: values.ticker, next: "" });
   const names = kebabNames(values);
   const line = rotating(values.startingLines, values.linesEvery * SECOND_MS, screen.now - screen.start);

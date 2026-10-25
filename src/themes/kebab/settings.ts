@@ -9,6 +9,7 @@ import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 import { DISH_SET, DISH_TYPES } from "./dishes.ts";
 
 const TITLE_FONTS = ["Titan One", "Baloo 2", "Fredoka"] as const;
@@ -270,6 +271,7 @@ const GROUP_SCENES = {
   [MINIME_VARIANTS]: ["minimes"],
   [MINIME_LOOK]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
+  ...TUNING_GROUPS,
 } as const;
 
 // On first login: the shop of the streamer, "Rezondes' Döner" for a login ending in s, x or z, else "Neos Döner"
@@ -282,6 +284,6 @@ const personalize = (login: string) => ({ channelName: shopOf(login) });
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
 const BASIC = ["quality", "channelName", "red", "redText", "sawOn", "shavingsOn", "startingItems", "countdownLabel", "countdownDone", "ticker", "brbTitle", "brbTicker", "endingTitle", "endingNext", "closingTitle", "closingLines", "stampText", "alertStyle", "followLine", "subLine", "raidLine", "cheerLine", "alertStampText", "chatStyle", "chatBadges", "camStyle", "camLabel", "musicStyle", "musicLabel", "musicIdle", "fxText", "minimeDefault", "minimeLabels"];
 
-export const kebabSettings: ThemeSchema = { id: "kebab", name: "Kebab", fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(DISH_SET)], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize,
+export const kebabSettings: ThemeSchema = { id: "kebab", name: "Kebab", fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(DISH_SET), ...TUNING_FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize,
   minimeVariants: DISH_SET,
 };

@@ -8,15 +8,21 @@ import { seedOf } from "../../../core/hash.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import type { SoundValue } from "../../../core/theme.ts";
 import type { AlertTexts } from "../alerts.ts";
-import Burst, { type BurstProps } from "../pixi/Burst.tsx";
+import Burst, { burstLookOf, type BurstProps } from "../pixi/Burst.tsx";
 import type { KebabValues } from "../settings.ts";
 import { playPrinter, playStamp } from "../tones.ts";
 import { sceneClock } from "../useFrame.ts";
 import Stamp from "./Stamp.tsx";
 
-// fixed: the timing of the prototype in s (printer, bon, name) and how the parts move (px, s, steps of the shake)
-const AT = { printer: 0, bon: 0.5, printed: 1.5 };
-const MOVE = { printerY: -220, printer: 0.45, feed: 1, letterY: 20, letter: 0.35, letterStagger: 0.05, hit: 0.18, hitScale: 2.6, shake: 6, shakeTime: 0.04, shakes: 3 };
+// The timing of the settings in s (printer, bon, name) and how the parts move (px, s, steps of the shake)
+const motionOf = (values: KebabValues) => ({
+  AT: { printer: values.bonPrinterAt, bon: values.bonFeedAt, printed: values.bonPrintedAt },
+  MOVE: {
+    printerY: values.bonPrinterFrom, printer: values.bonPrinterTime, feed: values.bonFeedTime, letterY: values.bonLetterFrom, letter: values.bonLetterTime,
+    letterStagger: values.bonLetterStep, hit: values.bonHitTime, hitScale: values.bonHitScale, shake: values.bonShake, shakeTime: values.bonShakeTime,
+    shakes: values.bonShakes,
+  },
+});
 const SECOND_MS = 1000;
 // fixed: the PixiJS stage of the crumbs around the stamp: its size and where the stamp sits in it (px)
 const BURST = { size: { width: 800, height: 700 }, origin: { x: 400, y: 350 } };
@@ -29,6 +35,7 @@ export default function AlertBon({ texts, user, shop, values, sound }: Props) {
   const box = useRef<HTMLDivElement>(null);
   const [clock] = useState(sceneClock);
   const stampAt = values.alertStampAt / SECOND_MS;
+  const { AT, MOVE } = motionOf(values);
   useTimeline(timeline => {
     timeline.from(".kb-printer", { y: MOVE.printerY, duration: MOVE.printer, ease: "back.out(1.7)" }, AT.printer);
     timeline.from(".kb-bon", { clipPath: "inset(0% 0% 100% 0%)", duration: MOVE.feed, ease: `steps(${values.alertPrintSteps})` }, AT.bon);
@@ -39,11 +46,11 @@ export default function AlertBon({ texts, user, shop, values, sound }: Props) {
     timeline.from(".kb-stamp", { scale: MOVE.hitScale, opacity: 0, duration: MOVE.hit, ease: "power4.in" }, stampAt);
     timeline.to(".kb-bon", { x: MOVE.shake, duration: MOVE.shakeTime, yoyo: true, repeat: MOVE.shakes }, stampAt + MOVE.hit);
     if (sound) timeline.call(() => playStamp(sound), [], stampAt);
-  }, [values.alertPrintSteps, values.alertStamp, stampAt, sound], box);
+  }, [values, stampAt, sound], box);
   const burst: BurstProps = useMemo(() => ({
     clock, size: BURST.size, color: values.red, seed: seedOf(user), count: values.alertCrumbCount,
-    hitAt: values.alertStamp && values.alertCrumbs ? stampAt + MOVE.hit : null, origin: BURST.origin, steam: null,
-  }), [clock, values.red, values.alertCrumbCount, values.alertStamp, values.alertCrumbs, stampAt, user]);
+    hitAt: values.alertStamp && values.alertCrumbs ? stampAt + MOVE.hit : null, origin: BURST.origin, steam: null, look: burstLookOf(values),
+  }), [clock, values, stampAt, MOVE.hit, user]);
   return (
     <div className="kb-bon-box kb-alert-bon" ref={box}>
       <div className="kb-printer" />

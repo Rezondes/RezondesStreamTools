@@ -2,17 +2,17 @@
    minime the scene sets --x, --move, --action-ms, --facing, --hops, --hop-ms;
    the running action is the class action-<name>. The dish itself poses in ink/Dish.tsx. Keyframes are kebab-minime-*. */
 
-.theme-kebab .kb-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; --kb-floor: var(--minimeGround); }
-.theme-kebab .kb-on-counter { --kb-floor: calc(var(--minimeGround) + var(--kb-counter-line, 4px)); }
+.theme-kebab .kb-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; --kb-floor: calc(var(--minimeGround) * var(--minimesKbFloor) / 100); }
+.theme-kebab .kb-on-counter { --kb-floor: calc(calc(var(--minimeGround) * var(--onCounterKbFloor) / 100) + var(--onCounterKbFloor2)); }
 
 /* The counter line along the bottom, in the red of the logo */
 .theme-kebab .kb-minime-counter {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: var(--minimeGround);
-  border-top: var(--kb-counter-line, 4px) solid var(--red);
-  border-radius: var(--kb-counter-round, 2px);
+  bottom: calc(var(--minimeGround) * var(--minimeCounterBottom) / 100);
+  border-top: var(--minimeCounterBorderTop2) solid var(--minimeCounterBorderTop);
+  border-radius: var(--minimeCounterBorderRadius);
 }
 
 .theme-kebab .kb-minime {
@@ -22,25 +22,25 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: var(--minimeSize);
-  transform: translateX(calc(var(--x) - 50%));
+  width: calc(var(--minimeSize) * var(--minimeWidth) / 100);
+  transform: translateX(calc(var(--x) - var(--minimeTransform)));
   transition: transform var(--move) linear;
 }
-.theme-kebab .kb-minime-flip { scale: var(--facing) 1; }
-.theme-kebab .kb-dish { display: block; width: var(--minimeSize); height: var(--minimeSize); overflow: visible; }
-.theme-kebab .kb-dish-sauce circle { fill: var(--redText); }
-.theme-kebab .kb-dish-steam circle { fill: var(--paper); stroke: var(--red); stroke-width: var(--kb-steam-line, 1.6px); }
+.theme-kebab .kb-minime-flip { scale: var(--facing) var(--minimeFlipScale); }
+.theme-kebab .kb-dish { display: block; width: calc(var(--minimeSize) * var(--dishWidth) / 100); height: calc(var(--minimeSize) * var(--dishHeight) / 100); overflow: visible; }
+.theme-kebab .kb-dish-sauce circle { fill: var(--dishSauceCircleFill); }
+.theme-kebab .kb-dish-steam circle { fill: var(--dishSteamCircleFill); stroke: var(--dishSteamCircleStroke); stroke-width: var(--dishSteamCircleStrokeWidth); }
 
 /* Name on a small order note above the dish; in a tower it moves aside, so the notes do not cover each other */
 .theme-kebab .kb-minime-name {
-  margin-bottom: var(--kb-note-gap, 4px);
-  padding: var(--kb-note-pad, 1px 8px 3px);
-  background: var(--bon);
-  border-bottom: var(--kb-note-edge, 2px) dashed var(--muted);
-  box-shadow: 0 var(--kb-note-drop, 2px) var(--kb-note-blur, 4px) color-mix(in srgb, var(--brown) 25%, transparent);
-  color: var(--brown);
-  font-family: var(--font), sans-serif;
-  font-weight: 800;
+  margin-bottom: var(--minimeNameMarginBottom);
+  padding: var(--minimeNamePadding) var(--minimeNamePadding2) var(--minimeNamePadding3);
+  background: var(--minimeNameBackground);
+  border-bottom: var(--minimeNameBorderBottom2) dashed var(--minimeNameBorderBottom);
+  box-shadow: 0 var(--minimeNameBoxShadow2) var(--minimeNameBoxShadow3) color-mix(in srgb, var(--minimeNameBoxShadow) var(--minimeNameBoxShadow4), transparent);
+  color: var(--minimeNameColor);
+  font-family: var(--minimeNameFont), sans-serif;
+  font-weight: var(--minimeNameFontWeight);
   font-size: var(--minimeLabelSize);
   white-space: nowrap;
 }
@@ -51,5 +51,5 @@
 .theme-kebab .action-exit .kb-minime-flip { animation: kebab-minime-pop var(--action-ms) ease-in reverse forwards; }
 .theme-kebab .action-exit .kb-minime-name { animation: kebab-minime-fade var(--action-ms) ease-in reverse forwards; }
 
-@keyframes kebab-minime-pop { from { scale: 0 0; } to { scale: var(--facing) 1; } }
-@keyframes kebab-minime-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes kebab-minime-pop { from { scale: 0 0; } to { scale: var(--facing) var(--kfMinimePopToScale); } }
+@keyframes kebab-minime-fade { from { opacity: 0; } to { opacity: var(--kfMinimeFadeToOpacity); } }

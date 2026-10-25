@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { hexNumber } from "../../../core/color.ts";
 import { particleCount } from "../../../core/three/quality.ts";
 import { CUT, PLATE, toStage } from "../chef.ts";
-import { type Point, shavingsAt, steamAt } from "../food.ts";
+import { type Point, shavingsAt, steamAt, steamLookOf } from "../food.ts";
 import type { KebabValues } from "../settings.ts";
 
 // fixed: line widths of steam and shavings in grid units, how far a shaving curls, like the prototype
@@ -17,7 +17,7 @@ const CURL = 0.7;
 type Props = { app: Application; clock: () => number; values: KebabValues; shavingsFrom: number | null; steam: { from: Point; at: number } | null };
 
 function drawSteam(graphics: Graphics, time: number, from: Point, values: KebabValues, color: number) {
-  for (const wisp of steamAt(time, { from, height: values.steamHeight })) {
+  for (const wisp of steamAt(time, { from, height: values.steamHeight, ...steamLookOf(values) })) {
     const [first, ...rest] = wisp.points.map(point => toStage(point));
     graphics.moveTo(first.x, first.y);
     for (const point of rest) graphics.lineTo(point.x, point.y);

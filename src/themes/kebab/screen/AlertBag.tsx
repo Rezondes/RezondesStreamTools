@@ -10,14 +10,20 @@ import type { AlertTexts } from "../alerts.ts";
 import { BAG_ARC, BAG_BOX, BAG_TEXT, bagParts } from "../bag.ts";
 import ArcTitle from "../ink/ArcTitle.tsx";
 import Ink, { type InkStyle } from "../ink/Ink.tsx";
-import Burst, { type BurstProps } from "../pixi/Burst.tsx";
+import Burst, { burstLookOf, type BurstProps } from "../pixi/Burst.tsx";
 import type { KebabValues } from "../settings.ts";
 import { playBag } from "../tones.ts";
 import { sceneClock } from "../useFrame.ts";
 
-// fixed: the timing of the prototype in s and how the bag moves (px, factors, s)
-const AT = { land: 0.42, letters: 0.8, print: 1, texts: 1.4 };
-const MOVE = { dropY: -760, drop: 0.7, squashY: 0.92, squashX: 1.05, squash: 0.08, letter: 0.3, letterStagger: 0.04, print: 0.5, printStagger: 0.05, stamp: 0.22, stampScale: 1.5, textStagger: 0.25 };
+// The timing of the settings in s and how the bag moves (px, factors, s)
+const motionOf = (values: KebabValues) => ({
+  AT: { land: values.bagLandAt, letters: values.bagLettersAt, print: values.bagPrintAt, texts: values.bagTextsAt },
+  MOVE: {
+    dropY: values.bagDropFrom, drop: values.bagDropTime, squashY: values.bagSquashY, squashX: values.bagSquashX, squash: values.bagSquashTime,
+    letter: values.bagLetterTime, letterStagger: values.bagLetterStep, print: values.bagPrintTime, printStagger: values.bagPrintStep,
+    stamp: values.bagStampTime, stampScale: values.bagStampScale, textStagger: values.bagTextStep,
+  },
+});
 // fixed: the PixiJS stage around the bag (it reaches above the bag for the steam) and where the top of the bag sits in it
 const BURST = { size: { width: 600, height: 760 }, top: { x: 300, y: 237 }, steam: 110 };
 const SALT = 4000;
@@ -29,6 +35,7 @@ export default function AlertBag({ texts, user, values, sound }: Props) {
   const name = useRef<SVGTextElement>(null);
   const [clock] = useState(sceneClock);
   const [lettered, setLettered] = useState(false);
+  const { AT, MOVE } = motionOf(values);
   const parts = useMemo(() => bagParts(), []);
   const style: InkStyle = { roughness: values.inkRoughness, bowing: values.inkBowing, width: values.inkWidth, seed: values.inkSeed };
   useLayoutEffect(() => {
@@ -43,12 +50,12 @@ export default function AlertBag({ texts, user, values, sound }: Props) {
     timeline.from(".kb-bag .kb-arc-letter", { scale: 0, opacity: 0, transformOrigin: "50% 70%", duration: MOVE.letter, ease: "back.out(3)", stagger: MOVE.letterStagger }, AT.letters);
     timeline.from(".kb-bag-print .kb-ink", { drawSVG: "0%", duration: MOVE.print, stagger: MOVE.printStagger }, AT.print);
     timeline.from(".kb-bag-text", { opacity: 0, scale: MOVE.stampScale, transformOrigin: "50% 50%", duration: MOVE.stamp, ease: "power4.in", stagger: MOVE.textStagger }, AT.texts);
-  }, [lettered, sound], box);
+  }, [lettered, sound, values], box);
   const burst: BurstProps = useMemo(() => ({
     clock, size: BURST.size, color: values.redText, seed: seedOf(user) + SALT, count: values.alertCrumbCount,
     hitAt: values.alertCrumbs ? AT.land : null, origin: BURST.top,
-    steam: values.steamOn ? { from: BURST.top, height: BURST.steam, color: values.steam } : null,
-  }), [clock, values.redText, values.alertCrumbCount, values.alertCrumbs, values.steamOn, values.steam, user]);
+    steam: values.steamOn ? { from: BURST.top, height: BURST.steam, color: values.steam } : null, look: burstLookOf(values),
+  }), [clock, values, AT.land, user]);
   return (
     <div className="kb-alert-bag" ref={box}>
       <div className="kb-alert-burst kb-bag-burst"><Burst {...burst} /></div>

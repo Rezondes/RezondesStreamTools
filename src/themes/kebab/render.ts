@@ -8,7 +8,8 @@ import { readStingerOptions, withStingerOptions } from "../../core/stingerOption
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import type * as BannerModule from "./banners.ts";
-import type { BannerLook } from "./banners.ts";
+import type { BannerLayout, BannerLook } from "./banners.ts";
+import { steamLookOf } from "./food.ts";
 import type { KebabValues } from "./settings.ts";
 import type * as StingerModule from "./stinger.ts";
 import type { StingerLook, StingerStyle } from "./stinger.ts";
@@ -52,22 +53,48 @@ function coverStandIn(look: StingerLook): Draw {
   };
 }
 
+// Places of the banners (settings)
+export const kebabBannerLayout = (values: KebabValues): BannerLayout => ({
+  profile: {
+    logoTop: values.profileLogoTop, logoHeight: values.profileLogoHeight, title: values.profileTitleY, titleSize: values.profileTitleSize,
+    line: values.profileLineY, lineSize: values.profileLineSize,
+  },
+  offline: {
+    logoTop: values.offlineLogoTop, logoHeight: values.offlineLogoHeight, text: values.offlineTextY, textSize: values.offlineTextSize,
+    slat: values.offlineSlat, slatLine: values.offlineSlatLine, slatAlpha: values.offlineSlatAlpha, rail: values.offlineRail, railAlpha: values.offlineRailAlpha,
+  },
+});
+
 export function kebabClips(settings: SettingValues, login: string): RenderClip[] {
   const values = settings as unknown as KebabValues;
   const names = { channel: values.channelName, shop: values.channelName, login };
   const fill = (text: string) => fillTemplate(text, names);
   const ink = { roughness: values.inkRoughness, bowing: values.inkBowing, width: values.inkWidth, seed: values.inkSeed };
+  // The stinger and each banner have their own colors and fonts
   const stinger: StingerLook = {
     style: values.stingerStyle as StingerStyle, text: fill(values.stingerText), duration: values.stingerDuration, cut: values.stingerCut,
-    jag: values.stingerTearJag, slices: values.stingerSlices, shavings: values.stingerShavings, seed: values.stingerSeed, titleFont: values.titleFont, ink,
-    colors: { red: values.red, redText: values.redText, paper: values.paper, brown: values.brown },
+    jag: values.stingerTearJag, slices: values.stingerSlices, shavings: values.stingerShavings, seed: values.stingerSeed, titleFont: values.stingerFont, ink,
+    colors: { red: values.stingerRed, redText: values.stingerRedText, paper: values.stingerPaper, brown: values.stingerBrown },
   };
-  const banner = (size: { width: number; height: number }, steam: boolean): BannerLook => ({
-    ...size, steam, ink, titleFont: values.titleFont, font: values.font,
-    colors: { red: values.red, redText: values.redText, paper: values.paper, brown: values.brown, muted: values.muted, steam: values.steam },
+  const banner = (size: { width: number; height: number }, steam: boolean, own: Pick<BannerLook, "titleFont" | "font" | "colors">): BannerLook => ({
+    ...size, steam, ink, ...own,
     arc: { text: values.arcText, size: values.arcSize, span: values.arcSpan, stroke: values.arcStroke },
-    hatchRows: values.hatchRows, steamHeight: values.steamHeight,
+    hatchRows: values.hatchRows, steamHeight: values.steamHeight, steamLook: steamLookOf(values), layout: kebabBannerLayout(values),
   });
+  const profile = {
+    titleFont: values.profileTitleFont, font: values.profileFont,
+    colors: {
+      red: values.profileRed, redText: values.profileRedText, paper: values.profilePaper, brown: values.profileBrown, muted: values.profileMuted,
+      steam: values.profileSteamColor,
+    },
+  };
+  const offline = {
+    titleFont: values.offlineTitleFont, font: values.font,
+    colors: {
+      red: values.offlineRed, redText: values.offlineRedText, paper: values.offlinePaper, brown: values.offlineBrown, muted: values.offlineMuted,
+      steam: values.offlineSteamColor,
+    },
+  };
   const font = `24px "${values.titleFont}"`;
   const banners = { feature: "banners", font, fps: STILL, duration: STILL, cut: null, prepare } as const;
   return [
@@ -77,11 +104,11 @@ export function kebabClips(settings: SettingValues, login: string): RenderClip[]
     }, readStingerOptions(settings)),
     {
       ...banners, name: "profile", group: "Profilbanner", ...PROFILE_SIZE,
-      draw: clipDraw(loaded => loaded.banners.makeProfile(banner(PROFILE_SIZE, values.profileSteam), { title: fill(values.profileTitle), line: fill(values.profileSubtitle) }), plain(PROFILE_SIZE, values.paper)),
+      draw: clipDraw(loaded => loaded.banners.makeProfile(banner(PROFILE_SIZE, values.profileSteam, profile), { title: fill(values.profileTitle), line: fill(values.profileSubtitle) }), plain(PROFILE_SIZE, values.paper)),
     },
     {
       ...banners, name: "offline", group: "Offline-Banner", ...PICTURE,
-      draw: clipDraw(loaded => loaded.banners.makeOffline(banner(PICTURE, values.offlineSteam), fill(values.offlineText)), plain(PICTURE, values.brown)),
+      draw: clipDraw(loaded => loaded.banners.makeOffline(banner(PICTURE, values.offlineSteam, offline), fill(values.offlineText)), plain(PICTURE, values.brown)),
     },
   ];
 }
