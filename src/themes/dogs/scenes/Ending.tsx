@@ -1,6 +1,6 @@
 // Ending of the Dogs theme (DESIGN-DOGS.md "Ending", prototype refs/px-ending.html): the room at night, the streamer's
 // dog walks in, lies down in its basket and sleeps while the lamp dims (EndingWorld on a PixiJS stage), above it the
-// title, the pill and the card with the numbers of the stream (EndingSigns). ?t=<seconds> shows a still.
+// title, the subtitle and the pill (EndingSigns); the stream numbers are the scene stats. ?t=<seconds> shows a still.
 import type { Application } from "pixi.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import PixiStage from "../../../core/pixi/PixiStage.tsx";
@@ -39,7 +39,7 @@ export default function Ending() {
     <div className="dg-screen">
       <PixiStage background={null} onReady={onReady} className="dg-world" />
       {app && <EndingWorld app={app} clock={clock} values={values} colors={colors} dog={dog} timing={timing} size={size} />}
-      <EndingSigns values={values} clock={clock} />
+      <EndingSigns values={values} />
     </div>
   );
 }

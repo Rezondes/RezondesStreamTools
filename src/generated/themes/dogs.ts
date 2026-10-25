@@ -187,8 +187,6 @@ export type DogsValues = {
   readonly endingTitle: string;
   readonly endingSubtitle: string;
   readonly endingBye: string;
-  readonly endingCardLabel: string;
-  readonly endingStats: readonly string[];
   readonly night: string;
   readonly nightSub: string;
   readonly windowSky: string;
@@ -204,6 +202,8 @@ export type DogsValues = {
   readonly lampDimTo: number;
   readonly zzz: boolean;
   readonly zzzEvery: number;
+  readonly statsLabel: string;
+  readonly statsLines: readonly string[];
   readonly followTag: string;
   readonly followLine: string;
   readonly subTag: string;

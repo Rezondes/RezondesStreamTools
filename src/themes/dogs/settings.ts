@@ -24,6 +24,7 @@ const WORLD = "Welt";
 const STARTING = "Starting";
 const BRB = "BRB";
 const ENDING = "Ending";
+const STATS = "Statistik";
 const ALERTS = "Alerts";
 const RAID = "Raid";
 const TOYS = ["ball", "knochen", "frisbee", "leckerli"] as const;
@@ -178,12 +179,9 @@ const FIELDS = [
   inScene("brb", color("pathColor", "Weg", BRB, "#e3c49a")),
   inScene("brb", flag("parallax", "Parallaxe (ferne Ebenen langsamer)", BRB, true)),
 
-  // Keys: follows, subs, giftedSubs, raids, raiders, bits, redeems, hypeLevel, chatMessages, chatters, duration
   inScene("ending", text("endingTitle", "Titel", ENDING, "Gute Nacht!", 60)),
   inScene("ending", text("endingSubtitle", "Unterzeile ({dog})", ENDING, "Danke fürs Zuschauen. {dog} schläft schon.", 80)),
   inScene("ending", text("endingBye", "Pille", ENDING, "Bis zum nächsten Mal!", 40)),
-  inScene("ending", text("endingCardLabel", "Karte: Überzeile", ENDING, "HEUTE IM RUDEL", 40)),
-  inScene("ending", lines("endingStats", "Zahlen (Schlüssel|Text)", ENDING, ["follows|neue Follower", "subs|Abos", "raids|Raids"], 6)),
   inScene("ending", color("night", "Wand bei Nacht", ENDING, "#3b3a63")),
   inScene("ending", color("nightSub", "Unterzeile auf der Wand", ENDING, "#f1dcc0")),
   inScene("ending", color("windowSky", "Nachthimmel im Fenster", ENDING, "#1b2547")),
@@ -199,6 +197,11 @@ const FIELDS = [
   inScene("ending", number("lampDimTo", "Lampe: gedimmt bei", ENDING, 7.5, 0, 120, "s", 0.5)),
   inScene("ending", flag("zzz", "Z beim Schlafen", ENDING, true)),
   inScene("ending", number("zzzEvery", "Z: Dauer je Aufstieg", ENDING, 1.8, 0.5, 10, "s", 0.1)),
+
+  // Stream numbers (scene stats); keys: follows, subs, giftedSubs, raids, raiders, bits, redeems, hypeLevel, chatMessages,
+  // chatters, duration
+  text("statsLabel", "Überschrift", STATS, "HEUTE IM RUDEL", 40),
+  lines("statsLines", "Zahlen (Schlüssel|Text)", STATS, ["follows|neue Follower", "subs|Abos", "raids|Raids"], 6),
 
   // Per kind: head line ({amount}) and line under the name (placeholders {user}, {amount}, {detail}, {text})
   text("followTag", "Follow: Kopfzeile", ALERTS, "NEUER FOLLOWER"),
@@ -337,7 +340,8 @@ const GROUP_SCENES = {
   [WORLD]: ["starting", "brb"],
   [STARTING]: ["starting"],
   [BRB]: ["brb"],
-  [ENDING]: ["ending", "stats"],
+  [ENDING]: ["ending"],
+  [STATS]: ["stats"],
   [ALERTS]: ["alerts"],
   [RAID]: ["alerts"],
   [CHAT]: ["chat"],
@@ -358,7 +362,7 @@ const GROUP_SCENES = {
 const personalize = (login: string) => ({ channelName: login.toUpperCase() });
 
 // Simple view of the dashboard: per area the texts, main colors and switches most streamers change
-const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "endingStats", "followLine", "subLine", "raidLine", "cheerLine", "alertBark", "chatStyle", "chatBadges", "camLabel", "musicStyle", "musicLabel", "fxText", "minimeNameTag"];
+const BASIC = ["quality", "channelName", "accent", "cream", "dog", "coat", "dogName", "startingTitle", "startingSubtitle", "countdownLabel", "cardLabel", "ticker", "brbTitle", "brbSubtitle", "endingTitle", "endingSubtitle", "statsLines", "followLine", "subLine", "raidLine", "cheerLine", "alertBark", "chatStyle", "chatBadges", "camLabel", "musicStyle", "musicLabel", "fxText", "minimeNameTag"];
 
 export const dogsSettings: ThemeSchema = { id: "dogs", name: "Dogs", fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(DOG_SET)], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize,
   minimeVariants: DOG_SET };

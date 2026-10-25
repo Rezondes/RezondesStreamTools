@@ -12,14 +12,14 @@ export const ENDING = { walk: 2.2, enter: 8, lie: 2.8, sleep: 4, wag: 10, lyingW
 const ZZZ = { count: 3, rise: 34, drift: 16, wobble: 2, wobbleRate: 9, fade: 2.5, start: [-6, 8] };
 // fixed: the room darkens by up to 35 % of the dimmed light
 export const DARKNESS = 0.35;
-// fixed: the entrance of the sign layer in the GSAP timeline (s, stage px, eases); the card counts up for 1 s after it came
+// fixed: the entrance of the sign layer in the GSAP timeline (s, stage px, eases); the stream numbers (scene stats)
+// count up for 1 s from 0.3 s on
 export const ENDING_INTRO = {
   title: { at: 0.2, duration: 0.7, y: -60, ease: "back.out(1.7)", fade: 0.3 },
   subtitle: { at: 0.8, duration: 0.5 },
   bye: { at: 1.2, duration: 0.5, ease: "back.out(2)" },
-  card: { at: 1.6, duration: 0.6, y: 250, ease: "back.out(1.7)" },
-  count: { from: 2.2, duration: 1 },
 };
+const COUNT = { from: 0.3, duration: 1 };
 
 export type EndingTiming = { width: number; dogWidth: number; basketX: number; lampDim: number; lampDimFrom: number; lampDimTo: number; zzzEvery: number; snoreEvery: number };
 
@@ -67,4 +67,4 @@ export function endingSoundsBetween(timing: EndingTiming, from: number, to: numb
 }
 
 // How far the numbers of the card have counted up at time (0 to 1)
-export const countShare = (time: number) => smooth(segment(time, ENDING_INTRO.count.from, ENDING_INTRO.count.from + ENDING_INTRO.count.duration));
+export const countShare = (time: number) => smooth(segment(time, COUNT.from, COUNT.from + COUNT.duration));

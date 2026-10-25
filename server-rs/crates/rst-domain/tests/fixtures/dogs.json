@@ -1566,29 +1566,6 @@
       "scene": "ending"
     },
     {
-      "key": "endingCardLabel",
-      "type": "text",
-      "label": "Karte: Überzeile",
-      "group": "Ending",
-      "default": "HEUTE IM RUDEL",
-      "maxLength": 40,
-      "scene": "ending"
-    },
-    {
-      "key": "endingStats",
-      "type": "lines",
-      "label": "Zahlen (Schlüssel|Text)",
-      "group": "Ending",
-      "default": [
-        "follows|neue Follower",
-        "subs|Abos",
-        "raids|Raids"
-      ],
-      "maxLines": 6,
-      "scene": "ending",
-      "basic": true
-    },
-    {
       "key": "night",
       "type": "color",
       "label": "Wand bei Nacht",
@@ -1724,6 +1701,27 @@
       "unit": "s",
       "step": 0.1,
       "scene": "ending"
+    },
+    {
+      "key": "statsLabel",
+      "type": "text",
+      "label": "Überschrift",
+      "group": "Statistik",
+      "default": "HEUTE IM RUDEL",
+      "maxLength": 40
+    },
+    {
+      "key": "statsLines",
+      "type": "lines",
+      "label": "Zahlen (Schlüssel|Text)",
+      "group": "Statistik",
+      "default": [
+        "follows|neue Follower",
+        "subs|Abos",
+        "raids|Raids"
+      ],
+      "maxLines": 6,
+      "basic": true
     },
     {
       "key": "followTag",
@@ -3475,7 +3473,9 @@
       "brb"
     ],
     "Ending": [
-      "ending",
+      "ending"
+    ],
+    "Statistik": [
       "stats"
     ],
     "Alerts": [

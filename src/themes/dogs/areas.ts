@@ -22,7 +22,7 @@ export function dogsAreas(values: SettingValues): Partial<Record<SceneName, Scen
   const dogs = values as unknown as DogsValues;
   const top = Math.max(0, dogs.cardTop - ABOVE_CARD);
   const dog = dogs.musicStyle === "hund" ? (tallestDog + MUSIC.dogRows) * dogs.pixelScale * MUSIC.dogScale + MUSIC.below : 0;
-  const rows = parseStatLines(dogs.endingStats.join("\n")).length;
+  const rows = parseStatLines(dogs.statsLines.join("\n")).length;
   return {
     alerts: alertArea({ top, width: STAGE.width, height: STAGE.height - top, room: 0 }),
     chat: { width: dogs.chatWidth, height: SCENE_SIZES.chat.height },

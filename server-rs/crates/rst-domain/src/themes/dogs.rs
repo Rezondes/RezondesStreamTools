@@ -31,6 +31,7 @@ const WORLD: &str = "Welt";
 const STARTING: &str = "Starting";
 const BRB: &str = "BRB";
 const ENDING: &str = "Ending";
+const STATS: &str = "Statistik";
 const ALERTS: &str = "Alerts";
 const RAID: &str = "Raid";
 const TOYS: [&str; 4] = ["ball", "knochen", "frisbee", "leckerli"];
@@ -316,19 +317,25 @@ fn brb() -> Vec<SettingField> {
     fields.into_iter().map(|field| in_scene(SceneName::Brb, field)).collect()
 }
 
+/// The stream numbers of the scene stats
+fn stats() -> Vec<SettingField> {
+    vec![
+        text("statsLabel", "Überschrift", STATS, "HEUTE IM RUDEL", Some(40)),
+        lines(
+            "statsLines",
+            "Zahlen (Schlüssel|Text)",
+            STATS,
+            &["follows|neue Follower", "subs|Abos", "raids|Raids"],
+            Some(6),
+        ),
+    ]
+}
+
 fn ending() -> Vec<SettingField> {
     let fields = vec![
         text("endingTitle", "Titel", ENDING, "Gute Nacht!", Some(60)),
         text("endingSubtitle", "Unterzeile ({dog})", ENDING, "Danke fürs Zuschauen. {dog} schläft schon.", Some(80)),
         text("endingBye", "Pille", ENDING, "Bis zum nächsten Mal!", Some(40)),
-        text("endingCardLabel", "Karte: Überzeile", ENDING, "HEUTE IM RUDEL", Some(40)),
-        lines(
-            "endingStats",
-            "Zahlen (Schlüssel|Text)",
-            ENDING,
-            &["follows|neue Follower", "subs|Abos", "raids|Raids"],
-            Some(6),
-        ),
         color("night", "Wand bei Nacht", ENDING, "#3b3a63"),
         color("nightSub", "Unterzeile auf der Wand", ENDING, "#f1dcc0"),
         color("windowSky", "Nachthimmel im Fenster", ENDING, "#1b2547"),
@@ -557,7 +564,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (WORLD.to_owned(), vec![SceneName::Starting, SceneName::Brb]),
         (STARTING.to_owned(), vec![SceneName::Starting]),
         (BRB.to_owned(), vec![SceneName::Brb]),
-        (ENDING.to_owned(), vec![SceneName::Ending, SceneName::Stats]),
+        (ENDING.to_owned(), vec![SceneName::Ending]),
+        (STATS.to_owned(), vec![SceneName::Stats]),
         (ALERTS.to_owned(), vec![SceneName::Alerts]),
         (RAID.to_owned(), vec![SceneName::Alerts]),
         (CHAT.to_owned(), vec![SceneName::Chat]),
@@ -598,7 +606,7 @@ const BASIC: &[&str] = &[
     "brbSubtitle",
     "endingTitle",
     "endingSubtitle",
-    "endingStats",
+    "statsLines",
     "followLine",
     "subLine",
     "raidLine",
@@ -624,6 +632,7 @@ pub fn dogs() -> Theme {
         starting(),
         brb(),
         ending(),
+        stats(),
         alerts(),
         raid(),
         chat(),

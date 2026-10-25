@@ -32,7 +32,7 @@ assert.deepEqual(endingSoundsBetween(timing, 6, 16).map(sound => sound.at), [8, 
 assert.deepEqual(endingSoundsBetween(timing, 3, 3), []);
 
 // The card counts from 0 to 1 within a second after it came
-assert.equal(countShare(2), 0);
-assert.equal(countShare(4), 1);
+assert.equal(countShare(0.2), 0);
+assert.equal(countShare(1.3), 1);
 
 console.log("dogs ending ok");

@@ -287,31 +287,6 @@
   font-size: calc(var(--fontSize) * 1.15);
 }
 
-.theme-dogs .dg-end-card {
-  right: var(--dg-brb-x, 85px);
-  bottom: var(--dg-end-card-bottom, 75px);
-  padding: var(--dg-end-card-pad, 18px 30px 22px);
-}
-
-.theme-dogs .dg-end-rows {
-  display: flex;
-  gap: var(--dg-stats-gap, 30px);
-  margin-top: var(--dg-brb-sub-gap, 10px);
-}
-
-.theme-dogs .dg-end-number {
-  font-size: calc(var(--fontSize) * 2);
-  font-weight: 700;
-  line-height: 1;
-  color: var(--accent);
-}
-
-.theme-dogs .dg-end-label {
-  font-size: calc(var(--fontSize) * 0.77);
-  font-weight: 500;
-  color: var(--muted);
-}
-
 /* Alerts: the card stands above the running track (cardTop), its pill sits on its top edge; the name in red */
 .theme-dogs .dg-alert-card {
   left: var(--dg-alert-left, 860px);
