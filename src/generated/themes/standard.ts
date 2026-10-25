@@ -482,8 +482,6 @@ export type StandardValues = {
   readonly cardBoxShadow2: number;
   readonly cardBoxShadow3: number;
   readonly cardBoxShadow4: number;
-  readonly cardLeavingAnimation: number;
-  readonly kfOutToTranslate: number;
   readonly camBeforeBorderRadius: number;
   readonly camBeforeBackground: string;
   readonly camBeforeBackground2: string;
@@ -517,6 +515,7 @@ export type StandardValues = {
   readonly camEnterRise: number;
   readonly camEnterStagger: number;
   readonly camEnterTagsAt: number;
+  readonly cardLeavingAnimation: number;
   readonly progressHeight: number;
   readonly progressBorderRadius: number;
   readonly progressBackground: string;
@@ -556,6 +555,7 @@ export type StandardValues = {
   readonly lineFontWeight: number;
   readonly lineColor: string;
   readonly lineFont: string;
+  readonly kfOutToTranslate: number;
   readonly fxItemGap: number;
   readonly fxItemAnimation: number;
   readonly fxItemAnimation2: number;

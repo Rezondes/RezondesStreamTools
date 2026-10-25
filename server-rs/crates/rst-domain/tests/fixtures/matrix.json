@@ -4368,6 +4368,246 @@
       "step": 0.01
     },
     {
+      "key": "glitchBeforeColor",
+      "type": "color",
+      "label": "Glitch (Ebene 1): Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": "",
+      "inherit": "highlight"
+    },
+    {
+      "key": "glitchBeforeAnimation",
+      "type": "number",
+      "label": "Glitch (Ebene 1): Animation Dauer Anteil von „Namens-Glitch alle“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "glitchBeforeAnimation2",
+      "type": "number",
+      "label": "Glitch (Ebene 1): Animation Verzögerung",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 1.6,
+      "min": 0,
+      "max": 8,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "glitchBeforeAnimation3",
+      "type": "number",
+      "label": "Glitch (Ebene 1): Animation Schritte",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "glitchAfterColor",
+      "type": "color",
+      "label": "Glitch (Ebene 2): Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": "",
+      "inherit": "dim"
+    },
+    {
+      "key": "glitchAfterAnimation",
+      "type": "number",
+      "label": "Glitch (Ebene 2): Animation Dauer Anteil von „Namens-Glitch alle“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "glitchAfterAnimation2",
+      "type": "number",
+      "label": "Glitch (Ebene 2): Animation Verzögerung",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 1.6,
+      "min": 0,
+      "max": 8,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "glitchAfterAnimation3",
+      "type": "number",
+      "label": "Glitch (Ebene 2): Animation Schritte",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfGlitchA90pOpacity",
+      "type": "number",
+      "label": "Namens-Glitch A (90 %): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 0.8,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfGlitchA90pTransform",
+      "type": "number",
+      "label": "Namens-Glitch A (90 %): Verformung Verschiebung y Anteil von „Glitch (Stärke)“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "kfGlitchA90pTransform2",
+      "type": "number",
+      "label": "Namens-Glitch A (90 %): Verformung Verschiebung x",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": -4,
+      "min": -16,
+      "max": 16
+    },
+    {
+      "key": "kfGlitchA90pClipPath",
+      "type": "number",
+      "label": "Namens-Glitch A (90 %): Zuschnitt Einzug oben",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 10,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "kfGlitchA90pClipPath2",
+      "type": "number",
+      "label": "Namens-Glitch A (90 %): Zuschnitt Einzug unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 55,
+      "min": 0,
+      "max": 165,
+      "unit": "%"
+    },
+    {
+      "key": "kfGlitchA94pOpacity",
+      "type": "number",
+      "label": "Namens-Glitch A (94 %): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 0.8,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfGlitchA94pTransform",
+      "type": "number",
+      "label": "Namens-Glitch A (94 %): Verformung Verschiebung x",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "kfGlitchA94pClipPath",
+      "type": "number",
+      "label": "Namens-Glitch A (94 %): Zuschnitt Einzug oben",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 60,
+      "min": 0,
+      "max": 180,
+      "unit": "%"
+    },
+    {
+      "key": "kfGlitchA94pClipPath2",
+      "type": "number",
+      "label": "Namens-Glitch A (94 %): Zuschnitt Einzug unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 8,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "kfGlitchB91pOpacity",
+      "type": "number",
+      "label": "Namens-Glitch B (91 %): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 0.8,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfGlitchB91pTransform",
+      "type": "number",
+      "label": "Namens-Glitch B (91 %): Verformung Verschiebung x",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 4,
+      "min": -16,
+      "max": 16
+    },
+    {
+      "key": "kfGlitchB91pClipPath",
+      "type": "number",
+      "label": "Namens-Glitch B (91 %): Zuschnitt Einzug oben",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 40,
+      "min": 0,
+      "max": 120,
+      "unit": "%"
+    },
+    {
+      "key": "kfGlitchB91pClipPath2",
+      "type": "number",
+      "label": "Namens-Glitch B (91 %): Zuschnitt Einzug unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "kfGlitchB95pOpacity",
+      "type": "number",
+      "label": "Namens-Glitch B (95 %): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 0.8,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfGlitchB95pTransform",
+      "type": "number",
+      "label": "Namens-Glitch B (95 %): Verformung Verschiebung y Anteil von „Glitch (Stärke)“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "kfGlitchB95pTransform2",
+      "type": "number",
+      "label": "Namens-Glitch B (95 %): Verformung Verschiebung x",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": -3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "kfGlitchB95pClipPath",
+      "type": "number",
+      "label": "Namens-Glitch B (95 %): Zuschnitt Einzug unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes",
+      "default": 75,
+      "min": 0,
+      "max": 225,
+      "unit": "%"
+    },
+    {
       "key": "glowTextShadow",
       "type": "color",
       "label": "Glühender Text: Textschatten Farbe (Glühfarbe)",
@@ -5457,246 +5697,6 @@
       "max": 1000,
       "unit": "ms",
       "step": 10
-    },
-    {
-      "key": "glitchBeforeColor",
-      "type": "color",
-      "label": "Glitch (Ebene 1): Textfarbe",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": "",
-      "inherit": "highlight"
-    },
-    {
-      "key": "glitchBeforeAnimation",
-      "type": "number",
-      "label": "Glitch (Ebene 1): Animation Dauer Anteil von „Namens-Glitch alle“ (%)",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "glitchBeforeAnimation2",
-      "type": "number",
-      "label": "Glitch (Ebene 1): Animation Verzögerung",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 1.6,
-      "min": 0,
-      "max": 8,
-      "unit": "s",
-      "step": 0.05
-    },
-    {
-      "key": "glitchBeforeAnimation3",
-      "type": "number",
-      "label": "Glitch (Ebene 1): Animation Schritte",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "glitchAfterColor",
-      "type": "color",
-      "label": "Glitch (Ebene 2): Textfarbe",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": "",
-      "inherit": "dim"
-    },
-    {
-      "key": "glitchAfterAnimation",
-      "type": "number",
-      "label": "Glitch (Ebene 2): Animation Dauer Anteil von „Namens-Glitch alle“ (%)",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "glitchAfterAnimation2",
-      "type": "number",
-      "label": "Glitch (Ebene 2): Animation Verzögerung",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 1.6,
-      "min": 0,
-      "max": 8,
-      "unit": "s",
-      "step": 0.05
-    },
-    {
-      "key": "glitchAfterAnimation3",
-      "type": "number",
-      "label": "Glitch (Ebene 2): Animation Schritte",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfGlitchA90pOpacity",
-      "type": "number",
-      "label": "Namens-Glitch A (90 %): Deckkraft",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 0.8,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfGlitchA90pTransform",
-      "type": "number",
-      "label": "Namens-Glitch A (90 %): Verformung Verschiebung y Anteil von „Glitch (Stärke)“ (%)",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "kfGlitchA90pTransform2",
-      "type": "number",
-      "label": "Namens-Glitch A (90 %): Verformung Verschiebung x",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": -4,
-      "min": -16,
-      "max": 16
-    },
-    {
-      "key": "kfGlitchA90pClipPath",
-      "type": "number",
-      "label": "Namens-Glitch A (90 %): Zuschnitt Einzug oben",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 10,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "kfGlitchA90pClipPath2",
-      "type": "number",
-      "label": "Namens-Glitch A (90 %): Zuschnitt Einzug unten",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 55,
-      "min": 0,
-      "max": 165,
-      "unit": "%"
-    },
-    {
-      "key": "kfGlitchA94pOpacity",
-      "type": "number",
-      "label": "Namens-Glitch A (94 %): Deckkraft",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 0.8,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfGlitchA94pTransform",
-      "type": "number",
-      "label": "Namens-Glitch A (94 %): Verformung Verschiebung x",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "kfGlitchA94pClipPath",
-      "type": "number",
-      "label": "Namens-Glitch A (94 %): Zuschnitt Einzug oben",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 60,
-      "min": 0,
-      "max": 180,
-      "unit": "%"
-    },
-    {
-      "key": "kfGlitchA94pClipPath2",
-      "type": "number",
-      "label": "Namens-Glitch A (94 %): Zuschnitt Einzug unten",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 8,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "kfGlitchB91pOpacity",
-      "type": "number",
-      "label": "Namens-Glitch B (91 %): Deckkraft",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 0.8,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfGlitchB91pTransform",
-      "type": "number",
-      "label": "Namens-Glitch B (91 %): Verformung Verschiebung x",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 4,
-      "min": -16,
-      "max": 16
-    },
-    {
-      "key": "kfGlitchB91pClipPath",
-      "type": "number",
-      "label": "Namens-Glitch B (91 %): Zuschnitt Einzug oben",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 40,
-      "min": 0,
-      "max": 120,
-      "unit": "%"
-    },
-    {
-      "key": "kfGlitchB91pClipPath2",
-      "type": "number",
-      "label": "Namens-Glitch B (91 %): Zuschnitt Einzug unten",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 30,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "kfGlitchB95pOpacity",
-      "type": "number",
-      "label": "Namens-Glitch B (95 %): Deckkraft",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 0.8,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfGlitchB95pTransform",
-      "type": "number",
-      "label": "Namens-Glitch B (95 %): Verformung Verschiebung y Anteil von „Glitch (Stärke)“ (%)",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "kfGlitchB95pTransform2",
-      "type": "number",
-      "label": "Namens-Glitch B (95 %): Verformung Verschiebung x",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": -3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "kfGlitchB95pClipPath",
-      "type": "number",
-      "label": "Namens-Glitch B (95 %): Zuschnitt Einzug unten",
-      "group": "Feinschliff: Alerts, Effekte, Minimes",
-      "default": 75,
-      "min": 0,
-      "max": 225,
-      "unit": "%"
     },
     {
       "key": "inGlitchInEase",
@@ -10595,6 +10595,16 @@
       "fx",
       "minimes"
     ],
+    "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Effekte, Befehlsseite, Minimes": [
+      "starting",
+      "brb",
+      "ending",
+      "alerts",
+      "cam",
+      "fx",
+      "info",
+      "minimes"
+    ],
     "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik, Effekte, Befehlsseite": [
       "starting",
       "brb",
@@ -10626,11 +10636,6 @@
     ],
     "Feinschliff: Alerts": [
       "alerts"
-    ],
-    "Feinschliff: Alerts, Effekte, Minimes": [
-      "alerts",
-      "fx",
-      "minimes"
     ],
     "Feinschliff: Alerts, Chat, Musik, Effekte": [
       "alerts",

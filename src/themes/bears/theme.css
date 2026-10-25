@@ -68,12 +68,10 @@
 
 /* Life: blinking (every blinkEvery, 0 = never), breathing (on/off, duration), the tower sways */
 .theme-bears .bb-blinking .part-eye { animation: bears-blink var(--blinkEvery) step-end infinite; }
-.theme-bears .bb-breathing .bb-body { transform-box: fill-box; transform-origin: var(--breathingBodyTransformOrigin) 100%; animation: bears-breathe var(--breatheMs) ease-in-out infinite; }
 .theme-bears .bb-tower-sway { transform-box: fill-box; transform-origin: var(--towerSwayTransformOrigin) 100%; animation: bears-sway var(--towerSwayMs) ease-in-out infinite; }
 .theme-bears .bb-facing-rechts .bb-hero { scale: var(--facingRechtsHeroScale) var(--facingRechtsHeroScale2); }
 .theme-bears .bb-facing-rechts .part-sign-text { transform: scaleX(var(--facingRechtsPartSignTextTransform)); transform-box: fill-box; transform-origin: center; }
 @keyframes bears-blink { 0%, 96% { transform: scaleY(var(--kfBlink0p96pTransform)); } 97%, 99% { transform: scaleY(var(--kfBlink97p99pTransform)); } }
-@keyframes bears-breathe { 0%, 100% { transform: scaleY(var(--kfBreathe0p100pTransform)); } 50% { transform: scaleY(var(--kfBreathe50pTransform)); } }
 @keyframes bears-sway { 0%, 100% { rotate: calc(calc(var(--kfSway0p100pRotate2) * 1deg) * calc(var(--towerSway) * var(--kfSway0p100pRotate) / 100)); } 50% { rotate: calc(calc(var(--kfSway50pRotate2) * 1deg) * calc(var(--towerSway) * var(--kfSway50pRotate) / 100)); } }
 @keyframes bears-steam { 0%, 100% { translate: 0 0; opacity: var(--kfSteam0p100pOpacity); } 50% { translate: 0 calc(-1 * var(--kfSteam50pTranslate)); opacity: var(--kfSteam50pOpacity); } }
 

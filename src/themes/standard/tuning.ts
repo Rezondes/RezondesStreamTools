@@ -14,6 +14,7 @@ import { FX_TUNING } from "./tuning/fx.ts";
 import { GENERAL_TUNING } from "./tuning/general.ts";
 import { INFO_TUNING } from "./tuning/info.ts";
 import { MUSIC_TUNING } from "./tuning/music.ts";
+import { MUSIC_FX_TUNING } from "./tuning/musicFx.ts";
 import { MUSIC_INFO_TUNING } from "./tuning/musicInfo.ts";
 import { OFFLINE_BANNER_TUNING } from "./tuning/offlineBanner.ts";
 import { PROFILE_BANNER_TUNING } from "./tuning/profileBanner.ts";
@@ -26,7 +27,7 @@ import { STINGER_TUNING } from "./tuning/stinger.ts";
 
 // typed as plain fields: the values type comes generated from the server (src/generated/themes), and the literal
 // types of hundreds of fields are too much for the compiler
-export const TUNING_FIELDS: readonly SettingField[] = ([] as readonly SettingField[]).concat(STARTING_TUNING, STARTING_BRB_TUNING, STARTING_BRB_ENDING_TUNING, STARTING_BRB_ENDING_MUSIC_INFO_TUNING, BRB_TUNING, STATS_TUNING, ALERTS_TUNING, CHAT_TUNING, CHAT_INFO_TUNING, CHAT_MUSIC_FX_INFO_TUNING, CAM_TUNING, MUSIC_TUNING, MUSIC_INFO_TUNING, FX_TUNING, INFO_TUNING, OFFLINE_BANNER_TUNING, PROFILE_BANNER_TUNING, STINGER_TUNING, GENERAL_TUNING);
+export const TUNING_FIELDS: readonly SettingField[] = ([] as readonly SettingField[]).concat(STARTING_TUNING, STARTING_BRB_TUNING, STARTING_BRB_ENDING_TUNING, STARTING_BRB_ENDING_MUSIC_INFO_TUNING, BRB_TUNING, STATS_TUNING, ALERTS_TUNING, CHAT_TUNING, CHAT_INFO_TUNING, CHAT_MUSIC_FX_INFO_TUNING, CAM_TUNING, MUSIC_TUNING, MUSIC_INFO_TUNING, MUSIC_FX_TUNING, FX_TUNING, INFO_TUNING, OFFLINE_BANNER_TUNING, PROFILE_BANNER_TUNING, STINGER_TUNING, GENERAL_TUNING);
 
 export const TUNING_GROUPS: Readonly<Record<string, readonly SceneName[]>> = {
   "Feinschliff: Starting": ["starting"],
@@ -42,6 +43,7 @@ export const TUNING_GROUPS: Readonly<Record<string, readonly SceneName[]>> = {
   "Feinschliff: Kamera-Rahmen": ["cam"],
   "Feinschliff: Musik": ["music"],
   "Feinschliff: Musik, Befehlsseite": ["music", "info"],
+  "Feinschliff: Musik, Effekte": ["music", "fx"],
   "Feinschliff: Effekte": ["fx"],
   "Feinschliff: Befehlsseite": ["info"],
 };

@@ -3,8 +3,6 @@ import { color, font, inherits, number } from "../../../core/fields.ts";
 import type { SettingField } from "../../../core/theme.ts";
 
 export const MINIMES_TUNING = [
-  number("kfBlink0p96pTransform", "Blinzeln (0 %, 96 %): Verformung Grösse y", "Feinschliff: Minimes", 1, -4, 4, undefined, 0.01),
-  number("kfBlink97p99pTransform", "Blinzeln (97 %, 99 %): Verformung Grösse y", "Feinschliff: Minimes", 0.1, -2, 2, undefined, 0.01),
   number("minimeTransform", "Minime: Verformung Verschiebung x", "Feinschliff: Minimes", 50, -150, 150, "%"),
   number("minimeNameBottom", "Minime Name: Lage unten", "Feinschliff: Minimes", 1, -4, 4, undefined, 0.01),
   number("minimeNameMarginBottom", "Minime Name: Abstand unten", "Feinschliff: Minimes", 4, -40, 40, "px"),

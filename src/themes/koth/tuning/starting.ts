@@ -12,5 +12,4 @@ export const STARTING_TUNING = [
   number("warningStripesIBackground3", "Warnstreifen: Fortschritt: Hintergrund Verlauf Stopp 1", "Feinschliff: Starting", 18, 0, 100, "px"),
   number("warningStripesIBackground4", "Warnstreifen: Fortschritt: Hintergrund Verlauf Stopp 2", "Feinschliff: Starting", 18, 0, 100, "px"),
   number("warningStripesIBackground5", "Warnstreifen: Fortschritt: Hintergrund Verlauf Stopp 2 (2)", "Feinschliff: Starting", 36, 0, 100, "px"),
-  number("startingTickerBottom", "Starting: Lauftext: Lage unten (vh)", "Feinschliff: Starting", 1.7, -6.8, 6.8, undefined, 0.01),
 ] as const satisfies readonly SettingField[];

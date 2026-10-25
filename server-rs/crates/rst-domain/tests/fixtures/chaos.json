@@ -6153,6 +6153,158 @@
       "inherit": ""
     },
     {
+      "key": "topLeftTop",
+      "type": "number",
+      "label": "oben links: Lage oben",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "topLeftTop2",
+      "type": "number",
+      "label": "oben links: Lage oben (2)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "topLeftLeft",
+      "type": "number",
+      "label": "oben links: Lage links",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "topLeftLeft2",
+      "type": "number",
+      "label": "oben links: Lage links (2)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "topRightTop",
+      "type": "number",
+      "label": "oben rechts: Lage oben",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "topRightTop2",
+      "type": "number",
+      "label": "oben rechts: Lage oben (2)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "topRightRight",
+      "type": "number",
+      "label": "oben rechts: Lage rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "topRightRight2",
+      "type": "number",
+      "label": "oben rechts: Lage rechts (2)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "bottomRightBottom",
+      "type": "number",
+      "label": "unten rechts: Lage unten",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "bottomRightBottom2",
+      "type": "number",
+      "label": "unten rechts: Lage unten (2)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "bottomRightRight",
+      "type": "number",
+      "label": "unten rechts: Lage rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "bottomRightRight2",
+      "type": "number",
+      "label": "unten rechts: Lage rechts (2)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "bottomLeftBottom",
+      "type": "number",
+      "label": "unten links: Lage unten",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "bottomLeftBottom2",
+      "type": "number",
+      "label": "unten links: Lage unten (2)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "bottomLeftLeft",
+      "type": "number",
+      "label": "unten links: Lage links",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "bottomLeftLeft2",
+      "type": "number",
+      "label": "unten links: Lage links (2)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -3,
+      "min": -12,
+      "max": 12
+    },
+    {
       "key": "musicLeft",
       "type": "number",
       "label": "Musik: Lage links",
@@ -8033,158 +8185,6 @@
         "Pacifico"
       ],
       "inherit": "titleFont"
-    },
-    {
-      "key": "topLeftTop",
-      "type": "number",
-      "label": "oben links: Lage oben",
-      "group": "Feinschliff: Allgemein",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "topLeftTop2",
-      "type": "number",
-      "label": "oben links: Lage oben (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": -3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "topLeftLeft",
-      "type": "number",
-      "label": "oben links: Lage links",
-      "group": "Feinschliff: Allgemein",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "topLeftLeft2",
-      "type": "number",
-      "label": "oben links: Lage links (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": -3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "topRightTop",
-      "type": "number",
-      "label": "oben rechts: Lage oben",
-      "group": "Feinschliff: Allgemein",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "topRightTop2",
-      "type": "number",
-      "label": "oben rechts: Lage oben (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": -3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "topRightRight",
-      "type": "number",
-      "label": "oben rechts: Lage rechts",
-      "group": "Feinschliff: Allgemein",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "topRightRight2",
-      "type": "number",
-      "label": "oben rechts: Lage rechts (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": -3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "bottomRightBottom",
-      "type": "number",
-      "label": "unten rechts: Lage unten",
-      "group": "Feinschliff: Allgemein",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "bottomRightBottom2",
-      "type": "number",
-      "label": "unten rechts: Lage unten (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": -3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "bottomRightRight",
-      "type": "number",
-      "label": "unten rechts: Lage rechts",
-      "group": "Feinschliff: Allgemein",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "bottomRightRight2",
-      "type": "number",
-      "label": "unten rechts: Lage rechts (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": -3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "bottomLeftBottom",
-      "type": "number",
-      "label": "unten links: Lage unten",
-      "group": "Feinschliff: Allgemein",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "bottomLeftBottom2",
-      "type": "number",
-      "label": "unten links: Lage unten (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": -3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "bottomLeftLeft",
-      "type": "number",
-      "label": "unten links: Lage links",
-      "group": "Feinschliff: Allgemein",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "bottomLeftLeft2",
-      "type": "number",
-      "label": "unten links: Lage links (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": -3,
-      "min": -12,
-      "max": 12
     },
     {
       "key": "rootLineHeight",

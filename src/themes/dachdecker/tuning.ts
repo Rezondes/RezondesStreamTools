@@ -23,12 +23,12 @@ import { STARTING_BRB_TUNING } from "./tuning/startingBrb.ts";
 import { STARTING_BRB_ENDING_TUNING } from "./tuning/startingBrbEnding.ts";
 import { STARTING_MUSIC_TUNING } from "./tuning/startingMusic.ts";
 import { STATS_TUNING } from "./tuning/stats.ts";
-import { STATS_ALERTS_MUSIC_INFO_TUNING } from "./tuning/statsAlertsMusicInfo.ts";
+import { STATS_ALERTS_CHAT_MUSIC_INFO_TUNING } from "./tuning/statsAlertsChatMusicInfo.ts";
 import { STINGER_TUNING } from "./tuning/stinger.ts";
 
 // typed as plain fields: the values type comes generated from the server (src/generated/themes), and the literal
 // types of hundreds of fields are too much for the compiler
-export const TUNING_FIELDS: readonly SettingField[] = ([] as readonly SettingField[]).concat(STARTING_TUNING, STARTING_BRB_TUNING, STARTING_MUSIC_TUNING, STARTING_BRB_ENDING_TUNING, BRB_TUNING, ENDING_TUNING, STATS_TUNING, STATS_ALERTS_MUSIC_INFO_TUNING, ALERTS_TUNING, ALERTS_CAM_TUNING, ALERTS_MUSIC_INFO_TUNING, CHAT_TUNING, CAM_TUNING, MUSIC_TUNING, FX_TUNING, INFO_TUNING, MINIMES_TUNING, OFFLINE_BANNER_TUNING, PROFILE_BANNER_TUNING, STINGER_TUNING, GENERAL_TUNING);
+export const TUNING_FIELDS: readonly SettingField[] = ([] as readonly SettingField[]).concat(STARTING_TUNING, STARTING_BRB_TUNING, STARTING_MUSIC_TUNING, STARTING_BRB_ENDING_TUNING, BRB_TUNING, ENDING_TUNING, STATS_TUNING, STATS_ALERTS_CHAT_MUSIC_INFO_TUNING, ALERTS_TUNING, ALERTS_CAM_TUNING, ALERTS_MUSIC_INFO_TUNING, CHAT_TUNING, CAM_TUNING, MUSIC_TUNING, FX_TUNING, INFO_TUNING, MINIMES_TUNING, OFFLINE_BANNER_TUNING, PROFILE_BANNER_TUNING, STINGER_TUNING, GENERAL_TUNING);
 
 export const TUNING_GROUPS: Readonly<Record<string, readonly SceneName[]>> = {
   "Feinschliff: Starting": ["starting"],
@@ -38,7 +38,7 @@ export const TUNING_GROUPS: Readonly<Record<string, readonly SceneName[]>> = {
   "Feinschliff: BRB": ["brb"],
   "Feinschliff: Ending": ["ending"],
   "Feinschliff: Statistik": ["stats"],
-  "Feinschliff: Statistik, Alerts, Musik, Befehlsseite": ["stats", "alerts", "music", "info"],
+  "Feinschliff: Statistik, Alerts, Chat, Musik, Befehlsseite": ["stats", "alerts", "chat", "music", "info"],
   "Feinschliff: Alerts": ["alerts"],
   "Feinschliff: Alerts, Kamera-Rahmen": ["alerts", "cam"],
   "Feinschliff: Alerts, Musik, Befehlsseite": ["alerts", "music", "info"],

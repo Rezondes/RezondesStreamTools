@@ -31,69 +31,13 @@
 
 /* --- Backdrop ------------------------------------------------------------------------------------------------ */
 .theme-plantage .pl-screen { position: fixed; inset: 0; overflow: hidden; background: var(--screenBackground); }
-.theme-plantage .pl-field { position: absolute; inset: 0; overflow: hidden; }
-.theme-plantage .time-morgen { --sky-top: var(--timeMorgenSkyTop); --sky-bottom: var(--timeMorgenSkyBottom); --light: var(--timeMorgenLight); }
-.theme-plantage .time-mittag { --sky-top: var(--timeMittagSkyTop); --sky-bottom: var(--timeMittagSkyBottom); --light: var(--timeMittagLight); }
-.theme-plantage .time-abend { --sky-top: var(--timeAbendSkyTop); --sky-bottom: var(--timeAbendSkyBottom); --light: var(--timeAbendLight); }
-.theme-plantage .time-nacht { --sky-top: var(--timeNachtSkyTop); --sky-bottom: var(--timeNachtSkyBottom); --light: var(--timeNachtLight); }
 /* One SVG illustration (Field.tsx), covering the picture; colors of its parts and gradient stops from the settings */
-.theme-plantage .pl-scene { position: absolute; inset: 0; width: 100%; height: 100%; }
-.theme-plantage .pl-stop-sky-top { stop-color: var(--sky-top); }
-.theme-plantage .pl-stop-sky-bottom { stop-color: var(--sky-bottom); }
-.theme-plantage .pl-stop-light { stop-color: var(--light); }
-.theme-plantage .pl-stop-soil { stop-color: var(--stopSoilStopColor); }
-.theme-plantage .pl-stop-soil-dark { stop-color: var(--stopSoilDarkStopColor); }
-.theme-plantage .pl-stop-mango { stop-color: var(--stopMangoStopColor); }
-.theme-plantage .pl-stop-blush { stop-color: var(--stopBlushStopColor); }
-.theme-plantage .pl-stop-gloss { stop-color: color-mix(in srgb, var(--stopGlossStopColor) var(--stopGlossStopColor3), var(--stopGlossStopColor2)); }
 /* Sun or moon: disc, glow and faint rays that turn slowly; strength from sunGlow */
-.theme-plantage .pl-sun-disc { fill: var(--light); }
-.theme-plantage .pl-sun-glow { opacity: calc(var(--sunGlow) * var(--sunGlowOpacity)); }
-.theme-plantage .pl-rays path { fill: var(--light); opacity: calc(var(--sunGlow) * var(--raysPathOpacity)); }
-.theme-plantage .pl-rays { animation: plantage-turn var(--raysAnimation) linear infinite; }
-.theme-plantage .time-nacht .pl-rays { display: none; }
 /* Clouds: lit puffs over a slightly darker underside, drifting at their own height and size */
-.theme-plantage .pl-cloud {
-  --cloud-y: calc(var(--y) * var(--cloudCloudY) + var(--cloudCloudY2));
-  animation: plantage-drift calc(var(--cloudSpeed) * var(--cloudAnimation) / 100) linear infinite;
-  animation-delay: calc(var(--i) * calc(var(--cloudSpeed) * var(--cloudAnimationDelay) / 100) / var(--cloudAnimationDelay3) - var(--y) * calc(var(--cloudSpeed) * var(--cloudAnimationDelay2) / 100));
-}
-.theme-plantage .pl-cloud-body { scale: var(--size); }
-.theme-plantage .pl-cloud-puff { fill: var(--cloudPuffFill); }
-.theme-plantage .pl-cloud-shade { fill: color-mix(in srgb, var(--cloudShadeFill) var(--cloudShadeFill2), var(--sky-top)); }
 /* Hills fade into the sky the farther they are (atmospheric depth) */
-.theme-plantage .pl-hill-far { fill: color-mix(in srgb, var(--hillFarFill) var(--hillFarFill2), var(--sky-bottom)); }
-.theme-plantage .pl-hill-near { fill: color-mix(in srgb, var(--hillNearFill) var(--hillNearFill2), var(--sky-bottom)); }
-.theme-plantage .pl-grass-edge { fill: color-mix(in srgb, var(--grassEdgeFill) var(--grassEdgeFill3), var(--grassEdgeFill2)); }
-.theme-plantage .pl-furrows { fill: none; stroke: var(--furrowsStroke); stroke-width: var(--furrowsStrokeWidth); stroke-linecap: round; opacity: var(--furrowsOpacity); }
 /* Trees: crown in three tones (shade, mid, light toward the sun), mangos with gradient and gloss; they sway gently */
-.theme-plantage .pl-tree { animation: plantage-sway calc(var(--treeSwaySpeed) * var(--treeAnimation) / 100) ease-in-out infinite alternate; animation-delay: calc(var(--i) * calc(var(--treeSwaySpeed) * var(--treeAnimationDelay) / 100) / var(--treeAnimationDelay2)); }
-.theme-plantage .pl-trunk { fill: var(--trunkFill); }
-.theme-plantage .pl-bark { fill: none; stroke: color-mix(in srgb, var(--barkStroke) var(--barkStroke3), var(--barkStroke2)); stroke-width: var(--barkStrokeWidth); stroke-linecap: round; }
-.theme-plantage .pl-crown-shade { fill: var(--crownShadeFill); }
-.theme-plantage .pl-crown-mid { fill: var(--crownMidFill); }
-.theme-plantage .pl-crown-light { fill: color-mix(in srgb, var(--crownLightFill) var(--crownLightFill2), var(--light)); }
-.theme-plantage .pl-stem { stroke: var(--stemStroke); stroke-width: var(--stemStrokeWidth); }
-.theme-plantage .pl-gloss { fill: var(--glossFill); opacity: var(--glossOpacity); }
-.theme-plantage .pl-tree-shadow { fill: var(--treeShadowFill); opacity: var(--treeShadowOpacity); }
-.theme-plantage .pl-treerow-far .pl-crown-shade { fill: color-mix(in srgb, var(--treerowFarCrownShadeFill) var(--treerowFarCrownShadeFill2), var(--sky-bottom)); }
-.theme-plantage .pl-treerow-far .pl-crown-mid { fill: color-mix(in srgb, var(--treerowFarCrownMidFill) var(--treerowFarCrownMidFill2), var(--sky-bottom)); }
-.theme-plantage .pl-treerow-far .pl-crown-light { fill: color-mix(in srgb, var(--treerowFarCrownLightFill) var(--treerowFarCrownLightFill2), var(--sky-bottom)); }
-.theme-plantage .pl-treerow-far .pl-trunk { fill: color-mix(in srgb, var(--treerowFarTrunkFill) var(--treerowFarTrunkFill2), var(--sky-bottom)); }
-.theme-plantage .pl-treerow-far .pl-fruit { opacity: var(--treerowFarFruitOpacity); }
-.theme-plantage .pl-treerow-far .pl-gloss { opacity: var(--treerowFarGlossOpacity); }
-.theme-plantage .pl-treerow-far .pl-tree-shadow { opacity: var(--treerowFarTreeShadowOpacity); }
 /* Crates in front: planks, slats and grain in wood, a pile of mangos, the channel name burned in */
-.theme-plantage .pl-crate-body { fill: var(--crateBodyFill); stroke: var(--crateBodyStroke); stroke-width: var(--crateBodyStrokeWidth); }
-.theme-plantage .pl-crate-slats { fill: none; stroke: var(--crateSlatsStroke); stroke-width: var(--crateSlatsStrokeWidth); }
-.theme-plantage .pl-crate-grain { fill: none; stroke: var(--crateGrainStroke); stroke-width: var(--crateGrainStrokeWidth); opacity: var(--crateGrainOpacity); }
-.theme-plantage .pl-crate-name { fill: var(--crateNameFill); font-family: var(--crateNameFont), sans-serif; font-size: var(--crateNameFontSize); font-weight: var(--crateNameFontWeight); color: var(--crateNameColor); }
-.theme-plantage .pl-tuft { fill: color-mix(in srgb, var(--tuftFill) var(--tuftFill3), var(--tuftFill2)); }
-.theme-plantage .pl-birds { fill: none; stroke: var(--birdsStroke); stroke-width: var(--birdsStrokeWidth); stroke-linecap: round; animation: plantage-fly var(--birdEvery) linear infinite; }
 /* Night: a blue veil over everything; evening a warm one */
-.theme-plantage .pl-night { fill: var(--nightFill); opacity: 0; pointer-events: none; }
-.theme-plantage .time-nacht .pl-night { opacity: var(--timeNachtNightOpacity); }
-.theme-plantage .time-abend .pl-night { fill: var(--timeAbendNightFill); opacity: var(--timeAbendNightOpacity); }
 
 /* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
 
@@ -494,10 +438,6 @@
 }
 
 /* --- Keyframes ------------------------------------------------------------------------------------------------ */
-@keyframes plantage-drift { from { translate: var(--kfDriftFromTranslate) var(--cloud-y); } to { translate: var(--kfDriftToTranslate) var(--cloud-y); } }
-@keyframes plantage-turn { to { rotate: 1turn; } }
-@keyframes plantage-sway { from { rotate: calc(var(--treeSway) * calc(var(--kfSwayFromRotate) * 1deg)); } to { rotate: calc(var(--treeSway) * 1deg); } }
-@keyframes plantage-fly { 0% { translate: var(--kfFly0pTranslate) var(--kfFly0pTranslate2); } 45% { translate: var(--kfFly45pTranslate) var(--kfFly45pTranslate2); } 100% { translate: var(--kfFly100pTranslate) var(--kfFly100pTranslate2); } }
 @keyframes plantage-plop { from { scale: var(--kfPlopFromScale); } to { scale: var(--kfPlopToScale); } }
 @keyframes plantage-plane { from { translate: var(--kfPlaneFromTranslate) 0; } to { translate: calc(var(--kfPlaneToTranslate) * 1vw) 0; } }
 @keyframes plantage-marquee { to { translate: var(--kfMarqueeToTranslate) 0; } }
@@ -509,7 +449,6 @@
 @keyframes plantage-pop-out { from { opacity: var(--kfPopOutFromOpacity); scale: var(--kfPopOutFromScale); } to { opacity: 0; scale: var(--kfPopOutToScale); } }
 @keyframes plantage-slide-in { from { opacity: 0; translate: calc(var(--kfSlideInFromTranslate) * 1vw) 0; } to { opacity: var(--kfSlideInToOpacity); translate: 0 0; } }
 @keyframes plantage-slide-out { from { opacity: var(--kfSlideOutFromOpacity); translate: 0 0; } to { opacity: 0; translate: calc(var(--kfSlideOutToTranslate) * 1vw) 0; } }
-@keyframes plantage-fall { from { translate: 0 0; rotate: 0turn; } to { translate: calc((var(--spin) - var(--kfFallToTranslate)) * calc(var(--kfFallToTranslate2) * 1vw)) calc(var(--kfFallToTranslate3) * 1vh); rotate: calc(var(--spin) * 3turn); } }
 @keyframes plantage-rise-in { from { opacity: 0; translate: 0 var(--kfRiseInFromTranslate); scale: var(--kfRiseInFromScale); } to { opacity: var(--kfRiseInToOpacity); translate: 0 0; scale: var(--kfRiseInToScale); } }
 @keyframes plantage-rock { from { rotate: calc(var(--kfRockFromRotate) * 1deg); } to { rotate: calc(var(--kfRockToRotate) * 1deg); } }
 @keyframes plantage-leaf { from { rotate: calc(var(--kfLeafFromRotate) * 1deg); } to { rotate: calc(var(--kfLeafToRotate) * 1deg); } }

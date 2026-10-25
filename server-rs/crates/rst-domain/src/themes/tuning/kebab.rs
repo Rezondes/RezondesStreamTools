@@ -488,6 +488,8 @@ pub fn fields() -> Vec<SettingField> {
         number("infoDetailFontSize", "Befehlsseite Detail: Schriftgrösse (em)", "Feinschliff: Befehlsseite", 0.85, 0.0, 3.4, None, Some(0.01)),
         inherits(color("infoDetailColor", "Befehlsseite Detail: Textfarbe", "Feinschliff: Befehlsseite", ""), "muted"),
         inherits(font("infoDetailFont", "Befehlsseite Detail: Schrift", "Feinschliff: Befehlsseite", "", &["Nunito", "DM Sans", "Manrope"]), ""),
+        number("onCounterKbFloor", "auf Theke: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100.0, 0.0, 400.0, None, None),
+        number("onCounterKbFloor2", "auf Theke: Abstand zum Boden", "Feinschliff: Minimes", 4.0, 0.0, 40.0, Some(Unit::Px), None),
         number("minimesKbFloor", "Minimes: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100.0, 0.0, 400.0, None, None),
         number("minimeCounterBottom", "Minime Theke: Lage unten Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100.0, 0.0, 400.0, None, None),
         inherits(color("minimeCounterBorderTop", "Minime Theke: Rand oben Farbe (Linien und Bogenschrift (Signatur))", "Feinschliff: Minimes", ""), "red"),
@@ -554,8 +556,6 @@ pub fn fields() -> Vec<SettingField> {
         inherits(color("stingerBrown", "Dunkel: Farbe", "Stinger", ""), "brown"),
         inherits(font("stingerFont", "Titel: Schrift", "Stinger", "", &["Titan One", "Baloo 2", "Fredoka"]), "titleFont"),
         number("rootLineHeight", "Theme: Zeilenhöhe", "Feinschliff: Allgemein", 1.25, 0.5, 3.0, None, Some(0.01)),
-        number("onCounterKbFloor", "auf Theke: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Allgemein", 100.0, 0.0, 400.0, None, None),
-        number("onCounterKbFloor2", "auf Theke: Abstand zum Boden", "Feinschliff: Allgemein", 4.0, 0.0, 40.0, Some(Unit::Px), None),
     ]
 }
 

@@ -78,14 +78,6 @@ const FIELDS = [
   number("fadeDuration", "Ein- und Ausblenden", GENERAL, 400, 0, 3000, "ms"),
   choice("locale", "Uhrzeit-Format", GENERAL, "de-DE", LOCALES),
 
-  color("skyMorningTop", "Himmel Morgen oben", HILL, "#c9a77c"),
-  color("skyMorningBottom", "Himmel Morgen unten", HILL, "#f0dcb4"),
-  color("skyDayTop", "Himmel Mittag oben", HILL, "#6f9fc8"),
-  color("skyDayBottom", "Himmel Mittag unten", HILL, "#d6e6ef"),
-  color("skyEveningTop", "Himmel Abend oben", HILL, "#8a4b3a"),
-  color("skyEveningBottom", "Himmel Abend unten", HILL, "#e0a060"),
-  color("skyNightTop", "Himmel Nacht oben", HILL, "#0d1420"),
-  color("skyNightBottom", "Himmel Nacht unten", HILL, "#2a3440"),
   color("sun", "Sonne", HILL, "#ffe08a"),
   color("moon", "Mond", HILL, "#e8e6d0"),
   flag("mountains", "Berge im Hintergrund", HILL, true),
@@ -94,10 +86,8 @@ const FIELDS = [
   color("hillDark", "Hügel im Schatten", HILL, "#4a5628"),
   flag("tower", "Funkmast", HILL, true),
   color("towerBlink", "Funkmast: Blinklicht", HILL, "#ff3b30"),
-  color("flagColor", "Flagge auf dem Hügel", HILL, "#c2b280"),
   flag("sandbags", "Sandsäcke", HILL, true),
   flag("smoke", "Rauch am Horizont", HILL, true),
-  number("smokeSpeed", "Rauch: Dauer eines Aufsteigens", HILL, 12, 2, 60, "s"),
   flag("dust", "Staub in der Luft", HILL, true),
 
   // 3D world (PLAN-KOTH.md package 2); colors of hill, mountains and beacon and the switches of tower, sandbags, smoke and

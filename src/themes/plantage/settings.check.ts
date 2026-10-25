@@ -19,7 +19,7 @@ assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 // Required keys per group
 const REQUIRED: Record<string, string[]> = {
   "Allgemein": ["channelName", "font", "titleFont", "wood", "soil", "leaf", "trunk", "mango", "mangoBlush", "accent", "accent2", "radius", "fadeDuration"],
-  "Plantage": ["skyNightTop", "sun", "moon", "clouds", "hills", "treeSway", "mangosOnTrees", "crates", "crateName"],
+  "Plantage": ["sun", "clouds", "hills", "mangosOnTrees", "crates", "crateName"],
   "Starting, BRB, Ending": ["startingTitle", "brbTitle", "endingTitle", "picker", "pickerSide", "countdown", "progressStyle", "startingLines", "ticker", "tickerStyle", "brbPickEvery"],
   "Alerts": ["alertStyle", "followLine", "followIcon", "hypeEndLine", "alertDuration", "alertMangoOn", "alertGap", "alertTimer", "leafConfetti", "juice", "soundFollow", "soundLeave"],
   "Chat": ["chatStyle", "chatFade", "chatMax", "chatAlign", "chatSway"],

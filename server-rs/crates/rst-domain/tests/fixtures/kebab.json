@@ -7011,6 +7011,25 @@
       "inherit": ""
     },
     {
+      "key": "onCounterKbFloor",
+      "type": "number",
+      "label": "auf Theke: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "onCounterKbFloor2",
+      "type": "number",
+      "label": "auf Theke: Abstand zum Boden",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
       "key": "minimesKbFloor",
       "type": "number",
       "label": "Minimes: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)",
@@ -7632,25 +7651,6 @@
       "min": 0.5,
       "max": 3,
       "step": 0.01
-    },
-    {
-      "key": "onCounterKbFloor",
-      "type": "number",
-      "label": "auf Theke: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)",
-      "group": "Feinschliff: Allgemein",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "onCounterKbFloor2",
-      "type": "number",
-      "label": "auf Theke: Abstand zum Boden",
-      "group": "Feinschliff: Allgemein",
-      "default": 4,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
     }
   ],
   "groupScenes": {

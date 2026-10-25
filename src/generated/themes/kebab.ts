@@ -736,6 +736,8 @@ export type KebabValues = {
   readonly infoDetailFontSize: number;
   readonly infoDetailColor: string;
   readonly infoDetailFont: string;
+  readonly onCounterKbFloor: number;
+  readonly onCounterKbFloor2: number;
   readonly minimesKbFloor: number;
   readonly minimeCounterBottom: number;
   readonly minimeCounterBorderTop: string;
@@ -802,6 +804,4 @@ export type KebabValues = {
   readonly stingerBrown: string;
   readonly stingerFont: string;
   readonly rootLineHeight: number;
-  readonly onCounterKbFloor: number;
-  readonly onCounterKbFloor2: number;
 };

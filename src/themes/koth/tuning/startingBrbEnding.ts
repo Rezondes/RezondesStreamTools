@@ -3,6 +3,7 @@ import { color, font, inherits, number } from "../../../core/fields.ts";
 import type { SettingField } from "../../../core/theme.ts";
 
 export const STARTING_BRB_ENDING_TUNING = [
+  number("startingTickerBottom", "Starting: Lauftext: Lage unten (vh)", "Feinschliff: Starting, BRB, Ending", 1.7, -6.8, 6.8, undefined, 0.01),
   inherits(color("screenBackground", "Bildschirm: Hintergrund Farbe (Oliv dunkel)", "Feinschliff: Starting, BRB, Ending", ""), "oliveDark"),
   number("clockTop", "Uhr: Lage oben", "Feinschliff: Starting, BRB, Ending", 28, -112, 112, "px"),
   number("clockRight", "Uhr: Lage rechts", "Feinschliff: Starting, BRB, Ending", 40, -160, 160, "px"),

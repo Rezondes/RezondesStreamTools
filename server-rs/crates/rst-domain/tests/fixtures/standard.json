@@ -4570,25 +4570,6 @@
       "unit": "%"
     },
     {
-      "key": "cardLeavingAnimation",
-      "type": "number",
-      "label": "Karte beim Ausblenden: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)",
-      "group": "Feinschliff: Chat, Musik, Effekte, Befehlsseite",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "kfOutToTranslate",
-      "type": "number",
-      "label": "Ausblenden (Ende): Verschiebung y",
-      "group": "Feinschliff: Chat, Musik, Effekte, Befehlsseite",
-      "default": 16,
-      "min": -64,
-      "max": 64,
-      "unit": "px"
-    },
-    {
       "key": "camBeforeBorderRadius",
       "type": "number",
       "label": "Kamera-Rand: Eckenradius Anteil von „Eckenradius“ (%)",
@@ -4910,6 +4891,15 @@
       "max": 10,
       "unit": "s",
       "step": 0.05
+    },
+    {
+      "key": "cardLeavingAnimation",
+      "type": "number",
+      "label": "Karte beim Ausblenden: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Musik",
+      "default": 100,
+      "min": 0,
+      "max": 400
     },
     {
       "key": "progressHeight",
@@ -5302,6 +5292,16 @@
         "Space Grotesk"
       ],
       "inherit": "font"
+    },
+    {
+      "key": "kfOutToTranslate",
+      "type": "number",
+      "label": "Ausblenden (Ende): Verschiebung y",
+      "group": "Feinschliff: Musik, Effekte",
+      "default": 16,
+      "min": -64,
+      "max": 64,
+      "unit": "px"
     },
     {
       "key": "fxItemGap",
@@ -6185,6 +6185,10 @@
     "Feinschliff: Musik, Befehlsseite": [
       "music",
       "info"
+    ],
+    "Feinschliff: Musik, Effekte": [
+      "music",
+      "fx"
     ],
     "Feinschliff: Effekte": [
       "fx"

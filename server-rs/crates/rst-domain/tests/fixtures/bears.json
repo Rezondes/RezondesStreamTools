@@ -5752,6 +5752,26 @@
       "step": 0.01
     },
     {
+      "key": "kfBlink0p96pTransform",
+      "type": "number",
+      "label": "Blinzeln (0 %, 96 %): Verformung Grösse y",
+      "group": "Feinschliff: Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite, Minimes",
+      "default": 1,
+      "min": -4,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfBlink97p99pTransform",
+      "type": "number",
+      "label": "Blinzeln (97 %, 99 %): Verformung Grösse y",
+      "group": "Feinschliff: Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite, Minimes",
+      "default": 0.1,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
       "key": "chatPadding",
       "type": "number",
       "label": "Chat: Innenabstand",
@@ -7734,26 +7754,6 @@
       "inherit": ""
     },
     {
-      "key": "kfBlink0p96pTransform",
-      "type": "number",
-      "label": "Blinzeln (0 %, 96 %): Verformung Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": -4,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfBlink97p99pTransform",
-      "type": "number",
-      "label": "Blinzeln (97 %, 99 %): Verformung Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 0.1,
-      "min": -2,
-      "max": 2,
-      "step": 0.01
-    },
-    {
       "key": "minimeTransform",
       "type": "number",
       "label": "Minime: Verformung Verschiebung x",
@@ -9257,36 +9257,6 @@
       "inherit": ""
     },
     {
-      "key": "breathingBodyTransformOrigin",
-      "type": "number",
-      "label": "atmend Körper: Drehpunkt x",
-      "group": "Feinschliff: Allgemein",
-      "default": 50,
-      "min": 0,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "kfBreathe0p100pTransform",
-      "type": "number",
-      "label": "Atmen (0 %, 100 %): Verformung Grösse y",
-      "group": "Feinschliff: Allgemein",
-      "default": 1,
-      "min": -4,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfBreathe50pTransform",
-      "type": "number",
-      "label": "Atmen (50 %): Verformung Grösse y",
-      "group": "Feinschliff: Allgemein",
-      "default": 1.015,
-      "min": -4.06,
-      "max": 4.06,
-      "step": 0.01
-    },
-    {
       "key": "kfSteam0p100pOpacity",
       "type": "number",
       "label": "Dampf steigt (0 %, 100 %): Deckkraft",
@@ -9532,6 +9502,14 @@
       "chat",
       "music",
       "fx"
+    ],
+    "Feinschliff: Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite, Minimes": [
+      "alerts",
+      "chat",
+      "cam",
+      "music",
+      "info",
+      "minimes"
     ],
     "Feinschliff: Chat": [
       "chat"

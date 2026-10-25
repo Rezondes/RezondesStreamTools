@@ -795,6 +795,8 @@ export type DachdeckerValues = {
   readonly chipColor: string;
   readonly chipFontWeight: number;
   readonly chipFont: string;
+  readonly onRidgeDdFloor: number;
+  readonly onRidgeDdFloor2: number;
   readonly minimesDdFloor: number;
   readonly minimeRidgeBottom: number;
   readonly minimeRidgeHeight2: number;
@@ -871,6 +873,4 @@ export type DachdeckerValues = {
   readonly stingerAmbient: number;
   readonly stingerSun: number;
   readonly rootLineHeight: number;
-  readonly onRidgeDdFloor: number;
-  readonly onRidgeDdFloor2: number;
 };

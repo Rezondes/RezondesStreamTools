@@ -602,6 +602,8 @@ export type BearsValues = {
   readonly kfSlideOutToTranslate: number;
   readonly iconPartLineStrokeWidth: number;
   readonly kfFadeOutFromOpacity: number;
+  readonly kfBlink0p96pTransform: number;
+  readonly kfBlink97p99pTransform: number;
   readonly chatPadding: number;
   readonly chatColor: string;
   readonly chatFont: string;
@@ -806,8 +808,6 @@ export type BearsValues = {
   readonly infoDetailColor: string;
   readonly infoDetailFontSize: number;
   readonly infoDetailFont: string;
-  readonly kfBlink0p96pTransform: number;
-  readonly kfBlink97p99pTransform: number;
   readonly minimeTransform: number;
   readonly minimeNameBottom: number;
   readonly minimeNameMarginBottom: number;
@@ -961,9 +961,6 @@ export type BearsValues = {
   readonly partSignTextFontWeight: number;
   readonly partSignTextFill: string;
   readonly partSignTextColor: string;
-  readonly breathingBodyTransformOrigin: number;
-  readonly kfBreathe0p100pTransform: number;
-  readonly kfBreathe50pTransform: number;
   readonly kfSteam0p100pOpacity: number;
   readonly kfSteam50pTranslate: number;
   readonly kfSteam50pOpacity: number;

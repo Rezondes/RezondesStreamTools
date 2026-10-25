@@ -19,36 +19,6 @@
 
 /* --- Backdrop ------------------------------------------------------------------------------------------------ */
 .theme-koth .kh-screen { position: fixed; inset: 0; overflow: hidden; background: var(--screenBackground); }
-.theme-koth .kh-field { position: absolute; inset: 0; overflow: hidden; }
-.theme-koth .time-morgen { --sky-top: var(--timeMorgenSkyTop); --sky-bottom: var(--timeMorgenSkyBottom); --sun-x: var(--timeMorgenSunX); --sun-y: var(--timeMorgenSunY); --light: var(--timeMorgenLight); --dim: var(--timeMorgenDim); }
-.theme-koth .time-mittag { --sky-top: var(--timeMittagSkyTop); --sky-bottom: var(--timeMittagSkyBottom); --sun-x: var(--timeMittagSunX); --sun-y: var(--timeMittagSunY); --light: var(--timeMittagLight); --dim: var(--timeMittagDim); }
-.theme-koth .time-abend { --sky-top: var(--timeAbendSkyTop); --sky-bottom: var(--timeAbendSkyBottom); --sun-x: var(--timeAbendSunX); --sun-y: var(--timeAbendSunY); --light: var(--timeAbendLight); --dim: var(--timeAbendDim); }
-.theme-koth .time-nacht { --sky-top: var(--timeNachtSkyTop); --sky-bottom: var(--timeNachtSkyBottom); --sun-x: var(--timeNachtSunX); --sun-y: var(--timeNachtSunY); --light: var(--timeNachtLight); --dim: var(--timeNachtDim); }
-.theme-koth .kh-sky { position: absolute; inset: 0; background: linear-gradient(var(--sky-top), var(--sky-bottom) var(--skyBackground)); }
-.theme-koth .kh-sun { position: absolute; left: var(--sun-x); top: var(--sun-y); width: calc(var(--sunWidth) * 1vmin); aspect-ratio: var(--sunAspectRatio); border-radius: 50%; background: var(--light); translate: var(--sunTranslate) var(--sunTranslate2); box-shadow: 0 0 calc(var(--sunBoxShadow) * 1vmin) var(--light); }
-.theme-koth .kh-mountains { position: absolute; left: 0; right: 0; bottom: var(--mountainsBottom); width: 100%; height: var(--mountainsHeight); fill: var(--mountainsFill); filter: brightness(var(--dim)); }
-.theme-koth .kh-smoke { position: absolute; left: calc(var(--x) * 1%); bottom: var(--smokeBottom); width: calc(var(--smokeWidth) * 1vw); opacity: var(--smokeOpacity); transform-origin: var(--smokeTransformOrigin) 100%; animation: koth-smoke calc(var(--smokeSpeed) * var(--smokeAnimation) / 100) ease-out infinite; animation-delay: calc(var(--i) * calc(var(--smokeSpeed) * var(--smokeAnimationDelay) / 100) / var(--smokeAnimationDelay2)); }
-.theme-koth .kh-smoke .part-main { fill: color-mix(in srgb, var(--smokePartMainFill) var(--smokePartMainFill3), var(--smokePartMainFill2)); }
-.theme-koth .kh-hill { position: absolute; left: 0; right: 0; bottom: 0; filter: brightness(var(--dim)); }
-.theme-koth .kh-hill > .kh-shape .part-main { fill: var(--hillShapePartMainFill); }
-.theme-koth .kh-hill > .kh-shape .part-detail { fill: var(--hillShapePartDetailFill); }
-.theme-koth .kh-hill > .kh-shape .part-line { stroke: var(--hillShapePartLineStroke); stroke-width: var(--hillShapePartLineStrokeWidth); }
-.theme-koth .kh-tower { position: absolute; left: var(--towerLeft); bottom: var(--towerBottom); width: calc(var(--towerWidth) * 1vw); translate: var(--towerTranslate) 0; }
-.theme-koth .kh-tower .part-line { stroke: var(--towerPartLineStroke); stroke-width: var(--towerPartLineStrokeWidth); }
-.theme-koth .kh-tower .part-main { fill: var(--towerPartMainFill); }
-.theme-koth .kh-blink { position: absolute; left: var(--blinkLeft); top: var(--blinkTop); width: var(--blinkWidth); aspect-ratio: var(--blinkAspectRatio); border-radius: 50%; translate: var(--blinkTranslate) 0; background: var(--blinkBackground); box-shadow: 0 0 var(--blinkBoxShadow2) var(--blinkBoxShadow); animation: koth-blink var(--blinkAnimation) steps(var(--blinkAnimation2), end) infinite; }
-.theme-koth .kh-flag { position: absolute; left: calc(var(--flagLeft) + calc(var(--flagLeft2) * 1vw)); bottom: var(--flagBottom); width: calc(var(--flagWidth) * 1vw); }
-.theme-koth .kh-flag .part-line { stroke: var(--flagPartLineStroke); stroke-width: var(--flagPartLineStrokeWidth); }
-.theme-koth .kh-flag .part-main { fill: var(--flagPartMainFill); transform-origin: var(--flagPartMainTransformOrigin) var(--flagPartMainTransformOrigin2); animation: koth-wave var(--flagPartMainAnimation) ease-in-out infinite alternate; }
-.theme-koth .kh-net { position: absolute; left: calc(var(--x) * 1%); bottom: calc(var(--y) * 1%); width: calc(var(--netWidth) * 1vw); }
-.theme-koth .kh-net .part-line { stroke: var(--netPartLineStroke); stroke-width: var(--netPartLineStrokeWidth); }
-.theme-koth .kh-net .part-main { fill: var(--netPartMainFill); }
-.theme-koth .kh-net .part-detail { fill: var(--netPartDetailFill); }
-.theme-koth .kh-sandbags { position: absolute; left: calc(var(--x) * 1%); bottom: calc(var(--y) * 1%); width: calc(var(--sandbagsWidth) * 1vw); }
-.theme-koth .kh-sandbags .part-main { fill: var(--sandbagsPartMainFill); stroke: var(--sandbagsPartMainStroke); stroke-width: var(--sandbagsPartMainStrokeWidth); }
-.theme-koth .kh-sandbags .part-line { stroke: var(--sandbagsPartLineStroke); stroke-width: var(--sandbagsPartLineStrokeWidth); }
-.theme-koth .kh-hill-name { position: absolute; left: var(--hillNameLeft); bottom: var(--hillNameBottom); translate: var(--hillNameTranslate) 0; padding: var(--hillNamePadding) var(--hillNamePadding2); background: repeating-linear-gradient(calc(var(--hillNameBackground3) * 1deg), var(--hillNameBackground) 0 var(--hillNameBackground4), var(--hillNameBackground2) var(--hillNameBackground5) calc(var(--hillNameBackground6) * var(--hillNameBackground7))); border: var(--hillNameBorder2) solid var(--hillNameBorder); color: var(--hillNameColor); font-family: var(--hillNameFont), sans-serif; font-size: calc(var(--hillNameFontSize) * 1vw); text-shadow: 0 var(--hillNameTextShadow2) 0 var(--hillNameTextShadow); }
-.theme-koth .kh-dust { position: absolute; left: calc(var(--x) * 100%); top: calc(var(--dustTop) + var(--y) * var(--dustTop2)); width: var(--dustWidth); aspect-ratio: var(--dustAspectRatio); border-radius: 50%; background: var(--dustBackground); opacity: var(--dustOpacity); animation: koth-drift var(--dustAnimation) linear infinite; animation-delay: calc(var(--i) * var(--dustAnimationDelay) / var(--dustAnimationDelay2)); }
 
 /* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
 .theme-koth .kh-clock { position: absolute; top: var(--clockTop); right: var(--clockRight); padding: var(--clockPadding) var(--clockPadding2); background: linear-gradient(color-mix(in srgb, var(--clockBackground) var(--clockBackground3), white), var(--clockBackground2)); border: var(--clockBorder2) solid var(--clockBorder); border-radius: calc(var(--radius) * var(--clockBorderRadius) / 100); color: var(--clockColor); font-family: "Share Tech Mono", monospace; font-size: var(--clockFontSize); font-variant-numeric: tabular-nums; }
@@ -163,10 +133,7 @@
 .theme-koth .kh-fx-text.slip { padding: var(--fxTextSlipPadding) var(--fxTextSlipPadding2); background: var(--fxTextSlipBackground); color: var(--fxTextSlipColor); border-left: var(--fxTextSlipBorderLeft2) solid var(--fxTextSlipBorderLeft); text-shadow: none; box-shadow: 0 var(--fxTextSlipBoxShadow) var(--fxTextSlipBoxShadow2) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent); rotate: calc(var(--fxTextSlipRotate) * 1deg); }
 
 /* --- Keyframes ------------------------------------------------------------------------------------------------ */
-@keyframes koth-smoke { from { scale: var(--kfSmokeFromScale); opacity: 0; translate: 0 0; } 20% { opacity: var(--kfSmoke20pOpacity); } to { scale: var(--kfSmokeToScale); opacity: 0; translate: calc(var(--kfSmokeToTranslate) * 1vw) calc(-1 * calc(var(--kfSmokeToTranslate2) * 1vh)); } }
 @keyframes koth-blink { 0%, 100% { opacity: var(--kfBlink0p100pOpacity); } 50% { opacity: var(--kfBlink50pOpacity); } }
-@keyframes koth-wave { from { skew: 0deg calc(var(--kfWaveFromSkew) * 1deg); scale: var(--kfWaveFromScale) var(--kfWaveFromScale2); } to { skew: 0deg calc(var(--kfWaveToSkew) * 1deg); scale: var(--kfWaveToScale) var(--kfWaveToScale2); } }
-@keyframes koth-drift { from { translate: 0 0; } to { translate: calc(var(--kfDriftToTranslate) * 1vw) calc(-1 * calc(var(--kfDriftToTranslate2) * 1vh)); } }
 @keyframes koth-marquee { to { translate: var(--kfMarqueeToTranslate) 0; } }
 @keyframes koth-fade { from { opacity: 0; } to { opacity: var(--kfFadeToOpacity); } }
 @keyframes koth-fade-out { from { opacity: var(--kfFadeOutFromOpacity); } to { opacity: 0; } }

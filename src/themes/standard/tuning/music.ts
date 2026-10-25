@@ -3,6 +3,7 @@ import { color, font, inherits, number } from "../../../core/fields.ts";
 import type { SettingField } from "../../../core/theme.ts";
 
 export const MUSIC_TUNING = [
+  number("cardLeavingAnimation", "Karte beim Ausblenden: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)", "Feinschliff: Musik", 100, 0, 400),
   number("progressHeight", "Fortschrittsbalken: Höhe", "Feinschliff: Musik", 6, 0, 40, "px"),
   number("progressBorderRadius", "Fortschrittsbalken: Eckenradius", "Feinschliff: Musik", 999, 0, 999, "px"),
   inherits(color("progressBackground", "Fortschrittsbalken: Hintergrund Farbe (Gedämpfte Textfarbe)", "Feinschliff: Musik", ""), "mutedColor"),

@@ -21,7 +21,7 @@ assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 // Required keys per group
 const REQUIRED: Record<string, string[]> = {
   "Allgemein": ["channelName", "font", "titleFont", "olive", "sand", "steel", "paper", "ink", "accent", "accent2", "radius", "fadeDuration"],
-  "Hügel": ["skyNightTop", "sun", "moon", "mountains", "hillColor", "tower", "flagColor", "sandbags", "smoke", "dust"],
+  "Hügel": ["sun", "moon", "mountains", "hillColor", "tower", "sandbags", "smoke", "dust"],
   "Starting, BRB, Ending": ["startingTitle", "brbTitle", "endingTitle", "mapGrid", "countdown", "progressStyle", "startingLines", "ticker", "briefingMapOn", "radioLinesOn"],
   "Welt": ["quality", "worldSeed", "skyTop", "skyHorizon", "fogNear", "fogFar", "sunColor", "bloomStrength", "shadows", "hillHeight", "sandColor"],
   "Lager": ["mastHeight", "mastWires", "flagFaction", "flagSize", "bunkerOn", "tents", "trees", "rocks", "jeepOn", "helicopterOn", "smokeColumns", "dustAmount"],

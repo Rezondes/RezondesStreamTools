@@ -4,6 +4,4 @@ import type { SettingField } from "../../../core/theme.ts";
 
 export const GENERAL_TUNING = [
   number("rootLineHeight", "Theme: Zeilenhöhe", "Feinschliff: Allgemein", 1.2, 0.5, 3, undefined, 0.01),
-  number("onRidgeDdFloor", "auf First: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Allgemein", 100, 0, 400),
-  number("onRidgeDdFloor2", "auf First: Abstand zum Boden Anteil von „Boden: Höhe“ (%)", "Feinschliff: Allgemein", 100, 0, 400),
 ] as const satisfies readonly SettingField[];
