@@ -7,8 +7,9 @@ export type StatKey = Exclude<keyof StreamStats, "startedAt" | "endedAt"> | "dur
 type StatLine = { key: StatKey; label: string };
 type StatValue = StatLine & { value: string };
 
-const KEYS: readonly StatKey[] = ["follows", "subs", "giftedSubs", "raids", "raiders", "bits", "redeems", "hypeLevel", "chatMessages", "chatters", "duration"];
-const isKey = (key: string): key is StatKey => (KEYS as readonly string[]).includes(key);
+// The keys a "key|Text" line can use (the dashboard lists them under such a setting)
+export const STAT_KEYS: readonly StatKey[] = ["follows", "subs", "giftedSubs", "raids", "raiders", "bits", "redeems", "hypeLevel", "chatMessages", "chatters", "duration"];
+const isKey = (key: string): key is StatKey => (STAT_KEYS as readonly string[]).includes(key);
 
 // Lines of the setting in their order; unknown keys and empty lines are skipped, without | the key is the text
 export function parseStatLines(text: string): StatLine[] {

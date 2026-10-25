@@ -30,6 +30,7 @@ const S: Option<Unit> = Some(Unit::S);
 const GENERAL: &str = "Allgemein";
 const RAIN: &str = "Matrix-Regen";
 const SCREENS: &str = "Starting, BRB, Ending";
+const STATS: &str = "Statistik";
 const ALERTS: &str = "Alerts";
 const CHAT: &str = "Chat";
 const CAM: &str = "Kamera-Rahmen";
@@ -104,8 +105,8 @@ fn fields() -> Vec<SettingField> {
         in_scene(SceneName::Ending, text("endingThanks", "Untertitel Ending", SCREENS, "DANKE FÜRS ZUSCHAUEN", None)),
         in_scene(SceneName::Ending, text("endingNextLabel", "Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream: ", None)),
         in_scene(SceneName::Ending, text("endingNext", "Nächster Stream (leer = ausblenden)", SCREENS, "", None)),
-        in_scene(SceneName::Stats, lines("logoutLines", "Statistik: Zahlen (Schlüssel|Text)", SCREENS, &["follows|new users", "subs|subscriptions", "raids|incoming raids", "bits|bits", "chatMessages|messages"], None)),
-        in_scene(SceneName::Stats, number("countUpMs", "Statistik: Hochzählen (Dauer)", SCREENS, 1000.0, 0.0, 10_000.0, MS, None)),
+        lines("logoutLines", "Zahlen (Schlüssel|Text)", STATS, &["follows|new users", "subs|subscriptions", "raids|incoming raids", "bits|bits", "chatMessages|messages"], None),
+        number("countUpMs", "Hochzählen (Dauer)", STATS, 1000.0, 0.0, 10_000.0, MS, None),
         in_scene(SceneName::Ending, number("crtOffAt", "Ending: CRT aus nach (0 = nie)", SCREENS, 8.0, 0.0, 600.0, S, None)),
         flag("terminal", "Terminal", SCREENS, true),
         text("prompt", "Prompt ({login}, {channel})", SCREENS, "root@{login}:~$", None),
@@ -283,6 +284,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
     [
         (RAIN, vec![SceneName::Starting, SceneName::Brb, SceneName::Ending, SceneName::Alerts, SceneName::Info]),
         (SCREENS, vec![SceneName::Starting, SceneName::Brb, SceneName::Ending]),
+        (STATS, vec![SceneName::Stats]),
         (ALERTS, vec![SceneName::Alerts]),
         (CHAT, vec![SceneName::Chat]),
         (CAM, vec![SceneName::Cam]),
@@ -333,6 +335,7 @@ const BASIC: &[&str] = &[
     "endingThanks",
     "endingNext",
     "endingLines",
+    "logoutLines",
     "followLine",
     "subLine",
     "resubLine",

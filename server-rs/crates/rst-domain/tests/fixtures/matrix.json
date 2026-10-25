@@ -572,8 +572,8 @@
     {
       "key": "logoutLines",
       "type": "lines",
-      "label": "Statistik: Zahlen (Schlüssel|Text)",
-      "group": "Starting, BRB, Ending",
+      "label": "Zahlen (Schlüssel|Text)",
+      "group": "Statistik",
       "default": [
         "follows|new users",
         "subs|subscriptions",
@@ -582,18 +582,17 @@
         "chatMessages|messages"
       ],
       "maxLines": 100,
-      "scene": "stats"
+      "basic": true
     },
     {
       "key": "countUpMs",
       "type": "number",
-      "label": "Statistik: Hochzählen (Dauer)",
-      "group": "Starting, BRB, Ending",
+      "label": "Hochzählen (Dauer)",
+      "group": "Statistik",
       "default": 1000,
       "min": 0,
       "max": 10000,
-      "unit": "ms",
-      "scene": "stats"
+      "unit": "ms"
     },
     {
       "key": "crtOffAt",
@@ -2750,6 +2749,9 @@
       "starting",
       "brb",
       "ending"
+    ],
+    "Statistik": [
+      "stats"
     ],
     "Alerts": [
       "alerts"

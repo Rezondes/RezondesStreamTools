@@ -30,4 +30,11 @@ for (const [group, keys] of Object.entries(REQUIRED)) {
   for (const key of keys) assert.equal(fields.find(field => field.key === key)?.group, group, `${key} fehlt in ${group}`);
 }
 
+// The stream numbers have their own group that applies to the scene stats, so the dashboard shows them there
+for (const key of ["logoutLines", "countUpMs"]) {
+  const field = fields.find(candidate => candidate.key === key);
+  assert.ok(field && field.group === "Statistik" && field.scene === undefined, key);
+}
+assert.deepEqual(matrixSettings.groupScenes?.Statistik, ["stats"]);
+
 console.log("matrix settings ok");

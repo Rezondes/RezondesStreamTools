@@ -4,7 +4,7 @@
 import { lazy, Suspense, useState } from "react";
 import { MEDIA_KIND, type SettingErrorCode } from "../core/settings.ts";
 import type { SettingField, SettingValue, SoundValue } from "../core/theme.ts";
-import { isDefault } from "./settingsForm.ts";
+import { isDefault, statKeysHint } from "./settingsForm.ts";
 import { TEXTS } from "./texts.de.ts";
 
 type Props = {
@@ -26,10 +26,12 @@ export default function SettingInput({ field, value, error, media, onChange, onR
   const id = `setting-${field.key}`;
   const [generator, setGenerator] = useState(false);
   const ascii = field.type === "textarea" && field.ascii === true;
+  const statKeys = statKeysHint(field);
   return (
     <div className={`setting${error ? " invalid" : ""}`}>
       <label htmlFor={id}>{field.label}{field.type === "number" ? numberHint(field.unit, TEXTS.theme.range(field.min, field.max)) : ""}</label>
       <Input id={id} field={field} value={value} media={media} onChange={onChange} invalid={Boolean(error)} />
+      {statKeys && <span className="muted">{TEXTS.theme.statKeys(statKeys)}</span>}
       {ascii && !generator && <button type="button" className="btn" onClick={() => setGenerator(true)}>{TEXTS.ascii.open}</button>}
       {ascii && generator && (
         <Suspense fallback={<p className="muted">{TEXTS.loading}</p>}>

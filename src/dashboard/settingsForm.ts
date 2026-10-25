@@ -2,6 +2,7 @@
 // changed fields compared to the saved state and errors per field. Pure functions, tested in settingsForm.check.ts.
 import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
 import type { SettingError, SettingErrorCode } from "../core/settings.ts";
+import { STAT_KEYS } from "../core/stats/stats.ts";
 import type { SceneName, SettingField, SettingValue, SettingValues, ThemeSchema } from "../core/theme.ts";
 
 // The schema of a theme: the server's (GET /api/themes) decides rules, limits and defaults; the built-in one only
@@ -88,6 +89,13 @@ export function shownField(schema: ThemeSchema, field: SettingField, values: Set
   const options = typeof value === "string" ? field.optionsBy.options[value] : undefined;
   return options ? { ...field, options } : field;
 }
+
+// fixed: the label part of a lines setting with stream numbers in every theme
+const STAT_LINES_LABEL = "(Schlüssel|Text)";
+
+// The keys of the stream numbers under a lines setting "... (Schlüssel|Text)", null for every other field
+export const statKeysHint = (field: SettingField): readonly string[] | null =>
+  (field.type === "lines" && field.label.includes(STAT_LINES_LABEL) ? STAT_KEYS : null);
 
 export const isDefault = (field: SettingField, value: SettingValue | undefined) => same(field.default, value);
 

@@ -22,6 +22,7 @@ const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", 
 const GENERAL = "Allgemein";
 const RAIN = "Matrix-Regen";
 const SCREENS = "Starting, BRB, Ending";
+const STATS = "Statistik";
 const ALERTS = "Alerts";
 const CHAT = "Chat";
 const CAM = "Kamera-Rahmen";
@@ -99,8 +100,8 @@ const FIELDS = [
   inScene("ending", text("endingThanks", "Untertitel Ending", SCREENS, "DANKE FÜRS ZUSCHAUEN")),
   inScene("ending", text("endingNextLabel", "Nächster Stream (Beschriftung)", SCREENS, "Nächster Stream: ")),
   inScene("ending", text("endingNext", "Nächster Stream (leer = ausblenden)", SCREENS, "")),
-  inScene("stats", lines("logoutLines", "Statistik: Zahlen (Schlüssel|Text)", SCREENS, ["follows|new users", "subs|subscriptions", "raids|incoming raids", "bits|bits", "chatMessages|messages"])),
-  inScene("stats", number("countUpMs", "Statistik: Hochzählen (Dauer)", SCREENS, 1000, 0, 10000, "ms")),
+  lines("logoutLines", "Zahlen (Schlüssel|Text)", STATS, ["follows|new users", "subs|subscriptions", "raids|incoming raids", "bits|bits", "chatMessages|messages"]),
+  number("countUpMs", "Hochzählen (Dauer)", STATS, 1000, 0, 10000, "ms"),
   inScene("ending", number("crtOffAt", "Ending: CRT aus nach (0 = nie)", SCREENS, 8, 0, 600, "s")),
   flag("terminal", "Terminal", SCREENS, true),
   text("prompt", "Prompt ({login}, {channel})", SCREENS, "root@{login}:~$"),
@@ -332,6 +333,7 @@ export type { MatrixValues } from "../../generated/themes/matrix.ts";
 const GROUP_SCENES = {
   [RAIN]: ["starting", "brb", "ending", "alerts", "info"],
   [SCREENS]: ["starting", "brb", "ending"],
+  [STATS]: ["stats"],
   [ALERTS]: ["alerts"],
   [CHAT]: ["chat"],
   [CAM]: ["cam"],
@@ -355,7 +357,7 @@ const personalize = (login: string) => ({ channelName: login.toUpperCase(), logo
 const BASIC = [
   "quality",
   "accent", "background", "font", "channelName", "logo", "rainScreens", "rainAlerts", "startingTitle", "countdownDone", "startingLines",
-  "ticker", "brbTitle", "brbNote", "brbLines", "endingTitle", "endingThanks", "endingNext", "endingLines", "followLine", "subLine",
+  "ticker", "brbTitle", "brbNote", "brbLines", "endingTitle", "endingThanks", "endingNext", "endingLines", "logoutLines", "followLine", "subLine",
   "resubLine", "giftLine", "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatPrompt", "camLabel", "camRec", "musicHeadPlaying",
   "musicIdleTitle", "musicHide", "fxIn", "fxOut", "minimeNames", "minimeDefaultColor",
 ];

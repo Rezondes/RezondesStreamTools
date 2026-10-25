@@ -1,10 +1,10 @@
 // Check for settingsForm.ts: groups in schema order, reset, changes and errors per field. Runs with npm test.
 import assert from "node:assert/strict";
-import { choice, choiceBy } from "../core/fields.ts";
+import { choice, choiceBy, lines } from "../core/fields.ts";
 import type { SettingField, ThemeSchema } from "../core/theme.ts";
 import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
 import {
-  changedKeys, errorsByKey, fieldsByKind, groupFields, groupsForMode, groupsForView, groupsWithoutScene, hiddenKeys, isDefault, pickSchema, resetAll, resetField, shownField, viewOfField,
+  changedKeys, errorsByKey, fieldsByKind, groupFields, groupsForMode, groupsForView, groupsWithoutScene, hiddenKeys, isDefault, pickSchema, resetAll, resetField, shownField, statKeysHint, viewOfField,
 } from "./settingsForm.ts";
 
 const schema: ThemeSchema = {
@@ -65,6 +65,12 @@ assert.deepEqual(offered({}), ["red", "sable"]);
 assert.deepEqual(offered({ dog: "mops" }), ["beige"]);
 assert.deepEqual(offered({ dog: "wolf" }), ["red", "sable", "beige"]);
 assert.equal(shownField(dogs, breeds, {}), breeds);
+
+// Stream number lines ("(Schlüssel|Text)" in the label) name the keys that can be used, other fields nothing
+const statLines = lines("statsLines", "Zahlen (Schlüssel|Text)", "A", ["follows|Follows"]);
+assert.ok(statKeysHint(statLines)?.includes("follows") && statKeysHint(statLines)?.includes("duration"));
+assert.equal(statKeysHint(lines("terminal", "Zeilen", "A", [])), null);
+assert.equal(statKeysHint(breeds), null);
 
 // Default detected, also for lists
 assert.equal(isDefault(schema.fields[3], ["a", "b"]), true);
