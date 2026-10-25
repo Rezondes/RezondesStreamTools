@@ -1,7 +1,13 @@
 // Check for banners.ts of the KOTH theme: both banners draw their title and texts, the offline banner at most three
 // lines, the same options give the same calls. A mock canvas records the calls. Runs with npm test.
 import assert from "node:assert/strict";
+import { effectiveSettings } from "../../core/settings.ts";
+import { kothBannerLayout } from "./render.ts";
+import { type KothValues, kothSettings } from "./settings.ts";
 import { drawKothOfflineBanner, drawKothProfileBanner, type KothBannerOptions } from "./banners.ts";
+
+// The look of the default settings
+const defaults = effectiveSettings(kothSettings, {}) as unknown as KothValues;
 
 function recorder() {
   const calls: unknown[][] = [];
@@ -16,6 +22,7 @@ function recorder() {
 const options: KothBannerOptions = {
   font: "Inter", titleFont: "Black Ops One", paper: "#e9e4d0", ink: "#23251c", textColor: "#f2f0e6",
   title: "KOTH", profileText: "Hold the hill", offlineTitle: "Radio silence", offlineText: "Follow the channel", offlineLines: ["Back soon", "The hill waits", "Over", "Out"],
+  layout: kothBannerLayout(defaults),
 };
 const texts = (calls: unknown[][]) => calls.filter(call => call[0] === "fillText").map(call => call[1]);
 

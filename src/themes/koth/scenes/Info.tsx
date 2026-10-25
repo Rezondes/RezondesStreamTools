@@ -10,8 +10,8 @@ import WorldBackdrop, { kindOfTime } from "../three/WorldBackdrop.tsx";
 import { kothSettings } from "../settings.ts";
 import { kothNames, useKoth } from "../useKoth.ts";
 
-// fixed: how the mission sheets drop in (px, deg, s, s between two, ease)
-const DROP = { y: -60, turn: -2, length: 0.6, step: 0.12, ease: "back.out(2)" };
+// fixed: the curve of the mission sheets; their drop, turn and times come from the settings
+const DROP_EASE = "back.out(2)";
 
 export default function Info() {
   const values = useKoth();
@@ -19,8 +19,8 @@ export default function Info() {
   const page = useInfoPage(values, kothNames(values), readMinimeOptions(values, kothSettings.minimeVariants, kothSettings.minimeTeams).rules);
   useTimeline(timeline => {
     const sheets = column.current?.querySelectorAll(":scope > .kh-sheet");
-    if (sheets?.length) timeline.from(sheets, { opacity: 0, y: DROP.y, rotate: DROP.turn, duration: DROP.length, ease: DROP.ease, stagger: DROP.step });
-  }, [page?.sections.length ?? 0], column);
+    if (sheets?.length) timeline.from(sheets, { opacity: 0, y: values.infoDropY, rotate: values.infoDropTurn, duration: values.infoDropLength, ease: DROP_EASE, stagger: values.infoDropStep });
+  }, [page?.sections.length ?? 0, values.infoDropY, values.infoDropTurn, values.infoDropLength, values.infoDropStep], column);
   if (!page) return null;
   return (
     <div className="kh-info">

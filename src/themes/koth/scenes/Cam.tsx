@@ -8,19 +8,18 @@ import { fillTemplate } from "../../../core/template.ts";
 import { kothNames, useKoth } from "../useKoth.ts";
 
 const CORNERS = ["top-left", "top-right", "bottom-left", "bottom-right"] as const;
-// fixed: the crosshair starts this large and turned (deg) and pulls together in (s); the battery bars fill one by one
-const CROSS = { scale: 1.8, turn: 45, length: 0.9, ease: "back.out(1.6)" };
-const BARS = { length: 0.15, step: 0.18, after: 0.5 };
+// fixed: the curve of the crosshair; its size, turn and time and the battery bars come from the settings
+const CROSS_EASE = "back.out(1.6)";
 
 export default function Cam() {
   const values = useKoth();
   const cam = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
     const cross = cam.current?.querySelector(".kh-cam-cross");
-    if (cross) timeline.fromTo(cross, { opacity: 0, scale: CROSS.scale, rotate: CROSS.turn }, { opacity: 1, scale: 1, rotate: 0, duration: CROSS.length, ease: CROSS.ease }, 0);
+    if (cross) timeline.fromTo(cross, { opacity: 0, scale: values.camCrossScale, rotate: values.camCrossTurn }, { opacity: 1, scale: 1, rotate: 0, duration: values.camCrossLength, ease: CROSS_EASE }, 0);
     const bars = cam.current?.querySelectorAll(".kh-cam-battery i");
-    if (bars?.length) timeline.from(bars, { opacity: 0, duration: BARS.length, stagger: BARS.step }, BARS.after);
-  }, [values.camCross, values.camBattery], cam);
+    if (bars?.length) timeline.from(bars, { opacity: 0, duration: values.camBarsLength, stagger: values.camBarsStep }, values.camBarsAfter);
+  }, [values.camCross, values.camBattery, values.camCrossScale, values.camCrossTurn, values.camCrossLength, values.camBarsLength, values.camBarsStep, values.camBarsAfter], cam);
   return (
     <div ref={cam} className={`kh-cam kh-cam-${values.camStyle}`}>
       <div className="kh-cam-frame" />

@@ -3,6 +3,7 @@
 import type { CSSProperties } from "react";
 import { nail, type Steps, stepShare } from "../build.ts";
 import { typed } from "../briefing.ts";
+import { useKoth } from "../useKoth.ts";
 
 type Props = { time: number; steps: Steps; label: string; target: string; grid: boolean };
 
@@ -15,17 +16,19 @@ const CONTOURS = [
 const ROUTE = "M30 270 C70 250 80 210 120 196 C150 186 170 176 196 164";
 const ARROW = "M184 152 L200 162 L184 176";
 const CROSS = "M200 146 L228 174 M228 146 L200 174";
-const TILT = { from: -9, to: -2.5 };
-const DROP = 40;
 
 // A path that draws itself: pathLength 1, the dash offset is what is still missing
 const drawn = (share: number) => ({ pathLength: 1, strokeDasharray: 1, strokeDashoffset: 1 - share });
 
 export default function BriefingMap({ time, steps, label, target, grid }: Props) {
+  const values = useKoth();
+  const from = values.mapTiltFrom;
+  const to = values.mapTiltTo;
+  const drop = values.mapDrop;
   const shown = nail(stepShare(steps.map, time));
   const style = {
     opacity: Math.min(1, shown),
-    transform: `translateY(${(1 - shown) * -DROP}px) rotate(${TILT.from + (TILT.to - TILT.from) * shown}deg)`,
+    transform: `translateY(${(1 - shown) * -drop}px) rotate(${from + (to - from) * shown}deg)`,
   } as CSSProperties;
   return (
     <div className={`kh-briefing-map${grid ? " grid" : ""}`} style={style}>

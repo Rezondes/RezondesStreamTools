@@ -3,10 +3,17 @@
 // gives the same scene. Runs with npm test (no WebGL needed, only the scene graph).
 import assert from "node:assert/strict";
 import type { Mesh, MeshBasicMaterial, MeshLambertMaterial } from "three";
+import { effectiveSettings } from "../../core/settings.ts";
+import { kothStingerCloud, kothStingerLook } from "./render.ts";
+import { type KothValues, kothSettings } from "./settings.ts";
 import { type KothStingerOptions, stingerSetup } from "./stinger.ts";
+
+// The look of the default settings
+const defaults = effectiveSettings(kothSettings, {}) as unknown as KothValues;
 
 const options: KothStingerOptions = {
   duration: 1.6, cut: 0.8, flag: true, smoke: "#9ea3a0", flags: ["#2f6fd6", "#d63a2f"], pole: "#3c4146", grenade: "#4b5320", puffs: 24, seed: 3,
+  look: kothStingerLook(defaults), cloud: kothStingerCloud(defaults),
 };
 const setup = stingerSetup(options);
 const part = (name: string) => setup.scene.getObjectByName(name) as Mesh;

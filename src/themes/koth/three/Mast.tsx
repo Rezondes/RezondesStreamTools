@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef } from "react";
 import { BufferGeometry, Color, DoubleSide, Float32BufferAttribute, type Mesh, type MeshBasicMaterial, type PointLight } from "three";
 import { type KothClock, nail, outCubic, type Steps, stepShare } from "../build.ts";
 import { DISH_HEIGHT, mastSegments, mastWires, PLATFORM_HEIGHT, type Segment } from "../mast.ts";
+import { useKoth } from "../useKoth.ts";
 
 type Props = {
   clock: KothClock;
@@ -18,15 +19,10 @@ type Props = {
   ground: (x: number, depth: number) => number;
 };
 
-// fixed: blink length in s, light of the beacon and how dark it is between blinks
-const BLINK = 0.18;
-const BEACON_LIGHT = 40;
-const BEACON_DARK = 0.3;
+// fixed: the beacon blinks once the mast is built this far; blink, light and darkness come from the settings
 const BUILT = 0.98;
 // fixed: a tiny scale instead of 0 for parts that pop on
 const HIDDEN = 1e-4;
-// fixed: the light metal of the dish
-const DISH_COLOR = "#c9c4b4";
 
 function lines(segments: readonly Segment[]) {
   const geometry = new BufferGeometry();
@@ -40,7 +36,8 @@ export default function Mast({ clock, steps, base, height, wires, dish, beacon, 
   const latticeGeometry = useMemo(() => lines(lattice), [lattice]);
   const wireGeometry = useMemo(() => lines(guys), [guys]);
   useEffect(() => () => { latticeGeometry.dispose(); wireGeometry.dispose(); }, [latticeGeometry, wireGeometry]);
-  const [lit, dark] = useMemo(() => [new Color(beacon.color), new Color(beacon.color).multiplyScalar(BEACON_DARK)], [beacon.color]);
+  const { beaconBlink, beaconLight, beaconDark, mastDishColor } = useKoth();
+  const [lit, dark] = useMemo(() => [new Color(beacon.color), new Color(beacon.color).multiplyScalar(beaconDark)], [beacon.color, beaconDark]);
   const lamp = useRef<Mesh>(null);
   const light = useRef<PointLight>(null);
   const dishMesh = useRef<Mesh>(null);
@@ -53,9 +50,9 @@ export default function Mast({ clock, steps, base, height, wires, dish, beacon, 
     wireGeometry.setDrawRange(0, Math.floor(guys.length * outCubic(stepShare(steps.wires, time))) * 2);
     dishMesh.current?.scale.setScalar(Math.max(HIDDEN, nail(stepShare(steps.dish, time, 0))));
     platform.current?.scale.setScalar(Math.max(HIDDEN, nail(stepShare(steps.dish, time, 1))));
-    const blink = built > BUILT && time % beacon.every < BLINK;
+    const blink = built > BUILT && time % beacon.every < beaconBlink;
     (lamp.current?.material as MeshBasicMaterial | undefined)?.color.copy(blink ? lit : dark);
-    if (light.current) light.current.intensity = blink ? BEACON_LIGHT : 0;
+    if (light.current) light.current.intensity = blink ? beaconLight : 0;
   });
 
   const top = base + height;
@@ -73,7 +70,7 @@ export default function Mast({ clock, steps, base, height, wires, dish, beacon, 
         <>
           <mesh ref={dishMesh} position={[1.1, base + height * DISH_HEIGHT, 0.3]} rotation={[0, 0, -Math.PI / 2.4]} castShadow>
             <cylinderGeometry args={[0.85, 0.12, 0.35, 18, 1, true]} />
-            <meshStandardMaterial color={DISH_COLOR} side={DoubleSide} roughness={0.6} />
+            <meshStandardMaterial color={mastDishColor} side={DoubleSide} roughness={0.6} />
           </mesh>
           <mesh ref={platform} position={[0, base + height * PLATFORM_HEIGHT, 0]} castShadow>
             <cylinderGeometry args={[1.05, 1.05, 0.08, 3]} />

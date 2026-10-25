@@ -28,15 +28,12 @@ import Terrain from "./Terrain.tsx";
 // look: sky, light and camera of the screen (looks.ts); kind: the screen, for the parts only it has (ScreenParts)
 type Props = { kind: ScreenKind; values: KothValues; clock: KothClock; steps: Steps; look: WorldLook };
 
-// fixed: look of the prototype (refs/starting.html): field of view, far plane, shadow of the main light, bloom shape
-const FOV = 34;
+// fixed: far plane and shadow map of the prototype (refs/starting.html); field of view, shadow reach, bloom, fog, dust and
+// how white the sun disc and the dust get come from the settings
 const FAR = 400;
-const SHADOW = { map: { hoch: 2048, other: 1024 }, reach: 26, far: 120 };
-const BLOOM = { radius: 0.5, threshold: 0.82 };
-// Sky gradient: share of the horizon color at the stops from the top; fog and light mixes
+const SHADOW_MAP = { hoch: 2048, other: 1024 };
+// Sky gradient: share of the horizon color at the stops from the top
 const SKY_STOPS = [[0, 0], [0.45, 0.6], [0.72, 0.85], [1, 1]] as const;
-const FOG_MIX = 0.8;
-const DUST = { spread: 40, height: 10, rise: 0.15, sway: 0.4, swaySpeed: 0.3, size: 0.08, opacity: 0.7 };
 // fixed: white to brighten the sun disc and the dust
 const WHITE = "#ffffff";
 
@@ -63,11 +60,15 @@ function Sky({ top, horizon }: { top: string; horizon: string }) {
   return null;
 }
 
-function Dust({ clock, count, seed, color }: { clock: KothClock; count: number; seed: number; color: string }) {
+function Dust({ clock, count, seed, color, values }: { clock: KothClock; count: number; seed: number; color: string; values: KothValues }) {
+  const DUST = {
+    spread: values.worldDustSpread, height: values.worldDustHeight, rise: values.worldDustRise, sway: values.worldDustSway, swaySpeed: values.worldDustSwaySpeed,
+    size: values.worldDustSize, opacity: values.worldDustOpacity,
+  };
   const base = useMemo(() => {
     const random = chance(seed);
     return Array.from({ length: count * 3 }, (_, index) => (index % 3 === 1 ? random.between(0, DUST.height) : random.between(-DUST.spread / 2, DUST.spread / 2)));
-  }, [count, seed]);
+  }, [count, seed, DUST.height, DUST.spread]);
   const geometry = useMemo(() => new BufferGeometry().setAttribute("position", new Float32BufferAttribute(base, 3)), [base]);
   useEffect(() => () => geometry.dispose(), [geometry]);
   useFrame(() => {
@@ -81,21 +82,22 @@ function Dust({ clock, count, seed, color }: { clock: KothClock; count: number; 
   return <points geometry={geometry}><pointsMaterial color={color} size={DUST.size} transparent opacity={DUST.opacity} /></points>;
 }
 
-function Lights({ look, ground, quality }: { look: WorldLook; ground: string; quality: string }) {
+function Lights({ look, ground, values }: { look: WorldLook; ground: string; values: KothValues }) {
   const disc = useRef<Mesh>(null);
   useEffect(() => disc.current?.lookAt(0, 0, 0), [look.disc]);
-  const map = quality === "hoch" ? SHADOW.map.hoch : SHADOW.map.other;
+  const map = values.quality === "hoch" ? SHADOW_MAP.hoch : SHADOW_MAP.other;
+  const reach = values.worldShadowReach;
   return (
     <>
       <hemisphereLight args={[mix(look.sky.horizon, look.light.color, 0.5), darker(ground, 0.6), look.ambient]} />
       <directionalLight
         position={look.light.position} color={look.light.color} intensity={look.light.strength} castShadow
-        shadow-mapSize={[map, map]} shadow-camera-left={-SHADOW.reach} shadow-camera-right={SHADOW.reach} shadow-camera-top={SHADOW.reach} shadow-camera-bottom={-SHADOW.reach} shadow-camera-far={SHADOW.far}
+        shadow-mapSize={[map, map]} shadow-camera-left={-reach} shadow-camera-right={reach} shadow-camera-top={reach} shadow-camera-bottom={-reach} shadow-camera-far={values.worldShadowFar}
       />
       {look.disc && (
         <mesh ref={disc} position={look.disc.position}>
           <circleGeometry args={[look.disc.size, 40]} />
-          <meshBasicMaterial color={mix(look.disc.color, WHITE, 0.25)} fog={false} />
+          <meshBasicMaterial color={mix(look.disc.color, WHITE, values.worldSunWhite)} fog={false} />
         </mesh>
       )}
     </>
@@ -134,11 +136,11 @@ export default memo(function World({ kind, values, clock, steps, look }: Props) 
   const pole = items.find(item => item.kind === "pole")!;
   return (
     <Stage3D
-      background={look.sky.horizon} fog={{ color: mix(look.sky.top, look.sky.horizon, FOG_MIX), near: values.fogNear, far: values.fogFar }}
-      bloom={{ strength: values.bloomStrength, ...BLOOM }} level={values.quality} fov={FOV} far={FAR} shadows={values.shadows}
+      background={look.sky.horizon} fog={{ color: mix(look.sky.top, look.sky.horizon, values.worldFogMix), near: values.fogNear, far: values.fogFar }}
+      bloom={{ strength: values.bloomStrength, radius: values.worldBloomRadius, threshold: values.worldBloomThreshold }} level={values.quality} fov={values.worldFov} far={FAR} shadows={values.shadows}
     >
       <Sky top={look.sky.top} horizon={look.sky.horizon} />
-      <Lights look={look} ground={values.hillDark} quality={values.quality} />
+      <Lights look={look} ground={values.hillDark} values={values} />
       {values.mountains && <Mountains seed={values.worldSeed} color={values.mountainColor} />}
       <Terrain clock={clock} step={steps.ground} height={values.hillHeight} seed={values.worldSeed} colors={groundColors}>
         <Camp items={items} clock={clock} steps={steps} colors={colors} markers={markers} />
@@ -154,8 +156,8 @@ export default memo(function World({ kind, values, clock, steps, look }: Props) 
       {values.smoke && (
         <Smoke clock={clock} step={steps.smoke} columns={values.smokeColumns} amount={particleCount(values.smokeAmount, values.quality)} color={values.smokeColor} seed={values.worldSeed} ground={ground} />
       )}
-      {values.dust && values.dustAmount > 0 && <Dust clock={clock} count={particleCount(values.dustAmount, values.quality)} seed={values.worldSeed + 1} color={mix(look.light.color, WHITE, 0.3)} />}
-      {values.helicopterOn && <Helicopter clock={clock} color={values.oliveDark} />}
+      {values.dust && values.dustAmount > 0 && <Dust clock={clock} count={particleCount(values.dustAmount, values.quality)} seed={values.worldSeed + 1} color={mix(look.light.color, WHITE, values.worldDustWhite)} values={values} />}
+      {values.helicopterOn && <Helicopter clock={clock} color={values.helicopterColor} />}
       <HillCamera clock={clock} options={look.camera} />
     </Stage3D>
   );

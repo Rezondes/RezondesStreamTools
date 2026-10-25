@@ -8,19 +8,19 @@ import { softTexture } from "../../../core/three/softTexture.ts";
 import type { KothClock } from "../build.ts";
 import { FLARE_LIFE, flaresAt } from "../flares.ts";
 import { playFlare } from "../tones.ts";
+import { useKoth } from "../useKoth.ts";
 
 type Props = { clock: KothClock; start: number; seed: number; every: number; sparks: number; colors: readonly string[]; sound: boolean };
 
-// fixed: size of a spark and of a rocket in m, how much white brightens the faction colors
-const SIZE = 1.1;
-const GLOW = 0.45;
 // fixed: white that brightens the sparks
 const WHITE = "#ffffff";
 
 export default function Flares({ clock, start, seed, every, sparks, colors, sound }: Props) {
+  // size of a spark and of a rocket in m, how much white brightens the faction colors (settings)
+  const { flareSize, flareGlow } = useKoth();
   const alive = Math.ceil(FLARE_LIFE / every) + 1;
   const points = alive * (sparks + 1);
-  const tints = useMemo(() => colors.map(color => new Color(color).lerp(new Color(WHITE), GLOW)), [colors]);
+  const tints = useMemo(() => colors.map(color => new Color(color).lerp(new Color(WHITE), flareGlow)), [colors, flareGlow]);
   const texture = useMemo(() => softTexture(), []);
   useEffect(() => () => texture.dispose(), [texture]);
   const geometry = useMemo(() => new BufferGeometry()
@@ -51,5 +51,5 @@ export default function Flares({ clock, start, seed, every, sparks, colors, soun
     launched.current = Math.max(launched.current, newest);
   });
 
-  return <points geometry={geometry}><pointsMaterial map={texture} vertexColors size={SIZE} transparent blending={AdditiveBlending} depthWrite={false} /></points>;
+  return <points geometry={geometry}><pointsMaterial map={texture} vertexColors size={flareSize} transparent blending={AdditiveBlending} depthWrite={false} /></points>;
 }

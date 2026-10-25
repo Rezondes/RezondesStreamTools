@@ -9,36 +9,39 @@
   position: absolute;
   left: 0;
   bottom: var(--soldierGround);
-  width: var(--soldierSize);
+  width: calc(var(--soldierSize) * var(--minimeWidth) / 100);
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateX(calc(var(--x) - 50%));
+  transform: translateX(calc(var(--x) - var(--minimeTransform)));
   transition: transform var(--move) linear;
 }
-.theme-koth .kh-minime-name { margin-bottom: var(--name-gap, 4px); padding: var(--name-padding, 1px 8px); font-size: var(--soldierNameSize); font-weight: 700; white-space: nowrap; text-transform: uppercase; letter-spacing: 0.06em; }
-.theme-koth .name-band { background: var(--team); color: var(--textColor); }
-.theme-koth .name-schild { background: var(--paper); border: var(--name-border, 2px) solid var(--team); color: var(--ink); }
+.theme-koth .kh-minime-name { margin-bottom: var(--minimeNameMarginBottom); padding: var(--minimeNamePadding) var(--minimeNamePadding2); font-size: var(--soldierNameSize); font-weight: var(--minimeNameFontWeight); white-space: nowrap; text-transform: uppercase; letter-spacing: calc(var(--minimeNameLetterSpacing) * 1em); color: var(--minimeNameColor); font-family: var(--minimeNameFont), system-ui, sans-serif; }
+.theme-koth .name-band { background: var(--team); color: var(--nameBandColor); }
+.theme-koth .name-schild { background: var(--nameSchildBackground); border: var(--nameSchildBorder) solid var(--team); color: var(--nameSchildColor); }
 .theme-koth .kh-minime-body { position: relative; width: 100%; }
-.theme-koth .kh-minime-anchor { width: 100%; height: calc(var(--soldierSize) * 1.4); }
-.theme-koth .kh-minime-shadow { width: 70%; height: var(--shadow-height, 8px); margin-top: calc(-1 * var(--shadow-overlap, 4px)); border-radius: 50%; background: color-mix(in srgb, black calc(var(--soldierShadow) * 100%), transparent); }
+.theme-koth .kh-minime-anchor { width: 100%; height: calc(var(--soldierSize) * var(--minimeAnchorHeight)); }
+.theme-koth .kh-minime-shadow { width: var(--minimeShadowWidth); height: var(--minimeShadowHeight); margin-top: calc(-1 * var(--minimeShadowMarginTop)); border-radius: 50%; background: color-mix(in srgb, black calc(var(--soldierShadow) * 100%), transparent); }
 
 /* Cross over a medic while it revives */
-.theme-koth .kh-revive { position: absolute; left: 50%; top: 0; width: var(--revive, 22px); aspect-ratio: 1; background: linear-gradient(var(--medicCross) 0 0) center / 34% 100% no-repeat, linear-gradient(var(--medicCross) 0 0) center / 100% 34% no-repeat; translate: -50% 0; animation: koth-minime-up var(--action-ms) ease-out both; }
+.theme-koth .kh-revive { position: absolute; left: var(--reviveLeft); top: 0; width: var(--reviveWidth); aspect-ratio: var(--reviveAspectRatio); background: linear-gradient(var(--reviveBackground) 0 0) center / var(--reviveBackground3) 100% no-repeat, linear-gradient(var(--reviveBackground2) 0 0) center / 100% var(--reviveBackground4) no-repeat; translate: var(--reviveTranslate) 0; animation: koth-minime-up var(--action-ms) ease-out both; }
 
 /* Who holds the hill */
-.theme-koth .kh-holder { position: absolute; left: 50%; top: var(--holder-top, 10px); display: flex; align-items: center; gap: var(--holder-gap, 10px); padding: var(--holder-padding, 4px 16px); translate: -50% 0; background: color-mix(in srgb, var(--oliveDark) 88%, transparent); border: var(--holder-border, 2px) solid var(--team, var(--sand)); color: var(--textColor); font-family: var(--titleFont), sans-serif; font-size: var(--holder-size, 22px); text-transform: uppercase; letter-spacing: 0.06em; }
-.theme-koth .kh-holder-flag { width: var(--holder-flag, 26px); height: var(--holder-flag-height, 18px); background: var(--team, var(--sand)); clip-path: polygon(0 0, 100% 10%, 85% 50%, 100% 90%, 0 100%); }
-.theme-koth .kh-holder.contested .kh-holder-flag { background: var(--stripes); animation: koth-blink var(--blink-time, 1.6s) steps(1, end) infinite; }
+.theme-koth .kh-holder { position: absolute; left: var(--holderLeft); top: var(--holderTop); display: flex; align-items: center; gap: var(--holderGap); padding: var(--holderPadding) var(--holderPadding2); translate: var(--holderTranslate) 0; background: color-mix(in srgb, var(--holderBackground) var(--holderBackground2), transparent); border: var(--holderBorder2) solid var(--team, var(--holderBorder)); color: var(--holderColor); font-family: var(--holderFont), sans-serif; font-size: var(--holderFontSize); text-transform: uppercase; letter-spacing: calc(var(--holderLetterSpacing) * 1em); }
+.theme-koth .kh-holder-flag { width: var(--holderFlagWidth); height: var(--holderFlagHeight); background: var(--team, var(--holderFlagBackground)); clip-path: polygon(0 0, 100% var(--holderFlagClipPath), var(--holderFlagClipPath2) var(--holderFlagClipPath3), 100% var(--holderFlagClipPath4), 0 100%); }
+.theme-koth .kh-holder.contested .kh-holder-flag { background: repeating-linear-gradient(calc(var(--holderContestedHolderFlagBackground3) * 1deg), var(--holderContestedHolderFlagBackground) 0 var(--holderContestedHolderFlagBackground4), var(--holderContestedHolderFlagBackground2) var(--holderContestedHolderFlagBackground5) calc(var(--holderContestedHolderFlagBackground6) * var(--holderContestedHolderFlagBackground7))); animation: koth-blink var(--holderContestedHolderFlagAnimation) steps(var(--holderContestedHolderFlagAnimation2), end) infinite; }
 
 /* Appearing and disappearing (settings) */
 .theme-koth .enter-fallschirm .action-enter .kh-minime-body { animation: koth-minime-chute var(--action-ms) ease-out both; }
-.theme-koth .enter-blenden .action-enter .kh-minime-body, .theme-koth .action-enter .kh-minime-name { animation: koth-minime-fade-in var(--action-ms) ease-out both; }
+.theme-koth .enter-blenden .action-enter .kh-minime-body { animation: koth-minime-fade-in var(--action-ms) ease-out both; }
+.theme-koth .action-enter .kh-minime-name { animation: koth-minime-fade-in var(--action-ms) ease-out both; }
 .theme-koth .exit-abzug .action-exit .kh-minime-body { animation: koth-minime-leave var(--action-ms) ease-in forwards; }
-.theme-koth .exit-blenden .action-exit .kh-minime-body, .theme-koth .action-exit .kh-minime-name, .theme-koth .action-exit .kh-minime-shadow { animation: koth-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-koth .exit-blenden .action-exit .kh-minime-body { animation: koth-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-koth .action-exit .kh-minime-name { animation: koth-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-koth .action-exit .kh-minime-shadow { animation: koth-minime-fade-out var(--action-ms) ease-in forwards; }
 
-@keyframes koth-minime-up { from { opacity: 0; translate: -50% 0; } 20% { opacity: 1; } to { opacity: 0; translate: -50% calc(-1 * var(--rise-height, 46px)); } }
-@keyframes koth-minime-chute { from { translate: 0 calc(-1 * var(--drop-height, 320px)); rotate: -8deg; } 80% { translate: 0 0; rotate: 4deg; } to { translate: 0 0; rotate: 0deg; } }
-@keyframes koth-minime-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes koth-minime-fade-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes koth-minime-leave { from { translate: 0 0; opacity: 1; } to { translate: calc(var(--facing) * var(--leave-run, 160px)) 0; opacity: 0; } }
+@keyframes koth-minime-up { from { opacity: 0; translate: var(--kfMinimeUpFromTranslate) 0; } 20% { opacity: var(--kfMinimeUp20pOpacity); } to { opacity: 0; translate: var(--kfMinimeUpToTranslate) calc(-1 * var(--kfMinimeUpToTranslate2)); } }
+@keyframes koth-minime-chute { from { translate: 0 calc(-1 * var(--kfMinimeChuteFromTranslate)); rotate: calc(var(--kfMinimeChuteFromRotate) * 1deg); } 80% { translate: 0 0; rotate: calc(var(--kfMinimeChute80pRotate) * 1deg); } to { translate: 0 0; rotate: 0deg; } }
+@keyframes koth-minime-fade-in { from { opacity: 0; } to { opacity: var(--kfMinimeFadeInToOpacity); } }
+@keyframes koth-minime-fade-out { from { opacity: var(--kfMinimeFadeOutFromOpacity); } to { opacity: 0; } }
+@keyframes koth-minime-leave { from { translate: 0 0; opacity: var(--kfMinimeLeaveFromOpacity); } to { translate: calc(var(--facing) * var(--kfMinimeLeaveToTranslate)) 0; opacity: 0; } }

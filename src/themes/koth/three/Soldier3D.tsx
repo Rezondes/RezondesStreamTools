@@ -11,14 +11,13 @@ import { HitDust, MuzzleFlash } from "./CombatFx.tsx";
 type Box = RefObject<HTMLElement | null>;
 type Props = { role: string; team: string; values: KothValues; run: FigureRun; anchor: Box; stage: Box; seed: number; blast: boolean };
 
-// fixed: the pants are the faction color darkened by this share; the soldier turns far towards its target
-const PANTS = 0.45;
+// fixed: the soldier turns far towards its target (the pants are the faction color darkened by a share of the settings)
 const TURN = 1;
 
 export default function Soldier3D({ role, team, values, run, anchor, stage, seed, blast }: Props) {
   const parts = useMemo(() => soldier(role, values.soldierFaces), [role, values.soldierFaces]);
   const looks = useMemo<Record<SoldierTone, string>>(() => ({
-    skin: values.skin, uniform: team, pants: `#${new Color(team).multiplyScalar(1 - PANTS).getHexString()}`, gear: values.oliveDark,
+    skin: values.skin, uniform: team, pants: `#${new Color(team).multiplyScalar(1 - values.pantsDark).getHexString()}`, gear: values.oliveDark,
     eye: values.soldierEye, helmet: values.helmet, weapon: values.weapon, mark: values.weaponMark, bag: values.paper, cross: values.medicCross,
   }), [values, team]);
   const current = useRef(run);

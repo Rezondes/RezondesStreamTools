@@ -1,9 +1,14 @@
 // Check for smokeStinger.ts: covered at the transition point and less before and after, the grenade rolls in and pops,
 // the puffs follow time and seed, the flag changes at the cut. Runs with npm test.
 import assert from "node:assert/strict";
+import { effectiveSettings } from "../../core/settings.ts";
+import { kothStingerCloud } from "./render.ts";
+import { type KothValues, kothSettings } from "./settings.ts";
 import { flagSide, grenadeAt, popAt, smokeCover, smokePuffs } from "./smokeStinger.ts";
 
-const timing = { duration: 1.6, cut: 0.8 };
+// The look of the default settings
+const defaults = effectiveSettings(kothSettings, {}) as unknown as KothValues;
+const timing = { duration: 1.6, cut: 0.8, cloud: kothStingerCloud(defaults) };
 // Covered at the cut, less before and after, nothing at the ends
 assert.equal(smokeCover(timing.cut, timing), 1);
 assert.equal(smokeCover(0, timing), 0);

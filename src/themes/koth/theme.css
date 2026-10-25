@@ -1,268 +1,271 @@
 /* KOTH theme: military look with the hill, radio mast and flag, olive and sand terrain, steel devices, briefing paper and
    stencil type; faction colors as accents. Encapsulated under .theme-koth; colors, sizes and times come as CSS variables
-   from the settings, further sizes as var(--name, default). Keyframes are called koth-*. The minimes have their own CSS
-   (minimes.css). */
+   from the settings, every further size, time and color is a fine-tuning field of its own (tuning.ts). Keyframes are
+   called koth-*. The minimes have their own CSS (minimes.css). */
 
 .theme-koth {
   font-family: var(--font), system-ui, sans-serif;
   font-size: var(--fontSize);
-  line-height: 1.3;
+  line-height: var(--rootLineHeight);
   color: var(--textColor);
-  --shadow: 0 var(--shadow-y, 8px) var(--shadow-blur, 20px) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent);
-  --steel-plate: linear-gradient(color-mix(in srgb, var(--steel) 85%, white), var(--steel));
-  --stripes: repeating-linear-gradient(-45deg, var(--accent) 0 var(--stripe, 12px), var(--oliveDark) var(--stripe, 12px) calc(2 * var(--stripe, 12px)));
 }
 
 /* Shapes from hill.ts: colors per place further below, lines without fill */
 .theme-koth .kh-shape { display: block; width: 100%; height: auto; overflow: visible; }
-.theme-koth .kh-shape .part-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: var(--line-width, 4); }
-.theme-koth .kh-title, .theme-koth .kh-tag, .theme-koth .kh-callsign { font-family: var(--titleFont), sans-serif; font-weight: 400; letter-spacing: 0.04em; text-transform: uppercase; }
+.theme-koth .kh-shape .part-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: var(--shapePartLineStrokeWidth); }
+.theme-koth .kh-title { font-family: var(--titleFont2), sans-serif; font-weight: var(--titleFontWeight); letter-spacing: calc(var(--titleLetterSpacing) * 1em); text-transform: uppercase; }
+.theme-koth .kh-tag { font-family: var(--tagFont), sans-serif; font-weight: var(--tagFontWeight); letter-spacing: calc(var(--tagLetterSpacing) * 1em); text-transform: uppercase; }
+.theme-koth .kh-callsign { font-family: var(--callsignFont), sans-serif; font-weight: var(--callsignFontWeight); letter-spacing: calc(var(--callsignLetterSpacing) * 1em); text-transform: uppercase; color: var(--callsignColor); }
 
 /* --- Backdrop ------------------------------------------------------------------------------------------------ */
-.theme-koth .kh-screen { position: fixed; inset: 0; overflow: hidden; background: var(--oliveDark); }
+.theme-koth .kh-screen { position: fixed; inset: 0; overflow: hidden; background: var(--screenBackground); }
 .theme-koth .kh-field { position: absolute; inset: 0; overflow: hidden; }
-.theme-koth .time-morgen { --sky-top: var(--skyMorningTop); --sky-bottom: var(--skyMorningBottom); --sun-x: 18%; --sun-y: 34%; --light: var(--sun); --dim: 0.9; }
-.theme-koth .time-mittag { --sky-top: var(--skyDayTop); --sky-bottom: var(--skyDayBottom); --sun-x: 72%; --sun-y: 14%; --light: var(--sun); --dim: 1; }
-.theme-koth .time-abend { --sky-top: var(--skyEveningTop); --sky-bottom: var(--skyEveningBottom); --sun-x: 82%; --sun-y: 38%; --light: var(--sun); --dim: 0.8; }
-.theme-koth .time-nacht { --sky-top: var(--skyNightTop); --sky-bottom: var(--skyNightBottom); --sun-x: 78%; --sun-y: 14%; --light: var(--moon); --dim: 0.5; }
-.theme-koth .kh-sky { position: absolute; inset: 0; background: linear-gradient(var(--sky-top), var(--sky-bottom) 70%); }
-.theme-koth .kh-sun { position: absolute; left: var(--sun-x); top: var(--sun-y); width: var(--sun-size, 9vmin); aspect-ratio: 1; border-radius: 50%; background: var(--light); translate: -50% -50%; box-shadow: 0 0 var(--glow-size, 6vmin) var(--light); }
-.theme-koth .kh-mountains { position: absolute; left: 0; right: 0; bottom: 34%; width: 100%; height: 26%; fill: var(--mountainColor); filter: brightness(var(--dim)); }
-.theme-koth .kh-smoke { position: absolute; left: calc(var(--x) * 1%); bottom: 36%; width: var(--smoke-size, 5vw); opacity: 0.6; transform-origin: 50% 100%; animation: koth-smoke var(--smokeSpeed) ease-out infinite; animation-delay: calc(var(--i) * var(--smokeSpeed) / -3); }
-.theme-koth .kh-smoke .part-main { fill: color-mix(in srgb, var(--mountainColor) 50%, var(--paper)); }
+.theme-koth .time-morgen { --sky-top: var(--timeMorgenSkyTop); --sky-bottom: var(--timeMorgenSkyBottom); --sun-x: var(--timeMorgenSunX); --sun-y: var(--timeMorgenSunY); --light: var(--timeMorgenLight); --dim: var(--timeMorgenDim); }
+.theme-koth .time-mittag { --sky-top: var(--timeMittagSkyTop); --sky-bottom: var(--timeMittagSkyBottom); --sun-x: var(--timeMittagSunX); --sun-y: var(--timeMittagSunY); --light: var(--timeMittagLight); --dim: var(--timeMittagDim); }
+.theme-koth .time-abend { --sky-top: var(--timeAbendSkyTop); --sky-bottom: var(--timeAbendSkyBottom); --sun-x: var(--timeAbendSunX); --sun-y: var(--timeAbendSunY); --light: var(--timeAbendLight); --dim: var(--timeAbendDim); }
+.theme-koth .time-nacht { --sky-top: var(--timeNachtSkyTop); --sky-bottom: var(--timeNachtSkyBottom); --sun-x: var(--timeNachtSunX); --sun-y: var(--timeNachtSunY); --light: var(--timeNachtLight); --dim: var(--timeNachtDim); }
+.theme-koth .kh-sky { position: absolute; inset: 0; background: linear-gradient(var(--sky-top), var(--sky-bottom) var(--skyBackground)); }
+.theme-koth .kh-sun { position: absolute; left: var(--sun-x); top: var(--sun-y); width: calc(var(--sunWidth) * 1vmin); aspect-ratio: var(--sunAspectRatio); border-radius: 50%; background: var(--light); translate: var(--sunTranslate) var(--sunTranslate2); box-shadow: 0 0 calc(var(--sunBoxShadow) * 1vmin) var(--light); }
+.theme-koth .kh-mountains { position: absolute; left: 0; right: 0; bottom: var(--mountainsBottom); width: 100%; height: var(--mountainsHeight); fill: var(--mountainsFill); filter: brightness(var(--dim)); }
+.theme-koth .kh-smoke { position: absolute; left: calc(var(--x) * 1%); bottom: var(--smokeBottom); width: calc(var(--smokeWidth) * 1vw); opacity: var(--smokeOpacity); transform-origin: var(--smokeTransformOrigin) 100%; animation: koth-smoke calc(var(--smokeSpeed) * var(--smokeAnimation) / 100) ease-out infinite; animation-delay: calc(var(--i) * calc(var(--smokeSpeed) * var(--smokeAnimationDelay) / 100) / var(--smokeAnimationDelay2)); }
+.theme-koth .kh-smoke .part-main { fill: color-mix(in srgb, var(--smokePartMainFill) var(--smokePartMainFill3), var(--smokePartMainFill2)); }
 .theme-koth .kh-hill { position: absolute; left: 0; right: 0; bottom: 0; filter: brightness(var(--dim)); }
-.theme-koth .kh-hill > .kh-shape .part-main { fill: var(--hillColor); }
-.theme-koth .kh-hill > .kh-shape .part-detail { fill: var(--hillDark); }
-.theme-koth .kh-hill > .kh-shape .part-line { stroke: var(--oliveDark); stroke-width: var(--trench, 8); }
-.theme-koth .kh-tower { position: absolute; left: 50%; bottom: 74%; width: var(--tower-width, 5vw); translate: -50% 0; }
-.theme-koth .kh-tower .part-line { stroke: var(--steel); stroke-width: var(--tower-line, 4); }
-.theme-koth .kh-tower .part-main { fill: var(--steel); }
-.theme-koth .kh-blink { position: absolute; left: 50%; top: 4%; width: var(--blink, 12px); aspect-ratio: 1; border-radius: 50%; translate: -50% 0; background: var(--towerBlink); box-shadow: 0 0 var(--blink-glow, 14px) var(--towerBlink); animation: koth-blink var(--blink-time, 1.6s) steps(1, end) infinite; }
-.theme-koth .kh-flag { position: absolute; left: calc(50% + var(--flag-offset, 3vw)); bottom: 74%; width: var(--flag-width, 4vw); }
-.theme-koth .kh-flag .part-line { stroke: var(--steel); stroke-width: var(--pole, 4); }
-.theme-koth .kh-flag .part-main { fill: var(--flagColor); transform-origin: 10% 20%; animation: koth-wave var(--wave-time, 2.4s) ease-in-out infinite alternate; }
-.theme-koth .kh-net { position: absolute; left: calc(var(--x) * 1%); bottom: calc(var(--y) * 1%); width: var(--net-size, 9vw); }
-.theme-koth .kh-net .part-line { stroke: var(--steel); stroke-width: var(--pole, 4); }
-.theme-koth .kh-net .part-main { fill: var(--olive); }
-.theme-koth .kh-net .part-detail { fill: var(--sandDark); }
-.theme-koth .kh-sandbags { position: absolute; left: calc(var(--x) * 1%); bottom: calc(var(--y) * 1%); width: var(--bags-size, 8vw); }
-.theme-koth .kh-sandbags .part-main { fill: var(--sand); stroke: var(--sandDark); stroke-width: var(--bag-line, 3); }
-.theme-koth .kh-sandbags .part-line { stroke: var(--sandDark); stroke-width: var(--bag-seam, 2); }
-.theme-koth .kh-hill-name { position: absolute; left: 50%; bottom: var(--name-bottom, 6%); translate: -50% 0; padding: var(--name-padding, 4px 22px); background: var(--stripes); border: var(--name-border, 4px) solid var(--oliveDark); color: var(--textColor); font-family: var(--titleFont), sans-serif; font-size: var(--hill-name-size, 2vw); text-shadow: 0 var(--text-shadow, 2px) 0 var(--oliveDark); }
-.theme-koth .kh-dust { position: absolute; left: calc(var(--x) * 100%); top: calc(40% + var(--y) * 50%); width: var(--grain, 4px); aspect-ratio: 1; border-radius: 50%; background: var(--sand); opacity: 0.6; animation: koth-drift var(--dust-time, 9s) linear infinite; animation-delay: calc(var(--i) * var(--dust-time, 9s) / -7); }
+.theme-koth .kh-hill > .kh-shape .part-main { fill: var(--hillShapePartMainFill); }
+.theme-koth .kh-hill > .kh-shape .part-detail { fill: var(--hillShapePartDetailFill); }
+.theme-koth .kh-hill > .kh-shape .part-line { stroke: var(--hillShapePartLineStroke); stroke-width: var(--hillShapePartLineStrokeWidth); }
+.theme-koth .kh-tower { position: absolute; left: var(--towerLeft); bottom: var(--towerBottom); width: calc(var(--towerWidth) * 1vw); translate: var(--towerTranslate) 0; }
+.theme-koth .kh-tower .part-line { stroke: var(--towerPartLineStroke); stroke-width: var(--towerPartLineStrokeWidth); }
+.theme-koth .kh-tower .part-main { fill: var(--towerPartMainFill); }
+.theme-koth .kh-blink { position: absolute; left: var(--blinkLeft); top: var(--blinkTop); width: var(--blinkWidth); aspect-ratio: var(--blinkAspectRatio); border-radius: 50%; translate: var(--blinkTranslate) 0; background: var(--blinkBackground); box-shadow: 0 0 var(--blinkBoxShadow2) var(--blinkBoxShadow); animation: koth-blink var(--blinkAnimation) steps(var(--blinkAnimation2), end) infinite; }
+.theme-koth .kh-flag { position: absolute; left: calc(var(--flagLeft) + calc(var(--flagLeft2) * 1vw)); bottom: var(--flagBottom); width: calc(var(--flagWidth) * 1vw); }
+.theme-koth .kh-flag .part-line { stroke: var(--flagPartLineStroke); stroke-width: var(--flagPartLineStrokeWidth); }
+.theme-koth .kh-flag .part-main { fill: var(--flagPartMainFill); transform-origin: var(--flagPartMainTransformOrigin) var(--flagPartMainTransformOrigin2); animation: koth-wave var(--flagPartMainAnimation) ease-in-out infinite alternate; }
+.theme-koth .kh-net { position: absolute; left: calc(var(--x) * 1%); bottom: calc(var(--y) * 1%); width: calc(var(--netWidth) * 1vw); }
+.theme-koth .kh-net .part-line { stroke: var(--netPartLineStroke); stroke-width: var(--netPartLineStrokeWidth); }
+.theme-koth .kh-net .part-main { fill: var(--netPartMainFill); }
+.theme-koth .kh-net .part-detail { fill: var(--netPartDetailFill); }
+.theme-koth .kh-sandbags { position: absolute; left: calc(var(--x) * 1%); bottom: calc(var(--y) * 1%); width: calc(var(--sandbagsWidth) * 1vw); }
+.theme-koth .kh-sandbags .part-main { fill: var(--sandbagsPartMainFill); stroke: var(--sandbagsPartMainStroke); stroke-width: var(--sandbagsPartMainStrokeWidth); }
+.theme-koth .kh-sandbags .part-line { stroke: var(--sandbagsPartLineStroke); stroke-width: var(--sandbagsPartLineStrokeWidth); }
+.theme-koth .kh-hill-name { position: absolute; left: var(--hillNameLeft); bottom: var(--hillNameBottom); translate: var(--hillNameTranslate) 0; padding: var(--hillNamePadding) var(--hillNamePadding2); background: repeating-linear-gradient(calc(var(--hillNameBackground3) * 1deg), var(--hillNameBackground) 0 var(--hillNameBackground4), var(--hillNameBackground2) var(--hillNameBackground5) calc(var(--hillNameBackground6) * var(--hillNameBackground7))); border: var(--hillNameBorder2) solid var(--hillNameBorder); color: var(--hillNameColor); font-family: var(--hillNameFont), sans-serif; font-size: calc(var(--hillNameFontSize) * 1vw); text-shadow: 0 var(--hillNameTextShadow2) 0 var(--hillNameTextShadow); }
+.theme-koth .kh-dust { position: absolute; left: calc(var(--x) * 100%); top: calc(var(--dustTop) + var(--y) * var(--dustTop2)); width: var(--dustWidth); aspect-ratio: var(--dustAspectRatio); border-radius: 50%; background: var(--dustBackground); opacity: var(--dustOpacity); animation: koth-drift var(--dustAnimation) linear infinite; animation-delay: calc(var(--i) * var(--dustAnimationDelay) / var(--dustAnimationDelay2)); }
 
 /* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
-.theme-koth .kh-clock { position: absolute; top: var(--clock-top, 28px); right: var(--clock-right, 40px); padding: var(--clock-padding, 6px 16px); background: var(--steel-plate); border: var(--plate-border, 2px) solid var(--oliveDark); border-radius: var(--radius); color: var(--accent2); font-family: "Share Tech Mono", monospace; font-size: var(--clock-size, 28px); font-variant-numeric: tabular-nums; }
-.theme-koth .kh-eyebrow { position: relative; font-size: var(--eyebrow-size, 30px); font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); }
-.theme-koth .kh-title { position: relative; margin: var(--title-margin, 6px 0); font-size: var(--titleSize); line-height: 1.05; color: var(--ink); }
-.theme-koth .kh-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--ticker-padding, 10px 0); overflow: hidden; white-space: nowrap; background: var(--steel-plate); border-top: var(--ticker-border, 4px) solid var(--accent); color: var(--accent2); font-family: "Share Tech Mono", monospace; font-size: var(--ticker-size, 2vw); }
+.theme-koth .kh-clock { position: absolute; top: var(--clockTop); right: var(--clockRight); padding: var(--clockPadding) var(--clockPadding2); background: linear-gradient(color-mix(in srgb, var(--clockBackground) var(--clockBackground3), white), var(--clockBackground2)); border: var(--clockBorder2) solid var(--clockBorder); border-radius: calc(var(--radius) * var(--clockBorderRadius) / 100); color: var(--clockColor); font-family: "Share Tech Mono", monospace; font-size: var(--clockFontSize); font-variant-numeric: tabular-nums; }
+.theme-koth .kh-eyebrow { position: relative; font-size: var(--eyebrowFontSize); font-weight: var(--eyebrowFontWeight); letter-spacing: calc(var(--eyebrowLetterSpacing) * 1em); text-transform: uppercase; color: var(--eyebrowColor); font-family: var(--eyebrowFont), system-ui, sans-serif; }
+.theme-koth .kh-title { position: relative; margin: var(--titleMargin) 0; font-size: var(--titleSize); line-height: var(--titleLineHeight); color: var(--titleColor); }
+.theme-koth .kh-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--tickerPadding) 0; overflow: hidden; white-space: nowrap; background: linear-gradient(color-mix(in srgb, var(--tickerBackground) var(--tickerBackground3), white), var(--tickerBackground2)); border-top: var(--tickerBorderTop2) solid var(--tickerBorderTop); color: var(--tickerColor); font-family: "Share Tech Mono", monospace; font-size: calc(var(--tickerFontSize) * 1vw); }
 .theme-koth .kh-ticker span { display: inline-block; padding-left: 100%; animation: koth-marquee var(--tickerSpeed) linear infinite; }
 
 /* --- Alerts ------------------------------------------------------------------------------------------------- */
-.theme-koth .kh-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alert-top, 80px) var(--alert-side, 48px) 0; overflow: hidden; }
-.theme-koth .kh-alert { position: relative; display: flex; align-items: center; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
-.theme-koth .kh-alert.leaving { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
-.theme-koth .in-funk { --in: koth-static; --in-ease: steps(8, end); }
+.theme-koth .kh-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertsPadding) var(--alertsPadding2) 0; overflow: hidden; }
+.theme-koth .kh-alert { position: relative; display: flex; align-items: center; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) calc(var(--fadeDuration) * var(--alertAnimation) / 100) var(--in-ease, ease-out) both; }
+.theme-koth .kh-alert.leaving { animation: var(--out) calc(var(--fadeDuration) * var(--alertLeavingAnimation) / 100) var(--out-ease, ease-in) forwards; }
+.theme-koth .in-funk { --in: koth-static; --in-ease: steps(var(--inFunkInEase), end); }
 .theme-koth .in-plopp { --in: koth-pop-in; --in-ease: cubic-bezier(0.3, 1.6, 0.5, 1); }
 .theme-koth .in-gleiten { --in: koth-slide-in; }
 .theme-koth .in-blenden { --in: koth-fade; }
 .theme-koth .in-keins { --in: none; }
-.theme-koth .out-funk { --out: koth-static-out; --out-ease: steps(8, end); }
+.theme-koth .out-funk { --out: koth-static-out; --out-ease: steps(var(--outFunkOutEase), end); }
 .theme-koth .out-plopp { --out: koth-pop-out; }
 .theme-koth .out-gleiten { --out: koth-slide-out; }
 .theme-koth .out-blenden { --out: koth-fade-out; }
-.theme-koth .out-keins { --out: koth-fade-out; --out-ease: steps(1, start); }
-.theme-koth .kh-alert-body { position: relative; flex: 1; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: var(--alert-gap, 6px 22px); padding: var(--alert-padding, 18px 28px); box-shadow: var(--shadow); }
-.theme-koth .kh-callsign { grid-column: 1 / -1; font-size: 0.7em; letter-spacing: 0.2em; opacity: 0.8; }
-.theme-koth .kh-alert-icon { width: var(--icon, 92px); aspect-ratio: 1; padding: var(--icon-padding, 10px); border: var(--icon-border, 3px) solid currentColor; border-radius: var(--radius); }
-.theme-koth .kh-alert-icon .part-main { fill: var(--olive); }
-.theme-koth .kh-alert-icon .part-detail { fill: var(--accent); }
-.theme-koth .kh-alert-icon .part-line { stroke: var(--oliveDark); }
-.theme-koth .kh-alert-text { display: grid; gap: var(--text-gap, 4px); min-width: 0; }
-.theme-koth .kh-tag { font-size: 1.3em; color: var(--accent); }
-.theme-koth .kh-alert-line { font-size: 1.25em; overflow-wrap: anywhere; }
-.theme-koth .kh-quote { opacity: 0.85; overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
+.theme-koth .out-keins { --out: koth-fade-out; --out-ease: steps(var(--outKeinsOutEase), start); }
+.theme-koth .kh-alert-body { position: relative; flex: 1; display: grid; grid-template-columns: auto 1fr; align-items: center; gap: var(--alertBodyGap) var(--alertBodyGap2); padding: var(--alertBodyPadding) var(--alertBodyPadding2); box-shadow: 0 var(--alertBodyBoxShadow) var(--alertBodyBoxShadow2) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent); }
+.theme-koth .kh-callsign { grid-column: 1 / -1; font-size: calc(var(--callsignFontSize) * 1em); letter-spacing: calc(var(--callsignLetterSpacing2) * 1em); opacity: var(--callsignOpacity); }
+.theme-koth .kh-alert-icon { width: var(--alertIconWidth); aspect-ratio: var(--alertIconAspectRatio); padding: var(--alertIconPadding); border: var(--alertIconBorder) solid currentColor; border-radius: calc(var(--radius) * var(--alertIconBorderRadius) / 100); }
+.theme-koth .kh-alert-icon .part-main { fill: var(--alertIconPartMainFill); }
+.theme-koth .kh-alert-icon .part-detail { fill: var(--alertIconPartDetailFill); }
+.theme-koth .kh-alert-icon .part-line { stroke: var(--alertIconPartLineStroke); }
+.theme-koth .kh-alert-text { display: grid; gap: var(--alertTextGap); min-width: 0; }
+.theme-koth .kh-tag { font-size: calc(var(--tagFontSize) * 1em); color: var(--tagColor); }
+.theme-koth .kh-alert-line { font-size: calc(var(--alertLineFontSize) * 1em); overflow-wrap: anywhere; color: var(--alertLineColor); font-family: var(--alertLineFont), system-ui, sans-serif; }
+.theme-koth .kh-quote { opacity: var(--quoteOpacity); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--quoteWebkitLineClamp); overflow: hidden; }
 /* Radio message: steel case with a green display */
-.theme-koth .kh-alert-funk .kh-alert-body { background: var(--steel-plate); border: var(--plate-border, 3px) solid var(--oliveDark); border-radius: var(--radius); color: var(--accent2); }
-.theme-koth .kh-alert-funk .kh-alert-text { padding: var(--display-padding, 8px 14px); background: color-mix(in srgb, var(--oliveDark) 85%, black); border-radius: var(--radius); font-family: "Share Tech Mono", monospace; }
-.theme-koth .kh-alert-funk .kh-alert-icon .part-main { fill: var(--accent2); }
+.theme-koth .kh-alert-funk .kh-alert-body { background: linear-gradient(color-mix(in srgb, var(--alertFunkAlertBodyBackground) var(--alertFunkAlertBodyBackground3), white), var(--alertFunkAlertBodyBackground2)); border: var(--alertFunkAlertBodyBorder2) solid var(--alertFunkAlertBodyBorder); border-radius: calc(var(--radius) * var(--alertFunkAlertBodyBorderRadius) / 100); color: var(--alertFunkAlertBodyColor); }
+.theme-koth .kh-alert-funk .kh-alert-text { padding: var(--alertFunkAlertTextPadding) var(--alertFunkAlertTextPadding2); background: color-mix(in srgb, var(--alertFunkAlertTextBackground) var(--alertFunkAlertTextBackground2), black); border-radius: calc(var(--radius) * var(--alertFunkAlertTextBorderRadius) / 100); font-family: "Share Tech Mono", monospace; }
+.theme-koth .kh-alert-funk .kh-alert-icon .part-main { fill: var(--alertFunkAlertIconPartMainFill); }
 /* Mission file: paper with a red stamp stripe */
-.theme-koth .kh-alert-akte .kh-alert-body { background: var(--paper); color: var(--ink); border-left: var(--file-tab, 14px) solid var(--sandDark); border-radius: var(--radius); rotate: -1deg; }
+.theme-koth .kh-alert-akte .kh-alert-body { background: var(--alertAkteAlertBodyBackground); color: var(--alertAkteAlertBodyColor); border-left: var(--alertAkteAlertBodyBorderLeft2) solid var(--alertAkteAlertBodyBorderLeft); border-radius: calc(var(--radius) * var(--alertAkteAlertBodyBorderRadius) / 100); rotate: calc(var(--alertAkteAlertBodyRotate) * 1deg); }
 /* Stencilled sign: olive plate with warning stripes on top */
-.theme-koth .static .kh-alert-body::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, color-mix(in srgb, white 18%, transparent) 0 var(--scan, 2px), transparent var(--scan, 2px) calc(2 * var(--scan, 2px))); animation: koth-noise var(--noise-time, 600ms) steps(6, end) both; }
-.theme-koth .kh-timer { position: absolute; left: var(--timer-inset, 24px); right: var(--timer-inset, 24px); bottom: calc(-1 * var(--timer-drop, 12px)); height: var(--timer-height, 8px); background: var(--stripes); transform-origin: left; animation: koth-timer var(--alertDuration) linear forwards; }
+.theme-koth .static .kh-alert-body::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, color-mix(in srgb, white var(--staticAlertBodyAfterBackground), transparent) 0 var(--staticAlertBodyAfterBackground2), transparent var(--staticAlertBodyAfterBackground3) calc(var(--staticAlertBodyAfterBackground4) * var(--staticAlertBodyAfterBackground5))); animation: koth-noise var(--staticAlertBodyAfterAnimation) steps(var(--staticAlertBodyAfterAnimation2), end) both; }
+.theme-koth .kh-timer { position: absolute; left: var(--timerLeft); right: var(--timerRight); bottom: calc(-1 * var(--timerBottom)); height: var(--timerHeight); background: repeating-linear-gradient(calc(var(--timerBackground3) * 1deg), var(--timerBackground) 0 var(--timerBackground4), var(--timerBackground2) var(--timerBackground5) calc(var(--timerBackground6) * var(--timerBackground7))); transform-origin: left; animation: koth-timer var(--alertDuration) linear forwards; }
 
 /* --- Chat ----------------------------------------------------------------------------------------------------- */
-.theme-koth .kh-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chat-padding, 14px); overflow: hidden; font-size: var(--chatFontSize); }
+.theme-koth .kh-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chatPadding); overflow: hidden; font-size: var(--chatFontSize); color: var(--chatColor); font-family: var(--chatFont), system-ui, sans-serif; }
 .theme-koth .kh-chat-top { flex-direction: column-reverse; }
-.theme-koth .kh-row { flex: none; display: flex; gap: var(--time-gap, 12px); padding: var(--row-padding, 8px 14px); overflow-wrap: anywhere; }
-.theme-koth .kh-row.fades { animation: koth-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
+.theme-koth .kh-row { flex: none; display: flex; gap: var(--rowGap); padding: var(--rowPadding) var(--rowPadding2); overflow-wrap: anywhere; }
+.theme-koth .kh-row.fades { animation: koth-fade-out calc(var(--fadeDuration) * var(--rowFadesAnimation) / 100) ease-in var(--chatFade) forwards; }
 .theme-koth .kh-row.action { font-style: italic; }
-.theme-koth .kh-time { flex: none; font-family: "Share Tech Mono", monospace; opacity: 0.7; }
+.theme-koth .kh-time { flex: none; font-family: "Share Tech Mono", monospace; opacity: var(--timeOpacity); }
 .theme-koth .kh-msg { min-width: 0; }
-.theme-koth .kh-chat-funk .kh-row { background: color-mix(in srgb, var(--oliveDark) calc(var(--chatOpacity) * 100%), transparent); border-left: var(--row-bar, 4px) solid var(--accent2); color: var(--accent2); font-family: "Share Tech Mono", monospace; }
-.theme-koth .kh-chat-papier .kh-row { background: color-mix(in srgb, var(--paper) calc(var(--chatOpacity) * 100%), transparent); color: var(--ink); border-radius: var(--radius); font-family: "IBM Plex Mono", monospace; }
-.theme-koth .kh-chat-schlicht .kh-row { background: color-mix(in srgb, var(--steel) calc(var(--chatOpacity) * 100%), transparent); border-radius: var(--radius); }
-.theme-koth .kh-user { margin-right: var(--name-gap, 8px); color: var(--accent); text-transform: uppercase; }
-.theme-koth .kh-badge { display: inline-block; margin-right: var(--badge-gap, 6px); padding: var(--badge-padding, 0 6px); background: var(--olive); color: var(--textColor); font-size: 0.7em; font-weight: 700; text-transform: uppercase; }
+.theme-koth .kh-chat-funk .kh-row { background: color-mix(in srgb, var(--chatFunkRowBackground) calc(var(--chatOpacity) * 100%), transparent); border-left: var(--chatFunkRowBorderLeft2) solid var(--chatFunkRowBorderLeft); color: var(--chatFunkRowColor); font-family: "Share Tech Mono", monospace; }
+.theme-koth .kh-chat-papier .kh-row { background: color-mix(in srgb, var(--chatPapierRowBackground) calc(var(--chatOpacity) * 100%), transparent); color: var(--chatPapierRowColor); border-radius: calc(var(--radius) * var(--chatPapierRowBorderRadius) / 100); font-family: "IBM Plex Mono", monospace; }
+.theme-koth .kh-chat-schlicht .kh-row { background: color-mix(in srgb, var(--chatSchlichtRowBackground) calc(var(--chatOpacity) * 100%), transparent); border-radius: calc(var(--radius) * var(--chatSchlichtRowBorderRadius) / 100); }
+.theme-koth .kh-user { margin-right: var(--userMarginRight); color: var(--userColor); text-transform: uppercase; }
+.theme-koth .kh-badge { display: inline-block; margin-right: var(--badgeMarginRight); padding: 0 var(--badgePadding); background: var(--badgeBackground); color: var(--badgeColor); font-size: calc(var(--badgeFontSize) * 1em); font-weight: var(--badgeFontWeight); text-transform: uppercase; font-family: var(--badgeFont), system-ui, sans-serif; }
 .theme-koth .kh-emote { height: var(--emoteSize); vertical-align: middle; }
 
 /* --- Camera frame ------------------------------------------------------------------------------------------- */
-.theme-koth .kh-cam { position: fixed; inset: 0; animation: koth-fade var(--fadeDuration) ease-out both; color: var(--accent2); font-family: "Share Tech Mono", monospace; }
+.theme-koth .kh-cam { position: fixed; inset: 0; animation: koth-fade calc(var(--fadeDuration) * var(--camAnimation) / 100) ease-out both; color: var(--camColor); font-family: "Share Tech Mono", monospace; }
 .theme-koth .kh-cam-frame { position: absolute; inset: 0; padding: var(--camFrameWidth); border-radius: var(--camRadius); -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-.theme-koth .kh-cam-helm .kh-cam-frame { background: var(--steel-plate); }
-.theme-koth .kh-cam-schlicht .kh-cam-frame { background: var(--olive); }
+.theme-koth .kh-cam-helm .kh-cam-frame { background: linear-gradient(color-mix(in srgb, var(--camHelmCamFrameBackground) var(--camHelmCamFrameBackground3), white), var(--camHelmCamFrameBackground2)); }
+.theme-koth .kh-cam-schlicht .kh-cam-frame { background: var(--camSchlichtCamFrameBackground); }
 /* Scope: everything outside the round view is dark, the view has a thin ring */
-.theme-koth .kh-cam-visier .kh-cam-frame { padding: 0; border-radius: 0; -webkit-mask: none; mask: none; background: radial-gradient(circle closest-side, transparent 96%, var(--steel) 97%, var(--steel) 99%, color-mix(in srgb, black 90%, transparent) 100%); }
-.theme-koth .kh-cam-mark { position: absolute; width: var(--mark, 46px); aspect-ratio: 1; border: var(--mark-line, 4px) solid var(--accent2); }
-.theme-koth .kh-cam-mark.top-left { left: var(--mark-inset, 26px); top: var(--mark-inset, 26px); border-right: none; border-bottom: none; }
-.theme-koth .kh-cam-mark.top-right { right: var(--mark-inset, 26px); top: var(--mark-inset, 26px); border-left: none; border-bottom: none; }
-.theme-koth .kh-cam-mark.bottom-left { left: var(--mark-inset, 26px); bottom: var(--mark-inset, 26px); border-right: none; border-top: none; }
-.theme-koth .kh-cam-mark.bottom-right { right: var(--mark-inset, 26px); bottom: var(--mark-inset, 26px); border-left: none; border-top: none; }
-.theme-koth .kh-cam-cross { position: absolute; left: 50%; top: 50%; width: var(--cross, 80px); aspect-ratio: 1; translate: -50% -50%; background: linear-gradient(var(--accent2) 0 0) center / var(--cross-line, 2px) 100% no-repeat, linear-gradient(var(--accent2) 0 0) center / 100% var(--cross-line, 2px) no-repeat; opacity: 0.8; }
-.theme-koth .kh-cam-label { position: absolute; left: var(--label-left, 30px); bottom: var(--label-bottom, 24px); padding: var(--label-padding, 2px 12px); background: color-mix(in srgb, var(--oliveDark) 80%, transparent); text-transform: uppercase; letter-spacing: 0.12em; }
-.theme-koth .kh-cam-live { position: absolute; right: var(--live-right, 30px); top: var(--live-top, 26px); display: inline-flex; align-items: center; gap: var(--live-gap, 8px); font-weight: 700; letter-spacing: 0.12em; }
-.theme-koth .kh-cam-live i { width: var(--rec, 14px); aspect-ratio: 1; border-radius: 50%; background: var(--towerBlink); animation: koth-blink var(--blink-time, 1.6s) steps(1, end) infinite; }
-.theme-koth .kh-cam-battery { position: absolute; right: var(--live-right, 30px); bottom: var(--label-bottom, 24px); display: flex; gap: var(--cell-gap, 3px); padding: var(--cell-padding, 3px); border: var(--cell-border, 2px) solid var(--accent2); }
-.theme-koth .kh-cam-battery i { width: var(--cell, 8px); height: var(--cell-height, 14px); background: var(--accent2); }
+.theme-koth .kh-cam-visier .kh-cam-frame { padding: 0; border-radius: 0; -webkit-mask: none; mask: none; background: radial-gradient(circle closest-side, transparent var(--camVisierCamFrameBackground3), var(--camVisierCamFrameBackground) var(--camVisierCamFrameBackground4), var(--camVisierCamFrameBackground2) var(--camVisierCamFrameBackground5), color-mix(in srgb, black var(--camVisierCamFrameBackground6), transparent) 100%); }
+.theme-koth .kh-cam-mark { position: absolute; width: var(--camMarkWidth); aspect-ratio: var(--camMarkAspectRatio); border: var(--camMarkBorder2) solid var(--camMarkBorder); }
+.theme-koth .kh-cam-mark.top-left { left: var(--camMarkTopLeftLeft); top: var(--camMarkTopLeftTop); border-right: none; border-bottom: none; }
+.theme-koth .kh-cam-mark.top-right { right: var(--camMarkTopRightRight); top: var(--camMarkTopRightTop); border-left: none; border-bottom: none; }
+.theme-koth .kh-cam-mark.bottom-left { left: var(--camMarkBottomLeftLeft); bottom: var(--camMarkBottomLeftBottom); border-right: none; border-top: none; }
+.theme-koth .kh-cam-mark.bottom-right { right: var(--camMarkBottomRightRight); bottom: var(--camMarkBottomRightBottom); border-left: none; border-top: none; }
+.theme-koth .kh-cam-cross { position: absolute; left: var(--camCrossLeft); top: var(--camCrossTop); width: var(--camCrossWidth); aspect-ratio: var(--camCrossAspectRatio); translate: var(--camCrossTranslate) var(--camCrossTranslate2); background: linear-gradient(var(--camCrossBackground) 0 0) center / var(--camCrossBackground3) 100% no-repeat, linear-gradient(var(--camCrossBackground2) 0 0) center / 100% var(--camCrossBackground4) no-repeat; opacity: var(--camCrossOpacity); }
+.theme-koth .kh-cam-label { position: absolute; left: var(--camLabelLeft); bottom: var(--camLabelBottom); padding: var(--camLabelPadding) var(--camLabelPadding2); background: color-mix(in srgb, var(--camLabelBackground) var(--camLabelBackground2), transparent); text-transform: uppercase; letter-spacing: calc(var(--camLabelLetterSpacing) * 1em); color: var(--camLabelColor); font-family: var(--camLabelFont), system-ui, sans-serif; }
+.theme-koth .kh-cam-live { position: absolute; right: var(--camLiveRight); top: var(--camLiveTop); display: inline-flex; align-items: center; gap: var(--camLiveGap); font-weight: var(--camLiveFontWeight); letter-spacing: calc(var(--camLiveLetterSpacing) * 1em); color: var(--camLiveColor); font-family: var(--camLiveFont), system-ui, sans-serif; }
+.theme-koth .kh-cam-live i { width: var(--camLiveIWidth); aspect-ratio: var(--camLiveIAspectRatio); border-radius: 50%; background: var(--camLiveIBackground); animation: koth-blink var(--camLiveIAnimation) steps(var(--camLiveIAnimation2), end) infinite; }
+.theme-koth .kh-cam-battery { position: absolute; right: var(--camBatteryRight); bottom: var(--camBatteryBottom); display: flex; gap: var(--camBatteryGap); padding: var(--camBatteryPadding); border: var(--camBatteryBorder2) solid var(--camBatteryBorder); }
+.theme-koth .kh-cam-battery i { width: var(--camBatteryIWidth); height: var(--camBatteryIHeight); background: var(--camBatteryIBackground); }
 
 /* --- Music ---------------------------------------------------------------------------------------------------- */
-.theme-koth .kh-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 40px 14px 14px); }
-.theme-koth .kh-player { position: relative; width: 100%; display: flex; align-items: center; gap: var(--player-gap, 20px); padding: var(--player-padding, 16px 22px); animation: koth-fade var(--fadeDuration) ease-out both; }
-.theme-koth .kh-player.leaving { animation: koth-fade-out var(--fadeDuration) ease-in forwards; }
+.theme-koth .kh-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--musicPadding) var(--musicPadding2) var(--musicPadding3); }
+.theme-koth .kh-player { position: relative; width: 100%; display: flex; align-items: center; gap: var(--playerGap); padding: var(--playerPadding) var(--playerPadding2); animation: koth-fade calc(var(--fadeDuration) * var(--playerAnimation) / 100) ease-out both; }
+.theme-koth .kh-player.leaving { animation: koth-fade-out calc(var(--fadeDuration) * var(--playerLeavingAnimation) / 100) ease-in forwards; }
 /* Field radio: olive case with rivets, antenna and a green display */
-.theme-koth .kh-music-funkgeraet .kh-player { background: radial-gradient(circle, var(--oliveDark) var(--rivet, 3px), transparent calc(var(--rivet, 3px) + var(--rivet-edge, 1px))) 0 0 / var(--rivet-step, 28px) 100% repeat-x, var(--olive); border: var(--case-border, 4px) solid var(--oliveDark); border-radius: var(--radius); box-shadow: var(--shadow); }
-.theme-koth .kh-music-funkgeraet .kh-player::before { content: ""; position: absolute; left: var(--antenna-left, 24px); bottom: 100%; width: var(--antenna, 4px); height: var(--antenna-height, 44px); background: var(--steel); rotate: -12deg; transform-origin: bottom; }
-.theme-koth .kh-music-funkgeraet .kh-track { padding: var(--display-padding, 8px 14px); background: color-mix(in srgb, var(--oliveDark) 85%, black); color: var(--accent2); font-family: "Share Tech Mono", monospace; border-radius: var(--radius); }
-.theme-koth .kh-music-kiste .kh-player { background: var(--olive); border: var(--case-border, 4px) solid var(--oliveDark); border-top: var(--stripe-band, 10px) solid transparent; border-image: var(--stripes) 10; color: var(--textColor); box-shadow: var(--shadow); }
-.theme-koth .kh-music-schlicht .kh-player { background: color-mix(in srgb, var(--steel) 92%, transparent); border-radius: var(--radius); box-shadow: var(--shadow); }
-.theme-koth .kh-cover { flex: none; width: var(--coverSize); height: var(--coverSize); object-fit: cover; border: var(--cover-border, 4px) solid var(--oliveDark); box-shadow: var(--shadow); }
+.theme-koth .kh-music-funkgeraet .kh-player { background: radial-gradient(circle, var(--musicFunkgeraetPlayerBackground) var(--musicFunkgeraetPlayerBackground3), transparent calc(var(--musicFunkgeraetPlayerBackground4) + var(--musicFunkgeraetPlayerBackground5))) 0 0 / var(--musicFunkgeraetPlayerBackground6) 100% repeat-x, var(--musicFunkgeraetPlayerBackground2); border: var(--musicFunkgeraetPlayerBorder2) solid var(--musicFunkgeraetPlayerBorder); border-radius: calc(var(--radius) * var(--musicFunkgeraetPlayerBorderRadius) / 100); box-shadow: 0 var(--musicFunkgeraetPlayerBoxShadow) var(--musicFunkgeraetPlayerBoxShadow2) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent); }
+.theme-koth .kh-music-funkgeraet .kh-player::before { content: ""; position: absolute; left: var(--musicFunkgeraetPlayerBeforeLeft); bottom: 100%; width: var(--musicFunkgeraetPlayerBeforeWidth); height: var(--musicFunkgeraetPlayerBeforeHeight); background: var(--musicFunkgeraetPlayerBeforeBackground); rotate: calc(var(--musicFunkgeraetPlayerBeforeRotate) * 1deg); transform-origin: bottom; }
+.theme-koth .kh-music-funkgeraet .kh-track { padding: var(--musicFunkgeraetTrackPadding) var(--musicFunkgeraetTrackPadding2); background: color-mix(in srgb, var(--musicFunkgeraetTrackBackground) var(--musicFunkgeraetTrackBackground2), black); color: var(--musicFunkgeraetTrackColor); font-family: "Share Tech Mono", monospace; border-radius: calc(var(--radius) * var(--musicFunkgeraetTrackBorderRadius) / 100); }
+.theme-koth .kh-music-kiste .kh-player { background: var(--musicKistePlayerBackground); border: var(--musicKistePlayerBorder2) solid var(--musicKistePlayerBorder); border-top: var(--musicKistePlayerBorderTop) solid transparent; border-image: repeating-linear-gradient(calc(var(--musicKistePlayerBorderImage3) * 1deg), var(--musicKistePlayerBorderImage) 0 var(--musicKistePlayerBorderImage4), var(--musicKistePlayerBorderImage2) var(--musicKistePlayerBorderImage5) calc(var(--musicKistePlayerBorderImage6) * var(--musicKistePlayerBorderImage7))) var(--musicKistePlayerBorderImage8); color: var(--musicKistePlayerColor); box-shadow: 0 var(--musicKistePlayerBoxShadow) var(--musicKistePlayerBoxShadow2) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent); }
+.theme-koth .kh-music-schlicht .kh-player { background: color-mix(in srgb, var(--musicSchlichtPlayerBackground) var(--musicSchlichtPlayerBackground2), transparent); border-radius: calc(var(--radius) * var(--musicSchlichtPlayerBorderRadius) / 100); box-shadow: 0 var(--musicSchlichtPlayerBoxShadow) var(--musicSchlichtPlayerBoxShadow2) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent); }
+.theme-koth .kh-cover { flex: none; width: calc(var(--coverSize) * var(--coverWidth) / 100); height: calc(var(--coverSize) * var(--coverHeight) / 100); object-fit: cover; border: var(--coverBorder2) solid var(--coverBorder); box-shadow: 0 var(--coverBoxShadow) var(--coverBoxShadow2) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent); }
 .theme-koth .cover-rund { border-radius: 50%; }
-.theme-koth .cover-eckig { border-radius: var(--radius); }
-.theme-koth .kh-cover-empty { padding: var(--empty-padding, 18px); background: var(--steel); }
-.theme-koth .kh-cover-empty .part-main { fill: var(--olive); }
-.theme-koth .kh-cover-empty .part-detail { fill: var(--accent2); }
-.theme-koth .kh-cover-empty .part-line { stroke: var(--accent2); }
-.theme-koth .kh-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
-.theme-koth .kh-head { font-size: 0.72em; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); }
-.theme-koth .kh-song { font-weight: bold; font-size: var(--musicTitleSize); }
-.theme-koth .kh-artist, .theme-koth .kh-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: 0.85; }
-.theme-koth .kh-frequency { position: relative; height: var(--frequency, 10px); background: repeating-linear-gradient(90deg, color-mix(in srgb, currentColor 35%, transparent) 0 var(--tick-line, 2px), transparent var(--tick-line, 2px) var(--tick-step, 12px)); }
-.theme-koth .kh-frequency span { position: absolute; top: calc(-1 * var(--needle-over, 4px)); bottom: calc(-1 * var(--needle-over, 4px)); left: calc(var(--part) * 100%); width: var(--needle, 3px); background: var(--accent); transition: left var(--tick, 250ms) linear; }
-.theme-koth .kh-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eq-gap, 4px); height: var(--eq-height, 44px); }
-.theme-koth .kh-eq i { width: var(--eq-bar, 8px); height: 100%; background: var(--accent2); box-shadow: 0 0 var(--glow, 8px) color-mix(in srgb, var(--accent2) 60%, transparent); transform-origin: bottom; animation: koth-eq var(--eq-time, 700ms) steps(5, end) infinite alternate; animation-delay: calc(var(--i) * var(--eq-time, 700ms) / -5); }
+.theme-koth .cover-eckig { border-radius: calc(var(--radius) * var(--coverEckigBorderRadius) / 100); }
+.theme-koth .kh-cover-empty { padding: var(--coverEmptyPadding); background: var(--coverEmptyBackground); }
+.theme-koth .kh-cover-empty .part-main { fill: var(--coverEmptyPartMainFill); }
+.theme-koth .kh-cover-empty .part-detail { fill: var(--coverEmptyPartDetailFill); }
+.theme-koth .kh-cover-empty .part-line { stroke: var(--coverEmptyPartLineStroke); }
+.theme-koth .kh-track { flex: 1; min-width: 0; display: grid; gap: var(--trackGap); }
+.theme-koth .kh-head { font-size: calc(var(--headFontSize) * 1em); font-weight: var(--headFontWeight); letter-spacing: calc(var(--headLetterSpacing) * 1em); text-transform: uppercase; color: var(--headColor); }
+.theme-koth .kh-song { font-weight: bold; font-size: var(--musicTitleSize); color: var(--songColor); font-family: var(--songFont), system-ui, sans-serif; }
+.theme-koth .kh-artist { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: var(--artistOpacity); }
+.theme-koth .kh-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: var(--albumOpacity); }
+.theme-koth .kh-frequency { position: relative; height: var(--frequencyHeight); background: repeating-linear-gradient(calc(var(--frequencyBackground) * 1deg), color-mix(in srgb, currentColor var(--frequencyBackground2), transparent) 0 var(--frequencyBackground3), transparent var(--frequencyBackground4) var(--frequencyBackground5)); }
+.theme-koth .kh-frequency span { position: absolute; top: calc(-1 * var(--frequencySpanTop)); bottom: calc(-1 * var(--frequencySpanBottom)); left: calc(var(--part) * 100%); width: var(--frequencySpanWidth); background: var(--frequencySpanBackground); transition: left var(--frequencySpanTransition) linear; }
+.theme-koth .kh-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eqGap); height: var(--eqHeight); }
+.theme-koth .kh-eq i { width: var(--eqIWidth); height: 100%; background: var(--eqIBackground); box-shadow: 0 0 var(--eqIBoxShadow2) color-mix(in srgb, var(--eqIBoxShadow) var(--eqIBoxShadow3), transparent); transform-origin: bottom; animation: koth-eq var(--eqIAnimation) steps(var(--eqIAnimation2), end) infinite alternate; animation-delay: calc(var(--i) * var(--eqIAnimationDelay) / var(--eqIAnimationDelay2)); }
 .theme-koth .paused .kh-eq i { animation-play-state: paused; }
 
 /* --- Effects -------------------------------------------------------------------------------------------------- */
 .theme-koth .kh-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-koth .kh-fx-item { position: absolute; display: grid; gap: var(--fx-gap, 12px); justify-items: center; transform: translate(-50%, -50%); animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both, var(--out) var(--fadeDuration) var(--out-ease, ease-in) calc(var(--life) - var(--fadeDuration)) forwards; }
-.theme-koth .kh-fx-item img, .theme-koth .kh-fx-item video, .theme-koth .kh-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); }
-.theme-koth .kh-fx-text { font-family: var(--titleFont), sans-serif; font-size: var(--fxTextSize); text-align: center; text-transform: uppercase; overflow-wrap: anywhere; text-shadow: 0 var(--text-shadow, 3px) 0 var(--oliveDark); }
-.theme-koth .kh-fx-text.slip { padding: var(--fx-padding, 10px 22px); background: var(--paper); color: var(--ink); border-left: var(--file-tab, 10px) solid var(--accent); text-shadow: none; box-shadow: var(--shadow); rotate: -1.5deg; }
+.theme-koth .kh-fx-item { position: absolute; display: grid; gap: var(--fxItemGap); justify-items: center; transform: translate(var(--fxItemTransform), var(--fxItemTransform2)); animation: var(--in) calc(var(--fadeDuration) * var(--fxItemAnimation) / 100) var(--in-ease, ease-out) both, var(--out) calc(var(--fadeDuration) * var(--fxItemAnimation2) / 100) var(--out-ease, ease-in) calc(var(--life) - calc(var(--fadeDuration) * var(--fxItemAnimation3) / 100)) forwards; }
+.theme-koth .kh-fx-item img { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemImgBorderRadius) / 100); }
+.theme-koth .kh-fx-item video { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemVideoBorderRadius) / 100); }
+.theme-koth .kh-fx-item canvas { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemCanvasBorderRadius) / 100); }
+.theme-koth .kh-fx-text { font-family: var(--fxTextFont), sans-serif; font-size: var(--fxTextSize); text-align: center; text-transform: uppercase; overflow-wrap: anywhere; text-shadow: 0 var(--fxTextTextShadow2) 0 var(--fxTextTextShadow); }
+.theme-koth .kh-fx-text.slip { padding: var(--fxTextSlipPadding) var(--fxTextSlipPadding2); background: var(--fxTextSlipBackground); color: var(--fxTextSlipColor); border-left: var(--fxTextSlipBorderLeft2) solid var(--fxTextSlipBorderLeft); text-shadow: none; box-shadow: 0 var(--fxTextSlipBoxShadow) var(--fxTextSlipBoxShadow2) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent); rotate: calc(var(--fxTextSlipRotate) * 1deg); }
 
 /* --- Keyframes ------------------------------------------------------------------------------------------------ */
-@keyframes koth-smoke { from { scale: 0.6; opacity: 0; translate: 0 0; } 20% { opacity: 0.6; } to { scale: 1.4; opacity: 0; translate: var(--smoke-drift, 2vw) calc(-1 * var(--smoke-rise, 8vh)); } }
-@keyframes koth-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.15; } }
-@keyframes koth-wave { from { skew: 0deg -4deg; scale: 1 1; } to { skew: 0deg 4deg; scale: 0.94 1; } }
-@keyframes koth-drift { from { translate: 0 0; } to { translate: var(--drift-x, 30vw) calc(-1 * var(--drift-y, 6vh)); } }
-@keyframes koth-marquee { to { translate: -100% 0; } }
-@keyframes koth-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes koth-fade-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes koth-static { 0% { opacity: 0; filter: contrast(3) brightness(2); } 30% { opacity: 1; translate: var(--jitter, 6px) 0; } 50% { opacity: 0.4; translate: calc(-1 * var(--jitter, 6px)) 0; } 70% { opacity: 1; translate: 0 0; } 100% { opacity: 1; filter: none; } }
-@keyframes koth-static-out { 0% { opacity: 1; } 40% { opacity: 0.4; translate: var(--jitter, 6px) 0; } 70% { opacity: 0.8; translate: calc(-1 * var(--jitter, 6px)) 0; } 100% { opacity: 0; } }
-@keyframes koth-noise { from { opacity: 1; } to { opacity: 0; } }
-@keyframes koth-pop-in { from { opacity: 0; scale: 0.4; } to { opacity: 1; scale: 1; } }
-@keyframes koth-pop-out { from { opacity: 1; scale: 1; } to { opacity: 0; scale: 0.4; } }
-@keyframes koth-slide-in { from { opacity: 0; translate: -60vw 0; } to { opacity: 1; translate: 0 0; } }
-@keyframes koth-slide-out { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 60vw 0; } }
-@keyframes koth-timer { from { scale: 1 1; } to { scale: 0 1; } }
-@keyframes koth-eq { from { scale: 1 0.15; } to { scale: 1 1; } }
+@keyframes koth-smoke { from { scale: var(--kfSmokeFromScale); opacity: 0; translate: 0 0; } 20% { opacity: var(--kfSmoke20pOpacity); } to { scale: var(--kfSmokeToScale); opacity: 0; translate: calc(var(--kfSmokeToTranslate) * 1vw) calc(-1 * calc(var(--kfSmokeToTranslate2) * 1vh)); } }
+@keyframes koth-blink { 0%, 100% { opacity: var(--kfBlink0p100pOpacity); } 50% { opacity: var(--kfBlink50pOpacity); } }
+@keyframes koth-wave { from { skew: 0deg calc(var(--kfWaveFromSkew) * 1deg); scale: var(--kfWaveFromScale) var(--kfWaveFromScale2); } to { skew: 0deg calc(var(--kfWaveToSkew) * 1deg); scale: var(--kfWaveToScale) var(--kfWaveToScale2); } }
+@keyframes koth-drift { from { translate: 0 0; } to { translate: calc(var(--kfDriftToTranslate) * 1vw) calc(-1 * calc(var(--kfDriftToTranslate2) * 1vh)); } }
+@keyframes koth-marquee { to { translate: var(--kfMarqueeToTranslate) 0; } }
+@keyframes koth-fade { from { opacity: 0; } to { opacity: var(--kfFadeToOpacity); } }
+@keyframes koth-fade-out { from { opacity: var(--kfFadeOutFromOpacity); } to { opacity: 0; } }
+@keyframes koth-static { 0% { opacity: 0; filter: contrast(var(--kfStatic0pFilter)) brightness(var(--kfStatic0pFilter2)); } 30% { opacity: var(--kfStatic30pOpacity); translate: var(--kfStatic30pTranslate) 0; } 50% { opacity: var(--kfStatic50pOpacity); translate: calc(-1 * var(--kfStatic50pTranslate)) 0; } 70% { opacity: var(--kfStatic70pOpacity); translate: 0 0; } 100% { opacity: var(--kfStatic100pOpacity); filter: none; } }
+@keyframes koth-static-out { 0% { opacity: var(--kfStaticOut0pOpacity); } 40% { opacity: var(--kfStaticOut40pOpacity); translate: var(--kfStaticOut40pTranslate) 0; } 70% { opacity: var(--kfStaticOut70pOpacity); translate: calc(-1 * var(--kfStaticOut70pTranslate)) 0; } 100% { opacity: 0; } }
+@keyframes koth-noise { from { opacity: var(--kfNoiseFromOpacity); } to { opacity: 0; } }
+@keyframes koth-pop-in { from { opacity: 0; scale: var(--kfPopInFromScale); } to { opacity: var(--kfPopInToOpacity); scale: var(--kfPopInToScale); } }
+@keyframes koth-pop-out { from { opacity: var(--kfPopOutFromOpacity); scale: var(--kfPopOutFromScale); } to { opacity: 0; scale: var(--kfPopOutToScale); } }
+@keyframes koth-slide-in { from { opacity: 0; translate: calc(var(--kfSlideInFromTranslate) * 1vw) 0; } to { opacity: var(--kfSlideInToOpacity); translate: 0 0; } }
+@keyframes koth-slide-out { from { opacity: var(--kfSlideOutFromOpacity); translate: 0 0; } to { opacity: 0; translate: calc(var(--kfSlideOutToTranslate) * 1vw) 0; } }
+@keyframes koth-timer { from { scale: var(--kfTimerFromScale) var(--kfTimerFromScale2); } to { scale: 0 var(--kfTimerToScale); } }
+@keyframes koth-eq { from { scale: var(--kfEqFromScale) var(--kfEqFromScale2); } to { scale: var(--kfEqToScale) var(--kfEqToScale2); } }
 
 /* --- Commands page (public): hill fixed in the background, briefing sheets scroll in front as a normal page ----------- */
-.theme-koth.theme-root:has(.kh-info) { min-height: 100dvh; background: var(--oliveDark); }
-.theme-koth .kh-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-koth.theme-root:has(.kh-info) { min-height: 100dvh; background: var(--themeRootBackground); }
+.theme-koth .kh-info { position: relative; min-height: 100dvh; padding: var(--infoPadding) var(--infoPadding2); }
 .theme-koth .kh-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-koth .kh-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--info-gap, 26px); }
-.theme-koth .kh-sheet { background: var(--paper); color: var(--ink); border-radius: var(--radius); box-shadow: var(--shadow); }
-.theme-koth .kh-info-sign { padding: var(--info-inner, 28px 32px); text-align: center; display: grid; gap: var(--info-line-gap, 8px); border-top: var(--stripe-band, 12px) solid transparent; border-image: var(--stripes) 12; }
-.theme-koth .kh-info-sign .kh-title { font-size: min(var(--info-title, 56px), 9vw); }
-.theme-koth .kh-info-board { padding: var(--info-inner, 28px 32px); display: grid; gap: var(--info-entry-gap, 16px); }
-.theme-koth .kh-info-entry { display: grid; gap: var(--info-detail-gap, 2px); padding-left: var(--info-indent, 14px); border-left: var(--info-bar, 4px) solid var(--olive); }
-.theme-koth .kh-info-command { color: var(--accent); font-family: "Share Tech Mono", monospace; font-size: 1.2em; }
-.theme-koth .kh-info-detail { opacity: 0.8; font-size: 0.9em; }
+.theme-koth .kh-info-column { position: relative; max-width: var(--infoColumnMaxWidth); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--infoColumnGap); }
+.theme-koth .kh-sheet { background: var(--sheetBackground); color: var(--sheetColor); border-radius: calc(var(--radius) * var(--sheetBorderRadius) / 100); box-shadow: 0 var(--sheetBoxShadow) var(--sheetBoxShadow2) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent); }
+.theme-koth .kh-info-sign { padding: var(--infoSignPadding) var(--infoSignPadding2); text-align: center; display: grid; gap: var(--infoSignGap); border-top: var(--infoSignBorderTop) solid transparent; border-image: repeating-linear-gradient(calc(var(--infoSignBorderImage3) * 1deg), var(--infoSignBorderImage) 0 var(--infoSignBorderImage4), var(--infoSignBorderImage2) var(--infoSignBorderImage5) calc(var(--infoSignBorderImage6) * var(--infoSignBorderImage7))) var(--infoSignBorderImage8); }
+.theme-koth .kh-info-sign .kh-title { font-size: min(var(--infoSignTitleFontSize), calc(var(--infoSignTitleFontSize2) * 1vw)); }
+.theme-koth .kh-info-board { padding: var(--infoBoardPadding) var(--infoBoardPadding2); display: grid; gap: var(--infoBoardGap); }
+.theme-koth .kh-info-entry { display: grid; gap: var(--infoEntryGap); padding-left: var(--infoEntryPaddingLeft); border-left: var(--infoEntryBorderLeft2) solid var(--infoEntryBorderLeft); }
+.theme-koth .kh-info-command { color: var(--infoCommandColor); font-family: "Share Tech Mono", monospace; font-size: calc(var(--infoCommandFontSize) * 1em); }
+.theme-koth .kh-info-detail { opacity: var(--infoDetailOpacity); font-size: calc(var(--infoDetailFontSize) * 1em); color: var(--infoDetailColor); font-family: var(--infoDetailFont), system-ui, sans-serif; }
 
 /* --- Starting in 3D (PLAN-KOTH.md package 2): the briefing on top of the 3D world, laid out on the 1920x1080 stage; every
    reveal comes from the clock of the scene as inline opacity and transform ------------------------------------------- */
-.theme-koth .kh-starting { background: var(--skyHorizon); }
+.theme-koth .kh-starting { background: var(--startingBackground); }
 .theme-koth .kh-starting .stage-box canvas { display: block; }
-.theme-koth .kh-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, color-mix(in srgb, var(--oliveDark) 88%, black) 0%, color-mix(in srgb, var(--oliveDark) 45%, transparent) 22%, transparent 40%), radial-gradient(ellipse at 50% 45%, transparent 55%, color-mix(in srgb, black 55%, transparent) 100%); }
-.theme-koth .kh-briefing { position: absolute; --edge: var(--briefing-edge, 72px); --mono: "Share Tech Mono", monospace; --plate-dark: color-mix(in srgb, var(--steel) 50%, black); }
-.theme-koth .kh-briefing .kh-head { position: absolute; left: var(--edge); top: var(--head-top, 60px); margin: 0; font-family: var(--mono); font-size: var(--head-size, 20px); letter-spacing: var(--head-spacing, 5px); text-transform: uppercase; color: var(--accent2); text-shadow: 0 0 var(--head-glow, 8px) color-mix(in srgb, var(--accent2) 60%, transparent); white-space: pre; }
-.theme-koth .kh-briefing .kh-head b { font-weight: 400; color: var(--accent); text-shadow: 0 0 var(--head-glow, 8px) color-mix(in srgb, var(--accent) 70%, transparent); }
-.theme-koth .kh-briefing .kh-clock { top: var(--clock-top-3d, 46px); right: var(--edge); }
-.theme-koth .kh-briefing-map { position: absolute; left: var(--edge); top: var(--map-top, 120px); width: var(--map-width, 420px); height: var(--map-height, 300px); background-color: var(--paper); box-shadow: 0 var(--map-shadow-y, 18px) var(--map-shadow-blur, 40px) color-mix(in srgb, black 45%, transparent); }
-.theme-koth .kh-briefing-map.grid { --line: color-mix(in srgb, var(--ink) 12%, transparent); background-image: linear-gradient(var(--line) var(--grid-line, 1px), transparent var(--grid-line, 1px)), linear-gradient(90deg, var(--line) var(--grid-line, 1px), transparent var(--grid-line, 1px)); background-size: var(--grid-size, 30px) var(--grid-size, 30px); }
-.theme-koth .kh-briefing-map::before, .theme-koth .kh-briefing-map::after { content: ""; position: absolute; top: var(--tape-top, -14px); width: var(--tape-width, 110px); height: var(--tape-height, 30px); background: color-mix(in srgb, var(--sand) 85%, transparent); }
-.theme-koth .kh-briefing-map::before { left: var(--tape-inset, 20px); rotate: -6deg; }
-.theme-koth .kh-briefing-map::after { right: var(--tape-inset, 20px); rotate: 5deg; }
+.theme-koth .kh-shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to top, color-mix(in srgb, var(--shadeBackground) var(--shadeBackground3), black) 0%, color-mix(in srgb, var(--shadeBackground2) var(--shadeBackground4), transparent) var(--shadeBackground5), transparent var(--shadeBackground6)), radial-gradient(ellipse at var(--shadeBackground7) var(--shadeBackground8), transparent var(--shadeBackground9), color-mix(in srgb, black var(--shadeBackground10), transparent) 100%); }
+.theme-koth .kh-briefing { position: absolute; --edge: var(--briefingEdge); --mono: "Share Tech Mono", monospace; --plate-dark: color-mix(in srgb, var(--briefingPlateDark) var(--briefingPlateDark2), black); }
+.theme-koth .kh-briefing .kh-head { position: absolute; left: var(--edge); top: var(--briefingHeadTop); margin: 0; font-family: var(--mono); font-size: var(--briefingHeadFontSize); letter-spacing: var(--briefingHeadLetterSpacing); text-transform: uppercase; color: var(--briefingHeadColor); text-shadow: 0 0 var(--briefingHeadTextShadow2) color-mix(in srgb, var(--briefingHeadTextShadow) var(--briefingHeadTextShadow3), transparent); white-space: pre; }
+.theme-koth .kh-briefing .kh-head b { font-weight: var(--briefingHeadBFontWeight); color: var(--briefingHeadBColor); text-shadow: 0 0 var(--briefingHeadBTextShadow2) color-mix(in srgb, var(--briefingHeadBTextShadow) var(--briefingHeadBTextShadow3), transparent); font-family: var(--briefingHeadBFont), system-ui, sans-serif; }
+.theme-koth .kh-briefing .kh-clock { top: var(--briefingClockTop); right: var(--edge); }
+.theme-koth .kh-briefing-map { position: absolute; left: var(--edge); top: var(--briefingMapTop); width: var(--briefingMapWidth); height: var(--briefingMapHeight); background-color: var(--briefingMapBackgroundColor); box-shadow: 0 var(--briefingMapBoxShadow) var(--briefingMapBoxShadow2) color-mix(in srgb, black var(--briefingMapBoxShadow3), transparent); }
+.theme-koth .kh-briefing-map.grid { --line: color-mix(in srgb, var(--briefingMapGridLine) var(--briefingMapGridLine2), transparent); background-image: linear-gradient(var(--line) var(--briefingMapGridBackgroundImage), transparent var(--briefingMapGridBackgroundImage2)), linear-gradient(calc(var(--briefingMapGridBackgroundImage3) * 1deg), var(--line) var(--briefingMapGridBackgroundImage4), transparent var(--briefingMapGridBackgroundImage5)); background-size: var(--briefingMapGridBackgroundSize) var(--briefingMapGridBackgroundSize2); }
+.theme-koth .kh-briefing-map::before { content: ""; position: absolute; top: var(--briefingMapBeforeTop); width: var(--briefingMapBeforeWidth); height: var(--briefingMapBeforeHeight); background: color-mix(in srgb, var(--briefingMapBeforeBackground) var(--briefingMapBeforeBackground2), transparent); }
+.theme-koth .kh-briefing-map::after { content: ""; position: absolute; top: var(--briefingMapAfterTop); width: var(--briefingMapAfterWidth); height: var(--briefingMapAfterHeight); background: color-mix(in srgb, var(--briefingMapAfterBackground) var(--briefingMapAfterBackground2), transparent); }
+.theme-koth .kh-briefing-map::before { left: var(--briefingMapBeforeLeft); rotate: calc(var(--briefingMapBeforeRotate) * 1deg); }
+.theme-koth .kh-briefing-map::after { right: var(--briefingMapAfterRight); rotate: calc(var(--briefingMapAfterRotate) * 1deg); }
 .theme-koth .kh-briefing-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
-.theme-koth .kh-contours path { fill: none; stroke: color-mix(in srgb, var(--ink) 75%, var(--olive)); stroke-width: 1.6; opacity: 0.7; }
-.theme-koth .kh-route { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
-.theme-koth .kh-objective { fill: none; stroke: var(--towerBlink); stroke-width: 3.5; }
-.theme-koth .kh-target { font-family: var(--mono); font-size: var(--target-size, 16px); fill: var(--ink); }
-.theme-koth .kh-map-label { position: absolute; left: var(--label-left, 16px); bottom: var(--label-bottom, 10px); margin: 0; font-family: var(--mono); font-size: var(--label-size, 15px); letter-spacing: var(--label-spacing, 2px); color: var(--ink); white-space: pre; }
-.theme-koth .kh-stencil { position: absolute; left: 0; right: 0; top: var(--stencil-top, 700px); margin: 0; text-align: center; font-family: var(--titleFont), sans-serif; font-weight: 400; font-size: var(--stencil-size, 92px); letter-spacing: var(--stencil-spacing, 6px); text-transform: uppercase; color: var(--textColor); text-shadow: 0 var(--stencil-drop, 4px) 0 color-mix(in srgb, black 35%, transparent), 0 0 var(--stencil-glow, 30px) color-mix(in srgb, black 60%, transparent); }
+.theme-koth .kh-contours path { fill: none; stroke: color-mix(in srgb, var(--contoursPathStroke) var(--contoursPathStroke3), var(--contoursPathStroke2)); stroke-width: var(--contoursPathStrokeWidth); opacity: var(--contoursPathOpacity); }
+.theme-koth .kh-route { fill: none; stroke: var(--routeStroke); stroke-width: var(--routeStrokeWidth); stroke-linecap: round; stroke-linejoin: round; }
+.theme-koth .kh-objective { fill: none; stroke: var(--objectiveStroke); stroke-width: var(--objectiveStrokeWidth); }
+.theme-koth .kh-target { font-family: var(--mono); font-size: var(--targetFontSize); fill: var(--targetFill); color: var(--targetColor); }
+.theme-koth .kh-map-label { position: absolute; left: var(--mapLabelLeft); bottom: var(--mapLabelBottom); margin: 0; font-family: var(--mono); font-size: var(--mapLabelFontSize); letter-spacing: var(--mapLabelLetterSpacing); color: var(--mapLabelColor); white-space: pre; }
+.theme-koth .kh-stencil { position: absolute; left: 0; right: 0; top: var(--stencilTop); margin: 0; text-align: center; font-family: var(--stencilFont), sans-serif; font-weight: var(--stencilFontWeight); font-size: var(--stencilFontSize); letter-spacing: var(--stencilLetterSpacing); text-transform: uppercase; color: var(--stencilColor); text-shadow: 0 var(--stencilTextShadow) 0 color-mix(in srgb, black var(--stencilTextShadow2), transparent), 0 0 var(--stencilTextShadow3) color-mix(in srgb, black var(--stencilTextShadow4), transparent); }
 .theme-koth .kh-stencil span { display: inline-block; white-space: pre; }
-.theme-koth .kh-radio-display { --width: var(--display-width, 640px); position: absolute; left: calc(50% - var(--width) / 2); top: var(--display-top, 822px); width: var(--width); height: var(--display-height, 120px); box-sizing: border-box; padding: var(--display-padding-3d, 14px 22px); background: linear-gradient(color-mix(in srgb, var(--steel) 80%, white), var(--steel)); border: var(--display-border, 2px) solid var(--plate-dark); border-radius: var(--display-radius, 6px); box-shadow: inset 0 var(--display-shine, 1px) 0 color-mix(in srgb, white 20%, transparent), 0 var(--display-shadow-y, 20px) var(--display-shadow-blur, 40px) color-mix(in srgb, black 55%, transparent); }
-.theme-koth .kh-rivet { --inset: var(--rivet-inset, 6px); position: absolute; width: var(--rivet-size, 8px); height: var(--rivet-size, 8px); border-radius: 50%; background: color-mix(in srgb, var(--steel) 60%, black); box-shadow: inset 0 var(--display-shine, 1px) 0 color-mix(in srgb, white 30%, transparent); }
+.theme-koth .kh-radio-display { --width: var(--radioDisplayWidth); position: absolute; left: calc(var(--radioDisplayLeft) - var(--width) / var(--radioDisplayLeft2)); top: var(--radioDisplayTop); width: var(--width); height: var(--radioDisplayHeight); box-sizing: border-box; padding: var(--radioDisplayPadding) var(--radioDisplayPadding2); background: linear-gradient(color-mix(in srgb, var(--radioDisplayBackground) var(--radioDisplayBackground3), white), var(--radioDisplayBackground2)); border: var(--radioDisplayBorder) solid var(--plate-dark); border-radius: var(--radioDisplayBorderRadius); box-shadow: inset 0 var(--radioDisplayBoxShadow) 0 color-mix(in srgb, white var(--radioDisplayBoxShadow2), transparent), 0 var(--radioDisplayBoxShadow3) var(--radioDisplayBoxShadow4) color-mix(in srgb, black var(--radioDisplayBoxShadow5), transparent); }
+.theme-koth .kh-rivet { --inset: var(--rivetInset); position: absolute; width: var(--rivetWidth); height: var(--rivetHeight); border-radius: 50%; background: color-mix(in srgb, var(--rivetBackground) var(--rivetBackground2), black); box-shadow: inset 0 var(--rivetBoxShadow) 0 color-mix(in srgb, white var(--rivetBoxShadow2), transparent); }
 .theme-koth .kh-rivet.top-left { left: var(--inset); top: var(--inset); }
 .theme-koth .kh-rivet.top-right { right: var(--inset); top: var(--inset); }
 .theme-koth .kh-rivet.bottom-left { left: var(--inset); bottom: var(--inset); }
 .theme-koth .kh-rivet.bottom-right { right: var(--inset); bottom: var(--inset); }
-.theme-koth .kh-radio-screen { position: relative; display: flex; align-items: center; justify-content: center; height: var(--screen-height, 88px); overflow: hidden; border-radius: var(--screen-radius, 3px); background: color-mix(in srgb, var(--accent2) calc(var(--flash, 0) * 100%), color-mix(in srgb, var(--oliveDark) 30%, black)); box-shadow: inset 0 0 var(--screen-depth, 22px) color-mix(in srgb, black 90%, transparent); }
-.theme-koth .kh-radio-screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(transparent 0 var(--scanline-gap, 3px), color-mix(in srgb, black 28%, transparent) var(--scanline-gap, 3px) var(--scanline-step, 4px)); }
-.theme-koth .kh-radio-count { font-family: var(--mono); font-weight: 400; font-size: var(--count-size, 76px); letter-spacing: var(--count-spacing, 6px); color: var(--accent2); font-variant-numeric: tabular-nums; text-shadow: 0 0 var(--count-glow, 12px) color-mix(in srgb, var(--accent2) 85%, transparent), 0 0 var(--count-halo, 34px) color-mix(in srgb, var(--accent2) 35%, transparent); }
-.theme-koth .kh-radio-line { position: absolute; left: 0; right: 0; top: var(--radio-top, 958px); min-height: var(--radio-height, 30px); margin: 0; text-align: center; font-family: var(--mono); font-size: var(--radio-size, 26px); letter-spacing: var(--radio-spacing, 2px); text-transform: uppercase; color: var(--accent2); opacity: 0.9; white-space: pre; }
-.theme-koth .kh-radio-line.noise { opacity: 0.55; }
-.theme-koth .kh-factions { position: absolute; right: var(--edge); bottom: var(--factions-bottom, 48px); display: flex; gap: var(--factions-gap, 10px); font-weight: 600; font-size: var(--factions-size, 15px); letter-spacing: var(--factions-spacing, 2px); text-transform: uppercase; }
-.theme-koth .kh-factions span { padding: var(--faction-padding, 6px 12px); border-radius: var(--faction-radius, 3px); color: var(--textColor); }
-.theme-koth .kh-warning-stripes { --dark: color-mix(in srgb, var(--oliveDark) 40%, black); position: absolute; left: 0; right: 0; bottom: 0; height: var(--stripes-height, 1.7vh); background: var(--dark); }
-.theme-koth .kh-warning-stripes i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--part, 0) * 100%); background: repeating-linear-gradient(-45deg, var(--accent) 0 var(--stripe-3d, 18px), var(--dark) var(--stripe-3d, 18px) var(--stripes-step, 36px)); }
-.theme-koth .kh-starting .kh-ticker { bottom: var(--stripes-height, 1.7vh); }
-.theme-koth .kh-radio-count.long { font-size: var(--count-size-long, 40px); letter-spacing: var(--count-spacing-long, 2px); }
+.theme-koth .kh-radio-screen { position: relative; display: flex; align-items: center; justify-content: center; height: var(--radioScreenHeight); overflow: hidden; border-radius: var(--radioScreenBorderRadius); background: color-mix(in srgb, var(--radioScreenBackground) calc(var(--flash, 0) * 100%), color-mix(in srgb, var(--radioScreenBackground2) var(--radioScreenBackground3), black)); box-shadow: inset 0 0 var(--radioScreenBoxShadow) color-mix(in srgb, black var(--radioScreenBoxShadow2), transparent); }
+.theme-koth .kh-radio-screen::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(transparent 0 var(--radioScreenAfterBackground), color-mix(in srgb, black var(--radioScreenAfterBackground2), transparent) var(--radioScreenAfterBackground3) var(--radioScreenAfterBackground4)); }
+.theme-koth .kh-radio-count { font-family: var(--mono); font-weight: var(--radioCountFontWeight); font-size: var(--radioCountFontSize); letter-spacing: var(--radioCountLetterSpacing); color: var(--radioCountColor); font-variant-numeric: tabular-nums; text-shadow: 0 0 var(--radioCountTextShadow3) color-mix(in srgb, var(--radioCountTextShadow) var(--radioCountTextShadow4), transparent), 0 0 var(--radioCountTextShadow5) color-mix(in srgb, var(--radioCountTextShadow2) var(--radioCountTextShadow6), transparent); }
+.theme-koth .kh-radio-line { position: absolute; left: 0; right: 0; top: var(--radioLineTop); min-height: var(--radioLineMinHeight); margin: 0; text-align: center; font-family: var(--mono); font-size: var(--radioLineFontSize); letter-spacing: var(--radioLineLetterSpacing); text-transform: uppercase; color: var(--radioLineColor); opacity: var(--radioLineOpacity); white-space: pre; }
+.theme-koth .kh-radio-line.noise { opacity: var(--radioLineNoiseOpacity); }
+.theme-koth .kh-factions { position: absolute; right: var(--edge); bottom: var(--factionsBottom); display: flex; gap: var(--factionsGap); font-weight: var(--factionsFontWeight); font-size: var(--factionsFontSize); letter-spacing: var(--factionsLetterSpacing); text-transform: uppercase; color: var(--factionsColor); font-family: var(--factionsFont), system-ui, sans-serif; }
+.theme-koth .kh-factions span { padding: var(--factionsSpanPadding) var(--factionsSpanPadding2); border-radius: var(--factionsSpanBorderRadius); color: var(--factionsSpanColor); }
+.theme-koth .kh-warning-stripes { --dark: color-mix(in srgb, var(--warningStripesDark) var(--warningStripesDark2), black); position: absolute; left: 0; right: 0; bottom: 0; height: calc(var(--warningStripesHeight) * 1vh); background: var(--dark); }
+.theme-koth .kh-warning-stripes i { position: absolute; left: 0; top: 0; bottom: 0; width: calc(var(--part, 0) * 100%); background: repeating-linear-gradient(calc(var(--warningStripesIBackground2) * 1deg), var(--warningStripesIBackground) 0 var(--warningStripesIBackground3), var(--dark) var(--warningStripesIBackground4) var(--warningStripesIBackground5)); }
+.theme-koth .kh-starting .kh-ticker { bottom: calc(var(--startingTickerBottom) * 1vh); }
+.theme-koth .kh-radio-count.long { font-size: var(--radioCountLongFontSize); letter-spacing: var(--radioCountLongLetterSpacing); }
 
 /* --- Ending in 3D (PLAN-KOTH.md package 3): the mission report on paper with rows that count up and the stamp ------ */
 /* Stats overlay (scenes/Stats.tsx): the report at the top left of its own source */
-.theme-koth .kh-stats { position: fixed; inset: 0; padding: var(--stats-padding, 24px 24px 24px 72px); }
+.theme-koth .kh-stats { position: fixed; inset: 0; padding: var(--statsPadding) var(--statsPadding2) var(--statsPadding3) var(--statsPadding4); }
 .theme-koth .kh-stats .kh-report { position: relative; left: 0; top: 0; }
-.theme-koth .kh-report { position: absolute; left: var(--edge); top: var(--report-top, 120px); width: var(--report-width, 480px); box-sizing: border-box; padding: var(--report-padding, 26px 30px 34px); background: var(--paper); color: var(--ink); font-family: var(--mono); box-shadow: 0 var(--map-shadow-y, 18px) var(--map-shadow-blur, 40px) color-mix(in srgb, black 45%, transparent); }
-.theme-koth .kh-report-title { margin: 0 0 var(--report-gap, 14px); font-family: var(--titleFont), sans-serif; font-weight: 400; font-size: var(--report-title-size, 30px); letter-spacing: var(--report-spacing, 3px); }
-.theme-koth .kh-report-row { display: flex; justify-content: space-between; gap: var(--report-gap, 14px); margin: 0; padding: var(--report-row-padding, 7px 0); border-bottom: var(--grid-line, 1px) dashed color-mix(in srgb, var(--ink) 35%, transparent); font-size: var(--report-size, 19px); text-transform: uppercase; }
-.theme-koth .kh-report-row b { font-weight: 400; font-variant-numeric: tabular-nums; }
-.theme-koth .kh-report-stamp { position: absolute; right: var(--stamp-right, 12px); bottom: var(--stamp-bottom, -52px); padding: var(--stamp-padding, 6px 14px); border: var(--stamp-border, 4px) solid var(--towerBlink); color: var(--towerBlink); font-family: var(--titleFont), sans-serif; font-weight: 400; font-size: var(--stamp-size, 30px); letter-spacing: var(--report-spacing, 3px); }
+.theme-koth .kh-report { position: absolute; left: var(--edge); top: var(--reportTop); width: var(--reportWidth); box-sizing: border-box; padding: var(--reportPadding) var(--reportPadding2) var(--reportPadding3); background: var(--reportBackground); color: var(--reportColor); font-family: var(--mono); box-shadow: 0 var(--reportBoxShadow) var(--reportBoxShadow2) color-mix(in srgb, black var(--reportBoxShadow3), transparent); }
+.theme-koth .kh-report-title { margin: 0 0 var(--reportTitleMargin); font-family: var(--reportTitleFont), sans-serif; font-weight: var(--reportTitleFontWeight); font-size: var(--reportTitleFontSize); letter-spacing: var(--reportTitleLetterSpacing); color: var(--reportTitleColor); }
+.theme-koth .kh-report-row { display: flex; justify-content: space-between; gap: var(--reportRowGap); margin: 0; padding: var(--reportRowPadding) 0; border-bottom: var(--reportRowBorderBottom2) dashed color-mix(in srgb, var(--reportRowBorderBottom) var(--reportRowBorderBottom3), transparent); font-size: var(--reportRowFontSize); text-transform: uppercase; color: var(--reportRowColor); font-family: var(--reportRowFont), system-ui, sans-serif; }
+.theme-koth .kh-report-row b { font-weight: var(--reportRowBFontWeight); font-variant-numeric: tabular-nums; color: var(--reportRowBColor); font-family: var(--reportRowBFont), system-ui, sans-serif; }
+.theme-koth .kh-report-stamp { position: absolute; right: var(--reportStampRight); bottom: var(--reportStampBottom); padding: var(--reportStampPadding) var(--reportStampPadding2); border: var(--reportStampBorder2) solid var(--reportStampBorder); color: var(--reportStampColor); font-family: var(--reportStampFont), sans-serif; font-weight: var(--reportStampFontWeight); font-size: var(--reportStampFontSize); letter-spacing: var(--reportStampLetterSpacing); }
 
 /* --- Dog tag alert (PLAN-KOTH.md package 4): transparent 3D stage for the tag, the radio set on the 1920x1080 stage;
    place, clip and texts come from the clock of the alert as inline styles --------------------------------------------- */
 .theme-koth .kh-dogtag-alerts { position: fixed; inset: 0; pointer-events: none; --mono: "Share Tech Mono", monospace; }
-.theme-koth .kh-radio { position: absolute; box-sizing: border-box; padding: var(--set-padding, 18px 22px 22px); transform-origin: 0 0; border: var(--set-border, 2px) solid color-mix(in srgb, var(--steel) 50%, black); border-radius: var(--set-radius, 8px); background: linear-gradient(color-mix(in srgb, var(--steel) 80%, white), var(--steel) 60%, color-mix(in srgb, var(--steel) 85%, black)); box-shadow: inset 0 var(--set-shine, 1px) 0 color-mix(in srgb, white 22%, transparent), inset 0 calc(-1 * var(--set-lip, 3px)) 0 color-mix(in srgb, black 35%, transparent), 0 var(--set-shadow-y, 26px) var(--set-shadow-blur, 50px) color-mix(in srgb, black 55%, transparent); }
-.theme-koth .kh-radio-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--set-gap, 10px); font-family: var(--mono); font-size: var(--set-bar-size, 16px); letter-spacing: var(--set-bar-spacing, 4px); color: color-mix(in srgb, var(--paper) 75%, var(--steel)); white-space: pre; }
-.theme-koth .kh-led { display: inline-block; width: var(--led, 10px); height: var(--led, 10px); margin-right: var(--set-gap, 10px); border-radius: 50%; background: color-mix(in srgb, var(--towerBlink) 25%, black); vertical-align: middle; }
-.theme-koth .kh-led.on { background: var(--towerBlink); box-shadow: 0 0 var(--led-glow, 10px) var(--towerBlink); }
-.theme-koth .kh-grille { width: var(--grille-width, 120px); height: var(--grille-height, 14px); border-radius: var(--grille-radius, 2px); background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--steel) 45%, black) 0 var(--grille-bar, 4px), transparent var(--grille-bar, 4px) var(--grille-step, 9px)); }
-.theme-koth .kh-radio-panel { position: relative; overflow: hidden; min-height: var(--panel-height, 168px); box-sizing: border-box; padding: var(--panel-padding, 16px 24px); border-radius: var(--panel-radius, 4px); background: color-mix(in srgb, var(--oliveDark) 30%, black); box-shadow: inset 0 0 var(--panel-depth, 26px) color-mix(in srgb, black 95%, transparent); }
-.theme-koth .kh-radio-panel::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 var(--scanline-gap, 3px), color-mix(in srgb, black 30%, transparent) var(--scanline-gap, 3px) var(--scanline-step, 4px)); }
+.theme-koth .kh-radio { position: absolute; box-sizing: border-box; padding: var(--radioPadding) var(--radioPadding2) var(--radioPadding3); transform-origin: 0 0; border: var(--radioBorder2) solid color-mix(in srgb, var(--radioBorder) var(--radioBorder3), black); border-radius: var(--radioBorderRadius); background: linear-gradient(color-mix(in srgb, var(--radioBackground) var(--radioBackground4), white), var(--radioBackground2) var(--radioBackground5), color-mix(in srgb, var(--radioBackground3) var(--radioBackground6), black)); box-shadow: inset 0 var(--radioBoxShadow) 0 color-mix(in srgb, white var(--radioBoxShadow2), transparent), inset 0 calc(-1 * var(--radioBoxShadow3)) 0 color-mix(in srgb, black var(--radioBoxShadow4), transparent), 0 var(--radioBoxShadow5) var(--radioBoxShadow6) color-mix(in srgb, black var(--radioBoxShadow7), transparent); }
+.theme-koth .kh-radio-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--radioBarMarginBottom); font-family: var(--mono); font-size: var(--radioBarFontSize); letter-spacing: var(--radioBarLetterSpacing); color: color-mix(in srgb, var(--radioBarColor) var(--radioBarColor3), var(--radioBarColor2)); white-space: pre; }
+.theme-koth .kh-led { display: inline-block; width: var(--ledWidth); height: var(--ledHeight); margin-right: var(--ledMarginRight); border-radius: 50%; background: color-mix(in srgb, var(--ledBackground) var(--ledBackground2), black); vertical-align: middle; }
+.theme-koth .kh-led.on { background: var(--ledOnBackground); box-shadow: 0 0 var(--ledOnBoxShadow2) var(--ledOnBoxShadow); }
+.theme-koth .kh-grille { width: var(--grilleWidth); height: var(--grilleHeight); border-radius: var(--grilleBorderRadius); background: repeating-linear-gradient(calc(var(--grilleBackground2) * 1deg), color-mix(in srgb, var(--grilleBackground) var(--grilleBackground3), black) 0 var(--grilleBackground4), transparent var(--grilleBackground5) var(--grilleBackground6)); }
+.theme-koth .kh-radio-panel { position: relative; overflow: hidden; min-height: var(--radioPanelMinHeight); box-sizing: border-box; padding: var(--radioPanelPadding) var(--radioPanelPadding2); border-radius: var(--radioPanelBorderRadius); background: color-mix(in srgb, var(--radioPanelBackground) var(--radioPanelBackground2), black); box-shadow: inset 0 0 var(--radioPanelBoxShadow) color-mix(in srgb, black var(--radioPanelBoxShadow2), transparent); }
+.theme-koth .kh-radio-panel::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(transparent 0 var(--radioPanelAfterBackground), color-mix(in srgb, black var(--radioPanelAfterBackground2), transparent) var(--radioPanelAfterBackground3) var(--radioPanelAfterBackground4)); }
 .theme-koth .kh-radio-noise { position: absolute; inset: 0; width: 100%; height: 100%; }
-.theme-koth .kh-radio-tag { height: var(--set-tag-height, 26px); margin: 0; font-family: var(--mono); font-size: var(--set-tag-size, 20px); letter-spacing: var(--set-tag-spacing, 6px); text-transform: uppercase; color: var(--accent); text-shadow: 0 0 var(--head-glow, 8px) color-mix(in srgb, var(--accent) 70%, transparent); white-space: pre; }
-.theme-koth .kh-radio-name { position: relative; display: block; text-transform: uppercase; font-family: var(--titleFont), sans-serif; font-weight: 400; line-height: 1.1; letter-spacing: var(--set-name-spacing, 4px); color: var(--accent2); text-shadow: 0 0 var(--count-glow, 12px) color-mix(in srgb, var(--accent2) 75%, transparent), 0 0 var(--count-halo, 32px) color-mix(in srgb, var(--accent2) 30%, transparent); white-space: pre; }
-.theme-koth .kh-radio-text { position: relative; margin: 0; font-family: var(--mono); font-size: var(--set-text-size, 22px); line-height: var(--set-text-line, 1.35); color: var(--accent2); opacity: 0.9; white-space: pre-wrap; overflow-wrap: anywhere; }
-.theme-koth .kh-radio-quote { margin-top: var(--set-quote-gap, 6px); opacity: 0.75; }
+.theme-koth .kh-radio-tag { height: var(--radioTagHeight); margin: 0; font-family: var(--mono); font-size: var(--radioTagFontSize); letter-spacing: var(--radioTagLetterSpacing); text-transform: uppercase; color: var(--radioTagColor); text-shadow: 0 0 var(--radioTagTextShadow2) color-mix(in srgb, var(--radioTagTextShadow) var(--radioTagTextShadow3), transparent); white-space: pre; }
+.theme-koth .kh-radio-name { position: relative; display: block; text-transform: uppercase; font-family: var(--radioNameFont), sans-serif; font-weight: var(--radioNameFontWeight); line-height: var(--radioNameLineHeight); letter-spacing: var(--radioNameLetterSpacing); color: var(--radioNameColor); text-shadow: 0 0 var(--radioNameTextShadow3) color-mix(in srgb, var(--radioNameTextShadow) var(--radioNameTextShadow4), transparent), 0 0 var(--radioNameTextShadow5) color-mix(in srgb, var(--radioNameTextShadow2) var(--radioNameTextShadow6), transparent); white-space: pre; }
+.theme-koth .kh-radio-text { position: relative; margin: 0; font-family: var(--mono); font-size: var(--radioTextFontSize); line-height: var(--radioTextLineHeight); color: var(--radioTextColor); opacity: var(--radioTextOpacity); white-space: pre-wrap; overflow-wrap: anywhere; }
+.theme-koth .kh-radio-quote { margin-top: var(--radioQuoteMarginTop); opacity: var(--radioQuoteOpacity); }
 /* The whole text keeps its room unseen, the typed part lies on top; the message ends after --alert-quote-lines lines */
 .theme-koth .kh-radio-room { display: block; visibility: hidden; }
 .theme-koth .kh-radio-typed { position: absolute; inset: 0; }
-.theme-koth .kh-radio-quote span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
+.theme-koth .kh-radio-quote span { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--radioQuoteSpanWebkitLineClamp); overflow: hidden; }
 .theme-koth .kh-radio-measure { position: absolute; left: 0; top: 0; visibility: hidden; }
-.theme-koth .kh-radio-timer { position: absolute; left: var(--timer-inset, 22px); right: var(--timer-inset, 22px); bottom: var(--timer-bottom, 8px); height: var(--timer-height, 6px); transform-origin: left; background: repeating-linear-gradient(-45deg, var(--accent) 0 var(--timer-stripe, 8px), color-mix(in srgb, var(--oliveDark) 40%, black) var(--timer-stripe, 8px) var(--timer-step, 16px)); }
+.theme-koth .kh-radio-timer { position: absolute; left: var(--radioTimerLeft); right: var(--radioTimerRight); bottom: var(--radioTimerBottom); height: var(--radioTimerHeight); transform-origin: left; background: repeating-linear-gradient(calc(var(--radioTimerBackground3) * 1deg), var(--radioTimerBackground) 0 var(--radioTimerBackground4), color-mix(in srgb, var(--radioTimerBackground2) var(--radioTimerBackground5), black) var(--radioTimerBackground6) var(--radioTimerBackground7)); }
 
 /* --- Overlay motions (PLAN-KOTH.md package 4) run on GSAP in the scenes; the dial of the field radio ---------------- */
 .theme-koth .kh-tuned { display: contents; }
-.theme-koth .kh-dial { margin-left: var(--dial-gap, 12px); font-family: var(--mono); letter-spacing: 0.05em; color: var(--accent2); white-space: pre; }
+.theme-koth .kh-dial { margin-left: var(--dialMarginLeft); font-family: var(--mono); letter-spacing: calc(var(--dialLetterSpacing) * 1em); color: var(--dialColor); white-space: pre; }

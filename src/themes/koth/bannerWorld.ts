@@ -18,13 +18,17 @@ export type BannerWorldOptions = {
   seed: number; hillHeight: number; mastHeight: number; trees: number; rocks: number; radius: number; height: number;
   sky: { top: string; horizon: string }; light: string;
   colors: { sand: string; hill: string; shade: string; mountain: string; steel: string; pine: string; rock: string; flag: string };
+  lens: BannerLens;
 };
+// The lens of the settings: field of view (deg), angle on the camera circle, light, fog (m, share of the horizon color)
+// and the flag (m)
+export type BannerLens = { fov: number; turn: number; ambient: number; sun: number; fogNear: number; fogFar: number; fogMix: number; flag: readonly [number, number] };
 
-// fixed: lens, light and sky of the scenes, the angle on the camera circle, pole and flag sizes in m
-const LENS = { fov: 34, far: 400, turn: 0.35 };
-const LIGHT = { ambient: 0.9, sun: 2.2, position: [-30, 22, 18] as const };
-const SKY = { radius: 300, fogNear: 50, fogFar: 210, fogMix: 0.8 };
-const POLE = { height: 6.2, flag: [2.8, 1.75] as const };
+// fixed: far plane, place of the sun, size of the sky and the pole height in m
+const FAR = 400;
+const SUN = [-30, 22, 18] as const;
+const SKY_RADIUS = 300;
+const POLE_HEIGHT = 6.2;
 const VERTEX = "varying vec3 point; void main() { point = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }";
 const FRAGMENT = "uniform vec3 top; uniform vec3 horizon; varying vec3 point; void main() { gl_FragColor = vec4(mix(horizon, top, clamp(point.y * 2.5, 0.0, 1.0)), 1.0); }";
 
@@ -33,14 +37,15 @@ const flat = (color: string) => new MeshLambertMaterial({ color, flatShading: tr
 export function bannerSetup(size: { width: number; height: number }, options: BannerWorldOptions): GlSetup {
   const scene = new Scene();
   const { top, horizon } = options.sky;
-  scene.fog = new Fog(new Color(top).lerp(new Color(horizon), SKY.fogMix), SKY.fogNear, SKY.fogFar);
-  scene.add(new Mesh(new SphereGeometry(SKY.radius, 32, 16), new ShaderMaterial({
+  const { lens } = options;
+  scene.fog = new Fog(new Color(top).lerp(new Color(horizon), lens.fogMix), lens.fogNear, lens.fogFar);
+  scene.add(new Mesh(new SphereGeometry(SKY_RADIUS, 32, 16), new ShaderMaterial({
     side: BackSide, depthWrite: false, fog: false, vertexShader: VERTEX, fragmentShader: FRAGMENT,
     uniforms: { top: { value: new Color(top) }, horizon: { value: new Color(horizon) } },
   })));
-  const sun = new DirectionalLight(options.light, LIGHT.sun);
-  sun.position.set(...LIGHT.position);
-  scene.add(new AmbientLight(options.light, LIGHT.ambient), sun);
+  const sun = new DirectionalLight(options.light, lens.sun);
+  sun.position.set(...SUN);
+  scene.add(new AmbientLight(options.light, lens.ambient), sun);
 
   const { colors } = options;
   const ground = new Mesh(groundGeometry(options.hillHeight, options.seed, { sand: colors.sand, hill: colors.hill, shade: colors.shade }), new MeshStandardMaterial({ vertexColors: true, flatShading: true, roughness: 1 }));
@@ -59,9 +64,10 @@ export function bannerSetup(size: { width: number; height: number }, options: Ba
   const items = campLayout({ seed: options.seed, hillHeight: options.hillHeight, sandbags: false, bunker: false, tents: 0, crateStacks: 0, fence: false, trees: options.trees, rocks: options.rocks, jeep: false, markerFlags: false });
   for (const item of items) {
     if (item.kind === "pole") {
-      const cloth = new Mesh(new PlaneGeometry(...POLE.flag), new MeshLambertMaterial({ color: colors.flag, side: DoubleSide }));
+      const [width, height] = lens.flag;
+      const cloth = new Mesh(new PlaneGeometry(width, height), new MeshLambertMaterial({ color: colors.flag, side: DoubleSide }));
       cloth.name = "flag";
-      cloth.position.set(FLAG_POLE.x + POLE.flag[0] / 2, item.y + POLE.height - POLE.flag[1] / 2, FLAG_POLE.z);
+      cloth.position.set(FLAG_POLE.x + width / 2, item.y + POLE_HEIGHT - height / 2, FLAG_POLE.z);
       scene.add(cloth);
     } else {
       const shape = item.kind === "tree" ? new ConeGeometry(item.size * 0.45, item.size, 6) : new DodecahedronGeometry(item.size, 0);
@@ -71,11 +77,11 @@ export function bannerSetup(size: { width: number; height: number }, options: Ba
     }
   }
 
-  const camera = new PerspectiveCamera(LENS.fov, size.width / size.height, 0.1, LENS.far);
+  const camera = new PerspectiveCamera(lens.fov, size.width / size.height, 0.1, FAR);
   const pose = cameraPose(0, { intro: false, radius: options.radius, height: options.height, speed: 0, top: options.hillHeight });
   const [x, y, depth] = pose.position;
   const distance = Math.hypot(x, depth);
-  camera.position.set(Math.sin(LENS.turn) * distance, y, Math.cos(LENS.turn) * distance);
+  camera.position.set(Math.sin(lens.turn) * distance, y, Math.cos(lens.turn) * distance);
   camera.lookAt(...pose.target);
   return { scene, camera, update: () => {}, dispose: () => disposeAll(scene) };
 }

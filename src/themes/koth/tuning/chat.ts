@@ -1,0 +1,36 @@
+// Fine-tuning fields of the King of the Hill theme, group "Feinschliff: Chat" (tuning.ts puts the groups together).
+import { color, font, inherits, number } from "../../../core/fields.ts";
+import type { SettingField } from "../../../core/theme.ts";
+
+export const CHAT_TUNING = [
+  number("chatPadding", "Chat: Innenabstand", "Feinschliff: Chat", 14, 0, 56, "px"),
+  inherits(color("chatColor", "Chat: Textfarbe", "Feinschliff: Chat", ""), ""),
+  inherits(font("chatFont", "Chat: Schrift", "Feinschliff: Chat", "", ["Inter", "Share Tech Mono", "IBM Plex Mono", "DM Sans"]), ""),
+  number("rowGap", "Chat-Zeile: Abstand", "Feinschliff: Chat", 12, 0, 48, "px"),
+  number("rowPadding", "Chat-Zeile: Innenabstand oben/unten", "Feinschliff: Chat", 8, 0, 40, "px"),
+  number("rowPadding2", "Chat-Zeile: Innenabstand links/rechts", "Feinschliff: Chat", 14, 0, 56, "px"),
+  number("rowFadesAnimation", "Chat-Zeile beim Ausblenden: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)", "Feinschliff: Chat", 100, 0, 400),
+  number("timeOpacity", "Uhrzeit: Deckkraft", "Feinschliff: Chat", 0.7, 0, 1, undefined, 0.01),
+  inherits(color("chatFunkRowBackground", "Chat Funk: Zeile: Hintergrund Farbe (Oliv dunkel)", "Feinschliff: Chat", ""), "oliveDark"),
+  inherits(color("chatFunkRowBorderLeft", "Chat Funk: Zeile: Rand links Farbe (Akzent 2 (Funk-Grün))", "Feinschliff: Chat", ""), "accent2"),
+  number("chatFunkRowBorderLeft2", "Chat Funk: Zeile: Rand links Stärke", "Feinschliff: Chat", 4, 0, 40, "px"),
+  inherits(color("chatFunkRowColor", "Chat Funk: Zeile: Textfarbe", "Feinschliff: Chat", ""), "accent2"),
+  inherits(color("chatPapierRowBackground", "Chat Papier: Zeile: Hintergrund Farbe (Papier (Karten, Berichte))", "Feinschliff: Chat", ""), "paper"),
+  inherits(color("chatPapierRowColor", "Chat Papier: Zeile: Textfarbe", "Feinschliff: Chat", ""), "ink"),
+  number("chatPapierRowBorderRadius", "Chat Papier: Zeile: Eckenradius Anteil von „Eckenradius“ (%)", "Feinschliff: Chat", 100, 0, 400),
+  inherits(color("chatSchlichtRowBackground", "Chat schlicht: Zeile: Hintergrund Farbe (Stahl (Geräte, Rahmen))", "Feinschliff: Chat", ""), "steel"),
+  number("chatSchlichtRowBorderRadius", "Chat schlicht: Zeile: Eckenradius Anteil von „Eckenradius“ (%)", "Feinschliff: Chat", 100, 0, 400),
+  number("userMarginRight", "Name: Abstand rechts", "Feinschliff: Chat", 8, -40, 40, "px"),
+  inherits(color("userColor", "Name: Textfarbe", "Feinschliff: Chat", ""), "accent"),
+  number("badgeMarginRight", "Badge: Abstand rechts", "Feinschliff: Chat", 6, -40, 40, "px"),
+  number("badgePadding", "Badge: Innenabstand links/rechts", "Feinschliff: Chat", 6, 0, 40, "px"),
+  inherits(color("badgeBackground", "Badge: Hintergrund Farbe (Oliv)", "Feinschliff: Chat", ""), "olive"),
+  inherits(color("badgeColor", "Badge: Textfarbe", "Feinschliff: Chat", ""), "textColor"),
+  number("badgeFontSize", "Badge: Schriftgrösse (em)", "Feinschliff: Chat", 0.7, 0, 2.8, undefined, 0.01),
+  number("badgeFontWeight", "Badge: Schriftstärke", "Feinschliff: Chat", 700, 100, 900, undefined, 100),
+  inherits(font("badgeFont", "Badge: Schrift", "Feinschliff: Chat", "", ["Inter", "Share Tech Mono", "IBM Plex Mono", "DM Sans"]), ""),
+  number("chatStaticLength", "Neue Zeile: Rauschen dauert", "Feinschliff: Chat", 0.25, 0, 3, "s", 0.05),
+  number("chatStaticContrast", "Neue Zeile: Kontrast im Rauschen", "Feinschliff: Chat", 2.4, 0, 10, undefined, 0.1),
+  number("chatStaticBright", "Neue Zeile: Helligkeit im Rauschen", "Feinschliff: Chat", 1.7, 0, 10, undefined, 0.1),
+  number("chatTypeSteps", "Neue Zeile: tippt in Schritten", "Feinschliff: Chat", 10, 0, 100),
+] as const satisfies readonly SettingField[];

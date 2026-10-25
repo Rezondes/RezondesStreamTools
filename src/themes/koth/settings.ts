@@ -15,6 +15,7 @@ import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { MinimeVariantSet, SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./hill.ts";
 import { ROLE_IDS, ROLE_SET } from "./soldiers3d.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 
 export const FONTS = ["Inter", "Share Tech Mono", "IBM Plex Mono", "DM Sans"] as const;
 const TITLE_FONTS = ["Black Ops One", "Stardos Stencil", "Share Tech Mono", "Inter"] as const;
@@ -388,6 +389,7 @@ const GROUP_SCENES = {
   [MINIME_MOVES]: ["minimes"],
   [MINIME_COMBAT]: ["minimes"],
   [INFO_GROUP]: ["info"],
+  ...TUNING_GROUPS,
 } as const;
 
 const capital = (login: string) => login[0].toUpperCase() + login.slice(1);
@@ -406,7 +408,7 @@ const BASIC = [
 export const kothSettings: ThemeSchema = {
   id: "koth",
   name: "King of the Hill",
-  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(ROLE_SET), ...minimeTeamFields(TEAM_SET), ...COMBAT_FIELDS], STINGER), BASIC),
+  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(ROLE_SET), ...minimeTeamFields(TEAM_SET), ...COMBAT_FIELDS, ...TUNING_FIELDS], STINGER), BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: ROLE_SET,

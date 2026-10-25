@@ -6,6 +6,7 @@ import { type BannerWorldOptions, bannerSetup } from "./bannerWorld.ts";
 
 const options: BannerWorldOptions = {
   seed: 301, hillHeight: 7.2, mastHeight: 9.5, trees: 10, rocks: 4, radius: 40, height: 12, sky: { top: "#5d4a3a", horizon: "#f3dcb0" }, light: "#ffd29a",
+  lens: { fov: 34, turn: 0.35, ambient: 0.9, sun: 2.2, fogNear: 50, fogFar: 210, fogMix: 0.8, flag: [2.8, 1.75] },
   colors: { sand: "#b9a06a", hill: "#6b7a3a", shade: "#4a5628", mountain: "#6b7280", steel: "#3c4146", pine: "#4a5628", rock: "#7d786a", flag: "#2f6fd6" },
 };
 const setup = bannerSetup({ width: 1200, height: 480 }, options);

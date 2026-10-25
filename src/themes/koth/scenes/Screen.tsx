@@ -25,8 +25,6 @@ import { kothNames, teamColor, teamLabel, useKoth } from "../useKoth.ts";
 type Screen = ReturnType<typeof useScreen>;
 type Parts = { kind: ScreenKind; values: KothValues; clock: KothClock; steps: Steps; screen: Screen };
 
-// fixed: the stamp of a title letter (scale at the start, curve power4.in)
-const STAMP = { scale: 1.8, power: 4 };
 const CHANNEL = "{channel}";
 
 const texts = (values: KothValues, kind: ScreenKind) => ({
@@ -48,12 +46,16 @@ function Head({ values, eyebrow, opacity }: { values: KothValues; eyebrow: strin
   );
 }
 
+// The stamp of a title letter: from its start size with a hard curve (settings)
 function Title({ text, time, steps }: { text: string; time: number; steps: Steps }) {
+  const values = useKoth();
+  const scale = values.titleStampScale;
+  const power = values.titleStampPower;
   return (
     <h1 className="kh-stencil">
       {Array.from(text).map((letter, index) => {
-        const stamped = stepShare(steps.title, time, index) ** STAMP.power;
-        return <span key={index} style={{ opacity: stamped, transform: `scale(${STAMP.scale - (STAMP.scale - 1) * stamped})` }}>{letter}</span>;
+        const stamped = stepShare(steps.title, time, index) ** power;
+        return <span key={index} style={{ opacity: stamped, transform: `scale(${scale - (scale - 1) * stamped})` }}>{letter}</span>;
       })}
     </h1>
   );

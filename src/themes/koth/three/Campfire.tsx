@@ -6,14 +6,15 @@ import { AdditiveBlending, BufferGeometry, Float32BufferAttribute, type Mesh, ty
 import { hash } from "../../../core/hash.ts";
 import type { Point3 } from "../../../core/three/beam.ts";
 import type { KothClock } from "../build.ts";
+import { useKoth } from "../useKoth.ts";
 
 type Props = { clock: KothClock; at: Point3; flame: string; wood: string; sparks: number };
 
-// fixed: size of the fire in m, its flicker and the rise of the sparks
-const FIRE = { height: 0.9, radius: 0.35, flicker: 9, light: 8, reach: 9, opacity: 0.85 };
-const SPARK = { rise: 2.6, speed: 0.6, sway: 0.25, size: 0.06, opacity: 0.8 };
-
+// Size of the fire in m, its flicker and the rise of the sparks (settings)
 export default function Campfire({ clock, at, flame, wood, sparks }: Props) {
+  const values = useKoth();
+  const FIRE = { height: values.fireHeight, radius: values.fireRadius, flicker: values.fireFlicker, light: values.fireLight, reach: values.fireReach, opacity: values.fireOpacity };
+  const SPARK = { rise: values.sparkRise, speed: values.sparkSpeed, sway: values.sparkSway, size: values.sparkSize, opacity: values.sparkOpacity };
   const fire = useRef<Mesh>(null);
   const glow = useRef<PointLight>(null);
   const geometry = useMemo(() => new BufferGeometry().setAttribute("position", new Float32BufferAttribute(new Float32Array(sparks * 3), 3)), [sparks]);

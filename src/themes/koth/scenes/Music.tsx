@@ -27,8 +27,8 @@ export default function Music() {
   );
 }
 
-// fixed: the digits the dial runs through, how long it runs (s), the typing of the title (s, steps), the unit
-const DIAL = { chars: "0123456789.", length: 0.7, type: 0.6, steps: 14, unit: " MHz" };
+// fixed: the digits the dial runs through and the unit; its times and the typing of the title come from the settings
+const DIAL = { chars: "0123456789.", unit: " MHz" };
 
 function Playing({ track, at }: { track: Track; at: number }) {
   const values = useKoth();
@@ -39,9 +39,9 @@ function Playing({ track, at }: { track: Track; at: number }) {
   useTimeline(timeline => {
     const dial = scope.current?.querySelector(".kh-dial");
     const song = scope.current?.querySelector(".kh-song");
-    if (dial) timeline.from(dial, { duration: DIAL.length, scrambleText: { text: frequency, chars: DIAL.chars } }, 0);
-    if (song) timeline.fromTo(song, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: DIAL.type, ease: `steps(${DIAL.steps})` }, DIAL.length);
-  }, [track.id], scope);
+    if (dial) timeline.from(dial, { duration: values.musicDialLength, scrambleText: { text: frequency, chars: DIAL.chars } }, 0);
+    if (song) timeline.fromTo(song, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: values.musicTypeLength, ease: `steps(${values.musicTypeSteps})` }, values.musicDialLength);
+  }, [track.id, values.musicDialLength, values.musicTypeLength, values.musicTypeSteps], scope);
   return (
     <div ref={scope} className="kh-tuned">
       {cover.src

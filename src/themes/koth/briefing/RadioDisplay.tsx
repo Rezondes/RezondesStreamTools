@@ -3,26 +3,24 @@
 import type { CSSProperties } from "react";
 import { outCubic, type Steps, stepShare } from "../build.ts";
 import { scrambled } from "../briefing.ts";
+import { useKoth } from "../useKoth.ts";
 
 type Props = { time: number; steps: Steps; count: string };
 
-// fixed: the screen switches on in three steps, the signs change 20 times a second, the device rises from 30 px; longer
-// texts (break time, next mission) get the smaller type
-const FLASH_STEPS = 3;
-const TICKS = 20;
-const RISE = 30;
-const LONG = 9;
+// The screen switches on in steps, the signs change some times a second, the device rises; longer texts (break time,
+// next mission) get the smaller type (settings)
 const RIVETS = ["top-left", "top-right", "bottom-left", "bottom-right"];
 
 export default function RadioDisplay({ time, steps, count }: Props) {
+  const values = useKoth();
   const shown = outCubic(stepShare(steps.display, time));
-  const flash = 1 - Math.floor(stepShare(steps.screen, time) * FLASH_STEPS) / FLASH_STEPS;
-  const style = { opacity: shown, transform: `translateY(${(1 - shown) * RISE}px)`, "--flash": flash } as CSSProperties;
+  const flash = 1 - Math.floor(stepShare(steps.screen, time) * values.displayFlashSteps) / values.displayFlashSteps;
+  const style = { opacity: shown, transform: `translateY(${(1 - shown) * values.displayRise}px)`, "--flash": flash } as CSSProperties;
   return (
     <div className="kh-radio-display" style={style}>
       {RIVETS.map(place => <i key={place} className={`kh-rivet ${place}`} />)}
       <div className="kh-radio-screen">
-        <b className={`kh-radio-count${count.length > LONG ? " long" : ""}`}>{scrambled(count, stepShare(steps.count, time), Math.floor(time * TICKS))}</b>
+        <b className={`kh-radio-count${count.length > values.countLongFrom ? " long" : ""}`}>{scrambled(count, stepShare(steps.count, time), Math.floor(time * values.displayTicks))}</b>
       </div>
     </div>
   );

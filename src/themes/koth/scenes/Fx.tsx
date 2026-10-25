@@ -15,8 +15,8 @@ export default function Fx() {
   return <div className="kh-fx">{shown.map(item => <Item key={item.id} item={item} />)}</div>;
 }
 
-// fixed: how the slip drops in (px, deg, s, ease)
-const SLIP = { y: -80, turn: -8, length: 0.55, ease: "back.out(2)" };
+// fixed: the curve of the slip; its drop, turn and time come from the settings
+const SLIP_EASE = "back.out(2)";
 
 function Item({ item }: { item: ShownFx }) {
   const values = useKoth();
@@ -24,8 +24,8 @@ function Item({ item }: { item: ShownFx }) {
   const scope = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
     const slip = scope.current?.querySelector(".kh-fx-text.slip");
-    if (slip) timeline.from(slip, { opacity: 0, y: SLIP.y, rotate: SLIP.turn, duration: SLIP.length, ease: SLIP.ease });
-  }, [text, values.fxBubble], scope);
+    if (slip) timeline.from(slip, { opacity: 0, y: values.fxSlipDrop, rotate: values.fxSlipTurn, duration: values.fxSlipLength, ease: SLIP_EASE });
+  }, [text, values.fxBubble, values.fxSlipDrop, values.fxSlipTurn, values.fxSlipLength], scope);
   return (
     <div ref={scope} className={`kh-fx-item in-${values.fxIn} out-${values.fxOut}`} style={style}>
       <FxMedia item={item} phase={phase} />

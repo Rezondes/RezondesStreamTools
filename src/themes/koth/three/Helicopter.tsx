@@ -3,11 +3,15 @@ import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import type { Group, Mesh } from "three";
 import type { KothClock } from "../build.ts";
+import { useKoth } from "../useKoth.ts";
 
-// fixed: the flight of the prototype (refs/starting.html), far behind the hill and above the fog
-const FLIGHT = { turn: 0.12, width: 75, depth: 30, x: -20, z: -70, height: 24, bob: 0.8, bobSpeed: 0.7, tilt: 0.08, rotor: 30 };
-
+// The flight far behind the hill and above the fog (settings)
 export default function Helicopter({ clock, color }: { clock: KothClock; color: string }) {
+  const values = useKoth();
+  const FLIGHT = {
+    turn: values.helicopterTurn, width: values.helicopterWidth, depth: values.helicopterDepth, x: values.helicopterX, z: values.helicopterZ,
+    height: values.helicopterHeight, bob: values.helicopterBob, bobSpeed: values.helicopterBobSpeed, tilt: values.helicopterTilt, rotor: values.helicopterRotor,
+  };
   const body = useRef<Group>(null);
   const rotor = useRef<Mesh>(null);
   useFrame(() => {
@@ -29,10 +33,10 @@ export default function Helicopter({ clock, color }: { clock: KothClock; color: 
       </mesh>
       <mesh ref={rotor} position={[0, 1.05, 0]}>
         <boxGeometry args={[6, 0.04, 0.25]} />
-        <meshBasicMaterial color={color} transparent opacity={0.55} />
+        <meshBasicMaterial color={color} transparent opacity={values.helicopterRotorOpacity} />
         <mesh rotation={[0, Math.PI / 2, 0]}>
           <boxGeometry args={[6, 0.04, 0.25]} />
-          <meshBasicMaterial color={color} transparent opacity={0.55} />
+          <meshBasicMaterial color={color} transparent opacity={values.helicopterRotorOpacity} />
         </mesh>
       </mesh>
     </group>

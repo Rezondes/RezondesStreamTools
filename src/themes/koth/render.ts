@@ -8,12 +8,12 @@ import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
-import type { BannerWorldOptions } from "./bannerWorld.ts";
-import { drawKothOfflineBanner, drawKothProfileBanner, type KothBannerOptions, OFFLINE_SIZE, PROFILE_SIZE } from "./banners.ts";
+import type { BannerLens, BannerWorldOptions } from "./bannerWorld.ts";
+import { type BannerLayout, drawKothOfflineBanner, drawKothProfileBanner, type KothBannerOptions, OFFLINE_SIZE, PROFILE_SIZE } from "./banners.ts";
 import type * as Clips3d from "./clips3d.ts";
 import { TEAM_SET, type KothValues } from "./settings.ts";
-import { smokeCover } from "./smokeStinger.ts";
-import type { KothStingerOptions } from "./stinger.ts";
+import { type SmokeLook, smokeCover } from "./smokeStinger.ts";
+import type { KothStingerOptions, StingerLook } from "./stinger.ts";
 
 // A banner is one picture (the dashboard renders its first frame)
 const STILL = { duration: 1, fps: 1 };
@@ -33,13 +33,59 @@ function clipDraw(build: (loaded: typeof Clips3d) => Draw, standIn: Draw): Draw 
   };
 }
 
-function bannerWorld(koth: KothValues, sky: { top: string; horizon: string }, flag: string): BannerWorldOptions {
+// The own colors and lens of a banner (settings with the prefix profile or offline, they follow the theme until set)
+type BannerLook = {
+  sky: { top: string; horizon: string }; light: string; sand: string; hill: string; shade: string; mountain: string; steel: string; lens: BannerLens;
+};
+
+const profileLook = (koth: KothValues): BannerLook => ({
+    sky: { top: koth.profileSkyTop, horizon: koth.profileSkyHorizon }, light: koth.profileLightColor, sand: koth.profileSandColor, hill: koth.profileHillColor,
+    shade: koth.profileShadeColor, mountain: koth.profileMountainColor, steel: koth.profileSteelColor,
+    lens: {
+      fov: koth.profileFov, turn: koth.profileTurn, ambient: koth.profileAmbient, sun: koth.profileSun, fogNear: koth.profileFogNear, fogFar: koth.profileFogFar,
+      fogMix: koth.profileFogMix, flag: [koth.profileFlagWidth, koth.profileFlagHeight],
+    },
+});
+const offlineLook = (koth: KothValues): BannerLook => ({
+    sky: { top: koth.offlineSkyTop, horizon: koth.offlineSkyHorizon }, light: koth.offlineLightColor, sand: koth.offlineSandColor, hill: koth.offlineHillColor,
+    shade: koth.offlineShadeColor, mountain: koth.offlineMountainColor, steel: koth.offlineSteelColor,
+    lens: {
+      fov: koth.offlineFov, turn: koth.offlineTurn, ambient: koth.offlineAmbient, sun: koth.offlineSun, fogNear: koth.offlineFogNear, fogFar: koth.offlineFogFar,
+      fogMix: koth.offlineFogMix, flag: [koth.offlineFlagWidth, koth.offlineFlagHeight],
+    },
+});
+
+function bannerWorld(koth: KothValues, look: BannerLook, flag: string): BannerWorldOptions {
   return {
     seed: koth.worldSeed, hillHeight: koth.hillHeight, mastHeight: koth.mastHeight, trees: koth.trees, rocks: koth.rocks,
-    radius: koth.cameraRadius, height: koth.cameraHeight, sky, light: koth.sunColor,
-    colors: { sand: koth.sandColor, hill: koth.hillColor, shade: koth.hillDark, mountain: koth.mountainColor, steel: koth.steel, pine: koth.hillDark, rock: koth.mountainColor, flag },
+    radius: koth.cameraRadius, height: koth.cameraHeight, sky: look.sky, light: look.light, lens: look.lens,
+    colors: { sand: look.sand, hill: look.hill, shade: look.shade, mountain: look.mountain, steel: look.steel, pine: look.shade, rock: look.mountain, flag },
   };
 }
+
+// The stinger scene and its cloud of the settings
+export const kothStingerLook = (koth: KothValues): StingerLook => ({
+  fov: koth.stingerFov, ambient: koth.stingerAmbient, sun: koth.stingerSun,
+  cloth: { width: koth.stingerClothWidth, height: koth.stingerClothHeight, wind: koth.stingerWind },
+  text: { y: koth.stingerTextY, width: koth.stingerTextWidth, height: koth.stingerTextHeight }, shown: koth.stingerShown,
+});
+export const kothStingerCloud = (koth: KothValues): SmokeLook => ({
+  pop: koth.stingerPop, rollFrom: koth.stingerRollFrom, speed: [koth.stingerSpeedMin, koth.stingerSpeedMax], gravity: koth.stingerGravity,
+  drag: koth.stingerDrag, depth: koth.stingerDepth, grow: koth.stingerGrow, size: koth.stingerPuffSize,
+});
+
+// Sizes and places of the banner texts (settings)
+export const kothBannerLayout = (koth: KothValues): BannerLayout => ({
+  profile: {
+    titleSize: koth.profileTitleSize, titleX: koth.profileTitleX, titleY: koth.profileTitleY, textSize: koth.profileTextSize, textX: koth.profileTextX,
+    textY: koth.profileTextY, shadowAlpha: koth.profileShadowAlpha, shadowBlur: koth.profileShadowBlur,
+  },
+  offline: {
+    x: koth.offlineSheetX, y: koth.offlineSheetY, turn: koth.offlineSheetTurn, width: koth.offlineSheetWidth, height: koth.offlineSheetHeight,
+    titleSize: koth.offlineTitleSize, titleY: koth.offlineTitleY, textSize: koth.offlineTextSize, textY: koth.offlineTextY,
+    linesSize: koth.offlineLinesSize, linesY: koth.offlineLinesY, linesStep: koth.offlineLinesStep, linesMax: koth.offlineLinesMax,
+  },
+});
 
 // values: resolved against the KOTH schema; login for {login} in the texts
 export function kothClips(values: SettingValues, login: string): RenderClip[] {
@@ -47,20 +93,20 @@ export function kothClips(values: SettingValues, login: string): RenderClip[] {
   const names = { channel: koth.channelName, login };
   const [first, second] = TEAM_SET.variants.map(team => values[minimeTeamColorKey(team.id)] as string);
   const stinger: KothStingerOptions = {
-    duration: koth.stingerDuration, cut: koth.stingerCut, flag: koth.stingerFlag, smoke: koth.smokeColor, flags: [first, second],
-    pole: koth.steel, grenade: koth.olive, puffs: koth.stingerPuffs, seed: koth.worldSeed,
+    duration: koth.stingerDuration, cut: koth.stingerCut, flag: koth.stingerFlag, smoke: koth.stingerSmoke, flags: [first, second],
+    pole: koth.stingerPole, grenade: koth.stingerGrenade, puffs: koth.stingerPuffs, seed: koth.worldSeed, look: kothStingerLook(koth), cloud: kothStingerCloud(koth),
   };
-  const label = { text: fillTemplate(koth.stingerText, names), font: koth.titleFont, color: koth.textColor };
+  const label = { text: fillTemplate(koth.stingerText, names), font: koth.stingerFont, color: koth.stingerTextColor, size: koth.stingerTextSize };
   const texts: KothBannerOptions = {
-    font: koth.font, titleFont: koth.titleFont, paper: koth.paper, ink: koth.ink, textColor: koth.textColor,
+    font: koth.profileFont, titleFont: koth.profileTitleFont, paper: koth.offlinePaper, ink: koth.offlineInk, textColor: koth.profileTextColor,
     title: fillTemplate(koth.bannerTitle, names), profileText: koth.bannerProfileText,
-    offlineTitle: koth.bannerOfflineTitle, offlineText: koth.bannerOfflineText, offlineLines: koth.bannerOfflineLines,
+    offlineTitle: koth.bannerOfflineTitle, offlineText: koth.bannerOfflineText, offlineLines: koth.bannerOfflineLines, layout: kothBannerLayout(koth),
   };
-  // The offline banner has its own line with the channel
-  const offlineTexts = { ...texts, title: fillTemplate(koth.bannerOfflineName, names) };
+  // The offline banner has its own line with the channel and its own fonts
+  const offlineTexts = { ...texts, title: fillTemplate(koth.bannerOfflineName, names), font: koth.offlineFont, titleFont: koth.offlineTitleFont };
   const flag = values[minimeTeamColorKey(koth.flagFaction)] as string;
-  const day = bannerWorld(koth, { top: koth.skyTop, horizon: koth.skyHorizon }, flag);
-  const dusk = bannerWorld(koth, { top: koth.endingSkyTop, horizon: koth.endingSkyHorizon }, flag);
+  const day = bannerWorld(koth, profileLook(koth), flag);
+  const dusk = bannerWorld(koth, offlineLook(koth), flag);
   const font = `400 24px "${koth.titleFont}"`;
   const options = readStingerOptions(values);
   const coverOnly: Draw = (context, time) => {

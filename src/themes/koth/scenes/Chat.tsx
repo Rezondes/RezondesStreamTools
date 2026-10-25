@@ -21,9 +21,7 @@ export default function Chat() {
 }
 
 const SECOND_MS = 1000; // fixed: seconds in ms
-// fixed: the static over a new line (s, how bright and contrasty), the typing in steps, the digits the time counts through
-const STATIC = { length: 0.25, filter: "contrast(2.4) brightness(1.7)" };
-const TYPE_STEPS = 10; // fixed: the typing in steps
+// fixed: the digits the time counts through; the static over a new line and the typing come from the settings
 const DIGITS = "0123456789";
 
 function Row({ message }: { message: ChatMessage }) {
@@ -36,8 +34,8 @@ function Row({ message }: { message: ChatMessage }) {
     const line = row.current;
     if (!line) return;
     const typing = values.fadeDuration / SECOND_MS;
-    timeline.fromTo(line, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: typing, ease: `steps(${TYPE_STEPS})` }, 0)
-      .fromTo(line, { filter: STATIC.filter }, { filter: "none", duration: STATIC.length }, 0);
+    timeline.fromTo(line, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: typing, ease: `steps(${values.chatTypeSteps})` }, 0)
+      .fromTo(line, { filter: `contrast(${values.chatStaticContrast}) brightness(${values.chatStaticBright})` }, { filter: "none", duration: values.chatStaticLength }, 0);
     const stamp = line.querySelector(".kh-time");
     if (stamp) timeline.from(stamp, { duration: typing, scrambleText: { text: time, chars: DIGITS } }, 0);
   }, [], row);

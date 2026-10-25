@@ -9,6 +9,7 @@ import {
 } from "three";
 import { type KothClock, nail, outBounce, type Steps, stepShare } from "../build.ts";
 import type { CampItem } from "../camp.ts";
+import { useKoth } from "../useKoth.ts";
 
 export type CampColors = {
   bag: string; concrete: string; tent: string; crate: string; crateLight: string; edge: string; wood: string; pine: string; rock: string;
@@ -16,16 +17,13 @@ export type CampColors = {
 };
 type Props = { items: readonly CampItem[]; clock: KothClock; steps: Steps; colors: CampColors; markers: readonly string[] };
 
-// fixed: shapes of the prototype (refs/starting.html)
+// fixed: shapes of the prototype (refs/starting.html); the fall of the bags, the wave of the markers and the windscreen
+// of the jeep come from the settings
 const BAG_LIFT = 0.2;
-const BAG_DROP = 6;
 const PINE_SHADES = [0.8, 0.95, 1.1];
 const FENCE_WIRES = [0.45, 0.8];
-const MARKER_WAVE = { speed: 3, swing: 0.35 };
 const HIDDEN = 1e-4;
 const WHEELS = [[0.8, 0.65], [0.8, -0.65], [-0.8, 0.65], [-0.8, -0.65]] as const;
-// fixed: windscreen of the jeep
-const GLASS = "#9fb3b8";
 
 const flat = (color: string) => new MeshStandardMaterial({ color, roughness: 1, flatShading: true });
 
@@ -83,11 +81,12 @@ function Tent({ item, looks }: PartProps) {
 }
 
 function Jeep({ item, looks }: PartProps) {
+  const glass = useKoth().jeepGlassColor;
   return (
     <group {...placed(item)}>
       <mesh material={looks.jeep} position={[0, 0.75, 0]} castShadow receiveShadow><boxGeometry args={[2.4, 0.7, 1.3]} /></mesh>
       <mesh material={looks.jeepCab} position={[-0.4, 1.35, 0]} castShadow><boxGeometry args={[1.1, 0.5, 1.25]} /></mesh>
-      <mesh position={[0.16, 1.35, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[1.1, 0.45]} /><meshStandardMaterial color={GLASS} roughness={0.2} metalness={0.3} /></mesh>
+      <mesh position={[0.16, 1.35, 0]} rotation={[0, Math.PI / 2, 0]}><planeGeometry args={[1.1, 0.45]} /><meshStandardMaterial color={glass} roughness={0.2} metalness={0.3} /></mesh>
       {WHEELS.map(([x, side]) => (
         <mesh key={`${x}${side}`} material={looks.dark} position={[x, 0.36, side]} rotation={[Math.PI / 2, 0, 0]} castShadow><cylinderGeometry args={[0.36, 0.36, 0.28, 12]} /></mesh>
       ))}
@@ -109,9 +108,10 @@ type ItemProps = PartProps & { parts: Shapes; colors: CampColors; markers: reado
 // One item of the layout; the flag pole is drawn by Flag.tsx
 function Item({ item, looks, parts, colors, markers, bagRef, flagRef }: ItemProps) {
   const at = placed(item);
+  const { bagDrop } = useKoth();
   switch (item.kind) {
     case "sandbag":
-      return <mesh ref={bagRef} geometry={parts.bag} material={looks.bag} position={[item.x, item.y + BAG_LIFT + item.lift + BAG_DROP, item.z]} rotation={at.rotation} castShadow receiveShadow />;
+      return <mesh ref={bagRef} geometry={parts.bag} material={looks.bag} position={[item.x, item.y + BAG_LIFT + item.lift + bagDrop, item.z]} rotation={at.rotation} castShadow receiveShadow />;
     case "crate":
       return (
         <mesh geometry={parts.crate} material={item.index % 2 ? looks.crateLight : looks.crate} position={[item.x, item.y + item.lift + 0.25, item.z]} rotation={at.rotation} castShadow receiveShadow>
@@ -149,18 +149,19 @@ export default function Camp({ items, clock, steps, colors, markers }: Props) {
   useEffect(() => () => Object.values(looks).flat().forEach(look => look.dispose()), [looks]);
   const bags = useRef<(Mesh | null)[]>([]);
   const flags = useRef<(Group | null)[]>([]);
+  const { bagDrop, markerWaveSpeed, markerWaveSwing } = useKoth();
 
   useFrame(() => {
     const time = clock.time;
     items.forEach((item, index) => {
       if (item.kind === "sandbag") {
         const fall = 1 - outBounce(stepShare(steps.bags, time, item.index));
-        bags.current[index]?.position.setY(item.y + BAG_LIFT + item.lift + fall * BAG_DROP);
+        bags.current[index]?.position.setY(item.y + BAG_LIFT + item.lift + fall * bagDrop);
       }
       if (item.kind !== "marker") return;
       const flag = flags.current[index];
       flag?.scale.setScalar(Math.max(HIDDEN, nail(stepShare(steps.markers, time, item.index))));
-      flag?.children[1]?.rotation.set(0, Math.sin(time * MARKER_WAVE.speed + item.index) * MARKER_WAVE.swing, 0);
+      flag?.children[1]?.rotation.set(0, Math.sin(time * markerWaveSpeed + item.index) * markerWaveSwing, 0);
     });
   });
 

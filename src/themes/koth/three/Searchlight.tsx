@@ -6,14 +6,16 @@ import { AdditiveBlending, type Group, type Object3D, type SpotLight } from "thr
 import type { Point3 } from "../../../core/three/beam.ts";
 import type { KothClock } from "../build.ts";
 import { searchlightAngle } from "../searchlight.ts";
+import { useKoth } from "../useKoth.ts";
 
 type Props = { clock: KothClock; at: Point3; color: string; from: number; to: number; speed: number };
 
-// fixed: the lamp on the bunker roof, its light and the visible beam (length and spread in m)
-const LAMP = { lift: 1.2, strength: 150, reach: 60, cone: 0.28, softness: 0.5, decay: 1 };
-const BEAM = { length: 22, radius: 3.5, opacity: 0.16, tilt: 0.18 };
+// fixed: the lamp sits this far above the bunker roof, its light fades like this; light and beam come from the settings
+const LAMP = { lift: 1.2, decay: 1 };
 
 export default function Searchlight({ clock, at, color, from, to, speed }: Props) {
+  const values = useKoth();
+  const BEAM = { length: values.beamLength, radius: values.beamRadius, opacity: values.beamOpacity, tilt: values.beamTilt };
   const swing = useRef<Group>(null);
   const light = useRef<SpotLight>(null);
   const target = useRef<Object3D>(null);
@@ -23,7 +25,7 @@ export default function Searchlight({ clock, at, color, from, to, speed }: Props
   useFrame(() => swing.current?.rotation.set(0, searchlightAngle(clock.time, from, to, speed), 0));
   return (
     <group ref={swing} position={[at[0], at[1] + LAMP.lift, at[2]]}>
-      <spotLight ref={light} color={color} intensity={LAMP.strength} distance={LAMP.reach} decay={LAMP.decay} angle={LAMP.cone} penumbra={LAMP.softness} castShadow />
+      <spotLight ref={light} color={color} intensity={values.searchlightStrength} distance={values.searchlightReach} decay={LAMP.decay} angle={values.searchlightCone} penumbra={values.searchlightSoftness} castShadow />
       <object3D ref={target} position={[0, -BEAM.length * BEAM.tilt, BEAM.length]} />
       <mesh position={[0, (-BEAM.length * BEAM.tilt) / 2, BEAM.length / 2]} rotation={[BEAM.tilt - Math.PI / 2, 0, 0]}>
         <coneGeometry args={[BEAM.radius, BEAM.length, 24, 1, true]} />

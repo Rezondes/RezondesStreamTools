@@ -13,45 +13,55 @@ export type KothBannerOptions = {
   offlineTitle: string;
   offlineText: string;
   offlineLines: readonly string[];
+  layout: BannerLayout;
+};
+// Sizes and places of the settings (px): the profile texts from the top left, the offline sheet around its middle with
+// its texts from there, the shadow behind the profile texts so they read on the bright sky
+export type BannerLayout = {
+  profile: { titleSize: number; titleX: number; titleY: number; textSize: number; textX: number; textY: number; shadowAlpha: number; shadowBlur: number };
+  offline: {
+    x: number; y: number; turn: number; width: number; height: number; titleSize: number; titleY: number; textSize: number; textY: number;
+    linesSize: number; linesY: number; linesStep: number; linesMax: number;
+  };
 };
 
 export const PROFILE_SIZE = { width: 1200, height: 480 };
 export const OFFLINE_SIZE = { width: 1920, height: 1080 };
 
-// fixed: shadow behind the profile texts, so they read on the bright sky
-const TEXT_SHADOW = { color: "rgba(0, 0, 0, 0.55)", blur: 14 };
 
 function centered(context: CanvasRenderingContext2D, text: string, y: number) {
   context.fillText(text, Math.round(-context.measureText(text).width / 2), y);
 }
 
 export function drawKothProfileBanner(context: CanvasRenderingContext2D, options: KothBannerOptions) {
+  const look = options.layout.profile;
   context.save();
-  context.shadowColor = TEXT_SHADOW.color;
-  context.shadowBlur = TEXT_SHADOW.blur;
+  context.shadowColor = `rgba(0, 0, 0, ${look.shadowAlpha})`; // fixed: a black shadow, its opacity is a setting
+  context.shadowBlur = look.shadowBlur;
   context.fillStyle = options.textColor;
   context.textBaseline = "middle";
-  context.font = `400 90px "${options.titleFont}", sans-serif`;
-  context.fillText(options.title, 60, 110);
-  context.font = `600 32px "${options.font}", sans-serif`;
-  context.fillText(options.profileText, 64, 180);
+  context.font = `400 ${look.titleSize}px "${options.titleFont}", sans-serif`;
+  context.fillText(options.title, look.titleX, look.titleY);
+  context.font = `600 ${look.textSize}px "${options.font}", sans-serif`;
+  context.fillText(options.profileText, look.textX, look.textY);
   context.restore();
 }
 
 export function drawKothOfflineBanner(context: CanvasRenderingContext2D, options: KothBannerOptions) {
   // Briefing sheet in the upper half, slightly tilted
+  const look = options.layout.offline;
   context.save();
-  context.translate(960, 380);
-  context.rotate(-0.02);
+  context.translate(look.x, look.y);
+  context.rotate((look.turn * Math.PI) / 180);
   context.fillStyle = options.paper;
-  context.fillRect(-470, -240, 940, 480);
+  context.fillRect(-look.width / 2, -look.height / 2, look.width, look.height);
   context.fillStyle = options.ink;
   context.textBaseline = "middle";
-  context.font = `400 104px "${options.titleFont}", sans-serif`;
-  centered(context, options.offlineTitle, -110);
-  context.font = `600 40px "${options.font}", sans-serif`;
-  centered(context, options.offlineText, 10);
-  context.font = `400 34px "${options.font}", sans-serif`;
-  options.offlineLines.slice(0, 3).forEach((line, index) => centered(context, line, 90 + index * 52));
+  context.font = `400 ${look.titleSize}px "${options.titleFont}", sans-serif`;
+  centered(context, options.offlineTitle, look.titleY);
+  context.font = `600 ${look.textSize}px "${options.font}", sans-serif`;
+  centered(context, options.offlineText, look.textY);
+  context.font = `400 ${look.linesSize}px "${options.font}", sans-serif`;
+  options.offlineLines.slice(0, look.linesMax).forEach((line, index) => centered(context, line, look.linesY + index * look.linesStep));
   context.restore();
 }

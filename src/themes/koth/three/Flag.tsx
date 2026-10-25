@@ -6,6 +6,7 @@ import { CanvasTexture, DoubleSide, type Mesh, PlaneGeometry, SRGBColorSpace } f
 import { inOutQuad, type KothClock, type Step, stepShare } from "../build.ts";
 import { FLAG_POLE } from "../camp.ts";
 import { flagOffset } from "../flag.ts";
+import { useKoth } from "../useKoth.ts";
 
 type Props = { clock: KothClock; step: Step; base: number; size: number; wind: number; color: string; symbol: string; steel: string };
 
@@ -14,17 +15,15 @@ const POLE = { height: 6.2, from: 1.9, gap: 0.06 };
 const RATIO = 0.625;
 const SEGMENTS = [24, 10] as const;
 const TEXTURE = { width: 256, height: 160, band: 18, outer: 52, inner: 22, points: 5 };
-// fixed: a darker band at the top and bottom edge of the cloth
-const BAND = "rgba(0, 0, 0, 0.18)";
-
-function flagTexture(color: string, symbol: string) {
+// A darker band at the top and bottom edge of the cloth (band: its opacity)
+function flagTexture(color: string, symbol: string, band: number) {
   const canvas = document.createElement("canvas");
   canvas.width = TEXTURE.width;
   canvas.height = TEXTURE.height;
   const paint = canvas.getContext("2d")!;
   paint.fillStyle = color;
   paint.fillRect(0, 0, TEXTURE.width, TEXTURE.height);
-  paint.fillStyle = BAND;
+  paint.fillStyle = `rgba(0, 0, 0, ${band})`; // fixed: a black band, its opacity is a setting
   paint.fillRect(0, 0, TEXTURE.width, TEXTURE.band);
   paint.fillRect(0, TEXTURE.height - TEXTURE.band, TEXTURE.width, TEXTURE.band);
   paint.fillStyle = symbol;
@@ -41,7 +40,8 @@ function flagTexture(color: string, symbol: string) {
 }
 
 export default function Flag({ clock, step, base, size, wind, color, symbol, steel }: Props) {
-  const texture = useMemo(() => flagTexture(color, symbol), [color, symbol]);
+  const band = useKoth().flagBandAlpha;
+  const texture = useMemo(() => flagTexture(color, symbol, band), [color, symbol, band]);
   const geometry = useMemo(() => {
     const cloth = new PlaneGeometry(size, size * RATIO, ...SEGMENTS);
     cloth.translate(size / 2, (-size * RATIO) / 2, 0);

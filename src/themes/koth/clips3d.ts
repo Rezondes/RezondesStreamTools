@@ -6,10 +6,10 @@ import { type BannerWorldOptions, bannerSetup } from "./bannerWorld.ts";
 import { drawKothOfflineBanner, drawKothProfileBanner, type KothBannerOptions, OFFLINE_SIZE, PROFILE_SIZE } from "./banners.ts";
 import { HEIGHT, type KothStingerOptions, stingerSetup, WIDTH } from "./stinger.ts";
 
-type StingerText = { text: string; font: string; color: string };
+type StingerText = { text: string; font: string; color: string; size: number };
 
-// fixed: the text canvas of the stinger and its type, a banner is one picture
-const TEXT_CANVAS = { width: 1400, height: 250, size: 150 };
+// fixed: the text canvas of the stinger (its type size comes from the settings), a banner is one picture
+const TEXT_CANVAS = { width: 1400, height: 250 };
 const STILL = { duration: 1, fps: 1 };
 
 function printed(label: StingerText) {
@@ -19,7 +19,7 @@ function printed(label: StingerText) {
   const context = canvas.getContext("2d");
   if (context) {
     context.fillStyle = label.color;
-    context.font = `400 ${TEXT_CANVAS.size}px "${label.font}", sans-serif`;
+    context.font = `400 ${label.size}px "${label.font}", sans-serif`;
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillText(label.text, TEXT_CANVAS.width / 2, TEXT_CANVAS.height / 2);

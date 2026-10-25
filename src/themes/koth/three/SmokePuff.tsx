@@ -8,29 +8,32 @@ import { burstAt } from "../../../core/motion/burst.ts";
 import { STAGE } from "../../../core/screens/screens.ts";
 import { softTexture } from "../../../core/three/softTexture.ts";
 import type { KothClock } from "../build.ts";
+import { useKoth } from "../useKoth.ts";
 
 type Props = { clock: KothClock; start: number; at: { x: number; y: number }; scale: number; seed: number; colors: readonly [string, string] };
 
-// fixed: the burst of the prototype (refs/alert.html) in stage px and s; gravity below 0 lets the smoke rise
-const PUFFS = 26;
-const BURST = { origin: { x: 0, y: 0 }, direction: -Math.PI / 2, spread: Math.PI * 2, speed: [120, 380] as const, gravity: -60, drag: 1.5, life: 1.8 };
-const SIZE = { from: 70, by: 120, grow: 0.4 };
-const OPACITY = 0.7;
+// fixed: the burst flies out all around and brakes, a cloud starts at this share of its size, behind the tag; count,
+// speed, rise, life, size and opacity come from the settings (stage px and s, a rise lets the smoke go up)
+const BURST = { origin: { x: 0, y: 0 }, direction: -Math.PI / 2, spread: Math.PI * 2, drag: 1.5 };
+const GROW = 0.4;
 const BEHIND = -200;
 
 export default function SmokePuff({ clock, start, at, scale, seed, colors }: Props) {
+  const values = useKoth();
+  const puffs = values.alertSmokePuffs;
+  const burst = { ...BURST, speed: [values.alertSmokeSpeedMin, values.alertSmokeSpeedMax] as const, gravity: -values.alertSmokeRise, life: values.alertSmokeLife };
   const texture = useMemo(() => softTexture(), []);
-  const looks = useMemo(() => Array.from({ length: PUFFS }, (_, puff) =>
-    new SpriteMaterial({ map: texture, color: colors[puff % 2], transparent: true, opacity: 0, depthWrite: false })), [texture, colors]);
+  const looks = useMemo(() => Array.from({ length: puffs }, (_, puff) =>
+    new SpriteMaterial({ map: texture, color: colors[puff % 2], transparent: true, opacity: 0, depthWrite: false })), [texture, colors, puffs]);
   useEffect(() => () => { texture.dispose(); looks.forEach(look => look.dispose()); }, [texture, looks]);
   const sprites = useRef<(Sprite | null)[]>([]);
 
   useFrame(() => {
     const age = clock.time - start;
-    const grown = Math.min(1, Math.max(0, age / BURST.life));
-    burstAt(seed, PUFFS, age, BURST).forEach((cloud, puff) => {
-      looks[puff].opacity = cloud.opacity * OPACITY * (1 - grown);
-      const size = (SIZE.from + hash(seed * 17 + puff) * SIZE.by) * (SIZE.grow + grown) * scale;
+    const grown = Math.min(1, Math.max(0, age / burst.life));
+    burstAt(seed, puffs, age, burst).forEach((cloud, puff) => {
+      looks[puff].opacity = cloud.opacity * values.alertSmokeOpacity * (1 - grown);
+      const size = (values.alertSmokeSize + hash(seed * 17 + puff) * values.alertSmokeSizeRange) * (GROW + grown) * scale;
       sprites.current[puff]?.position.set(at.x - STAGE.width / 2 + cloud.x * scale, STAGE.height / 2 - at.y - cloud.y * scale, BEHIND);
       sprites.current[puff]?.scale.set(size, size, 1);
     });

@@ -23,6 +23,7 @@ use crate::themes::minime_fields::{
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
+use crate::themes::tuning;
 
 const PX: Option<Unit> = Some(Unit::Px);
 const MS: Option<Unit> = Some(Unit::Ms);
@@ -512,6 +513,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (INFO_GROUP, vec![SceneName::Info]),
     ]
     .into_iter()
+    .chain(tuning::koth::group_scenes())
     .map(|(group, scenes)| (group.to_owned(), scenes))
     .collect()
 }
@@ -612,7 +614,7 @@ pub fn koth() -> Theme {
     let schema = ThemeSchema {
         id: "koth".to_owned(),
         name: "King of the Hill".to_owned(),
-        fields: mark_basic(with_stinger_fields(fields(), STINGER, 60.0, 0.0), BASIC),
+        fields: mark_basic(with_stinger_fields([fields(), tuning::koth::fields()].concat(), STINGER, 60.0, 0.0), BASIC),
         group_scenes: group_scenes(),
         minime_variants: Some(roles()),
         minime_teams: Some(teams()),
