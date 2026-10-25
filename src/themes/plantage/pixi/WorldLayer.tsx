@@ -15,7 +15,11 @@ type Swaying = { node: Container; phase: number; kind: keyof typeof SWAY };
 
 // fixed: the look of the prototype (refs/starting.html) in stage px
 const SKY_HEIGHT = 700;
-const SUN = { x: 520, low: 700, rise: 330, size: 70, glow: 620, rays: 14, rayWidth: 0.06, rayLength: 900, rayAlpha: 0.09, turn: 0.03 };
+// The sun of the settings: place, rise, size, glow and its rays
+const sunOf = (values: PlantageValues) => ({
+  x: values.sunX, low: values.sunLow, rise: values.sunRise, size: values.sunSize, glow: values.sunGlowSize, rays: values.sunRays, rayWidth: values.sunRayWidth,
+  rayLength: values.sunRayLength, rayAlpha: values.sunRayAlpha, turn: values.sunTurn,
+});
 const DESATURATE = -0.5;
 const GRASS_TUFTS = 16;
 const CLOUD_PUFFS: readonly [number, number, number][] = [[0, 0, 60], [55, -18, 50], [105, 2, 54], [40, 18, 52], [85, 22, 44]];
@@ -60,6 +64,7 @@ const treeColors = (values: PlantageValues, sky: string): TreeColors => ({
 });
 
 function skyParts(values: PlantageValues, kind: LightKind) {
+  const SUN = sunOf(values);
   const skies = skiesOf(values, kind);
   const dawn = new Sprite(gradient([[0, skies.from[0]], [0.55, mixHex(skies.from[0], skies.from[1], 0.6)], [1, skies.from[1]]]));
   const day = new Sprite(gradient([[0, skies.to[0]], [1, skies.to[1]]]));
@@ -163,6 +168,7 @@ export default function WorldLayer({ app, world, clock, values, kind }: Props) {
     const spots = cloudSpots(values.cloudCount);
     const cloudBox = layers.find(entry => entry.layer.id === "clouds")?.box;
 
+    const SUN = sunOf(values);
     const place = () => {
       const seconds = clock();
       const light = daylight(kind, seconds, values);

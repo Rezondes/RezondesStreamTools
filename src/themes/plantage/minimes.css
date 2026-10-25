@@ -11,108 +11,111 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateX(calc(var(--x) - 50%));
+  transform: translateX(calc(var(--x) - var(--minimeTransform)));
   transition: transform var(--move) linear;
 }
 .theme-plantage .pl-minime-name {
-  margin-bottom: var(--name-gap, 4px);
-  padding: var(--name-padding, 1px 10px);
+  margin-bottom: var(--minimeNameMarginBottom);
+  padding: var(--minimeNamePadding) var(--minimeNamePadding2);
   font-size: var(--mangoNameSize);
-  font-weight: 700;
+  font-weight: var(--minimeNameFontWeight);
   white-space: nowrap;
+  color: var(--minimeNameColor);
+  font-family: var(--minimeNameFont), system-ui, sans-serif;
 }
-.theme-plantage .name-kiste { background: var(--wood); border: var(--name-border, 2px) solid var(--woodDark); border-radius: var(--name-round, 4px); color: var(--textOnWood); }
-.theme-plantage .name-band { background: var(--accent2); border-radius: var(--pill, 999px); color: var(--textColor); }
-.theme-plantage .pl-minime-body { position: relative; width: 100%; transform-origin: 50% 100%; animation: plantage-minime-breathe var(--breathe, 2.4s) ease-in-out infinite alternate; }
+.theme-plantage .name-kiste { background: var(--nameKisteBackground); border: var(--nameKisteBorder2) solid var(--nameKisteBorder); border-radius: var(--nameKisteBorderRadius); color: var(--nameKisteColor); }
+.theme-plantage .name-band { background: var(--nameBandBackground); border-radius: var(--nameBandBorderRadius); color: var(--nameBandColor); }
+.theme-plantage .pl-minime-body { position: relative; width: 100%; transform-origin: var(--minimeBodyTransformOrigin) 100%; animation: plantage-minime-breathe var(--minimeBodyAnimation) ease-in-out infinite alternate; }
 .theme-plantage .pl-minime-flip { position: relative; transform: scaleX(var(--facing)); }
 .theme-plantage .pl-minime-shadow {
-  width: 70%;
-  height: var(--shadow-height, 10px);
-  margin-top: calc(-1 * var(--shadow-overlap, 5px));
+  width: var(--minimeShadowWidth);
+  height: var(--minimeShadowHeight);
+  margin-top: calc(-1 * var(--minimeShadowMarginTop));
   border-radius: 50%;
   background: color-mix(in srgb, black calc(var(--mangoShadow) * 100%), transparent);
 }
 
 /* Mango soldier (Mango.tsx) */
 .theme-plantage .pl-mango { display: block; width: 100%; height: auto; overflow: visible; }
-.theme-plantage .mango-body { fill: var(--mango); stroke: var(--mangoOutline); stroke-width: var(--mangoOutlineWidth); stroke-linejoin: round; }
-.theme-plantage .mango-blush { fill: var(--mangoBlush); opacity: 0.7; }
-.theme-plantage .mango-leaf { fill: var(--leaf); stroke: var(--mangoOutline); stroke-width: var(--mangoOutlineWidth); stroke-linejoin: round; }
-.theme-plantage .mango-helmet { fill: var(--helmet); stroke: var(--mangoOutline); stroke-width: var(--mangoOutlineWidth); stroke-linejoin: round; transform-box: view-box; transform-origin: 50% 36%; }
-.theme-plantage .mango-strap { fill: none; stroke: var(--helmet); stroke-width: var(--strap, 3); stroke-linecap: round; }
-.theme-plantage .mango-cheek { fill: var(--mangoCheek); opacity: 0.6; }
-.theme-plantage .mango-eye { fill: var(--mangoEye); transform-box: fill-box; transform-origin: center; animation: plantage-minime-blink var(--mangoBlinkEvery) linear infinite; }
-.theme-plantage .mango-cross { fill: none; stroke: var(--mangoEye); stroke-width: var(--cross-line, 2.5); stroke-linecap: round; }
-.theme-plantage .mango-mouth { fill: none; stroke: var(--mangoMouth); stroke-width: var(--mouth-width, 2); stroke-linecap: round; }
-.theme-plantage .mango-weapon { transform-box: view-box; transform-origin: 56% 64%; }
-.theme-plantage .weapon-weapon { fill: var(--weapon); stroke: var(--mangoOutline); stroke-width: calc(var(--mangoOutlineWidth) * 0.6); stroke-linejoin: round; }
-.theme-plantage .weapon-mark { fill: var(--weaponMark); }
+.theme-plantage .mango-body { fill: var(--mangoBodyFill); stroke: var(--mangoBodyStroke); stroke-width: calc(var(--mangoOutlineWidth) * var(--mangoBodyStrokeWidth) / 100); stroke-linejoin: round; }
+.theme-plantage .mango-blush { fill: var(--mangoBlushFill); opacity: var(--mangoBlushOpacity); }
+.theme-plantage .mango-leaf { fill: var(--mangoLeafFill); stroke: var(--mangoLeafStroke); stroke-width: calc(var(--mangoOutlineWidth) * var(--mangoLeafStrokeWidth) / 100); stroke-linejoin: round; }
+.theme-plantage .mango-helmet { fill: var(--mangoHelmetFill); stroke: var(--mangoHelmetStroke); stroke-width: calc(var(--mangoOutlineWidth) * var(--mangoHelmetStrokeWidth) / 100); stroke-linejoin: round; transform-box: view-box; transform-origin: var(--mangoHelmetTransformOrigin) var(--mangoHelmetTransformOrigin2); }
+.theme-plantage .mango-strap { fill: none; stroke: var(--mangoStrapStroke); stroke-width: var(--mangoStrapStrokeWidth); stroke-linecap: round; }
+.theme-plantage .mango-cheek { fill: var(--mangoCheekFill); opacity: var(--mangoCheekOpacity); }
+.theme-plantage .mango-eye { fill: var(--mangoEyeFill); transform-box: fill-box; transform-origin: center; animation: plantage-minime-blink var(--mangoBlinkEvery) linear infinite; }
+.theme-plantage .mango-cross { fill: none; stroke: var(--mangoCrossStroke); stroke-width: var(--mangoCrossStrokeWidth); stroke-linecap: round; }
+.theme-plantage .mango-mouth { fill: none; stroke: var(--mangoMouthStroke); stroke-width: var(--mangoMouthStrokeWidth); stroke-linecap: round; }
+.theme-plantage .mango-weapon { transform-box: view-box; transform-origin: var(--mangoWeaponTransformOrigin) var(--mangoWeaponTransformOrigin2); }
+.theme-plantage .weapon-weapon { fill: var(--weaponWeaponFill); stroke: var(--weaponWeaponStroke); stroke-width: calc(var(--mangoOutlineWidth) * var(--weaponWeaponStrokeWidth)); stroke-linejoin: round; }
+.theme-plantage .weapon-mark { fill: var(--weaponMarkFill); }
 /* The medic carries a bag in the helmet color with the cross */
-.theme-plantage .role-medic .weapon-weapon { fill: var(--paper); }
-.theme-plantage .role-medic .weapon-mark { fill: var(--medicCross); }
-.theme-plantage .role-medic .mango-helmet { fill: var(--paper); }
+.theme-plantage .role-medic .weapon-weapon { fill: var(--roleMedicWeaponWeaponFill); }
+.theme-plantage .role-medic .weapon-mark { fill: var(--roleMedicWeaponMarkFill); }
+.theme-plantage .role-medic .mango-helmet { fill: var(--roleMedicMangoHelmetFill); }
 
 /* Hopping while walking comes from the core (minimeHops.css); breathing pauses meanwhile */
-.theme-plantage .action-walk .pl-minime-body, .theme-plantage .action-approach .pl-minime-body { animation: none; }
+.theme-plantage .action-walk .pl-minime-body { animation: none; }
+.theme-plantage .action-approach .pl-minime-body { animation: none; }
 
 /* Own animations */
 .theme-plantage .action-reload .mango-weapon { animation: plantage-minime-reload var(--action-ms) ease-in-out both; }
 .theme-plantage .action-helmet .mango-helmet { animation: plantage-minime-helmet var(--action-ms) ease-in-out both; }
 .theme-plantage .action-look .mango-eyes { animation: plantage-minime-look var(--action-ms) ease-in-out both; }
 .theme-plantage .action-sleep .pl-minime-body { animation: plantage-minime-doze var(--action-ms) ease-in-out both; }
-.theme-plantage .action-sleep .mango-eye { animation: none; scale: 1 0.15; }
-.theme-plantage .pl-minime-zz { position: absolute; top: 0; right: 0; color: var(--textColor); font-weight: 700; animation: plantage-minime-zz var(--zz-time, 2s) ease-out infinite; }
+.theme-plantage .action-sleep .mango-eye { animation: none; scale: var(--actionSleepMangoEyeScale) var(--actionSleepMangoEyeScale2); }
+.theme-plantage .pl-minime-zz { position: absolute; top: 0; right: 0; color: var(--minimeZzColor); font-weight: var(--minimeZzFontWeight); animation: plantage-minime-zz var(--minimeZzAnimation) ease-out infinite; font-family: var(--minimeZzFont), system-ui, sans-serif; }
 /* Reaction to chat: a jump of joy with the weapon raised */
 .theme-plantage .action-cheer .pl-minime-body { animation: plantage-minime-cheer var(--action-ms) ease-out both; }
-.theme-plantage .action-cheer .mango-weapon { rotate: -30deg; }
+.theme-plantage .action-cheer .mango-weapon { rotate: calc(var(--actionCheerMangoWeaponRotate) * 1deg); }
 
 /* Fights of the core: aim (weapon up), fire (muzzle flash, explosive: a blast), down (tipped over, cross eyes, juice),
    revive (a cross rises above the medic), up (stands up again) */
 .theme-plantage .action-aim .mango-weapon { animation: plantage-minime-aim var(--action-ms) ease-out both; }
-.theme-plantage .action-fire .mango-weapon { animation: plantage-minime-recoil var(--recoil, 120ms) ease-out infinite; }
+.theme-plantage .action-fire .mango-weapon { animation: plantage-minime-recoil var(--actionFireMangoWeaponAnimation) ease-out infinite; }
 .theme-plantage .pl-muzzle {
   position: absolute;
-  left: 94%;
-  top: 52%;
-  width: var(--flash, 22px);
-  aspect-ratio: 1;
+  left: var(--muzzleLeft);
+  top: var(--muzzleTop);
+  width: var(--muzzleWidth);
+  aspect-ratio: var(--muzzleAspectRatio);
   border-radius: 50%;
-  background: radial-gradient(circle, var(--paper) 15%, var(--muzzle) 45%, transparent 70%);
-  translate: -50% -50%;
-  animation: plantage-minime-flash var(--recoil, 120ms) steps(2, jump-none) infinite;
+  background: radial-gradient(circle, var(--muzzleBackground) var(--muzzleBackground3), var(--muzzleBackground2) var(--muzzleBackground4), transparent var(--muzzleBackground5));
+  translate: var(--muzzleTranslate) var(--muzzleTranslate2);
+  animation: plantage-minime-flash var(--muzzleAnimation) steps(2, jump-none) infinite;
 }
-.theme-plantage .explosive .pl-muzzle { width: var(--blast, 56px); animation: plantage-minime-blast var(--action-ms) ease-out both; }
-.theme-plantage .action-down .pl-minime-body { animation: plantage-minime-down var(--tip, 300ms) ease-in both; }
+.theme-plantage .explosive .pl-muzzle { width: var(--explosiveMuzzleWidth); animation: plantage-minime-blast var(--action-ms) ease-out both; }
+.theme-plantage .action-down .pl-minime-body { animation: plantage-minime-down var(--actionDownMinimeBodyAnimation) ease-in both; }
 .theme-plantage .action-up .pl-minime-body { animation: plantage-minime-up var(--action-ms) ease-out both; }
 .theme-plantage .action-revive .pl-minime-body { animation: plantage-minime-kneel var(--action-ms) ease-in-out both; }
 .theme-plantage .pl-revive {
   position: absolute;
-  left: 50%;
+  left: var(--reviveLeft);
   top: 0;
-  width: var(--revive, 26px);
-  aspect-ratio: 1;
-  background: linear-gradient(var(--medicCross) 0 0) center / 34% 100% no-repeat, linear-gradient(var(--medicCross) 0 0) center / 100% 34% no-repeat;
-  translate: -50% 0;
+  width: var(--reviveWidth);
+  aspect-ratio: var(--reviveAspectRatio);
+  background: linear-gradient(var(--reviveBackground) 0 0) center / var(--reviveBackground3) 100% no-repeat, linear-gradient(var(--reviveBackground2) 0 0) center / 100% var(--reviveBackground4) no-repeat;
+  translate: var(--reviveTranslate) 0;
   animation: plantage-minime-rise var(--action-ms) ease-out both;
 }
-.theme-plantage .pl-juice { position: absolute; left: 50%; top: 40%; }
+.theme-plantage .pl-juice { position: absolute; left: var(--juiceLeft); top: var(--juiceTop); }
 .theme-plantage .pl-juice i {
   position: absolute;
-  width: var(--juice-drop, 10px);
-  aspect-ratio: 1;
+  width: var(--juiceIWidth);
+  aspect-ratio: var(--juiceIAspectRatio);
   border-radius: 50% 50% 50% 0;
-  background: var(--mango);
-  animation: plantage-minime-juice var(--juice-time, 700ms) ease-out both;
+  background: var(--juiceIBackground);
+  animation: plantage-minime-juice var(--juiceIAnimation) ease-out both;
 }
 .theme-plantage .pl-juice.blast::before {
   content: "";
   position: absolute;
-  width: var(--blast, 56px);
-  aspect-ratio: 1;
+  width: var(--juiceBlastBeforeWidth);
+  aspect-ratio: var(--juiceBlastBeforeAspectRatio);
   border-radius: 50%;
-  background: radial-gradient(circle, var(--paper) 10%, var(--muzzle) 40%, var(--accent) 60%, transparent 72%);
-  translate: -50% -50%;
-  animation: plantage-minime-blast var(--juice-time, 700ms) ease-out both;
+  background: radial-gradient(circle, var(--juiceBlastBeforeBackground) var(--juiceBlastBeforeBackground4), var(--juiceBlastBeforeBackground2) var(--juiceBlastBeforeBackground5), var(--juiceBlastBeforeBackground3) var(--juiceBlastBeforeBackground6), transparent var(--juiceBlastBeforeBackground7));
+  translate: var(--juiceBlastBeforeTranslate) var(--juiceBlastBeforeTranslate2);
+  animation: plantage-minime-blast var(--juiceBlastBeforeAnimation) ease-out both;
 }
 
 /* Appearing and disappearing (settings) */
@@ -121,30 +124,31 @@
 .theme-plantage .action-enter .pl-minime-name { animation: plantage-minime-fade-in var(--action-ms) ease-out both; }
 .theme-plantage .exit-wegspringen .action-exit .pl-minime-body { animation: plantage-minime-leap var(--action-ms) ease-in forwards; }
 .theme-plantage .exit-versinken .action-exit .pl-minime-body { animation: plantage-minime-sink var(--action-ms) ease-in forwards; }
-.theme-plantage .action-exit .pl-minime-name, .theme-plantage .action-exit .pl-minime-shadow { animation: plantage-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-plantage .action-exit .pl-minime-name { animation: plantage-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-plantage .action-exit .pl-minime-shadow { animation: plantage-minime-fade-out var(--action-ms) ease-in forwards; }
 
-@keyframes plantage-minime-breathe { from { scale: 1 1; } to { scale: 1.03 0.97; } }
-@keyframes plantage-minime-blink { 0%, 95%, 100% { scale: 1 1; } 97.5% { scale: 1 0.1; } }
-@keyframes plantage-minime-reload { 0%, 100% { rotate: 0deg; translate: 0 0; } 20%, 70% { rotate: 50deg; translate: 0 var(--reload-drop, 8px); } 45% { rotate: 40deg; } }
-@keyframes plantage-minime-helmet { 0%, 100% { rotate: 0deg; translate: 0 0; } 30% { rotate: -14deg; translate: 0 calc(-1 * var(--helmet-lift, 8px)); } 60% { rotate: 8deg; } }
-@keyframes plantage-minime-look { 0%, 100% { translate: 0 0; } 20%, 40% { translate: calc(-1 * var(--look-shift, 3px)) 0; } 60%, 80% { translate: var(--look-shift, 3px) 0; } }
-@keyframes plantage-minime-doze { 0%, 100% { scale: 1 1; } 15%, 85% { scale: 1.04 0.92; } }
-@keyframes plantage-minime-zz { from { opacity: 0; translate: 0 0; } 30% { opacity: 1; } to { opacity: 0; translate: var(--zz-x, 12px) calc(-1 * var(--zz-y, 36px)); } }
+@keyframes plantage-minime-breathe { from { scale: var(--kfMinimeBreatheFromScale) var(--kfMinimeBreatheFromScale2); } to { scale: var(--kfMinimeBreatheToScale) var(--kfMinimeBreatheToScale2); } }
+@keyframes plantage-minime-blink { 0%, 95%, 100% { scale: var(--kfMinimeBlink0p95p100pScale) var(--kfMinimeBlink0p95p100pScale2); } 97.5% { scale: var(--kfMinimeBlink975pScale) var(--kfMinimeBlink975pScale2); } }
+@keyframes plantage-minime-reload { 0%, 100% { rotate: 0deg; translate: 0 0; } 20%, 70% { rotate: calc(var(--kfMinimeReload20p70pRotate) * 1deg); translate: 0 var(--kfMinimeReload20p70pTranslate); } 45% { rotate: calc(var(--kfMinimeReload45pRotate) * 1deg); } }
+@keyframes plantage-minime-helmet { 0%, 100% { rotate: 0deg; translate: 0 0; } 30% { rotate: calc(var(--kfMinimeHelmet30pRotate) * 1deg); translate: 0 calc(-1 * var(--kfMinimeHelmet30pTranslate)); } 60% { rotate: calc(var(--kfMinimeHelmet60pRotate) * 1deg); } }
+@keyframes plantage-minime-look { 0%, 100% { translate: 0 0; } 20%, 40% { translate: calc(-1 * var(--kfMinimeLook20p40pTranslate)) 0; } 60%, 80% { translate: var(--kfMinimeLook60p80pTranslate) 0; } }
+@keyframes plantage-minime-doze { 0%, 100% { scale: var(--kfMinimeDoze0p100pScale) var(--kfMinimeDoze0p100pScale2); } 15%, 85% { scale: var(--kfMinimeDoze15p85pScale) var(--kfMinimeDoze15p85pScale2); } }
+@keyframes plantage-minime-zz { from { opacity: 0; translate: 0 0; } 30% { opacity: var(--kfMinimeZz30pOpacity); } to { opacity: 0; translate: var(--kfMinimeZzToTranslate) calc(-1 * var(--kfMinimeZzToTranslate2)); } }
 @keyframes plantage-minime-cheer { 0%, 100% { translate: 0 0; } 35% { translate: 0 calc(-1 * var(--cheerHeight)); } }
-@keyframes plantage-minime-aim { from { rotate: 0deg; } to { rotate: -6deg; } }
-@keyframes plantage-minime-recoil { 0%, 100% { translate: 0 0; } 50% { translate: calc(-1 * var(--kick, 3px)) 0; } }
-@keyframes plantage-minime-flash { 0% { opacity: 1; scale: 1; } 100% { opacity: 0.3; scale: 0.6; } }
-@keyframes plantage-minime-blast { from { opacity: 1; scale: 0.3; } to { opacity: 0; scale: 1.6; } }
-@keyframes plantage-minime-down { from { rotate: 0deg; translate: 0 0; } to { rotate: -90deg; translate: 0 var(--lie, 20%); } }
-@keyframes plantage-minime-up { from { rotate: -90deg; translate: 0 var(--lie, 20%); } to { rotate: 0deg; translate: 0 0; } }
-@keyframes plantage-minime-kneel { 0%, 100% { scale: 1 1; } 20%, 80% { scale: 1.06 0.9; } }
-@keyframes plantage-minime-rise { from { opacity: 0; translate: -50% 0; } 20% { opacity: 1; } to { opacity: 0; translate: -50% calc(-1 * var(--rise-height, 50px)); } }
+@keyframes plantage-minime-aim { from { rotate: 0deg; } to { rotate: calc(var(--kfMinimeAimToRotate) * 1deg); } }
+@keyframes plantage-minime-recoil { 0%, 100% { translate: 0 0; } 50% { translate: calc(-1 * var(--kfMinimeRecoil50pTranslate)) 0; } }
+@keyframes plantage-minime-flash { 0% { opacity: var(--kfMinimeFlash0pOpacity); scale: var(--kfMinimeFlash0pScale); } 100% { opacity: var(--kfMinimeFlash100pOpacity); scale: var(--kfMinimeFlash100pScale); } }
+@keyframes plantage-minime-blast { from { opacity: var(--kfMinimeBlastFromOpacity); scale: var(--kfMinimeBlastFromScale); } to { opacity: 0; scale: var(--kfMinimeBlastToScale); } }
+@keyframes plantage-minime-down { from { rotate: 0deg; translate: 0 0; } to { rotate: calc(var(--kfMinimeDownToRotate) * 1deg); translate: 0 var(--kfMinimeDownToTranslate); } }
+@keyframes plantage-minime-up { from { rotate: calc(var(--kfMinimeUpFromRotate) * 1deg); translate: 0 var(--kfMinimeUpFromTranslate); } to { rotate: 0deg; translate: 0 0; } }
+@keyframes plantage-minime-kneel { 0%, 100% { scale: var(--kfMinimeKneel0p100pScale) var(--kfMinimeKneel0p100pScale2); } 20%, 80% { scale: var(--kfMinimeKneel20p80pScale) var(--kfMinimeKneel20p80pScale2); } }
+@keyframes plantage-minime-rise { from { opacity: 0; translate: var(--kfMinimeRiseFromTranslate) 0; } 20% { opacity: var(--kfMinimeRise20pOpacity); } to { opacity: 0; translate: var(--kfMinimeRiseToTranslate) calc(-1 * var(--kfMinimeRiseToTranslate2)); } }
 @keyframes plantage-minime-juice {
-  from { opacity: 1; transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(0); }
-  to { opacity: 0; transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(calc(-1 * var(--juice-reach, 60px))); }
+  from { opacity: var(--kfMinimeJuiceFromOpacity); transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(0); }
+  to { opacity: 0; transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(calc(-1 * var(--kfMinimeJuiceToTransform))); }
 }
-@keyframes plantage-minime-drop { from { translate: 0 calc(-1 * var(--drop-height, 380px)); } 70% { translate: 0 0; scale: 1.15 0.85; } to { translate: 0 0; scale: 1 1; } }
-@keyframes plantage-minime-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes plantage-minime-fade-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes plantage-minime-leap { from { translate: 0 0; opacity: 1; } to { translate: 0 calc(-1 * var(--leap-height, 420px)); opacity: 0; } }
+@keyframes plantage-minime-drop { from { translate: 0 calc(-1 * var(--kfMinimeDropFromTranslate)); } 70% { translate: 0 0; scale: var(--kfMinimeDrop70pScale) var(--kfMinimeDrop70pScale2); } to { translate: 0 0; scale: var(--kfMinimeDropToScale) var(--kfMinimeDropToScale2); } }
+@keyframes plantage-minime-fade-in { from { opacity: 0; } to { opacity: var(--kfMinimeFadeInToOpacity); } }
+@keyframes plantage-minime-fade-out { from { opacity: var(--kfMinimeFadeOutFromOpacity); } to { opacity: 0; } }
+@keyframes plantage-minime-leap { from { translate: 0 0; opacity: var(--kfMinimeLeapFromOpacity); } to { translate: 0 calc(-1 * var(--kfMinimeLeapToTranslate)); opacity: 0; } }
 @keyframes plantage-minime-sink { from { translate: 0 0; clip-path: inset(0 0 0 0); } to { translate: 0 100%; clip-path: inset(0 0 100% 0); } }

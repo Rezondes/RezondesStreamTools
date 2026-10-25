@@ -27,10 +27,6 @@ import { usePlantage } from "../usePlantage.ts";
 
 // fixed: seconds in ms
 const SECOND_MS = 1000;
-// fixed: the order of the entrance in s, like the prototype (refs/starting.html)
-const ENTER = { clock: 1.4, card: 1.2, count: 1.6, words: 1.9, pill: 2.0, reach: 2.2, note: 2.4, line: 2.6 };
-// fixed: how far things come from in px and the tilt of the falling card in degrees, like the prototype
-const FROM = { clock: 120, card: 520, tilt: 4, count: 520, word: 40, note: 14 };
 const SEEK = seekFromQuery(location.search);
 
 type Scene = { app: Application; world: Container };
@@ -48,14 +44,15 @@ function Cards({ kind, values, screen, stage }: { kind: ScreenKind; values: Plan
   const texts = textsOf(values, kind);
   useTimeline(timeline => {
     const drop = values.cardDropMs / SECOND_MS;
-    timeline.from(".pl-st-clock", { y: -FROM.clock, duration: 0.7, ease: "federnd" }, ENTER.clock);
-    timeline.from(".pl-st-card", { y: -FROM.card, rotate: -FROM.tilt, duration: drop, ease: "federnd" }, ENTER.card);
-    timeline.from(".pl-st-count", { y: FROM.count, duration: drop, ease: "federnd" }, ENTER.count);
-    timeline.from(SplitText.create(".pl-st-title", { type: "words" }).words, { y: FROM.word, opacity: 0, duration: 0.5, stagger: 0.12, ease: "back.out(2)" }, ENTER.words);
-    timeline.from(".pl-st-pill", { scale: 0, duration: 0.45, ease: "back.out(3)" }, ENTER.pill);
-    timeline.from(".pl-st-note", { opacity: 0, y: FROM.note, duration: 0.4 }, ENTER.note);
-    timeline.from(".pl-st-line", { scale: 0, duration: 0.5, ease: "back.out(2.4)" }, ENTER.line);
-  }, [values.cardDropMs, texts.title, texts.note], stage);
+    // the entrance of the settings: when and how fast each card comes, from how far, the tilt of the falling card
+    timeline.from(".pl-st-clock", { y: -values.fromClock, duration: values.clockDrop, ease: "federnd" }, values.enterClock);
+    timeline.from(".pl-st-card", { y: -values.fromCard, rotate: -values.fromTilt, duration: drop, ease: "federnd" }, values.enterCard);
+    timeline.from(".pl-st-count", { y: values.fromCount, duration: drop, ease: "federnd" }, values.enterCount);
+    timeline.from(SplitText.create(".pl-st-title", { type: "words" }).words, { y: values.fromWord, opacity: 0, duration: values.wordRise, stagger: values.wordStep, ease: "back.out(2)" }, values.enterWords);
+    timeline.from(".pl-st-pill", { scale: 0, duration: values.pillPop, ease: "back.out(3)" }, values.enterPill);
+    timeline.from(".pl-st-note", { opacity: 0, y: values.fromNote, duration: values.noteFade }, values.enterNote);
+    timeline.from(".pl-st-line", { scale: 0, duration: values.linePop, ease: "back.out(2.4)" }, values.enterLine);
+  }, [values, texts.title, texts.note], stage);
   const saying = rotating(texts.sayings, values.linesEvery * SECOND_MS, now - start);
   return (
     <div className="pl-st-stage stage-box" ref={stage}>
@@ -100,7 +97,7 @@ export default function Screen({ kind }: { kind: ScreenKind }) {
       {scene && (
         <>
           <WorldLayer app={scene.app} world={scene.world} clock={clock} values={values} kind={kind} />
-          {values.picker && <Picker app={scene.app} world={scene.world} clock={clock} values={values} kind={kind} reachAt={ENTER.reach} />}
+          {values.picker && <Picker app={scene.app} world={scene.world} clock={clock} values={values} kind={kind} reachAt={values.enterReach} />}
           <Drift app={scene.app} clock={clock} values={values} kind={kind} />
         </>
       )}

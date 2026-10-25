@@ -2,6 +2,12 @@
 // (the same picture every time). A mock canvas records the calls. Runs with npm test.
 import assert from "node:assert/strict";
 import { drawPlantageOfflineBanner, drawPlantageProfileBanner, type PlantageBannerOptions } from "./banners.ts";
+import { effectiveSettings } from "../../core/settings.ts";
+import { plantageBannerLayout } from "./render.ts";
+import { type PlantageValues, plantageSettings } from "./settings.ts";
+
+// The look of the default settings
+const defaults = effectiveSettings(plantageSettings, {}) as unknown as PlantageValues;
 
 // One gradient for all recordings, so equal pictures give equal calls
 const gradient = { addColorStop: () => {} };
@@ -26,6 +32,7 @@ const options: PlantageBannerOptions = {
   font: "Baloo 2", titleFont: "Fredoka", textColor: "#ffffff", textOnWood: "#3a2410", paper: "#fff6df", shadow: "#5e3b22",
   day: paint, evening: { ...paint, colors: { ...colors, skyTop: "#ff6f61", skyBottom: "#ffc371" } },
   title: "Plantage", profileText: "Mangos and streams", offlineTitle: "Out in the field", offlineText: "Follow the channel", offlineLines: ["Live soon", "See you soon"],
+  layout: plantageBannerLayout(defaults),
 };
 const texts = (calls: unknown[][]) => calls.filter(call => call[0] === "fillText").map(call => call[1]);
 

@@ -18,12 +18,18 @@ export type PlantageBannerOptions = {
   offlineTitle: string;
   offlineText: string;
   offlineLines: readonly string[];
+  layout: PlantageBannerLayout;
+};
+// Places and sizes of the settings in px: the text lines of both banners, the frosted card of the offline banner
+export type PlantageBannerLayout = {
+  profile: { title: number; text: number; titleSize: number; textSize: number; glow: number };
+  offline: { title: number; text: number; line: number; lineStep: number; titleSize: number; textSize: number; lineSize: number; lines: number };
+  card: { left: number; top: number; width: number; height: number; round: number; alpha: number; blur: number; lift: number; inset: number };
 };
 
-// fixed: layout of the banners in px (text lines, the frosted card of the offline banner)
-const PROFILE = { width: 1200, height: 480, title: 130, text: 220, titleSize: 96, textSize: 34, glow: 24 };
-const OFFLINE = { width: 1920, height: 1080, title: 330, text: 450, line: 530, lineStep: 52, titleSize: 110, textSize: 40, lineSize: 34, lines: 3 };
-const CARD = { left: 340, top: 200, width: 1240, height: 520, round: 28, alpha: 0.82, blur: 60, lift: 24, inset: 60 };
+// fixed: size of the banners in px
+const PROFILE = { width: 1200, height: 480 };
+const OFFLINE = { width: 1920, height: 1080 };
 
 function centered(context: CanvasRenderingContext2D, text: string, y: number, width: number) {
   context.textAlign = "center";
@@ -46,19 +52,21 @@ function lifted(context: CanvasRenderingContext2D, color: string, shadow: string
 }
 
 export function drawPlantageProfileBanner(context: CanvasRenderingContext2D, options: PlantageBannerOptions) {
+  const look = options.layout.profile;
   paintWorld(context, PROFILE.width, PROFILE.height, options.day);
   context.save();
-  lifted(context, options.textColor, options.shadow, PROFILE.glow);
+  lifted(context, options.textColor, options.shadow, look.glow);
   context.textBaseline = "middle";
-  context.font = `700 ${PROFILE.titleSize}px "${options.titleFont}", sans-serif`;
-  centered(context, options.title, PROFILE.title, PROFILE.width);
-  context.font = `600 ${PROFILE.textSize}px "${options.font}", sans-serif`;
-  centered(context, options.profileText, PROFILE.text, PROFILE.width);
+  context.font = `700 ${look.titleSize}px "${options.titleFont}", sans-serif`;
+  centered(context, options.title, look.title, PROFILE.width);
+  context.font = `600 ${look.textSize}px "${options.font}", sans-serif`;
+  centered(context, options.profileText, look.text, PROFILE.width);
   context.restore();
 }
 
 // The frosted card: harvest paper, a soft shadow on the field
 function frostCard(context: CanvasRenderingContext2D, options: PlantageBannerOptions) {
+  const CARD = options.layout.card;
   context.save();
   context.shadowColor = options.shadow;
   context.shadowBlur = CARD.blur;
@@ -74,15 +82,16 @@ function frostCard(context: CanvasRenderingContext2D, options: PlantageBannerOpt
 export function drawPlantageOfflineBanner(context: CanvasRenderingContext2D, options: PlantageBannerOptions) {
   paintWorld(context, OFFLINE.width, OFFLINE.height, options.evening);
   frostCard(context, options);
+  const { offline: look, card } = options.layout;
   context.save();
   context.fillStyle = options.textOnWood;
   context.textBaseline = "middle";
-  const room = CARD.width - CARD.inset * 2;
-  fitted(context, 700, OFFLINE.titleSize, options.titleFont, options.offlineTitle, room);
-  centered(context, options.offlineTitle, OFFLINE.title, OFFLINE.width);
-  fitted(context, 600, OFFLINE.textSize, options.font, options.offlineText, room);
-  centered(context, options.offlineText, OFFLINE.text, OFFLINE.width);
-  context.font = `400 ${OFFLINE.lineSize}px "${options.font}", sans-serif`;
-  options.offlineLines.slice(0, OFFLINE.lines).forEach((line, index) => centered(context, line, OFFLINE.line + index * OFFLINE.lineStep, OFFLINE.width));
+  const room = card.width - card.inset * 2;
+  fitted(context, 700, look.titleSize, options.titleFont, options.offlineTitle, room);
+  centered(context, options.offlineTitle, look.title, OFFLINE.width);
+  fitted(context, 600, look.textSize, options.font, options.offlineText, room);
+  centered(context, options.offlineText, look.text, OFFLINE.width);
+  context.font = `400 ${look.lineSize}px "${options.font}", sans-serif`;
+  options.offlineLines.slice(0, look.lines).forEach((line, index) => centered(context, line, look.line + index * look.lineStep, OFFLINE.width));
   context.restore();
 }

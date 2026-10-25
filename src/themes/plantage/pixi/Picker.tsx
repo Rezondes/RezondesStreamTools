@@ -11,15 +11,15 @@ import { drawShapes, NEAR_MOVE, NEAR_Z } from "./WorldLayer.tsx";
 
 type Props = { app: Application; world: Container; clock: () => number; values: PlantageValues; kind: LightKind; reachAt: number };
 
-// fixed: where the picker stands (feet) on the left and on the right, how long the reach takes in s, mango size and the
-// mangos of the full basket (Ending) relative to the basket
-const SPOT = { left: 470, right: 1450, ground: 990 };
-const REACH_SECONDS = 1.2;
-const MANGO = 16;
+// fixed: the mangos of the full basket (Ending) relative to the basket; where the picker stands (feet) on the left and on
+// the right, how long the reach takes in s and the mango size come from the settings
 const FULL: readonly [number, number][] = [[-26, -50], [0, -56], [26, -50], [-13, -64], [13, -64]];
 
 export default function Picker({ app, world, clock, values, kind, reachAt }: Props) {
   useEffect(() => {
+    const SPOT = { left: values.pickerLeft, right: values.pickerRight, ground: values.pickerGround };
+    const REACH_SECONDS = values.pickerReachTime;
+    const MANGO = values.pickerMango;
     const parts = picker({
       hat: values.pickerHat, band: values.accent, shirt: values.pickerShirt, skin: values.pickerSkin, pants: values.woodDark,
       eye: values.textOnWood, pole: values.wood, basket: values.wood, shadow: values.textOnWood,

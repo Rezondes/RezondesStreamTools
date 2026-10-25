@@ -2,4 +2,5 @@
 
 pub mod koth;
 pub mod matrix;
+pub mod plantage;
 pub mod standard;

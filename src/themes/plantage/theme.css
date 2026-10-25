@@ -1,246 +1,247 @@
 /* Plantage theme: mango plantation look with rows of mango trees, furrowed soil, crates, harvest slips and wooden signs.
-   Encapsulated under .theme-plantage; colors, sizes and times come as CSS variables from the settings, further sizes as
-   var(--name, default). Keyframes are called plantage-*. The minimes have their own CSS (minimes.css). */
+   Encapsulated under .theme-plantage; colors, sizes and times come as CSS variables from the settings, every further size,
+   time and color is a fine-tuning field of its own (tuning.ts). Keyframes are called plantage-*. The minimes have their
+   own CSS (minimes.css). */
 
 .theme-plantage {
   font-family: var(--font), system-ui, sans-serif;
   font-size: var(--fontSize);
-  line-height: 1.3;
+  line-height: var(--rootLineHeight);
   color: var(--textColor);
-  --shadow: 0 var(--shadow-y, 10px) var(--shadow-blur, 24px) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent);
-  /* Illustrated depth shared by every surface: soft lifted shadow, light edge on top, frosted paper, lit wood */
-  --lift: 0 var(--lift-y, 26px) var(--lift-blur, 56px) calc(-1 * var(--lift-spread, 18px)) color-mix(in srgb, var(--soilDark) calc(var(--shadowStrength) * 150%), transparent);
-  --pill-shadow: 0 var(--pill-lift, 10px) var(--pill-soft, 30px) calc(-1 * var(--pill-spread, 10px)) color-mix(in srgb, var(--soilDark) calc(var(--shadowStrength) * 120%), transparent);
-  --shine: inset 0 var(--shine-line, 2px) 0 color-mix(in srgb, var(--paper) 55%, transparent);
-  --frost: linear-gradient(180deg, color-mix(in srgb, var(--paper) 94%, transparent), color-mix(in srgb, var(--paper) 82%, transparent));
-  --lit-wood:
-    linear-gradient(180deg, color-mix(in srgb, var(--paper) 22%, transparent), transparent 45%, color-mix(in srgb, var(--woodDark) 30%, transparent)),
-    repeating-linear-gradient(180deg, transparent 0 var(--plank, 44px), color-mix(in srgb, var(--woodDark) 55%, transparent) var(--plank, 44px) calc(var(--plank, 44px) + var(--plank-gap, 2px))),
-    var(--wood);
 }
 
 /* Wood: lit crate planks with soft joints, thin dark edge, lifted off the picture */
 .theme-plantage .pl-wood {
-  background: var(--lit-wood);
-  border: var(--wood-border, 2px) solid color-mix(in srgb, var(--woodDark) 70%, transparent);
-  border-radius: var(--radius);
-  color: var(--textOnWood);
-  box-shadow: var(--lift), var(--shine);
+  background: linear-gradient(calc(var(--woodBackground5) * 1deg), color-mix(in srgb, var(--woodBackground) var(--woodBackground6), transparent), transparent var(--woodBackground7), color-mix(in srgb, var(--woodBackground2) var(--woodBackground8), transparent)),
+    repeating-linear-gradient(calc(var(--woodBackground9) * 1deg), transparent 0 var(--woodBackground10), color-mix(in srgb, var(--woodBackground3) var(--woodBackground11), transparent) var(--woodBackground12) calc(var(--woodBackground13) + var(--woodBackground14))),
+    var(--woodBackground4);
+  border: var(--woodBorder2) solid color-mix(in srgb, var(--woodBorder) var(--woodBorder3), transparent);
+  border-radius: calc(var(--radius) * var(--woodBorderRadius) / 100);
+  color: var(--woodColor);
+  box-shadow: 0 var(--woodBoxShadow3) var(--woodBoxShadow4) calc(-1 * var(--woodBoxShadow5)) color-mix(in srgb, var(--woodBoxShadow) calc(var(--shadowStrength) * var(--woodBoxShadow6)), transparent), inset 0 var(--woodBoxShadow7) 0 color-mix(in srgb, var(--woodBoxShadow2) var(--woodBoxShadow8), transparent);
 }
 
 /* Shapes from field.ts: colors per place further below, lines without fill; filled parts get a sheen (ShapeIcon.tsx) */
 .theme-plantage .pl-shape { display: block; width: 100%; height: auto; overflow: visible; }
-.theme-plantage .pl-shape .part-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: var(--line-width, 4); }
-.theme-plantage .pl-stop-sheen-light { stop-color: var(--paper); stop-opacity: var(--sheen-light, 0.5); }
-.theme-plantage .pl-stop-sheen-clear { stop-color: var(--paper); stop-opacity: 0; }
-.theme-plantage .pl-stop-sheen-shade { stop-color: var(--soilDark); stop-opacity: var(--sheen-shade, 0.28); }
+.theme-plantage .pl-shape .part-line { fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-width: var(--shapePartLineStrokeWidth); }
+.theme-plantage .pl-stop-sheen-light { stop-color: var(--stopSheenLightStopColor); stop-opacity: var(--stopSheenLightStopOpacity); }
+.theme-plantage .pl-stop-sheen-clear { stop-color: var(--stopSheenClearStopColor); stop-opacity: 0; }
+.theme-plantage .pl-stop-sheen-shade { stop-color: var(--stopSheenShadeStopColor); stop-opacity: var(--stopSheenShadeStopOpacity); }
 .theme-plantage .part-sheen { pointer-events: none; }
 
 /* --- Backdrop ------------------------------------------------------------------------------------------------ */
-.theme-plantage .pl-screen { position: fixed; inset: 0; overflow: hidden; background: var(--soilDark); }
+.theme-plantage .pl-screen { position: fixed; inset: 0; overflow: hidden; background: var(--screenBackground); }
 .theme-plantage .pl-field { position: absolute; inset: 0; overflow: hidden; }
-.theme-plantage .time-morgen { --sky-top: var(--skyMorningTop); --sky-bottom: var(--skyMorningBottom); --light: var(--sun); }
-.theme-plantage .time-mittag { --sky-top: var(--skyDayTop); --sky-bottom: var(--skyDayBottom); --light: var(--sun); }
-.theme-plantage .time-abend { --sky-top: var(--skyEveningTop); --sky-bottom: var(--skyEveningBottom); --light: var(--sun); }
-.theme-plantage .time-nacht { --sky-top: var(--skyNightTop); --sky-bottom: var(--skyNightBottom); --light: var(--moon); }
+.theme-plantage .time-morgen { --sky-top: var(--timeMorgenSkyTop); --sky-bottom: var(--timeMorgenSkyBottom); --light: var(--timeMorgenLight); }
+.theme-plantage .time-mittag { --sky-top: var(--timeMittagSkyTop); --sky-bottom: var(--timeMittagSkyBottom); --light: var(--timeMittagLight); }
+.theme-plantage .time-abend { --sky-top: var(--timeAbendSkyTop); --sky-bottom: var(--timeAbendSkyBottom); --light: var(--timeAbendLight); }
+.theme-plantage .time-nacht { --sky-top: var(--timeNachtSkyTop); --sky-bottom: var(--timeNachtSkyBottom); --light: var(--timeNachtLight); }
 /* One SVG illustration (Field.tsx), covering the picture; colors of its parts and gradient stops from the settings */
 .theme-plantage .pl-scene { position: absolute; inset: 0; width: 100%; height: 100%; }
 .theme-plantage .pl-stop-sky-top { stop-color: var(--sky-top); }
 .theme-plantage .pl-stop-sky-bottom { stop-color: var(--sky-bottom); }
 .theme-plantage .pl-stop-light { stop-color: var(--light); }
-.theme-plantage .pl-stop-soil { stop-color: var(--soil); }
-.theme-plantage .pl-stop-soil-dark { stop-color: var(--soilDark); }
-.theme-plantage .pl-stop-mango { stop-color: var(--mango); }
-.theme-plantage .pl-stop-blush { stop-color: var(--mangoBlush); }
-.theme-plantage .pl-stop-gloss { stop-color: color-mix(in srgb, var(--mango) 45%, var(--paper)); }
+.theme-plantage .pl-stop-soil { stop-color: var(--stopSoilStopColor); }
+.theme-plantage .pl-stop-soil-dark { stop-color: var(--stopSoilDarkStopColor); }
+.theme-plantage .pl-stop-mango { stop-color: var(--stopMangoStopColor); }
+.theme-plantage .pl-stop-blush { stop-color: var(--stopBlushStopColor); }
+.theme-plantage .pl-stop-gloss { stop-color: color-mix(in srgb, var(--stopGlossStopColor) var(--stopGlossStopColor3), var(--stopGlossStopColor2)); }
 /* Sun or moon: disc, glow and faint rays that turn slowly; strength from sunGlow */
 .theme-plantage .pl-sun-disc { fill: var(--light); }
-.theme-plantage .pl-sun-glow { opacity: calc(var(--sunGlow) * 0.8); }
-.theme-plantage .pl-rays path { fill: var(--light); opacity: calc(var(--sunGlow) * 0.07); }
-.theme-plantage .pl-rays { animation: plantage-turn var(--ray-time, 160s) linear infinite; }
+.theme-plantage .pl-sun-glow { opacity: calc(var(--sunGlow) * var(--sunGlowOpacity)); }
+.theme-plantage .pl-rays path { fill: var(--light); opacity: calc(var(--sunGlow) * var(--raysPathOpacity)); }
+.theme-plantage .pl-rays { animation: plantage-turn var(--raysAnimation) linear infinite; }
 .theme-plantage .time-nacht .pl-rays { display: none; }
 /* Clouds: lit puffs over a slightly darker underside, drifting at their own height and size */
 .theme-plantage .pl-cloud {
-  --cloud-y: calc(var(--y) * var(--cloud-band, 240px) + var(--cloud-top, 90px));
-  animation: plantage-drift var(--cloudSpeed) linear infinite;
-  animation-delay: calc(var(--i) * var(--cloudSpeed) / -3 - var(--y) * var(--cloudSpeed));
+  --cloud-y: calc(var(--y) * var(--cloudCloudY) + var(--cloudCloudY2));
+  animation: plantage-drift calc(var(--cloudSpeed) * var(--cloudAnimation) / 100) linear infinite;
+  animation-delay: calc(var(--i) * calc(var(--cloudSpeed) * var(--cloudAnimationDelay) / 100) / var(--cloudAnimationDelay3) - var(--y) * calc(var(--cloudSpeed) * var(--cloudAnimationDelay2) / 100));
 }
 .theme-plantage .pl-cloud-body { scale: var(--size); }
-.theme-plantage .pl-cloud-puff { fill: var(--paper); }
-.theme-plantage .pl-cloud-shade { fill: color-mix(in srgb, var(--paper) 72%, var(--sky-top)); }
+.theme-plantage .pl-cloud-puff { fill: var(--cloudPuffFill); }
+.theme-plantage .pl-cloud-shade { fill: color-mix(in srgb, var(--cloudShadeFill) var(--cloudShadeFill2), var(--sky-top)); }
 /* Hills fade into the sky the farther they are (atmospheric depth) */
-.theme-plantage .pl-hill-far { fill: color-mix(in srgb, var(--hillFarColor) 70%, var(--sky-bottom)); }
-.theme-plantage .pl-hill-near { fill: color-mix(in srgb, var(--hillColor) 85%, var(--sky-bottom)); }
-.theme-plantage .pl-grass-edge { fill: color-mix(in srgb, var(--hillColor) 70%, var(--leafDark)); }
-.theme-plantage .pl-furrows { fill: none; stroke: var(--soilDark); stroke-width: var(--furrow, 5); stroke-linecap: round; opacity: 0.55; }
+.theme-plantage .pl-hill-far { fill: color-mix(in srgb, var(--hillFarFill) var(--hillFarFill2), var(--sky-bottom)); }
+.theme-plantage .pl-hill-near { fill: color-mix(in srgb, var(--hillNearFill) var(--hillNearFill2), var(--sky-bottom)); }
+.theme-plantage .pl-grass-edge { fill: color-mix(in srgb, var(--grassEdgeFill) var(--grassEdgeFill3), var(--grassEdgeFill2)); }
+.theme-plantage .pl-furrows { fill: none; stroke: var(--furrowsStroke); stroke-width: var(--furrowsStrokeWidth); stroke-linecap: round; opacity: var(--furrowsOpacity); }
 /* Trees: crown in three tones (shade, mid, light toward the sun), mangos with gradient and gloss; they sway gently */
-.theme-plantage .pl-tree { animation: plantage-sway var(--treeSwaySpeed) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--treeSwaySpeed) / -7); }
-.theme-plantage .pl-trunk { fill: var(--trunk); }
-.theme-plantage .pl-bark { fill: none; stroke: color-mix(in srgb, var(--trunk) 60%, var(--soilDark)); stroke-width: var(--bark, 3); stroke-linecap: round; }
-.theme-plantage .pl-crown-shade { fill: var(--leafDark); }
-.theme-plantage .pl-crown-mid { fill: var(--leaf); }
-.theme-plantage .pl-crown-light { fill: color-mix(in srgb, var(--leaf) 68%, var(--light)); }
-.theme-plantage .pl-stem { stroke: var(--trunk); stroke-width: var(--stem, 2.5); }
-.theme-plantage .pl-gloss { fill: var(--paper); opacity: 0.75; }
-.theme-plantage .pl-tree-shadow { fill: var(--soilDark); opacity: 0.35; }
-.theme-plantage .pl-treerow-far .pl-crown-shade { fill: color-mix(in srgb, var(--leafDark) 55%, var(--sky-bottom)); }
-.theme-plantage .pl-treerow-far .pl-crown-mid { fill: color-mix(in srgb, var(--leaf) 55%, var(--sky-bottom)); }
-.theme-plantage .pl-treerow-far .pl-crown-light { fill: color-mix(in srgb, var(--leaf) 50%, var(--sky-bottom)); }
-.theme-plantage .pl-treerow-far .pl-trunk { fill: color-mix(in srgb, var(--trunk) 55%, var(--sky-bottom)); }
-.theme-plantage .pl-treerow-far .pl-fruit, .theme-plantage .pl-treerow-far .pl-gloss, .theme-plantage .pl-treerow-far .pl-tree-shadow { opacity: 0.6; }
+.theme-plantage .pl-tree { animation: plantage-sway calc(var(--treeSwaySpeed) * var(--treeAnimation) / 100) ease-in-out infinite alternate; animation-delay: calc(var(--i) * calc(var(--treeSwaySpeed) * var(--treeAnimationDelay) / 100) / var(--treeAnimationDelay2)); }
+.theme-plantage .pl-trunk { fill: var(--trunkFill); }
+.theme-plantage .pl-bark { fill: none; stroke: color-mix(in srgb, var(--barkStroke) var(--barkStroke3), var(--barkStroke2)); stroke-width: var(--barkStrokeWidth); stroke-linecap: round; }
+.theme-plantage .pl-crown-shade { fill: var(--crownShadeFill); }
+.theme-plantage .pl-crown-mid { fill: var(--crownMidFill); }
+.theme-plantage .pl-crown-light { fill: color-mix(in srgb, var(--crownLightFill) var(--crownLightFill2), var(--light)); }
+.theme-plantage .pl-stem { stroke: var(--stemStroke); stroke-width: var(--stemStrokeWidth); }
+.theme-plantage .pl-gloss { fill: var(--glossFill); opacity: var(--glossOpacity); }
+.theme-plantage .pl-tree-shadow { fill: var(--treeShadowFill); opacity: var(--treeShadowOpacity); }
+.theme-plantage .pl-treerow-far .pl-crown-shade { fill: color-mix(in srgb, var(--treerowFarCrownShadeFill) var(--treerowFarCrownShadeFill2), var(--sky-bottom)); }
+.theme-plantage .pl-treerow-far .pl-crown-mid { fill: color-mix(in srgb, var(--treerowFarCrownMidFill) var(--treerowFarCrownMidFill2), var(--sky-bottom)); }
+.theme-plantage .pl-treerow-far .pl-crown-light { fill: color-mix(in srgb, var(--treerowFarCrownLightFill) var(--treerowFarCrownLightFill2), var(--sky-bottom)); }
+.theme-plantage .pl-treerow-far .pl-trunk { fill: color-mix(in srgb, var(--treerowFarTrunkFill) var(--treerowFarTrunkFill2), var(--sky-bottom)); }
+.theme-plantage .pl-treerow-far .pl-fruit { opacity: var(--treerowFarFruitOpacity); }
+.theme-plantage .pl-treerow-far .pl-gloss { opacity: var(--treerowFarGlossOpacity); }
+.theme-plantage .pl-treerow-far .pl-tree-shadow { opacity: var(--treerowFarTreeShadowOpacity); }
 /* Crates in front: planks, slats and grain in wood, a pile of mangos, the channel name burned in */
-.theme-plantage .pl-crate-body { fill: var(--wood); stroke: var(--woodDark); stroke-width: var(--crate-line, 4); }
-.theme-plantage .pl-crate-slats { fill: none; stroke: var(--woodDark); stroke-width: var(--slat, 5); }
-.theme-plantage .pl-crate-grain { fill: none; stroke: var(--woodDark); stroke-width: var(--grain-line, 2); opacity: 0.35; }
-.theme-plantage .pl-crate-name { fill: var(--textOnWood); font-family: var(--titleFont), sans-serif; font-size: var(--crate-name-size, 30px); font-weight: 700; }
-.theme-plantage .pl-tuft { fill: color-mix(in srgb, var(--leafDark) 80%, var(--soilDark)); }
-.theme-plantage .pl-birds { fill: none; stroke: var(--textOnWood); stroke-width: var(--bird-line, 3); stroke-linecap: round; animation: plantage-fly var(--birdEvery) linear infinite; }
+.theme-plantage .pl-crate-body { fill: var(--crateBodyFill); stroke: var(--crateBodyStroke); stroke-width: var(--crateBodyStrokeWidth); }
+.theme-plantage .pl-crate-slats { fill: none; stroke: var(--crateSlatsStroke); stroke-width: var(--crateSlatsStrokeWidth); }
+.theme-plantage .pl-crate-grain { fill: none; stroke: var(--crateGrainStroke); stroke-width: var(--crateGrainStrokeWidth); opacity: var(--crateGrainOpacity); }
+.theme-plantage .pl-crate-name { fill: var(--crateNameFill); font-family: var(--crateNameFont), sans-serif; font-size: var(--crateNameFontSize); font-weight: var(--crateNameFontWeight); color: var(--crateNameColor); }
+.theme-plantage .pl-tuft { fill: color-mix(in srgb, var(--tuftFill) var(--tuftFill3), var(--tuftFill2)); }
+.theme-plantage .pl-birds { fill: none; stroke: var(--birdsStroke); stroke-width: var(--birdsStrokeWidth); stroke-linecap: round; animation: plantage-fly var(--birdEvery) linear infinite; }
 /* Night: a blue veil over everything; evening a warm one */
-.theme-plantage .pl-night { fill: var(--skyNightTop); opacity: 0; pointer-events: none; }
-.theme-plantage .time-nacht .pl-night { opacity: var(--night-veil, 0.4); }
-.theme-plantage .time-abend .pl-night { fill: var(--mangoBlush); opacity: var(--evening-veil, 0.08); }
+.theme-plantage .pl-night { fill: var(--nightFill); opacity: 0; pointer-events: none; }
+.theme-plantage .time-nacht .pl-night { opacity: var(--timeNachtNightOpacity); }
+.theme-plantage .time-abend .pl-night { fill: var(--timeAbendNightFill); opacity: var(--timeAbendNightOpacity); }
 
 /* --- Starting, BRB, Ending ------------------------------------------------------------------------------------ */
 
 /* Card: frosted harvest paper over the field, soft lifted shadow, a light line on top; text in dark wood brown */
 .theme-plantage .pl-card {
-  background: linear-gradient(180deg, color-mix(in srgb, var(--paper) 94%, transparent), color-mix(in srgb, var(--paper) 82%, transparent));
-  backdrop-filter: blur(var(--card-blur, 18px)) saturate(1.15);
-  border: var(--card-line, 2px) solid color-mix(in srgb, var(--paper) 55%, var(--wood));
-  border-radius: calc(var(--radius) * 2);
+  background: linear-gradient(calc(var(--cardBackground3) * 1deg), color-mix(in srgb, var(--cardBackground) var(--cardBackground4), transparent), color-mix(in srgb, var(--cardBackground2) var(--cardBackground5), transparent));
+  backdrop-filter: blur(var(--cardBackdropFilter)) saturate(var(--cardBackdropFilter2));
+  border: var(--cardBorder3) solid color-mix(in srgb, var(--cardBorder) var(--cardBorder4), var(--cardBorder2));
+  border-radius: calc(var(--radius) * var(--cardBorderRadius));
   box-shadow:
-    0 var(--card-lift, 34px) var(--card-soft, 70px) calc(-1 * var(--card-spread, 22px)) color-mix(in srgb, var(--soilDark) calc(var(--shadowStrength) * 150%), transparent),
-    inset 0 var(--card-shine, 2px) 0 color-mix(in srgb, var(--paper) 90%, transparent);
-  color: var(--textOnWood);
+    0 var(--cardBoxShadow3) var(--cardBoxShadow4) calc(-1 * var(--cardBoxShadow5)) color-mix(in srgb, var(--cardBoxShadow) calc(var(--shadowStrength) * var(--cardBoxShadow6)), transparent),
+    inset 0 var(--cardBoxShadow7) 0 color-mix(in srgb, var(--cardBoxShadow2) var(--cardBoxShadow8), transparent);
+  color: var(--cardColor);
 }
 
 /* Overline as a crate label: a leaf-green pill with a small mango dot */
 .theme-plantage .pl-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: var(--label-gap, 12px);
-  padding: var(--label-padding, 8px 22px 8px 16px);
-  border-radius: var(--pill, 999px);
-  background: color-mix(in srgb, var(--accent2) 55%, var(--leafDark));
-  color: var(--paper);
-  font-size: var(--eyebrow-size, 22px);
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  gap: var(--eyebrowGap);
+  padding: var(--eyebrowPadding) var(--eyebrowPadding2) var(--eyebrowPadding3) var(--eyebrowPadding4);
+  border-radius: var(--eyebrowBorderRadius);
+  background: color-mix(in srgb, var(--eyebrowBackground) var(--eyebrowBackground3), var(--eyebrowBackground2));
+  color: var(--eyebrowColor);
+  font-size: var(--eyebrowFontSize);
+  font-weight: var(--eyebrowFontWeight);
+  letter-spacing: calc(var(--eyebrowLetterSpacing) * 1em);
   text-transform: uppercase;
+  font-family: var(--eyebrowFont), system-ui, sans-serif;
 }
-.theme-plantage .pl-eyebrow::before { content: ""; width: var(--label-dot, 14px); aspect-ratio: 1; border-radius: 50% 50% 50% 0; background: radial-gradient(circle at 35% 35%, var(--mango), var(--mangoBlush)); rotate: -45deg; }
+.theme-plantage .pl-eyebrow::before { content: ""; width: var(--eyebrowBeforeWidth); aspect-ratio: var(--eyebrowBeforeAspectRatio); border-radius: 50% 50% 50% 0; background: radial-gradient(circle at var(--eyebrowBeforeBackground3) var(--eyebrowBeforeBackground4), var(--eyebrowBeforeBackground), var(--eyebrowBeforeBackground2)); rotate: calc(var(--eyebrowBeforeRotate) * 1deg); }
 .theme-plantage .pl-title {
   margin: 0;
-  font-family: var(--titleFont), sans-serif;
-  font-size: var(--titleSize);
-  font-weight: 700;
-  line-height: 1.02;
-  letter-spacing: -0.015em;
-  color: var(--textOnWood);
+  font-family: var(--titleFont2), sans-serif;
+  font-size: calc(var(--titleSize) * var(--titleFontSize) / 100);
+  font-weight: var(--titleFontWeight);
+  line-height: var(--titleLineHeight);
+  letter-spacing: calc(var(--titleLetterSpacing) * 1em);
+  color: var(--titleColor);
 }
 
-.theme-plantage .pl-progress-ast .part-main { fill: var(--mango); }
-.theme-plantage .pl-progress-ast .part-detail { fill: var(--leaf); }
-.theme-plantage .pl-progress-ast { position: relative; width: var(--progress-width, 520px); height: var(--branch, 8px); margin: var(--branch-room, 22px) 0 var(--branch-drop, 34px); border-radius: var(--pill, 999px); background: linear-gradient(90deg, var(--trunk) calc(var(--part) * 100%), color-mix(in srgb, var(--trunk) 25%, transparent) 0); }
-.theme-plantage .pl-progress-ast span { position: absolute; top: 50%; left: calc(var(--part) * 100%); width: var(--branch-mango, 44px); translate: -50% 0; transition: left var(--tick, 1s) linear; }
+.theme-plantage .pl-progress-ast .part-main { fill: var(--progressAstPartMainFill); }
+.theme-plantage .pl-progress-ast .part-detail { fill: var(--progressAstPartDetailFill); }
+.theme-plantage .pl-progress-ast { position: relative; width: var(--progressAstWidth); height: var(--progressAstHeight); margin: var(--progressAstMargin) 0 var(--progressAstMargin2); border-radius: var(--progressAstBorderRadius); background: linear-gradient(calc(var(--progressAstBackground3) * 1deg), var(--progressAstBackground) calc(var(--part) * 100%), color-mix(in srgb, var(--progressAstBackground2) var(--progressAstBackground4), transparent) 0); }
+.theme-plantage .pl-progress-ast span { position: absolute; top: var(--progressAstSpanTop); left: calc(var(--part) * 100%); width: var(--progressAstSpanWidth); translate: var(--progressAstSpanTranslate) 0; transition: left var(--progressAstSpanTransition) linear; }
 
-.theme-plantage .pl-plane { position: absolute; top: var(--plane-top, 8%); left: 0; display: flex; align-items: center; white-space: nowrap; animation: plantage-plane var(--tickerSpeed) linear infinite; }
-.theme-plantage .pl-plane .pl-shape { width: var(--plane-size, 7vw); }
-.theme-plantage .pl-plane .pl-shape { filter: drop-shadow(0 var(--icon-lift, 10px) var(--icon-soft, 10px) color-mix(in srgb, var(--soilDark) 30%, transparent)); }
-.theme-plantage .pl-plane .part-main { fill: var(--accent); }
-.theme-plantage .pl-plane .part-detail { fill: var(--woodDark); }
+.theme-plantage .pl-plane { position: absolute; top: var(--planeTop); left: 0; display: flex; align-items: center; white-space: nowrap; animation: plantage-plane calc(var(--tickerSpeed) * var(--planeAnimation) / 100) linear infinite; }
+.theme-plantage .pl-plane .pl-shape { width: calc(var(--planeShapeWidth) * 1vw); }
+.theme-plantage .pl-plane .pl-shape { filter: drop-shadow(0 var(--planeShapeFilter2) var(--planeShapeFilter3) color-mix(in srgb, var(--planeShapeFilter) var(--planeShapeFilter4), transparent)); }
+.theme-plantage .pl-plane .part-main { fill: var(--planePartMainFill); }
+.theme-plantage .pl-plane .part-detail { fill: var(--planePartDetailFill); }
 /* Cloth banner behind the plane: lit from above, a leaf-green hem, a thin rope to the tail */
 .theme-plantage .pl-banner {
   position: relative;
-  margin-right: var(--banner-rope, 2vw);
-  padding: var(--banner-padding, 0.3em 1em);
-  border-radius: var(--banner-round, 6px);
-  background: linear-gradient(180deg, var(--paper), color-mix(in srgb, var(--paper) 85%, var(--wood)));
-  border-bottom: var(--banner-hem, 6px) solid color-mix(in srgb, var(--accent2) 75%, var(--leafDark));
-  box-shadow: var(--lift);
-  color: var(--textOnWood);
-  font-size: var(--banner-size, 2.2vw);
-  font-weight: 700;
+  margin-right: calc(var(--bannerMarginRight) * 1vw);
+  padding: calc(var(--bannerPadding) * 1em) calc(var(--bannerPadding2) * 1em);
+  border-radius: var(--bannerBorderRadius);
+  background: linear-gradient(calc(var(--bannerBackground4) * 1deg), var(--bannerBackground), color-mix(in srgb, var(--bannerBackground2) var(--bannerBackground5), var(--bannerBackground3)));
+  border-bottom: var(--bannerBorderBottom3) solid color-mix(in srgb, var(--bannerBorderBottom) var(--bannerBorderBottom4), var(--bannerBorderBottom2));
+  box-shadow: 0 var(--bannerBoxShadow2) var(--bannerBoxShadow3) calc(-1 * var(--bannerBoxShadow4)) color-mix(in srgb, var(--bannerBoxShadow) calc(var(--shadowStrength) * var(--bannerBoxShadow5)), transparent);
+  color: var(--bannerColor);
+  font-size: calc(var(--bannerFontSize) * 1vw);
+  font-weight: var(--bannerFontWeight);
+  font-family: var(--bannerFont), system-ui, sans-serif;
 }
-.theme-plantage .pl-banner::after { content: ""; position: absolute; left: 100%; top: 50%; width: var(--banner-rope, 2vw); height: var(--banner-line, 2px); background: var(--woodDark); }
-.theme-plantage .pl-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--ticker-padding, 12px 0); overflow: hidden; white-space: nowrap; font-size: var(--ticker-size, 2vw); border-width: var(--ticker-edge, 2px) 0 0; border-radius: 0; }
-.theme-plantage .pl-ticker span { display: inline-block; padding-left: 100%; animation: plantage-marquee var(--tickerSpeed) linear infinite; }
+.theme-plantage .pl-banner::after { content: ""; position: absolute; left: 100%; top: var(--bannerAfterTop); width: calc(var(--bannerAfterWidth) * 1vw); height: var(--bannerAfterHeight); background: var(--bannerAfterBackground); }
+.theme-plantage .pl-ticker { position: absolute; left: 0; right: 0; bottom: 0; padding: var(--tickerPadding) 0; overflow: hidden; white-space: nowrap; font-size: calc(var(--tickerFontSize) * 1vw); border-width: var(--tickerBorderWidth) 0 0; border-radius: 0; color: var(--tickerColor); font-family: var(--tickerFont), system-ui, sans-serif; }
+.theme-plantage .pl-ticker span { display: inline-block; padding-left: 100%; animation: plantage-marquee calc(var(--tickerSpeed) * var(--tickerSpanAnimation) / 100) linear infinite; }
 
 /* --- Starting as the PixiJS world (scenes/Starting.tsx): frosted cards over the world, GSAP moves them ------------- */
-.theme-plantage .pl-starting { background: var(--skyMorningBottom); }
-.theme-plantage .pl-st-stage { color: var(--textOnWood); }
+.theme-plantage .pl-starting { background: var(--startingBackground); }
+.theme-plantage .pl-st-stage { color: var(--stStageColor); }
 /* Milk glass: blur of the world behind, thin light rim, light edge on top, soft lift */
 .theme-plantage .pl-frost {
   position: absolute;
   box-sizing: border-box;
-  background: color-mix(in srgb, var(--paper) 62%, transparent);
-  backdrop-filter: blur(var(--frost-blur, 14px)) saturate(1.2);
-  border: var(--frost-rim, 1.5px) solid color-mix(in srgb, white 75%, transparent);
-  border-radius: calc(var(--radius) * 1.9);
+  background: color-mix(in srgb, var(--frostBackground) var(--frostBackground2), transparent);
+  backdrop-filter: blur(var(--frostBackdropFilter)) saturate(var(--frostBackdropFilter2));
+  border: var(--frostBorder) solid color-mix(in srgb, white var(--frostBorder2), transparent);
+  border-radius: calc(var(--radius) * var(--frostBorderRadius));
   box-shadow:
-    inset 0 var(--frost-edge, 2px) 0 color-mix(in srgb, white 90%, transparent),
-    0 var(--frost-lift, 24px) var(--frost-soft, 48px) color-mix(in srgb, var(--textOnWood) calc(var(--shadowStrength) * 80%), transparent),
-    0 var(--frost-near, 6px) var(--frost-near-soft, 14px) color-mix(in srgb, var(--textOnWood) calc(var(--shadowStrength) * 50%), transparent);
+    inset 0 var(--frostBoxShadow3) 0 color-mix(in srgb, white var(--frostBoxShadow4), transparent),
+    0 var(--frostBoxShadow5) var(--frostBoxShadow6) color-mix(in srgb, var(--frostBoxShadow) calc(var(--shadowStrength) * var(--frostBoxShadow7)), transparent),
+    0 var(--frostBoxShadow8) var(--frostBoxShadow9) color-mix(in srgb, var(--frostBoxShadow2) calc(var(--shadowStrength) * var(--frostBoxShadow10)), transparent);
   text-align: center;
 }
-.theme-plantage .pl-st-card { left: 50%; top: var(--card-top, 150px); width: var(--signWidth); margin-left: calc(var(--signWidth) / -2); padding: var(--card-padding, 34px 40px 30px); }
+.theme-plantage .pl-st-card { left: var(--stCardLeft); top: var(--stCardTop); width: calc(var(--signWidth) * var(--stCardWidth) / 100); margin-left: calc(calc(var(--signWidth) * var(--stCardMarginLeft) / 100) / var(--stCardMarginLeft2)); padding: var(--stCardPadding) var(--stCardPadding2) var(--stCardPadding3); }
 .theme-plantage .pl-st-pill {
   display: inline-flex;
   align-items: center;
-  gap: var(--pill-gap, 12px);
-  padding: var(--pill-padding, 8px 22px 8px 16px);
-  border-radius: var(--pill, 999px);
-  background: var(--leaf);
-  color: var(--textColor);
-  font-weight: 800;
-  font-size: var(--pill-size, 22px);
-  letter-spacing: var(--pill-spacing, 4px);
+  gap: var(--stPillGap);
+  padding: var(--stPillPadding) var(--stPillPadding2) var(--stPillPadding3) var(--stPillPadding4);
+  border-radius: var(--stPillBorderRadius);
+  background: var(--stPillBackground);
+  color: var(--stPillColor);
+  font-weight: var(--stPillFontWeight);
+  font-size: var(--stPillFontSize);
+  letter-spacing: var(--stPillLetterSpacing);
   text-transform: uppercase;
-  box-shadow: 0 var(--pill-lift, 6px) var(--pill-soft, 14px) color-mix(in srgb, var(--leafDark) 35%, transparent), inset 0 var(--pill-edge, 2px) 0 color-mix(in srgb, white 25%, transparent);
+  box-shadow: 0 var(--stPillBoxShadow2) var(--stPillBoxShadow3) color-mix(in srgb, var(--stPillBoxShadow) var(--stPillBoxShadow4), transparent), inset 0 var(--stPillBoxShadow5) 0 color-mix(in srgb, white var(--stPillBoxShadow6), transparent);
+  font-family: var(--stPillFont), system-ui, sans-serif;
 }
-.theme-plantage .pl-st-pill i { width: var(--pill-dot, 16px); height: var(--pill-dot, 16px); border-radius: 50% 50% 50% 0; rotate: -45deg; background: radial-gradient(circle at 35% 30%, var(--paper), var(--mango) 45%, var(--mangoBlush)); }
-.theme-plantage .pl-st-title { margin: var(--title-gap, 18px 0 6px); font-family: var(--titleFont), sans-serif; font-size: var(--titleSize); font-weight: 700; line-height: 1.02; text-shadow: 0 var(--title-lift, 3px) 0 color-mix(in srgb, white 60%, transparent); }
-.theme-plantage .pl-st-note { margin: 0; font-size: var(--note-size, 34px); font-weight: 500; color: color-mix(in srgb, var(--textOnWood) 75%, var(--wood)); }
-.theme-plantage .pl-st-count { left: 50%; top: var(--count-top, 640px); width: var(--count-width, 520px); margin-left: calc(var(--count-width, 520px) / -2); padding: var(--count-padding, 18px 30px 22px); }
-.theme-plantage .pl-st-count b { display: block; font-size: var(--count-size, 96px); font-weight: 800; line-height: 1; letter-spacing: var(--count-spacing, 2px); }
+.theme-plantage .pl-st-pill i { width: var(--stPillIWidth); height: var(--stPillIHeight); border-radius: 50% 50% 50% 0; rotate: calc(var(--stPillIRotate) * 1deg); background: radial-gradient(circle at var(--stPillIBackground4) var(--stPillIBackground5), var(--stPillIBackground), var(--stPillIBackground2) var(--stPillIBackground6), var(--stPillIBackground3)); }
+.theme-plantage .pl-st-title { margin: var(--stTitleMargin) 0 var(--stTitleMargin2); font-family: var(--stTitleFont), sans-serif; font-size: calc(var(--titleSize) * var(--stTitleFontSize) / 100); font-weight: var(--stTitleFontWeight); line-height: var(--stTitleLineHeight); text-shadow: 0 var(--stTitleTextShadow) 0 color-mix(in srgb, white var(--stTitleTextShadow2), transparent); color: var(--stTitleColor); }
+.theme-plantage .pl-st-note { margin: 0; font-size: var(--stNoteFontSize); font-weight: var(--stNoteFontWeight); color: color-mix(in srgb, var(--stNoteColor) var(--stNoteColor3), var(--stNoteColor2)); font-family: var(--stNoteFont), system-ui, sans-serif; }
+.theme-plantage .pl-st-count { left: var(--stCountLeft); top: var(--stCountTop); width: var(--stCountWidth); margin-left: calc(var(--stCountMarginLeft) / var(--stCountMarginLeft2)); padding: var(--stCountPadding) var(--stCountPadding2) var(--stCountPadding3); }
+.theme-plantage .pl-st-count b { display: block; font-size: var(--stCountBFontSize); font-weight: var(--stCountBFontWeight); line-height: var(--stCountBLineHeight); letter-spacing: var(--stCountBLetterSpacing); color: var(--stCountBColor); font-family: var(--stCountBFont), system-ui, sans-serif; }
 .theme-plantage .pl-st-count .pl-progress-ast { margin-inline: auto; width: 100%; }
 /* BRB and Ending: one line of text (break time, next stream), the card grows with it */
-.theme-plantage .pl-brb .pl-st-count, .theme-plantage .pl-ending .pl-st-count { width: auto; min-width: var(--count-width, 520px); margin-left: 0; translate: -50% 0; padding-inline: var(--count-side, 44px); white-space: nowrap; }
-.theme-plantage .pl-brb .pl-st-count b, .theme-plantage .pl-ending .pl-st-count b { font-size: var(--next-size, 64px); }
-.theme-plantage .pl-st-count.empty, .theme-plantage .pl-st-note.empty { visibility: hidden; }
-.theme-plantage .pl-st-line { left: 50%; top: var(--line-top, 900px); translate: -50% 0; padding: var(--line-padding, 12px 34px); border-radius: var(--pill, 999px); font-size: var(--line-size, 30px); font-style: italic; font-weight: 500; white-space: nowrap; }
+.theme-plantage .pl-brb .pl-st-count { width: auto; min-width: var(--brbStCountMinWidth); margin-left: 0; translate: var(--brbStCountTranslate) 0; padding-inline: var(--brbStCountPaddingInline); white-space: nowrap; }
+.theme-plantage .pl-ending .pl-st-count { width: auto; min-width: var(--endingStCountMinWidth); margin-left: 0; translate: var(--endingStCountTranslate) 0; padding-inline: var(--endingStCountPaddingInline); white-space: nowrap; }
+.theme-plantage .pl-brb .pl-st-count b { font-size: var(--brbStCountBFontSize); color: var(--brbStCountBColor); font-family: var(--brbStCountBFont), system-ui, sans-serif; }
+.theme-plantage .pl-ending .pl-st-count b { font-size: var(--endingStCountBFontSize); color: var(--endingStCountBColor); font-family: var(--endingStCountBFont), system-ui, sans-serif; }
+.theme-plantage .pl-st-count.empty { visibility: hidden; }
+.theme-plantage .pl-st-note.empty { visibility: hidden; }
+.theme-plantage .pl-st-line { left: var(--stLineLeft); top: var(--stLineTop); translate: var(--stLineTranslate) 0; padding: var(--stLinePadding) var(--stLinePadding2); border-radius: var(--stLineBorderRadius); font-size: var(--stLineFontSize); font-style: italic; font-weight: var(--stLineFontWeight); white-space: nowrap; color: var(--stLineColor); font-family: var(--stLineFont), system-ui, sans-serif; }
 .theme-plantage .pl-st-line.empty { visibility: hidden; }
-.theme-plantage .pl-st-clock { right: var(--clock-right, 50px); top: var(--clock-top, 40px); padding: var(--clock-padding, 10px 26px); border-radius: var(--pill, 999px); font-size: var(--clock-size, 30px); font-weight: 700; }
+.theme-plantage .pl-st-clock { right: var(--stClockRight); top: var(--stClockTop); padding: var(--stClockPadding) var(--stClockPadding2); border-radius: var(--stClockBorderRadius); font-size: var(--stClockFontSize); font-weight: var(--stClockFontWeight); color: var(--stClockColor); font-family: var(--stClockFont), system-ui, sans-serif; }
 /* Woven basket: mangos drop in with a bounce when their part of the waiting time is over */
 .theme-plantage .pl-basket {
   position: relative;
-  margin: var(--basket-gap, 12px) auto 0;
-  width: var(--basket-width, 380px);
-  height: var(--basket-height, 52px);
-  border-radius: var(--basket-round, 10px 10px 26px 26px);
-  background: repeating-linear-gradient(90deg, var(--wood) 0 var(--basket-stave, 14px), var(--woodDark) var(--basket-stave, 14px) var(--basket-weave, 16px)), linear-gradient(var(--wood), var(--woodDark));
+  margin: var(--basketMargin) auto 0;
+  width: var(--basketWidth);
+  height: var(--basketHeight);
+  border-radius: var(--basketBorderRadius) var(--basketBorderRadius2) var(--basketBorderRadius3) var(--basketBorderRadius4);
+  background: repeating-linear-gradient(calc(var(--basketBackground5) * 1deg), var(--basketBackground) 0 var(--basketBackground6), var(--basketBackground2) var(--basketBackground7) var(--basketBackground8)), linear-gradient(var(--basketBackground3), var(--basketBackground4));
   background-blend-mode: multiply;
-  box-shadow: inset 0 calc(-1 * var(--basket-rim, 8px)) 0 color-mix(in srgb, black 18%, transparent), inset 0 var(--basket-shine, 3px) 0 color-mix(in srgb, white 30%, transparent), 0 var(--basket-lift, 8px) var(--basket-soft, 14px) color-mix(in srgb, var(--textOnWood) 25%, transparent);
+  box-shadow: inset 0 calc(-1 * var(--basketBoxShadow2)) 0 color-mix(in srgb, black var(--basketBoxShadow3), transparent), inset 0 var(--basketBoxShadow4) 0 color-mix(in srgb, white var(--basketBoxShadow5), transparent), 0 var(--basketBoxShadow6) var(--basketBoxShadow7) color-mix(in srgb, var(--basketBoxShadow) var(--basketBoxShadow8), transparent);
 }
 .theme-plantage .pl-basket i {
   position: absolute;
-  bottom: var(--basket-mango-bottom, 30px);
-  left: calc(var(--basket-edge, 24px) + var(--slot) * (var(--basket-width, 380px) - 2 * var(--basket-edge, 24px) - var(--basket-mango, 40px)) / max(1, var(--mangos) - 1));
-  width: var(--basket-mango, 40px);
-  height: calc(var(--basket-mango, 40px) * 0.85);
-  border-radius: 50% 50% 46% 46%;
-  background: radial-gradient(circle at 34% 30%, var(--paper) 0 8%, var(--mango) 28%, var(--mangoBlush) 100%);
-  box-shadow: 0 var(--mango-lift, 4px) var(--mango-soft, 6px) color-mix(in srgb, var(--textOnWood) 30%, transparent);
+  bottom: var(--basketIBottom);
+  left: calc(var(--basketILeft) + var(--slot) * (var(--basketILeft2) - var(--basketILeft3) * var(--basketILeft4) - var(--basketILeft5)) / max(var(--basketILeft6), var(--mangos) - var(--basketILeft7)));
+  width: var(--basketIWidth);
+  height: calc(var(--basketIHeight) * var(--basketIHeight2));
+  border-radius: 50% 50% var(--basketIBorderRadius) var(--basketIBorderRadius2);
+  background: radial-gradient(circle at var(--basketIBackground4) var(--basketIBackground5), var(--basketIBackground) 0 var(--basketIBackground6), var(--basketIBackground2) var(--basketIBackground7), var(--basketIBackground3) 100%);
+  box-shadow: 0 var(--basketIBoxShadow2) var(--basketIBoxShadow3) color-mix(in srgb, var(--basketIBoxShadow) var(--basketIBoxShadow4), transparent);
   visibility: hidden;
 }
-.theme-plantage .pl-basket i.full { visibility: visible; animation: plantage-plop var(--plop, 550ms) cubic-bezier(0.3, 1.6, 0.5, 1) both; }
-@keyframes plantage-plop { from { translate: 0 calc(-1 * var(--plop-height, 260px)); opacity: 0; } to { translate: 0 0; opacity: 1; } }
+.theme-plantage .pl-basket i.full { visibility: visible; animation: plantage-plop var(--basketIFullAnimation) cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+@keyframes plantage-plop { from { translate: 0 calc(-1 * var(--kfPlopFromTranslate)); opacity: 0; } to { translate: 0 0; opacity: var(--kfPlopToOpacity); } }
 
 /* --- Alerts ------------------------------------------------------------------------------------------------- */
 /* The alert (scenes/Alerts.tsx): paper medallion with its ring, the frosted card growing out of it, the branch as the
    remaining time, the PixiJS canvas of mango, juice and leaves around the medallion; leaving runs in the leave window of
    the core (the card shrinks back, the medallion pops out) */
-.theme-plantage .pl-alert { position: relative; width: calc(var(--card-left) + var(--alertWidth)); min-height: calc(var(--medal) + var(--alert-room, 40px)); scale: var(--alertScale); transform-origin: top center; color: var(--textOnWood); }
+.theme-plantage .pl-alert { position: relative; width: calc(var(--card-left) + calc(var(--alertWidth) * var(--alertWidth2) / 100)); min-height: calc(var(--medal) + var(--alertMinHeight)); scale: var(--alertScale); transform-origin: top center; color: var(--alertColor); }
 .theme-plantage .pl-medal {
   position: absolute;
   left: 0;
@@ -251,64 +252,64 @@
   width: var(--medal);
   height: var(--medal);
   border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, var(--paper) 0 40%, color-mix(in srgb, var(--paper) 80%, var(--wood)) 72%, color-mix(in srgb, var(--paper) 60%, var(--wood)) 100%);
-  box-shadow: 0 0 0 var(--ring, 12px) var(--wood), 0 0 0 var(--ring-outer, 16px) var(--woodDark), inset 0 var(--medal-shine, 6px) 0 color-mix(in srgb, white 80%, transparent), inset 0 calc(-1 * var(--medal-dip, 10px)) var(--medal-dip-soft, 18px) color-mix(in srgb, var(--woodDark) 25%, transparent), 0 var(--medal-lift, 26px) var(--medal-soft, 44px) color-mix(in srgb, black 40%, transparent);
+  background: radial-gradient(circle at var(--medalBackground6) var(--medalBackground7), var(--medalBackground) 0 var(--medalBackground8), color-mix(in srgb, var(--medalBackground2) var(--medalBackground9), var(--medalBackground3)) var(--medalBackground10), color-mix(in srgb, var(--medalBackground4) var(--medalBackground11), var(--medalBackground5)) 100%);
+  box-shadow: 0 0 0 var(--medalBoxShadow4) var(--medalBoxShadow), 0 0 0 var(--medalBoxShadow5) var(--medalBoxShadow2), inset 0 var(--medalBoxShadow6) 0 color-mix(in srgb, white var(--medalBoxShadow7), transparent), inset 0 calc(-1 * var(--medalBoxShadow8)) var(--medalBoxShadow9) color-mix(in srgb, var(--medalBoxShadow3) var(--medalBoxShadow10), transparent), 0 var(--medalBoxShadow11) var(--medalBoxShadow12) color-mix(in srgb, black var(--medalBoxShadow13), transparent);
 }
-.theme-plantage .pl-medal-zettel { box-shadow: 0 0 0 var(--ring, 12px) var(--paper), 0 0 0 var(--ring-outer, 16px) var(--wood), 0 var(--medal-lift, 26px) var(--medal-soft, 44px) color-mix(in srgb, black 40%, transparent); }
-.theme-plantage .pl-medal-korb { box-shadow: 0 0 0 var(--ring, 12px) var(--wood), 0 0 0 var(--ring-outer, 16px) var(--woodDark), 0 0 0 var(--ring-weave, 6px) color-mix(in srgb, var(--woodDark) 60%, transparent) inset, 0 var(--medal-lift, 26px) var(--medal-soft, 44px) color-mix(in srgb, black 40%, transparent); }
-.theme-plantage .pl-medal .pl-shape { width: 55%; }
-.theme-plantage .pl-medal .part-main { fill: var(--mango); }
-.theme-plantage .pl-medal .part-detail { fill: var(--leaf); }
+.theme-plantage .pl-medal-zettel { box-shadow: 0 0 0 var(--medalZettelBoxShadow3) var(--medalZettelBoxShadow), 0 0 0 var(--medalZettelBoxShadow4) var(--medalZettelBoxShadow2), 0 var(--medalZettelBoxShadow5) var(--medalZettelBoxShadow6) color-mix(in srgb, black var(--medalZettelBoxShadow7), transparent); }
+.theme-plantage .pl-medal-korb { box-shadow: 0 0 0 var(--medalKorbBoxShadow4) var(--medalKorbBoxShadow), 0 0 0 var(--medalKorbBoxShadow5) var(--medalKorbBoxShadow2), 0 0 0 var(--medalKorbBoxShadow6) color-mix(in srgb, var(--medalKorbBoxShadow3) var(--medalKorbBoxShadow7), transparent) inset, 0 var(--medalKorbBoxShadow8) var(--medalKorbBoxShadow9) color-mix(in srgb, black var(--medalKorbBoxShadow10), transparent); }
+.theme-plantage .pl-medal .pl-shape { width: var(--medalShapeWidth); }
+.theme-plantage .pl-medal .part-main { fill: var(--medalPartMainFill); }
+.theme-plantage .pl-medal .part-detail { fill: var(--medalPartDetailFill); }
 .theme-plantage .pl-alert-card {
   left: var(--card-left);
-  top: var(--card-top, 18px);
-  width: var(--alertWidth);
-  min-height: var(--card-height, 240px);
+  top: var(--alertCardTop);
+  width: calc(var(--alertWidth) * var(--alertCardWidth) / 100);
+  min-height: var(--alertCardMinHeight);
   display: grid;
   align-content: start;
   justify-items: start;
-  gap: var(--alert-text-gap, 2px);
-  padding: var(--alert-card-top, 26px) var(--alert-card-side, 44px) var(--alert-card-bottom, 24px) var(--text-pad);
-  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  gap: var(--alertCardGap);
+  padding: var(--alertCardPadding) var(--alertCardPadding2) var(--alertCardPadding3) var(--text-pad);
+  background: color-mix(in srgb, var(--alertCardBackground) var(--alertCardBackground2), transparent);
   text-align: left;
 }
-.theme-plantage .pl-alert-card .pl-st-pill { font-size: var(--alert-pill-size, 18px); letter-spacing: var(--alert-pill-spacing, 3px); padding: var(--alert-pill-padding, 6px 18px 6px 12px); }
-.theme-plantage .pl-alert-name { margin-top: var(--name-gap, 4px); font-family: var(--titleFont), sans-serif; font-size: var(--alertNameSize); line-height: 1.05; color: var(--accent); text-shadow: 0 var(--name-lift, 3px) 0 color-mix(in srgb, white 70%, transparent); overflow-wrap: anywhere; }
-.theme-plantage .pl-alert-line { font-size: var(--alert-line-size, 26px); font-weight: 600; overflow-wrap: anywhere; }
-.theme-plantage .pl-quote { font-size: var(--alert-quote-size, 22px); font-weight: 500; color: color-mix(in srgb, var(--textOnWood) 70%, var(--wood)); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
+.theme-plantage .pl-alert-card .pl-st-pill { font-size: var(--alertCardStPillFontSize); letter-spacing: var(--alertCardStPillLetterSpacing); padding: var(--alertCardStPillPadding) var(--alertCardStPillPadding2) var(--alertCardStPillPadding3) var(--alertCardStPillPadding4); font-family: var(--alertCardStPillFont), system-ui, sans-serif; }
+.theme-plantage .pl-alert-name { margin-top: var(--alertNameMarginTop); font-family: var(--alertNameFont), sans-serif; font-size: var(--alertNameSize); line-height: var(--alertNameLineHeight); color: var(--alertNameColor); text-shadow: 0 var(--alertNameTextShadow) 0 color-mix(in srgb, white var(--alertNameTextShadow2), transparent); overflow-wrap: anywhere; }
+.theme-plantage .pl-alert-line { font-size: var(--alertLineFontSize); font-weight: var(--alertLineFontWeight); overflow-wrap: anywhere; color: var(--alertLineColor); font-family: var(--alertLineFont), system-ui, sans-serif; }
+.theme-plantage .pl-quote { font-size: var(--quoteFontSize); font-weight: var(--quoteFontWeight); color: color-mix(in srgb, var(--quoteColor) var(--quoteColor3), var(--quoteColor2)); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--quoteWebkitLineClamp); overflow: hidden; font-family: var(--quoteFont), system-ui, sans-serif; }
 .theme-plantage .pl-twig {
   position: absolute;
   left: calc(var(--card-left) + var(--text-pad));
-  top: calc(var(--card-top, 18px) + var(--card-height, 240px) + var(--twig-gap, 14px));
-  width: var(--twig-width, 520px);
-  height: var(--twig, 14px);
-  border-radius: var(--twig-round, 8px);
-  background: linear-gradient(var(--trunk), var(--woodDark));
-  box-shadow: inset 0 var(--twig-shine, 2px) 0 color-mix(in srgb, white 25%, transparent), 0 var(--twig-lift, 6px) var(--twig-soft, 10px) color-mix(in srgb, black 30%, transparent);
+  top: calc(var(--twigTop) + var(--twigTop2) + var(--twigTop3));
+  width: var(--twigWidth);
+  height: var(--twigHeight);
+  border-radius: var(--twigBorderRadius);
+  background: linear-gradient(var(--twigBackground), var(--twigBackground2));
+  box-shadow: inset 0 var(--twigBoxShadow) 0 color-mix(in srgb, white var(--twigBoxShadow2), transparent), 0 var(--twigBoxShadow3) var(--twigBoxShadow4) color-mix(in srgb, black var(--twigBoxShadow5), transparent);
   transform-origin: left center;
   animation: plantage-twig var(--life) linear both;
 }
 .theme-plantage .pl-twig i {
   position: absolute;
-  top: calc(-1 * var(--twig, 14px));
-  left: calc((var(--leaf) + 0.5) / var(--leaves) * 100%);
-  width: var(--twig-leaf, 26px);
-  height: var(--twig, 14px);
+  top: calc(-1 * var(--twigITop));
+  left: calc((var(--leaf) + var(--twigILeft)) / var(--leaves) * 100%);
+  width: var(--twigIWidth);
+  height: var(--twigIHeight);
   border-radius: 0 100% 0 100%;
-  background: linear-gradient(135deg, var(--accent2), var(--leaf));
-  animation: plantage-twig-leaf var(--twig-leaf-fall, 600ms) ease-in both;
-  animation-delay: calc(var(--life) * (0.3 + (var(--leaves) - var(--leaf)) * 0.14));
+  background: linear-gradient(calc(var(--twigIBackground2) * 1deg), var(--twigIBackground), var(--leaf));
+  animation: plantage-twig-leaf var(--twigIAnimation) ease-in both;
+  animation-delay: calc(var(--life) * (var(--twigIAnimationDelay) + (var(--leaves) - var(--leaf)) * var(--twigIAnimationDelay2)));
 }
-.theme-plantage .pl-twig i:nth-child(even) { scale: -1 1; }
-.theme-plantage .pl-alert-burst-box { position: absolute; left: calc(var(--medal) / 2 - var(--burst-x)); top: calc(var(--medal) / 2 - var(--burst-y)); pointer-events: none; z-index: 2; }
-.theme-plantage .pl-alert.leaving .pl-alert-card { animation: plantage-card-close var(--alert-close, 400ms) ease-in forwards; }
-.theme-plantage .pl-alert.leaving .pl-medal { animation: plantage-medal-out var(--medal-out, 350ms) cubic-bezier(0.6, -0.6, 0.7, 0) var(--medal-out-delay, 400ms) forwards; }
-.theme-plantage .pl-alert.leaving .pl-twig { opacity: 0; transition: opacity var(--alert-close, 400ms); }
-@keyframes plantage-twig { 0% { scale: 0 1; } 8% { scale: 1 1; } 100% { scale: 0 1; } }
-@keyframes plantage-twig-leaf { to { translate: 0 var(--twig-leaf-drop, 60px); rotate: 90deg; opacity: 0; } }
+.theme-plantage .pl-twig i:nth-child(even) { scale: var(--twigIScale) var(--twigIScale2); }
+.theme-plantage .pl-alert-burst-box { position: absolute; left: calc(var(--medal) / var(--alertBurstBoxLeft) - var(--burst-x)); top: calc(var(--medal) / var(--alertBurstBoxTop) - var(--burst-y)); pointer-events: none; z-index: 2; }
+.theme-plantage .pl-alert.leaving .pl-alert-card { animation: plantage-card-close var(--alertLeavingAlertCardAnimation) ease-in forwards; }
+.theme-plantage .pl-alert.leaving .pl-medal { animation: plantage-medal-out var(--alertLeavingMedalAnimation) cubic-bezier(0.6, -0.6, 0.7, 0) var(--alertLeavingMedalAnimation2) forwards; }
+.theme-plantage .pl-alert.leaving .pl-twig { opacity: 0; transition: opacity var(--alertLeavingTwigTransition); }
+@keyframes plantage-twig { 0% { scale: 0 var(--kfTwig0pScale); } 8% { scale: var(--kfTwig8pScale) var(--kfTwig8pScale2); } 100% { scale: 0 var(--kfTwig100pScale); } }
+@keyframes plantage-twig-leaf { to { translate: 0 var(--kfTwigLeafToTranslate); rotate: calc(var(--kfTwigLeafToRotate) * 1deg); opacity: 0; } }
 @keyframes plantage-card-close { to { clip-path: inset(0 100% 0 0); } }
 @keyframes plantage-medal-out { to { scale: 0; } }
-.theme-plantage .pl-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alert-top, 80px) var(--alert-side, 48px) 0; overflow: hidden; }
+.theme-plantage .pl-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertsPadding) var(--alertsPadding2) 0; overflow: hidden; }
 
 .theme-plantage .in-fallen { --in: plantage-fall-in; --in-ease: cubic-bezier(0.3, 1.4, 0.5, 1); }
 .theme-plantage .in-plopp { --in: plantage-pop-in; --in-ease: cubic-bezier(0.3, 1.6, 0.5, 1); }
@@ -319,53 +320,53 @@
 .theme-plantage .out-plopp { --out: plantage-pop-out; }
 .theme-plantage .out-gleiten { --out: plantage-slide-out; }
 .theme-plantage .out-blenden { --out: plantage-fade-out; }
-.theme-plantage .out-keins { --out: plantage-fade-out; --out-ease: steps(1, start); }
+.theme-plantage .out-keins { --out: plantage-fade-out; --out-ease: steps(var(--outKeinsOutEase), start); }
 
 .theme-plantage .pl-fx-text.slip::before {
   content: "";
   position: absolute;
-  left: 50%;
-  top: calc(-1 * var(--tape-over, 12px));
-  width: var(--tape, 120px);
-  height: var(--tape-height, 26px);
-  translate: -50% 0;
-  rotate: 2deg;
-  background: color-mix(in srgb, var(--accent2) 35%, transparent);
-  backdrop-filter: blur(var(--tape-blur, 4px));
-  box-shadow: 0 var(--tape-lift, 2px) var(--tape-soft, 6px) color-mix(in srgb, var(--soilDark) 20%, transparent);
+  left: var(--fxTextSlipBeforeLeft);
+  top: calc(-1 * var(--fxTextSlipBeforeTop));
+  width: var(--fxTextSlipBeforeWidth);
+  height: var(--fxTextSlipBeforeHeight);
+  translate: var(--fxTextSlipBeforeTranslate) 0;
+  rotate: calc(var(--fxTextSlipBeforeRotate) * 1deg);
+  background: color-mix(in srgb, var(--fxTextSlipBeforeBackground) var(--fxTextSlipBeforeBackground2), transparent);
+  backdrop-filter: blur(var(--fxTextSlipBeforeBackdropFilter));
+  box-shadow: 0 var(--fxTextSlipBeforeBoxShadow2) var(--fxTextSlipBeforeBoxShadow3) color-mix(in srgb, var(--fxTextSlipBeforeBoxShadow) var(--fxTextSlipBeforeBoxShadow4), transparent);
 }
 
 /* --- Chat ----------------------------------------------------------------------------------------------------- */
-.theme-plantage .pl-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chat-padding, 14px); overflow: hidden; font-size: var(--chatFontSize); }
+.theme-plantage .pl-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); padding: var(--chatPadding); overflow: hidden; font-size: var(--chatFontSize); color: var(--chatColor); font-family: var(--chatFont), system-ui, sans-serif; }
 .theme-plantage .pl-chat-top { flex-direction: column-reverse; }
-.theme-plantage .pl-row { flex: none; position: relative; padding: var(--row-padding, 10px 16px); overflow-wrap: anywhere; color: var(--textOnWood); }
-.theme-plantage .pl-row.fades { animation: plantage-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
+.theme-plantage .pl-row { flex: none; position: relative; padding: var(--rowPadding) var(--rowPadding2); overflow-wrap: anywhere; color: var(--rowColor); }
+.theme-plantage .pl-row.fades { animation: plantage-fade-out calc(var(--fadeDuration) * var(--rowFadesAnimation) / 100) ease-in var(--chatFade) forwards; }
 .theme-plantage .pl-row.action { font-style: italic; }
 .theme-plantage .pl-msg { display: block; }
-.theme-plantage .sway .pl-msg { animation: plantage-rock var(--rock, 5s) ease-in-out infinite alternate; }
+.theme-plantage .sway .pl-msg { animation: plantage-rock var(--swayMsgAnimation) ease-in-out infinite alternate; }
 .theme-plantage .pl-chat-zettel .pl-row {
-  background: color-mix(in srgb, var(--paper) calc(var(--chatOpacity) * 100%), transparent);
-  border-top: var(--slip-tape, 8px) solid color-mix(in srgb, var(--accent2) 55%, transparent);
-  border-radius: var(--slip-round, 4px);
-  box-shadow: var(--shadow);
+  background: color-mix(in srgb, var(--chatZettelRowBackground) calc(var(--chatOpacity) * 100%), transparent);
+  border-top: var(--chatZettelRowBorderTop2) solid color-mix(in srgb, var(--chatZettelRowBorderTop) var(--chatZettelRowBorderTop3), transparent);
+  border-radius: var(--chatZettelRowBorderRadius);
+  box-shadow: 0 var(--chatZettelRowBoxShadow) var(--chatZettelRowBoxShadow2) color-mix(in srgb, black calc(var(--shadowStrength) * 100%), transparent);
 }
 .theme-plantage .pl-chat-brett .pl-row {
-  background: color-mix(in srgb, var(--wood) calc(var(--chatOpacity) * 100%), transparent);
-  border-left: var(--trunk-edge, 12px) solid var(--trunk);
-  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--chatBrettRowBackground) calc(var(--chatOpacity) * 100%), transparent);
+  border-left: var(--chatBrettRowBorderLeft2) solid var(--chatBrettRowBorderLeft);
+  border-radius: calc(var(--radius) * var(--chatBrettRowBorderRadius) / 100);
 }
 .theme-plantage .pl-chat-blatt .pl-row {
-  background: color-mix(in srgb, var(--leaf) calc(var(--chatOpacity) * 100%), transparent);
-  border-radius: var(--leaf-round, 4px 40px 4px 40px);
-  color: var(--textColor);
+  background: color-mix(in srgb, var(--chatBlattRowBackground) calc(var(--chatOpacity) * 100%), transparent);
+  border-radius: var(--chatBlattRowBorderRadius) var(--chatBlattRowBorderRadius2) var(--chatBlattRowBorderRadius3) var(--chatBlattRowBorderRadius4);
+  color: var(--chatBlattRowColor);
 }
-.theme-plantage .pl-user { margin-right: var(--name-gap, 8px); color: var(--accent); }
-.theme-plantage .pl-chat-blatt .pl-user { color: var(--mango); }
-.theme-plantage .pl-badge { display: inline-block; margin-right: var(--badge-gap, 6px); padding: var(--badge-padding, 0 8px); border-radius: var(--pill, 999px); background: var(--accent2); color: var(--textColor); font-size: 0.7em; font-weight: 700; }
+.theme-plantage .pl-user { margin-right: var(--userMarginRight); color: var(--userColor); }
+.theme-plantage .pl-chat-blatt .pl-user { color: var(--chatBlattUserColor); }
+.theme-plantage .pl-badge { display: inline-block; margin-right: var(--badgeMarginRight); padding: 0 var(--badgePadding); border-radius: var(--badgeBorderRadius); background: var(--badgeBackground); color: var(--badgeColor); font-size: calc(var(--badgeFontSize) * 1em); font-weight: var(--badgeFontWeight); font-family: var(--badgeFont), system-ui, sans-serif; }
 .theme-plantage .pl-emote { height: var(--emoteSize); vertical-align: middle; }
 
 /* --- Camera frame ------------------------------------------------------------------------------------------- */
-.theme-plantage .pl-cam { position: fixed; inset: 0; animation: plantage-fade var(--fadeDuration) ease-out both; }
+.theme-plantage .pl-cam { position: fixed; inset: 0; animation: plantage-fade calc(var(--fadeDuration) * var(--camAnimation) / 100) ease-out both; }
 .theme-plantage .pl-cam-frame {
   position: absolute;
   inset: 0;
@@ -376,87 +377,93 @@
   mask-composite: exclude;
 }
 /* Frames lit from above: a light top edge, shade toward the bottom, an inner shadow where the frame meets the picture */
-.theme-plantage .pl-cam-frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(180deg, color-mix(in srgb, var(--paper) 28%, transparent), transparent 35%, transparent 65%, color-mix(in srgb, var(--soilDark) 30%, transparent)); }
-.theme-plantage .pl-cam-frame { box-shadow: inset 0 0 0 var(--frame-edge, 2px) color-mix(in srgb, var(--woodDark) 60%, transparent); }
-.theme-plantage .pl-cam-kiste .pl-cam-frame { background: repeating-linear-gradient(90deg, var(--wood) 0 var(--slat, 90px), color-mix(in srgb, var(--woodDark) 70%, var(--wood)) var(--slat, 90px) calc(var(--slat, 90px) + var(--slat-gap, 3px))); }
-.theme-plantage .pl-cam-holz .pl-cam-frame { background: repeating-linear-gradient(90deg, var(--trunk) 0 var(--grain, 18px), color-mix(in srgb, var(--woodDark) 60%, var(--trunk)) var(--grain, 18px) calc(var(--grain, 18px) + var(--grain-line, 2px))); }
-.theme-plantage .pl-cam-seil .pl-cam-frame { background: repeating-linear-gradient(45deg, var(--wood) 0 var(--twist, 6px), color-mix(in srgb, var(--woodDark) 70%, var(--wood)) var(--twist, 6px) calc(2 * var(--twist, 6px))); }
-.theme-plantage .pl-cam-leaf { position: absolute; width: var(--camLeafSize); filter: drop-shadow(0 var(--icon-lift, 6px) var(--icon-soft, 8px) color-mix(in srgb, var(--soilDark) 35%, transparent)); }
-.theme-plantage .pl-cam-leaf .part-main { fill: var(--leaf); }
-.theme-plantage .pl-cam-leaf .part-line { stroke: var(--leafDark); stroke-width: var(--leaf-line, 3); }
+.theme-plantage .pl-cam-frame::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(calc(var(--camFrameAfterBackground3) * 1deg), color-mix(in srgb, var(--camFrameAfterBackground) var(--camFrameAfterBackground4), transparent), transparent var(--camFrameAfterBackground5), transparent var(--camFrameAfterBackground6), color-mix(in srgb, var(--camFrameAfterBackground2) var(--camFrameAfterBackground7), transparent)); }
+.theme-plantage .pl-cam-frame { box-shadow: inset 0 0 0 var(--camFrameBoxShadow2) color-mix(in srgb, var(--camFrameBoxShadow) var(--camFrameBoxShadow3), transparent); }
+.theme-plantage .pl-cam-kiste .pl-cam-frame { background: repeating-linear-gradient(calc(var(--camKisteCamFrameBackground4) * 1deg), var(--camKisteCamFrameBackground) 0 var(--camKisteCamFrameBackground5), color-mix(in srgb, var(--camKisteCamFrameBackground2) var(--camKisteCamFrameBackground6), var(--camKisteCamFrameBackground3)) var(--camKisteCamFrameBackground7) calc(var(--camKisteCamFrameBackground8) + var(--camKisteCamFrameBackground9))); }
+.theme-plantage .pl-cam-holz .pl-cam-frame { background: repeating-linear-gradient(calc(var(--camHolzCamFrameBackground4) * 1deg), var(--camHolzCamFrameBackground) 0 var(--camHolzCamFrameBackground5), color-mix(in srgb, var(--camHolzCamFrameBackground2) var(--camHolzCamFrameBackground6), var(--camHolzCamFrameBackground3)) var(--camHolzCamFrameBackground7) calc(var(--camHolzCamFrameBackground8) + var(--camHolzCamFrameBackground9))); }
+.theme-plantage .pl-cam-seil .pl-cam-frame { background: repeating-linear-gradient(calc(var(--camSeilCamFrameBackground4) * 1deg), var(--camSeilCamFrameBackground) 0 var(--camSeilCamFrameBackground5), color-mix(in srgb, var(--camSeilCamFrameBackground2) var(--camSeilCamFrameBackground6), var(--camSeilCamFrameBackground3)) var(--camSeilCamFrameBackground7) calc(var(--camSeilCamFrameBackground8) * var(--camSeilCamFrameBackground9))); }
+.theme-plantage .pl-cam-leaf { position: absolute; width: var(--camLeafSize); filter: drop-shadow(0 var(--camLeafFilter2) var(--camLeafFilter3) color-mix(in srgb, var(--camLeafFilter) var(--camLeafFilter4), transparent)); }
+.theme-plantage .pl-cam-leaf .part-main { fill: var(--camLeafPartMainFill); }
+.theme-plantage .pl-cam-leaf .part-line { stroke: var(--camLeafPartLineStroke); stroke-width: var(--camLeafPartLineStrokeWidth); }
 /* Leaves grow diagonally into the picture from the corner (shape: stem bottom left, tip top right), all inside the source */
-.theme-plantage .pl-cam-leaf.top-left { left: 0; top: 0; scale: 1 -1; }
-.theme-plantage .pl-cam-leaf.top-right { right: 0; top: 0; scale: -1 -1; }
-.theme-plantage .pl-cam-leaf.bottom-right { right: 0; bottom: 0; scale: -1 1; }
+.theme-plantage .pl-cam-leaf.top-left { left: 0; top: 0; scale: var(--camLeafTopLeftScale) var(--camLeafTopLeftScale2); }
+.theme-plantage .pl-cam-leaf.top-right { right: 0; top: 0; scale: var(--camLeafTopRightScale) var(--camLeafTopRightScale2); }
+.theme-plantage .pl-cam-leaf.bottom-right { right: 0; bottom: 0; scale: var(--camLeafBottomRightScale) var(--camLeafBottomRightScale2); }
 .theme-plantage .pl-cam-leaf.bottom-left { left: 0; bottom: 0; }
-.theme-plantage .sway .pl-cam-leaf .pl-shape { transform-origin: 3% 88%; animation: plantage-leaf var(--leaf-time, 4s) ease-in-out infinite alternate; }
-.theme-plantage .pl-cam-mango { position: absolute; right: var(--mango-inset, 10px); bottom: var(--mango-inset, 10px); width: var(--cam-mango, 84px); rotate: 12deg; filter: drop-shadow(0 var(--icon-lift, 6px) var(--icon-soft, 8px) color-mix(in srgb, var(--soilDark) 40%, transparent)); }
-.theme-plantage .pl-cam-mango .part-main, .theme-plantage .pl-cam-live .part-main { fill: var(--mango); }
-.theme-plantage .pl-cam-mango .part-detail, .theme-plantage .pl-cam-live .part-detail { fill: var(--leaf); }
-.theme-plantage .pl-cam-label { position: absolute; left: var(--label-left, 28px); bottom: var(--label-bottom, 14px); padding: var(--label-padding, 4px 18px); font-family: var(--titleFont), sans-serif; font-weight: 700; font-size: 1.2em; rotate: -2deg; }
+.theme-plantage .sway .pl-cam-leaf .pl-shape { transform-origin: var(--swayCamLeafShapeTransformOrigin) var(--swayCamLeafShapeTransformOrigin2); animation: plantage-leaf var(--swayCamLeafShapeAnimation) ease-in-out infinite alternate; }
+.theme-plantage .pl-cam-mango { position: absolute; right: var(--camMangoRight); bottom: var(--camMangoBottom); width: var(--camMangoWidth); rotate: calc(var(--camMangoRotate) * 1deg); filter: drop-shadow(0 var(--camMangoFilter2) var(--camMangoFilter3) color-mix(in srgb, var(--camMangoFilter) var(--camMangoFilter4), transparent)); }
+.theme-plantage .pl-cam-mango .part-main { fill: var(--camMangoPartMainFill); }
+.theme-plantage .pl-cam-live .part-main { fill: var(--camLivePartMainFill); }
+.theme-plantage .pl-cam-mango .part-detail { fill: var(--camMangoPartDetailFill); }
+.theme-plantage .pl-cam-live .part-detail { fill: var(--camLivePartDetailFill); }
+.theme-plantage .pl-cam-label { position: absolute; left: var(--camLabelLeft); bottom: var(--camLabelBottom); padding: var(--camLabelPadding) var(--camLabelPadding2); font-family: var(--camLabelFont), sans-serif; font-weight: var(--camLabelFontWeight); font-size: calc(var(--camLabelFontSize) * 1em); rotate: calc(var(--camLabelRotate) * 1deg); color: var(--camLabelColor); }
 .theme-plantage .pl-cam-live {
   position: absolute;
-  right: var(--live-right, 22px);
-  top: var(--live-top, 18px);
+  right: var(--camLiveRight);
+  top: var(--camLiveTop);
   display: inline-flex;
   align-items: center;
-  gap: var(--live-gap, 8px);
-  padding: var(--live-padding, 4px 14px 4px 6px);
-  border-radius: var(--pill, 999px);
-  background: color-mix(in srgb, var(--paper) 88%, transparent);
-  backdrop-filter: blur(var(--card-blur, 18px));
-  box-shadow: var(--pill-shadow);
-  color: var(--textOnWood);
-  font-size: 0.8em;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  gap: var(--camLiveGap);
+  padding: var(--camLivePadding) var(--camLivePadding2) var(--camLivePadding3) var(--camLivePadding4);
+  border-radius: var(--camLiveBorderRadius);
+  background: color-mix(in srgb, var(--camLiveBackground) var(--camLiveBackground2), transparent);
+  backdrop-filter: blur(var(--camLiveBackdropFilter));
+  box-shadow: 0 var(--camLiveBoxShadow2) var(--camLiveBoxShadow3) calc(-1 * var(--camLiveBoxShadow4)) color-mix(in srgb, var(--camLiveBoxShadow) calc(var(--shadowStrength) * var(--camLiveBoxShadow5)), transparent);
+  color: var(--camLiveColor);
+  font-size: calc(var(--camLiveFontSize) * 1em);
+  font-weight: var(--camLiveFontWeight);
+  letter-spacing: calc(var(--camLiveLetterSpacing) * 1em);
+  font-family: var(--camLiveFont), system-ui, sans-serif;
 }
-.theme-plantage .pl-cam-live .pl-shape { width: var(--live-mango, 26px); animation: plantage-plop var(--live-time, 1.2s) ease-in-out infinite alternate; }
+.theme-plantage .pl-cam-live .pl-shape { width: var(--camLiveShapeWidth); animation: plantage-plop var(--camLiveShapeAnimation) ease-in-out infinite alternate; }
 
 /* --- Music ---------------------------------------------------------------------------------------------------- */
-.theme-plantage .pl-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 34px 14px 14px); }
-.theme-plantage .pl-player { position: relative; width: 100%; display: flex; align-items: center; gap: var(--player-gap, 20px); padding: var(--player-padding, 16px 22px); animation: plantage-rise-in var(--fadeDuration) ease-out both; }
-.theme-plantage .pl-player.leaving { animation: plantage-fade-out var(--fadeDuration) ease-in forwards; }
+.theme-plantage .pl-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--musicPadding) var(--musicPadding2) var(--musicPadding3); }
+.theme-plantage .pl-player { position: relative; width: 100%; display: flex; align-items: center; gap: var(--playerGap); padding: var(--playerPadding) var(--playerPadding2); animation: plantage-rise-in calc(var(--fadeDuration) * var(--playerAnimation) / 100) ease-out both; }
+.theme-plantage .pl-player.leaving { animation: plantage-fade-out calc(var(--fadeDuration) * var(--playerLeavingAnimation) / 100) ease-in forwards; }
 /* Transistor radio: case in the accent color with a speaker grille, antenna, standing on a crate */
 .theme-plantage .pl-music-radio .pl-player {
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--paper) 30%, transparent), transparent 40%, color-mix(in srgb, var(--soilDark) 25%, transparent)),
-    radial-gradient(circle, color-mix(in srgb, var(--woodDark) 35%, transparent) var(--hole, 2px), transparent calc(var(--hole, 2px) + var(--hole-edge, 1px))) 0 0 / var(--grille, 10px) var(--grille, 10px),
-    var(--accent);
-  border: var(--case-border, 2px) solid color-mix(in srgb, var(--accent) 60%, var(--woodDark));
-  border-radius: var(--radio-round, 26px);
-  color: var(--textOnWood);
-  box-shadow: 0 var(--crate-under, 14px) 0 color-mix(in srgb, var(--wood) 85%, var(--woodDark)), var(--lift), var(--shine);
+    linear-gradient(calc(var(--musicRadioPlayerBackground5) * 1deg), color-mix(in srgb, var(--musicRadioPlayerBackground) var(--musicRadioPlayerBackground6), transparent), transparent var(--musicRadioPlayerBackground7), color-mix(in srgb, var(--musicRadioPlayerBackground2) var(--musicRadioPlayerBackground8), transparent)),
+    radial-gradient(circle, color-mix(in srgb, var(--musicRadioPlayerBackground3) var(--musicRadioPlayerBackground9), transparent) var(--musicRadioPlayerBackground10), transparent calc(var(--musicRadioPlayerBackground11) + var(--musicRadioPlayerBackground12))) 0 0 / var(--musicRadioPlayerBackground13) var(--musicRadioPlayerBackground14),
+    var(--musicRadioPlayerBackground4);
+  border: var(--musicRadioPlayerBorder3) solid color-mix(in srgb, var(--musicRadioPlayerBorder) var(--musicRadioPlayerBorder4), var(--musicRadioPlayerBorder2));
+  border-radius: var(--musicRadioPlayerBorderRadius);
+  color: var(--musicRadioPlayerColor);
+  box-shadow: 0 var(--musicRadioPlayerBoxShadow5) 0 color-mix(in srgb, var(--musicRadioPlayerBoxShadow) var(--musicRadioPlayerBoxShadow6), var(--musicRadioPlayerBoxShadow2)), 0 var(--musicRadioPlayerBoxShadow7) var(--musicRadioPlayerBoxShadow8) calc(-1 * var(--musicRadioPlayerBoxShadow9)) color-mix(in srgb, var(--musicRadioPlayerBoxShadow3) calc(var(--shadowStrength) * var(--musicRadioPlayerBoxShadow10)), transparent), inset 0 var(--musicRadioPlayerBoxShadow11) 0 color-mix(in srgb, var(--musicRadioPlayerBoxShadow4) var(--musicRadioPlayerBoxShadow12), transparent);
 }
 .theme-plantage .pl-music-radio .pl-player::before {
   content: "";
   position: absolute;
-  right: 16%;
+  right: var(--musicRadioPlayerBeforeRight);
   bottom: 100%;
-  width: var(--antenna, 4px);
-  height: var(--antenna-height, 40px);
-  background: var(--woodDark);
-  rotate: 20deg;
+  width: var(--musicRadioPlayerBeforeWidth);
+  height: var(--musicRadioPlayerBeforeHeight);
+  background: var(--musicRadioPlayerBeforeBackground);
+  rotate: calc(var(--musicRadioPlayerBeforeRotate) * 1deg);
   transform-origin: bottom;
 }
-.theme-plantage .pl-music-radio .pl-track { padding: var(--display-padding, 8px 14px); border-radius: var(--radius); background: color-mix(in srgb, var(--paper) 92%, transparent); box-shadow: inset 0 var(--display-inset, 2px) var(--display-soft, 6px) color-mix(in srgb, var(--soilDark) 25%, transparent); }
-.theme-plantage .pl-music-kiste .pl-player { background: var(--lit-wood); border: var(--wood-border, 2px) solid color-mix(in srgb, var(--woodDark) 70%, transparent); border-radius: calc(var(--radius) * 1.5); color: var(--textOnWood); box-shadow: var(--lift), var(--shine); }
-.theme-plantage .pl-music-kiste .pl-track { padding: var(--crate-text, 8px 18px); border-radius: var(--radius); background: color-mix(in srgb, var(--paper) 86%, transparent); }
+.theme-plantage .pl-music-radio .pl-track { padding: var(--musicRadioTrackPadding) var(--musicRadioTrackPadding2); border-radius: calc(var(--radius) * var(--musicRadioTrackBorderRadius) / 100); background: color-mix(in srgb, var(--musicRadioTrackBackground) var(--musicRadioTrackBackground2), transparent); box-shadow: inset 0 var(--musicRadioTrackBoxShadow2) var(--musicRadioTrackBoxShadow3) color-mix(in srgb, var(--musicRadioTrackBoxShadow) var(--musicRadioTrackBoxShadow4), transparent); }
+.theme-plantage .pl-music-kiste .pl-player { background: linear-gradient(calc(var(--musicKistePlayerBackground5) * 1deg), color-mix(in srgb, var(--musicKistePlayerBackground) var(--musicKistePlayerBackground6), transparent), transparent var(--musicKistePlayerBackground7), color-mix(in srgb, var(--musicKistePlayerBackground2) var(--musicKistePlayerBackground8), transparent)),
+    repeating-linear-gradient(calc(var(--musicKistePlayerBackground9) * 1deg), transparent 0 var(--musicKistePlayerBackground10), color-mix(in srgb, var(--musicKistePlayerBackground3) var(--musicKistePlayerBackground11), transparent) var(--musicKistePlayerBackground12) calc(var(--musicKistePlayerBackground13) + var(--musicKistePlayerBackground14))),
+    var(--musicKistePlayerBackground4); border: var(--musicKistePlayerBorder2) solid color-mix(in srgb, var(--musicKistePlayerBorder) var(--musicKistePlayerBorder3), transparent); border-radius: calc(var(--radius) * var(--musicKistePlayerBorderRadius)); color: var(--musicKistePlayerColor); box-shadow: 0 var(--musicKistePlayerBoxShadow3) var(--musicKistePlayerBoxShadow4) calc(-1 * var(--musicKistePlayerBoxShadow5)) color-mix(in srgb, var(--musicKistePlayerBoxShadow) calc(var(--shadowStrength) * var(--musicKistePlayerBoxShadow6)), transparent), inset 0 var(--musicKistePlayerBoxShadow7) 0 color-mix(in srgb, var(--musicKistePlayerBoxShadow2) var(--musicKistePlayerBoxShadow8), transparent); }
+.theme-plantage .pl-music-kiste .pl-track { padding: var(--musicKisteTrackPadding) var(--musicKisteTrackPadding2); border-radius: calc(var(--radius) * var(--musicKisteTrackBorderRadius) / 100); background: color-mix(in srgb, var(--musicKisteTrackBackground) var(--musicKisteTrackBackground2), transparent); }
 /* Plain: dark frosted glass over the stream picture */
-.theme-plantage .pl-music-schlicht .pl-player { background: linear-gradient(180deg, color-mix(in srgb, var(--soilDark) 78%, transparent), color-mix(in srgb, var(--soilDark) 92%, transparent)); backdrop-filter: blur(var(--card-blur, 18px)); border-radius: calc(var(--radius) * 1.5); color: var(--textColor); box-shadow: var(--lift), inset 0 var(--shine-line, 1px) 0 color-mix(in srgb, var(--paper) 18%, transparent); }
-.theme-plantage .pl-cover { flex: none; width: var(--coverSize); height: var(--coverSize); object-fit: cover; border: var(--cover-border, 4px) solid var(--paper); box-shadow: var(--pill-shadow); }
+.theme-plantage .pl-music-schlicht .pl-player { background: linear-gradient(calc(var(--musicSchlichtPlayerBackground3) * 1deg), color-mix(in srgb, var(--musicSchlichtPlayerBackground) var(--musicSchlichtPlayerBackground4), transparent), color-mix(in srgb, var(--musicSchlichtPlayerBackground2) var(--musicSchlichtPlayerBackground5), transparent)); backdrop-filter: blur(var(--musicSchlichtPlayerBackdropFilter)); border-radius: calc(var(--radius) * var(--musicSchlichtPlayerBorderRadius)); color: var(--musicSchlichtPlayerColor); box-shadow: 0 var(--musicSchlichtPlayerBoxShadow3) var(--musicSchlichtPlayerBoxShadow4) calc(-1 * var(--musicSchlichtPlayerBoxShadow5)) color-mix(in srgb, var(--musicSchlichtPlayerBoxShadow) calc(var(--shadowStrength) * var(--musicSchlichtPlayerBoxShadow6)), transparent), inset 0 var(--musicSchlichtPlayerBoxShadow7) 0 color-mix(in srgb, var(--musicSchlichtPlayerBoxShadow2) var(--musicSchlichtPlayerBoxShadow8), transparent); }
+.theme-plantage .pl-cover { flex: none; width: calc(var(--coverSize) * var(--coverWidth) / 100); height: calc(var(--coverSize) * var(--coverHeight) / 100); object-fit: cover; border: var(--coverBorder2) solid var(--coverBorder); box-shadow: 0 var(--coverBoxShadow2) var(--coverBoxShadow3) calc(-1 * var(--coverBoxShadow4)) color-mix(in srgb, var(--coverBoxShadow) calc(var(--shadowStrength) * var(--coverBoxShadow5)), transparent); }
 .theme-plantage .cover-rund { border-radius: 50%; }
-.theme-plantage .cover-eckig { border-radius: var(--radius); }
-.theme-plantage .pl-cover-empty { padding: var(--empty-padding, 16px); background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--leaf) 70%, var(--paper)), var(--leaf) 55%, var(--leafDark)); }
-.theme-plantage .pl-cover-empty .part-main { fill: var(--mango); }
-.theme-plantage .pl-cover-empty .part-detail { fill: var(--leafDark); }
-.theme-plantage .pl-cover-empty .part-line { stroke: var(--sun); }
-.theme-plantage .pl-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
-.theme-plantage .pl-head { font-size: 0.72em; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent2); }
-.theme-plantage .pl-song { font-weight: bold; font-size: var(--musicTitleSize); }
-.theme-plantage .pl-artist, .theme-plantage .pl-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: 0.85; }
-.theme-plantage .pl-vine { position: relative; height: var(--vine, 8px); border-radius: var(--pill, 999px); background: color-mix(in srgb, currentColor 20%, transparent); overflow: hidden; }
-.theme-plantage .pl-vine span { display: block; height: 100%; width: calc(var(--part) * 100%); border-radius: inherit; background: linear-gradient(180deg, color-mix(in srgb, var(--leaf) 65%, var(--paper)), var(--leaf) 50%, var(--leafDark)); transition: width var(--tick, 250ms) linear; }
+.theme-plantage .cover-eckig { border-radius: calc(var(--radius) * var(--coverEckigBorderRadius) / 100); }
+.theme-plantage .pl-cover-empty { padding: var(--coverEmptyPadding); background: radial-gradient(circle at var(--coverEmptyBackground5) var(--coverEmptyBackground6), color-mix(in srgb, var(--coverEmptyBackground) var(--coverEmptyBackground7), var(--coverEmptyBackground2)), var(--coverEmptyBackground3) var(--coverEmptyBackground8), var(--coverEmptyBackground4)); }
+.theme-plantage .pl-cover-empty .part-main { fill: var(--coverEmptyPartMainFill); }
+.theme-plantage .pl-cover-empty .part-detail { fill: var(--coverEmptyPartDetailFill); }
+.theme-plantage .pl-cover-empty .part-line { stroke: var(--coverEmptyPartLineStroke); }
+.theme-plantage .pl-track { flex: 1; min-width: 0; display: grid; gap: var(--trackGap); }
+.theme-plantage .pl-head { font-size: calc(var(--headFontSize) * 1em); font-weight: var(--headFontWeight); letter-spacing: calc(var(--headLetterSpacing) * 1em); text-transform: uppercase; color: var(--headColor); font-family: var(--headFont), system-ui, sans-serif; }
+.theme-plantage .pl-song { font-weight: bold; font-size: var(--musicTitleSize); color: var(--songColor); font-family: var(--songFont), system-ui, sans-serif; }
+.theme-plantage .pl-artist { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: var(--artistOpacity); }
+.theme-plantage .pl-album { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; opacity: var(--albumOpacity); }
+.theme-plantage .pl-vine { position: relative; height: var(--vineHeight); border-radius: var(--vineBorderRadius); background: color-mix(in srgb, currentColor var(--vineBackground), transparent); overflow: hidden; }
+.theme-plantage .pl-vine span { display: block; height: 100%; width: calc(var(--part) * 100%); border-radius: inherit; background: linear-gradient(calc(var(--vineSpanBackground5) * 1deg), color-mix(in srgb, var(--vineSpanBackground) var(--vineSpanBackground6), var(--vineSpanBackground2)), var(--vineSpanBackground3) var(--vineSpanBackground7), var(--vineSpanBackground4)); transition: width var(--vineSpanTransition) linear; }
 .theme-plantage .pl-eq { flex: none; display: flex; }
 .theme-plantage .pl-tuned { display: contents; }
 
@@ -465,62 +472,64 @@
 .theme-plantage .pl-fx-item {
   position: absolute;
   display: grid;
-  gap: var(--fx-gap, 12px);
+  gap: var(--fxItemGap);
   justify-items: center;
-  transform: translate(-50%, -50%);
-  animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both, var(--out) var(--fadeDuration) var(--out-ease, ease-in) calc(var(--life) - var(--fadeDuration)) forwards;
+  transform: translate(var(--fxItemTransform), var(--fxItemTransform2));
+  animation: var(--in) calc(var(--fadeDuration) * var(--fxItemAnimation) / 100) var(--in-ease, ease-out) both, var(--out) calc(var(--fadeDuration) * var(--fxItemAnimation2) / 100) var(--out-ease, ease-in) calc(var(--life) - calc(var(--fadeDuration) * var(--fxItemAnimation3) / 100)) forwards;
 }
-.theme-plantage .pl-fx-item img, .theme-plantage .pl-fx-item video, .theme-plantage .pl-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); }
-.theme-plantage .pl-fx-text { font-size: var(--fxTextSize); font-weight: 700; text-align: center; overflow-wrap: anywhere; text-shadow: 0 var(--text-shadow, 3px) 0 var(--soilDark); }
+.theme-plantage .pl-fx-item img { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemImgBorderRadius) / 100); }
+.theme-plantage .pl-fx-item video { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemVideoBorderRadius) / 100); }
+.theme-plantage .pl-fx-item canvas { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemCanvasBorderRadius) / 100); }
+.theme-plantage .pl-fx-text { font-size: var(--fxTextSize); font-weight: var(--fxTextFontWeight); text-align: center; overflow-wrap: anywhere; text-shadow: 0 var(--fxTextTextShadow2) 0 var(--fxTextTextShadow); font-family: var(--fxTextFont), system-ui, sans-serif; }
 .theme-plantage .pl-fx-text.slip {
   position: relative;
-  padding: var(--fx-padding, 14px 28px);
-  border-radius: var(--slip-round, 10px);
-  background: var(--frost);
-  backdrop-filter: blur(var(--card-blur, 18px));
-  color: var(--textOnWood);
+  padding: var(--fxTextSlipPadding) var(--fxTextSlipPadding2);
+  border-radius: var(--fxTextSlipBorderRadius);
+  background: linear-gradient(calc(var(--fxTextSlipBackground3) * 1deg), color-mix(in srgb, var(--fxTextSlipBackground) var(--fxTextSlipBackground4), transparent), color-mix(in srgb, var(--fxTextSlipBackground2) var(--fxTextSlipBackground5), transparent));
+  backdrop-filter: blur(var(--fxTextSlipBackdropFilter));
+  color: var(--fxTextSlipColor);
   text-shadow: none;
-  box-shadow: var(--lift), var(--shine);
-  rotate: -1.5deg;
+  box-shadow: 0 var(--fxTextSlipBoxShadow3) var(--fxTextSlipBoxShadow4) calc(-1 * var(--fxTextSlipBoxShadow5)) color-mix(in srgb, var(--fxTextSlipBoxShadow) calc(var(--shadowStrength) * var(--fxTextSlipBoxShadow6)), transparent), inset 0 var(--fxTextSlipBoxShadow7) 0 color-mix(in srgb, var(--fxTextSlipBoxShadow2) var(--fxTextSlipBoxShadow8), transparent);
+  rotate: calc(var(--fxTextSlipRotate) * 1deg);
 }
 
 /* --- Keyframes ------------------------------------------------------------------------------------------------ */
-@keyframes plantage-drift { from { translate: var(--cloud-from, -400px) var(--cloud-y); } to { translate: var(--cloud-to, 2320px) var(--cloud-y); } }
+@keyframes plantage-drift { from { translate: var(--kfDriftFromTranslate) var(--cloud-y); } to { translate: var(--kfDriftToTranslate) var(--cloud-y); } }
 @keyframes plantage-turn { to { rotate: 1turn; } }
-@keyframes plantage-sway { from { rotate: calc(var(--treeSway) * -1deg); } to { rotate: calc(var(--treeSway) * 1deg); } }
-@keyframes plantage-fly { 0% { translate: var(--bird-from, -200px) var(--bird-y, 180px); } 45% { translate: var(--bird-to, 2120px) var(--bird-y-end, 110px); } 100% { translate: var(--bird-to, 2120px) var(--bird-y-end, 110px); } }
-@keyframes plantage-plop { from { scale: 0.6; } to { scale: 1; } }
-@keyframes plantage-plane { from { translate: -100% 0; } to { translate: 110vw 0; } }
-@keyframes plantage-marquee { to { translate: -100% 0; } }
-@keyframes plantage-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes plantage-fade-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes plantage-fall-in { 0% { opacity: 0; translate: 0 -120%; rotate: 5deg; } 70% { opacity: 1; translate: 0 4%; rotate: -1deg; } 100% { translate: 0 0; rotate: 0deg; } }
-@keyframes plantage-fall-out { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 0 60vh; rotate: -8deg; } }
-@keyframes plantage-pop-in { from { opacity: 0; scale: 0.4; } to { opacity: 1; scale: 1; } }
-@keyframes plantage-pop-out { from { opacity: 1; scale: 1; } to { opacity: 0; scale: 0.4; } }
-@keyframes plantage-slide-in { from { opacity: 0; translate: -60vw 0; } to { opacity: 1; translate: 0 0; } }
-@keyframes plantage-slide-out { from { opacity: 1; translate: 0 0; } to { opacity: 0; translate: 60vw 0; } }
-@keyframes plantage-fall { from { translate: 0 0; rotate: 0turn; } to { translate: calc((var(--spin) - 0.5) * 30vw) 120vh; rotate: calc(var(--spin) * 3turn); } }
-@keyframes plantage-rise-in { from { opacity: 0; translate: 0 var(--rise, 20px); scale: 0.96; } to { opacity: 1; translate: 0 0; scale: 1; } }
-@keyframes plantage-rock { from { rotate: -0.6deg; } to { rotate: 0.6deg; } }
-@keyframes plantage-leaf { from { rotate: -5deg; } to { rotate: 5deg; } }
+@keyframes plantage-sway { from { rotate: calc(var(--treeSway) * calc(var(--kfSwayFromRotate) * 1deg)); } to { rotate: calc(var(--treeSway) * 1deg); } }
+@keyframes plantage-fly { 0% { translate: var(--kfFly0pTranslate) var(--kfFly0pTranslate2); } 45% { translate: var(--kfFly45pTranslate) var(--kfFly45pTranslate2); } 100% { translate: var(--kfFly100pTranslate) var(--kfFly100pTranslate2); } }
+@keyframes plantage-plop { from { scale: var(--kfPlopFromScale); } to { scale: var(--kfPlopToScale); } }
+@keyframes plantage-plane { from { translate: var(--kfPlaneFromTranslate) 0; } to { translate: calc(var(--kfPlaneToTranslate) * 1vw) 0; } }
+@keyframes plantage-marquee { to { translate: var(--kfMarqueeToTranslate) 0; } }
+@keyframes plantage-fade { from { opacity: 0; } to { opacity: var(--kfFadeToOpacity); } }
+@keyframes plantage-fade-out { from { opacity: var(--kfFadeOutFromOpacity); } to { opacity: 0; } }
+@keyframes plantage-fall-in { 0% { opacity: 0; translate: 0 var(--kfFallIn0pTranslate); rotate: calc(var(--kfFallIn0pRotate) * 1deg); } 70% { opacity: var(--kfFallIn70pOpacity); translate: 0 var(--kfFallIn70pTranslate); rotate: calc(var(--kfFallIn70pRotate) * 1deg); } 100% { translate: 0 0; rotate: 0deg; } }
+@keyframes plantage-fall-out { from { opacity: var(--kfFallOutFromOpacity); translate: 0 0; } to { opacity: 0; translate: 0 calc(var(--kfFallOutToTranslate) * 1vh); rotate: calc(var(--kfFallOutToRotate) * 1deg); } }
+@keyframes plantage-pop-in { from { opacity: 0; scale: var(--kfPopInFromScale); } to { opacity: var(--kfPopInToOpacity); scale: var(--kfPopInToScale); } }
+@keyframes plantage-pop-out { from { opacity: var(--kfPopOutFromOpacity); scale: var(--kfPopOutFromScale); } to { opacity: 0; scale: var(--kfPopOutToScale); } }
+@keyframes plantage-slide-in { from { opacity: 0; translate: calc(var(--kfSlideInFromTranslate) * 1vw) 0; } to { opacity: var(--kfSlideInToOpacity); translate: 0 0; } }
+@keyframes plantage-slide-out { from { opacity: var(--kfSlideOutFromOpacity); translate: 0 0; } to { opacity: 0; translate: calc(var(--kfSlideOutToTranslate) * 1vw) 0; } }
+@keyframes plantage-fall { from { translate: 0 0; rotate: 0turn; } to { translate: calc((var(--spin) - var(--kfFallToTranslate)) * calc(var(--kfFallToTranslate2) * 1vw)) calc(var(--kfFallToTranslate3) * 1vh); rotate: calc(var(--spin) * 3turn); } }
+@keyframes plantage-rise-in { from { opacity: 0; translate: 0 var(--kfRiseInFromTranslate); scale: var(--kfRiseInFromScale); } to { opacity: var(--kfRiseInToOpacity); translate: 0 0; scale: var(--kfRiseInToScale); } }
+@keyframes plantage-rock { from { rotate: calc(var(--kfRockFromRotate) * 1deg); } to { rotate: calc(var(--kfRockToRotate) * 1deg); } }
+@keyframes plantage-leaf { from { rotate: calc(var(--kfLeafFromRotate) * 1deg); } to { rotate: calc(var(--kfLeafToRotate) * 1deg); } }
 
 /* --- Commands page (public): field fixed in the background, paper cards scroll in front as a normal page -------------- */
-.theme-plantage.theme-root:has(.pl-info) { min-height: 100dvh; background: var(--soilDark); }
-.theme-plantage .pl-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-plantage.theme-root:has(.pl-info) { min-height: 100dvh; background: var(--themeRootBackground); }
+.theme-plantage .pl-info { position: relative; min-height: 100dvh; padding: var(--infoPadding) var(--infoPadding2); }
 .theme-plantage .pl-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-plantage .pl-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--info-gap, 28px); }
-.theme-plantage .pl-info .pl-card:nth-child(2) { animation-delay: var(--card-step, 120ms); }
-.theme-plantage .pl-info .pl-card:nth-child(3) { animation-delay: calc(2 * var(--card-step, 120ms)); }
-.theme-plantage .pl-info .pl-card:nth-child(n + 4) { animation-delay: calc(3 * var(--card-step, 120ms)); }
-.theme-plantage .pl-info-sign { padding: var(--info-inner, 28px 32px); text-align: center; display: grid; gap: var(--info-line-gap, 8px); }
+.theme-plantage .pl-info-column { position: relative; max-width: var(--infoColumnMaxWidth); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--infoColumnGap); }
+.theme-plantage .pl-info .pl-card:nth-child(2) { animation-delay: var(--infoCardAnimationDelay); }
+.theme-plantage .pl-info .pl-card:nth-child(3) { animation-delay: calc(var(--infoCardAnimationDelay2) * var(--infoCardAnimationDelay22)); }
+.theme-plantage .pl-info .pl-card:nth-child(n + 4) { animation-delay: calc(var(--infoCardAnimationDelay3) * var(--infoCardAnimationDelay23)); }
+.theme-plantage .pl-info-sign { padding: var(--infoSignPadding) var(--infoSignPadding2); text-align: center; display: grid; gap: var(--infoSignGap); }
 /* Phones: the title shrinks with the width, so the page stays as wide as the screen */
-.theme-plantage .pl-info-sign .pl-title { font-size: min(var(--titleSize), 11vw); }
-.theme-plantage .pl-info-board { padding: var(--info-inner, 28px 32px); display: grid; gap: var(--info-entry-gap, 16px); }
-.theme-plantage .pl-info-entry { display: grid; gap: var(--info-detail-gap, 2px); padding-left: var(--info-indent, 14px); border-left: var(--info-rope, 4px) solid color-mix(in srgb, var(--accent2) 70%, var(--leaf)); border-radius: var(--info-rope, 4px); }
+.theme-plantage .pl-info-sign .pl-title { font-size: min(calc(var(--titleSize) * var(--infoSignTitleFontSize) / 100), calc(var(--infoSignTitleFontSize2) * 1vw)); }
+.theme-plantage .pl-info-board { padding: var(--infoBoardPadding) var(--infoBoardPadding2); display: grid; gap: var(--infoBoardGap); }
+.theme-plantage .pl-info-entry { display: grid; gap: var(--infoEntryGap); padding-left: var(--infoEntryPaddingLeft); border-left: var(--infoEntryBorderLeft3) solid color-mix(in srgb, var(--infoEntryBorderLeft) var(--infoEntryBorderLeft4), var(--infoEntryBorderLeft2)); border-radius: var(--infoEntryBorderRadius); }
 .theme-plantage .pl-info-board .pl-eyebrow { justify-self: start; margin: 0; }
-.theme-plantage .pl-info-command { color: color-mix(in srgb, var(--accent) 75%, var(--textOnWood)); font-size: 1.2em; }
-.theme-plantage .pl-info-detail { opacity: 0.8; font-size: 0.9em; }
+.theme-plantage .pl-info-command { color: color-mix(in srgb, var(--infoCommandColor) var(--infoCommandColor3), var(--infoCommandColor2)); font-size: calc(var(--infoCommandFontSize) * 1em); font-family: var(--infoCommandFont), system-ui, sans-serif; }
+.theme-plantage .pl-info-detail { opacity: var(--infoDetailOpacity); font-size: calc(var(--infoDetailFontSize) * 1em); color: var(--infoDetailColor); font-family: var(--infoDetailFont), system-ui, sans-serif; }
 
 /* Overlays (PLAN-PLANTAGE.md package 4): chat slips float in like leaves and settle, the music vine grows with a new
    track, frosted cards fall in like ripe fruit and spring */

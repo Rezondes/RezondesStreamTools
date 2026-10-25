@@ -30,8 +30,6 @@ export default function Music() {
   );
 }
 
-// fixed: how long the vine grows on a new track (s)
-const VINE_GROW = 0.9;
 
 function Playing({ track, at }: { track: Track; at: number }) {
   const values = usePlantage();
@@ -40,8 +38,8 @@ function Playing({ track, at }: { track: Track; at: number }) {
   const scope = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
     const vine = scope.current?.querySelector(".pl-vine");
-    if (vine) timeline.fromTo(vine, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: VINE_GROW, ease: "power2.out" });
-  }, [track.id], scope);
+    if (vine) timeline.fromTo(vine, { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: values.vineGrow, ease: "power2.out" });
+  }, [track.id, values.vineGrow], scope);
   return (
     <div ref={scope} className="pl-tuned">
       {cover.src
@@ -73,14 +71,14 @@ function Idle() {
 }
 
 const SECOND_MS = 1000; // fixed: seconds in ms
-// fixed: bar width, gap and height of the equalizer (px)
-const EQ = { bar: 12, gap: 6, height: 52 };
 
 // The mango equalizer in PixiJS; its time runs only while the track plays
 function Equalizer({ playing }: { playing: boolean }) {
   const values = usePlantage();
   const latest = useRef({ values, playing });
   latest.current = { values, playing };
+  // bar width, gap and height of the equalizer (settings, px)
+  const EQ = { bar: values.eqBar, gap: values.eqGap, height: values.eqHeight };
   const size = { width: values.equalizerBars * (EQ.bar + EQ.gap) - EQ.gap, height: EQ.height };
   const draw = (app: Application) => {
     const bars = app.stage.addChild(new Graphics());

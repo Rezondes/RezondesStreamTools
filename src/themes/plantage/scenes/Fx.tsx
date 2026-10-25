@@ -15,8 +15,8 @@ export default function Fx() {
   return <div className="pl-fx">{shown.map(item => <Item key={item.id} item={item} />)}</div>;
 }
 
-// fixed: how a card drops and bounces (px, deg, s, ease)
-const DROP = { fall: -120, turn: -3, length: 1.1, ease: "bounce.out" };
+// fixed: the curve of the dropping card; its fall, turn and time come from the settings
+const DROP_EASE = "bounce.out";
 
 function Item({ item }: { item: ShownFx }) {
   const values = usePlantage();
@@ -24,8 +24,8 @@ function Item({ item }: { item: ShownFx }) {
   const scope = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
     const slip = scope.current?.querySelector(".pl-fx-text.slip");
-    if (slip) timeline.from(slip, { opacity: 0, y: DROP.fall, rotate: DROP.turn, duration: DROP.length, ease: DROP.ease });
-  }, [text, values.fxBubble], scope);
+    if (slip) timeline.from(slip, { opacity: 0, y: values.fxDropFall, rotate: values.fxDropTurn, duration: values.fxDropLength, ease: DROP_EASE });
+  }, [text, values.fxBubble, values.fxDropFall, values.fxDropTurn, values.fxDropLength], scope);
   return (
     <div ref={scope} className={`pl-fx-item in-${values.fxIn} out-${values.fxOut}`} style={style}>
       <FxMedia item={item} phase={phase} />

@@ -3,6 +3,12 @@
 // Runs with npm test.
 import assert from "node:assert/strict";
 import { drawPlantageStinger, HEIGHT, WIDTH, type PlantageStingerOptions } from "./stinger.ts";
+import { effectiveSettings } from "../../core/settings.ts";
+import { plantageStingerLook } from "./render.ts";
+import { type PlantageValues, plantageSettings } from "./settings.ts";
+
+// The look of the default settings
+const defaults = effectiveSettings(plantageSettings, {}) as unknown as PlantageValues;
 
 // One gradient for all recordings, so equal pictures give equal calls
 const gradient = { addColorStop: () => {} };
@@ -21,6 +27,7 @@ function recorder() {
 const options: PlantageStingerOptions = {
   duration: 1.4, cut: 0.7, leaves: true, leafCount: 24, seed: 42, text: "Plantage", font: "Fredoka",
   mango: "#ffb02e", blush: "#ff5e3a", leaf: "#2f8f3a", leafDark: "#1d5e27", paper: "#fff6df", shadow: "#5e3b22", textColor: "#ffffff",
+  look: plantageStingerLook(defaults),
 };
 
 // At the transition point: one area over the whole picture, plus the text and the leaves

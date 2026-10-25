@@ -14,6 +14,7 @@ import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./field.ts";
 import { ROLE_IDS, ROLE_SET } from "./mangos.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 
 export const FONTS = ["Baloo 2", "Fredoka", "Nunito", "Inter", "DM Sans"] as const;
 const TITLE_FONTS = ["Fredoka", "Baloo 2", "Pacifico", "Nunito"] as const;
@@ -329,6 +330,7 @@ const GROUP_SCENES = {
   [MINIME_MOVES]: ["minimes"],
   [MINIME_COMBAT]: ["minimes"],
   [INFO_GROUP]: ["info"],
+  ...TUNING_GROUPS,
 } as const;
 
 const capital = (login: string) => login[0].toUpperCase() + login.slice(1);
@@ -347,7 +349,7 @@ const BASIC = [
 export const plantageSettings: ThemeSchema = {
   id: "plantage",
   name: "Südfrucht-Plantage",
-  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(ROLE_SET), ...COMBAT_FIELDS], STINGER), BASIC),
+  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(ROLE_SET), ...COMBAT_FIELDS, ...TUNING_FIELDS], STINGER), BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: ROLE_SET,

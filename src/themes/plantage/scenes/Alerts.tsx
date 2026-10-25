@@ -29,10 +29,6 @@ const ICONS_BY_KIND = {
   follow: "followIcon", sub: "subIcon", resub: "resubIcon", gift: "giftIcon", raid: "raidIcon", cheer: "cheerIcon", redeem: "redeemIcon", hype: "hypeIcon",
 } as const satisfies Record<AlertKind, Key>;
 
-// fixed: the entrance in s, like the prototype
-const ENTER = { medal: 0.3, card: 0.8, name: 1.0, branch: 1.0, line: 1.4, quote: 1.6 };
-// fixed: how far the name letters and the text lines rise in px, like the prototype
-const RISE = { name: 50, text: 12 };
 
 function describe(alert: Alert, values: PlantageValues) {
   return { ...describeAlert(alert, values, KEYS), icon: values[ICONS_BY_KIND[alert.kind]] as IconName, sound: values[ALERT_SOUND_KEYS[alert.kind]] };
@@ -60,11 +56,12 @@ function Card({ alert, leaving, seed }: { alert: Alert; leaving: boolean; seed: 
   useEffect(() => { if (leaving) leavingAt.current = performance.now(); }, [leaving]);
   const box = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
-    timeline.from(".pl-medal", { scale: 0, duration: 0.55, ease: "back.out(2.2)" }, ENTER.medal);
-    timeline.fromTo(".pl-alert-card", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(-40px -80px -80px -20px)", duration: 0.6, ease: "power3.out" }, ENTER.card);
-    timeline.from(SplitText.create(".pl-alert-name", { type: "chars" }).chars, { y: RISE.name, scale: 0.4, opacity: 0, duration: 0.5, ease: "back.out(3)", stagger: 0.05 }, ENTER.name);
-    timeline.from(".pl-alert-line", { opacity: 0, y: RISE.text, duration: 0.4 }, ENTER.line);
-    timeline.from(".pl-quote", { opacity: 0, y: RISE.text, duration: 0.4 }, ENTER.quote);
+    // the entrance of the settings: when and how fast each part comes, how far the letters and lines rise
+    timeline.from(".pl-medal", { scale: 0, duration: values.medalPop, ease: "back.out(2.2)" }, values.enterMedal);
+    timeline.fromTo(".pl-alert-card", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(-40px -80px -80px -20px)", duration: values.cardOpen, ease: "power3.out" }, values.enterAlertCard);
+    timeline.from(SplitText.create(".pl-alert-name", { type: "chars" }).chars, { y: values.nameFrom, scale: 0.4, opacity: 0, duration: values.nameRise, ease: "back.out(3)", stagger: values.nameStep }, values.enterName);
+    timeline.from(".pl-alert-line", { opacity: 0, y: values.textFrom, duration: values.textFade }, values.enterAlertLine);
+    timeline.from(".pl-quote", { opacity: 0, y: values.textFrom, duration: values.textFade }, values.enterQuote);
   }, [], box);
   const layout = alertLayout({ medal: MEDAL.size, ring: MEDAL.ring, overlap: MEDAL.overlap, gap: values.alertGap });
   const style = { "--medal": `${MEDAL.size}px`, "--card-left": `${layout.cardLeft}px`, "--text-pad": `${layout.textPadding}px` } as CSSProperties;

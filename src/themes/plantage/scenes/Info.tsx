@@ -10,9 +10,8 @@ import { kindOfTime } from "../world.ts";
 import { plantageSettings } from "../settings.ts";
 import { plantageNames, usePlantage } from "../usePlantage.ts";
 
-// fixed: how a card drops and bounces (px, deg, s, ease)
-const DROP = { fall: -120, turn: -3, length: 1.1, ease: "bounce.out" };
-const STEP = 0.12; // fixed: s between two cards
+// fixed: the curve of the dropping cards; their fall, turn and times come from the settings
+const DROP_EASE = "bounce.out";
 
 export default function Info() {
   const values = usePlantage();
@@ -20,8 +19,8 @@ export default function Info() {
   const column = useRef<HTMLElement>(null);
   useTimeline(timeline => {
     const cards = column.current?.querySelectorAll(":scope > .pl-card");
-    if (cards?.length) timeline.from(cards, { opacity: 0, y: DROP.fall, rotate: DROP.turn, duration: DROP.length, ease: DROP.ease, stagger: STEP });
-  }, [page?.sections.length ?? 0], column);
+    if (cards?.length) timeline.from(cards, { opacity: 0, y: values.infoDropFall, rotate: values.infoDropTurn, duration: values.infoDropLength, ease: DROP_EASE, stagger: values.infoDropStep });
+  }, [page?.sections.length ?? 0, values.infoDropFall, values.infoDropTurn, values.infoDropLength, values.infoDropStep], column);
   if (!page) return null;
   return (
     <div className="pl-info">

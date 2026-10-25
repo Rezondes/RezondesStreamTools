@@ -22,8 +22,6 @@ import "../minimes.css";
 const DEMO_MEDIC = params.has("demo") ? DEMO_FIRST_LOGIN : null;
 // Fights with the roles of the mangos, the grenadier fires explosions; stable for useMinimes
 const COMBAT: MinimeCombatScene = { roles: ROLE_SET, explosive: EXPLOSIVE, sounds: COMBAT_TONES };
-// fixed: juice drops when a mango is hit
-const DROPS = 8;
 
 export default function Minimes() {
   const values = usePlantage();
@@ -76,10 +74,12 @@ function Soldier({ actor, role, blast }: { actor: MinimeActor; role: string; bla
   );
 }
 
+// Juice drops when a mango is hit (how many: settings)
 function Juice({ blast }: { blast: boolean }) {
+  const drops = usePlantage().juiceDrops;
   return (
     <div className={`pl-juice${blast ? " blast" : ""}`}>
-      {Array.from({ length: DROPS }, (_, index) => <i key={index} style={{ "--i": index, "--n": DROPS } as CSSProperties} />)}
+      {Array.from({ length: drops }, (_, index) => <i key={index} style={{ "--i": index, "--n": drops } as CSSProperties} />)}
     </div>
   );
 }

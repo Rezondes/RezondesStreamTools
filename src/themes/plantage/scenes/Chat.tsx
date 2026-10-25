@@ -20,11 +20,10 @@ export default function Chat() {
   );
 }
 
-// fixed: the way of a leaf: drift sideways and fall (px), the turns on its way (deg), how long (s)
-const LEAF = { drift: 30, fall: 70, turns: [-14, 8, -3], length: 1.1 };
-
+// The way of a leaf (settings): drift sideways and fall (px), the turns on its way (deg), how long (s)
 function Row({ message }: { message: ChatMessage }) {
   const values = usePlantage();
+  const LEAF = { drift: values.chatLeafDrift, fall: values.chatLeafFall, turns: [values.chatLeafTurn, values.chatLeafTurn2, values.chatLeafTurn3], length: values.chatLeafLength };
   const row = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
     if (!row.current) return;
