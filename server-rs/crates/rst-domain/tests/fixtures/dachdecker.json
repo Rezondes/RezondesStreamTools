@@ -2781,6 +2781,5459 @@
       "group": "Minimes: Typen",
       "default": "polier, chef",
       "maxLength": 200
+    },
+    {
+      "key": "minimesDdFloor",
+      "type": "number",
+      "label": "Minimes: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "onRidgeDdFloor",
+      "type": "number",
+      "label": "auf First: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "onRidgeDdFloor2",
+      "type": "number",
+      "label": "auf First: Abstand zum Boden Anteil von „Boden: Höhe“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "minimeRidgeBottom",
+      "type": "number",
+      "label": "Minime First: Lage unten Anteil von „Abstand zum unteren Rand“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "minimeRidgeHeight2",
+      "type": "number",
+      "label": "Minime First: Höhe Anteil von „Boden: Höhe“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "minimeRidgeBorderTop",
+      "type": "color",
+      "label": "Minime First: Rand oben Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "minimeRidgeBorderTop2",
+      "type": "number",
+      "label": "Minime First: Rand oben Stärke",
+      "group": "Feinschliff: Minimes",
+      "default": 2,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeRidgeBackground",
+      "type": "color",
+      "label": "Minime First: Hintergrund Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "minimeRidgeBackground2",
+      "type": "color",
+      "label": "Minime First: Hintergrund Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "minimeRidgeBackground3",
+      "type": "color",
+      "label": "Minime First: Hintergrund Farbe (Plan-Linien und Text) (2)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "minimeRidgeBackground4",
+      "type": "number",
+      "label": "Minime First: Hintergrund Verlauf Stopp 0",
+      "group": "Feinschliff: Minimes",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "minimeRidgeBackground5",
+      "type": "number",
+      "label": "Minime First: Hintergrund Farbanteil",
+      "group": "Feinschliff: Minimes",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "minimeRidgeBackground6",
+      "type": "number",
+      "label": "Minime First: Hintergrund Verlauf Stopp 1",
+      "group": "Feinschliff: Minimes",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "minimeRidgeBackground7",
+      "type": "number",
+      "label": "Minime First: Hintergrund Verlauf Stopp 2",
+      "group": "Feinschliff: Minimes",
+      "default": 32,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "minimeRidgeBackground8",
+      "type": "number",
+      "label": "Minime First: Hintergrund Wert 5 (Teil 1)",
+      "group": "Feinschliff: Minimes",
+      "default": 48,
+      "min": 0,
+      "max": 192,
+      "unit": "px"
+    },
+    {
+      "key": "minimeRidgeBackground9",
+      "type": "number",
+      "label": "Minime First: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Minimes",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "minimeRidgeBackground10",
+      "type": "number",
+      "label": "Minime First: Hintergrund Farbanteil (2)",
+      "group": "Feinschliff: Minimes",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "minimeRidgeBackground11",
+      "type": "number",
+      "label": "Minime First: Hintergrund Verlauf Stopp 1 (2)",
+      "group": "Feinschliff: Minimes",
+      "default": 48,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "minimeRidgeBackground12",
+      "type": "number",
+      "label": "Minime First: Hintergrund Verlauf Stopp 1 (3)",
+      "group": "Feinschliff: Minimes",
+      "default": 2,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "minimeRidgeBackground13",
+      "type": "number",
+      "label": "Minime First: Hintergrund Verlauf Stopp 2 (2)",
+      "group": "Feinschliff: Minimes",
+      "default": 48,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "minimeRidgeBoxShadow",
+      "type": "color",
+      "label": "Minime First: Schatten Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "minimeRidgeBoxShadow2",
+      "type": "number",
+      "label": "Minime First: Schatten Unschärfe",
+      "group": "Feinschliff: Minimes",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "minimeRidgeBoxShadow3",
+      "type": "number",
+      "label": "Minime First: Schatten Farbanteil",
+      "group": "Feinschliff: Minimes",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "minimeWidth",
+      "type": "number",
+      "label": "Minime: Breite",
+      "group": "Feinschliff: Minimes",
+      "default": 0.5,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "minimeTransform",
+      "type": "number",
+      "label": "Minime: Verformung Verschiebung x",
+      "group": "Feinschliff: Minimes",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "minimeAnchorHeight",
+      "type": "number",
+      "label": "Minime Anker: Höhe Anteil von „Grösse (Höhe)“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "minimeNameMarginBottom",
+      "type": "number",
+      "label": "Minime Name: Abstand unten",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeNamePadding",
+      "type": "number",
+      "label": "Minime Name: Innenabstand oben/unten",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeNamePadding2",
+      "type": "number",
+      "label": "Minime Name: Innenabstand links/rechts",
+      "group": "Feinschliff: Minimes",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeNameBorder",
+      "type": "color",
+      "label": "Minime Name: Rand Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "minimeNameBorder2",
+      "type": "number",
+      "label": "Minime Name: Rand Stärke",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeNameBackground",
+      "type": "color",
+      "label": "Minime Name: Hintergrund Farbe (Karte (Protokoll, Schilder))",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "card"
+    },
+    {
+      "key": "minimeNameBackground2",
+      "type": "number",
+      "label": "Minime Name: Hintergrund Farbanteil",
+      "group": "Feinschliff: Minimes",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "minimeNameColor",
+      "type": "color",
+      "label": "Minime Name: Textfarbe",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "minimeNameLetterSpacing",
+      "type": "number",
+      "label": "Minime Name: Zeichenabstand (em)",
+      "group": "Feinschliff: Minimes",
+      "default": 0.08,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "minimeNameFont",
+      "type": "font",
+      "label": "Minime Name: Schrift",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "kfMinimeDropFromTranslate",
+      "type": "number",
+      "label": "Minime fällt (Start): Verschiebung y",
+      "group": "Feinschliff: Minimes",
+      "default": 400,
+      "min": -1600,
+      "max": 1600,
+      "unit": "px"
+    },
+    {
+      "key": "kfMinimeFadeToOpacity",
+      "type": "number",
+      "label": "Minime blendet (Ende): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "signPadding",
+      "type": "number",
+      "label": "Schild: Innenabstand oben/unten",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "signPadding2",
+      "type": "number",
+      "label": "Schild: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 26,
+      "min": 0,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "quoteMarginTop",
+      "type": "number",
+      "label": "Zitat: Abstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "quoteFontSize",
+      "type": "number",
+      "label": "Zitat: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.8,
+      "min": 0,
+      "max": 3.2,
+      "step": 0.01
+    },
+    {
+      "key": "quoteColor",
+      "type": "color",
+      "label": "Zitat: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "quoteWebkitLineClamp",
+      "type": "number",
+      "label": "Zitat: Zeilen höchstens",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 3,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "key": "quoteFont",
+      "type": "font",
+      "label": "Zitat: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "chipMarginRight",
+      "type": "number",
+      "label": "Plakette: Abstand rechts",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chipPadding",
+      "type": "number",
+      "label": "Plakette: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chipBackground",
+      "type": "color",
+      "label": "Plakette: Hintergrund Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "chipColor",
+      "type": "color",
+      "label": "Plakette: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "onAccent"
+    },
+    {
+      "key": "chipFontWeight",
+      "type": "number",
+      "label": "Plakette: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "chipFont",
+      "type": "font",
+      "label": "Plakette: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "screenBackground",
+      "type": "color",
+      "label": "Bildschirm: Hintergrund Farbe (Blaupause (Hintergrund))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "blueprint"
+    },
+    {
+      "key": "vignetteBackground",
+      "type": "color",
+      "label": "Vignette: Hintergrund Farbe (Blaupause dunkel (Verlauf unten))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "page"
+    },
+    {
+      "key": "vignetteBackground2",
+      "type": "color",
+      "label": "Vignette: Hintergrund Farbe (Blaupause dunkel (Verlauf unten)) (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "page"
+    },
+    {
+      "key": "vignetteBackground3",
+      "type": "color",
+      "label": "Vignette: Hintergrund Farbe (Blaupause dunkel (Verlauf unten)) (3)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "page"
+    },
+    {
+      "key": "vignetteBackground4",
+      "type": "number",
+      "label": "Vignette: Hintergrund Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 92,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "vignetteBackground5",
+      "type": "number",
+      "label": "Vignette: Hintergrund Farbanteil (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "vignetteBackground6",
+      "type": "number",
+      "label": "Vignette: Hintergrund Verlauf Stopp 2",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 24,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "vignetteBackground7",
+      "type": "number",
+      "label": "Vignette: Hintergrund Verlauf Stopp 3",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 42,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "vignetteBackground8",
+      "type": "number",
+      "label": "Vignette: Hintergrund Verlauf Stopp 0",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "vignetteBackground9",
+      "type": "number",
+      "label": "Vignette: Hintergrund Verlauf Stopp 0 (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "vignetteBackground10",
+      "type": "number",
+      "label": "Vignette: Hintergrund Verlauf Stopp 1",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 45,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "vignetteBackground11",
+      "type": "number",
+      "label": "Vignette: Hintergrund Farbanteil (3)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "vignetteOpacity",
+      "type": "number",
+      "label": "Vignette: Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.9,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "headLeft",
+      "type": "number",
+      "label": "Kopfzeile: Lage links",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 80,
+      "min": -320,
+      "max": 320,
+      "unit": "px"
+    },
+    {
+      "key": "headTop",
+      "type": "number",
+      "label": "Kopfzeile: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 64,
+      "min": -256,
+      "max": 256,
+      "unit": "px"
+    },
+    {
+      "key": "headFontSize",
+      "type": "number",
+      "label": "Kopfzeile: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "headFontWeight",
+      "type": "number",
+      "label": "Kopfzeile: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "headLetterSpacing",
+      "type": "number",
+      "label": "Kopfzeile: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "headColor",
+      "type": "color",
+      "label": "Kopfzeile: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "headFont",
+      "type": "font",
+      "label": "Kopfzeile: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "headBColor",
+      "type": "color",
+      "label": "Kopfzeile (fett): Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "headBFontWeight",
+      "type": "number",
+      "label": "Kopfzeile (fett): Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "headBFont",
+      "type": "font",
+      "label": "Kopfzeile (fett): Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "headPartBeforeMargin",
+      "type": "number",
+      "label": "Kopfzeile: Teil (Ebene 1): Aussenabstand links/rechts",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 34,
+      "min": -136,
+      "max": 136,
+      "unit": "px"
+    },
+    {
+      "key": "sayingLeft",
+      "type": "number",
+      "label": "Spruch: Lage links",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 80,
+      "min": -320,
+      "max": 320,
+      "unit": "px"
+    },
+    {
+      "key": "sayingTop",
+      "type": "number",
+      "label": "Spruch: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 112,
+      "min": -448,
+      "max": 448,
+      "unit": "px"
+    },
+    {
+      "key": "sayingFontSize",
+      "type": "number",
+      "label": "Spruch: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.75,
+      "min": 0,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "sayingFontWeight",
+      "type": "number",
+      "label": "Spruch: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "sayingColor",
+      "type": "color",
+      "label": "Spruch: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "sayingAnimation",
+      "type": "number",
+      "label": "Spruch: Animation Dauer",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 600,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms",
+      "step": 10
+    },
+    {
+      "key": "sayingFont",
+      "type": "font",
+      "label": "Spruch: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "centerTop",
+      "type": "number",
+      "label": "Mitte: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 790,
+      "min": -3160,
+      "max": 3160,
+      "unit": "px"
+    },
+    {
+      "key": "titleFontSize",
+      "type": "number",
+      "label": "Titel: Schriftgrösse Anteil von „Titelgrösse“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "titleFontWeight",
+      "type": "number",
+      "label": "Titel: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "titleLetterSpacing",
+      "type": "number",
+      "label": "Titel: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "titleLineHeight",
+      "type": "number",
+      "label": "Titel: Zeilenhöhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.15,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "titleTextShadow",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "titleTextShadow2",
+      "type": "number",
+      "label": "Titel: Textschatten Unschärfe Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "titleTextShadow3",
+      "type": "number",
+      "label": "Titel: Textschatten Unschärfe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "titleTextShadow4",
+      "type": "number",
+      "label": "Titel: Textschatten Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "titleFont",
+      "type": "font",
+      "label": "Titel: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "subtitleMargin",
+      "type": "number",
+      "label": "Untertitel: Aussenabstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "subtitleFontSize",
+      "type": "number",
+      "label": "Untertitel: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 30,
+      "min": 0,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "subtitleFontWeight",
+      "type": "number",
+      "label": "Untertitel: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "subtitleLetterSpacing",
+      "type": "number",
+      "label": "Untertitel: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 12,
+      "min": -48,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "subtitleLetterSpacing2",
+      "type": "number",
+      "label": "Untertitel: Zeichenabstand (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "subtitleColor",
+      "type": "color",
+      "label": "Untertitel: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "subtitleFont",
+      "type": "font",
+      "label": "Untertitel: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "bigMarginTop",
+      "type": "number",
+      "label": "gross: Abstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bigFontSize",
+      "type": "number",
+      "label": "gross: Schriftgrösse Anteil von „Countdown-Grösse“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "bigFontWeight",
+      "type": "number",
+      "label": "gross: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bigLineHeight",
+      "type": "number",
+      "label": "gross: Zeilenhöhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.1,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "bigLetterSpacing",
+      "type": "number",
+      "label": "gross: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bigColor",
+      "type": "color",
+      "label": "gross: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "bigTextShadow",
+      "type": "color",
+      "label": "gross: Textschatten Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "bigTextShadow2",
+      "type": "color",
+      "label": "gross: Textschatten Farbe (Ziegelrot (Flächen und Leuchten))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "brick"
+    },
+    {
+      "key": "bigTextShadow3",
+      "type": "number",
+      "label": "gross: Textschatten Unschärfe (Teil 1) Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "bigTextShadow4",
+      "type": "number",
+      "label": "gross: Textschatten Unschärfe (Teil 2) Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "bigTextShadow5",
+      "type": "number",
+      "label": "gross: Textschatten Unschärfe (Teil 1)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bigTextShadow6",
+      "type": "number",
+      "label": "gross: Textschatten Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 80,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "bigTextShadow7",
+      "type": "number",
+      "label": "gross: Textschatten Unschärfe (Teil 2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 34,
+      "min": 0,
+      "max": 136,
+      "unit": "px"
+    },
+    {
+      "key": "bigTextShadow8",
+      "type": "number",
+      "label": "gross: Textschatten Farbanteil (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 45,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "bigFont",
+      "type": "font",
+      "label": "gross: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "progressBoxLeft",
+      "type": "number",
+      "label": "Fortschritt Kasten: Lage links",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "progressBoxBottom",
+      "type": "number",
+      "label": "Fortschritt Kasten: Lage unten",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "progressBoxWidth",
+      "type": "number",
+      "label": "Fortschritt Kasten: Breite",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 640,
+      "min": 0,
+      "max": 2560,
+      "unit": "px"
+    },
+    {
+      "key": "progressBoxTransform",
+      "type": "number",
+      "label": "Fortschritt Kasten: Verformung Verschiebung x",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "blockRight",
+      "type": "number",
+      "label": "Schriftfeld: Lage rechts",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 60,
+      "min": -240,
+      "max": 240,
+      "unit": "px"
+    },
+    {
+      "key": "blockBottom",
+      "type": "number",
+      "label": "Schriftfeld: Lage unten",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "blockWidth",
+      "type": "number",
+      "label": "Schriftfeld: Breite",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 380,
+      "min": 0,
+      "max": 1520,
+      "unit": "px"
+    },
+    {
+      "key": "blockBorder",
+      "type": "color",
+      "label": "Schriftfeld: Rand Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "blockBorder2",
+      "type": "number",
+      "label": "Schriftfeld: Rand Stärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.5,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "blockBorder3",
+      "type": "number",
+      "label": "Schriftfeld: Rand Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "blockFontSize",
+      "type": "number",
+      "label": "Schriftfeld: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "blockFontWeight",
+      "type": "number",
+      "label": "Schriftfeld: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "blockColor",
+      "type": "color",
+      "label": "Schriftfeld: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "blockFont",
+      "type": "font",
+      "label": "Schriftfeld: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "blockRowBorderTop",
+      "type": "color",
+      "label": "Schriftfeld Zeile: Rand oben Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "blockRowBorderTop2",
+      "type": "number",
+      "label": "Schriftfeld Zeile: Rand oben Stärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.5,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "blockRowBorderTop3",
+      "type": "number",
+      "label": "Schriftfeld Zeile: Rand oben Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "blockRowSpanPadding",
+      "type": "number",
+      "label": "Schriftfeld: Zeile (Text): Innenabstand oben/unten",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 9,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "blockRowSpanPadding2",
+      "type": "number",
+      "label": "Schriftfeld: Zeile (Text): Innenabstand links/rechts",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "blockRowSpanSpanBorderLeft",
+      "type": "color",
+      "label": "Schriftfeld: Zeile (Text innen): Rand links Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "blockRowSpanSpanBorderLeft2",
+      "type": "number",
+      "label": "Schriftfeld: Zeile (Text innen): Rand links Stärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.5,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "blockRowSpanSpanBorderLeft3",
+      "type": "number",
+      "label": "Schriftfeld: Zeile (Text innen): Rand links Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "copperColor",
+      "type": "color",
+      "label": "Kupfer: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "tickerHeight",
+      "type": "number",
+      "label": "Lauftext: Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 40,
+      "min": 0,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "tickerBorderTop",
+      "type": "color",
+      "label": "Lauftext: Rand oben Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "tickerBorderTop2",
+      "type": "number",
+      "label": "Lauftext: Rand oben Stärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.5,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "tickerBorderTop3",
+      "type": "number",
+      "label": "Lauftext: Rand oben Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "tickerFontSize",
+      "type": "number",
+      "label": "Lauftext: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "tickerLetterSpacing",
+      "type": "number",
+      "label": "Lauftext: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "tickerColor",
+      "type": "color",
+      "label": "Lauftext: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "tickerFont",
+      "type": "font",
+      "label": "Lauftext: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "tickerSpanTop",
+      "type": "number",
+      "label": "Lauftext: Text: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "brbCenterTop",
+      "type": "number",
+      "label": "BRB Mitte: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 780,
+      "min": -3120,
+      "max": 3120,
+      "unit": "px"
+    },
+    {
+      "key": "brbBigMarginTop",
+      "type": "number",
+      "label": "BRB gross: Abstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "brbBigFontSize",
+      "type": "number",
+      "label": "BRB gross: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.62,
+      "min": 0,
+      "max": 2.48,
+      "step": 0.01
+    },
+    {
+      "key": "brbBigFont",
+      "type": "font",
+      "label": "BRB gross: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "endingCenterTop",
+      "type": "number",
+      "label": "Ending Mitte: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 800,
+      "min": -3200,
+      "max": 3200,
+      "unit": "px"
+    },
+    {
+      "key": "endingTitleFontSize",
+      "type": "number",
+      "label": "Ending Titel: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.33,
+      "min": 0,
+      "max": 5.32,
+      "step": 0.01
+    },
+    {
+      "key": "endingTitleLetterSpacing",
+      "type": "number",
+      "label": "Ending Titel: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 14,
+      "min": -56,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "endingTitleColor",
+      "type": "color",
+      "label": "Ending Titel: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "endingTitleTextShadow",
+      "type": "color",
+      "label": "Ending Titel: Textschatten Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "endingTitleTextShadow2",
+      "type": "color",
+      "label": "Ending Titel: Textschatten Farbe (Ziegelrot (Flächen und Leuchten))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "brick"
+    },
+    {
+      "key": "endingTitleTextShadow3",
+      "type": "number",
+      "label": "Ending Titel: Textschatten Unschärfe (Teil 1) Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "endingTitleTextShadow4",
+      "type": "number",
+      "label": "Ending Titel: Textschatten Unschärfe (Teil 2) Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "endingTitleTextShadow5",
+      "type": "number",
+      "label": "Ending Titel: Textschatten Unschärfe (Teil 1)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "endingTitleTextShadow6",
+      "type": "number",
+      "label": "Ending Titel: Textschatten Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "endingTitleTextShadow7",
+      "type": "number",
+      "label": "Ending Titel: Textschatten Unschärfe (Teil 2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 40,
+      "min": 0,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "endingTitleTextShadow8",
+      "type": "number",
+      "label": "Ending Titel: Textschatten Farbanteil (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 45,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "endingTitleFont",
+      "type": "font",
+      "label": "Ending Titel: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "endingSubtitleColor",
+      "type": "color",
+      "label": "Ending Untertitel: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "endingBigMarginTop",
+      "type": "number",
+      "label": "Ending gross: Abstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "endingBigFontSize",
+      "type": "number",
+      "label": "Ending gross: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 26,
+      "min": 0,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "endingBigLetterSpacing",
+      "type": "number",
+      "label": "Ending gross: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "endingBigFont",
+      "type": "font",
+      "label": "Ending gross: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "sheetBorder",
+      "type": "color",
+      "label": "Blatt: Rand Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "sheetBorder2",
+      "type": "number",
+      "label": "Blatt: Rand Stärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.5,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "sheetBorder3",
+      "type": "number",
+      "label": "Blatt: Rand Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "sheetBackgroundColor",
+      "type": "color",
+      "label": "Blatt: Hintergrund Farbe (Blaupause (Hintergrund))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "blueprint"
+    },
+    {
+      "key": "sheetBackgroundColor2",
+      "type": "number",
+      "label": "Blatt: Hintergrund Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "sheetBackgroundImage",
+      "type": "color",
+      "label": "Blatt: Hintergrundbild Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "sheetBackgroundImage2",
+      "type": "color",
+      "label": "Blatt: Hintergrundbild Farbe (Plan-Linien und Text) (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "sheetBackgroundImage3",
+      "type": "color",
+      "label": "Blatt: Hintergrundbild Farbe (Plan-Linien und Text) (3)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "sheetBackgroundImage4",
+      "type": "color",
+      "label": "Blatt: Hintergrundbild Farbe (Plan-Linien und Text) (4)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "sheetBackgroundImage5",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "sheetBackgroundImage6",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlauf Stopp 0",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundImage7",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlauf Stopp 1",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundImage8",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "sheetBackgroundImage9",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Farbanteil (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "sheetBackgroundImage10",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlauf Stopp 1 (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundImage11",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlauf Stopp 2",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundImage12",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Farbanteil (3)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 4,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "sheetBackgroundImage13",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlauf Stopp 0 (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundImage14",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlauf Stopp 1 (3)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundImage15",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlaufswinkel (Grad) (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "sheetBackgroundImage16",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Farbanteil (4)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 4,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "sheetBackgroundImage17",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlauf Stopp 1 (4)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundImage18",
+      "type": "number",
+      "label": "Blatt: Hintergrundbild Verlauf Stopp 2 (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundSize",
+      "type": "number",
+      "label": "Blatt: Hintergrund-Grösse x (Teil 1)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 50,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundSize2",
+      "type": "number",
+      "label": "Blatt: Hintergrund-Grösse y (Teil 1)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 50,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundSize3",
+      "type": "number",
+      "label": "Blatt: Hintergrund-Grösse x (Teil 2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 50,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundSize4",
+      "type": "number",
+      "label": "Blatt: Hintergrund-Grösse y (Teil 2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 50,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundSize5",
+      "type": "number",
+      "label": "Blatt: Hintergrund-Grösse x (Teil 3)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundSize6",
+      "type": "number",
+      "label": "Blatt: Hintergrund-Grösse y (Teil 3)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundSize7",
+      "type": "number",
+      "label": "Blatt: Hintergrund-Grösse x (Teil 4)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBackgroundSize8",
+      "type": "number",
+      "label": "Blatt: Hintergrund-Grösse y (Teil 4)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBeforeWidth",
+      "type": "number",
+      "label": "Blatt (Ebene 1): Breite",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBeforeHeight",
+      "type": "number",
+      "label": "Blatt (Ebene 1): Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBeforeBorder",
+      "type": "color",
+      "label": "Blatt (Ebene 1): Rand Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "sheetBeforeBorder2",
+      "type": "number",
+      "label": "Blatt (Ebene 1): Rand Stärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 3,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "sheetAfterWidth",
+      "type": "number",
+      "label": "Blatt (Ebene 2): Breite",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "sheetAfterHeight",
+      "type": "number",
+      "label": "Blatt (Ebene 2): Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "sheetAfterBorder",
+      "type": "color",
+      "label": "Blatt (Ebene 2): Rand Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "sheetAfterBorder2",
+      "type": "number",
+      "label": "Blatt (Ebene 2): Rand Stärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 3,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBeforeLeft",
+      "type": "number",
+      "label": "Blatt (Ebene 1): Lage links",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "sheetBeforeTop",
+      "type": "number",
+      "label": "Blatt (Ebene 1): Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "sheetAfterRight",
+      "type": "number",
+      "label": "Blatt (Ebene 2): Lage rechts",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "sheetAfterBottom",
+      "type": "number",
+      "label": "Blatt (Ebene 2): Lage unten",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "kfFlicker0p90p100pOpacity",
+      "type": "number",
+      "label": "Flackern (0 %, 90 %, 100 %): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfFlicker91p93p95pOpacity",
+      "type": "number",
+      "label": "Flackern (91 %, 93 %, 95 %): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.72,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfFlicker92p94pOpacity",
+      "type": "number",
+      "label": "Flackern (92 %, 94 %): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfTickerFromTransform",
+      "type": "number",
+      "label": "Lauftext (Start): Verformung Verschiebung x (vw)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 100,
+      "min": -400,
+      "max": 400,
+      "step": 0.01
+    },
+    {
+      "key": "kfTickerFromTransform2",
+      "type": "number",
+      "label": "Lauftext (Start): Verformung Verschiebung y",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "kfTickerToTransform",
+      "type": "number",
+      "label": "Lauftext (Ende): Verformung Verschiebung x",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -100,
+      "min": -300,
+      "max": 300,
+      "unit": "%"
+    },
+    {
+      "key": "kfTickerToTransform2",
+      "type": "number",
+      "label": "Lauftext (Ende): Verformung Verschiebung y",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "gridFineShare",
+      "type": "number",
+      "label": "Feinraster: Anteil der Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.27,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "lightPlanSky",
+      "type": "number",
+      "label": "Licht Starting: Himmel",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.9,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "lightPlanMain",
+      "type": "number",
+      "label": "Licht Starting: Hauptlicht",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.1,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "lightRainSky",
+      "type": "number",
+      "label": "Licht BRB: Himmel",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.1,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "lightRainMain",
+      "type": "number",
+      "label": "Licht BRB: Mondlicht",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.4,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "lightDuskSky",
+      "type": "number",
+      "label": "Licht Ending: Himmel",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.1,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "lightDuskMain",
+      "type": "number",
+      "label": "Licht Ending: Sonne",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.6,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "lightDuskFill",
+      "type": "number",
+      "label": "Licht Ending: Aufhellung",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.8,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "rainGround",
+      "type": "number",
+      "label": "Licht BRB: Boden (Anteil der Seite)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.6,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "duskGround",
+      "type": "number",
+      "label": "Licht Ending: Boden (Anteil des Abendglühens)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "moonWhite",
+      "type": "number",
+      "label": "Licht BRB: Mond weiss (Anteil)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "sunWhite",
+      "type": "number",
+      "label": "Licht Ending: Sonne weiss (Anteil)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.45,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "lightningFlash",
+      "type": "number",
+      "label": "Blitz: Lichtstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 2.2,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "lightningSkyFlash",
+      "type": "number",
+      "label": "Blitz: Himmel hellt auf (Anteil)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.12,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "splashSize",
+      "type": "number",
+      "label": "Spritzer: Grösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.06,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "splashOpacity",
+      "type": "number",
+      "label": "Spritzer: Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.95,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "frameFrontFill",
+      "type": "number",
+      "label": "Dachstuhl: vorderer Binder Füllung",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.22,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "frameFaintEdge",
+      "type": "number",
+      "label": "Dachstuhl: Nebenteile Kanten (Anteil)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.72,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "frameFaintFill",
+      "type": "number",
+      "label": "Dachstuhl: Nebenteile Füllung (Anteil)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "tileSlateShine",
+      "type": "number",
+      "label": "Schiefer: Glanz",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 40,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "tileCopperShine",
+      "type": "number",
+      "label": "Kupfer: Glanz",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "tileSlateOpacity",
+      "type": "number",
+      "label": "Schiefer: Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.92,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "tileEdgeOpacity",
+      "type": "number",
+      "label": "Ziegel: Kanten Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.55,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "tileSlateHighlight",
+      "type": "number",
+      "label": "Schiefer: Glanzlicht (Anteil)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.2,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "tileCopperHighlight",
+      "type": "number",
+      "label": "Kupfer: Glanzlicht (Anteil)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "tileCopperWarm",
+      "type": "number",
+      "label": "Kupfer: mit Ziegelrot gewärmt (Anteil)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "tileCopperDark",
+      "type": "number",
+      "label": "Kupfer: Helligkeit (Anteil)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.75,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "wreathWaveSpeed",
+      "type": "number",
+      "label": "Richtkranz: Wehen Tempo",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 3.2,
+      "min": 0,
+      "max": 20,
+      "step": 0.1
+    },
+    {
+      "key": "wreathWaveAlong",
+      "type": "number",
+      "label": "Richtkranz: Wellen entlang des Bands",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 3,
+      "min": 0,
+      "max": 20,
+      "step": 0.1
+    },
+    {
+      "key": "wreathWaveSway",
+      "type": "number",
+      "label": "Richtkranz: Bänder schwingen",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.18,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "wreathWaveLean",
+      "type": "number",
+      "label": "Richtkranz: Bänder neigen sich",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.25,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "fireworksSparkSize",
+      "type": "number",
+      "label": "Feuerwerk: Funkengrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.13,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "dimensionSvgHeight",
+      "type": "number",
+      "label": "Masslinie Grafik: Höhe",
+      "group": "Feinschliff: Alerts",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "dimensionLineStroke",
+      "type": "color",
+      "label": "Masslinie Linie: Linienfarbe Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "dimensionLineStrokeWidth",
+      "type": "number",
+      "label": "Masslinie Linie: Linienstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 1.5,
+      "min": 0,
+      "max": 6,
+      "step": 0.01
+    },
+    {
+      "key": "dimensionHalfStrokeDasharray",
+      "type": "number",
+      "label": "Masslinie Hälfte: Strichmuster",
+      "group": "Feinschliff: Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "dimensionHalfStrokeDashoffset",
+      "type": "number",
+      "label": "Masslinie Hälfte: Strichversatz",
+      "group": "Feinschliff: Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "dimensionHalfAnimation",
+      "type": "number",
+      "label": "Masslinie Hälfte: Animation Dauer",
+      "group": "Feinschliff: Alerts",
+      "default": 550,
+      "min": 0,
+      "max": 2750,
+      "unit": "ms",
+      "step": 10
+    },
+    {
+      "key": "dimensionTextMarginBottom",
+      "type": "number",
+      "label": "Masslinie Text: Abstand unten",
+      "group": "Feinschliff: Alerts",
+      "default": 2,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "dimensionTextFontSize",
+      "type": "number",
+      "label": "Masslinie Text: Schriftgrösse",
+      "group": "Feinschliff: Alerts",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "dimensionTextFontWeight",
+      "type": "number",
+      "label": "Masslinie Text: Schriftstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "dimensionTextLetterSpacing",
+      "type": "number",
+      "label": "Masslinie Text: Zeichenabstand",
+      "group": "Feinschliff: Alerts",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "dimensionTextColor",
+      "type": "color",
+      "label": "Masslinie Text: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "dimensionTextAnimation",
+      "type": "number",
+      "label": "Masslinie Text: Animation Dauer",
+      "group": "Feinschliff: Alerts",
+      "default": 550,
+      "min": 0,
+      "max": 2750,
+      "unit": "ms",
+      "step": 10
+    },
+    {
+      "key": "dimensionTextFont",
+      "type": "font",
+      "label": "Masslinie Text: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "alertLeft",
+      "type": "number",
+      "label": "Alert: Lage links",
+      "group": "Feinschliff: Alerts",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "alertTop",
+      "type": "number",
+      "label": "Alert: Lage oben",
+      "group": "Feinschliff: Alerts",
+      "default": 620,
+      "min": -2480,
+      "max": 2480,
+      "unit": "px"
+    },
+    {
+      "key": "alertTransform",
+      "type": "number",
+      "label": "Alert: Verformung Verschiebung x",
+      "group": "Feinschliff: Alerts",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "alertSignMarginTop",
+      "type": "number",
+      "label": "Alert Schild: Abstand oben",
+      "group": "Feinschliff: Alerts",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertLeavingAlertSignAnimation",
+      "type": "number",
+      "label": "Alert beim Gehen Alert Schild: Animation Dauer Anteil von „Schliessen: Dauer“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "alertLeavingDimensionAnimation",
+      "type": "number",
+      "label": "Alert beim Gehen Masslinie: Animation Dauer Anteil von „Schliessen: Dauer“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "alertTagFontSize",
+      "type": "number",
+      "label": "Alert Marke: Schriftgrösse",
+      "group": "Feinschliff: Alerts",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "alertTagFontWeight",
+      "type": "number",
+      "label": "Alert Marke: Schriftstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "alertTagLetterSpacing",
+      "type": "number",
+      "label": "Alert Marke: Zeichenabstand",
+      "group": "Feinschliff: Alerts",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertTagColor",
+      "type": "color",
+      "label": "Alert Marke: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "alertTagFont",
+      "type": "font",
+      "label": "Alert Marke: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "alertNameMargin",
+      "type": "number",
+      "label": "Alert Name: Aussenabstand oben/unten",
+      "group": "Feinschliff: Alerts",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertNameFontSize",
+      "type": "number",
+      "label": "Alert Name: Schriftgrösse",
+      "group": "Feinschliff: Alerts",
+      "default": 1.9,
+      "min": 0,
+      "max": 7.6,
+      "step": 0.01
+    },
+    {
+      "key": "alertNameFontWeight",
+      "type": "number",
+      "label": "Alert Name: Schriftstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "alertNameLetterSpacing",
+      "type": "number",
+      "label": "Alert Name: Zeichenabstand",
+      "group": "Feinschliff: Alerts",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertNameColor",
+      "type": "color",
+      "label": "Alert Name: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "alertNameTextShadow",
+      "type": "color",
+      "label": "Alert Name: Textschatten Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "alertNameTextShadow2",
+      "type": "number",
+      "label": "Alert Name: Textschatten Unschärfe Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "alertNameTextShadow3",
+      "type": "number",
+      "label": "Alert Name: Textschatten Unschärfe",
+      "group": "Feinschliff: Alerts",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertNameTextShadow4",
+      "type": "number",
+      "label": "Alert Name: Textschatten Farbanteil",
+      "group": "Feinschliff: Alerts",
+      "default": 70,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "alertNameFont",
+      "type": "font",
+      "label": "Alert Name: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "alertLineFontSize",
+      "type": "number",
+      "label": "Alert Linie: Schriftgrösse Anteil von „Schriftgrösse“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "alertLineFontWeight",
+      "type": "number",
+      "label": "Alert Linie: Schriftstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "alertLineColor",
+      "type": "color",
+      "label": "Alert Linie: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "alertLineFont",
+      "type": "font",
+      "label": "Alert Linie: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "alertTimerHeight",
+      "type": "number",
+      "label": "Alert Zeitbalken: Höhe",
+      "group": "Feinschliff: Alerts",
+      "default": 3,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertTimerMarginTop",
+      "type": "number",
+      "label": "Alert Zeitbalken: Abstand oben",
+      "group": "Feinschliff: Alerts",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertTimerBackground",
+      "type": "color",
+      "label": "Alert Zeitbalken: Hintergrund Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "dimStroke",
+      "type": "color",
+      "label": "Mass: Linienfarbe Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "dimStrokeWidth",
+      "type": "number",
+      "label": "Mass: Linienstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 1.5,
+      "min": 0,
+      "max": 6,
+      "step": 0.01
+    },
+    {
+      "key": "dimOpacity",
+      "type": "number",
+      "label": "Mass: Deckkraft",
+      "group": "Feinschliff: Alerts",
+      "default": 0.7,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "tickOpacity",
+      "type": "number",
+      "label": "Haken: Deckkraft",
+      "group": "Feinschliff: Alerts",
+      "default": 0.4,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "dimDoneStroke",
+      "type": "color",
+      "label": "Mass fertig: Linienfarbe Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "dimDoneStrokeWidth",
+      "type": "number",
+      "label": "Mass fertig: Linienstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 3,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "key": "dimDoneFilter",
+      "type": "color",
+      "label": "Mass fertig: Filter Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "dimDoneFilter2",
+      "type": "number",
+      "label": "Mass fertig: Filter Schlagschatten Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "dimDoneFilter3",
+      "type": "number",
+      "label": "Mass fertig: Filter Schlagschatten",
+      "group": "Feinschliff: Alerts",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chatGap",
+      "type": "number",
+      "label": "Chat: Abstand",
+      "group": "Feinschliff: Chat",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chatPadding",
+      "type": "number",
+      "label": "Chat: Innenabstand",
+      "group": "Feinschliff: Chat",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "chatRowPadding",
+      "type": "number",
+      "label": "Chat Zeile: Innenabstand oben/unten",
+      "group": "Feinschliff: Chat",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chatRowPadding2",
+      "type": "number",
+      "label": "Chat Zeile: Innenabstand links/rechts",
+      "group": "Feinschliff: Chat",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "chatRowAnimation",
+      "type": "number",
+      "label": "Chat Zeile: Animation Dauer Anteil von „Öffnen: Dauer“ (%)",
+      "group": "Feinschliff: Chat",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "chatListeChatRowBorderBottom",
+      "type": "color",
+      "label": "Chat (Liste) Chat Zeile: Rand unten Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "chatListeChatRowBorderBottom2",
+      "type": "number",
+      "label": "Chat (Liste) Chat Zeile: Rand unten Stärke",
+      "group": "Feinschliff: Chat",
+      "default": 1.5,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "chatListeChatRowBorderBottom3",
+      "type": "number",
+      "label": "Chat (Liste) Chat Zeile: Rand unten Farbanteil",
+      "group": "Feinschliff: Chat",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "chatRowFadesAnimation",
+      "type": "number",
+      "label": "Chat-Zeile beim Ausblenden: Animation Dauer (Teil 1) Anteil von „Öffnen: Dauer“ (%)",
+      "group": "Feinschliff: Chat",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "chatRowFadesAnimation2",
+      "type": "number",
+      "label": "Chat-Zeile beim Ausblenden: Animation Dauer (Teil 2)",
+      "group": "Feinschliff: Chat",
+      "default": 600,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms",
+      "step": 10
+    },
+    {
+      "key": "chatNameFontSize",
+      "type": "number",
+      "label": "Chat Name: Schriftgrösse",
+      "group": "Feinschliff: Chat",
+      "default": 0.75,
+      "min": 0,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "chatNameFontWeight",
+      "type": "number",
+      "label": "Chat Name: Schriftstärke",
+      "group": "Feinschliff: Chat",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "chatNameLetterSpacing",
+      "type": "number",
+      "label": "Chat Name: Zeichenabstand",
+      "group": "Feinschliff: Chat",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chatNameColor2",
+      "type": "color",
+      "label": "Chat Name: Textfarbe",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "chatNameFont",
+      "type": "font",
+      "label": "Chat Name: Schrift",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "chatDimWidth",
+      "type": "number",
+      "label": "Chat Mass: Breite",
+      "group": "Feinschliff: Chat",
+      "default": 120,
+      "min": 0,
+      "max": 480,
+      "unit": "px"
+    },
+    {
+      "key": "chatDimMargin",
+      "type": "number",
+      "label": "Chat Mass: Aussenabstand oben/unten",
+      "group": "Feinschliff: Chat",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chatDimBorderTop",
+      "type": "color",
+      "label": "Chat Mass: Rand oben Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "chatDimBorderTop2",
+      "type": "number",
+      "label": "Chat Mass: Rand oben Stärke",
+      "group": "Feinschliff: Chat",
+      "default": 1.5,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "chatDimBorderTop3",
+      "type": "number",
+      "label": "Chat Mass: Rand oben Farbanteil",
+      "group": "Feinschliff: Chat",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "chatTextFontSize",
+      "type": "number",
+      "label": "Chat Text: Schriftgrösse",
+      "group": "Feinschliff: Chat",
+      "default": 0.8,
+      "min": 0,
+      "max": 3.2,
+      "step": 0.01
+    },
+    {
+      "key": "chatTextFont",
+      "type": "font",
+      "label": "Chat Text: Schrift",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "chatRowActionChatTextColor",
+      "type": "color",
+      "label": "Chat-Zeile Aktion: Text: Textfarbe",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "badgeMarginRight",
+      "type": "number",
+      "label": "Badge: Abstand rechts",
+      "group": "Feinschliff: Chat",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "badgePadding",
+      "type": "number",
+      "label": "Badge: Innenabstand links/rechts",
+      "group": "Feinschliff: Chat",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "badgeBackground",
+      "type": "color",
+      "label": "Badge: Hintergrund Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "badgeColor",
+      "type": "color",
+      "label": "Badge: Textfarbe",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "onAccent"
+    },
+    {
+      "key": "badgeFontWeight",
+      "type": "number",
+      "label": "Badge: Schriftstärke",
+      "group": "Feinschliff: Chat",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "badgeFont",
+      "type": "font",
+      "label": "Badge: Schrift",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "emoteHeight",
+      "type": "number",
+      "label": "Emote: Höhe (em)",
+      "group": "Feinschliff: Chat",
+      "default": 1.4,
+      "min": 0,
+      "max": 5.6,
+      "step": 0.01
+    },
+    {
+      "key": "toneCopperColor",
+      "type": "color",
+      "label": "Ton Kupfer: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "toneAccentColor",
+      "type": "color",
+      "label": "Ton Akzent: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "toneRainColor",
+      "type": "color",
+      "label": "Ton Regen: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "rain"
+    },
+    {
+      "key": "toneLineColor",
+      "type": "color",
+      "label": "Ton Linie: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "rootLineHeight",
+      "type": "number",
+      "label": "Theme: Zeilenhöhe",
+      "group": "Feinschliff: Allgemein",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "camFrameInset",
+      "type": "number",
+      "label": "Kamera Rahmen: Lage",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "camFrameBorder",
+      "type": "color",
+      "label": "Kamera Rahmen: Rand Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "camFrameBorder2",
+      "type": "number",
+      "label": "Kamera Rahmen: Rand Stärke",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 1.5,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "camFrameBorder3",
+      "type": "number",
+      "label": "Kamera Rahmen: Rand Farbanteil",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "camCornerWidth",
+      "type": "number",
+      "label": "Kamera Ecke: Breite",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 36,
+      "min": 0,
+      "max": 144,
+      "unit": "px"
+    },
+    {
+      "key": "camCornerHeight",
+      "type": "number",
+      "label": "Kamera Ecke: Höhe",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 36,
+      "min": 0,
+      "max": 144,
+      "unit": "px"
+    },
+    {
+      "key": "camCornerBorder",
+      "type": "color",
+      "label": "Kamera Ecke: Rand Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "camCornerBorder2",
+      "type": "number",
+      "label": "Kamera Ecke: Rand Stärke",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 3,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camCornerStartLeft",
+      "type": "number",
+      "label": "Kamera Ecke Anfang: Lage links",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camCornerStartTop",
+      "type": "number",
+      "label": "Kamera Ecke Anfang: Lage oben",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camCornerEndRight",
+      "type": "number",
+      "label": "Kamera Ecke Ende: Lage rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camCornerEndBottom",
+      "type": "number",
+      "label": "Kamera Ecke Ende: Lage unten",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camDimTopLeft",
+      "type": "number",
+      "label": "Kamera Mass oben: Lage links",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 20,
+      "min": -100,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "camDimTopRight",
+      "type": "number",
+      "label": "Kamera Mass oben: Lage rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 20,
+      "min": -100,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "camDimTopTop",
+      "type": "number",
+      "label": "Kamera Mass oben: Lage oben",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 26,
+      "min": -104,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "camDimSideRight",
+      "type": "number",
+      "label": "Kamera Mass Seite: Lage rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 26,
+      "min": -104,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "camDimSideTop",
+      "type": "number",
+      "label": "Kamera Mass Seite: Lage oben",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "camDimSideWidth",
+      "type": "number",
+      "label": "Kamera Mass Seite: Breite (vh)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 40,
+      "min": 0,
+      "max": 160,
+      "step": 0.01
+    },
+    {
+      "key": "camDimSideTransform",
+      "type": "number",
+      "label": "Kamera Mass Seite: Verformung Verschiebung x",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "camDimSideTransform2",
+      "type": "number",
+      "label": "Kamera Mass Seite: Verformung Verschiebung y",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "camDimSideTransform3",
+      "type": "number",
+      "label": "Kamera Mass Seite: Verformung Drehung (Grad)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "camDimSideTransform4",
+      "type": "number",
+      "label": "Kamera Mass Seite: Verformung Verschiebung y (2)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "camNameLeft",
+      "type": "number",
+      "label": "Kamera Name: Lage links",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "camNameBottom",
+      "type": "number",
+      "label": "Kamera Name: Lage unten",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "camNamePadding",
+      "type": "number",
+      "label": "Kamera Name: Innenabstand oben/unten",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 9,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camNamePadding2",
+      "type": "number",
+      "label": "Kamera Name: Innenabstand links/rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "camNameBorder",
+      "type": "color",
+      "label": "Kamera Name: Rand Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "camNameBorder2",
+      "type": "number",
+      "label": "Kamera Name: Rand Stärke",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 1.5,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "camNameBorder3",
+      "type": "number",
+      "label": "Kamera Name: Rand Farbanteil",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "camNameBackground",
+      "type": "color",
+      "label": "Kamera Name: Hintergrund Farbe (Blaupause (Hintergrund))",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "blueprint"
+    },
+    {
+      "key": "camNameBackground2",
+      "type": "number",
+      "label": "Kamera Name: Hintergrund Farbanteil",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "camNameFontWeight",
+      "type": "number",
+      "label": "Kamera Name: Schriftstärke",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "camNameLetterSpacing",
+      "type": "number",
+      "label": "Kamera Name: Zeichenabstand",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camNameColor",
+      "type": "color",
+      "label": "Kamera Name: Textfarbe",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "camNameFont",
+      "type": "font",
+      "label": "Kamera Name: Schrift",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "camLiveRight",
+      "type": "number",
+      "label": "Kamera Live: Lage rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "camLiveTop",
+      "type": "number",
+      "label": "Kamera Live: Lage oben",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "camLivePadding",
+      "type": "number",
+      "label": "Kamera Live: Innenabstand links/rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camLiveBackground",
+      "type": "color",
+      "label": "Kamera Live: Hintergrund Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "camLiveColor",
+      "type": "color",
+      "label": "Kamera Live: Textfarbe",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "onAccent"
+    },
+    {
+      "key": "camLiveFontWeight",
+      "type": "number",
+      "label": "Kamera Live: Schriftstärke",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "camLiveLetterSpacing",
+      "type": "number",
+      "label": "Kamera Live: Zeichenabstand",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camLiveFont",
+      "type": "font",
+      "label": "Kamera Live: Schrift",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "musicLeft",
+      "type": "number",
+      "label": "Musik: Lage links",
+      "group": "Feinschliff: Musik",
+      "default": 12,
+      "min": -48,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "musicBottom",
+      "type": "number",
+      "label": "Musik: Lage unten",
+      "group": "Feinschliff: Musik",
+      "default": 12,
+      "min": -48,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "musicWidth",
+      "type": "number",
+      "label": "Musik: Breite Anteil von „Radio: Grösse (Faktor)“ (%)",
+      "group": "Feinschliff: Musik",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "musicWidth2",
+      "type": "number",
+      "label": "Musik: Breite",
+      "group": "Feinschliff: Musik",
+      "default": 560,
+      "min": 0,
+      "max": 2240,
+      "unit": "px"
+    },
+    {
+      "key": "musicTransition",
+      "type": "number",
+      "label": "Musik: Übergang Dauer",
+      "group": "Feinschliff: Musik",
+      "default": 600,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms",
+      "step": 10
+    },
+    {
+      "key": "radioBodyFill",
+      "type": "color",
+      "label": "Radio Gehäuse: Füllfarbe Farbe (Radio: Gehäuse)",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "radioBody"
+    },
+    {
+      "key": "radioBodyStroke",
+      "type": "color",
+      "label": "Radio Gehäuse: Linienfarbe Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "radioBodyStrokeWidth",
+      "type": "number",
+      "label": "Radio Gehäuse: Linienstärke",
+      "group": "Feinschliff: Musik",
+      "default": 0.003,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "radioBumperFill",
+      "type": "color",
+      "label": "Radio Puffer: Füllfarbe Farbe (Radio: Puffer und Bügel)",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "radioBumper"
+    },
+    {
+      "key": "radioHandleFill",
+      "type": "color",
+      "label": "Radio Bügel: Füllfarbe Farbe (Radio: Puffer und Bügel)",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "radioBumper"
+    },
+    {
+      "key": "radioGrilleFill",
+      "type": "color",
+      "label": "Radio Gitter: Füllfarbe Farbe (Schiefer dunkel)",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "slateDark"
+    },
+    {
+      "key": "radioGrilleStroke",
+      "type": "color",
+      "label": "Radio Gitter: Linienfarbe Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "radioGrilleStroke2",
+      "type": "number",
+      "label": "Radio Gitter: Linienfarbe Farbanteil",
+      "group": "Feinschliff: Musik",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "radioGrilleStrokeWidth",
+      "type": "number",
+      "label": "Radio Gitter: Linienstärke",
+      "group": "Feinschliff: Musik",
+      "default": 0.004,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "radioGrilleStrokeDasharray",
+      "type": "number",
+      "label": "Radio Gitter: Strichmuster Wert 1",
+      "group": "Feinschliff: Musik",
+      "default": 0.01,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "radioGrilleStrokeDasharray2",
+      "type": "number",
+      "label": "Radio Gitter: Strichmuster Wert 2",
+      "group": "Feinschliff: Musik",
+      "default": 0.008,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "radioDisplayPadding",
+      "type": "number",
+      "label": "Radio Display: Innenabstand Anteil von „Radio: Grösse (Faktor)“ (%)",
+      "group": "Feinschliff: Musik",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "radioDisplayPadding2",
+      "type": "number",
+      "label": "Radio Display: Innenabstand",
+      "group": "Feinschliff: Musik",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "radioDisplayBackground",
+      "type": "color",
+      "label": "Radio Display: Hintergrund Farbe (Radio: Display)",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "radioDisplay"
+    },
+    {
+      "key": "radioDisplayColor",
+      "type": "color",
+      "label": "Radio Display: Textfarbe",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "page"
+    },
+    {
+      "key": "radioDisplayFontSize",
+      "type": "number",
+      "label": "Radio Display: Schriftgrösse Anteil von „Radio: Grösse (Faktor)“ (%)",
+      "group": "Feinschliff: Musik",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "radioDisplayFontSize2",
+      "type": "number",
+      "label": "Radio Display: Schriftgrösse",
+      "group": "Feinschliff: Musik",
+      "default": 13,
+      "min": 0,
+      "max": 52,
+      "unit": "px"
+    },
+    {
+      "key": "radioDisplayBorderRadius",
+      "type": "number",
+      "label": "Radio Display: Eckenradius Anteil von „Radio: Grösse (Faktor)“ (%)",
+      "group": "Feinschliff: Musik",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "radioDisplayBorderRadius2",
+      "type": "number",
+      "label": "Radio Display: Eckenradius",
+      "group": "Feinschliff: Musik",
+      "default": 4,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "radioDisplayBoxShadow",
+      "type": "color",
+      "label": "Radio Display: Schatten Farbe (Radio: Display)",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "radioDisplay"
+    },
+    {
+      "key": "radioDisplayBoxShadow2",
+      "type": "number",
+      "label": "Radio Display: Schatten Unschärfe Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Musik",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "radioDisplayBoxShadow3",
+      "type": "number",
+      "label": "Radio Display: Schatten Unschärfe",
+      "group": "Feinschliff: Musik",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "radioDisplayBoxShadow4",
+      "type": "number",
+      "label": "Radio Display: Schatten Farbanteil",
+      "group": "Feinschliff: Musik",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "radioDisplayFont",
+      "type": "font",
+      "label": "Radio Display: Schrift",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "trackGap",
+      "type": "number",
+      "label": "Song: Abstand",
+      "group": "Feinschliff: Musik",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "coverAspectRatio",
+      "type": "number",
+      "label": "Cover: Seitenverhältnis",
+      "group": "Feinschliff: Musik",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "musicLabelFontSize",
+      "type": "number",
+      "label": "Musik Beschriftung: Schriftgrösse (em)",
+      "group": "Feinschliff: Musik",
+      "default": 0.7,
+      "min": 0,
+      "max": 2.8,
+      "step": 0.01
+    },
+    {
+      "key": "musicLabelFontWeight",
+      "type": "number",
+      "label": "Musik Beschriftung: Schriftstärke",
+      "group": "Feinschliff: Musik",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "musicLabelLetterSpacing",
+      "type": "number",
+      "label": "Musik Beschriftung: Zeichenabstand",
+      "group": "Feinschliff: Musik",
+      "default": 2,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "musicLabelFont",
+      "type": "font",
+      "label": "Musik Beschriftung: Schrift",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "trackTitleFontWeight",
+      "type": "number",
+      "label": "Song Titel: Schriftstärke",
+      "group": "Feinschliff: Musik",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "trackTitleColor",
+      "type": "color",
+      "label": "Song Titel: Textfarbe",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "trackTitleFont",
+      "type": "font",
+      "label": "Song Titel: Schrift",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "musicIdleFontWeight",
+      "type": "number",
+      "label": "Musik ohne Song: Schriftstärke",
+      "group": "Feinschliff: Musik",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "musicIdleLetterSpacing",
+      "type": "number",
+      "label": "Musik ohne Song: Zeichenabstand",
+      "group": "Feinschliff: Musik",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "musicIdleColor",
+      "type": "color",
+      "label": "Musik ohne Song: Textfarbe",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "musicIdleFont",
+      "type": "font",
+      "label": "Musik ohne Song: Schrift",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "musicSignTrackHeight",
+      "type": "number",
+      "label": "Musik Schild Song: Höhe",
+      "group": "Feinschliff: Musik",
+      "default": 72,
+      "min": 0,
+      "max": 288,
+      "unit": "px"
+    },
+    {
+      "key": "musicPlainTrackHeight",
+      "type": "number",
+      "label": "Musik (schlicht) Song: Höhe",
+      "group": "Feinschliff: Musik",
+      "default": 72,
+      "min": 0,
+      "max": 288,
+      "unit": "px"
+    },
+    {
+      "key": "musicSignMusicLabelColor",
+      "type": "color",
+      "label": "Musik Schild Musik Beschriftung: Textfarbe",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "equalizerGap",
+      "type": "number",
+      "label": "Equalizer: Abstand",
+      "group": "Feinschliff: Musik",
+      "default": 2,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "equalizerHeight",
+      "type": "number",
+      "label": "Equalizer: Höhe",
+      "group": "Feinschliff: Musik",
+      "default": 60,
+      "min": 0,
+      "max": 180,
+      "unit": "%"
+    },
+    {
+      "key": "equalizerIWidth",
+      "type": "number",
+      "label": "Equalizer-Balken: Breite",
+      "group": "Feinschliff: Musik",
+      "default": 3,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "equalizerIAnimation",
+      "type": "number",
+      "label": "Equalizer-Balken: Animation Dauer",
+      "group": "Feinschliff: Musik",
+      "default": 900,
+      "min": 0,
+      "max": 4500,
+      "unit": "ms",
+      "step": 10
+    },
+    {
+      "key": "equalizerIAnimation2",
+      "type": "number",
+      "label": "Equalizer-Balken: Animation Verzögerung",
+      "group": "Feinschliff: Musik",
+      "default": -130,
+      "min": -130,
+      "max": 1000,
+      "unit": "ms",
+      "step": 10
+    },
+    {
+      "key": "musicProgressMarginTop",
+      "type": "number",
+      "label": "Musik Fortschritt: Abstand oben",
+      "group": "Feinschliff: Musik",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "kfEqFromTransform",
+      "type": "number",
+      "label": "Equalizer (Start): Verformung Grösse y",
+      "group": "Feinschliff: Musik",
+      "default": 0.2,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "fxTextFontWeight",
+      "type": "number",
+      "label": "Effekte Text: Schriftstärke",
+      "group": "Feinschliff: Effekte",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "fxTextLetterSpacing",
+      "type": "number",
+      "label": "Effekte Text: Zeichenabstand",
+      "group": "Feinschliff: Effekte",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "fxTextTextShadow",
+      "type": "color",
+      "label": "Effekte Text: Textschatten Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Effekte",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "fxTextTextShadow2",
+      "type": "number",
+      "label": "Effekte Text: Textschatten Unschärfe Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Effekte",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "fxTextTextShadow3",
+      "type": "number",
+      "label": "Effekte Text: Textschatten Unschärfe",
+      "group": "Feinschliff: Effekte",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "fxTextTextShadow4",
+      "type": "number",
+      "label": "Effekte Text: Textschatten Farbanteil",
+      "group": "Feinschliff: Effekte",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "fxTextColor",
+      "type": "color",
+      "label": "Effekte Text: Textfarbe",
+      "group": "Feinschliff: Effekte",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "fxTextFont",
+      "type": "font",
+      "label": "Effekte Text: Schrift",
+      "group": "Feinschliff: Effekte",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "infoMinHeight",
+      "type": "number",
+      "label": "Befehlsseite: Mindesthöhe (vh)",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 100,
+      "min": 0,
+      "max": 400,
+      "step": 0.01
+    },
+    {
+      "key": "infoBackground",
+      "type": "color",
+      "label": "Befehlsseite: Hintergrund Farbe (Blaupause dunkel (Verlauf unten))",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "inherit": "page"
+    },
+    {
+      "key": "infoPadding",
+      "type": "number",
+      "label": "Befehlsseite: Innenabstand oben/unten",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 32,
+      "min": 0,
+      "max": 128,
+      "unit": "px"
+    },
+    {
+      "key": "infoPadding2",
+      "type": "number",
+      "label": "Befehlsseite: Innenabstand links/rechts",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "infoColumnGap",
+      "type": "number",
+      "label": "Befehlsseite Spalte: Abstand",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "infoTitleFontSize",
+      "type": "number",
+      "label": "Befehlsseite Titel: Schriftgrösse",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 1.6,
+      "min": 0,
+      "max": 6.4,
+      "step": 0.01
+    },
+    {
+      "key": "infoTitleLetterSpacing",
+      "type": "number",
+      "label": "Befehlsseite Titel: Zeichenabstand",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "infoTitleColor",
+      "type": "color",
+      "label": "Befehlsseite Titel: Textfarbe",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "infoTitleFont",
+      "type": "font",
+      "label": "Befehlsseite Titel: Schrift",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "infoIntroColor",
+      "type": "color",
+      "label": "Befehlsseite Einleitung: Textfarbe",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "infoDetailColor",
+      "type": "color",
+      "label": "Befehlsseite Detail: Textfarbe",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "infoHeadingMargin",
+      "type": "number",
+      "label": "Befehlsseite Überschrift: Aussenabstand unten",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 12,
+      "min": -48,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "infoHeadingFontSize",
+      "type": "number",
+      "label": "Befehlsseite Überschrift: Schriftgrösse",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "infoHeadingLetterSpacing",
+      "type": "number",
+      "label": "Befehlsseite Überschrift: Zeichenabstand",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "infoHeadingColor",
+      "type": "color",
+      "label": "Befehlsseite Überschrift: Textfarbe",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "infoHeadingFont",
+      "type": "font",
+      "label": "Befehlsseite Überschrift: Schrift",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "infoEntryPadding",
+      "type": "number",
+      "label": "Befehlsseite Eintrag: Innenabstand oben/unten",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "infoEntryBorderTop",
+      "type": "color",
+      "label": "Befehlsseite Eintrag: Rand oben Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "infoEntryBorderTop2",
+      "type": "number",
+      "label": "Befehlsseite Eintrag: Rand oben Stärke",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 1,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "infoEntryBorderTop3",
+      "type": "number",
+      "label": "Befehlsseite Eintrag: Rand oben Farbanteil",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "infoTextMargin",
+      "type": "number",
+      "label": "Befehlsseite Text: Aussenabstand oben",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "statsProtocolLeft",
+      "type": "number",
+      "label": "Tagesabschluss Protokoll: Lage links",
+      "group": "Feinschliff: Protokoll",
+      "default": 48,
+      "min": -192,
+      "max": 192,
+      "unit": "px"
+    },
+    {
+      "key": "statsProtocolTop",
+      "type": "number",
+      "label": "Tagesabschluss Protokoll: Lage oben",
+      "group": "Feinschliff: Protokoll",
+      "default": 24,
+      "min": -96,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "statsStampLeft",
+      "type": "number",
+      "label": "Tagesabschluss Stempel: Lage links",
+      "group": "Feinschliff: Protokoll",
+      "default": 218,
+      "min": -872,
+      "max": 872,
+      "unit": "px"
+    },
+    {
+      "key": "statsStampTop",
+      "type": "number",
+      "label": "Tagesabschluss Stempel: Lage oben",
+      "group": "Feinschliff: Protokoll",
+      "default": 404,
+      "min": -1616,
+      "max": 1616,
+      "unit": "px"
+    },
+    {
+      "key": "protocolLeft",
+      "type": "number",
+      "label": "Protokoll: Lage links",
+      "group": "Feinschliff: Protokoll",
+      "default": 80,
+      "min": -320,
+      "max": 320,
+      "unit": "px"
+    },
+    {
+      "key": "protocolTop",
+      "type": "number",
+      "label": "Protokoll: Lage oben",
+      "group": "Feinschliff: Protokoll",
+      "default": 180,
+      "min": -720,
+      "max": 720,
+      "unit": "px"
+    },
+    {
+      "key": "protocolWidth",
+      "type": "number",
+      "label": "Protokoll: Breite",
+      "group": "Feinschliff: Protokoll",
+      "default": 470,
+      "min": 0,
+      "max": 1880,
+      "unit": "px"
+    },
+    {
+      "key": "protocolPadding",
+      "type": "number",
+      "label": "Protokoll: Innenabstand oben",
+      "group": "Feinschliff: Protokoll",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "protocolPadding2",
+      "type": "number",
+      "label": "Protokoll: Innenabstand links/rechts",
+      "group": "Feinschliff: Protokoll",
+      "default": 26,
+      "min": 0,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "protocolPadding3",
+      "type": "number",
+      "label": "Protokoll: Innenabstand unten",
+      "group": "Feinschliff: Protokoll",
+      "default": 26,
+      "min": 0,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "protocolTransform",
+      "type": "number",
+      "label": "Protokoll: Verformung Verschiebung x",
+      "group": "Feinschliff: Protokoll",
+      "default": -40,
+      "min": -160,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "protocolTransform2",
+      "type": "number",
+      "label": "Protokoll: Verformung Verschiebung x (2)",
+      "group": "Feinschliff: Protokoll",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "protocolH2Margin",
+      "type": "number",
+      "label": "Protokoll: Überschrift: Aussenabstand unten",
+      "group": "Feinschliff: Protokoll",
+      "default": 14,
+      "min": -56,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "protocolH2FontSize",
+      "type": "number",
+      "label": "Protokoll: Überschrift: Schriftgrösse",
+      "group": "Feinschliff: Protokoll",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "protocolH2FontWeight",
+      "type": "number",
+      "label": "Protokoll: Überschrift: Schriftstärke",
+      "group": "Feinschliff: Protokoll",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "protocolH2LetterSpacing",
+      "type": "number",
+      "label": "Protokoll: Überschrift: Zeichenabstand",
+      "group": "Feinschliff: Protokoll",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "protocolH2Color",
+      "type": "color",
+      "label": "Protokoll: Überschrift: Textfarbe",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "protocolH2Font",
+      "type": "font",
+      "label": "Protokoll: Überschrift: Schrift",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "protocolRowPadding",
+      "type": "number",
+      "label": "Protokoll Zeile: Innenabstand oben/unten",
+      "group": "Feinschliff: Protokoll",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "protocolRowFontSize",
+      "type": "number",
+      "label": "Protokoll Zeile: Schriftgrösse",
+      "group": "Feinschliff: Protokoll",
+      "default": 0.85,
+      "min": 0,
+      "max": 3.4,
+      "step": 0.01
+    },
+    {
+      "key": "protocolRowBorderTop",
+      "type": "color",
+      "label": "Protokoll Zeile: Rand oben Farbe (Plan-Linien und Text)",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "protocolRowBorderTop2",
+      "type": "number",
+      "label": "Protokoll Zeile: Rand oben Stärke",
+      "group": "Feinschliff: Protokoll",
+      "default": 1,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "protocolRowBorderTop3",
+      "type": "number",
+      "label": "Protokoll Zeile: Rand oben Farbanteil",
+      "group": "Feinschliff: Protokoll",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "protocolRowColor",
+      "type": "color",
+      "label": "Protokoll Zeile: Textfarbe",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "protocolRowFont",
+      "type": "font",
+      "label": "Protokoll Zeile: Schrift",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "protocolRowBColor",
+      "type": "color",
+      "label": "Protokoll: Zeile (fett): Textfarbe",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "protocolRowBFontWeight",
+      "type": "number",
+      "label": "Protokoll: Zeile (fett): Schriftstärke",
+      "group": "Feinschliff: Protokoll",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "protocolRowBFont",
+      "type": "font",
+      "label": "Protokoll: Zeile (fett): Schrift",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "stampLeft",
+      "type": "number",
+      "label": "Stempel: Lage links",
+      "group": "Feinschliff: Protokoll",
+      "default": 250,
+      "min": -1000,
+      "max": 1000,
+      "unit": "px"
+    },
+    {
+      "key": "stampTop",
+      "type": "number",
+      "label": "Stempel: Lage oben",
+      "group": "Feinschliff: Protokoll",
+      "default": 560,
+      "min": -2240,
+      "max": 2240,
+      "unit": "px"
+    },
+    {
+      "key": "stampPadding",
+      "type": "number",
+      "label": "Stempel: Innenabstand oben/unten",
+      "group": "Feinschliff: Protokoll",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampPadding2",
+      "type": "number",
+      "label": "Stempel: Innenabstand links/rechts",
+      "group": "Feinschliff: Protokoll",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "stampBorder",
+      "type": "color",
+      "label": "Stempel: Rand Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stampBorder2",
+      "type": "number",
+      "label": "Stempel: Rand Stärke",
+      "group": "Feinschliff: Protokoll",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampBorderRadius",
+      "type": "number",
+      "label": "Stempel: Eckenradius",
+      "group": "Feinschliff: Protokoll",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampFontSize",
+      "type": "number",
+      "label": "Stempel: Schriftgrösse",
+      "group": "Feinschliff: Protokoll",
+      "default": 40,
+      "min": 0,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "stampFontWeight",
+      "type": "number",
+      "label": "Stempel: Schriftstärke",
+      "group": "Feinschliff: Protokoll",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "stampLetterSpacing",
+      "type": "number",
+      "label": "Stempel: Zeichenabstand",
+      "group": "Feinschliff: Protokoll",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampColor",
+      "type": "color",
+      "label": "Stempel: Textfarbe",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stampTransform",
+      "type": "number",
+      "label": "Stempel: Verformung Drehung (Grad)",
+      "group": "Feinschliff: Protokoll",
+      "default": -12,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stampTransform2",
+      "type": "number",
+      "label": "Stempel: Verformung Grösse",
+      "group": "Feinschliff: Protokoll",
+      "default": 1,
+      "min": -4,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "stampTextShadow",
+      "type": "color",
+      "label": "Stempel: Textschatten Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stampTextShadow2",
+      "type": "number",
+      "label": "Stempel: Textschatten Unschärfe Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Protokoll",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "stampTextShadow3",
+      "type": "number",
+      "label": "Stempel: Textschatten Unschärfe",
+      "group": "Feinschliff: Protokoll",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampTextShadow4",
+      "type": "number",
+      "label": "Stempel: Textschatten Farbanteil",
+      "group": "Feinschliff: Protokoll",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "stampBoxShadow",
+      "type": "color",
+      "label": "Stempel: Schatten Farbe (Signatur Terrakotta)",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stampBoxShadow2",
+      "type": "color",
+      "label": "Stempel: Schatten Farbe (Signatur Terrakotta) (2)",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stampBoxShadow3",
+      "type": "number",
+      "label": "Stempel: Schatten Unschärfe (Teil 1) Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Protokoll",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "stampBoxShadow4",
+      "type": "number",
+      "label": "Stempel: Schatten Unschärfe (Teil 2) Anteil von „Text-Leuchten (0 = aus)“ (%)",
+      "group": "Feinschliff: Protokoll",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "stampBoxShadow5",
+      "type": "number",
+      "label": "Stempel: Schatten Unschärfe (Teil 1)",
+      "group": "Feinschliff: Protokoll",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "stampBoxShadow6",
+      "type": "number",
+      "label": "Stempel: Schatten Farbanteil",
+      "group": "Feinschliff: Protokoll",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "stampBoxShadow7",
+      "type": "number",
+      "label": "Stempel: Schatten Unschärfe (Teil 2)",
+      "group": "Feinschliff: Protokoll",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "stampBoxShadow8",
+      "type": "number",
+      "label": "Stempel: Schatten Farbanteil (2)",
+      "group": "Feinschliff: Protokoll",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "stampFont",
+      "type": "font",
+      "label": "Stempel: Schrift",
+      "group": "Feinschliff: Protokoll",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "statsCardAt",
+      "type": "number",
+      "label": "Blatt: gleitet ein ab",
+      "group": "Feinschliff: Protokoll",
+      "default": 0.3,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "stampFromScale",
+      "type": "number",
+      "label": "Stempel: fällt aus Grösse",
+      "group": "Feinschliff: Protokoll",
+      "default": 3.2,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "stampFromTurn",
+      "type": "number",
+      "label": "Stempel: fällt gedreht (Grad)",
+      "group": "Feinschliff: Protokoll",
+      "default": -28,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stampRest",
+      "type": "number",
+      "label": "Stempel: liegt gedreht (Grad)",
+      "group": "Feinschliff: Protokoll",
+      "default": -12,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stingerBlueprint",
+      "type": "color",
+      "label": "Blaupause: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "blueprint"
+    },
+    {
+      "key": "stingerLine",
+      "type": "color",
+      "label": "Linien und Text: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "stingerAccent",
+      "type": "color",
+      "label": "Akzent: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stingerCopper",
+      "type": "color",
+      "label": "Kupfer: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "stingerMuted",
+      "type": "color",
+      "label": "Gedämpft: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "stingerBrick",
+      "type": "color",
+      "label": "Ziegelrot: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "brick"
+    },
+    {
+      "key": "stingerShadow",
+      "type": "color",
+      "label": "Schatten der Rolle: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "page"
+    },
+    {
+      "key": "stingerFont",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Stinger",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stingerSeams",
+      "type": "number",
+      "label": "Rolle: Nähte Deckkraft",
+      "group": "Stinger",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "stingerShadowAlpha",
+      "type": "number",
+      "label": "Rolle: Schatten Deckkraft",
+      "group": "Stinger",
+      "default": 0.35,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "stingerPaperLight",
+      "type": "number",
+      "label": "Rolle: Papier heller (Anteil)",
+      "group": "Stinger",
+      "default": 0.35,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "stingerAmbient",
+      "type": "number",
+      "label": "Rolle: Umgebungslicht",
+      "group": "Stinger",
+      "default": 0.35,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "stingerSun",
+      "type": "number",
+      "label": "Rolle: Licht von links",
+      "group": "Stinger",
+      "default": 2.2,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "profileBlueprint",
+      "type": "color",
+      "label": "Blaupause: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "blueprint"
+    },
+    {
+      "key": "profilePage",
+      "type": "color",
+      "label": "Seite: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "page"
+    },
+    {
+      "key": "profileAccent",
+      "type": "color",
+      "label": "Name: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "profileCopper",
+      "type": "color",
+      "label": "Kopfzeile: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "profileLine",
+      "type": "color",
+      "label": "Linien und Text: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "profileFont",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Profilbanner",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "profileSignWidth",
+      "type": "number",
+      "label": "Schild: Breite (Anteil)",
+      "group": "Profilbanner",
+      "default": 0.78,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "profileGridMajor",
+      "type": "number",
+      "label": "Raster: Deckkraft",
+      "group": "Profilbanner",
+      "default": 0.1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "profileGridFine",
+      "type": "number",
+      "label": "Feinraster: Deckkraft",
+      "group": "Profilbanner",
+      "default": 0.04,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "profileGridPage",
+      "type": "number",
+      "label": "Raster der Seite: Deckkraft",
+      "group": "Profilbanner",
+      "default": 0.04,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "profileSheetOpacity",
+      "type": "number",
+      "label": "Blatt: Deckkraft",
+      "group": "Profilbanner",
+      "default": 0.9,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "offlineBlueprint",
+      "type": "color",
+      "label": "Blaupause: Farbe",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "blueprint"
+    },
+    {
+      "key": "offlinePage",
+      "type": "color",
+      "label": "Seite: Farbe",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "page"
+    },
+    {
+      "key": "offlineAccent",
+      "type": "color",
+      "label": "Name: Farbe",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "offlineCopper",
+      "type": "color",
+      "label": "Kopfzeile: Farbe",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "copper"
+    },
+    {
+      "key": "offlineLine",
+      "type": "color",
+      "label": "Linien und Text: Farbe",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "line"
+    },
+    {
+      "key": "offlineRainColor",
+      "type": "color",
+      "label": "Regen: Farbe",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "rain"
+    },
+    {
+      "key": "offlineFont",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Offline-Banner",
+      "default": "",
+      "options": [
+        "Roboto Mono",
+        "IBM Plex Mono",
+        "Fira Mono",
+        "Share Tech Mono"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "offlineSignWidth",
+      "type": "number",
+      "label": "Schild: Breite (Anteil)",
+      "group": "Offline-Banner",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "offlineGridMajor",
+      "type": "number",
+      "label": "Raster: Deckkraft",
+      "group": "Offline-Banner",
+      "default": 0.1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "offlineGridFine",
+      "type": "number",
+      "label": "Feinraster: Deckkraft",
+      "group": "Offline-Banner",
+      "default": 0.04,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "offlineGridPage",
+      "type": "number",
+      "label": "Raster der Seite: Deckkraft",
+      "group": "Offline-Banner",
+      "default": 0.04,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "offlineSheetOpacity",
+      "type": "number",
+      "label": "Blatt: Deckkraft",
+      "group": "Offline-Banner",
+      "default": 0.9,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "offlineRainLength",
+      "type": "number",
+      "label": "Regen: Streifenlänge (Anteil der Höhe)",
+      "group": "Offline-Banner",
+      "default": 0.035,
+      "min": 0,
+      "max": 1,
+      "step": 0.001
+    },
+    {
+      "key": "offlineRainSlant",
+      "type": "number",
+      "label": "Regen: Schräge (Anteil der Höhe)",
+      "group": "Offline-Banner",
+      "default": 0.006,
+      "min": -1,
+      "max": 1,
+      "step": 0.001
+    },
+    {
+      "key": "offlineRainOpacity",
+      "type": "number",
+      "label": "Regen: Deckkraft",
+      "group": "Offline-Banner",
+      "default": 0.55,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
     }
   ],
   "groupScenes": {
@@ -2839,6 +8292,48 @@
     ],
     "Befehlsseite": [
       "info"
+    ],
+    "Feinschliff: Minimes": [
+      "minimes"
+    ],
+    "Feinschliff: Starting, BRB, Ending": [
+      "starting",
+      "brb",
+      "ending"
+    ],
+    "Feinschliff: Alerts": [
+      "alerts"
+    ],
+    "Feinschliff: Chat": [
+      "chat"
+    ],
+    "Feinschliff: Allgemein": [
+      "starting",
+      "brb",
+      "ending",
+      "alerts",
+      "chat",
+      "cam",
+      "music",
+      "stats",
+      "fx",
+      "minimes",
+      "info"
+    ],
+    "Feinschliff: Kamera-Rahmen": [
+      "cam"
+    ],
+    "Feinschliff: Musik": [
+      "music"
+    ],
+    "Feinschliff: Effekte": [
+      "fx"
+    ],
+    "Feinschliff: Befehlsseite": [
+      "info"
+    ],
+    "Feinschliff: Protokoll": [
+      "stats"
     ]
   },
   "minimeVariants": {

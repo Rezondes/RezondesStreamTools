@@ -1,153 +1,173 @@
 /* Overlays of the Dachdecker theme (alerts, chat, camera, music, effects, commands page): the 2D plan layer on a
    transparent background. Blueprint signs, dimension lines and the building site radio; colors, sizes and times come as
-   CSS variables from the settings, further sizes as var(--name, default). Design: docs/DESIGN-DACHDECKER.md. */
+   CSS variables from the settings, every further size, time and color is a fine-tuning field of its own (tuning.ts). Design: docs/DESIGN-DACHDECKER.md. */
 
-.theme-dachdecker .dd-sign { position: relative; padding: var(--dd-sign-pad, 18px) var(--dd-sign-pad-x, 26px); }
-.theme-dachdecker .dd-no-corners::before, .theme-dachdecker .dd-no-corners::after { display: none; }
+.theme-dachdecker .dd-sign { position: relative; padding: var(--signPadding) var(--signPadding2); }
+.theme-dachdecker .dd-no-corners::before { display: none; }
+.theme-dachdecker .dd-no-corners::after { display: none; }
 
 /* --- Dimension line: draws from the middle outwards ----------------------------------------------------------- */
 .theme-dachdecker .dd-dimension { position: relative; text-align: center; }
-.theme-dachdecker .dd-dimension svg { display: block; width: 100%; height: var(--dd-dim-height, 24px); overflow: visible; }
-.theme-dachdecker .dd-dimension line { stroke: var(--line); stroke-width: 1.5; }
+.theme-dachdecker .dd-dimension svg { display: block; width: 100%; height: var(--dimensionSvgHeight); overflow: visible; }
+.theme-dachdecker .dd-dimension line { stroke: var(--dimensionLineStroke); stroke-width: var(--dimensionLineStrokeWidth); }
 .theme-dachdecker .dd-dimension-end line { vector-effect: non-scaling-stroke; }
-.theme-dachdecker .dd-dimension-half { stroke-dasharray: 1; stroke-dashoffset: 1; animation: dachdecker-draw var(--alertOpenMs, 550ms) ease-out forwards; }
+.theme-dachdecker .dd-dimension-half { stroke-dasharray: var(--dimensionHalfStrokeDasharray); stroke-dashoffset: var(--dimensionHalfStrokeDashoffset); animation: dachdecker-draw var(--alertOpenMs, var(--dimensionHalfAnimation)) ease-out forwards; }
 .theme-dachdecker .dd-dimension-text {
   display: block;
-  margin-bottom: var(--dd-dim-gap, 2px);
-  font-size: var(--dd-dim-size, 16px);
-  font-weight: 700;
-  letter-spacing: var(--dd-dim-track, 3px);
-  color: var(--copper);
-  animation: dachdecker-fade var(--alertOpenMs, 550ms) ease-out both;
+  margin-bottom: var(--dimensionTextMarginBottom);
+  font-size: var(--dimensionTextFontSize);
+  font-weight: var(--dimensionTextFontWeight);
+  letter-spacing: var(--dimensionTextLetterSpacing);
+  color: var(--dimensionTextColor);
+  animation: dachdecker-fade var(--alertOpenMs, var(--dimensionTextAnimation)) ease-out both;
+  font-family: var(--dimensionTextFont), system-ui, sans-serif;
 }
 
 /* --- Alerts ------------------------------------------------------------------------------------------------- */
 .theme-dachdecker .dd-alerts { position: fixed; inset: 0; overflow: hidden; }
-.theme-dachdecker .dd-alert { position: absolute; left: 50%; top: var(--alert-top, 620px); width: var(--alertWidth); transform: translateX(-50%); }
-.theme-dachdecker .dd-alert-sign { margin-top: var(--dd-alert-gap, 10px); text-align: center; animation: dachdecker-open var(--alertOpenMs) cubic-bezier(0.2, 0.9, 0.3, 1) both; }
-.theme-dachdecker .dd-alert.leaving .dd-alert-sign { animation: dachdecker-close var(--alertCloseMs) ease-in both; }
-.theme-dachdecker .dd-alert.leaving .dd-dimension { animation: dachdecker-close var(--alertCloseMs) ease-in both; }
-.theme-dachdecker .dd-alert-tag { margin: 0; font-size: var(--dd-head-size, 20px); font-weight: 700; letter-spacing: var(--dd-head-track, 6px); color: var(--copper); }
+.theme-dachdecker .dd-alert { position: absolute; left: var(--alertLeft); top: var(--alertTop); width: var(--alertWidth); transform: translateX(var(--alertTransform)); }
+.theme-dachdecker .dd-alert-sign { margin-top: var(--alertSignMarginTop); text-align: center; animation: dachdecker-open var(--alertOpenMs) cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+.theme-dachdecker .dd-alert.leaving .dd-alert-sign { animation: dachdecker-close calc(var(--alertCloseMs) * var(--alertLeavingAlertSignAnimation) / 100) ease-in both; }
+.theme-dachdecker .dd-alert.leaving .dd-dimension { animation: dachdecker-close calc(var(--alertCloseMs) * var(--alertLeavingDimensionAnimation) / 100) ease-in both; }
+.theme-dachdecker .dd-alert-tag { margin: 0; font-size: var(--alertTagFontSize); font-weight: var(--alertTagFontWeight); letter-spacing: var(--alertTagLetterSpacing); color: var(--alertTagColor); font-family: var(--alertTagFont), system-ui, sans-serif; }
 .theme-dachdecker .dd-alert-name {
   display: block;
-  margin: var(--dd-alert-name-gap, 6px) 0;
-  font-size: calc(var(--fontSize) * 1.9);
-  font-weight: 700;
-  letter-spacing: var(--dd-big-track, 4px);
-  color: var(--accent);
-  text-shadow: 0 0 calc(var(--dd-big-glow, 10px) * var(--glow)) color-mix(in srgb, var(--accent) 70%, transparent);
+  margin: var(--alertNameMargin) 0;
+  font-size: calc(var(--fontSize) * var(--alertNameFontSize));
+  font-weight: var(--alertNameFontWeight);
+  letter-spacing: var(--alertNameLetterSpacing);
+  color: var(--alertNameColor);
+  text-shadow: 0 0 calc(var(--alertNameTextShadow3) * calc(var(--glow) * var(--alertNameTextShadow2) / 100)) color-mix(in srgb, var(--alertNameTextShadow) var(--alertNameTextShadow4), transparent);
+  font-family: var(--alertNameFont), system-ui, sans-serif;
 }
-.theme-dachdecker .dd-alert-line { margin: 0; font-size: var(--fontSize); font-weight: 500; }
-.theme-dachdecker .dd-quote { margin-top: var(--dd-alert-name-gap, 6px); font-size: calc(var(--fontSize) * 0.8); color: var(--muted); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
+.theme-dachdecker .dd-alert-line { margin: 0; font-size: calc(var(--fontSize) * var(--alertLineFontSize) / 100); font-weight: var(--alertLineFontWeight); color: var(--alertLineColor); font-family: var(--alertLineFont), system-ui, sans-serif; }
+.theme-dachdecker .dd-quote { margin-top: var(--quoteMarginTop); font-size: calc(var(--fontSize) * var(--quoteFontSize)); color: var(--quoteColor); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--quoteWebkitLineClamp); overflow: hidden; font-family: var(--quoteFont), system-ui, sans-serif; }
 .theme-dachdecker .dd-alert-timer {
   display: block;
-  height: var(--dd-timer-height, 3px);
-  margin-top: var(--dd-alert-gap, 10px);
-  background: var(--accent);
+  height: var(--alertTimerHeight);
+  margin-top: var(--alertTimerMarginTop);
+  background: var(--alertTimerBackground);
   transform-origin: left;
   animation: dachdecker-retract var(--alertDuration) linear forwards;
 }
 
 /* --- Chat --------------------------------------------------------------------------------------------------- */
-.theme-dachdecker .dd-chat { position: fixed; left: 0; bottom: 0; width: var(--chatWidth); display: flex; flex-direction: column; gap: var(--dd-chat-gap, 10px); padding: var(--dd-chat-pad, 12px); }
-.theme-dachdecker .dd-chat-row { position: relative; padding: var(--dd-chat-row-y, 8px) var(--dd-chat-row-x, 14px); animation: dachdecker-open var(--chatOpenMs) cubic-bezier(0.2, 0.9, 0.3, 1) both; }
-.theme-dachdecker .dd-chat-liste .dd-chat-row { border-bottom: var(--plan-line); }
-.theme-dachdecker .dd-chat-row.fades { animation: dachdecker-open var(--chatOpenMs) cubic-bezier(0.2, 0.9, 0.3, 1) both, dachdecker-fade var(--dd-fade, 600ms) ease-in var(--chatLifetime) reverse forwards; }
-.theme-dachdecker .dd-chat-name { display: block; font-size: calc(var(--fontSize) * 0.75); font-weight: 700; letter-spacing: var(--dd-dim-track, 3px); }
-.theme-dachdecker .dd-chat-dim { display: block; width: var(--dd-chat-dim, 120px); height: 0; margin: var(--dd-chat-dim-gap, 4px) 0; border-top: var(--plan-line); }
-.theme-dachdecker .dd-chat-text { display: block; font-size: calc(var(--fontSize) * 0.8); overflow-wrap: anywhere; }
-.theme-dachdecker .dd-chat-row.action .dd-chat-text { font-style: italic; color: var(--muted); }
-.theme-dachdecker .dd-tone-copper { color: var(--copper); }
-.theme-dachdecker .dd-tone-accent { color: var(--accent); }
-.theme-dachdecker .dd-tone-rain { color: var(--rain); }
-.theme-dachdecker .dd-tone-line { color: var(--line); }
-.theme-dachdecker .dd-badge, .theme-dachdecker .dd-chip {
+.theme-dachdecker .dd-chat { position: fixed; left: 0; bottom: 0; width: var(--chatWidth); display: flex; flex-direction: column; gap: var(--chatGap); padding: var(--chatPadding); }
+.theme-dachdecker .dd-chat-row { position: relative; padding: var(--chatRowPadding) var(--chatRowPadding2); animation: dachdecker-open calc(var(--chatOpenMs) * var(--chatRowAnimation) / 100) cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+.theme-dachdecker .dd-chat-liste .dd-chat-row { border-bottom: var(--chatListeChatRowBorderBottom2) solid color-mix(in srgb, var(--chatListeChatRowBorderBottom) var(--chatListeChatRowBorderBottom3), transparent); }
+.theme-dachdecker .dd-chat-row.fades { animation: dachdecker-open calc(var(--chatOpenMs) * var(--chatRowFadesAnimation) / 100) cubic-bezier(0.2, 0.9, 0.3, 1) both, dachdecker-fade var(--chatRowFadesAnimation2) ease-in var(--chatLifetime) reverse forwards; }
+.theme-dachdecker .dd-chat-name { display: block; font-size: calc(var(--fontSize) * var(--chatNameFontSize)); font-weight: var(--chatNameFontWeight); letter-spacing: var(--chatNameLetterSpacing); color: var(--chatNameColor2); font-family: var(--chatNameFont), system-ui, sans-serif; }
+.theme-dachdecker .dd-chat-dim { display: block; width: var(--chatDimWidth); height: 0; margin: var(--chatDimMargin) 0; border-top: var(--chatDimBorderTop2) solid color-mix(in srgb, var(--chatDimBorderTop) var(--chatDimBorderTop3), transparent); }
+.theme-dachdecker .dd-chat-text { display: block; font-size: calc(var(--fontSize) * var(--chatTextFontSize)); overflow-wrap: anywhere; font-family: var(--chatTextFont), system-ui, sans-serif; }
+.theme-dachdecker .dd-chat-row.action .dd-chat-text { font-style: italic; color: var(--chatRowActionChatTextColor); }
+.theme-dachdecker .dd-tone-copper { color: var(--toneCopperColor); }
+.theme-dachdecker .dd-tone-accent { color: var(--toneAccentColor); }
+.theme-dachdecker .dd-tone-rain { color: var(--toneRainColor); }
+.theme-dachdecker .dd-tone-line { color: var(--toneLineColor); }
+.theme-dachdecker .dd-badge {
   display: inline-block;
-  margin-right: var(--dd-badge-gap, 6px);
-  padding: 0 var(--dd-badge-pad, 6px);
-  background: var(--accent);
-  color: var(--onAccent);
-  font-weight: 700;
+  margin-right: var(--badgeMarginRight);
+  padding: 0 var(--badgePadding);
+  background: var(--badgeBackground);
+  color: var(--badgeColor);
+  font-weight: var(--badgeFontWeight);
+  font-family: var(--badgeFont), system-ui, sans-serif;
 }
-.theme-dachdecker .dd-emote { height: 1.4em; vertical-align: middle; }
+.theme-dachdecker .dd-chip {
+  display: inline-block;
+  margin-right: var(--chipMarginRight);
+  padding: 0 var(--chipPadding);
+  background: var(--chipBackground);
+  color: var(--chipColor);
+  font-weight: var(--chipFontWeight);
+  font-family: var(--chipFont), system-ui, sans-serif;
+}
+.theme-dachdecker .dd-emote { height: calc(var(--emoteHeight) * 1em); vertical-align: middle; }
 
 /* --- Camera frame ------------------------------------------------------------------------------------------- */
 .theme-dachdecker .dd-cam { position: fixed; inset: 0; }
-.theme-dachdecker .dd-cam-frame { position: absolute; inset: var(--dd-cam-inset, 18px); border: var(--plan-line); }
-.theme-dachdecker .dd-cam-corner { position: absolute; width: var(--dd-cam-corner, 36px); height: var(--dd-cam-corner, 36px); border: var(--dd-corner-line, 3px) solid var(--accent); }
-.theme-dachdecker .dd-cam-corner-start { left: var(--dd-cam-corner-inset, 8px); top: var(--dd-cam-corner-inset, 8px); border-right: 0; border-bottom: 0; }
-.theme-dachdecker .dd-cam-corner-end { right: var(--dd-cam-corner-inset, 8px); bottom: var(--dd-cam-corner-inset, 8px); border-left: 0; border-top: 0; }
+.theme-dachdecker .dd-cam-frame { position: absolute; inset: var(--camFrameInset); border: var(--camFrameBorder2) solid color-mix(in srgb, var(--camFrameBorder) var(--camFrameBorder3), transparent); }
+.theme-dachdecker .dd-cam-corner { position: absolute; width: var(--camCornerWidth); height: var(--camCornerHeight); border: var(--camCornerBorder2) solid var(--camCornerBorder); }
+.theme-dachdecker .dd-cam-corner-start { left: var(--camCornerStartLeft); top: var(--camCornerStartTop); border-right: 0; border-bottom: 0; }
+.theme-dachdecker .dd-cam-corner-end { right: var(--camCornerEndRight); bottom: var(--camCornerEndBottom); border-left: 0; border-top: 0; }
 .theme-dachdecker .dd-cam-dim { position: absolute; }
-.theme-dachdecker .dd-cam-dim-top { left: 20%; right: 20%; top: var(--dd-cam-dim-inset, 26px); }
-.theme-dachdecker .dd-cam-dim-side { right: var(--dd-cam-dim-inset, 26px); top: 50%; width: 40vh; transform: translate(50%, -50%) rotate(90deg) translateY(-50%); }
+.theme-dachdecker .dd-cam-dim-top { left: var(--camDimTopLeft); right: var(--camDimTopRight); top: var(--camDimTopTop); }
+.theme-dachdecker .dd-cam-dim-side { right: var(--camDimSideRight); top: var(--camDimSideTop); width: calc(var(--camDimSideWidth) * 1vh); transform: translate(var(--camDimSideTransform), var(--camDimSideTransform2)) rotate(calc(var(--camDimSideTransform3) * 1deg)) translateY(var(--camDimSideTransform4)); }
 .theme-dachdecker .dd-cam-name {
   position: absolute;
-  left: var(--dd-cam-name-inset, 30px);
-  bottom: var(--dd-cam-name-inset, 30px);
-  padding: var(--dd-cell-y, 9px) var(--dd-cell-x, 14px);
-  border: var(--plan-line);
-  background: color-mix(in srgb, var(--blueprint) 85%, transparent);
-  font-weight: 700;
-  letter-spacing: var(--dd-head-track, 6px);
+  left: var(--camNameLeft);
+  bottom: var(--camNameBottom);
+  padding: var(--camNamePadding) var(--camNamePadding2);
+  border: var(--camNameBorder2) solid color-mix(in srgb, var(--camNameBorder) var(--camNameBorder3), transparent);
+  background: color-mix(in srgb, var(--camNameBackground) var(--camNameBackground2), transparent);
+  font-weight: var(--camNameFontWeight);
+  letter-spacing: var(--camNameLetterSpacing);
+  color: var(--camNameColor);
+  font-family: var(--camNameFont), system-ui, sans-serif;
 }
 .theme-dachdecker .dd-cam-live {
   position: absolute;
-  right: var(--dd-cam-name-inset, 30px);
-  top: var(--dd-cam-name-inset, 30px);
-  padding: 0 var(--dd-badge-pad, 8px);
-  background: var(--accent);
-  color: var(--onAccent);
-  font-weight: 700;
-  letter-spacing: var(--dd-dim-track, 3px);
+  right: var(--camLiveRight);
+  top: var(--camLiveTop);
+  padding: 0 var(--camLivePadding);
+  background: var(--camLiveBackground);
+  color: var(--camLiveColor);
+  font-weight: var(--camLiveFontWeight);
+  letter-spacing: var(--camLiveLetterSpacing);
+  font-family: var(--camLiveFont), system-ui, sans-serif;
 }
 
 /* --- Music: building site radio, sign or plain -------------------------------------------------------------- */
-.theme-dachdecker .dd-music { position: fixed; left: var(--dd-music-inset, 12px); bottom: var(--dd-music-inset, 12px); width: calc(var(--dd-radio-width, 560px) * var(--radioScale)); transition: opacity var(--dd-fade, 600ms); }
+.theme-dachdecker .dd-music { position: fixed; left: var(--musicLeft); bottom: var(--musicBottom); width: calc(var(--musicWidth2) * calc(var(--radioScale) * var(--musicWidth) / 100)); transition: opacity var(--musicTransition); }
 .theme-dachdecker .dd-music.leaving { opacity: 0; }
 .theme-dachdecker .dd-radio { position: relative; }
 .theme-dachdecker .dd-radio svg { display: block; width: 100%; }
-.theme-dachdecker .dd-radio-body { fill: var(--radioBody); stroke: var(--line); stroke-width: 0.003; }
-.theme-dachdecker .dd-radio-bumper, .theme-dachdecker .dd-radio-handle { fill: var(--radioBumper); }
-.theme-dachdecker .dd-radio-grille { fill: var(--slateDark); stroke: color-mix(in srgb, var(--line) 35%, transparent); stroke-width: 0.004; stroke-dasharray: 0.01 0.008; }
+.theme-dachdecker .dd-radio-body { fill: var(--radioBodyFill); stroke: var(--radioBodyStroke); stroke-width: var(--radioBodyStrokeWidth); }
+.theme-dachdecker .dd-radio-bumper { fill: var(--radioBumperFill); }
+.theme-dachdecker .dd-radio-handle { fill: var(--radioHandleFill); }
+.theme-dachdecker .dd-radio-grille { fill: var(--radioGrilleFill); stroke: color-mix(in srgb, var(--radioGrilleStroke) var(--radioGrilleStroke2), transparent); stroke-width: var(--radioGrilleStrokeWidth); stroke-dasharray: var(--radioGrilleStrokeDasharray) var(--radioGrilleStrokeDasharray2); }
 .theme-dachdecker .dd-radio-display {
   position: absolute;
   overflow: hidden;
   box-sizing: border-box;
-  padding: calc(var(--dd-display-pad, 6px) * var(--radioScale));
-  background: var(--radioDisplay);
-  color: var(--page);
-  font-size: calc(var(--dd-display-size, 13px) * var(--radioScale));
-  border-radius: calc(var(--dd-display-round, 4px) * var(--radioScale));
-  box-shadow: 0 0 calc(var(--dd-display-glow, 14px) * var(--glow)) color-mix(in srgb, var(--radioDisplay) 60%, transparent);
+  padding: calc(var(--radioDisplayPadding2) * calc(var(--radioScale) * var(--radioDisplayPadding) / 100));
+  background: var(--radioDisplayBackground);
+  color: var(--radioDisplayColor);
+  font-size: calc(var(--radioDisplayFontSize2) * calc(var(--radioScale) * var(--radioDisplayFontSize) / 100));
+  border-radius: calc(var(--radioDisplayBorderRadius2) * calc(var(--radioScale) * var(--radioDisplayBorderRadius) / 100));
+  box-shadow: 0 0 calc(var(--radioDisplayBoxShadow3) * calc(var(--glow) * var(--radioDisplayBoxShadow2) / 100)) color-mix(in srgb, var(--radioDisplayBoxShadow) var(--radioDisplayBoxShadow4), transparent);
+  font-family: var(--radioDisplayFont), system-ui, sans-serif;
 }
-.theme-dachdecker .dd-track { display: flex; align-items: center; gap: var(--dd-track-gap, 6px); height: 100%; }
-.theme-dachdecker .dd-cover { height: 100%; aspect-ratio: 1; object-fit: cover; }
+.theme-dachdecker .dd-track { display: flex; align-items: center; gap: var(--trackGap); height: 100%; }
+.theme-dachdecker .dd-cover { height: 100%; aspect-ratio: var(--coverAspectRatio); object-fit: cover; }
 .theme-dachdecker .dd-track-text { flex: 1; min-width: 0; }
-.theme-dachdecker .dd-music-label { display: block; font-size: 0.7em; font-weight: 700; letter-spacing: var(--dd-dim-track, 2px); }
-.theme-dachdecker .dd-track-title { font-weight: 700; }
-.theme-dachdecker .dd-music-idle { margin: 0; font-weight: 700; letter-spacing: var(--dd-dim-track, 3px); }
-.theme-dachdecker .dd-music-sign .dd-track, .theme-dachdecker .dd-music-plain .dd-track { height: var(--dd-sign-cover, 72px); }
-.theme-dachdecker .dd-music-sign .dd-music-label { color: var(--copper); }
-.theme-dachdecker .dd-equalizer { display: flex; align-items: flex-end; gap: var(--dd-eq-gap, 2px); height: 60%; }
-.theme-dachdecker .dd-equalizer i { width: var(--dd-eq-width, 3px); height: 100%; background: currentcolor; transform-origin: bottom; animation: dachdecker-eq var(--dd-eq-speed, 900ms) ease-in-out calc(var(--i) * var(--dd-eq-step, -130ms)) infinite alternate; }
-.theme-dachdecker .dd-music-progress { margin-top: var(--dd-alert-gap, 10px); }
+.theme-dachdecker .dd-music-label { display: block; font-size: calc(var(--musicLabelFontSize) * 1em); font-weight: var(--musicLabelFontWeight); letter-spacing: var(--musicLabelLetterSpacing); font-family: var(--musicLabelFont), system-ui, sans-serif; }
+.theme-dachdecker .dd-track-title { font-weight: var(--trackTitleFontWeight); color: var(--trackTitleColor); font-family: var(--trackTitleFont), system-ui, sans-serif; }
+.theme-dachdecker .dd-music-idle { margin: 0; font-weight: var(--musicIdleFontWeight); letter-spacing: var(--musicIdleLetterSpacing); color: var(--musicIdleColor); font-family: var(--musicIdleFont), system-ui, sans-serif; }
+.theme-dachdecker .dd-music-sign .dd-track { height: var(--musicSignTrackHeight); }
+.theme-dachdecker .dd-music-plain .dd-track { height: var(--musicPlainTrackHeight); }
+.theme-dachdecker .dd-music-sign .dd-music-label { color: var(--musicSignMusicLabelColor); }
+.theme-dachdecker .dd-equalizer { display: flex; align-items: flex-end; gap: var(--equalizerGap); height: var(--equalizerHeight); }
+.theme-dachdecker .dd-equalizer i { width: var(--equalizerIWidth); height: 100%; background: currentcolor; transform-origin: bottom; animation: dachdecker-eq var(--equalizerIAnimation) ease-in-out calc(var(--i) * var(--equalizerIAnimation2)) infinite alternate; }
+.theme-dachdecker .dd-music-progress { margin-top: var(--musicProgressMarginTop); }
 
 /* --- Effects ------------------------------------------------------------------------------------------------ */
 .theme-dachdecker .dd-fx { position: fixed; inset: 0; }
 .theme-dachdecker .dd-fx-item { position: absolute; display: flex; flex-direction: column; align-items: center; }
-.theme-dachdecker .dd-fx-text { font-size: var(--fxTextSize); font-weight: 700; letter-spacing: var(--dd-title-track, 10px); text-shadow: 0 0 calc(var(--dd-title-glow, 14px) * var(--glow)) color-mix(in srgb, var(--line) 35%, transparent); }
+.theme-dachdecker .dd-fx-text { font-size: var(--fxTextSize); font-weight: var(--fxTextFontWeight); letter-spacing: var(--fxTextLetterSpacing); text-shadow: 0 0 calc(var(--fxTextTextShadow3) * calc(var(--glow) * var(--fxTextTextShadow2) / 100)) color-mix(in srgb, var(--fxTextTextShadow) var(--fxTextTextShadow4), transparent); color: var(--fxTextColor); font-family: var(--fxTextFont), system-ui, sans-serif; }
 
 /* --- Commands page ------------------------------------------------------------------------------------------ */
-.theme-dachdecker .dd-info { min-height: 100vh; background: var(--page); padding: var(--dd-info-pad, 32px) var(--dd-info-margin, 24px); box-sizing: border-box; }
-.theme-dachdecker .dd-info-column { width: min(var(--infoWidth), 100%); margin: 0 auto; display: flex; flex-direction: column; gap: var(--dd-info-gap, 18px); }
-.theme-dachdecker .dd-info-title { margin: 0; font-size: calc(var(--fontSize) * 1.6); letter-spacing: var(--dd-head-track, 6px); color: var(--accent); }
-.theme-dachdecker .dd-info-intro, .theme-dachdecker .dd-info-detail { margin: 0; color: var(--muted); }
-.theme-dachdecker .dd-info-heading { margin: 0 0 var(--dd-protocol-gap, 12px); font-size: var(--dd-head-size, 20px); letter-spacing: var(--dd-head-track, 6px); color: var(--copper); }
-.theme-dachdecker .dd-info-entry { padding: var(--dd-row-pad, 8px) 0; border-top: var(--dd-grid-line, 1px) dashed color-mix(in srgb, var(--line) 35%, transparent); }
-.theme-dachdecker .dd-info-text { margin: var(--dd-info-text-gap, 4px) 0 0; }
+.theme-dachdecker .dd-info { min-height: calc(var(--infoMinHeight) * 1vh); background: var(--infoBackground); padding: var(--infoPadding) var(--infoPadding2); box-sizing: border-box; }
+.theme-dachdecker .dd-info-column { width: min(var(--infoWidth), 100%); margin: 0 auto; display: flex; flex-direction: column; gap: var(--infoColumnGap); }
+.theme-dachdecker .dd-info-title { margin: 0; font-size: calc(var(--fontSize) * var(--infoTitleFontSize)); letter-spacing: var(--infoTitleLetterSpacing); color: var(--infoTitleColor); font-family: var(--infoTitleFont), system-ui, sans-serif; }
+.theme-dachdecker .dd-info-intro { margin: 0; color: var(--infoIntroColor); }
+.theme-dachdecker .dd-info-detail { margin: 0; color: var(--infoDetailColor); }
+.theme-dachdecker .dd-info-heading { margin: 0 0 var(--infoHeadingMargin); font-size: var(--infoHeadingFontSize); letter-spacing: var(--infoHeadingLetterSpacing); color: var(--infoHeadingColor); font-family: var(--infoHeadingFont), system-ui, sans-serif; }
+.theme-dachdecker .dd-info-entry { padding: var(--infoEntryPadding) 0; border-top: var(--infoEntryBorderTop2) dashed color-mix(in srgb, var(--infoEntryBorderTop) var(--infoEntryBorderTop3), transparent); }
+.theme-dachdecker .dd-info-text { margin: var(--infoTextMargin) 0 0; }
 
 @keyframes dachdecker-draw { to { stroke-dashoffset: 0; } }
 @keyframes dachdecker-open { from { transform: scaleX(0); opacity: 0; } }
 @keyframes dachdecker-close { to { transform: scaleX(0); opacity: 0; } }
 @keyframes dachdecker-retract { to { transform: scaleX(0); } }
-@keyframes dachdecker-eq { from { transform: scaleY(0.2); } }
+@keyframes dachdecker-eq { from { transform: scaleY(var(--kfEqFromTransform)); } }

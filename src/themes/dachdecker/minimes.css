@@ -3,8 +3,8 @@
    the running action is the class action-<name>. The anchor box is invisible, the 3D figure (three/Figure.tsx) follows
    it. Keyframes are called dachdecker-minime-*. */
 
-.theme-dachdecker .dd-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; --dd-floor: var(--minimeGround); }
-.theme-dachdecker .dd-on-ridge { --dd-floor: calc(var(--minimeGround) + var(--minimeRidgeHeight)); }
+.theme-dachdecker .dd-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; --dd-floor: calc(var(--minimeGround) * var(--minimesDdFloor) / 100); }
+.theme-dachdecker .dd-on-ridge { --dd-floor: calc(calc(var(--minimeGround) * var(--onRidgeDdFloor) / 100) + calc(var(--minimeRidgeHeight) * var(--onRidgeDdFloor2) / 100)); }
 .theme-dachdecker .dd-minime-canvas { position: absolute !important; inset: 0; }
 
 /* Ridge strip: a row of ridge tiles with a plan line on top, half transparent */
@@ -12,13 +12,13 @@
   position: absolute;
   left: 0;
   right: 0;
-  bottom: var(--minimeGround);
-  height: var(--minimeRidgeHeight);
-  border-top: var(--dd-ridge-line, 2px) solid var(--line);
+  bottom: calc(var(--minimeGround) * var(--minimeRidgeBottom) / 100);
+  height: calc(var(--minimeRidgeHeight) * var(--minimeRidgeHeight2) / 100);
+  border-top: var(--minimeRidgeBorderTop2) solid var(--minimeRidgeBorderTop);
   background:
-    radial-gradient(ellipse at 50% 0%, color-mix(in srgb, var(--line) 30%, transparent) 0 30%, transparent 32%) 0 0 / var(--dd-ridge-tile, 48px) 100%,
-    repeating-linear-gradient(90deg, color-mix(in srgb, var(--accent) 60%, transparent) 0 calc(var(--dd-ridge-tile, 48px) - var(--dd-ridge-gap, 2px)), var(--line) 0 var(--dd-ridge-tile, 48px));
-  box-shadow: 0 0 var(--dd-ridge-glow, 16px) color-mix(in srgb, var(--accent) 50%, transparent);
+    radial-gradient(ellipse at var(--minimeRidgeBackground4) 0%, color-mix(in srgb, var(--minimeRidgeBackground) var(--minimeRidgeBackground5), transparent) 0 var(--minimeRidgeBackground6), transparent var(--minimeRidgeBackground7)) 0 0 / var(--minimeRidgeBackground8) 100%,
+    repeating-linear-gradient(calc(var(--minimeRidgeBackground9) * 1deg), color-mix(in srgb, var(--minimeRidgeBackground2) var(--minimeRidgeBackground10), transparent) 0 calc(var(--minimeRidgeBackground11) - var(--minimeRidgeBackground12)), var(--minimeRidgeBackground3) 0 var(--minimeRidgeBackground13));
+  box-shadow: 0 0 var(--minimeRidgeBoxShadow2) color-mix(in srgb, var(--minimeRidgeBoxShadow) var(--minimeRidgeBoxShadow3), transparent);
 }
 
 .theme-dachdecker .dd-minime {
@@ -28,22 +28,23 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: calc(var(--minimeSize) * 0.5);
-  transform: translateX(calc(var(--x) - 50%));
+  width: calc(var(--minimeSize) * var(--minimeWidth));
+  transform: translateX(calc(var(--x) - var(--minimeTransform)));
   transition: transform var(--move) linear;
 }
-.theme-dachdecker .dd-minime-anchor { width: 100%; height: var(--minimeSize); }
+.theme-dachdecker .dd-minime-anchor { width: 100%; height: calc(var(--minimeSize) * var(--minimeAnchorHeight) / 100); }
 
 /* Name as a plan label above the figure; in a tower it moves aside, so the names do not cover each other */
 .theme-dachdecker .dd-minime-name {
-  margin-bottom: var(--dd-name-gap, 4px);
-  padding: var(--dd-name-pad, 1px 8px);
-  border: var(--dd-name-border, 1px) solid var(--line);
-  background: color-mix(in srgb, var(--card) 85%, transparent);
-  color: var(--line);
+  margin-bottom: var(--minimeNameMarginBottom);
+  padding: var(--minimeNamePadding) var(--minimeNamePadding2);
+  border: var(--minimeNameBorder2) solid var(--minimeNameBorder);
+  background: color-mix(in srgb, var(--minimeNameBackground) var(--minimeNameBackground2), transparent);
+  color: var(--minimeNameColor);
   font-size: var(--minimeLabelSize);
-  letter-spacing: 0.08em;
+  letter-spacing: calc(var(--minimeNameLetterSpacing) * 1em);
   white-space: nowrap;
+  font-family: var(--minimeNameFont), system-ui, sans-serif;
 }
 
 /* Appearing: dropped in from above; disappearing: lifted out, the label fades */
@@ -52,5 +53,5 @@
 .theme-dachdecker .action-exit .dd-minime-anchor { animation: dachdecker-minime-drop var(--action-ms) ease-in reverse forwards; }
 .theme-dachdecker .action-exit .dd-minime-name { animation: dachdecker-minime-fade var(--action-ms) ease-in reverse forwards; }
 
-@keyframes dachdecker-minime-drop { from { translate: 0 calc(-1 * var(--dd-drop, 400px)); } to { translate: 0 0; } }
-@keyframes dachdecker-minime-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dachdecker-minime-drop { from { translate: 0 calc(-1 * var(--kfMinimeDropFromTranslate)); } to { translate: 0 0; } }
+@keyframes dachdecker-minime-fade { from { opacity: 0; } to { opacity: var(--kfMinimeFadeToOpacity); } }

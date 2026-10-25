@@ -21,6 +21,7 @@ use crate::themes::minime_fields::{
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
+use crate::themes::tuning;
 
 const FONTS: [&str; 4] = ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"];
 const PROGRESS: [&str; 2] = ["masskette", "aus"];
@@ -453,6 +454,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()
+    .chain(tuning::dachdecker::group_scenes())
     .map(|(group, scenes)| (group.to_owned(), scenes))
     .collect()
 }
@@ -528,6 +530,7 @@ pub fn dachdecker() -> Theme {
     .concat();
     fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 900.0, 400.0, 1600.0, PX, None));
     fields.extend(minime_variant_fields(&variants()));
+    fields.extend(tuning::dachdecker::fields());
     let schema = ThemeSchema {
         id: "dachdecker".to_owned(),
         name: "Dachdecker".to_owned(),

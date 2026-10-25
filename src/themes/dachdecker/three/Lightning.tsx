@@ -7,14 +7,12 @@ import { BufferGeometry, Color, type DirectionalLight, Line, LineBasicMaterial, 
 import { boltAt, boltPoints, flashLevel } from "../rain.ts";
 import type { BuildClock } from "../schedule.ts";
 
-type Props = { clock: BuildClock; every: number; strength: number; seed: number; line: string; sky: string };
+// flashLight: light of the flash on the roof, skyFlash: share of the sky that brightens at full strength (settings)
+type Props = { clock: BuildClock; every: number; strength: number; seed: number; line: string; sky: string; flashLight: number; skyFlash: number };
 
-// Light of the flash on the roof, share of the sky that brightens at full strength
-const FLASH = 2.2;
-const SKY_FLASH = 0.12;
 const FLASH_AT = [8, 14, -10] as const;
 
-export default function Lightning({ clock, every, strength, seed, line, sky }: Props) {
+export default function Lightning({ clock, every, strength, seed, line, sky, flashLight, skyFlash }: Props) {
   const geometry = useMemo(() => new BufferGeometry(), []);
   const material = useMemo(() => new LineBasicMaterial({ color: line, transparent: true, opacity: 0, fog: false }), [line]);
   useEffect(() => () => { geometry.dispose(); material.dispose(); }, [geometry, material]);
@@ -32,8 +30,8 @@ export default function Lightning({ clock, every, strength, seed, line, sky }: P
       shown.current = current.index;
     }
     material.opacity = Math.min(1, level * 2);
-    if (flash.current) flash.current.intensity = level * FLASH;
-    if (scene.background instanceof Color) scene.background.copy(colors.sky).lerp(colors.line, level * SKY_FLASH);
+    if (flash.current) flash.current.intensity = level * flashLight;
+    if (scene.background instanceof Color) scene.background.copy(colors.sky).lerp(colors.line, level * skyFlash);
   });
 
   return (

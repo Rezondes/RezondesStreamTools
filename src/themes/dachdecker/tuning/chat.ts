@@ -1,0 +1,36 @@
+// Fine-tuning fields of the Dachdecker theme, group "Feinschliff: Chat" (tuning.ts puts the groups together).
+import { color, font, inherits, number } from "../../../core/fields.ts";
+import type { SettingField } from "../../../core/theme.ts";
+
+export const CHAT_TUNING = [
+  number("chatGap", "Chat: Abstand", "Feinschliff: Chat", 10, 0, 40, "px"),
+  number("chatPadding", "Chat: Innenabstand", "Feinschliff: Chat", 12, 0, 48, "px"),
+  number("chatRowPadding", "Chat Zeile: Innenabstand oben/unten", "Feinschliff: Chat", 8, 0, 40, "px"),
+  number("chatRowPadding2", "Chat Zeile: Innenabstand links/rechts", "Feinschliff: Chat", 14, 0, 56, "px"),
+  number("chatRowAnimation", "Chat Zeile: Animation Dauer Anteil von „Öffnen: Dauer“ (%)", "Feinschliff: Chat", 100, 0, 400),
+  inherits(color("chatListeChatRowBorderBottom", "Chat (Liste) Chat Zeile: Rand unten Farbe (Plan-Linien und Text)", "Feinschliff: Chat", ""), "line"),
+  number("chatListeChatRowBorderBottom2", "Chat (Liste) Chat Zeile: Rand unten Stärke", "Feinschliff: Chat", 1.5, 0, 40, "px", 0.5),
+  number("chatListeChatRowBorderBottom3", "Chat (Liste) Chat Zeile: Rand unten Farbanteil", "Feinschliff: Chat", 85, 0, 100, "%"),
+  number("chatRowFadesAnimation", "Chat-Zeile beim Ausblenden: Animation Dauer (Teil 1) Anteil von „Öffnen: Dauer“ (%)", "Feinschliff: Chat", 100, 0, 400),
+  number("chatRowFadesAnimation2", "Chat-Zeile beim Ausblenden: Animation Dauer (Teil 2)", "Feinschliff: Chat", 600, 0, 3000, "ms", 10),
+  number("chatNameFontSize", "Chat Name: Schriftgrösse", "Feinschliff: Chat", 0.75, 0, 3, undefined, 0.01),
+  number("chatNameFontWeight", "Chat Name: Schriftstärke", "Feinschliff: Chat", 700, 100, 900, undefined, 100),
+  number("chatNameLetterSpacing", "Chat Name: Zeichenabstand", "Feinschliff: Chat", 3, -40, 40, "px"),
+  inherits(color("chatNameColor2", "Chat Name: Textfarbe", "Feinschliff: Chat", ""), ""),
+  inherits(font("chatNameFont", "Chat Name: Schrift", "Feinschliff: Chat", "", ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"]), ""),
+  number("chatDimWidth", "Chat Mass: Breite", "Feinschliff: Chat", 120, 0, 480, "px"),
+  number("chatDimMargin", "Chat Mass: Aussenabstand oben/unten", "Feinschliff: Chat", 4, -40, 40, "px"),
+  inherits(color("chatDimBorderTop", "Chat Mass: Rand oben Farbe (Plan-Linien und Text)", "Feinschliff: Chat", ""), "line"),
+  number("chatDimBorderTop2", "Chat Mass: Rand oben Stärke", "Feinschliff: Chat", 1.5, 0, 40, "px", 0.5),
+  number("chatDimBorderTop3", "Chat Mass: Rand oben Farbanteil", "Feinschliff: Chat", 85, 0, 100, "%"),
+  number("chatTextFontSize", "Chat Text: Schriftgrösse", "Feinschliff: Chat", 0.8, 0, 3.2, undefined, 0.01),
+  inherits(font("chatTextFont", "Chat Text: Schrift", "Feinschliff: Chat", "", ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"]), ""),
+  inherits(color("chatRowActionChatTextColor", "Chat-Zeile Aktion: Text: Textfarbe", "Feinschliff: Chat", ""), "muted"),
+  number("badgeMarginRight", "Badge: Abstand rechts", "Feinschliff: Chat", 6, -40, 40, "px"),
+  number("badgePadding", "Badge: Innenabstand links/rechts", "Feinschliff: Chat", 6, 0, 40, "px"),
+  inherits(color("badgeBackground", "Badge: Hintergrund Farbe (Signatur Terrakotta)", "Feinschliff: Chat", ""), "accent"),
+  inherits(color("badgeColor", "Badge: Textfarbe", "Feinschliff: Chat", ""), "onAccent"),
+  number("badgeFontWeight", "Badge: Schriftstärke", "Feinschliff: Chat", 700, 100, 900, undefined, 100),
+  inherits(font("badgeFont", "Badge: Schrift", "Feinschliff: Chat", "", ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"]), ""),
+  number("emoteHeight", "Emote: Höhe (em)", "Feinschliff: Chat", 1.4, 0, 5.6, undefined, 0.01),
+] as const satisfies readonly SettingField[];

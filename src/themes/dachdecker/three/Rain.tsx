@@ -10,13 +10,11 @@ import type { BuildClock } from "../schedule.ts";
 
 type Props = {
   clock: BuildClock; roof: Roof; count: number; speed: number; length: number; opacity: number; color: string; splashColor: string;
-  splashes: boolean; splashAmount: number; ground: boolean; windMax: number; windEvery: number; seed: number;
+  splashes: boolean; splashAmount: number; ground: boolean; windMax: number; windEvery: number; seed: number; splashSize: number; splashOpacity: number;
 };
 
-// A frame never steps more than this (after a hidden tab), splashes as small dots
+// A frame never steps more than this (after a hidden tab)
 const MAX_STEP = 0.05;
-const SPLASH_SIZE = 0.06;
-const SPLASH_OPACITY = 0.95;
 // Splash buffer per drop
 const SPLASH_SHARE = 0.9;
 
@@ -70,7 +68,7 @@ export default function Rain(props: Props) {
       </lineSegments>
       {splashes && (
         <points geometry={dots} frustumCulled={false}>
-          <pointsMaterial color={splashColor} size={SPLASH_SIZE} transparent opacity={SPLASH_OPACITY} />
+          <pointsMaterial color={splashColor} size={props.splashSize} transparent opacity={props.splashOpacity} />
         </points>
       )}
     </>

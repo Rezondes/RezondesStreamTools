@@ -20,8 +20,8 @@ import Blueprint from "../three/Blueprint.tsx";
 import Lightning from "../three/Lightning.tsx";
 import OrbitCamera from "../three/OrbitCamera.tsx";
 import Rain from "../three/Rain.tsx";
-import RoofFrame from "../three/RoofFrame.tsx";
-import Tiles from "../three/Tiles.tsx";
+import RoofFrame, { frameLookOf } from "../three/RoofFrame.tsx";
+import Tiles, { tileLookOf } from "../three/Tiles.tsx";
 import { ridgeOf } from "../tiles.ts";
 import { startRain } from "../tones.ts";
 import { dachdeckerNames, useDachdecker } from "../useDachdecker.ts";
@@ -43,17 +43,18 @@ const World = memo(function World({ values, clock, schedule }: Parts) {
       <Blueprint grid={values.grid} opacity={values.gridOpacity} mood="rain" palette={values} />
       <RoofFrame
         dims={dims} clock={BUILT} schedule={schedule}
-        accent={values.accent} line={values.line} fill={values.muted} lineOpacity={values.lineOpacity} fillOpacity={values.fillOpacity}
+        accent={values.accent} line={values.line} fill={values.muted} lineOpacity={values.lineOpacity} fillOpacity={values.fillOpacity} {...frameLookOf(values)}
       />
-      <Tiles tiles={tiles} clock={BUILT} step={schedule.tiles} slate={values.slate} copper={values.copper} brick={values.brick} edge={values.muted} lit ridge={ridgeOf(dims)} />
+      <Tiles tiles={tiles} clock={BUILT} step={schedule.tiles} slate={values.slate} copper={values.copper} brick={values.brick} edge={values.muted} {...tileLookOf(values)} lit ridge={ridgeOf(dims)} />
       {values.rainOn && (
         <Rain
           clock={clock} roof={roof} count={particleCount(values.rainCount, values.quality)} speed={values.rainSpeed} length={values.rainLength}
           opacity={values.rainOpacity} color={values.rain} splashColor={splashColor(values)} splashes={values.splashOn} splashAmount={values.splashAmount}
           ground={values.splashGround} windMax={values.windMax} windEvery={values.windEvery} seed={values.seed}
+          splashSize={values.splashSize} splashOpacity={values.splashOpacity}
         />
       )}
-      {values.lightningOn && <Lightning clock={clock} every={values.lightningEvery} strength={values.lightningStrength} seed={values.seed} line={values.line} sky={look.sky} />}
+      {values.lightningOn && <Lightning clock={clock} every={values.lightningEvery} strength={values.lightningStrength} seed={values.seed} line={values.line} sky={look.sky} flashLight={values.lightningFlash} skyFlash={values.lightningSkyFlash} />}
       <OrbitCamera clock={clock} pose={time => cameraPose(schedule, orbit, time, BRB_VIEW)} />
     </Stage3D>
   );

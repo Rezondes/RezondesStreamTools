@@ -10,9 +10,19 @@ import {
 import { mergedEdges } from "../../../core/three/edges.ts";
 import { type BuildClock, type BuildStep, landing, stepEnd } from "../schedule.ts";
 import { type Ridge, TILE, type Tile } from "../tiles.ts";
+import type { DachdeckerValues } from "../settings.ts";
 
 // lit: shining in the light (BRB, Ending), otherwise flat colors like a drawing (Starting)
-type Colors = { slate: string; copper: string; brick: string; edge: string; lit: boolean };
+type Colors = { slate: string; copper: string; brick: string; edge: string; lit: boolean } & TileLook;
+// Shine, opacity and highlights of slate and copper, the copper warmed with brick and darkened (settings)
+export type TileLook = {
+  slateShine: number; copperShine: number; slateOpacity: number; edgeOpacity: number; slateHighlight: number; copperHighlight: number;
+  copperWarm: number; copperDark: number;
+};
+export const tileLookOf = (values: DachdeckerValues): TileLook => ({
+  slateShine: values.tileSlateShine, copperShine: values.tileCopperShine, slateOpacity: values.tileSlateOpacity, edgeOpacity: values.tileEdgeOpacity,
+  slateHighlight: values.tileSlateHighlight, copperHighlight: values.tileCopperHighlight, copperWarm: values.tileCopperWarm, copperDark: values.tileCopperDark,
+});
 // ridge: copper pipe along the ridge, shown once every tile has landed, null without; land: own landing of tile index
 // at time (default: one after the other in the step) with doneAt, the time when the last one is done
 type Props = Colors & {
@@ -21,32 +31,21 @@ type Props = Colors & {
 };
 const RIDGE = { radius: 0.16, sides: 16 };
 
-// Shine of slate and copper, slate a little clear, edges at 55 %
-const SLATE_SHINE = 40;
-const COPPER_SHINE = 90;
-const SLATE_OPACITY = 0.92;
-const EDGE_OPACITY = 0.55;
-// Highlights: a dim copy of the edge color on slate, a light copper on copper
-const SLATE_HIGHLIGHT = 0.2;
-const COPPER_HIGHLIGHT = 0.5;
-// Copper of the tiles: the copper of the settings warmed with brick and darkened, so it reads as metal, not as sand
-const COPPER_WARM = 0.5;
-const COPPER_DARK = 0.75;
 const UNLANDED = 1e-4;
 
-function useLooks({ slate, copper, brick, edge, lit }: Colors) {
+function useLooks({ slate, copper, brick, edge, lit, slateShine, copperShine, slateOpacity, edgeOpacity, slateHighlight, copperHighlight, copperWarm, copperDark }: Colors) {
   const looks = useMemo(() => {
-    const metal = new Color(copper).lerp(new Color(brick), COPPER_WARM).multiplyScalar(COPPER_DARK);
+    const metal = new Color(copper).lerp(new Color(brick), copperWarm).multiplyScalar(copperDark);
     return {
       slate: lit
-        ? new MeshPhongMaterial({ color: slate, shininess: SLATE_SHINE, specular: new Color(edge).multiplyScalar(SLATE_HIGHLIGHT), transparent: true, opacity: SLATE_OPACITY })
+        ? new MeshPhongMaterial({ color: slate, shininess: slateShine, specular: new Color(edge).multiplyScalar(slateHighlight), transparent: true, opacity: slateOpacity })
         : new MeshBasicMaterial({ color: slate }),
       copper: lit
-        ? new MeshPhongMaterial({ color: metal, shininess: COPPER_SHINE, specular: new Color(copper).lerp(new Color(edge), COPPER_HIGHLIGHT) })
+        ? new MeshPhongMaterial({ color: metal, shininess: copperShine, specular: new Color(copper).lerp(new Color(edge), copperHighlight) })
         : new MeshBasicMaterial({ color: metal }),
-      edge: new LineBasicMaterial({ color: edge, transparent: true, opacity: EDGE_OPACITY }),
+      edge: new LineBasicMaterial({ color: edge, transparent: true, opacity: edgeOpacity }),
     };
-  }, [slate, copper, brick, edge, lit]);
+  }, [slate, copper, brick, edge, lit, slateShine, copperShine, slateOpacity, edgeOpacity, slateHighlight, copperHighlight, copperWarm, copperDark]);
   useEffect(() => () => Object.values(looks).forEach(look => look.dispose()), [looks]);
   return looks;
 }

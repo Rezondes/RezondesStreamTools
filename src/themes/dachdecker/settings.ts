@@ -10,6 +10,7 @@ import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 import { FIGURE_SET, FIGURE_TYPES } from "./figures.ts";
 
 const FONTS = ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"] as const;
@@ -316,6 +317,7 @@ const GROUP_SCENES = {
   [MINIME_LOOK]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
   [INFO_GROUP]: ["info"],
+  ...TUNING_GROUPS,
 } as const;
 
 // On first login: channel name from the Twitch login instead of the sample
@@ -335,7 +337,7 @@ const BASIC = [
 export const dachdeckerSettings: ThemeSchema = {
   id: "dachdecker",
   name: "Dachdecker",
-  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(FIGURE_SET)], STINGER, { stingerFps: 30, stingerHold: 20 }), BASIC),
+  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(FIGURE_SET), ...TUNING_FIELDS], STINGER, { stingerFps: 30, stingerHold: 20 }), BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: FIGURE_SET,

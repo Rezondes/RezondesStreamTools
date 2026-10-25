@@ -11,7 +11,12 @@ export type BannerColors = { blueprint: string; page: string; accent: string; co
 type BannerText = { dim: string; tag: string; title: string; line: string };
 export type BannerOptions = {
   width: number; height: number; font: string; fontSize: number; alertWidth: number; grid: number; glow: number;
-  rain: boolean; drops: number; seed: number; colors: BannerColors;
+  rain: boolean; drops: number; seed: number; colors: BannerColors; look: BannerLook;
+};
+// Share of the banner width the sign takes, the grid strength of sheet and page, the opacity of the sheet, the rain
+// streaks (length and slant as shares of the height) (settings)
+export type BannerLook = {
+  signWidth: number; gridMajor: number; gridFine: number; gridPage: number; sheetOpacity: number; rainLength: number; rainSlant: number; rainOpacity: number;
 };
 type Box = { x: number; y: number; w: number; h: number };
 
@@ -20,12 +25,6 @@ const SIGN = {
   pad: 18, padX: 26, gap: 10, nameGap: 6, head: 20, headTrack: 6, nameScale: 1.9, nameTrack: 4, nameGlow: 10,
   dimText: 16, dimTrack: 3, dimGap: 2, dimHeight: 24, slash: 7, fine: 10, corner: 18, cornerLine: 3, cornerOut: 8, timer: 3,
 };
-// Share of the banner width the sign takes, the grid strength of sheet and page, the line weights
-const SIGN_WIDTH = { profile: 0.78, offline: 0.5 };
-const GRID = { major: 0.1, fine: 0.04, page: 0.04 };
-const SHEET_OPACITY = 0.9;
-// Rain: streak length and slant as shares of the height
-const RAIN = { length: 0.035, slant: 0.006, opacity: 0.55 };
 
 // How far drop index has fallen (0 at the top, 1 at the bottom), spread over the height
 export const dropFall = (index: number, seed: number) => hash(seed * 17 + index);
@@ -86,12 +85,12 @@ function dimension(context: CanvasRenderingContext2D, box: Box, y: number, label
 function sheet(context: CanvasRenderingContext2D, box: Box, scale: number, options: BannerOptions) {
   const { colors } = options;
   context.save();
-  context.globalAlpha = SHEET_OPACITY;
+  context.globalAlpha = options.look.sheetOpacity;
   context.fillStyle = colors.blueprint;
   context.fillRect(box.x, box.y, box.w, box.h);
   context.restore();
-  grid(context, box, SIGN.fine * scale, colors.line, GRID.fine);
-  grid(context, box, options.grid * scale, colors.line, GRID.major);
+  grid(context, box, SIGN.fine * scale, colors.line, options.look.gridFine);
+  grid(context, box, options.grid * scale, colors.line, options.look.gridMajor);
   context.strokeStyle = colors.line;
   context.lineWidth = Math.max(1, scale);
   context.strokeRect(box.x, box.y, box.w, box.h);
@@ -111,32 +110,33 @@ function sheet(context: CanvasRenderingContext2D, box: Box, scale: number, optio
 
 function rain(context: CanvasRenderingContext2D, options: BannerOptions) {
   const { width, height, colors } = options;
-  const length = height * RAIN.length;
+  const { look } = options;
+  const length = height * look.rainLength;
   context.save();
   context.strokeStyle = colors.rainColor;
-  context.globalAlpha = RAIN.opacity;
+  context.globalAlpha = look.rainOpacity;
   context.lineWidth = Math.max(1, height / 900);
   context.beginPath();
   for (let index = 0; index < options.drops; index++) {
     const x = hash(options.seed * 7 + index) * width;
     const y = dropFall(index, options.seed) * (height + length) - length;
     context.moveTo(x, y);
-    context.lineTo(x - height * RAIN.slant, y + length);
+    context.lineTo(x - height * look.rainSlant, y + length);
   }
   context.stroke();
   context.restore();
 }
 
 // The alert sign scaled to share of the banner width, centred: dimension line, sheet, head line, name, line, timer bar
-function banner(context: CanvasRenderingContext2D, options: BannerOptions, words: BannerText, share: number, wet: boolean) {
+function banner(context: CanvasRenderingContext2D, options: BannerOptions, words: BannerText, wet: boolean) {
   const { width, height, colors, fontSize, font } = options;
   context.clearRect(0, 0, width, height);
   context.fillStyle = colors.page;
   context.fillRect(0, 0, width, height);
-  grid(context, { x: 0, y: 0, w: width, h: height }, options.grid, colors.line, GRID.page);
+  grid(context, { x: 0, y: 0, w: width, h: height }, options.grid, colors.line, options.look.gridPage);
   if (wet) rain(context, options);
 
-  const signWidth = width * share;
+  const signWidth = width * options.look.signWidth;
   const scale = signWidth / options.alertWidth;
   const sizes = { head: SIGN.head * scale, name: fontSize * SIGN.nameScale * scale, line: fontSize * scale, timer: SIGN.timer * scale };
   const rows = [words.tag ? sizes.head : 0, sizes.name + 2 * SIGN.nameGap * scale, words.line ? sizes.line : 0];
@@ -168,7 +168,7 @@ function banner(context: CanvasRenderingContext2D, options: BannerOptions, words
 }
 
 export const drawProfile = (context: CanvasRenderingContext2D, options: BannerOptions, words: BannerText) =>
-  banner(context, options, words, SIGN_WIDTH.profile, false);
+  banner(context, options, words, false);
 
 export const drawOffline = (context: CanvasRenderingContext2D, options: BannerOptions, words: BannerText) =>
-  banner(context, options, words, SIGN_WIDTH.offline, options.rain);
+  banner(context, options, words, options.rain);

@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import { rollAt } from "./roll.ts";
 import { stingerSetup } from "./stinger.ts";
 
-const options = { duration: 2.4, cut: 1.2, hold: 0.2, roll: 180, fps: 30, blueprint: "#192a56", line: "#ffffff", copper: "#d4a373", shadow: "#121e40" };
+const options = { duration: 2.4, cut: 1.2, hold: 0.2, roll: 180, fps: 30, blueprint: "#192a56", line: "#ffffff", copper: "#d4a373", shadow: "#121e40", seams: 0.3, shadowAlpha: 0.35, paperLight: 0.35, ambient: 0.35, sun: 2.2 };
 const state = (time: number) => {
   const built = stingerSetup(options);
   built.update(time);

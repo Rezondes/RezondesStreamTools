@@ -8,19 +8,18 @@ import { BURST_LIFE, bursts } from "../fireworks.ts";
 import type { BuildClock } from "../schedule.ts";
 import { softTexture } from "../../../core/three/softTexture.ts";
 
-type Props = { clock: BuildClock; seed: number; start: number; every: number; sparks: number; colors: readonly string[] };
+// sparkSize: size of a spark (settings)
+type Props = { clock: BuildClock; seed: number; start: number; every: number; sparks: number; colors: readonly string[]; sparkSize: number };
 
-const SPARK_SIZE = 0.13;
-
-export default function Fireworks({ clock, seed, start, every, sparks, colors }: Props) {
+export default function Fireworks({ clock, seed, start, every, sparks, colors, sparkSize }: Props) {
   const texture = useMemo(() => softTexture(), []);
   // As many clouds as bursts can be alive at once
   const pool = useMemo(() => Array.from({ length: Math.ceil(BURST_LIFE / every) + 2 }, () => {
     const geometry = new BufferGeometry();
     geometry.setAttribute("position", new BufferAttribute(new Float32Array(sparks * 3), 3));
-    const material = new PointsMaterial({ size: SPARK_SIZE, transparent: true, opacity: 0, map: texture, depthWrite: false, blending: AdditiveBlending });
+    const material = new PointsMaterial({ size: sparkSize, transparent: true, opacity: 0, map: texture, depthWrite: false, blending: AdditiveBlending });
     return Object.assign(new Points(geometry, material), { frustumCulled: false });
-  }), [every, sparks, texture]);
+  }), [every, sparks, sparkSize, texture]);
   useEffect(() => () => { texture.dispose(); pool.forEach(cloud => { cloud.geometry.dispose(); cloud.material.dispose(); }); }, [texture, pool]);
 
   useFrame(() => {

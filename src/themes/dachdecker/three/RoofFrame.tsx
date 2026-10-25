@@ -6,33 +6,33 @@ import { useEffect, useMemo, useRef } from "react";
 import { BoxGeometry, EdgesGeometry, type Group, LineBasicMaterial, MeshBasicMaterial, Object3D } from "three";
 import { type BeamKind, type FrameDims, roofFrame } from "../frame.ts";
 import { type BuildClock, growth, type Schedule, type StepName } from "../schedule.ts";
+import type { DachdeckerValues } from "../settings.ts";
 
 type Props = {
   dims: FrameDims; clock: BuildClock; schedule: Schedule;
   accent: string; line: string; fill: string; lineOpacity: number; fillOpacity: number;
-};
+} & FrameLook;
+// Front truss fill; side parts (battens, wall plates) with fainter edges and fill (shares, settings)
+export type FrameLook = { frontFill: number; faintEdge: number; faintFill: number };
+export const frameLookOf = (values: DachdeckerValues): FrameLook => ({ frontFill: values.frameFrontFill, faintEdge: values.frameFaintEdge, faintFill: values.frameFaintFill });
 
 const STEP_OF: Record<BeamKind, StepName> = { plate: "walls", front: "front", truss: "trusses", purlin: "purlins", batten: "battens" };
 // A beam is 2.2 times as high as wide; not yet grown beams keep a tiny length (a zero scale breaks the matrix)
 const HEIGHT = 2.2;
 const UNGROWN = 1e-4;
-// Front truss fill; side parts (battens, wall plates) with fainter edges and fill
-const FRONT_FILL = 0.22;
-const FAINT_EDGE = 0.72;
-const FAINT_FILL = 0.5;
 
-function useLooks({ accent, line, fill, lineOpacity, fillOpacity }: Props) {
+function useLooks({ accent, line, fill, lineOpacity, fillOpacity, frontFill, faintEdge, faintFill }: Props) {
   const looks = useMemo(() => {
     const look = (edge: string, edgeOpacity: number, body: string, bodyOpacity: number) => ({
       edge: new LineBasicMaterial({ color: edge, transparent: edgeOpacity < 1, opacity: edgeOpacity }),
       fill: new MeshBasicMaterial({ color: body, transparent: true, opacity: bodyOpacity, depthWrite: false }),
     });
     return {
-      front: look(accent, 1, accent, FRONT_FILL),
+      front: look(accent, 1, accent, frontFill),
       main: look(line, lineOpacity, fill, fillOpacity),
-      faint: look(line, lineOpacity * FAINT_EDGE, fill, fillOpacity * FAINT_FILL),
+      faint: look(line, lineOpacity * faintEdge, fill, fillOpacity * faintFill),
     };
-  }, [accent, line, fill, lineOpacity, fillOpacity]);
+  }, [accent, line, fill, lineOpacity, fillOpacity, frontFill, faintEdge, faintFill]);
   useEffect(() => () => Object.values(looks).forEach(look => { look.edge.dispose(); look.fill.dispose(); }), [looks]);
   return looks;
 }

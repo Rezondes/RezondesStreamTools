@@ -21,9 +21,9 @@ import DuskSky from "../three/DuskSky.tsx";
 import Fireworks from "../three/Fireworks.tsx";
 import House from "../three/House.tsx";
 import OrbitCamera from "../three/OrbitCamera.tsx";
-import RoofFrame from "../three/RoofFrame.tsx";
+import RoofFrame, { frameLookOf } from "../three/RoofFrame.tsx";
 import Smoke from "../three/Smoke.tsx";
-import Tiles from "../three/Tiles.tsx";
+import Tiles, { tileLookOf } from "../three/Tiles.tsx";
 import Wreath from "../three/Wreath.tsx";
 import { FACE_ROWS, ridgeOf } from "../tiles.ts";
 import { dachdeckerNames, useDachdecker } from "../useDachdecker.ts";
@@ -45,9 +45,9 @@ const World = memo(function World({ values, clock, schedule }: Parts) {
       <group position={[0, home.roofBase, 0]}>
         <RoofFrame
           dims={dims} clock={BUILT} schedule={schedule}
-          accent={values.accent} line={values.line} fill={values.muted} lineOpacity={values.lineOpacity} fillOpacity={values.fillOpacity}
+          accent={values.accent} line={values.line} fill={values.muted} lineOpacity={values.lineOpacity} fillOpacity={values.fillOpacity} {...frameLookOf(values)}
         />
-        <Tiles tiles={tiles} clock={BUILT} step={schedule.tiles} slate={values.slate} copper={values.copper} brick={values.brick} edge={values.muted} lit ridge={ridgeOf(dims)} />
+        <Tiles tiles={tiles} clock={BUILT} step={schedule.tiles} slate={values.slate} copper={values.copper} brick={values.brick} edge={values.muted} {...tileLookOf(values)} lit ridge={ridgeOf(dims)} />
       </group>
       <House
         house={home} clock={clock} schedule={schedule} lights={values.windowsOn}
@@ -59,12 +59,13 @@ const World = memo(function World({ values, clock, schedule }: Parts) {
         <Wreath
           at={home.wreath} height={values.wreathPole} clock={clock} schedule={schedule} green={values.wreathGreen} pole={values.copper}
           ribbons={values.ribbonColors} wind={values.ribbonWind}
+          wave={{ speed: values.wreathWaveSpeed, along: values.wreathWaveAlong, sway: values.wreathWaveSway, lean: values.wreathWaveLean }}
         />
       )}
       {values.fireworksOn && (
         <Fireworks
           clock={clock} seed={values.seed} start={schedule.fireworks.start} every={values.fireworksEvery}
-          sparks={particleCount(values.fireworksSparks, values.quality)} colors={[values.accent, values.copper, values.line, values.brick]}
+          sparks={particleCount(values.fireworksSparks, values.quality)} colors={[values.accent, values.copper, values.line, values.brick]} sparkSize={values.fireworksSparkSize}
         />
       )}
       <OrbitCamera clock={clock} pose={time => endingPose(schedule, orbit, time, roofTop)} shift={values.endingShift} />

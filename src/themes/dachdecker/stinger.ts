@@ -15,17 +15,17 @@ import { rollAt, type RollTiming, STINGER_SIZE } from "./roll.ts";
 const WIDTH = STINGER_SIZE.width;
 const HEIGHT = STINGER_SIZE.height;
 
-export type StingerOptions = RollTiming & { fps: number; blueprint: string; line: string; copper: string; shadow: string };
+// seams, shadowAlpha: opacities of the seams and the shadow of the roll; paperLight: how much lighter the paper is than the
+// sheet; ambient, sun: the light, mostly from the left so the roll reads as round (settings)
+export type StingerOptions = RollTiming & {
+  fps: number; blueprint: string; line: string; copper: string; shadow: string; seams: number; shadowAlpha: number; paperLight: number; ambient: number; sun: number;
+};
 // The printed sheet: a canvas of the stinger size (sheet.ts); without one (checks) the sheet is plain blueprint
 type SheetPicture = HTMLCanvasElement | OffscreenCanvas;
 
 // The paper of the roll overlaps the picture top and bottom
 const OVERHANG = 1.06;
 const SEGMENTS = 28;
-const LOOK = { seams: 0.3, shadow: 0.35 };
-// Paper of the roll lighter than the sheet; light mostly from the left, so the roll reads as round
-const PAPER_LIGHT = 0.35;
-const LIGHT = { ambient: 0.35, sun: 2.2 };
 
 export function stingerSetup(options: StingerOptions, picture: SheetPicture | null = null): GlSetup {
   const scene = new Scene();
@@ -38,15 +38,15 @@ export function stingerSetup(options: StingerOptions, picture: SheetPicture | nu
   scene.add(sheet);
 
   // The roll: a paper cylinder of unit radius, scaled per frame, with its seams as lines so the turning shows
-  const paper = new Color(options.blueprint).lerp(new Color(options.line), PAPER_LIGHT);
+  const paper = new Color(options.blueprint).lerp(new Color(options.line), options.paperLight);
   const cylinder = new CylinderGeometry(1, 1, HEIGHT * OVERHANG, SEGMENTS, 1, true);
   const roll = new Mesh(cylinder, new MeshLambertMaterial({ color: paper, side: DoubleSide }));
-  roll.add(new LineSegments(new EdgesGeometry(cylinder, 1), new LineBasicMaterial({ color: options.copper, transparent: true, opacity: LOOK.seams })));
-  const shadow = new Mesh(new PlaneGeometry(1, HEIGHT), new MeshBasicMaterial({ color: options.shadow, transparent: true, opacity: LOOK.shadow, depthWrite: false }));
+  roll.add(new LineSegments(new EdgesGeometry(cylinder, 1), new LineBasicMaterial({ color: options.copper, transparent: true, opacity: options.seams })));
+  const shadow = new Mesh(new PlaneGeometry(1, HEIGHT), new MeshBasicMaterial({ color: options.shadow, transparent: true, opacity: options.shadowAlpha, depthWrite: false }));
   shadow.position.set(0, HEIGHT / 2, 2);
-  const sun = new DirectionalLight(options.line, LIGHT.sun);
+  const sun = new DirectionalLight(options.line, options.sun);
   sun.position.set(-1, 0.3, 0.6);
-  scene.add(roll, shadow, new AmbientLight(options.line, LIGHT.ambient), sun);
+  scene.add(roll, shadow, new AmbientLight(options.line, options.ambient), sun);
 
   return {
     scene,

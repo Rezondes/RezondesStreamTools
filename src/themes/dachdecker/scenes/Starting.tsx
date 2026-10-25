@@ -18,8 +18,8 @@ import { type BuildClock, buildSchedule, cameraPose, coverEnd, coverLanding, rea
 import type { DachdeckerValues } from "../settings.ts";
 import Blueprint from "../three/Blueprint.tsx";
 import OrbitCamera from "../three/OrbitCamera.tsx";
-import RoofFrame from "../three/RoofFrame.tsx";
-import Tiles from "../three/Tiles.tsx";
+import RoofFrame, { frameLookOf } from "../three/RoofFrame.tsx";
+import Tiles, { tileLookOf } from "../three/Tiles.tsx";
 import { dachdeckerNames, useDachdecker } from "../useDachdecker.ts";
 import { FACE_ROWS, ridgeOf, type Tile } from "../tiles.ts";
 import { BOTH_FACES, frameDims, orbitOf, stageLook, tilesOf } from "../world.ts";
@@ -50,12 +50,12 @@ const World = memo(function World({ values, clock, schedule, until }: Parts & { 
       <Blueprint grid={values.grid} opacity={values.gridOpacity} mood="plan" palette={values} />
       <RoofFrame
         dims={dims} clock={clock} schedule={schedule}
-        accent={values.accent} line={values.line} fill={values.muted} lineOpacity={values.lineOpacity} fillOpacity={values.fillOpacity}
+        accent={values.accent} line={values.line} fill={values.muted} lineOpacity={values.lineOpacity} fillOpacity={values.fillOpacity} {...frameLookOf(values)}
       />
       {tiles.length > 0 && (
         <Tiles
           tiles={tiles} clock={clock} step={schedule.tiles} land={land} doneAt={coverEnd(schedule.tiles, first, tiles.length, until)} ridge={ridgeOf(dims)}
-          slate={values.slate} copper={values.copper} brick={values.brick} edge={values.muted} lit={false}
+          slate={values.slate} copper={values.copper} brick={values.brick} edge={values.muted} {...tileLookOf(values)} lit={false}
         />
       )}
       <OrbitCamera clock={clock} pose={time => cameraPose(schedule, orbit, time)} />

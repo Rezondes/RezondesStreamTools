@@ -14,9 +14,6 @@ import { type BuildClock, type BuildStep, buildSchedule, reached, shakeAt } from
 import { playStamp } from "../tones.ts";
 import { useDachdecker } from "../useDachdecker.ts";
 
-// fixed: the sheet slides in this many seconds after the source opened
-const CARD_AT = 0.3;
-
 export default function Stats() {
   const values = useDachdecker();
   const now = useNow();
@@ -25,10 +22,10 @@ export default function Stats() {
   // The Ending timing, moved forward: the sheet comes at once instead of after the title, rows and stamp keep their gaps
   const schedule = useMemo(() => {
     const ending = buildSchedule({ buildSpeed: values.buildSpeed, scrambleMs: values.scrambleMs, countUpMs: values.countUpMs, windowStep: values.windowStep, stampAt: values.stampAt }, "ending");
-    const earlier = ending.card.start - CARD_AT;
+    const earlier = ending.card.start - values.statsCardAt;
     const moved = (step: BuildStep): BuildStep => ({ ...step, start: Math.max(0, step.start - earlier) });
     return { ...ending, card: moved(ending.card), rows: moved(ending.rows), stamp: moved(ending.stamp) };
-  }, [values.buildSpeed, values.scrambleMs, values.countUpMs, values.windowStep, values.stampAt]);
+  }, [values.buildSpeed, values.scrambleMs, values.countUpMs, values.windowStep, values.stampAt, values.statsCardAt]);
   const time = useRevealTime(clock, schedule);
   const lines = useMemo(() => parseStatLines(values.protocolLines.join("\n")), [values.protocolLines]);
   const rows = protocolRows(stats, lines, LOCALE, now, lines.map((_, index) => reached({ ...schedule.rows, start: schedule.rows.start + index * schedule.rows.stagger }, time)));
@@ -44,7 +41,7 @@ export default function Stats() {
   return (
     <div className="dd-stats">
       <Protocol title={values.protocolTitle} rows={rows} shown={reached(schedule.card, time)} shake={values.stampOn ? shakeAt(schedule.stamp, time) : 0} />
-      {values.stampOn && <Stamp text={values.stampText} share={stamped} />}
+      {values.stampOn && <Stamp text={values.stampText} share={stamped} look={{ fromScale: values.stampFromScale, fromTurn: values.stampFromTurn, rest: values.stampRest }} />}
     </div>
   );
 }

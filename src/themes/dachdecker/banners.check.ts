@@ -20,7 +20,8 @@ const record = () => {
   return { texts, context };
 };
 const colors = { blueprint: "#192a56", page: "#121e40", accent: "#e67e22", copper: "#d4a373", line: "#ffffff", rainColor: "#7fe3ff" };
-const options = { width: 1200, height: 480, font: "Roboto Mono", fontSize: 26, alertWidth: 720, grid: 50, glow: 0.8, rain: true, drops: 100, seed: 7, colors };
+const options = { width: 1200, height: 480, font: "Roboto Mono", fontSize: 26, alertWidth: 720, grid: 50, glow: 0.8, rain: true, drops: 100, seed: 7, colors,
+  look: { signWidth: 0.78, gridMajor: 0.1, gridFine: 0.04, gridPage: 0.04, sheetOpacity: 0.9, rainLength: 0.035, rainSlant: 0.006, rainOpacity: 0.55 } };
 const profile = record();
 drawProfile(profile.context, options, { dim: "BAUPLAN", tag: "", title: "NEO", line: "Live!" });
 assert.deepEqual(profile.texts, ["BAUPLAN", "NEO", "Live!"]);

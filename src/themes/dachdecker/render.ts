@@ -41,28 +41,58 @@ function clipDraw(build: (loaded: typeof Clips3d) => Draw, standIn: Draw): Draw 
   };
 }
 
+// Each banner has its own font, colors and look; the profile banner has no rain
+function bannerOptions(values: DachdeckerValues): { profile: BannerOptions; offline: BannerOptions } {
+  const rain = { rainLength: values.offlineRainLength, rainSlant: values.offlineRainSlant, rainOpacity: values.offlineRainOpacity };
+  const base = (size: { width: number; height: number }) => ({
+    width: size.width, height: size.height, fontSize: values.fontSize, alertWidth: values.alertWidth,
+    grid: values.bannerGrid, glow: values.glow, rain: values.bannerRain, drops: values.bannerRainCount, seed: values.seed,
+  });
+  const profile: BannerOptions = {
+    ...base(PROFILE_SIZE), font: values.profileFont,
+    colors: {
+      blueprint: values.profileBlueprint, page: values.profilePage, accent: values.profileAccent, copper: values.profileCopper, line: values.profileLine,
+      rainColor: values.offlineRainColor,
+    },
+    look: {
+      signWidth: values.profileSignWidth, gridMajor: values.profileGridMajor, gridFine: values.profileGridFine, gridPage: values.profileGridPage,
+      sheetOpacity: values.profileSheetOpacity, ...rain,
+    },
+  };
+  // The offline banner has its own grid size
+  const offline: BannerOptions = {
+    ...base(OFFLINE_SIZE), font: values.offlineFont, grid: values.bannerOfflineGrid,
+    colors: {
+      blueprint: values.offlineBlueprint, page: values.offlinePage, accent: values.offlineAccent, copper: values.offlineCopper, line: values.offlineLine,
+      rainColor: values.offlineRainColor,
+    },
+    look: {
+      signWidth: values.offlineSignWidth, gridMajor: values.offlineGridMajor, gridFine: values.offlineGridFine, gridPage: values.offlineGridPage,
+      sheetOpacity: values.offlineSheetOpacity, ...rain,
+    },
+  };
+  return { profile, offline };
+}
+
 export function dachdeckerClips(settings: SettingValues, login: string): RenderClip[] {
   const values = settings as unknown as DachdeckerValues;
   const names = { channel: values.channelName, login };
   const fill = (text: string) => fillTemplate(text, names);
   const stinger: StingerOptions = {
     duration: values.stingerDuration, cut: values.stingerCut, hold: values.stingerHold / PERCENT, roll: values.stingerRollSize, fps: values.stingerFps,
-    blueprint: values.blueprint, line: values.line, copper: values.copper, shadow: values.page,
+    blueprint: values.stingerBlueprint, line: values.stingerLine, copper: values.stingerCopper, shadow: values.stingerShadow, seams: values.stingerSeams,
+    shadowAlpha: values.stingerShadowAlpha, paperLight: values.stingerPaperLight, ambient: values.stingerAmbient, sun: values.stingerSun,
   };
   const sheet: SheetOptions = {
-    ...STINGER_SIZE, grid: values.stingerGrid, font: values.font,
-    colors: { blueprint: values.blueprint, line: values.line, accent: values.accent, copper: values.copper, muted: values.muted, brick: values.brick },
+    ...STINGER_SIZE, grid: values.stingerGrid, font: values.stingerFont,
+    colors: {
+      blueprint: values.stingerBlueprint, line: values.stingerLine, accent: values.stingerAccent, copper: values.stingerCopper, muted: values.stingerMuted,
+      brick: values.stingerBrick,
+    },
     title: fill(values.stingerText), subtitle: fill(values.stingerSubtitle), block: values.stingerBlockLines.map(fill), notes: values.stingerNotes.map(fill),
     stamp: fill(values.stingerStamp), span: values.span, rise: values.rise,
   };
-  const banner = (size: { width: number; height: number }): BannerOptions => ({
-    width: size.width, height: size.height, font: values.font, fontSize: values.fontSize, alertWidth: values.alertWidth,
-    grid: values.bannerGrid, glow: values.glow, rain: values.bannerRain, drops: values.bannerRainCount, seed: values.seed,
-    colors: { blueprint: values.blueprint, page: values.page, accent: values.accent, copper: values.copper, line: values.line, rainColor: values.rain },
-  });
-  const profile = banner(PROFILE_SIZE);
-  // The offline banner has its own grid size
-  const offline = { ...banner(OFFLINE_SIZE), grid: values.bannerOfflineGrid };
+  const { profile, offline } = bannerOptions(values);
   const font = `700 24px "${values.font}"`;
   // The roll draws the hold itself (roll.ts), so the core only takes frame rate, curve and size
   return [

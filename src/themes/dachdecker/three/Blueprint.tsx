@@ -6,25 +6,30 @@ import { useEffect, useMemo } from "react";
 import { Color, GridHelper } from "three";
 
 type Mood = "plan" | "rain" | "dusk";
-export type Palette = { line: string; muted: string; blueprint: string; page: string; accent: string; dusk: string };
+// The colors and the light of the settings (the scenes pass their values)
+export type Palette = {
+  line: string; muted: string; blueprint: string; page: string; accent: string; dusk: string; gridFineShare: number; rainGround: number; duskGround: number;
+  moonWhite: number; sunWhite: number; lightPlanSky: number; lightPlanMain: number; lightRainSky: number; lightRainMain: number; lightDuskSky: number;
+  lightDuskMain: number; lightDuskFill: number;
+};
 type Props = { grid: boolean; opacity: number; mood: Mood; palette: Palette };
 
 const SIZE = 80;
 const MAIN = 40;
 const FINE = 400;
-// The fine grid is this much fainter than the main grid
-const FINE_SHARE = 0.27;
-// Per mood: half-sphere light, the main light and its place, an optional fill light
-const LIGHTS = {
-  plan: { sky: 0.9, main: 1.1, mainAt: [-6, 10, 4], fill: 0, fillAt: [0, 0, 0] },
-  rain: { sky: 1.1, main: 1.4, mainAt: [-6, 10, 6], fill: 0, fillAt: [0, 0, 0] },
-  dusk: { sky: 1.1, main: 1.6, mainAt: [10, 4, -12], fill: 0.8, fillAt: [-8, 10, 10] },
+// Per mood: the place of the main light and of the fill light; their strengths come from the settings
+const PLACES = {
+  plan: { mainAt: [-6, 10, 4], fillAt: [0, 0, 0] },
+  rain: { mainAt: [-6, 10, 6], fillAt: [0, 0, 0] },
+  dusk: { mainAt: [10, 4, -12], fillAt: [-8, 10, 10] },
 } as const;
-// Shares of the mixed light colors
-const RAIN_GROUND = 0.6;
-const DUSK_GROUND = 0.3;
-const MOON_WHITE = 0.5;
-const SUN_WHITE = 0.45;
+
+// Per mood: half-sphere light, the main light, the fill light (0 = none)
+function lightsOf(mood: Mood, palette: Palette) {
+  if (mood === "rain") return { sky: palette.lightRainSky, main: palette.lightRainMain, fill: 0 };
+  if (mood === "dusk") return { sky: palette.lightDuskSky, main: palette.lightDuskMain, fill: palette.lightDuskFill };
+  return { sky: palette.lightPlanSky, main: palette.lightPlanMain, fill: 0 };
+}
 
 function useGrid(divisions: number, color: string, opacity: number) {
   const grid = useMemo(() => {
@@ -40,15 +45,15 @@ function useGrid(divisions: number, color: string, opacity: number) {
 
 function lightColors(mood: Mood, palette: Palette) {
   const color = (value: string) => new Color(value);
-  if (mood === "rain") return { ground: color(palette.page).multiplyScalar(RAIN_GROUND), main: color(palette.muted).lerp(color(palette.line), MOON_WHITE) };
-  if (mood === "dusk") return { ground: color(palette.dusk).multiplyScalar(DUSK_GROUND), main: color(palette.accent).lerp(color(palette.line), SUN_WHITE) };
+  if (mood === "rain") return { ground: color(palette.page).multiplyScalar(palette.rainGround), main: color(palette.muted).lerp(color(palette.line), palette.moonWhite) };
+  if (mood === "dusk") return { ground: color(palette.dusk).multiplyScalar(palette.duskGround), main: color(palette.accent).lerp(color(palette.line), palette.sunWhite) };
   return { ground: color(palette.blueprint), main: color(palette.line) };
 }
 
 export default function Blueprint({ grid, opacity, mood, palette }: Props) {
   const main = useGrid(MAIN, palette.line, opacity);
-  const fine = useGrid(FINE, palette.line, opacity * FINE_SHARE);
-  const light = LIGHTS[mood];
+  const fine = useGrid(FINE, palette.line, opacity * palette.gridFineShare);
+  const light = { ...lightsOf(mood, palette), ...PLACES[mood] };
   const colors = useMemo(() => lightColors(mood, palette), [mood, palette]);
   return (
     <>
