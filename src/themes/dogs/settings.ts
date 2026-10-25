@@ -154,7 +154,7 @@ const FIELDS = [
   inScene("starting", color("rugColor", "Teppich", STARTING, "#c24535")),
   inScene("starting", number("dropEvery", "Hunde fallen: Abstand", STARTING, 0.2, 0, 2, "s", 0.05)),
   inScene("starting", number("markerStart", "Marker startet nach", STARTING, 2.6, 0, 20, "s", 0.1)),
-  inScene("starting", number("markerHop", "Marker: Dauer je Sprung", STARTING, 0.45, 0.1, 3, "s", 0.05)),
+  inScene("starting", number("markerHop", "Marker: Dauer je Sprung", STARTING, 1, 0.1, 3, "s", 0.05)),
   inScene("starting", number("hearts", "Herzen", STARTING, 7, 0, 30)),
   inScene("starting", number("walkSpeed", "Lauf zum Teppich: Tempo", STARTING, 48, 5, 300)),
   inScene("starting", number("barkEvery", "Bellen: alle", STARTING, 7, 1, 120, "s", 0.5)),

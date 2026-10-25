@@ -284,7 +284,7 @@ fn starting() -> Vec<SettingField> {
         color("rugColor", "Teppich", STARTING, "#c24535"),
         number("dropEvery", "Hunde fallen: Abstand", STARTING, 0.2, 0.0, 2.0, S, Some(0.05)),
         number("markerStart", "Marker startet nach", STARTING, 2.6, 0.0, 20.0, S, Some(0.1)),
-        number("markerHop", "Marker: Dauer je Sprung", STARTING, 0.45, 0.1, 3.0, S, Some(0.05)),
+        number("markerHop", "Marker: Dauer je Sprung", STARTING, 1.0, 0.1, 3.0, S, Some(0.05)),
         number("hearts", "Herzen", STARTING, 7.0, 0.0, 30.0, None, None),
         number("walkSpeed", "Lauf zum Teppich: Tempo", STARTING, 48.0, 5.0, 300.0, None, None),
         number("barkEvery", "Bellen: alle", STARTING, 7.0, 1.0, 120.0, S, Some(0.5)),

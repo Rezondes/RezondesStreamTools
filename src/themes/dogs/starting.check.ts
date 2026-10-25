@@ -5,6 +5,8 @@
 import assert from "node:assert/strict";
 import { BREED_IDS } from "./breeds.ts";
 import { dogCache } from "./dog.ts";
+import { resolveSettings } from "../../core/settings.ts";
+import { dogsSettings, type DogsValues } from "./settings.ts";
 import { bubbleAt, bubblePlace, dogAt, headAt, labelAt, labelPlace, markerAt, soundsBetween, startingPlan, type StartingTiming } from "./starting.ts";
 
 const colors = { base: "#cc7633", mark: "#fbf6ee", dark: "#a85a22", nose: "#1d1715", pattern: "solid" as const };
@@ -62,5 +64,11 @@ assert.equal(first.filter(sound => sound.kind === "card").length, 1);
 assert.ok(first.every((sound, index) => index === 0 || first[index - 1].at <= sound.at), "in order");
 assert.deepEqual(soundsBetween(corgi, corgi.bark + 1, corgi.bark + 15).map(sound => [sound.kind, sound.at]), [["bark", corgi.bark + 7], ["bark", corgi.bark + 14]]);
 assert.deepEqual(soundsBetween(corgi, 5, 5), []);
+
+// With the default settings the marker leaves a bark time of 0.8 s (the longest bark file) before the next dog barks
+const defaults = resolveSettings(dogsSettings, {}) as unknown as DogsValues;
+const slow = startingPlan({ ...timing, markerStart: defaults.markerStart, markerHop: defaults.markerHop }, sizes);
+const barks = soundsBetween(slow, 0, slow.arrive).filter(sound => sound.kind === "bark").map(sound => sound.at);
+assert.ok(barks.length > 1 && barks.every((at, index) => index === 0 || at - barks[index - 1] >= 0.8), `barks overlap: ${barks.join(", ")}`);
 
 console.log("dogs starting ok");
