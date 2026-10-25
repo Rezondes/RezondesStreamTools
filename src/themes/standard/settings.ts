@@ -8,6 +8,7 @@ import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 
 const STANDARD_FONTS = ["Inter", "Manrope", "DM Sans", "Space Grotesk"] as const;
 const LOCALES = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"] as const;
@@ -173,6 +174,7 @@ const GROUP_SCENES = {
   [PROFILE_BANNER]: [],
   [OFFLINE_BANNER]: [],
   [INFO_GROUP]: ["info"],
+  ...TUNING_GROUPS,
 } as const;
 
 // On first login: channel name from the Twitch login instead of the sample
@@ -186,4 +188,4 @@ const BASIC = [
   "raidLine", "cheerLine", "redeemLine", "hypeBeginLine", "chatBadges", "camName", "camLive", "musicLabel", "musicIdle", "musicHide",
 ];
 
-export const standardSettings: ThemeSchema = { id: "standard", name: "Standard", fields: markBasic(withStingerFields([...FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };
+export const standardSettings: ThemeSchema = { id: "standard", name: "Standard", fields: markBasic(withStingerFields([...FIELDS, ...TUNING_FIELDS], STINGER), BASIC), groupScenes: GROUP_SCENES, personalize };

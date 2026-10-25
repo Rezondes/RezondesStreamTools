@@ -1,6 +1,9 @@
 // Check for stinger.ts of the standard theme: at the transition point the stripes cover the whole picture, at the start and end
 // nothing is visible. A mock canvas counts the filled areas. Runs with npm test.
 import assert from "node:assert/strict";
+import { effectiveSettings } from "../../core/settings.ts";
+import { auroraOptions } from "./aurora.ts";
+import { type StandardValues, standardSettings } from "./settings.ts";
 import { drawStandardStinger, HEIGHT, WIDTH, type StandardStingerOptions } from "./stinger.ts";
 
 function recorder() {
@@ -20,8 +23,11 @@ function recorder() {
   return { context: context as unknown as CanvasRenderingContext2D, rects, texts };
 }
 
-const lights = { seed: 7, count: 4, loop: 24, accent: "#7c5cff", accent2: "#22d3ee", strength: 0.7, dust: 20 };
-const options: StandardStingerOptions = { duration: 1.2, cut: 0.6, panels: 3, text: "REZONDES", font: "Inter", accent: "#7c5cff", accent2: "#22d3ee", textColor: "#ffffff", background: "#0b0b12", lights };
+const lights = { ...auroraOptions(effectiveSettings(standardSettings, {}) as StandardValues), dust: 20, dustScale: 0.25 };
+const options: StandardStingerOptions = {
+  duration: 1.2, cut: 0.6, panels: 3, text: "REZONDES", font: "Inter", accent: "#7c5cff", accent2: "#22d3ee", textColor: "#ffffff", background: "#0b0b12", lights,
+  front: 28, textSize: 120, textWeight: 800, textRise: 40, textWindow: 0.5, inShare: 0.7, outShare: 0.7, stagger: 0.3,
+};
 
 // At the transition point: every stripe over the full width, together at least the full height (1 px overlap)
 const atCut = recorder();

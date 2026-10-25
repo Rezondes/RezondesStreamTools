@@ -91,8 +91,13 @@ for (const file of files.filter(file => SOURCE.test(file))) {
   if (folders.some(folder => ["dist", "render", "data", "node_modules"].includes(folder))) failures.push(`${file}: git-ignored folder name (rule 6)`);
 }
 
-// Checks: every logic module has <name>.check.ts next to it, except hooks, pure types or with a reason in WITHOUT_CHECK
-for (const file of files.filter(file => LOGIC.test(file) && !HOOK.test(file) && !file.endsWith(".d.ts") && !typesOnly(file))) {
+// Fine-tuning tables of a theme (tuning.ts, tuning/*.ts) are field data like settings.ts: the schema audit of the
+// theme and scripts/tuning.check.ts check them
+const TUNING_TABLE = /^src\/themes\/[^/]+\/tuning(\.ts|\/[^/]+\.ts)$/;
+
+// Checks: every logic module has <name>.check.ts next to it, except hooks, pure types, tuning tables or with a reason
+// in WITHOUT_CHECK
+for (const file of files.filter(file => LOGIC.test(file) && !HOOK.test(file) && !TUNING_TABLE.test(file) && !file.endsWith(".d.ts") && !typesOnly(file))) {
   if (!existsSync(file.replace(/\.ts$/, ".check.ts")) && !(file in WITHOUT_CHECK)) failures.push(`${file}: no ${file.replace(/^.*\//, "").replace(/\.ts$/, ".check.ts")} (checks)`);
 }
 for (const listed of Object.keys(WITHOUT_CHECK)) {
@@ -160,7 +165,7 @@ const COLOR_LITERAL = /#[0-9a-f]{3,8}\b|\brgba?\(|\bhsla?\(/i;
 const VISIBLE = /[\p{L}\p{N}\p{So}]/u;
 const CSS_SIZE = /(?<![\w-])-?(\d+\.?\d*|\.\d+)(px|ms|s)\b/;
 const VAR_DEFAULT = /var\(--[\w-]+,[^()]*\)/g;
-const THEME_CODE = /^src\/themes\/[^/]+\/(?!settings\.ts$).*(?<!\.check)\.(ts|tsx|css)$/;
+const THEME_CODE = /^src\/themes\/[^/]+\/(?!settings\.ts$|tuning\.ts$|tuning\/).*(?<!\.check)\.(ts|tsx|css)$/;
 
 function designLiterals(file: string, source: string): string[] {
   const found: string[] = [];

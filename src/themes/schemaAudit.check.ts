@@ -6,7 +6,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { minimeVariantFields } from "../core/minimeFields.ts";
 import type { ThemeSchema } from "../core/theme.ts";
-import { auditBasic, auditInherit, auditTheme } from "./schemaAudit.ts";
+import { auditBasic, auditInherit, auditTheme, TUNING_GROUP } from "./schemaAudit.ts";
 
 const schema: ThemeSchema = {
   id: "probe",
@@ -36,6 +36,10 @@ try {
   const audit = auditTheme(schema, folder);
   assert.deepEqual(audit.errors, [{ key: "accent", code: "invalid_color" }]);
   assert.deepEqual(audit.unused, ["unused"]);
+  // A field others inherit from counts as used, even when no code reads it directly
+  const shade = { key: "shade", type: "color" as const, label: "Shade", group: "A", default: "#000000" };
+  const family = { ...schema, fields: [...schema.fields, shade, { ...shade, key: "nameColor", default: "", inherit: "shade" }] };
+  assert.ok(!auditTheme(family, folder).unused.includes("shade"));
   // The core reads the generated variant fields of the minimes: they count as used
   const typed = { ...schema, fields: minimeVariantFields({ command: "!frucht", label: "Frucht", variants: [{ id: "mango", label: "Mango", names: ["mango"] }] }) };
   assert.deepEqual(auditTheme(typed, folder).unused, []);
@@ -61,5 +65,8 @@ assert.deepEqual(auditBasic({ ...simple, fields: simple.fields.slice(0, 2) }), [
 // The performance level does not count against the limit: ten others plus quality are fine
 const quality = { key: "quality", type: "select" as const, label: "Q", group: "S", default: "mittel", options: ["hoch", "mittel", "niedrig"], basic: true };
 assert.ok(!auditBasic({ ...simple, fields: [simple.fields[0], ...many.slice(1), quality] }).some(finding => finding.startsWith("chat")));
+// Fine-tuning groups do not count: a scene whose only text field sits there needs no basic field
+const tuned: ThemeSchema = { ...simple, fields: [...simple.fields.slice(0, 1), ...many.slice(0, 3), { key: "nameColor", type: "color", label: "N", group: `${TUNING_GROUP}Chat`, default: "", inherit: "accent" }], groupScenes: { S: ["chat"], [`${TUNING_GROUP}Chat`]: ["fx"] } };
+assert.ok(!auditBasic(tuned).some(finding => finding.startsWith("fx")));
 
 console.log("schemaAudit ok");

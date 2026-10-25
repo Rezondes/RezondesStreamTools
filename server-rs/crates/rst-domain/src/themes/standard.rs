@@ -17,6 +17,7 @@ use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::registry::Theme;
 use crate::themes::schema::{SceneName, ThemeSchema};
 use crate::themes::stinger_fields::with_stinger_fields;
+use crate::themes::tuning;
 
 const FONTS: [&str; 4] = ["Inter", "Manrope", "DM Sans", "Space Grotesk"];
 const LOCALES: [&str; 8] = ["de-DE", "de-CH", "de-AT", "en-US", "en-GB", "fr-FR", "es-ES", "nl-NL"];
@@ -218,6 +219,7 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (INFO_GROUP, vec![Info]),
     ]
     .into_iter()
+    .chain(tuning::standard::group_scenes())
     .map(|(group, scenes)| (group.to_owned(), scenes))
     .collect()
 }
@@ -268,6 +270,7 @@ pub fn standard() -> Theme {
     let mut fields =
         [general(), screens(), background(), alerts(), chat_cam_music(), fx_stinger_banner(), info_fields()].concat();
     fields.push(number("infoWidth", "Befehlsseite: Breite der Spalte", INFO_GROUP, 860.0, 400.0, 1600.0, PX, None));
+    fields.extend(tuning::standard::fields());
     let schema = ThemeSchema {
         id: "standard".to_owned(),
         name: "Standard".to_owned(),

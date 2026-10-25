@@ -8,9 +8,6 @@ import type { ChatMessage } from "../../../core/types.ts";
 import { useChat } from "../../../core/hooks/useChat.ts";
 import { useStandard } from "../useStandard.ts";
 
-// fixed: where a new card comes from (px below, scale) and how long it glides in s
-const ENTER = { y: 24, scale: 0.96, duration: 0.5 };
-
 export default function Chat() {
   const values = useStandard();
   const messages = useChat(values.chatMax);
@@ -21,7 +18,7 @@ function Row({ message }: { message: ChatMessage }) {
   const values = useStandard();
   const row = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
-    timeline.from(row.current, { y: ENTER.y, opacity: 0, scale: ENTER.scale, duration: ENTER.duration, ease: "back.out(1.4)" });
+    timeline.from(row.current, { y: values.chatFromY, opacity: 0, scale: values.chatFromScale, duration: values.chatEnterTime, ease: `back.out(${values.chatOvershoot})` });
   }, [], row);
   return (
     <div ref={row} className={`standard-card standard-row${values.chatFade > 0 ? " fades" : ""}`}>

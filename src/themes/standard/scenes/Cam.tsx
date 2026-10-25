@@ -6,16 +6,13 @@ import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { fillTemplate } from "../../../core/template.ts";
 import { standardNames, useStandard } from "../useStandard.ts";
 
-// fixed: durations in s, how far the tags rise in px and the stagger between them
-const ENTER = { frame: 0.6, tag: 0.5, rise: 8, stagger: 0.12, tagsAt: 0.3 };
-
 export default function Cam() {
   const values = useStandard();
   const frame = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
-    timeline.from(frame.current, { opacity: 0, duration: ENTER.frame, ease: "power1.out" });
-    timeline.from(".standard-pill", { opacity: 0, y: ENTER.rise, duration: ENTER.tag, ease: "power2.out", stagger: ENTER.stagger }, ENTER.tagsAt);
-  }, [values.camLive], frame);
+    timeline.from(frame.current, { opacity: 0, duration: values.camEnterFrame, ease: "power1.out" });
+    timeline.from(".standard-pill", { opacity: 0, y: values.camEnterRise, duration: values.camEnterTag, ease: "power2.out", stagger: values.camEnterStagger }, values.camEnterTagsAt);
+  }, [values], frame);
   return (
     <div ref={frame} className={`standard-cam${values.camSpinOn ? " spins" : ""}`}>
       <span className="standard-pill standard-name">{fillTemplate(values.camName, standardNames(values))}</span>

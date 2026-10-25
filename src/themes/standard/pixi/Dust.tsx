@@ -11,13 +11,13 @@ import { softDot } from "./softDot.ts";
 
 type Props = { app: Application; clock: () => number; values: StandardValues; kind: ScreenKind };
 
-// fixed: texture size in px and share of the bright core, like the prototype (refs/starting.html)
-const TEXTURE = { size: 32, core: 0.25 };
+// fixed: texture size in px (only its resolution, the drawn size comes from the settings)
+const TEXTURE_SIZE = 32;
 
 export default function Dust({ app, clock, values, kind }: Props) {
   useEffect(() => {
     const total = values.dustOn && values.dustCount > 0 ? particleCount(values.dustCount, values.quality) : 0;
-    const texture = softDot(TEXTURE.size, TEXTURE.core);
+    const texture = softDot(TEXTURE_SIZE, values.dustCore, values.dustCoreAlpha);
     const box = new Container();
     box.blendMode = "add";
     const options = auroraOptions(values);

@@ -3,6 +3,7 @@
 // (burstAt of the core per spark), all from seed and time. Check: edgeTrace.check.ts.
 import { hash } from "../../core/hash.ts";
 import { burstAt } from "../../core/motion/burst.ts";
+import type { StandardValues } from "./settings.ts";
 
 export type Spark = { x: number; y: number; opacity: number; size: number };
 
@@ -30,26 +31,30 @@ export function edgePoint(share: number, width: number, height: number): { x: nu
   return { x: 0, y: height - (path - 2 * width - height), normal: Math.PI };
 }
 
-// Like the prototype: life of a spark in s, the latest start in s, speed in px/s, a light pull down, fan of the flight
-const LIFE = 1.1;
-const LATEST = 0.25;
-const BURST = { spread: 1.2, speed: [160, 480] as const, gravity: 520, drag: 0, life: LIFE };
-const SIZE = { least: 8, more: 14, shrink: 0.6 };
+// How the sparks fly (settings): life of a spark in s, the latest start in s, fan of the flight, speed in px/s, the
+// pull down, size in px and how far it shrinks over its life
+export type SparkLook = { life: number; latest: number; spread: number; speedMin: number; speedMax: number; gravity: number; size: number; sizeSpread: number; shrink: number };
+
+export const sparkLookOf = (values: StandardValues): SparkLook => ({
+  life: values.alertSparkLife, latest: values.alertSparkLatest, spread: values.alertSparkSpread, speedMin: values.alertSparkSpeedMin, speedMax: values.alertSparkSpeedMax,
+  gravity: values.alertSparkGravity, size: values.alertSparkSize, sizeSpread: values.alertSparkSizeSpread, shrink: values.alertSparkShrink,
+});
 
 // Seconds after the burst when every spark is gone
-export const SPARK_DONE = LIFE + LATEST;
+export const sparksDone = (look: SparkLook) => look.life + look.latest;
 // fixed: room around the card in px for the flight of the sparks (their canvas, and the OBS source of the alerts)
 export const SPARK_ROOM = 360;
 
 // Sparks seconds after the burst: each starts at its own point of the edge a little later than the burst, flies out
 // along the normal and fades; positions relative to the top left corner of the card
-export function sparksAt(seed: number, count: number, seconds: number, card: { width: number; height: number }): Spark[] {
+export function sparksAt(seed: number, count: number, seconds: number, card: { width: number; height: number }, look: SparkLook): Spark[] {
+  const burst = { spread: look.spread, speed: [look.speedMin, look.speedMax] as const, gravity: look.gravity, drag: 0, life: look.life };
   return Array.from({ length: count }, (_, index) => {
     const value = (property: number) => hash(seed * 7919 + index * 31 + property);
     const point = edgePoint(value(1), card.width, card.height);
-    const age = seconds - value(2) * LATEST;
-    const [flying] = burstAt(seed * 131 + index, 1, age, { ...BURST, origin: point, direction: point.normal });
-    const size = (SIZE.least + value(3) * SIZE.more) * (1 - (Math.max(0, age) / LIFE) * SIZE.shrink);
+    const age = seconds - value(2) * look.latest;
+    const [flying] = burstAt(seed * 131 + index, 1, age, { ...burst, origin: point, direction: point.normal });
+    const size = (look.size + value(3) * look.sizeSpread) * (1 - (Math.max(0, age) / Math.max(look.life, Number.EPSILON)) * look.shrink);
     return { x: flying.x, y: flying.y, opacity: flying.opacity, size };
   });
 }

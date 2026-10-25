@@ -11,15 +11,13 @@ type Props = { values: StandardValues; clock: () => number; start: number; now: 
 
 // fixed: seconds in ms
 const SECOND_MS = 1000;
-// fixed: seconds between the start of two cards counting up
-const STAGGER = 0.15;
 
 export default function StatCards({ values, clock, start, now }: Props) {
   const stats = useStreamStats();
   const lines = useMemo(() => parseStatLines(values.endingStats.join("\n")), [values.endingStats]);
   const sceneClock = useMemo(() => ({ get time() { return clock(); } }), [clock]);
   const count = Math.max(values.countUpMs / SECOND_MS, Number.EPSILON);
-  const shares = useClockValue(sceneClock, time => lines.map((_, index) => Math.min(1, Math.max(0, (time - start - index * STAGGER) / count))).join(","));
+  const shares = useClockValue(sceneClock, time => lines.map((_, index) => Math.min(1, Math.max(0, (time - start - index * values.statsCountStagger) / count))).join(","));
   const rows = countedStats(stats, lines, values.locale, now, shares.split(",").map(Number));
   if (rows.length === 0) return null;
   return (

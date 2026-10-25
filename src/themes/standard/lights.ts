@@ -3,11 +3,12 @@
 // other as soft radial gradients and dots. Pure function of seed and time. Check: lights.check.ts.
 import { type AuroraOptions, auroraField, moteAt } from "./aurora.ts";
 
-export type LightsOptions = AuroraOptions & { dust: number }; // dust: number of motes
+// dust: number of motes, dustScale: their size on the canvas as a share of their size on the screens
+export type LightsOptions = AuroraOptions & { dust: number; dustScale: number };
 
 const STAGE = { width: 1920, height: 1080 };
-// Alpha of the fade at the edge of the bright core as two hex digits, and where the core ends, like the screens
-const CORE = { alpha: "73", at: 0.35 };
+// The alpha of the fade at the edge of the bright core as two hex digits
+const alphaHex = (alpha: number) => Math.round(Math.min(1, Math.max(0, alpha)) * 255).toString(16).padStart(2, "0");
 
 export function paintLights(context: CanvasRenderingContext2D, options: LightsOptions, time: number, width: number, height: number, alpha = 1) {
   const [scaleX, scale] = [width / STAGE.width, height / STAGE.height];
@@ -18,7 +19,7 @@ export function paintLights(context: CanvasRenderingContext2D, options: LightsOp
     const [x, y, radius] = [field.x * scaleX, field.y * scale, field.radius * scale];
     const fade = context.createRadialGradient(x, y, 0, x, y, radius);
     fade.addColorStop(0, field.color);
-    fade.addColorStop(CORE.at, `${field.color}${CORE.alpha}`);
+    fade.addColorStop(options.core, `${field.color}${alphaHex(options.coreAlpha)}`);
     fade.addColorStop(1, `${field.color}00`);
     context.globalAlpha = field.alpha * alpha;
     context.fillStyle = fade;
@@ -29,7 +30,7 @@ export function paintLights(context: CanvasRenderingContext2D, options: LightsOp
     context.globalAlpha = mote.alpha * alpha;
     context.fillStyle = mote.color;
     context.beginPath();
-    context.arc(mote.x * scaleX, mote.y * scale, (mote.size * scale) / 4, 0, Math.PI * 2);
+    context.arc(mote.x * scaleX, mote.y * scale, mote.size * scale * options.dustScale, 0, Math.PI * 2);
     context.fill();
   }
   context.restore();

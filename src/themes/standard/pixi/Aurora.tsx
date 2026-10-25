@@ -12,14 +12,14 @@ import { softDot } from "./softDot.ts";
 
 type Props = { app: Application; clock: () => number; values: StandardValues; kind: ScreenKind };
 
-// fixed: texture size in px and share of the bright core, like the prototype (refs/starting.html)
-const TEXTURE = { size: 512, core: 0.35 };
+// fixed: texture size in px (only its resolution, the drawn size comes from the settings)
+const TEXTURE_SIZE = 512;
 // fixed: passes of the blur, like the prototype
 const BLUR_QUALITY = 4;
 
 export default function Aurora({ app, clock, values, kind }: Props) {
   useEffect(() => {
-    const texture = softDot(TEXTURE.size, TEXTURE.core);
+    const texture = softDot(TEXTURE_SIZE, values.auroraCore, values.auroraCoreAlpha);
     const box = new Container();
     box.blendMode = "add";
     if (quality(values.quality).bloom && values.auroraBlur > 0) box.filters = [new BlurFilter({ strength: values.auroraBlur, quality: BLUR_QUALITY })];

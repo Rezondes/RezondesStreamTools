@@ -7,17 +7,14 @@ import { useInfoPage } from "../../../core/info/useInfoPage.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { standardNames, useStandard } from "../useStandard.ts";
 
-// fixed: how far the parts rise in px, how long in s and the stagger between them
-const ENTER = { rise: 20, duration: 0.6, stagger: 0.08 };
-
 export default function Info() {
   const values = useStandard();
   const page = useInfoPage(values, standardNames(values), null);
   const column = useRef<HTMLElement>(null);
   const loaded = page !== null;
   useTimeline(timeline => {
-    if (loaded) timeline.from(".standard-info-column > *", { opacity: 0, y: ENTER.rise, duration: ENTER.duration, ease: "power2.out", stagger: ENTER.stagger });
-  }, [loaded], column);
+    if (loaded) timeline.from(".standard-info-column > *", { opacity: 0, y: values.infoEnterRise, duration: values.infoEnterTime, ease: "power2.out", stagger: values.infoEnterStagger });
+  }, [loaded, values], column);
   if (!page) return null;
   return (
     <div className="standard-info">

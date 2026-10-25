@@ -32,6 +32,9 @@ const CORE_KEYS = new Set<string>([
 ]);
 const CORE_PREFIXES = [minimeNamesKey(""), minimeTeamNamesKey(""), minimeTeamLabelKey(""), minimeTeamColorKey(""), minimeAimKey(""), minimeFireKey("")];
 
+// Groups of the fine-tuning fields of a theme (src/themes/<id>/tuning.ts)
+export const TUNING_GROUP = "Feinschliff: ";
+
 // Simple view of the dashboard: every area with fields other than numbers shows a few basic ones (general 3 to 12, a
 // scene 1 to 10; an area of numbers only shows the hint to the advanced view), and no number is basic except these,
 // which almost every streamer sets
@@ -41,7 +44,8 @@ const ALWAYS_BASIC = new Set(["quality"]);
 export function auditBasic(schema: ThemeSchema): string[] {
   const numbers = schema.fields.filter(field => field.basic && field.type === "number" && !BASIC_NUMBERS.has(field.key)).map(field => `${field.key}: basic number`);
   const areas = (["general", ...SCENES] as const).flatMap(view => {
-    const fields = groupsForView(schema, view).flatMap(group => group.fields);
+    // fine-tuning groups (tuning.ts) hold only details for the advanced view
+    const fields = groupsForView(schema, view).filter(group => !group.group.startsWith(TUNING_GROUP)).flatMap(group => group.fields);
     const count = fields.filter(field => field.basic && !ALWAYS_BASIC.has(field.key)).length;
     const [min, max] = view === "general" ? [3, 12] : [1, 10];
     const needed = fields.some(field => field.type !== "number") ? min : 0;
@@ -74,8 +78,10 @@ export function auditTheme(schema: ThemeSchema, folder: string) {
   if (inherit.length > 0) throw new Error(`inherit: ${inherit.join("; ")}`);
   const defaults = Object.fromEntries(schema.fields.map(field => [field.key, field.default]));
   const files = readdirSync(folder, { recursive: true, encoding: "utf8" })
-    .filter(file => /\.(ts|tsx|css)$/.test(file) && !/settings\.ts$|tuning\.ts$|\.check\.ts$/.test(file));
+    .filter(file => /\.(ts|tsx|css)$/.test(file) && !/settings\.ts$|tuning\.ts$|tuning[\\/]|\.check\.ts$/.test(file));
   const source = files.map(file => readFileSync(join(folder, file), "utf8")).join("\n");
-  const used = (key: string) => CORE_KEYS.has(key) || CORE_PREFIXES.some(prefix => key.startsWith(prefix)) || new RegExp(`\\.${key}\\b|[{,]\\s*${key}\\s*[,}]|"${key}"|var\\(--${key}\\)`).test(source);
+  // a field others inherit from is used through them
+  const parents = new Set(schema.fields.flatMap(field => (field.inherit === undefined ? [] : [field.inherit])));
+  const used = (key: string) => CORE_KEYS.has(key) || parents.has(key) || CORE_PREFIXES.some(prefix => key.startsWith(prefix)) || new RegExp(`\\.${key}\\b|[{,]\\s*${key}\\s*[,}]|"${key}"|var\\(--${key}\\)`).test(source);
   return { errors: validateSettings(schema, defaults).errors, unused: schema.fields.map(field => field.key).filter(key => !used(key)), basic: auditBasic(schema) };
 }

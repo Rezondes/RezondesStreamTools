@@ -10,8 +10,6 @@ import { useStandard } from "../useStandard.ts";
 
 // fixed: seconds in ms
 const SECOND_MS = 1000;
-// fixed: the cards rise from 24 px below, 0.5 s each, 0.12 s apart, then count up
-const RISE = { from: 24, duration: 0.5, stagger: 0.12 };
 const SEEK = seekFromQuery(location.search);
 
 export default function Stats() {
@@ -21,11 +19,11 @@ export default function Stats() {
   const startedAt = useRef(performance.now());
   const clock = useCallback(() => SEEK ?? (performance.now() - startedAt.current) / SECOND_MS, []);
   useTimeline(timeline => {
-    timeline.from(".standard-st-rise", { opacity: 0, y: RISE.from, duration: RISE.duration, ease: "power2.out", stagger: RISE.stagger }, 0);
-  }, [], scope);
+    timeline.from(".standard-st-rise", { opacity: 0, y: values.statsRiseFrom, duration: values.statsRiseTime, ease: "power2.out", stagger: values.statsRiseStagger }, 0);
+  }, [values], scope);
   return (
     <div ref={scope} className="standard-stats">
-      <StatCards values={values} clock={clock} start={RISE.duration} now={now} />
+      <StatCards values={values} clock={clock} start={values.statsRiseTime} now={now} />
     </div>
   );
 }

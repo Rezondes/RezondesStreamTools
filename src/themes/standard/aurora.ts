@@ -6,7 +6,19 @@ import { hash } from "../../core/hash.ts";
 import type { ScreenKind } from "../../core/screens/screens.ts";
 import type { StandardValues } from "./settings.ts";
 
-export type AuroraOptions = { seed: number; count: number; loop: number; accent: string; accent2: string; strength: number };
+// How the motes of the light dust look and move (settings): colors, rises, sways and glows per MOTE_PERIOD (least
+// plus a random part), the sway and size in px, the opacity, the bright core of their texture
+export type MoteLook = {
+  accent: string; accent2: string; rises: number; risesSpread: number; sways: number; swaysSpread: number; glows: number; glowsSpread: number;
+  sway: number; swaySpread: number; size: number; sizeSpread: number; glowMin: number; glowRange: number; core: number; coreAlpha: number;
+};
+// The light fields (settings): their centers as shares of the stage, how far the seed shifts them, the orbit and the
+// radius in px (least plus a random part), how much they breathe, the bright core of their texture; plus the dust
+export type AuroraOptions = {
+  seed: number; count: number; loop: number; accent: string; accent2: string; strength: number; slots: readonly (readonly [number, number])[];
+  shift: number; orbitX: number; orbitXSpread: number; orbitY: number; orbitYSpread: number; radius: number; radiusSpread: number;
+  breathe: number; core: number; coreAlpha: number; mote: MoteLook;
+};
 type AuroraField = { x: number; y: number; radius: number; alpha: number; color: string; share: number };
 export type Mote = { x: number; y: number; size: number; alpha: number; color: string };
 
@@ -17,25 +29,21 @@ const TURN = Math.PI * 2;
 // Value from 0 to below 1 for one property of one field or mote
 const pick = (seed: number, index: number, property: number) => hash(seed * 7919 + index * 104729 + property * 31);
 
-// Centers of the fields as share of the stage, like the prototype (refs/starting.html), so they spread over the
-// corners; the seed shifts each one a little, a fifth field starts over at the first slot
-const SLOTS = [[0.22, 0.3], [0.78, 0.7], [0.69, 0.2], [0.32, 0.83]] as const;
-const SHIFT = 0.16;
-
 // Field on a closed orbit (a figure eight around its center), breathing slightly; even fields lean to the accent,
 // odd ones to the second accent, so both colors always show
 export function auroraField(options: AuroraOptions, index: number, time: number): AuroraField {
   const value = (property: number) => pick(options.seed, index, property);
-  const [slotX, slotY] = SLOTS[index % SLOTS.length];
-  const centerX = WIDTH * (slotX + (value(1) - 0.5) * SHIFT);
-  const centerY = HEIGHT * (slotY + (value(2) - 0.5) * SHIFT);
+  // the seed shifts each center a little, a fifth field starts over at the first slot
+  const [slotX, slotY] = options.slots[index % options.slots.length];
+  const centerX = WIDTH * (slotX + (value(1) - 0.5) * options.shift);
+  const centerY = HEIGHT * (slotY + (value(2) - 0.5) * options.shift);
   const angle = (time / options.loop + value(6)) * TURN;
-  const breathe = 0.85 + 0.15 * Math.sin(angle * 3);
+  const breathe = 1 - options.breathe + options.breathe * Math.sin(angle * 3);
   const share = index % 2 ? 0.6 + 0.4 * value(7) : 0.4 * value(7);
   return {
-    x: centerX + Math.cos(angle) * (160 + 100 * value(3)),
-    y: centerY + Math.sin(angle * 2) * (80 + 60 * value(4)),
-    radius: (420 + 200 * value(5)) * breathe,
+    x: centerX + Math.cos(angle) * (options.orbitX + options.orbitXSpread * value(3)),
+    y: centerY + Math.sin(angle * 2) * (options.orbitY + options.orbitYSpread * value(4)),
+    radius: (options.radius + options.radiusSpread * value(5)) * breathe,
     alpha: options.strength * breathe,
     color: mixHex(options.accent, options.accent2, share),
     share,
@@ -44,7 +52,15 @@ export function auroraField(options: AuroraOptions, index: number, time: number)
 
 // Options from the theme settings
 export const auroraOptions = (values: StandardValues): AuroraOptions => ({
-  seed: values.worldSeed, count: values.auroraFields, loop: values.blobSpeed, accent: values.accent, accent2: values.accent2, strength: values.auroraStrength,
+  seed: values.worldSeed, count: values.auroraFields, loop: values.blobSpeed, accent: values.auroraColor, accent2: values.auroraColor2, strength: values.auroraStrength,
+  slots: [[values.auroraSlot1X, values.auroraSlot1Y], [values.auroraSlot2X, values.auroraSlot2Y], [values.auroraSlot3X, values.auroraSlot3Y], [values.auroraSlot4X, values.auroraSlot4Y]],
+  shift: values.auroraShift, orbitX: values.auroraOrbitX, orbitXSpread: values.auroraOrbitXSpread, orbitY: values.auroraOrbitY, orbitYSpread: values.auroraOrbitYSpread,
+  radius: values.auroraRadius, radiusSpread: values.auroraRadiusSpread, breathe: values.auroraBreathe, core: values.auroraCore, coreAlpha: values.auroraCoreAlpha,
+  mote: {
+    accent: values.dustColor, accent2: values.dustColor2, rises: values.dustRises, risesSpread: values.dustRisesSpread, sways: values.dustSways, swaysSpread: values.dustSwaysSpread,
+    glows: values.dustGlows, glowsSpread: values.dustGlowsSpread, sway: values.dustSway, swaySpread: values.dustSwaySpread, size: values.dustSize, sizeSpread: values.dustSizeSpread,
+    glowMin: values.dustGlowMin, glowRange: values.dustGlowRange, core: values.dustCore, coreAlpha: values.dustCoreAlpha,
+  },
 });
 
 // Share from 0 to 1 the fields and the dust have faded in after the scene opened
@@ -64,17 +80,15 @@ export function breathLight(seconds: number, dim: number, breathe: number): numb
   return dim + (1 - dim) * (0.5 + 0.5 * Math.cos((seconds / breathe) * TURN));
 }
 
-// How far the fields have sunk in px when the Ending fades the world out
-const SINK = 240;
-
-// Drop and alpha of the fields after fadeAt seconds, eased over fadeMs; before that untouched
-export function sinkAt(seconds: number, fadeAt: number, fadeMs: number): { drop: number; alpha: number } {
+// Drop and alpha of the fields after fadeAt seconds, eased over fadeMs; before that untouched; sink: how far the
+// fields have sunk in px at the end
+export function sinkAt(seconds: number, fadeAt: number, fadeMs: number, sink: number): { drop: number; alpha: number } {
   const linear = fadeMs > 0 ? Math.min(1, Math.max(0, ((seconds - fadeAt) * 1000) / fadeMs)) : Number(seconds >= fadeAt);
   const eased = linear * linear * (3 - 2 * linear);
-  return { drop: SINK * eased, alpha: 1 - eased };
+  return { drop: sink * eased, alpha: 1 - eased };
 }
 
-type SceneTiming = { introMs: number; brbPace: number; brbDim: number; brbBreatheSeconds: number; endingFadeAt: number; endingFadeMs: number };
+type SceneTiming = { introMs: number; brbPace: number; brbDim: number; brbBreatheSeconds: number; endingFadeAt: number; endingFadeMs: number; endingSink: number };
 
 // Orbit time, alpha and drop of the light fields and the dust per screen: Starting plain, BRB slower and breathing,
 // Ending sinking away; every screen fades in over introMs
@@ -82,7 +96,7 @@ export function sceneLight(kind: ScreenKind, seconds: number, timing: SceneTimin
   const shown = introShare(seconds, timing.introMs);
   if (kind === "brb") return { time: pacedTime(seconds, timing.brbPace, timing.introMs / 1000), alpha: shown * breathLight(seconds, timing.brbDim, timing.brbBreatheSeconds), drop: 0 };
   if (kind === "ending") {
-    const sink = sinkAt(seconds, timing.endingFadeAt, timing.endingFadeMs);
+    const sink = sinkAt(seconds, timing.endingFadeAt, timing.endingFadeMs, timing.endingSink);
     return { time: seconds, alpha: shown * sink.alpha, drop: sink.drop };
   }
   return { time: seconds, alpha: shown, drop: 0 };
@@ -92,20 +106,23 @@ export function sceneLight(kind: ScreenKind, seconds: number, timing: SceneTimin
 export const MOTE_PERIOD = 120;
 const RISE_SPAN = HEIGHT + 100;
 
-// Mote rising slowly from below the stage to above it, swaying sideways and glowing up and down on its own rhythm
+// Mote rising slowly from below the stage to above it, swaying sideways and glowing up and down on its own rhythm;
+// whole numbers of rises, sways and glows, so every mote is back at its start after MOTE_PERIOD
 export function moteAt(options: AuroraOptions, index: number, time: number): Mote {
+  const look = options.mote;
   const value = (property: number) => pick(options.seed + 1, index, property);
   const phase = value(7) * TURN;
-  const rises = 2 + Math.floor(value(3) * 3);
-  const sways = 6 + Math.floor(value(4) * 4);
-  const glows = 17 + Math.floor(value(6) * 35);
+  const whole = (least: number, spread: number, property: number) => Math.round(least) + Math.floor(value(property) * Math.round(spread));
+  const rises = whole(look.rises, look.risesSpread, 3);
+  const sways = whole(look.sways, look.swaysSpread, 4);
+  const glows = whole(look.glows, look.glowsSpread, 6);
   const cycle = (count: number) => (time / MOTE_PERIOD) * count * TURN + phase;
   const risen = value(2) * RISE_SPAN - (time / MOTE_PERIOD) * rises * RISE_SPAN;
   return {
-    x: value(1) * WIDTH + Math.sin(cycle(sways)) * (10 + 30 * value(5)),
+    x: value(1) * WIDTH + Math.sin(cycle(sways)) * (look.sway + look.swaySpread * value(5)),
     y: ((risen % RISE_SPAN) + RISE_SPAN) % RISE_SPAN - 50,
-    size: 9 + value(8) * 21,
-    alpha: 0.15 + 0.6 * Math.max(0, Math.sin(cycle(glows))),
-    color: mixHex(options.accent, options.accent2, value(9)),
+    size: look.size + value(8) * look.sizeSpread,
+    alpha: look.glowMin + look.glowRange * Math.max(0, Math.sin(cycle(glows))),
+    color: mixHex(look.accent, look.accent2, value(9)),
   };
 }

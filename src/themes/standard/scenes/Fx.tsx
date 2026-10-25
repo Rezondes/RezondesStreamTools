@@ -9,8 +9,8 @@ import type { ShownFx } from "../../../core/hooks/useFx.ts";
 import { useTimeline } from "../../../core/motion/useTimeline.ts";
 import { useStandard } from "../useStandard.ts";
 
-// fixed: the item is centered on its position (percent of its size), starts a little smaller and pops in over s
-const POP = { center: -50, scale: 0.85, duration: 0.45 };
+// fixed: the item is centered on its position (percent of its size)
+const CENTER = -50;
 
 export default function Fx() {
   const shown = useFxScene(useStandard());
@@ -18,10 +18,11 @@ export default function Fx() {
 }
 
 function Item({ item }: { item: ShownFx }) {
+  const values = useStandard();
   const { phase, text, style } = useFxItem(item);
   const box = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
-    timeline.fromTo(box.current, { xPercent: POP.center, yPercent: POP.center, scale: POP.scale, opacity: 0 }, { scale: 1, opacity: 1, duration: POP.duration, ease: "back.out(1.7)" });
+    timeline.fromTo(box.current, { xPercent: CENTER, yPercent: CENTER, scale: values.fxFromScale, opacity: 0 }, { scale: 1, opacity: 1, duration: values.fxEnterTime, ease: `back.out(${values.fxOvershoot})` });
   }, [], box);
   return (
     <div ref={box} className="standard-fx-item" style={style}>

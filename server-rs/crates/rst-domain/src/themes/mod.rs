@@ -20,4 +20,5 @@ pub mod registry;
 pub mod schema;
 pub mod standard;
 pub mod stinger_fields;
+pub mod tuning;
 pub mod urlaub;

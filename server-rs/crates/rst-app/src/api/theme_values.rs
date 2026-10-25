@@ -14,6 +14,11 @@ pub fn values_name(id: &str) -> String {
     format!("{first}{}Values", chars.as_str())
 }
 
+/// Fields from which the type would break the line limit of the frontend (eslint max-lines 400, without blank lines
+/// and comments, the type adds four lines): the file then switches that rule off with a reason, one key per line
+/// stays readable
+const LONG_FILE: usize = 396;
+
 fn ts_type(kind: &FieldKind) -> &'static str {
     match kind {
         FieldKind::Number { .. } => "number",
@@ -28,6 +33,9 @@ fn ts_type(kind: &FieldKind) -> &'static str {
 #[must_use]
 pub fn values_type(schema: &ThemeSchema) -> String {
     let mut text = String::new();
+    if schema.fields.len() > LONG_FILE {
+        text.push_str("/* eslint-disable max-lines -- generated, one key per field of the schema */\n");
+    }
     if schema.fields.iter().any(|field| matches!(field.kind, FieldKind::Sound { .. })) {
         text.push_str("import type { SoundValue } from \"../SoundValue.ts\";\n\n");
     }
@@ -86,5 +94,19 @@ mod tests {
         ] {
             assert!(text.contains(line), "{line}");
         }
+        assert!(!text.contains("eslint-disable"), "a short type keeps the line limit");
+    }
+
+    #[test]
+    fn long_type_switches_off_the_line_limit() {
+        let schema = ThemeSchema {
+            id: "probe".to_owned(),
+            name: "Probe".to_owned(),
+            fields: (0..=LONG_FILE).map(|index| flag(&format!("flag{index}"), "Flag", "A", true)).collect(),
+            group_scenes: BTreeMap::new(),
+            minime_variants: None,
+            minime_teams: None,
+        };
+        assert!(values_type(&schema).starts_with("/* eslint-disable max-lines -- generated"));
     }
 }

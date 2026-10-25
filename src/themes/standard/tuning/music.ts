@@ -1,0 +1,29 @@
+// Fine-tuning fields of the Standard theme, group "Feinschliff: Musik" (tuning.ts puts the groups together).
+import { color, font, inherits, number } from "../../../core/fields.ts";
+import type { SettingField } from "../../../core/theme.ts";
+
+export const MUSIC_TUNING = [
+  number("musicPadding", "Musik-Bereich: Innenabstand", "Feinschliff: Musik", 12, 0, 48, "px"),
+  number("playerGap", "Musik-Karte: Abstand", "Feinschliff: Musik", 20, 0, 80, "px"),
+  number("playerPadding", "Musik-Karte: Innenabstand oben/unten", "Feinschliff: Musik", 16, 0, 64, "px"),
+  number("playerPadding2", "Musik-Karte: Innenabstand links/rechts", "Feinschliff: Musik", 20, 0, 80, "px"),
+  number("coverWidth", "Musik-Cover: Breite Anteil von „Cover-Grösse“ (%)", "Feinschliff: Musik", 100, 0, 400),
+  number("coverHeight", "Musik-Cover: Höhe Anteil von „Cover-Grösse“ (%)", "Feinschliff: Musik", 100, 0, 400),
+  number("coverBorderRadius", "Musik-Cover: Eckenradius", "Feinschliff: Musik", 0.75, 0, 3, undefined, 0.01),
+  number("trackGap", "Musik-Titelblock: Abstand", "Feinschliff: Musik", 4, 0, 40, "px"),
+  number("trackLineFontSize", "Musik-Titel: Schriftgrösse (em)", "Feinschliff: Musik", 1.2, 0, 4.8, undefined, 0.01),
+  inherits(color("trackLineColor", "Musik-Titel: Textfarbe", "Feinschliff: Musik", ""), "textColor"),
+  inherits(font("trackLineFont", "Musik-Titel: Schrift", "Feinschliff: Musik", "", ["Inter", "Manrope", "DM Sans", "Space Grotesk"]), "font"),
+  number("timeGap", "Musik-Zeitzeile: Abstand", "Feinschliff: Musik", 12, 0, 48, "px"),
+  inherits(color("timeColor", "Musik-Zeitzeile: Textfarbe", "Feinschliff: Musik", ""), "mutedColor"),
+  number("timeFontSize", "Musik-Zeitzeile: Schriftgrösse (em)", "Feinschliff: Musik", 0.75, 0, 3, undefined, 0.01),
+  inherits(font("timeFont", "Musik-Zeitzeile: Schrift", "Feinschliff: Musik", "", ["Inter", "Manrope", "DM Sans", "Space Grotesk"]), "font"),
+  number("musicEnterCard", "Musik-Einflug: Karte (Dauer)", "Feinschliff: Musik", 0.5, 0, 10, "s", 0.05),
+  number("musicEnterCover", "Musik-Einflug: Cover (Dauer)", "Feinschliff: Musik", 0.7, 0, 10, "s", 0.05),
+  number("musicCoverTilt", "Musik-Einflug: Cover kippt von (Grad)", "Feinschliff: Musik", -90, -360, 360),
+  number("musicCoverOvershoot", "Musik-Einflug: Cover federt nach (Stärke)", "Feinschliff: Musik", 1.4, 0, 5, undefined, 0.1),
+  number("musicEnterLines", "Musik-Einflug: Zeilen (Dauer)", "Feinschliff: Musik", 0.5, 0, 10, "s", 0.05),
+  number("musicEnterRise", "Musik-Einflug: steigt um", "Feinschliff: Musik", 10, -40, 40, "px"),
+  number("musicEnterStagger", "Musik-Einflug: Abstand zwischen Zeilen", "Feinschliff: Musik", 0.1, 0, 2, "s", 0.05),
+  number("musicEnterLinesAt", "Musik-Einflug: Zeilen ab", "Feinschliff: Musik", 0.2, 0, 10, "s", 0.05),
+] as const satisfies readonly SettingField[];

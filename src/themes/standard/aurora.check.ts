@@ -2,11 +2,13 @@
 // alone, stay on the stage, repeat after their loop, and take their colors between the two accents. Runs with npm test.
 import assert from "node:assert/strict";
 import { hexNumber } from "../../core/color.ts";
-import { resolveSettings } from "../../core/settings.ts";
+import { effectiveSettings } from "../../core/settings.ts";
 import { auroraField, type AuroraOptions, auroraOptions, breathLight, introShare, moteAt, MOTE_PERIOD, pacedTime, sceneLight, sinkAt } from "./aurora.ts";
 import { type StandardValues, standardSettings } from "./settings.ts";
 
-const OPTIONS: AuroraOptions = { seed: 7, count: 4, loop: 24, accent: "#7c5cff", accent2: "#22d3ee", strength: 0.55 };
+// The options of the default settings, with a lower strength
+const DEFAULTS = auroraOptions(effectiveSettings(standardSettings, {}) as StandardValues);
+const OPTIONS: AuroraOptions = { ...DEFAULTS, strength: 0.55 };
 const STAGE = { width: 1920, height: 1080 };
 const close = (first: Record<string, unknown>, second: Record<string, unknown>) =>
   Object.keys(first).every(key => (typeof first[key] === "number" ? Math.abs(first[key] -(second[key] as number)) < 1e-6 : first[key] === second[key]));
@@ -71,21 +73,26 @@ assert.ok(Math.abs(breathLight(3, 0.6, 6) - 0.6) < 1e-9, "darkest at half a brea
 assert.equal(breathLight(2, 0.6, 0), 0.6, "without breathing the dim holds");
 
 // Ausblenden: the Ending lets the fields sink and fade after endingFadeAt
-assert.deepEqual(sinkAt(5, 10, 4000), { drop: 0, alpha: 1 });
-assert.equal(sinkAt(20, 10, 4000).alpha, 0);
-assert.ok(sinkAt(20, 10, 4000).drop > 0);
-assert.equal(sinkAt(10, 10, 0).alpha, 0, "without a fade duration at once");
+assert.deepEqual(sinkAt(5, 10, 4000, 240), { drop: 0, alpha: 1 });
+assert.equal(sinkAt(20, 10, 4000, 240).alpha, 0);
+assert.equal(sinkAt(20, 10, 4000, 240).drop, 240, "sunk as far as the setting");
+assert.equal(sinkAt(10, 10, 0, 240).alpha, 0, "without a fade duration at once");
 
 // Szenen: Starting as before, BRB dimmed and slower, Ending sinking
-const scene = { introMs: 1200, brbPace: 0.5, brbDim: 0.6, brbBreatheSeconds: 6, endingFadeAt: 10, endingFadeMs: 4000 };
+const scene = { introMs: 1200, brbPace: 0.5, brbDim: 0.6, brbBreatheSeconds: 6, endingFadeAt: 10, endingFadeMs: 4000, endingSink: 240 };
 assert.deepEqual(sceneLight("starting", 5, scene), { time: 5, alpha: 1, drop: 0 });
 assert.equal(sceneLight("brb", 5, scene).time, pacedTime(5, 0.5, 1.2));
 assert.equal(sceneLight("brb", 3, scene).alpha, breathLight(3, 0.6, 6));
-assert.deepEqual(sceneLight("ending", 20, scene), { time: 20, ...sinkAt(20, 10, 4000) });
+assert.deepEqual(sceneLight("ending", 20, scene), { time: 20, ...sinkAt(20, 10, 4000, 240) });
 assert.equal(sceneLight("starting", 0.6, scene).alpha, 0.5, "every scene fades in");
 
-// Optionen: the settings feed the options
-const values = resolveSettings(standardSettings, {}) as StandardValues;
-assert.deepEqual(auroraOptions(values), { seed: 7, count: 4, loop: 24, accent: "#7c5cff", accent2: "#22d3ee", strength: 0.7 });
+// Optionen: the settings feed the options; the colors follow the accents until set
+assert.deepEqual([DEFAULTS.seed, DEFAULTS.count, DEFAULTS.loop, DEFAULTS.accent, DEFAULTS.accent2, DEFAULTS.strength], [7, 4, 24, "#7c5cff", "#22d3ee", 0.7]);
+assert.deepEqual(DEFAULTS.slots, [[0.22, 0.3], [0.78, 0.7], [0.69, 0.2], [0.32, 0.83]]);
+const own = auroraOptions(effectiveSettings(standardSettings, { auroraColor: "#ff0000", dustColor2: "#00ff00", auroraRadius: 100 }) as StandardValues);
+assert.deepEqual([own.accent, own.accent2, own.mote.accent2, own.radius], ["#ff0000", "#22d3ee", "#00ff00", 100]);
+// the look of the fields and motes comes from the settings
+assert.equal(auroraField({ ...OPTIONS, radius: 50, radiusSpread: 0, breathe: 0 }, 0, 3).radius, 50);
+assert.equal(moteAt({ ...OPTIONS, mote: { ...OPTIONS.mote, size: 12, sizeSpread: 0 } }, 2, 3).size, 12);
 
 console.log("aurora ok");

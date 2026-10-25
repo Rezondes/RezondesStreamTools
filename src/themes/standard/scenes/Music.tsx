@@ -13,8 +13,6 @@ import { useStandard } from "../useStandard.ts";
 
 // fixed: percent for the width of the progress bar
 const PERCENT = 100;
-// fixed: durations in s, the tilt of the cover in degrees, how far the lines rise in px and their stagger
-const ENTER = { card: 0.5, cover: 0.7, tilt: -90, lines: 0.5, rise: 10, stagger: 0.1, linesAt: 0.2 };
 
 export default function Music() {
   const values = useStandard();
@@ -30,9 +28,9 @@ function Player({ track, visible, at }: { track: Track | null; visible: boolean;
   const values = useStandard();
   const card = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
-    timeline.from(card.current, { opacity: 0, y: ENTER.rise, duration: ENTER.card, ease: "power2.out" });
-    timeline.from(".standard-cover", { rotateY: ENTER.tilt, opacity: 0, duration: ENTER.cover, ease: "back.out(1.4)" }, 0);
-    timeline.from(".standard-track > *", { opacity: 0, y: ENTER.rise, duration: ENTER.lines, ease: "power2.out", stagger: ENTER.stagger }, ENTER.linesAt);
+    timeline.from(card.current, { opacity: 0, y: values.musicEnterRise, duration: values.musicEnterCard, ease: "power2.out" });
+    timeline.from(".standard-cover", { rotateY: values.musicCoverTilt, opacity: 0, duration: values.musicEnterCover, ease: `back.out(${values.musicCoverOvershoot})` }, 0);
+    timeline.from(".standard-track > *", { opacity: 0, y: values.musicEnterRise, duration: values.musicEnterLines, ease: "power2.out", stagger: values.musicEnterStagger }, values.musicEnterLinesAt);
   }, [], card);
   return (
     <div ref={card} className={`standard-card standard-player${visible ? "" : " leaving"}`}>

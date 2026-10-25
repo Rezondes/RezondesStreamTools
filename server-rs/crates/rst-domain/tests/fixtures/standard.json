@@ -1400,6 +1400,4707 @@
       "min": 400,
       "max": 1600,
       "unit": "px"
+    },
+    {
+      "key": "rootLineHeight",
+      "type": "number",
+      "label": "Theme: Zeilenhöhe",
+      "group": "Feinschliff: Allgemein",
+      "default": 1.35,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "mutedColor2",
+      "type": "color",
+      "label": "Gedämpfter Text: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "eyebrowColor",
+      "type": "color",
+      "label": "Überzeile: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "eyebrowFontSize",
+      "type": "number",
+      "label": "Überzeile: Schriftgrösse (em)",
+      "group": "Feinschliff: Allgemein",
+      "default": 0.7,
+      "min": 0,
+      "max": 2.8,
+      "step": 0.01
+    },
+    {
+      "key": "eyebrowFontWeight",
+      "type": "number",
+      "label": "Überzeile: Schriftstärke",
+      "group": "Feinschliff: Allgemein",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "eyebrowLetterSpacing",
+      "type": "number",
+      "label": "Überzeile: Zeichenabstand (em)",
+      "group": "Feinschliff: Allgemein",
+      "default": 0.12,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "eyebrowFont",
+      "type": "font",
+      "label": "Überzeile: Schrift",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "lineFontWeight",
+      "type": "number",
+      "label": "Hauptzeile: Schriftstärke",
+      "group": "Feinschliff: Allgemein",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "lineColor",
+      "type": "color",
+      "label": "Hauptzeile: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "lineFont",
+      "type": "font",
+      "label": "Hauptzeile: Schrift",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "cardBorderRadius",
+      "type": "number",
+      "label": "Karte: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Allgemein",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "cardBackground",
+      "type": "color",
+      "label": "Karte: Hintergrund Farbe (Kartenfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "card"
+    },
+    {
+      "key": "cardBoxShadow",
+      "type": "color",
+      "label": "Karte: Schatten Farbe (Kartenfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "card"
+    },
+    {
+      "key": "cardBoxShadow2",
+      "type": "number",
+      "label": "Karte: Schatten y",
+      "group": "Feinschliff: Allgemein",
+      "default": 12,
+      "min": -48,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "cardBoxShadow3",
+      "type": "number",
+      "label": "Karte: Schatten Unschärfe",
+      "group": "Feinschliff: Allgemein",
+      "default": 32,
+      "min": 0,
+      "max": 128,
+      "unit": "px"
+    },
+    {
+      "key": "cardBoxShadow4",
+      "type": "number",
+      "label": "Karte: Schatten Farbanteil",
+      "group": "Feinschliff: Allgemein",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "cardLeavingAnimation",
+      "type": "number",
+      "label": "Karte beim Ausblenden: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Allgemein",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "chipMarginRight",
+      "type": "number",
+      "label": "Chip: Abstand rechts",
+      "group": "Feinschliff: Allgemein",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chipPadding",
+      "type": "number",
+      "label": "Chip: Innenabstand oben/unten",
+      "group": "Feinschliff: Allgemein",
+      "default": 2,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chipPadding2",
+      "type": "number",
+      "label": "Chip: Innenabstand links/rechts",
+      "group": "Feinschliff: Allgemein",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chipBorderRadius",
+      "type": "number",
+      "label": "Chip: Eckenradius",
+      "group": "Feinschliff: Allgemein",
+      "default": 999,
+      "min": 0,
+      "max": 999,
+      "unit": "px"
+    },
+    {
+      "key": "chipBackground",
+      "type": "color",
+      "label": "Chip: Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "chipBackground2",
+      "type": "color",
+      "label": "Chip: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "chipBackground3",
+      "type": "number",
+      "label": "Chip: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Allgemein",
+      "default": 135,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "chipColor",
+      "type": "color",
+      "label": "Chip: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "chipFontSize",
+      "type": "number",
+      "label": "Chip: Schriftgrösse (em)",
+      "group": "Feinschliff: Allgemein",
+      "default": 0.7,
+      "min": 0,
+      "max": 2.8,
+      "step": 0.01
+    },
+    {
+      "key": "chipFontWeight",
+      "type": "number",
+      "label": "Chip: Schriftstärke",
+      "group": "Feinschliff: Allgemein",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "chipLetterSpacing",
+      "type": "number",
+      "label": "Chip: Zeichenabstand (em)",
+      "group": "Feinschliff: Allgemein",
+      "default": 0.04,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "chipFont",
+      "type": "font",
+      "label": "Chip: Schrift",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "progressHeight",
+      "type": "number",
+      "label": "Fortschrittsbalken: Höhe",
+      "group": "Feinschliff: Allgemein",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "progressBorderRadius",
+      "type": "number",
+      "label": "Fortschrittsbalken: Eckenradius",
+      "group": "Feinschliff: Allgemein",
+      "default": 999,
+      "min": 0,
+      "max": 999,
+      "unit": "px"
+    },
+    {
+      "key": "progressBackground",
+      "type": "color",
+      "label": "Fortschrittsbalken: Hintergrund Farbe (Gedämpfte Textfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "progressBackground2",
+      "type": "number",
+      "label": "Fortschrittsbalken: Hintergrund Farbanteil",
+      "group": "Feinschliff: Allgemein",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "progressSpanBackground",
+      "type": "color",
+      "label": "Fortschrittsbalken (Füllung): Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "progressSpanBackground2",
+      "type": "color",
+      "label": "Fortschrittsbalken (Füllung): Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "progressSpanBackground3",
+      "type": "number",
+      "label": "Fortschrittsbalken (Füllung): Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Allgemein",
+      "default": 135,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "progressSpanTransition",
+      "type": "number",
+      "label": "Fortschrittsbalken (Füllung): Übergang Dauer Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Allgemein",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "screenBackground",
+      "type": "color",
+      "label": "Vollbild-Hintergrund: Hintergrund Farbe (Hintergrund (Vollbild-Szenen))",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "background"
+    },
+    {
+      "key": "kfInFromTranslate",
+      "type": "number",
+      "label": "Einblenden (Start): Verschiebung y",
+      "group": "Feinschliff: Allgemein",
+      "default": 16,
+      "min": -64,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "kfInFromScale",
+      "type": "number",
+      "label": "Einblenden (Start): Grösse",
+      "group": "Feinschliff: Allgemein",
+      "default": 0.98,
+      "min": 0,
+      "max": 3.92,
+      "step": 0.01
+    },
+    {
+      "key": "kfOutToTranslate",
+      "type": "number",
+      "label": "Ausblenden (Ende): Verschiebung y",
+      "group": "Feinschliff: Allgemein",
+      "default": 16,
+      "min": -64,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "themeRootBackground",
+      "type": "color",
+      "label": "Befehlsseite (Seite): Hintergrund Farbe (Hintergrund (Vollbild-Szenen))",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "background"
+    },
+    {
+      "key": "stStageColor",
+      "type": "color",
+      "label": "Vollbild-Bühne: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "stVignetteBackground",
+      "type": "color",
+      "label": "Vignette: Hintergrund Farbe (Hintergrund (Vollbild-Szenen))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "background"
+    },
+    {
+      "key": "stVignetteBackground2",
+      "type": "number",
+      "label": "Vignette: Hintergrund Verlauf Stopp 1",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 45,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "stVignetteBackground3",
+      "type": "number",
+      "label": "Vignette: Hintergrund Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "stTopLeft",
+      "type": "number",
+      "label": "Kopfzeile oben: Lage links",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 80,
+      "min": -320,
+      "max": 320,
+      "unit": "px"
+    },
+    {
+      "key": "stTopRight",
+      "type": "number",
+      "label": "Kopfzeile oben: Lage rechts",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 80,
+      "min": -320,
+      "max": 320,
+      "unit": "px"
+    },
+    {
+      "key": "stTopTop",
+      "type": "number",
+      "label": "Kopfzeile oben: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 56,
+      "min": -224,
+      "max": 224,
+      "unit": "px"
+    },
+    {
+      "key": "stTopFontSize",
+      "type": "number",
+      "label": "Kopfzeile oben: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "stTopColor",
+      "type": "color",
+      "label": "Kopfzeile oben: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "stTopFont",
+      "type": "font",
+      "label": "Kopfzeile oben: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stChannelBackground",
+      "type": "color",
+      "label": "Kanal-Name oben: Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stChannelBackground2",
+      "type": "color",
+      "label": "Kanal-Name oben: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "stChannelBackground3",
+      "type": "number",
+      "label": "Kanal-Name oben: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stDigitBBackground",
+      "type": "color",
+      "label": "Countdown-Ziffer (Glyphe): Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stDigitBBackground2",
+      "type": "color",
+      "label": "Countdown-Ziffer (Glyphe): Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "stDigitBBackground3",
+      "type": "number",
+      "label": "Countdown-Ziffer (Glyphe): Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stColonBackground",
+      "type": "color",
+      "label": "Countdown-Doppelpunkt: Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stColonBackground2",
+      "type": "color",
+      "label": "Countdown-Doppelpunkt: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "stColonBackground3",
+      "type": "number",
+      "label": "Countdown-Doppelpunkt: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stDoneBackground",
+      "type": "color",
+      "label": "Text nach dem Countdown: Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stDoneBackground2",
+      "type": "color",
+      "label": "Text nach dem Countdown: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "stDoneBackground3",
+      "type": "number",
+      "label": "Text nach dem Countdown: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stChannelFontWeight",
+      "type": "number",
+      "label": "Kanal-Name oben: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "stChannelLetterSpacing",
+      "type": "number",
+      "label": "Kanal-Name oben: Zeichenabstand (em)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.08,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "stChannelFont",
+      "type": "font",
+      "label": "Kanal-Name oben: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stTopMutedFontWeight",
+      "type": "number",
+      "label": "Uhrzeit oben: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "stTopMutedColor",
+      "type": "color",
+      "label": "Uhrzeit oben: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "stTopMutedFont",
+      "type": "font",
+      "label": "Uhrzeit oben: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stCenterTop",
+      "type": "number",
+      "label": "Mittelblock: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 330,
+      "min": -1320,
+      "max": 1320,
+      "unit": "px"
+    },
+    {
+      "key": "stCenterGap",
+      "type": "number",
+      "label": "Mittelblock: Abstand",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "stEyebrowFontSize",
+      "type": "number",
+      "label": "Überzeile (Vollbild): Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 30,
+      "min": 0,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "stEyebrowFontWeight",
+      "type": "number",
+      "label": "Überzeile (Vollbild): Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "stEyebrowLetterSpacing",
+      "type": "number",
+      "label": "Überzeile (Vollbild): Zeichenabstand (em)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.24,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "stEyebrowColor",
+      "type": "color",
+      "label": "Überzeile (Vollbild): Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "stEyebrowFont",
+      "type": "font",
+      "label": "Überzeile (Vollbild): Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stTitleFontSize",
+      "type": "number",
+      "label": "Titel: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 104,
+      "min": 0,
+      "max": 416,
+      "unit": "px"
+    },
+    {
+      "key": "stTitleFontWeight",
+      "type": "number",
+      "label": "Titel: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "stTitleLetterSpacing",
+      "type": "number",
+      "label": "Titel: Zeichenabstand (em)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -0.02,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "stTitleLineHeight",
+      "type": "number",
+      "label": "Titel: Zeilenhöhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.05,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "stTitleColor",
+      "type": "color",
+      "label": "Titel: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "stTitleFont",
+      "type": "font",
+      "label": "Titel: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stCountMarginTop",
+      "type": "number",
+      "label": "Countdown: Abstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "stCountFontSize",
+      "type": "number",
+      "label": "Countdown: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 132,
+      "min": 0,
+      "max": 528,
+      "unit": "px"
+    },
+    {
+      "key": "stCountFontWeight",
+      "type": "number",
+      "label": "Countdown: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "stCountLetterSpacing",
+      "type": "number",
+      "label": "Countdown: Zeichenabstand (em)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -0.02,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "stCountLineHeight",
+      "type": "number",
+      "label": "Countdown: Zeilenhöhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.1,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "stCountColor",
+      "type": "color",
+      "label": "Countdown: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "stCountFont",
+      "type": "font",
+      "label": "Countdown: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stDigitWidth",
+      "type": "number",
+      "label": "Countdown-Ziffer: Breite (em)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.62,
+      "min": 0,
+      "max": 2.48,
+      "step": 0.01
+    },
+    {
+      "key": "stDigitHeight",
+      "type": "number",
+      "label": "Countdown-Ziffer: Höhe (em)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.1,
+      "min": 0,
+      "max": 4.4,
+      "step": 0.01
+    },
+    {
+      "key": "stDigitBBackgroundSize",
+      "type": "number",
+      "label": "Countdown-Ziffer (Glyphe): Hintergrund-Grösse x",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 400,
+      "min": 0,
+      "max": 1200,
+      "unit": "%"
+    },
+    {
+      "key": "stColonWidth",
+      "type": "number",
+      "label": "Countdown-Doppelpunkt: Breite (em)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.32,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "stColonBackgroundSize",
+      "type": "number",
+      "label": "Countdown-Doppelpunkt: Hintergrund-Grösse x",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 400,
+      "min": 0,
+      "max": 1200,
+      "unit": "%"
+    },
+    {
+      "key": "stDoneAnimation",
+      "type": "number",
+      "label": "Text nach dem Countdown: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "stBarWidth",
+      "type": "number",
+      "label": "Fortschrittsbalken (Vollbild): Breite",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 760,
+      "min": 0,
+      "max": 3040,
+      "unit": "px"
+    },
+    {
+      "key": "stBarHeight",
+      "type": "number",
+      "label": "Fortschrittsbalken (Vollbild): Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stBarBorderRadius",
+      "type": "number",
+      "label": "Fortschrittsbalken (Vollbild): Eckenradius",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 999,
+      "min": 0,
+      "max": 999,
+      "unit": "px"
+    },
+    {
+      "key": "stBarBackground",
+      "type": "color",
+      "label": "Fortschrittsbalken (Vollbild): Hintergrund Farbe (Textfarbe)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "stBarBackground2",
+      "type": "number",
+      "label": "Fortschrittsbalken (Vollbild): Hintergrund Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 8,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "stFillBackground",
+      "type": "color",
+      "label": "Fortschrittsbalken (Füllung): Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stFillBackground2",
+      "type": "color",
+      "label": "Fortschrittsbalken (Füllung): Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "stFillBackground3",
+      "type": "number",
+      "label": "Fortschrittsbalken (Füllung): Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stFillBoxShadow",
+      "type": "color",
+      "label": "Fortschrittsbalken (Füllung): Schatten Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stFillBoxShadow2",
+      "type": "number",
+      "label": "Fortschrittsbalken (Füllung): Schatten Unschärfe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "stFillBoxShadow3",
+      "type": "number",
+      "label": "Fortschrittsbalken (Füllung): Schatten Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "stShineWidth",
+      "type": "number",
+      "label": "Glanzlicht: Breite",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 120,
+      "min": 0,
+      "max": 480,
+      "unit": "px"
+    },
+    {
+      "key": "stShineBackground",
+      "type": "color",
+      "label": "Glanzlicht: Hintergrund Farbe (Textfarbe)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "stShineBackground2",
+      "type": "number",
+      "label": "Glanzlicht: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stShineBackground3",
+      "type": "number",
+      "label": "Glanzlicht: Hintergrund Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "stTickerBottom",
+      "type": "number",
+      "label": "Hinweis unten: Lage unten",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 64,
+      "min": -256,
+      "max": 256,
+      "unit": "px"
+    },
+    {
+      "key": "stTickerFontSize",
+      "type": "number",
+      "label": "Hinweis unten: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "stTickerColor",
+      "type": "color",
+      "label": "Hinweis unten: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "stTickerFont",
+      "type": "font",
+      "label": "Hinweis unten: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stNoteFontSize",
+      "type": "number",
+      "label": "Untertitel: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 32,
+      "min": 0,
+      "max": 128,
+      "unit": "px"
+    },
+    {
+      "key": "stNoteColor",
+      "type": "color",
+      "label": "Untertitel: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "stNoteFont",
+      "type": "font",
+      "label": "Untertitel: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "kfRollInFromTranslate",
+      "type": "number",
+      "label": "Ziffer rollt herein (Start): Verschiebung y",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 110,
+      "min": -330,
+      "max": 330,
+      "unit": "%"
+    },
+    {
+      "key": "kfRollOutToTranslate",
+      "type": "number",
+      "label": "Ziffer rollt hinaus (Ende): Verschiebung y",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -110,
+      "min": -330,
+      "max": 330,
+      "unit": "%"
+    },
+    {
+      "key": "countdownSlice",
+      "type": "number",
+      "label": "Countdown: Verlauf je Stelle (%)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 25,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "screenAtTop",
+      "type": "number",
+      "label": "Vollbild-Ablauf: Kopfzeile ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.2,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenAtEyebrow",
+      "type": "number",
+      "label": "Vollbild-Ablauf: Überzeile ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.5,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenAtTitle",
+      "type": "number",
+      "label": "Vollbild-Ablauf: Titel ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.8,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenAtRest",
+      "type": "number",
+      "label": "Vollbild-Ablauf: Countdown und Rest ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.6,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenAtTicker",
+      "type": "number",
+      "label": "Vollbild-Ablauf: Hinweis ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 2.2,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenAtShine",
+      "type": "number",
+      "label": "Vollbild-Ablauf: Glanzlicht ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 2.6,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenFromEyebrow",
+      "type": "number",
+      "label": "Vollbild-Einflug: Überzeile steigt um",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 14,
+      "min": -56,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "screenFromEyebrowBlur",
+      "type": "number",
+      "label": "Vollbild-Einflug: Überzeile startet mit Unschärfe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "screenFromChar",
+      "type": "number",
+      "label": "Vollbild-Einflug: Buchstaben steigen um",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 46,
+      "min": -184,
+      "max": 184,
+      "unit": "px"
+    },
+    {
+      "key": "screenFromCharBlur",
+      "type": "number",
+      "label": "Vollbild-Einflug: Buchstaben starten mit Unschärfe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "screenFromRest",
+      "type": "number",
+      "label": "Vollbild-Einflug: Countdown und Rest steigen um",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 20,
+      "min": -80,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "screenFromTicker",
+      "type": "number",
+      "label": "Vollbild-Einflug: Hinweis steigt um",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 12,
+      "min": -48,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "screenTimeTop",
+      "type": "number",
+      "label": "Vollbild-Einflug: Kopfzeile (Dauer)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.8,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenTimeEyebrow",
+      "type": "number",
+      "label": "Vollbild-Einflug: Überzeile (Dauer)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.7,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenTimeRest",
+      "type": "number",
+      "label": "Vollbild-Einflug: Countdown und Rest (Dauer)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.8,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenTimeTicker",
+      "type": "number",
+      "label": "Vollbild-Einflug: Hinweis (Dauer)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.8,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenCharStagger",
+      "type": "number",
+      "label": "Vollbild-Einflug: Abstand zwischen Buchstaben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.035,
+      "min": 0,
+      "max": 1,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenRestStagger",
+      "type": "number",
+      "label": "Vollbild-Einflug: Abstand zwischen den Teilen",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.15,
+      "min": 0,
+      "max": 2,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenTimeShine",
+      "type": "number",
+      "label": "Glanzlicht: Lauf (Dauer)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.2,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "screenShineFrom",
+      "type": "number",
+      "label": "Glanzlicht: startet bei (x)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": -140,
+      "min": -560,
+      "max": 560,
+      "unit": "px"
+    },
+    {
+      "key": "screenShineTo",
+      "type": "number",
+      "label": "Glanzlicht: endet bei (x)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 900,
+      "min": -3600,
+      "max": 3600,
+      "unit": "px"
+    },
+    {
+      "key": "statsPadding",
+      "type": "number",
+      "label": "Statistik-Bereich: Innenabstand",
+      "group": "Feinschliff: Statistik",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "stStatsGap",
+      "type": "number",
+      "label": "Statistik-Reihe: Abstand",
+      "group": "Feinschliff: Statistik",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "stStatsMarginTop",
+      "type": "number",
+      "label": "Statistik-Reihe: Abstand oben",
+      "group": "Feinschliff: Statistik",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "stStatGap",
+      "type": "number",
+      "label": "Statistik-Karte: Abstand",
+      "group": "Feinschliff: Statistik",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stStatMinWidth",
+      "type": "number",
+      "label": "Statistik-Karte: Mindestbreite",
+      "group": "Feinschliff: Statistik",
+      "default": 180,
+      "min": 0,
+      "max": 720,
+      "unit": "px"
+    },
+    {
+      "key": "stStatPadding",
+      "type": "number",
+      "label": "Statistik-Karte: Innenabstand oben/unten",
+      "group": "Feinschliff: Statistik",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "stStatPadding2",
+      "type": "number",
+      "label": "Statistik-Karte: Innenabstand links/rechts",
+      "group": "Feinschliff: Statistik",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "stStatBorderRadius",
+      "type": "number",
+      "label": "Statistik-Karte: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Statistik",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "stStatBackground",
+      "type": "color",
+      "label": "Statistik-Karte: Hintergrund Farbe (Kartenfarbe)",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "inherit": "card"
+    },
+    {
+      "key": "stStatBoxShadow",
+      "type": "color",
+      "label": "Statistik-Karte: Schatten Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "stStatBoxShadow2",
+      "type": "number",
+      "label": "Statistik-Karte: Schatten Ausbreitung",
+      "group": "Feinschliff: Statistik",
+      "default": 1,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stStatBoxShadow3",
+      "type": "number",
+      "label": "Statistik-Karte: Schatten Farbanteil",
+      "group": "Feinschliff: Statistik",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "stStatBFontSize",
+      "type": "number",
+      "label": "Statistik-Zahl: Schriftgrösse",
+      "group": "Feinschliff: Statistik",
+      "default": 56,
+      "min": 0,
+      "max": 224,
+      "unit": "px"
+    },
+    {
+      "key": "stStatBFontWeight",
+      "type": "number",
+      "label": "Statistik-Zahl: Schriftstärke",
+      "group": "Feinschliff: Statistik",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "stStatBBackground",
+      "type": "color",
+      "label": "Statistik-Zahl: Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stStatBBackground2",
+      "type": "color",
+      "label": "Statistik-Zahl: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "stStatBBackground3",
+      "type": "number",
+      "label": "Statistik-Zahl: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Statistik",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stStatBFont",
+      "type": "font",
+      "label": "Statistik-Zahl: Schrift",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stStatSpanFontSize",
+      "type": "number",
+      "label": "Statistik-Beschriftung: Schriftgrösse",
+      "group": "Feinschliff: Statistik",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "stStatSpanFontWeight",
+      "type": "number",
+      "label": "Statistik-Beschriftung: Schriftstärke",
+      "group": "Feinschliff: Statistik",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "stStatSpanLetterSpacing",
+      "type": "number",
+      "label": "Statistik-Beschriftung: Zeichenabstand (em)",
+      "group": "Feinschliff: Statistik",
+      "default": 0.12,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "stStatSpanColor",
+      "type": "color",
+      "label": "Statistik-Beschriftung: Textfarbe",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "stStatSpanFont",
+      "type": "font",
+      "label": "Statistik-Beschriftung: Schrift",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "statsRiseFrom",
+      "type": "number",
+      "label": "Statistik-Einflug: Karten steigen um",
+      "group": "Feinschliff: Statistik",
+      "default": 24,
+      "min": -96,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "statsRiseTime",
+      "type": "number",
+      "label": "Statistik-Einflug: Dauer",
+      "group": "Feinschliff: Statistik",
+      "default": 0.5,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "statsRiseStagger",
+      "type": "number",
+      "label": "Statistik-Einflug: Abstand zwischen Karten",
+      "group": "Feinschliff: Statistik",
+      "default": 0.12,
+      "min": 0,
+      "max": 2,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "statsCountStagger",
+      "type": "number",
+      "label": "Statistik: Abstand beim Hochzählen",
+      "group": "Feinschliff: Statistik",
+      "default": 0.15,
+      "min": 0,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertsPaddingTop",
+      "type": "number",
+      "label": "Alert-Bereich: Innenabstand oben",
+      "group": "Feinschliff: Alerts",
+      "default": 48,
+      "min": 0,
+      "max": 192,
+      "unit": "px"
+    },
+    {
+      "key": "alertsPerspective",
+      "type": "number",
+      "label": "Alert-Bereich: Perspektive",
+      "group": "Feinschliff: Alerts",
+      "default": 900,
+      "min": 0,
+      "max": 3600,
+      "unit": "px"
+    },
+    {
+      "key": "alertPadding",
+      "type": "number",
+      "label": "Alert-Karte: Innenabstand oben",
+      "group": "Feinschliff: Alerts",
+      "default": 26,
+      "min": 0,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "alertPadding2",
+      "type": "number",
+      "label": "Alert-Karte: Innenabstand links/rechts",
+      "group": "Feinschliff: Alerts",
+      "default": 32,
+      "min": 0,
+      "max": 128,
+      "unit": "px"
+    },
+    {
+      "key": "alertPadding3",
+      "type": "number",
+      "label": "Alert-Karte: Innenabstand unten",
+      "group": "Feinschliff: Alerts",
+      "default": 40,
+      "min": 0,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "alertBorderRadius",
+      "type": "number",
+      "label": "Alert-Karte: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "alertBackground",
+      "type": "color",
+      "label": "Alert-Karte: Hintergrund Farbe (Kartenfarbe)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "card"
+    },
+    {
+      "key": "alertBoxShadow",
+      "type": "color",
+      "label": "Alert-Karte: Schatten Farbe (Hintergrund (Vollbild-Szenen))",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "background"
+    },
+    {
+      "key": "alertBoxShadow2",
+      "type": "number",
+      "label": "Alert-Karte: Schatten y",
+      "group": "Feinschliff: Alerts",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "alertBoxShadow3",
+      "type": "number",
+      "label": "Alert-Karte: Schatten Unschärfe",
+      "group": "Feinschliff: Alerts",
+      "default": 50,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "alertBoxShadow4",
+      "type": "number",
+      "label": "Alert-Karte: Schatten Farbanteil",
+      "group": "Feinschliff: Alerts",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "alertTransformOrigin",
+      "type": "number",
+      "label": "Alert-Karte: Drehpunkt x",
+      "group": "Feinschliff: Alerts",
+      "default": 50,
+      "min": 0,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "alertGlowInset",
+      "type": "number",
+      "label": "Alert-Schein: Lage",
+      "group": "Feinschliff: Alerts",
+      "default": 2,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertGlowBorderRadius",
+      "type": "number",
+      "label": "Alert-Schein: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "alertGlowBorderRadius2",
+      "type": "number",
+      "label": "Alert-Schein: Eckenradius",
+      "group": "Feinschliff: Alerts",
+      "default": 2,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertGlowBoxShadow",
+      "type": "color",
+      "label": "Alert-Schein: Schatten Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "alertGlowBoxShadow2",
+      "type": "color",
+      "label": "Alert-Schein: Schatten Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "alertGlowBoxShadow3",
+      "type": "number",
+      "label": "Alert-Schein: Schatten Unschärfe (Teil 1) Anteil von „Schein um die Karte“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "alertGlowBoxShadow4",
+      "type": "number",
+      "label": "Alert-Schein: Schatten Farbanteil",
+      "group": "Feinschliff: Alerts",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "alertGlowBoxShadow5",
+      "type": "number",
+      "label": "Alert-Schein: Schatten Unschärfe (Teil 2)",
+      "group": "Feinschliff: Alerts",
+      "default": 2,
+      "min": 0,
+      "max": 10
+    },
+    {
+      "key": "alertGlowBoxShadow6",
+      "type": "number",
+      "label": "Alert-Schein: Schatten Farbanteil",
+      "group": "Feinschliff: Alerts",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "alertLabelPadding",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Innenabstand oben/unten",
+      "group": "Feinschliff: Alerts",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertLabelPadding2",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Innenabstand links/rechts",
+      "group": "Feinschliff: Alerts",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "alertLabelBorderRadius",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Eckenradius",
+      "group": "Feinschliff: Alerts",
+      "default": 999,
+      "min": 0,
+      "max": 999,
+      "unit": "px"
+    },
+    {
+      "key": "alertLabelFontSize",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Schriftgrösse",
+      "group": "Feinschliff: Alerts",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "alertLabelFontWeight",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Schriftstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "alertLabelLetterSpacing",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Zeichenabstand (em)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.12,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "alertLabelBackground",
+      "type": "color",
+      "label": "Alert-Kopfzeile: Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "alertLabelBackground2",
+      "type": "color",
+      "label": "Alert-Kopfzeile: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "alertLabelBackground3",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Alerts",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "alertLabelBackground4",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Hintergrund Farbanteil",
+      "group": "Feinschliff: Alerts",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "alertLabelBackground5",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Hintergrund Farbanteil",
+      "group": "Feinschliff: Alerts",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "alertLabelColor",
+      "type": "color",
+      "label": "Alert-Kopfzeile: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "alertLabelColor2",
+      "type": "color",
+      "label": "Alert-Kopfzeile: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "alertLabelColor3",
+      "type": "number",
+      "label": "Alert-Kopfzeile: Textfarbe Farbanteil",
+      "group": "Feinschliff: Alerts",
+      "default": 85,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "alertLabelFont",
+      "type": "font",
+      "label": "Alert-Kopfzeile: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "alertNameMargin",
+      "type": "number",
+      "label": "Alert-Name: Aussenabstand oben",
+      "group": "Feinschliff: Alerts",
+      "default": 16,
+      "min": -64,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "alertNameMargin2",
+      "type": "number",
+      "label": "Alert-Name: Aussenabstand unten",
+      "group": "Feinschliff: Alerts",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertNameFontSize",
+      "type": "number",
+      "label": "Alert-Name: Schriftgrösse",
+      "group": "Feinschliff: Alerts",
+      "default": 56,
+      "min": 0,
+      "max": 224,
+      "unit": "px"
+    },
+    {
+      "key": "alertNameFontWeight",
+      "type": "number",
+      "label": "Alert-Name: Schriftstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "alertNameLetterSpacing",
+      "type": "number",
+      "label": "Alert-Name: Zeichenabstand (em)",
+      "group": "Feinschliff: Alerts",
+      "default": -0.02,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "alertNameLineHeight",
+      "type": "number",
+      "label": "Alert-Name: Zeilenhöhe",
+      "group": "Feinschliff: Alerts",
+      "default": 1.05,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "alertNameColor",
+      "type": "color",
+      "label": "Alert-Name: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "alertNameFont",
+      "type": "font",
+      "label": "Alert-Name: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "alertNameDivBackground",
+      "type": "color",
+      "label": "Alert-Name (Buchstaben): Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "alertNameDivBackground2",
+      "type": "color",
+      "label": "Alert-Name (Buchstaben): Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "alertNameDivBackground3",
+      "type": "number",
+      "label": "Alert-Name (Buchstaben): Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Alerts",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "alertNameDivBackgroundSize",
+      "type": "number",
+      "label": "Alert-Name (Buchstaben): Hintergrund-Grösse x",
+      "group": "Feinschliff: Alerts",
+      "default": 600,
+      "min": 0,
+      "max": 1800,
+      "unit": "%"
+    },
+    {
+      "key": "alertLineMarginTop",
+      "type": "number",
+      "label": "Alert-Zeile: Abstand oben",
+      "group": "Feinschliff: Alerts",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertLineFontSize",
+      "type": "number",
+      "label": "Alert-Zeile: Schriftgrösse",
+      "group": "Feinschliff: Alerts",
+      "default": 26,
+      "min": 0,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "alertLineFontWeight",
+      "type": "number",
+      "label": "Alert-Zeile: Schriftstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "alertLineColor",
+      "type": "color",
+      "label": "Alert-Zeile: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "alertLineFont",
+      "type": "font",
+      "label": "Alert-Zeile: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "alertQuoteMarginTop",
+      "type": "number",
+      "label": "Alert-Nachricht: Abstand oben",
+      "group": "Feinschliff: Alerts",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertQuoteFontSize",
+      "type": "number",
+      "label": "Alert-Nachricht: Schriftgrösse",
+      "group": "Feinschliff: Alerts",
+      "default": 21,
+      "min": 0,
+      "max": 84,
+      "unit": "px"
+    },
+    {
+      "key": "alertQuoteColor",
+      "type": "color",
+      "label": "Alert-Nachricht: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "alertQuoteWebkitLineClamp",
+      "type": "number",
+      "label": "Alert-Nachricht: Zeilen höchstens",
+      "group": "Feinschliff: Alerts",
+      "default": 3,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "key": "alertQuoteFont",
+      "type": "font",
+      "label": "Alert-Nachricht: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "alertBarLeft",
+      "type": "number",
+      "label": "Alert-Restzeitbalken: Lage links",
+      "group": "Feinschliff: Alerts",
+      "default": 32,
+      "min": -128,
+      "max": 128,
+      "unit": "px"
+    },
+    {
+      "key": "alertBarRight",
+      "type": "number",
+      "label": "Alert-Restzeitbalken: Lage rechts",
+      "group": "Feinschliff: Alerts",
+      "default": 32,
+      "min": -128,
+      "max": 128,
+      "unit": "px"
+    },
+    {
+      "key": "alertBarBottom",
+      "type": "number",
+      "label": "Alert-Restzeitbalken: Lage unten",
+      "group": "Feinschliff: Alerts",
+      "default": 14,
+      "min": -56,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "alertBarHeight",
+      "type": "number",
+      "label": "Alert-Restzeitbalken: Höhe",
+      "group": "Feinschliff: Alerts",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertBarBorderRadius",
+      "type": "number",
+      "label": "Alert-Restzeitbalken: Eckenradius",
+      "group": "Feinschliff: Alerts",
+      "default": 999,
+      "min": 0,
+      "max": 999,
+      "unit": "px"
+    },
+    {
+      "key": "alertBarBackground",
+      "type": "color",
+      "label": "Alert-Restzeitbalken: Hintergrund Farbe (Textfarbe)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "alertBarBackground2",
+      "type": "number",
+      "label": "Alert-Restzeitbalken: Hintergrund Farbanteil",
+      "group": "Feinschliff: Alerts",
+      "default": 8,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "timerBackground",
+      "type": "color",
+      "label": "Alert-Restzeit (Füllung): Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "timerBackground2",
+      "type": "color",
+      "label": "Alert-Restzeit (Füllung): Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "timerBackground3",
+      "type": "number",
+      "label": "Alert-Restzeit (Füllung): Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Alerts",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "alertShineWidth",
+      "type": "number",
+      "label": "Alert-Glanzlicht: Breite",
+      "group": "Feinschliff: Alerts",
+      "default": 90,
+      "min": 0,
+      "max": 360,
+      "unit": "px"
+    },
+    {
+      "key": "alertShineBackground",
+      "type": "color",
+      "label": "Alert-Glanzlicht: Hintergrund Farbe (Textfarbe)",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "alertShineBackground2",
+      "type": "number",
+      "label": "Alert-Glanzlicht: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Alerts",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "alertShineBackground3",
+      "type": "number",
+      "label": "Alert-Glanzlicht: Hintergrund Farbanteil",
+      "group": "Feinschliff: Alerts",
+      "default": 80,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "alertLeavingExitBlurAnimation",
+      "type": "number",
+      "label": "Alert-Abgang Unschärfe: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "alertLeavingExitGlideAnimation",
+      "type": "number",
+      "label": "Alert-Abgang Gleiten: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "alertLeavingExitFadeAnimation",
+      "type": "number",
+      "label": "Alert-Abgang Blenden: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Alerts",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "kfExitBlurToTransform",
+      "type": "number",
+      "label": "Alert-Abgang Unschärfe (Ende): Verformung Verschiebung y",
+      "group": "Feinschliff: Alerts",
+      "default": -24,
+      "min": -96,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "kfExitBlurToTransform2",
+      "type": "number",
+      "label": "Alert-Abgang Unschärfe (Ende): Verformung Kippung x (Grad)",
+      "group": "Feinschliff: Alerts",
+      "default": 18,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "kfExitBlurToFilter",
+      "type": "number",
+      "label": "Alert-Abgang Unschärfe (Ende): Filter Unschärfe",
+      "group": "Feinschliff: Alerts",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "kfExitGlideToTransform",
+      "type": "number",
+      "label": "Alert-Abgang Gleiten (Ende): Verformung Verschiebung y",
+      "group": "Feinschliff: Alerts",
+      "default": -80,
+      "min": -320,
+      "max": 320,
+      "unit": "px"
+    },
+    {
+      "key": "alertAtTrace",
+      "type": "number",
+      "label": "Alert-Ablauf: Rand zeichnet ab",
+      "group": "Feinschliff: Alerts",
+      "default": 0.3,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertAtBurst",
+      "type": "number",
+      "label": "Alert-Ablauf: Funken fliegen ab",
+      "group": "Feinschliff: Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertAtGlow",
+      "type": "number",
+      "label": "Alert-Ablauf: Schein leuchtet ab",
+      "group": "Feinschliff: Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertAtLabel",
+      "type": "number",
+      "label": "Alert-Ablauf: Kopfzeile erscheint ab",
+      "group": "Feinschliff: Alerts",
+      "default": 0.55,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertAtName",
+      "type": "number",
+      "label": "Alert-Ablauf: Name erscheint ab",
+      "group": "Feinschliff: Alerts",
+      "default": 0.7,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertAtLine",
+      "type": "number",
+      "label": "Alert-Ablauf: Zeile erscheint ab",
+      "group": "Feinschliff: Alerts",
+      "default": 1.2,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertAtQuote",
+      "type": "number",
+      "label": "Alert-Ablauf: Nachricht erscheint ab",
+      "group": "Feinschliff: Alerts",
+      "default": 1.45,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertAtShine",
+      "type": "number",
+      "label": "Alert-Ablauf: Glanzlicht startet ab",
+      "group": "Feinschliff: Alerts",
+      "default": 1.6,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertFromCardY",
+      "type": "number",
+      "label": "Alert-Einflug: Karte kommt von (y)",
+      "group": "Feinschliff: Alerts",
+      "default": -60,
+      "min": -240,
+      "max": 240,
+      "unit": "px"
+    },
+    {
+      "key": "alertFromCardScale",
+      "type": "number",
+      "label": "Alert-Einflug: Karte startet mit Grösse",
+      "group": "Feinschliff: Alerts",
+      "default": 0.96,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "alertFromCardBlur",
+      "type": "number",
+      "label": "Alert-Einflug: Karte startet mit Unschärfe",
+      "group": "Feinschliff: Alerts",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertFromLabel",
+      "type": "number",
+      "label": "Alert-Einflug: Kopfzeile steigt um",
+      "group": "Feinschliff: Alerts",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertFromChar",
+      "type": "number",
+      "label": "Alert-Einflug: Buchstaben steigen um",
+      "group": "Feinschliff: Alerts",
+      "default": 30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "alertFromCharBlur",
+      "type": "number",
+      "label": "Alert-Einflug: Buchstaben starten mit Unschärfe",
+      "group": "Feinschliff: Alerts",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertFromLine",
+      "type": "number",
+      "label": "Alert-Einflug: Zeile und Nachricht steigen um",
+      "group": "Feinschliff: Alerts",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "alertTimeCard",
+      "type": "number",
+      "label": "Alert-Einflug: Karte (Dauer)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.8,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertCardOvershoot",
+      "type": "number",
+      "label": "Alert-Einflug: Karte federt nach (Stärke)",
+      "group": "Feinschliff: Alerts",
+      "default": 1.6,
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "key": "alertTimeGlowUp",
+      "type": "number",
+      "label": "Alert-Schein: Aufleuchten (Dauer)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.25,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertTimeGlowDown",
+      "type": "number",
+      "label": "Alert-Schein: Abklingen (Dauer)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.9,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertGlowRest",
+      "type": "number",
+      "label": "Alert-Schein: Deckkraft danach",
+      "group": "Feinschliff: Alerts",
+      "default": 0.25,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "alertTimeLabel",
+      "type": "number",
+      "label": "Alert-Einflug: Kopfzeile (Dauer)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.45,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertTimeChar",
+      "type": "number",
+      "label": "Alert-Einflug: Buchstabe (Dauer)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.7,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertCharStagger",
+      "type": "number",
+      "label": "Alert-Einflug: Abstand zwischen Buchstaben",
+      "group": "Feinschliff: Alerts",
+      "default": 0.04,
+      "min": 0,
+      "max": 1,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertTimeLine",
+      "type": "number",
+      "label": "Alert-Einflug: Zeile und Nachricht (Dauer)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.5,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertTimeShine",
+      "type": "number",
+      "label": "Alert-Glanzlicht: Lauf (Dauer)",
+      "group": "Feinschliff: Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertShineFrom",
+      "type": "number",
+      "label": "Alert-Glanzlicht: startet bei (x)",
+      "group": "Feinschliff: Alerts",
+      "default": -100,
+      "min": -400,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "alertShineTo",
+      "type": "number",
+      "label": "Alert-Glanzlicht: endet bei (x)",
+      "group": "Feinschliff: Alerts",
+      "default": 760,
+      "min": -3040,
+      "max": 3040,
+      "unit": "px"
+    },
+    {
+      "key": "alertRimInset",
+      "type": "number",
+      "label": "Alert-Rand: Einzug",
+      "group": "Feinschliff: Alerts",
+      "default": 1,
+      "min": -20,
+      "max": 20,
+      "unit": "px"
+    },
+    {
+      "key": "alertRimStroke",
+      "type": "number",
+      "label": "Alert-Rand: Stärke",
+      "group": "Feinschliff: Alerts",
+      "default": 2.5,
+      "min": 0,
+      "max": 20,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "alertRimColor",
+      "type": "color",
+      "label": "Alert-Rand: Verlauf Farbe 1",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "alertRimColor2",
+      "type": "color",
+      "label": "Alert-Rand: Verlauf Farbe 2",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "alertSparkColor",
+      "type": "color",
+      "label": "Funken: Farbe 1",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "alertSparkColor2",
+      "type": "color",
+      "label": "Funken: Farbe 2",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "alertSparkCore",
+      "type": "number",
+      "label": "Funken: Anteil des hellen Kerns",
+      "group": "Feinschliff: Alerts",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "alertSparkCoreAlpha",
+      "type": "number",
+      "label": "Funken: Helligkeit am Rand des Kerns",
+      "group": "Feinschliff: Alerts",
+      "default": 0.45,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "alertSparkLife",
+      "type": "number",
+      "label": "Funken: Lebensdauer",
+      "group": "Feinschliff: Alerts",
+      "default": 1.1,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertSparkLatest",
+      "type": "number",
+      "label": "Funken: späteste Startverzögerung",
+      "group": "Feinschliff: Alerts",
+      "default": 0.25,
+      "min": 0,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "alertSparkSpread",
+      "type": "number",
+      "label": "Funken: Streuung der Flugrichtung",
+      "group": "Feinschliff: Alerts",
+      "default": 1.2,
+      "min": 0,
+      "max": 6.5,
+      "step": 0.01
+    },
+    {
+      "key": "alertSparkSpeedMin",
+      "type": "number",
+      "label": "Funken: Tempo mindestens (px pro Sekunde)",
+      "group": "Feinschliff: Alerts",
+      "default": 160,
+      "min": 0,
+      "max": 2000
+    },
+    {
+      "key": "alertSparkSpeedMax",
+      "type": "number",
+      "label": "Funken: Tempo höchstens (px pro Sekunde)",
+      "group": "Feinschliff: Alerts",
+      "default": 480,
+      "min": 0,
+      "max": 4000
+    },
+    {
+      "key": "alertSparkGravity",
+      "type": "number",
+      "label": "Funken: Schwerkraft (px pro Sekunde zum Quadrat)",
+      "group": "Feinschliff: Alerts",
+      "default": 520,
+      "min": -3000,
+      "max": 3000
+    },
+    {
+      "key": "alertSparkSize",
+      "type": "number",
+      "label": "Funken: Grösse mindestens",
+      "group": "Feinschliff: Alerts",
+      "default": 8,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "alertSparkSizeSpread",
+      "type": "number",
+      "label": "Funken: Grösse zusätzlich bis",
+      "group": "Feinschliff: Alerts",
+      "default": 14,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "alertSparkShrink",
+      "type": "number",
+      "label": "Funken: Schrumpfen bis zum Ende (Anteil)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.6,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "chatPadding",
+      "type": "number",
+      "label": "Chat-Bereich: Innenabstand",
+      "group": "Feinschliff: Chat",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "rowPadding",
+      "type": "number",
+      "label": "Chat-Nachricht: Innenabstand oben/unten",
+      "group": "Feinschliff: Chat",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "rowPadding2",
+      "type": "number",
+      "label": "Chat-Nachricht: Innenabstand links/rechts",
+      "group": "Feinschliff: Chat",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "rowFadesAnimation",
+      "type": "number",
+      "label": "Chat-Nachricht beim Ausblenden: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Chat",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "userMarginRight",
+      "type": "number",
+      "label": "Chat-Name: Abstand rechts",
+      "group": "Feinschliff: Chat",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "userBackground",
+      "type": "color",
+      "label": "Chat-Name: Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "userBackground2",
+      "type": "color",
+      "label": "Chat-Name: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "userBackground3",
+      "type": "number",
+      "label": "Chat-Name: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Chat",
+      "default": 135,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "kfRowOutToFilter",
+      "type": "number",
+      "label": "Chat-Zeile blendet aus (Ende): Filter Unschärfe",
+      "group": "Feinschliff: Chat",
+      "default": 4,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "chatFromY",
+      "type": "number",
+      "label": "Chat-Einflug: Nachricht kommt von (y)",
+      "group": "Feinschliff: Chat",
+      "default": 24,
+      "min": -96,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "chatFromScale",
+      "type": "number",
+      "label": "Chat-Einflug: startet mit Grösse",
+      "group": "Feinschliff: Chat",
+      "default": 0.96,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "chatEnterTime",
+      "type": "number",
+      "label": "Chat-Einflug: Dauer",
+      "group": "Feinschliff: Chat",
+      "default": 0.5,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "chatOvershoot",
+      "type": "number",
+      "label": "Chat-Einflug: federt nach (Stärke)",
+      "group": "Feinschliff: Chat",
+      "default": 1.4,
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "key": "camBeforeBorderRadius",
+      "type": "number",
+      "label": "Kamera-Rand: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "camBeforeBackground",
+      "type": "color",
+      "label": "Kamera-Rand: Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "camBeforeBackground2",
+      "type": "color",
+      "label": "Kamera-Rand: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "camBeforeBackground3",
+      "type": "number",
+      "label": "Kamera-Rand: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 135,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "camSpinsBeforeBackground",
+      "type": "color",
+      "label": "Kamera-Rand (wandernd): Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "camSpinsBeforeBackground2",
+      "type": "color",
+      "label": "Kamera-Rand (wandernd): Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "camSpinsBeforeBackground3",
+      "type": "color",
+      "label": "Kamera-Rand (wandernd): Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "pillGap",
+      "type": "number",
+      "label": "Kamera-Schild: Abstand",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "pillPadding",
+      "type": "number",
+      "label": "Kamera-Schild: Innenabstand oben/unten",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "pillPadding2",
+      "type": "number",
+      "label": "Kamera-Schild: Innenabstand links/rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "pillBorderRadius",
+      "type": "number",
+      "label": "Kamera-Schild: Eckenradius",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 999,
+      "min": 0,
+      "max": 999,
+      "unit": "px"
+    },
+    {
+      "key": "pillBackground",
+      "type": "color",
+      "label": "Kamera-Schild: Hintergrund Farbe (Kartenfarbe)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "card"
+    },
+    {
+      "key": "pillFontWeight",
+      "type": "number",
+      "label": "Kamera-Schild: Schriftstärke",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "pillColor",
+      "type": "color",
+      "label": "Kamera-Schild: Textfarbe",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "pillFont",
+      "type": "font",
+      "label": "Kamera-Schild: Schrift",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "nameLeft",
+      "type": "number",
+      "label": "Namensschild: Lage links",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 16,
+      "min": -64,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "nameBottom",
+      "type": "number",
+      "label": "Namensschild: Lage unten",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 16,
+      "min": -64,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "liveRight",
+      "type": "number",
+      "label": "Live-Anzeige: Lage rechts",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 16,
+      "min": -64,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "liveTop",
+      "type": "number",
+      "label": "Live-Anzeige: Lage oben",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 16,
+      "min": -64,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "liveFontSize",
+      "type": "number",
+      "label": "Live-Anzeige: Schriftgrösse (em)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 0.75,
+      "min": 0,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "liveLetterSpacing",
+      "type": "number",
+      "label": "Live-Anzeige: Zeichenabstand (em)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 0.08,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "liveColor",
+      "type": "color",
+      "label": "Live-Anzeige: Textfarbe",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "liveFont",
+      "type": "font",
+      "label": "Live-Anzeige: Schrift",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "liveIWidth",
+      "type": "number",
+      "label": "Live-Punkt: Breite",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "liveIHeight",
+      "type": "number",
+      "label": "Live-Punkt: Höhe",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "liveIBackground",
+      "type": "color",
+      "label": "Live-Punkt: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "liveIAnimation",
+      "type": "number",
+      "label": "Live-Punkt: Animation Dauer",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 1.6,
+      "min": 0,
+      "max": 8,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "kfPulse50pOpacity",
+      "type": "number",
+      "label": "Live-Punkt pulsiert (Mitte): Deckkraft",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "camEnterFrame",
+      "type": "number",
+      "label": "Kamera-Einblenden: Rahmen (Dauer)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 0.6,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "camEnterTag",
+      "type": "number",
+      "label": "Kamera-Einblenden: Schild (Dauer)",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 0.5,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "camEnterRise",
+      "type": "number",
+      "label": "Kamera-Einblenden: Schilder steigen um",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "camEnterStagger",
+      "type": "number",
+      "label": "Kamera-Einblenden: Abstand zwischen Schildern",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 0.12,
+      "min": 0,
+      "max": 2,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "camEnterTagsAt",
+      "type": "number",
+      "label": "Kamera-Einblenden: Schilder ab",
+      "group": "Feinschliff: Kamera-Rahmen",
+      "default": 0.3,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "musicPadding",
+      "type": "number",
+      "label": "Musik-Bereich: Innenabstand",
+      "group": "Feinschliff: Musik",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "playerGap",
+      "type": "number",
+      "label": "Musik-Karte: Abstand",
+      "group": "Feinschliff: Musik",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "playerPadding",
+      "type": "number",
+      "label": "Musik-Karte: Innenabstand oben/unten",
+      "group": "Feinschliff: Musik",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "playerPadding2",
+      "type": "number",
+      "label": "Musik-Karte: Innenabstand links/rechts",
+      "group": "Feinschliff: Musik",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "coverWidth",
+      "type": "number",
+      "label": "Musik-Cover: Breite Anteil von „Cover-Grösse“ (%)",
+      "group": "Feinschliff: Musik",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "coverHeight",
+      "type": "number",
+      "label": "Musik-Cover: Höhe Anteil von „Cover-Grösse“ (%)",
+      "group": "Feinschliff: Musik",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "coverBorderRadius",
+      "type": "number",
+      "label": "Musik-Cover: Eckenradius",
+      "group": "Feinschliff: Musik",
+      "default": 0.75,
+      "min": 0,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "trackGap",
+      "type": "number",
+      "label": "Musik-Titelblock: Abstand",
+      "group": "Feinschliff: Musik",
+      "default": 4,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "trackLineFontSize",
+      "type": "number",
+      "label": "Musik-Titel: Schriftgrösse (em)",
+      "group": "Feinschliff: Musik",
+      "default": 1.2,
+      "min": 0,
+      "max": 4.8,
+      "step": 0.01
+    },
+    {
+      "key": "trackLineColor",
+      "type": "color",
+      "label": "Musik-Titel: Textfarbe",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "trackLineFont",
+      "type": "font",
+      "label": "Musik-Titel: Schrift",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "timeGap",
+      "type": "number",
+      "label": "Musik-Zeitzeile: Abstand",
+      "group": "Feinschliff: Musik",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "timeColor",
+      "type": "color",
+      "label": "Musik-Zeitzeile: Textfarbe",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "timeFontSize",
+      "type": "number",
+      "label": "Musik-Zeitzeile: Schriftgrösse (em)",
+      "group": "Feinschliff: Musik",
+      "default": 0.75,
+      "min": 0,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "timeFont",
+      "type": "font",
+      "label": "Musik-Zeitzeile: Schrift",
+      "group": "Feinschliff: Musik",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "musicEnterCard",
+      "type": "number",
+      "label": "Musik-Einflug: Karte (Dauer)",
+      "group": "Feinschliff: Musik",
+      "default": 0.5,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "musicEnterCover",
+      "type": "number",
+      "label": "Musik-Einflug: Cover (Dauer)",
+      "group": "Feinschliff: Musik",
+      "default": 0.7,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "musicCoverTilt",
+      "type": "number",
+      "label": "Musik-Einflug: Cover kippt von (Grad)",
+      "group": "Feinschliff: Musik",
+      "default": -90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "musicCoverOvershoot",
+      "type": "number",
+      "label": "Musik-Einflug: Cover federt nach (Stärke)",
+      "group": "Feinschliff: Musik",
+      "default": 1.4,
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "key": "musicEnterLines",
+      "type": "number",
+      "label": "Musik-Einflug: Zeilen (Dauer)",
+      "group": "Feinschliff: Musik",
+      "default": 0.5,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "musicEnterRise",
+      "type": "number",
+      "label": "Musik-Einflug: steigt um",
+      "group": "Feinschliff: Musik",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "musicEnterStagger",
+      "type": "number",
+      "label": "Musik-Einflug: Abstand zwischen Zeilen",
+      "group": "Feinschliff: Musik",
+      "default": 0.1,
+      "min": 0,
+      "max": 2,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "musicEnterLinesAt",
+      "type": "number",
+      "label": "Musik-Einflug: Zeilen ab",
+      "group": "Feinschliff: Musik",
+      "default": 0.2,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "fxItemGap",
+      "type": "number",
+      "label": "Effekt: Abstand",
+      "group": "Feinschliff: Effekte",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "fxItemAnimation",
+      "type": "number",
+      "label": "Effekt: Animation Dauer Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Effekte",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "fxItemAnimation2",
+      "type": "number",
+      "label": "Effekt: Animation Verzögerung Anteil von „Ein- und Ausblenden“ (%)",
+      "group": "Feinschliff: Effekte",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "fxItemImgBorderRadius",
+      "type": "number",
+      "label": "Effekt-Bild: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Effekte",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "fxItemVideoBorderRadius",
+      "type": "number",
+      "label": "Effekt-Video: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Effekte",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "fxItemCanvasBorderRadius",
+      "type": "number",
+      "label": "Effekt-Grafik: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Effekte",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "fxTextPadding",
+      "type": "number",
+      "label": "Effekt-Text: Innenabstand oben/unten",
+      "group": "Feinschliff: Effekte",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "fxTextPadding2",
+      "type": "number",
+      "label": "Effekt-Text: Innenabstand links/rechts",
+      "group": "Feinschliff: Effekte",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "fxTextFontWeight",
+      "type": "number",
+      "label": "Effekt-Text: Schriftstärke",
+      "group": "Feinschliff: Effekte",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "fxTextColor",
+      "type": "color",
+      "label": "Effekt-Text: Textfarbe",
+      "group": "Feinschliff: Effekte",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "fxTextFont",
+      "type": "font",
+      "label": "Effekt-Text: Schrift",
+      "group": "Feinschliff: Effekte",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "fxFromScale",
+      "type": "number",
+      "label": "Effekt-Einflug: startet mit Grösse",
+      "group": "Feinschliff: Effekte",
+      "default": 0.85,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "fxEnterTime",
+      "type": "number",
+      "label": "Effekt-Einflug: Dauer",
+      "group": "Feinschliff: Effekte",
+      "default": 0.45,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "fxOvershoot",
+      "type": "number",
+      "label": "Effekt-Einflug: federt nach (Stärke)",
+      "group": "Feinschliff: Effekte",
+      "default": 1.7,
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "key": "infoPadding",
+      "type": "number",
+      "label": "Befehlsseite: Innenabstand oben/unten",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 48,
+      "min": 0,
+      "max": 192,
+      "unit": "px"
+    },
+    {
+      "key": "infoPadding2",
+      "type": "number",
+      "label": "Befehlsseite: Innenabstand links/rechts",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "infoColumnGap",
+      "type": "number",
+      "label": "Befehlsseite: Spalte: Abstand",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "infoTitleFontSize",
+      "type": "number",
+      "label": "Befehlsseite: Titel: Schriftgrösse (Wert 1) (em)",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 2.4,
+      "min": 0,
+      "max": 9.6,
+      "step": 0.01
+    },
+    {
+      "key": "infoTitleFontSize2",
+      "type": "number",
+      "label": "Befehlsseite: Titel: Schriftgrösse (Wert 2) (vw)",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 9,
+      "min": 0,
+      "max": 36,
+      "step": 0.01
+    },
+    {
+      "key": "infoTitleFontWeight",
+      "type": "number",
+      "label": "Befehlsseite: Titel: Schriftstärke",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "infoTitleBackground",
+      "type": "color",
+      "label": "Befehlsseite: Titel: Hintergrund Farbe (Akzentfarbe)",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "infoTitleBackground2",
+      "type": "color",
+      "label": "Befehlsseite: Titel: Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "infoTitleBackground3",
+      "type": "number",
+      "label": "Befehlsseite: Titel: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 135,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "infoTitleFont",
+      "type": "font",
+      "label": "Befehlsseite: Titel: Schrift",
+      "group": "Feinschliff: Befehlsseite",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "infoCardGap",
+      "type": "number",
+      "label": "Befehlsseite: Karte: Abstand",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "infoCardPadding",
+      "type": "number",
+      "label": "Befehlsseite: Karte: Innenabstand",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "infoEntryGap",
+      "type": "number",
+      "label": "Befehlsseite: Eintrag: Abstand",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 4,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "infoEnterRise",
+      "type": "number",
+      "label": "Befehlsseite-Einflug: Teile steigen um",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 20,
+      "min": -80,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "infoEnterTime",
+      "type": "number",
+      "label": "Befehlsseite-Einflug: Dauer",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 0.6,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "infoEnterStagger",
+      "type": "number",
+      "label": "Befehlsseite-Einflug: Abstand zwischen Teilen",
+      "group": "Feinschliff: Befehlsseite",
+      "default": 0.08,
+      "min": 0,
+      "max": 2,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "grainTile",
+      "type": "number",
+      "label": "Korn: Kachelgrösse",
+      "group": "Feinschliff: Hintergrund",
+      "default": 256,
+      "min": 16,
+      "max": 1024,
+      "unit": "px"
+    },
+    {
+      "key": "auroraColor",
+      "type": "color",
+      "label": "Lichtfelder: Farbe 1",
+      "group": "Feinschliff: Hintergrund",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "auroraColor2",
+      "type": "color",
+      "label": "Lichtfelder: Farbe 2",
+      "group": "Feinschliff: Hintergrund",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "auroraCore",
+      "type": "number",
+      "label": "Lichtfelder: Anteil des hellen Kerns",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.35,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraCoreAlpha",
+      "type": "number",
+      "label": "Lichtfelder: Helligkeit am Rand des Kerns",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.45,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraSlot1X",
+      "type": "number",
+      "label": "Lichtfeld 1: Mitte x (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.22,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraSlot1Y",
+      "type": "number",
+      "label": "Lichtfeld 1: Mitte y (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraSlot2X",
+      "type": "number",
+      "label": "Lichtfeld 2: Mitte x (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.78,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraSlot2Y",
+      "type": "number",
+      "label": "Lichtfeld 2: Mitte y (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.7,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraSlot3X",
+      "type": "number",
+      "label": "Lichtfeld 3: Mitte x (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.69,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraSlot3Y",
+      "type": "number",
+      "label": "Lichtfeld 3: Mitte y (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.2,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraSlot4X",
+      "type": "number",
+      "label": "Lichtfeld 4: Mitte x (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.32,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraSlot4Y",
+      "type": "number",
+      "label": "Lichtfeld 4: Mitte y (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.83,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraShift",
+      "type": "number",
+      "label": "Lichtfelder: Streuung der Mitte (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.16,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "auroraOrbitX",
+      "type": "number",
+      "label": "Lichtfelder: Bahn breit mindestens",
+      "group": "Feinschliff: Hintergrund",
+      "default": 160,
+      "min": 0,
+      "max": 960,
+      "unit": "px"
+    },
+    {
+      "key": "auroraOrbitXSpread",
+      "type": "number",
+      "label": "Lichtfelder: Bahn breit zusätzlich bis",
+      "group": "Feinschliff: Hintergrund",
+      "default": 100,
+      "min": 0,
+      "max": 960,
+      "unit": "px"
+    },
+    {
+      "key": "auroraOrbitY",
+      "type": "number",
+      "label": "Lichtfelder: Bahn hoch mindestens",
+      "group": "Feinschliff: Hintergrund",
+      "default": 80,
+      "min": 0,
+      "max": 540,
+      "unit": "px"
+    },
+    {
+      "key": "auroraOrbitYSpread",
+      "type": "number",
+      "label": "Lichtfelder: Bahn hoch zusätzlich bis",
+      "group": "Feinschliff: Hintergrund",
+      "default": 60,
+      "min": 0,
+      "max": 540,
+      "unit": "px"
+    },
+    {
+      "key": "auroraRadius",
+      "type": "number",
+      "label": "Lichtfelder: Radius mindestens",
+      "group": "Feinschliff: Hintergrund",
+      "default": 420,
+      "min": 0,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "auroraRadiusSpread",
+      "type": "number",
+      "label": "Lichtfelder: Radius zusätzlich bis",
+      "group": "Feinschliff: Hintergrund",
+      "default": 200,
+      "min": 0,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "auroraBreathe",
+      "type": "number",
+      "label": "Lichtfelder: Atmen (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.15,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "endingSink",
+      "type": "number",
+      "label": "Ending: Lichtfelder sinken um",
+      "group": "Feinschliff: Hintergrund",
+      "default": 240,
+      "min": 0,
+      "max": 1080,
+      "unit": "px"
+    },
+    {
+      "key": "dustColor",
+      "type": "color",
+      "label": "Lichtstaub: Farbe 1",
+      "group": "Feinschliff: Hintergrund",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "dustColor2",
+      "type": "color",
+      "label": "Lichtstaub: Farbe 2",
+      "group": "Feinschliff: Hintergrund",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "dustCore",
+      "type": "number",
+      "label": "Lichtstaub: Anteil des hellen Kerns",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.25,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "dustCoreAlpha",
+      "type": "number",
+      "label": "Lichtstaub: Helligkeit am Rand des Kerns",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.45,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "dustRises",
+      "type": "number",
+      "label": "Lichtstaub: Aufstiege je 2 Minuten mindestens",
+      "group": "Feinschliff: Hintergrund",
+      "default": 2,
+      "min": 0,
+      "max": 50
+    },
+    {
+      "key": "dustRisesSpread",
+      "type": "number",
+      "label": "Lichtstaub: Aufstiege zusätzlich bis",
+      "group": "Feinschliff: Hintergrund",
+      "default": 3,
+      "min": 0,
+      "max": 50
+    },
+    {
+      "key": "dustSways",
+      "type": "number",
+      "label": "Lichtstaub: Schwünge je 2 Minuten mindestens",
+      "group": "Feinschliff: Hintergrund",
+      "default": 6,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "dustSwaysSpread",
+      "type": "number",
+      "label": "Lichtstaub: Schwünge zusätzlich bis",
+      "group": "Feinschliff: Hintergrund",
+      "default": 4,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "dustGlows",
+      "type": "number",
+      "label": "Lichtstaub: Aufleuchten je 2 Minuten mindestens",
+      "group": "Feinschliff: Hintergrund",
+      "default": 17,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "key": "dustGlowsSpread",
+      "type": "number",
+      "label": "Lichtstaub: Aufleuchten zusätzlich bis",
+      "group": "Feinschliff: Hintergrund",
+      "default": 35,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "key": "dustSway",
+      "type": "number",
+      "label": "Lichtstaub: Schwung mindestens",
+      "group": "Feinschliff: Hintergrund",
+      "default": 10,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "dustSwaySpread",
+      "type": "number",
+      "label": "Lichtstaub: Schwung zusätzlich bis",
+      "group": "Feinschliff: Hintergrund",
+      "default": 30,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "dustSize",
+      "type": "number",
+      "label": "Lichtstaub: Grösse mindestens",
+      "group": "Feinschliff: Hintergrund",
+      "default": 9,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "dustSizeSpread",
+      "type": "number",
+      "label": "Lichtstaub: Grösse zusätzlich bis",
+      "group": "Feinschliff: Hintergrund",
+      "default": 21,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "dustGlowMin",
+      "type": "number",
+      "label": "Lichtstaub: Deckkraft mindestens",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.15,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "dustGlowRange",
+      "type": "number",
+      "label": "Lichtstaub: Deckkraft zusätzlich bis",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.6,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "dustBannerScale",
+      "type": "number",
+      "label": "Lichtstaub in Stinger und Bannern: Grösse (Anteil)",
+      "group": "Feinschliff: Hintergrund",
+      "default": 0.25,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "stingerAccent",
+      "type": "color",
+      "label": "Verlaufskante: Farbe 1",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stingerAccent2",
+      "type": "color",
+      "label": "Verlaufskante: Farbe 2",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "stingerBackground",
+      "type": "color",
+      "label": "Streifen: Hintergrund",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "background"
+    },
+    {
+      "key": "stingerTextColor",
+      "type": "color",
+      "label": "Text: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "stingerFont",
+      "type": "font",
+      "label": "Text: Schrift",
+      "group": "Stinger",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stingerTextSize",
+      "type": "number",
+      "label": "Text: Grösse",
+      "group": "Stinger",
+      "default": 120,
+      "min": 10,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "stingerTextWeight",
+      "type": "number",
+      "label": "Text: Schriftstärke",
+      "group": "Stinger",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "stingerTextRise",
+      "type": "number",
+      "label": "Text: steigt um",
+      "group": "Stinger",
+      "default": 40,
+      "min": -400,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "stingerTextWindow",
+      "type": "number",
+      "label": "Text: sichtbar um den Übergang (Anteil)",
+      "group": "Stinger",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "stingerFront",
+      "type": "number",
+      "label": "Verlaufskante: Breite",
+      "group": "Stinger",
+      "default": 28,
+      "min": 0,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "stingerInShare",
+      "type": "number",
+      "label": "Streifen: Einfahrt (Anteil bis zum Übergang)",
+      "group": "Stinger",
+      "default": 0.7,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "stingerOutShare",
+      "type": "number",
+      "label": "Streifen: Ausfahrt (Anteil nach dem Übergang)",
+      "group": "Stinger",
+      "default": 0.7,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "stingerStagger",
+      "type": "number",
+      "label": "Streifen: Versatz (Anteil)",
+      "group": "Stinger",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "bannerProfileBackground",
+      "type": "color",
+      "label": "Hintergrund",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "background"
+    },
+    {
+      "key": "bannerProfileTitleColor",
+      "type": "color",
+      "label": "Titel: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "bannerProfileTextColor",
+      "type": "color",
+      "label": "Text: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "bannerProfileBarColor",
+      "type": "color",
+      "label": "Balken: Farbe 1",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "bannerProfileBarColor2",
+      "type": "color",
+      "label": "Balken: Farbe 2",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "bannerProfileFont",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Profilbanner",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "bannerProfileLeft",
+      "type": "number",
+      "label": "Abstand links",
+      "group": "Profilbanner",
+      "default": 360,
+      "min": 0,
+      "max": 1200,
+      "unit": "px"
+    },
+    {
+      "key": "bannerProfileTitleY",
+      "type": "number",
+      "label": "Titel: Grundlinie",
+      "group": "Profilbanner",
+      "default": 220,
+      "min": 0,
+      "max": 480,
+      "unit": "px"
+    },
+    {
+      "key": "bannerProfileTitleSize",
+      "type": "number",
+      "label": "Titel: Grösse",
+      "group": "Profilbanner",
+      "default": 96,
+      "min": 8,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "bannerProfileTitleWeight",
+      "type": "number",
+      "label": "Titel: Schriftstärke",
+      "group": "Profilbanner",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bannerProfileBarY",
+      "type": "number",
+      "label": "Balken: Lage oben",
+      "group": "Profilbanner",
+      "default": 248,
+      "min": 0,
+      "max": 480,
+      "unit": "px"
+    },
+    {
+      "key": "bannerProfileBarWidth",
+      "type": "number",
+      "label": "Balken: Breite höchstens",
+      "group": "Profilbanner",
+      "default": 420,
+      "min": 0,
+      "max": 1200,
+      "unit": "px"
+    },
+    {
+      "key": "bannerProfileBarHeight",
+      "type": "number",
+      "label": "Balken: Höhe",
+      "group": "Profilbanner",
+      "default": 8,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "bannerProfileTextY",
+      "type": "number",
+      "label": "Text: Grundlinie",
+      "group": "Profilbanner",
+      "default": 312,
+      "min": 0,
+      "max": 480,
+      "unit": "px"
+    },
+    {
+      "key": "bannerProfileTextSize",
+      "type": "number",
+      "label": "Text: Grösse",
+      "group": "Profilbanner",
+      "default": 34,
+      "min": 8,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "bannerProfileTextWeight",
+      "type": "number",
+      "label": "Text: Schriftstärke",
+      "group": "Profilbanner",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bannerOfflineBackground",
+      "type": "color",
+      "label": "Hintergrund",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "background"
+    },
+    {
+      "key": "bannerOfflineNameColor",
+      "type": "color",
+      "label": "Kanalzeile: Farbe",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "bannerOfflineTitleColor",
+      "type": "color",
+      "label": "Titel: Farbe",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "bannerOfflineTextColor",
+      "type": "color",
+      "label": "Text: Farbe",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "mutedColor"
+    },
+    {
+      "key": "bannerOfflineBarColor",
+      "type": "color",
+      "label": "Balken: Farbe 1",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "bannerOfflineBarColor2",
+      "type": "color",
+      "label": "Balken: Farbe 2",
+      "group": "Offline-Banner",
+      "default": "",
+      "inherit": "accent2"
+    },
+    {
+      "key": "bannerOfflineFont",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Offline-Banner",
+      "default": "",
+      "options": [
+        "Inter",
+        "Manrope",
+        "DM Sans",
+        "Space Grotesk"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "bannerOfflineLeft",
+      "type": "number",
+      "label": "Abstand links",
+      "group": "Offline-Banner",
+      "default": 180,
+      "min": 0,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineNameY",
+      "type": "number",
+      "label": "Kanalzeile: Grundlinie",
+      "group": "Offline-Banner",
+      "default": 300,
+      "min": 0,
+      "max": 1080,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineNameSize",
+      "type": "number",
+      "label": "Kanalzeile: Grösse",
+      "group": "Offline-Banner",
+      "default": 44,
+      "min": 8,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineNameWeight",
+      "type": "number",
+      "label": "Kanalzeile: Schriftstärke",
+      "group": "Offline-Banner",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bannerOfflineTitleY",
+      "type": "number",
+      "label": "Titel: Grundlinie",
+      "group": "Offline-Banner",
+      "default": 470,
+      "min": 0,
+      "max": 1080,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineTitleSize",
+      "type": "number",
+      "label": "Titel: Grösse",
+      "group": "Offline-Banner",
+      "default": 150,
+      "min": 8,
+      "max": 600,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineTitleWeight",
+      "type": "number",
+      "label": "Titel: Schriftstärke",
+      "group": "Offline-Banner",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bannerOfflineBarY",
+      "type": "number",
+      "label": "Balken: Lage oben",
+      "group": "Offline-Banner",
+      "default": 520,
+      "min": 0,
+      "max": 1080,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineBarWidth",
+      "type": "number",
+      "label": "Balken: Breite höchstens",
+      "group": "Offline-Banner",
+      "default": 720,
+      "min": 0,
+      "max": 1920,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineBarHeight",
+      "type": "number",
+      "label": "Balken: Höhe",
+      "group": "Offline-Banner",
+      "default": 12,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineTextY",
+      "type": "number",
+      "label": "Text: Grundlinie",
+      "group": "Offline-Banner",
+      "default": 620,
+      "min": 0,
+      "max": 1080,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineTextSize",
+      "type": "number",
+      "label": "Text: Grösse",
+      "group": "Offline-Banner",
+      "default": 48,
+      "min": 8,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "bannerOfflineTextWeight",
+      "type": "number",
+      "label": "Text: Schriftstärke",
+      "group": "Offline-Banner",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
     }
   ],
   "groupScenes": {
@@ -1433,6 +6134,38 @@
     "Offline-Banner": [],
     "Befehlsseite": [
       "info"
+    ],
+    "Feinschliff: Starting, BRB, Ending": [
+      "starting",
+      "brb",
+      "ending"
+    ],
+    "Feinschliff: Statistik": [
+      "ending",
+      "stats"
+    ],
+    "Feinschliff: Alerts": [
+      "alerts"
+    ],
+    "Feinschliff: Chat": [
+      "chat"
+    ],
+    "Feinschliff: Kamera-Rahmen": [
+      "cam"
+    ],
+    "Feinschliff: Musik": [
+      "music"
+    ],
+    "Feinschliff: Effekte": [
+      "fx"
+    ],
+    "Feinschliff: Befehlsseite": [
+      "info"
+    ],
+    "Feinschliff: Hintergrund": [
+      "starting",
+      "brb",
+      "ending"
     ]
   },
   "personalize": {

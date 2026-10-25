@@ -1,133 +1,148 @@
 /* Standard theme: clear, modern look with a gradient of two accent colors, rounded cards and soft
-   transitions. Encapsulated under .theme-standard; colors, sizes and times come as CSS variables from the
-   settings, further sizes as var(--name, default). Keyframes are called standard-*. */
+   transitions. Encapsulated under .theme-standard; every color, size and time comes as a CSS variable from the
+   settings (settings.ts, the fine-tuning fields in tuning.ts). Keyframes are called standard-*. */
 
 .theme-standard {
   font-family: var(--font), system-ui, sans-serif;
   font-size: var(--fontSize);
-  line-height: 1.35;
+  line-height: var(--rootLineHeight);
   color: var(--textColor);
-  --gradient: linear-gradient(135deg, var(--accent), var(--accent2));
-  --surface: color-mix(in srgb, var(--card) calc(var(--cardOpacity) * 100%), transparent);
 }
 
-.theme-standard .standard-muted { color: var(--mutedColor); }
+.theme-standard .standard-muted { color: var(--mutedColor2); }
 .theme-standard .standard-eyebrow {
-  color: var(--accent2);
-  font-size: 0.7em;
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  color: var(--eyebrowColor);
+  font-size: calc(var(--eyebrowFontSize) * 1em);
+  font-weight: var(--eyebrowFontWeight);
+  letter-spacing: calc(var(--eyebrowLetterSpacing) * 1em);
   text-transform: uppercase;
+  font-family: var(--eyebrowFont), system-ui, sans-serif;
 }
-.theme-standard .standard-line { font-weight: 700; }
+.theme-standard .standard-line { font-weight: var(--lineFontWeight); color: var(--lineColor); font-family: var(--lineFont), system-ui, sans-serif; }
 
 /* Card: base building block of all scenes */
 .theme-standard .standard-card {
   position: relative;
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: 0 var(--shadow-y, 12px) var(--shadow-blur, 32px) color-mix(in srgb, var(--card) 50%, transparent);
+  border-radius: calc(var(--radius) * var(--cardBorderRadius) / 100);
+  background: color-mix(in srgb, var(--cardBackground) calc(var(--cardOpacity) * 100%), transparent);
+  box-shadow: 0 var(--cardBoxShadow2) var(--cardBoxShadow3) color-mix(in srgb, var(--cardBoxShadow) var(--cardBoxShadow4), transparent);
 }
-.theme-standard .standard-card.leaving { animation: standard-out var(--fadeDuration) ease-in forwards; }
+.theme-standard .standard-card.leaving { animation: standard-out calc(var(--fadeDuration) * var(--cardLeavingAnimation) / 100) ease-in forwards; }
 
 .theme-standard .standard-chip {
   display: inline-block;
-  margin-right: var(--chip-gap, 8px);
-  padding: var(--chip-padding, 2px 10px);
-  border-radius: var(--pill-radius, 999px);
-  background: var(--gradient);
-  color: var(--textColor);
-  font-size: 0.7em;
-  font-weight: 600;
-  letter-spacing: 0.04em;
+  margin-right: var(--chipMarginRight);
+  padding: var(--chipPadding) var(--chipPadding2);
+  border-radius: var(--chipBorderRadius);
+  background: linear-gradient(calc(var(--chipBackground3) * 1deg), var(--chipBackground), var(--chipBackground2));
+  color: var(--chipColor);
+  font-size: calc(var(--chipFontSize) * 1em);
+  font-weight: var(--chipFontWeight);
+  letter-spacing: calc(var(--chipLetterSpacing) * 1em);
+  font-family: var(--chipFont), system-ui, sans-serif;
 }
 
 .theme-standard .standard-progress {
-  height: var(--progress-height, 6px);
-  border-radius: var(--pill-radius, 999px);
-  background: color-mix(in srgb, var(--mutedColor) 25%, transparent);
+  height: var(--progressHeight);
+  border-radius: var(--progressBorderRadius);
+  background: color-mix(in srgb, var(--progressBackground) var(--progressBackground2), transparent);
   overflow: hidden;
 }
-.theme-standard .standard-progress span { display: block; height: 100%; border-radius: inherit; background: var(--gradient); transition: width var(--fadeDuration) linear; }
+.theme-standard .standard-progress span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(calc(var(--progressSpanBackground3) * 1deg), var(--progressSpanBackground), var(--progressSpanBackground2)); transition: width calc(var(--fadeDuration) * var(--progressSpanTransition) / 100) linear; }
 
 /* --- Full-screen scenes (starting, brb, ending) -------------------------------- */
-.theme-standard .standard-screen { position: fixed; inset: 0; overflow: hidden; background: var(--background); }
+.theme-standard .standard-screen { position: fixed; inset: 0; overflow: hidden; background: var(--screenBackground); }
 
 /* Light fields (screen/LightScreen.tsx, prototype refs/starting.html): the PixiJS stage below, over it a
    vignette, the grain and the texts; GSAP brings everything in */
-.theme-standard .standard-st-stage { color: var(--textColor); }
+.theme-standard .standard-st-stage { color: var(--stStageColor); }
 .theme-standard .standard-st-stage > * { position: absolute; }
-.theme-standard .standard-st-vignette { inset: 0; background: radial-gradient(ellipse at center, transparent 45%, color-mix(in srgb, var(--background) 85%, transparent) 100%); }
+.theme-standard .standard-st-vignette { inset: 0; background: radial-gradient(ellipse at center, transparent var(--stVignetteBackground2), color-mix(in srgb, var(--stVignetteBackground) var(--stVignetteBackground3), transparent) 100%); }
 .theme-standard .standard-st-grain { inset: 0; mix-blend-mode: overlay; }
 .theme-standard .standard-st-grain canvas { width: 100%; height: 100%; image-rendering: pixelated; }
-.theme-standard .standard-st-top { left: var(--st-side, 80px); right: var(--st-side, 80px); top: var(--st-top, 56px); display: flex; justify-content: space-between; font-size: var(--top-size, 24px); }
-.theme-standard .standard-st-channel,
-.theme-standard .standard-st-digit b,
-.theme-standard .standard-st-colon,
-.theme-standard .standard-st-done {
-  background: linear-gradient(90deg, var(--accent), var(--accent2));
+.theme-standard .standard-st-top { left: var(--stTopLeft); right: var(--stTopRight); top: var(--stTopTop); display: flex; justify-content: space-between; font-size: var(--stTopFontSize); color: var(--stTopColor); font-family: var(--stTopFont), system-ui, sans-serif; }
+.theme-standard .standard-st-channel {
+  background: linear-gradient(calc(var(--stChannelBackground3) * 1deg), var(--stChannelBackground), var(--stChannelBackground2));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
-.theme-standard .standard-st-channel { font-weight: 800; letter-spacing: 0.08em; }
-.theme-standard .standard-st-top .standard-muted { font-weight: 500; }
-.theme-standard .standard-st-center { left: 0; right: 0; top: var(--st-center-top, 330px); display: grid; justify-items: center; gap: var(--center-gap, 22px); text-align: center; }
-.theme-standard .standard-st-eyebrow { margin: 0; font-size: var(--eyebrow-size, 30px); font-weight: 600; letter-spacing: 0.24em; text-transform: uppercase; color: var(--mutedColor); }
-.theme-standard .standard-st-title { margin: 0; font-size: var(--title-size, 104px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
-.theme-standard .standard-st-count { margin-top: var(--st-count-gap, 18px); font-size: var(--big-size, 132px); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.1; }
+.theme-standard .standard-st-digit b {
+  background: linear-gradient(calc(var(--stDigitBBackground3) * 1deg), var(--stDigitBBackground), var(--stDigitBBackground2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.theme-standard .standard-st-colon {
+  background: linear-gradient(calc(var(--stColonBackground3) * 1deg), var(--stColonBackground), var(--stColonBackground2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.theme-standard .standard-st-done {
+  background: linear-gradient(calc(var(--stDoneBackground3) * 1deg), var(--stDoneBackground), var(--stDoneBackground2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.theme-standard .standard-st-channel { font-weight: var(--stChannelFontWeight); letter-spacing: calc(var(--stChannelLetterSpacing) * 1em); font-family: var(--stChannelFont), system-ui, sans-serif; }
+.theme-standard .standard-st-top .standard-muted { font-weight: var(--stTopMutedFontWeight); color: var(--stTopMutedColor); font-family: var(--stTopMutedFont), system-ui, sans-serif; }
+.theme-standard .standard-st-center { left: 0; right: 0; top: var(--stCenterTop); display: grid; justify-items: center; gap: var(--stCenterGap); text-align: center; }
+.theme-standard .standard-st-eyebrow { margin: 0; font-size: var(--stEyebrowFontSize); font-weight: var(--stEyebrowFontWeight); letter-spacing: calc(var(--stEyebrowLetterSpacing) * 1em); text-transform: uppercase; color: var(--stEyebrowColor); font-family: var(--stEyebrowFont), system-ui, sans-serif; }
+.theme-standard .standard-st-title { margin: 0; font-size: var(--stTitleFontSize); font-weight: var(--stTitleFontWeight); letter-spacing: calc(var(--stTitleLetterSpacing) * 1em); line-height: var(--stTitleLineHeight); color: var(--stTitleColor); font-family: var(--stTitleFont), system-ui, sans-serif; }
+.theme-standard .standard-st-count { margin-top: var(--stCountMarginTop); font-size: var(--stCountFontSize); font-weight: var(--stCountFontWeight); font-variant-numeric: tabular-nums; letter-spacing: calc(var(--stCountLetterSpacing) * 1em); line-height: var(--stCountLineHeight); color: var(--stCountColor); font-family: var(--stCountFont), system-ui, sans-serif; }
 .theme-standard .standard-st-clock { display: flex; }
 /* One window per digit: the old digit rolls up and out, the new one in from below (eases out like rolledShare) */
-.theme-standard .standard-st-digit { position: relative; display: inline-block; width: 0.62em; height: 1.1em; overflow: hidden; }
-.theme-standard .standard-st-digit b { position: absolute; inset: 0; text-align: center; background-size: 400% 100%; }
+.theme-standard .standard-st-digit { position: relative; display: inline-block; width: calc(var(--stDigitWidth) * 1em); height: calc(var(--stDigitHeight) * 1em); overflow: hidden; }
+.theme-standard .standard-st-digit b { position: absolute; inset: 0; text-align: center; background-size: var(--stDigitBBackgroundSize) 100%; }
 .theme-standard .standard-st-digit.rolling b { animation: standard-roll-in var(--roll-ms) cubic-bezier(0.33, 1, 0.68, 1) both; }
 .theme-standard .standard-st-digit.rolling b.from { animation-name: standard-roll-out; }
-.theme-standard .standard-st-colon { display: inline-block; width: 0.32em; text-align: center; background-size: 400% 100%; }
-.theme-standard .standard-st-done { animation: standard-in var(--fadeDuration) ease-out both; }
-.theme-standard .standard-st-bar { position: relative; width: var(--progress-width, 760px); height: var(--screen-progress-height, 10px); border-radius: var(--pill-radius, 999px); background: color-mix(in srgb, var(--textColor) 8%, transparent); overflow: hidden; }
-.theme-standard .standard-st-fill { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent2)); box-shadow: 0 0 var(--st-glow, 24px) color-mix(in srgb, var(--accent) 60%, transparent); }
+.theme-standard .standard-st-colon { display: inline-block; width: calc(var(--stColonWidth) * 1em); text-align: center; background-size: var(--stColonBackgroundSize) 100%; }
+.theme-standard .standard-st-done { animation: standard-in calc(var(--fadeDuration) * var(--stDoneAnimation) / 100) ease-out both; }
+.theme-standard .standard-st-bar { position: relative; width: var(--stBarWidth); height: var(--stBarHeight); border-radius: var(--stBarBorderRadius); background: color-mix(in srgb, var(--stBarBackground) var(--stBarBackground2), transparent); overflow: hidden; }
+.theme-standard .standard-st-fill { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(calc(var(--stFillBackground3) * 1deg), var(--stFillBackground), var(--stFillBackground2)); box-shadow: 0 0 var(--stFillBoxShadow2) color-mix(in srgb, var(--stFillBoxShadow) var(--stFillBoxShadow3), transparent); }
 /* GSAP moves the shine from left of the bar to right of it */
-.theme-standard .standard-st-shine { position: absolute; top: 0; bottom: 0; left: 0; width: var(--st-shine-width, 120px); background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--textColor) 75%, transparent), transparent); mix-blend-mode: soft-light; }
-.theme-standard .standard-st-ticker { left: 0; right: 0; bottom: var(--st-bottom, 64px); text-align: center; font-size: var(--ticker-size, 24px); color: var(--mutedColor); }
-.theme-standard .standard-st-note { margin: 0; font-size: var(--note-size, 32px); color: var(--mutedColor); }
+.theme-standard .standard-st-shine { position: absolute; top: 0; bottom: 0; left: 0; width: var(--stShineWidth); background: linear-gradient(calc(var(--stShineBackground2) * 1deg), transparent, color-mix(in srgb, var(--stShineBackground) var(--stShineBackground3), transparent), transparent); mix-blend-mode: soft-light; }
+.theme-standard .standard-st-ticker { left: 0; right: 0; bottom: var(--stTickerBottom); text-align: center; font-size: var(--stTickerFontSize); color: var(--stTickerColor); font-family: var(--stTickerFont), system-ui, sans-serif; }
+.theme-standard .standard-st-note { margin: 0; font-size: var(--stNoteFontSize); color: var(--stNoteColor); font-family: var(--stNoteFont), system-ui, sans-serif; }
 /* Ending: the stream numbers as small cards side by side */
 /* Stats overlay (scenes/Stats.tsx): the cards in the middle of their own source */
-.theme-standard .standard-stats { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--stats-padding, 16px); }
+.theme-standard .standard-stats { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: var(--statsPadding); }
 .theme-standard .standard-stats .standard-st-stats { margin-top: 0; }
-.theme-standard .standard-st-stats { display: flex; gap: var(--stat-gap, 20px); margin-top: var(--st-count-gap, 18px); }
+.theme-standard .standard-st-stats { display: flex; gap: var(--stStatsGap); margin-top: var(--stStatsMarginTop); }
 .theme-standard .standard-st-stat {
   display: grid;
   justify-items: center;
-  gap: var(--stat-inner-gap, 6px);
-  min-width: var(--stat-width, 180px);
-  padding: var(--stat-padding, 20px 24px);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: inset 0 0 0 var(--stat-border, 1px) color-mix(in srgb, var(--accent2) 25%, transparent);
+  gap: var(--stStatGap);
+  min-width: var(--stStatMinWidth);
+  padding: var(--stStatPadding) var(--stStatPadding2);
+  border-radius: calc(var(--radius) * var(--stStatBorderRadius) / 100);
+  background: color-mix(in srgb, var(--stStatBackground) calc(var(--cardOpacity) * 100%), transparent);
+  box-shadow: inset 0 0 0 var(--stStatBoxShadow2) color-mix(in srgb, var(--stStatBoxShadow) var(--stStatBoxShadow3), transparent);
 }
-.theme-standard .standard-st-stat b { font-size: var(--stat-size, 56px); font-weight: 800; font-variant-numeric: tabular-nums; background: linear-gradient(90deg, var(--accent), var(--accent2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.theme-standard .standard-st-stat span { font-size: var(--stat-label-size, 20px); font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mutedColor); }
+.theme-standard .standard-st-stat b { font-size: var(--stStatBFontSize); font-weight: var(--stStatBFontWeight); font-variant-numeric: tabular-nums; background: linear-gradient(calc(var(--stStatBBackground3) * 1deg), var(--stStatBBackground), var(--stStatBBackground2)); -webkit-background-clip: text; background-clip: text; color: transparent; font-family: var(--stStatBFont), system-ui, sans-serif; }
+.theme-standard .standard-st-stat span { font-size: var(--stStatSpanFontSize); font-weight: var(--stStatSpanFontWeight); letter-spacing: calc(var(--stStatSpanLetterSpacing) * 1em); text-transform: uppercase; color: var(--stStatSpanColor); font-family: var(--stStatSpanFont), system-ui, sans-serif; }
 
 /* --- Alerts ------------------------------------------------------------------ */
 /* Card like the prototype refs/alert.html: GSAP brings it in, the SVG edge draws itself (scenes/Alerts.tsx), the glow
    pulses, the sparks fly in a PixiStage around it; the exit is a CSS animation per alertExit */
-.theme-standard .standard-alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alert-top, 48px); perspective: var(--alert-perspective, 900px); }
+.theme-standard .standard-alerts { position: fixed; inset: 0; display: flex; justify-content: center; align-items: flex-start; padding-top: var(--alertsPaddingTop); perspective: var(--alertsPerspective); }
 .theme-standard .standard-alert-scope { position: relative; }
 .theme-standard .standard-alert {
   position: relative;
   box-sizing: border-box;
   width: var(--alertWidth);
-  padding: var(--alert-padding, 26px 32px 40px);
-  border-radius: var(--radius);
-  background: var(--surface);
-  box-shadow: 0 var(--alert-shadow-y, 18px) var(--alert-shadow-blur, 50px) color-mix(in srgb, var(--background) 60%, transparent);
-  transform-origin: 50% 0;
+  padding: var(--alertPadding) var(--alertPadding2) var(--alertPadding3);
+  border-radius: calc(var(--radius) * var(--alertBorderRadius) / 100);
+  background: color-mix(in srgb, var(--alertBackground) calc(var(--cardOpacity) * 100%), transparent);
+  box-shadow: 0 var(--alertBoxShadow2) var(--alertBoxShadow3) color-mix(in srgb, var(--alertBoxShadow) var(--alertBoxShadow4), transparent);
+  transform-origin: var(--alertTransformOrigin) 0;
 }
 .theme-standard .standard-alert-glow {
   position: absolute;
-  inset: calc(-1 * var(--alert-glow-gap, 2px));
-  border-radius: calc(var(--radius) + var(--alert-glow-gap, 2px));
-  box-shadow: 0 0 var(--alertGlow) color-mix(in srgb, var(--accent) 75%, transparent), 0 0 calc(var(--alertGlow) * 2) color-mix(in srgb, var(--accent2) 35%, transparent);
+  inset: calc(-1 * var(--alertGlowInset));
+  border-radius: calc(calc(var(--radius) * var(--alertGlowBorderRadius) / 100) + var(--alertGlowBorderRadius2));
+  box-shadow: 0 0 calc(var(--alertGlow) * var(--alertGlowBoxShadow3) / 100) color-mix(in srgb, var(--alertGlowBoxShadow) var(--alertGlowBoxShadow4), transparent), 0 0 calc(var(--alertGlow) * var(--alertGlowBoxShadow5)) color-mix(in srgb, var(--alertGlowBoxShadow2) var(--alertGlowBoxShadow6), transparent);
   opacity: 0;
   pointer-events: none;
 }
@@ -135,35 +150,36 @@
 .theme-standard .standard-alert-sparks { position: absolute; pointer-events: none; }
 .theme-standard .standard-alert-label {
   display: inline-block;
-  padding: var(--alert-label-padding, 6px 14px);
-  border-radius: var(--pill-radius, 999px);
-  font-size: var(--alert-label-size, 18px);
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  padding: var(--alertLabelPadding) var(--alertLabelPadding2);
+  border-radius: var(--alertLabelBorderRadius);
+  font-size: var(--alertLabelFontSize);
+  font-weight: var(--alertLabelFontWeight);
+  letter-spacing: calc(var(--alertLabelLetterSpacing) * 1em);
   text-transform: uppercase;
-  background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 25%, transparent), color-mix(in srgb, var(--accent2) 25%, transparent));
-  color: color-mix(in srgb, var(--textColor) 85%, var(--accent));
+  background: linear-gradient(calc(var(--alertLabelBackground3) * 1deg), color-mix(in srgb, var(--alertLabelBackground) var(--alertLabelBackground4), transparent), color-mix(in srgb, var(--alertLabelBackground2) var(--alertLabelBackground5), transparent));
+  color: color-mix(in srgb, var(--alertLabelColor) var(--alertLabelColor3), var(--alertLabelColor2));
+  font-family: var(--alertLabelFont), system-ui, sans-serif;
 }
-.theme-standard .standard-alert-name { margin: var(--alert-name-margin, 16px 0 4px); font-size: var(--alert-name-size, 56px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; }
+.theme-standard .standard-alert-name { margin: var(--alertNameMargin) 0 var(--alertNameMargin2); font-size: var(--alertNameFontSize); font-weight: var(--alertNameFontWeight); letter-spacing: calc(var(--alertNameLetterSpacing) * 1em); line-height: var(--alertNameLineHeight); color: var(--alertNameColor); font-family: var(--alertNameFont), system-ui, sans-serif; }
 /* Each letter (SplitText) shows its slice of the gradient */
-.theme-standard .standard-alert-name > div { background: linear-gradient(90deg, var(--accent), var(--accent2)); background-size: 600% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
-.theme-standard .standard-alert-line { margin-top: var(--alert-line-gap, 8px); font-size: var(--alert-line-size, 26px); font-weight: 500; }
-.theme-standard .standard-alert-quote { margin-top: var(--alert-quote-gap, 10px); font-size: var(--alert-quote-size, 21px); color: var(--mutedColor); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
+.theme-standard .standard-alert-name > div { background: linear-gradient(calc(var(--alertNameDivBackground3) * 1deg), var(--alertNameDivBackground), var(--alertNameDivBackground2)); background-size: var(--alertNameDivBackgroundSize) 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+.theme-standard .standard-alert-line { margin-top: var(--alertLineMarginTop); font-size: var(--alertLineFontSize); font-weight: var(--alertLineFontWeight); color: var(--alertLineColor); font-family: var(--alertLineFont), system-ui, sans-serif; }
+.theme-standard .standard-alert-quote { margin-top: var(--alertQuoteMarginTop); font-size: var(--alertQuoteFontSize); color: var(--alertQuoteColor); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alertQuoteWebkitLineClamp); overflow: hidden; font-family: var(--alertQuoteFont), system-ui, sans-serif; }
 .theme-standard .standard-alert-bar {
   position: absolute;
-  left: var(--alert-bar-side, 32px);
-  right: var(--alert-bar-side, 32px);
-  bottom: var(--alert-bar-bottom, 14px);
-  height: var(--alert-bar-height, 5px);
-  border-radius: var(--pill-radius, 999px);
-  background: color-mix(in srgb, var(--textColor) 8%, transparent);
+  left: var(--alertBarLeft);
+  right: var(--alertBarRight);
+  bottom: var(--alertBarBottom);
+  height: var(--alertBarHeight);
+  border-radius: var(--alertBarBorderRadius);
+  background: color-mix(in srgb, var(--alertBarBackground) var(--alertBarBackground2), transparent);
   overflow: hidden;
 }
-.theme-standard .standard-timer { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(90deg, var(--accent), var(--accent2)); animation: standard-timer var(--alertDuration) linear forwards; }
-.theme-standard .standard-alert-shine { position: absolute; top: 0; bottom: 0; left: 0; width: var(--alert-shine-width, 90px); background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--textColor) 80%, transparent), transparent); mix-blend-mode: soft-light; }
-.theme-standard .standard-alert.leaving.exit-blur { animation: standard-exit-blur var(--fadeDuration) ease-in forwards; }
-.theme-standard .standard-alert.leaving.exit-glide { animation: standard-exit-glide var(--fadeDuration) ease-in forwards; }
-.theme-standard .standard-alert.leaving.exit-fade { animation: standard-fade var(--fadeDuration) ease-in reverse forwards; }
+.theme-standard .standard-timer { position: absolute; inset: 0 auto 0 0; border-radius: inherit; background: linear-gradient(calc(var(--timerBackground3) * 1deg), var(--timerBackground), var(--timerBackground2)); animation: standard-timer var(--alertDuration) linear forwards; }
+.theme-standard .standard-alert-shine { position: absolute; top: 0; bottom: 0; left: 0; width: var(--alertShineWidth); background: linear-gradient(calc(var(--alertShineBackground2) * 1deg), transparent, color-mix(in srgb, var(--alertShineBackground) var(--alertShineBackground3), transparent), transparent); mix-blend-mode: soft-light; }
+.theme-standard .standard-alert.leaving.exit-blur { animation: standard-exit-blur calc(var(--fadeDuration) * var(--alertLeavingExitBlurAnimation) / 100) ease-in forwards; }
+.theme-standard .standard-alert.leaving.exit-glide { animation: standard-exit-glide calc(var(--fadeDuration) * var(--alertLeavingExitGlideAnimation) / 100) ease-in forwards; }
+.theme-standard .standard-alert.leaving.exit-fade { animation: standard-fade calc(var(--fadeDuration) * var(--alertLeavingExitFadeAnimation) / 100) ease-in reverse forwards; }
 
 /* --- Chat ---------------------------------------------------------------------- */
 .theme-standard .standard-chat {
@@ -173,13 +189,13 @@
   flex-direction: column;
   justify-content: flex-end;
   gap: var(--chatGap);
-  padding: var(--chat-padding, 12px);
+  padding: var(--chatPadding);
   overflow: hidden;
 }
-.theme-standard .standard-row { flex: none; padding: var(--row-padding, 10px 14px); overflow-wrap: anywhere; }
+.theme-standard .standard-row { flex: none; padding: var(--rowPadding) var(--rowPadding2); overflow-wrap: anywhere; }
 /* Fade out after chatFade with a light blur; GSAP brings the card in */
-.theme-standard .standard-row.fades { animation: standard-row-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
-.theme-standard .standard-user { margin-right: var(--name-gap, 8px); background: var(--gradient); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.theme-standard .standard-row.fades { animation: standard-row-out calc(var(--fadeDuration) * var(--rowFadesAnimation) / 100) ease-in var(--chatFade) forwards; }
+.theme-standard .standard-user { margin-right: var(--userMarginRight); background: linear-gradient(calc(var(--userBackground3) * 1deg), var(--userBackground), var(--userBackground2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .theme-standard .standard-emote { height: var(--emoteSize); vertical-align: middle; }
 
 /* --- Camera frame ------------------------------------------------------------- */
@@ -190,36 +206,38 @@
   position: absolute;
   inset: 0;
   padding: var(--camBorder);
-  border-radius: var(--radius);
-  background: var(--gradient);
+  border-radius: calc(var(--radius) * var(--camBeforeBorderRadius) / 100);
+  background: linear-gradient(calc(var(--camBeforeBackground3) * 1deg), var(--camBeforeBackground), var(--camBeforeBackground2));
   -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 }
-.theme-standard .standard-cam.spins::before { background: conic-gradient(from var(--cam-angle), var(--accent), var(--accent2), var(--accent)); animation: standard-spin var(--camSpinSeconds) linear infinite; }
+.theme-standard .standard-cam.spins::before { background: conic-gradient(from var(--cam-angle), var(--camSpinsBeforeBackground), var(--camSpinsBeforeBackground2), var(--camSpinsBeforeBackground3)); animation: standard-spin var(--camSpinSeconds) linear infinite; }
 .theme-standard .standard-pill {
   position: absolute;
   display: inline-flex;
   align-items: center;
-  gap: var(--pill-gap, 8px);
-  padding: var(--pill-padding, 6px 14px);
-  border-radius: var(--pill-radius, 999px);
-  background: var(--surface);
-  font-weight: 600;
+  gap: var(--pillGap);
+  padding: var(--pillPadding) var(--pillPadding2);
+  border-radius: var(--pillBorderRadius);
+  background: color-mix(in srgb, var(--pillBackground) calc(var(--cardOpacity) * 100%), transparent);
+  font-weight: var(--pillFontWeight);
+  color: var(--pillColor);
+  font-family: var(--pillFont), system-ui, sans-serif;
 }
-.theme-standard .standard-name { left: var(--pill-offset, 16px); bottom: var(--pill-offset, 16px); }
-.theme-standard .standard-live { right: var(--pill-offset, 16px); top: var(--pill-offset, 16px); font-size: 0.75em; letter-spacing: 0.08em; }
-.theme-standard .standard-live i { width: var(--dot, 10px); height: var(--dot, 10px); border-radius: 50%; background: var(--accent2); animation: standard-pulse var(--pulse, 1.6s) ease-in-out infinite; }
+.theme-standard .standard-name { left: var(--nameLeft); bottom: var(--nameBottom); }
+.theme-standard .standard-live { right: var(--liveRight); top: var(--liveTop); font-size: calc(var(--liveFontSize) * 1em); letter-spacing: calc(var(--liveLetterSpacing) * 1em); color: var(--liveColor); font-family: var(--liveFont), system-ui, sans-serif; }
+.theme-standard .standard-live i { width: var(--liveIWidth); height: var(--liveIHeight); border-radius: 50%; background: var(--liveIBackground); animation: standard-pulse var(--liveIAnimation) ease-in-out infinite; }
 
 /* --- Music --------------------------------------------------------------------- */
-.theme-standard .standard-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 12px); }
-.theme-standard .standard-player { width: 100%; display: flex; align-items: center; gap: var(--player-gap, 20px); padding: var(--player-padding, 16px 20px); }
-.theme-standard .standard-cover { flex: none; width: var(--coverSize); height: var(--coverSize); border-radius: calc(var(--radius) * 0.75); object-fit: cover; }
-.theme-standard .standard-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
+.theme-standard .standard-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--musicPadding); }
+.theme-standard .standard-player { width: 100%; display: flex; align-items: center; gap: var(--playerGap); padding: var(--playerPadding) var(--playerPadding2); }
+.theme-standard .standard-cover { flex: none; width: calc(var(--coverSize) * var(--coverWidth) / 100); height: calc(var(--coverSize) * var(--coverHeight) / 100); border-radius: calc(var(--radius) * var(--coverBorderRadius)); object-fit: cover; }
+.theme-standard .standard-track { flex: 1; min-width: 0; display: grid; gap: var(--trackGap); }
 .theme-standard .standard-track > * { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .theme-standard .standard-track .marquee { text-overflow: clip; }
-.theme-standard .standard-track .standard-line { font-size: 1.2em; }
-.theme-standard .standard-time { display: flex; align-items: center; gap: var(--time-gap, 12px); color: var(--mutedColor); font-size: 0.75em; font-variant-numeric: tabular-nums; }
+.theme-standard .standard-track .standard-line { font-size: calc(var(--trackLineFontSize) * 1em); color: var(--trackLineColor); font-family: var(--trackLineFont), system-ui, sans-serif; }
+.theme-standard .standard-time { display: flex; align-items: center; gap: var(--timeGap); color: var(--timeColor); font-size: calc(var(--timeFontSize) * 1em); font-variant-numeric: tabular-nums; font-family: var(--timeFont), system-ui, sans-serif; }
 .theme-standard .standard-time .standard-progress { flex: 1; }
 
 /* --- Effects ------------------------------------------------------------------- */
@@ -227,37 +245,40 @@
 .theme-standard .standard-fx-item {
   position: absolute;
   display: grid;
-  gap: var(--fx-gap, 12px);
+  gap: var(--fxItemGap);
   justify-items: center;
-  animation: standard-out var(--fadeDuration) ease-in calc(var(--life) - var(--fadeDuration)) forwards;
+  animation: standard-out calc(var(--fadeDuration) * var(--fxItemAnimation) / 100) ease-in calc(var(--life) - calc(var(--fadeDuration) * var(--fxItemAnimation2) / 100)) forwards;
 }
-.theme-standard .standard-fx-item img, .theme-standard .standard-fx-item video, .theme-standard .standard-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); }
-.theme-standard .standard-fx-text { padding: var(--fx-text-padding, 10px 20px); font-size: var(--fxTextSize); font-weight: 700; text-align: center; overflow-wrap: anywhere; }
+.theme-standard .standard-fx-item img { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemImgBorderRadius) / 100); }
+.theme-standard .standard-fx-item video { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemVideoBorderRadius) / 100); }
+.theme-standard .standard-fx-item canvas { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemCanvasBorderRadius) / 100); }
+.theme-standard .standard-fx-text { padding: var(--fxTextPadding) var(--fxTextPadding2); font-size: var(--fxTextSize); font-weight: var(--fxTextFontWeight); text-align: center; overflow-wrap: anywhere; color: var(--fxTextColor); font-family: var(--fxTextFont), system-ui, sans-serif; }
 
-@keyframes standard-in { from { opacity: 0; translate: 0 calc(-1 * var(--slide, 16px)); scale: 0.98; } to { opacity: 1; translate: 0 0; scale: 1; } }
-@keyframes standard-out { from { opacity: 1; } to { opacity: 0; translate: 0 calc(-1 * var(--slide, 16px)); } }
+@keyframes standard-in { from { opacity: 0; translate: 0 calc(-1 * var(--kfInFromTranslate)); scale: var(--kfInFromScale); } to { opacity: 1; translate: 0 0; scale: 1; } }
+@keyframes standard-out { from { opacity: 1; } to { opacity: 0; translate: 0 calc(-1 * var(--kfOutToTranslate)); } }
 @keyframes standard-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes standard-timer { from { width: 100%; } to { width: 0; } }
-@keyframes standard-exit-blur { to { opacity: 0; transform: translateY(var(--exit-rise, -24px)) rotateX(18deg); filter: blur(var(--exit-blur, 10px)); } }
-@keyframes standard-exit-glide { to { opacity: 0; transform: translateY(var(--exit-glide, -80px)); } }
-@keyframes standard-pulse { 50% { opacity: 0.3; } }
+@keyframes standard-exit-blur { to { opacity: 0; transform: translateY(var(--kfExitBlurToTransform)) rotateX(calc(var(--kfExitBlurToTransform2) * 1deg)); filter: blur(var(--kfExitBlurToFilter)); } }
+@keyframes standard-exit-glide { to { opacity: 0; transform: translateY(var(--kfExitGlideToTransform)); } }
+@keyframes standard-pulse { 50% { opacity: var(--kfPulse50pOpacity); } }
 @property --cam-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
 @keyframes standard-spin { to { --cam-angle: 360deg; } }
-@keyframes standard-row-out { to { opacity: 0; filter: blur(var(--row-blur, 4px)); } }
-@keyframes standard-roll-in { from { translate: 0 110%; } to { translate: 0 0; } }
-@keyframes standard-roll-out { from { translate: 0 0; opacity: 1; } to { translate: 0 -110%; opacity: 0; } }
+@keyframes standard-row-out { to { opacity: 0; filter: blur(var(--kfRowOutToFilter)); } }
+@keyframes standard-roll-in { from { translate: 0 var(--kfRollInFromTranslate); } to { translate: 0 0; } }
+@keyframes standard-roll-out { from { translate: 0 0; opacity: 1; } to { translate: 0 var(--kfRollOutToTranslate); opacity: 0; } }
 
 /* --- Commands page (public): column with cards on the background, scrolls as a normal page ---------------------- */
-.theme-standard.theme-root:has(.standard-info) { min-height: 100dvh; background: var(--background); }
-.theme-standard .standard-info { min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
-.theme-standard .standard-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--info-gap, 24px); }
+.theme-standard.theme-root:has(.standard-info) { min-height: 100dvh; background: var(--themeRootBackground); }
+.theme-standard .standard-info { min-height: 100dvh; padding: var(--infoPadding) var(--infoPadding2); }
+.theme-standard .standard-info-column { max-width: var(--infoWidth); margin: 0 auto; display: grid; gap: var(--infoColumnGap); }
 .theme-standard .standard-info-title {
-  font-size: min(2.4em, 9vw);
-  font-weight: 800;
-  background: var(--gradient);
+  font-size: min(calc(var(--infoTitleFontSize) * 1em), calc(var(--infoTitleFontSize2) * 1vw));
+  font-weight: var(--infoTitleFontWeight);
+  background: linear-gradient(calc(var(--infoTitleBackground3) * 1deg), var(--infoTitleBackground), var(--infoTitleBackground2));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  font-family: var(--infoTitleFont), system-ui, sans-serif;
 }
-.theme-standard .standard-info-card { display: grid; gap: var(--info-entry-gap, 16px); padding: var(--info-inner, 24px); }
-.theme-standard .standard-info-entry { display: grid; gap: var(--info-line-gap, 4px); justify-items: start; }
+.theme-standard .standard-info-card { display: grid; gap: var(--infoCardGap); padding: var(--infoCardPadding); }
+.theme-standard .standard-info-entry { display: grid; gap: var(--infoEntryGap); justify-items: start; }
