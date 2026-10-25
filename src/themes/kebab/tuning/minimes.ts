@@ -4,8 +4,6 @@ import type { SettingField } from "../../../core/theme.ts";
 
 export const MINIMES_TUNING = [
   number("minimesKbFloor", "Minimes: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100, 0, 400),
-  number("onCounterKbFloor", "auf Theke: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100, 0, 400),
-  number("onCounterKbFloor2", "auf Theke: Abstand zum Boden", "Feinschliff: Minimes", 4, 0, 40, "px"),
   number("minimeCounterBottom", "Minime Theke: Lage unten Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100, 0, 400),
   inherits(color("minimeCounterBorderTop", "Minime Theke: Rand oben Farbe (Linien und Bogenschrift (Signatur))", "Feinschliff: Minimes", ""), "red"),
   number("minimeCounterBorderTop2", "Minime Theke: Rand oben Stärke", "Feinschliff: Minimes", 4, 0, 40, "px"),

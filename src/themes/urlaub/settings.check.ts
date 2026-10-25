@@ -41,9 +41,9 @@ for (const id of THING_IDS) {
   for (const key of [thingColorKeys(id).main, thingColorKeys(id).detail, minimeNamesKey(id)]) assert.ok(keys.has(key), `${key} fehlt`);
 }
 
-// Every group is mapped to its scenes (Allgemein applies everywhere)
+// Every group is mapped to its scenes (Allgemein and the fine-tuning of every scene apply everywhere)
 for (const group of new Set(fields.map(field => field.group))) {
-  if (group !== "Allgemein") assert.ok(group in (urlaubSettings.groupScenes ?? {}), `${group} without a scene`);
+  if (group !== "Allgemein" && group !== "Feinschliff: Allgemein") assert.ok(group in (urlaubSettings.groupScenes ?? {}), `${group} without a scene`);
 }
 
 // Minimes with beach things as variants, chosen with !typ

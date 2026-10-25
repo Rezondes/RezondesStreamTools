@@ -47,9 +47,9 @@ for (const id of ROLE_IDS) {
 assert.equal(defaultOf(minimeAimKey("sniper")), 1600);
 assert.equal(defaultOf(minimeFireKey("mg")), 1400);
 
-// Every group is mapped to its scenes (Allgemein applies everywhere)
+// Every group is mapped to its scenes (Allgemein and the fine-tuning of every scene apply everywhere)
 for (const group of new Set(fields.map(field => field.group))) {
-  if (group !== "Allgemein") assert.ok(group in (plantageSettings.groupScenes ?? {}), `${group} without a scene`);
+  if (group !== "Allgemein" && group !== "Feinschliff: Allgemein") assert.ok(group in (plantageSettings.groupScenes ?? {}), `${group} without a scene`);
 }
 
 // Minimes with the roles as variants, chosen with !rolle

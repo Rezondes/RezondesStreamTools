@@ -113,4 +113,5 @@ export const ALERTS_TUNING = [
   number("crumbCurl", "Zwiebelringe: Fleisch-Grösse", "Feinschliff: Alerts", 7, 0, 100, "px"),
   number("crumbLine", "Zwiebelringe: Linienstärke", "Feinschliff: Alerts", 3, 0, 40, "px"),
   number("burstSteamLine", "Dampf über der Tüte: Linienstärke", "Feinschliff: Alerts", 3, 0, 40, "px"),
+  number("kfRiseToTransform", "Aufsteigen (Ende): Verformung Verschiebung y", "Feinschliff: Alerts", -220, -880, 880, "px"),
 ] as const satisfies readonly SettingField[];

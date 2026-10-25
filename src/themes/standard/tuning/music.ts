@@ -3,6 +3,14 @@ import { color, font, inherits, number } from "../../../core/fields.ts";
 import type { SettingField } from "../../../core/theme.ts";
 
 export const MUSIC_TUNING = [
+  number("progressHeight", "Fortschrittsbalken: Höhe", "Feinschliff: Musik", 6, 0, 40, "px"),
+  number("progressBorderRadius", "Fortschrittsbalken: Eckenradius", "Feinschliff: Musik", 999, 0, 999, "px"),
+  inherits(color("progressBackground", "Fortschrittsbalken: Hintergrund Farbe (Gedämpfte Textfarbe)", "Feinschliff: Musik", ""), "mutedColor"),
+  number("progressBackground2", "Fortschrittsbalken: Hintergrund Farbanteil", "Feinschliff: Musik", 25, 0, 100, "%"),
+  inherits(color("progressSpanBackground", "Fortschrittsbalken (Füllung): Hintergrund Farbe (Akzentfarbe)", "Feinschliff: Musik", ""), "accent"),
+  inherits(color("progressSpanBackground2", "Fortschrittsbalken (Füllung): Hintergrund Farbe (Zweite Akzentfarbe (Verlauf))", "Feinschliff: Musik", ""), "accent2"),
+  number("progressSpanBackground3", "Fortschrittsbalken (Füllung): Hintergrund Verlaufswinkel (Grad)", "Feinschliff: Musik", 135, -360, 360),
+  number("progressSpanTransition", "Fortschrittsbalken (Füllung): Übergang Dauer Anteil von „Ein- und Ausblenden“ (%)", "Feinschliff: Musik", 100, 0, 400),
   number("musicPadding", "Musik-Bereich: Innenabstand", "Feinschliff: Musik", 12, 0, 48, "px"),
   number("playerGap", "Musik-Karte: Abstand", "Feinschliff: Musik", 20, 0, 80, "px"),
   number("playerPadding", "Musik-Karte: Innenabstand oben/unten", "Feinschliff: Musik", 16, 0, 64, "px"),

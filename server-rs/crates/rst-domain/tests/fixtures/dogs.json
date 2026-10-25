@@ -3471,467 +3471,2906 @@
       "maxLength": 200
     },
     {
-      "key": "minimesDgFloor",
+      "key": "cardRight",
       "type": "number",
-      "label": "Minimes: Abstand zum Boden",
-      "group": "Feinschliff: Minimes",
-      "default": 14,
+      "label": "Karte: Lage rechts",
+      "group": "Feinschliff: Starting",
+      "default": 90,
+      "min": -360,
+      "max": 360,
+      "unit": "px"
+    },
+    {
+      "key": "cardBottom",
+      "type": "number",
+      "label": "Karte: Lage unten",
+      "group": "Feinschliff: Starting",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "cardGap",
+      "type": "number",
+      "label": "Karte: Abstand",
+      "group": "Feinschliff: Starting",
+      "default": 22,
       "min": 0,
-      "max": 56,
+      "max": 88,
       "unit": "px"
     },
     {
-      "key": "minimeGrassHeight",
+      "key": "cardPadding",
       "type": "number",
-      "label": "Minime Gras: Höhe",
-      "group": "Feinschliff: Minimes",
-      "default": 14,
+      "label": "Karte: Innenabstand oben",
+      "group": "Feinschliff: Starting",
+      "default": 18,
       "min": 0,
-      "max": 56,
+      "max": 72,
       "unit": "px"
     },
     {
-      "key": "minimeGrassBackground",
-      "type": "color",
-      "label": "Minime Gras: Hintergrund Farbe (Wiese)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "grass"
-    },
-    {
-      "key": "minimeGrassBoxShadow",
-      "type": "color",
-      "label": "Minime Gras: Schatten Farbe (Wiese: Oberkante)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "grassLight"
-    },
-    {
-      "key": "minimeGrassBoxShadow2",
-      "type": "color",
-      "label": "Minime Gras: Schatten Farbe (Tinte (Kontur))",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "minimeGrassBoxShadow3",
+      "key": "cardPadding2",
       "type": "number",
-      "label": "Minime Gras: Schatten y (Teil 1)",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeGrassBoxShadow4",
-      "type": "number",
-      "label": "Minime Gras: Schatten y (Teil 2)",
-      "group": "Feinschliff: Minimes",
-      "default": 2,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeBottom",
-      "type": "number",
-      "label": "Minime: Lage unten",
-      "group": "Feinschliff: Minimes",
-      "default": 6,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeTransform",
-      "type": "number",
-      "label": "Minime: Verformung Verschiebung x",
-      "group": "Feinschliff: Minimes",
-      "default": 50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "minimeFlipScale",
-      "type": "number",
-      "label": "Minime Wende: Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
+      "label": "Karte: Innenabstand rechts",
+      "group": "Feinschliff: Starting",
+      "default": 30,
       "min": 0,
-      "max": 4,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "cardPadding3",
+      "type": "number",
+      "label": "Karte: Innenabstand unten",
+      "group": "Feinschliff: Starting",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "cardPadding4",
+      "type": "number",
+      "label": "Karte: Innenabstand links",
+      "group": "Feinschliff: Starting",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "cardNameFontSize",
+      "type": "number",
+      "label": "Karte Name: Schriftgrösse",
+      "group": "Feinschliff: Starting",
+      "default": 2.55,
+      "min": 0,
+      "max": 10.2,
       "step": 0.01
     },
     {
-      "key": "minimeNameMarginBottom",
+      "key": "cardNameFontWeight",
       "type": "number",
-      "label": "Minime Name: Abstand unten",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
+      "label": "Karte Name: Schriftstärke",
+      "group": "Feinschliff: Starting",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
     },
     {
-      "key": "minimeNamePadding",
+      "key": "cardNameLineHeight",
       "type": "number",
-      "label": "Minime Name: Innenabstand oben",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
+      "label": "Karte Name: Zeilenhöhe",
+      "group": "Feinschliff: Starting",
+      "default": 1.05,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
     },
     {
-      "key": "minimeNamePadding2",
-      "type": "number",
-      "label": "Minime Name: Innenabstand links/rechts",
-      "group": "Feinschliff: Minimes",
-      "default": 8,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNamePadding3",
-      "type": "number",
-      "label": "Minime Name: Innenabstand unten",
-      "group": "Feinschliff: Minimes",
-      "default": 3,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNameBackground",
+      "key": "cardNameColor",
       "type": "color",
-      "label": "Minime Name: Hintergrund Farbe (Signatur (Halsband-Rot))",
-      "group": "Feinschliff: Minimes",
+      "label": "Karte Name: Textfarbe",
+      "group": "Feinschliff: Starting",
       "default": "",
       "inherit": "accent"
     },
     {
-      "key": "minimeNameColor",
-      "type": "color",
-      "label": "Minime Name: Textfarbe",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "onAccent"
-    },
-    {
-      "key": "minimeNameBoxShadow",
-      "type": "color",
-      "label": "Minime Name: Schatten Farbe (Tinte (Kontur))",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "minimeNameBoxShadow2",
-      "type": "number",
-      "label": "Minime Name: Schatten Ausbreitung",
-      "group": "Feinschliff: Minimes",
-      "default": 2,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNameFont",
+      "key": "cardNameFont",
       "type": "font",
-      "label": "Minime Name: Schrift",
-      "group": "Feinschliff: Minimes",
+      "label": "Karte Name: Schrift",
+      "group": "Feinschliff: Starting",
       "default": "",
       "options": [
         "Pixelify Sans",
         "VT323",
         "Silkscreen"
       ],
-      "inherit": "font"
+      "inherit": ""
     },
     {
-      "key": "minimeNameFontWeight",
+      "key": "cardBreedFontSize",
       "type": "number",
-      "label": "Minime Name: Schriftstärke",
-      "group": "Feinschliff: Minimes",
+      "label": "Karte Rasse: Schriftgrösse Anteil von „Schriftgrösse“ (%)",
+      "group": "Feinschliff: Starting",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "cardBreedFontWeight",
+      "type": "number",
+      "label": "Karte Rasse: Schriftstärke",
+      "group": "Feinschliff: Starting",
       "default": 600,
       "min": 100,
       "max": 900,
       "step": 100
     },
     {
-      "key": "minimeNameFontSize",
+      "key": "cardBreedColor",
+      "type": "color",
+      "label": "Karte Rasse: Textfarbe",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "cardBreedFont",
+      "type": "font",
+      "label": "Karte Rasse: Schrift",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "sheetNameLeft",
       "type": "number",
-      "label": "Minime Name: Schriftgrösse",
-      "group": "Feinschliff: Minimes",
-      "default": 0.6,
+      "label": "Blatt Name: Lage links",
+      "group": "Feinschliff: Starting",
+      "default": 40,
+      "min": -160,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "sheetNameTransform",
+      "type": "number",
+      "label": "Blatt Name: Verformung Verschiebung y",
+      "group": "Feinschliff: Starting",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "sheetNameFontSize",
+      "type": "number",
+      "label": "Blatt Name: Schriftgrösse",
+      "group": "Feinschliff: Starting",
+      "default": 1.3,
       "min": 0,
-      "max": 2.4,
+      "max": 5.2,
       "step": 0.01
     },
     {
-      "key": "minimeDustRight",
+      "key": "sheetNameFontWeight",
       "type": "number",
-      "label": "Minime Staub: Lage rechts",
-      "group": "Feinschliff: Minimes",
-      "default": -4,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
+      "label": "Blatt Name: Schriftstärke",
+      "group": "Feinschliff: Starting",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
     },
     {
-      "key": "minimeDustBottom",
-      "type": "number",
-      "label": "Minime Staub: Lage unten",
-      "group": "Feinschliff: Minimes",
-      "default": 6,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
+      "key": "sheetNameColor",
+      "type": "color",
+      "label": "Blatt Name: Textfarbe",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": ""
     },
     {
-      "key": "minimeDustWidth",
+      "key": "sheetNameFont",
+      "type": "font",
+      "label": "Blatt Name: Schrift",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "sheetCoatTransform",
       "type": "number",
-      "label": "Minime Staub: Breite",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
+      "label": "Blatt Fell: Verformung Verschiebung x",
+      "group": "Feinschliff: Starting",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "sheetCoatFontSize",
+      "type": "number",
+      "label": "Blatt Fell: Schriftgrösse",
+      "group": "Feinschliff: Starting",
+      "default": 0.7,
       "min": 0,
-      "max": 40,
-      "unit": "px"
+      "max": 2.8,
+      "step": 0.01
     },
     {
-      "key": "minimeDustHeight",
+      "key": "sheetCoatFontWeight",
       "type": "number",
-      "label": "Minime Staub: Höhe",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeDustBackground",
-      "type": "color",
-      "label": "Minime Staub: Hintergrund Farbe (Schild: Kante unten)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "edge"
-    },
-    {
-      "key": "minimeDustBoxShadow",
-      "type": "color",
-      "label": "Minime Staub: Schatten Farbe (Schild: Kante unten)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "edge"
-    },
-    {
-      "key": "minimeDustBoxShadow2",
-      "type": "color",
-      "label": "Minime Staub: Schatten Farbe (Schild: Kante unten) (2)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "edge"
-    },
-    {
-      "key": "minimeDustBoxShadow3",
-      "type": "number",
-      "label": "Minime Staub: Schatten x (Teil 1)",
-      "group": "Feinschliff: Minimes",
-      "default": 8,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeDustBoxShadow4",
-      "type": "number",
-      "label": "Minime Staub: Schatten y (Teil 1)",
-      "group": "Feinschliff: Minimes",
-      "default": 8,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeDustBoxShadow5",
-      "type": "number",
-      "label": "Minime Staub: Schatten x (Teil 2)",
-      "group": "Feinschliff: Minimes",
-      "default": 8,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeDustBoxShadow6",
-      "type": "number",
-      "label": "Minime Staub: Schatten y (Teil 2)",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeDustAnimation",
-      "type": "number",
-      "label": "Minime Staub: Animation Dauer",
-      "group": "Feinschliff: Minimes",
+      "label": "Blatt Fell: Schriftstärke",
+      "group": "Feinschliff: Starting",
       "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "sheetCoatColor",
+      "type": "color",
+      "label": "Blatt Fell: Textfarbe",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "sheetCoatFont",
+      "type": "font",
+      "label": "Blatt Fell: Schrift",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "badgeWidth",
+      "type": "number",
+      "label": "Badge: Breite",
+      "group": "Feinschliff: Starting",
+      "default": 18,
       "min": 0,
-      "max": 3000,
-      "unit": "ms",
-      "step": 10
+      "max": 72
     },
     {
-      "key": "minimeDustAnimation2",
+      "key": "badgeWidth2",
       "type": "number",
-      "label": "Minime Staub: Animation Schritte",
-      "group": "Feinschliff: Minimes",
-      "default": 3,
-      "min": 1,
-      "max": 12
+      "label": "Badge: Breite (2)",
+      "group": "Feinschliff: Starting",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
     },
     {
-      "key": "minimeZzzRight",
+      "key": "badgeHeight",
       "type": "number",
-      "label": "Minime Zzz: Lage rechts",
-      "group": "Feinschliff: Minimes",
+      "label": "Badge: Höhe",
+      "group": "Feinschliff: Starting",
+      "default": 18,
+      "min": 0,
+      "max": 72
+    },
+    {
+      "key": "badgeHeight2",
+      "type": "number",
+      "label": "Badge: Höhe (2)",
+      "group": "Feinschliff: Starting",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "badgeBackground",
+      "type": "color",
+      "label": "Badge: Hintergrund Farbe (Ball-Gelb)",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "ball"
+    },
+    {
+      "key": "badgeColor",
+      "type": "color",
+      "label": "Badge: Textfarbe",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "badgePawWidth",
+      "type": "number",
+      "label": "Badge: Pfote: Breite",
+      "group": "Feinschliff: Starting",
       "default": 10,
-      "min": -100,
+      "min": 0,
+      "max": 40
+    },
+    {
+      "key": "badgePawWidth2",
+      "type": "number",
+      "label": "Badge: Pfote: Breite (2)",
+      "group": "Feinschliff: Starting",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "badgePawHeight",
+      "type": "number",
+      "label": "Badge: Pfote: Höhe",
+      "group": "Feinschliff: Starting",
+      "default": 10,
+      "min": 0,
+      "max": 40
+    },
+    {
+      "key": "badgePawHeight2",
+      "type": "number",
+      "label": "Badge: Pfote: Höhe (2)",
+      "group": "Feinschliff: Starting",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "startPillTop",
+      "type": "number",
+      "label": "Start Pille: Lage oben",
+      "group": "Feinschliff: Starting",
+      "default": 30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "labelPadding",
+      "type": "number",
+      "label": "Schild: Innenabstand oben",
+      "group": "Feinschliff: Starting",
+      "default": 2,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "labelPadding2",
+      "type": "number",
+      "label": "Schild: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "labelPadding3",
+      "type": "number",
+      "label": "Schild: Innenabstand unten",
+      "group": "Feinschliff: Starting",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "labelFontSize",
+      "type": "number",
+      "label": "Schild: Schriftgrösse",
+      "group": "Feinschliff: Starting",
+      "default": 0.85,
+      "min": 0,
+      "max": 3.4,
+      "step": 0.01
+    },
+    {
+      "key": "labelFontWeight",
+      "type": "number",
+      "label": "Schild: Schriftstärke",
+      "group": "Feinschliff: Starting",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "labelTransformOrigin",
+      "type": "number",
+      "label": "Schild: Drehpunkt x",
+      "group": "Feinschliff: Starting",
+      "default": 50,
+      "min": 0,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "labelColor",
+      "type": "color",
+      "label": "Schild: Textfarbe",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "labelFont",
+      "type": "font",
+      "label": "Schild: Schrift",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "labelSmallFontSize",
+      "type": "number",
+      "label": "Schild klein: Schriftgrösse",
+      "group": "Feinschliff: Starting",
+      "default": 0.62,
+      "min": 0,
+      "max": 2.48,
+      "step": 0.01
+    },
+    {
+      "key": "labelSmallFontWeight",
+      "type": "number",
+      "label": "Schild klein: Schriftstärke",
+      "group": "Feinschliff: Starting",
+      "default": 500,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "labelSmallColor",
+      "type": "color",
+      "label": "Schild klein: Textfarbe",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "labelSmallFont",
+      "type": "font",
+      "label": "Schild klein: Schrift",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "labelNearBackground",
+      "type": "color",
+      "label": "Schild nah: Hintergrund Farbe (Ball-Gelb)",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "ball"
+    },
+    {
+      "key": "labelNearBackground2",
+      "type": "color",
+      "label": "Schild nah: Hintergrund Farbe (Schild)",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "cream"
+    },
+    {
+      "key": "labelNearBackground3",
+      "type": "number",
+      "label": "Schild nah: Hintergrund Farbanteil",
+      "group": "Feinschliff: Starting",
+      "default": 45,
+      "min": 0,
       "max": 100,
       "unit": "%"
     },
     {
-      "key": "minimeZzzTop",
+      "key": "countdownLeft",
       "type": "number",
-      "label": "Minime Zzz: Lage oben",
-      "group": "Feinschliff: Minimes",
-      "default": -6,
-      "min": -40,
-      "max": 40,
+      "label": "Countdown: Lage links",
+      "group": "Feinschliff: Starting",
+      "default": 90,
+      "min": -360,
+      "max": 360,
       "unit": "px"
     },
     {
-      "key": "minimeZzzAnimation",
+      "key": "countdownBottom",
       "type": "number",
-      "label": "Minime Zzz: Animation Dauer",
-      "group": "Feinschliff: Minimes",
-      "default": 1800,
-      "min": 0,
-      "max": 9000,
-      "unit": "ms",
-      "step": 10
-    },
-    {
-      "key": "minimeZzzAnimation2",
-      "type": "number",
-      "label": "Minime Zzz: Animation Schritte",
-      "group": "Feinschliff: Minimes",
-      "default": 6,
-      "min": 1,
-      "max": 24
-    },
-    {
-      "key": "actionEnterMinimeFlipAnimation",
-      "type": "number",
-      "label": "Aktion beim Kommen Minime Wende: Animation Schritte",
-      "group": "Feinschliff: Minimes",
-      "default": 6,
-      "min": 1,
-      "max": 24
-    },
-    {
-      "key": "actionExitMinimeFlipAnimation",
-      "type": "number",
-      "label": "Aktion beim Gehen Minime Wende: Animation Schritte",
-      "group": "Feinschliff: Minimes",
-      "default": 6,
-      "min": 1,
-      "max": 24
-    },
-    {
-      "key": "kfMinimePopToOpacity",
-      "type": "number",
-      "label": "Minime ploppt (Ende): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeFadeToOpacity",
-      "type": "number",
-      "label": "Minime blendet (Ende): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeDustToTranslate",
-      "type": "number",
-      "label": "Minime Staub (Ende): Verschiebung x",
-      "group": "Feinschliff: Minimes",
-      "default": 6,
-      "min": -40,
-      "max": 40,
+      "label": "Countdown: Lage unten",
+      "group": "Feinschliff: Starting",
+      "default": 70,
+      "min": -280,
+      "max": 280,
       "unit": "px"
     },
     {
-      "key": "kfMinimeDustToTranslate2",
+      "key": "countdownPadding",
       "type": "number",
-      "label": "Minime Staub (Ende): Verschiebung y",
-      "group": "Feinschliff: Minimes",
-      "default": 10,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeZzzFromTranslate",
-      "type": "number",
-      "label": "Minime schläft (Start): Verschiebung y",
-      "group": "Feinschliff: Minimes",
-      "default": 12,
-      "min": -48,
-      "max": 48,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeZzz30pOpacity",
-      "type": "number",
-      "label": "Minime schläft (30 %): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
+      "label": "Countdown: Innenabstand oben",
+      "group": "Feinschliff: Starting",
+      "default": 16,
       "min": 0,
-      "max": 1,
-      "step": 0.01
+      "max": 64,
+      "unit": "px"
     },
     {
-      "key": "kfMinimeZzzToTranslate",
+      "key": "countdownPadding2",
       "type": "number",
-      "label": "Minime schläft (Ende): Verschiebung x",
-      "group": "Feinschliff: Minimes",
+      "label": "Countdown: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting",
+      "default": 28,
+      "min": 0,
+      "max": 112,
+      "unit": "px"
+    },
+    {
+      "key": "countdownPadding3",
+      "type": "number",
+      "label": "Countdown: Innenabstand unten",
+      "group": "Feinschliff: Starting",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "clockMarginTop",
+      "type": "number",
+      "label": "Uhr: Abstand oben",
+      "group": "Feinschliff: Starting",
       "default": 8,
       "min": -40,
       "max": 40,
       "unit": "px"
     },
     {
-      "key": "kfMinimeZzzToTranslate2",
+      "key": "clockPadding",
       "type": "number",
-      "label": "Minime schläft (Ende): Verschiebung y",
-      "group": "Feinschliff: Minimes",
+      "label": "Uhr: Innenabstand oben",
+      "group": "Feinschliff: Starting",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "clockPadding2",
+      "type": "number",
+      "label": "Uhr: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "clockPadding3",
+      "type": "number",
+      "label": "Uhr: Innenabstand unten",
+      "group": "Feinschliff: Starting",
       "default": 12,
-      "min": -48,
+      "min": 0,
       "max": 48,
       "unit": "px"
+    },
+    {
+      "key": "clockFontSize",
+      "type": "number",
+      "label": "Uhr: Schriftgrösse",
+      "group": "Feinschliff: Starting",
+      "default": 2.75,
+      "min": 0,
+      "max": 11,
+      "step": 0.01
+    },
+    {
+      "key": "clockFontWeight",
+      "type": "number",
+      "label": "Uhr: Schriftstärke",
+      "group": "Feinschliff: Starting",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "clockLineHeight",
+      "type": "number",
+      "label": "Uhr: Zeilenhöhe",
+      "group": "Feinschliff: Starting",
+      "default": 1,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "clockColor",
+      "type": "color",
+      "label": "Uhr: Textfarbe",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "onAccent"
+    },
+    {
+      "key": "clockFont",
+      "type": "font",
+      "label": "Uhr: Schrift",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "tickerLeft",
+      "type": "number",
+      "label": "Lauftext: Lage links",
+      "group": "Feinschliff: Starting",
+      "default": 520,
+      "min": -2080,
+      "max": 2080,
+      "unit": "px"
+    },
+    {
+      "key": "tickerRight",
+      "type": "number",
+      "label": "Lauftext: Lage rechts",
+      "group": "Feinschliff: Starting",
+      "default": 520,
+      "min": -2080,
+      "max": 2080,
+      "unit": "px"
+    },
+    {
+      "key": "tickerBottom",
+      "type": "number",
+      "label": "Lauftext: Lage unten",
+      "group": "Feinschliff: Starting",
+      "default": 24,
+      "min": -96,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "tickerPadding",
+      "type": "number",
+      "label": "Lauftext: Innenabstand oben",
+      "group": "Feinschliff: Starting",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "tickerPadding2",
+      "type": "number",
+      "label": "Lauftext: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "tickerPadding3",
+      "type": "number",
+      "label": "Lauftext: Innenabstand unten",
+      "group": "Feinschliff: Starting",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "tickerFontSize",
+      "type": "number",
+      "label": "Lauftext: Schriftgrösse Anteil von „Schriftgrösse“ (%)",
+      "group": "Feinschliff: Starting",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "tickerFontWeight",
+      "type": "number",
+      "label": "Lauftext: Schriftstärke",
+      "group": "Feinschliff: Starting",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "tickerColor",
+      "type": "color",
+      "label": "Lauftext: Textfarbe",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "tickerFont",
+      "type": "font",
+      "label": "Lauftext: Schrift",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "titleTop",
+      "type": "number",
+      "label": "Titel: Lage oben",
+      "group": "Feinschliff: Starting, Ending",
+      "default": 80,
+      "min": -320,
+      "max": 320,
+      "unit": "px"
+    },
+    {
+      "key": "titleFontSize",
+      "type": "number",
+      "label": "Titel: Schriftgrösse Anteil von „Titel: Grösse“ (%)",
+      "group": "Feinschliff: Starting, Ending",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "titleFontWeight",
+      "type": "number",
+      "label": "Titel: Schriftstärke",
+      "group": "Feinschliff: Starting, Ending",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "titleLineHeight",
+      "type": "number",
+      "label": "Titel: Zeilenhöhe",
+      "group": "Feinschliff: Starting, Ending",
+      "default": 1,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "titleColor",
+      "type": "color",
+      "label": "Titel: Textfarbe",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": "cream"
+    },
+    {
+      "key": "titleTextShadow",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Tinte (Kontur))",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "titleTextShadow2",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (2)",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "titleTextShadow3",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (3)",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "titleTextShadow4",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (4)",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "titleTextShadow5",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (5)",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "titleTextShadow6",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (6)",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "titleTextShadow7",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (7)",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "titleTextShadow8",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (8)",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "titleTextShadow9",
+      "type": "number",
+      "label": "Titel: Textschatten y (Teil 9)",
+      "group": "Feinschliff: Starting, Ending",
+      "default": 3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "titleFont",
+      "type": "font",
+      "label": "Titel: Schrift",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "subtitleTop",
+      "type": "number",
+      "label": "Untertitel: Lage oben",
+      "group": "Feinschliff: Starting, Ending",
+      "default": 200,
+      "min": -800,
+      "max": 800,
+      "unit": "px"
+    },
+    {
+      "key": "subtitleFontSize",
+      "type": "number",
+      "label": "Untertitel: Schriftgrösse",
+      "group": "Feinschliff: Starting, Ending",
+      "default": 1.3,
+      "min": 0,
+      "max": 5.2,
+      "step": 0.01
+    },
+    {
+      "key": "subtitleFontWeight",
+      "type": "number",
+      "label": "Untertitel: Schriftstärke",
+      "group": "Feinschliff: Starting, Ending",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "subtitleColor",
+      "type": "color",
+      "label": "Untertitel: Textfarbe",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "subtitleFont",
+      "type": "font",
+      "label": "Untertitel: Schrift",
+      "group": "Feinschliff: Starting, Ending",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "bubblePadding",
+      "type": "number",
+      "label": "Sprechblase: Innenabstand oben",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bubblePadding2",
+      "type": "number",
+      "label": "Sprechblase: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "bubblePadding3",
+      "type": "number",
+      "label": "Sprechblase: Innenabstand unten",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bubbleFontSize",
+      "type": "number",
+      "label": "Sprechblase: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 1.75,
+      "min": 0,
+      "max": 7,
+      "step": 0.01
+    },
+    {
+      "key": "bubbleFontWeight",
+      "type": "number",
+      "label": "Sprechblase: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bubbleColor",
+      "type": "color",
+      "label": "Sprechblase: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "bubbleFont",
+      "type": "font",
+      "label": "Sprechblase: Schrift",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "bubbleAfterLeft",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Lage links",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 4,
+      "min": -16,
+      "max": 16
+    },
+    {
+      "key": "bubbleAfterLeft2",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Lage links (2)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bubbleAfterBottom",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Lage unten",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": -4,
+      "min": -16,
+      "max": 16
+    },
+    {
+      "key": "bubbleAfterBottom2",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Lage unten (2)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bubbleAfterWidth",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Breite",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 3,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "key": "bubbleAfterWidth2",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Breite (2)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bubbleAfterHeight",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Höhe",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 3,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "key": "bubbleAfterHeight2",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Höhe (2)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bubbleAfterBackground",
+      "type": "color",
+      "label": "Sprechblase (Ebene 2): Hintergrund Farbe (Schild)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": "",
+      "inherit": "cream"
+    },
+    {
+      "key": "bubbleAfterBoxShadow",
+      "type": "color",
+      "label": "Sprechblase (Ebene 2): Schatten Farbe (Tinte (Kontur))",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "bubbleAfterBoxShadow2",
+      "type": "color",
+      "label": "Sprechblase (Ebene 2): Schatten Farbe (Tinte (Kontur)) (2)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "bubbleAfterBoxShadow3",
+      "type": "color",
+      "label": "Sprechblase (Ebene 2): Schatten Farbe (Tinte (Kontur)) (3)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "bubbleAfterBoxShadow4",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Schatten y (Teil 1)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bubbleAfterBoxShadow5",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Schatten x (Teil 2)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bubbleAfterBoxShadow6",
+      "type": "number",
+      "label": "Sprechblase (Ebene 2): Schatten x (Teil 3)",
+      "group": "Feinschliff: Starting, BRB, Alerts",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "captionFontSize",
+      "type": "number",
+      "label": "Unterschrift: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Musik",
+      "default": 0.85,
+      "min": 0,
+      "max": 3.4,
+      "step": 0.01
+    },
+    {
+      "key": "captionFontWeight",
+      "type": "number",
+      "label": "Unterschrift: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Musik",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "captionLetterSpacing",
+      "type": "number",
+      "label": "Unterschrift: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Musik",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "captionColor",
+      "type": "color",
+      "label": "Unterschrift: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Musik",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "captionFont",
+      "type": "font",
+      "label": "Unterschrift: Schrift",
+      "group": "Feinschliff: Starting, BRB, Musik",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "endingLie",
+      "type": "number",
+      "label": "Ending: legt sich bei",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Minimes",
+      "default": 2.8,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "pillGap",
+      "type": "number",
+      "label": "Pille: Abstand",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "pillPadding",
+      "type": "number",
+      "label": "Pille: Innenabstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "pillPadding2",
+      "type": "number",
+      "label": "Pille: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite",
+      "default": 20,
+      "min": 0,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "pillPadding3",
+      "type": "number",
+      "label": "Pille: Innenabstand unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "pillFontSize",
+      "type": "number",
+      "label": "Pille: Schriftgrösse Anteil von „Schriftgrösse“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "pillFontWeight",
+      "type": "number",
+      "label": "Pille: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "pillLetterSpacing",
+      "type": "number",
+      "label": "Pille: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "pillColor",
+      "type": "color",
+      "label": "Pille: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite",
+      "default": "",
+      "inherit": "onAccent"
+    },
+    {
+      "key": "pillFont",
+      "type": "font",
+      "label": "Pille: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "pawWidth",
+      "type": "number",
+      "label": "Pfote: Breite",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "key": "pawWidth2",
+      "type": "number",
+      "label": "Pfote: Breite (2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "pawHeight",
+      "type": "number",
+      "label": "Pfote: Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "key": "pawHeight2",
+      "type": "number",
+      "label": "Pfote: Höhe (2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxBackground",
+      "type": "color",
+      "label": "Kasten: Hintergrund Farbe (Schild)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "cream"
+    },
+    {
+      "key": "boxBoxShadow",
+      "type": "color",
+      "label": "Kasten: Schatten Farbe (Tinte (Kontur))",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxBoxShadow2",
+      "type": "color",
+      "label": "Kasten: Schatten Farbe (Tinte (Kontur)) (2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxBoxShadow3",
+      "type": "color",
+      "label": "Kasten: Schatten Farbe (Tinte (Kontur)) (3)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxBoxShadow4",
+      "type": "color",
+      "label": "Kasten: Schatten Farbe (Tinte (Kontur)) (4)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxBoxShadow5",
+      "type": "color",
+      "label": "Kasten: Schatten Farbe (Schild: Kante unten)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "edge"
+    },
+    {
+      "key": "boxBoxShadow6",
+      "type": "color",
+      "label": "Kasten: Schatten Farbe (Licht (Augen, Wolken, Zaun))",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "light"
+    },
+    {
+      "key": "boxBoxShadow7",
+      "type": "color",
+      "label": "Kasten: Schatten Farbe (Tinte (Kontur)) (5)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxBoxShadow8",
+      "type": "number",
+      "label": "Kasten: Schatten y (Teil 1)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxBoxShadow9",
+      "type": "number",
+      "label": "Kasten: Schatten y (Teil 2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxBoxShadow10",
+      "type": "number",
+      "label": "Kasten: Schatten x (Teil 3)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxBoxShadow11",
+      "type": "number",
+      "label": "Kasten: Schatten x (Teil 4)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxBoxShadow12",
+      "type": "number",
+      "label": "Kasten: Schatten y (Teil 5)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxBoxShadow13",
+      "type": "number",
+      "label": "Kasten: Schatten y (Teil 6)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxBoxShadow14",
+      "type": "number",
+      "label": "Kasten: Schatten y (Teil 7)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "boxBoxShadow15",
+      "type": "number",
+      "label": "Kasten: Schatten y (Teil 7) (2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxRedBackground",
+      "type": "color",
+      "label": "Kasten rot: Hintergrund Farbe (Signatur (Halsband-Rot))",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "boxRedColor",
+      "type": "color",
+      "label": "Kasten rot: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "onAccent"
+    },
+    {
+      "key": "boxRedBoxShadow",
+      "type": "color",
+      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur))",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxRedBoxShadow2",
+      "type": "color",
+      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxRedBoxShadow3",
+      "type": "color",
+      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (3)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxRedBoxShadow4",
+      "type": "color",
+      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (4)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxRedBoxShadow5",
+      "type": "color",
+      "label": "Kasten rot: Schatten Farbe (Signatur (Halsband-Rot))",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "boxRedBoxShadow6",
+      "type": "color",
+      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (5)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxRedBoxShadow7",
+      "type": "color",
+      "label": "Kasten rot: Schatten Farbe (Signatur (Halsband-Rot)) (2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "boxRedBoxShadow8",
+      "type": "color",
+      "label": "Kasten rot: Schatten Farbe (Licht (Augen, Wolken, Zaun))",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "light"
+    },
+    {
+      "key": "boxRedBoxShadow9",
+      "type": "color",
+      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (6)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "boxRedBoxShadow10",
+      "type": "number",
+      "label": "Kasten rot: Schatten y (Teil 1)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxRedBoxShadow11",
+      "type": "number",
+      "label": "Kasten rot: Schatten y (Teil 2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxRedBoxShadow12",
+      "type": "number",
+      "label": "Kasten rot: Schatten x (Teil 3)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxRedBoxShadow13",
+      "type": "number",
+      "label": "Kasten rot: Schatten x (Teil 4)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxRedBoxShadow14",
+      "type": "number",
+      "label": "Kasten rot: Schatten y (Teil 5)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxRedBoxShadow15",
+      "type": "number",
+      "label": "Kasten rot: Schatten Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 75,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "boxRedBoxShadow16",
+      "type": "number",
+      "label": "Kasten rot: Schatten y (Teil 6)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "boxRedBoxShadow17",
+      "type": "number",
+      "label": "Kasten rot: Schatten Farbanteil (2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 70,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "boxRedBoxShadow18",
+      "type": "number",
+      "label": "Kasten rot: Schatten y (Teil 7)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "boxRedBoxShadow19",
+      "type": "number",
+      "label": "Kasten rot: Schatten y (Teil 7) (2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "brbCardLeft",
+      "type": "number",
+      "label": "BRB Karte: Lage links",
+      "group": "Feinschliff: BRB",
+      "default": 85,
+      "min": -340,
+      "max": 340,
+      "unit": "px"
+    },
+    {
+      "key": "brbCardTop",
+      "type": "number",
+      "label": "BRB Karte: Lage oben",
+      "group": "Feinschliff: BRB",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "brbCardPadding",
+      "type": "number",
+      "label": "BRB Karte: Innenabstand oben",
+      "group": "Feinschliff: BRB",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "brbCardPadding2",
+      "type": "number",
+      "label": "BRB Karte: Innenabstand rechts",
+      "group": "Feinschliff: BRB",
+      "default": 40,
+      "min": 0,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "brbCardPadding3",
+      "type": "number",
+      "label": "BRB Karte: Innenabstand unten",
+      "group": "Feinschliff: BRB",
+      "default": 30,
+      "min": 0,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "brbCardPadding4",
+      "type": "number",
+      "label": "BRB Karte: Innenabstand links",
+      "group": "Feinschliff: BRB",
+      "default": 30,
+      "min": 0,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "brbTitleMarginTop",
+      "type": "number",
+      "label": "BRB Titel: Abstand oben",
+      "group": "Feinschliff: BRB",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "brbTitleFontSize",
+      "type": "number",
+      "label": "BRB Titel: Schriftgrösse",
+      "group": "Feinschliff: BRB",
+      "default": 0.84,
+      "min": 0,
+      "max": 3.36,
+      "step": 0.01
+    },
+    {
+      "key": "brbTitleFontWeight",
+      "type": "number",
+      "label": "BRB Titel: Schriftstärke",
+      "group": "Feinschliff: BRB",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "brbTitleLineHeight",
+      "type": "number",
+      "label": "BRB Titel: Zeilenhöhe",
+      "group": "Feinschliff: BRB",
+      "default": 1,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "brbTitleColor",
+      "type": "color",
+      "label": "BRB Titel: Textfarbe",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "cream"
+    },
+    {
+      "key": "brbTitleTextShadow",
+      "type": "color",
+      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur))",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "brbTitleTextShadow2",
+      "type": "color",
+      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (2)",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "brbTitleTextShadow3",
+      "type": "color",
+      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (3)",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "brbTitleTextShadow4",
+      "type": "color",
+      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (4)",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "brbTitleTextShadow5",
+      "type": "color",
+      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (5)",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "brbTitleTextShadow6",
+      "type": "color",
+      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (6)",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "brbTitleTextShadow7",
+      "type": "color",
+      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (7)",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "brbTitleTextShadow8",
+      "type": "color",
+      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (8)",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "brbTitleTextShadow9",
+      "type": "number",
+      "label": "BRB Titel: Textschatten y (Teil 9)",
+      "group": "Feinschliff: BRB",
+      "default": 3,
+      "min": -12,
+      "max": 12
+    },
+    {
+      "key": "brbTitleFont",
+      "type": "font",
+      "label": "BRB Titel: Schrift",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "brbSubMarginTop",
+      "type": "number",
+      "label": "BRB Unterzeile: Abstand oben",
+      "group": "Feinschliff: BRB",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "brbSubFontSize",
+      "type": "number",
+      "label": "BRB Unterzeile: Schriftgrösse",
+      "group": "Feinschliff: BRB",
+      "default": 1.3,
+      "min": 0,
+      "max": 5.2,
+      "step": 0.01
+    },
+    {
+      "key": "brbSubFontWeight",
+      "type": "number",
+      "label": "BRB Unterzeile: Schriftstärke",
+      "group": "Feinschliff: BRB",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "brbSubColor",
+      "type": "color",
+      "label": "BRB Unterzeile: Textfarbe",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "brbSubFont",
+      "type": "font",
+      "label": "BRB Unterzeile: Schrift",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "brbStatsRight",
+      "type": "number",
+      "label": "BRB Statistik: Lage rechts",
+      "group": "Feinschliff: BRB",
+      "default": 85,
+      "min": -340,
+      "max": 340,
+      "unit": "px"
+    },
+    {
+      "key": "brbStatsTop",
+      "type": "number",
+      "label": "BRB Statistik: Lage oben",
+      "group": "Feinschliff: BRB",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "brbStatsGap",
+      "type": "number",
+      "label": "BRB Statistik: Abstand",
+      "group": "Feinschliff: BRB",
+      "default": 30,
+      "min": 0,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "statPadding",
+      "type": "number",
+      "label": "Wert: Innenabstand oben",
+      "group": "Feinschliff: BRB",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "statPadding2",
+      "type": "number",
+      "label": "Wert: Innenabstand links/rechts",
+      "group": "Feinschliff: BRB",
+      "default": 26,
+      "min": 0,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "statPadding3",
+      "type": "number",
+      "label": "Wert: Innenabstand unten",
+      "group": "Feinschliff: BRB",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "statValueMarginTop",
+      "type": "number",
+      "label": "Wert Wert: Abstand oben",
+      "group": "Feinschliff: BRB",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "statValueFontSize",
+      "type": "number",
+      "label": "Wert Wert: Schriftgrösse",
+      "group": "Feinschliff: BRB",
+      "default": 2.75,
+      "min": 0,
+      "max": 11,
+      "step": 0.01
+    },
+    {
+      "key": "statValueFontWeight",
+      "type": "number",
+      "label": "Wert Wert: Schriftstärke",
+      "group": "Feinschliff: BRB",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "statValueLineHeight",
+      "type": "number",
+      "label": "Wert Wert: Zeilenhöhe",
+      "group": "Feinschliff: BRB",
+      "default": 1,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "statValueColor",
+      "type": "color",
+      "label": "Wert Wert: Textfarbe",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "statValueFont",
+      "type": "font",
+      "label": "Wert Wert: Schrift",
+      "group": "Feinschliff: BRB",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "endTitleTop",
+      "type": "number",
+      "label": "Ending Titel: Lage oben",
+      "group": "Feinschliff: Ending",
+      "default": 60,
+      "min": -240,
+      "max": 240,
+      "unit": "px"
+    },
+    {
+      "key": "endTitleFontSize",
+      "type": "number",
+      "label": "Ending Titel: Schriftgrösse",
+      "group": "Feinschliff: Ending",
+      "default": 1.16,
+      "min": 0,
+      "max": 4.64,
+      "step": 0.01
+    },
+    {
+      "key": "endTitleColor",
+      "type": "color",
+      "label": "Ending Titel: Textfarbe",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "cream"
+    },
+    {
+      "key": "endTitleFont",
+      "type": "font",
+      "label": "Ending Titel: Schrift",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "endSubTop",
+      "type": "number",
+      "label": "Ending Unterzeile: Lage oben",
+      "group": "Feinschliff: Ending",
+      "default": 196,
+      "min": -784,
+      "max": 784,
+      "unit": "px"
+    },
+    {
+      "key": "endSubColor",
+      "type": "color",
+      "label": "Ending Unterzeile: Textfarbe",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "nightSub"
+    },
+    {
+      "key": "endSubTextShadow",
+      "type": "color",
+      "label": "Ending Unterzeile: Textschatten Farbe (Tinte (Kontur))",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "endSubTextShadow2",
+      "type": "number",
+      "label": "Ending Unterzeile: Textschatten y",
+      "group": "Feinschliff: Ending",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "endSubTextShadow3",
+      "type": "number",
+      "label": "Ending Unterzeile: Textschatten Farbanteil",
+      "group": "Feinschliff: Ending",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "endByeTop",
+      "type": "number",
+      "label": "Ending Tschüss: Lage oben",
+      "group": "Feinschliff: Ending",
+      "default": 268,
+      "min": -1072,
+      "max": 1072,
+      "unit": "px"
+    },
+    {
+      "key": "endByePillFontSize",
+      "type": "number",
+      "label": "Ending: Tschüss-Pille: Schriftgrösse",
+      "group": "Feinschliff: Ending",
+      "default": 1.15,
+      "min": 0,
+      "max": 4.6,
+      "step": 0.01
+    },
+    {
+      "key": "endByePillColor",
+      "type": "color",
+      "label": "Ending: Tschüss-Pille: Textfarbe",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "onAccent"
+    },
+    {
+      "key": "endByePillFont",
+      "type": "font",
+      "label": "Ending: Tschüss-Pille: Schrift",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "endTitleAt",
+      "type": "number",
+      "label": "Ending-Titel: kommt bei",
+      "group": "Feinschliff: Ending",
+      "default": 0.2,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "endTitleTime",
+      "type": "number",
+      "label": "Ending-Titel: fällt in",
+      "group": "Feinschliff: Ending",
+      "default": 0.7,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "endTitleFrom",
+      "type": "number",
+      "label": "Ending-Titel: fällt aus Höhe",
+      "group": "Feinschliff: Ending",
+      "default": -60,
+      "min": -400,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "endTitleFade",
+      "type": "number",
+      "label": "Ending-Titel: blendet ein in",
+      "group": "Feinschliff: Ending",
+      "default": 0.3,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "endSubtitleAt",
+      "type": "number",
+      "label": "Ending-Unterzeile: kommt bei",
+      "group": "Feinschliff: Ending",
+      "default": 0.8,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "endSubtitleTime",
+      "type": "number",
+      "label": "Ending-Unterzeile: blendet ein in",
+      "group": "Feinschliff: Ending",
+      "default": 0.5,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "endByeAt",
+      "type": "number",
+      "label": "Ending-Pille: kommt bei",
+      "group": "Feinschliff: Ending",
+      "default": 1.2,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "endByeTime",
+      "type": "number",
+      "label": "Ending-Pille: wächst in",
+      "group": "Feinschliff: Ending",
+      "default": 0.5,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "endingWalk",
+      "type": "number",
+      "label": "Ending: Hund läuft herein in",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 2.2,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "endingEnter",
+      "type": "number",
+      "label": "Ending: kommt von rechts aussen (Pixel)",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 8,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "endingSleep",
+      "type": "number",
+      "label": "Ending: schläft ab",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 4,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "endingWag",
+      "type": "number",
+      "label": "Ending: Wedeln je Sekunde",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 10,
+      "min": 0,
+      "max": 60
+    },
+    {
+      "key": "endingLyingWag",
+      "type": "number",
+      "label": "Ending: Wedeln im Liegen je Sekunde",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 2,
+      "min": 0,
+      "max": 60
+    },
+    {
+      "key": "endingSink",
+      "type": "number",
+      "label": "Ending: sinkt ins Körbchen (Pixel)",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 5,
+      "min": 0,
+      "max": 40
+    },
+    {
+      "key": "zzzRise",
+      "type": "number",
+      "label": "Zzz: steigt (Pixel)",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 34,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "zzzDrift",
+      "type": "number",
+      "label": "Zzz: driftet nach links (Pixel)",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 16,
+      "min": -400,
+      "max": 400
+    },
+    {
+      "key": "zzzFade",
+      "type": "number",
+      "label": "Zzz: Ausblenden (Faktor)",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 2.5,
+      "min": 0,
+      "max": 20,
+      "step": 0.1
+    },
+    {
+      "key": "endingDarkness",
+      "type": "number",
+      "label": "Ending: Raum dunkelt bis",
+      "group": "Feinschliff: Ending, Statistik",
+      "default": 0.35,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "statsGap",
+      "type": "number",
+      "label": "Statistik: Abstand",
+      "group": "Feinschliff: Statistik",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "statsPadding",
+      "type": "number",
+      "label": "Statistik: Innenabstand oben",
+      "group": "Feinschliff: Statistik",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "statsPadding2",
+      "type": "number",
+      "label": "Statistik: Innenabstand links/rechts",
+      "group": "Feinschliff: Statistik",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "statsPadding3",
+      "type": "number",
+      "label": "Statistik: Innenabstand unten",
+      "group": "Feinschliff: Statistik",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "statsRowGap",
+      "type": "number",
+      "label": "Statistik Zeile: Abstand",
+      "group": "Feinschliff: Statistik",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "statsRowPadding",
+      "type": "number",
+      "label": "Statistik Zeile: Innenabstand oben",
+      "group": "Feinschliff: Statistik",
+      "default": 8,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "statsRowPadding2",
+      "type": "number",
+      "label": "Statistik Zeile: Innenabstand links/rechts",
+      "group": "Feinschliff: Statistik",
+      "default": 18,
+      "min": 0,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "statsRowPadding3",
+      "type": "number",
+      "label": "Statistik Zeile: Innenabstand unten",
+      "group": "Feinschliff: Statistik",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "statsNumberFontSize",
+      "type": "number",
+      "label": "Statistik Zahl: Schriftgrösse (em)",
+      "group": "Feinschliff: Statistik",
+      "default": 1.6,
+      "min": 0,
+      "max": 6.4,
+      "step": 0.01
+    },
+    {
+      "key": "statsNumberColor",
+      "type": "color",
+      "label": "Statistik Zahl: Textfarbe",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "statsNumberFont",
+      "type": "font",
+      "label": "Statistik Zahl: Schrift",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "statsLabelFontWeight",
+      "type": "number",
+      "label": "Statistik Schild: Schriftstärke",
+      "group": "Feinschliff: Statistik",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "statsLabelColor",
+      "type": "color",
+      "label": "Statistik Schild: Textfarbe",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "statsLabelFont",
+      "type": "font",
+      "label": "Statistik Schild: Schrift",
+      "group": "Feinschliff: Statistik",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "alertCardTop",
+      "type": "number",
+      "label": "Alert Karte: Lage oben",
+      "group": "Feinschliff: Alerts",
+      "default": 440,
+      "min": -1760,
+      "max": 1760,
+      "unit": "px"
+    },
+    {
+      "key": "alertCardMinWidth",
+      "type": "number",
+      "label": "Alert Karte: Mindestbreite",
+      "group": "Feinschliff: Alerts",
+      "default": 940,
+      "min": 0,
+      "max": 3760,
+      "unit": "px"
+    },
+    {
+      "key": "alertCardMaxWidth",
+      "type": "number",
+      "label": "Alert Karte: Höchstbreite",
+      "group": "Feinschliff: Alerts",
+      "default": 2,
+      "min": 0,
+      "max": 10
+    },
+    {
+      "key": "alertCardMaxWidth2",
+      "type": "number",
+      "label": "Alert Karte: Höchstbreite (2)",
+      "group": "Feinschliff: Alerts",
+      "default": 48,
+      "min": 0,
+      "max": 192,
+      "unit": "px"
+    },
+    {
+      "key": "alertCardPadding",
+      "type": "number",
+      "label": "Alert Karte: Innenabstand oben",
+      "group": "Feinschliff: Alerts",
+      "default": 26,
+      "min": 0,
+      "max": 104,
+      "unit": "px"
+    },
+    {
+      "key": "alertCardPadding2",
+      "type": "number",
+      "label": "Alert Karte: Innenabstand links/rechts",
+      "group": "Feinschliff: Alerts",
+      "default": 40,
+      "min": 0,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "alertCardPadding3",
+      "type": "number",
+      "label": "Alert Karte: Innenabstand unten",
+      "group": "Feinschliff: Alerts",
+      "default": 32,
+      "min": 0,
+      "max": 128,
+      "unit": "px"
+    },
+    {
+      "key": "alertCardTransformOrigin",
+      "type": "number",
+      "label": "Alert Karte: Drehpunkt x",
+      "group": "Feinschliff: Alerts",
+      "default": 50,
+      "min": 0,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "alertCardPillLeft",
+      "type": "number",
+      "label": "Alert-Karte: Pille: Lage links",
+      "group": "Feinschliff: Alerts",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "alertCardPillTop",
+      "type": "number",
+      "label": "Alert-Karte: Pille: Lage oben",
+      "group": "Feinschliff: Alerts",
+      "default": -30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "alertCardPillTransform",
+      "type": "number",
+      "label": "Alert-Karte: Pille: Verformung Verschiebung x",
+      "group": "Feinschliff: Alerts",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "alertNameMarginTop",
+      "type": "number",
+      "label": "Alert Name: Abstand oben",
+      "group": "Feinschliff: Alerts",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "alertNameFontSize",
+      "type": "number",
+      "label": "Alert Name: Schriftgrösse",
+      "group": "Feinschliff: Alerts",
+      "default": 3.25,
+      "min": 0,
+      "max": 13,
+      "step": 0.01
+    },
+    {
+      "key": "alertNameFontWeight",
+      "type": "number",
+      "label": "Alert Name: Schriftstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "alertNameLineHeight",
+      "type": "number",
+      "label": "Alert Name: Zeilenhöhe",
+      "group": "Feinschliff: Alerts",
+      "default": 1.05,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "alertNameColor",
+      "type": "color",
+      "label": "Alert Name: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "alertNameFont",
+      "type": "font",
+      "label": "Alert Name: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "alertLineFontSize",
+      "type": "number",
+      "label": "Alert Zeile: Schriftgrösse",
+      "group": "Feinschliff: Alerts",
+      "default": 1.3,
+      "min": 0,
+      "max": 5.2,
+      "step": 0.01
+    },
+    {
+      "key": "alertLineFontWeight",
+      "type": "number",
+      "label": "Alert Zeile: Schriftstärke",
+      "group": "Feinschliff: Alerts",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "alertLineColor",
+      "type": "color",
+      "label": "Alert Zeile: Textfarbe",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "alertLineFont",
+      "type": "font",
+      "label": "Alert Zeile: Schrift",
+      "group": "Feinschliff: Alerts",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "alertAtStop",
+      "type": "number",
+      "label": "Ablauf: Hund hält bei",
+      "group": "Feinschliff: Alerts",
+      "default": 1.25,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertAtDrop",
+      "type": "number",
+      "label": "Ablauf: Spielzeug fällt bei",
+      "group": "Feinschliff: Alerts",
+      "default": 1.3,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertAtCard",
+      "type": "number",
+      "label": "Ablauf: Karte kommt bei",
+      "group": "Feinschliff: Alerts",
+      "default": 1.4,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertAtBark",
+      "type": "number",
+      "label": "Ablauf: erstes Bellen bei",
+      "group": "Feinschliff: Alerts",
+      "default": 2,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertBarkGap",
+      "type": "number",
+      "label": "Ablauf: zweites Bellen danach",
+      "group": "Feinschliff: Alerts",
+      "default": 1.4,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertAtStand",
+      "type": "number",
+      "label": "Ablauf: Hund steht bis",
+      "group": "Feinschliff: Alerts",
+      "default": 5.6,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertAtPick",
+      "type": "number",
+      "label": "Ablauf: hebt Spielzeug auf bei",
+      "group": "Feinschliff: Alerts",
+      "default": 5.85,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertAtRun",
+      "type": "number",
+      "label": "Ablauf: läuft los bei",
+      "group": "Feinschliff: Alerts",
+      "default": 6.2,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertAtGone",
+      "type": "number",
+      "label": "Ablauf: weg bei",
+      "group": "Feinschliff: Alerts",
+      "default": 7.4,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertPackAfterCard",
+      "type": "number",
+      "label": "Raid: Rudel startet nach der Karte",
+      "group": "Feinschliff: Alerts",
+      "default": 0.3,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "alertWaitAfterPack",
+      "type": "number",
+      "label": "Raid: Hund wartet nach dem Rudel",
+      "group": "Feinschliff: Alerts",
+      "default": 0.3,
+      "min": 0,
+      "max": 20,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "cardGrow",
+      "type": "number",
+      "label": "Karte: springt herein in",
+      "group": "Feinschliff: Alerts",
+      "default": 0.5,
+      "min": 0,
+      "max": 5,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "cardOvershoot",
+      "type": "number",
+      "label": "Karte: Überschwingen",
+      "group": "Feinschliff: Alerts",
+      "default": 1.6,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "cardLeaveFrom",
+      "type": "number",
+      "label": "Karte: geht ab (nach Loslaufen)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.2,
+      "min": 0,
+      "max": 5,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "cardLeaveTo",
+      "type": "number",
+      "label": "Karte: weg (nach Loslaufen)",
+      "group": "Feinschliff: Alerts",
+      "default": 0.6,
+      "min": 0,
+      "max": 5,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "toySlide",
+      "type": "number",
+      "label": "Spielzeug: rutscht um (Pixel)",
+      "group": "Feinschliff: Alerts",
+      "default": 14,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "toySlideTime",
+      "type": "number",
+      "label": "Spielzeug: rutscht in",
+      "group": "Feinschliff: Alerts",
+      "default": 0.6,
+      "min": 0,
+      "max": 5,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "toyBack",
+      "type": "number",
+      "label": "Spielzeug: zurück ins Maul in",
+      "group": "Feinschliff: Alerts",
+      "default": 0.15,
+      "min": 0,
+      "max": 5,
+      "unit": "s",
+      "step": 0.01
     },
     {
       "key": "chatGap",
@@ -4313,773 +6752,14 @@
       "inherit": ""
     },
     {
-      "key": "badgeWidth",
-      "type": "number",
-      "label": "Badge: Breite",
-      "group": "Feinschliff: Chat",
-      "default": 18,
-      "min": 0,
-      "max": 72
-    },
-    {
-      "key": "badgeWidth2",
-      "type": "number",
-      "label": "Badge: Breite (2)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "badgeHeight",
-      "type": "number",
-      "label": "Badge: Höhe",
-      "group": "Feinschliff: Chat",
-      "default": 18,
-      "min": 0,
-      "max": 72
-    },
-    {
-      "key": "badgeHeight2",
-      "type": "number",
-      "label": "Badge: Höhe (2)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "badgeBackground",
-      "type": "color",
-      "label": "Badge: Hintergrund Farbe (Ball-Gelb)",
-      "group": "Feinschliff: Chat",
-      "default": "",
-      "inherit": "ball"
-    },
-    {
-      "key": "badgeColor",
-      "type": "color",
-      "label": "Badge: Textfarbe",
-      "group": "Feinschliff: Chat",
-      "default": "",
-      "inherit": "textColor"
-    },
-    {
-      "key": "badgePawWidth",
-      "type": "number",
-      "label": "Badge: Pfote: Breite",
-      "group": "Feinschliff: Chat",
-      "default": 10,
-      "min": 0,
-      "max": 40
-    },
-    {
-      "key": "badgePawWidth2",
-      "type": "number",
-      "label": "Badge: Pfote: Breite (2)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "badgePawHeight",
-      "type": "number",
-      "label": "Badge: Pfote: Höhe",
-      "group": "Feinschliff: Chat",
-      "default": 10,
-      "min": 0,
-      "max": 40
-    },
-    {
-      "key": "badgePawHeight2",
-      "type": "number",
-      "label": "Badge: Pfote: Höhe (2)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bubblePadding",
-      "type": "number",
-      "label": "Sprechblase: Innenabstand oben",
-      "group": "Feinschliff: Chat",
-      "default": 6,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bubblePadding2",
-      "type": "number",
-      "label": "Sprechblase: Innenabstand links/rechts",
-      "group": "Feinschliff: Chat",
-      "default": 22,
-      "min": 0,
-      "max": 88,
-      "unit": "px"
-    },
-    {
-      "key": "bubblePadding3",
-      "type": "number",
-      "label": "Sprechblase: Innenabstand unten",
-      "group": "Feinschliff: Chat",
-      "default": 10,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bubbleFontSize",
-      "type": "number",
-      "label": "Sprechblase: Schriftgrösse",
-      "group": "Feinschliff: Chat",
-      "default": 1.75,
-      "min": 0,
-      "max": 7,
-      "step": 0.01
-    },
-    {
-      "key": "bubbleFontWeight",
-      "type": "number",
-      "label": "Sprechblase: Schriftstärke",
-      "group": "Feinschliff: Chat",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "bubbleColor",
-      "type": "color",
-      "label": "Sprechblase: Textfarbe",
-      "group": "Feinschliff: Chat",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "bubbleFont",
-      "type": "font",
-      "label": "Sprechblase: Schrift",
-      "group": "Feinschliff: Chat",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "bubbleAfterLeft",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Lage links",
-      "group": "Feinschliff: Chat",
-      "default": 4,
-      "min": -16,
-      "max": 16
-    },
-    {
-      "key": "bubbleAfterLeft2",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Lage links (2)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bubbleAfterBottom",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Lage unten",
-      "group": "Feinschliff: Chat",
-      "default": -4,
-      "min": -16,
-      "max": 16
-    },
-    {
-      "key": "bubbleAfterBottom2",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Lage unten (2)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bubbleAfterWidth",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Breite",
-      "group": "Feinschliff: Chat",
-      "default": 3,
-      "min": 0,
-      "max": 12
-    },
-    {
-      "key": "bubbleAfterWidth2",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Breite (2)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bubbleAfterHeight",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Höhe",
-      "group": "Feinschliff: Chat",
-      "default": 3,
-      "min": 0,
-      "max": 12
-    },
-    {
-      "key": "bubbleAfterHeight2",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Höhe (2)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bubbleAfterBackground",
-      "type": "color",
-      "label": "Sprechblase (Ebene 2): Hintergrund Farbe (Schild)",
-      "group": "Feinschliff: Chat",
-      "default": "",
-      "inherit": "cream"
-    },
-    {
-      "key": "bubbleAfterBoxShadow",
-      "type": "color",
-      "label": "Sprechblase (Ebene 2): Schatten Farbe (Tinte (Kontur))",
-      "group": "Feinschliff: Chat",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "bubbleAfterBoxShadow2",
-      "type": "color",
-      "label": "Sprechblase (Ebene 2): Schatten Farbe (Tinte (Kontur)) (2)",
-      "group": "Feinschliff: Chat",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "bubbleAfterBoxShadow3",
-      "type": "color",
-      "label": "Sprechblase (Ebene 2): Schatten Farbe (Tinte (Kontur)) (3)",
-      "group": "Feinschliff: Chat",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "bubbleAfterBoxShadow4",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Schatten y (Teil 1)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bubbleAfterBoxShadow5",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Schatten x (Teil 2)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bubbleAfterBoxShadow6",
-      "type": "number",
-      "label": "Sprechblase (Ebene 2): Schatten x (Teil 3)",
-      "group": "Feinschliff: Chat",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
       "key": "kfPopFromTransform",
       "type": "number",
       "label": "Ploppen (Start): Verformung Verschiebung y",
-      "group": "Feinschliff: Allgemein",
+      "group": "Feinschliff: Chat, Musik",
       "default": 20,
       "min": -80,
       "max": 80,
       "unit": "px"
-    },
-    {
-      "key": "boxBackground",
-      "type": "color",
-      "label": "Kasten: Hintergrund Farbe (Schild)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "cream"
-    },
-    {
-      "key": "boxBoxShadow",
-      "type": "color",
-      "label": "Kasten: Schatten Farbe (Tinte (Kontur))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxBoxShadow2",
-      "type": "color",
-      "label": "Kasten: Schatten Farbe (Tinte (Kontur)) (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxBoxShadow3",
-      "type": "color",
-      "label": "Kasten: Schatten Farbe (Tinte (Kontur)) (3)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxBoxShadow4",
-      "type": "color",
-      "label": "Kasten: Schatten Farbe (Tinte (Kontur)) (4)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxBoxShadow5",
-      "type": "color",
-      "label": "Kasten: Schatten Farbe (Schild: Kante unten)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "edge"
-    },
-    {
-      "key": "boxBoxShadow6",
-      "type": "color",
-      "label": "Kasten: Schatten Farbe (Licht (Augen, Wolken, Zaun))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "light"
-    },
-    {
-      "key": "boxBoxShadow7",
-      "type": "color",
-      "label": "Kasten: Schatten Farbe (Tinte (Kontur)) (5)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxBoxShadow8",
-      "type": "number",
-      "label": "Kasten: Schatten y (Teil 1)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxBoxShadow9",
-      "type": "number",
-      "label": "Kasten: Schatten y (Teil 2)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxBoxShadow10",
-      "type": "number",
-      "label": "Kasten: Schatten x (Teil 3)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxBoxShadow11",
-      "type": "number",
-      "label": "Kasten: Schatten x (Teil 4)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxBoxShadow12",
-      "type": "number",
-      "label": "Kasten: Schatten y (Teil 5)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxBoxShadow13",
-      "type": "number",
-      "label": "Kasten: Schatten y (Teil 6)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxBoxShadow14",
-      "type": "number",
-      "label": "Kasten: Schatten y (Teil 7)",
-      "group": "Feinschliff: Allgemein",
-      "default": 3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "boxBoxShadow15",
-      "type": "number",
-      "label": "Kasten: Schatten y (Teil 7) (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxRedBackground",
-      "type": "color",
-      "label": "Kasten rot: Hintergrund Farbe (Signatur (Halsband-Rot))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "boxRedColor",
-      "type": "color",
-      "label": "Kasten rot: Textfarbe",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "onAccent"
-    },
-    {
-      "key": "boxRedBoxShadow",
-      "type": "color",
-      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxRedBoxShadow2",
-      "type": "color",
-      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxRedBoxShadow3",
-      "type": "color",
-      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (3)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxRedBoxShadow4",
-      "type": "color",
-      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (4)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxRedBoxShadow5",
-      "type": "color",
-      "label": "Kasten rot: Schatten Farbe (Signatur (Halsband-Rot))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "boxRedBoxShadow6",
-      "type": "color",
-      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (5)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxRedBoxShadow7",
-      "type": "color",
-      "label": "Kasten rot: Schatten Farbe (Signatur (Halsband-Rot)) (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "boxRedBoxShadow8",
-      "type": "color",
-      "label": "Kasten rot: Schatten Farbe (Licht (Augen, Wolken, Zaun))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "light"
-    },
-    {
-      "key": "boxRedBoxShadow9",
-      "type": "color",
-      "label": "Kasten rot: Schatten Farbe (Tinte (Kontur)) (6)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "boxRedBoxShadow10",
-      "type": "number",
-      "label": "Kasten rot: Schatten y (Teil 1)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxRedBoxShadow11",
-      "type": "number",
-      "label": "Kasten rot: Schatten y (Teil 2)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxRedBoxShadow12",
-      "type": "number",
-      "label": "Kasten rot: Schatten x (Teil 3)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxRedBoxShadow13",
-      "type": "number",
-      "label": "Kasten rot: Schatten x (Teil 4)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxRedBoxShadow14",
-      "type": "number",
-      "label": "Kasten rot: Schatten y (Teil 5)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxRedBoxShadow15",
-      "type": "number",
-      "label": "Kasten rot: Schatten Farbanteil",
-      "group": "Feinschliff: Allgemein",
-      "default": 75,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "boxRedBoxShadow16",
-      "type": "number",
-      "label": "Kasten rot: Schatten y (Teil 6)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "boxRedBoxShadow17",
-      "type": "number",
-      "label": "Kasten rot: Schatten Farbanteil (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": 70,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "boxRedBoxShadow18",
-      "type": "number",
-      "label": "Kasten rot: Schatten y (Teil 7)",
-      "group": "Feinschliff: Allgemein",
-      "default": 3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "boxRedBoxShadow19",
-      "type": "number",
-      "label": "Kasten rot: Schatten y (Teil 7) (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "pawWidth",
-      "type": "number",
-      "label": "Pfote: Breite",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": 0,
-      "max": 20
-    },
-    {
-      "key": "pawWidth2",
-      "type": "number",
-      "label": "Pfote: Breite (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "pawHeight",
-      "type": "number",
-      "label": "Pfote: Höhe",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": 0,
-      "max": 20
-    },
-    {
-      "key": "pawHeight2",
-      "type": "number",
-      "label": "Pfote: Höhe (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "pillGap",
-      "type": "number",
-      "label": "Pille: Abstand",
-      "group": "Feinschliff: Allgemein",
-      "default": 12,
-      "min": 0,
-      "max": 48,
-      "unit": "px"
-    },
-    {
-      "key": "pillPadding",
-      "type": "number",
-      "label": "Pille: Innenabstand oben",
-      "group": "Feinschliff: Allgemein",
-      "default": 8,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "pillPadding2",
-      "type": "number",
-      "label": "Pille: Innenabstand links/rechts",
-      "group": "Feinschliff: Allgemein",
-      "default": 20,
-      "min": 0,
-      "max": 80,
-      "unit": "px"
-    },
-    {
-      "key": "pillPadding3",
-      "type": "number",
-      "label": "Pille: Innenabstand unten",
-      "group": "Feinschliff: Allgemein",
-      "default": 10,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "pillFontSize",
-      "type": "number",
-      "label": "Pille: Schriftgrösse Anteil von „Schriftgrösse“ (%)",
-      "group": "Feinschliff: Allgemein",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "pillFontWeight",
-      "type": "number",
-      "label": "Pille: Schriftstärke",
-      "group": "Feinschliff: Allgemein",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "pillLetterSpacing",
-      "type": "number",
-      "label": "Pille: Zeichenabstand",
-      "group": "Feinschliff: Allgemein",
-      "default": 3,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "pillColor",
-      "type": "color",
-      "label": "Pille: Textfarbe",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "onAccent"
-    },
-    {
-      "key": "pillFont",
-      "type": "font",
-      "label": "Pille: Schrift",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
     },
     {
       "key": "camFrameInset",
@@ -5845,290 +7525,6 @@
       "inherit": ""
     },
     {
-      "key": "statsGap",
-      "type": "number",
-      "label": "Statistik: Abstand",
-      "group": "Feinschliff: Statistik",
-      "default": 18,
-      "min": 0,
-      "max": 72,
-      "unit": "px"
-    },
-    {
-      "key": "statsPadding",
-      "type": "number",
-      "label": "Statistik: Innenabstand oben",
-      "group": "Feinschliff: Statistik",
-      "default": 16,
-      "min": 0,
-      "max": 64,
-      "unit": "px"
-    },
-    {
-      "key": "statsPadding2",
-      "type": "number",
-      "label": "Statistik: Innenabstand links/rechts",
-      "group": "Feinschliff: Statistik",
-      "default": 16,
-      "min": 0,
-      "max": 64,
-      "unit": "px"
-    },
-    {
-      "key": "statsPadding3",
-      "type": "number",
-      "label": "Statistik: Innenabstand unten",
-      "group": "Feinschliff: Statistik",
-      "default": 24,
-      "min": 0,
-      "max": 96,
-      "unit": "px"
-    },
-    {
-      "key": "statsRowGap",
-      "type": "number",
-      "label": "Statistik Zeile: Abstand",
-      "group": "Feinschliff: Statistik",
-      "default": 14,
-      "min": 0,
-      "max": 56,
-      "unit": "px"
-    },
-    {
-      "key": "statsRowPadding",
-      "type": "number",
-      "label": "Statistik Zeile: Innenabstand oben",
-      "group": "Feinschliff: Statistik",
-      "default": 8,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "statsRowPadding2",
-      "type": "number",
-      "label": "Statistik Zeile: Innenabstand links/rechts",
-      "group": "Feinschliff: Statistik",
-      "default": 18,
-      "min": 0,
-      "max": 72,
-      "unit": "px"
-    },
-    {
-      "key": "statsRowPadding3",
-      "type": "number",
-      "label": "Statistik Zeile: Innenabstand unten",
-      "group": "Feinschliff: Statistik",
-      "default": 12,
-      "min": 0,
-      "max": 48,
-      "unit": "px"
-    },
-    {
-      "key": "statsNumberFontSize",
-      "type": "number",
-      "label": "Statistik Zahl: Schriftgrösse (em)",
-      "group": "Feinschliff: Statistik",
-      "default": 1.6,
-      "min": 0,
-      "max": 6.4,
-      "step": 0.01
-    },
-    {
-      "key": "statsNumberColor",
-      "type": "color",
-      "label": "Statistik Zahl: Textfarbe",
-      "group": "Feinschliff: Statistik",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "statsNumberFont",
-      "type": "font",
-      "label": "Statistik Zahl: Schrift",
-      "group": "Feinschliff: Statistik",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "statsLabelFontWeight",
-      "type": "number",
-      "label": "Statistik Schild: Schriftstärke",
-      "group": "Feinschliff: Statistik",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "statsLabelColor",
-      "type": "color",
-      "label": "Statistik Schild: Textfarbe",
-      "group": "Feinschliff: Statistik",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "statsLabelFont",
-      "type": "font",
-      "label": "Statistik Schild: Schrift",
-      "group": "Feinschliff: Statistik",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "captionFontSize",
-      "type": "number",
-      "label": "Unterschrift: Schriftgrösse",
-      "group": "Feinschliff: Statistik",
-      "default": 0.85,
-      "min": 0,
-      "max": 3.4,
-      "step": 0.01
-    },
-    {
-      "key": "captionFontWeight",
-      "type": "number",
-      "label": "Unterschrift: Schriftstärke",
-      "group": "Feinschliff: Statistik",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "captionLetterSpacing",
-      "type": "number",
-      "label": "Unterschrift: Zeichenabstand",
-      "group": "Feinschliff: Statistik",
-      "default": 3,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "captionColor",
-      "type": "color",
-      "label": "Unterschrift: Textfarbe",
-      "group": "Feinschliff: Statistik",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "captionFont",
-      "type": "font",
-      "label": "Unterschrift: Schrift",
-      "group": "Feinschliff: Statistik",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "statPadding",
-      "type": "number",
-      "label": "Wert: Innenabstand oben",
-      "group": "Feinschliff: Statistik",
-      "default": 16,
-      "min": 0,
-      "max": 64,
-      "unit": "px"
-    },
-    {
-      "key": "statPadding2",
-      "type": "number",
-      "label": "Wert: Innenabstand links/rechts",
-      "group": "Feinschliff: Statistik",
-      "default": 26,
-      "min": 0,
-      "max": 104,
-      "unit": "px"
-    },
-    {
-      "key": "statPadding3",
-      "type": "number",
-      "label": "Wert: Innenabstand unten",
-      "group": "Feinschliff: Statistik",
-      "default": 22,
-      "min": 0,
-      "max": 88,
-      "unit": "px"
-    },
-    {
-      "key": "statValueMarginTop",
-      "type": "number",
-      "label": "Wert Wert: Abstand oben",
-      "group": "Feinschliff: Statistik",
-      "default": 8,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "statValueFontSize",
-      "type": "number",
-      "label": "Wert Wert: Schriftgrösse",
-      "group": "Feinschliff: Statistik",
-      "default": 2.75,
-      "min": 0,
-      "max": 11,
-      "step": 0.01
-    },
-    {
-      "key": "statValueFontWeight",
-      "type": "number",
-      "label": "Wert Wert: Schriftstärke",
-      "group": "Feinschliff: Statistik",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "statValueLineHeight",
-      "type": "number",
-      "label": "Wert Wert: Zeilenhöhe",
-      "group": "Feinschliff: Statistik",
-      "default": 1,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "statValueColor",
-      "type": "color",
-      "label": "Wert Wert: Textfarbe",
-      "group": "Feinschliff: Statistik",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "statValueFont",
-      "type": "font",
-      "label": "Wert Wert: Schrift",
-      "group": "Feinschliff: Statistik",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
       "key": "themeRootMinHeight",
       "type": "number",
       "label": "Befehlsseite (Seite): Mindesthöhe (vh)",
@@ -6564,2013 +7960,467 @@
       "inherit": ""
     },
     {
-      "key": "startPillTop",
+      "key": "minimesDgFloor",
       "type": "number",
-      "label": "Start Pille: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 30,
-      "min": -120,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "titleTop",
-      "type": "number",
-      "label": "Titel: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 80,
-      "min": -320,
-      "max": 320,
-      "unit": "px"
-    },
-    {
-      "key": "titleFontSize",
-      "type": "number",
-      "label": "Titel: Schriftgrösse Anteil von „Titel: Grösse“ (%)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 100,
+      "label": "Minimes: Abstand zum Boden",
+      "group": "Feinschliff: Minimes",
+      "default": 14,
       "min": 0,
-      "max": 400
-    },
-    {
-      "key": "titleFontWeight",
-      "type": "number",
-      "label": "Titel: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "titleLineHeight",
-      "type": "number",
-      "label": "Titel: Zeilenhöhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "titleColor",
-      "type": "color",
-      "label": "Titel: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "cream"
-    },
-    {
-      "key": "titleTextShadow",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Tinte (Kontur))",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "titleTextShadow2",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "titleTextShadow3",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (3)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "titleTextShadow4",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (4)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "titleTextShadow5",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (5)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "titleTextShadow6",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (6)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "titleTextShadow7",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (7)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "titleTextShadow8",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Tinte (Kontur)) (8)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "titleTextShadow9",
-      "type": "number",
-      "label": "Titel: Textschatten y (Teil 9)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 3,
-      "min": -12,
-      "max": 12
-    },
-    {
-      "key": "titleFont",
-      "type": "font",
-      "label": "Titel: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "subtitleTop",
-      "type": "number",
-      "label": "Untertitel: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 200,
-      "min": -800,
-      "max": 800,
+      "max": 56,
       "unit": "px"
     },
     {
-      "key": "subtitleFontSize",
+      "key": "minimeGrassHeight",
       "type": "number",
-      "label": "Untertitel: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1.3,
+      "label": "Minime Gras: Höhe",
+      "group": "Feinschliff: Minimes",
+      "default": 14,
       "min": 0,
-      "max": 5.2,
-      "step": 0.01
+      "max": 56,
+      "unit": "px"
     },
     {
-      "key": "subtitleFontWeight",
-      "type": "number",
-      "label": "Untertitel: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "subtitleColor",
+      "key": "minimeGrassBackground",
       "type": "color",
-      "label": "Untertitel: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Gras: Hintergrund Farbe (Wiese)",
+      "group": "Feinschliff: Minimes",
       "default": "",
-      "inherit": ""
+      "inherit": "grass"
     },
     {
-      "key": "subtitleFont",
-      "type": "font",
-      "label": "Untertitel: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "key": "minimeGrassBoxShadow",
+      "type": "color",
+      "label": "Minime Gras: Schatten Farbe (Wiese: Oberkante)",
+      "group": "Feinschliff: Minimes",
       "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
+      "inherit": "grassLight"
     },
     {
-      "key": "labelPadding",
+      "key": "minimeGrassBoxShadow2",
+      "type": "color",
+      "label": "Minime Gras: Schatten Farbe (Tinte (Kontur))",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "minimeGrassBoxShadow3",
       "type": "number",
-      "label": "Schild: Innenabstand oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Gras: Schatten y (Teil 1)",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeGrassBoxShadow4",
+      "type": "number",
+      "label": "Minime Gras: Schatten y (Teil 2)",
+      "group": "Feinschliff: Minimes",
       "default": 2,
-      "min": 0,
+      "min": -40,
       "max": 40,
       "unit": "px"
     },
     {
-      "key": "labelPadding2",
+      "key": "minimeBottom",
       "type": "number",
-      "label": "Schild: Innenabstand links/rechts",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 12,
-      "min": 0,
-      "max": 48,
-      "unit": "px"
-    },
-    {
-      "key": "labelPadding3",
-      "type": "number",
-      "label": "Schild: Innenabstand unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 5,
-      "min": 0,
+      "label": "Minime: Lage unten",
+      "group": "Feinschliff: Minimes",
+      "default": 6,
+      "min": -40,
       "max": 40,
       "unit": "px"
     },
     {
-      "key": "labelFontSize",
+      "key": "minimeTransform",
       "type": "number",
-      "label": "Schild: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.85,
-      "min": 0,
-      "max": 3.4,
-      "step": 0.01
-    },
-    {
-      "key": "labelFontWeight",
-      "type": "number",
-      "label": "Schild: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "labelTransformOrigin",
-      "type": "number",
-      "label": "Schild: Drehpunkt x",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime: Verformung Verschiebung x",
+      "group": "Feinschliff: Minimes",
       "default": 50,
-      "min": 0,
+      "min": -150,
       "max": 150,
       "unit": "%"
     },
     {
-      "key": "labelColor",
-      "type": "color",
-      "label": "Schild: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "labelFont",
-      "type": "font",
-      "label": "Schild: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "labelSmallFontSize",
+      "key": "minimeFlipScale",
       "type": "number",
-      "label": "Schild klein: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.62,
+      "label": "Minime Wende: Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
-      "max": 2.48,
+      "max": 4,
       "step": 0.01
     },
     {
-      "key": "labelSmallFontWeight",
+      "key": "minimeNameMarginBottom",
       "type": "number",
-      "label": "Schild klein: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 500,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "labelSmallColor",
-      "type": "color",
-      "label": "Schild klein: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "labelSmallFont",
-      "type": "font",
-      "label": "Schild klein: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "labelNearBackground",
-      "type": "color",
-      "label": "Schild nah: Hintergrund Farbe (Ball-Gelb)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ball"
-    },
-    {
-      "key": "labelNearBackground2",
-      "type": "color",
-      "label": "Schild nah: Hintergrund Farbe (Schild)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "cream"
-    },
-    {
-      "key": "labelNearBackground3",
-      "type": "number",
-      "label": "Schild nah: Hintergrund Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 45,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "countdownLeft",
-      "type": "number",
-      "label": "Countdown: Lage links",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 90,
-      "min": -360,
-      "max": 360,
-      "unit": "px"
-    },
-    {
-      "key": "countdownBottom",
-      "type": "number",
-      "label": "Countdown: Lage unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "countdownPadding",
-      "type": "number",
-      "label": "Countdown: Innenabstand oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 16,
-      "min": 0,
-      "max": 64,
-      "unit": "px"
-    },
-    {
-      "key": "countdownPadding2",
-      "type": "number",
-      "label": "Countdown: Innenabstand links/rechts",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 28,
-      "min": 0,
-      "max": 112,
-      "unit": "px"
-    },
-    {
-      "key": "countdownPadding3",
-      "type": "number",
-      "label": "Countdown: Innenabstand unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 22,
-      "min": 0,
-      "max": 88,
-      "unit": "px"
-    },
-    {
-      "key": "clockMarginTop",
-      "type": "number",
-      "label": "Uhr: Abstand oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 8,
+      "label": "Minime Name: Abstand unten",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
       "min": -40,
       "max": 40,
       "unit": "px"
     },
     {
-      "key": "clockPadding",
+      "key": "minimeNamePadding",
       "type": "number",
-      "label": "Uhr: Innenabstand oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Name: Innenabstand oben",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeNamePadding2",
+      "type": "number",
+      "label": "Minime Name: Innenabstand links/rechts",
+      "group": "Feinschliff: Minimes",
       "default": 8,
       "min": 0,
       "max": 40,
       "unit": "px"
     },
     {
-      "key": "clockPadding2",
+      "key": "minimeNamePadding3",
       "type": "number",
-      "label": "Uhr: Innenabstand links/rechts",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 22,
+      "label": "Minime Name: Innenabstand unten",
+      "group": "Feinschliff: Minimes",
+      "default": 3,
       "min": 0,
-      "max": 88,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "clockPadding3",
-      "type": "number",
-      "label": "Uhr: Innenabstand unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 12,
-      "min": 0,
-      "max": 48,
-      "unit": "px"
-    },
-    {
-      "key": "clockFontSize",
-      "type": "number",
-      "label": "Uhr: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.75,
-      "min": 0,
-      "max": 11,
-      "step": 0.01
-    },
-    {
-      "key": "clockFontWeight",
-      "type": "number",
-      "label": "Uhr: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "clockLineHeight",
-      "type": "number",
-      "label": "Uhr: Zeilenhöhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "clockColor",
+      "key": "minimeNameBackground",
       "type": "color",
-      "label": "Uhr: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Name: Hintergrund Farbe (Signatur (Halsband-Rot))",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "minimeNameColor",
+      "type": "color",
+      "label": "Minime Name: Textfarbe",
+      "group": "Feinschliff: Minimes",
       "default": "",
       "inherit": "onAccent"
     },
     {
-      "key": "clockFont",
+      "key": "minimeNameBoxShadow",
+      "type": "color",
+      "label": "Minime Name: Schatten Farbe (Tinte (Kontur))",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "minimeNameBoxShadow2",
+      "type": "number",
+      "label": "Minime Name: Schatten Ausbreitung",
+      "group": "Feinschliff: Minimes",
+      "default": 2,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeNameFont",
       "type": "font",
-      "label": "Uhr: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Name: Schrift",
+      "group": "Feinschliff: Minimes",
       "default": "",
       "options": [
         "Pixelify Sans",
         "VT323",
         "Silkscreen"
       ],
-      "inherit": ""
+      "inherit": "font"
     },
     {
-      "key": "tickerLeft",
+      "key": "minimeNameFontWeight",
       "type": "number",
-      "label": "Lauftext: Lage links",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 520,
-      "min": -2080,
-      "max": 2080,
-      "unit": "px"
-    },
-    {
-      "key": "tickerRight",
-      "type": "number",
-      "label": "Lauftext: Lage rechts",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 520,
-      "min": -2080,
-      "max": 2080,
-      "unit": "px"
-    },
-    {
-      "key": "tickerBottom",
-      "type": "number",
-      "label": "Lauftext: Lage unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 24,
-      "min": -96,
-      "max": 96,
-      "unit": "px"
-    },
-    {
-      "key": "tickerPadding",
-      "type": "number",
-      "label": "Lauftext: Innenabstand oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 6,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "tickerPadding2",
-      "type": "number",
-      "label": "Lauftext: Innenabstand links/rechts",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 18,
-      "min": 0,
-      "max": 72,
-      "unit": "px"
-    },
-    {
-      "key": "tickerPadding3",
-      "type": "number",
-      "label": "Lauftext: Innenabstand unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 10,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "tickerFontSize",
-      "type": "number",
-      "label": "Lauftext: Schriftgrösse Anteil von „Schriftgrösse“ (%)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "tickerFontWeight",
-      "type": "number",
-      "label": "Lauftext: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Name: Schriftstärke",
+      "group": "Feinschliff: Minimes",
       "default": 600,
       "min": 100,
       "max": 900,
       "step": 100
     },
     {
-      "key": "tickerColor",
-      "type": "color",
-      "label": "Lauftext: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "tickerFont",
-      "type": "font",
-      "label": "Lauftext: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "brbCardLeft",
+      "key": "minimeNameFontSize",
       "type": "number",
-      "label": "BRB Karte: Lage links",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 85,
-      "min": -340,
-      "max": 340,
-      "unit": "px"
-    },
-    {
-      "key": "brbCardTop",
-      "type": "number",
-      "label": "BRB Karte: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "brbCardPadding",
-      "type": "number",
-      "label": "BRB Karte: Innenabstand oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 24,
+      "label": "Minime Name: Schriftgrösse",
+      "group": "Feinschliff: Minimes",
+      "default": 0.6,
       "min": 0,
-      "max": 96,
-      "unit": "px"
-    },
-    {
-      "key": "brbCardPadding2",
-      "type": "number",
-      "label": "BRB Karte: Innenabstand rechts",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 40,
-      "min": 0,
-      "max": 160,
-      "unit": "px"
-    },
-    {
-      "key": "brbCardPadding3",
-      "type": "number",
-      "label": "BRB Karte: Innenabstand unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 30,
-      "min": 0,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "brbCardPadding4",
-      "type": "number",
-      "label": "BRB Karte: Innenabstand links",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 30,
-      "min": 0,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "brbTitleMarginTop",
-      "type": "number",
-      "label": "BRB Titel: Abstand oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 18,
-      "min": -72,
-      "max": 72,
-      "unit": "px"
-    },
-    {
-      "key": "brbTitleFontSize",
-      "type": "number",
-      "label": "BRB Titel: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.84,
-      "min": 0,
-      "max": 3.36,
+      "max": 2.4,
       "step": 0.01
     },
     {
-      "key": "brbTitleFontWeight",
+      "key": "minimeDustRight",
       "type": "number",
-      "label": "BRB Titel: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
+      "label": "Minime Staub: Lage rechts",
+      "group": "Feinschliff: Minimes",
+      "default": -4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
     },
     {
-      "key": "brbTitleLineHeight",
+      "key": "minimeDustBottom",
       "type": "number",
-      "label": "BRB Titel: Zeilenhöhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
+      "label": "Minime Staub: Lage unten",
+      "group": "Feinschliff: Minimes",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
     },
     {
-      "key": "brbTitleColor",
-      "type": "color",
-      "label": "BRB Titel: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "cream"
-    },
-    {
-      "key": "brbTitleTextShadow",
-      "type": "color",
-      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur))",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "brbTitleTextShadow2",
-      "type": "color",
-      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "brbTitleTextShadow3",
-      "type": "color",
-      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (3)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "brbTitleTextShadow4",
-      "type": "color",
-      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (4)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "brbTitleTextShadow5",
-      "type": "color",
-      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (5)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "brbTitleTextShadow6",
-      "type": "color",
-      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (6)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "brbTitleTextShadow7",
-      "type": "color",
-      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (7)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "brbTitleTextShadow8",
-      "type": "color",
-      "label": "BRB Titel: Textschatten Farbe (Tinte (Kontur)) (8)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "brbTitleTextShadow9",
+      "key": "minimeDustWidth",
       "type": "number",
-      "label": "BRB Titel: Textschatten y (Teil 9)",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Staub: Breite",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDustHeight",
+      "type": "number",
+      "label": "Minime Staub: Höhe",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDustBackground",
+      "type": "color",
+      "label": "Minime Staub: Hintergrund Farbe (Schild: Kante unten)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "edge"
+    },
+    {
+      "key": "minimeDustBoxShadow",
+      "type": "color",
+      "label": "Minime Staub: Schatten Farbe (Schild: Kante unten)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "edge"
+    },
+    {
+      "key": "minimeDustBoxShadow2",
+      "type": "color",
+      "label": "Minime Staub: Schatten Farbe (Schild: Kante unten) (2)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "edge"
+    },
+    {
+      "key": "minimeDustBoxShadow3",
+      "type": "number",
+      "label": "Minime Staub: Schatten x (Teil 1)",
+      "group": "Feinschliff: Minimes",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDustBoxShadow4",
+      "type": "number",
+      "label": "Minime Staub: Schatten y (Teil 1)",
+      "group": "Feinschliff: Minimes",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDustBoxShadow5",
+      "type": "number",
+      "label": "Minime Staub: Schatten x (Teil 2)",
+      "group": "Feinschliff: Minimes",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDustBoxShadow6",
+      "type": "number",
+      "label": "Minime Staub: Schatten y (Teil 2)",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeDustAnimation",
+      "type": "number",
+      "label": "Minime Staub: Animation Dauer",
+      "group": "Feinschliff: Minimes",
+      "default": 600,
+      "min": 0,
+      "max": 3000,
+      "unit": "ms",
+      "step": 10
+    },
+    {
+      "key": "minimeDustAnimation2",
+      "type": "number",
+      "label": "Minime Staub: Animation Schritte",
+      "group": "Feinschliff: Minimes",
       "default": 3,
-      "min": -12,
+      "min": 1,
       "max": 12
     },
     {
-      "key": "brbTitleFont",
-      "type": "font",
-      "label": "BRB Titel: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "brbSubMarginTop",
+      "key": "minimeZzzRight",
       "type": "number",
-      "label": "BRB Unterzeile: Abstand oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Zzz: Lage rechts",
+      "group": "Feinschliff: Minimes",
       "default": 10,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "brbSubFontSize",
-      "type": "number",
-      "label": "BRB Unterzeile: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1.3,
-      "min": 0,
-      "max": 5.2,
-      "step": 0.01
-    },
-    {
-      "key": "brbSubFontWeight",
-      "type": "number",
-      "label": "BRB Unterzeile: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "brbSubColor",
-      "type": "color",
-      "label": "BRB Unterzeile: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "brbSubFont",
-      "type": "font",
-      "label": "BRB Unterzeile: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "brbStatsRight",
-      "type": "number",
-      "label": "BRB Statistik: Lage rechts",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 85,
-      "min": -340,
-      "max": 340,
-      "unit": "px"
-    },
-    {
-      "key": "brbStatsTop",
-      "type": "number",
-      "label": "BRB Statistik: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "brbStatsGap",
-      "type": "number",
-      "label": "BRB Statistik: Abstand",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 30,
-      "min": 0,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "endTitleTop",
-      "type": "number",
-      "label": "Ending Titel: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 60,
-      "min": -240,
-      "max": 240,
-      "unit": "px"
-    },
-    {
-      "key": "endTitleFontSize",
-      "type": "number",
-      "label": "Ending Titel: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1.16,
-      "min": 0,
-      "max": 4.64,
-      "step": 0.01
-    },
-    {
-      "key": "endTitleColor",
-      "type": "color",
-      "label": "Ending Titel: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "cream"
-    },
-    {
-      "key": "endTitleFont",
-      "type": "font",
-      "label": "Ending Titel: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "endSubTop",
-      "type": "number",
-      "label": "Ending Unterzeile: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 196,
-      "min": -784,
-      "max": 784,
-      "unit": "px"
-    },
-    {
-      "key": "endSubColor",
-      "type": "color",
-      "label": "Ending Unterzeile: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "nightSub"
-    },
-    {
-      "key": "endSubTextShadow",
-      "type": "color",
-      "label": "Ending Unterzeile: Textschatten Farbe (Tinte (Kontur))",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "endSubTextShadow2",
-      "type": "number",
-      "label": "Ending Unterzeile: Textschatten y",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "endSubTextShadow3",
-      "type": "number",
-      "label": "Ending Unterzeile: Textschatten Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 35,
-      "min": 0,
+      "min": -100,
       "max": 100,
       "unit": "%"
     },
     {
-      "key": "endByeTop",
+      "key": "minimeZzzTop",
       "type": "number",
-      "label": "Ending Tschüss: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 268,
-      "min": -1072,
-      "max": 1072,
+      "label": "Minime Zzz: Lage oben",
+      "group": "Feinschliff: Minimes",
+      "default": -6,
+      "min": -40,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "endByePillFontSize",
+      "key": "minimeZzzAnimation",
       "type": "number",
-      "label": "Ending: Tschüss-Pille: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1.15,
+      "label": "Minime Zzz: Animation Dauer",
+      "group": "Feinschliff: Minimes",
+      "default": 1800,
       "min": 0,
-      "max": 4.6,
-      "step": 0.01
+      "max": 9000,
+      "unit": "ms",
+      "step": 10
     },
     {
-      "key": "endByePillColor",
-      "type": "color",
-      "label": "Ending: Tschüss-Pille: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "onAccent"
-    },
-    {
-      "key": "endByePillFont",
-      "type": "font",
-      "label": "Ending: Tschüss-Pille: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "endingWalk",
+      "key": "minimeZzzAnimation2",
       "type": "number",
-      "label": "Ending: Hund läuft herein in",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.2,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
+      "label": "Minime Zzz: Animation Schritte",
+      "group": "Feinschliff: Minimes",
+      "default": 6,
+      "min": 1,
+      "max": 24
     },
     {
-      "key": "endingEnter",
+      "key": "actionEnterMinimeFlipAnimation",
       "type": "number",
-      "label": "Ending: kommt von rechts aussen (Pixel)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 8,
-      "min": 0,
-      "max": 200
+      "label": "Aktion beim Kommen Minime Wende: Animation Schritte",
+      "group": "Feinschliff: Minimes",
+      "default": 6,
+      "min": 1,
+      "max": 24
     },
     {
-      "key": "endingLie",
+      "key": "actionExitMinimeFlipAnimation",
       "type": "number",
-      "label": "Ending: legt sich bei",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.8,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
+      "label": "Aktion beim Gehen Minime Wende: Animation Schritte",
+      "group": "Feinschliff: Minimes",
+      "default": 6,
+      "min": 1,
+      "max": 24
     },
     {
-      "key": "endingSleep",
+      "key": "kfMinimePopToOpacity",
       "type": "number",
-      "label": "Ending: schläft ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 4,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "endingWag",
-      "type": "number",
-      "label": "Ending: Wedeln je Sekunde",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 10,
-      "min": 0,
-      "max": 60
-    },
-    {
-      "key": "endingLyingWag",
-      "type": "number",
-      "label": "Ending: Wedeln im Liegen je Sekunde",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2,
-      "min": 0,
-      "max": 60
-    },
-    {
-      "key": "endingSink",
-      "type": "number",
-      "label": "Ending: sinkt ins Körbchen (Pixel)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 5,
-      "min": 0,
-      "max": 40
-    },
-    {
-      "key": "zzzRise",
-      "type": "number",
-      "label": "Zzz: steigt (Pixel)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 34,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "zzzDrift",
-      "type": "number",
-      "label": "Zzz: driftet nach links (Pixel)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 16,
-      "min": -400,
-      "max": 400
-    },
-    {
-      "key": "zzzFade",
-      "type": "number",
-      "label": "Zzz: Ausblenden (Faktor)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.5,
-      "min": 0,
-      "max": 20,
-      "step": 0.1
-    },
-    {
-      "key": "endingDarkness",
-      "type": "number",
-      "label": "Ending: Raum dunkelt bis",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.35,
+      "label": "Minime ploppt (Ende): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
       "max": 1,
       "step": 0.01
     },
     {
-      "key": "endTitleAt",
+      "key": "kfMinimeFadeToOpacity",
       "type": "number",
-      "label": "Ending-Titel: kommt bei",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.2,
+      "label": "Minime blendet (Ende): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
-      "max": 20,
-      "unit": "s",
+      "max": 1,
       "step": 0.01
     },
     {
-      "key": "endTitleTime",
+      "key": "kfMinimeDustToTranslate",
       "type": "number",
-      "label": "Ending-Titel: fällt in",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.7,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "endTitleFrom",
-      "type": "number",
-      "label": "Ending-Titel: fällt aus Höhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": -60,
-      "min": -400,
-      "max": 400,
+      "label": "Minime Staub (Ende): Verschiebung x",
+      "group": "Feinschliff: Minimes",
+      "default": 6,
+      "min": -40,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "endTitleFade",
+      "key": "kfMinimeDustToTranslate2",
       "type": "number",
-      "label": "Ending-Titel: blendet ein in",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.3,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "endSubtitleAt",
-      "type": "number",
-      "label": "Ending-Unterzeile: kommt bei",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.8,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "endSubtitleTime",
-      "type": "number",
-      "label": "Ending-Unterzeile: blendet ein in",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.5,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "endByeAt",
-      "type": "number",
-      "label": "Ending-Pille: kommt bei",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1.2,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "endByeTime",
-      "type": "number",
-      "label": "Ending-Pille: wächst in",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.5,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "cardRight",
-      "type": "number",
-      "label": "Karte: Lage rechts",
-      "group": "Feinschliff: Alerts",
-      "default": 90,
-      "min": -360,
-      "max": 360,
+      "label": "Minime Staub (Ende): Verschiebung y",
+      "group": "Feinschliff: Minimes",
+      "default": 10,
+      "min": -40,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "cardBottom",
+      "key": "kfMinimeZzzFromTranslate",
       "type": "number",
-      "label": "Karte: Lage unten",
-      "group": "Feinschliff: Alerts",
-      "default": 70,
-      "min": -280,
-      "max": 280,
+      "label": "Minime schläft (Start): Verschiebung y",
+      "group": "Feinschliff: Minimes",
+      "default": 12,
+      "min": -48,
+      "max": 48,
       "unit": "px"
     },
     {
-      "key": "cardGap",
+      "key": "kfMinimeZzz30pOpacity",
       "type": "number",
-      "label": "Karte: Abstand",
-      "group": "Feinschliff: Alerts",
-      "default": 22,
+      "label": "Minime schläft (30 %): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
-      "max": 88,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeZzzToTranslate",
+      "type": "number",
+      "label": "Minime schläft (Ende): Verschiebung x",
+      "group": "Feinschliff: Minimes",
+      "default": 8,
+      "min": -40,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "cardPadding",
+      "key": "kfMinimeZzzToTranslate2",
       "type": "number",
-      "label": "Karte: Innenabstand oben",
-      "group": "Feinschliff: Alerts",
-      "default": 18,
-      "min": 0,
-      "max": 72,
+      "label": "Minime schläft (Ende): Verschiebung y",
+      "group": "Feinschliff: Minimes",
+      "default": 12,
+      "min": -48,
+      "max": 48,
       "unit": "px"
-    },
-    {
-      "key": "cardPadding2",
-      "type": "number",
-      "label": "Karte: Innenabstand rechts",
-      "group": "Feinschliff: Alerts",
-      "default": 30,
-      "min": 0,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "cardPadding3",
-      "type": "number",
-      "label": "Karte: Innenabstand unten",
-      "group": "Feinschliff: Alerts",
-      "default": 22,
-      "min": 0,
-      "max": 88,
-      "unit": "px"
-    },
-    {
-      "key": "cardPadding4",
-      "type": "number",
-      "label": "Karte: Innenabstand links",
-      "group": "Feinschliff: Alerts",
-      "default": 22,
-      "min": 0,
-      "max": 88,
-      "unit": "px"
-    },
-    {
-      "key": "cardNameFontSize",
-      "type": "number",
-      "label": "Karte Name: Schriftgrösse",
-      "group": "Feinschliff: Alerts",
-      "default": 2.55,
-      "min": 0,
-      "max": 10.2,
-      "step": 0.01
-    },
-    {
-      "key": "cardNameFontWeight",
-      "type": "number",
-      "label": "Karte Name: Schriftstärke",
-      "group": "Feinschliff: Alerts",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "cardNameLineHeight",
-      "type": "number",
-      "label": "Karte Name: Zeilenhöhe",
-      "group": "Feinschliff: Alerts",
-      "default": 1.05,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "cardNameColor",
-      "type": "color",
-      "label": "Karte Name: Textfarbe",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "cardNameFont",
-      "type": "font",
-      "label": "Karte Name: Schrift",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "cardBreedFontSize",
-      "type": "number",
-      "label": "Karte Rasse: Schriftgrösse Anteil von „Schriftgrösse“ (%)",
-      "group": "Feinschliff: Alerts",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "cardBreedFontWeight",
-      "type": "number",
-      "label": "Karte Rasse: Schriftstärke",
-      "group": "Feinschliff: Alerts",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "cardBreedColor",
-      "type": "color",
-      "label": "Karte Rasse: Textfarbe",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "cardBreedFont",
-      "type": "font",
-      "label": "Karte Rasse: Schrift",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "sheetNameLeft",
-      "type": "number",
-      "label": "Blatt Name: Lage links",
-      "group": "Feinschliff: Alerts",
-      "default": 40,
-      "min": -160,
-      "max": 160,
-      "unit": "px"
-    },
-    {
-      "key": "sheetNameTransform",
-      "type": "number",
-      "label": "Blatt Name: Verformung Verschiebung y",
-      "group": "Feinschliff: Alerts",
-      "default": -50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "sheetNameFontSize",
-      "type": "number",
-      "label": "Blatt Name: Schriftgrösse",
-      "group": "Feinschliff: Alerts",
-      "default": 1.3,
-      "min": 0,
-      "max": 5.2,
-      "step": 0.01
-    },
-    {
-      "key": "sheetNameFontWeight",
-      "type": "number",
-      "label": "Blatt Name: Schriftstärke",
-      "group": "Feinschliff: Alerts",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "sheetNameColor",
-      "type": "color",
-      "label": "Blatt Name: Textfarbe",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "sheetNameFont",
-      "type": "font",
-      "label": "Blatt Name: Schrift",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "sheetCoatTransform",
-      "type": "number",
-      "label": "Blatt Fell: Verformung Verschiebung x",
-      "group": "Feinschliff: Alerts",
-      "default": -50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "sheetCoatFontSize",
-      "type": "number",
-      "label": "Blatt Fell: Schriftgrösse",
-      "group": "Feinschliff: Alerts",
-      "default": 0.7,
-      "min": 0,
-      "max": 2.8,
-      "step": 0.01
-    },
-    {
-      "key": "sheetCoatFontWeight",
-      "type": "number",
-      "label": "Blatt Fell: Schriftstärke",
-      "group": "Feinschliff: Alerts",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "sheetCoatColor",
-      "type": "color",
-      "label": "Blatt Fell: Textfarbe",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "sheetCoatFont",
-      "type": "font",
-      "label": "Blatt Fell: Schrift",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "alertCardTop",
-      "type": "number",
-      "label": "Alert Karte: Lage oben",
-      "group": "Feinschliff: Alerts",
-      "default": 440,
-      "min": -1760,
-      "max": 1760,
-      "unit": "px"
-    },
-    {
-      "key": "alertCardMinWidth",
-      "type": "number",
-      "label": "Alert Karte: Mindestbreite",
-      "group": "Feinschliff: Alerts",
-      "default": 940,
-      "min": 0,
-      "max": 3760,
-      "unit": "px"
-    },
-    {
-      "key": "alertCardMaxWidth",
-      "type": "number",
-      "label": "Alert Karte: Höchstbreite",
-      "group": "Feinschliff: Alerts",
-      "default": 2,
-      "min": 0,
-      "max": 10
-    },
-    {
-      "key": "alertCardMaxWidth2",
-      "type": "number",
-      "label": "Alert Karte: Höchstbreite (2)",
-      "group": "Feinschliff: Alerts",
-      "default": 48,
-      "min": 0,
-      "max": 192,
-      "unit": "px"
-    },
-    {
-      "key": "alertCardPadding",
-      "type": "number",
-      "label": "Alert Karte: Innenabstand oben",
-      "group": "Feinschliff: Alerts",
-      "default": 26,
-      "min": 0,
-      "max": 104,
-      "unit": "px"
-    },
-    {
-      "key": "alertCardPadding2",
-      "type": "number",
-      "label": "Alert Karte: Innenabstand links/rechts",
-      "group": "Feinschliff: Alerts",
-      "default": 40,
-      "min": 0,
-      "max": 160,
-      "unit": "px"
-    },
-    {
-      "key": "alertCardPadding3",
-      "type": "number",
-      "label": "Alert Karte: Innenabstand unten",
-      "group": "Feinschliff: Alerts",
-      "default": 32,
-      "min": 0,
-      "max": 128,
-      "unit": "px"
-    },
-    {
-      "key": "alertCardTransformOrigin",
-      "type": "number",
-      "label": "Alert Karte: Drehpunkt x",
-      "group": "Feinschliff: Alerts",
-      "default": 50,
-      "min": 0,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "alertCardPillLeft",
-      "type": "number",
-      "label": "Alert-Karte: Pille: Lage links",
-      "group": "Feinschliff: Alerts",
-      "default": 50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "alertCardPillTop",
-      "type": "number",
-      "label": "Alert-Karte: Pille: Lage oben",
-      "group": "Feinschliff: Alerts",
-      "default": -30,
-      "min": -120,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "alertCardPillTransform",
-      "type": "number",
-      "label": "Alert-Karte: Pille: Verformung Verschiebung x",
-      "group": "Feinschliff: Alerts",
-      "default": -50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "alertNameMarginTop",
-      "type": "number",
-      "label": "Alert Name: Abstand oben",
-      "group": "Feinschliff: Alerts",
-      "default": 18,
-      "min": -72,
-      "max": 72,
-      "unit": "px"
-    },
-    {
-      "key": "alertNameFontSize",
-      "type": "number",
-      "label": "Alert Name: Schriftgrösse",
-      "group": "Feinschliff: Alerts",
-      "default": 3.25,
-      "min": 0,
-      "max": 13,
-      "step": 0.01
-    },
-    {
-      "key": "alertNameFontWeight",
-      "type": "number",
-      "label": "Alert Name: Schriftstärke",
-      "group": "Feinschliff: Alerts",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "alertNameLineHeight",
-      "type": "number",
-      "label": "Alert Name: Zeilenhöhe",
-      "group": "Feinschliff: Alerts",
-      "default": 1.05,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "alertNameColor",
-      "type": "color",
-      "label": "Alert Name: Textfarbe",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "alertNameFont",
-      "type": "font",
-      "label": "Alert Name: Schrift",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "alertLineFontSize",
-      "type": "number",
-      "label": "Alert Zeile: Schriftgrösse",
-      "group": "Feinschliff: Alerts",
-      "default": 1.3,
-      "min": 0,
-      "max": 5.2,
-      "step": 0.01
-    },
-    {
-      "key": "alertLineFontWeight",
-      "type": "number",
-      "label": "Alert Zeile: Schriftstärke",
-      "group": "Feinschliff: Alerts",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "alertLineColor",
-      "type": "color",
-      "label": "Alert Zeile: Textfarbe",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "alertLineFont",
-      "type": "font",
-      "label": "Alert Zeile: Schrift",
-      "group": "Feinschliff: Alerts",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "alertAtStop",
-      "type": "number",
-      "label": "Ablauf: Hund hält bei",
-      "group": "Feinschliff: Alerts",
-      "default": 1.25,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertAtDrop",
-      "type": "number",
-      "label": "Ablauf: Spielzeug fällt bei",
-      "group": "Feinschliff: Alerts",
-      "default": 1.3,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertAtCard",
-      "type": "number",
-      "label": "Ablauf: Karte kommt bei",
-      "group": "Feinschliff: Alerts",
-      "default": 1.4,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertAtBark",
-      "type": "number",
-      "label": "Ablauf: erstes Bellen bei",
-      "group": "Feinschliff: Alerts",
-      "default": 2,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertBarkGap",
-      "type": "number",
-      "label": "Ablauf: zweites Bellen danach",
-      "group": "Feinschliff: Alerts",
-      "default": 1.4,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertAtStand",
-      "type": "number",
-      "label": "Ablauf: Hund steht bis",
-      "group": "Feinschliff: Alerts",
-      "default": 5.6,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertAtPick",
-      "type": "number",
-      "label": "Ablauf: hebt Spielzeug auf bei",
-      "group": "Feinschliff: Alerts",
-      "default": 5.85,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertAtRun",
-      "type": "number",
-      "label": "Ablauf: läuft los bei",
-      "group": "Feinschliff: Alerts",
-      "default": 6.2,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertAtGone",
-      "type": "number",
-      "label": "Ablauf: weg bei",
-      "group": "Feinschliff: Alerts",
-      "default": 7.4,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertPackAfterCard",
-      "type": "number",
-      "label": "Raid: Rudel startet nach der Karte",
-      "group": "Feinschliff: Alerts",
-      "default": 0.3,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "alertWaitAfterPack",
-      "type": "number",
-      "label": "Raid: Hund wartet nach dem Rudel",
-      "group": "Feinschliff: Alerts",
-      "default": 0.3,
-      "min": 0,
-      "max": 20,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "cardGrow",
-      "type": "number",
-      "label": "Karte: springt herein in",
-      "group": "Feinschliff: Alerts",
-      "default": 0.5,
-      "min": 0,
-      "max": 5,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "cardOvershoot",
-      "type": "number",
-      "label": "Karte: Überschwingen",
-      "group": "Feinschliff: Alerts",
-      "default": 1.6,
-      "min": 0,
-      "max": 10,
-      "step": 0.05
-    },
-    {
-      "key": "cardLeaveFrom",
-      "type": "number",
-      "label": "Karte: geht ab (nach Loslaufen)",
-      "group": "Feinschliff: Alerts",
-      "default": 0.2,
-      "min": 0,
-      "max": 5,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "cardLeaveTo",
-      "type": "number",
-      "label": "Karte: weg (nach Loslaufen)",
-      "group": "Feinschliff: Alerts",
-      "default": 0.6,
-      "min": 0,
-      "max": 5,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "toySlide",
-      "type": "number",
-      "label": "Spielzeug: rutscht um (Pixel)",
-      "group": "Feinschliff: Alerts",
-      "default": 14,
-      "min": 0,
-      "max": 200
-    },
-    {
-      "key": "toySlideTime",
-      "type": "number",
-      "label": "Spielzeug: rutscht in",
-      "group": "Feinschliff: Alerts",
-      "default": 0.6,
-      "min": 0,
-      "max": 5,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "toyBack",
-      "type": "number",
-      "label": "Spielzeug: zurück ins Maul in",
-      "group": "Feinschliff: Alerts",
-      "default": 0.15,
-      "min": 0,
-      "max": 5,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "stingerEdge",
-      "type": "color",
-      "label": "Rand: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "edge"
-    },
-    {
-      "key": "stingerInk",
-      "type": "color",
-      "label": "Tinte: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "stingerAccent",
-      "type": "color",
-      "label": "Akzent: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "stingerBall",
-      "type": "color",
-      "label": "Ball: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "ball"
-    },
-    {
-      "key": "stingerMuted",
-      "type": "color",
-      "label": "Gedämpft: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "stingerFont",
-      "type": "font",
-      "label": "Name: Schrift",
-      "group": "Stinger",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": "font"
-    },
-    {
-      "key": "stingerNameSize",
-      "type": "number",
-      "label": "Name: Schriftgrösse",
-      "group": "Stinger",
-      "default": 60,
-      "min": 0,
-      "max": 400,
-      "unit": "px"
-    },
-    {
-      "key": "stingerNameBelow",
-      "type": "number",
-      "label": "Name: unter dem Abzeichen",
-      "group": "Stinger",
-      "default": 80,
-      "min": -400,
-      "max": 400,
-      "unit": "px"
-    },
-    {
-      "key": "profileTitleColor",
-      "type": "color",
-      "label": "Titel: Farbe",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "cream"
-    },
-    {
-      "key": "profileOutlineColor",
-      "type": "color",
-      "label": "Titel: Umriss",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "ink"
-    },
-    {
-      "key": "profileLineColor",
-      "type": "color",
-      "label": "Zeile: Farbe",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "textColor"
-    },
-    {
-      "key": "profileFont",
-      "type": "font",
-      "label": "Schrift",
-      "group": "Profilbanner",
-      "default": "",
-      "options": [
-        "Pixelify Sans",
-        "VT323",
-        "Silkscreen"
-      ],
-      "inherit": "font"
-    },
-    {
-      "key": "profileTitleY",
-      "type": "number",
-      "label": "Titel: von oben",
-      "group": "Profilbanner",
-      "default": 80,
-      "min": -1080,
-      "max": 2160,
-      "unit": "px"
-    },
-    {
-      "key": "profileLineY",
-      "type": "number",
-      "label": "Zeile: von oben",
-      "group": "Profilbanner",
-      "default": 150,
-      "min": -1080,
-      "max": 2160,
-      "unit": "px"
-    },
-    {
-      "key": "profileLineScale",
-      "type": "number",
-      "label": "Zeile: Schriftgrösse (Faktor)",
-      "group": "Profilbanner",
-      "default": 1.3,
-      "min": 0,
-      "max": 5,
-      "step": 0.05
-    },
-    {
-      "key": "profileTitleShare",
-      "type": "number",
-      "label": "Titel: Grösse (Anteil der Titelgrösse)",
-      "group": "Profilbanner",
-      "default": 0.72,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
     },
     {
       "key": "offlineTitleColor",
@@ -8659,6 +8509,156 @@
       "min": 0,
       "max": 1,
       "step": 0.01
+    },
+    {
+      "key": "profileTitleColor",
+      "type": "color",
+      "label": "Titel: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "cream"
+    },
+    {
+      "key": "profileOutlineColor",
+      "type": "color",
+      "label": "Titel: Umriss",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "profileLineColor",
+      "type": "color",
+      "label": "Zeile: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "profileFont",
+      "type": "font",
+      "label": "Schrift",
+      "group": "Profilbanner",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "profileTitleY",
+      "type": "number",
+      "label": "Titel: von oben",
+      "group": "Profilbanner",
+      "default": 80,
+      "min": -1080,
+      "max": 2160,
+      "unit": "px"
+    },
+    {
+      "key": "profileLineY",
+      "type": "number",
+      "label": "Zeile: von oben",
+      "group": "Profilbanner",
+      "default": 150,
+      "min": -1080,
+      "max": 2160,
+      "unit": "px"
+    },
+    {
+      "key": "profileLineScale",
+      "type": "number",
+      "label": "Zeile: Schriftgrösse (Faktor)",
+      "group": "Profilbanner",
+      "default": 1.3,
+      "min": 0,
+      "max": 5,
+      "step": 0.05
+    },
+    {
+      "key": "profileTitleShare",
+      "type": "number",
+      "label": "Titel: Grösse (Anteil der Titelgrösse)",
+      "group": "Profilbanner",
+      "default": 0.72,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "stingerEdge",
+      "type": "color",
+      "label": "Rand: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "edge"
+    },
+    {
+      "key": "stingerInk",
+      "type": "color",
+      "label": "Tinte: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "ink"
+    },
+    {
+      "key": "stingerAccent",
+      "type": "color",
+      "label": "Akzent: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "stingerBall",
+      "type": "color",
+      "label": "Ball: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "ball"
+    },
+    {
+      "key": "stingerMuted",
+      "type": "color",
+      "label": "Gedämpft: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "stingerFont",
+      "type": "font",
+      "label": "Name: Schrift",
+      "group": "Stinger",
+      "default": "",
+      "options": [
+        "Pixelify Sans",
+        "VT323",
+        "Silkscreen"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "stingerNameSize",
+      "type": "number",
+      "label": "Name: Schriftgrösse",
+      "group": "Stinger",
+      "default": 60,
+      "min": 0,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "stingerNameBelow",
+      "type": "number",
+      "label": "Name: unter dem Abzeichen",
+      "group": "Stinger",
+      "default": 80,
+      "min": -400,
+      "max": 400,
+      "unit": "px"
     }
   ],
   "groupScenes": {
@@ -8720,24 +8720,83 @@
     "Minimes: Töne": [
       "minimes"
     ],
-    "Feinschliff: Minimes": [
-      "minimes"
+    "Feinschliff: Starting": [
+      "starting"
     ],
-    "Feinschliff: Chat": [
-      "chat"
+    "Feinschliff: Starting, Ending": [
+      "starting",
+      "ending"
     ],
-    "Feinschliff: Allgemein": [
+    "Feinschliff: Starting, BRB, Alerts": [
+      "starting",
+      "brb",
+      "alerts"
+    ],
+    "Feinschliff: Starting, BRB, Musik": [
+      "starting",
+      "brb",
+      "music"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Minimes": [
       "starting",
       "brb",
       "ending",
+      "stats",
+      "alerts",
+      "minimes"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Befehlsseite": [
+      "starting",
+      "brb",
+      "ending",
+      "stats",
+      "alerts",
+      "cam",
+      "info"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Kamera-Rahmen, Musik, Befehlsseite": [
+      "starting",
+      "brb",
+      "ending",
+      "stats",
+      "alerts",
+      "cam",
+      "music",
+      "info"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Kamera-Rahmen, Musik, Befehlsseite": [
+      "starting",
+      "brb",
+      "ending",
+      "stats",
       "alerts",
       "chat",
       "cam",
       "music",
-      "stats",
-      "fx",
-      "minimes",
       "info"
+    ],
+    "Feinschliff: BRB": [
+      "brb"
+    ],
+    "Feinschliff: Ending": [
+      "ending"
+    ],
+    "Feinschliff: Ending, Statistik": [
+      "ending",
+      "stats"
+    ],
+    "Feinschliff: Statistik": [
+      "stats"
+    ],
+    "Feinschliff: Alerts": [
+      "alerts"
+    ],
+    "Feinschliff: Chat": [
+      "chat"
+    ],
+    "Feinschliff: Chat, Musik": [
+      "chat",
+      "music"
     ],
     "Feinschliff: Kamera-Rahmen": [
       "cam"
@@ -8748,19 +8807,11 @@
     "Feinschliff: Effekte": [
       "fx"
     ],
-    "Feinschliff: Statistik": [
-      "stats"
-    ],
     "Feinschliff: Befehlsseite": [
       "info"
     ],
-    "Feinschliff: Starting, BRB, Ending": [
-      "starting",
-      "brb",
-      "ending"
-    ],
-    "Feinschliff: Alerts": [
-      "alerts"
+    "Feinschliff: Minimes": [
+      "minimes"
     ]
   },
   "minimeVariants": {

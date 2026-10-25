@@ -44,4 +44,6 @@ export const MUSIC_TUNING = [
   number("kfEqToScale", "Equalizer (Ende): Grösse x", "Feinschliff: Musik", 1, 0, 4, undefined, 0.01),
   number("kfEqToScale2", "Equalizer (Ende): Grösse y", "Feinschliff: Musik", 1, 0, 4, undefined, 0.01),
   number("zigzagDraw", "Zickzack: zeichnet sich in", "Feinschliff: Musik", 0.9, 0, 10, "s", 0.05),
+  number("timeProgressZigzagWidth", "Musik-Zeit: Zickzack: Breite", "Feinschliff: Musik", 260, 0, 1040, "px"),
+  number("timeProgressZigzagHeight", "Musik-Zeit: Zickzack: Höhe", "Feinschliff: Musik", 18, 0, 72, "px"),
 ] as const satisfies readonly SettingField[];

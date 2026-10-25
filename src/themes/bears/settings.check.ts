@@ -47,9 +47,9 @@ const optionsOf = (key: string) => { const field = fields.find(candidate => cand
 for (const key of ["bearChat", "bearFx"]) assert.deepEqual(optionsOf(key), [...BEAR_IDS], key);
 for (const key of ["bearAlerts", "bearCam", "bearMusic", "bearInfo"]) assert.deepEqual(optionsOf(key), [...BEAR_CHOICES], key);
 
-// Every group is mapped to its scenes (Allgemein applies everywhere)
+// Every group is mapped to its scenes (Allgemein and the fine-tuning of every scene apply everywhere)
 for (const group of new Set(fields.map(field => field.group))) {
-  if (group !== "Allgemein") assert.ok(group in (bearsSettings.groupScenes ?? {}), `${group} without a scene`);
+  if (group !== "Allgemein" && group !== "Feinschliff: Allgemein") assert.ok(group in (bearsSettings.groupScenes ?? {}), `${group} without a scene`);
 }
 
 // Minimes: the core fields, one names field per bear, the three bears as variants, the scene for every minime group

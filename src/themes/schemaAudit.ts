@@ -14,7 +14,7 @@ import {
 import { validateSettings } from "../core/settings.ts";
 import { stingerFields } from "../core/stingerOptions.ts";
 import { SCENES, type ThemeSchema } from "../core/theme.ts";
-import { groupsForView } from "../dashboard/settingsForm.ts";
+import { FINE_TUNING, groupsForView } from "../dashboard/settingsForm.ts";
 
 // The core reads shared fields of a feature (e.g. readMinimeOptions, describeCommands, useFxScene, badgeLabel,
 // readStingerOptions), they count as used; plus the generated variant, faction, hop and fight fields of the minimes
@@ -45,8 +45,8 @@ const ALWAYS_BASIC = new Set(["quality"]);
 export function auditBasic(schema: ThemeSchema): string[] {
   const numbers = schema.fields.filter(field => field.basic && field.type === "number" && !BASIC_NUMBERS.has(field.key)).map(field => `${field.key}: basic number`);
   const areas = (["general", ...SCENES] as const).flatMap(view => {
-    // fine-tuning groups (tuning.ts) hold only details for the advanced view
-    const fields = groupsForView(schema, view).filter(group => !group.group.startsWith(TUNING_GROUP)).flatMap(group => group.fields);
+    // the fine-tuning (tuning.ts, one group per view) holds only details for the advanced view
+    const fields = groupsForView(schema, view).filter(group => group.group !== FINE_TUNING).flatMap(group => group.fields);
     const count = fields.filter(field => field.basic && !ALWAYS_BASIC.has(field.key)).length;
     const [min, max] = view === "general" ? [3, 12] : [1, 10];
     const needed = fields.some(field => field.type !== "number") ? min : 0;

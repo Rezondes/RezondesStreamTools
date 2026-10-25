@@ -3,6 +3,7 @@ import { color, font, inherits, number } from "../../../core/fields.ts";
 import type { SettingField } from "../../../core/theme.ts";
 
 export const CHAT_TUNING = [
+  number("kfCollapseToMarginTop", "Zusammenfallen (Ende): Abstand oben", "Feinschliff: Chat", 8, -40, 40, "px"),
   number("chatGap", "Chat: Abstand", "Feinschliff: Chat", 8, 0, 40, "px"),
   number("chatPadding", "Chat: Innenabstand", "Feinschliff: Chat", 12, 0, 48, "px"),
   inherits(color("chatColor", "Chat: Textfarbe", "Feinschliff: Chat", ""), "accent"),

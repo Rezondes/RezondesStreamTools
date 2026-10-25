@@ -55,7 +55,6 @@ export const MUSIC_TUNING = [
   number("coverBorder2", "Cover: Rand Stärke", "Feinschliff: Musik", 5, 0, 40, "px"),
   number("coverBoxShadow", "Cover: Schatten y", "Feinschliff: Musik", 10, -40, 40, "px"),
   number("coverBoxShadow2", "Cover: Schatten Unschärfe", "Feinschliff: Musik", 24, 0, 96, "px"),
-  number("coverEckigBorderRadius", "Cover eckig: Eckenradius Anteil von „Eckenradius“ (%)", "Feinschliff: Musik", 100, 0, 400),
   number("coverEmptyPadding", "Cover Platzhalter: Innenabstand", "Feinschliff: Musik", 16, 0, 64, "px"),
   inherits(color("coverEmptyBackground", "Cover Platzhalter: Hintergrund Farbe (Meer)", "Feinschliff: Musik", ""), "sea"),
   inherits(color("coverEmptyPartMainFill", "Cover Platzhalter Fläche: Füllfarbe Farbe (Sonne)", "Feinschliff: Musik", ""), "sun"),

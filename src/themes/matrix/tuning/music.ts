@@ -3,7 +3,6 @@ import { color, font, inherits, number } from "../../../core/fields.ts";
 import type { SettingField } from "../../../core/theme.ts";
 
 export const MUSIC_TUNING = [
-  number("kfMarqueeToTransform", "Lauftext (Ende): Verformung Verschiebung x", "Feinschliff: Musik", -50, -150, 150, "%"),
   number("musicPadding", "Musik: Innenabstand", "Feinschliff: Musik", 12, 0, 48, "px"),
   number("musicBoxGap", "Musik Kasten: Abstand", "Feinschliff: Musik", 22, 0, 88, "px"),
   number("musicBoxPadding", "Musik Kasten: Innenabstand oben/unten", "Feinschliff: Musik", 16, 0, 64, "px"),

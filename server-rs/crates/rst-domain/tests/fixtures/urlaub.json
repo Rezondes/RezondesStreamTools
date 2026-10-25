@@ -3143,1383 +3143,435 @@
       "default": "#ffe28a"
     },
     {
-      "key": "thingRettungsringMain2",
-      "type": "color",
-      "label": "Strandding Rettungsring: --main Farbe (Rettungsring: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingRettungsringMain"
-    },
-    {
-      "key": "thingRettungsringDetail2",
-      "type": "color",
-      "label": "Strandding Rettungsring: --detail Farbe (Rettungsring: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingRettungsringDetail"
-    },
-    {
-      "key": "thingBadeenteMain2",
-      "type": "color",
-      "label": "Strandding Badeente: --main Farbe (Badeente: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingBadeenteMain"
-    },
-    {
-      "key": "thingBadeenteDetail2",
-      "type": "color",
-      "label": "Strandding Badeente: --detail Farbe (Badeente: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingBadeenteDetail"
-    },
-    {
-      "key": "thingWasserballMain2",
-      "type": "color",
-      "label": "Strandding Wasserball: --main Farbe (Wasserball: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingWasserballMain"
-    },
-    {
-      "key": "thingWasserballDetail2",
-      "type": "color",
-      "label": "Strandding Wasserball: --detail Farbe (Wasserball: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingWasserballDetail"
-    },
-    {
-      "key": "thingSurfbrettMain2",
-      "type": "color",
-      "label": "Strandding Surfbrett: --main Farbe (Surfbrett: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSurfbrettMain"
-    },
-    {
-      "key": "thingSurfbrettDetail2",
-      "type": "color",
-      "label": "Strandding Surfbrett: --detail Farbe (Surfbrett: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSurfbrettDetail"
-    },
-    {
-      "key": "thingSonnenschirmMain2",
-      "type": "color",
-      "label": "Strandding Sonnenschirm: --main Farbe (Sonnenschirm: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSonnenschirmMain"
-    },
-    {
-      "key": "thingSonnenschirmDetail2",
-      "type": "color",
-      "label": "Strandding Sonnenschirm: --detail Farbe (Sonnenschirm: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSonnenschirmDetail"
-    },
-    {
-      "key": "thingFlamingoMain2",
-      "type": "color",
-      "label": "Strandding Flamingo: --main Farbe (Flamingo-Schwimmring: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingFlamingoMain"
-    },
-    {
-      "key": "thingFlamingoDetail2",
-      "type": "color",
-      "label": "Strandding Flamingo: --detail Farbe (Flamingo-Schwimmring: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingFlamingoDetail"
-    },
-    {
-      "key": "thingLiegestuhlMain2",
-      "type": "color",
-      "label": "Strandding Liegestuhl: --main Farbe (Liegestuhl: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingLiegestuhlMain"
-    },
-    {
-      "key": "thingLiegestuhlDetail2",
-      "type": "color",
-      "label": "Strandding Liegestuhl: --detail Farbe (Liegestuhl: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingLiegestuhlDetail"
-    },
-    {
-      "key": "thingSandeimerMain2",
-      "type": "color",
-      "label": "Strandding Sandeimer: --main Farbe (Sandeimer: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSandeimerMain"
-    },
-    {
-      "key": "thingSandeimerDetail2",
-      "type": "color",
-      "label": "Strandding Sandeimer: --detail Farbe (Sandeimer: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSandeimerDetail"
-    },
-    {
-      "key": "thingEisMain2",
-      "type": "color",
-      "label": "Strandding Eis: --main Farbe (Eis am Stiel: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingEisMain"
-    },
-    {
-      "key": "thingEisDetail2",
-      "type": "color",
-      "label": "Strandding Eis: --detail Farbe (Eis am Stiel: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingEisDetail"
-    },
-    {
-      "key": "thingMuschelMain2",
-      "type": "color",
-      "label": "Strandding Muschel: --main Farbe (Muschel: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingMuschelMain"
-    },
-    {
-      "key": "thingMuschelDetail2",
-      "type": "color",
-      "label": "Strandding Muschel: --detail Farbe (Muschel: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingMuschelDetail"
-    },
-    {
-      "key": "thingSeesternMain2",
-      "type": "color",
-      "label": "Strandding Seestern: --main Farbe (Seestern: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSeesternMain"
-    },
-    {
-      "key": "thingSeesternDetail2",
-      "type": "color",
-      "label": "Strandding Seestern: --detail Farbe (Seestern: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSeesternDetail"
-    },
-    {
-      "key": "thingKrebsMain2",
-      "type": "color",
-      "label": "Strandding Krebs: --main Farbe (Krebs: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingKrebsMain"
-    },
-    {
-      "key": "thingKrebsDetail2",
-      "type": "color",
-      "label": "Strandding Krebs: --detail Farbe (Krebs: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingKrebsDetail"
-    },
-    {
-      "key": "thingSchnorchelMain2",
-      "type": "color",
-      "label": "Strandding Schnorchel: --main Farbe (Schnorchelmaske: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSchnorchelMain"
-    },
-    {
-      "key": "thingSchnorchelDetail2",
-      "type": "color",
-      "label": "Strandding Schnorchel: --detail Farbe (Schnorchelmaske: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSchnorchelDetail"
-    },
-    {
-      "key": "thingSonnenbrilleMain2",
-      "type": "color",
-      "label": "Strandding Sonnenbrille: --main Farbe (Sonnenbrille: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSonnenbrilleMain"
-    },
-    {
-      "key": "thingSonnenbrilleDetail2",
-      "type": "color",
-      "label": "Strandding Sonnenbrille: --detail Farbe (Sonnenbrille: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingSonnenbrilleDetail"
-    },
-    {
-      "key": "thingCocktailMain2",
-      "type": "color",
-      "label": "Strandding Cocktail: --main Farbe (Cocktail: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingCocktailMain"
-    },
-    {
-      "key": "thingCocktailDetail2",
-      "type": "color",
-      "label": "Strandding Cocktail: --detail Farbe (Cocktail: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingCocktailDetail"
-    },
-    {
-      "key": "thingStrandtascheMain2",
-      "type": "color",
-      "label": "Strandding Strandtasche: --main Farbe (Strandtasche: Hauptfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingStrandtascheMain"
-    },
-    {
-      "key": "thingStrandtascheDetail2",
-      "type": "color",
-      "label": "Strandding Strandtasche: --detail Farbe (Strandtasche: Detailfarbe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "thingStrandtascheDetail"
-    },
-    {
-      "key": "minimeTransform",
+      "key": "buoyRopeWidth",
       "type": "number",
-      "label": "Minime: Verformung Verschiebung x",
-      "group": "Feinschliff: Minimes",
-      "default": 50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "minimeNameMarginBottom",
-      "type": "number",
-      "label": "Minime Name: Abstand unten",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNamePadding",
-      "type": "number",
-      "label": "Minime Name: Innenabstand oben/unten",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
+      "label": "Boje Seil: Breite",
+      "group": "Feinschliff: Starting",
+      "default": 480,
       "min": 0,
-      "max": 40,
+      "max": 1920,
       "unit": "px"
     },
     {
-      "key": "minimeNamePadding2",
+      "key": "buoyRopeHeight",
       "type": "number",
-      "label": "Minime Name: Innenabstand links/rechts",
-      "group": "Feinschliff: Minimes",
-      "default": 10,
+      "label": "Boje Seil: Höhe",
+      "group": "Feinschliff: Starting",
+      "default": 54,
       "min": 0,
-      "max": 40,
+      "max": 216,
       "unit": "px"
     },
     {
-      "key": "minimeNameFontWeight",
-      "type": "number",
-      "label": "Minime Name: Schriftstärke",
-      "group": "Feinschliff: Minimes",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "minimeNameColor",
+      "key": "ropeLineStroke",
       "type": "color",
-      "label": "Minime Name: Textfarbe",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "minimeNameFont",
-      "type": "font",
-      "label": "Minime Name: Schrift",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "options": [
-        "Fredoka",
-        "Baloo 2",
-        "Nunito",
-        "Inter",
-        "DM Sans"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "nameSchildBackground",
-      "type": "color",
-      "label": "Minime-Name als Schild: Hintergrund Farbe (Holz)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "wood"
-    },
-    {
-      "key": "nameSchildBorder",
-      "type": "color",
-      "label": "Minime-Name als Schild: Rand Farbe (Holz dunkel (Maserung, Rand))",
-      "group": "Feinschliff: Minimes",
+      "label": "Seil Linie: Linienfarbe Farbe (Holz dunkel (Maserung, Rand))",
+      "group": "Feinschliff: Starting",
       "default": "",
       "inherit": "woodDark"
     },
     {
-      "key": "nameSchildBorder2",
+      "key": "ropeLineStrokeWidth",
       "type": "number",
-      "label": "Minime-Name als Schild: Rand Stärke",
-      "group": "Feinschliff: Minimes",
-      "default": 2,
+      "label": "Seil Linie: Linienstärke",
+      "group": "Feinschliff: Starting",
+      "default": 9,
       "min": 0,
-      "max": 40,
-      "unit": "px"
+      "max": 36
     },
     {
-      "key": "nameSchildBorderRadius",
+      "key": "ropeTwistStroke",
+      "type": "color",
+      "label": "Seil Drall: Linienfarbe Farbe (Holz)",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "wood"
+    },
+    {
+      "key": "ropeTwistStroke2",
+      "type": "color",
+      "label": "Seil Drall: Linienfarbe Farbe (Gischt)",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "foam"
+    },
+    {
+      "key": "ropeTwistStroke3",
       "type": "number",
-      "label": "Minime-Name als Schild: Eckenradius",
-      "group": "Feinschliff: Minimes",
+      "label": "Seil Drall: Linienfarbe Farbanteil",
+      "group": "Feinschliff: Starting",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "ropeTwistStrokeWidth",
+      "type": "number",
+      "label": "Seil Drall: Linienstärke",
+      "group": "Feinschliff: Starting",
+      "default": 5,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "key": "ropeTwistStrokeDasharray",
+      "type": "number",
+      "label": "Seil Drall: Strichmuster Wert 1",
+      "group": "Feinschliff: Starting",
       "default": 6,
       "min": 0,
-      "max": 40,
-      "unit": "px"
+      "max": 24
     },
     {
-      "key": "nameSchildColor",
-      "type": "color",
-      "label": "Minime-Name als Schild: Textfarbe",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "textOnWood"
-    },
-    {
-      "key": "nameBandBackground",
-      "type": "color",
-      "label": "Minime-Name als Band: Hintergrund Farbe (Akzent (Hibiskus))",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "nameBandBorderRadius",
-      "type": "number",
-      "label": "Minime-Name als Band: Eckenradius",
-      "group": "Feinschliff: Minimes",
-      "default": 999,
-      "min": 0,
-      "max": 999,
-      "unit": "px"
-    },
-    {
-      "key": "nameBandColor",
-      "type": "color",
-      "label": "Minime-Name als Band: Textfarbe",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "textColor"
-    },
-    {
-      "key": "minimeBodyTransformOrigin",
-      "type": "number",
-      "label": "Minime Körper: Drehpunkt x",
-      "group": "Feinschliff: Minimes",
-      "default": 50,
-      "min": 0,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "minimeBodyAnimation",
-      "type": "number",
-      "label": "Minime Körper: Animation Dauer",
-      "group": "Feinschliff: Minimes",
-      "default": 2.4,
-      "min": 0,
-      "max": 12,
-      "unit": "s",
-      "step": 0.05
-    },
-    {
-      "key": "minimeShadowWidth",
-      "type": "number",
-      "label": "Minime Schatten: Breite",
-      "group": "Feinschliff: Minimes",
-      "default": 70,
-      "min": 0,
-      "max": 210,
-      "unit": "%"
-    },
-    {
-      "key": "minimeShadowHeight",
-      "type": "number",
-      "label": "Minime Schatten: Höhe",
-      "group": "Feinschliff: Minimes",
-      "default": 10,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeShadowMarginTop",
-      "type": "number",
-      "label": "Minime Schatten: Abstand oben",
-      "group": "Feinschliff: Minimes",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "thingBodyStroke",
-      "type": "color",
-      "label": "Strandding Körper: Linienfarbe Farbe (Umriss)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitOutline"
-    },
-    {
-      "key": "thingBodyStrokeWidth",
-      "type": "number",
-      "label": "Strandding Körper: Linienstärke Anteil von „Umriss: Stärke“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "thingLineStrokeWidth",
-      "type": "number",
-      "label": "Strandding Linie: Linienstärke Anteil von „Umriss: Stärke“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "thingLeafFill",
-      "type": "color",
-      "label": "Strandding Blatt: Füllfarbe Farbe (Akzent)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitLeaf"
-    },
-    {
-      "key": "thingLeafStroke",
-      "type": "color",
-      "label": "Strandding Blatt: Linienfarbe Farbe (Umriss)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitOutline"
-    },
-    {
-      "key": "thingLeafStrokeWidth",
-      "type": "number",
-      "label": "Strandding Blatt: Linienstärke Anteil von „Umriss: Stärke“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "thingStemFill",
-      "type": "color",
-      "label": "Strandding Stiel: Füllfarbe Farbe (Holz und Griffe)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitStem"
-    },
-    {
-      "key": "thingStemStroke",
-      "type": "color",
-      "label": "Strandding Stiel: Linienfarbe Farbe (Umriss)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitOutline"
-    },
-    {
-      "key": "thingStemStrokeWidth",
-      "type": "number",
-      "label": "Strandding Stiel: Linienstärke",
-      "group": "Feinschliff: Minimes",
-      "default": 0.6,
-      "min": 0,
-      "max": 2.4,
-      "step": 0.01
-    },
-    {
-      "key": "thingCheekFill",
-      "type": "color",
-      "label": "Strandding Wange: Füllfarbe Farbe (Bäckchen)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitCheek"
-    },
-    {
-      "key": "thingCheekOpacity",
-      "type": "number",
-      "label": "Strandding Wange: Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 0.6,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "thingEyeFill",
-      "type": "color",
-      "label": "Strandding Auge: Füllfarbe Farbe (Augen)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitEye"
-    },
-    {
-      "key": "thingMouthStroke",
-      "type": "color",
-      "label": "Strandding Mund: Linienfarbe Farbe (Mund)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitMouth"
-    },
-    {
-      "key": "thingMouthStrokeWidth",
-      "type": "number",
-      "label": "Strandding Mund: Linienstärke",
-      "group": "Feinschliff: Minimes",
-      "default": 2,
-      "min": 0,
-      "max": 10
-    },
-    {
-      "key": "thingSleepyStroke",
-      "type": "color",
-      "label": "Strandding müde Augen: Linienfarbe Farbe (Augen)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitEye"
-    },
-    {
-      "key": "thingSleepyStrokeWidth",
-      "type": "number",
-      "label": "Strandding müde Augen: Linienstärke",
-      "group": "Feinschliff: Minimes",
-      "default": 2,
-      "min": 0,
-      "max": 10
-    },
-    {
-      "key": "thingSnoreFill",
-      "type": "color",
-      "label": "Strandding Schnarchen: Füllfarbe Farbe (Mund)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "fruitMouth"
-    },
-    {
-      "key": "thingGlassesFill",
-      "type": "color",
-      "label": "Strandding Brille: Füllfarbe Farbe (Sonnenbrille)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "sunglasses"
-    },
-    {
-      "key": "actionBounceMinimeBodyAnimation",
-      "type": "number",
-      "label": "Aktion Hüpfen: Minime Körper: Animation Wert 2",
-      "group": "Feinschliff: Minimes",
-      "default": 3,
-      "min": 0,
-      "max": 12
-    },
-    {
-      "key": "actionBounceMinimeBodyAnimation2",
-      "type": "number",
-      "label": "Aktion Hüpfen: Minime Körper: Animation Wert 4",
-      "group": "Feinschliff: Minimes",
-      "default": 3,
-      "min": 0,
-      "max": 12
-    },
-    {
-      "key": "actionBounceMinimeShadowAnimation",
-      "type": "number",
-      "label": "Aktion Hüpfen: Minime Schatten: Animation Wert 2",
-      "group": "Feinschliff: Minimes",
-      "default": 3,
-      "min": 0,
-      "max": 12
-    },
-    {
-      "key": "actionBounceMinimeShadowAnimation2",
-      "type": "number",
-      "label": "Aktion Hüpfen: Minime Schatten: Animation Wert 4",
-      "group": "Feinschliff: Minimes",
-      "default": 3,
-      "min": 0,
-      "max": 12
-    },
-    {
-      "key": "actionSpinMinimeFlipAnimation",
-      "type": "number",
-      "label": "Aktion Drehen: Minime Spiegelung: Animation Wert 2 Anteil von „Pirouette: Umdrehungen“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "actionSpinMinimeFlipAnimation2",
-      "type": "number",
-      "label": "Aktion Drehen: Minime Spiegelung: Animation Wert 4 Anteil von „Pirouette: Umdrehungen“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "minimeZzColor",
-      "type": "color",
-      "label": "Minime Zz: Textfarbe",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "textColor"
-    },
-    {
-      "key": "minimeZzFontWeight",
-      "type": "number",
-      "label": "Minime Zz: Schriftstärke",
-      "group": "Feinschliff: Minimes",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "minimeZzAnimation",
-      "type": "number",
-      "label": "Minime Zz: Animation Dauer",
-      "group": "Feinschliff: Minimes",
-      "default": 2,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.05
-    },
-    {
-      "key": "minimeZzFont",
-      "type": "font",
-      "label": "Minime Zz: Schrift",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "options": [
-        "Fredoka",
-        "Baloo 2",
-        "Nunito",
-        "Inter",
-        "DM Sans"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "juiceLeft",
-      "type": "number",
-      "label": "Spritzer: Lage links",
-      "group": "Feinschliff: Minimes",
-      "default": 50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "juiceTop",
-      "type": "number",
-      "label": "Spritzer: Lage oben",
-      "group": "Feinschliff: Minimes",
-      "default": 40,
-      "min": -120,
-      "max": 120,
-      "unit": "%"
-    },
-    {
-      "key": "juiceIWidth",
-      "type": "number",
-      "label": "Spritzer: Tropfen: Breite",
-      "group": "Feinschliff: Minimes",
-      "default": 10,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "juiceIAspectRatio",
-      "type": "number",
-      "label": "Spritzer: Tropfen: Seitenverhältnis",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeBreatheFromScale",
-      "type": "number",
-      "label": "Minime atmet (Start): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeBreatheFromScale2",
-      "type": "number",
-      "label": "Minime atmet (Start): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeBreatheToScale",
-      "type": "number",
-      "label": "Minime atmet (Ende): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1.03,
-      "min": 0,
-      "max": 4.12,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeBreatheToScale2",
-      "type": "number",
-      "label": "Minime atmet (Ende): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 0.97,
-      "min": 0,
-      "max": 3.88,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeBlink0p95p100pScale",
-      "type": "number",
-      "label": "Minime blinzelt (0 %, 95 %, 100 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeBlink0p95p100pScale2",
-      "type": "number",
-      "label": "Minime blinzelt (0 %, 95 %, 100 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeBlink975pScale",
-      "type": "number",
-      "label": "Minime blinzelt (97.5 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeBlink975pScale2",
-      "type": "number",
-      "label": "Minime blinzelt (97.5 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 0.1,
-      "min": 0,
-      "max": 2,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeShadow0p100pScale",
-      "type": "number",
-      "label": "Minime-Schatten (0 %, 100 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeShadow0p100pScale2",
-      "type": "number",
-      "label": "Minime-Schatten (0 %, 100 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeShadow0p100pOpacity",
-      "type": "number",
-      "label": "Minime-Schatten (0 %, 100 %): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeShadow50pScale",
-      "type": "number",
-      "label": "Minime-Schatten (50 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 0.6,
-      "min": 0,
-      "max": 2.4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeShadow50pScale2",
-      "type": "number",
-      "label": "Minime-Schatten (50 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 0.6,
-      "min": 0,
-      "max": 2.4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeShadow50pOpacity",
-      "type": "number",
-      "label": "Minime-Schatten (50 %): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 0.5,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeSpin0p100pScale",
-      "type": "number",
-      "label": "Minime dreht sich (0 %, 100 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeSpin0p100pScale2",
-      "type": "number",
-      "label": "Minime dreht sich (0 %, 100 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeSpin25p75pScale",
-      "type": "number",
-      "label": "Minime dreht sich (25 %, 75 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 0.05,
-      "min": 0,
-      "max": 2,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeSpin25p75pScale2",
-      "type": "number",
-      "label": "Minime dreht sich (25 %, 75 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeSpin50pScale",
-      "type": "number",
-      "label": "Minime dreht sich (50 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": -1,
-      "min": -4,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeSpin50pScale2",
-      "type": "number",
-      "label": "Minime dreht sich (50 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeWobble20p60pRotate",
-      "type": "number",
-      "label": "Minime wackelt (20 %, 60 %): Drehung (Grad)",
-      "group": "Feinschliff: Minimes",
-      "default": -1,
-      "min": -360,
-      "max": 360
-    },
-    {
-      "key": "kfMinimeGlasses0pTranslate",
-      "type": "number",
-      "label": "Minime Sonnenbrille (0 %): Verschiebung y",
-      "group": "Feinschliff: Minimes",
-      "default": 30,
-      "min": -120,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeGlasses15p85pOpacity",
-      "type": "number",
-      "label": "Minime Sonnenbrille (15 %, 85 %): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeGlasses100pTranslate",
-      "type": "number",
-      "label": "Minime Sonnenbrille (100 %): Verschiebung y",
-      "group": "Feinschliff: Minimes",
-      "default": 30,
-      "min": -120,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeLook20p40pTranslate",
-      "type": "number",
-      "label": "Minime schaut (20 %, 40 %): Verschiebung x",
-      "group": "Feinschliff: Minimes",
-      "default": 3,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeLook60p80pTranslate",
-      "type": "number",
-      "label": "Minime schaut (60 %, 80 %): Verschiebung x",
-      "group": "Feinschliff: Minimes",
-      "default": 3,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeDoze0p100pScale",
-      "type": "number",
-      "label": "Minime döst (0 %, 100 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeDoze0p100pScale2",
-      "type": "number",
-      "label": "Minime döst (0 %, 100 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeDoze15p85pScale",
-      "type": "number",
-      "label": "Minime döst (15 %, 85 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1.04,
-      "min": 0,
-      "max": 4.16,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeDoze15p85pScale2",
-      "type": "number",
-      "label": "Minime döst (15 %, 85 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 0.92,
-      "min": 0,
-      "max": 3.68,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeZz30pOpacity",
-      "type": "number",
-      "label": "Schlaf-Zz (30 %): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeZzToTranslate",
-      "type": "number",
-      "label": "Schlaf-Zz (Ende): Verschiebung x",
-      "group": "Feinschliff: Minimes",
-      "default": 12,
-      "min": -48,
-      "max": 48,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeZzToTranslate2",
-      "type": "number",
-      "label": "Schlaf-Zz (Ende): Verschiebung y",
-      "group": "Feinschliff: Minimes",
-      "default": 36,
-      "min": -144,
-      "max": 144,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeJuiceFromOpacity",
-      "type": "number",
-      "label": "Spritzer (Start): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeJuiceToTransform",
-      "type": "number",
-      "label": "Spritzer (Ende): Verformung Verschiebung y",
-      "group": "Feinschliff: Minimes",
-      "default": 70,
-      "min": -280,
-      "max": 280,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeDropFromTranslate",
-      "type": "number",
-      "label": "Minime fällt herab (Start): Verschiebung y",
-      "group": "Feinschliff: Minimes",
-      "default": 380,
-      "min": -1520,
-      "max": 1520,
-      "unit": "px"
-    },
-    {
-      "key": "kfMinimeDrop70pScale",
-      "type": "number",
-      "label": "Minime fällt herab (70 %): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1.15,
-      "min": 0,
-      "max": 4.6,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeDrop70pScale2",
-      "type": "number",
-      "label": "Minime fällt herab (70 %): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 0.85,
-      "min": 0,
-      "max": 3.4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeDropToScale",
-      "type": "number",
-      "label": "Minime fällt herab (Ende): Grösse x",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeDropToScale2",
-      "type": "number",
-      "label": "Minime fällt herab (Ende): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeFadeInToOpacity",
-      "type": "number",
-      "label": "Minime blendet ein (Ende): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeFadeOutFromOpacity",
-      "type": "number",
-      "label": "Minime blendet aus (Start): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeLeapFromOpacity",
-      "type": "number",
-      "label": "Minime springt weg (Start): Deckkraft",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfMinimeLeapToTranslate",
-      "type": "number",
-      "label": "Minime springt weg (Ende): Verschiebung y",
-      "group": "Feinschliff: Minimes",
-      "default": 420,
-      "min": -1680,
-      "max": 1680,
-      "unit": "px"
-    },
-    {
-      "key": "rootLineHeight",
-      "type": "number",
-      "label": "Theme: Zeilenhöhe",
-      "group": "Feinschliff: Allgemein",
-      "default": 1.3,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "woodBackground",
-      "type": "color",
-      "label": "Holz: Hintergrund Farbe (Holz)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "wood"
-    },
-    {
-      "key": "woodBackground2",
-      "type": "color",
-      "label": "Holz: Hintergrund Farbe (Holz dunkel (Maserung, Rand))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "woodDark"
-    },
-    {
-      "key": "woodBackground3",
-      "type": "number",
-      "label": "Holz: Hintergrund Verlaufswinkel (Grad)",
-      "group": "Feinschliff: Allgemein",
-      "default": 180,
-      "min": -360,
-      "max": 360
-    },
-    {
-      "key": "woodBackground4",
-      "type": "number",
-      "label": "Holz: Hintergrund Verlauf Stopp 1",
-      "group": "Feinschliff: Allgemein",
-      "default": 44,
-      "min": 0,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "woodBackground5",
-      "type": "number",
-      "label": "Holz: Hintergrund Verlauf Stopp 2",
-      "group": "Feinschliff: Allgemein",
-      "default": 44,
-      "min": 0,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "woodBackground6",
-      "type": "number",
-      "label": "Holz: Hintergrund Verlauf Stopp 2 (2)",
-      "group": "Feinschliff: Allgemein",
-      "default": 44,
-      "min": 0,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "woodBackground7",
-      "type": "number",
-      "label": "Holz: Hintergrund Verlauf Stopp 2 (3)",
-      "group": "Feinschliff: Allgemein",
-      "default": 3,
-      "min": 0,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "woodBorder",
-      "type": "color",
-      "label": "Holz: Rand Farbe (Holz dunkel (Maserung, Rand))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "woodDark"
-    },
-    {
-      "key": "woodBorder2",
-      "type": "number",
-      "label": "Holz: Rand Stärke",
-      "group": "Feinschliff: Allgemein",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "woodBorderRadius",
-      "type": "number",
-      "label": "Holz: Eckenradius Anteil von „Eckenradius“ (%)",
-      "group": "Feinschliff: Allgemein",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "woodColor",
-      "type": "color",
-      "label": "Holz: Textfarbe",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "textOnWood"
-    },
-    {
-      "key": "woodBoxShadow",
-      "type": "number",
-      "label": "Holz: Schatten y",
-      "group": "Feinschliff: Allgemein",
-      "default": 10,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "woodBoxShadow2",
-      "type": "number",
-      "label": "Holz: Schatten Unschärfe",
-      "group": "Feinschliff: Allgemein",
-      "default": 24,
-      "min": 0,
-      "max": 96,
-      "unit": "px"
-    },
-    {
-      "key": "shapePartLineStrokeWidth",
+      "key": "ropeTwistStrokeDasharray2",
       "type": "number",
-      "label": "Form Linie: Linienstärke",
-      "group": "Feinschliff: Allgemein",
+      "label": "Seil Drall: Strichmuster Wert 2",
+      "group": "Feinschliff: Starting",
       "default": 4,
       "min": 0,
       "max": 16
     },
     {
-      "key": "kfFadeToOpacity",
+      "key": "buoyRingFill",
+      "type": "color",
+      "label": "Boje Ring: Füllfarbe Farbe (Gischt)",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "foam"
+    },
+    {
+      "key": "buoyRingStroke",
+      "type": "color",
+      "label": "Boje Ring: Linienfarbe Farbe (Text auf Holz)",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "textOnWood"
+    },
+    {
+      "key": "buoyRingStrokeWidth",
       "type": "number",
-      "label": "Einblenden (Ende): Deckkraft",
-      "group": "Feinschliff: Allgemein",
-      "default": 1,
+      "label": "Boje Ring: Linienstärke",
+      "group": "Feinschliff: Starting",
+      "default": 2.5,
       "min": 0,
-      "max": 1,
+      "max": 10,
       "step": 0.01
     },
     {
-      "key": "kfFadeOutFromOpacity",
-      "type": "number",
-      "label": "Ausblenden (Start): Deckkraft",
-      "group": "Feinschliff: Allgemein",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
+      "key": "buoyStripesFill",
+      "type": "color",
+      "label": "Boje Streifen: Füllfarbe Farbe (Akzent (Hibiskus))",
+      "group": "Feinschliff: Starting",
+      "default": "",
+      "inherit": "accent"
     },
     {
-      "key": "kfRiseInFromTranslate",
+      "key": "buoyAnimation",
       "type": "number",
-      "label": "Aufsteigen (Start): Verschiebung y",
-      "group": "Feinschliff: Allgemein",
-      "default": 20,
-      "min": -80,
-      "max": 80,
+      "label": "Boje: Animation Dauer",
+      "group": "Feinschliff: Starting",
+      "default": 1.8,
+      "min": 0,
+      "max": 9,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "kfBobFromRotate",
+      "type": "number",
+      "label": "Schaukeln (Start): Drehung (Grad)",
+      "group": "Feinschliff: Starting, Alerts",
+      "default": -6,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "kfBobToTranslate",
+      "type": "number",
+      "label": "Schaukeln (Ende): Verschiebung y",
+      "group": "Feinschliff: Starting, Alerts",
+      "default": 5,
+      "min": -40,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "kfRiseInFromScale",
+      "key": "kfBobToRotate",
       "type": "number",
-      "label": "Aufsteigen (Start): Grösse",
-      "group": "Feinschliff: Allgemein",
-      "default": 0.96,
-      "min": 0,
-      "max": 3.84,
-      "step": 0.01
+      "label": "Schaukeln (Ende): Drehung (Grad)",
+      "group": "Feinschliff: Starting, Alerts",
+      "default": 6,
+      "min": -360,
+      "max": 360
     },
     {
-      "key": "kfRiseInToOpacity",
+      "key": "kfBobFromRotate2",
       "type": "number",
-      "label": "Aufsteigen (Ende): Deckkraft",
-      "group": "Feinschliff: Allgemein",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
+      "label": "Schaukeln (Start): Drehung (Grad)",
+      "group": "Feinschliff: Starting, Alerts",
+      "default": -2,
+      "min": -360,
+      "max": 360
     },
     {
-      "key": "kfRiseInToScale",
+      "key": "kfBobToTranslate2",
       "type": "number",
-      "label": "Aufsteigen (Ende): Grösse",
-      "group": "Feinschliff: Allgemein",
-      "default": 1,
+      "label": "Schaukeln (Ende): Verschiebung y",
+      "group": "Feinschliff: Starting, Alerts",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "kfBobToRotate2",
+      "type": "number",
+      "label": "Schaukeln (Ende): Drehung (Grad)",
+      "group": "Feinschliff: Starting, Alerts",
+      "default": 2,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "boardGap",
+      "type": "number",
+      "label": "Tafel: Abstand",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 12,
       "min": 0,
-      "max": 4,
-      "step": 0.01
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "boardMinWidth",
+      "type": "number",
+      "label": "Tafel: Mindestbreite",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 520,
+      "min": 0,
+      "max": 2080,
+      "unit": "px"
+    },
+    {
+      "key": "boardPadding",
+      "type": "number",
+      "label": "Tafel: Innenabstand oben/unten",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "boardPadding2",
+      "type": "number",
+      "label": "Tafel: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 40,
+      "min": 0,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "bigFontSize",
+      "type": "number",
+      "label": "Countdown: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 80,
+      "min": 0,
+      "max": 320,
+      "unit": "px"
+    },
+    {
+      "key": "bigFont",
+      "type": "font",
+      "label": "Countdown: Schrift",
+      "group": "Feinschliff: Starting, BRB",
+      "default": "",
+      "options": [
+        "Fredoka",
+        "Baloo 2",
+        "Nunito",
+        "Inter",
+        "DM Sans"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "driftwoodColor",
+      "type": "color",
+      "label": "Treibholz: Textfarbe",
+      "group": "Feinschliff: Starting, BRB",
+      "default": "",
+      "inherit": "foam"
+    },
+    {
+      "key": "driftwoodColor2",
+      "type": "color",
+      "label": "Treibholz: Textfarbe (2)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": "",
+      "inherit": "wood"
+    },
+    {
+      "key": "driftwoodColor3",
+      "type": "number",
+      "label": "Treibholz: Textfarbe Farbanteil",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 92,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "driftwoodTextShadow",
+      "type": "color",
+      "label": "Treibholz: Textschatten Farbe (Text auf Holz)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": "",
+      "inherit": "textOnWood"
+    },
+    {
+      "key": "driftwoodTextShadow2",
+      "type": "color",
+      "label": "Treibholz: Textschatten Farbe (Text auf Holz) (2)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": "",
+      "inherit": "textOnWood"
+    },
+    {
+      "key": "driftwoodTextShadow3",
+      "type": "number",
+      "label": "Treibholz: Textschatten y (Teil 1)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 2,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "driftwoodTextShadow4",
+      "type": "number",
+      "label": "Treibholz: Textschatten Farbanteil",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "driftwoodTextShadow5",
+      "type": "number",
+      "label": "Treibholz: Textschatten y (Teil 2)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "driftwoodTextShadow6",
+      "type": "number",
+      "label": "Treibholz: Textschatten Unschärfe (Teil 2)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "unit": "px"
+    },
+    {
+      "key": "driftwoodTextShadow7",
+      "type": "number",
+      "label": "Treibholz: Textschatten Farbanteil (2)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "postAfterLeft",
+      "type": "number",
+      "label": "Pfosten: Stamm: Lage links",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "postAfterWidth",
+      "type": "number",
+      "label": "Pfosten: Stamm: Breite",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 30,
+      "min": 0,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "postAfterHeight",
+      "type": "number",
+      "label": "Pfosten: Stamm: Höhe",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 320,
+      "min": 0,
+      "max": 1280,
+      "unit": "px"
+    },
+    {
+      "key": "postAfterTranslate",
+      "type": "number",
+      "label": "Pfosten: Stamm: Verschiebung x",
+      "group": "Feinschliff: Starting, BRB",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "postAfterBackground",
+      "type": "color",
+      "label": "Pfosten: Stamm: Hintergrund Farbe (Holz dunkel (Maserung, Rand))",
+      "group": "Feinschliff: Starting, BRB",
+      "default": "",
+      "inherit": "woodDark"
+    },
+    {
+      "key": "postAfterBackground2",
+      "type": "color",
+      "label": "Pfosten: Stamm: Hintergrund Farbe (Holz)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": "",
+      "inherit": "wood"
+    },
+    {
+      "key": "postAfterBackground3",
+      "type": "color",
+      "label": "Pfosten: Stamm: Hintergrund Farbe (Holz dunkel (Maserung, Rand)) (2)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": "",
+      "inherit": "woodDark"
+    },
+    {
+      "key": "postAfterBackground4",
+      "type": "number",
+      "label": "Pfosten: Stamm: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 90,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "postAfterBackground5",
+      "type": "number",
+      "label": "Pfosten: Stamm: Hintergrund Verlauf Stopp 2",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 45,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
     },
     {
       "key": "screenBackground",
@@ -4909,156 +3961,6 @@
       "unit": "%"
     },
     {
-      "key": "eyebrowFontSize",
-      "type": "number",
-      "label": "Überzeile: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 32,
-      "min": 0,
-      "max": 128,
-      "unit": "px"
-    },
-    {
-      "key": "eyebrowFontWeight",
-      "type": "number",
-      "label": "Überzeile: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 700,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "eyebrowLetterSpacing",
-      "type": "number",
-      "label": "Überzeile: Zeichenabstand (em)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.08,
-      "min": -2,
-      "max": 2,
-      "step": 0.01
-    },
-    {
-      "key": "eyebrowColor",
-      "type": "color",
-      "label": "Überzeile: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "woodDark"
-    },
-    {
-      "key": "eyebrowFont",
-      "type": "font",
-      "label": "Überzeile: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Fredoka",
-        "Baloo 2",
-        "Nunito",
-        "Inter",
-        "DM Sans"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "titleMargin",
-      "type": "number",
-      "label": "Titel: Aussenabstand oben/unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 6,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "titleFont2",
-      "type": "font",
-      "label": "Titel: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Pacifico",
-        "Fredoka",
-        "Baloo 2",
-        "Nunito"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "titleFontSize",
-      "type": "number",
-      "label": "Titel: Schriftgrösse Anteil von „Titelgrösse“ (%)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "titleFontWeight",
-      "type": "number",
-      "label": "Titel: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 400,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "titleLineHeight",
-      "type": "number",
-      "label": "Titel: Zeilenhöhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1.2,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "titleColor",
-      "type": "color",
-      "label": "Titel: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "textOnWood"
-    },
-    {
-      "key": "titleTextShadow",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Holz)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "wood"
-    },
-    {
-      "key": "titleTextShadow2",
-      "type": "color",
-      "label": "Titel: Textschatten Farbe (Gischt)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "foam"
-    },
-    {
-      "key": "titleTextShadow3",
-      "type": "number",
-      "label": "Titel: Textschatten y",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 3,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "titleTextShadow4",
-      "type": "number",
-      "label": "Titel: Textschatten Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 50,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
       "key": "noteFontSize",
       "type": "number",
       "label": "Hinweis: Schriftgrösse",
@@ -5080,71 +3982,6 @@
       "key": "noteFont",
       "type": "font",
       "label": "Hinweis: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Fredoka",
-        "Baloo 2",
-        "Nunito",
-        "Inter",
-        "DM Sans"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "boardGap",
-      "type": "number",
-      "label": "Tafel: Abstand",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 12,
-      "min": 0,
-      "max": 48,
-      "unit": "px"
-    },
-    {
-      "key": "boardMinWidth",
-      "type": "number",
-      "label": "Tafel: Mindestbreite",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 520,
-      "min": 0,
-      "max": 2080,
-      "unit": "px"
-    },
-    {
-      "key": "boardPadding",
-      "type": "number",
-      "label": "Tafel: Innenabstand oben/unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 16,
-      "min": 0,
-      "max": 64,
-      "unit": "px"
-    },
-    {
-      "key": "boardPadding2",
-      "type": "number",
-      "label": "Tafel: Innenabstand links/rechts",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 40,
-      "min": 0,
-      "max": 160,
-      "unit": "px"
-    },
-    {
-      "key": "bigFontSize",
-      "type": "number",
-      "label": "Countdown: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 80,
-      "min": 0,
-      "max": 320,
-      "unit": "px"
-    },
-    {
-      "key": "bigFont",
-      "type": "font",
-      "label": "Countdown: Schrift",
       "group": "Feinschliff: Starting, BRB, Ending",
       "default": "",
       "options": [
@@ -5497,344 +4334,6 @@
       "unit": "px"
     },
     {
-      "key": "driftwoodColor",
-      "type": "color",
-      "label": "Treibholz: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "foam"
-    },
-    {
-      "key": "driftwoodColor2",
-      "type": "color",
-      "label": "Treibholz: Textfarbe (2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "wood"
-    },
-    {
-      "key": "driftwoodColor3",
-      "type": "number",
-      "label": "Treibholz: Textfarbe Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 92,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "driftwoodTextShadow",
-      "type": "color",
-      "label": "Treibholz: Textschatten Farbe (Text auf Holz)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "textOnWood"
-    },
-    {
-      "key": "driftwoodTextShadow2",
-      "type": "color",
-      "label": "Treibholz: Textschatten Farbe (Text auf Holz) (2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "textOnWood"
-    },
-    {
-      "key": "driftwoodTextShadow3",
-      "type": "number",
-      "label": "Treibholz: Textschatten y (Teil 1)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "driftwoodTextShadow4",
-      "type": "number",
-      "label": "Treibholz: Textschatten Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 60,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "driftwoodTextShadow5",
-      "type": "number",
-      "label": "Treibholz: Textschatten y (Teil 2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 6,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "driftwoodTextShadow6",
-      "type": "number",
-      "label": "Treibholz: Textschatten Unschärfe (Teil 2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 16,
-      "min": 0,
-      "max": 64,
-      "unit": "px"
-    },
-    {
-      "key": "driftwoodTextShadow7",
-      "type": "number",
-      "label": "Treibholz: Textschatten Farbanteil (2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 35,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "postAfterLeft",
-      "type": "number",
-      "label": "Pfosten: Stamm: Lage links",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "postAfterWidth",
-      "type": "number",
-      "label": "Pfosten: Stamm: Breite",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 30,
-      "min": 0,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "postAfterHeight",
-      "type": "number",
-      "label": "Pfosten: Stamm: Höhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 320,
-      "min": 0,
-      "max": 1280,
-      "unit": "px"
-    },
-    {
-      "key": "postAfterTranslate",
-      "type": "number",
-      "label": "Pfosten: Stamm: Verschiebung x",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": -50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "postAfterBackground",
-      "type": "color",
-      "label": "Pfosten: Stamm: Hintergrund Farbe (Holz dunkel (Maserung, Rand))",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "woodDark"
-    },
-    {
-      "key": "postAfterBackground2",
-      "type": "color",
-      "label": "Pfosten: Stamm: Hintergrund Farbe (Holz)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "wood"
-    },
-    {
-      "key": "postAfterBackground3",
-      "type": "color",
-      "label": "Pfosten: Stamm: Hintergrund Farbe (Holz dunkel (Maserung, Rand)) (2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "woodDark"
-    },
-    {
-      "key": "postAfterBackground4",
-      "type": "number",
-      "label": "Pfosten: Stamm: Hintergrund Verlaufswinkel (Grad)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 90,
-      "min": -360,
-      "max": 360
-    },
-    {
-      "key": "postAfterBackground5",
-      "type": "number",
-      "label": "Pfosten: Stamm: Hintergrund Verlauf Stopp 2",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 45,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "buoyRopeWidth",
-      "type": "number",
-      "label": "Boje Seil: Breite",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 480,
-      "min": 0,
-      "max": 1920,
-      "unit": "px"
-    },
-    {
-      "key": "buoyRopeHeight",
-      "type": "number",
-      "label": "Boje Seil: Höhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 54,
-      "min": 0,
-      "max": 216,
-      "unit": "px"
-    },
-    {
-      "key": "ropeLineStroke",
-      "type": "color",
-      "label": "Seil Linie: Linienfarbe Farbe (Holz dunkel (Maserung, Rand))",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "woodDark"
-    },
-    {
-      "key": "ropeLineStrokeWidth",
-      "type": "number",
-      "label": "Seil Linie: Linienstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 9,
-      "min": 0,
-      "max": 36
-    },
-    {
-      "key": "ropeTwistStroke",
-      "type": "color",
-      "label": "Seil Drall: Linienfarbe Farbe (Holz)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "wood"
-    },
-    {
-      "key": "ropeTwistStroke2",
-      "type": "color",
-      "label": "Seil Drall: Linienfarbe Farbe (Gischt)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "foam"
-    },
-    {
-      "key": "ropeTwistStroke3",
-      "type": "number",
-      "label": "Seil Drall: Linienfarbe Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 60,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "ropeTwistStrokeWidth",
-      "type": "number",
-      "label": "Seil Drall: Linienstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 5,
-      "min": 0,
-      "max": 20
-    },
-    {
-      "key": "ropeTwistStrokeDasharray",
-      "type": "number",
-      "label": "Seil Drall: Strichmuster Wert 1",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 6,
-      "min": 0,
-      "max": 24
-    },
-    {
-      "key": "ropeTwistStrokeDasharray2",
-      "type": "number",
-      "label": "Seil Drall: Strichmuster Wert 2",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 4,
-      "min": 0,
-      "max": 16
-    },
-    {
-      "key": "buoyRingFill",
-      "type": "color",
-      "label": "Boje Ring: Füllfarbe Farbe (Gischt)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "foam"
-    },
-    {
-      "key": "buoyRingStroke",
-      "type": "color",
-      "label": "Boje Ring: Linienfarbe Farbe (Text auf Holz)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "textOnWood"
-    },
-    {
-      "key": "buoyRingStrokeWidth",
-      "type": "number",
-      "label": "Boje Ring: Linienstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.5,
-      "min": 0,
-      "max": 10,
-      "step": 0.01
-    },
-    {
-      "key": "buoyStripesFill",
-      "type": "color",
-      "label": "Boje Streifen: Füllfarbe Farbe (Akzent (Hibiskus))",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "accent"
-    },
-    {
-      "key": "buoyAnimation",
-      "type": "number",
-      "label": "Boje: Animation Dauer",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1.8,
-      "min": 0,
-      "max": 9,
-      "unit": "s",
-      "step": 0.05
-    },
-    {
-      "key": "kfBobFromRotate",
-      "type": "number",
-      "label": "Schaukeln (Start): Drehung (Grad)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": -6,
-      "min": -360,
-      "max": 360
-    },
-    {
-      "key": "kfBobToTranslate",
-      "type": "number",
-      "label": "Schaukeln (Ende): Verschiebung y",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "kfBobToRotate",
-      "type": "number",
-      "label": "Schaukeln (Ende): Drehung (Grad)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 6,
-      "min": -360,
-      "max": 360
-    },
-    {
       "key": "sayingMaxWidth",
       "type": "number",
       "label": "Spruch: Höchstbreite Anteil von „Schild: Breite“ (%)",
@@ -6184,34 +4683,6 @@
       "max": 400
     },
     {
-      "key": "kfBobFromRotate2",
-      "type": "number",
-      "label": "Schaukeln (Start): Drehung (Grad)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": -2,
-      "min": -360,
-      "max": 360
-    },
-    {
-      "key": "kfBobToTranslate2",
-      "type": "number",
-      "label": "Schaukeln (Ende): Verschiebung y",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 6,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "kfBobToRotate2",
-      "type": "number",
-      "label": "Schaukeln (Ende): Drehung (Grad)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2,
-      "min": -360,
-      "max": 360
-    },
-    {
       "key": "kfSwingFromRotate",
       "type": "number",
       "label": "Schild schwingt (Start): Drehung (Grad)",
@@ -6483,6 +4954,549 @@
       "max": 10,
       "unit": "s",
       "step": 0.05
+    },
+    {
+      "key": "kfUnrollFromScale",
+      "type": "number",
+      "label": "Entrollen (Start): Grösse x",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 0.2,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "kfUnrollFromScale2",
+      "type": "number",
+      "label": "Entrollen (Start): Grösse y",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfUnrollToOpacity",
+      "type": "number",
+      "label": "Entrollen (Ende): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfUnrollToScale",
+      "type": "number",
+      "label": "Entrollen (Ende): Grösse x",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfUnrollToScale2",
+      "type": "number",
+      "label": "Entrollen (Ende): Grösse y",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "boatHullColor",
+      "type": "color",
+      "label": "Boot: Rumpf Farbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": "#f2f2ee"
+    },
+    {
+      "key": "boatSailColor",
+      "type": "color",
+      "label": "Boot: Segel Farbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": "#fffaf0"
+    },
+    {
+      "key": "boatX",
+      "type": "number",
+      "label": "Boot: seitlich (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 60,
+      "min": -500,
+      "max": 500
+    },
+    {
+      "key": "boatDrift",
+      "type": "number",
+      "label": "Boot: treibt um (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 8,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "boatZ",
+      "type": "number",
+      "label": "Boot: Entfernung (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": -300,
+      "min": -2000,
+      "max": 0
+    },
+    {
+      "key": "boatRoll",
+      "type": "number",
+      "label": "Boot: schaukelt (Bogenmass)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 0.04,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "boatBob",
+      "type": "number",
+      "label": "Boot: wippt (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 0.2,
+      "min": 0,
+      "max": 5,
+      "step": 0.05
+    },
+    {
+      "key": "boatSailHeight",
+      "type": "number",
+      "label": "Boot: Segelhöhe (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 7,
+      "min": 0,
+      "max": 40,
+      "step": 0.1
+    },
+    {
+      "key": "boatSailWidth",
+      "type": "number",
+      "label": "Boot: Segelbreite (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 3.4,
+      "min": 0,
+      "max": 40,
+      "step": 0.1
+    },
+    {
+      "key": "torchFlame",
+      "type": "number",
+      "label": "Fackeln: Flammengrösse",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 0.9,
+      "min": 0,
+      "max": 5,
+      "step": 0.05
+    },
+    {
+      "key": "torchLight",
+      "type": "number",
+      "label": "Fackeln: Lichtstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 6,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "torchReach",
+      "type": "number",
+      "label": "Fackeln: Lichtweite (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 9,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "umbrellaSway",
+      "type": "number",
+      "label": "Sonnenschirm: schwingt (Bogenmass)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 0.05,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "umbrellaSwaySpeed",
+      "type": "number",
+      "label": "Sonnenschirm: Schwingtempo",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 0.8,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "gullRadius",
+      "type": "number",
+      "label": "Möwen: Kreisradius (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 30,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "key": "gullStep",
+      "type": "number",
+      "label": "Möwen: Radius je Möwe (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 8,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "gullHeight",
+      "type": "number",
+      "label": "Möwen: Flughöhe (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 14,
+      "min": 0,
+      "max": 200
+    },
+    {
+      "key": "gullRise",
+      "type": "number",
+      "label": "Möwen: Höhe je Möwe (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 2,
+      "min": 0,
+      "max": 50,
+      "step": 0.1
+    },
+    {
+      "key": "gullCenter",
+      "type": "number",
+      "label": "Möwen: Kreismitte Tiefe (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": -40,
+      "min": -500,
+      "max": 500
+    },
+    {
+      "key": "gullDepth",
+      "type": "number",
+      "label": "Möwen: Kreistiefe (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 18,
+      "min": 0,
+      "max": 300
+    },
+    {
+      "key": "gullSwing",
+      "type": "number",
+      "label": "Möwen: auf und ab (m)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 1.2,
+      "min": 0,
+      "max": 20,
+      "step": 0.1
+    },
+    {
+      "key": "gullTilt",
+      "type": "number",
+      "label": "Möwen: Neigung (Bogenmass)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 0.1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "eyebrowFontSize",
+      "type": "number",
+      "label": "Überzeile: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 32,
+      "min": 0,
+      "max": 128,
+      "unit": "px"
+    },
+    {
+      "key": "eyebrowFontWeight",
+      "type": "number",
+      "label": "Überzeile: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "eyebrowLetterSpacing",
+      "type": "number",
+      "label": "Überzeile: Zeichenabstand (em)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 0.08,
+      "min": -2,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "eyebrowColor",
+      "type": "color",
+      "label": "Überzeile: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": "",
+      "inherit": "woodDark"
+    },
+    {
+      "key": "eyebrowFont",
+      "type": "font",
+      "label": "Überzeile: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": "",
+      "options": [
+        "Fredoka",
+        "Baloo 2",
+        "Nunito",
+        "Inter",
+        "DM Sans"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "titleMargin",
+      "type": "number",
+      "label": "Titel: Aussenabstand oben/unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "titleFont2",
+      "type": "font",
+      "label": "Titel: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": "",
+      "options": [
+        "Pacifico",
+        "Fredoka",
+        "Baloo 2",
+        "Nunito"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "titleFontSize",
+      "type": "number",
+      "label": "Titel: Schriftgrösse Anteil von „Titelgrösse“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "titleFontWeight",
+      "type": "number",
+      "label": "Titel: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 400,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "titleLineHeight",
+      "type": "number",
+      "label": "Titel: Zeilenhöhe",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "titleColor",
+      "type": "color",
+      "label": "Titel: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": "",
+      "inherit": "textOnWood"
+    },
+    {
+      "key": "titleTextShadow",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Holz)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": "",
+      "inherit": "wood"
+    },
+    {
+      "key": "titleTextShadow2",
+      "type": "color",
+      "label": "Titel: Textschatten Farbe (Gischt)",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": "",
+      "inherit": "foam"
+    },
+    {
+      "key": "titleTextShadow3",
+      "type": "number",
+      "label": "Titel: Textschatten y",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "titleTextShadow4",
+      "type": "number",
+      "label": "Titel: Textschatten Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending, Befehlsseite",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "woodBackground",
+      "type": "color",
+      "label": "Holz: Hintergrund Farbe (Holz)",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": "",
+      "inherit": "wood"
+    },
+    {
+      "key": "woodBackground2",
+      "type": "color",
+      "label": "Holz: Hintergrund Farbe (Holz dunkel (Maserung, Rand))",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": "",
+      "inherit": "woodDark"
+    },
+    {
+      "key": "woodBackground3",
+      "type": "number",
+      "label": "Holz: Hintergrund Verlaufswinkel (Grad)",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": 180,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "woodBackground4",
+      "type": "number",
+      "label": "Holz: Hintergrund Verlauf Stopp 1",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": 44,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "woodBackground5",
+      "type": "number",
+      "label": "Holz: Hintergrund Verlauf Stopp 2",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": 44,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "woodBackground6",
+      "type": "number",
+      "label": "Holz: Hintergrund Verlauf Stopp 2 (2)",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": 44,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "woodBackground7",
+      "type": "number",
+      "label": "Holz: Hintergrund Verlauf Stopp 2 (3)",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": 3,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "woodBorder",
+      "type": "color",
+      "label": "Holz: Rand Farbe (Holz dunkel (Maserung, Rand))",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": "",
+      "inherit": "woodDark"
+    },
+    {
+      "key": "woodBorder2",
+      "type": "number",
+      "label": "Holz: Rand Stärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "woodBorderRadius",
+      "type": "number",
+      "label": "Holz: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "woodColor",
+      "type": "color",
+      "label": "Holz: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": "",
+      "inherit": "textOnWood"
+    },
+    {
+      "key": "woodBoxShadow",
+      "type": "number",
+      "label": "Holz: Schatten y",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "woodBoxShadow2",
+      "type": "number",
+      "label": "Holz: Schatten Unschärfe",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "kfFadeToOpacity",
+      "type": "number",
+      "label": "Einblenden (Ende): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "shapePartLineStrokeWidth",
+      "type": "number",
+      "label": "Form Linie: Linienstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Musik",
+      "default": 4,
+      "min": 0,
+      "max": 16
     },
     {
       "key": "alertsPadding",
@@ -6843,15 +5857,6 @@
       "min": -40,
       "max": 40,
       "unit": "px"
-    },
-    {
-      "key": "outKeinsOutEase",
-      "type": "number",
-      "label": "Ausblendung keine: Ausblend-Kurve Schritte 1",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 1,
-      "max": 4
     },
     {
       "key": "alertBodyGap",
@@ -8648,233 +7653,6 @@
       "max": 400
     },
     {
-      "key": "kfUnrollFromScale",
-      "type": "number",
-      "label": "Entrollen (Start): Grösse x",
-      "group": "Feinschliff: Alerts",
-      "default": 0.2,
-      "min": 0,
-      "max": 2,
-      "step": 0.01
-    },
-    {
-      "key": "kfUnrollFromScale2",
-      "type": "number",
-      "label": "Entrollen (Start): Grösse y",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfUnrollToOpacity",
-      "type": "number",
-      "label": "Entrollen (Ende): Deckkraft",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfUnrollToScale",
-      "type": "number",
-      "label": "Entrollen (Ende): Grösse x",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfUnrollToScale2",
-      "type": "number",
-      "label": "Entrollen (Ende): Grösse y",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfWaveIn0pTranslate",
-      "type": "number",
-      "label": "Wellen-Einblendung (0 %): Verschiebung y",
-      "group": "Feinschliff: Alerts",
-      "default": -120,
-      "min": -360,
-      "max": 360,
-      "unit": "%"
-    },
-    {
-      "key": "kfWaveIn0pRotate",
-      "type": "number",
-      "label": "Wellen-Einblendung (0 %): Drehung (Grad)",
-      "group": "Feinschliff: Alerts",
-      "default": -6,
-      "min": -360,
-      "max": 360
-    },
-    {
-      "key": "kfWaveIn60pOpacity",
-      "type": "number",
-      "label": "Wellen-Einblendung (60 %): Deckkraft",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfWaveIn60pTranslate",
-      "type": "number",
-      "label": "Wellen-Einblendung (60 %): Verschiebung y",
-      "group": "Feinschliff: Alerts",
-      "default": 6,
-      "min": -100,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "kfWaveIn60pRotate",
-      "type": "number",
-      "label": "Wellen-Einblendung (60 %): Drehung (Grad)",
-      "group": "Feinschliff: Alerts",
-      "default": 2,
-      "min": -360,
-      "max": 360
-    },
-    {
-      "key": "kfWaveOutFromOpacity",
-      "type": "number",
-      "label": "Wellen-Ausblendung (Start): Deckkraft",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfWaveOutToTranslate",
-      "type": "number",
-      "label": "Wellen-Ausblendung (Ende): Verschiebung y",
-      "group": "Feinschliff: Alerts",
-      "default": -120,
-      "min": -360,
-      "max": 360,
-      "unit": "%"
-    },
-    {
-      "key": "kfWaveOutToRotate",
-      "type": "number",
-      "label": "Wellen-Ausblendung (Ende): Drehung (Grad)",
-      "group": "Feinschliff: Alerts",
-      "default": 6,
-      "min": -360,
-      "max": 360
-    },
-    {
-      "key": "kfPopInFromScale",
-      "type": "number",
-      "label": "Plopp-Einblendung (Start): Grösse",
-      "group": "Feinschliff: Alerts",
-      "default": 0.4,
-      "min": 0,
-      "max": 2,
-      "step": 0.01
-    },
-    {
-      "key": "kfPopInToOpacity",
-      "type": "number",
-      "label": "Plopp-Einblendung (Ende): Deckkraft",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfPopInToScale",
-      "type": "number",
-      "label": "Plopp-Einblendung (Ende): Grösse",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfPopOutFromOpacity",
-      "type": "number",
-      "label": "Plopp-Ausblendung (Start): Deckkraft",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfPopOutFromScale",
-      "type": "number",
-      "label": "Plopp-Ausblendung (Start): Grösse",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "kfPopOutToScale",
-      "type": "number",
-      "label": "Plopp-Ausblendung (Ende): Grösse",
-      "group": "Feinschliff: Alerts",
-      "default": 0.4,
-      "min": 0,
-      "max": 2,
-      "step": 0.01
-    },
-    {
-      "key": "kfSlideInFromTranslate",
-      "type": "number",
-      "label": "Gleit-Einblendung (Start): Verschiebung x (vw)",
-      "group": "Feinschliff: Alerts",
-      "default": -60,
-      "min": -240,
-      "max": 240,
-      "step": 0.01
-    },
-    {
-      "key": "kfSlideInToOpacity",
-      "type": "number",
-      "label": "Gleit-Einblendung (Ende): Deckkraft",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfSlideOutFromOpacity",
-      "type": "number",
-      "label": "Gleit-Ausblendung (Start): Deckkraft",
-      "group": "Feinschliff: Alerts",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "kfSlideOutToTranslate",
-      "type": "number",
-      "label": "Gleit-Ausblendung (Ende): Verschiebung x (vw)",
-      "group": "Feinschliff: Alerts",
-      "default": 60,
-      "min": -240,
-      "max": 240,
-      "step": 0.01
-    },
-    {
       "key": "kfTimerFromScale",
       "type": "number",
       "label": "Restzeit (Start): Grösse x",
@@ -9715,6 +8493,56 @@
       "min": -360,
       "max": 360,
       "step": 0.5
+    },
+    {
+      "key": "kfRiseInFromTranslate",
+      "type": "number",
+      "label": "Aufsteigen (Start): Verschiebung y",
+      "group": "Feinschliff: Chat, Musik",
+      "default": 20,
+      "min": -80,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "kfRiseInFromScale",
+      "type": "number",
+      "label": "Aufsteigen (Start): Grösse",
+      "group": "Feinschliff: Chat, Musik",
+      "default": 0.96,
+      "min": 0,
+      "max": 3.84,
+      "step": 0.01
+    },
+    {
+      "key": "kfRiseInToOpacity",
+      "type": "number",
+      "label": "Aufsteigen (Ende): Deckkraft",
+      "group": "Feinschliff: Chat, Musik",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfRiseInToScale",
+      "type": "number",
+      "label": "Aufsteigen (Ende): Grösse",
+      "group": "Feinschliff: Chat, Musik",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfFadeOutFromOpacity",
+      "type": "number",
+      "label": "Ausblenden (Start): Deckkraft",
+      "group": "Feinschliff: Chat, Musik, Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
     },
     {
       "key": "camAnimation",
@@ -10911,15 +9739,6 @@
       "unit": "px"
     },
     {
-      "key": "coverEckigBorderRadius",
-      "type": "number",
-      "label": "Cover eckig: Eckenradius Anteil von „Eckenradius“ (%)",
-      "group": "Feinschliff: Musik",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
       "key": "coverEmptyPadding",
       "type": "number",
       "label": "Cover Platzhalter: Innenabstand",
@@ -11162,6 +9981,192 @@
       "min": 0,
       "max": 400,
       "unit": "px"
+    },
+    {
+      "key": "outKeinsOutEase",
+      "type": "number",
+      "label": "Ausblendung keine: Ausblend-Kurve Schritte 1",
+      "group": "Feinschliff: Effekte",
+      "default": 1,
+      "min": 1,
+      "max": 4
+    },
+    {
+      "key": "kfWaveIn0pTranslate",
+      "type": "number",
+      "label": "Wellen-Einblendung (0 %): Verschiebung y",
+      "group": "Feinschliff: Effekte",
+      "default": -120,
+      "min": -360,
+      "max": 360,
+      "unit": "%"
+    },
+    {
+      "key": "kfWaveIn0pRotate",
+      "type": "number",
+      "label": "Wellen-Einblendung (0 %): Drehung (Grad)",
+      "group": "Feinschliff: Effekte",
+      "default": -6,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "kfWaveIn60pOpacity",
+      "type": "number",
+      "label": "Wellen-Einblendung (60 %): Deckkraft",
+      "group": "Feinschliff: Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfWaveIn60pTranslate",
+      "type": "number",
+      "label": "Wellen-Einblendung (60 %): Verschiebung y",
+      "group": "Feinschliff: Effekte",
+      "default": 6,
+      "min": -100,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "kfWaveIn60pRotate",
+      "type": "number",
+      "label": "Wellen-Einblendung (60 %): Drehung (Grad)",
+      "group": "Feinschliff: Effekte",
+      "default": 2,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "kfWaveOutFromOpacity",
+      "type": "number",
+      "label": "Wellen-Ausblendung (Start): Deckkraft",
+      "group": "Feinschliff: Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfWaveOutToTranslate",
+      "type": "number",
+      "label": "Wellen-Ausblendung (Ende): Verschiebung y",
+      "group": "Feinschliff: Effekte",
+      "default": -120,
+      "min": -360,
+      "max": 360,
+      "unit": "%"
+    },
+    {
+      "key": "kfWaveOutToRotate",
+      "type": "number",
+      "label": "Wellen-Ausblendung (Ende): Drehung (Grad)",
+      "group": "Feinschliff: Effekte",
+      "default": 6,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "kfPopInFromScale",
+      "type": "number",
+      "label": "Plopp-Einblendung (Start): Grösse",
+      "group": "Feinschliff: Effekte",
+      "default": 0.4,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "kfPopInToOpacity",
+      "type": "number",
+      "label": "Plopp-Einblendung (Ende): Deckkraft",
+      "group": "Feinschliff: Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfPopInToScale",
+      "type": "number",
+      "label": "Plopp-Einblendung (Ende): Grösse",
+      "group": "Feinschliff: Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfPopOutFromOpacity",
+      "type": "number",
+      "label": "Plopp-Ausblendung (Start): Deckkraft",
+      "group": "Feinschliff: Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfPopOutFromScale",
+      "type": "number",
+      "label": "Plopp-Ausblendung (Start): Grösse",
+      "group": "Feinschliff: Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfPopOutToScale",
+      "type": "number",
+      "label": "Plopp-Ausblendung (Ende): Grösse",
+      "group": "Feinschliff: Effekte",
+      "default": 0.4,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "kfSlideInFromTranslate",
+      "type": "number",
+      "label": "Gleit-Einblendung (Start): Verschiebung x (vw)",
+      "group": "Feinschliff: Effekte",
+      "default": -60,
+      "min": -240,
+      "max": 240,
+      "step": 0.01
+    },
+    {
+      "key": "kfSlideInToOpacity",
+      "type": "number",
+      "label": "Gleit-Einblendung (Ende): Deckkraft",
+      "group": "Feinschliff: Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfSlideOutFromOpacity",
+      "type": "number",
+      "label": "Gleit-Ausblendung (Start): Deckkraft",
+      "group": "Feinschliff: Effekte",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfSlideOutToTranslate",
+      "type": "number",
+      "label": "Gleit-Ausblendung (Ende): Verschiebung x (vw)",
+      "group": "Feinschliff: Effekte",
+      "default": 60,
+      "min": -240,
+      "max": 240,
+      "step": 0.01
     },
     {
       "key": "fxItemGap",
@@ -11598,458 +10603,68 @@
       "inherit": ""
     },
     {
-      "key": "boatHullColor",
-      "type": "color",
-      "label": "Boot: Rumpf Farbe",
-      "group": "Feinschliff: Strand",
-      "default": "#f2f2ee"
-    },
-    {
-      "key": "boatSailColor",
-      "type": "color",
-      "label": "Boot: Segel Farbe",
-      "group": "Feinschliff: Strand",
-      "default": "#fffaf0"
-    },
-    {
-      "key": "boatX",
+      "key": "minimeTransform",
       "type": "number",
-      "label": "Boot: seitlich (m)",
-      "group": "Feinschliff: Strand",
-      "default": 60,
-      "min": -500,
-      "max": 500
+      "label": "Minime: Verformung Verschiebung x",
+      "group": "Feinschliff: Minimes",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
     },
     {
-      "key": "boatDrift",
+      "key": "minimeNameMarginBottom",
       "type": "number",
-      "label": "Boot: treibt um (m)",
-      "group": "Feinschliff: Strand",
-      "default": 8,
-      "min": 0,
-      "max": 200
+      "label": "Minime Name: Abstand unten",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
     },
     {
-      "key": "boatZ",
+      "key": "minimeNamePadding",
       "type": "number",
-      "label": "Boot: Entfernung (m)",
-      "group": "Feinschliff: Strand",
-      "default": -300,
-      "min": -2000,
-      "max": 0
-    },
-    {
-      "key": "boatRoll",
-      "type": "number",
-      "label": "Boot: schaukelt (Bogenmass)",
-      "group": "Feinschliff: Strand",
-      "default": 0.04,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "boatBob",
-      "type": "number",
-      "label": "Boot: wippt (m)",
-      "group": "Feinschliff: Strand",
-      "default": 0.2,
-      "min": 0,
-      "max": 5,
-      "step": 0.05
-    },
-    {
-      "key": "boatSailHeight",
-      "type": "number",
-      "label": "Boot: Segelhöhe (m)",
-      "group": "Feinschliff: Strand",
-      "default": 7,
+      "label": "Minime Name: Innenabstand oben/unten",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
       "max": 40,
-      "step": 0.1
-    },
-    {
-      "key": "boatSailWidth",
-      "type": "number",
-      "label": "Boot: Segelbreite (m)",
-      "group": "Feinschliff: Strand",
-      "default": 3.4,
-      "min": 0,
-      "max": 40,
-      "step": 0.1
-    },
-    {
-      "key": "torchFlame",
-      "type": "number",
-      "label": "Fackeln: Flammengrösse",
-      "group": "Feinschliff: Strand",
-      "default": 0.9,
-      "min": 0,
-      "max": 5,
-      "step": 0.05
-    },
-    {
-      "key": "torchLight",
-      "type": "number",
-      "label": "Fackeln: Lichtstärke",
-      "group": "Feinschliff: Strand",
-      "default": 6,
-      "min": 0,
-      "max": 100
-    },
-    {
-      "key": "torchReach",
-      "type": "number",
-      "label": "Fackeln: Lichtweite (m)",
-      "group": "Feinschliff: Strand",
-      "default": 9,
-      "min": 0,
-      "max": 100
-    },
-    {
-      "key": "umbrellaSway",
-      "type": "number",
-      "label": "Sonnenschirm: schwingt (Bogenmass)",
-      "group": "Feinschliff: Strand",
-      "default": 0.05,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "umbrellaSwaySpeed",
-      "type": "number",
-      "label": "Sonnenschirm: Schwingtempo",
-      "group": "Feinschliff: Strand",
-      "default": 0.8,
-      "min": 0,
-      "max": 10,
-      "step": 0.05
-    },
-    {
-      "key": "gullRadius",
-      "type": "number",
-      "label": "Möwen: Kreisradius (m)",
-      "group": "Feinschliff: Strand",
-      "default": 30,
-      "min": 0,
-      "max": 300
-    },
-    {
-      "key": "gullStep",
-      "type": "number",
-      "label": "Möwen: Radius je Möwe (m)",
-      "group": "Feinschliff: Strand",
-      "default": 8,
-      "min": 0,
-      "max": 100
-    },
-    {
-      "key": "gullHeight",
-      "type": "number",
-      "label": "Möwen: Flughöhe (m)",
-      "group": "Feinschliff: Strand",
-      "default": 14,
-      "min": 0,
-      "max": 200
-    },
-    {
-      "key": "gullRise",
-      "type": "number",
-      "label": "Möwen: Höhe je Möwe (m)",
-      "group": "Feinschliff: Strand",
-      "default": 2,
-      "min": 0,
-      "max": 50,
-      "step": 0.1
-    },
-    {
-      "key": "gullCenter",
-      "type": "number",
-      "label": "Möwen: Kreismitte Tiefe (m)",
-      "group": "Feinschliff: Strand",
-      "default": -40,
-      "min": -500,
-      "max": 500
-    },
-    {
-      "key": "gullDepth",
-      "type": "number",
-      "label": "Möwen: Kreistiefe (m)",
-      "group": "Feinschliff: Strand",
-      "default": 18,
-      "min": 0,
-      "max": 300
-    },
-    {
-      "key": "gullSwing",
-      "type": "number",
-      "label": "Möwen: auf und ab (m)",
-      "group": "Feinschliff: Strand",
-      "default": 1.2,
-      "min": 0,
-      "max": 20,
-      "step": 0.1
-    },
-    {
-      "key": "gullTilt",
-      "type": "number",
-      "label": "Möwen: Neigung (Bogenmass)",
-      "group": "Feinschliff: Strand",
-      "default": 0.1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "stingerSea",
-      "type": "color",
-      "label": "Welle: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "sea"
-    },
-    {
-      "key": "stingerSeaDeep",
-      "type": "color",
-      "label": "Welle: tiefe Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "seaDeep"
-    },
-    {
-      "key": "stingerFoamColor",
-      "type": "color",
-      "label": "Gischt: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "foam"
-    },
-    {
-      "key": "stingerTextColor",
-      "type": "color",
-      "label": "Text: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "textColor"
-    },
-    {
-      "key": "stingerPalmColor",
-      "type": "color",
-      "label": "Palme: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "woodDark"
-    },
-    {
-      "key": "stingerFont",
-      "type": "font",
-      "label": "Text: Schrift",
-      "group": "Stinger",
-      "default": "",
-      "options": [
-        "Pacifico",
-        "Fredoka",
-        "Baloo 2",
-        "Nunito"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "stingerTextSize",
-      "type": "number",
-      "label": "Text: Schriftgrösse",
-      "group": "Stinger",
-      "default": 140,
-      "min": 10,
-      "max": 400,
       "unit": "px"
     },
     {
-      "key": "stingerShown",
+      "key": "minimeNamePadding2",
       "type": "number",
-      "label": "Text und Palme: sichtbar über (Anteil der Zeit)",
-      "group": "Stinger",
-      "default": 0.6,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "stingerScale",
-      "type": "number",
-      "label": "Welle: breiter als im Alert um",
-      "group": "Stinger",
-      "default": 3,
-      "min": 0,
-      "max": 10,
-      "step": 0.1
-    },
-    {
-      "key": "stingerRise",
-      "type": "number",
-      "label": "Welle: steigt über das Bild um",
-      "group": "Stinger",
-      "default": 140,
-      "min": 0,
-      "max": 1000,
-      "unit": "px"
-    },
-    {
-      "key": "stingerReach",
-      "type": "number",
-      "label": "Welle: beginnt ausserhalb um",
-      "group": "Stinger",
-      "default": 1200,
-      "min": 0,
-      "max": 4000,
-      "unit": "px"
-    },
-    {
-      "key": "stingerLayer",
-      "type": "number",
-      "label": "Welle: Abstand der Schichten",
-      "group": "Stinger",
-      "default": 110,
-      "min": 0,
-      "max": 1000,
-      "unit": "px"
-    },
-    {
-      "key": "stingerFoamWidth",
-      "type": "number",
-      "label": "Gischtlinie: Breite",
-      "group": "Stinger",
-      "default": 14,
-      "min": 0,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "stingerRippleSize",
-      "type": "number",
-      "label": "Kräuselung: Höhe",
-      "group": "Stinger",
+      "label": "Minime Name: Innenabstand links/rechts",
+      "group": "Feinschliff: Minimes",
       "default": 10,
       "min": 0,
-      "max": 200,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "stingerRippleWave",
+      "key": "minimeNameFontWeight",
       "type": "number",
-      "label": "Kräuselung: Dichte",
-      "group": "Stinger",
-      "default": 0.012,
-      "min": 0,
-      "max": 0.2,
-      "step": 0.001
+      "label": "Minime Name: Schriftstärke",
+      "group": "Feinschliff: Minimes",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
     },
     {
-      "key": "stingerRippleSpeed",
-      "type": "number",
-      "label": "Kräuselung: Tempo",
-      "group": "Stinger",
-      "default": 6,
-      "min": 0,
-      "max": 60,
-      "step": 0.1
-    },
-    {
-      "key": "stingerSpraySpeedMin",
-      "type": "number",
-      "label": "Gischt: Tempo mindestens (px pro Sekunde)",
-      "group": "Stinger",
-      "default": 300,
-      "min": 0,
-      "max": 5000
-    },
-    {
-      "key": "stingerSpraySpeedMax",
-      "type": "number",
-      "label": "Gischt: Tempo höchstens (px pro Sekunde)",
-      "group": "Stinger",
-      "default": 800,
-      "min": 0,
-      "max": 5000
-    },
-    {
-      "key": "stingerSprayGravity",
-      "type": "number",
-      "label": "Gischt: Schwerkraft",
-      "group": "Stinger",
-      "default": 2200,
-      "min": -10000,
-      "max": 10000
-    },
-    {
-      "key": "stingerSprayLife",
-      "type": "number",
-      "label": "Gischt: Dauer",
-      "group": "Stinger",
-      "default": 0.45,
-      "min": 0,
-      "max": 5,
-      "unit": "s",
-      "step": 0.05
-    },
-    {
-      "key": "stingerSpraySize",
-      "type": "number",
-      "label": "Gischt: Tropfengrösse",
-      "group": "Stinger",
-      "default": 12,
-      "min": 0,
-      "max": 200,
-      "unit": "px"
-    },
-    {
-      "key": "stingerFace",
-      "type": "number",
-      "label": "Gischt: fliegt auf Höhe der Welle (Anteil)",
-      "group": "Stinger",
-      "default": 0.45,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "stingerLean",
-      "type": "number",
-      "label": "Gischt: Neigung (Bogenmass)",
-      "group": "Stinger",
-      "default": 0.5,
-      "min": 0,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "profileTextColor",
+      "key": "minimeNameColor",
       "type": "color",
-      "label": "Text: Farbe",
-      "group": "Profilbanner",
+      "label": "Minime Name: Textfarbe",
+      "group": "Feinschliff: Minimes",
       "default": "",
-      "inherit": "textColor"
+      "inherit": ""
     },
     {
-      "key": "profileTitleFont",
+      "key": "minimeNameFont",
       "type": "font",
-      "label": "Titel: Schrift",
-      "group": "Profilbanner",
-      "default": "",
-      "options": [
-        "Pacifico",
-        "Fredoka",
-        "Baloo 2",
-        "Nunito"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "profileFont",
-      "type": "font",
-      "label": "Zeile: Schrift",
-      "group": "Profilbanner",
+      "label": "Minime Name: Schrift",
+      "group": "Feinschliff: Minimes",
       "default": "",
       "options": [
         "Fredoka",
@@ -12058,126 +10673,545 @@
         "Inter",
         "DM Sans"
       ],
-      "inherit": "font"
+      "inherit": ""
     },
     {
-      "key": "profileTitleSize",
+      "key": "minimeBodyTransformOrigin",
       "type": "number",
-      "label": "Titel: Schriftgrösse",
-      "group": "Profilbanner",
-      "default": 96,
-      "min": 8,
-      "max": 300,
+      "label": "Minime Körper: Drehpunkt x",
+      "group": "Feinschliff: Minimes",
+      "default": 50,
+      "min": 0,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "minimeBodyAnimation",
+      "type": "number",
+      "label": "Minime Körper: Animation Dauer",
+      "group": "Feinschliff: Minimes",
+      "default": 2.4,
+      "min": 0,
+      "max": 12,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "minimeShadowWidth",
+      "type": "number",
+      "label": "Minime Schatten: Breite",
+      "group": "Feinschliff: Minimes",
+      "default": 70,
+      "min": 0,
+      "max": 210,
+      "unit": "%"
+    },
+    {
+      "key": "minimeShadowHeight",
+      "type": "number",
+      "label": "Minime Schatten: Höhe",
+      "group": "Feinschliff: Minimes",
+      "default": 10,
+      "min": 0,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "profileTitleY",
+      "key": "minimeShadowMarginTop",
       "type": "number",
-      "label": "Titel: von oben",
-      "group": "Profilbanner",
-      "default": 150,
-      "min": -480,
-      "max": 960,
+      "label": "Minime Schatten: Abstand oben",
+      "group": "Feinschliff: Minimes",
+      "default": 5,
+      "min": -40,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "profileTextSize",
+      "key": "actionBounceMinimeBodyAnimation",
       "type": "number",
-      "label": "Zeile: Schriftgrösse",
-      "group": "Profilbanner",
-      "default": 34,
-      "min": 8,
-      "max": 200,
+      "label": "Aktion Hüpfen: Minime Körper: Animation Wert 2",
+      "group": "Feinschliff: Minimes",
+      "default": 3,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "key": "actionBounceMinimeBodyAnimation2",
+      "type": "number",
+      "label": "Aktion Hüpfen: Minime Körper: Animation Wert 4",
+      "group": "Feinschliff: Minimes",
+      "default": 3,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "key": "actionBounceMinimeShadowAnimation",
+      "type": "number",
+      "label": "Aktion Hüpfen: Minime Schatten: Animation Wert 2",
+      "group": "Feinschliff: Minimes",
+      "default": 3,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "key": "actionBounceMinimeShadowAnimation2",
+      "type": "number",
+      "label": "Aktion Hüpfen: Minime Schatten: Animation Wert 4",
+      "group": "Feinschliff: Minimes",
+      "default": 3,
+      "min": 0,
+      "max": 12
+    },
+    {
+      "key": "actionSpinMinimeFlipAnimation",
+      "type": "number",
+      "label": "Aktion Drehen: Minime Spiegelung: Animation Wert 2 Anteil von „Pirouette: Umdrehungen“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "actionSpinMinimeFlipAnimation2",
+      "type": "number",
+      "label": "Aktion Drehen: Minime Spiegelung: Animation Wert 4 Anteil von „Pirouette: Umdrehungen“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "minimeZzColor",
+      "type": "color",
+      "label": "Minime Zz: Textfarbe",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "minimeZzFontWeight",
+      "type": "number",
+      "label": "Minime Zz: Schriftstärke",
+      "group": "Feinschliff: Minimes",
+      "default": 700,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "minimeZzAnimation",
+      "type": "number",
+      "label": "Minime Zz: Animation Dauer",
+      "group": "Feinschliff: Minimes",
+      "default": 2,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "minimeZzFont",
+      "type": "font",
+      "label": "Minime Zz: Schrift",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "options": [
+        "Fredoka",
+        "Baloo 2",
+        "Nunito",
+        "Inter",
+        "DM Sans"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "juiceLeft",
+      "type": "number",
+      "label": "Spritzer: Lage links",
+      "group": "Feinschliff: Minimes",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "juiceTop",
+      "type": "number",
+      "label": "Spritzer: Lage oben",
+      "group": "Feinschliff: Minimes",
+      "default": 40,
+      "min": -120,
+      "max": 120,
+      "unit": "%"
+    },
+    {
+      "key": "juiceIWidth",
+      "type": "number",
+      "label": "Spritzer: Tropfen: Breite",
+      "group": "Feinschliff: Minimes",
+      "default": 10,
+      "min": 0,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "profileTextY",
+      "key": "juiceIAspectRatio",
       "type": "number",
-      "label": "Zeile: von oben",
-      "group": "Profilbanner",
-      "default": 250,
-      "min": -480,
-      "max": 960,
-      "unit": "px"
+      "label": "Spritzer: Tropfen: Seitenverhältnis",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
     },
     {
-      "key": "profileShadowAlpha",
+      "key": "kfMinimeBreatheFromScale",
       "type": "number",
-      "label": "Textschatten: Deckkraft",
-      "group": "Profilbanner",
-      "default": 0.45,
+      "label": "Minime atmet (Start): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeBreatheFromScale2",
+      "type": "number",
+      "label": "Minime atmet (Start): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeBreatheToScale",
+      "type": "number",
+      "label": "Minime atmet (Ende): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 1.03,
+      "min": 0,
+      "max": 4.12,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeBreatheToScale2",
+      "type": "number",
+      "label": "Minime atmet (Ende): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 0.97,
+      "min": 0,
+      "max": 3.88,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeShadow0p100pScale",
+      "type": "number",
+      "label": "Minime-Schatten (0 %, 100 %): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeShadow0p100pScale2",
+      "type": "number",
+      "label": "Minime-Schatten (0 %, 100 %): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeShadow0p100pOpacity",
+      "type": "number",
+      "label": "Minime-Schatten (0 %, 100 %): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
       "max": 1,
       "step": 0.01
     },
     {
-      "key": "profileShadowBlur",
+      "key": "kfMinimeShadow50pScale",
       "type": "number",
-      "label": "Textschatten: Unschärfe",
-      "group": "Profilbanner",
-      "default": 18,
+      "label": "Minime-Schatten (50 %): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 0.6,
       "min": 0,
-      "max": 200,
+      "max": 2.4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeShadow50pScale2",
+      "type": "number",
+      "label": "Minime-Schatten (50 %): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 0.6,
+      "min": 0,
+      "max": 2.4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeShadow50pOpacity",
+      "type": "number",
+      "label": "Minime-Schatten (50 %): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeSpin0p100pScale",
+      "type": "number",
+      "label": "Minime dreht sich (0 %, 100 %): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeSpin0p100pScale2",
+      "type": "number",
+      "label": "Minime dreht sich (0 %, 100 %): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeSpin25p75pScale",
+      "type": "number",
+      "label": "Minime dreht sich (25 %, 75 %): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 0.05,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeSpin25p75pScale2",
+      "type": "number",
+      "label": "Minime dreht sich (25 %, 75 %): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeSpin50pScale",
+      "type": "number",
+      "label": "Minime dreht sich (50 %): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": -1,
+      "min": -4,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeSpin50pScale2",
+      "type": "number",
+      "label": "Minime dreht sich (50 %): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeWobble20p60pRotate",
+      "type": "number",
+      "label": "Minime wackelt (20 %, 60 %): Drehung (Grad)",
+      "group": "Feinschliff: Minimes",
+      "default": -1,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "kfMinimeDoze0p100pScale",
+      "type": "number",
+      "label": "Minime döst (0 %, 100 %): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeDoze0p100pScale2",
+      "type": "number",
+      "label": "Minime döst (0 %, 100 %): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeDoze15p85pScale",
+      "type": "number",
+      "label": "Minime döst (15 %, 85 %): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 1.04,
+      "min": 0,
+      "max": 4.16,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeDoze15p85pScale2",
+      "type": "number",
+      "label": "Minime döst (15 %, 85 %): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 0.92,
+      "min": 0,
+      "max": 3.68,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeZz30pOpacity",
+      "type": "number",
+      "label": "Schlaf-Zz (30 %): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeZzToTranslate",
+      "type": "number",
+      "label": "Schlaf-Zz (Ende): Verschiebung x",
+      "group": "Feinschliff: Minimes",
+      "default": 12,
+      "min": -48,
+      "max": 48,
       "unit": "px"
     },
     {
-      "key": "profileShadowDrop",
+      "key": "kfMinimeZzToTranslate2",
       "type": "number",
-      "label": "Textschatten: Versatz",
-      "group": "Profilbanner",
-      "default": 4,
-      "min": -100,
-      "max": 100,
+      "label": "Schlaf-Zz (Ende): Verschiebung y",
+      "group": "Feinschliff: Minimes",
+      "default": 36,
+      "min": -144,
+      "max": 144,
       "unit": "px"
     },
     {
-      "key": "profileWater",
-      "type": "color",
-      "label": "Strand: Wasser",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "waterColor"
-    },
-    {
-      "key": "profileSand",
-      "type": "color",
-      "label": "Strand: Sand",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "sand"
-    },
-    {
-      "key": "profilePalmLeaf",
-      "type": "color",
-      "label": "Strand: Palmblätter",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "palmLeaf"
-    },
-    {
-      "key": "profilePalmTrunk",
-      "type": "color",
-      "label": "Strand: Palmstamm",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "palmTrunk"
-    },
-    {
-      "key": "profileAmbient",
-      "type": "color",
-      "label": "Strand: Grundlicht Farbe",
-      "group": "Profilbanner",
-      "default": "#fff4e0"
-    },
-    {
-      "key": "profileAmbientStrength",
+      "key": "kfMinimeJuiceFromOpacity",
       "type": "number",
-      "label": "Strand: Grundlicht Stärke",
-      "group": "Profilbanner",
-      "default": 1.4,
+      "label": "Spritzer (Start): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
-      "max": 10,
-      "step": 0.05
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeJuiceToTransform",
+      "type": "number",
+      "label": "Spritzer (Ende): Verformung Verschiebung y",
+      "group": "Feinschliff: Minimes",
+      "default": 70,
+      "min": -280,
+      "max": 280,
+      "unit": "px"
+    },
+    {
+      "key": "kfMinimeDropFromTranslate",
+      "type": "number",
+      "label": "Minime fällt herab (Start): Verschiebung y",
+      "group": "Feinschliff: Minimes",
+      "default": 380,
+      "min": -1520,
+      "max": 1520,
+      "unit": "px"
+    },
+    {
+      "key": "kfMinimeDrop70pScale",
+      "type": "number",
+      "label": "Minime fällt herab (70 %): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 1.15,
+      "min": 0,
+      "max": 4.6,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeDrop70pScale2",
+      "type": "number",
+      "label": "Minime fällt herab (70 %): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 0.85,
+      "min": 0,
+      "max": 3.4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeDropToScale",
+      "type": "number",
+      "label": "Minime fällt herab (Ende): Grösse x",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeDropToScale2",
+      "type": "number",
+      "label": "Minime fällt herab (Ende): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeFadeInToOpacity",
+      "type": "number",
+      "label": "Minime blendet ein (Ende): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeFadeOutFromOpacity",
+      "type": "number",
+      "label": "Minime blendet aus (Start): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeLeapFromOpacity",
+      "type": "number",
+      "label": "Minime springt weg (Start): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeLeapToTranslate",
+      "type": "number",
+      "label": "Minime springt weg (Ende): Verschiebung y",
+      "group": "Feinschliff: Minimes",
+      "default": 420,
+      "min": -1680,
+      "max": 1680,
+      "unit": "px"
     },
     {
       "key": "offlineWood",
@@ -12409,6 +11443,972 @@
       "min": 0,
       "max": 10,
       "step": 0.05
+    },
+    {
+      "key": "profileTextColor",
+      "type": "color",
+      "label": "Text: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "profileTitleFont",
+      "type": "font",
+      "label": "Titel: Schrift",
+      "group": "Profilbanner",
+      "default": "",
+      "options": [
+        "Pacifico",
+        "Fredoka",
+        "Baloo 2",
+        "Nunito"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "profileFont",
+      "type": "font",
+      "label": "Zeile: Schrift",
+      "group": "Profilbanner",
+      "default": "",
+      "options": [
+        "Fredoka",
+        "Baloo 2",
+        "Nunito",
+        "Inter",
+        "DM Sans"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "profileTitleSize",
+      "type": "number",
+      "label": "Titel: Schriftgrösse",
+      "group": "Profilbanner",
+      "default": 96,
+      "min": 8,
+      "max": 300,
+      "unit": "px"
+    },
+    {
+      "key": "profileTitleY",
+      "type": "number",
+      "label": "Titel: von oben",
+      "group": "Profilbanner",
+      "default": 150,
+      "min": -480,
+      "max": 960,
+      "unit": "px"
+    },
+    {
+      "key": "profileTextSize",
+      "type": "number",
+      "label": "Zeile: Schriftgrösse",
+      "group": "Profilbanner",
+      "default": 34,
+      "min": 8,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "profileTextY",
+      "type": "number",
+      "label": "Zeile: von oben",
+      "group": "Profilbanner",
+      "default": 250,
+      "min": -480,
+      "max": 960,
+      "unit": "px"
+    },
+    {
+      "key": "profileShadowAlpha",
+      "type": "number",
+      "label": "Textschatten: Deckkraft",
+      "group": "Profilbanner",
+      "default": 0.45,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "profileShadowBlur",
+      "type": "number",
+      "label": "Textschatten: Unschärfe",
+      "group": "Profilbanner",
+      "default": 18,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "profileShadowDrop",
+      "type": "number",
+      "label": "Textschatten: Versatz",
+      "group": "Profilbanner",
+      "default": 4,
+      "min": -100,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "profileWater",
+      "type": "color",
+      "label": "Strand: Wasser",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "waterColor"
+    },
+    {
+      "key": "profileSand",
+      "type": "color",
+      "label": "Strand: Sand",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "sand"
+    },
+    {
+      "key": "profilePalmLeaf",
+      "type": "color",
+      "label": "Strand: Palmblätter",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "palmLeaf"
+    },
+    {
+      "key": "profilePalmTrunk",
+      "type": "color",
+      "label": "Strand: Palmstamm",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "palmTrunk"
+    },
+    {
+      "key": "profileAmbient",
+      "type": "color",
+      "label": "Strand: Grundlicht Farbe",
+      "group": "Profilbanner",
+      "default": "#fff4e0"
+    },
+    {
+      "key": "profileAmbientStrength",
+      "type": "number",
+      "label": "Strand: Grundlicht Stärke",
+      "group": "Profilbanner",
+      "default": 1.4,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "stingerSea",
+      "type": "color",
+      "label": "Welle: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "sea"
+    },
+    {
+      "key": "stingerSeaDeep",
+      "type": "color",
+      "label": "Welle: tiefe Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "seaDeep"
+    },
+    {
+      "key": "stingerFoamColor",
+      "type": "color",
+      "label": "Gischt: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "foam"
+    },
+    {
+      "key": "stingerTextColor",
+      "type": "color",
+      "label": "Text: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "stingerPalmColor",
+      "type": "color",
+      "label": "Palme: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "woodDark"
+    },
+    {
+      "key": "stingerFont",
+      "type": "font",
+      "label": "Text: Schrift",
+      "group": "Stinger",
+      "default": "",
+      "options": [
+        "Pacifico",
+        "Fredoka",
+        "Baloo 2",
+        "Nunito"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "stingerTextSize",
+      "type": "number",
+      "label": "Text: Schriftgrösse",
+      "group": "Stinger",
+      "default": 140,
+      "min": 10,
+      "max": 400,
+      "unit": "px"
+    },
+    {
+      "key": "stingerShown",
+      "type": "number",
+      "label": "Text und Palme: sichtbar über (Anteil der Zeit)",
+      "group": "Stinger",
+      "default": 0.6,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "stingerScale",
+      "type": "number",
+      "label": "Welle: breiter als im Alert um",
+      "group": "Stinger",
+      "default": 3,
+      "min": 0,
+      "max": 10,
+      "step": 0.1
+    },
+    {
+      "key": "stingerRise",
+      "type": "number",
+      "label": "Welle: steigt über das Bild um",
+      "group": "Stinger",
+      "default": 140,
+      "min": 0,
+      "max": 1000,
+      "unit": "px"
+    },
+    {
+      "key": "stingerReach",
+      "type": "number",
+      "label": "Welle: beginnt ausserhalb um",
+      "group": "Stinger",
+      "default": 1200,
+      "min": 0,
+      "max": 4000,
+      "unit": "px"
+    },
+    {
+      "key": "stingerLayer",
+      "type": "number",
+      "label": "Welle: Abstand der Schichten",
+      "group": "Stinger",
+      "default": 110,
+      "min": 0,
+      "max": 1000,
+      "unit": "px"
+    },
+    {
+      "key": "stingerFoamWidth",
+      "type": "number",
+      "label": "Gischtlinie: Breite",
+      "group": "Stinger",
+      "default": 14,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "stingerRippleSize",
+      "type": "number",
+      "label": "Kräuselung: Höhe",
+      "group": "Stinger",
+      "default": 10,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "stingerRippleWave",
+      "type": "number",
+      "label": "Kräuselung: Dichte",
+      "group": "Stinger",
+      "default": 0.012,
+      "min": 0,
+      "max": 0.2,
+      "step": 0.001
+    },
+    {
+      "key": "stingerRippleSpeed",
+      "type": "number",
+      "label": "Kräuselung: Tempo",
+      "group": "Stinger",
+      "default": 6,
+      "min": 0,
+      "max": 60,
+      "step": 0.1
+    },
+    {
+      "key": "stingerSpraySpeedMin",
+      "type": "number",
+      "label": "Gischt: Tempo mindestens (px pro Sekunde)",
+      "group": "Stinger",
+      "default": 300,
+      "min": 0,
+      "max": 5000
+    },
+    {
+      "key": "stingerSpraySpeedMax",
+      "type": "number",
+      "label": "Gischt: Tempo höchstens (px pro Sekunde)",
+      "group": "Stinger",
+      "default": 800,
+      "min": 0,
+      "max": 5000
+    },
+    {
+      "key": "stingerSprayGravity",
+      "type": "number",
+      "label": "Gischt: Schwerkraft",
+      "group": "Stinger",
+      "default": 2200,
+      "min": -10000,
+      "max": 10000
+    },
+    {
+      "key": "stingerSprayLife",
+      "type": "number",
+      "label": "Gischt: Dauer",
+      "group": "Stinger",
+      "default": 0.45,
+      "min": 0,
+      "max": 5,
+      "unit": "s",
+      "step": 0.05
+    },
+    {
+      "key": "stingerSpraySize",
+      "type": "number",
+      "label": "Gischt: Tropfengrösse",
+      "group": "Stinger",
+      "default": 12,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "stingerFace",
+      "type": "number",
+      "label": "Gischt: fliegt auf Höhe der Welle (Anteil)",
+      "group": "Stinger",
+      "default": 0.45,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "stingerLean",
+      "type": "number",
+      "label": "Gischt: Neigung (Bogenmass)",
+      "group": "Stinger",
+      "default": 0.5,
+      "min": 0,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "rootLineHeight",
+      "type": "number",
+      "label": "Theme: Zeilenhöhe",
+      "group": "Feinschliff: Allgemein",
+      "default": 1.3,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "thingRettungsringMain2",
+      "type": "color",
+      "label": "Strandding Rettungsring: --main Farbe (Rettungsring: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingRettungsringMain"
+    },
+    {
+      "key": "thingRettungsringDetail2",
+      "type": "color",
+      "label": "Strandding Rettungsring: --detail Farbe (Rettungsring: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingRettungsringDetail"
+    },
+    {
+      "key": "thingBadeenteMain2",
+      "type": "color",
+      "label": "Strandding Badeente: --main Farbe (Badeente: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingBadeenteMain"
+    },
+    {
+      "key": "thingBadeenteDetail2",
+      "type": "color",
+      "label": "Strandding Badeente: --detail Farbe (Badeente: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingBadeenteDetail"
+    },
+    {
+      "key": "thingWasserballMain2",
+      "type": "color",
+      "label": "Strandding Wasserball: --main Farbe (Wasserball: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingWasserballMain"
+    },
+    {
+      "key": "thingWasserballDetail2",
+      "type": "color",
+      "label": "Strandding Wasserball: --detail Farbe (Wasserball: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingWasserballDetail"
+    },
+    {
+      "key": "thingSurfbrettMain2",
+      "type": "color",
+      "label": "Strandding Surfbrett: --main Farbe (Surfbrett: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSurfbrettMain"
+    },
+    {
+      "key": "thingSurfbrettDetail2",
+      "type": "color",
+      "label": "Strandding Surfbrett: --detail Farbe (Surfbrett: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSurfbrettDetail"
+    },
+    {
+      "key": "thingSonnenschirmMain2",
+      "type": "color",
+      "label": "Strandding Sonnenschirm: --main Farbe (Sonnenschirm: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSonnenschirmMain"
+    },
+    {
+      "key": "thingSonnenschirmDetail2",
+      "type": "color",
+      "label": "Strandding Sonnenschirm: --detail Farbe (Sonnenschirm: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSonnenschirmDetail"
+    },
+    {
+      "key": "thingFlamingoMain2",
+      "type": "color",
+      "label": "Strandding Flamingo: --main Farbe (Flamingo-Schwimmring: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingFlamingoMain"
+    },
+    {
+      "key": "thingFlamingoDetail2",
+      "type": "color",
+      "label": "Strandding Flamingo: --detail Farbe (Flamingo-Schwimmring: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingFlamingoDetail"
+    },
+    {
+      "key": "thingLiegestuhlMain2",
+      "type": "color",
+      "label": "Strandding Liegestuhl: --main Farbe (Liegestuhl: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingLiegestuhlMain"
+    },
+    {
+      "key": "thingLiegestuhlDetail2",
+      "type": "color",
+      "label": "Strandding Liegestuhl: --detail Farbe (Liegestuhl: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingLiegestuhlDetail"
+    },
+    {
+      "key": "thingSandeimerMain2",
+      "type": "color",
+      "label": "Strandding Sandeimer: --main Farbe (Sandeimer: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSandeimerMain"
+    },
+    {
+      "key": "thingSandeimerDetail2",
+      "type": "color",
+      "label": "Strandding Sandeimer: --detail Farbe (Sandeimer: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSandeimerDetail"
+    },
+    {
+      "key": "thingEisMain2",
+      "type": "color",
+      "label": "Strandding Eis: --main Farbe (Eis am Stiel: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingEisMain"
+    },
+    {
+      "key": "thingEisDetail2",
+      "type": "color",
+      "label": "Strandding Eis: --detail Farbe (Eis am Stiel: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingEisDetail"
+    },
+    {
+      "key": "thingMuschelMain2",
+      "type": "color",
+      "label": "Strandding Muschel: --main Farbe (Muschel: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingMuschelMain"
+    },
+    {
+      "key": "thingMuschelDetail2",
+      "type": "color",
+      "label": "Strandding Muschel: --detail Farbe (Muschel: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingMuschelDetail"
+    },
+    {
+      "key": "thingSeesternMain2",
+      "type": "color",
+      "label": "Strandding Seestern: --main Farbe (Seestern: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSeesternMain"
+    },
+    {
+      "key": "thingSeesternDetail2",
+      "type": "color",
+      "label": "Strandding Seestern: --detail Farbe (Seestern: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSeesternDetail"
+    },
+    {
+      "key": "thingKrebsMain2",
+      "type": "color",
+      "label": "Strandding Krebs: --main Farbe (Krebs: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingKrebsMain"
+    },
+    {
+      "key": "thingKrebsDetail2",
+      "type": "color",
+      "label": "Strandding Krebs: --detail Farbe (Krebs: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingKrebsDetail"
+    },
+    {
+      "key": "thingSchnorchelMain2",
+      "type": "color",
+      "label": "Strandding Schnorchel: --main Farbe (Schnorchelmaske: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSchnorchelMain"
+    },
+    {
+      "key": "thingSchnorchelDetail2",
+      "type": "color",
+      "label": "Strandding Schnorchel: --detail Farbe (Schnorchelmaske: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSchnorchelDetail"
+    },
+    {
+      "key": "thingSonnenbrilleMain2",
+      "type": "color",
+      "label": "Strandding Sonnenbrille: --main Farbe (Sonnenbrille: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSonnenbrilleMain"
+    },
+    {
+      "key": "thingSonnenbrilleDetail2",
+      "type": "color",
+      "label": "Strandding Sonnenbrille: --detail Farbe (Sonnenbrille: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingSonnenbrilleDetail"
+    },
+    {
+      "key": "thingCocktailMain2",
+      "type": "color",
+      "label": "Strandding Cocktail: --main Farbe (Cocktail: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingCocktailMain"
+    },
+    {
+      "key": "thingCocktailDetail2",
+      "type": "color",
+      "label": "Strandding Cocktail: --detail Farbe (Cocktail: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingCocktailDetail"
+    },
+    {
+      "key": "thingStrandtascheMain2",
+      "type": "color",
+      "label": "Strandding Strandtasche: --main Farbe (Strandtasche: Hauptfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingStrandtascheMain"
+    },
+    {
+      "key": "thingStrandtascheDetail2",
+      "type": "color",
+      "label": "Strandding Strandtasche: --detail Farbe (Strandtasche: Detailfarbe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "thingStrandtascheDetail"
+    },
+    {
+      "key": "nameSchildBackground",
+      "type": "color",
+      "label": "Minime-Name als Schild: Hintergrund Farbe (Holz)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "wood"
+    },
+    {
+      "key": "nameSchildBorder",
+      "type": "color",
+      "label": "Minime-Name als Schild: Rand Farbe (Holz dunkel (Maserung, Rand))",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "woodDark"
+    },
+    {
+      "key": "nameSchildBorder2",
+      "type": "number",
+      "label": "Minime-Name als Schild: Rand Stärke",
+      "group": "Feinschliff: Allgemein",
+      "default": 2,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "nameSchildBorderRadius",
+      "type": "number",
+      "label": "Minime-Name als Schild: Eckenradius",
+      "group": "Feinschliff: Allgemein",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "nameSchildColor",
+      "type": "color",
+      "label": "Minime-Name als Schild: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "textOnWood"
+    },
+    {
+      "key": "nameBandBackground",
+      "type": "color",
+      "label": "Minime-Name als Band: Hintergrund Farbe (Akzent (Hibiskus))",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "accent"
+    },
+    {
+      "key": "nameBandBorderRadius",
+      "type": "number",
+      "label": "Minime-Name als Band: Eckenradius",
+      "group": "Feinschliff: Allgemein",
+      "default": 999,
+      "min": 0,
+      "max": 999,
+      "unit": "px"
+    },
+    {
+      "key": "nameBandColor",
+      "type": "color",
+      "label": "Minime-Name als Band: Textfarbe",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "textColor"
+    },
+    {
+      "key": "thingBodyStroke",
+      "type": "color",
+      "label": "Strandding Körper: Linienfarbe Farbe (Umriss)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitOutline"
+    },
+    {
+      "key": "thingBodyStrokeWidth",
+      "type": "number",
+      "label": "Strandding Körper: Linienstärke Anteil von „Umriss: Stärke“ (%)",
+      "group": "Feinschliff: Allgemein",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "thingLineStrokeWidth",
+      "type": "number",
+      "label": "Strandding Linie: Linienstärke Anteil von „Umriss: Stärke“ (%)",
+      "group": "Feinschliff: Allgemein",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "thingLeafFill",
+      "type": "color",
+      "label": "Strandding Blatt: Füllfarbe Farbe (Akzent)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitLeaf"
+    },
+    {
+      "key": "thingLeafStroke",
+      "type": "color",
+      "label": "Strandding Blatt: Linienfarbe Farbe (Umriss)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitOutline"
+    },
+    {
+      "key": "thingLeafStrokeWidth",
+      "type": "number",
+      "label": "Strandding Blatt: Linienstärke Anteil von „Umriss: Stärke“ (%)",
+      "group": "Feinschliff: Allgemein",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "thingStemFill",
+      "type": "color",
+      "label": "Strandding Stiel: Füllfarbe Farbe (Holz und Griffe)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitStem"
+    },
+    {
+      "key": "thingStemStroke",
+      "type": "color",
+      "label": "Strandding Stiel: Linienfarbe Farbe (Umriss)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitOutline"
+    },
+    {
+      "key": "thingStemStrokeWidth",
+      "type": "number",
+      "label": "Strandding Stiel: Linienstärke",
+      "group": "Feinschliff: Allgemein",
+      "default": 0.6,
+      "min": 0,
+      "max": 2.4,
+      "step": 0.01
+    },
+    {
+      "key": "thingCheekFill",
+      "type": "color",
+      "label": "Strandding Wange: Füllfarbe Farbe (Bäckchen)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitCheek"
+    },
+    {
+      "key": "thingCheekOpacity",
+      "type": "number",
+      "label": "Strandding Wange: Deckkraft",
+      "group": "Feinschliff: Allgemein",
+      "default": 0.6,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "thingEyeFill",
+      "type": "color",
+      "label": "Strandding Auge: Füllfarbe Farbe (Augen)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitEye"
+    },
+    {
+      "key": "thingMouthStroke",
+      "type": "color",
+      "label": "Strandding Mund: Linienfarbe Farbe (Mund)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitMouth"
+    },
+    {
+      "key": "thingMouthStrokeWidth",
+      "type": "number",
+      "label": "Strandding Mund: Linienstärke",
+      "group": "Feinschliff: Allgemein",
+      "default": 2,
+      "min": 0,
+      "max": 10
+    },
+    {
+      "key": "thingSleepyStroke",
+      "type": "color",
+      "label": "Strandding müde Augen: Linienfarbe Farbe (Augen)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitEye"
+    },
+    {
+      "key": "thingSleepyStrokeWidth",
+      "type": "number",
+      "label": "Strandding müde Augen: Linienstärke",
+      "group": "Feinschliff: Allgemein",
+      "default": 2,
+      "min": 0,
+      "max": 10
+    },
+    {
+      "key": "thingSnoreFill",
+      "type": "color",
+      "label": "Strandding Schnarchen: Füllfarbe Farbe (Mund)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "fruitMouth"
+    },
+    {
+      "key": "thingGlassesFill",
+      "type": "color",
+      "label": "Strandding Brille: Füllfarbe Farbe (Sonnenbrille)",
+      "group": "Feinschliff: Allgemein",
+      "default": "",
+      "inherit": "sunglasses"
+    },
+    {
+      "key": "kfMinimeBlink0p95p100pScale",
+      "type": "number",
+      "label": "Minime blinzelt (0 %, 95 %, 100 %): Grösse x",
+      "group": "Feinschliff: Allgemein",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeBlink0p95p100pScale2",
+      "type": "number",
+      "label": "Minime blinzelt (0 %, 95 %, 100 %): Grösse y",
+      "group": "Feinschliff: Allgemein",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeBlink975pScale",
+      "type": "number",
+      "label": "Minime blinzelt (97.5 %): Grösse x",
+      "group": "Feinschliff: Allgemein",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeBlink975pScale2",
+      "type": "number",
+      "label": "Minime blinzelt (97.5 %): Grösse y",
+      "group": "Feinschliff: Allgemein",
+      "default": 0.1,
+      "min": 0,
+      "max": 2,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeGlasses0pTranslate",
+      "type": "number",
+      "label": "Minime Sonnenbrille (0 %): Verschiebung y",
+      "group": "Feinschliff: Allgemein",
+      "default": 30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "kfMinimeGlasses15p85pOpacity",
+      "type": "number",
+      "label": "Minime Sonnenbrille (15 %, 85 %): Deckkraft",
+      "group": "Feinschliff: Allgemein",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfMinimeGlasses100pTranslate",
+      "type": "number",
+      "label": "Minime Sonnenbrille (100 %): Verschiebung y",
+      "group": "Feinschliff: Allgemein",
+      "default": 30,
+      "min": -120,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "kfMinimeLook20p40pTranslate",
+      "type": "number",
+      "label": "Minime schaut (20 %, 40 %): Verschiebung x",
+      "group": "Feinschliff: Allgemein",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "kfMinimeLook60p80pTranslate",
+      "type": "number",
+      "label": "Minime schaut (60 %, 80 %): Verschiebung x",
+      "group": "Feinschliff: Allgemein",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "coverEckigBorderRadius",
+      "type": "number",
+      "label": "Cover eckig: Eckenradius Anteil von „Eckenradius“ (%)",
+      "group": "Feinschliff: Allgemein",
+      "default": 100,
+      "min": 0,
+      "max": 400
     }
   ],
   "groupScenes": {
@@ -12468,32 +12468,70 @@
     "Befehlsseite": [
       "info"
     ],
-    "Feinschliff: Minimes": [
-      "minimes"
+    "Feinschliff: Starting": [
+      "starting"
     ],
-    "Feinschliff: Allgemein": [
+    "Feinschliff: Starting, Alerts": [
       "starting",
-      "brb",
-      "ending",
-      "alerts",
-      "chat",
-      "cam",
-      "music",
-      "stats",
-      "fx",
-      "minimes",
-      "info"
+      "alerts"
+    ],
+    "Feinschliff: Starting, BRB": [
+      "starting",
+      "brb"
     ],
     "Feinschliff: Starting, BRB, Ending": [
       "starting",
       "brb",
       "ending"
     ],
+    "Feinschliff: Starting, BRB, Ending, Alerts": [
+      "starting",
+      "brb",
+      "ending",
+      "alerts"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Befehlsseite": [
+      "starting",
+      "brb",
+      "ending",
+      "info"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Befehlsseite": [
+      "starting",
+      "brb",
+      "ending",
+      "cam",
+      "info"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Kamera-Rahmen, Effekte": [
+      "starting",
+      "brb",
+      "ending",
+      "cam",
+      "fx"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Alerts, Kamera-Rahmen, Musik": [
+      "starting",
+      "brb",
+      "ending",
+      "alerts",
+      "cam",
+      "music"
+    ],
     "Feinschliff: Alerts": [
       "alerts"
     ],
     "Feinschliff: Chat": [
       "chat"
+    ],
+    "Feinschliff: Chat, Musik": [
+      "chat",
+      "music"
+    ],
+    "Feinschliff: Chat, Musik, Effekte": [
+      "chat",
+      "music",
+      "fx"
     ],
     "Feinschliff: Kamera-Rahmen": [
       "cam"
@@ -12507,11 +12545,8 @@
     "Feinschliff: Befehlsseite": [
       "info"
     ],
-    "Feinschliff: Strand": [
-      "starting",
-      "brb",
-      "ending",
-      "info"
+    "Feinschliff: Minimes": [
+      "minimes"
     ]
   },
   "minimeVariants": {

@@ -3,15 +3,6 @@ import { color, font, inherits, number } from "../../../core/fields.ts";
 import type { SettingField } from "../../../core/theme.ts";
 
 export const ALERTS_TUNING = [
-  number("tagLeft", "Kennung: Lage links", "Feinschliff: Alerts", 70, -280, 280, "px"),
-  number("tagTop", "Kennung: Lage oben", "Feinschliff: Alerts", 46, -184, 184, "px"),
-  number("tagRotate", "Kennung: Drehung (Grad)", "Feinschliff: Alerts", -6, -360, 360),
-  inherits(font("tagFont", "Kennung: Schrift", "Feinschliff: Alerts", "", ["Permanent Marker", "Black Ops One", "Sniglet", "Pacifico"]), "titleFont"),
-  inherits(font("tagFont2", "Kennung: Schrift", "Feinschliff: Alerts", "", ["Space Grotesk", "Inter", "Manrope", "DM Sans"]), "font"),
-  number("tagFontSize", "Kennung: Schriftgrösse", "Feinschliff: Alerts", 0.32, 0, 2, undefined, 0.01),
-  inherits(color("tagColor", "Kennung: Textfarbe", "Feinschliff: Alerts", ""), "accent2"),
-  inherits(color("tagTextShadow", "Kennung: Textschatten Farbe (Zweiter Akzent Cyan)", "Feinschliff: Alerts", ""), "accent2"),
-  number("tagTextShadow2", "Kennung: Textschatten Unschärfe", "Feinschliff: Alerts", 12, 0, 48, "px"),
   number("alertTop", "Alert: Lage oben", "Feinschliff: Alerts", 120, -480, 480, "px"),
   number("alertLeft", "Alert: Lage links", "Feinschliff: Alerts", 50, -150, 150, "%"),
   number("alertTranslate", "Alert: Verschiebung x", "Feinschliff: Alerts", -50, -150, 150, "%"),
@@ -54,4 +45,5 @@ export const ALERTS_TUNING = [
   number("burstDotAlpha", "Sprühnebel: Deckkraft", "Feinschliff: Alerts", 0.8, 0, 1, undefined, 0.01),
   number("confettiSize", "Konfetti: Grösse", "Feinschliff: Alerts", 32, 0, 400, "px"),
   number("confettiLine", "Konfetti: Linienstärke", "Feinschliff: Alerts", 3, 0, 40, "px"),
+  number("kfRetractToStrokeDashoffset", "Zurückziehen (Ende): Strichversatz", "Feinschliff: Alerts", 1, 0, 4, undefined, 0.01),
 ] as const satisfies readonly SettingField[];

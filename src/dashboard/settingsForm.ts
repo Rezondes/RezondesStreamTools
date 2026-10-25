@@ -26,16 +26,28 @@ export function groupFields(schema: ThemeSchema): { group: string; fields: Setti
 // View of the form: the general groups (apply everywhere, also in stinger and banners) or a scene
 export type FormView = SceneName | "general";
 
+// The fine-tuning of a theme comes in groups "Feinschliff: <scenes>", each with the fields of exactly the scenes they
+// change; a view shows the ones that apply there as one group
+export const FINE_TUNING = "Feinschliff";
+
+function mergeFineTuning(groups: { group: string; fields: SettingField[] }[]) {
+  const fine = groups.filter(({ group }) => group.startsWith(`${FINE_TUNING}: `));
+  if (fine.length === 0) return groups;
+  const at = groups.indexOf(fine[0]);
+  const rest = groups.filter(entry => !fine.includes(entry));
+  return [...rest.slice(0, at), { group: FINE_TUNING, fields: fine.flatMap(({ fields }) => fields) }, ...rest.slice(at)];
+}
+
 // Groups of a view: "general" = groups without an entry in groupScenes, a scene = only the groups that apply there,
 // and in them only fields without their own scene or with exactly this one (e.g. the terminal lines of BRB only at BRB)
 export const groupsForView = (schema: ThemeSchema, view: FormView) =>
-  groupFields(schema)
+  mergeFineTuning(groupFields(schema)
     .filter(({ group }) => {
       const scenes = schema.groupScenes?.[group];
       return view === "general" ? scenes === undefined : scenes?.includes(view) ?? false;
     })
     .map(({ group, fields }) => ({ group, fields: fields.filter(field => field.scene === undefined || field.scene === view) }))
-    .filter(({ fields }) => fields.length > 0);
+    .filter(({ fields }) => fields.length > 0));
 
 // Groups that apply in no scene (stinger, banners): are in the render section
 export const groupsWithoutScene = (schema: ThemeSchema) =>

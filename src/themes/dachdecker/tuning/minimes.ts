@@ -4,8 +4,6 @@ import type { SettingField } from "../../../core/theme.ts";
 
 export const MINIMES_TUNING = [
   number("minimesDdFloor", "Minimes: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100, 0, 400),
-  number("onRidgeDdFloor", "auf First: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100, 0, 400),
-  number("onRidgeDdFloor2", "auf First: Abstand zum Boden Anteil von „Boden: Höhe“ (%)", "Feinschliff: Minimes", 100, 0, 400),
   number("minimeRidgeBottom", "Minime First: Lage unten Anteil von „Abstand zum unteren Rand“ (%)", "Feinschliff: Minimes", 100, 0, 400),
   number("minimeRidgeHeight2", "Minime First: Höhe Anteil von „Boden: Höhe“ (%)", "Feinschliff: Minimes", 100, 0, 400),
   inherits(color("minimeRidgeBorderTop", "Minime First: Rand oben Farbe (Plan-Linien und Text)", "Feinschliff: Minimes", ""), "line"),

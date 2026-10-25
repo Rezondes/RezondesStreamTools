@@ -44,4 +44,7 @@ export const CHAT_TUNING = [
   inherits(color("badgeColor", "Badge: Textfarbe", "Feinschliff: Chat", ""), "paper"),
   number("badgeFont", "Badge: font Wert 1 (Teil 1)", "Feinschliff: Chat", 800, 0, 3200),
   number("badgeFont2", "Badge: font Wert 2 (Teil 1) (em)", "Feinschliff: Chat", 0.6, 0, 2.4, undefined, 0.01),
+  inherits(color("toneRedTextColor", "Ton rot: Textfarbe", "Feinschliff: Chat", ""), "redText"),
+  inherits(color("toneBrownColor", "Ton braun: Textfarbe", "Feinschliff: Chat", ""), "brown"),
+  inherits(color("toneMutedColor", "Ton gedämpft: Textfarbe", "Feinschliff: Chat", ""), "muted"),
 ] as const satisfies readonly SettingField[];

@@ -25,9 +25,9 @@ for (const [group, required] of Object.entries(REQUIRED)) {
   for (const key of required) assert.equal(fields.find(field => field.key === key)?.group, group, `${key} fehlt in ${group}`);
 }
 
-// Every group is mapped to its scenes (Allgemein applies everywhere)
+// Every group is mapped to its scenes (Allgemein and the fine-tuning of every scene apply everywhere)
 for (const group of new Set(fields.map(field => field.group))) {
-  if (group !== "Allgemein") assert.ok(group in (dachdeckerSettings.groupScenes ?? {}), `${group} without a scene`);
+  if (group !== "Allgemein" && group !== "Feinschliff: Allgemein") assert.ok(group in (dachdeckerSettings.groupScenes ?? {}), `${group} without a scene`);
 }
 
 assert.deepEqual(dachdeckerSettings.personalize?.("neo"), { channelName: "NEO" });

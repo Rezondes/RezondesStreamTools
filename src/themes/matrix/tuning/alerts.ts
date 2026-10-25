@@ -64,7 +64,6 @@ export const ALERTS_TUNING = [
   number("alertTimerMask3", "Alert Restzeit: Maske Verlauf Stopp 2", "Feinschliff: Alerts", 18, 0, 100, "px"),
   number("alertTimerMask4", "Alert Restzeit: Maske Verlauf Stopp 2", "Feinschliff: Alerts", 18, 0, 100, "px"),
   number("alertTimerMask5", "Alert Restzeit: Maske Verlauf Stopp 2", "Feinschliff: Alerts", 4, 0, 100, "px"),
-  number("kfCollapseToMarginTop", "Zusammenfallen (Ende): Abstand oben", "Feinschliff: Alerts", 8, -40, 40, "px"),
   number("alertCurtainRoom", "Alert-Vorhang: Platz unter dem Kasten für fallende Zeichen", "Feinschliff: Alerts", 420, 0, 1080, "px"),
   number("alertCurtainGlyphScale", "Alert-Vorhang: Zeichen in der Zelle (Anteil)", "Feinschliff: Alerts", 1.05, 0, 3, undefined, 0.01),
   number("alertCurtainChange", "Alert-Vorhang: Zeichenwechsel je Sekunde", "Feinschliff: Alerts", 10, 0, 60),

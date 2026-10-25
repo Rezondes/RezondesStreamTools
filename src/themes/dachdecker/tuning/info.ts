@@ -24,4 +24,10 @@ export const INFO_TUNING = [
   number("infoEntryBorderTop2", "Befehlsseite Eintrag: Rand oben Stärke", "Feinschliff: Befehlsseite", 1, 0, 40, "px"),
   number("infoEntryBorderTop3", "Befehlsseite Eintrag: Rand oben Farbanteil", "Feinschliff: Befehlsseite", 35, 0, 100, "%"),
   number("infoTextMargin", "Befehlsseite Text: Aussenabstand oben", "Feinschliff: Befehlsseite", 4, -40, 40, "px"),
+  number("chipMarginRight", "Plakette: Abstand rechts", "Feinschliff: Befehlsseite", 6, -40, 40, "px"),
+  number("chipPadding", "Plakette: Innenabstand links/rechts", "Feinschliff: Befehlsseite", 6, 0, 40, "px"),
+  inherits(color("chipBackground", "Plakette: Hintergrund Farbe (Signatur Terrakotta)", "Feinschliff: Befehlsseite", ""), "accent"),
+  inherits(color("chipColor", "Plakette: Textfarbe", "Feinschliff: Befehlsseite", ""), "onAccent"),
+  number("chipFontWeight", "Plakette: Schriftstärke", "Feinschliff: Befehlsseite", 700, 100, 900, undefined, 100),
+  inherits(font("chipFont", "Plakette: Schrift", "Feinschliff: Befehlsseite", "", ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"]), ""),
 ] as const satisfies readonly SettingField[];

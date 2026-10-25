@@ -3,6 +3,8 @@ import { color, font, inherits, number } from "../../../core/fields.ts";
 import type { SettingField } from "../../../core/theme.ts";
 
 export const MINIMES_TUNING = [
+  number("kfBlink0p96pTransform", "Blinzeln (0 %, 96 %): Verformung Grösse y", "Feinschliff: Minimes", 1, -4, 4, undefined, 0.01),
+  number("kfBlink97p99pTransform", "Blinzeln (97 %, 99 %): Verformung Grösse y", "Feinschliff: Minimes", 0.1, -2, 2, undefined, 0.01),
   number("minimeTransform", "Minime: Verformung Verschiebung x", "Feinschliff: Minimes", 50, -150, 150, "%"),
   number("minimeNameBottom", "Minime Name: Lage unten", "Feinschliff: Minimes", 1, -4, 4, undefined, 0.01),
   number("minimeNameMarginBottom", "Minime Name: Abstand unten", "Feinschliff: Minimes", 4, -40, 40, "px"),
@@ -84,10 +86,4 @@ export const MINIMES_TUNING = [
   number("kfMinimePopOut30pScale", "Minime ploppt hinaus (30 %): Grösse", "Feinschliff: Minimes", 1.15, 0, 4.6, undefined, 0.01),
   number("kfMinimeFadeInToOpacity", "Minime blendet ein (Ende): Deckkraft", "Feinschliff: Minimes", 1, 0, 1, undefined, 0.01),
   number("kfMinimeFadeOutFromOpacity", "Minime blendet aus (Start): Deckkraft", "Feinschliff: Minimes", 1, 0, 1, undefined, 0.01),
-  number("towerSwayTransformOrigin", "Turm wippend: Drehpunkt x", "Feinschliff: Minimes", 50, 0, 150, "%"),
-  number("walkerBottom", "Läufer: Lage unten", "Feinschliff: Minimes", 2, -40, 40, "px"),
-  number("walkerLeft", "Läufer: Lage links  1", "Feinschliff: Minimes", 34, -136, 136, "px"),
-  number("walkerHeight", "Läufer: Höhe", "Feinschliff: Minimes", 52, 0, 208, "px"),
-  number("walkerTransition", "Läufer: Übergang Dauer Anteil von „Ein- und Ausblenden“ (%)", "Feinschliff: Minimes", 100, 0, 400),
-  number("walkerAnimation", "Läufer: Animation Dauer", "Feinschliff: Minimes", 0.8, 0, 5, "s", 0.05),
 ] as const satisfies readonly SettingField[];

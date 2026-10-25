@@ -2309,303 +2309,1971 @@
       "maxLength": 200
     },
     {
-      "key": "minimesKbFloor",
+      "key": "tickerRunFontWeight",
       "type": "number",
-      "label": "Minimes: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
+      "label": "Lauftext Lauf: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 900,
+      "min": 100,
+      "max": 900,
+      "step": 100
     },
     {
-      "key": "onCounterKbFloor",
+      "key": "tickerRunFontSize",
       "type": "number",
-      "label": "auf Theke: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
+      "label": "Lauftext Lauf: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 30,
       "min": 0,
-      "max": 400
-    },
-    {
-      "key": "onCounterKbFloor2",
-      "type": "number",
-      "label": "auf Theke: Abstand zum Boden",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
-      "min": 0,
-      "max": 40,
+      "max": 120,
       "unit": "px"
     },
     {
-      "key": "minimeCounterBottom",
+      "key": "tickerRunLineHeight",
       "type": "number",
-      "label": "Minime Theke: Lage unten Anteil von „Abstand zum unteren Rand“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
+      "label": "Lauftext Lauf: Zeilenhöhe",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 72,
       "min": 0,
-      "max": 400
-    },
-    {
-      "key": "minimeCounterBorderTop",
-      "type": "color",
-      "label": "Minime Theke: Rand oben Farbe (Linien und Bogenschrift (Signatur))",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "red"
-    },
-    {
-      "key": "minimeCounterBorderTop2",
-      "type": "number",
-      "label": "Minime Theke: Rand oben Stärke",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
-      "min": 0,
-      "max": 40,
+      "max": 288,
       "unit": "px"
     },
     {
-      "key": "minimeCounterBorderRadius",
+      "key": "tickerRunLetterSpacing",
       "type": "number",
-      "label": "Minime Theke: Eckenradius",
-      "group": "Feinschliff: Minimes",
-      "default": 2,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeWidth",
-      "type": "number",
-      "label": "Minime: Breite Anteil von „Grösse (Höhe)“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "minimeTransform",
-      "type": "number",
-      "label": "Minime: Verformung Verschiebung x",
-      "group": "Feinschliff: Minimes",
-      "default": 50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "minimeFlipScale",
-      "type": "number",
-      "label": "Minime Wende: Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 4,
-      "step": 0.01
-    },
-    {
-      "key": "dishWidth",
-      "type": "number",
-      "label": "Gericht: Breite Anteil von „Grösse (Höhe)“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "dishHeight",
-      "type": "number",
-      "label": "Gericht: Höhe Anteil von „Grösse (Höhe)“ (%)",
-      "group": "Feinschliff: Minimes",
-      "default": 100,
-      "min": 0,
-      "max": 400
-    },
-    {
-      "key": "dishSauceCircleFill",
-      "type": "color",
-      "label": "Gericht Sosse Kreis: Füllfarbe Farbe (Rot für Schrift und Flächen)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "dishSteamCircleFill",
-      "type": "color",
-      "label": "Gericht Dampf Kreis: Füllfarbe Farbe (Papier)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "dishSteamCircleStroke",
-      "type": "color",
-      "label": "Gericht Dampf Kreis: Linienfarbe Farbe (Linien und Bogenschrift (Signatur))",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "red"
-    },
-    {
-      "key": "dishSteamCircleStrokeWidth",
-      "type": "number",
-      "label": "Gericht Dampf Kreis: Linienstärke",
-      "group": "Feinschliff: Minimes",
-      "default": 1.6,
-      "min": 0,
-      "max": 40,
-      "unit": "px",
-      "step": 0.5
-    },
-    {
-      "key": "minimeNameMarginBottom",
-      "type": "number",
-      "label": "Minime Name: Abstand unten",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNamePadding",
-      "type": "number",
-      "label": "Minime Name: Innenabstand oben",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNamePadding2",
-      "type": "number",
-      "label": "Minime Name: Innenabstand links/rechts",
-      "group": "Feinschliff: Minimes",
-      "default": 8,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNamePadding3",
-      "type": "number",
-      "label": "Minime Name: Innenabstand unten",
-      "group": "Feinschliff: Minimes",
-      "default": 3,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNameBackground",
-      "type": "color",
-      "label": "Minime Name: Hintergrund Farbe (Bon-Papier)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "bon"
-    },
-    {
-      "key": "minimeNameBorderBottom",
-      "type": "color",
-      "label": "Minime Name: Rand unten Farbe (Text gedämpft)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "minimeNameBorderBottom2",
-      "type": "number",
-      "label": "Minime Name: Rand unten Stärke",
-      "group": "Feinschliff: Minimes",
-      "default": 2,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNameBoxShadow",
-      "type": "color",
-      "label": "Minime Name: Schatten Farbe (Text dunkel)",
-      "group": "Feinschliff: Minimes",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "minimeNameBoxShadow2",
-      "type": "number",
-      "label": "Minime Name: Schatten y",
-      "group": "Feinschliff: Minimes",
+      "label": "Lauftext Lauf: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB",
       "default": 2,
       "min": -40,
       "max": 40,
       "unit": "px"
     },
     {
-      "key": "minimeNameBoxShadow3",
-      "type": "number",
-      "label": "Minime Name: Schatten Unschärfe",
-      "group": "Feinschliff: Minimes",
-      "default": 4,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "minimeNameBoxShadow4",
-      "type": "number",
-      "label": "Minime Name: Schatten Farbanteil",
-      "group": "Feinschliff: Minimes",
-      "default": 25,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "minimeNameColor",
+      "key": "tickerRunColor",
       "type": "color",
-      "label": "Minime Name: Textfarbe",
-      "group": "Feinschliff: Minimes",
+      "label": "Lauftext Lauf: Textfarbe",
+      "group": "Feinschliff: Starting, BRB",
       "default": "",
-      "inherit": "brown"
+      "inherit": ""
     },
     {
-      "key": "minimeNameFont",
+      "key": "tickerRunFont",
       "type": "font",
-      "label": "Minime Name: Schrift",
-      "group": "Feinschliff: Minimes",
+      "label": "Lauftext Lauf: Schrift",
+      "group": "Feinschliff: Starting, BRB",
       "default": "",
       "options": [
         "Nunito",
         "DM Sans",
         "Manrope"
       ],
-      "inherit": "font"
+      "inherit": ""
     },
     {
-      "key": "minimeNameFontWeight",
+      "key": "tickerRunSpanPaddingRight",
       "type": "number",
-      "label": "Minime Name: Schriftstärke",
-      "group": "Feinschliff: Minimes",
+      "label": "Lauftext: Text: Innenabstand rechts",
+      "group": "Feinschliff: Starting, BRB",
+      "default": 48,
+      "min": 0,
+      "max": 192,
+      "unit": "px"
+    },
+    {
+      "key": "tickerHeight",
+      "type": "number",
+      "label": "Lauftext: Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 72,
+      "min": 0,
+      "max": 288,
+      "unit": "px"
+    },
+    {
+      "key": "tickerBackground",
+      "type": "color",
+      "label": "Lauftext: Hintergrund Farbe (Rot für Schrift und Flächen)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "tickerColor",
+      "type": "color",
+      "label": "Lauftext: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "bonLabelFontWeight",
+      "type": "number",
+      "label": "Bon Beschriftung: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
       "default": 800,
       "min": 100,
       "max": 900,
       "step": 100
     },
     {
-      "key": "kfMinimePopToScale",
+      "key": "bonLabelFontSize",
       "type": "number",
-      "label": "Minime ploppt (Ende): Grösse y",
-      "group": "Feinschliff: Minimes",
-      "default": 1,
+      "label": "Bon Beschriftung: Schriftgrösse (em)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.9,
       "min": 0,
-      "max": 4,
+      "max": 3.6,
       "step": 0.01
     },
     {
-      "key": "kfMinimeFadeToOpacity",
+      "key": "bonLabelLetterSpacing",
       "type": "number",
-      "label": "Minime blendet (Ende): Deckkraft",
-      "group": "Feinschliff: Minimes",
+      "label": "Bon Beschriftung: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 3,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bonLabelColor",
+      "type": "color",
+      "label": "Bon Beschriftung: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "bonLabelFont",
+      "type": "font",
+      "label": "Bon Beschriftung: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Nunito",
+        "DM Sans",
+        "Manrope"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "bonBigFont",
+      "type": "font",
+      "label": "Bon gross: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "bonBigFontSize",
+      "type": "number",
+      "label": "Bon gross: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 112,
+      "min": 0,
+      "max": 448,
+      "unit": "px"
+    },
+    {
+      "key": "bonBigLineHeight",
+      "type": "number",
+      "label": "Bon gross: Zeilenhöhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.05,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "bonBigColor",
+      "type": "color",
+      "label": "Bon gross: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "bonLineFontWeight",
+      "type": "number",
+      "label": "Bon Zeile: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bonLineFontSize",
+      "type": "number",
+      "label": "Bon Zeile: Schriftgrösse (em)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.85,
+      "min": 0,
+      "max": 3.4,
+      "step": 0.01
+    },
+    {
+      "key": "bonLineColor",
+      "type": "color",
+      "label": "Bon Zeile: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "bonLineAnimation",
+      "type": "number",
+      "label": "Bon Zeile: Animation Dauer",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 400,
+      "min": 0,
+      "max": 2000,
+      "unit": "ms",
+      "step": 10
+    },
+    {
+      "key": "bonLineFont",
+      "type": "font",
+      "label": "Bon Zeile: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "options": [
+        "Nunito",
+        "DM Sans",
+        "Manrope"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "bonBigSmallFontSize",
+      "type": "number",
+      "label": "Bon gross klein: Schriftgrösse",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 48,
+      "min": 0,
+      "max": 192,
+      "unit": "px"
+    },
+    {
+      "key": "screenBackground",
+      "type": "color",
+      "label": "Bildschirm: Hintergrund Farbe (Papier)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "screenBackground2",
+      "type": "color",
+      "label": "Bildschirm: Hintergrund Farbe (Papier) (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "screenBackground3",
+      "type": "color",
+      "label": "Bildschirm: Hintergrund Farbe (Tütenpapier)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "kraft"
+    },
+    {
+      "key": "screenBackground4",
+      "type": "number",
+      "label": "Bildschirm: Hintergrund Verlauf Stopp 0",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 40,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "screenBackground5",
+      "type": "number",
+      "label": "Bildschirm: Hintergrund Verlauf Stopp 0 (2)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 45,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "screenBackground6",
+      "type": "number",
+      "label": "Bildschirm: Hintergrund Verlauf Stopp 1",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 55,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "screenBackground7",
+      "type": "number",
+      "label": "Bildschirm: Hintergrund Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 88,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "logoLeft",
+      "type": "number",
+      "label": "Logo: Lage links",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 120,
+      "min": -480,
+      "max": 480,
+      "unit": "px"
+    },
+    {
+      "key": "logoTop",
+      "type": "number",
+      "label": "Logo: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 60,
+      "min": -240,
+      "max": 240,
+      "unit": "px"
+    },
+    {
+      "key": "logoWidth",
+      "type": "number",
+      "label": "Logo: Breite",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1238,
+      "min": 0,
+      "max": 4952,
+      "unit": "px"
+    },
+    {
+      "key": "logoHeight",
+      "type": "number",
+      "label": "Logo: Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 940,
+      "min": 0,
+      "max": 3760,
+      "unit": "px"
+    },
+    {
+      "key": "lightsBackground",
+      "type": "color",
+      "label": "Lichter: Hintergrund Farbe (Text dunkel)",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "lightsBackground2",
+      "type": "number",
+      "label": "Lichter: Hintergrund Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 60,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "introLights",
+      "type": "number",
+      "label": "Ablauf: Licht ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introLetters",
+      "type": "number",
+      "label": "Ablauf: Bogenschrift ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 0.6,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introBody",
+      "type": "number",
+      "label": "Ablauf: Koch ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
       "default": 1,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introFills",
+      "type": "number",
+      "label": "Ablauf: Flächen ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.4,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introSpit",
+      "type": "number",
+      "label": "Ablauf: Spiess ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 1.5,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introArm",
+      "type": "number",
+      "label": "Ablauf: Arm ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 2,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introHatch",
+      "type": "number",
+      "label": "Ablauf: Fleischstreifen ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 2.1,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introSteam",
+      "type": "number",
+      "label": "Ablauf: Dampf ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 2.4,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introPrinter",
+      "type": "number",
+      "label": "Ablauf: Drucker ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 2.4,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introIdle",
+      "type": "number",
+      "label": "Ablauf: Bewegung ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 2.6,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introBon",
+      "type": "number",
+      "label": "Ablauf: Bon ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 2.8,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introTicker",
+      "type": "number",
+      "label": "Ablauf: Lauftext ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 3.2,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "introShavings",
+      "type": "number",
+      "label": "Ablauf: Späne ab",
+      "group": "Feinschliff: Starting, BRB, Ending",
+      "default": 3.2,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "bonNumberFontWeight",
+      "type": "number",
+      "label": "Bon Nummer: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bonNumberFontSize",
+      "type": "number",
+      "label": "Bon Nummer: Schriftgrösse (em)",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 0.75,
+      "min": 0,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "bonNumberColor",
+      "type": "color",
+      "label": "Bon Nummer: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "bonNumberMarginTop",
+      "type": "number",
+      "label": "Bon Nummer: Abstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bonNumberFont",
+      "type": "font",
+      "label": "Bon Nummer: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": "",
+      "options": [
+        "Nunito",
+        "DM Sans",
+        "Manrope"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "arcLetterFont",
+      "type": "font",
+      "label": "Bogenschrift: Buchstabe: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": "",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "arcLetterFill",
+      "type": "color",
+      "label": "Bogenschrift: Buchstabe: Füllfarbe Farbe (Papier)",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "arcLetterStroke",
+      "type": "color",
+      "label": "Bogenschrift: Buchstabe: Linienfarbe Farbe (Linien und Bogenschrift (Signatur))",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": "",
+      "inherit": "red"
+    },
+    {
+      "key": "arcLetterLetterSpacing",
+      "type": "number",
+      "label": "Bogenschrift: Buchstabe: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 1,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "arcLetterColor",
+      "type": "color",
+      "label": "Bogenschrift: Buchstabe: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "steamRate",
+      "type": "number",
+      "label": "Dampf: Schwaden je Sekunde",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 0.32,
+      "min": 0,
+      "max": 5,
+      "step": 0.01
+    },
+    {
+      "key": "steamSway",
+      "type": "number",
+      "label": "Dampf: schwankt um",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 9,
+      "min": 0,
+      "max": 200,
+      "unit": "px"
+    },
+    {
+      "key": "steamAlpha",
+      "type": "number",
+      "label": "Dampf: Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts",
+      "default": 0.45,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "kfInFromTransform",
+      "type": "number",
+      "label": "Einblenden (Start): Verformung Verschiebung y",
+      "group": "Feinschliff: Starting, BRB, Ending, Musik",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "kfInToOpacity",
+      "type": "number",
+      "label": "Einblenden (Ende): Deckkraft",
+      "group": "Feinschliff: Starting, BRB, Ending, Musik",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "bonTitleFont",
+      "type": "font",
+      "label": "Bon Titel: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik",
+      "default": "",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "bonTitleFontSize",
+      "type": "number",
+      "label": "Bon Titel: Schriftgrösse (em)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik",
+      "default": 1.35,
+      "min": 0,
+      "max": 5.4,
+      "step": 0.01
+    },
+    {
+      "key": "bonTitleLineHeight",
+      "type": "number",
+      "label": "Bon Titel: Zeilenhöhe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik",
+      "default": 1.1,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "bonTitleColor",
+      "type": "color",
+      "label": "Bon Titel: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "bonTitleMarginTop",
+      "type": "number",
+      "label": "Bon Titel: Abstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "inkStroke",
+      "type": "color",
+      "label": "Tinte: Linienfarbe Farbe (Linien und Bogenschrift (Signatur))",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Minimes",
+      "default": "",
+      "inherit": "red"
+    },
+    {
+      "key": "fillFill",
+      "type": "color",
+      "label": "Füllung: Füllfarbe Farbe (Papier)",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Minimes",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "dotStroke",
+      "type": "color",
+      "label": "Punkt: Linienfarbe Farbe (Linien und Bogenschrift (Signatur))",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Minimes",
+      "default": "",
+      "inherit": "red"
+    },
+    {
+      "key": "dotStrokeWidth",
+      "type": "number",
+      "label": "Punkt: Linienstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Minimes",
+      "default": 2.2,
+      "min": 0,
+      "max": 40,
+      "unit": "px",
+      "step": 0.5
+    },
+    {
+      "key": "dotFilledFill",
+      "type": "color",
+      "label": "Punkt gefüllt: Füllfarbe Farbe (Linien und Bogenschrift (Signatur))",
+      "group": "Feinschliff: Starting, BRB, Ending, Alerts, Minimes",
+      "default": "",
+      "inherit": "red"
+    },
+    {
+      "key": "bonBoxLeft",
+      "type": "number",
+      "label": "Bon Kasten: Lage links",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 1430,
+      "min": -5720,
+      "max": 5720,
+      "unit": "px"
+    },
+    {
+      "key": "bonBoxTop",
+      "type": "number",
+      "label": "Bon Kasten: Lage oben",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 120,
+      "min": -480,
+      "max": 480,
+      "unit": "px"
+    },
+    {
+      "key": "bonBoxWidth",
+      "type": "number",
+      "label": "Bon Kasten: Breite",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 420,
+      "min": 0,
+      "max": 1680,
+      "unit": "px"
+    },
+    {
+      "key": "printerHeight",
+      "type": "number",
+      "label": "Drucker: Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 46,
+      "min": 0,
+      "max": 184,
+      "unit": "px"
+    },
+    {
+      "key": "printerBorderRadius",
+      "type": "number",
+      "label": "Drucker: Eckenradius",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "printerBackground",
+      "type": "color",
+      "label": "Drucker: Hintergrund Farbe (Text dunkel)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "printerAfterLeft",
+      "type": "number",
+      "label": "Drucker: Schlitz: Lage links",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 22,
+      "min": -88,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "printerAfterRight",
+      "type": "number",
+      "label": "Drucker: Schlitz: Lage rechts",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 22,
+      "min": -88,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "printerAfterBottom",
+      "type": "number",
+      "label": "Drucker: Schlitz: Lage unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "printerAfterHeight",
+      "type": "number",
+      "label": "Drucker: Schlitz: Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 6,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "printerAfterBorderRadius",
+      "type": "number",
+      "label": "Drucker: Schlitz: Eckenradius",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 3,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "printerAfterBackground",
+      "type": "color",
+      "label": "Drucker: Schlitz: Hintergrund Farbe (Text dunkel)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "printerAfterBackground2",
+      "type": "number",
+      "label": "Drucker: Schlitz: Hintergrund Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 55,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "bonMargin",
+      "type": "number",
+      "label": "Bon: Aussenabstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bonMargin2",
+      "type": "number",
+      "label": "Bon: Aussenabstand links/rechts",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 20,
+      "min": -80,
+      "max": 80,
+      "unit": "px"
+    },
+    {
+      "key": "bonPadding",
+      "type": "number",
+      "label": "Bon: Innenabstand oben",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 30,
+      "min": 0,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "bonPadding2",
+      "type": "number",
+      "label": "Bon: Innenabstand links/rechts",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 30,
+      "min": 0,
+      "max": 120,
+      "unit": "px"
+    },
+    {
+      "key": "bonPadding3",
+      "type": "number",
+      "label": "Bon: Innenabstand unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 40,
+      "min": 0,
+      "max": 160,
+      "unit": "px"
+    },
+    {
+      "key": "bonBackground",
+      "type": "color",
+      "label": "Bon: Hintergrund Farbe (Bon-Papier)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "inherit": "bon"
+    },
+    {
+      "key": "bonBoxShadow",
+      "type": "color",
+      "label": "Bon: Schatten Farbe (Text dunkel)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "bonBoxShadow2",
+      "type": "number",
+      "label": "Bon: Schatten y",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bonBoxShadow3",
+      "type": "number",
+      "label": "Bon: Schatten Unschärfe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 24,
+      "min": 0,
+      "max": 96,
+      "unit": "px"
+    },
+    {
+      "key": "bonBoxShadow4",
+      "type": "number",
+      "label": "Bon: Schatten Farbanteil",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 18,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "bonHrBorderTop",
+      "type": "color",
+      "label": "Bon: Trennlinie: Rand oben Farbe (Text gedämpft)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "bonHrBorderTop2",
+      "type": "number",
+      "label": "Bon: Trennlinie: Rand oben Stärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 2,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bonHrMargin",
+      "type": "number",
+      "label": "Bon: Trennlinie: Aussenabstand oben/unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 18,
+      "min": -72,
+      "max": 72,
+      "unit": "px"
+    },
+    {
+      "key": "bonShopFontWeight",
+      "type": "number",
+      "label": "Bon Laden: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 900,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bonShopFontSize",
+      "type": "number",
+      "label": "Bon Laden: Schriftgrösse (em)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 0.85,
+      "min": 0,
+      "max": 3.4,
+      "step": 0.01
+    },
+    {
+      "key": "bonShopLetterSpacing",
+      "type": "number",
+      "label": "Bon Laden: Zeichenabstand",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 4,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bonShopColor",
+      "type": "color",
+      "label": "Bon Laden: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "bonShopFont",
+      "type": "font",
+      "label": "Bon Laden: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "options": [
+        "Nunito",
+        "DM Sans",
+        "Manrope"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "bonItemGap",
+      "type": "number",
+      "label": "Bon Posten: Abstand",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 12,
+      "min": 0,
+      "max": 48,
+      "unit": "px"
+    },
+    {
+      "key": "bonItemFontWeight",
+      "type": "number",
+      "label": "Bon Posten: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bonItemMargin",
+      "type": "number",
+      "label": "Bon Posten: Aussenabstand oben/unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 6,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "bonItemColor",
+      "type": "color",
+      "label": "Bon Posten: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "inherit": ""
+    },
+    {
+      "key": "bonItemFont",
+      "type": "font",
+      "label": "Bon Posten: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "options": [
+        "Nunito",
+        "DM Sans",
+        "Manrope"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "bonItemSmallFontWeight",
+      "type": "number",
+      "label": "Bon Posten klein: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 600,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bonItemSmallFontSize",
+      "type": "number",
+      "label": "Bon Posten klein: Schriftgrösse (em)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 0.85,
+      "min": 0,
+      "max": 3.4,
+      "step": 0.01
+    },
+    {
+      "key": "bonItemSmallColor",
+      "type": "color",
+      "label": "Bon Posten klein: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "bonItemSmallFont",
+      "type": "font",
+      "label": "Bon Posten klein: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "options": [
+        "Nunito",
+        "DM Sans",
+        "Manrope"
+      ],
+      "inherit": ""
+    },
+    {
+      "key": "bonItemBFont",
+      "type": "font",
+      "label": "Bon Posten fett: Schrift",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "bonItemBFontWeight",
+      "type": "number",
+      "label": "Bon Posten fett: Schriftstärke",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": 400,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "bonItemBColor",
+      "type": "color",
+      "label": "Bon Posten fett: Textfarbe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "zigzagBottom",
+      "type": "number",
+      "label": "Zickzack: Lage unten",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 14,
+      "min": -56,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "zigzagHeight",
+      "type": "number",
+      "label": "Zickzack: Höhe",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "zigzagBackground",
+      "type": "color",
+      "label": "Zickzack: Hintergrund Farbe (Bon-Papier)",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": "",
+      "inherit": "bon"
+    },
+    {
+      "key": "zigzagClipPath",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 3",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 95,
+      "min": 0,
+      "max": 285,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath2",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 4",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 90,
+      "min": 0,
+      "max": 270,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath3",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 5",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 85,
+      "min": 0,
+      "max": 255,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath4",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 6",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 80,
+      "min": 0,
+      "max": 240,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath5",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 7",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 75,
+      "min": 0,
+      "max": 225,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath6",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 8",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 70,
+      "min": 0,
+      "max": 210,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath7",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 9",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 65,
+      "min": 0,
+      "max": 195,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath8",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 10",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 60,
+      "min": 0,
+      "max": 180,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath9",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 11",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 55,
+      "min": 0,
+      "max": 165,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath10",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 12",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 50,
+      "min": 0,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath11",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 13",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 45,
+      "min": 0,
+      "max": 135,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath12",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 14",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 40,
+      "min": 0,
+      "max": 120,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath13",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 15",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 35,
+      "min": 0,
+      "max": 105,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath14",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 16",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 30,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath15",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 17",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath16",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 18",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 20,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath17",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 19",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 15,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath18",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 20",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 10,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "zigzagClipPath19",
+      "type": "number",
+      "label": "Zickzack: Zuschnitt Eckpunkt 21",
+      "group": "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik",
+      "default": 5,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "shutterWidth",
+      "type": "number",
+      "label": "Rollladen: Breite",
+      "group": "Feinschliff: Ending",
+      "default": 1400,
+      "min": 0,
+      "max": 5600,
+      "unit": "px"
+    },
+    {
+      "key": "shutterHeight",
+      "type": "number",
+      "label": "Rollladen: Höhe",
+      "group": "Feinschliff: Ending",
+      "default": 1080,
+      "min": 0,
+      "max": 4320,
+      "unit": "px"
+    },
+    {
+      "key": "shutterTransform",
+      "type": "number",
+      "label": "Rollladen: Verformung Verschiebung y",
+      "group": "Feinschliff: Ending",
+      "default": -100,
+      "min": -300,
+      "max": 300,
+      "unit": "%"
+    },
+    {
+      "key": "shutterBoxBackground",
+      "type": "color",
+      "label": "Rollladen Kasten: Hintergrund Farbe (Papier)",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "shutterBoxBackground2",
+      "type": "color",
+      "label": "Rollladen Kasten: Hintergrund Farbe (Text dunkel)",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "shutterBoxBackground3",
+      "type": "number",
+      "label": "Rollladen Kasten: Hintergrund Verlauf Stopp 1",
+      "group": "Feinschliff: Ending",
+      "default": 34,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "shutterBoxBackground4",
+      "type": "number",
+      "label": "Rollladen Kasten: Hintergrund Farbanteil",
+      "group": "Feinschliff: Ending",
+      "default": 22,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "shutterBoxBackground5",
+      "type": "number",
+      "label": "Rollladen Kasten: Hintergrund Verlauf Stopp 2",
+      "group": "Feinschliff: Ending",
+      "default": 34,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "shutterBoxBackground6",
+      "type": "number",
+      "label": "Rollladen Kasten: Hintergrund Verlauf Stopp 2 (2)",
+      "group": "Feinschliff: Ending",
+      "default": 34,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "shutterBoxBackground7",
+      "type": "number",
+      "label": "Rollladen Kasten: Hintergrund Verlauf Stopp 2 (3)",
+      "group": "Feinschliff: Ending",
+      "default": 3,
+      "min": 0,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "shutterBoxBorderBottom",
+      "type": "color",
+      "label": "Rollladen Kasten: Rand unten Farbe (Text dunkel)",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "shutterBoxBorderBottom2",
+      "type": "number",
+      "label": "Rollladen Kasten: Rand unten Stärke",
+      "group": "Feinschliff: Ending",
+      "default": 14,
+      "min": 0,
+      "max": 56,
+      "unit": "px"
+    },
+    {
+      "key": "shutterBoxBorderBottom3",
+      "type": "number",
+      "label": "Rollladen Kasten: Rand unten Farbanteil",
+      "group": "Feinschliff: Ending",
+      "default": 35,
+      "min": 0,
+      "max": 100,
+      "unit": "%"
+    },
+    {
+      "key": "shutterArcLetterFill",
+      "type": "color",
+      "label": "Rollladen: Bogenschrift: Füllfarbe Farbe (Text dunkel)",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "shutterArcLetterStroke",
+      "type": "color",
+      "label": "Rollladen: Bogenschrift: Linienfarbe Farbe (Papier)",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "shutterTitleWidth",
+      "type": "number",
+      "label": "Rollladen Titel: Breite",
+      "group": "Feinschliff: Ending",
+      "default": 1400,
+      "min": 0,
+      "max": 5600,
+      "unit": "px"
+    },
+    {
+      "key": "shutterTitleTop",
+      "type": "number",
+      "label": "Rollladen Titel: Lage oben",
+      "group": "Feinschliff: Ending",
+      "default": 760,
+      "min": -3040,
+      "max": 3040,
+      "unit": "px"
+    },
+    {
+      "key": "shutterTitleFont",
+      "type": "font",
+      "label": "Rollladen Titel: Schrift",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "shutterTitleFontSize",
+      "type": "number",
+      "label": "Rollladen Titel: Schriftgrösse",
+      "group": "Feinschliff: Ending",
+      "default": 84,
+      "min": 0,
+      "max": 336,
+      "unit": "px"
+    },
+    {
+      "key": "shutterTitleColor",
+      "type": "color",
+      "label": "Rollladen Titel: Textfarbe",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "endingTitleWidth",
+      "type": "number",
+      "label": "Ending Titel: Breite",
+      "group": "Feinschliff: Ending",
+      "default": 1400,
+      "min": 0,
+      "max": 5600,
+      "unit": "px"
+    },
+    {
+      "key": "endingTitleTop",
+      "type": "number",
+      "label": "Ending Titel: Lage oben",
+      "group": "Feinschliff: Ending",
+      "default": 760,
+      "min": -3040,
+      "max": 3040,
+      "unit": "px"
+    },
+    {
+      "key": "endingTitleFont",
+      "type": "font",
+      "label": "Ending Titel: Schrift",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "endingTitleFontSize",
+      "type": "number",
+      "label": "Ending Titel: Schriftgrösse",
+      "group": "Feinschliff: Ending",
+      "default": 84,
+      "min": 0,
+      "max": 336,
+      "unit": "px"
+    },
+    {
+      "key": "endingTitleColor",
+      "type": "color",
+      "label": "Ending Titel: Textfarbe",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "endingTitleColor2",
+      "type": "color",
+      "label": "Ending Titel: Textfarbe",
+      "group": "Feinschliff: Ending",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "statsBonBoxLeft",
+      "type": "number",
+      "label": "Tagesabschluss: Bon-Kasten: Lage links",
+      "group": "Feinschliff: Statistik",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "statsBonBoxTop",
+      "type": "number",
+      "label": "Tagesabschluss: Bon-Kasten: Lage oben",
+      "group": "Feinschliff: Statistik",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "statsBonBoxTransform",
+      "type": "number",
+      "label": "Tagesabschluss: Bon-Kasten: Verformung Verschiebung x",
+      "group": "Feinschliff: Statistik",
+      "default": -50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "closingPrinterAt",
+      "type": "number",
+      "label": "Drucker: ab",
+      "group": "Feinschliff: Statistik",
+      "default": 0.1,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "closingBonAt",
+      "type": "number",
+      "label": "Bon: wird gedruckt ab",
+      "group": "Feinschliff: Statistik",
+      "default": 0.4,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "closingPrintedAt",
+      "type": "number",
+      "label": "Bon: gedruckt ab",
+      "group": "Feinschliff: Statistik",
+      "default": 1.5,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "closingRowGap",
+      "type": "number",
+      "label": "Zeilen: Versatz je Zeile",
+      "group": "Feinschliff: Statistik",
+      "default": 0.25,
+      "min": 0,
+      "max": 3,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "closingSteps",
+      "type": "number",
+      "label": "Bon: Druckschritte",
+      "group": "Feinschliff: Statistik",
+      "default": 16,
+      "min": 0,
+      "max": 100
+    },
+    {
+      "key": "closingDropFrom",
+      "type": "number",
+      "label": "Drucker: fällt aus Höhe",
+      "group": "Feinschliff: Statistik",
+      "default": -200,
+      "min": -2000,
+      "max": 2000,
+      "unit": "px"
+    },
+    {
+      "key": "closingDropTime",
+      "type": "number",
+      "label": "Drucker: fällt in",
+      "group": "Feinschliff: Statistik",
+      "default": 0.45,
+      "min": 0,
+      "max": 3,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "closingFeedTime",
+      "type": "number",
+      "label": "Bon: wird gedruckt in",
+      "group": "Feinschliff: Statistik",
+      "default": 1,
+      "min": 0,
+      "max": 10,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "closingHitScale",
+      "type": "number",
+      "label": "Stempel: trifft aus Grösse",
+      "group": "Feinschliff: Statistik",
+      "default": 2.6,
+      "min": 0,
+      "max": 10,
+      "step": 0.05
+    },
+    {
+      "key": "closingHitTime",
+      "type": "number",
+      "label": "Stempel: trifft in",
+      "group": "Feinschliff: Statistik",
+      "default": 0.18,
+      "min": 0,
+      "max": 3,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "closingShake",
+      "type": "number",
+      "label": "Bon: wackelt um",
+      "group": "Feinschliff: Statistik",
+      "default": 6,
+      "min": -100,
+      "max": 100,
+      "unit": "px"
+    },
+    {
+      "key": "closingShakeTime",
+      "type": "number",
+      "label": "Bon: Wackler dauert",
+      "group": "Feinschliff: Statistik",
+      "default": 0.04,
+      "min": 0,
+      "max": 1,
+      "unit": "s",
+      "step": 0.01
+    },
+    {
+      "key": "closingShakes",
+      "type": "number",
+      "label": "Bon: Wackler",
+      "group": "Feinschliff: Statistik",
+      "default": 3,
+      "min": 0,
+      "max": 20
+    },
+    {
+      "key": "stampRight",
+      "type": "number",
+      "label": "Stempel: Lage rechts",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 10,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampTop",
+      "type": "number",
+      "label": "Stempel: Lage oben",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampWidth",
+      "type": "number",
+      "label": "Stempel: Breite",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 120,
+      "min": 0,
+      "max": 480,
+      "unit": "px"
+    },
+    {
+      "key": "stampHeight",
+      "type": "number",
+      "label": "Stempel: Höhe",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 120,
+      "min": 0,
+      "max": 480,
+      "unit": "px"
+    },
+    {
+      "key": "stampBorder",
+      "type": "color",
+      "label": "Stempel: Rand Farbe (Rot für Schrift und Flächen)",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "stampBorder2",
+      "type": "number",
+      "label": "Stempel: Rand Stärke",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 5,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampBoxShadow",
+      "type": "color",
+      "label": "Stempel: Schatten Farbe (Bon-Papier)",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": "",
+      "inherit": "bon"
+    },
+    {
+      "key": "stampBoxShadow2",
+      "type": "color",
+      "label": "Stempel: Schatten Farbe (Rot für Schrift und Flächen)",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "stampBoxShadow3",
+      "type": "number",
+      "label": "Stempel: Schatten Ausbreitung (Teil 1)",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 5,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampBoxShadow4",
+      "type": "number",
+      "label": "Stempel: Schatten Ausbreitung (Teil 2)",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 8,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "stampColor",
+      "type": "color",
+      "label": "Stempel: Textfarbe",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "stampFont",
+      "type": "font",
+      "label": "Stempel: Schrift",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": "",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "stampFontSize",
+      "type": "number",
+      "label": "Stempel: Schriftgrösse",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 22,
+      "min": 0,
+      "max": 88,
+      "unit": "px"
+    },
+    {
+      "key": "stampLineHeight",
+      "type": "number",
+      "label": "Stempel: Zeilenhöhe",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 1,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "stampTransform",
+      "type": "number",
+      "label": "Stempel: Verformung Drehung (Grad)",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 12,
+      "min": -360,
+      "max": 360
+    },
+    {
+      "key": "stampOpacity",
+      "type": "number",
+      "label": "Stempel: Deckkraft",
+      "group": "Feinschliff: Statistik, Alerts",
+      "default": 0.9,
       "min": 0,
       "max": 1,
       "step": 0.01
@@ -3726,158 +5394,11 @@
       "key": "kfRiseToTransform",
       "type": "number",
       "label": "Aufsteigen (Ende): Verformung Verschiebung y",
-      "group": "Feinschliff: Allgemein",
+      "group": "Feinschliff: Alerts",
       "default": -220,
       "min": -880,
       "max": 880,
       "unit": "px"
-    },
-    {
-      "key": "toneRedTextColor",
-      "type": "color",
-      "label": "Ton rot: Textfarbe",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "toneBrownColor",
-      "type": "color",
-      "label": "Ton braun: Textfarbe",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "toneMutedColor",
-      "type": "color",
-      "label": "Ton gedämpft: Textfarbe",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "rootLineHeight",
-      "type": "number",
-      "label": "Theme: Zeilenhöhe",
-      "group": "Feinschliff: Allgemein",
-      "default": 1.25,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "inkStroke",
-      "type": "color",
-      "label": "Tinte: Linienfarbe Farbe (Linien und Bogenschrift (Signatur))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "red"
-    },
-    {
-      "key": "fillFill",
-      "type": "color",
-      "label": "Füllung: Füllfarbe Farbe (Papier)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "arcLetterFont",
-      "type": "font",
-      "label": "Bogenschrift: Buchstabe: Schrift",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "options": [
-        "Titan One",
-        "Baloo 2",
-        "Fredoka"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "arcLetterFill",
-      "type": "color",
-      "label": "Bogenschrift: Buchstabe: Füllfarbe Farbe (Papier)",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "arcLetterStroke",
-      "type": "color",
-      "label": "Bogenschrift: Buchstabe: Linienfarbe Farbe (Linien und Bogenschrift (Signatur))",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": "red"
-    },
-    {
-      "key": "arcLetterLetterSpacing",
-      "type": "number",
-      "label": "Bogenschrift: Buchstabe: Zeichenabstand",
-      "group": "Feinschliff: Allgemein",
-      "default": 1,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "arcLetterColor",
-      "type": "color",
-      "label": "Bogenschrift: Buchstabe: Textfarbe",
-      "group": "Feinschliff: Allgemein",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "kfInFromTransform",
-      "type": "number",
-      "label": "Einblenden (Start): Verformung Verschiebung y",
-      "group": "Feinschliff: Allgemein",
-      "default": 6,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "kfInToOpacity",
-      "type": "number",
-      "label": "Einblenden (Ende): Deckkraft",
-      "group": "Feinschliff: Allgemein",
-      "default": 1,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "steamRate",
-      "type": "number",
-      "label": "Dampf: Schwaden je Sekunde",
-      "group": "Feinschliff: Allgemein",
-      "default": 0.32,
-      "min": 0,
-      "max": 5,
-      "step": 0.01
-    },
-    {
-      "key": "steamSway",
-      "type": "number",
-      "label": "Dampf: schwankt um",
-      "group": "Feinschliff: Allgemein",
-      "default": 9,
-      "min": 0,
-      "max": 200,
-      "unit": "px"
-    },
-    {
-      "key": "steamAlpha",
-      "type": "number",
-      "label": "Dampf: Deckkraft",
-      "group": "Feinschliff: Allgemein",
-      "default": 0.45,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
     },
     {
       "key": "chatGap",
@@ -4270,6 +5791,30 @@
       "min": 0,
       "max": 2.4,
       "step": 0.01
+    },
+    {
+      "key": "toneRedTextColor",
+      "type": "color",
+      "label": "Ton rot: Textfarbe",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "toneBrownColor",
+      "type": "color",
+      "label": "Ton braun: Textfarbe",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "toneMutedColor",
+      "type": "color",
+      "label": "Ton gedämpft: Textfarbe",
+      "group": "Feinschliff: Chat",
+      "default": "",
+      "inherit": "muted"
     },
     {
       "key": "camFrameInset",
@@ -5466,1973 +7011,250 @@
       "inherit": ""
     },
     {
-      "key": "dotStroke",
+      "key": "minimesKbFloor",
+      "type": "number",
+      "label": "Minimes: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "minimeCounterBottom",
+      "type": "number",
+      "label": "Minime Theke: Lage unten Anteil von „Abstand zum unteren Rand“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "minimeCounterBorderTop",
       "type": "color",
-      "label": "Punkt: Linienfarbe Farbe (Linien und Bogenschrift (Signatur))",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Theke: Rand oben Farbe (Linien und Bogenschrift (Signatur))",
+      "group": "Feinschliff: Minimes",
       "default": "",
       "inherit": "red"
     },
     {
-      "key": "dotStrokeWidth",
+      "key": "minimeCounterBorderTop2",
       "type": "number",
-      "label": "Punkt: Linienstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.2,
+      "label": "Minime Theke: Rand oben Stärke",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeCounterBorderRadius",
+      "type": "number",
+      "label": "Minime Theke: Eckenradius",
+      "group": "Feinschliff: Minimes",
+      "default": 2,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeWidth",
+      "type": "number",
+      "label": "Minime: Breite Anteil von „Grösse (Höhe)“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "minimeTransform",
+      "type": "number",
+      "label": "Minime: Verformung Verschiebung x",
+      "group": "Feinschliff: Minimes",
+      "default": 50,
+      "min": -150,
+      "max": 150,
+      "unit": "%"
+    },
+    {
+      "key": "minimeFlipScale",
+      "type": "number",
+      "label": "Minime Wende: Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
+      "min": 0,
+      "max": 4,
+      "step": 0.01
+    },
+    {
+      "key": "dishWidth",
+      "type": "number",
+      "label": "Gericht: Breite Anteil von „Grösse (Höhe)“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "dishHeight",
+      "type": "number",
+      "label": "Gericht: Höhe Anteil von „Grösse (Höhe)“ (%)",
+      "group": "Feinschliff: Minimes",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "dishSauceCircleFill",
+      "type": "color",
+      "label": "Gericht Sosse Kreis: Füllfarbe Farbe (Rot für Schrift und Flächen)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "dishSteamCircleFill",
+      "type": "color",
+      "label": "Gericht Dampf Kreis: Füllfarbe Farbe (Papier)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "dishSteamCircleStroke",
+      "type": "color",
+      "label": "Gericht Dampf Kreis: Linienfarbe Farbe (Linien und Bogenschrift (Signatur))",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "red"
+    },
+    {
+      "key": "dishSteamCircleStrokeWidth",
+      "type": "number",
+      "label": "Gericht Dampf Kreis: Linienstärke",
+      "group": "Feinschliff: Minimes",
+      "default": 1.6,
       "min": 0,
       "max": 40,
       "unit": "px",
       "step": 0.5
     },
     {
-      "key": "dotFilledFill",
-      "type": "color",
-      "label": "Punkt gefüllt: Füllfarbe Farbe (Linien und Bogenschrift (Signatur))",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "red"
-    },
-    {
-      "key": "screenBackground",
-      "type": "color",
-      "label": "Bildschirm: Hintergrund Farbe (Papier)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "screenBackground2",
-      "type": "color",
-      "label": "Bildschirm: Hintergrund Farbe (Papier) (2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "screenBackground3",
-      "type": "color",
-      "label": "Bildschirm: Hintergrund Farbe (Tütenpapier)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "kraft"
-    },
-    {
-      "key": "screenBackground4",
+      "key": "minimeNameMarginBottom",
       "type": "number",
-      "label": "Bildschirm: Hintergrund Verlauf Stopp 0",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 40,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "screenBackground5",
-      "type": "number",
-      "label": "Bildschirm: Hintergrund Verlauf Stopp 0 (2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 45,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "screenBackground6",
-      "type": "number",
-      "label": "Bildschirm: Hintergrund Verlauf Stopp 1",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 55,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "screenBackground7",
-      "type": "number",
-      "label": "Bildschirm: Hintergrund Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 88,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "logoLeft",
-      "type": "number",
-      "label": "Logo: Lage links",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 120,
-      "min": -480,
-      "max": 480,
+      "label": "Minime Name: Abstand unten",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
+      "min": -40,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "logoTop",
+      "key": "minimeNamePadding",
       "type": "number",
-      "label": "Logo: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 60,
-      "min": -240,
-      "max": 240,
-      "unit": "px"
-    },
-    {
-      "key": "logoWidth",
-      "type": "number",
-      "label": "Logo: Breite",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1238,
+      "label": "Minime Name: Innenabstand oben",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
-      "max": 4952,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "logoHeight",
+      "key": "minimeNamePadding2",
       "type": "number",
-      "label": "Logo: Höhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 940,
+      "label": "Minime Name: Innenabstand links/rechts",
+      "group": "Feinschliff: Minimes",
+      "default": 8,
       "min": 0,
-      "max": 3760,
+      "max": 40,
       "unit": "px"
     },
     {
-      "key": "lightsBackground",
+      "key": "minimeNamePadding3",
+      "type": "number",
+      "label": "Minime Name: Innenabstand unten",
+      "group": "Feinschliff: Minimes",
+      "default": 3,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
+    },
+    {
+      "key": "minimeNameBackground",
       "type": "color",
-      "label": "Lichter: Hintergrund Farbe (Text dunkel)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "lightsBackground2",
-      "type": "number",
-      "label": "Lichter: Hintergrund Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 60,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagBottom",
-      "type": "number",
-      "label": "Zickzack: Lage unten",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 14,
-      "min": -56,
-      "max": 56,
-      "unit": "px"
-    },
-    {
-      "key": "zigzagHeight",
-      "type": "number",
-      "label": "Zickzack: Höhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 14,
-      "min": 0,
-      "max": 56,
-      "unit": "px"
-    },
-    {
-      "key": "zigzagBackground",
-      "type": "color",
-      "label": "Zickzack: Hintergrund Farbe (Bon-Papier)",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Name: Hintergrund Farbe (Bon-Papier)",
+      "group": "Feinschliff: Minimes",
       "default": "",
       "inherit": "bon"
     },
     {
-      "key": "zigzagClipPath",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 3",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 95,
-      "min": 0,
-      "max": 285,
-      "unit": "%"
+      "key": "minimeNameBorderBottom",
+      "type": "color",
+      "label": "Minime Name: Rand unten Farbe (Text gedämpft)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "muted"
     },
     {
-      "key": "zigzagClipPath2",
+      "key": "minimeNameBorderBottom2",
       "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 4",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 90,
+      "label": "Minime Name: Rand unten Stärke",
+      "group": "Feinschliff: Minimes",
+      "default": 2,
       "min": 0,
-      "max": 270,
-      "unit": "%"
+      "max": 40,
+      "unit": "px"
     },
     {
-      "key": "zigzagClipPath3",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 5",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 85,
-      "min": 0,
-      "max": 255,
-      "unit": "%"
+      "key": "minimeNameBoxShadow",
+      "type": "color",
+      "label": "Minime Name: Schatten Farbe (Text dunkel)",
+      "group": "Feinschliff: Minimes",
+      "default": "",
+      "inherit": "brown"
     },
     {
-      "key": "zigzagClipPath4",
+      "key": "minimeNameBoxShadow2",
       "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 6",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 80,
-      "min": 0,
-      "max": 240,
-      "unit": "%"
+      "label": "Minime Name: Schatten y",
+      "group": "Feinschliff: Minimes",
+      "default": 2,
+      "min": -40,
+      "max": 40,
+      "unit": "px"
     },
     {
-      "key": "zigzagClipPath5",
+      "key": "minimeNameBoxShadow3",
       "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 7",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 75,
+      "label": "Minime Name: Schatten Unschärfe",
+      "group": "Feinschliff: Minimes",
+      "default": 4,
       "min": 0,
-      "max": 225,
-      "unit": "%"
+      "max": 40,
+      "unit": "px"
     },
     {
-      "key": "zigzagClipPath6",
+      "key": "minimeNameBoxShadow4",
       "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 8",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 70,
-      "min": 0,
-      "max": 210,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath7",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 9",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 65,
-      "min": 0,
-      "max": 195,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath8",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 10",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 60,
-      "min": 0,
-      "max": 180,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath9",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 11",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 55,
-      "min": 0,
-      "max": 165,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath10",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 12",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 50,
-      "min": 0,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath11",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 13",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 45,
-      "min": 0,
-      "max": 135,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath12",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 14",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 40,
-      "min": 0,
-      "max": 120,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath13",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 15",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 35,
-      "min": 0,
-      "max": 105,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath14",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 16",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 30,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath15",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 17",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Name: Schatten Farbanteil",
+      "group": "Feinschliff: Minimes",
       "default": 25,
       "min": 0,
       "max": 100,
       "unit": "%"
     },
     {
-      "key": "zigzagClipPath16",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 18",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 20,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath17",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 19",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 15,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath18",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 20",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 10,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "zigzagClipPath19",
-      "type": "number",
-      "label": "Zickzack: Zuschnitt Eckpunkt 21",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 5,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "tickerHeight",
-      "type": "number",
-      "label": "Lauftext: Höhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 72,
-      "min": 0,
-      "max": 288,
-      "unit": "px"
-    },
-    {
-      "key": "tickerBackground",
+      "key": "minimeNameColor",
       "type": "color",
-      "label": "Lauftext: Hintergrund Farbe (Rot für Schrift und Flächen)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "tickerColor",
-      "type": "color",
-      "label": "Lauftext: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "tickerRunFontWeight",
-      "type": "number",
-      "label": "Lauftext Lauf: Schriftstärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 900,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "tickerRunFontSize",
-      "type": "number",
-      "label": "Lauftext Lauf: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 30,
-      "min": 0,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "tickerRunLineHeight",
-      "type": "number",
-      "label": "Lauftext Lauf: Zeilenhöhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 72,
-      "min": 0,
-      "max": 288,
-      "unit": "px"
-    },
-    {
-      "key": "tickerRunLetterSpacing",
-      "type": "number",
-      "label": "Lauftext Lauf: Zeichenabstand",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "tickerRunColor",
-      "type": "color",
-      "label": "Lauftext Lauf: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "tickerRunFont",
-      "type": "font",
-      "label": "Lauftext Lauf: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Nunito",
-        "DM Sans",
-        "Manrope"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "tickerRunSpanPaddingRight",
-      "type": "number",
-      "label": "Lauftext: Text: Innenabstand rechts",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 48,
-      "min": 0,
-      "max": 192,
-      "unit": "px"
-    },
-    {
-      "key": "shutterWidth",
-      "type": "number",
-      "label": "Rollladen: Breite",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1400,
-      "min": 0,
-      "max": 5600,
-      "unit": "px"
-    },
-    {
-      "key": "shutterHeight",
-      "type": "number",
-      "label": "Rollladen: Höhe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1080,
-      "min": 0,
-      "max": 4320,
-      "unit": "px"
-    },
-    {
-      "key": "shutterTransform",
-      "type": "number",
-      "label": "Rollladen: Verformung Verschiebung y",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": -100,
-      "min": -300,
-      "max": 300,
-      "unit": "%"
-    },
-    {
-      "key": "shutterBoxBackground",
-      "type": "color",
-      "label": "Rollladen Kasten: Hintergrund Farbe (Papier)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "shutterBoxBackground2",
-      "type": "color",
-      "label": "Rollladen Kasten: Hintergrund Farbe (Text dunkel)",
-      "group": "Feinschliff: Starting, BRB, Ending",
+      "label": "Minime Name: Textfarbe",
+      "group": "Feinschliff: Minimes",
       "default": "",
       "inherit": "brown"
     },
     {
-      "key": "shutterBoxBackground3",
-      "type": "number",
-      "label": "Rollladen Kasten: Hintergrund Verlauf Stopp 1",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 34,
-      "min": 0,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "shutterBoxBackground4",
-      "type": "number",
-      "label": "Rollladen Kasten: Hintergrund Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 22,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "shutterBoxBackground5",
-      "type": "number",
-      "label": "Rollladen Kasten: Hintergrund Verlauf Stopp 2",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 34,
-      "min": 0,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "shutterBoxBackground6",
-      "type": "number",
-      "label": "Rollladen Kasten: Hintergrund Verlauf Stopp 2 (2)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 34,
-      "min": 0,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "shutterBoxBackground7",
-      "type": "number",
-      "label": "Rollladen Kasten: Hintergrund Verlauf Stopp 2 (3)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 3,
-      "min": 0,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "shutterBoxBorderBottom",
-      "type": "color",
-      "label": "Rollladen Kasten: Rand unten Farbe (Text dunkel)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "shutterBoxBorderBottom2",
-      "type": "number",
-      "label": "Rollladen Kasten: Rand unten Stärke",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 14,
-      "min": 0,
-      "max": 56,
-      "unit": "px"
-    },
-    {
-      "key": "shutterBoxBorderBottom3",
-      "type": "number",
-      "label": "Rollladen Kasten: Rand unten Farbanteil",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 35,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "shutterArcLetterFill",
-      "type": "color",
-      "label": "Rollladen: Bogenschrift: Füllfarbe Farbe (Text dunkel)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "shutterArcLetterStroke",
-      "type": "color",
-      "label": "Rollladen: Bogenschrift: Linienfarbe Farbe (Papier)",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "shutterTitleWidth",
-      "type": "number",
-      "label": "Rollladen Titel: Breite",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1400,
-      "min": 0,
-      "max": 5600,
-      "unit": "px"
-    },
-    {
-      "key": "shutterTitleTop",
-      "type": "number",
-      "label": "Rollladen Titel: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 760,
-      "min": -3040,
-      "max": 3040,
-      "unit": "px"
-    },
-    {
-      "key": "shutterTitleFont",
+      "key": "minimeNameFont",
       "type": "font",
-      "label": "Rollladen Titel: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Titan One",
-        "Baloo 2",
-        "Fredoka"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "shutterTitleFontSize",
-      "type": "number",
-      "label": "Rollladen Titel: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 84,
-      "min": 0,
-      "max": 336,
-      "unit": "px"
-    },
-    {
-      "key": "shutterTitleColor",
-      "type": "color",
-      "label": "Rollladen Titel: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "endingTitleWidth",
-      "type": "number",
-      "label": "Ending Titel: Breite",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1400,
-      "min": 0,
-      "max": 5600,
-      "unit": "px"
-    },
-    {
-      "key": "endingTitleTop",
-      "type": "number",
-      "label": "Ending Titel: Lage oben",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 760,
-      "min": -3040,
-      "max": 3040,
-      "unit": "px"
-    },
-    {
-      "key": "endingTitleFont",
-      "type": "font",
-      "label": "Ending Titel: Schrift",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "options": [
-        "Titan One",
-        "Baloo 2",
-        "Fredoka"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "endingTitleFontSize",
-      "type": "number",
-      "label": "Ending Titel: Schriftgrösse",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 84,
-      "min": 0,
-      "max": 336,
-      "unit": "px"
-    },
-    {
-      "key": "endingTitleColor",
-      "type": "color",
-      "label": "Ending Titel: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "endingTitleColor2",
-      "type": "color",
-      "label": "Ending Titel: Textfarbe",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "introLights",
-      "type": "number",
-      "label": "Ablauf: Licht ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introLetters",
-      "type": "number",
-      "label": "Ablauf: Bogenschrift ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 0.6,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introBody",
-      "type": "number",
-      "label": "Ablauf: Koch ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introFills",
-      "type": "number",
-      "label": "Ablauf: Flächen ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1.4,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introSpit",
-      "type": "number",
-      "label": "Ablauf: Spiess ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 1.5,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introArm",
-      "type": "number",
-      "label": "Ablauf: Arm ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introHatch",
-      "type": "number",
-      "label": "Ablauf: Fleischstreifen ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.1,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introSteam",
-      "type": "number",
-      "label": "Ablauf: Dampf ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.4,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introPrinter",
-      "type": "number",
-      "label": "Ablauf: Drucker ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.4,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introIdle",
-      "type": "number",
-      "label": "Ablauf: Bewegung ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.6,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introBon",
-      "type": "number",
-      "label": "Ablauf: Bon ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 2.8,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introTicker",
-      "type": "number",
-      "label": "Ablauf: Lauftext ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 3.2,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "introShavings",
-      "type": "number",
-      "label": "Ablauf: Späne ab",
-      "group": "Feinschliff: Starting, BRB, Ending",
-      "default": 3.2,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "bonBoxLeft",
-      "type": "number",
-      "label": "Bon Kasten: Lage links",
-      "group": "Feinschliff: Bon",
-      "default": 1430,
-      "min": -5720,
-      "max": 5720,
-      "unit": "px"
-    },
-    {
-      "key": "bonBoxTop",
-      "type": "number",
-      "label": "Bon Kasten: Lage oben",
-      "group": "Feinschliff: Bon",
-      "default": 120,
-      "min": -480,
-      "max": 480,
-      "unit": "px"
-    },
-    {
-      "key": "bonBoxWidth",
-      "type": "number",
-      "label": "Bon Kasten: Breite",
-      "group": "Feinschliff: Bon",
-      "default": 420,
-      "min": 0,
-      "max": 1680,
-      "unit": "px"
-    },
-    {
-      "key": "printerHeight",
-      "type": "number",
-      "label": "Drucker: Höhe",
-      "group": "Feinschliff: Bon",
-      "default": 46,
-      "min": 0,
-      "max": 184,
-      "unit": "px"
-    },
-    {
-      "key": "printerBorderRadius",
-      "type": "number",
-      "label": "Drucker: Eckenradius",
-      "group": "Feinschliff: Bon",
-      "default": 10,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "printerBackground",
-      "type": "color",
-      "label": "Drucker: Hintergrund Farbe (Text dunkel)",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "printerAfterLeft",
-      "type": "number",
-      "label": "Drucker: Schlitz: Lage links",
-      "group": "Feinschliff: Bon",
-      "default": 22,
-      "min": -88,
-      "max": 88,
-      "unit": "px"
-    },
-    {
-      "key": "printerAfterRight",
-      "type": "number",
-      "label": "Drucker: Schlitz: Lage rechts",
-      "group": "Feinschliff: Bon",
-      "default": 22,
-      "min": -88,
-      "max": 88,
-      "unit": "px"
-    },
-    {
-      "key": "printerAfterBottom",
-      "type": "number",
-      "label": "Drucker: Schlitz: Lage unten",
-      "group": "Feinschliff: Bon",
-      "default": 10,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "printerAfterHeight",
-      "type": "number",
-      "label": "Drucker: Schlitz: Höhe",
-      "group": "Feinschliff: Bon",
-      "default": 6,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "printerAfterBorderRadius",
-      "type": "number",
-      "label": "Drucker: Schlitz: Eckenradius",
-      "group": "Feinschliff: Bon",
-      "default": 3,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "printerAfterBackground",
-      "type": "color",
-      "label": "Drucker: Schlitz: Hintergrund Farbe (Text dunkel)",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "printerAfterBackground2",
-      "type": "number",
-      "label": "Drucker: Schlitz: Hintergrund Farbanteil",
-      "group": "Feinschliff: Bon",
-      "default": 55,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "bonMargin",
-      "type": "number",
-      "label": "Bon: Aussenabstand oben",
-      "group": "Feinschliff: Bon",
-      "default": 10,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bonMargin2",
-      "type": "number",
-      "label": "Bon: Aussenabstand links/rechts",
-      "group": "Feinschliff: Bon",
-      "default": 20,
-      "min": -80,
-      "max": 80,
-      "unit": "px"
-    },
-    {
-      "key": "bonPadding",
-      "type": "number",
-      "label": "Bon: Innenabstand oben",
-      "group": "Feinschliff: Bon",
-      "default": 30,
-      "min": 0,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "bonPadding2",
-      "type": "number",
-      "label": "Bon: Innenabstand links/rechts",
-      "group": "Feinschliff: Bon",
-      "default": 30,
-      "min": 0,
-      "max": 120,
-      "unit": "px"
-    },
-    {
-      "key": "bonPadding3",
-      "type": "number",
-      "label": "Bon: Innenabstand unten",
-      "group": "Feinschliff: Bon",
-      "default": 40,
-      "min": 0,
-      "max": 160,
-      "unit": "px"
-    },
-    {
-      "key": "bonBackground",
-      "type": "color",
-      "label": "Bon: Hintergrund Farbe (Bon-Papier)",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "bon"
-    },
-    {
-      "key": "bonBoxShadow",
-      "type": "color",
-      "label": "Bon: Schatten Farbe (Text dunkel)",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "bonBoxShadow2",
-      "type": "number",
-      "label": "Bon: Schatten y",
-      "group": "Feinschliff: Bon",
-      "default": 10,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bonBoxShadow3",
-      "type": "number",
-      "label": "Bon: Schatten Unschärfe",
-      "group": "Feinschliff: Bon",
-      "default": 24,
-      "min": 0,
-      "max": 96,
-      "unit": "px"
-    },
-    {
-      "key": "bonBoxShadow4",
-      "type": "number",
-      "label": "Bon: Schatten Farbanteil",
-      "group": "Feinschliff: Bon",
-      "default": 18,
-      "min": 0,
-      "max": 100,
-      "unit": "%"
-    },
-    {
-      "key": "bonHrBorderTop",
-      "type": "color",
-      "label": "Bon: Trennlinie: Rand oben Farbe (Text gedämpft)",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "bonHrBorderTop2",
-      "type": "number",
-      "label": "Bon: Trennlinie: Rand oben Stärke",
-      "group": "Feinschliff: Bon",
-      "default": 2,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bonHrMargin",
-      "type": "number",
-      "label": "Bon: Trennlinie: Aussenabstand oben/unten",
-      "group": "Feinschliff: Bon",
-      "default": 18,
-      "min": -72,
-      "max": 72,
-      "unit": "px"
-    },
-    {
-      "key": "bonShopFontWeight",
-      "type": "number",
-      "label": "Bon Laden: Schriftstärke",
-      "group": "Feinschliff: Bon",
-      "default": 900,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "bonShopFontSize",
-      "type": "number",
-      "label": "Bon Laden: Schriftgrösse (em)",
-      "group": "Feinschliff: Bon",
-      "default": 0.85,
-      "min": 0,
-      "max": 3.4,
-      "step": 0.01
-    },
-    {
-      "key": "bonShopLetterSpacing",
-      "type": "number",
-      "label": "Bon Laden: Zeichenabstand",
-      "group": "Feinschliff: Bon",
-      "default": 4,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bonShopColor",
-      "type": "color",
-      "label": "Bon Laden: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "bonShopFont",
-      "type": "font",
-      "label": "Bon Laden: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Nunito",
-        "DM Sans",
-        "Manrope"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "bonNumberFontWeight",
-      "type": "number",
-      "label": "Bon Nummer: Schriftstärke",
-      "group": "Feinschliff: Bon",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "bonNumberFontSize",
-      "type": "number",
-      "label": "Bon Nummer: Schriftgrösse (em)",
-      "group": "Feinschliff: Bon",
-      "default": 0.75,
-      "min": 0,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "bonNumberColor",
-      "type": "color",
-      "label": "Bon Nummer: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "bonNumberMarginTop",
-      "type": "number",
-      "label": "Bon Nummer: Abstand oben",
-      "group": "Feinschliff: Bon",
-      "default": 4,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bonNumberFont",
-      "type": "font",
-      "label": "Bon Nummer: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Nunito",
-        "DM Sans",
-        "Manrope"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "bonItemGap",
-      "type": "number",
-      "label": "Bon Posten: Abstand",
-      "group": "Feinschliff: Bon",
-      "default": 12,
-      "min": 0,
-      "max": 48,
-      "unit": "px"
-    },
-    {
-      "key": "bonItemFontWeight",
-      "type": "number",
-      "label": "Bon Posten: Schriftstärke",
-      "group": "Feinschliff: Bon",
-      "default": 800,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "bonItemMargin",
-      "type": "number",
-      "label": "Bon Posten: Aussenabstand oben/unten",
-      "group": "Feinschliff: Bon",
-      "default": 6,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bonItemColor",
-      "type": "color",
-      "label": "Bon Posten: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "bonItemFont",
-      "type": "font",
-      "label": "Bon Posten: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Nunito",
-        "DM Sans",
-        "Manrope"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "bonItemSmallFontWeight",
-      "type": "number",
-      "label": "Bon Posten klein: Schriftstärke",
-      "group": "Feinschliff: Bon",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "bonItemSmallFontSize",
-      "type": "number",
-      "label": "Bon Posten klein: Schriftgrösse (em)",
-      "group": "Feinschliff: Bon",
-      "default": 0.85,
-      "min": 0,
-      "max": 3.4,
-      "step": 0.01
-    },
-    {
-      "key": "bonItemSmallColor",
-      "type": "color",
-      "label": "Bon Posten klein: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "bonItemSmallFont",
-      "type": "font",
-      "label": "Bon Posten klein: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Nunito",
-        "DM Sans",
-        "Manrope"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "bonLabelFontWeight",
-      "type": "number",
-      "label": "Bon Beschriftung: Schriftstärke",
-      "group": "Feinschliff: Bon",
-      "default": 800,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "bonLabelFontSize",
-      "type": "number",
-      "label": "Bon Beschriftung: Schriftgrösse (em)",
-      "group": "Feinschliff: Bon",
-      "default": 0.9,
-      "min": 0,
-      "max": 3.6,
-      "step": 0.01
-    },
-    {
-      "key": "bonLabelLetterSpacing",
-      "type": "number",
-      "label": "Bon Beschriftung: Zeichenabstand",
-      "group": "Feinschliff: Bon",
-      "default": 3,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bonLabelColor",
-      "type": "color",
-      "label": "Bon Beschriftung: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": ""
-    },
-    {
-      "key": "bonLabelFont",
-      "type": "font",
-      "label": "Bon Beschriftung: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Nunito",
-        "DM Sans",
-        "Manrope"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "bonBigFont",
-      "type": "font",
-      "label": "Bon gross: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Titan One",
-        "Baloo 2",
-        "Fredoka"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "bonBigFontSize",
-      "type": "number",
-      "label": "Bon gross: Schriftgrösse",
-      "group": "Feinschliff: Bon",
-      "default": 112,
-      "min": 0,
-      "max": 448,
-      "unit": "px"
-    },
-    {
-      "key": "bonBigLineHeight",
-      "type": "number",
-      "label": "Bon gross: Zeilenhöhe",
-      "group": "Feinschliff: Bon",
-      "default": 1.05,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "bonBigColor",
-      "type": "color",
-      "label": "Bon gross: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "bonLineFontWeight",
-      "type": "number",
-      "label": "Bon Zeile: Schriftstärke",
-      "group": "Feinschliff: Bon",
-      "default": 600,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "bonLineFontSize",
-      "type": "number",
-      "label": "Bon Zeile: Schriftgrösse (em)",
-      "group": "Feinschliff: Bon",
-      "default": 0.85,
-      "min": 0,
-      "max": 3.4,
-      "step": 0.01
-    },
-    {
-      "key": "bonLineColor",
-      "type": "color",
-      "label": "Bon Zeile: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "bonLineAnimation",
-      "type": "number",
-      "label": "Bon Zeile: Animation Dauer",
-      "group": "Feinschliff: Bon",
-      "default": 400,
-      "min": 0,
-      "max": 2000,
-      "unit": "ms",
-      "step": 10
-    },
-    {
-      "key": "bonLineFont",
-      "type": "font",
-      "label": "Bon Zeile: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Nunito",
-        "DM Sans",
-        "Manrope"
-      ],
-      "inherit": ""
-    },
-    {
-      "key": "bonTitleFont",
-      "type": "font",
-      "label": "Bon Titel: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Titan One",
-        "Baloo 2",
-        "Fredoka"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "bonTitleFontSize",
-      "type": "number",
-      "label": "Bon Titel: Schriftgrösse (em)",
-      "group": "Feinschliff: Bon",
-      "default": 1.35,
-      "min": 0,
-      "max": 5.4,
-      "step": 0.01
-    },
-    {
-      "key": "bonTitleLineHeight",
-      "type": "number",
-      "label": "Bon Titel: Zeilenhöhe",
-      "group": "Feinschliff: Bon",
-      "default": 1.1,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "bonTitleColor",
-      "type": "color",
-      "label": "Bon Titel: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "bonTitleMarginTop",
-      "type": "number",
-      "label": "Bon Titel: Abstand oben",
-      "group": "Feinschliff: Bon",
-      "default": 10,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "bonBigSmallFontSize",
-      "type": "number",
-      "label": "Bon gross klein: Schriftgrösse",
-      "group": "Feinschliff: Bon",
-      "default": 48,
-      "min": 0,
-      "max": 192,
-      "unit": "px"
-    },
-    {
-      "key": "bonItemBFont",
-      "type": "font",
-      "label": "Bon Posten fett: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Titan One",
-        "Baloo 2",
-        "Fredoka"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "bonItemBFontWeight",
-      "type": "number",
-      "label": "Bon Posten fett: Schriftstärke",
-      "group": "Feinschliff: Bon",
-      "default": 400,
-      "min": 100,
-      "max": 900,
-      "step": 100
-    },
-    {
-      "key": "bonItemBColor",
-      "type": "color",
-      "label": "Bon Posten fett: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "stampRight",
-      "type": "number",
-      "label": "Stempel: Lage rechts",
-      "group": "Feinschliff: Bon",
-      "default": 10,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "stampTop",
-      "type": "number",
-      "label": "Stempel: Lage oben",
-      "group": "Feinschliff: Bon",
-      "default": 8,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "stampWidth",
-      "type": "number",
-      "label": "Stempel: Breite",
-      "group": "Feinschliff: Bon",
-      "default": 120,
-      "min": 0,
-      "max": 480,
-      "unit": "px"
-    },
-    {
-      "key": "stampHeight",
-      "type": "number",
-      "label": "Stempel: Höhe",
-      "group": "Feinschliff: Bon",
-      "default": 120,
-      "min": 0,
-      "max": 480,
-      "unit": "px"
-    },
-    {
-      "key": "stampBorder",
-      "type": "color",
-      "label": "Stempel: Rand Farbe (Rot für Schrift und Flächen)",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "stampBorder2",
-      "type": "number",
-      "label": "Stempel: Rand Stärke",
-      "group": "Feinschliff: Bon",
-      "default": 5,
-      "min": 0,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "stampBoxShadow",
-      "type": "color",
-      "label": "Stempel: Schatten Farbe (Bon-Papier)",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "bon"
-    },
-    {
-      "key": "stampBoxShadow2",
-      "type": "color",
-      "label": "Stempel: Schatten Farbe (Rot für Schrift und Flächen)",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "stampBoxShadow3",
-      "type": "number",
-      "label": "Stempel: Schatten Ausbreitung (Teil 1)",
-      "group": "Feinschliff: Bon",
-      "default": 5,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "stampBoxShadow4",
-      "type": "number",
-      "label": "Stempel: Schatten Ausbreitung (Teil 2)",
-      "group": "Feinschliff: Bon",
-      "default": 8,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "stampColor",
-      "type": "color",
-      "label": "Stempel: Textfarbe",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "stampFont",
-      "type": "font",
-      "label": "Stempel: Schrift",
-      "group": "Feinschliff: Bon",
-      "default": "",
-      "options": [
-        "Titan One",
-        "Baloo 2",
-        "Fredoka"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "stampFontSize",
-      "type": "number",
-      "label": "Stempel: Schriftgrösse",
-      "group": "Feinschliff: Bon",
-      "default": 22,
-      "min": 0,
-      "max": 88,
-      "unit": "px"
-    },
-    {
-      "key": "stampLineHeight",
-      "type": "number",
-      "label": "Stempel: Zeilenhöhe",
-      "group": "Feinschliff: Bon",
-      "default": 1,
-      "min": 0.5,
-      "max": 3,
-      "step": 0.01
-    },
-    {
-      "key": "stampTransform",
-      "type": "number",
-      "label": "Stempel: Verformung Drehung (Grad)",
-      "group": "Feinschliff: Bon",
-      "default": 12,
-      "min": -360,
-      "max": 360
-    },
-    {
-      "key": "stampOpacity",
-      "type": "number",
-      "label": "Stempel: Deckkraft",
-      "group": "Feinschliff: Bon",
-      "default": 0.9,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "statsBonBoxLeft",
-      "type": "number",
-      "label": "Tagesabschluss: Bon-Kasten: Lage links",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "statsBonBoxTop",
-      "type": "number",
-      "label": "Tagesabschluss: Bon-Kasten: Lage oben",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 8,
-      "min": -40,
-      "max": 40,
-      "unit": "px"
-    },
-    {
-      "key": "statsBonBoxTransform",
-      "type": "number",
-      "label": "Tagesabschluss: Bon-Kasten: Verformung Verschiebung x",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": -50,
-      "min": -150,
-      "max": 150,
-      "unit": "%"
-    },
-    {
-      "key": "closingPrinterAt",
-      "type": "number",
-      "label": "Drucker: ab",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 0.1,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "closingBonAt",
-      "type": "number",
-      "label": "Bon: wird gedruckt ab",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 0.4,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "closingPrintedAt",
-      "type": "number",
-      "label": "Bon: gedruckt ab",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 1.5,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "closingRowGap",
-      "type": "number",
-      "label": "Zeilen: Versatz je Zeile",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 0.25,
-      "min": 0,
-      "max": 3,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "closingSteps",
-      "type": "number",
-      "label": "Bon: Druckschritte",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 16,
-      "min": 0,
-      "max": 100
-    },
-    {
-      "key": "closingDropFrom",
-      "type": "number",
-      "label": "Drucker: fällt aus Höhe",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": -200,
-      "min": -2000,
-      "max": 2000,
-      "unit": "px"
-    },
-    {
-      "key": "closingDropTime",
-      "type": "number",
-      "label": "Drucker: fällt in",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 0.45,
-      "min": 0,
-      "max": 3,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "closingFeedTime",
-      "type": "number",
-      "label": "Bon: wird gedruckt in",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 1,
-      "min": 0,
-      "max": 10,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "closingHitScale",
-      "type": "number",
-      "label": "Stempel: trifft aus Grösse",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 2.6,
-      "min": 0,
-      "max": 10,
-      "step": 0.05
-    },
-    {
-      "key": "closingHitTime",
-      "type": "number",
-      "label": "Stempel: trifft in",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 0.18,
-      "min": 0,
-      "max": 3,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "closingShake",
-      "type": "number",
-      "label": "Bon: wackelt um",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 6,
-      "min": -100,
-      "max": 100,
-      "unit": "px"
-    },
-    {
-      "key": "closingShakeTime",
-      "type": "number",
-      "label": "Bon: Wackler dauert",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 0.04,
-      "min": 0,
-      "max": 1,
-      "unit": "s",
-      "step": 0.01
-    },
-    {
-      "key": "closingShakes",
-      "type": "number",
-      "label": "Bon: Wackler",
-      "group": "Feinschliff: Tagesabschluss",
-      "default": 3,
-      "min": 0,
-      "max": 20
-    },
-    {
-      "key": "stingerRed",
-      "type": "color",
-      "label": "Linien: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "red"
-    },
-    {
-      "key": "stingerRedText",
-      "type": "color",
-      "label": "Schrift rot: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "stingerPaper",
-      "type": "color",
-      "label": "Papier: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "stingerBrown",
-      "type": "color",
-      "label": "Dunkel: Farbe",
-      "group": "Stinger",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "stingerFont",
-      "type": "font",
-      "label": "Titel: Schrift",
-      "group": "Stinger",
-      "default": "",
-      "options": [
-        "Titan One",
-        "Baloo 2",
-        "Fredoka"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "profileRed",
-      "type": "color",
-      "label": "Linien: Farbe",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "red"
-    },
-    {
-      "key": "profileRedText",
-      "type": "color",
-      "label": "Schrift rot: Farbe",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "redText"
-    },
-    {
-      "key": "profilePaper",
-      "type": "color",
-      "label": "Papier: Farbe",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "paper"
-    },
-    {
-      "key": "profileBrown",
-      "type": "color",
-      "label": "Dunkel: Farbe",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "brown"
-    },
-    {
-      "key": "profileMuted",
-      "type": "color",
-      "label": "Gedämpft: Farbe",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "muted"
-    },
-    {
-      "key": "profileSteamColor",
-      "type": "color",
-      "label": "Dampf: Farbe",
-      "group": "Profilbanner",
-      "default": "",
-      "inherit": "steam"
-    },
-    {
-      "key": "profileTitleFont",
-      "type": "font",
-      "label": "Titel: Schrift",
-      "group": "Profilbanner",
-      "default": "",
-      "options": [
-        "Titan One",
-        "Baloo 2",
-        "Fredoka"
-      ],
-      "inherit": "titleFont"
-    },
-    {
-      "key": "profileFont",
-      "type": "font",
-      "label": "Zeile: Schrift",
-      "group": "Profilbanner",
+      "label": "Minime Name: Schrift",
+      "group": "Feinschliff: Minimes",
       "default": "",
       "options": [
         "Nunito",
@@ -7442,64 +7264,34 @@
       "inherit": "font"
     },
     {
-      "key": "profileLogoTop",
+      "key": "minimeNameFontWeight",
       "type": "number",
-      "label": "Logo: von oben (Anteil der Höhe)",
-      "group": "Profilbanner",
-      "default": 0.02,
+      "label": "Minime Name: Schriftstärke",
+      "group": "Feinschliff: Minimes",
+      "default": 800,
+      "min": 100,
+      "max": 900,
+      "step": 100
+    },
+    {
+      "key": "kfMinimePopToScale",
+      "type": "number",
+      "label": "Minime ploppt (Ende): Grösse y",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
-      "max": 1,
+      "max": 4,
       "step": 0.01
     },
     {
-      "key": "profileLogoHeight",
+      "key": "kfMinimeFadeToOpacity",
       "type": "number",
-      "label": "Logo: Höhe (Anteil)",
-      "group": "Profilbanner",
-      "default": 0.7,
+      "label": "Minime blendet (Ende): Deckkraft",
+      "group": "Feinschliff: Minimes",
+      "default": 1,
       "min": 0,
       "max": 1,
       "step": 0.01
-    },
-    {
-      "key": "profileTitleY",
-      "type": "number",
-      "label": "Titel: von oben (Anteil)",
-      "group": "Profilbanner",
-      "default": 0.86,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "profileTitleSize",
-      "type": "number",
-      "label": "Titel: Schriftgrösse (Anteil)",
-      "group": "Profilbanner",
-      "default": 0.12,
-      "min": 0,
-      "max": 1,
-      "step": 0.005
-    },
-    {
-      "key": "profileLineY",
-      "type": "number",
-      "label": "Zeile: von oben (Anteil)",
-      "group": "Profilbanner",
-      "default": 0.95,
-      "min": 0,
-      "max": 1,
-      "step": 0.01
-    },
-    {
-      "key": "profileLineSize",
-      "type": "number",
-      "label": "Zeile: Schriftgrösse (Anteil)",
-      "group": "Profilbanner",
-      "default": 0.05,
-      "min": 0,
-      "max": 1,
-      "step": 0.005
     },
     {
       "key": "offlineRed",
@@ -7651,6 +7443,214 @@
       "min": 0,
       "max": 1,
       "step": 0.01
+    },
+    {
+      "key": "profileRed",
+      "type": "color",
+      "label": "Linien: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "red"
+    },
+    {
+      "key": "profileRedText",
+      "type": "color",
+      "label": "Schrift rot: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "profilePaper",
+      "type": "color",
+      "label": "Papier: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "profileBrown",
+      "type": "color",
+      "label": "Dunkel: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "profileMuted",
+      "type": "color",
+      "label": "Gedämpft: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "muted"
+    },
+    {
+      "key": "profileSteamColor",
+      "type": "color",
+      "label": "Dampf: Farbe",
+      "group": "Profilbanner",
+      "default": "",
+      "inherit": "steam"
+    },
+    {
+      "key": "profileTitleFont",
+      "type": "font",
+      "label": "Titel: Schrift",
+      "group": "Profilbanner",
+      "default": "",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "profileFont",
+      "type": "font",
+      "label": "Zeile: Schrift",
+      "group": "Profilbanner",
+      "default": "",
+      "options": [
+        "Nunito",
+        "DM Sans",
+        "Manrope"
+      ],
+      "inherit": "font"
+    },
+    {
+      "key": "profileLogoTop",
+      "type": "number",
+      "label": "Logo: von oben (Anteil der Höhe)",
+      "group": "Profilbanner",
+      "default": 0.02,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "profileLogoHeight",
+      "type": "number",
+      "label": "Logo: Höhe (Anteil)",
+      "group": "Profilbanner",
+      "default": 0.7,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "profileTitleY",
+      "type": "number",
+      "label": "Titel: von oben (Anteil)",
+      "group": "Profilbanner",
+      "default": 0.86,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "profileTitleSize",
+      "type": "number",
+      "label": "Titel: Schriftgrösse (Anteil)",
+      "group": "Profilbanner",
+      "default": 0.12,
+      "min": 0,
+      "max": 1,
+      "step": 0.005
+    },
+    {
+      "key": "profileLineY",
+      "type": "number",
+      "label": "Zeile: von oben (Anteil)",
+      "group": "Profilbanner",
+      "default": 0.95,
+      "min": 0,
+      "max": 1,
+      "step": 0.01
+    },
+    {
+      "key": "profileLineSize",
+      "type": "number",
+      "label": "Zeile: Schriftgrösse (Anteil)",
+      "group": "Profilbanner",
+      "default": 0.05,
+      "min": 0,
+      "max": 1,
+      "step": 0.005
+    },
+    {
+      "key": "stingerRed",
+      "type": "color",
+      "label": "Linien: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "red"
+    },
+    {
+      "key": "stingerRedText",
+      "type": "color",
+      "label": "Schrift rot: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "redText"
+    },
+    {
+      "key": "stingerPaper",
+      "type": "color",
+      "label": "Papier: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "paper"
+    },
+    {
+      "key": "stingerBrown",
+      "type": "color",
+      "label": "Dunkel: Farbe",
+      "group": "Stinger",
+      "default": "",
+      "inherit": "brown"
+    },
+    {
+      "key": "stingerFont",
+      "type": "font",
+      "label": "Titel: Schrift",
+      "group": "Stinger",
+      "default": "",
+      "options": [
+        "Titan One",
+        "Baloo 2",
+        "Fredoka"
+      ],
+      "inherit": "titleFont"
+    },
+    {
+      "key": "rootLineHeight",
+      "type": "number",
+      "label": "Theme: Zeilenhöhe",
+      "group": "Feinschliff: Allgemein",
+      "default": 1.25,
+      "min": 0.5,
+      "max": 3,
+      "step": 0.01
+    },
+    {
+      "key": "onCounterKbFloor",
+      "type": "number",
+      "label": "auf Theke: Abstand zum Boden Anteil von „Abstand zum unteren Rand“ (%)",
+      "group": "Feinschliff: Allgemein",
+      "default": 100,
+      "min": 0,
+      "max": 400
+    },
+    {
+      "key": "onCounterKbFloor2",
+      "type": "number",
+      "label": "auf Theke: Abstand zum Boden",
+      "group": "Feinschliff: Allgemein",
+      "default": 4,
+      "min": 0,
+      "max": 40,
+      "unit": "px"
     }
   ],
   "groupScenes": {
@@ -7719,24 +7719,68 @@
     "Minimes: Animationen": [
       "minimes"
     ],
-    "Feinschliff: Minimes": [
-      "minimes"
+    "Feinschliff: Starting, BRB": [
+      "starting",
+      "brb"
     ],
-    "Feinschliff: Alerts": [
+    "Feinschliff: Starting, BRB, Ending": [
+      "starting",
+      "brb",
+      "ending"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Alerts": [
+      "starting",
+      "brb",
+      "ending",
       "alerts"
     ],
-    "Feinschliff: Allgemein": [
+    "Feinschliff: Starting, BRB, Ending, Musik": [
+      "starting",
+      "brb",
+      "ending",
+      "music"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Statistik": [
+      "starting",
+      "brb",
+      "ending",
+      "stats"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Alerts, Minimes": [
       "starting",
       "brb",
       "ending",
       "alerts",
-      "chat",
-      "cam",
-      "music",
+      "minimes"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Statistik, Alerts": [
+      "starting",
+      "brb",
+      "ending",
       "stats",
-      "fx",
-      "minimes",
-      "info"
+      "alerts"
+    ],
+    "Feinschliff: Starting, BRB, Ending, Statistik, Alerts, Chat, Musik": [
+      "starting",
+      "brb",
+      "ending",
+      "stats",
+      "alerts",
+      "chat",
+      "music"
+    ],
+    "Feinschliff: Ending": [
+      "ending"
+    ],
+    "Feinschliff: Statistik": [
+      "stats"
+    ],
+    "Feinschliff: Statistik, Alerts": [
+      "stats",
+      "alerts"
+    ],
+    "Feinschliff: Alerts": [
+      "alerts"
     ],
     "Feinschliff: Chat": [
       "chat"
@@ -7753,18 +7797,8 @@
     "Feinschliff: Befehlsseite": [
       "info"
     ],
-    "Feinschliff: Starting, BRB, Ending": [
-      "starting",
-      "brb",
-      "ending"
-    ],
-    "Feinschliff: Bon": [
-      "alerts",
-      "music",
-      "stats"
-    ],
-    "Feinschliff: Tagesabschluss": [
-      "stats"
+    "Feinschliff: Minimes": [
+      "minimes"
     ]
   },
   "minimeVariants": {

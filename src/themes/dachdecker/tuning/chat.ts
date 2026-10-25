@@ -33,4 +33,8 @@ export const CHAT_TUNING = [
   number("badgeFontWeight", "Badge: Schriftstärke", "Feinschliff: Chat", 700, 100, 900, undefined, 100),
   inherits(font("badgeFont", "Badge: Schrift", "Feinschliff: Chat", "", ["Roboto Mono", "IBM Plex Mono", "Fira Mono", "Share Tech Mono"]), ""),
   number("emoteHeight", "Emote: Höhe (em)", "Feinschliff: Chat", 1.4, 0, 5.6, undefined, 0.01),
+  inherits(color("toneCopperColor", "Ton Kupfer: Textfarbe", "Feinschliff: Chat", ""), "copper"),
+  inherits(color("toneAccentColor", "Ton Akzent: Textfarbe", "Feinschliff: Chat", ""), "accent"),
+  inherits(color("toneRainColor", "Ton Regen: Textfarbe", "Feinschliff: Chat", ""), "rain"),
+  inherits(color("toneLineColor", "Ton Linie: Textfarbe", "Feinschliff: Chat", ""), "line"),
 ] as const satisfies readonly SettingField[];

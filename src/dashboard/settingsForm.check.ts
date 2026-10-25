@@ -28,6 +28,26 @@ assert.deepEqual(groupFields(schema).map(({ group, fields }) => [group, fields.m
 const scoped: ThemeSchema = { ...schema, groupScenes: { Scenes: ["starting"], Stinger: [] } };
 assert.deepEqual(groupsForView(scoped, "general").map(({ group }) => group), ["General"]);
 assert.deepEqual(groupsForView(scoped, "starting").map(({ group }) => group), ["Scenes"]);
+
+// The fine-tuning groups (each with the fields of exactly the scenes they change) show as one group per view, there
+// with only the fields that change this scene
+const tuned: ThemeSchema = {
+  ...schema,
+  fields: [
+    ...schema.fields,
+    { key: "both", type: "number", label: "Both", group: "Feinschliff: Starting, BRB", default: 1, min: 0, max: 2 },
+    { key: "brbOnly", type: "number", label: "BRB only", group: "Feinschliff: BRB", default: 1, min: 0, max: 2 },
+  ],
+  groupScenes: { Scenes: ["starting", "brb"], "Feinschliff: Starting, BRB": ["starting", "brb"], "Feinschliff: BRB": ["brb"] },
+};
+assert.deepEqual(groupsForView(tuned, "brb").map(({ group, fields }) => [group, fields.map(field => field.key)]), [
+  ["Scenes", ["title", "lines"]],
+  ["Feinschliff", ["both", "brbOnly"]],
+]);
+assert.deepEqual(groupsForView(tuned, "starting").map(({ group, fields }) => [group, fields.map(field => field.key)]), [
+  ["Scenes", ["title", "lines"]],
+  ["Feinschliff", ["both"]],
+]);
 assert.deepEqual(groupsForView(scoped, "chat").map(({ group }) => group), []);
 assert.deepEqual(groupsForView(schema, "general").map(({ group }) => group), ["General", "Scenes"]);
 assert.deepEqual(groupsForView(schema, "chat").map(({ group }) => group), []);

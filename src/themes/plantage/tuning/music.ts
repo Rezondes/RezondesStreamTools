@@ -114,7 +114,6 @@ export const MUSIC_TUNING = [
   number("coverBoxShadow3", "Cover: Schatten Unschärfe", "Feinschliff: Musik", 30, 0, 120, "px"),
   number("coverBoxShadow4", "Cover: Schatten Ausbreitung", "Feinschliff: Musik", 10, -40, 40, "px"),
   number("coverBoxShadow5", "Cover: Schatten Farbanteil", "Feinschliff: Musik", 120, 0, 120, "%"),
-  number("coverEckigBorderRadius", "Cover eckig: Eckenradius Anteil von „Eckenradius“ (%)", "Feinschliff: Musik", 100, 0, 400),
   number("coverEmptyPadding", "Cover leer: Innenabstand", "Feinschliff: Musik", 16, 0, 64, "px"),
   inherits(color("coverEmptyBackground", "Cover leer: Hintergrund Farbe (Blätter)", "Feinschliff: Musik", ""), "leaf"),
   inherits(color("coverEmptyBackground2", "Cover leer: Hintergrund Farbe (Erntezettel)", "Feinschliff: Musik", ""), "paper"),

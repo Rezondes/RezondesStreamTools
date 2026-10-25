@@ -3,6 +3,7 @@ import { color, font, inherits, number } from "../../../core/fields.ts";
 import type { SettingField } from "../../../core/theme.ts";
 
 export const INFO_TUNING = [
+  inherits(color("themeRootBackground", "Befehlsseite (Seite): Hintergrund Farbe (Hintergrund (Vollbild-Szenen))", "Feinschliff: Befehlsseite", ""), "background"),
   number("infoPadding", "Befehlsseite: Innenabstand oben/unten", "Feinschliff: Befehlsseite", 48, 0, 192, "px"),
   number("infoPadding2", "Befehlsseite: Innenabstand links/rechts", "Feinschliff: Befehlsseite", 16, 0, 64, "px"),
   number("infoColumnGap", "Befehlsseite: Spalte: Abstand", "Feinschliff: Befehlsseite", 24, 0, 96, "px"),
