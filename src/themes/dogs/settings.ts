@@ -315,7 +315,7 @@ const FIELDS = [
 
   // Minimes: core fields plus the look and the own actions of the dogs (minimes.ts); the type is the breed
   ...MINIME_BASE_FIELDS,
-  number("minimeScale", "Grösse (Bildschirmpixel je Pixel)", MINIME_DOGS, 3, 2, 8),
+  number("minimeScale", "Grösse (Bildschirmpixel je Pixel)", MINIME_DOGS, 2, 1, 8),
   flag("minimeGrass", "Grasstreifen unten", MINIME_DOGS, true),
   flag("minimeNameTag", "Namensschild", MINIME_DOGS, true),
   number("minimeBarkWeight", "Bellen: Häufigkeit", MINIME_DOGS, 3, 0, 100),

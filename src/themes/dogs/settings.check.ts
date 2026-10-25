@@ -20,6 +20,10 @@ assert.deepEqual(audit.unused.filter(key => !builtKeys.includes(key)), [], `unus
 assert.deepEqual(audit.basic, [], `simple view: ${audit.basic.join("; ")}`);
 assert.equal(dogsSettings.id, "dogs");
 
+// Minimes are drawn at 2 screen pixels per pixel by default, down to 1
+const minimeScale = dogsSettings.fields.find(field => field.key === "minimeScale");
+assert.deepEqual(minimeScale && "min" in minimeScale ? [minimeScale.default, minimeScale.min] : [], [2, 1]);
+
 // Every one of the 18 variants has its four coat fields with a color default, and the palette reads them
 const keys = new Set(dogsSettings.fields.map(field => field.key));
 assert.equal(coatKeys.length, 72);

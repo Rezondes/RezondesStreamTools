@@ -554,7 +554,7 @@ Blickrichtung `facing` spiegelt die Textur. Kein `MINIME_HOP_FIELDS`. Die Aktion
 | Gruppe | Schlüssel (Standard) |
 |---|---|
 | Minimes: Töne | `soundMinimeBark` (eingebaut, 30 %), `soundMinimeSniff` (eingebaut, aus), `soundMinimeWag` (eingebaut, 20 %); Töne `sounds/minimes-bark.ogg`, `minimes-sniff.ogg`, `minimes-wag.ogg` |
-| Minimes: Hunde | `minimeScale` (3), `minimeGrass` (an), `minimeNameTag` (an), `barkMs` (900 ms), `barkWeight` (3), `sniffMs` (2000 ms), `sniffWeight` (3), `lieMs` (4000 ms), `lieWeight` (2), `sleepMs` (6000 ms), `sleepWeight` (1), `wagOnChat` (an), `wagMs` (1200 ms) |
+| Minimes: Hunde | `minimeScale` (2), `minimeGrass` (an), `minimeNameTag` (an), `barkMs` (900 ms), `barkWeight` (3), `sniffMs` (2000 ms), `sniffWeight` (3), `lieMs` (4000 ms), `lieWeight` (2), `sleepMs` (6000 ms), `sleepWeight` (1), `wagOnChat` (an), `wagMs` (1200 ms) |
 | Kern | `MINIME_COMMANDS`, `MINIME_RULES`, `MINIME_MOTION`, `MINIME_VARIANTS` (Befehl `!rasse`) |
 
 ### Acceptance Criteria

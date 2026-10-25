@@ -527,7 +527,7 @@ fn variants() -> MinimeVariantSet {
 fn minimes() -> Vec<SettingField> {
     let mut fields = minime_base_fields();
     fields.extend(vec![
-        number("minimeScale", "Grösse (Bildschirmpixel je Pixel)", MINIME_DOGS, 3.0, 2.0, 8.0, None, None),
+        number("minimeScale", "Grösse (Bildschirmpixel je Pixel)", MINIME_DOGS, 2.0, 1.0, 8.0, None, None),
         flag("minimeGrass", "Grasstreifen unten", MINIME_DOGS, true),
         flag("minimeNameTag", "Namensschild", MINIME_DOGS, true),
         number("minimeBarkWeight", "Bellen: Häufigkeit", MINIME_DOGS, 3.0, 0.0, 100.0, None, None),

@@ -3268,8 +3268,8 @@
       "type": "number",
       "label": "Grösse (Bildschirmpixel je Pixel)",
       "group": "Minimes: Hunde",
-      "default": 3,
-      "min": 2,
+      "default": 2,
+      "min": 1,
       "max": 8
     },
     {
