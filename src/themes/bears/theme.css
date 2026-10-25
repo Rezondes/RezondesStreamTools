@@ -1,186 +1,191 @@
 /* Bärenbande theme: three bear brothers as cartoons with one clear outline and one shade tone, in front of a watercolor
    world without black outlines. Encapsulated under .theme-bears; colors, sizes and times come as CSS variables from the
-   settings, further sizes as var(--name, default). Classes bb-*, keyframes bears-*. */
+   settings, every further size, time and color is a fine-tuning field of its own (tuning.ts). Classes bb-*, keyframes bears-*. */
 
 .theme-bears {
   font-family: var(--font), system-ui, sans-serif;
   font-size: var(--fontSize);
-  line-height: 1.3;
+  line-height: var(--rootLineHeight);
   color: var(--textDark);
-  /* The paper surface shared by cards, signs and pills: outline, flat paper, one shade band inside at the bottom */
-  --sticker: inset 0 calc(-1 * var(--band, 10px)) 0 var(--paperShade);
-  --ground-shadow: color-mix(in srgb, var(--outline) 22%, transparent);
 }
 
 /* --- Bears ------------------------------------------------------------------------------------------------------ */
 .theme-bears .bb-bear { display: block; height: 100%; width: auto; overflow: visible; }
-.theme-bears .bb-eisbaer { --fur: var(--iceFur); --shade: var(--iceShade); --limb: var(--iceFur); }
-.theme-bears .bb-grizzly { --fur: var(--grizzlyFur); --shade: var(--grizzlyShade); --limb: var(--grizzlyFur); }
-.theme-bears .bb-panda { --fur: var(--pandaFur); --shade: var(--pandaShade); --limb: var(--pandaPatch); }
+.theme-bears .bb-eisbaer { --fur: var(--eisbaerFur); --shade: var(--eisbaerShade); --limb: var(--eisbaerLimb); }
+.theme-bears .bb-grizzly { --fur: var(--grizzlyFur2); --shade: var(--grizzlyShade2); --limb: var(--grizzlyLimb); }
+.theme-bears .bb-panda { --fur: var(--pandaFur2); --shade: var(--pandaShade2); --limb: var(--pandaLimb); }
 .theme-bears .part-fur { fill: var(--fur); }
 .theme-bears .part-shade { fill: var(--shade); }
-.theme-bears .part-patch { fill: var(--pandaPatch); }
-.theme-bears .part-patch-shade { fill: var(--pandaPatchShade); }
-.theme-bears .part-back { fill: var(--limb); stroke: var(--outline); stroke-width: var(--outlineWidth); }
+.theme-bears .part-patch { fill: var(--partPatchFill); }
+.theme-bears .part-patch-shade { fill: var(--partPatchShadeFill); }
+.theme-bears .part-back { fill: var(--limb); stroke: var(--partBackStroke); stroke-width: calc(var(--outlineWidth) * var(--partBackStrokeWidth) / 100); }
 .theme-bears .part-limb { fill: var(--limb); }
 /* Every bone group of the rig turns around its own pivot (set as transform origin in Bear.tsx) */
 .theme-bears .bb-bone { transform-box: view-box; }
-.theme-bears .part-outline,
-.theme-bears .part-line {
+.theme-bears .part-outline {
   fill: none;
-  stroke: var(--outline);
-  stroke-width: var(--outlineWidth);
+  stroke: var(--partOutlineStroke);
+  stroke-width: calc(var(--outlineWidth) * var(--partOutlineStrokeWidth) / 100);
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.theme-bears .part-eye { fill: var(--bearEye); transform-box: fill-box; transform-origin: center; }
-.theme-bears .part-nose { fill: var(--bearNose); }
-.theme-bears .part-mouth { fill: var(--grizzlyMouth); }
-.theme-bears .part-tongue { fill: var(--grizzlyTongue); }
-.theme-bears .part-teeth { fill: var(--bearTeeth); }
+.theme-bears .part-line {
+  fill: none;
+  stroke: var(--partLineStroke);
+  stroke-width: calc(var(--outlineWidth) * var(--partLineStrokeWidth) / 100);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.theme-bears .part-eye { fill: var(--partEyeFill); transform-box: fill-box; transform-origin: center; }
+.theme-bears .part-nose { fill: var(--partNoseFill); }
+.theme-bears .part-mouth { fill: var(--partMouthFill); }
+.theme-bears .part-tongue { fill: var(--partTongueFill); }
+.theme-bears .part-teeth { fill: var(--partTeethFill); }
 .theme-bears .part-pad { fill: var(--shade); }
-.theme-bears .bb-panda .part-pad { fill: var(--pandaPatchShade); }
-.theme-bears .part-prop { fill: var(--prop); }
-.theme-bears .bb-pose-phone .part-prop,
-.theme-bears .bb-pose-selfie .part-prop { fill: var(--phoneCase); }
-.theme-bears .bb-pose-headphones .part-prop { fill: var(--accent2); }
-.theme-bears .part-screen { fill: var(--phoneScreen); }
-.theme-bears .part-paper { fill: var(--paper); }
-.theme-bears .part-food { fill: var(--food); }
+.theme-bears .bb-panda .part-pad { fill: var(--pandaPartPadFill); }
+.theme-bears .part-prop { fill: var(--partPropFill); }
+.theme-bears .bb-pose-phone .part-prop { fill: var(--posePhonePartPropFill); }
+.theme-bears .bb-pose-selfie .part-prop { fill: var(--poseSelfiePartPropFill); }
+.theme-bears .bb-pose-headphones .part-prop { fill: var(--poseHeadphonesPartPropFill); }
+.theme-bears .part-screen { fill: var(--partScreenFill); }
+.theme-bears .part-paper { fill: var(--partPaperFill); }
+.theme-bears .part-food { fill: var(--partFoodFill); }
 .theme-bears .part-steam {
   fill: none;
-  stroke: var(--paper);
-  stroke-width: calc(var(--outlineWidth) * 0.6);
+  stroke: var(--partSteamStroke);
+  stroke-width: calc(var(--outlineWidth) * var(--partSteamStrokeWidth));
   stroke-linecap: round;
-  opacity: 0.8;
-  animation: bears-steam var(--steam-time, 2.4s) ease-in-out infinite;
+  opacity: var(--partSteamOpacity);
+  animation: bears-steam var(--partSteamAnimation) ease-in-out infinite;
 }
 .theme-bears .part-sign-text {
-  font-family: var(--titleFont), var(--font), sans-serif;
-  font-size: var(--sign-text, 15px);
-  font-weight: 800;
-  fill: var(--textDark);
+  font-family: var(--partSignTextFont), var(--partSignTextFont2), sans-serif;
+  font-size: var(--partSignTextFontSize);
+  font-weight: var(--partSignTextFontWeight);
+  fill: var(--partSignTextFill);
+  color: var(--partSignTextColor);
 }
 
 /* Life: blinking (every blinkEvery, 0 = never), breathing (on/off, duration), the tower sways */
 .theme-bears .bb-blinking .part-eye { animation: bears-blink var(--blinkEvery) step-end infinite; }
-.theme-bears .bb-breathing .bb-body { transform-box: fill-box; transform-origin: 50% 100%; animation: bears-breathe var(--breatheMs) ease-in-out infinite; }
-.theme-bears .bb-tower-sway { transform-box: fill-box; transform-origin: 50% 100%; animation: bears-sway var(--towerSwayMs) ease-in-out infinite; }
-.theme-bears .bb-facing-rechts .bb-hero { scale: -1 1; }
-.theme-bears .bb-facing-rechts .part-sign-text { transform: scaleX(-1); transform-box: fill-box; transform-origin: center; }
-@keyframes bears-blink { 0%, 96% { transform: scaleY(1); } 97%, 99% { transform: scaleY(0.1); } }
-@keyframes bears-breathe { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.015); } }
-@keyframes bears-sway { 0%, 100% { rotate: calc(-1deg * var(--towerSway)); } 50% { rotate: calc(1deg * var(--towerSway)); } }
-@keyframes bears-steam { 0%, 100% { translate: 0 0; opacity: 0.2; } 50% { translate: 0 calc(-1 * var(--steam-rise, 6px)); opacity: 0.9; } }
+.theme-bears .bb-breathing .bb-body { transform-box: fill-box; transform-origin: var(--breathingBodyTransformOrigin) 100%; animation: bears-breathe var(--breatheMs) ease-in-out infinite; }
+.theme-bears .bb-tower-sway { transform-box: fill-box; transform-origin: var(--towerSwayTransformOrigin) 100%; animation: bears-sway var(--towerSwayMs) ease-in-out infinite; }
+.theme-bears .bb-facing-rechts .bb-hero { scale: var(--facingRechtsHeroScale) var(--facingRechtsHeroScale2); }
+.theme-bears .bb-facing-rechts .part-sign-text { transform: scaleX(var(--facingRechtsPartSignTextTransform)); transform-box: fill-box; transform-origin: center; }
+@keyframes bears-blink { 0%, 96% { transform: scaleY(var(--kfBlink0p96pTransform)); } 97%, 99% { transform: scaleY(var(--kfBlink97p99pTransform)); } }
+@keyframes bears-breathe { 0%, 100% { transform: scaleY(var(--kfBreathe0p100pTransform)); } 50% { transform: scaleY(var(--kfBreathe50pTransform)); } }
+@keyframes bears-sway { 0%, 100% { rotate: calc(calc(var(--kfSway0p100pRotate2) * 1deg) * calc(var(--towerSway) * var(--kfSway0p100pRotate) / 100)); } 50% { rotate: calc(calc(var(--kfSway50pRotate2) * 1deg) * calc(var(--towerSway) * var(--kfSway50pRotate) / 100)); } }
+@keyframes bears-steam { 0%, 100% { translate: 0 0; opacity: var(--kfSteam0p100pOpacity); } 50% { translate: 0 calc(-1 * var(--kfSteam50pTranslate)); opacity: var(--kfSteam50pOpacity); } }
 
 /* --- Paper surfaces --------------------------------------------------------------------------------------------- */
 .theme-bears .bb-card {
-  background: var(--paper);
-  color: var(--textDark);
-  border: var(--card-line, 5px) solid var(--outline);
-  border-radius: var(--radius);
-  box-shadow: var(--sticker);
-  padding: var(--card-padding, 24px 36px 30px);
+  background: var(--cardBackground);
+  color: var(--cardColor);
+  border: var(--cardBorder2) solid var(--cardBorder);
+  border-radius: calc(var(--radius) * var(--cardBorderRadius) / 100);
+  box-shadow: inset 0 calc(-1 * var(--cardBoxShadow2)) 0 var(--cardBoxShadow);
+  padding: var(--cardPadding) var(--cardPadding2) var(--cardPadding3);
 }
 .theme-bears .bb-pill {
   display: inline-block;
-  background: var(--paper);
-  color: var(--textDark);
-  border: var(--pill-line, 4px) solid var(--outline);
-  border-radius: var(--pill-radius, 999px);
-  padding: var(--pill-padding, 6px 22px);
-  font-weight: 800;
+  background: var(--pillBackground);
+  color: var(--pillColor);
+  border: var(--pillBorder2) solid var(--pillBorder);
+  border-radius: var(--pillBorderRadius);
+  padding: var(--pillPadding) var(--pillPadding2);
+  font-weight: var(--pillFontWeight);
+  font-family: var(--pillFont), system-ui, sans-serif;
 }
 
 /* --- World ------------------------------------------------------------------------------------------------------ */
-.theme-bears .bb-screen { position: fixed; inset: 0; overflow: hidden; background: var(--meadow); }
+.theme-bears .bb-screen { position: fixed; inset: 0; overflow: hidden; background: var(--screenBackground); }
 .theme-bears .bb-world { position: absolute; inset: 0; overflow: hidden; isolation: isolate; }
 .theme-bears .bb-world-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
 /* The painted world (WorldCanvas.tsx): canvases cover the stage like the cloud SVG; it paints itself in from left to
    right as --paint runs from 0 to 1 */
 .theme-bears .bb-world-canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 /* fixed: a mask only reads the opacity of its color */
-.theme-bears .bb-painted { --paint: 1; mask-image: linear-gradient(90deg, #000 0 40%, transparent 60%); mask-size: 300% 100%; mask-repeat: no-repeat; mask-position: calc((1 - var(--paint)) * 100%) 0; }
+.theme-bears .bb-painted { --paint: var(--paintedPaint); mask-image: linear-gradient(calc(var(--paintedMaskImage) * 1deg), #000 0 var(--paintedMaskImage2), transparent var(--paintedMaskImage3)); mask-size: 300% 100%; mask-repeat: no-repeat; mask-position: calc((1 - var(--paint)) * 100%) 0; }
 /* The bones driven by bearDriver (Bear.tsx): the eyes close around their own middle */
 .theme-bears .bb-rig .part-eye { transform-box: fill-box; transform-origin: center; }
 /* The flash of the selfie: the whole picture lights up, opacity from the timeline */
-.theme-bears .bb-flash { position: absolute; inset: 0; background: var(--textColor); opacity: 0; pointer-events: none; }
+.theme-bears .bb-flash { position: absolute; inset: 0; background: var(--flashBackground); opacity: 0; pointer-events: none; }
 /* Clouds drift from the left edge to the right, each with its own phase */
-.theme-bears .bb-cloud { animation: bears-drift var(--cloudSpeed) linear infinite; animation-delay: calc(var(--cloudSpeed) * var(--i) / var(--n) * -1); }
-@keyframes bears-drift { from { translate: calc(-1 * var(--cloud-room, 400px)) 0; } to { translate: var(--drift-width, 2200px) 0; } }
+.theme-bears .bb-cloud { animation: bears-drift calc(var(--cloudSpeed) * var(--cloudAnimation) / 100) linear infinite; animation-delay: calc(calc(var(--cloudSpeed) * var(--cloudAnimationDelay) / 100) * var(--i) / var(--n) * -1); }
+@keyframes bears-drift { from { translate: calc(-1 * var(--kfDriftFromTranslate)) 0; } to { translate: var(--kfDriftToTranslate) 0; } }
 
 /* --- Full-screen scenes ----------------------------------------------------------------------------------------- */
 .theme-bears .bb-stage { display: block; }
-.theme-bears .bb-clock { position: absolute; top: var(--clock-top, 40px); right: var(--clock-right, 48px); font-size: var(--clock-size, 30px); }
+.theme-bears .bb-clock { position: absolute; top: var(--clockTop); right: var(--clockRight); font-size: var(--clockFontSize); color: var(--clockColor); font-family: var(--clockFont), system-ui, sans-serif; }
 .theme-bears .bb-hero-spot {
   position: absolute;
-  bottom: var(--ground, 70px);
-  left: var(--hero-gap, 110px);
+  bottom: var(--heroSpotBottom);
+  left: var(--heroSpotLeft);
   height: var(--bearSize);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  gap: var(--name-space, 14px);
+  gap: var(--heroSpotGap);
 }
-.theme-bears .bb-side-rechts .bb-hero-spot { left: auto; right: var(--hero-gap, 110px); }
+.theme-bears .bb-side-rechts .bb-hero-spot { left: auto; right: var(--sideRechtsHeroSpotRight); }
 .theme-bears .bb-hero { height: 100%; min-height: 0; flex: 1; }
 .theme-bears .bb-ground-shadow {
   position: absolute;
-  bottom: calc(-1 * var(--shadow-drop, 12px));
-  width: 80%;
-  height: var(--shadow-height, 36px);
+  bottom: calc(-1 * var(--groundShadowBottom));
+  width: var(--groundShadowWidth);
+  height: var(--groundShadowHeight);
   border-radius: 50%;
-  background: var(--ground-shadow);
-  filter: blur(var(--shadow-blur, 4px));
+  background: color-mix(in srgb, var(--groundShadowBackground) var(--groundShadowBackground2), transparent);
+  filter: blur(var(--groundShadowFilter));
 }
-.theme-bears .bb-name { position: absolute; bottom: calc(-1 * var(--name-drop, 54px)); font-size: var(--name-size, 24px); }
+.theme-bears .bb-name { position: absolute; bottom: calc(-1 * var(--nameBottom)); font-size: var(--nameFontSize); color: var(--nameColor); font-family: var(--nameFont), system-ui, sans-serif; }
 .theme-bears .bb-board {
   position: absolute;
-  top: var(--board-top, 150px);
-  right: var(--board-gap, 130px);
+  top: var(--boardTop);
+  right: var(--boardRight);
   width: var(--signWidth);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--board-space, 28px);
+  gap: var(--boardGap);
 }
-.theme-bears .bb-side-rechts .bb-board { right: auto; left: var(--board-gap, 130px); }
+.theme-bears .bb-side-rechts .bb-board { right: auto; left: var(--sideRechtsBoardLeft); }
 .theme-bears .bb-sign { width: 100%; text-align: center; }
-.theme-bears .bb-eyebrow { margin: 0; background: var(--accent); color: var(--textColor); font-size: var(--eyebrow-size, 26px); }
+.theme-bears .bb-eyebrow { margin: 0; background: var(--eyebrowBackground); color: var(--eyebrowColor); font-size: var(--eyebrowFontSize); font-family: var(--eyebrowFont), system-ui, sans-serif; }
 .theme-bears .bb-title {
-  margin: var(--title-space, 18px 0 8px);
-  font-family: var(--titleFont), var(--font), sans-serif;
+  margin: var(--titleMargin) 0 var(--titleMargin2);
+  font-family: var(--titleFont2), var(--titleFont3), sans-serif;
   font-size: var(--titleSize);
-  font-weight: 800;
-  line-height: 1.05;
-  color: var(--paper);
-  -webkit-text-stroke: calc(var(--outlineWidth) * var(--title-line, 1.6px)) var(--outline);
+  font-weight: var(--titleFontWeight);
+  line-height: var(--titleLineHeight);
+  color: var(--titleColor);
+  -webkit-text-stroke: calc(var(--outlineWidth) * var(--titleWebkitTextStroke2)) var(--titleWebkitTextStroke);
   paint-order: stroke fill;
 }
-.theme-bears .bb-note { margin: 0; color: var(--textDim); font-size: var(--note-size, 32px); font-weight: 700; }
-.theme-bears .bb-count { display: flex; flex-direction: column; align-items: center; gap: var(--count-space, 12px); min-width: var(--count-width, 420px); }
-.theme-bears .bb-big { font-family: var(--titleFont), var(--font), sans-serif; font-size: var(--big-size, 76px); color: var(--accentText); line-height: 1; }
-.theme-bears .bb-next { font-size: var(--next-size, 40px); }
+.theme-bears .bb-note { margin: 0; color: var(--noteColor); font-size: var(--noteFontSize); font-weight: var(--noteFontWeight); font-family: var(--noteFont), system-ui, sans-serif; }
+.theme-bears .bb-count { display: flex; flex-direction: column; align-items: center; gap: var(--countGap); min-width: var(--countMinWidth); }
+.theme-bears .bb-big { font-family: var(--bigFont), var(--bigFont2), sans-serif; font-size: var(--bigFontSize); color: var(--bigColor); line-height: var(--bigLineHeight); }
+.theme-bears .bb-next { font-size: var(--nextFontSize); color: var(--nextColor); font-family: var(--nextFont), system-ui, sans-serif; }
 /* Progress: a dashed path a little bear walks along, or an outlined bar */
 .theme-bears .bb-progress-path {
   position: relative;
-  width: var(--path-width, 380px);
-  height: var(--path-height, 56px);
-  background: linear-gradient(90deg, var(--outline) 50%, transparent 0) left bottom / var(--dash, 22px) var(--dash-height, 4px) repeat-x;
+  width: var(--progressPathWidth);
+  height: var(--progressPathHeight);
+  background: linear-gradient(calc(var(--progressPathBackground2) * 1deg), var(--progressPathBackground) var(--progressPathBackground3), transparent 0) left bottom / var(--progressPathBackground4) var(--progressPathBackground5) repeat-x;
 }
 .theme-bears .bb-walker {
   position: absolute;
-  bottom: var(--walker-lift, 2px);
-  left: calc(var(--part) * (100% - var(--walker-width, 34px)));
-  height: var(--walker-height, 52px);
-  transition: left var(--fadeDuration) linear;
-  animation: bears-waddle var(--waddle-time, 0.8s) ease-in-out infinite;
+  bottom: var(--walkerBottom);
+  left: calc(var(--part) * (100% - var(--walkerLeft)));
+  height: var(--walkerHeight);
+  transition: left calc(var(--fadeDuration) * var(--walkerTransition) / 100) linear;
+  animation: bears-waddle var(--walkerAnimation) ease-in-out infinite;
 }
-.theme-bears .bb-progress-bar { width: var(--path-width, 380px); height: var(--bar-height, 22px); border: var(--pill-line, 4px) solid var(--outline); border-radius: var(--pill-radius, 999px); overflow: hidden; background: var(--paperShade); }
-.theme-bears .bb-progress-bar span { display: block; height: 100%; width: calc(var(--part) * 100%); background: var(--accent); transition: width var(--fadeDuration) linear; }
-.theme-bears .bb-saying { margin: 0; font-size: var(--saying-size, 28px); color: var(--textDim); animation: bears-plopp var(--fadeDuration) ease-out; }
-.theme-bears .bb-saying::before { content: ""; display: inline-block; width: var(--dot, 12px); height: var(--dot, 12px); margin-right: var(--dot-space, 12px); border-radius: 50%; background: var(--accent2); vertical-align: middle; }
+.theme-bears .bb-progress-bar { width: var(--progressBarWidth); height: var(--progressBarHeight); border: var(--progressBarBorder2) solid var(--progressBarBorder); border-radius: var(--progressBarBorderRadius); overflow: hidden; background: var(--progressBarBackground); }
+.theme-bears .bb-progress-bar span { display: block; height: 100%; width: calc(var(--part) * 100%); background: var(--progressBarSpanBackground); transition: width calc(var(--fadeDuration) * var(--progressBarSpanTransition) / 100) linear; }
+.theme-bears .bb-saying { margin: 0; font-size: var(--sayingFontSize); color: var(--sayingColor); animation: bears-plopp calc(var(--fadeDuration) * var(--sayingAnimation) / 100) ease-out; font-family: var(--sayingFont), system-ui, sans-serif; }
+.theme-bears .bb-saying::before { content: ""; display: inline-block; width: var(--sayingBeforeWidth); height: var(--sayingBeforeHeight); margin-right: var(--sayingBeforeMarginRight); border-radius: 50%; background: var(--sayingBeforeBackground); vertical-align: middle; }
 /* Ticker: a paper strip at the bottom with the outline */
 .theme-bears .bb-ticker {
   position: absolute;
@@ -188,26 +193,28 @@
   right: 0;
   bottom: 0;
   overflow: hidden;
-  background: var(--paper);
-  border-top: var(--pill-line, 4px) solid var(--outline);
-  box-shadow: var(--sticker);
-  padding: var(--ticker-padding, 10px 0 14px);
+  background: var(--tickerBackground);
+  border-top: var(--tickerBorderTop2) solid var(--tickerBorderTop);
+  box-shadow: inset 0 calc(-1 * var(--tickerBoxShadow2)) 0 var(--tickerBoxShadow);
+  padding: var(--tickerPadding) 0 var(--tickerPadding2);
   white-space: nowrap;
-  font-weight: 800;
-  font-size: var(--ticker-size, 28px);
+  font-weight: var(--tickerFontWeight);
+  font-size: var(--tickerFontSize);
+  color: var(--tickerColor);
+  font-family: var(--tickerFont), system-ui, sans-serif;
 }
 .theme-bears .bb-ticker span { display: inline-block; padding-left: 100%; animation: bears-ticker var(--tickerSpeed) linear infinite; }
-@keyframes bears-ticker { to { translate: -100% 0; } }
-@keyframes bears-waddle { 0%, 100% { rotate: calc(-1deg * var(--waddle, 6)); } 50% { rotate: calc(1deg * var(--waddle, 6)); } }
-@keyframes bears-plopp { 0% { scale: 0.7; opacity: 0; } 70% { scale: 1.05; opacity: 1; } 100% { scale: 1; } }
+@keyframes bears-ticker { to { translate: var(--kfTickerToTranslate) 0; } }
+@keyframes bears-waddle { 0%, 100% { rotate: calc(calc(var(--kfWaddle0p100pRotate) * 1deg) * var(--kfWaddle0p100pRotate2)); } 50% { rotate: calc(calc(var(--kfWaddle50pRotate) * 1deg) * var(--kfWaddle50pRotate2)); } }
+@keyframes bears-plopp { 0% { scale: var(--kfPlopp0pScale); opacity: 0; } 70% { scale: var(--kfPlopp70pScale); opacity: var(--kfPlopp70pOpacity); } 100% { scale: var(--kfPlopp100pScale); } }
 
 /* Power on: the world paints itself in from left to right like a wash, the stage pops up after it (the painted Starting
    does both on its timeline) */
-.theme-bears .power-aquarell .bb-world:not(.bb-painted) { animation: bears-wash var(--powerOnDuration) ease-out both; }
-.theme-bears .power-aquarell:not(.bb-timed) .bb-stage > * { animation: bears-plopp var(--fadeDuration) ease-out both; animation-delay: calc(var(--powerOnDuration) * 0.6); }
-.theme-bears .power-blenden.bb-screen { animation: bears-fade var(--powerOnDuration) ease-out both; }
-@keyframes bears-wash { from { clip-path: inset(0 100% 0 0); filter: blur(var(--wash-blur, 12px)); } to { clip-path: inset(0 0 0 0); filter: blur(0); } }
-@keyframes bears-fade { from { opacity: 0; } to { opacity: 1; } }
+.theme-bears .power-aquarell .bb-world:not(.bb-painted) { animation: bears-wash calc(var(--powerOnDuration) * var(--powerAquarellWorldAnimation) / 100) ease-out both; }
+.theme-bears .power-aquarell:not(.bb-timed) .bb-stage > * { animation: bears-plopp calc(var(--fadeDuration) * var(--powerAquarellStageAnimation) / 100) ease-out both; animation-delay: calc(var(--powerOnDuration) * var(--powerAquarellStageAnimationDelay)); }
+.theme-bears .power-blenden.bb-screen { animation: bears-fade calc(var(--powerOnDuration) * var(--powerBlendenScreenAnimation) / 100) ease-out both; }
+@keyframes bears-wash { from { clip-path: inset(0 100% 0 0); filter: blur(var(--kfWashFromFilter)); } to { clip-path: inset(0 0 0 0); filter: blur(0); } }
+@keyframes bears-fade { from { opacity: 0; } to { opacity: var(--kfFadeToOpacity); } }
 
 /* --- Shared motions: waddle in from the side, plop, slide, fade, none ------------------------------------------ */
 .theme-bears .in-watscheln { --in: bears-waddle-in; }
@@ -219,61 +226,61 @@
 .theme-bears .out-plopp { --out: bears-plopp-out; }
 .theme-bears .out-gleiten { --out: bears-slide-out; }
 .theme-bears .out-blenden { --out: bears-fade-out; }
-.theme-bears .out-keins { --out: bears-fade-out; --out-ease: steps(1, start); }
+.theme-bears .out-keins { --out: bears-fade-out; --out-ease: steps(var(--outKeinsOutEase), start); }
 @keyframes bears-waddle-in {
-  0% { translate: calc(-1 * var(--waddle-way, 60vw)) 0; rotate: -4deg; }
-  25% { rotate: 4deg; } 50% { rotate: -4deg; } 75% { rotate: 3deg; }
+  0% { translate: calc(-1 * calc(var(--kfWaddleIn0pTranslate) * 1vw)) 0; rotate: calc(var(--kfWaddleIn0pRotate) * 1deg); }
+  25% { rotate: calc(var(--kfWaddleIn25pRotate) * 1deg); } 50% { rotate: calc(var(--kfWaddleIn50pRotate) * 1deg); } 75% { rotate: calc(var(--kfWaddleIn75pRotate) * 1deg); }
   100% { translate: 0 0; rotate: 0deg; }
 }
-@keyframes bears-waddle-out { 0% { translate: 0 0; rotate: 0deg; } 30% { rotate: 4deg; } 60% { rotate: -4deg; } 100% { translate: var(--waddle-way, 60vw) 0; rotate: 3deg; } }
-@keyframes bears-plopp-out { from { scale: 1; opacity: 1; } to { scale: 0.6; opacity: 0; } }
-@keyframes bears-slide-in { from { translate: 0 calc(-1 * var(--slide, 120px)); opacity: 0; } to { translate: 0 0; opacity: 1; } }
-@keyframes bears-slide-out { from { translate: 0 0; opacity: 1; } to { translate: 0 calc(-1 * var(--slide, 120px)); opacity: 0; } }
-@keyframes bears-fade-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes bears-shrink { from { scale: 1 1; } to { scale: 0 1; } }
+@keyframes bears-waddle-out { 0% { translate: 0 0; rotate: 0deg; } 30% { rotate: calc(var(--kfWaddleOut30pRotate) * 1deg); } 60% { rotate: calc(var(--kfWaddleOut60pRotate) * 1deg); } 100% { translate: calc(var(--kfWaddleOut100pTranslate) * 1vw) 0; rotate: calc(var(--kfWaddleOut100pRotate) * 1deg); } }
+@keyframes bears-plopp-out { from { scale: var(--kfPloppOutFromScale); opacity: var(--kfPloppOutFromOpacity); } to { scale: var(--kfPloppOutToScale); opacity: 0; } }
+@keyframes bears-slide-in { from { translate: 0 calc(-1 * var(--kfSlideInFromTranslate)); opacity: 0; } to { translate: 0 0; opacity: var(--kfSlideInToOpacity); } }
+@keyframes bears-slide-out { from { translate: 0 0; opacity: var(--kfSlideOutFromOpacity); } to { translate: 0 calc(-1 * var(--kfSlideOutToTranslate)); opacity: 0; } }
+@keyframes bears-fade-out { from { opacity: var(--kfFadeOutFromOpacity); } to { opacity: 0; } }
+@keyframes bears-shrink { from { scale: var(--kfShrinkFromScale) var(--kfShrinkFromScale2); } to { scale: 0 var(--kfShrinkToScale); } }
 
 /* --- Alerts ------------------------------------------------------------------------------------------------------ */
-.theme-bears .bb-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alert-top, 80px) var(--alert-side, 48px) 0; overflow: hidden; }
-.theme-bears .bb-alert { position: relative; display: flex; align-items: flex-end; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both; }
+.theme-bears .bb-alerts { position: fixed; inset: 0; display: flex; align-items: flex-start; justify-content: center; padding: var(--alertsPadding) var(--alertsPadding2) 0; overflow: hidden; }
+.theme-bears .bb-alert { position: relative; display: flex; align-items: flex-end; width: var(--alertWidth); scale: var(--alertScale); transform-origin: top center; animation: var(--in) calc(var(--fadeDuration) * var(--alertAnimation) / 100) var(--in-ease, ease-out) both; }
 /* With plopp the card squashes, stretches and springs on its GSAP timeline (Alerts.tsx) instead of the CSS plop. Leaving,
    the card takes the out motion (plopp: it hops and vanishes) and the bear ducks away on its own timeline */
 .theme-bears .bb-alert.in-plopp { animation: none; }
-.theme-bears .bb-alert.leaving .bb-alert-card { animation: var(--out) var(--fadeDuration) var(--out-ease, ease-in) forwards; }
+.theme-bears .bb-alert.leaving .bb-alert-card { animation: var(--out) calc(var(--fadeDuration) * var(--alertLeavingAlertCardAnimation) / 100) var(--out-ease, ease-in) forwards; }
 .theme-bears .bb-alert.leaving.out-plopp .bb-alert-card { animation-name: bears-hop-out; }
-@keyframes bears-hop-out { 0% { translate: 0 0; opacity: 1; } 35% { translate: 0 calc(-1 * var(--hop, 22px)); opacity: 1; } 100% { translate: 0 var(--hop-drop, 30px); scale: 0.6; opacity: 0; } }
-.theme-bears .bb-alert-bear { position: relative; flex: none; height: var(--alertBearSize); margin-right: calc(-1 * var(--peek-overlap, 40px)); z-index: 0; }
-.theme-bears .bb-alert-card { position: relative; z-index: 1; flex: 1; display: flex; align-items: center; gap: var(--alert-gap, 22px); margin-bottom: var(--card-lift, 20px); overflow: hidden; }
-.theme-bears .bb-alert-icon { flex: none; width: var(--icon-size, 96px); }
-.theme-bears .bb-alert-text { display: grid; gap: var(--text-gap, 6px); min-width: 0; }
-.theme-bears .bb-tag { justify-self: start; background: var(--accent); color: var(--textColor); font-size: 0.8em; }
-.theme-bears .bb-alert-line { font-family: var(--titleFont), var(--font), sans-serif; font-size: var(--line-size, 34px); line-height: 1.15; overflow-wrap: anywhere; }
-.theme-bears .bb-quote { color: var(--textDim); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--alert-quote-lines, 3); overflow: hidden; }
-.theme-bears .bb-timer { position: absolute; left: 0; right: 0; bottom: 0; height: var(--timer-height, 10px); background: var(--paperShade); }
-.theme-bears .bb-timer span { display: block; height: 100%; background: var(--accent); transform-origin: left; animation: bears-shrink var(--alertDuration) linear forwards; }
+@keyframes bears-hop-out { 0% { translate: 0 0; opacity: var(--kfHopOut0pOpacity); } 35% { translate: 0 calc(-1 * var(--kfHopOut35pTranslate)); opacity: var(--kfHopOut35pOpacity); } 100% { translate: 0 var(--kfHopOut100pTranslate); scale: var(--kfHopOut100pScale); opacity: 0; } }
+.theme-bears .bb-alert-bear { position: relative; flex: none; height: var(--alertBearSize); margin-right: calc(-1 * var(--alertBearMarginRight)); z-index: 0; }
+.theme-bears .bb-alert-card { position: relative; z-index: 1; flex: 1; display: flex; align-items: center; gap: var(--alertCardGap); margin-bottom: var(--alertCardMarginBottom); overflow: hidden; }
+.theme-bears .bb-alert-icon { flex: none; width: var(--alertIconWidth); }
+.theme-bears .bb-alert-text { display: grid; gap: var(--alertTextGap); min-width: 0; }
+.theme-bears .bb-tag { justify-self: start; background: var(--tagBackground); color: var(--tagColor); font-size: calc(var(--tagFontSize) * 1em); font-family: var(--tagFont), system-ui, sans-serif; }
+.theme-bears .bb-alert-line { font-family: var(--alertLineFont), var(--alertLineFont2), sans-serif; font-size: var(--alertLineFontSize); line-height: var(--alertLineLineHeight); overflow-wrap: anywhere; color: var(--alertLineColor); }
+.theme-bears .bb-quote { color: var(--quoteColor); overflow-wrap: anywhere; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: var(--quoteWebkitLineClamp); overflow: hidden; }
+.theme-bears .bb-timer { position: absolute; left: 0; right: 0; bottom: 0; height: var(--timerHeight); background: var(--timerBackground); }
+.theme-bears .bb-timer span { display: block; height: 100%; background: var(--timerSpanBackground); transform-origin: left; animation: bears-shrink var(--alertDuration) linear forwards; }
 /* Icons: the colored shape with the outline, a second tone in the paper shade */
 .theme-bears .bb-icon { display: block; width: 100%; height: auto; overflow: visible; }
-.theme-bears .part-icon { fill: var(--accent); stroke: var(--outline); stroke-width: var(--icon-line, 6); stroke-linejoin: round; }
-.theme-bears .part-icon-detail { fill: var(--paperShade); }
-.theme-bears .bb-icon .part-line { stroke-width: var(--icon-line, 6); }
+.theme-bears .part-icon { fill: var(--partIconFill); stroke: var(--partIconStroke); stroke-width: var(--partIconStrokeWidth); stroke-linejoin: round; }
+.theme-bears .part-icon-detail { fill: var(--partIconDetailFill); }
+.theme-bears .bb-icon .part-line { stroke-width: var(--iconPartLineStrokeWidth); }
 .theme-bears .bb-confetti { position: absolute; inset: 0; pointer-events: none; }
 /* Confetti pieces: placed around their middle by the timeline (confetti.ts), hidden until thrown */
-.theme-bears .bb-piece { position: absolute; left: calc(-0.5 * var(--piece-size, 60px)); top: calc(-0.5 * var(--piece-size, 60px)); width: var(--piece-size, 60px); opacity: 0; }
-.theme-bears .bb-piece:nth-child(even) .part-icon { fill: var(--treeLeaf, var(--accent2)); }
+.theme-bears .bb-piece { position: absolute; left: calc(var(--pieceLeft) * var(--pieceLeft2)); top: calc(var(--pieceTop) * var(--pieceTop2)); width: var(--pieceWidth); opacity: 0; }
+.theme-bears .bb-piece:nth-child(even) .part-icon { fill: var(--treeLeaf, var(--piecePartIconFill)); }
 
 /* --- Chat -------------------------------------------------------------------------------------------------------- */
-.theme-bears .bb-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--chat-padding, 16px); font-size: var(--chatFontSize); overflow: hidden; }
+.theme-bears .bb-chat { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--chatPadding); font-size: var(--chatFontSize); overflow: hidden; color: var(--chatColor); font-family: var(--chatFont), system-ui, sans-serif; }
 .theme-bears .bb-chat-list { display: flex; flex-direction: column; justify-content: flex-end; gap: var(--chatGap); min-height: 0; overflow: hidden; }
 .theme-bears .bb-chat-top { flex-direction: column-reverse; justify-content: flex-end; }
-.theme-bears .bb-row { flex: none; animation: bears-plopp var(--fadeDuration) ease-out both; overflow-wrap: anywhere; }
-.theme-bears .bb-row.fades { animation: bears-plopp var(--fadeDuration) ease-out both, bears-fade-out var(--fadeDuration) ease-in var(--chatFade) forwards; }
+.theme-bears .bb-row { flex: none; animation: bears-plopp calc(var(--fadeDuration) * var(--rowAnimation) / 100) ease-out both; overflow-wrap: anywhere; }
+.theme-bears .bb-row.fades { animation: bears-plopp calc(var(--fadeDuration) * var(--rowFadesAnimation) / 100) ease-out both, bears-fade-out calc(var(--fadeDuration) * var(--rowFadesAnimation2) / 100) ease-in var(--chatFade) forwards; }
 .theme-bears .bb-row.action { font-style: italic; }
-.theme-bears .bb-msg { display: inline-block; max-width: 100%; padding: var(--bubble-padding, 8px 14px); background: var(--paper); color: var(--textDark); border: var(--pill-line, 4px) solid var(--outline); border-radius: var(--radius); box-shadow: inset 0 calc(-1 * var(--bubble-band, 5px)) 0 var(--paperShade); }
-.theme-bears .bb-user { margin-right: var(--name-gap, 8px); color: var(--accentText); }
-.theme-bears .bb-badge { display: inline-block; margin-right: var(--badge-gap, 6px); padding: var(--badge-padding, 0 8px); border-radius: var(--pill-radius, 999px); background: var(--accent2); color: var(--textColor); font-size: 0.7em; font-weight: 800; }
+.theme-bears .bb-msg { display: inline-block; max-width: 100%; padding: var(--msgPadding) var(--msgPadding2); background: var(--msgBackground); color: var(--msgColor); border: var(--msgBorder2) solid var(--msgBorder); border-radius: calc(var(--radius) * var(--msgBorderRadius) / 100); box-shadow: inset 0 calc(-1 * var(--msgBoxShadow2)) 0 var(--msgBoxShadow); }
+.theme-bears .bb-user { margin-right: var(--userMarginRight); color: var(--userColor); }
+.theme-bears .bb-badge { display: inline-block; margin-right: var(--badgeMarginRight); padding: 0 var(--badgePadding); border-radius: var(--badgeBorderRadius); background: var(--badgeBackground); color: var(--badgeColor); font-size: calc(var(--badgeFontSize) * 1em); font-weight: var(--badgeFontWeight); font-family: var(--badgeFont), system-ui, sans-serif; }
 .theme-bears .bb-emote { height: var(--emoteSize); vertical-align: middle; }
 /* The phone fills the column and carries the messages, the bear sits in front of its lower corner and looks at it */
 .theme-bears .bb-chat-style-handy { align-items: center; }
-.theme-bears .bb-chat-bear { position: absolute; right: var(--chat-bear-side, 0px); bottom: 0; z-index: 2; height: var(--chatBearSize); }
+.theme-bears .bb-chat-bear { position: absolute; right: 0; bottom: 0; z-index: 2; height: calc(var(--chatBearSize) * var(--chatBearHeight) / 100); }
 .theme-bears .bb-phone {
   position: relative;
   width: min(var(--chatPhoneWidth), 100%);
@@ -281,93 +288,96 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: var(--phone-padding, 26px 14px) calc(var(--chatBearSize) * 0.3) calc(var(--chatBearSize) * 0.45) var(--phone-side, 14px);
-  background: var(--phoneScreen);
-  border: var(--phone-rim, 12px) solid var(--phoneCase);
-  outline: var(--card-line, 5px) solid var(--outline);
-  border-radius: var(--phone-radius, 36px);
+  padding: var(--phonePadding) var(--phonePadding2) calc(var(--chatBearSize) * var(--phonePadding3)) calc(var(--chatBearSize) * var(--phonePadding4)) var(--phonePadding5);
+  background: var(--phoneBackground);
+  border: var(--phoneBorder2) solid var(--phoneBorder);
+  outline: var(--phoneOutline2) solid var(--phoneOutline);
+  border-radius: var(--phoneBorderRadius);
 }
-.theme-bears .bb-chat-style-zettel .bb-msg { border-radius: var(--note-radius, 4px); rotate: var(--note-tilt, -1deg); }
-.theme-bears .bb-chat-style-zettel .bb-row:nth-child(even) .bb-msg { rotate: var(--note-tilt-even, 1.2deg); }
-.theme-bears .bb-chat-style-zettel .bb-chat-list { border-top: var(--pill-line, 4px) dashed var(--outline); padding-top: var(--string-gap, 12px); }
-.theme-bears .bb-chat-style-blasen .bb-msg { border-radius: var(--radius) var(--radius) var(--radius) var(--tail, 4px); }
+.theme-bears .bb-chat-style-zettel .bb-msg { border-radius: var(--chatStyleZettelMsgBorderRadius); rotate: calc(var(--chatStyleZettelMsgRotate) * 1deg); }
+.theme-bears .bb-chat-style-zettel .bb-row:nth-child(even) .bb-msg { rotate: calc(var(--chatStyleZettelRowMsgRotate) * 1deg); }
+.theme-bears .bb-chat-style-zettel .bb-chat-list { border-top: var(--chatStyleZettelChatListBorderTop2) dashed var(--chatStyleZettelChatListBorderTop); padding-top: var(--chatStyleZettelChatListPaddingTop); }
+.theme-bears .bb-chat-style-blasen .bb-msg { border-radius: calc(var(--radius) * var(--chatStyleBlasenMsgBorderRadius) / 100) calc(var(--radius) * var(--chatStyleBlasenMsgBorderRadius2) / 100) calc(var(--radius) * var(--chatStyleBlasenMsgBorderRadius3) / 100) var(--chatStyleBlasenMsgBorderRadius4); }
 
 /* --- Effects ----------------------------------------------------------------------------------------------------- */
 .theme-bears .bb-fx { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
 .theme-bears .bb-fx-item {
   position: absolute;
   display: grid;
-  gap: var(--fx-gap, 12px);
+  gap: var(--fxItemGap);
   justify-items: center;
-  transform: translate(-50%, -50%);
-  animation: var(--in) var(--fadeDuration) var(--in-ease, ease-out) both, var(--out) var(--fadeDuration) var(--out-ease, ease-in) calc(var(--life) - var(--fadeDuration)) forwards;
+  transform: translate(var(--fxItemTransform), var(--fxItemTransform2));
+  animation: var(--in) calc(var(--fadeDuration) * var(--fxItemAnimation) / 100) var(--in-ease, ease-out) both, var(--out) calc(var(--fadeDuration) * var(--fxItemAnimation2) / 100) var(--out-ease, ease-in) calc(var(--life) - calc(var(--fadeDuration) * var(--fxItemAnimation3) / 100)) forwards;
 }
-.theme-bears .bb-fx-item img, .theme-bears .bb-fx-item video, .theme-bears .bb-fx-item canvas { display: block; width: 100%; border-radius: var(--radius); border: var(--card-line, 5px) solid var(--outline); }
-.theme-bears .bb-fx-bear { height: var(--fxBearSize); }
-.theme-bears .bb-fx-bear .part-sign-text { font-size: var(--fx-sign-text, 18px); }
-.theme-bears .bb-fx-talk { display: flex; align-items: flex-end; gap: var(--talk-gap, 8px); }
-.theme-bears .bb-fx-text { font-size: var(--fxTextSize); font-weight: 800; text-align: center; overflow-wrap: anywhere; margin-bottom: calc(var(--fxBearSize) * 0.55); border-radius: var(--radius) var(--radius) var(--tail, 4px) var(--radius); }
+.theme-bears .bb-fx-item img { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemImgBorderRadius) / 100); border: var(--fxItemImgBorder2) solid var(--fxItemImgBorder); }
+.theme-bears .bb-fx-item video { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemVideoBorderRadius) / 100); border: var(--fxItemVideoBorder2) solid var(--fxItemVideoBorder); }
+.theme-bears .bb-fx-item canvas { display: block; width: 100%; border-radius: calc(var(--radius) * var(--fxItemCanvasBorderRadius) / 100); border: var(--fxItemCanvasBorder2) solid var(--fxItemCanvasBorder); }
+.theme-bears .bb-fx-bear { height: calc(var(--fxBearSize) * var(--fxBearHeight) / 100); }
+.theme-bears .bb-fx-bear .part-sign-text { font-size: var(--fxBearPartSignTextFontSize); color: var(--fxBearPartSignTextColor); }
+.theme-bears .bb-fx-talk { display: flex; align-items: flex-end; gap: var(--fxTalkGap); }
+.theme-bears .bb-fx-text { font-size: var(--fxTextSize); font-weight: var(--fxTextFontWeight); text-align: center; overflow-wrap: anywhere; margin-bottom: calc(var(--fxBearSize) * var(--fxTextMarginBottom)); border-radius: calc(var(--radius) * var(--fxTextBorderRadius) / 100) calc(var(--radius) * var(--fxTextBorderRadius2) / 100) var(--fxTextBorderRadius4) calc(var(--radius) * var(--fxTextBorderRadius3) / 100); color: var(--fxTextColor); font-family: var(--fxTextFont), system-ui, sans-serif; }
 
 /* --- Webcam frame ------------------------------------------------------------------------------------------------ */
 .theme-bears .bb-cam { position: fixed; inset: 0; }
-.theme-bears .bb-cam-frame { position: absolute; inset: 0; border: var(--camFrameWidth) solid var(--paper); border-radius: var(--camRadius); outline: var(--card-line, 5px) solid var(--outline); outline-offset: calc(-1 * var(--card-line, 5px)); box-shadow: inset 0 0 0 var(--card-line, 5px) var(--outline); }
-.theme-bears .bb-cam-holz .bb-cam-frame { border-color: var(--wood); }
-.theme-bears .bb-cam-polaroid .bb-cam-frame { border-color: var(--paper); border-bottom-width: calc(var(--camFrameWidth) * 3.5); border-radius: var(--polaroid-radius, 6px); }
+.theme-bears .bb-cam-frame { position: absolute; inset: 0; border: calc(var(--camFrameWidth) * var(--camFrameBorder2) / 100) solid var(--camFrameBorder); border-radius: var(--camRadius); outline: var(--camFrameOutline2) solid var(--camFrameOutline); outline-offset: calc(-1 * var(--camFrameOutlineOffset)); box-shadow: inset 0 0 0 var(--camFrameBoxShadow2) var(--camFrameBoxShadow); }
+.theme-bears .bb-cam-holz .bb-cam-frame { border-color: var(--camHolzCamFrameBorderColor); }
+.theme-bears .bb-cam-polaroid .bb-cam-frame { border-color: var(--camPolaroidCamFrameBorderColor); border-bottom-width: calc(var(--camFrameWidth) * var(--camPolaroidCamFrameBorderBottomWidth)); border-radius: var(--camPolaroidCamFrameBorderRadius); }
 .theme-bears .bb-cam-bear { position: absolute; bottom: 0; height: var(--camBearSize); }
 /* The bear leans inside the frame, its raised paw included (it reaches past the box of the pose), so nothing leaves the source */
-.theme-bears .bb-cam-spot-rechts .bb-cam-bear { right: calc(var(--camFrameWidth) * 0.5 + var(--cam-edge, 16px)); }
-.theme-bears .bb-cam-spot-links .bb-cam-bear { left: calc(var(--camFrameWidth) * 0.5 + var(--cam-edge, 16px)); }
+.theme-bears .bb-cam-spot-rechts .bb-cam-bear { right: calc(var(--camFrameWidth) * var(--camSpotRechtsCamBearRight) + var(--camSpotRechtsCamBearRight2)); }
+.theme-bears .bb-cam-spot-links .bb-cam-bear { left: calc(var(--camFrameWidth) * var(--camSpotLinksCamBearLeft) + var(--camSpotLinksCamBearLeft2)); }
 /* Over the top edge: only the upper part of the bear shows, the rest hides behind the frame */
 /* Peeking: the bear looks in from the top edge, only the part below the cut stays hidden */
-.theme-bears .bb-cam-spot-oben .bb-cam-bear { bottom: auto; top: var(--camFrameWidth); right: var(--peek-side, 12%); clip-path: inset(0 0 58% 0); }
+.theme-bears .bb-cam-spot-oben .bb-cam-bear { bottom: auto; top: calc(var(--camFrameWidth) * var(--camSpotObenCamBearTop) / 100); right: var(--camSpotObenCamBearRight); clip-path: inset(0 0 var(--camSpotObenCamBearClipPath) 0); }
 /* The name tag sits on the bottom frame, fully inside the source */
-.theme-bears .bb-cam-label { position: absolute; left: 50%; bottom: var(--label-gap, 6px); translate: -50% 0; font-size: var(--cam-label, 22px); }
-.theme-bears .bb-cam-live { position: absolute; top: calc(var(--camFrameWidth) + var(--live-gap, 10px)); left: calc(var(--camFrameWidth) + var(--live-gap, 10px)); display: flex; align-items: center; gap: var(--live-dot-gap, 6px); background: var(--accent); color: var(--textColor); font-size: var(--live-size, 18px); }
-.theme-bears .bb-cam-live .bb-icon { width: var(--live-paw, 22px); animation: bears-plopp var(--live-time, 1.2s) ease-in-out infinite alternate; }
-.theme-bears .bb-cam-live .part-icon { fill: var(--paper); }
+.theme-bears .bb-cam-label { position: absolute; left: var(--camLabelLeft); bottom: var(--camLabelBottom); translate: var(--camLabelTranslate) 0; font-size: var(--camLabelFontSize); color: var(--camLabelColor); font-family: var(--camLabelFont), system-ui, sans-serif; }
+.theme-bears .bb-cam-live { position: absolute; top: calc(calc(var(--camFrameWidth) * var(--camLiveTop) / 100) + var(--camLiveTop2)); left: calc(calc(var(--camFrameWidth) * var(--camLiveLeft) / 100) + var(--camLiveLeft2)); display: flex; align-items: center; gap: var(--camLiveGap); background: var(--camLiveBackground); color: var(--camLiveColor); font-size: var(--camLiveFontSize); font-family: var(--camLiveFont), system-ui, sans-serif; }
+.theme-bears .bb-cam-live .bb-icon { width: var(--camLiveIconWidth); animation: bears-plopp var(--camLiveIconAnimation) ease-in-out infinite alternate; }
+.theme-bears .bb-cam-live .part-icon { fill: var(--camLivePartIconFill); }
 
 /* --- Music ------------------------------------------------------------------------------------------------------- */
-.theme-bears .bb-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--music-padding, 14px); }
-.theme-bears .bb-player { position: relative; width: 100%; display: flex; align-items: flex-end; gap: var(--player-gap, 6px); animation: bears-plopp var(--fadeDuration) ease-out both; }
-.theme-bears .bb-player.leaving { animation: bears-fade-out var(--fadeDuration) ease-in forwards; }
-.theme-bears .bb-music-bear { position: relative; flex: none; height: var(--musicBearSize); margin-right: calc(-1 * var(--music-overlap, 24px)); z-index: 1; }
-.theme-bears .bb-player.playing .bb-music-bear .bb-hero { transform-origin: 50% 100%; animation: bears-bop var(--bop-time, 0.5s) ease-in-out infinite alternate; }
-@keyframes bears-bop { from { rotate: calc(-1deg * var(--bopStrength)); } to { rotate: calc(1deg * var(--bopStrength)); } }
+.theme-bears .bb-music { position: fixed; inset: 0; display: flex; align-items: flex-end; padding: var(--musicPadding); }
+.theme-bears .bb-player { position: relative; width: 100%; display: flex; align-items: flex-end; gap: var(--playerGap); animation: bears-plopp calc(var(--fadeDuration) * var(--playerAnimation) / 100) ease-out both; }
+.theme-bears .bb-player.leaving { animation: bears-fade-out calc(var(--fadeDuration) * var(--playerLeavingAnimation) / 100) ease-in forwards; }
+.theme-bears .bb-music-bear { position: relative; flex: none; height: var(--musicBearSize); margin-right: calc(-1 * var(--musicBearMarginRight)); z-index: 1; }
+.theme-bears .bb-player.playing .bb-music-bear .bb-hero { transform-origin: var(--playerPlayingMusicBearHeroTransformOrigin) 100%; animation: bears-bop var(--playerPlayingMusicBearHeroAnimation) ease-in-out infinite alternate; }
+@keyframes bears-bop { from { rotate: calc(calc(var(--kfBopFromRotate2) * 1deg) * calc(var(--bopStrength) * var(--kfBopFromRotate) / 100)); } to { rotate: calc(calc(var(--kfBopToRotate2) * 1deg) * calc(var(--bopStrength) * var(--kfBopToRotate) / 100)); } }
 /* Nodding to the beat: the head bone of the rig (ears, face, headset) turns around the neck */
-.theme-bears .bb-player.playing .bb-music-bear :is(.bone-head, .bone-ears, .bone-worn, .bone-headset) { animation: bears-nod var(--bop-time, 0.5s) ease-in-out infinite alternate; }
-@keyframes bears-nod { from { rotate: calc(-1.5deg * var(--bopStrength)); } to { rotate: calc(2deg * var(--bopStrength)); } }
-.theme-bears .bb-music-card { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--card-gap, 18px); }
-.theme-bears .bb-music-kofferradio .bb-music-card { background: var(--wood); color: var(--textColor); box-shadow: inset 0 calc(-1 * var(--band, 10px)) 0 color-mix(in srgb, var(--wood), var(--outline) 30%); }
-.theme-bears .bb-music-kofferradio .bb-artist, .theme-bears .bb-music-kofferradio .bb-album { color: var(--paper); }
-.theme-bears .bb-radio-handle { position: absolute; top: calc(-1 * var(--handle-height, 26px)); left: 50%; translate: -50% 0; width: var(--handle-width, 140px); height: var(--handle-height, 26px); border: var(--card-line, 5px) solid var(--outline); border-bottom: none; border-radius: var(--handle-radius, 18px 18px 0 0); background: transparent; }
-.theme-bears .bb-cover { flex: none; width: var(--coverSize); height: var(--coverSize); object-fit: cover; border: var(--pill-line, 4px) solid var(--outline); background: var(--paperShade); }
+.theme-bears .bb-player.playing .bb-music-bear :is(.bone-head, .bone-ears, .bone-worn, .bone-headset) { animation: bears-nod var(--playerPlayingMusicBearAnimation) ease-in-out infinite alternate; }
+@keyframes bears-nod { from { rotate: calc(calc(var(--kfNodFromRotate2) * 1deg) * calc(var(--bopStrength) * var(--kfNodFromRotate) / 100)); } to { rotate: calc(calc(var(--kfNodToRotate2) * 1deg) * calc(var(--bopStrength) * var(--kfNodToRotate) / 100)); } }
+.theme-bears .bb-music-card { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; gap: var(--musicCardGap); }
+.theme-bears .bb-music-kofferradio .bb-music-card { background: var(--musicKofferradioMusicCardBackground); color: var(--musicKofferradioMusicCardColor); box-shadow: inset 0 calc(-1 * var(--musicKofferradioMusicCardBoxShadow3)) 0 color-mix(in srgb, var(--musicKofferradioMusicCardBoxShadow), var(--musicKofferradioMusicCardBoxShadow2) var(--musicKofferradioMusicCardBoxShadow4)); }
+.theme-bears .bb-music-kofferradio .bb-artist { color: var(--musicKofferradioArtistColor); }
+.theme-bears .bb-music-kofferradio .bb-album { color: var(--musicKofferradioAlbumColor); }
+.theme-bears .bb-radio-handle { position: absolute; top: calc(-1 * var(--radioHandleTop)); left: var(--radioHandleLeft); translate: var(--radioHandleTranslate) 0; width: var(--radioHandleWidth); height: var(--radioHandleHeight); border: var(--radioHandleBorder2) solid var(--radioHandleBorder); border-bottom: none; border-radius: var(--radioHandleBorderRadius) var(--radioHandleBorderRadius2) 0 0; background: transparent; }
+.theme-bears .bb-cover { flex: none; width: calc(var(--coverSize) * var(--coverWidth) / 100); height: calc(var(--coverSize) * var(--coverHeight) / 100); object-fit: cover; border: var(--coverBorder2) solid var(--coverBorder); background: var(--coverBackground); }
 .theme-bears .cover-rund { border-radius: 50%; }
-.theme-bears .cover-eckig { border-radius: calc(var(--radius) * 0.6); }
-.theme-bears .bb-cover-empty { display: grid; place-items: center; padding: var(--cover-pad, 18px); }
-.theme-bears .bb-track { flex: 1; min-width: 0; display: grid; gap: var(--track-gap, 4px); }
-.theme-bears .bb-head { justify-self: start; background: var(--accent); color: var(--textColor); font-size: 0.7em; }
-.theme-bears .bb-song { font-family: var(--titleFont), var(--font), sans-serif; font-size: var(--musicTitleSize); line-height: 1.2; }
-.theme-bears .bb-artist { color: var(--textDim); font-weight: 700; }
-.theme-bears .bb-album { color: var(--textDim); font-size: 0.85em; }
-.theme-bears .bb-track .bb-progress-bar { width: 100%; height: var(--music-bar, 14px); }
-.theme-bears .bb-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eq-gap, 5px); height: var(--eq-height, 48px); }
-.theme-bears .bb-eq i { width: var(--eq-bar, 10px); height: 100%; background: var(--accent2); border: var(--eq-line, 3px) solid var(--outline); border-radius: var(--eq-radius, 4px); transform-origin: bottom; animation: bears-eq var(--eq-time, 0.9s) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--eq-time, 0.9s) / -5); }
+.theme-bears .cover-eckig { border-radius: calc(var(--radius) * var(--coverEckigBorderRadius)); }
+.theme-bears .bb-cover-empty { display: grid; place-items: center; padding: var(--coverEmptyPadding); }
+.theme-bears .bb-track { flex: 1; min-width: 0; display: grid; gap: var(--trackGap); }
+.theme-bears .bb-head { justify-self: start; background: var(--headBackground); color: var(--headColor); font-size: calc(var(--headFontSize) * 1em); font-family: var(--headFont), system-ui, sans-serif; }
+.theme-bears .bb-song { font-family: var(--songFont), var(--songFont2), sans-serif; font-size: var(--musicTitleSize); line-height: var(--songLineHeight); color: var(--songColor); }
+.theme-bears .bb-artist { color: var(--artistColor); font-weight: var(--artistFontWeight); font-family: var(--artistFont), system-ui, sans-serif; }
+.theme-bears .bb-album { color: var(--albumColor); font-size: calc(var(--albumFontSize) * 1em); font-family: var(--albumFont), system-ui, sans-serif; }
+.theme-bears .bb-track .bb-progress-bar { width: 100%; height: var(--trackProgressBarHeight); }
+.theme-bears .bb-eq { flex: none; display: flex; align-items: flex-end; gap: var(--eqGap); height: var(--eqHeight); }
+.theme-bears .bb-eq i { width: var(--eqIWidth); height: 100%; background: var(--eqIBackground); border: var(--eqIBorder2) solid var(--eqIBorder); border-radius: var(--eqIBorderRadius); transform-origin: bottom; animation: bears-eq var(--eqIAnimation) ease-in-out infinite alternate; animation-delay: calc(var(--i) * var(--eqIAnimationDelay) / var(--eqIAnimationDelay2)); }
 .theme-bears .paused .bb-eq i { animation-play-state: paused; }
-@keyframes bears-eq { from { scale: 1 0.2; } to { scale: 1 1; } }
+@keyframes bears-eq { from { scale: var(--kfEqFromScale) var(--kfEqFromScale2); } to { scale: var(--kfEqToScale) var(--kfEqToScale2); } }
 
 /* --- Commands page ----------------------------------------------------------------------------------------------- */
-.theme-bears.theme-root:has(.bb-info) { min-height: 100dvh; background: var(--meadow); }
-.theme-bears .bb-info { position: relative; min-height: 100dvh; padding: var(--info-pad, 48px) var(--info-side, 16px); }
+.theme-bears.theme-root:has(.bb-info) { min-height: 100dvh; background: var(--themeRootBackground); }
+.theme-bears .bb-info { position: relative; min-height: 100dvh; padding: var(--infoPadding) var(--infoPadding2); }
 .theme-bears .bb-info-backdrop { position: fixed; inset: 0; overflow: hidden; pointer-events: none; }
-.theme-bears .bb-info-column { position: relative; max-width: var(--info-width, 860px); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--info-gap, 28px); }
-.theme-bears .bb-info-head { display: flex; align-items: flex-end; gap: var(--info-head-gap, 4px); }
-.theme-bears .bb-info-bear { position: relative; flex: none; height: min(var(--info-bear, 220px), 40vw); margin-right: calc(-1 * var(--info-overlap, 30px)); z-index: 1; }
+.theme-bears .bb-info-column { position: relative; max-width: var(--infoColumnMaxWidth); margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--infoColumnGap); }
+.theme-bears .bb-info-head { display: flex; align-items: flex-end; gap: var(--infoHeadGap); }
+.theme-bears .bb-info-bear { position: relative; flex: none; height: min(var(--infoBearHeight), calc(var(--infoBearHeight2) * 1vw)); margin-right: calc(-1 * var(--infoBearMarginRight)); z-index: 1; }
 .theme-bears .bb-info-sign { flex: 1; min-width: 0; text-align: center; }
 /* Phones: title and bear shrink with the width, so the page stays as wide as the screen */
-.theme-bears .bb-info-sign .bb-title { font-size: min(var(--info-title, 56px), 9vw); }
-.theme-bears .bb-info-board { display: grid; gap: var(--entry-gap, 14px); }
-.theme-bears .bb-info-board .bb-eyebrow { justify-self: start; font-size: var(--info-heading, 22px); }
-.theme-bears .bb-info-entry { display: grid; gap: var(--entry-inner, 4px); padding-top: var(--entry-pad, 10px); border-top: var(--entry-line, 3px) dashed var(--paperShade); }
+.theme-bears .bb-info-sign .bb-title { font-size: min(var(--infoSignTitleFontSize), calc(var(--infoSignTitleFontSize2) * 1vw)); }
+.theme-bears .bb-info-board { display: grid; gap: var(--infoBoardGap); }
+.theme-bears .bb-info-board .bb-eyebrow { justify-self: start; font-size: var(--infoBoardEyebrowFontSize); font-family: var(--infoBoardEyebrowFont), system-ui, sans-serif; }
+.theme-bears .bb-info-entry { display: grid; gap: var(--infoEntryGap); padding-top: var(--infoEntryPaddingTop); border-top: var(--infoEntryBorderTop2) dashed var(--infoEntryBorderTop); }
 .theme-bears .bb-info-entry p { margin: 0; }
-.theme-bears .bb-info-command { color: var(--accentText); font-size: 1.1em; }
-.theme-bears .bb-info-detail { color: var(--textDim); font-size: 0.9em; }
+.theme-bears .bb-info-command { color: var(--infoCommandColor); font-size: calc(var(--infoCommandFontSize) * 1em); font-family: var(--infoCommandFont), system-ui, sans-serif; }
+.theme-bears .bb-info-detail { color: var(--infoDetailColor); font-size: calc(var(--infoDetailFontSize) * 1em); font-family: var(--infoDetailFont), system-ui, sans-serif; }

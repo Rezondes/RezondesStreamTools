@@ -40,17 +40,20 @@ const MOVE_OF: Partial<Record<PoseName, Move>> = { wave: "wave", cook: "cook", p
 // fixed: how long the timeline runs (s); the moves of the bear loop inside it
 const RUN = 24 * 60 * 60;
 const PERCENT = 100; // fixed: settings in percent to shares
-// fixed: when the cards come in (s): sign, clock, title letters, eyebrow, countdown, note
-const CARDS_AT = { sign: 1.4, clock: 1.6, title: 1.7, eyebrow: 1.8, count: 2, note: 2.3 };
-// fixed: the cards plop in squashed and stretched, the clock drops in, the letters fall in, the eyebrow pops, the note rises
-const PLOP = { scaleX: 0.4, scaleY: 1.4, opacity: 0, duration: 0.7, ease: "elastic.out(1, 0.45)", transformOrigin: "50% 100%" };
-const DROP = { y: -110, duration: 0.6, ease: "back.out(2)" }; // fixed: see above
-const LETTERS = { y: -60, scaleY: 1.4, opacity: 0, duration: 0.5, ease: "bounce.out", stagger: 0.03 }; // fixed: see above
-const POP = { scale: 0, rotate: -12, duration: 0.5, ease: "back.out(3)" }; // fixed: see above
-const RISE = { opacity: 0, y: 12, duration: 0.4 }; // fixed: see above
+// The cards of the settings: when they come in (s), they plop in squashed and stretched, the clock drops in, the letters
+// fall in, the eyebrow pops, the note rises
+const cardsMotion = (values: BearsValues) => ({
+  CARDS_AT: { sign: values.cardsAtSign, clock: values.cardsAtClock, title: values.cardsAtTitle, eyebrow: values.cardsAtEyebrow, count: values.cardsAtCount, note: values.cardsAtNote },
+  PLOP: { scaleX: values.plopScaleX, scaleY: values.plopScaleY, opacity: 0, duration: values.plopTime, ease: "elastic.out(1, 0.45)", transformOrigin: "50% 100%" },
+  DROP: { y: values.clockDropFrom, duration: values.clockDropTime, ease: "back.out(2)" },
+  LETTERS: { y: values.titleLettersFrom, scaleY: values.titleLettersStretch, opacity: 0, duration: values.titleLettersTime, ease: "bounce.out", stagger: values.titleLettersStep },
+  POP: { scale: 0, rotate: values.eyebrowPopTurn, duration: values.eyebrowPopTime, ease: "back.out(3)" },
+  RISE: { opacity: 0, y: values.noteRiseFrom, duration: values.noteRiseTime },
+});
 
 // The build of a screen: the world paints in, the bear waddles in, lands and plays its move, the cards plop in
 function useScreenTimeline(scope: RefObject<HTMLDivElement | null>, values: BearsValues, choice: string, kind: ScreenKind) {
+  const { CARDS_AT, PLOP, DROP, LETTERS, POP, RISE } = cardsMotion(values);
   useTimeline(timeline => {
     const root = scope.current;
     if (!root) return;

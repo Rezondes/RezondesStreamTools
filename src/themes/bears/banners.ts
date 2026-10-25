@@ -35,6 +35,16 @@ export type BearsBannerOptions = {
   paperShade: string;
   sleepText: string;
   world?: WorldPainter;
+  layout: BearsBannerLayout;
+};
+// Places and sizes of the settings in px: the bear, the card and the texts of each banner, the z of the sleeping bear
+export type BearsBannerLayout = {
+  profile: { bearX: number; bearY: number; bearHeight: number; cardX: number; cardY: number; cardWidth: number; cardHeight: number; titleX: number; titleY: number; titleSize: number; textY: number; textSize: number };
+  offline: {
+    bearX: number; bearY: number; bearHeight: number; cardX: number; cardY: number; cardWidth: number; cardHeight: number; padding: number; right: number;
+    titleY: number; titleSize: number; textY: number; textSize: number; linesY: number; lineStep: number; lineSize: number;
+    sleepX: number; sleepY: number; sleepRiseX: number; sleepRiseY: number; sleepSize: number;
+  };
 };
 
 const TURN = Math.PI * 2;
@@ -44,8 +54,6 @@ const ASLEEP: Record<BearId, PoseName> = { eisbaer: "sleep", grizzly: "sleep", p
 // fixed: the moment of the still: the clouds at their start, the three z at a sixth, half and five sixths of their rise
 // (so all of them show)
 const STILL_PHASE = 1 / 6;
-// fixed: the offline card: its center, smallest width, room beside the title, how far right it may reach, title size
-const OFFLINE_CARD = { x: 1330, width: 860, padding: 70, right: 1880, titleSize: 92 };
 
 // A paper card with the outline and one shade band at the bottom
 function card(context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, options: BearsBannerOptions) {
@@ -89,7 +97,7 @@ function line(context: CanvasRenderingContext2D, text: string, x: number, y: num
 
 // The awake bear of the profile banner with its arm raised to wave; the tower stands
 function awake(context: CanvasRenderingContext2D, options: BearsBannerOptions) {
-  const [x, baseY, height] = [230, 462, 330];
+  const { bearX: x, bearY: baseY, bearHeight: height } = options.layout.profile;
   const bear = isBearChoice(options.profileBear) && options.profileBear !== TOWER ? options.profileBear : null;
   if (!bear) return drawHero(context, options.profileBear, AWAKE, x, baseY, height, options.palette);
   drawBear(context, bear, AWAKE[bear], x, baseY, height, options.palette, 1, 0, {}, { arm: waveAt(waveLoop(1) / 2, 1) });
@@ -105,9 +113,10 @@ export function drawBearsProfileBanner(context: CanvasRenderingContext2D, option
   (options.world ?? flatWorld)(context, options.day, 0, "mittag");
   context.restore();
   awake(context, options);
-  card(context, 520, 120, 600, 230, options);
-  title(context, options.title, 820, 205, 76, options);
-  line(context, options.profileText, 820, 290, 30, options.textDark, options);
+  const look = options.layout.profile;
+  card(context, look.cardX, look.cardY, look.cardWidth, look.cardHeight, options);
+  title(context, options.title, look.titleX, look.titleY, look.titleSize, options);
+  line(context, options.profileText, look.titleX, look.textY, look.textSize, options.textDark, options);
 }
 
 // A string of lights along the cave mouth, each bulb at its own brightness
@@ -134,15 +143,16 @@ function fairyLights(context: CanvasRenderingContext2D, phase: number, options: 
 
 // Three z above the sleeping bear, one after another on their way up
 function sleep(context: CanvasRenderingContext2D, phase: number, options: BearsBannerOptions) {
-  context.font = `800 54px "${options.titleFont}", sans-serif`;
+  const look = options.layout.offline;
+  context.font = `800 ${look.sleepSize}px "${options.titleFont}", sans-serif`;
   context.fillStyle = options.palette.paper;
   context.strokeStyle = options.palette.outline;
   context.lineWidth = options.palette.outlineWidth;
   for (let index = 0; index < 3; index++) {
     const rise = (phase + index / 3) % 1;
     context.globalAlpha = Math.sin(Math.PI * rise);
-    context.strokeText(options.sleepText, 430 + rise * 90, 560 - rise * 200);
-    context.fillText(options.sleepText, 430 + rise * 90, 560 - rise * 200);
+    context.strokeText(options.sleepText, look.sleepX + rise * look.sleepRiseX, look.sleepY - rise * look.sleepRiseY);
+    context.fillText(options.sleepText, look.sleepX + rise * look.sleepRiseX, look.sleepY - rise * look.sleepRiseY);
   }
   context.globalAlpha = 1;
 }
@@ -150,15 +160,16 @@ function sleep(context: CanvasRenderingContext2D, phase: number, options: BearsB
 export function drawBearsOfflineBanner(context: CanvasRenderingContext2D, options: BearsBannerOptions) {
   (options.world ?? flatWorld)(context, options.evening, 0, "abend");
   if (options.lights) fairyLights(context, STILL_PHASE, options);
-  drawHero(context, options.offlineBear, ASLEEP, 340, 900, 420, options.palette);
+  const look = options.layout.offline;
+  drawHero(context, options.offlineBear, ASLEEP, look.bearX, look.bearY, look.bearHeight, options.palette);
   sleep(context, STILL_PHASE, options);
   // The card grows with a long title up to the right edge, beyond that the title gets smaller
-  context.font = `800 ${OFFLINE_CARD.titleSize}px "${options.titleFont}", sans-serif`;
+  context.font = `800 ${look.titleSize}px "${options.titleFont}", sans-serif`;
   const words = context.measureText(options.offlineTitle).width;
-  const room = (OFFLINE_CARD.right - OFFLINE_CARD.x) * 2 - OFFLINE_CARD.padding * 2;
-  const width = Math.min(room, Math.max(OFFLINE_CARD.width - OFFLINE_CARD.padding * 2, words)) + OFFLINE_CARD.padding * 2;
-  card(context, OFFLINE_CARD.x - width / 2, 240, width, 520, options);
-  title(context, options.offlineTitle, OFFLINE_CARD.x, 350, OFFLINE_CARD.titleSize * Math.min(1, room / words), options);
-  line(context, options.offlineText, 1330, 460, 36, options.textDark, options);
-  options.offlineLines.forEach((text, index) => line(context, text, 1330, 550 + index * 60, 32, options.textDim, options));
+  const room = (look.right - look.cardX) * 2 - look.padding * 2;
+  const width = Math.min(room, Math.max(look.cardWidth - look.padding * 2, words)) + look.padding * 2;
+  card(context, look.cardX - width / 2, look.cardY, width, look.cardHeight, options);
+  title(context, options.offlineTitle, look.cardX, look.titleY, look.titleSize * Math.min(1, room / words), options);
+  line(context, options.offlineText, look.cardX, look.textY, look.textSize, options.textDark, options);
+  options.offlineLines.forEach((text, index) => line(context, text, look.cardX, look.linesY + index * look.lineStep, look.lineSize, options.textDim, options));
 }

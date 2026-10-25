@@ -169,7 +169,7 @@ export function drawBearsStinger(context: CanvasRenderingContext2D, time: number
   if (shown <= 0) return;
   context.save();
   context.globalAlpha = shown;
-  context.font = `800 150px "${options.font}", sans-serif`;
+  context.font = `800 150px "${options.font}", sans-serif`; // fixed: the size fits the curtain
   context.textBaseline = "middle";
   context.lineJoin = "round";
   context.lineWidth = options.palette.outlineWidth * 4;

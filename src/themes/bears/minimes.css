@@ -13,23 +13,24 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  transform: translateX(calc(var(--x) - 50%));
+  transform: translateX(calc(var(--x) - var(--minimeTransform)));
   transition: transform var(--move) linear;
 }
 .theme-bears .bb-minime-name {
   position: absolute;
   /* Right above the bear in its pose (a bear on all fours is lower than a standing one) */
-  bottom: calc(100% * var(--pose-h, 1));
-  margin-bottom: var(--name-gap, 4px);
-  padding: var(--name-padding, 1px 10px);
-  background: var(--paper);
-  border: calc(var(--outlineWidth) * var(--name-line, 0.6px)) solid var(--outline);
-  border-radius: var(--name-round, 8px);
-  box-shadow: inset 0 calc(-1 * var(--name-band, 3px)) 0 var(--paperShade);
-  color: var(--textDark);
+  bottom: calc(100% * var(--pose-h, var(--minimeNameBottom)));
+  margin-bottom: var(--minimeNameMarginBottom);
+  padding: var(--minimeNamePadding) var(--minimeNamePadding2);
+  background: var(--minimeNameBackground);
+  border: calc(var(--outlineWidth) * var(--minimeNameBorder2)) solid var(--minimeNameBorder);
+  border-radius: var(--minimeNameBorderRadius);
+  box-shadow: inset 0 calc(-1 * var(--minimeNameBoxShadow2)) 0 var(--minimeNameBoxShadow);
+  color: var(--minimeNameColor);
   font-size: var(--minimeNameSize);
-  font-weight: 800;
+  font-weight: var(--minimeNameFontWeight);
   white-space: nowrap;
+  font-family: var(--minimeNameFont), system-ui, sans-serif;
 }
 /* The lift wrapper is as high as the bear (minimeBearSize); the name sign floats above it */
 .theme-bears .bb-minime-lift { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; }
@@ -40,52 +41,52 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  transform-origin: 50% 100%;
+  transform-origin: var(--minimeBodyTransformOrigin) 100%;
 }
 /* --pose-h: height of the pose relative to standing, so a bear on all fours keeps its size */
-.theme-bears .bb-minime-flip { height: calc(100% * var(--pose-h, 1)); scale: calc(-1 * var(--facing)) 1; }
+.theme-bears .bb-minime-flip { height: calc(100% * var(--pose-h, var(--minimeFlipHeight))); scale: calc(-1 * var(--facing)) var(--minimeFlipScale); }
 .theme-bears .bb-minime-shadow {
-  width: var(--shadow-width, 70%);
-  height: var(--shadow-height, 10px);
-  margin-top: calc(-1 * var(--shadow-overlap, 6px));
+  width: var(--minimeShadowWidth);
+  height: var(--minimeShadowHeight);
+  margin-top: calc(-1 * var(--minimeShadowMarginTop));
   border-radius: 50%;
-  background: color-mix(in srgb, var(--outline) calc(var(--minimeShadow) * 100%), transparent);
+  background: color-mix(in srgb, var(--minimeShadowBackground) calc(var(--minimeShadow) * 100%), transparent);
 }
 
 /* Walking is a waddle: tipping from side to side with a small bob per step */
-.theme-bears .action-walk .bb-minime-body { animation: bears-minime-waddle var(--waddleMs) ease-in-out infinite; }
+.theme-bears .action-walk .bb-minime-body { animation: bears-minime-waddle calc(var(--waddleMs) * var(--actionWalkMinimeBodyAnimation) / 100) ease-in-out infinite; }
 
 /* Own animations (the pose comes from minimeBears.ts) */
 .theme-bears .action-selfie .bb-minime-flash {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: radial-gradient(circle at var(--flash-at, 70% 15%), var(--paper), transparent 45%);
+  background: radial-gradient(circle at var(--actionSelfieMinimeFlashBackground2) var(--actionSelfieMinimeFlashBackground3), var(--actionSelfieMinimeFlashBackground), transparent var(--actionSelfieMinimeFlashBackground4));
   animation: bears-minime-flash var(--action-ms) ease-out both;
 }
-.theme-bears .action-snack .bb-minime-body { animation: bears-minime-chew var(--chew-ms, 500ms) ease-in-out infinite; }
-.theme-bears .action-wave .bb-minime-body { animation: bears-minime-bob var(--wave-bob-ms, 800ms) ease-in-out infinite; }
-.theme-bears .action-dance .bb-minime-body { animation: bears-minime-dance calc(var(--action-ms) / 4) ease-in-out 4; }
+.theme-bears .action-snack .bb-minime-body { animation: bears-minime-chew var(--actionSnackMinimeBodyAnimation) ease-in-out infinite; }
+.theme-bears .action-wave .bb-minime-body { animation: bears-minime-bob var(--actionWaveMinimeBodyAnimation) ease-in-out infinite; }
+.theme-bears .action-dance .bb-minime-body { animation: bears-minime-dance calc(var(--action-ms) / var(--actionDanceMinimeBodyAnimation)) ease-in-out var(--actionDanceMinimeBodyAnimation2); }
 .theme-bears .action-look .bb-minime-flip { animation: bears-minime-look var(--action-ms) step-end both; }
 .theme-bears .action-sleep .bb-minime-body { animation: bears-minime-doze var(--action-ms) ease-in-out both; }
 .theme-bears .bb-minime-zz {
   position: absolute;
   top: 0;
   right: 0;
-  color: var(--textDark);
-  font-family: var(--titleFont), var(--font), sans-serif;
-  font-weight: 800;
-  animation: bears-minime-zz var(--zz-time, 2s) ease-out infinite;
+  color: var(--minimeZzColor);
+  font-family: var(--minimeZzFont), var(--minimeZzFont2), sans-serif;
+  font-weight: var(--minimeZzFontWeight);
+  animation: bears-minime-zz var(--minimeZzAnimation) ease-out infinite;
 }
 
 /* Towers (core actions, minimeStack.ts): the others gather waddling, the base braces on all fours, every upper level
    climbs to the backs below it (--stack-lift), the tower sways together and waddles as a whole, then steps off from the
    top with a hop to the side (the core moves it there). Name signs in a tower move aside (--name-shift), upper levels cast no shadow. */
-.theme-bears .action-gather .bb-minime-body,
-.theme-bears .action-stackWalk .bb-minime-body { animation: bears-minime-waddle var(--waddleMs) ease-in-out infinite; }
-.theme-bears .action-brace .bb-minime-body { animation: bears-minime-brace var(--brace-ms, 900ms) ease-in-out infinite; }
+.theme-bears .action-gather .bb-minime-body { animation: bears-minime-waddle calc(var(--waddleMs) * var(--actionGatherMinimeBodyAnimation) / 100) ease-in-out infinite; }
+.theme-bears .action-stackWalk .bb-minime-body { animation: bears-minime-waddle calc(var(--waddleMs) * var(--actionStackWalkMinimeBodyAnimation) / 100) ease-in-out infinite; }
+.theme-bears .action-brace .bb-minime-body { animation: bears-minime-brace var(--actionBraceMinimeBodyAnimation) ease-in-out infinite; }
 .theme-bears .action-climb .bb-minime-lift { animation: bears-minime-climb var(--action-ms) ease-in-out both; }
-.theme-bears .action-stacked .bb-minime-lift,
+.theme-bears .action-stacked .bb-minime-lift { translate: 0 calc(-1 * var(--stack-lift)); }
 .theme-bears .action-stackWalk .bb-minime-lift { translate: 0 calc(-1 * var(--stack-lift)); }
 .theme-bears .action-stacked .bb-minime-body { animation: bears-minime-sway var(--stackSwayMs) ease-in-out infinite; }
 .theme-bears .action-dismount .bb-minime-lift { animation: bears-minime-dismount var(--action-ms) ease-in both; }
@@ -98,55 +99,56 @@
 .theme-bears .action-enter .bb-minime-name { animation: bears-minime-fade-in var(--action-ms) ease-out both; }
 .theme-bears .exit-watscheln .action-exit .bb-minime-body { animation: bears-minime-waddle-out var(--action-ms) ease-in forwards; }
 .theme-bears .exit-plopp .action-exit .bb-minime-body { animation: bears-minime-pop-out var(--action-ms) ease-in forwards; }
-.theme-bears .action-exit .bb-minime-name, .theme-bears .action-exit .bb-minime-shadow { animation: bears-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-bears .action-exit .bb-minime-name { animation: bears-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-bears .action-exit .bb-minime-shadow { animation: bears-minime-fade-out var(--action-ms) ease-in forwards; }
 
 @keyframes bears-minime-waddle {
-  0%, 100% { rotate: calc(var(--waddleAngle) * -1deg); translate: 0 0; }
-  25%, 75% { translate: 0 calc(-1 * var(--waddle-bob, 4px)); }
+  0%, 100% { rotate: calc(var(--waddleAngle) * calc(var(--kfMinimeWaddle0p100pRotate) * 1deg)); translate: 0 0; }
+  25%, 75% { translate: 0 calc(-1 * var(--kfMinimeWaddle25p75pTranslate)); }
   50% { rotate: calc(var(--waddleAngle) * 1deg); translate: 0 0; }
 }
-@keyframes bears-minime-flash { 0%, 30% { opacity: 0; } 38% { opacity: 1; } 60%, 100% { opacity: 0; } }
-@keyframes bears-minime-chew { 0%, 100% { scale: 1 1; } 50% { scale: 1.02 0.97; } }
-@keyframes bears-minime-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 calc(-1 * var(--wave-bob, 4px)); } }
+@keyframes bears-minime-flash { 0%, 30% { opacity: 0; } 38% { opacity: var(--kfMinimeFlash38pOpacity); } 60%, 100% { opacity: 0; } }
+@keyframes bears-minime-chew { 0%, 100% { scale: var(--kfMinimeChew0p100pScale) var(--kfMinimeChew0p100pScale2); } 50% { scale: var(--kfMinimeChew50pScale) var(--kfMinimeChew50pScale2); } }
+@keyframes bears-minime-bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 calc(-1 * var(--kfMinimeBob50pTranslate)); } }
 @keyframes bears-minime-dance {
   0%, 100% { rotate: 0deg; translate: 0 0; }
-  25% { rotate: calc(var(--dance-angle, 10) * -1deg); translate: 0 calc(-1 * var(--dance-hop, 12px)); }
+  25% { rotate: calc(var(--kfMinimeDance25pRotate) * calc(var(--kfMinimeDance25pRotate2) * 1deg)); translate: 0 calc(-1 * var(--kfMinimeDance25pTranslate)); }
   50% { rotate: 0deg; translate: 0 0; }
-  75% { rotate: calc(var(--dance-angle, 10) * 1deg); translate: 0 calc(-1 * var(--dance-hop, 12px)); }
+  75% { rotate: calc(var(--kfMinimeDance75pRotate) * 1deg); translate: 0 calc(-1 * var(--kfMinimeDance75pTranslate)); }
 }
-@keyframes bears-minime-look { 0%, 60% { scale: calc(-1 * var(--facing)) 1; } 30% { scale: var(--facing) 1; } }
-@keyframes bears-minime-doze { 0%, 100% { scale: 1 1; } 15%, 85% { scale: 1.04 0.94; } }
-@keyframes bears-minime-zz { from { opacity: 0; translate: 0 0; } 30% { opacity: 1; } to { opacity: 0; translate: var(--zz-x, 12px) calc(-1 * var(--zz-y, 36px)); } }
+@keyframes bears-minime-look { 0%, 60% { scale: calc(-1 * var(--facing)) var(--kfMinimeLook0p60pScale); } 30% { scale: var(--facing) var(--kfMinimeLook30pScale); } }
+@keyframes bears-minime-doze { 0%, 100% { scale: var(--kfMinimeDoze0p100pScale) var(--kfMinimeDoze0p100pScale2); } 15%, 85% { scale: var(--kfMinimeDoze15p85pScale) var(--kfMinimeDoze15p85pScale2); } }
+@keyframes bears-minime-zz { from { opacity: 0; translate: 0 0; } 30% { opacity: var(--kfMinimeZz30pOpacity); } to { opacity: 0; translate: var(--kfMinimeZzToTranslate) calc(-1 * var(--kfMinimeZzToTranslate2)); } }
 @keyframes bears-minime-waddle-in {
-  from { translate: calc(var(--waddle-in, 140px) * var(--facing) * -1) 0; opacity: 0; rotate: calc(var(--waddleAngle) * -1deg); }
-  25% { opacity: 1; rotate: calc(var(--waddleAngle) * 1deg); }
-  50% { rotate: calc(var(--waddleAngle) * -1deg); }
+  from { translate: calc(var(--kfMinimeWaddleInFromTranslate) * var(--facing) * -1) 0; opacity: 0; rotate: calc(var(--waddleAngle) * calc(var(--kfMinimeWaddleInFromRotate) * 1deg)); }
+  25% { opacity: var(--kfMinimeWaddleIn25pOpacity); rotate: calc(var(--waddleAngle) * 1deg); }
+  50% { rotate: calc(var(--waddleAngle) * calc(var(--kfMinimeWaddleIn50pRotate) * 1deg)); }
   75% { rotate: calc(var(--waddleAngle) * 1deg); }
-  to { translate: 0 0; opacity: 1; rotate: 0deg; }
+  to { translate: 0 0; opacity: var(--kfMinimeWaddleInToOpacity); rotate: 0deg; }
 }
 @keyframes bears-minime-waddle-out {
-  from { translate: 0 0; opacity: 1; rotate: 0deg; }
+  from { translate: 0 0; opacity: var(--kfMinimeWaddleOutFromOpacity); rotate: 0deg; }
   25% { rotate: calc(var(--waddleAngle) * 1deg); }
-  50% { rotate: calc(var(--waddleAngle) * -1deg); }
-  75% { opacity: 1; rotate: calc(var(--waddleAngle) * 1deg); }
-  to { translate: calc(var(--waddle-in, 140px) * var(--facing)) 0; opacity: 0; rotate: 0deg; }
+  50% { rotate: calc(var(--waddleAngle) * calc(var(--kfMinimeWaddleOut50pRotate) * 1deg)); }
+  75% { opacity: var(--kfMinimeWaddleOut75pOpacity); rotate: calc(var(--waddleAngle) * 1deg); }
+  to { translate: calc(var(--kfMinimeWaddleOutToTranslate) * var(--facing)) 0; opacity: 0; rotate: 0deg; }
 }
-@keyframes bears-minime-brace { 0%, 100% { scale: 1 1; } 50% { scale: 1.02 0.96; } }
+@keyframes bears-minime-brace { 0%, 100% { scale: var(--kfMinimeBrace0p100pScale) var(--kfMinimeBrace0p100pScale2); } 50% { scale: var(--kfMinimeBrace50pScale) var(--kfMinimeBrace50pScale2); } }
 @keyframes bears-minime-climb {
   from { translate: 0 0; }
-  60% { translate: var(--stack-shift, 0px) calc(-1 * var(--stack-lift) - var(--climb-overshoot, 12px)); }
-  to { translate: var(--stack-shift, 0px) calc(-1 * var(--stack-lift)); }
+  60% { translate: var(--stack-shift, 0) calc(-1 * var(--stack-lift) - var(--kfMinimeClimb60pTranslate)); }
+  to { translate: var(--stack-shift, 0) calc(-1 * var(--stack-lift)); }
 }
 @keyframes bears-minime-sway {
-  0%, 100% { rotate: calc(var(--stackSway) * -1deg); }
+  0%, 100% { rotate: calc(var(--stackSway) * calc(var(--kfMinimeSway0p100pRotate) * 1deg)); }
   50% { rotate: calc(var(--stackSway) * 1deg); }
 }
 @keyframes bears-minime-dismount {
-  from { translate: var(--stack-shift, 0px) calc(-1 * var(--stack-lift, 0px)); }
-  45% { translate: var(--stack-shift, 0px) calc(-1 * var(--stack-lift, 0px) - var(--dismount-hop, 30px)); }
+  from { translate: var(--stack-shift, 0) calc(-1 * var(--stack-lift, 0)); }
+  45% { translate: var(--stack-shift, 0) calc(-1 * var(--stack-lift, 0) - var(--kfMinimeDismount45pTranslate)); }
   to { translate: 0 0; }
 }
-@keyframes bears-minime-pop-in { from { scale: 0; } to { scale: 1; } }
-@keyframes bears-minime-pop-out { 0% { scale: 1; } 30% { scale: 1.15; } 100% { scale: 0; opacity: 0; } }
-@keyframes bears-minime-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes bears-minime-fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes bears-minime-pop-in { from { scale: 0; } to { scale: var(--kfMinimePopInToScale); } }
+@keyframes bears-minime-pop-out { 0% { scale: var(--kfMinimePopOut0pScale); } 30% { scale: var(--kfMinimePopOut30pScale); } 100% { scale: 0; opacity: 0; } }
+@keyframes bears-minime-fade-in { from { opacity: 0; } to { opacity: var(--kfMinimeFadeInToOpacity); } }
+@keyframes bears-minime-fade-out { from { opacity: var(--kfMinimeFadeOutFromOpacity); } to { opacity: 0; } }

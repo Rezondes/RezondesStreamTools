@@ -12,6 +12,7 @@ import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { BEAR_CHOICES, BEAR_IDS } from "./bears.ts";
 import { ICON_NAMES } from "./icons.ts";
 import { BEAR_SET } from "./minimeBears.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 
 export const FONTS = ["Nunito", "Fredoka", "Baloo 2", "Inter", "DM Sans"] as const;
 const TITLE_FONTS = ["Sniglet", "Fredoka", "Baloo 2", "Nunito"] as const;
@@ -343,6 +344,7 @@ const GROUP_SCENES = {
   [MINIME_LOOK]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
   [INFO_GROUP]: ["info"],
+  ...TUNING_GROUPS,
 } as const;
 
 const capital = (login: string) => login[0].toUpperCase() + login.slice(1);
@@ -361,7 +363,7 @@ const BASIC = [
 export const bearsSettings: ThemeSchema = {
   id: "bears",
   name: "Bärenbande",
-  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(BEAR_SET)], STINGER), BASIC),
+  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(BEAR_SET), ...TUNING_FIELDS], STINGER), BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: BEAR_SET,

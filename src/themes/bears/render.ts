@@ -7,7 +7,7 @@ import type { RenderClip } from "../../core/renderClip.ts";
 import { readStingerOptions, withStingerOptions } from "../../core/stingerOptions.ts";
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
-import { drawBearsOfflineBanner, drawBearsProfileBanner, type BearsBannerOptions, type WorldPainter } from "./banners.ts";
+import { type BearsBannerLayout, drawBearsOfflineBanner, drawBearsProfileBanner, type BearsBannerOptions, type WorldPainter } from "./banners.ts";
 import type * as ClipWorld from "./clipWorld.ts";
 import type { Palette, WorldColors } from "./paint.ts";
 import type { BearsValues } from "./settings.ts";
@@ -73,23 +73,43 @@ export function worldAt(field: BearsValues, time: TimeOfDay): WorldColors {
 }
 
 // values: resolved against the Bärenbande schema; login for {login} in the texts
+// Places and sizes of the banners (settings)
+export const bearsBannerLayout = (field: BearsValues): BearsBannerLayout => ({
+  profile: {
+    bearX: field.profileBearX, bearY: field.profileBearY, bearHeight: field.profileBearHeight, cardX: field.profileCardX, cardY: field.profileCardY,
+    cardWidth: field.profileCardWidth, cardHeight: field.profileCardHeight, titleX: field.profileTitleX, titleY: field.profileTitleY, titleSize: field.profileTitleSize,
+    textY: field.profileTextY, textSize: field.profileTextSize,
+  },
+  offline: {
+    bearX: field.offlineBearX, bearY: field.offlineBearY, bearHeight: field.offlineBearHeight, cardX: field.offlineCardX, cardY: field.offlineCardY,
+    cardWidth: field.offlineCardWidth, cardHeight: field.offlineCardHeight, padding: field.offlineCardPadding, right: field.offlineCardRight,
+    titleY: field.offlineTitleY, titleSize: field.offlineTitleSize, textY: field.offlineTextY, textSize: field.offlineTextSize, linesY: field.offlineLinesY,
+    lineStep: field.offlineLineStep, lineSize: field.offlineLineSize, sleepX: field.offlineSleepX, sleepY: field.offlineSleepY, sleepRiseX: field.offlineSleepRiseX,
+    sleepRiseY: field.offlineSleepRiseY, sleepSize: field.offlineSleepSize,
+  },
+});
+
 export function bearsClips(values: SettingValues, login: string): RenderClip[] {
   const field = values as unknown as BearsValues;
   const names = { channel: field.channelName, login };
   const palette = paletteOf(field);
   const stinger: BearsStingerOptions = {
     duration: field.stingerDuration, cut: field.stingerCut, bear: field.stingerBear, text: fillTemplate(field.stingerText, names),
-    font: field.titleFont, waddle: field.stingerWaddle, palette, from: field.stingerFrom, open: field.stingerOpen,
+    font: field.stingerFont, waddle: field.stingerWaddle, palette, from: field.stingerFrom, open: field.stingerOpen,
     curtain: { color: field.stingerCurtain, shade: field.stingerCurtainShade, pattern: field.stingerCurtainPattern, folds: field.stingerFolds },
   };
   const banner: BearsBannerOptions = {
-    font: field.font, titleFont: field.titleFont, palette,
+    font: field.profileFont, titleFont: field.profileTitleFont, palette, layout: bearsBannerLayout(field),
     day: worldAt(field, "mittag"),
     evening: worldAt(field, "abend"),
     profileBear: field.bannerProfileBear, offlineBear: field.bannerOfflineBear, title: fillTemplate(field.bannerTitle, names),
     profileText: field.bannerProfileText, offlineTitle: field.bannerOfflineTitle, offlineText: field.bannerOfflineText,
     offlineLines: field.bannerOfflineLines, lights: field.fairyLights, lightColors: [field.accent, field.sun, field.accent2],
-    textDark: field.textDark, textDim: field.textDim, paperShade: field.paperShade, sleepText: field.bannerSleepText,
+    textDark: field.profileTextColor, textDim: field.offlineLinesColor, paperShade: field.profileCardShade, sleepText: field.bannerSleepText,
+  };
+  // The offline banner has its own fonts and colors
+  const offline: BearsBannerOptions = {
+    ...banner, font: field.offlineFont, titleFont: field.offlineTitleFont, textDark: field.offlineTextColor, paperShade: field.offlineCardShade,
   };
   const look = { seed: field.worldSeed, layers: field.washLayers, alpha: field.washAlpha, roughness: field.washRoughness, sketch: field.sketchLines, grain: 0 };
   const show = { city: field.showCity, bridge: field.showBridge, cave: field.showCave, flowers: field.flowers };
@@ -99,7 +119,7 @@ export function bearsClips(values: SettingValues, login: string): RenderClip[] {
   return [
     withStingerOptions({ name: "stinger", feature: "stinger", group: "Stinger", font, width: WIDTH, height: HEIGHT, fps: options.fps, duration: stinger.duration, cut: stinger.cut, draw: (context, time) => drawBearsStinger(context, time, stinger) }, options),
     { name: "profile", feature: "banners", group: "Profilbanner", font, width: 1200, height: 480, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(world => context => drawBearsProfileBanner(context, { ...banner, world }), painter) },
-    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(world => context => drawBearsOfflineBanner(context, { ...banner, title: fillTemplate(field.bannerOfflineName, names), world }), painter) },
+    { name: "offline", feature: "banners", group: "Offline-Banner", font, width: 1920, height: 1080, fps: STILL, duration: STILL, cut: null, prepare, draw: clipDraw(world => context => drawBearsOfflineBanner(context, { ...offline, title: fillTemplate(field.bannerOfflineName, names), world }), painter) },
   ];
 }
 

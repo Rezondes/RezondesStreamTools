@@ -41,18 +41,20 @@ const REACTIONS: Record<BearId, Reaction> = { eisbaer: "nod", grizzly: "cheer", 
 const RUN = 60 * 60;
 const SECOND_MS = 1000; // fixed: seconds in ms
 const PERCENT = 100; // fixed: settings in percent to shares
-// fixed: when the parts come in (s): the throw of the confetti, the symbol, the tag, the name letters, its beat, the quote
-const PARTS_AT = { throw: 0.3, icon: 0.35, tag: 0.45, line: 0.55, beat: 1, quote: 1 };
-// fixed: the symbol pops in turning and beats like a heart, the tag pops, the letters fall in, the quote rises
-const POP_ICON = { scale: 0, rotate: -30, duration: 0.5, ease: "back.out(3)", transformOrigin: "50% 60%" };
-const BEAT = { scale: 1.12, duration: 0.22, repeat: 9, yoyo: true, ease: "sine.inOut", transformOrigin: "50% 60%" }; // fixed: see above
-const POP_TAG = { scale: 0, rotate: 10, duration: 0.4, ease: "back.out(3)" }; // fixed: see above
-const LETTERS = { y: -50, scaleY: 1.5, opacity: 0, duration: 0.45, ease: "bounce.out", stagger: 0.04 }; // fixed: see above
-const RISE = { opacity: 0, y: 10, duration: 0.3 }; // fixed: see above
+// The parts of the settings: when they come in (s), the symbol pops in turning and beats like a heart, the tag pops, the
+// letters fall in, the quote rises
+const partsMotion = (values: BearsValues) => ({
+  PARTS_AT: { icon: values.partsAtIcon, tag: values.partsAtTag, line: values.partsAtLine, beat: values.partsAtBeat, quote: values.partsAtQuote },
+  POP_ICON: { scale: 0, rotate: values.iconPopTurn, duration: values.iconPopTime, ease: "back.out(3)", transformOrigin: "50% 60%" },
+  BEAT: { scale: values.beatScale, duration: values.beatTime, repeat: values.beatRepeat, yoyo: true, ease: "sine.inOut", transformOrigin: "50% 60%" },
+  POP_TAG: { scale: 0, rotate: values.tagPopTurn, duration: values.tagPopTime, ease: "back.out(3)" },
+  LETTERS: { y: values.lettersFrom, scaleY: values.lettersStretch, opacity: 0, duration: values.lettersTime, ease: "bounce.out", stagger: values.lettersStep },
+  RISE: { opacity: 0, y: values.quoteRiseFrom, duration: values.quoteRiseTime },
+});
 // fixed: the plop of the card from nothing: squash, stretch, spring back (scale x and y, share of fadeDuration)
 const PLOP = [{ scaleX: 1.25, scaleY: 0.7, share: 0.35 }, { scaleX: 0.9, scaleY: 1.12, share: 0.25 }, { scaleX: 1.04, scaleY: 0.97, share: 0.2 }, { scaleX: 1, scaleY: 1, share: 0.2 }];
-// fixed: leaving, the bear ducks away: how far down (share of its height) and how
-const DUCK = { yPercent: 70, ease: "back.in(2)" };
+// fixed: leaving, the bear ducks away with this curve (how far down is a setting)
+const DUCK_EASE = "back.in(2)";
 
 function describe(alert: Alert, values: BearsValues) {
   return { ...describeAlert(alert, values, KEYS), icon: values[ICONS_BY_KIND[alert.kind]] as IconName, sound: values[ALERT_SOUND_KEYS[alert.kind]] };
@@ -82,6 +84,7 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   useTimeline(timeline => {
     const root = scope.current;
     if (!root) return;
+    const { PARTS_AT, POP_ICON, BEAT, POP_TAG, LETTERS, RISE } = partsMotion(values);
     // First on the timeline, so the steps follow each other from 0
     const card = root.querySelector(".bb-alert-card");
     if (card && values.alertIn === "plopp") {
@@ -112,8 +115,8 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   }, [values, alert], scope);
   useTimeline(timeline => {
     const spot = scope.current?.querySelector(".bb-alert-bear");
-    if (leaving && spot) timeline.to(spot, { yPercent: DUCK.yPercent, opacity: 0, duration: values.fadeDuration / SECOND_MS, ease: DUCK.ease });
-  }, [leaving, values.fadeDuration], scope);
+    if (leaving && spot) timeline.to(spot, { yPercent: values.duckDepth, opacity: 0, duration: values.fadeDuration / SECOND_MS, ease: DUCK_EASE });
+  }, [leaving, values.fadeDuration, values.duckDepth], scope);
   return (
     <div ref={scope} className={`bb-alert in-${values.alertIn} out-${values.alertOut}${leaving ? " leaving" : ""}`}>
       <div className="bb-alert-bear"><Hero choice={values.bearAlerts} poses={POSES} className="bb-hero" /></div>
@@ -132,6 +135,7 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
 
 // Paw prints and leaves thrown up out of the top of the card, placed every frame from the time since the throw
 function Confetti({ count, seed }: { count: number; seed: number }) {
+  const throwAt = useBears().partsAtThrow;
   const scope = useRef<HTMLDivElement>(null);
   useTimeline(timeline => {
     const root = scope.current;
@@ -146,8 +150,8 @@ function Confetti({ count, seed }: { count: number; seed: number }) {
       nodes[index].style.opacity = String(piece.alpha);
     });
     place();
-    timeline.to(clock, { seconds: CONFETTI_LIFE, duration: CONFETTI_LIFE, ease: "none", onUpdate: place }, PARTS_AT.throw);
-  }, [count, seed], scope);
+    timeline.to(clock, { seconds: CONFETTI_LIFE, duration: CONFETTI_LIFE, ease: "none", onUpdate: place }, throwAt);
+  }, [count, seed, throwAt], scope);
   return (
     <div ref={scope} className="bb-confetti" aria-hidden="true">
       {confettiAt(seed, count, 0, { x: 0, y: 0 }).map((piece, index) => (
