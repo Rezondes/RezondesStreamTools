@@ -8,7 +8,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use serde_json::{Map, Value};
 
 use crate::identity::values::Login;
-use crate::settings::field::SettingField;
+use crate::settings::field::{SURROUNDING, SettingField};
 use crate::settings::validate::validate_settings;
 use crate::themes::info_fields::info_fields;
 use crate::themes::registry::Theme;
@@ -32,7 +32,7 @@ fn inherit_problems(schema: &ThemeSchema) -> Vec<String> {
         .fields
         .iter()
         .filter_map(|field| {
-            let parent_key = field.inherit.as_deref()?;
+            let parent_key = field.inherit.as_deref().filter(|parent| *parent != SURROUNDING)?;
             let Some(parent) = by_key.get(parent_key) else {
                 return Some(format!("{}: unknown parent {parent_key}", field.key));
             };
@@ -100,7 +100,7 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::*;
-    use crate::settings::field::{SettingValue, SettingValues, color, font, inherits, text};
+    use crate::settings::field::{SettingValue, SettingValues, color, follows, font, inherits, text};
     use crate::themes::registry::themes;
 
     fn personalize(_: &Login) -> SettingValues {
@@ -124,6 +124,7 @@ mod tests {
                 text("title", "", "A", "x", Some(10)),
                 text("title", "Title", "A", "y", Some(10)),
                 inherits(color("name", "Name", "A", "#000000"), "nothing"),
+                follows(color("row", "Row", "A", "#000000")),
                 inherits(font("face", "Face", "A", "A", &["A"]), "title"),
                 inherits(color("a", "A", "A", "#000000"), "b"),
                 inherits(color("b", "B", "A", "#000000"), "a"),

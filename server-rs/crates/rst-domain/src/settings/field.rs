@@ -364,6 +364,16 @@ pub fn inherits(field: SettingField, parent: &str) -> SettingField {
     SettingField { inherit: Some(parent.to_owned()), ..field }.with_default(&SettingValue::Text(String::new()))
 }
 
+/// Parent of a field that follows its surroundings while empty (template: `SURROUNDING` in `src/core/fields.ts`): it gets
+/// no value, so the element keeps the color or font of the part around it
+pub const SURROUNDING: &str = "";
+
+/// Field that follows its surroundings while empty (template: `follows` in `src/core/fields.ts`)
+#[must_use]
+pub fn follows(field: SettingField) -> SettingField {
+    inherits(field, SURROUNDING)
+}
+
 /// Field of the simple view in the dashboard (template: `basic` in `src/core/fields.ts`)
 #[must_use]
 pub fn basic(field: SettingField) -> SettingField {

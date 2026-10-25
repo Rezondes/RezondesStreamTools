@@ -142,6 +142,9 @@ assert.deepEqual(inheritedOf(family, name, { accent: "#ff0000", title: "", name:
 assert.equal(inheritedOf(family, name, { accent: "#ff0000", title: "", name: "#000000" }), null);
 assert.equal(inheritedOf(family, accent, { accent: "#ff0000" }), null);
 assert.deepEqual(inheritedOf(family, title, { accent: "#ff0000", title: "" }), { label: "Akzent", value: "#ff0000" });
+// Following the surroundings: no parent to name, an own value starts white (a font with its first option)
+assert.deepEqual(inheritedOf(family, { ...name, inherit: "" }, { name: "" }), { label: null, value: "#ffffff" });
+assert.deepEqual(inheritedOf(family, { key: "face", type: "font", label: "F", group: "A", default: "", options: ["Inter", "VT323"], inherit: "" }, { face: "" }), { label: null, value: "Inter" });
 
 console.log("settingsForm ok");
 

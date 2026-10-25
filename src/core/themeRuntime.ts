@@ -20,12 +20,14 @@ export function sceneNames<Component>(scenes: SceneTable<Component>, themeId: st
 }
 
 // Colors, numbers (with unit according to the schema), switches (1/0, for computing in calc) and fonts as --<key>.
-// The scene reads texts, choices and media directly. Empty fields that inherit take the value of their parent.
+// The scene reads texts, choices and media directly. Empty fields that inherit take the value of their parent; a color or
+// font that follows its surroundings (still empty) gets no variable, so the CSS that reads it keeps the inherited one.
 export function cssVariables(schema: ThemeSchema, stored: SettingValues): Record<string, string> {
   const values = effectiveValues(schema, stored);
   const variables: Record<string, string> = {};
   for (const field of schema.fields) {
     const value = values[field.key];
+    if ((field.type === "color" || field.type === "font") && value === "") continue;
     if (field.type === "color" && typeof value === "string") variables[`--${field.key}`] = value;
     if (field.type === "number" && typeof value === "number") variables[`--${field.key}`] = `${value}${field.unit ?? ""}`;
     if (field.type === "boolean" && typeof value === "boolean") variables[`--${field.key}`] = value ? "1" : "0";

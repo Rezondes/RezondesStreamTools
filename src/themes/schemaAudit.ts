@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { ALERT_SOUND_KEYS, alertTextKeys } from "../core/alerts/alerts.ts";
 import { BADGE_KEYS } from "../core/chat/chat.ts";
 import { FX_KEYS } from "../core/fx/fx.ts";
+import { SURROUNDING } from "../core/fields.ts";
 import { INFO_FIELDS } from "../core/infoFields.ts";
 import {
   COMBAT_SOUNDS, MINIME_FIELDS, MINIME_HOP_FIELDS, minimeAimKey, minimeFireKey, minimeNamesKey, minimeStackFields, minimeTeamColorKey, minimeTeamLabelKey,
@@ -54,11 +55,12 @@ export function auditBasic(schema: ThemeSchema): string[] {
   return [...numbers, ...areas];
 }
 
-// Inheritance: the parent exists, has the same type, and no chain runs in a circle
+// Inheritance: the parent exists, has the same type, and no chain runs in a circle; following the surroundings needs no
+// parent
 export function auditInherit(schema: ThemeSchema): string[] {
   const byKey = new Map(schema.fields.map(field => [field.key, field]));
   return schema.fields.flatMap(field => {
-    if (field.inherit === undefined) return [];
+    if (field.inherit === undefined || field.inherit === SURROUNDING) return [];
     const parent = byKey.get(field.inherit);
     if (!parent) return [`${field.key}: unknown parent ${field.inherit}`];
     if (parent.type !== field.type) return [`${field.key}: parent ${field.inherit} is ${parent.type}`];

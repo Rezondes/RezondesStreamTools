@@ -15,7 +15,7 @@ type Props = {
   media: readonly string[];
   onChange: (value: SettingValue) => void;
   onReset: () => void;
-  inherited: { label: string; value: string } | null;
+  inherited: { label: string | null; value: string } | null;
 };
 
 const COLOR = /^#[0-9a-f]{6}/i;
@@ -34,7 +34,7 @@ export default function SettingInput({ field, value, error, media, onChange, onR
       <label htmlFor={id}>{field.label}{field.type === "number" ? numberHint(field.unit, TEXTS.theme.range(field.min, field.max)) : ""}</label>
       {inherited ? (
         <span className="setting-row">
-          <span id={id} className="muted">{TEXTS.theme.inherits(inherited.label, inherited.value)}</span>
+          <span id={id} className="muted">{inherited.label === null ? TEXTS.theme.surrounding : TEXTS.theme.inherits(inherited.label, inherited.value)}</span>
           <button type="button" className="btn" onClick={() => onChange(inherited.value)}>{TEXTS.theme.ownValue}</button>
         </span>
       ) : <Input id={id} field={field} value={value} media={media} onChange={onChange} invalid={Boolean(error)} />}

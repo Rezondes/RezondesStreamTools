@@ -53,6 +53,10 @@ export const inScene = <F extends SettingField>(scene: SceneName, field: F): F &
 // Field that takes the value of the field parent while it is empty: the theme value by default, its own once set
 type TextField = Extract<SettingField, { default: string }>;
 export const inherits = <F extends TextField>(field: F, parent: string): F & { inherit: string } => ({ ...field, default: "", inherit: parent }) as F & { inherit: string };
+// Parent of a field that follows its surroundings while empty: it gets no value, so the element keeps the color or font
+// of the part around it (a text on a paper card the ink of the card, in a radio row the green of the row)
+export const SURROUNDING = "";
+export const follows = <F extends TextField>(field: F) => inherits(field, SURROUNDING);
 
 // Field of the simple view in the dashboard: the few settings most streamers change (texts, main colors, switches)
 export const basic = <F extends SettingField>(field: F): F & { basic: true } => ({ ...field, basic: true });

@@ -24,6 +24,7 @@ const color = (key: string, inherit?: string) => ({ key, type: "color" as const,
 const family = (fields: ThemeSchema["fields"]): ThemeSchema => ({ id: "probe", name: "Probe", fields });
 assert.deepEqual(auditInherit(family([color("accent"), color("title", "accent"), color("name", "title")])), []);
 assert.deepEqual(auditInherit(family([color("title", "nothing")])), ["title: unknown parent nothing"]);
+assert.deepEqual(auditInherit(family([color("row", "")])), [], "following the surroundings needs no parent");
 assert.deepEqual(auditInherit(family([{ key: "font", type: "font", label: "F", group: "A", default: "A", options: ["A"] }, color("title", "font")])), ["title: parent font is font"]);
 assert.deepEqual(auditInherit(family([color("a", "b"), color("b", "a")])), ["a: inherits in a circle", "b: inherits in a circle"]);
 

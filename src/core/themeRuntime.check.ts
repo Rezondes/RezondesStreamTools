@@ -37,5 +37,9 @@ assert.deepEqual(cssVariables(schema, { accent: "#ff0000", size: 12, fade: 5, sc
 // An empty field that inherits gets the value of its parent as its variable
 const family: ThemeSchema = { ...schema, fields: [{ key: "accent", type: "color", label: "A", group: "G", default: "#000000" }, { key: "nameColor", type: "color", label: "N", group: "G", default: "", inherit: "accent" }] };
 assert.deepEqual(cssVariables(family, { accent: "#ff0000", nameColor: "" }), { "--accent": "#ff0000", "--nameColor": "#ff0000" });
+// A color that follows its surroundings has no variable while empty, its own value once set
+const around: ThemeSchema = { ...family, fields: [...family.fields, { key: "rowColor", type: "color", label: "Row", group: "A", default: "", inherit: "" }] };
+assert.deepEqual(cssVariables(around, { accent: "#ff0000", nameColor: "", rowColor: "" }), { "--accent": "#ff0000", "--nameColor": "#ff0000" });
+assert.equal(cssVariables(around, { accent: "#ff0000", nameColor: "", rowColor: "#00ff00" })["--rowColor"], "#00ff00");
 
 console.log("themeRuntime ok");

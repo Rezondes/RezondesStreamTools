@@ -1,12 +1,16 @@
 // Logic of the settings form: the schema from the server, fields by group in schema order, reset to the default,
 // changed fields compared to the saved state and errors per field. Pure functions, tested in settingsForm.check.ts.
 import type { ThemeSchema as ServerSchema } from "../generated/ThemeSchema.ts";
+import { SURROUNDING } from "../core/fields.ts";
 import { effectiveValues, type SettingError, type SettingErrorCode } from "../core/settings.ts";
 import { STAT_KEYS } from "../core/stats/stats.ts";
 import type { SceneName, SettingField, SettingValue, SettingValues, ThemeSchema } from "../core/theme.ts";
 
 // The schema of a theme: the server's (GET /api/themes) decides rules, limits and defaults; the built-in one only
 // stands in while the server has not answered, the default theme for an unknown id
+// fixed: an own color of a field that followed its surroundings starts white
+const START_COLOR = "#ffffff";
+
 export const pickSchema = (server: readonly ServerSchema[] | null, local: (id: string) => ThemeSchema | null, fallback: ThemeSchema, id: string): ThemeSchema =>
   server?.find(schema => schema.id === id) ?? local(id) ?? fallback;
 
@@ -81,8 +85,10 @@ export function resetField(schema: ThemeSchema, values: SettingValues, key: stri
 }
 
 // An empty field that inherits: the label of its parent and the value it takes from there; null for an own value
-export function inheritedOf(schema: ThemeSchema, field: SettingField, values: SettingValues): { label: string; value: string } | null {
+// label null: the field follows its surroundings; value is then where an own value starts
+export function inheritedOf(schema: ThemeSchema, field: SettingField, values: SettingValues): { label: string | null; value: string } | null {
   if (field.inherit === undefined || values[field.key] !== "") return null;
+  if (field.inherit === SURROUNDING) return { label: null, value: field.type === "font" ? field.options[0] ?? "" : START_COLOR };
   const parent = schema.fields.find(candidate => candidate.key === field.inherit);
   const value = effectiveValues(schema, values)[field.key];
   return parent && typeof value === "string" ? { label: parent.label, value } : null;
