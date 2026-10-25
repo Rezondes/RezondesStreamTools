@@ -3,22 +3,22 @@
    class action-<name>, the beach thing is thing-<id> on the minime. Keyframes are called urlaub-minime-*. */
 
 /* Colors per beach thing (settings "Typen: Farben") */
-.theme-urlaub .thing-rettungsring { --main: var(--thingRettungsringMain); --detail: var(--thingRettungsringDetail); }
-.theme-urlaub .thing-badeente { --main: var(--thingBadeenteMain); --detail: var(--thingBadeenteDetail); }
-.theme-urlaub .thing-wasserball { --main: var(--thingWasserballMain); --detail: var(--thingWasserballDetail); }
-.theme-urlaub .thing-surfbrett { --main: var(--thingSurfbrettMain); --detail: var(--thingSurfbrettDetail); }
-.theme-urlaub .thing-sonnenschirm { --main: var(--thingSonnenschirmMain); --detail: var(--thingSonnenschirmDetail); }
-.theme-urlaub .thing-flamingo { --main: var(--thingFlamingoMain); --detail: var(--thingFlamingoDetail); }
-.theme-urlaub .thing-liegestuhl { --main: var(--thingLiegestuhlMain); --detail: var(--thingLiegestuhlDetail); }
-.theme-urlaub .thing-sandeimer { --main: var(--thingSandeimerMain); --detail: var(--thingSandeimerDetail); }
-.theme-urlaub .thing-eis { --main: var(--thingEisMain); --detail: var(--thingEisDetail); }
-.theme-urlaub .thing-muschel { --main: var(--thingMuschelMain); --detail: var(--thingMuschelDetail); }
-.theme-urlaub .thing-seestern { --main: var(--thingSeesternMain); --detail: var(--thingSeesternDetail); }
-.theme-urlaub .thing-krebs { --main: var(--thingKrebsMain); --detail: var(--thingKrebsDetail); }
-.theme-urlaub .thing-schnorchel { --main: var(--thingSchnorchelMain); --detail: var(--thingSchnorchelDetail); }
-.theme-urlaub .thing-sonnenbrille { --main: var(--thingSonnenbrilleMain); --detail: var(--thingSonnenbrilleDetail); }
-.theme-urlaub .thing-cocktail { --main: var(--thingCocktailMain); --detail: var(--thingCocktailDetail); }
-.theme-urlaub .thing-strandtasche { --main: var(--thingStrandtascheMain); --detail: var(--thingStrandtascheDetail); }
+.theme-urlaub .thing-rettungsring { --main: var(--thingRettungsringMain2); --detail: var(--thingRettungsringDetail2); }
+.theme-urlaub .thing-badeente { --main: var(--thingBadeenteMain2); --detail: var(--thingBadeenteDetail2); }
+.theme-urlaub .thing-wasserball { --main: var(--thingWasserballMain2); --detail: var(--thingWasserballDetail2); }
+.theme-urlaub .thing-surfbrett { --main: var(--thingSurfbrettMain2); --detail: var(--thingSurfbrettDetail2); }
+.theme-urlaub .thing-sonnenschirm { --main: var(--thingSonnenschirmMain2); --detail: var(--thingSonnenschirmDetail2); }
+.theme-urlaub .thing-flamingo { --main: var(--thingFlamingoMain2); --detail: var(--thingFlamingoDetail2); }
+.theme-urlaub .thing-liegestuhl { --main: var(--thingLiegestuhlMain2); --detail: var(--thingLiegestuhlDetail2); }
+.theme-urlaub .thing-sandeimer { --main: var(--thingSandeimerMain2); --detail: var(--thingSandeimerDetail2); }
+.theme-urlaub .thing-eis { --main: var(--thingEisMain2); --detail: var(--thingEisDetail2); }
+.theme-urlaub .thing-muschel { --main: var(--thingMuschelMain2); --detail: var(--thingMuschelDetail2); }
+.theme-urlaub .thing-seestern { --main: var(--thingSeesternMain2); --detail: var(--thingSeesternDetail2); }
+.theme-urlaub .thing-krebs { --main: var(--thingKrebsMain2); --detail: var(--thingKrebsDetail2); }
+.theme-urlaub .thing-schnorchel { --main: var(--thingSchnorchelMain2); --detail: var(--thingSchnorchelDetail2); }
+.theme-urlaub .thing-sonnenbrille { --main: var(--thingSonnenbrilleMain2); --detail: var(--thingSonnenbrilleDetail2); }
+.theme-urlaub .thing-cocktail { --main: var(--thingCocktailMain2); --detail: var(--thingCocktailDetail2); }
+.theme-urlaub .thing-strandtasche { --main: var(--thingStrandtascheMain2); --detail: var(--thingStrandtascheDetail2); }
 
 
 .theme-urlaub .ul-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
@@ -30,24 +30,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translateX(calc(var(--x) - 50%));
+  transform: translateX(calc(var(--x) - var(--minimeTransform)));
   transition: transform var(--move) linear;
 }
 .theme-urlaub .ul-minime-name {
-  margin-bottom: var(--name-gap, 4px);
-  padding: var(--name-padding, 1px 10px);
+  margin-bottom: var(--minimeNameMarginBottom);
+  padding: var(--minimeNamePadding) var(--minimeNamePadding2);
   font-size: var(--fruitNameSize);
-  font-weight: 700;
+  font-weight: var(--minimeNameFontWeight);
   white-space: nowrap;
+  color: var(--minimeNameColor);
+  font-family: var(--minimeNameFont), system-ui, sans-serif;
 }
-.theme-urlaub .name-schild { background: var(--wood); border: var(--name-border, 2px) solid var(--woodDark); border-radius: var(--name-round, 6px); color: var(--textOnWood); }
-.theme-urlaub .name-band { background: var(--accent); border-radius: var(--pill, 999px); color: var(--textColor); }
-.theme-urlaub .ul-minime-body { position: relative; width: 100%; transform-origin: 50% 100%; animation: urlaub-minime-breathe var(--breathe, 2.4s) ease-in-out infinite alternate; }
+.theme-urlaub .name-schild { background: var(--nameSchildBackground); border: var(--nameSchildBorder2) solid var(--nameSchildBorder); border-radius: var(--nameSchildBorderRadius); color: var(--nameSchildColor); }
+.theme-urlaub .name-band { background: var(--nameBandBackground); border-radius: var(--nameBandBorderRadius); color: var(--nameBandColor); }
+.theme-urlaub .ul-minime-body { position: relative; width: 100%; transform-origin: var(--minimeBodyTransformOrigin) 100%; animation: urlaub-minime-breathe var(--minimeBodyAnimation) ease-in-out infinite alternate; }
 .theme-urlaub .ul-minime-flip { transform: scaleX(var(--facing)); }
 .theme-urlaub .ul-minime-shadow {
-  width: 70%;
-  height: var(--shadow-height, 10px);
-  margin-top: calc(-1 * var(--shadow-overlap, 5px));
+  width: var(--minimeShadowWidth);
+  height: var(--minimeShadowHeight);
+  margin-top: calc(-1 * var(--minimeShadowMarginTop));
   border-radius: 50%;
   background: color-mix(in srgb, black calc(var(--fruitShadow) * 100%), transparent);
 }
@@ -55,40 +57,42 @@
 /* Beach thing (BeachThing.tsx) */
 .theme-urlaub .ul-thing { display: block; width: 100%; height: auto; overflow: visible; }
 /* evenodd: a second subpath cuts a hole (rings) */
-.theme-urlaub .thing-body { fill: var(--main); fill-rule: evenodd; stroke: var(--fruitOutline); stroke-width: var(--fruitOutlineWidth); stroke-linejoin: round; }
+.theme-urlaub .thing-body { fill: var(--main); fill-rule: evenodd; stroke: var(--thingBodyStroke); stroke-width: calc(var(--fruitOutlineWidth) * var(--thingBodyStrokeWidth) / 100); stroke-linejoin: round; }
 .theme-urlaub .thing-detail { fill: var(--detail); }
-.theme-urlaub .thing-line { fill: none; stroke: var(--detail); stroke-width: var(--fruitOutlineWidth); stroke-linecap: round; }
-.theme-urlaub .thing-leaf { fill: var(--fruitLeaf); stroke: var(--fruitOutline); stroke-width: var(--fruitOutlineWidth); stroke-linejoin: round; }
-.theme-urlaub .thing-stem { fill: var(--fruitStem); stroke: var(--fruitOutline); stroke-width: calc(var(--fruitOutlineWidth) * 0.6); }
-.theme-urlaub .thing-cheek { fill: var(--fruitCheek); opacity: 0.6; }
-.theme-urlaub .thing-eye { fill: var(--fruitEye); transform-box: fill-box; transform-origin: center; animation: urlaub-minime-blink var(--fruitBlinkEvery) linear infinite; }
-.theme-urlaub .thing-mouth { fill: none; stroke: var(--fruitMouth); stroke-width: var(--mouth-width, 2); stroke-linecap: round; }
-.theme-urlaub .thing-sleepy { display: none; fill: none; stroke: var(--fruitEye); stroke-width: var(--mouth-width, 2); stroke-linecap: round; }
-.theme-urlaub .thing-snore { display: none; fill: var(--fruitMouth); }
-.theme-urlaub .thing-glasses { display: none; fill: var(--sunglasses); }
+.theme-urlaub .thing-line { fill: none; stroke: var(--detail); stroke-width: calc(var(--fruitOutlineWidth) * var(--thingLineStrokeWidth) / 100); stroke-linecap: round; }
+.theme-urlaub .thing-leaf { fill: var(--thingLeafFill); stroke: var(--thingLeafStroke); stroke-width: calc(var(--fruitOutlineWidth) * var(--thingLeafStrokeWidth) / 100); stroke-linejoin: round; }
+.theme-urlaub .thing-stem { fill: var(--thingStemFill); stroke: var(--thingStemStroke); stroke-width: calc(var(--fruitOutlineWidth) * var(--thingStemStrokeWidth)); }
+.theme-urlaub .thing-cheek { fill: var(--thingCheekFill); opacity: var(--thingCheekOpacity); }
+.theme-urlaub .thing-eye { fill: var(--thingEyeFill); transform-box: fill-box; transform-origin: center; animation: urlaub-minime-blink var(--fruitBlinkEvery) linear infinite; }
+.theme-urlaub .thing-mouth { fill: none; stroke: var(--thingMouthStroke); stroke-width: var(--thingMouthStrokeWidth); stroke-linecap: round; }
+.theme-urlaub .thing-sleepy { display: none; fill: none; stroke: var(--thingSleepyStroke); stroke-width: var(--thingSleepyStrokeWidth); stroke-linecap: round; }
+.theme-urlaub .thing-snore { display: none; fill: var(--thingSnoreFill); }
+.theme-urlaub .thing-glasses { display: none; fill: var(--thingGlassesFill); }
 
 /* Hopping while walking comes from the core (minimeHops.css); breathing pauses meanwhile */
 .theme-urlaub .action-walk .ul-minime-body { animation: none; }
 
 /* Own animations */
-.theme-urlaub .action-bounce .ul-minime-body { animation: urlaub-minime-bounce calc(var(--action-ms) / 3) ease-in-out 3; }
-.theme-urlaub .action-bounce .ul-minime-shadow { animation: urlaub-minime-shadow calc(var(--action-ms) / 3) ease-in-out 3; }
-.theme-urlaub .action-spin .ul-minime-flip { animation: urlaub-minime-spin calc(var(--action-ms) / var(--spinTurns)) linear var(--spinTurns); }
+.theme-urlaub .action-bounce .ul-minime-body { animation: urlaub-minime-bounce calc(var(--action-ms) / var(--actionBounceMinimeBodyAnimation)) ease-in-out var(--actionBounceMinimeBodyAnimation2); }
+.theme-urlaub .action-bounce .ul-minime-shadow { animation: urlaub-minime-shadow calc(var(--action-ms) / var(--actionBounceMinimeShadowAnimation)) ease-in-out var(--actionBounceMinimeShadowAnimation2); }
+.theme-urlaub .action-spin .ul-minime-flip { animation: urlaub-minime-spin calc(var(--action-ms) / calc(var(--spinTurns) * var(--actionSpinMinimeFlipAnimation) / 100)) linear calc(var(--spinTurns) * var(--actionSpinMinimeFlipAnimation2) / 100); }
 .theme-urlaub .action-wobble .ul-minime-body { animation: urlaub-minime-wobble var(--action-ms) ease-in-out both; }
 .theme-urlaub .action-sunglasses .thing-glasses { display: inline; animation: urlaub-minime-glasses var(--action-ms) ease both; }
 .theme-urlaub .action-look .thing-eyes { animation: urlaub-minime-look var(--action-ms) ease-in-out both; }
 .theme-urlaub .action-sleep .ul-minime-body { animation: urlaub-minime-doze var(--action-ms) ease-in-out both; }
-.theme-urlaub .action-sleep .thing-eyes, .theme-urlaub .action-sleep .thing-mouth { display: none; }
-.theme-urlaub .action-sleep .thing-sleepy, .theme-urlaub .action-sleep .thing-snore { display: inline; }
-.theme-urlaub .ul-minime-zz { position: absolute; top: 0; right: 0; color: var(--textColor); font-weight: 700; animation: urlaub-minime-zz var(--zz-time, 2s) ease-out infinite; }
+.theme-urlaub .action-sleep .thing-eyes { display: none; }
+.theme-urlaub .action-sleep .thing-mouth { display: none; }
+.theme-urlaub .action-sleep .thing-sleepy { display: inline; }
+.theme-urlaub .action-sleep .thing-snore { display: inline; }
+.theme-urlaub .ul-minime-zz { position: absolute; top: 0; right: 0; color: var(--minimeZzColor); font-weight: var(--minimeZzFontWeight); animation: urlaub-minime-zz var(--minimeZzAnimation) ease-out infinite; font-family: var(--minimeZzFont), system-ui, sans-serif; }
 
 /* Reaction to chat: a big jump with water splashes in the main color */
 .theme-urlaub .action-splash .ul-minime-body { animation: urlaub-minime-splash var(--action-ms) ease-out both; }
-.theme-urlaub .ul-juice { position: absolute; left: 50%; top: 40%; }
+.theme-urlaub .ul-juice { position: absolute; left: var(--juiceLeft); top: var(--juiceTop); }
 .theme-urlaub .ul-juice i {
   position: absolute;
-  width: var(--juice-drop, 10px);
-  aspect-ratio: 1;
+  width: var(--juiceIWidth);
+  aspect-ratio: var(--juiceIAspectRatio);
   border-radius: 50% 50% 50% 0;
   background: var(--main);
   animation: urlaub-minime-juice var(--action-ms) ease-out both;
@@ -100,33 +104,34 @@
 .theme-urlaub .action-enter .ul-minime-name { animation: urlaub-minime-fade-in var(--action-ms) ease-out both; }
 .theme-urlaub .exit-wegspringen .action-exit .ul-minime-body { animation: urlaub-minime-leap var(--action-ms) ease-in forwards; }
 .theme-urlaub .exit-versinken .action-exit .ul-minime-body { animation: urlaub-minime-sink var(--action-ms) ease-in forwards; }
-.theme-urlaub .action-exit .ul-minime-name, .theme-urlaub .action-exit .ul-minime-shadow { animation: urlaub-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-urlaub .action-exit .ul-minime-name { animation: urlaub-minime-fade-out var(--action-ms) ease-in forwards; }
+.theme-urlaub .action-exit .ul-minime-shadow { animation: urlaub-minime-fade-out var(--action-ms) ease-in forwards; }
 
-@keyframes urlaub-minime-breathe { from { scale: 1 1; } to { scale: 1.03 0.97; } }
-@keyframes urlaub-minime-blink { 0%, 95%, 100% { scale: 1 1; } 97.5% { scale: 1 0.1; } }
-@keyframes urlaub-minime-shadow { 0%, 100% { scale: 1 1; opacity: 1; } 50% { scale: 0.6 0.6; opacity: 0.5; } }
+@keyframes urlaub-minime-breathe { from { scale: var(--kfMinimeBreatheFromScale) var(--kfMinimeBreatheFromScale2); } to { scale: var(--kfMinimeBreatheToScale) var(--kfMinimeBreatheToScale2); } }
+@keyframes urlaub-minime-blink { 0%, 95%, 100% { scale: var(--kfMinimeBlink0p95p100pScale) var(--kfMinimeBlink0p95p100pScale2); } 97.5% { scale: var(--kfMinimeBlink975pScale) var(--kfMinimeBlink975pScale2); } }
+@keyframes urlaub-minime-shadow { 0%, 100% { scale: var(--kfMinimeShadow0p100pScale) var(--kfMinimeShadow0p100pScale2); opacity: var(--kfMinimeShadow0p100pOpacity); } 50% { scale: var(--kfMinimeShadow50pScale) var(--kfMinimeShadow50pScale2); opacity: var(--kfMinimeShadow50pOpacity); } }
 @keyframes urlaub-minime-bounce { 0%, 100% { translate: 0 0; } 50% { translate: 0 calc(-1 * var(--bounceHeight)); } }
-@keyframes urlaub-minime-spin { 0%, 100% { scale: 1 1; } 25%, 75% { scale: 0.05 1; } 50% { scale: -1 1; } }
+@keyframes urlaub-minime-spin { 0%, 100% { scale: var(--kfMinimeSpin0p100pScale) var(--kfMinimeSpin0p100pScale2); } 25%, 75% { scale: var(--kfMinimeSpin25p75pScale) var(--kfMinimeSpin25p75pScale2); } 50% { scale: var(--kfMinimeSpin50pScale) var(--kfMinimeSpin50pScale2); } }
 @keyframes urlaub-minime-wobble {
   0%, 100% { rotate: 0deg; }
-  20%, 60% { rotate: calc(var(--wobbleAngle) * -1deg); }
+  20%, 60% { rotate: calc(var(--wobbleAngle) * calc(var(--kfMinimeWobble20p60pRotate) * 1deg)); }
   40%, 80% { rotate: calc(var(--wobbleAngle) * 1deg); }
 }
 @keyframes urlaub-minime-glasses {
-  0% { translate: 0 calc(-1 * var(--glasses-drop, 30px)); opacity: 0; }
-  15%, 85% { translate: 0 0; opacity: 1; }
-  100% { translate: 0 calc(-1 * var(--glasses-drop, 30px)); opacity: 0; }
+  0% { translate: 0 calc(-1 * var(--kfMinimeGlasses0pTranslate)); opacity: 0; }
+  15%, 85% { translate: 0 0; opacity: var(--kfMinimeGlasses15p85pOpacity); }
+  100% { translate: 0 calc(-1 * var(--kfMinimeGlasses100pTranslate)); opacity: 0; }
 }
-@keyframes urlaub-minime-look { 0%, 100% { translate: 0 0; } 20%, 40% { translate: calc(-1 * var(--look-shift, 3px)) 0; } 60%, 80% { translate: var(--look-shift, 3px) 0; } }
-@keyframes urlaub-minime-doze { 0%, 100% { scale: 1 1; } 15%, 85% { scale: 1.04 0.92; } }
-@keyframes urlaub-minime-zz { from { opacity: 0; translate: 0 0; } 30% { opacity: 1; } to { opacity: 0; translate: var(--zz-x, 12px) calc(-1 * var(--zz-y, 36px)); } }
+@keyframes urlaub-minime-look { 0%, 100% { translate: 0 0; } 20%, 40% { translate: calc(-1 * var(--kfMinimeLook20p40pTranslate)) 0; } 60%, 80% { translate: var(--kfMinimeLook60p80pTranslate) 0; } }
+@keyframes urlaub-minime-doze { 0%, 100% { scale: var(--kfMinimeDoze0p100pScale) var(--kfMinimeDoze0p100pScale2); } 15%, 85% { scale: var(--kfMinimeDoze15p85pScale) var(--kfMinimeDoze15p85pScale2); } }
+@keyframes urlaub-minime-zz { from { opacity: 0; translate: 0 0; } 30% { opacity: var(--kfMinimeZz30pOpacity); } to { opacity: 0; translate: var(--kfMinimeZzToTranslate) calc(-1 * var(--kfMinimeZzToTranslate2)); } }
 @keyframes urlaub-minime-splash { 0%, 100% { translate: 0 0; } 35% { translate: 0 calc(-1 * var(--splashHeight)); } }
 @keyframes urlaub-minime-juice {
-  from { opacity: 1; transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(0); }
-  to { opacity: 0; transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(calc(-1 * var(--juice-reach, 70px))); }
+  from { opacity: var(--kfMinimeJuiceFromOpacity); transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(0); }
+  to { opacity: 0; transform: rotate(calc(var(--i) / var(--n) * 1turn)) translateY(calc(-1 * var(--kfMinimeJuiceToTransform))); }
 }
-@keyframes urlaub-minime-drop { from { translate: 0 calc(-1 * var(--drop-height, 380px)); } 70% { translate: 0 0; scale: 1.15 0.85; } to { translate: 0 0; scale: 1 1; } }
-@keyframes urlaub-minime-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes urlaub-minime-fade-out { from { opacity: 1; } to { opacity: 0; } }
-@keyframes urlaub-minime-leap { from { translate: 0 0; opacity: 1; } to { translate: 0 calc(-1 * var(--leap-height, 420px)); opacity: 0; } }
+@keyframes urlaub-minime-drop { from { translate: 0 calc(-1 * var(--kfMinimeDropFromTranslate)); } 70% { translate: 0 0; scale: var(--kfMinimeDrop70pScale) var(--kfMinimeDrop70pScale2); } to { translate: 0 0; scale: var(--kfMinimeDropToScale) var(--kfMinimeDropToScale2); } }
+@keyframes urlaub-minime-fade-in { from { opacity: 0; } to { opacity: var(--kfMinimeFadeInToOpacity); } }
+@keyframes urlaub-minime-fade-out { from { opacity: var(--kfMinimeFadeOutFromOpacity); } to { opacity: 0; } }
+@keyframes urlaub-minime-leap { from { translate: 0 0; opacity: var(--kfMinimeLeapFromOpacity); } to { translate: 0 calc(-1 * var(--kfMinimeLeapToTranslate)); opacity: 0; } }
 @keyframes urlaub-minime-sink { from { translate: 0 0; clip-path: inset(0 0 0 0); } to { translate: 0 100%; clip-path: inset(0 0 100% 0); } }

@@ -4,19 +4,22 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import { AdditiveBlending, type PointLight, type Sprite, SpriteMaterial } from "three";
 import { shoreHeight } from "../shore.ts";
+import { useUrlaub } from "../useUrlaub.ts";
 import type { BeachClock } from "./Sky.tsx";
 import { canvasTexture } from "./textures.ts";
 
 type Props = { clock: BeachClock; count: number; flame: string; pole: string };
 
-// fixed: the row of torches (first x, step, z, how far every other one stands back), pole height, flame size and light
+// fixed: the row of torches (first x, step, z, how far every other one stands back), pole height; flame size and light
+// come from the settings
 const ROW = { from: -9, step: 6, z: 19, back: 2.5 };
 const POLE = { height: 2.4, radius: 0.07 };
-const FLAME = { size: 0.9, light: 6, reach: 9 };
 // fixed: the flame drawn as a soft glow (px)
 const GLOW = 64;
 
 export default function Torches({ clock, count, flame, pole }: Props) {
+  const values = useUrlaub();
+  const FLAME = { size: values.torchFlame, light: values.torchLight, reach: values.torchReach };
   const material = useMemo(() => new SpriteMaterial({
     blending: AdditiveBlending,
     depthWrite: false,

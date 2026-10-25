@@ -63,14 +63,14 @@ function Idle() {
 }
 
 const SECOND_MS = 1000; // fixed: seconds in ms
-// fixed: bar width, gap and height of the equalizer (px)
-const EQ = { bar: 7, gap: 4, height: 40 };
 
 // The wave equalizer in PixiJS; its time runs only while the track plays
 function Equalizer({ playing }: { playing: boolean }) {
   const values = useUrlaub();
   const latest = useRef({ values, playing });
   latest.current = { values, playing };
+  // bar width, gap and height of the equalizer (settings, px)
+  const EQ = { bar: values.eqBar, gap: values.eqGap, height: values.eqHeight };
   const size = { width: values.equalizerBars * (EQ.bar + EQ.gap) - EQ.gap, height: EQ.height };
   const draw = (app: Application) => {
     const bars = app.stage.addChild(new Graphics());

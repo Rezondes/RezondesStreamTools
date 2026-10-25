@@ -8,10 +8,10 @@ import { readStingerOptions, withStingerOptions } from "../../core/stingerOption
 import { fillTemplate } from "../../core/template.ts";
 import type { SettingValues } from "../../core/theme.ts";
 import type { BannerWorldOptions } from "./bannerWorld.ts";
-import { drawUrlaubOfflineBanner, drawUrlaubProfileBanner, OFFLINE_SIZE, PROFILE_SIZE, type UrlaubBannerOptions } from "./banners.ts";
+import { drawUrlaubOfflineBanner, drawUrlaubProfileBanner, OFFLINE_SIZE, PROFILE_SIZE, type UrlaubBannerLayout, type UrlaubBannerOptions } from "./banners.ts";
 import type * as Clips3d from "./clips3d.ts";
 import type { UrlaubValues } from "./settings.ts";
-import { drawUrlaubStinger, HEIGHT, WIDTH, type UrlaubStingerOptions } from "./stinger.ts";
+import { drawUrlaubStinger, HEIGHT, type UrlaubStingerLook, type UrlaubStingerOptions, WIDTH } from "./stinger.ts";
 
 // A banner is one picture (the dashboard renders its first frame)
 const STILL = { duration: 1, fps: 1 };
@@ -31,13 +31,45 @@ function clipDraw(build: (loaded: typeof Clips3d) => Draw, standIn: Draw): Draw 
   };
 }
 
-function bannerWorld(beach: UrlaubValues, sunHeight: number): BannerWorldOptions {
+// The own colors of a banner's beach (settings, they follow the theme until set)
+type BeachLook = { water: string; sand: string; leaf: string; trunk: string; ambient: { color: string; strength: number } };
+const profileBeach = (beach: UrlaubValues): BeachLook => ({
+  water: beach.profileWater, sand: beach.profileSand, leaf: beach.profilePalmLeaf, trunk: beach.profilePalmTrunk,
+  ambient: { color: beach.profileAmbient, strength: beach.profileAmbientStrength },
+});
+const offlineBeach = (beach: UrlaubValues): BeachLook => ({
+  water: beach.offlineWater, sand: beach.offlineSand, leaf: beach.offlinePalmLeaf, trunk: beach.offlinePalmTrunk,
+  ambient: { color: beach.offlineAmbient, strength: beach.offlineAmbientStrength },
+});
+
+function bannerWorld(beach: UrlaubValues, sunHeight: number, look: BeachLook): BannerWorldOptions {
   return {
     sunHeight, azimuth: beach.sunAzimuth, turbidity: beach.turbidity, seed: beach.worldSeed, cameraHeight: beach.cameraHeight,
-    water: beach.waterColor, distortion: beach.waveDistortion, sand: beach.sand, rocks: beach.rocks,
-    palms: { left: beach.palmsLeft, right: beach.palmsRight, sway: beach.palmSway, leaf: beach.palmLeaf, trunk: beach.palmTrunk },
+    water: look.water, distortion: beach.waveDistortion, sand: look.sand, rocks: beach.rocks, ambient: look.ambient,
+    palms: { left: beach.palmsLeft, right: beach.palmsRight, sway: beach.palmSway, leaf: look.leaf, trunk: look.trunk },
   };
 }
+
+// The wave of the stinger (settings)
+export const urlaubStingerLook = (beach: UrlaubValues): UrlaubStingerLook => ({
+  scale: beach.stingerScale, rise: beach.stingerRise, reach: beach.stingerReach, layer: beach.stingerLayer, foamWidth: beach.stingerFoamWidth,
+  ripple: { size: beach.stingerRippleSize, wave: beach.stingerRippleWave, speed: beach.stingerRippleSpeed },
+  spray: { speed: [beach.stingerSpraySpeedMin, beach.stingerSpraySpeedMax], gravity: beach.stingerSprayGravity, life: beach.stingerSprayLife, size: beach.stingerSpraySize },
+  face: beach.stingerFace, lean: beach.stingerLean, textSize: beach.stingerTextSize, shown: beach.stingerShown,
+});
+
+// Places and sizes of the banner texts and the offline sign (settings)
+export const urlaubBannerLayout = (beach: UrlaubValues): UrlaubBannerLayout => ({
+  profile: {
+    titleSize: beach.profileTitleSize, titleY: beach.profileTitleY, textSize: beach.profileTextSize, textY: beach.profileTextY,
+    shadowAlpha: beach.profileShadowAlpha, shadowBlur: beach.profileShadowBlur, shadowDrop: beach.profileShadowDrop,
+  },
+  offline: {
+    x: beach.offlineSignX, y: beach.offlineSignY, width: beach.offlineSignWidth, height: beach.offlineSignHeight, border: beach.offlineSignBorder,
+    titleSize: beach.offlineTitleSize, titleY: beach.offlineTitleY, textSize: beach.offlineTextSize, textY: beach.offlineTextY,
+    lineSize: beach.offlineLineSize, lineY: beach.offlineLineY, lineStep: beach.offlineLineStep, lines: beach.offlineLines,
+  },
+});
 
 // values: resolved against the Urlaub schema; login for {login} in the texts
 export function urlaubClips(values: SettingValues, login: string): RenderClip[] {
@@ -45,18 +77,19 @@ export function urlaubClips(values: SettingValues, login: string): RenderClip[] 
   const names = { channel: beach.channelName, login };
   const stinger: UrlaubStingerOptions = {
     duration: beach.stingerDuration, cut: beach.stingerCut, waves: beach.stingerWaves, foam: beach.stingerFoam, palm: beach.stingerPalm, spray: beach.stingerSpray,
-    text: fillTemplate(beach.stingerText, names), font: beach.titleFont,
-    sea: beach.sea, seaDeep: beach.seaDeep, foamColor: beach.foam, textColor: beach.textColor, palmColor: beach.woodDark,
+    text: fillTemplate(beach.stingerText, names), font: beach.stingerFont,
+    sea: beach.stingerSea, seaDeep: beach.stingerSeaDeep, foamColor: beach.stingerFoamColor, textColor: beach.stingerTextColor, palmColor: beach.stingerPalmColor,
+    look: urlaubStingerLook(beach),
   };
   const texts: UrlaubBannerOptions = {
-    font: beach.font, titleFont: beach.titleFont, wood: beach.wood, woodDark: beach.woodDark, textColor: beach.textColor, textOnWood: beach.textOnWood,
-    title: fillTemplate(beach.bannerTitle, names), profileText: beach.bannerProfileText,
-    offlineTitle: beach.bannerOfflineTitle, offlineText: beach.bannerOfflineText, offlineLines: beach.bannerOfflineLines,
+    font: beach.profileFont, titleFont: beach.profileTitleFont, wood: beach.offlineWood, woodDark: beach.offlineWoodDark, textColor: beach.profileTextColor,
+    textOnWood: beach.offlineTextColor, title: fillTemplate(beach.bannerTitle, names), profileText: beach.bannerProfileText,
+    offlineTitle: beach.bannerOfflineTitle, offlineText: beach.bannerOfflineText, offlineLines: beach.bannerOfflineLines, layout: urlaubBannerLayout(beach),
   };
-  // The offline banner has its own line with the channel
-  const offlineTexts = { ...texts, title: fillTemplate(beach.bannerOfflineName, names) };
-  const day = bannerWorld(beach, beach.bannerSunHeight);
-  const dusk = bannerWorld(beach, beach.bannerSunset);
+  // The offline banner has its own line with the channel and its own fonts
+  const offlineTexts = { ...texts, title: fillTemplate(beach.bannerOfflineName, names), font: beach.offlineFont, titleFont: beach.offlineTitleFont };
+  const day = bannerWorld(beach, beach.bannerSunHeight, profileBeach(beach));
+  const dusk = bannerWorld(beach, beach.bannerSunset, offlineBeach(beach));
   const font = `400 24px "${beach.titleFont}"`;
   const options = readStingerOptions(values);
   return [

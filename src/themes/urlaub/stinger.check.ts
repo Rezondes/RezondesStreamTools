@@ -2,7 +2,13 @@
 // nothing is drawn, the same time gives the same draw commands. A mock canvas records everything.
 // Runs with npm test.
 import assert from "node:assert/strict";
+import { effectiveSettings } from "../../core/settings.ts";
+import { urlaubStingerLook } from "./render.ts";
+import { type UrlaubValues, urlaubSettings } from "./settings.ts";
 import { drawUrlaubStinger, surfaceAt, WIDTH, type UrlaubStingerOptions } from "./stinger.ts";
+
+// The look of the default settings
+const defaults = effectiveSettings(urlaubSettings, {}) as unknown as UrlaubValues;
 
 function recorder() {
   const calls: unknown[][] = [];
@@ -17,6 +23,7 @@ function recorder() {
 const options: UrlaubStingerOptions = {
   duration: 1.4, cut: 0.7, waves: 3, foam: true, palm: true, spray: 40, text: "Strand", font: "Pacifico",
   sea: "#1fb5c9", seaDeep: "#0b6f8e", foamColor: "#f4fffd", textColor: "#ffffff", palmColor: "#3b2412",
+  look: urlaubStingerLook(defaults),
 };
 
 // gedeckt am Übergang: at the transition point the water stands above the picture in every column, plus the text

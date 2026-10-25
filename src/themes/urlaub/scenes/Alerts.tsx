@@ -35,24 +35,24 @@ const ICONS_BY_KIND = {
 } as const satisfies Record<AlertKind, Key>;
 
 const SECOND_MS = 1000; // fixed: seconds in ms
-// fixed: when the parts come in (s): settle, flip, tag, letters, line and quote, postmark; the leaving starts this long
-// before the end
-const AT = { settle: 0.65, flip: 1.1, tag: 1.4, letters: 1.5, words: 1.8, stamp: 2, leaveEarly: 0.4 }; // fixed: see above
-// fixed: the card rides in from the left on the crest, low and tilted, and is set down
-const RIDE = { x: -560, y: 160, rotateZ: -14, scale: 0.78 };
-const PLACED = { y: -30, rotateZ: 4 }; // fixed: where the crest sets it down
-const SETTLE = { y: 0, rotateZ: 0, duration: 0.5, ease: "back.out(2)" }; // fixed: the card settles
-const FLIP = { rotateY: 180, rotateZ: -2, duration: 0.8, ease: "back.out(1.4)" }; // fixed: the postcard turns over
-const STRAIGHT = { rotateZ: 0, duration: 1.2, ease: "elastic.out(1, 0.3)" }; // fixed: and straightens
-const POP = { scale: 0, duration: 0.35, ease: "back.out(3)" }; // fixed: the tag pops
-const LETTERS = { y: 30, opacity: 0, rotate: -20, duration: 0.4, ease: "back.out(3)", stagger: 0.05 }; // fixed: the letters jump
-const RISE = { opacity: 0, y: 10, duration: 0.3, stagger: 0.12 }; // fixed: line and quote rise
-const STAMP = { scale: 2.2, opacity: 0, duration: 0.25, ease: "power4.out" }; // fixed: the postmark hits
-const SHAKE = { x: 6, duration: 0.05, repeat: 3, yoyo: true }; // fixed: and shakes the card
-const LIFT = { y: -40, rotateZ: -6, duration: 0.25, ease: "power2.out" }; // fixed: the outgoing crest lifts the card
-const CARRY = { x: -620, y: 180, rotateZ: -28, scale: 0.72, duration: 0.75, ease: "power2.in" }; // fixed: and carries it off
-// fixed: where the flowers fly from (top right of the card) in the stage
-const FLOWERS = { x: 1120, y: 200 };
+// The motion of the settings: when the parts come in (s), the ride in on the crest, the flip, the pops, the postmark and
+// the ride out; the leaving starts leaveEarly s before the end
+const cardMotion = (values: UrlaubValues) => ({
+  AT: { flip: values.atFlip, tag: values.atTag, letters: values.atLetters, words: values.atQuote, stamp: values.atStamp, leaveEarly: values.leaveEarly },
+  RIDE: { x: values.rideX, y: values.rideY, rotateZ: values.rideTurn, scale: values.rideScale },
+  PLACED: { y: values.placedY, rotateZ: values.placedTurn },
+  SETTLE: { y: 0, rotateZ: 0, duration: values.settleTime, ease: "back.out(2)" },
+  FLIP: { rotateY: 180, rotateZ: values.flipTurn, duration: values.flipTime, ease: "back.out(1.4)" }, // fixed: a half turn shows the back
+  STRAIGHT: { rotateZ: 0, duration: values.straightTime, ease: "elastic.out(1, 0.3)" },
+  POP: { scale: 0, duration: values.tagPop, ease: "back.out(3)" },
+  LETTERS: { y: values.lettersFrom, opacity: 0, rotate: values.lettersTurn, duration: values.lettersTime, ease: "back.out(3)", stagger: values.lettersStep },
+  RISE: { opacity: 0, y: values.quoteFrom, duration: values.quoteTime, stagger: values.quoteStep },
+  STAMP: { scale: values.stampFrom, opacity: 0, duration: values.stampTime, ease: "power4.out" },
+  SHAKE: { x: values.shakeX, duration: values.shakeTime, repeat: values.shakeRepeat, yoyo: true },
+  LIFT: { y: values.liftY, rotateZ: values.liftTurn, duration: values.liftTime, ease: "power2.out" },
+  CARRY: { x: values.carryX, y: values.carryY, rotateZ: values.carryTurn, scale: values.carryScale, duration: values.carryTime, ease: "power2.in" },
+  FLOWERS: { x: values.flowersX, y: values.flowersY },
+});
 
 function describe(alert: Alert, values: UrlaubValues) {
   return { ...describeAlert(alert, values, KEYS), icon: values[ICONS_BY_KIND[alert.kind]] as IconName, sound: values[ALERT_SOUND_KEYS[alert.kind]] };
@@ -70,6 +70,7 @@ export default function Alerts() {
 
 // The timeline of a card: the clock of the swell, the ride in on the crest, the flip, the pops, the postmark, the ride out
 function useCardTimeline(scope: RefObject<HTMLDivElement | null>, clock: { time: number }, timing: SwellTiming, deps: readonly unknown[]) {
+  const { AT, RIDE, PLACED, SETTLE, FLIP, STRAIGHT, POP, LETTERS, RISE, STAMP, SHAKE, LIFT, CARRY } = cardMotion(useUrlaub());
   useTimeline(timeline => {
     const root = scope.current;
     const card = root?.querySelector(".ul-alert");
@@ -100,6 +101,7 @@ function swellPainter(clock: { time: number }, timing: SwellTiming, values: Urla
     const [water, spray, flowers] = [new Graphics(), new Graphics(), new Graphics()];
     app.stage.addChild(water, spray, flowers);
     const breaks = [timing.inSeconds * 0.5, timing.leave + timing.outSeconds * 0.5];
+    const { AT, FLOWERS } = cardMotion(values);
     const paint = () => {
       const seconds = clock.time;
       drawSwell(water, seconds, timing, { sea: values.sea, deep: values.seaDeep, foam: values.foam });
@@ -126,7 +128,7 @@ function Card({ alert, leaving }: { alert: Alert; leaving: boolean }) {
   const timing: SwellTiming = {
     inSeconds: values.alertSwellIn / SECOND_MS,
     outSeconds: values.alertSwellOut / SECOND_MS,
-    leave: values.alertDuration / SECOND_MS - values.alertSwellOut / SECOND_MS - AT.leaveEarly,
+    leave: values.alertDuration / SECOND_MS - values.alertSwellOut / SECOND_MS - values.leaveEarly,
     height: values.alertSwellHeight,
   };
   const clock = useRef({ time: 0 });

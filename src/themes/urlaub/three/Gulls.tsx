@@ -3,17 +3,22 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import { type Sprite, SpriteMaterial } from "three";
+import { useUrlaub } from "../useUrlaub.ts";
 import type { BeachClock } from "./Sky.tsx";
 import { canvasTexture } from "./textures.ts";
 
 type Props = { clock: BeachClock; count: number; color: string };
 
-// fixed: the sprite (px) and its size in the world, the circles (radius, step per gull), the height (base, step), the
-// center of the circles, how far they rise and sink and tilt
+// fixed: the sprite (px) and its size in the world; the circles, the height, how far they rise and sink and tilt come
+// from the settings
 const SPRITE = { width: 64, height: 32, scale: [2.4, 1.2, 1] as [number, number, number] };
-const CIRCLE = { radius: 30, step: 8, height: 14, rise: 2, center: -40, depth: 18, swing: 1.2, tilt: 0.1 };
 
 export default function Gulls({ clock, count, color }: Props) {
+  const values = useUrlaub();
+  const CIRCLE = {
+    radius: values.gullRadius, step: values.gullStep, height: values.gullHeight, rise: values.gullRise, center: values.gullCenter, depth: values.gullDepth,
+    swing: values.gullSwing, tilt: values.gullTilt,
+  };
   const material = useMemo(() => new SpriteMaterial({
     transparent: true,
     map: canvasTexture(SPRITE.width, SPRITE.height, context => {

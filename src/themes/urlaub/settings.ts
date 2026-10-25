@@ -11,6 +11,7 @@ import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { ICON_NAMES } from "./beach.ts";
 import { BEACH_THINGS, THING_IDS, THING_SET } from "./beachThings.ts";
+import { TUNING_FIELDS, TUNING_GROUPS } from "./tuning.ts";
 
 export const FONTS = ["Fredoka", "Baloo 2", "Nunito", "Inter", "DM Sans"] as const;
 const TITLE_FONTS = ["Pacifico", "Fredoka", "Baloo 2", "Nunito"] as const;
@@ -313,6 +314,7 @@ const GROUP_SCENES = {
   [MINIME_MOVES]: ["minimes"],
   [THING_COLORS]: ["minimes"],
   [INFO_GROUP]: ["info"],
+  ...TUNING_GROUPS,
 } as const;
 
 // On first login: channel name from the Twitch login (first letter upper case)
@@ -329,7 +331,7 @@ const BASIC = [
 export const urlaubSettings: ThemeSchema = {
   id: "urlaub",
   name: "Urlaub",
-  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(THING_SET), ...THING_COLOR_FIELDS], STINGER), BASIC),
+  fields: markBasic(withStingerFields([...FIELDS, ...minimeVariantFields(THING_SET), ...THING_COLOR_FIELDS, ...TUNING_FIELDS], STINGER), BASIC),
   groupScenes: GROUP_SCENES,
   personalize,
   minimeVariants: THING_SET,

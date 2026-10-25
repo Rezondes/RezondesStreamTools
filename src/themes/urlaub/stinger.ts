@@ -24,46 +24,45 @@ export type UrlaubStingerOptions = {
   foamColor: string;
   textColor: string;
   palmColor: string;
+  look: UrlaubStingerLook;
+};
+// The wave of the settings: how much wider the crest is than in the alert, how far it rises above the picture, how far
+// front and back start outside it, the distance of the layers, the foam line, the ripple along the surface (px, rad per
+// px, rad per s), the spray of a break and where on the face it flies from (share of the height, lean in rad), the text
+export type UrlaubStingerLook = {
+  scale: number; rise: number; reach: number; layer: number; foamWidth: number; ripple: { size: number; wave: number; speed: number };
+  spray: { speed: readonly [number, number]; gravity: number; life: number; size: number }; face: number; lean: number; textSize: number; shown: number;
 };
 
-// fixed: how much wider the crest is than in the alert, how far the wave rises above the picture, how far front and
-// back start outside it, the distance of the layers, the step of the surface line, the width of the foam line
-const SCALE = 3;
-const RISE = 140;
-const REACH = 1200;
-const LAYER = 110;
+// fixed: the step of the surface line; when the wave breaks (share of the way in and of the way out), the spread of its
+// spray
 const STEP = 16;
-const FOAM_WIDTH = 14;
-// fixed: the ripple running along the surface (px, rad per px, rad per s)
-const RIPPLE = { size: 10, wave: 0.012, speed: 6 };
-// fixed: when the wave breaks (share of the way in and of the way out) and how the spray of a break flies
 const BREAKS = { in: [0.45, 0.6], out: [0.45] };
-const SPRAY = { spread: Math.PI * 0.6, speed: [300, 800] as const, gravity: 2200, drag: 0, life: 0.45, size: 12 };
-// fixed: the spray flies from the face of the crest where it stands at this share of the height, up and forward (rad)
-const FACE = 0.45;
-const LEAN = 0.5;
+const SPRAY = { spread: Math.PI * 0.6, drag: 0 };
 
 // Where the front (coming in) and the back (going out) of the wave are at time, in px
 function edges(time: number, options: UrlaubStingerOptions) {
   const { cut, duration } = options;
   const enter = easeInOut(clamp01(time / (cut * 0.9)));
   const leave = easeInOut(clamp01((time - cut) / ((duration - cut) * 0.9)));
-  return { front: enter * (WIDTH + 2 * REACH) - REACH, back: leave * (WIDTH + 2 * REACH) - REACH };
+  const { reach } = options.look;
+  return { front: enter * (WIDTH + 2 * reach) - reach, back: leave * (WIDTH + 2 * reach) - reach };
 }
 
 // The y of the water surface at x (HEIGHT = no water, below 0 = the column is covered)
 export function surfaceAt(x: number, time: number, options: UrlaubStingerOptions): number {
   const { front, back } = edges(time, options);
-  const coming = x <= front ? 1 : crestShape(x - front, SCALE);
-  const going = x >= back ? 1 : crestShape(x - back, SCALE);
+  const { scale, rise, ripple } = options.look;
+  const coming = x <= front ? 1 : crestShape(x - front, scale);
+  const going = x >= back ? 1 : crestShape(x - back, scale);
   const lift = Math.min(coming, going);
-  return HEIGHT - (HEIGHT + RISE) * lift + Math.sin(x * RIPPLE.wave + time * RIPPLE.speed) * RIPPLE.size * lift;
+  return HEIGHT - (HEIGHT + rise) * lift + Math.sin(x * ripple.wave + time * ripple.speed) * ripple.size * lift;
 }
 
 // Where the face of the wave crosses FACE of the height: coming in (ahead 1) the last wet column, going out the first
 function faceAt(time: number, ahead: 1 | -1, options: UrlaubStingerOptions) {
   const columns = Array.from({ length: Math.ceil(WIDTH / STEP) + 1 }, (_, index) => index * STEP);
-  const wet = columns.filter(x => surfaceAt(x, time, options) < HEIGHT * FACE);
+  const wet = columns.filter(x => surfaceAt(x, time, options) < HEIGHT * options.look.face);
   return ahead > 0 ? (wet.at(-1) ?? 0) : (wet[0] ?? WIDTH);
 }
 
@@ -99,15 +98,16 @@ function drawPalm(context: CanvasRenderingContext2D, color: string) {
 function drawSpray(context: CanvasRenderingContext2D, time: number, options: UrlaubStingerOptions) {
   const { cut, duration } = options;
   const moments = [...BREAKS.in.map(share => share * cut * 0.9), ...BREAKS.out.map(share => cut + share * (duration - cut) * 0.9)];
+  const { spray, face, lean } = options.look;
   context.fillStyle = options.foamColor;
   moments.forEach((moment, index) => {
     const ahead = index < BREAKS.in.length ? 1 : -1;
-    const origin = { x: faceAt(moment, ahead, options), y: HEIGHT * FACE };
-    for (const drop of burstAt(index + 1, options.spray, time - moment, { ...SPRAY, origin, direction: -Math.PI / 2 + ahead * LEAN })) {
+    const origin = { x: faceAt(moment, ahead, options), y: HEIGHT * face };
+    for (const drop of burstAt(index + 1, options.spray, time - moment, { ...SPRAY, ...spray, origin, direction: -Math.PI / 2 + ahead * lean })) {
       if (drop.opacity <= 0) continue;
       context.globalAlpha = drop.opacity;
       context.beginPath();
-      context.arc(drop.x, drop.y, SPRAY.size * drop.opacity, 0, Math.PI * 2);
+      context.arc(drop.x, drop.y, spray.size * drop.opacity, 0, Math.PI * 2);
       context.fill();
     }
   });
@@ -118,7 +118,8 @@ export function drawUrlaubStinger(context: CanvasRenderingContext2D, time: numbe
   const { cut, duration } = options;
   context.clearRect(0, 0, WIDTH, HEIGHT);
   const { front, back } = edges(time, options);
-  if (front <= -REACH || back >= WIDTH + REACH) return;
+  const { reach, layer: LAYER, foamWidth: FOAM_WIDTH } = options.look;
+  if (front <= -reach || back >= WIDTH + reach) return;
   const layers = Math.max(1, Math.round(options.waves));
   for (let layer = 0; layer < layers; layer++) {
     const top = layer === layers - 1;
@@ -144,7 +145,7 @@ export function drawUrlaubStinger(context: CanvasRenderingContext2D, time: numbe
   drawSpray(context, time, options);
 
   // Text and palm around the transition point, only in the water (otherwise they would stand over the transparent picture)
-  const shown = 1 - clamp01(Math.abs(time - cut) / (Math.min(cut, duration - cut) * 0.6));
+  const shown = 1 - clamp01(Math.abs(time - cut) / (Math.min(cut, duration - cut) * options.look.shown));
   if (shown <= 0) return;
   context.save();
   body(context, time, options, 0);
@@ -152,7 +153,7 @@ export function drawUrlaubStinger(context: CanvasRenderingContext2D, time: numbe
   context.globalAlpha = shown;
   if (options.palm) drawPalm(context, options.palmColor);
   context.fillStyle = options.textColor;
-  context.font = `400 140px "${options.font}", cursive`;
+  context.font = `400 ${options.look.textSize}px "${options.font}", cursive`;
   context.textBaseline = "middle";
   const width = context.measureText(options.text).width;
   context.fillText(options.text, (WIDTH - width) / 2, HEIGHT / 2);

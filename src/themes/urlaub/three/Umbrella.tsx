@@ -5,6 +5,7 @@ import { useMemo, useRef } from "react";
 import { BufferAttribute, Color, ConeGeometry, type Group } from "three";
 import { mixHex } from "../../../core/color.ts";
 import { shoreHeight } from "../shore.ts";
+import { useUrlaub } from "../useUrlaub.ts";
 import type { BeachClock } from "./Sky.tsx";
 
 type Props = { clock: BeachClock; color: string; wood: string; light: string };
@@ -13,10 +14,12 @@ type Props = { clock: BeachClock; color: string; wood: string; light: string };
 const SPOT = { x: -7, z: 21 };
 const POLE = { height: 3.2, radius: 0.05 };
 const CANOPY = { radius: 2.2, height: 0.7, gores: 8 };
-const SWAY = { angle: 0.05, speed: 0.8 };
 const CHAIR = { x: -4.6, z: 22.5, turn: -0.5, seat: [1.2, 0.08, 1.8] as [number, number, number], back: [1.2, 0.08, 1.1] as [number, number, number] };
 
 export default function Umbrella({ clock, color, wood, light }: Props) {
+  const values = useUrlaub();
+  // how the canopy sways (settings)
+  const SWAY = { angle: values.umbrellaSway, speed: values.umbrellaSwaySpeed };
   const top = useRef<Group>(null);
   const canopy = useMemo(() => {
     const geometry = new ConeGeometry(CANOPY.radius, CANOPY.height, CANOPY.gores * 2, 1, true);

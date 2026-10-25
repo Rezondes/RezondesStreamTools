@@ -16,10 +16,9 @@ export type BannerWorldOptions = {
   sunHeight: number; azimuth: number; turbidity: number; seed: number; cameraHeight: number;
   water: string; distortion: number; sand: string; rocks: number;
   palms: { left: number; right: number; sway: number; leaf: string; trunk: string };
+  // A soft light from everywhere in place of the sky environment, for a renderer that cannot make one
+  ambient: { color: string; strength: number };
 };
-
-// A soft light from everywhere in place of the sky environment, for a renderer that cannot make one
-const AMBIENT = { color: "#fff4e0", strength: 1.4 }; // fixed: warm white
 
 export function bannerSetup(size: { width: number; height: number }, options: BannerWorldOptions, renderer?: GlRenderer): GlSetup {
   const scene = new Scene();
@@ -35,7 +34,7 @@ export function bannerSetup(size: { width: number; height: number }, options: Ba
   holder.add(sky.sky.clone());
   const environment = renderer?.environment?.(holder) ?? null;
   if (environment) scene.environment = environment;
-  else scene.add(new AmbientLight(AMBIENT.color, AMBIENT.strength));
+  else scene.add(new AmbientLight(options.ambient.color, options.ambient.strength));
   const camera = new PerspectiveCamera(FOV, size.width / size.height, 0.1, FAR);
   camera.position.set(0, options.cameraHeight, BACK);
   camera.lookAt(...TARGET);

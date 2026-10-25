@@ -2,6 +2,12 @@
 // A mock canvas records the calls. Runs with npm test.
 import assert from "node:assert/strict";
 import { drawUrlaubOfflineBanner, drawUrlaubProfileBanner, type UrlaubBannerOptions } from "./banners.ts";
+import { effectiveSettings } from "../../core/settings.ts";
+import { urlaubBannerLayout } from "./render.ts";
+import { type UrlaubValues, urlaubSettings } from "./settings.ts";
+
+// The look of the default settings
+const defaults = effectiveSettings(urlaubSettings, {}) as unknown as UrlaubValues;
 
 function recorder() {
   const calls: unknown[][] = [];
@@ -16,6 +22,7 @@ function recorder() {
 const options: UrlaubBannerOptions = {
   font: "Fredoka", titleFont: "Pacifico", wood: "#d39a5c", woodDark: "#8a5527", textColor: "#ffffff", textOnWood: "#3b2412",
   title: "Beach", profileText: "Sun and streams", offlineTitle: "At the beach right now", offlineText: "Follow the channel", offlineLines: ["Live soon", "See you soon"],
+  layout: urlaubBannerLayout(defaults),
 };
 const texts = (calls: unknown[][]) => calls.filter(call => call[0] === "fillText").map(call => call[1]);
 

@@ -15,41 +15,52 @@ export type UrlaubBannerOptions = {
   offlineTitle: string;
   offlineText: string;
   offlineLines: readonly string[];
+  layout: UrlaubBannerLayout;
+};
+// Places and sizes of the settings in px: the profile texts with their soft dark shadow on the bright sky, the wooden
+// sign of the offline banner with its texts
+export type UrlaubBannerLayout = {
+  profile: { titleSize: number; titleY: number; textSize: number; textY: number; shadowAlpha: number; shadowBlur: number; shadowDrop: number };
+  offline: {
+    x: number; y: number; width: number; height: number; border: number; titleSize: number; titleY: number; textSize: number; textY: number;
+    lineSize: number; lineY: number; lineStep: number; lines: number;
+  };
 };
 
 export const PROFILE_SIZE = { width: 1200, height: 480 };
 export const OFFLINE_SIZE = { width: 1920, height: 1080 };
-// fixed: a soft dark shadow under the texts on the bright sky
-const SHADOW = { color: "rgba(0, 0, 0, 0.45)", blur: 18, drop: 4 };
 
 function centered(context: CanvasRenderingContext2D, text: string, y: number, width: number) {
   context.fillText(text, Math.round((width - context.measureText(text).width) / 2), y);
 }
 
 export function drawUrlaubProfileBanner(context: CanvasRenderingContext2D, options: UrlaubBannerOptions) {
+  const look = options.layout.profile;
   context.save();
-  Object.assign(context, { shadowColor: SHADOW.color, shadowBlur: SHADOW.blur, shadowOffsetY: SHADOW.drop });
+  // fixed: a black shadow, its opacity is a setting
+  Object.assign(context, { shadowColor: `rgba(0, 0, 0, ${look.shadowAlpha})`, shadowBlur: look.shadowBlur, shadowOffsetY: look.shadowDrop });
   context.fillStyle = options.textColor;
   context.textBaseline = "middle";
-  context.font = `400 96px "${options.titleFont}", cursive`;
-  centered(context, options.title, 150, PROFILE_SIZE.width);
-  context.font = `600 34px "${options.font}", sans-serif`;
-  centered(context, options.profileText, 250, PROFILE_SIZE.width);
+  context.font = `400 ${look.titleSize}px "${options.titleFont}", cursive`;
+  centered(context, options.title, look.titleY, PROFILE_SIZE.width);
+  context.font = `600 ${look.textSize}px "${options.font}", sans-serif`;
+  centered(context, options.profileText, look.textY, PROFILE_SIZE.width);
   context.restore();
 }
 
 export function drawUrlaubOfflineBanner(context: CanvasRenderingContext2D, options: UrlaubBannerOptions) {
   // Wooden sign in the middle
+  const look = options.layout.offline;
   context.fillStyle = options.woodDark;
-  context.fillRect(470, 230, 980, 520);
+  context.fillRect(look.x, look.y, look.width, look.height);
   context.fillStyle = options.wood;
-  context.fillRect(486, 246, 948, 488);
+  context.fillRect(look.x + look.border, look.y + look.border, look.width - 2 * look.border, look.height - 2 * look.border);
   context.fillStyle = options.textOnWood;
   context.textBaseline = "middle";
-  context.font = `400 110px "${options.titleFont}", cursive`;
-  centered(context, options.offlineTitle, 360, OFFLINE_SIZE.width);
-  context.font = `600 40px "${options.font}", sans-serif`;
-  centered(context, options.offlineText, 480, OFFLINE_SIZE.width);
-  context.font = `400 34px "${options.font}", sans-serif`;
-  options.offlineLines.slice(0, 3).forEach((line, index) => centered(context, line, 560 + index * 52, OFFLINE_SIZE.width));
+  context.font = `400 ${look.titleSize}px "${options.titleFont}", cursive`;
+  centered(context, options.offlineTitle, look.titleY, OFFLINE_SIZE.width);
+  context.font = `600 ${look.textSize}px "${options.font}", sans-serif`;
+  centered(context, options.offlineText, look.textY, OFFLINE_SIZE.width);
+  context.font = `400 ${look.lineSize}px "${options.font}", sans-serif`;
+  options.offlineLines.slice(0, look.lines).forEach((line, index) => centered(context, line, look.lineY + index * look.lineStep, OFFLINE_SIZE.width));
 }

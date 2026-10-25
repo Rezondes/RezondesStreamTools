@@ -2,15 +2,17 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import { DoubleSide, type Group, Shape, ShapeGeometry } from "three";
+import { useUrlaub } from "../useUrlaub.ts";
 import type { BeachClock } from "./Sky.tsx";
 
-// fixed: where the boat drifts (x, how far it drifts, z), how it rocks and bobs, hull and sail sizes and colors
-const PLACE = { x: 60, drift: 8, z: -300 };
-const ROCK = { roll: 0.04, bob: 0.2 };
-const HULL = { size: [6, 1, 1.8] as [number, number, number], color: "#f2f2ee" }; // fixed: a white hull
-const SAIL = { height: 7, width: 3.4, color: "#fffaf0" }; // fixed: a white sail
+// fixed: the size of the hull; where the boat drifts, how it rocks and bobs, the sail and the colors come from the settings
+const HULL = [6, 1, 1.8] as [number, number, number];
 
 export default function Boat({ clock }: { clock: BeachClock }) {
+  const values = useUrlaub();
+  const PLACE = { x: values.boatX, drift: values.boatDrift, z: values.boatZ };
+  const ROCK = { roll: values.boatRoll, bob: values.boatBob };
+  const SAIL = { height: values.boatSailHeight, width: values.boatSailWidth };
   const boat = useRef<Group>(null);
   const sail = useMemo(() => {
     const shape = new Shape();
@@ -19,7 +21,7 @@ export default function Boat({ clock }: { clock: BeachClock }) {
     shape.lineTo(SAIL.width, 0);
     shape.lineTo(0, 0);
     return new ShapeGeometry(shape);
-  }, []);
+  }, [SAIL.height, SAIL.width]);
   useFrame(() => {
     if (!boat.current) return;
     const time = clock.time;
@@ -28,12 +30,12 @@ export default function Boat({ clock }: { clock: BeachClock }) {
   });
   return (
     <group ref={boat}>
-      <mesh position={[0, HULL.size[1] / 2, 0]}>
-        <boxGeometry args={HULL.size} />
-        <meshStandardMaterial color={HULL.color} roughness={0.5} />
+      <mesh position={[0, HULL[1] / 2, 0]}>
+        <boxGeometry args={HULL} />
+        <meshStandardMaterial color={values.boatHullColor} roughness={0.5} />
       </mesh>
-      <mesh geometry={sail} position={[-0.5, HULL.size[1], 0]}>
-        <meshStandardMaterial color={SAIL.color} side={DoubleSide} roughness={0.8} />
+      <mesh geometry={sail} position={[-0.5, HULL[1], 0]}>
+        <meshStandardMaterial color={values.boatSailColor} side={DoubleSide} roughness={0.8} />
       </mesh>
     </group>
   );

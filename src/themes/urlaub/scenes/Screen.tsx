@@ -25,18 +25,22 @@ const SECOND_MS = 1000;
 
 // fixed: how long the clock of the beach runs (s)
 const RUN = 24 * 60 * 60;
-// fixed: when the parts come in (s): clock, sign drop, post, sign swing, words, note
-const AT = { clock: 1.4, drop: 1, post: 1.6, swing: 1.8, words: 1.9, note: 2.4 };
-const DROP = { y: -700, duration: 0.8, ease: "power2.in" }; // fixed: the sign drops in on its ropes
-const SWING = { duration: 3, ease: "elastic.out(1, 0.18)" }; // fixed: and swings out
-const WORDS = { y: 30, opacity: 0, rotate: -6, duration: 0.5, stagger: 0.12, ease: "back.out(2.4)" }; // fixed: title words
-const SPREAD = { opacity: 0, letterSpacing: "0.6em", duration: 0.6 }; // fixed: the eyebrow letters close up
-const RISE = { opacity: 0, y: 10, duration: 0.4 }; // fixed: the note rises
-const POST = { y: 520, duration: 0.9, ease: "back.out(1.4)" }; // fixed: the post rises out of the sand
-const CLOCK = { y: -110, duration: 0.6, ease: "back.out(2)" }; // fixed: the clock drops in
+// The build of the settings: when the parts come in (s), the sign drops on its ropes and swings out, the title words
+// jump, the eyebrow letters close up, the note rises, the post rises out of the sand, the clock drops in
+const screenMotion = (values: UrlaubValues) => ({
+  AT: { clock: values.atClock, drop: values.atDrop, post: values.atPost, swing: values.atSwing, words: values.atWords, note: values.atNote },
+  DROP: { y: values.signDropFrom, duration: values.signDrop, ease: "power2.in" },
+  SWING: { duration: values.signSwingTime, ease: "elastic.out(1, 0.18)" },
+  WORDS: { y: values.wordsFrom, opacity: 0, rotate: values.wordsTurn, duration: values.wordsRise, stagger: values.wordsStep, ease: "back.out(2.4)" },
+  SPREAD: { opacity: 0, letterSpacing: `${values.spreadFrom}em`, duration: values.spreadTime },
+  RISE: { opacity: 0, y: values.noteFrom, duration: values.noteRise },
+  POST: { y: values.postFrom, duration: values.postRise, ease: "back.out(1.4)" },
+  CLOCK: { y: values.clockFrom, duration: values.clockDrop, ease: "back.out(2)" },
+});
 
 // The build of a screen: the clock of the 3D beach, the signs dropping, swinging and rising
 function useScreenTimeline(scope: RefObject<HTMLDivElement | null>, clock: BeachClock, values: UrlaubValues, kind: ScreenKind) {
+  const { AT, DROP, SWING, WORDS, SPREAD, RISE, POST, CLOCK } = screenMotion(values);
   useTimeline(timeline => {
     const root = scope.current;
     if (!root) return;
