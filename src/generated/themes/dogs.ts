@@ -348,7 +348,7 @@ export type DogsValues = {
   readonly stingerBadge: boolean;
   readonly stingerText: string;
   readonly stingerCover: string;
-  readonly bannerTitle: string;
+  readonly bannerProfileTitle: string;
   readonly bannerProfileText: string;
   readonly bannerOfflineTitle: string;
   readonly bannerOfflineText: string;

@@ -3003,34 +3003,34 @@
       "default": "#fff6e6"
     },
     {
-      "key": "bannerTitle",
+      "key": "bannerProfileTitle",
       "type": "text",
       "label": "Titel ({channel})",
-      "group": "Banner",
+      "group": "Profilbanner",
       "default": "{channel}",
       "maxLength": 40
     },
     {
       "key": "bannerProfileText",
       "type": "text",
-      "label": "Profilbanner: Zeile",
-      "group": "Banner",
+      "label": "Zeile ({channel})",
+      "group": "Profilbanner",
       "default": "Willkommen im Rudel!",
       "maxLength": 80
     },
     {
       "key": "bannerOfflineTitle",
       "type": "text",
-      "label": "Offline-Banner: Titel",
-      "group": "Banner",
+      "label": "Titel ({channel})",
+      "group": "Offline-Banner",
       "default": "OFFLINE",
       "maxLength": 40
     },
     {
       "key": "bannerOfflineText",
       "type": "text",
-      "label": "Offline-Banner: Zeile ({dog})",
-      "group": "Banner",
+      "label": "Zeile ({dog}, {channel})",
+      "group": "Offline-Banner",
       "default": "{dog} schläft. Bis bald!",
       "maxLength": 80
     },
@@ -3500,7 +3500,8 @@
       "info"
     ],
     "Stinger": [],
-    "Banner": [],
+    "Profilbanner": [],
+    "Offline-Banner": [],
     "Minimes: Befehle": [
       "minimes"
     ],

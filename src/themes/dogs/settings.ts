@@ -29,7 +29,8 @@ const ALERTS = "Alerts";
 const RAID = "Raid";
 const TOYS = ["ball", "knochen", "frisbee", "leckerli"] as const;
 const STINGER = "Stinger";
-const BANNER = "Banner";
+const PROFILE_BANNER = "Profilbanner";
+const OFFLINE_BANNER = "Offline-Banner";
 const MINIME_DOGS = "Minimes: Hunde";
 const MINIME_SOUNDS = "Minimes: Töne";
 const CHAT = "Chat";
@@ -307,10 +308,10 @@ const FIELDS = [
   text("stingerText", "Name auf der Plakette ({dog}, {channel})", STINGER, "{dog}", 30),
   color("stingerCover", "Fläche", STINGER, "#fff6e6"),
 
-  text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", 40),
-  text("bannerProfileText", "Profilbanner: Zeile", BANNER, "Willkommen im Rudel!", 80),
-  text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "OFFLINE", 40),
-  text("bannerOfflineText", "Offline-Banner: Zeile ({dog})", BANNER, "{dog} schläft. Bis bald!", 80),
+  text("bannerProfileTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}", 40),
+  text("bannerProfileText", "Zeile ({channel})", PROFILE_BANNER, "Willkommen im Rudel!", 80),
+  text("bannerOfflineTitle", "Titel ({channel})", OFFLINE_BANNER, "OFFLINE", 40),
+  text("bannerOfflineText", "Zeile ({dog}, {channel})", OFFLINE_BANNER, "{dog} schläft. Bis bald!", 80),
 
   // Minimes: core fields plus the look and the own actions of the dogs (minimes.ts); the type is the breed
   ...MINIME_BASE_FIELDS,
@@ -350,7 +351,8 @@ const GROUP_SCENES = {
   [FX]: ["fx"],
   [INFO_GROUP]: ["info"],
   [STINGER]: [],
-  [BANNER]: [],
+  [PROFILE_BANNER]: [],
+  [OFFLINE_BANNER]: [],
   [MINIME_COMMANDS]: ["minimes"],
   [MINIME_RULES]: ["minimes"],
   [MINIME_MOTION]: ["minimes"],

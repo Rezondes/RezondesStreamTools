@@ -36,7 +36,8 @@ const ALERTS: &str = "Alerts";
 const RAID: &str = "Raid";
 const TOYS: [&str; 4] = ["ball", "knochen", "frisbee", "leckerli"];
 const STINGER: &str = "Stinger";
-const BANNER: &str = "Banner";
+const PROFILE_BANNER: &str = "Profilbanner";
+const OFFLINE_BANNER: &str = "Offline-Banner";
 const MINIME_DOGS: &str = "Minimes: Hunde";
 const MINIME_SOUNDS: &str = "Minimes: Töne";
 const CHAT: &str = "Chat";
@@ -490,10 +491,10 @@ fn clips() -> Vec<SettingField> {
         flag("stingerBadge", "Plakette am Übergang", STINGER, true),
         text("stingerText", "Name auf der Plakette ({dog}, {channel})", STINGER, "{dog}", Some(30)),
         color("stingerCover", "Fläche", STINGER, "#fff6e6"),
-        text("bannerTitle", "Titel ({channel})", BANNER, "{channel}", Some(40)),
-        text("bannerProfileText", "Profilbanner: Zeile", BANNER, "Willkommen im Rudel!", Some(80)),
-        text("bannerOfflineTitle", "Offline-Banner: Titel", BANNER, "OFFLINE", Some(40)),
-        text("bannerOfflineText", "Offline-Banner: Zeile ({dog})", BANNER, "{dog} schläft. Bis bald!", Some(80)),
+        text("bannerProfileTitle", "Titel ({channel})", PROFILE_BANNER, "{channel}", Some(40)),
+        text("bannerProfileText", "Zeile ({channel})", PROFILE_BANNER, "Willkommen im Rudel!", Some(80)),
+        text("bannerOfflineTitle", "Titel ({channel})", OFFLINE_BANNER, "OFFLINE", Some(40)),
+        text("bannerOfflineText", "Zeile ({dog}, {channel})", OFFLINE_BANNER, "{dog} schläft. Bis bald!", Some(80)),
     ]
 }
 
@@ -574,7 +575,8 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (FX.to_owned(), vec![SceneName::Fx]),
         (INFO_GROUP.to_owned(), vec![SceneName::Info]),
         (STINGER.to_owned(), vec![]),
-        (BANNER.to_owned(), vec![]),
+        (PROFILE_BANNER.to_owned(), vec![]),
+        (OFFLINE_BANNER.to_owned(), vec![]),
         (MINIME_COMMANDS.to_owned(), vec![SceneName::Minimes]),
         (MINIME_RULES.to_owned(), vec![SceneName::Minimes]),
         (MINIME_MOTION.to_owned(), vec![SceneName::Minimes]),

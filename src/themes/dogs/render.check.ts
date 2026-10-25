@@ -12,7 +12,7 @@ import { dogsSettings } from "./settings.ts";
 
 // Clips
 const clips = dogsClips(resolveSettings(dogsSettings, {}), "rezondes");
-assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.height]), [["stinger", "Stinger", 1920, 1080], ["profile", "Banner", PROFILE_SIZE.width, PROFILE_SIZE.height], ["offline", "Banner", 1920, 1080]]);
+assert.deepEqual(clips.map(clip => [clip.name, clip.group, clip.width, clip.height]), [["stinger", "Stinger", 1920, 1080], ["profile", "Profilbanner", PROFILE_SIZE.width, PROFILE_SIZE.height], ["offline", "Offline-Banner", 1920, 1080]]);
 const stinger = clips[0];
 assert.equal(stinger.cut, 1.2);
 const before = recorder();

@@ -47,18 +47,17 @@ export function dogsClips(settings: SettingValues, login: string): RenderClip[] 
   const fill = (text: string) => fillTemplate(text, { channel: values.channelName, dog: values.dogName, login });
   const font = `24px "${values.font}"`;
   const banners = { feature: "banners", font, fps: STILL, duration: STILL, cut: null, prepare } as const;
-  const title = fill(values.bannerTitle);
   return [
     withStingerOptions({
       name: "stinger", feature: "stinger", group: "Stinger", font, ...STAGE, fps: values.stingerFps, duration: values.stingerDuration, cut: values.stingerCut, prepare,
       draw: clipDraw(loaded => loaded.stinger.makeStinger(loaded.stinger.stingerLookOf(values, fill(values.stingerText))), plain(STAGE, values.stingerCover)),
     }, readStingerOptions(settings)),
     {
-      ...banners, name: "profile", group: "Banner", ...PROFILE,
-      draw: clipDraw(loaded => loaded.banners.makeProfile(loaded.banners.bannerLookOf(values), { title, line: fill(values.bannerProfileText) }), plain(PROFILE, values.cream)),
+      ...banners, name: "profile", group: "Profilbanner", ...PROFILE,
+      draw: clipDraw(loaded => loaded.banners.makeProfile(loaded.banners.bannerLookOf(values), { title: fill(values.bannerProfileTitle), line: fill(values.bannerProfileText) }), plain(PROFILE, values.cream)),
     },
     {
-      ...banners, name: "offline", group: "Banner", ...STAGE,
+      ...banners, name: "offline", group: "Offline-Banner", ...STAGE,
       draw: clipDraw(loaded => loaded.banners.makeOffline(loaded.banners.bannerLookOf(values), { title: fill(values.bannerOfflineTitle), line: fill(values.bannerOfflineText) }), plain(STAGE, values.night)),
     },
   ];
