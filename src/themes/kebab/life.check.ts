@@ -1,7 +1,7 @@
 // Check for life.ts: the pose follows the time alone; blinking lasts 0.12 s per period; switched off parts stay still.
 // Runs with npm test.
 import assert from "node:assert/strict";
-import { chefPose, type PoseOptions, waveAngle } from "./life.ts";
+import { chefPose, type PoseOptions, waveAngle, waveTurn } from "./life.ts";
 
 const options: PoseOptions = { sawOn: true, sawSpeed: 5.2, sawAngle: 2.6, hatOn: true, stacheOn: true, blinkEvery: 4.2 };
 
@@ -32,5 +32,16 @@ assert.notEqual(chefPose(1.75, options).stacheAngle, 0);
 // Waving: the arm stays raised and swings around it
 const waves = Array.from({ length: 100 }, (_, step) => waveAngle(step / 10));
 assert.ok(Math.max(...waves) <= -93 && Math.min(...waves) >= -117 && Math.max(...waves) - Math.min(...waves) > 20);
+
+// The waving arm is mirrored around the shoulder (the elbow bends towards the head) and turned so the fist (245, 387)
+// stands straight above the shoulder (150, 362) in the middle of the swing
+const shoulder = { x: 150, y: 362 };
+const mirrored = { x: 2 * shoulder.x - 245, y: 387 };
+const radians = (waveTurn(0) * Math.PI) / 180;
+const hand = {
+  x: shoulder.x + (mirrored.x - shoulder.x) * Math.cos(radians) - (mirrored.y - shoulder.y) * Math.sin(radians),
+  y: shoulder.y + (mirrored.x - shoulder.x) * Math.sin(radians) + (mirrored.y - shoulder.y) * Math.cos(radians),
+};
+assert.ok(Math.abs(hand.x - shoulder.x) < 2 && hand.y < shoulder.y - 90, `hand at ${hand.x}, ${hand.y}`);
 
 console.log("kebab life ok");

@@ -1,6 +1,6 @@
 // Idle life of the chef as a pure function of the time (DESIGN-KEBAB.md "Figuren"): the knife arm saws around the
 // shoulder and pushes along the blade, the hat bobs, the moustache twitches now and then, the eyes blink; when he says
-// goodbye (Ending) the arm is raised beside his head and waves. Angles in degrees, shifts in grid units. Check: life.check.ts.
+// goodbye (Ending) the arm is mirrored, raised beside his head and waves. Angles in degrees, shifts in grid units. Check: life.check.ts.
 
 export type PoseOptions = { sawOn: boolean; sawSpeed: number; sawAngle: number; hatOn: boolean; stacheOn: boolean; blinkEvery: number };
 type ChefPose = { armAngle: number; armShift: { x: number; y: number }; hatAngle: number; stacheAngle: number; blink: boolean };
@@ -16,8 +16,19 @@ const BLINK_S = 0.12;
 // swings 12 degrees to each side, 6 radians per second
 const WAVE = { lift: 105, swing: 12, rate: 6 };
 
+// fixed: the fist of the resting arm points 15 degrees below the horizontal from the shoulder; mirrored around the
+// shoulder it points to the other side, so the turn shifts by 180 - 2 x 15 degrees to keep the hand where it was
+const MIRROR_TURN = 150;
+
 // Angle of the waving arm around the shoulder at a time (negative = raised)
 export const waveAngle = (time: number) => -WAVE.lift + Math.sin(time * WAVE.rate) * WAVE.swing;
+
+// Turn of the mirrored waving arm: the hand goes the same way as with waveAngle, the elbow bends towards the head
+export const waveTurn = (time: number) => waveAngle(time) - MIRROR_TURN;
+
+// SVG transform of the waving arm: mirrored around the shoulder, then turned by waveTurn
+export const waveTransform = (time: number, shoulder: { x: number; y: number }) =>
+  `rotate(${waveTurn(time)} ${shoulder.x} ${shoulder.y}) translate(${shoulder.x} ${shoulder.y}) scale(-1 1) translate(${-shoulder.x} ${-shoulder.y})`;
 
 export function chefPose(time: number, options: PoseOptions): ChefPose {
   const saw = options.sawOn ? Math.sin(time * options.sawSpeed) : 0;

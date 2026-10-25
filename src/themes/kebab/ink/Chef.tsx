@@ -6,7 +6,7 @@
 import { type RefObject, useMemo, useRef } from "react";
 import { CHEF_PARTS, chefParts, EYE_LINE, HAT_PIVOT, type InkPart, MEAT, SHOULDER, STACHE_PIVOT } from "../chef.ts";
 import { hatchOffset, meatHatch } from "../hatch.ts";
-import { chefPose, waveAngle } from "../life.ts";
+import { chefPose, waveTransform } from "../life.ts";
 import { pauseParts } from "../pause.ts";
 import type { KebabValues } from "../settings.ts";
 import { useFrame } from "../useFrame.ts";
@@ -51,7 +51,7 @@ function useIdle(values: KebabValues, clock: () => number, idleFrom: number, pos
     refs.hatch.current?.setAttribute("transform", `translate(${hatchOffset(time, values.spitSpeed, PERIOD)} 0)`);
     if (time < idleFrom) return;
     const life = chefPose(time - idleFrom, { ...values, sawOn: values.sawOn && pose === "saw" });
-    const arm = pose === "wave" ? `rotate(${waveAngle(time - idleFrom)} ${SHOULDER.x} ${SHOULDER.y})` : `rotate(${life.armAngle} ${SHOULDER.x} ${SHOULDER.y}) translate(${life.armShift.x} ${life.armShift.y})`;
+    const arm = pose === "wave" ? waveTransform(time - idleFrom, SHOULDER) : `rotate(${life.armAngle} ${SHOULDER.x} ${SHOULDER.y}) translate(${life.armShift.x} ${life.armShift.y})`;
     refs.arm.current?.setAttribute("transform", arm);
     refs.hat.current?.setAttribute("transform", `rotate(${life.hatAngle} ${HAT_PIVOT.x} ${HAT_PIVOT.y})`);
     refs.stache.current?.setAttribute("transform", `rotate(${life.stacheAngle} ${STACHE_PIVOT.x} ${STACHE_PIVOT.y})`);
