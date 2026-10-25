@@ -44,8 +44,9 @@ const WEIGHTS = { base: 0.3, dark: 0.14, accent: 0.24, ball: 0.18, muted: 0.14 }
 const BRIGHT = 0.85;
 const LUMA = [0.299, 0.587, 0.114] as const;
 const SHADOW = 0.28;
-// fixed: the runner on the ground row 176 at double size, 4 pixels ahead of the edge, walking at 20 frames per s
-const RUNNER = { ground: 176, ahead: 4, size: 2, fps: 20, wag: 20 };
+// fixed: the runner on the ground row 176 at double size, 4 pixels ahead of the edge, walking at 20 frames per s; it
+// comes out from behind the edge during the first 30 % of the sweep, so it runs in from outside the picture
+const RUNNER = { ground: 176, ahead: 4, size: 2, fps: 20, wag: 20, enter: 0.3 };
 // fixed: the badge: radius 38 at full size, 4 above the middle, a ring 5 inside, the paw on it; it grows from 0.42 s
 // before the cut (to 0.1 s before) with an overshoot of 2.2 and shrinks from 0.12 s to 0.36 s after the cut
 const BADGE = { radius: 38, above: 4, shadowDown: 3, ring: 5, inner: 7, grow: [0.42, 0.1], shrink: [0.12, 0.36], overshoot: 2.2, pad: [7, 6, 4], toes: [[-10, -13], [-4, -19], [4, -19], [10, -13]], toe: [2.5, 3], shown: 0.6, gone: 0.02 } as const;
@@ -106,7 +107,8 @@ export function stingerPaws(look: StingerLook): Paw[] {
       const y = Math.round(row * rowStep + (chance(2) - 0.5) * PAWS.jitter);
       const share = clamp((x + look.slant * (height - y)) / span);
       const spread = (more: number) => (chance(more) - 0.5) * PAWS.spread;
-      paws.push({ x, y, color: pick(chance(6)), in: PAWS.lead + share * look.sweep + spread(3), out: look.cut + PAWS.outAfter + share * look.sweep + spread(4) });
+      // No paw before the lead, so the first frame stays empty
+      paws.push({ x, y, color: pick(chance(6)), in: Math.max(PAWS.lead, PAWS.lead + share * look.sweep + spread(3)), out: look.cut + PAWS.outAfter + share * look.sweep + spread(4) });
     }
   }
   return paws.sort((first, second) => first.in - second.in);
@@ -142,7 +144,8 @@ function runner(image: PixelImage, look: StingerLook, share: number, time: numbe
   const { edgeX } = stingerWorld(look);
   const ground = roomRow(image.height, RUNNER.ground);
   const pose = look.dog.pose(poseAt({ time, mode: "walk", fps: RUNNER.fps, wagSpeed: RUNNER.wag, blinkEvery: 0, pant: true }));
-  const left = edgeX(share, ground - pose.height) + RUNNER.ahead;
+  const behind = (1 - clamp(share / RUNNER.enter)) * pose.width * RUNNER.size;
+  const left = Math.round(edgeX(share, ground - pose.height) + RUNNER.ahead - behind);
   const top = ground - pose.height * RUNNER.size;
   for (let y = 0; y < pose.height; y++) {
     for (let x = 0; x < pose.width; x++) {

@@ -30,6 +30,16 @@ const paws = stingerPaws(look);
 const atCut = stingerImage(look, paws, look.cut);
 assert.ok(atCut.colors.every(color => color !== null), "the surface covers the stage at the cut");
 for (const time of [0, look.duration]) assert.ok(!stingerImage(look, paws, time).colors.includes(look.colors.cover), `no surface at ${time}`);
+// The first frame is empty (no paw, no snout of the dog); the dog comes in from the left out of the picture
+assert.ok(stingerImage(look, paws, 0).colors.every(color => color === null), "nothing at 0");
+const leftmost = (time: number) => {
+  const image = stingerImage({ ...look, colors: { ...look.colors, cover: "#000001" } }, [], time);
+  const xs = image.colors.flatMap((color, index) => (color && color !== "#000001" && color !== look.colors.ink && color !== look.colors.edge ? [index % image.width] : []));
+  return xs.length ? Math.min(...xs) : null;
+};
+assert.equal(leftmost(0.1), null, "the dog is still outside at 0.1 s");
+assert.ok((leftmost(0.5) ?? 0) > 0, "the dog runs in later");
+
 // The badge: hidden before, full around the cut, hidden after; off when switched off
 assert.equal(badgeAt(look, 0.5), 0);
 assert.ok(badgeAt(look, look.cut) > 0.9);
