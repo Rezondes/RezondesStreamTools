@@ -6,7 +6,7 @@ import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, inScene, lines, markBasic, number, text, withDefaults } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
-import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
+import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { DISH_SET, DISH_TYPES } from "./dishes.ts";
@@ -231,7 +231,6 @@ const FIELDS = [
   flag("minimeCounter", "Thekenlinie unten", MINIME_LOOK, true),
   flag("minimeLabels", "Namensschilder als Bestellzettel", MINIME_LOOK, true),
   number("minimeLabelSize", "Namensschild: Schriftgrösse", MINIME_LOOK, 16, 8, 48, "px"),
-  number("minimeLevelHeight", "Tellerstapel: Höhe je Stufe", MINIME_LOOK, 70, 30, 120, "%"),
   number("minimeSpinWeight", "Drehen (Döner): Häufigkeit", MINIME_MOVES, 5, 0, 100),
   number("minimeSpinMs", "Drehen (Döner): Dauer", MINIME_MOVES, 1600, 300, 10000, "ms"),
   number("minimeRollWeight", "Aufrollen (Dürüm): Häufigkeit", MINIME_MOVES, 4, 0, 100),
@@ -243,8 +242,6 @@ const FIELDS = [
   number("minimeWaveWeight", "Winken: Häufigkeit", MINIME_MOVES, 3, 0, 100),
   number("minimeWaveMs", "Winken: Dauer", MINIME_MOVES, 1500, 300, 10000, "ms"),
   number("minimeJumpMs", "Reaktion auf Chat (Sprung mit Dampf): Dauer", MINIME_MOVES, 700, 200, 5000, "ms"),
-  // Towers as a stack of plates: Lahmacun at the bottom, Dürüm in the middle, Pommes on top, with the plop on each climb
-  ...minimeStackFields(DISH_SET, { minimeStack: true, minimeStackLevel1: "lahmacun", minimeStackLevel2: "duerum", minimeStackLevel3: "pommes", minimeStackSound: true }),
 ] as const satisfies readonly SettingField[];
 
 // The resolved values as the server generates them (src/generated/themes, npm run gen:types)
@@ -271,7 +268,6 @@ const GROUP_SCENES = {
   [MINIME_MOTION]: ["minimes"],
   [MINIME_HOP]: ["minimes"],
   [MINIME_VARIANTS]: ["minimes"],
-  [MINIME_STACK]: ["minimes"],
   [MINIME_LOOK]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
 } as const;

@@ -7,7 +7,7 @@ import { badgeFields } from "../../core/chat/chat.ts";
 import { choice, color, flag, font, inScene, lines, markBasic, number, text } from "../../core/fields.ts";
 import { qualityField } from "../../core/graphicsFields.ts";
 import { INFO_FIELDS, INFO_GROUP } from "../../core/infoFields.ts";
-import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minimeStackFields, minimeVariantFields } from "../../core/minimeFields.ts";
+import { MINIME_BASE_FIELDS, MINIME_COMMANDS, MINIME_HOP, MINIME_HOP_FIELDS, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minimeVariantFields } from "../../core/minimeFields.ts";
 import { withStingerFields } from "../../core/stingerOptions.ts";
 import type { SettingField, ThemeSchema } from "../../core/theme.ts";
 import { FIGURE_SET, FIGURE_TYPES } from "./figures.ts";
@@ -286,8 +286,6 @@ const FIELDS = [
   number("minimeSnackWeight", "Brotzeit: Häufigkeit", MINIME_MOVES, 2, 0, 100),
   number("minimeSnackMs", "Brotzeit: Dauer", MINIME_MOVES, 6000, 300, 60000, "ms"),
   number("minimeTipMs", "Reaktion auf Chat (Helm lupfen): Dauer", MINIME_MOVES, 900, 200, 5000, "ms"),
-  // Towers as a scaffold: Azubi at the bottom, Zimmerer in the middle, Polier on top
-  ...minimeStackFields(FIGURE_SET, { minimeStack: true, minimeStackLevel1: "azubi", minimeStackLevel2: "zimmerer", minimeStackLevel3: "polier" }),
 
   // Commands page (public, /s/<login>/): shared texts from the core, plus the look
   ...INFO_FIELDS,
@@ -315,7 +313,6 @@ const GROUP_SCENES = {
   [MINIME_MOTION]: ["minimes"],
   [MINIME_HOP]: ["minimes"],
   [MINIME_VARIANTS]: ["minimes"],
-  [MINIME_STACK]: ["minimes"],
   [MINIME_LOOK]: ["minimes"],
   [MINIME_MOVES]: ["minimes"],
   [INFO_GROUP]: ["info"],

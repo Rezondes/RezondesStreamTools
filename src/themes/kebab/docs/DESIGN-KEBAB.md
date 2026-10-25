@@ -66,8 +66,8 @@ Lächeln) und Füsschen:
 | Lahmacun | flacher Fladen, aufgestellt | wird gefaltet, klappt wieder auf |
 | Pommes | Tüte mit Stäbchen | Stäbchen wackeln, eins fliegt hoch |
 
-Alle laufen mit Hüpfen (Kern), winken und reagieren auf Chat mit einem Sprung und einer Dampfwolke. Türme aus dem Kern
-sind ein **Tellerstapel**: Lahmacun unten, Dürüm in der Mitte, Pommes oben. Gefechte und Fraktionen gibt es nicht.
+Alle laufen mit Hüpfen (Kern), winken und reagieren auf Chat mit einem Sprung und einer Dampfwolke. Türme, Gefechte
+und Fraktionen gibt es nicht (Türme passen nur zur Bärenbande).
 
 ## Overlays
 

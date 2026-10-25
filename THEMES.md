@@ -130,7 +130,7 @@ des Schemas, `explosive` die Rollen, deren Schuss eine Explosion ist, `sounds` d
 `shownRole(actor, enabled, fallback, demoMedic)` (in `?demo` ist das erste Demo-Minime der Medic). Diese Aktionsnamen
 darf der eigene Katalog nicht nutzen (`COMBAT_ACTIONS`, geprüft).
 
-**Türme** (nur mit Typen, `src/core/minimeStack.ts`): Das Schema bindet `...minimeStackFields(set, defaults)` ein (Gruppe
+**Türme** (nur mit Typen, `src/core/minimeStack.ts`; bisher nur in `bears`, sie passen zu keinem anderen Theme): Das Schema bindet `...minimeStackFields(set, defaults)` ein (Gruppe
 `MINIME_STACK`: an/aus, Abstand, gleichzeitige Türme, Typ je Stufe 1 bis 3 von unten, Stufe 3 auch "keiner", Tempo,
 Dauer je Schritt, Abstand beim Absteigen, Turm läuft, Ton beim Aufsteigen); mit `defaults` setzt das Theme seine Standards (z.B. Türme an und
 die Typen der Stufen), ohne sie sind Türme aus. Die Szene übergibt `useMinimes({ ..., stack: { variants, sound } })`

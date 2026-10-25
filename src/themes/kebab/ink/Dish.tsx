@@ -1,9 +1,8 @@
 // One dish of the minimes (dishes.ts) as SVG in its 100 x 100 box: feet, body, the part of its own move, face and arm,
 // drawn in the red line like the chef (Ink.tsx). Every frame sets the pose of the running animation (dishPose) from the
-// wall clock: jump, turn, the dürüm's layer, the lahmacun's half, the fries stick, the waving arm, sauce and steam. In
-// a tower an upper dish stands on a plate. Classes kb-dish-* for minimes.css.
+// wall clock: jump, turn, the dürüm's layer, the lahmacun's half, the fries stick, the waving arm, sauce and steam.
+// Classes kb-dish-* for minimes.css.
 import { type RefObject, useMemo, useRef } from "react";
-import type { InkPart } from "../chef.ts";
 import { DISH_TYPES, type DishType, dishParts, dishPose, FLAP_X, FOLD_X, MOVE_OF, OWN_MOVES, sauceDrops, SHOULDER } from "../dishes.ts";
 import { useFrame } from "../useFrame.ts";
 import Ink, { type InkStyle } from "./Ink.tsx";
@@ -17,14 +16,12 @@ const STICK = { rise: 44, turns: 1 };
 const DROPS = { count: 5, radius: 2.6 };
 const PUFFS = [{ x: 34, r: 7 }, { x: 50, r: 9 }, { x: 66, r: 7 }];
 const STEAM = { from: 6, rise: 24 };
-const SALT = { type: 100, plate: 90 };
+const SALT = { type: 100 };
 const FULL_TURN = 360;
-// fixed: the plate under a dish standing in a tower
-const PLATE: InkPart = { fills: [], lines: [{ shape: { kind: "ellipse", x: 50, y: 98, width: 86, height: 10 }, width: 2.6 }], dots: [] };
 
 const wallClock = () => Date.now();
 
-type Props = { type: DishType; action: string; startedAt: number; durationMs: number; style: InkStyle; onPlate: boolean };
+type Props = { type: DishType; action: string; startedAt: number; durationMs: number; style: InkStyle };
 type Refs = Record<"jump" | "turn" | "move" | "arm" | "sauce" | "steam", RefObject<SVGGElement | null>>;
 
 function useDishPose(type: DishType, animation: string, startedAt: number, durationMs: number, refs: Refs) {
@@ -48,7 +45,7 @@ function useDishPose(type: DishType, animation: string, startedAt: number, durat
   });
 }
 
-export default function Dish({ type, action, startedAt, durationMs, style, onPlate }: Props) {
+export default function Dish({ type, action, startedAt, durationMs, style }: Props) {
   const parts = useMemo(() => dishParts(type), [type]);
   const salt = DISH_TYPES.indexOf(type) * SALT.type;
   const refs: Refs = { jump: useRef(null), turn: useRef(null), move: useRef(null), arm: useRef(null), sauce: useRef(null), steam: useRef(null) };
@@ -56,7 +53,6 @@ export default function Dish({ type, action, startedAt, durationMs, style, onPla
   useDishPose(type, (OWN_MOVES as readonly string[]).includes(action) ? MOVE_OF[type] : action, startedAt, durationMs, refs);
   return (
     <svg className="kb-dish" viewBox="0 0 100 100">
-      {onPlate && <Ink part={PLATE} style={style} salt={salt + SALT.plate} />}
       <g ref={refs.jump}>
         <g ref={refs.turn}>
           <Ink part={parts.feet} style={style} salt={salt + 1} />

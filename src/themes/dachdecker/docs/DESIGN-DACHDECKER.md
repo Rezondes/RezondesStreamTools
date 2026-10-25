@@ -59,8 +59,8 @@ in der Farbe des Typs. Grösse etwa ein Viertel der Firsthöhe. Name in Roboto M
 | Azubi | Cyan | Ziegelstapel | Ziegel tragen, stolpern |
 | Polier | Ziegelrot | Bauplan | Plan aufrollen, zeigen |
 
-Alle können laufen (mit Hüpfen aus dem Kern), winken, Brotzeit machen und bei Chat den Helm lupfen. Türme aus dem Kern
-sind ein **Gerüst**: Azubi unten, Zimmerer in der Mitte, Polier oben. Gefechte und Fraktionen gibt es nicht.
+Alle können laufen (mit Hüpfen aus dem Kern), winken, Brotzeit machen und bei Chat den Helm lupfen. Türme, Gefechte
+und Fraktionen gibt es nicht (Türme passen nur zur Bärenbande).
 
 ## Overlays
 

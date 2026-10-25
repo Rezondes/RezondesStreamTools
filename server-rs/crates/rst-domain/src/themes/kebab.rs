@@ -15,8 +15,8 @@ use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{
-    MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minime_base_fields,
-    minime_hop_fields, minime_stack_fields, minime_variant_fields,
+    MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minime_base_fields, minime_hop_fields,
+    minime_variant_fields,
 };
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
@@ -368,7 +368,6 @@ fn minimes() -> Vec<SettingField> {
         flag("minimeCounter", "Thekenlinie unten", MINIME_LOOK, true),
         flag("minimeLabels", "Namensschilder als Bestellzettel", MINIME_LOOK, true),
         number("minimeLabelSize", "Namensschild: Schriftgrösse", MINIME_LOOK, 16.0, 8.0, 48.0, PX, None),
-        number("minimeLevelHeight", "Tellerstapel: Höhe je Stufe", MINIME_LOOK, 70.0, 30.0, 120.0, PERCENT, None),
         number("minimeSpinWeight", "Drehen (Döner): Häufigkeit", MINIME_MOVES, 5.0, 0.0, 100.0, None, None),
         number("minimeSpinMs", "Drehen (Döner): Dauer", MINIME_MOVES, 1600.0, 300.0, 10_000.0, MS, None),
         number("minimeRollWeight", "Aufrollen (Dürüm): Häufigkeit", MINIME_MOVES, 4.0, 0.0, 100.0, None, None),
@@ -390,18 +389,6 @@ fn minimes() -> Vec<SettingField> {
             None,
         ),
     ]);
-    // Towers as a stack of plates: Lahmacun at the bottom, Dürüm in the middle, Pommes on top, plop on each climb
-    let level = |id: &str| SettingValue::Text(id.to_owned());
-    fields.extend(minime_stack_fields(
-        &variants(),
-        &[
-            ("minimeStack", SettingValue::Flag(true)),
-            ("minimeStackLevel1", level("lahmacun")),
-            ("minimeStackLevel2", level("duerum")),
-            ("minimeStackLevel3", level("pommes")),
-            ("minimeStackSound", SettingValue::Flag(true)),
-        ],
-    ));
     fields
 }
 
@@ -428,7 +415,6 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MINIME_MOTION.to_owned(), vec![SceneName::Minimes]),
         (MINIME_HOP.to_owned(), vec![SceneName::Minimes]),
         (MINIME_VARIANTS.to_owned(), vec![SceneName::Minimes]),
-        (MINIME_STACK.to_owned(), vec![SceneName::Minimes]),
         (MINIME_LOOK.to_owned(), vec![SceneName::Minimes]),
         (MINIME_MOVES.to_owned(), vec![SceneName::Minimes]),
     ])

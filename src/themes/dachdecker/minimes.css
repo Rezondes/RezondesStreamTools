@@ -1,5 +1,5 @@
 /* Minimes of the Dachdecker theme (scenes/Minimes.tsx), encapsulated under .theme-dachdecker, loaded only with the scene.
-   Per minime the scene sets --x, --move, --action-ms, --facing, --hops, --hop-ms, --level (tower) and --name-shift;
+   Per minime the scene sets --x, --move, --action-ms, --facing, --hops, --hop-ms;
    the running action is the class action-<name>. The anchor box is invisible, the 3D figure (three/Figure.tsx) follows
    it. Keyframes are called dachdecker-minime-*. */
 
@@ -30,9 +30,7 @@
   align-items: center;
   width: calc(var(--minimeSize) * 0.5);
   transform: translateX(calc(var(--x) - 50%));
-  transition: transform var(--move) linear, translate var(--minimeClimbMs) ease-out;
-  /* In a tower every level stands on the shoulders of the one below */
-  translate: 0 calc(var(--level) * var(--minimeSize) * -0.66);
+  transition: transform var(--move) linear;
 }
 .theme-dachdecker .dd-minime-anchor { width: 100%; height: var(--minimeSize); }
 
@@ -46,7 +44,6 @@
   font-size: var(--minimeLabelSize);
   letter-spacing: 0.08em;
   white-space: nowrap;
-  translate: calc(var(--name-shift) * 90%) 0;
 }
 
 /* Appearing: dropped in from above; disappearing: lifted out, the label fades */

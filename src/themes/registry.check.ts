@@ -51,4 +51,7 @@ for (const id of folders) {
 }
 assert.equal(findModule("does-not-exist"), null);
 
+// Minime towers fit only the Bärenbande; no other theme offers them
+assert.deepEqual(THEMES.filter(theme => theme.fields.some(field => field.key === "minimeStack")).map(theme => theme.id), ["bears"]);
+
 console.log("registry ok");

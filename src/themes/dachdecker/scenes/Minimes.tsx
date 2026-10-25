@@ -6,7 +6,7 @@
 // Parameters: ?demo, ?demo=<n>
 import { type CSSProperties, type RefObject, useMemo, useRef, useState } from "react";
 import { useAnchors } from "../../../core/hooks/useAnchors.ts";
-import { useMinimes, type MinimeStackScene } from "../../../core/hooks/useMinimes.ts";
+import { useMinimes } from "../../../core/hooks/useMinimes.ts";
 import { actorRun, actorStyle, shownVariant, type MinimeAction, type MinimeActor } from "../../../core/minimeBehavior.ts";
 import { readMinimeOptions } from "../../../core/minimeFields.ts";
 import { hopStyle } from "../../../core/minimeHops.ts";
@@ -20,9 +20,8 @@ import "../../../core/minimeHops.css";
 import "../minimes.css";
 
 const DEMO = params.has("demo");
-const STACK: MinimeStackScene = { variants: FIGURE_SET };
 // Core actions in which the figure walks
-const WALKING = new Set(["walk", "approach", "gather", "stackWalk", "dismount"]);
+const WALKING = new Set(["walk", "approach"]);
 const HELMETS = {
   dachdecker: "helmetDachdecker", zimmerer: "helmetZimmerer", spengler: "helmetSpengler", azubi: "helmetAzubi", polier: "helmetPolier",
 } as const satisfies Record<FigureType, keyof DachdeckerValues>;
@@ -48,7 +47,7 @@ export default function Minimes() {
     { name: "snack", durationMs: values.minimeSnackMs, weight: values.minimeSnackWeight },
   ], [values]);
   const reaction = useMemo<MinimeAction>(() => ({ name: "tip", durationMs: values.minimeTipMs, weight: 0 }), [values.minimeTipMs]);
-  const actors = useMinimes({ catalog, reaction, widthPx, stack: STACK });
+  const actors = useMinimes({ catalog, reaction, widthPx });
   const enabled = useMemo(() => readMinimeOptions(values, FIGURE_SET).rules.variants?.map(variant => variant.id) ?? [], [values]);
   const stage = useRef<HTMLDivElement>(null);
   const anchorOf = useAnchors();
@@ -77,11 +76,10 @@ export default function Minimes() {
   );
 }
 
-// The box the core moves: position, hops, level in a tower; the name label sits above it
+// The box the core moves: position and hops; the name label sits above it
 function Anchor({ actor, anchor }: { actor: MinimeActor; anchor: RefObject<HTMLDivElement | null> }) {
   const values = useDachdecker();
-  const level = actor.stack ? actor.stack.level - 1 : 0;
-  const style = { ...actorStyle(actor), ...hopStyle(actor, values.hopMs), "--level": level, "--name-shift": level > 0 ? (-1) ** level : 0 } as CSSProperties;
+  const style = { ...actorStyle(actor), ...hopStyle(actor, values.hopMs) } as CSSProperties;
   return (
     <div className={`dd-minime action-${actor.action}`} style={style}>
       {values.minimeLabels && <span className="dd-minime-name">{actor.user}</span>}

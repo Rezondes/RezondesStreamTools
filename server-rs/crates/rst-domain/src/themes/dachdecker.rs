@@ -15,8 +15,8 @@ use crate::themes::core_fields::{alert_sound_fields, badge_fields};
 use crate::themes::graphics_fields::quality_field;
 use crate::themes::info_fields::{INFO_GROUP, info_fields};
 use crate::themes::minime_fields::{
-    MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_STACK, MINIME_VARIANTS, minime_base_fields,
-    minime_hop_fields, minime_stack_fields, minime_variant_fields,
+    MINIME_COMMANDS, MINIME_HOP, MINIME_MOTION, MINIME_RULES, MINIME_VARIANTS, minime_base_fields, minime_hop_fields,
+    minime_variant_fields,
 };
 use crate::themes::registry::Theme;
 use crate::themes::schema::{MinimeVariantInfo, MinimeVariantSet, SceneName, ThemeSchema};
@@ -425,17 +425,6 @@ fn minimes() -> Vec<SettingField> {
         number("minimeSnackMs", "Brotzeit: Dauer", MINIME_MOVES, 6000.0, 300.0, 60_000.0, MS, None),
         number("minimeTipMs", "Reaktion auf Chat (Helm lupfen): Dauer", MINIME_MOVES, 900.0, 200.0, 5000.0, MS, None),
     ]);
-    // Towers as a scaffold: Azubi at the bottom, Zimmerer in the middle, Polier on top
-    let level = |id: &str| SettingValue::Text(id.to_owned());
-    fields.extend(minime_stack_fields(
-        &variants(),
-        &[
-            ("minimeStack", SettingValue::Flag(true)),
-            ("minimeStackLevel1", level("azubi")),
-            ("minimeStackLevel2", level("zimmerer")),
-            ("minimeStackLevel3", level("polier")),
-        ],
-    ));
     fields
 }
 
@@ -459,7 +448,6 @@ fn group_scenes() -> BTreeMap<String, Vec<SceneName>> {
         (MINIME_MOTION, vec![Minimes]),
         (MINIME_HOP, vec![Minimes]),
         (MINIME_VARIANTS, vec![Minimes]),
-        (MINIME_STACK, vec![Minimes]),
         (MINIME_LOOK, vec![Minimes]),
         (MINIME_MOVES, vec![Minimes]),
         (INFO_GROUP, vec![Info]),

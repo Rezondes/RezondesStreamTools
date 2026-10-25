@@ -4,7 +4,6 @@
 import { playSound } from "../../core/sound.ts";
 import type { SoundValue } from "../../core/theme.ts";
 import bag from "./sounds/bag.ogg";
-import plop from "./sounds/plop.ogg";
 import printer from "./sounds/printer.ogg";
 import register from "./sounds/register.ogg";
 import stamp from "./sounds/stamp.ogg";
@@ -23,4 +22,3 @@ export const playStamp = play(stamp);
 export const playPrinter = play(printer);
 export const playTear = play(tear);
 export const playBag = play(bag);
-export const plopTone = tone(plop);

@@ -1,5 +1,5 @@
 /* Minimes of the Kebab theme (scenes/Minimes.tsx), encapsulated under .theme-kebab, loaded only with the scene. Per
-   minime the scene sets --x, --move, --action-ms, --facing, --hops, --hop-ms, --level-lift (tower) and --name-shift;
+   minime the scene sets --x, --move, --action-ms, --facing, --hops, --hop-ms;
    the running action is the class action-<name>. The dish itself poses in ink/Dish.tsx. Keyframes are kebab-minime-*. */
 
 .theme-kebab .kb-minimes { position: absolute; inset: 0; overflow: hidden; pointer-events: none; --kb-floor: var(--minimeGround); }
@@ -24,9 +24,7 @@
   align-items: center;
   width: var(--minimeSize);
   transform: translateX(calc(var(--x) - 50%));
-  transition: transform var(--move) linear, translate var(--minimeClimbMs) ease-out;
-  /* In a tower every level stands on a plate on the one below */
-  translate: 0 calc(-1 * var(--level-lift, 0px));
+  transition: transform var(--move) linear;
 }
 .theme-kebab .kb-minime-flip { scale: var(--facing) 1; }
 .theme-kebab .kb-dish { display: block; width: var(--minimeSize); height: var(--minimeSize); overflow: visible; }
@@ -45,7 +43,6 @@
   font-weight: 800;
   font-size: var(--minimeLabelSize);
   white-space: nowrap;
-  translate: calc(var(--name-shift) * 90%) 0;
 }
 
 /* Appearing: the dish pops up from the counter; disappearing: it shrinks away, the note fades */
